@@ -1248,7 +1248,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@bam.tech/react-native-image-resizer@npm:^3.0.7":
+"@bam.tech/react-native-image-resizer@npm:3.0.10":
   version: 3.0.10
   resolution: "@bam.tech/react-native-image-resizer@npm:3.0.10"
   peerDependencies:
