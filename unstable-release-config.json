@@ -2,13 +2,10 @@
   "include-component-in-tag": true,
   "include-v-in-tag": true,
   "tag-separator": "@",
-  "separate-pull-requests": true,
-  "bump-minor-pre-major": true,
-  "bump-patch-for-minor-pre-major": true,
+  "prerelease": true,
+  "release-type": "node",
   "packages": {
     ".": {
-      "release-type": "node",
-      "prerelease": true,
       "prerelease-type": "dev"
     }
   },
