@@ -25,8 +25,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          yarn set version 3.6.4
-          yarn install --frozen-lockfile
+          yarn install --immutable
 
       - name: Check Format
         run: |
