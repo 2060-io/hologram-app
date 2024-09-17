@@ -1,0 +1,33 @@
+name: Continuous Integration
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, labeled]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: node:20
+
+    steps:
+      - name: Checkout hologram-app
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          yarn install --frozen-lockfile
+
+      - name: Check Format
+        run: |
+          yarn prettier -c
+
+      - name: Check Types
+        run: |
+          yarn lint
+
+      - name: Build
+        run: |
+          yarn build
