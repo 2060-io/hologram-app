@@ -72,10 +72,5 @@ android/app/upload-key.keystore
 **/.xcode.env.local
 
 # Yarn
-.yarn
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/sdks
-!.yarn/versions
+.yarn/cache
+.yarn/install-state.gz
