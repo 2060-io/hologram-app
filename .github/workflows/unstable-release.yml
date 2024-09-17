@@ -16,11 +16,9 @@ jobs:
         id: release-please
         with:
           manifest-file: .release-please-manifest.json
-          release-type": "node"
+          config-file: unstable-release-config.json
           skip-github-release: true
           skip-github-pull-request: true
-          prerelease: true
-          prerelease-type: "dev"
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Print release outputs for debugging
         continue-on-error: true
