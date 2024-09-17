@@ -1,0 +1,129 @@
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+  useRef,
+  PropsWithChildren,
+} from 'react'
+import { View, PanResponder, Modal } from 'react-native'
+
+import { useNavigation } from '../agent/NavigationProvider'
+import { useIsForeground } from '../useIsForeground'
+
+import { useVideoCallContext } from './useVideoCallContext'
+
+import Authentication from '@2060/components/Authentication'
+import { setStorageData, getStorageData } from '@2060/utils/asyncStorage'
+
+interface ScreenLockInterface {
+  isScreenLockEnabled: boolean
+  onToggleLockScreen: () => void
+  changeScreenLockTimeout: (newLockTimeoutValue: number | null) => void
+  screenLockTimeout: number | null
+}
+
+const ScreenLockContext = createContext<ScreenLockInterface | undefined>(undefined)
+
+export const useScreenLock = () => {
+  const screenLockContext = useContext(ScreenLockContext)
+  if (!screenLockContext) throw new Error('useScreenLock must be used within a LockContextProvider')
+  return screenLockContext
+}
+
+export const INSTANT_TIMEOUT = 0
+export const FIVE_MINUTES_TIMEOUT = 300_000
+
+export const ScreenLockProvider: React.FC<PropsWithChildren> = ({ children }) => {
+  const { isInCall, isIncomingCall, isFinishedCall } = useVideoCallContext()
+  const [isScreenLockEnabled, setIsScreenLockEnabled] = useState(false)
+  const [screenLockTimeout, setLockTimeout] = useState<number | null>(null)
+  const { getLocalAuth, setLocalAuth } = useNavigation()
+  const isAuthenticated = getLocalAuth()
+  const timerRef = useRef<ReturnType<typeof setTimeout>>()
+  const isAppActive = useIsForeground()
+  const makeLocalLogout = () => setLocalAuth(false)
+
+  useEffect(() => {
+    if (isInCall || isIncomingCall) clearInactivityTimeout()
+  }, [isInCall, isIncomingCall])
+
+  useEffect(() => {
+    if (isFinishedCall) clearAndRestartInactivityTimeout()
+  }, [isFinishedCall])
+
+  /**
+   * This hook is exclusive when screen lock timeout is instant (0)
+   */
+  useEffect(() => {
+    if (!isAppActive && screenLockTimeout === INSTANT_TIMEOUT) makeLocalLogout()
+  }, [isAppActive])
+
+  useEffect(() => {
+    const getStoredScreenLockedTimeout = async () => {
+      const storedScreenLockTimeout = (await getStorageData('screenLockTimeout')) ?? FIVE_MINUTES_TIMEOUT
+      setLockTimeout(Number(storedScreenLockTimeout))
+    }
+    getStoredScreenLockedTimeout()
+  }, [])
+
+  useEffect(() => {
+    clearAndRestartInactivityTimeout()
+  }, [screenLockTimeout])
+
+  useEffect(() => {
+    if (isAuthenticated) clearAndRestartInactivityTimeout()
+  }, [isAuthenticated])
+
+  useEffect(() => {
+    const getStoredScreenLock = async () => {
+      const storedIsScreenLockEnabled = (await getStorageData('screenLockEnabled')) ?? true
+      setIsScreenLockEnabled(Boolean(storedIsScreenLockEnabled))
+    }
+    getStoredScreenLock()
+  }, [])
+
+  const onToggleLockScreen = () => {
+    const newIsScreenLockEnabled = !isScreenLockEnabled
+    setIsScreenLockEnabled(newIsScreenLockEnabled)
+    setStorageData('screenLockEnabled', newIsScreenLockEnabled)
+    changeScreenLockTimeout(newIsScreenLockEnabled ? FIVE_MINUTES_TIMEOUT : null)
+  }
+
+  const panResponder = PanResponder.create({
+    onStartShouldSetPanResponderCapture: () => {
+      clearAndRestartInactivityTimeout()
+      return false
+    },
+  })
+
+  const clearInactivityTimeout = () => clearTimeout(timerRef?.current)
+
+  const clearAndRestartInactivityTimeout = () => {
+    clearInactivityTimeout()
+    if (screenLockTimeout && isScreenLockEnabled) {
+      timerRef.current = setTimeout(() => {
+        makeLocalLogout()
+      }, screenLockTimeout)
+    }
+  }
+
+  const changeScreenLockTimeout = useCallback((newLockTimeoutValue: number | null) => {
+    setLockTimeout(newLockTimeoutValue)
+    setStorageData('screenLockTimeout', newLockTimeoutValue)
+  }, [])
+
+  return (
+    <ScreenLockContext.Provider
+      value={{ isScreenLockEnabled, onToggleLockScreen, changeScreenLockTimeout, screenLockTimeout }}
+    >
+      <View style={{ flex: 1 }} {...panResponder.panHandlers}>
+        <Modal visible={!isAuthenticated}>
+          <Authentication isAppActive={isAppActive} />
+        </Modal>
+        {children}
+      </View>
+    </ScreenLockContext.Provider>
+  )
+}

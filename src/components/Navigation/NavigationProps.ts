@@ -1,0 +1,54 @@
+import { OutOfBandRecord } from '@credo-ts/core'
+
+import { ChatEntryData } from '@2060/model'
+import { CredentialMainInfo } from '@2060/services/agent/display'
+import { ServiceInfo } from '@2060/services/api/trustRegistryService'
+
+export type BiometricsAction = {
+  (message: string, isLocalAuthenticated: boolean, buttonText: string): void
+}
+
+type TypeParameters = 'oob' | 'd_m' | 'c_i'
+type HomeParams = {
+  [K in TypeParameters]: string | undefined
+}
+
+export type PersonalChatStackParams = {
+  PersonalChat: { chatThreadId: string }
+  MessageDetails: { selectedMessage: ChatEntryData }
+  ConnectionDetails: { connectionId: string }
+  ForwardMessages: undefined
+  ShareMessages: undefined
+}
+
+export type NavigationStackParams = {
+  Home: HomeParams | undefined
+  SignUpMain: undefined
+  Settings: undefined
+  Connections: undefined
+  ConnectionsForNewChat: undefined
+  Privacy: undefined
+  PersonalChatStack: undefined
+  OpenIdCredentialOffer: { url: string }
+  OpenIdPresentationRequest: { url: string }
+  DidcommCredentialOffer: { credentialRecordId: string }
+  DidcommPresentationRequest: { did: string; proofRecordId: string }
+  ConnectionInvitation: { outOfBandRecord: OutOfBandRecord }
+  ConnectionDetails: { connectionId: string }
+  RelatedConnections: { parentConnectionId: string }
+  UserInvitation: undefined
+  UserProfile: undefined
+  ProfileCreation: undefined
+  WalletBackup: undefined
+  RestoreWalletBackup: undefined
+  ChangeBackupPassword: undefined
+  Wallet: undefined
+  // TODO: Maybe this goes into a separate WalletStack?
+  CredentialDetails: { credentialRecordId: string }
+  Developer: undefined
+  CredentialPresented: {
+    verifier: ServiceInfo
+    credentials: CredentialMainInfo[]
+    presentedAt: string
+  }
+}

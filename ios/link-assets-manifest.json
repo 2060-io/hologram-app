@@ -1,0 +1,61 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "src/assets/fonts/EuclidCircularA-Bold.ttf",
+      "sha1": "0a69a0d9a4d2f9477582e7f01d84bc1d61c4d01c"
+    },
+    {
+      "path": "src/assets/fonts/EuclidCircularA-BoldItalic.ttf",
+      "sha1": "2c57c16a8a3d267c3a053d54bc7ebbc8456ab82e"
+    },
+    {
+      "path": "src/assets/fonts/EuclidCircularA-Italic.ttf",
+      "sha1": "f4ceb4d1ee8ff638760b1a30462bc16dccf1d25a"
+    },
+    {
+      "path": "src/assets/fonts/EuclidCircularA-Light.ttf",
+      "sha1": "eb1ac25ae5af273c16753fdf76b5a2919f4aac25"
+    },
+    {
+      "path": "src/assets/fonts/EuclidCircularA-LightItalic.ttf",
+      "sha1": "ddeae67fe43eee191894342d8eea2fbcc1e8dab6"
+    },
+    {
+      "path": "src/assets/fonts/EuclidCircularA-Medium.ttf",
+      "sha1": "e97e414467f782f08b7227a89db002829ebb4a52"
+    },
+    {
+      "path": "src/assets/fonts/EuclidCircularA-MediumItalic.ttf",
+      "sha1": "cf63245a613916b7411b34466861d5c6dbeabee4"
+    },
+    {
+      "path": "src/assets/fonts/EuclidCircularA-Regular.ttf",
+      "sha1": "d1ad5380051d486ba359d1a38bb8feb3f2a26fe5"
+    },
+    {
+      "path": "src/assets/fonts/EuclidCircularA-SemiBold.ttf",
+      "sha1": "e89ec5f5d0749a91981e5544c67bb73d8e135445"
+    },
+    {
+      "path": "src/assets/fonts/EuclidCircularA-SemiBoldItalic.ttf",
+      "sha1": "af44774e595180b183ff8abb34bb8812011ae0ce"
+    },
+    {
+      "path": "src/assets/fonts/SFPro-Bold.otf",
+      "sha1": "f2f8964dac04471d13fc2843f08e2cb06a6c00d3"
+    },
+    {
+      "path": "src/assets/fonts/SFPro-Light.otf",
+      "sha1": "e4418fce1790f20883505ddab72b4fa0ee5591bb"
+    },
+    {
+      "path": "src/assets/fonts/SFPro-Medium.otf",
+      "sha1": "d7db1c34350a2753bb5f49bd1e5eaa964349b29e"
+    },
+    {
+      "path": "src/assets/fonts/SFPro.ttf",
+      "sha1": "3cfae99c250b267a7c0e3d1b1b8e65028e1e749b"
+    }
+  ]
+}

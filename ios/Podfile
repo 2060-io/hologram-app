@@ -1,0 +1,79 @@
+require_relative '../node_modules/expo/scripts/autolinking'
+
+# Resolve react_native_pods.rb with node to allow for hoisting
+require Pod::Executable.execute_command('node', ['-p',
+  'require.resolve(
+    "react-native/scripts/react_native_pods.rb",
+    "react-native-permissions/scripts/setup.rb",
+    {paths: [process.argv[1]]},
+  )', __dir__]).strip
+
+platform :ios, '13.4'
+install! 'cocoapods', :deterministic_uuids => false
+
+abstract_target '2060CommonPods' do
+  target '2060Dev' do
+   end
+
+   target '2060Staging' do
+   end
+
+   target '2060Prod' do
+   end
+  use_expo_modules!
+  post_integrate do |installer|
+    begin
+      expo_patch_react_imports!(installer)
+    rescue => e
+      Pod::UI.warn e
+    end
+  end
+  pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec', :modular_headers => false
+
+  config = use_native_modules!
+  use_modular_headers!
+
+  use_react_native!(
+    :path => config[:reactNativePath],
+    # An absolute path to your application root.
+    :app_path => "#{Pod::Config.instance.installation_root}/.."
+  )
+
+  permissions_path = '../node_modules/react-native-permissions/ios'
+  pod 'Permission-Microphone', :path => "#{permissions_path}/Microphone"
+
+  pre_install do |installer|
+    Pod::Installer::Xcode::TargetValidator.send(:define_method, :verify_no_static_framework_transitive_dependencies) {}
+  end
+
+  post_install do |installer|
+    react_native_post_install(
+      installer,
+      config[:reactNativePath],
+      :mac_catalyst_enabled => false,
+      # :ccache_enabled => true
+    )
+    installer.pods_project.targets.each do |target|
+      target.build_configurations.each do |config|
+        config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)', '_LIBCPP_ENABLE_CXX17_REMOVED_UNARY_BINARY_FUNCTION']
+        config.build_settings['APPLICATION_EXTENSION_API_ONLY'] = 'NO'
+      end
+    end
+  end
+end
+
+abstract_target 'CommonShareExtensionPods' do
+  use_react_native!
+
+  pod 'RNShareMenu', :path => '../node_modules/react-native-share-menu'
+
+  target 'ShareExtensionDev' do
+    # Additional configurations specific to ShareExtensionDev
+  end
+  target 'ShareExtensionStaging' do
+    # Additional configurations specific to ShareExtensionStaging
+  end
+  target 'ShareExtensionProd' do
+    # Additional configurations specific to ShareExtensionProd
+  end
+end

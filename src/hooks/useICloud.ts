@@ -1,0 +1,153 @@
+import React, { useState, useEffect } from 'react'
+import * as CloudStore from 'react-native-cloud-store'
+import * as RNFS from 'react-native-fs'
+
+import { BACKUP_NAME, BACKUP_ZIP_FILE_PATH, existsBackupFile } from '../utils/walletBackUpUtils'
+
+import {
+  BackupHandler,
+  BackupProgressProps,
+  OnBackupFinish,
+  RestoreProgress,
+  restoreProgressInitialValues,
+} from './backup'
+import { useIsForeground } from './useIsForeground'
+
+import { logError } from '@2060/utils'
+
+export interface ICloudBackupInfo {
+  exists: boolean
+  path?: string
+  size?: number
+  lastModifiedDate?: string
+}
+
+export const useICloud = () => {
+  const { defaultICloudContainerPath } = CloudStore
+  const iCloudBackupFolderPath = CloudStore.PathUtils.join(defaultICloudContainerPath ?? '', 'Documents')
+  const backupICloudPath = `${iCloudBackupFolderPath}/${BACKUP_NAME}`
+  const [isCloudAvailable, setIsCloudAvailable] = useState(false)
+  const [backupHandler, setBackupHandler] = useState<BackupHandler>({ isFetching: false })
+  const isForeground = useIsForeground()
+
+  useEffect(() => {
+    const iCloudIdentityChangeEvent = CloudStore.registerICloudIdentityDidChangeEvent()
+    const uploadEvent = CloudStore.registerGlobalUploadEvent()
+    const downloadEvent = CloudStore.registerGlobalDownloadEvent()
+    return () => {
+      iCloudIdentityChangeEvent?.remove()
+      uploadEvent?.remove()
+      downloadEvent?.remove()
+    }
+  }, [])
+
+  useEffect(() => {
+    const isIcloudAvailable = async () => {
+      try {
+        const available = await CloudStore.isICloudAvailable()
+        setIsCloudAvailable(available)
+      } catch (error) {
+        logError('Error getting if iCloud is available', error)
+      }
+    }
+    isForeground && isIcloudAvailable()
+  }, [isForeground])
+
+  useEffect(() => {
+    const checkBackup = async () => {
+      await getBackupInfo()
+    }
+    if (isCloudAvailable && !backupHandler.backup) checkBackup()
+  }, [isCloudAvailable, isForeground])
+
+  const existsBackup = async (): Promise<boolean> => {
+    const info = await getBackupInfo()
+    return info.exists ?? false
+  }
+
+  const getBackupInfo = async (): Promise<ICloudBackupInfo> => {
+    setBackupHandler({ isFetching: true })
+    try {
+      const info = await CloudStore.query(backupICloudPath)
+      setBackupHandler({
+        isFetching: false,
+        backup: info.isInICloud
+          ? {
+              size: `${info.fileSize}`,
+              modifyDate: info.modifyTimestamp,
+            }
+          : undefined,
+      })
+      return {
+        exists: info.isInICloud ?? false,
+        lastModifiedDate: info.modifyTimestamp ? new Date(info.modifyTimestamp).toISOString() : undefined,
+        size: info.fileSize,
+      }
+    } catch (error) {
+      setBackupHandler({ isFetching: false, error: true })
+      logError('Error getting file info', error)
+      return { exists: false }
+    }
+  }
+
+  const uploadFileToIcloud =
+    (setUploadProgress: React.Dispatch<React.SetStateAction<BackupProgressProps>>) =>
+    async (
+      fileToUploadLocation: string,
+      onBackupUploadSuccess: OnBackupFinish,
+      onBackupUploadFailure: (error: string) => void,
+    ) => {
+      try {
+        if (await existsBackup()) await CloudStore.unlink(backupICloudPath)
+        else CloudStore.createDir(iCloudBackupFolderPath)
+
+        CloudStore.upload(fileToUploadLocation, backupICloudPath, {
+          onProgress(data) {
+            setUploadProgress(prev => ({ ...prev, progress: data?.progress }))
+            if (data?.progress === 100) {
+              getBackupInfo()
+              onBackupUploadSuccess()
+            }
+          },
+        })
+      } catch (error) {
+        onBackupUploadFailure(`${error}`)
+        logError('Error uploading file to iCloud', error)
+      }
+    }
+
+  const downloadBackup = (setRestoreProgress: React.Dispatch<React.SetStateAction<RestoreProgress>>) => () =>
+    new Promise(async resolve => {
+      try {
+        // File already downloaded locally in files app
+        if (await CloudStore.exist(backupICloudPath)) {
+          const alreadyDownloadBackup = await existsBackupFile()
+          if (!alreadyDownloadBackup) {
+            await RNFS.copyFile(backupICloudPath, BACKUP_ZIP_FILE_PATH)
+          }
+          resolve(true)
+        } else {
+          // Need to download the file
+          await CloudStore.download(backupICloudPath, {
+            onProgress(data) {
+              const progressLessOne = data?.progress ? data?.progress - 1 : data?.progress
+              setRestoreProgress(prev => ({ ...prev, progress: progressLessOne }))
+              if (data?.progress === 100) {
+                RNFS.copyFile(backupICloudPath, BACKUP_ZIP_FILE_PATH).then(_ => resolve(true))
+              }
+            },
+          })
+        }
+      } catch (error) {
+        setRestoreProgress({ ...restoreProgressInitialValues, error: `${error}` })
+        resolve(false)
+      }
+    })
+
+  return {
+    isCloudAvailable,
+    backupHandler,
+    uploadFileToIcloud,
+    downloadBackup,
+  }
+}

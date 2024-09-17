@@ -1,0 +1,19 @@
+{
+  "extends": "@tsconfig/react-native/tsconfig.json",
+  "compilerOptions": {
+    "types": ["node"],
+    "outDir": "./build",
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "downlevelIteration": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "jsx": "react",
+    "baseUrl": ".",
+    "paths": {
+      "@2060/*": ["src/*"]
+    },
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "build"]
+}

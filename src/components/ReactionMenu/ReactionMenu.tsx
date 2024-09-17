@@ -1,0 +1,91 @@
+import { View as MotiView, AnimatePresence } from 'moti'
+import React, { useState, memo } from 'react'
+import { View, TouchableOpacity } from 'react-native'
+import EmojiPicker from 'rn-emoji-keyboard'
+
+import EmojiItem from './EmojiItem'
+import getStyles from './styles'
+
+import { Icon } from '@2060/components/common'
+import { useTheme } from '@2060/hooks/providers/ThemeProvider'
+import { ChatEntryRole } from '@2060/model'
+import { ChatEntryMessage } from '@2060/pages/PersonalChat/ChatMessage/Props'
+
+const mainEmojis = [
+  { emoji: '😂', name: 'laugh' },
+  { emoji: '👍🏻', name: 'good' },
+  { emoji: '❤️', name: 'heart' },
+  { emoji: '😮', name: 'astonished' },
+  { emoji: '😢', name: 'sad' },
+  { emoji: '🙏🏻', name: 'thanks' },
+]
+
+type Props = {
+  message: ChatEntryMessage
+  onReaction(action: 'react' | 'unreact', emoji: string): void
+  onClose(): void
+}
+
+type Emoji = {
+  emoji: string
+  name: string
+}
+
+const ReactionMenu = ({ message, onClose, onReaction }: Props) => {
+  const theme = useTheme()
+  const styles = getStyles(theme)
+  const [isOpen, setIsOpen] = useState(false)
+
+  const handleOnCloseEmojiPicker = () => setIsOpen(false)
+  const handleOnshowEmojiPicker = () => setIsOpen(true)
+
+  const handleOnEmojiSelected = (emoji: Emoji) => {
+    const isEmojiAlreadySelected = getIsEmojiSelected(emoji.emoji)
+    const action = isEmojiAlreadySelected ? 'unreact' : 'react'
+    onReaction(action, emoji.emoji)
+    onClose()
+  }
+
+  const getIsEmojiSelected = (emoji: string) => {
+    const exists = message.reactions.find(
+      reaction => reaction.emoji === emoji && reaction.role === ChatEntryRole.Sender,
+    )
+    return Boolean(exists)
+  }
+
+  return (
+    <View style={styles.root}>
+      <EmojiPicker
+        open={isOpen}
+        onClose={handleOnCloseEmojiPicker}
+        onEmojiSelected={handleOnEmojiSelected}
+        expandable={false}
+        enableRecentlyUsed
+        categoryPosition="top"
+      />
+      <AnimatePresence exitBeforeEnter>
+        <MotiView from={{ opacity: 0 }} animate={{ opacity: 1 }}>
+          <View style={styles.emojiBox}>
+            {mainEmojis.map(emoji => (
+              <EmojiItem
+                onPress={() => handleOnEmojiSelected(emoji)}
+                key={emoji.name}
+                data={emoji}
+                isEmojiSelected={getIsEmojiSelected(emoji.emoji)}
+              />
+            ))}
+            <TouchableOpacity
+              onPress={handleOnshowEmojiPicker}
+              activeOpacity={0.7}
+              style={styles.iconEllipsis}
+            >
+              <Icon as="Ionicons" name="add" color={theme.colors.blue} size={25} />
+            </TouchableOpacity>
+          </View>
+        </MotiView>
+      </AnimatePresence>
+    </View>
+  )
+}
+
+export default memo(ReactionMenu)

@@ -1,0 +1,194 @@
+apply plugin: "com.android.application"
+apply plugin: 'com.google.gms.google-services'
+apply plugin: "com.facebook.react"
+
+project.ext.envConfigFiles = [
+   proddebug: ".env.prod",
+   prodrelease: ".env.prod",
+   devrelease: ".env.dev",
+   devdebug: ".env.dev",
+   stagingrelease: ".env.staging",
+   stagingdebug: ".env.staging"
+]
+
+apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
+
+import com.android.build.OutputFile
+
+react {
+    autolinkLibrariesWithApp()
+}
+
+apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
+
+/**
+ * Set this to true to create four separate APKs instead of one,
+ * one for each native architecture. This is useful if you don't
+ * use App Bundles (https://developer.android.com/guide/app-bundle/)
+ * and want to have separate APKs to upload to the Play Store.
+ */
+def enableSeparateBuildPerCPUArchitecture = false
+
+/**
+ * Set this to true to Run Proguard on Release builds to minify the Java bytecode.
+ */
+def enableProguardInReleaseBuilds = true
+
+def enableShrinkResources = true
+
+/**
+ * The preferred build flavor of JavaScriptCore (JSC)
+ *
+ * For example, to use the international variant, you can use:
+ * `def jscFlavor = 'org.webkit:android-jsc-intl:+'`
+ *
+ * The international variant includes ICU i18n library and necessary data
+ * allowing to use e.g. `Date.toLocaleString` and `String.localeCompare` that
+ * give correct results when using with locales other than en-US. Note that
+ * this variant is about 6MiB larger per architecture than default.
+ */
+def jscFlavor = 'org.webkit:android-jsc:+'
+
+/**
+ * Private function to get the list of Native Architectures you want to build.
+ * This reads the value from reactNativeArchitectures in your gradle.properties
+ * file and works together with the --active-arch-only flag of react-native run-android.
+ */
+def reactNativeArchitectures() {
+    def value = project.getProperties().get("reactNativeArchitectures")
+    return value ? value.split(",") : ["armeabi-v7a", "x86", "x86_64", "arm64-v8a"]
+}
+
+android {
+    packagingOptions {
+        pickFirst '**/libc++_shared.so'
+        pickFirst '**/libfbjni.so'
+    }
+    ndkVersion rootProject.ext.ndkVersion
+    compileSdk rootProject.ext.compileSdkVersion
+
+    namespace "io.twentysixty.mobileagent"
+    defaultConfig {
+        applicationId "io.twentysixty.mobileagent"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 20000
+        versionName "2.0.0"
+        vectorDrawables.useSupportLibrary = true
+        buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
+        buildConfigField "boolean", "IS_HERMES_ENABLED", isNewHermesEnabled().toString()
+    }
+
+    splits {
+        abi {
+            reset()
+            enable enableSeparateBuildPerCPUArchitecture
+            universalApk false  // If true, also generate a universal APK
+            include (*reactNativeArchitectures())
+        }
+    }
+    signingConfigs {
+        debug {
+            storeFile file('debug.keystore')
+            storePassword 'android'
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+        }
+        release {
+            storeFile file('upload-key.keystore')
+            storePassword System.getenv("UPLOAD_KEYSTORE_PASSWORD") ?: ""
+            keyAlias 'main'
+            keyPassword System.getenv("UPLOAD_KEY_PASSWORD") ?: ""
+        }
+    }
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+            matchingFallbacks = ['debug', 'release']
+        }
+        release {
+            signingConfig signingConfigs.release
+            minifyEnabled enableProguardInReleaseBuilds
+            shrinkResources enableShrinkResources
+            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+        }
+    }
+
+    flavorDimensions "default"
+    productFlavors {
+        dev {
+            applicationIdSuffix ".dev"
+            resValue "string", "build_config_package", "io.twentysixty.mobileagent"
+        }
+
+        staging {
+            applicationIdSuffix ".st"
+            resValue "string", "build_config_package", "io.twentysixty.mobileagent"
+        }
+
+        prod {
+            applicationIdSuffix ".m"
+            resValue "string", "build_config_package", "io.twentysixty.mobileagent"
+        }
+    }
+
+    configurations {
+        all*.exclude group: "com.facebook.react", module: "react-native"
+    }
+
+    // applicationVariants are e.g. debug, release
+    applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            // For each separate APK per architecture, set a unique version code as described here:
+            // https://developer.android.com/studio/build/configure-apk-splits.html
+            // Example: versionCode 1 will generate 1001 for armeabi-v7a, 1002 for x86, etc.
+            def versionCodes = ["armeabi-v7a": 1, "x86": 2, "arm64-v8a": 3, "x86_64": 4]
+            def abi = output.getFilter(OutputFile.ABI)
+            if (abi != null) {  // null for the universal-debug, universal-release variants
+                output.versionCodeOverride =
+                        defaultConfig.versionCode * 1000 + versionCodes.get(abi)
+            }
+
+        }
+    }
+}
+
+dependencies {
+    // The version of react-native is set by the React Native Gradle Plugin
+    implementation("com.facebook.react:react-android")
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.0.0")
+
+    if (hermesEnabled.toBoolean()) {
+        implementation("com.facebook.react:hermes-android")
+    } else {
+        implementation jscFlavor
+    }
+
+    implementation 'net.java.dev.jna:jna:5.2.0'
+
+    // Firebase BOM
+    implementation platform('com.google.firebase:firebase-bom:30.1.0')
+
+    // Add the dependency for the Firebase SDK for Google Analytics
+    // When using the BoM, don't specify versions in Firebase dependencies
+    implementation 'com.google.firebase:firebase-analytics'
+
+    // For AES encryption (TODO: remove when the module is extracted from  the app)
+    implementation 'com.madgag.spongycastle:core:1.58.0.0'
+    implementation 'com.madgag.spongycastle:prov:1.54.0.0'
+    implementation 'com.madgag.spongycastle:pg:1.54.0.0'
+
+    implementation project(':react-native-fs')
+    implementation 'com.google.android.gms:play-services-auth:21.2.0'
+    implementation project(':react-native-splash-screen')
+}
+
+apply plugin: 'com.google.gms.google-services'
+
+def isNewArchitectureEnabled() {
+    return project.hasProperty("newArchEnabled") && project.newArchEnabled == "true"
+}
+
+def isNewHermesEnabled() {
+    return project.hasProperty("hermesEnabled") && project.hermesEnabled == "true"
+}

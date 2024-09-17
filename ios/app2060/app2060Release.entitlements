@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>aps-environment</key>
+	<string>development</string>
+	<key>com.apple.developer.associated-domains</key>
+	<array>
+		<string>applinks:*.2060.io</string>
+		<string>invitations:hologram.zone</string>
+	</array>
+	<key>com.apple.developer.devicecheck.appattest-environment</key>
+	<string>production</string>
+	<key>com.apple.developer.icloud-container-identifiers</key>
+	<array>
+		<string>iCloud.io.2060.mobileagent.m</string>
+	</array>
+	<key>com.apple.developer.icloud-services</key>
+	<array>
+		<string>CloudDocuments</string>
+	</array>
+	<key>com.apple.developer.ubiquity-container-identifiers</key>
+	<array>
+		<string>iCloud.io.2060.mobileagent.m</string>
+	</array>
+	<key>com.apple.security.application-groups</key>
+	<array>
+		<string>group.io.2060.mobileagent.dev</string>
+		<string>group.io.2060.mobileagent.st</string>
+		<string>group.io.2060.mobileagent.m</string>
+	</array>
+</dict>
+</plist>

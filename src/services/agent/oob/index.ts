@@ -1,0 +1,336 @@
+import { V1OfferCredentialMessage, V1RequestPresentationMessage } from '@credo-ts/anoncreds'
+import {
+  OutOfBandApi,
+  EventEmitter,
+  AgentContext,
+  ConnectionRepository,
+  RoutingService,
+  ConnectionsApi,
+  ConnectionRecord,
+  OutOfBandInvitation,
+  OutOfBandRecord,
+  OutOfBandRepository,
+  CredentialEventTypes,
+  CredentialState,
+  CredentialStateChangedEvent,
+  OutOfBandState,
+  ProofEventTypes,
+  ProofState,
+  ProofStateChangedEvent,
+  V2OfferCredentialMessage,
+  V2RequestPresentationMessage,
+  parseMessageType,
+  MediationRecipientApi,
+} from '@credo-ts/core'
+import { DidCommDocumentService } from '@credo-ts/core/build/modules/didcomm'
+import { tryParseDid } from '@credo-ts/core/build/modules/dids/domain/parse'
+import { supportsIncomingMessageType } from '@credo-ts/core/build/utils/messageType'
+import { t } from 'i18next'
+import { filter, firstValueFrom, merge, first, timeout } from 'rxjs'
+
+import { MobileAgent } from '../MobileAgent'
+
+import { OutOfBandInvitationEvent, OutOfBandInvitationEventTypes } from './OutOfBandEvents'
+
+import { deleteConnection, findExistingConnection } from '@2060/hooks/agent/connections'
+import { log, logError } from '@2060/utils'
+import { toast } from '@2060/utils/toast'
+
+export enum DidcommInvitationType {
+  ConnectionRequest = 'connection-request',
+  PresentationRequest = 'presentation-request',
+  CredentialOffer = 'credential-offer',
+}
+
+/**
+ * Gets the out of band record and connection associated to a given invitation. In case no
+ * existing connection or out of band record are found, it will create a new one, in order to
+ * let the invitation be accepted through a call to acceptInvitation
+ *
+ * @param agentContext
+ * @param options
+ * @returns
+ */
+export const getOutOfBandRecord = async (
+  agentContext: AgentContext,
+  options: {
+    invitation: OutOfBandInvitation
+    parentConnectionId?: string
+  },
+): Promise<{ outOfBandRecord: OutOfBandRecord; existingConnection?: ConnectionRecord }> => {
+  const { invitation, parentConnectionId } = options
+
+  const outOfBandApi = agentContext.dependencyManager.resolve(OutOfBandApi)
+
+  // Check that this is not an invitation created by us
+  const ownInvitationRecord = await outOfBandApi.findByCreatedInvitationId(invitation.id)
+  if (ownInvitationRecord) {
+    throw new Error(t('invitation.errorConnectToSelf'))
+  }
+  // Check if there is a connection whose did is associated to the same id from the invitation
+  const existingConnection = await findExistingConnection(agentContext, invitation)
+
+  // Special case: this is a regular connection invitation and we are already connected: return the original
+  // oob record and do not do any further processing
+  const requests = invitation.getRequests()
+  const requestMessage = requests && requests.length ? requests[0] : undefined
+  if (existingConnection?.outOfBandId && !requestMessage) {
+    const oobRecordFromExistingConnection = await outOfBandApi.findById(existingConnection.outOfBandId)
+    if (oobRecordFromExistingConnection) {
+      return { outOfBandRecord: oobRecordFromExistingConnection, existingConnection }
+    }
+  }
+
+  // We check if OOB Record with the same invitation ID exists and return it if that's the case
+  const existingOobRecord = await outOfBandApi.findByReceivedInvitationId(invitation.id)
+  if (existingOobRecord) return { outOfBandRecord: existingOobRecord, existingConnection }
+
+  const { outOfBandRecord } = await outOfBandApi.receiveInvitation(invitation, {
+    autoAcceptInvitation: false,
+    autoAcceptConnection: true,
+    reuseConnection: true,
+  })
+  if (parentConnectionId) {
+    outOfBandRecord.setTag('parentConnectionId', parentConnectionId)
+    await agentContext.dependencyManager.resolve(OutOfBandRepository).update(agentContext, outOfBandRecord)
+  }
+
+  return { outOfBandRecord, existingConnection }
+}
+
+/**
+ * Process a DIDComm invitation by assigning an out of band record to it. In case of regular connection
+ * invitations, it will return specifying if there was already a connection associated to it.
+ *
+ * In case of Presentation Requests and Credential Offers, it will automatically accept the invitation in
+ * order to process the request messages. Later on the user can actually accept or refuse the request
+ * specifically. In these cases, we'll attempt to reuse any existing connection. In order for this to work,
+ * both receiver and requester agents must be online. Otherwise, the flow will timeout and cancelled.
+ *
+ * @param agent
+ * @param invitation
+ * @returns
+ */
+export const processInvitation = async (
+  agent: MobileAgent,
+  invitation: OutOfBandInvitation,
+): Promise<{
+  success: boolean
+  error?: string
+  existingConnectionId?: string
+  recordId?: string
+  invitationType?: DidcommInvitationType
+}> => {
+  try {
+    const { outOfBandRecord, existingConnection } = await getOutOfBandRecord(agent.context, { invitation })
+    if (outOfBandRecord.state !== OutOfBandState.Initial) {
+      toast({ type: 'warning', message: t('invitation.alreadyScanned') })
+    }
+
+    const requests = invitation.getRequests()
+    const requestMessage = requests && requests.length ? requests[0] : undefined
+
+    // If it is simply a connection invitation, show it without further processing
+    if (!requestMessage) {
+      return {
+        success: true,
+        invitationType: DidcommInvitationType.ConnectionRequest,
+        existingConnectionId: existingConnection?.id,
+        recordId: outOfBandRecord.id,
+      }
+    }
+
+    const parsedMessageType = parseMessageType(requestMessage['@type'])
+    const isValidRequestMessage =
+      supportsIncomingMessageType(parsedMessageType, V1OfferCredentialMessage.type) ||
+      supportsIncomingMessageType(parsedMessageType, V2OfferCredentialMessage.type) ||
+      supportsIncomingMessageType(parsedMessageType, V1RequestPresentationMessage.type) ||
+      supportsIncomingMessageType(parsedMessageType, V2RequestPresentationMessage.type)
+
+    if (!isValidRequestMessage) {
+      logError('Message request is not from supported protocol.')
+      throw new Error('Message request is not from supported protocol.')
+    }
+
+    // The value is reassigned, but eslint doesn't know this.
+
+    let connectionId: string | undefined
+
+    const credentialOffer = agent.events
+      .observable<CredentialStateChangedEvent>(CredentialEventTypes.CredentialStateChanged)
+      .pipe(
+        filter(event => event.payload.credentialRecord.state === CredentialState.OfferReceived),
+        filter(event =>
+          connectionId
+            ? event.payload.credentialRecord.connectionId === connectionId
+            : event.payload.credentialRecord.parentThreadId === invitation.id,
+        ),
+      )
+
+    const proofRequest = agent.events
+      .observable<ProofStateChangedEvent>(ProofEventTypes.ProofStateChanged)
+      .pipe(
+        filter(event => event.payload.proofRecord.state === ProofState.RequestReceived),
+        filter(event =>
+          connectionId
+            ? event.payload.proofRecord.connectionId === connectionId
+            : event.payload.proofRecord.parentThreadId === invitation.id,
+        ),
+      )
+
+    const eventPromise = firstValueFrom(
+      merge(credentialOffer, proofRequest).pipe(
+        first(),
+        // Wait up to 10 seconds to receive event: TODO add possibility of canceling the process
+        timeout(10 * 1000),
+      ),
+    )
+    const { connectionRecord } = await acceptInvitation(agent.context, { outOfBandId: outOfBandRecord.id })
+    connectionId = connectionRecord?.id
+
+    try {
+      const event = await eventPromise
+
+      if (event.type === CredentialEventTypes.CredentialStateChanged) {
+        return {
+          success: true,
+          invitationType: DidcommInvitationType.CredentialOffer,
+          existingConnectionId: existingConnection?.id,
+          recordId: event.payload.credentialRecord.id,
+        }
+      } else if (event.type === ProofEventTypes.ProofStateChanged) {
+        return {
+          success: true,
+          invitationType: DidcommInvitationType.PresentationRequest,
+          existingConnectionId: existingConnection?.id,
+          recordId: event.payload.proofRecord.id,
+        }
+      }
+    } catch (error) {
+      logError(`Error while waiting for credential offer or proof request. Deleting out of band record`)
+      // Delete OOB record
+      const outOfBandRepository = agent.dependencyManager.resolve(OutOfBandRepository)
+      await outOfBandRepository.deleteById(agent.context, outOfBandRecord.id)
+
+      // Delete connection record (only if it was created from this flow)
+      if (!existingConnection && connectionRecord) {
+        log(`Deleting connection`)
+        await deleteConnection(agent, connectionRecord)
+      }
+      return {
+        success: false,
+        existingConnectionId: existingConnection?.id,
+        error: (error as Error).message,
+      }
+    }
+  } catch (error) {
+    return {
+      success: false,
+      error: (error as Error).message,
+    }
+  }
+
+  return {
+    success: false,
+  }
+}
+export const createInvitation = async (
+  agent: MobileAgent,
+  options: { label?: string },
+): Promise<OutOfBandInvitation> => {
+  // TODO: make it multi-use (it requires a fix in the way keylist-update-response is handled)
+  const oobRecord = await agent.oob.createInvitation({
+    routing: await getMediationRouting(agent.context),
+    label: options.label,
+    multiUseInvitation: false,
+  })
+
+  return oobRecord.outOfBandInvitation
+}
+
+export async function acceptInvitation(
+  agentContext: AgentContext,
+  options: { connectionId?: string; outOfBandId: string; label?: string },
+) {
+  const connectionsApi = agentContext.dependencyManager.resolve(ConnectionsApi)
+  const connection = options.connectionId ? await connectionsApi.findById(options.connectionId) : null
+
+  const outOfBandApi = agentContext.dependencyManager.resolve(OutOfBandApi)
+  const outOfBandRecord = await outOfBandApi.getById(options.outOfBandId)
+  const parentConnectionId =
+    (outOfBandRecord.getTag('parentConnectionId') as string | undefined) ?? options.connectionId
+
+  const routing = await getMediationRouting(agentContext)
+
+  const { connectionRecord: newConnection } = await outOfBandApi.acceptInvitation(options.outOfBandId, {
+    autoAcceptConnection: true,
+    label: options.label,
+    routing,
+    reuseConnection: true,
+  })
+
+  // Tag connection with its parent unless it is a connection to a public id
+  // Invitations to public DIDs will always create standalone connections
+  if (!tryParseDid(outOfBandRecord.outOfBandInvitation.id) && parentConnectionId && newConnection) {
+    newConnection.setTag('parentConnectionId', parentConnectionId)
+    await agentContext.dependencyManager.resolve(ConnectionRepository).update(agentContext, newConnection)
+  }
+
+  // Emit event: OOB Invitation accepted
+  agentContext.dependencyManager.resolve(EventEmitter).emit<OutOfBandInvitationEvent>(agentContext, {
+    type: OutOfBandInvitationEventTypes.OutOfBandInvitationEvent,
+    payload: {
+      action: 'Accepted',
+      outOfBandRecord: outOfBandRecord.clone(),
+      connection,
+    },
+  })
+
+  return { connectionRecord: newConnection }
+}
+
+export async function refuseInvitation(
+  agentContext: AgentContext,
+  options: { connectionId?: string; outOfBandId: string },
+) {
+  const connectionsApi = agentContext.dependencyManager.resolve(ConnectionsApi)
+  const connection = options.connectionId ? await connectionsApi.findById(options.connectionId) : null
+
+  const outOfBandApi = agentContext.dependencyManager.resolve(OutOfBandApi)
+  const outOfBandRecord = await outOfBandApi.getById(options.outOfBandId)
+
+  // Emit event: OOB Invitation accepted
+  agentContext.dependencyManager.resolve(EventEmitter).emit<OutOfBandInvitationEvent>(agentContext, {
+    type: OutOfBandInvitationEventTypes.OutOfBandInvitationEvent,
+    payload: {
+      action: 'Refused',
+      outOfBandRecord: outOfBandRecord.clone(),
+      connection,
+    },
+  })
+}
+
+const getMediationRouting = async (agentContext: AgentContext) => {
+  const routing = await agentContext.dependencyManager.resolve(RoutingService).getRouting(agentContext)
+  const mediationRecipient = agentContext.dependencyManager.resolve(MediationRecipientApi)
+  const didcommDocumentService = agentContext.dependencyManager.resolve(DidCommDocumentService)
+
+  const mediatorConnection = await mediationRecipient.findDefaultMediatorConnection()
+  const mediationRecord = await mediationRecipient.findDefaultMediator()
+  if (!mediatorConnection || !mediatorConnection.invitationDid || !mediationRecord) {
+    return
+  }
+
+  const services = await didcommDocumentService.resolveServicesFromDid(
+    agentContext,
+    mediatorConnection.invitationDid,
+  )
+  routing.endpoints = mediationRecord.endpoint
+    ? [
+        mediationRecord.endpoint,
+        ...services.map(service => service.serviceEndpoint).filter(item => item !== mediationRecord.endpoint),
+      ]
+    : services.map(service => service.serviceEndpoint)
+
+  return routing
+}

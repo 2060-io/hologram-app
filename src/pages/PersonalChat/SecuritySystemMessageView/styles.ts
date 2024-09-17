@@ -1,0 +1,36 @@
+import { StyleSheet } from 'react-native'
+
+import { cardShadowStyles } from '../../../styles/globalStyles'
+
+import { AppTheme } from '@2060/styles'
+import { widthPercentageToDP } from '@2060/utils/responsiveUtils'
+
+export default (theme: AppTheme) =>
+  StyleSheet.create({
+    containerSecurityMessage: {
+      ...cardShadowStyles(theme.colors),
+      width: widthPercentageToDP('84.81%'),
+      paddingVertical: 4,
+      paddingHorizontal: 8,
+      backgroundColor: theme.isDarkMode ? '#182022' : '#E8F0F2',
+      alignSelf: 'center',
+      borderRadius: 4,
+      marginBottom: 12.84,
+    },
+    textMessage: {
+      color: theme.isDarkMode ? theme.colors.lightGrey : '#6A8994',
+      fontSize: theme.fontSize.sm + 2,
+    },
+    textMessageForService: {
+      color: theme.isDarkMode ? theme.colors.lightGrey : '#6A8994',
+      fontSize: theme.fontSize.sm + 2,
+      marginBottom: 12,
+    },
+    disclaimer: {
+      color: theme.colors.red,
+      fontSize: theme.fontSize.sm + 2,
+    },
+    underLineText: {
+      textDecorationLine: 'underline',
+    },
+  })

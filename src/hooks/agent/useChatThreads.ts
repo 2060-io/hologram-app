@@ -1,0 +1,135 @@
+import { t } from 'i18next'
+import { useState, useEffect, useMemo } from 'react'
+
+import { useLocalRealm } from '../providers/RealmProvider'
+import { useFetchServiceInfo } from '../useFetchServiceInfo'
+
+import { useConnectionById } from './ConnectionProvider'
+import { useUserProfile } from './UserProfileProvider'
+
+import { ChatThreadData, ChatThread, getChatThreadData, ChatEntryRole } from '@2060/model'
+import { ChatParticipant } from '@2060/pages/PersonalChat/ChatMessage/Props'
+import {
+  getConnectionDisplayIcon,
+  getConnectionDisplayName,
+  getConnectionDisplayPicture,
+  getPictureDataUrl,
+  isBlocked,
+  isService,
+  isTerminated,
+  supportsMediaSharing,
+  supportsMessageReactions,
+  supportsMessageReceipts,
+} from '@2060/utils/connectionUtils'
+
+export const useUnreadChatThreads = () => {
+  return useChatThreadsHook('unreadCount > 0')
+}
+
+export type ChatThreadWithParticipants = ReturnType<typeof useChatThreadWithParticipants>
+
+export const useChatThreadWithParticipants = (chatThreadId: string) => {
+  const chatThread = useChatThreadById(chatThreadId)
+  const connection = useConnectionById(chatThread?.connectionId)
+  const { serviceInfo } = useFetchServiceInfo(
+    connection && isService(connection) ? connection.invitationDid : undefined,
+  )
+  const { userProfileData } = useUserProfile()
+  const displayPicture = userProfileData?.displayPicture
+
+  const participants: ChatParticipant[] = useMemo(
+    () => [
+      { id: ChatEntryRole.Sender, name: t('personalChat.you'), avatar: getPictureDataUrl(displayPicture) },
+      {
+        id: ChatEntryRole.Receiver,
+        name: connection ? getConnectionDisplayName(connection) : undefined,
+        avatar: connection ? getConnectionDisplayPicture(connection) : undefined,
+      },
+    ],
+    [connection],
+  )
+
+  const flags = useMemo(
+    () => ({
+      did: connection?.invitationDid,
+      isService: connection ? isService(connection) : false,
+      serviceInfo,
+      isConnectionDeleted: connection === undefined,
+      connectionIconUrl: connection ? getConnectionDisplayIcon(connection) : undefined,
+      isConnectionBlocked: connection ? isBlocked(connection) : false,
+      isConnectionTerminated: connection ? isTerminated(connection) : false,
+      isConnectionCompleted: connection ? connection.isReady : false,
+      supportsMediaSharing: Boolean(connection && supportsMediaSharing(connection)),
+      supportsMessageReceipts: Boolean(connection && supportsMessageReceipts(connection)),
+      supportsMessageReactions: Boolean(connection && supportsMessageReactions(connection)),
+    }),
+    [connection, serviceInfo],
+  )
+
+  return {
+    participants,
+    flags,
+    data: chatThread,
+  }
+}
+
+export const useChatThreadById = (chatThreadId: string) => {
+  return useChatThreadsHook(`id == '${chatThreadId}'`)[0]
+}
+
+export const useChatThreadsbyParentId = (parentId: string, category: string, topic: string) => {
+  const [childChatThreads, setChildChatThreads] = useState<ChatThreadData[]>([])
+  const { realm } = useLocalRealm()
+  const categoryFilterMapping: Record<string, string> = {
+    archived: 'archived == true',
+    all: 'archived == false',
+  }
+
+  const filterQuery = `
+    topic CONTAINS[c] '${topic}' 
+    && ${categoryFilterMapping[category]} 
+    && parentId == '${parentId}' 
+    SORT(lastActivityAt DESC)`
+
+  const entries = realm?.objects(ChatThread).filtered(filterQuery).sorted('lastActivityAt', true)
+
+  const getChatThreadsbyParentId = () => {
+    if (!entries) return
+    setChildChatThreads(entries.length ? entries.map(getChatThreadData) : [])
+
+    const handleChange: Realm.CollectionChangeCallback<ChatThread> = newCollection => {
+      setChildChatThreads(newCollection.length ? newCollection.map(getChatThreadData) : [])
+    }
+
+    entries.addListener(handleChange)
+    return () => entries.removeListener(handleChange)
+  }
+
+  useEffect(() => {
+    return getChatThreadsbyParentId()
+  }, [category, topic])
+
+  return childChatThreads
+}
+
+export const useChatThreadsHook = (query: string) => {
+  const [data, setData] = useState<ChatThreadData[]>([])
+  const { realm } = useLocalRealm()
+
+  useEffect(() => {
+    if (realm) {
+      const collection = realm.objects(ChatThread).filtered(query)
+
+      setData(collection.length > 0 ? collection.map(getChatThreadData) : [])
+
+      const handleChange: Realm.CollectionChangeCallback<ChatThread> = newCollection => {
+        setData(newCollection.length ? newCollection.map(getChatThreadData) : [])
+      }
+
+      collection.addListener(handleChange)
+      return () => collection.removeListener(handleChange)
+    }
+  }, [realm])
+
+  return data
+}

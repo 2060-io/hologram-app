@@ -1,0 +1,40 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+    ext {
+        buildToolsVersion = "34.0.0"
+        minSdkVersion = 25
+        compileSdkVersion = 34
+        targetSdkVersion = 34
+        ndkVersion = "26.1.10909125"
+        kotlinVersion = '1.9.22'
+        googlePlayServicesAuthVersion = "19.2.0"
+    }
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath('com.android.tools.build:gradle')
+        classpath("com.facebook.react:react-native-gradle-plugin")
+        classpath 'com.google.gms:google-services:4.3.14'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+    }
+}
+def REACT_NATIVE_VERSION = new File(['node', '--print',"JSON.parse(require('fs').readFileSync(require.resolve('react-native/package.json'), 'utf-8')).version"].execute(null, rootDir).text.trim())
+
+allprojects {
+    configurations.all {
+        resolutionStrategy {
+            force "com.facebook.react:hermes-android:" + REACT_NATIVE_VERSION
+            force "com.facebook.react:react-android:" + REACT_NATIVE_VERSION
+        }
+    }
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        google()
+        maven { url 'https://www.jitpack.io' }
+        maven { url 'https://maven.google.com' }
+    }
+}

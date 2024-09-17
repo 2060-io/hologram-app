@@ -1,0 +1,137 @@
+diff --git a/node_modules/react-native-create-thumbnail/README.md b/node_modules/react-native-create-thumbnail/README.md
+index 1d7c5aa..46b1f84 100644
+--- a/node_modules/react-native-create-thumbnail/README.md
++++ b/node_modules/react-native-create-thumbnail/README.md
+@@ -53,9 +53,13 @@ createThumbnail({
+ | url       |    `String` (required)    | Path to video file (local or remote)                                      |
+ | timeStamp |  `Number` (default `0`)   | Thumbnail timestamp (in milliseconds)                                     |
+ | format    | `String` (default `jpeg`) | Thumbnail format, can be one of: `jpeg`, or `png`                         |
++| maxWidth  | `Number` (default `512`)  | Max thumbnail width in px                                                 |
++| maxHeight | `Number` (default `512`)  | Max thumbnail height in px                                                |
+ | dirSize   | `Number` (default `100`)  | Maximum size of the cache directory (in megabytes). When this directory is full, the previously generated thumbnails will be deleted to clear about half of it's size.                        |
+ | headers   |         `Object`          | Headers to load the video with. e.g. `{ Authorization: 'someAuthToken' }` |
+ | cacheName   |         `String` (optional)          | Cache name for this thumbnail to avoid duplicate generation. If specified, and a thumbnail already exists with the same cache name, it will be returned instead of generating a new one. |
++| timeToleranceMs | `Number` (default `2000`, Only iOS) | Time tolerance in ms for the system to pick the best matching video frame |
++| quality   | `Number` (default `90`)  | Thumbnail quality                                                         |
+ 
+ ## Response Object
+ 
+diff --git a/node_modules/react-native-create-thumbnail/android/src/main/java/com/createthumbnail/CreateThumbnailModule.java b/node_modules/react-native-create-thumbnail/android/src/main/java/com/createthumbnail/CreateThumbnailModule.java
+index 8f14cce..9c9056f 100644
+--- a/node_modules/react-native-create-thumbnail/android/src/main/java/com/createthumbnail/CreateThumbnailModule.java
++++ b/node_modules/react-native-create-thumbnail/android/src/main/java/com/createthumbnail/CreateThumbnailModule.java
+@@ -88,13 +88,16 @@ public class CreateThumbnailModule extends ReactContextBaseJavaModule {
+             String filePath = options.hasKey("url") ? options.getString("url") : "";
+             int dirSize = options.hasKey("dirSize") ? options.getInt("dirSize") : 100;
+             int timeStamp = options.hasKey("timeStamp") ? options.getInt("timeStamp") : 0;
++            int maxWidth = options.hasKey("maxWidth") ? options.getInt("maxWidth") : 512;
++            int maxHeight = options.hasKey("maxHeight") ? options.getInt("maxHeight") : 512;
++            int quality = options.hasKey("quality") ? options.getInt("quality") : 90;
+             HashMap headers = options.hasKey("headers") ? options.getMap("headers").toHashMap() : new HashMap<String, String>();
+             String fileName = TextUtils.isEmpty(cacheName) ? ("thumb-" + UUID.randomUUID().toString()) : cacheName + "." + format;
+             OutputStream fOut = null;
+             try {
+                 File file = new File(cacheDir, fileName);
+                 Context context = weakContext.get();
+-                Bitmap image = getBitmapAtTime(context, filePath, timeStamp, headers);
++                Bitmap image = getBitmapAtTime(context, filePath, timeStamp, maxWidth, maxHeight, headers);
+                 file.createNewFile();
+                 fOut = new FileOutputStream(file);
+ 
+@@ -102,7 +105,7 @@ public class CreateThumbnailModule extends ReactContextBaseJavaModule {
+                 if (format.equals("png")) {
+                     image.compress(Bitmap.CompressFormat.PNG, 100, fOut);
+                 } else {
+-                    image.compress(Bitmap.CompressFormat.JPEG, 90, fOut);
++                    image.compress(Bitmap.CompressFormat.JPEG, quality, fOut);
+                 }
+ 
+                 fOut.flush();
+@@ -168,7 +171,7 @@ public class CreateThumbnailModule extends ReactContextBaseJavaModule {
+         return dir;
+     }
+ 
+-    private static Bitmap getBitmapAtTime(Context context, String filePath, int time, Map headers) {
++    private static Bitmap getBitmapAtTime(Context context, String filePath, int time, int maxWidth, int maxHeight, Map headers) throws IOException, IllegalStateException {
+         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+         if (URLUtil.isFileUrl(filePath)) {
+             String decodedPath;
+@@ -188,7 +191,7 @@ public class CreateThumbnailModule extends ReactContextBaseJavaModule {
+             retriever.setDataSource(filePath, headers);
+         }
+   
+-        Bitmap image = retriever.getFrameAtTime(time * 1000, MediaMetadataRetriever.OPTION_CLOSEST_SYNC);
++        Bitmap image = retriever.getScaledFrameAtTime(time * 1000, MediaMetadataRetriever.OPTION_CLOSEST_SYNC, maxWidth, maxHeight);
+         try {
+             retriever.release();
+         } catch(IOException e) {
+diff --git a/node_modules/react-native-create-thumbnail/index.d.ts b/node_modules/react-native-create-thumbnail/index.d.ts
+index fe13044..da5b08a 100644
+--- a/node_modules/react-native-create-thumbnail/index.d.ts
++++ b/node_modules/react-native-create-thumbnail/index.d.ts
+@@ -6,6 +6,10 @@ declare module "react-native-create-thumbnail" {
+     dirSize?: number;
+     headers?: object;
+     cacheName?: string;
++    maxWidth?: number;
++    maxHeight?: number;
++    timeToleranceMs?: number;
++    quality?: number
+   }
+ 
+   export interface Thumbnail {
+diff --git a/node_modules/react-native-create-thumbnail/ios/CreateThumbnail.m b/node_modules/react-native-create-thumbnail/ios/CreateThumbnail.m
+index 7c6879e..8a6d171 100644
+--- a/node_modules/react-native-create-thumbnail/ios/CreateThumbnail.m
++++ b/node_modules/react-native-create-thumbnail/ios/CreateThumbnail.m
+@@ -1,3 +1,4 @@
++
+ #import "CreateThumbnail.h"
+ 
+ @implementation CreateThumbnail
+@@ -12,6 +13,10 @@ @implementation CreateThumbnail
+     int dirSize = [[config objectForKey:@"dirSize"] intValue] ?: 100;
+     NSString *cacheName = (NSString *)[config objectForKey:@"cacheName"];
+     NSDictionary *headers = config[@"headers"] ?: @{};
++    CGFloat maxWidth = [config[@"maxWidth"] floatValue] ?: 512;
++    CGFloat maxHeight = [config[@"maxHeight"] floatValue] ?: 512;
++    int timeToleranceMs = [config[@"timeToleranceMs"] intValue] ?: 2000;
++    CGFloat quality = [config[@"quality"] floatValue] ?: 90;
+ 
+     unsigned long long cacheDirSize = dirSize * 1024 * 1024;
+ 
+@@ -47,7 +52,7 @@ @implementation CreateThumbnail
+         }
+ 
+         AVURLAsset *asset = [[AVURLAsset alloc] initWithURL:vidURL options:@{@"AVURLAssetHTTPHeaderFieldsKey": headers}];
+-        [self generateThumbImage:asset atTime:timeStamp completion:^(UIImage *thumbnail) {
++        [self generateThumbImage:asset atTime:timeStamp maxWidth:maxWidth maxHeight:maxHeight timeToleranceMs:timeToleranceMs completion:^(UIImage *thumbnail) {
+             // Clean directory
+             unsigned long long size = [self sizeOfFolderAtPath:tempDirectory];
+             if (size >= cacheDirSize) {
+@@ -59,7 +64,7 @@ @implementation CreateThumbnail
+             if ([format isEqual: @"png"]) {
+                 data = UIImagePNGRepresentation(thumbnail);
+             } else {
+-                data = UIImageJPEGRepresentation(thumbnail, 1.0);
++                data = UIImageJPEGRepresentation(thumbnail, quality / 100);
+             }
+ 
+             NSFileManager *fileManager = [NSFileManager defaultManager];
+@@ -110,12 +115,12 @@ - (void) cleanDir:(NSString *)path forSpace:(unsigned long long)size {
+     return;
+ }
+ 
+-- (void) generateThumbImage:(AVURLAsset *)asset atTime:(int)timeStamp completion:(void (^)(UIImage* thumbnail))completion failure:(void (^)(NSError* error))failure {
++- (void) generateThumbImage:(AVURLAsset *)asset atTime:(int)timeStamp maxWidth:(CGFloat)maxWidth maxHeight:(CGFloat)maxHeight timeToleranceMs:(int)timeToleranceMs completion:(void (^)(UIImage* thumbnail))completion failure:(void (^)(NSError* error))failure {
+     AVAssetImageGenerator *generator = [[AVAssetImageGenerator alloc] initWithAsset:asset];
+     generator.appliesPreferredTrackTransform = YES;
+-    generator.maximumSize = CGSizeMake(512, 512);    
+-    generator.requestedTimeToleranceBefore = CMTimeMake(0, 1000);
+-    generator.requestedTimeToleranceAfter = CMTimeMake(0, 1000);
++    generator.maximumSize = CGSizeMake(maxWidth, maxHeight);
++    generator.requestedTimeToleranceBefore = CMTimeMake(0, timeToleranceMs / 2);
++    generator.requestedTimeToleranceAfter = CMTimeMake(0, timeToleranceMs / 2);
+     CMTime time = CMTimeMake(timeStamp, 1000);
+     AVAssetImageGeneratorCompletionHandler handler = ^(CMTime timeRequested, CGImageRef image, CMTime timeActual, AVAssetImageGeneratorResult result, NSError *error) {
+         if (result == AVAssetImageGeneratorSucceeded) {

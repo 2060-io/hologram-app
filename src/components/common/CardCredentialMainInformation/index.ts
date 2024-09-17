@@ -1,0 +1,3 @@
+import CardCredentialMainInformation from './CardCredentialMainInformation'
+
+export default CardCredentialMainInformation

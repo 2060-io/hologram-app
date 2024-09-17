@@ -1,0 +1,185 @@
+import { ParamListBase } from '@react-navigation/native'
+import { StackNavigationProp } from '@react-navigation/stack'
+import React, { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { View, TouchableOpacity, ScrollView, TouchableWithoutFeedback, SafeAreaView } from 'react-native'
+
+import getStyles from './styles'
+
+import { ModalConfirmAction } from '@2060/components'
+import {
+  CardCredentialMainInformation,
+  MainButton,
+  Text,
+  ServiceMainInfo,
+  RadioButton,
+} from '@2060/components/common'
+import { useTheme } from '@2060/hooks/providers/ThemeProvider'
+import { FormattedSubmission } from '@2060/services/agent/formatPresentation'
+import { ServiceInfo } from '@2060/services/api/trustRegistryService'
+
+type Props = {
+  navigation: StackNavigationProp<ParamListBase>
+  submission?: FormattedSubmission
+  isFromDidComm?: boolean
+  onSelectOpenIdCredential?: (...args: [number[]]) => void
+  onSelectDidcommCredential?: (...args: [string, string]) => void
+  accept: () => void
+  refuse: () => void
+  serviceInfo?: ServiceInfo | null
+}
+
+const BasePresentationRequest: React.FC<Props> = ({
+  navigation,
+  submission,
+  isFromDidComm = true,
+  onSelectOpenIdCredential = () => {},
+  onSelectDidcommCredential = () => {},
+  accept,
+  refuse,
+  serviceInfo,
+}) => {
+  const { t } = useTranslation()
+  const theme = useTheme()
+  const styles = getStyles(theme)
+  const defaultSelectedCredentialsIndexes = new Array(submission?.entries?.length).fill(-1)
+  const [selectedCredentialsIndexes, setSelectedCredentialsIndexes] = useState<number[]>(
+    defaultSelectedCredentialsIndexes,
+  )
+  const [showModalRefuseConfirmation, setShowModalRefuseConfirmation] = useState(false)
+
+  const hasCompatibleCredentials = submission
+    ? submission.entries.some(entry => entry.credentials.length > 0)
+    : false
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerLeft: () =>
+        hasCompatibleCredentials ? (
+          <TouchableOpacity style={styles.headerLeft} onPress={displayModalRefuseConfirmation}>
+            <Text style={styles.headerBtnText} typography="EuclidCircularA-Medium">
+              {t('general.refuse')}
+            </Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity style={styles.headerLeft} onPress={() => navigation.goBack()}>
+            <Text style={styles.headerBtnText} typography="EuclidCircularA-Medium">
+              {t('general.dismiss')}
+            </Text>
+          </TouchableOpacity>
+        ),
+    })
+  }, [hasCompatibleCredentials])
+
+  const displayModalRefuseConfirmation = () => setShowModalRefuseConfirmation(true)
+  const hideModalRefuseConfirmation = () => setShowModalRefuseConfirmation(false)
+
+  const onRefuse = () => {
+    hideModalRefuseConfirmation()
+    refuse()
+  }
+
+  const updateSelectedCredential = (
+    positionToUpdate: number,
+    newValue: number,
+    entryId: string,
+    credentialId: string,
+  ) => {
+    const newSelectedCredentialsIndexes = [...selectedCredentialsIndexes]
+    newSelectedCredentialsIndexes[positionToUpdate] = newValue
+    setSelectedCredentialsIndexes(newSelectedCredentialsIndexes)
+    isFromDidComm
+      ? onSelectDidcommCredential(entryId, credentialId)
+      : onSelectOpenIdCredential(newSelectedCredentialsIndexes)
+  }
+
+  const enabledPresentButton = selectedCredentialsIndexes.every(value => value >= 0)
+
+  const goToCredentialDetails = (credentialRecordId: string) => {
+    navigation.navigate('CredentialDetails', { credentialRecordId })
+  }
+
+  return (
+    <SafeAreaView style={styles.root}>
+      <ModalConfirmAction
+        visible={showModalRefuseConfirmation}
+        title={t('personalChat.confirmRefusePresentCredential')}
+        subTitle=""
+        confirmText={t('general.confirm')}
+        cancelText="No"
+        onClose={hideModalRefuseConfirmation}
+        onConfirm={onRefuse}
+        onCancel={hideModalRefuseConfirmation}
+      />
+      {submission && (
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <View style={styles.subContainer}>
+            {serviceInfo && <ServiceMainInfo serviceInfo={serviceInfo} />}
+            {hasCompatibleCredentials ? (
+              <>
+                <Text style={[styles.title, styles.mainTitle]} typography="EuclidCircularA-Regular">
+                  {t('presentationRequest.selectCredentialYouWouldLikeToPresentTo')}
+                  <Text style={styles.title} typography="EuclidCircularA-SemiBold">
+                    {submission?.verifier?.name}
+                  </Text>
+                </Text>
+                {submission.entries.map((entry, entryIndex) => {
+                  const title = `${submission?.verifier?.name} ${t('presentationRequest.isRequestingYou')}`
+                  return (
+                    <View key={entry.name}>
+                      <Text style={styles.submissionSectionTitle} typography="EuclidCircularA-SemiBold">
+                        {entry.name}
+                      </Text>
+                      <Text style={styles.title} typography="EuclidCircularA-Regular">
+                        {title}
+                        <Text style={styles.title} typography="EuclidCircularA-SemiBold">
+                          {entry?.requestedAttributes?.join(', ')}
+                        </Text>
+                      </Text>
+                      <View style={styles.sectionContainer}>
+                        {entry.credentials.map((credential, credentialIndex) => (
+                          <TouchableWithoutFeedback
+                            key={credential.id}
+                            onPress={() => {
+                              updateSelectedCredential(entryIndex, credentialIndex, entry.id, credential.id)
+                            }}
+                          >
+                            <View style={styles.credentialContainer}>
+                              <RadioButton
+                                style={styles.radioButton}
+                                isChecked={selectedCredentialsIndexes?.[entryIndex] === credentialIndex}
+                              />
+                              <CardCredentialMainInformation
+                                credentialMainInfo={credential}
+                                onPress={() => goToCredentialDetails(credential.recordId)}
+                                size="medium"
+                              />
+                            </View>
+                          </TouchableWithoutFeedback>
+                        ))}
+                      </View>
+                    </View>
+                  )
+                })}
+                <MainButton
+                  disabled={!enabledPresentButton}
+                  text={t('personalChat.presentCredential', { count: submission?.entries?.length })}
+                  onPress={accept}
+                  style={{ opacity: enabledPresentButton ? 1 : 0.5 }}
+                />
+              </>
+            ) : (
+              <View style={styles.noCompatibleCredentialContainer}>
+                <Text style={styles.title} typography="EuclidCircularA-Regular">
+                  {t('presentationRequest.noCredentials')}
+                </Text>
+              </View>
+            )}
+          </View>
+        </ScrollView>
+      )}
+    </SafeAreaView>
+  )
+}
+
+export default BasePresentationRequest

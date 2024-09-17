@@ -1,0 +1,78 @@
+version: '3'
+
+services:
+  cloud-agent:
+    image: gitlab.mobiera.com:4567/2060/2060-cloud-agent:dev
+    container_name: 2060-cloud-agent
+    environment:
+      - AGENT_PUBLIC_DID=did:web:10.82.14.12%3A4000
+      - AGENT_NAME=Cloud Agent
+      - AGENT_ENDPOINT=ws://10.82.14.12:4000
+      - AGENT_PORT=4000
+      - PNVS_SERVICE_AGENT_ADMIN_BASE_URL=http://10.82.14.12:3100
+    restart: always
+    ports:
+      - 4000:4000
+    volumes:
+       - ./volumes/cloud-agent:/root/.afj
+  phonenumbervs-service-agent:
+    image: gitlab.mobiera.com:4567/2060/2060-service-agent:dev
+    container_name: phonenumbervs-service-agent
+    restart: always
+    networks:
+      - t2060
+    ports:
+      - 3100:3000
+      - 3101:3001
+    environment:
+      - AGENT_PUBLIC_DID=did:web:10.82.14.12%3A3100
+      - AGENT_ENDPOINT=ws://10.82.14.12:3101
+      - AGENT_NAME=Phone Number Verification Service Agent
+      - USE_CORS=true
+      - EVENTS_BASE_URL=http://phonenumbervs-backend:5000
+    volumes:
+       - ./volumes/phonenumbervs:/root/.afj
+  phonenumbervs-backend:
+    build: .
+    image: gitlab.mobiera.com:4567/2060/2060-verification-service:dev
+    container_name: phonenumbervs-backend
+    restart: always
+    networks:
+      - t2060
+    ports:
+      - 5100:5000
+    environment:
+      - PORT=5000
+      - SERVICE_AGENT_ADMIN_BASE_URL=http://phonenumbervs-service-agent:3000
+  chatbot-service-agent:
+    image: gitlab.mobiera.com:4567/2060/2060-service-agent:dev
+    container_name: chatbot-service-agent
+    restart: always
+    networks:
+      - t2060
+    ports:
+      - 3000:3000
+      - 3001:3001
+    environment:
+      - AGENT_PUBLIC_DID=did:web:10.82.14.12%3A3000
+      - AGENT_ENDPOINT=ws://10.82.14.12:3001
+      - AGENT_INVITATION_IMAGE_URL=http://10.82.14.12:3001/avatar.png
+      - AGENT_NAME=Chatbot Agent
+      - USE_CORS=true
+      - EVENTS_BASE_URL=http://chatbot-backend:5000
+    volumes:
+       - ./volumes/chatbot:/root/.afj
+  chatbot-backend:
+    image: gitlab.mobiera.com:4567/2060/2060-service-agent/chatbot:dev
+    container_name: chatbot-backend
+    restart: always
+    networks:
+      - t2060
+    ports:
+      - 5000:5000
+    environment:
+      - PORT=5000
+      - SERVICE_AGENT_ADMIN_BASE_URL=http://chatbot-service-agent:3000
+      - PNVS_SERVICE_AGENT_ADMIN_BASE_URL=http://10.82.14.12:3100
+networks:
+  t2060:

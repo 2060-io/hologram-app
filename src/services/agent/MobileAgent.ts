@@ -1,0 +1,131 @@
+import { ActionMenuModule } from '@credo-ts/action-menu'
+import {
+  AnonCredsCredentialFormatService,
+  AnonCredsModule,
+  AnonCredsProofFormatService,
+  LegacyIndyCredentialFormatService,
+  LegacyIndyProofFormatService,
+  V1CredentialProtocol,
+  V1ProofProtocol,
+} from '@credo-ts/anoncreds'
+import { AskarModule } from '@credo-ts/askar'
+import {
+  Agent,
+  AutoAcceptCredential,
+  AutoAcceptProof,
+  ConnectionsModule,
+  CredentialsModule,
+  DidsModule,
+  JsonLdCredentialFormatService,
+  JwkDidRegistrar,
+  JwkDidResolver,
+  KeyDidRegistrar,
+  KeyDidResolver,
+  MediationRecipientModule,
+  MediatorPickupStrategy,
+  PeerDidRegistrar,
+  PeerDidResolver,
+  ProofsModule,
+  V2CredentialProtocol,
+  V2ProofProtocol,
+  WebDidResolver,
+} from '@credo-ts/core'
+import { OpenId4VcHolderModule } from '@credo-ts/openid4vc'
+import { PushNotificationsFcmModule } from '@credo-ts/push-notifications'
+import { QuestionAnswerModule } from '@credo-ts/question-answer'
+import { anoncreds } from '@hyperledger/anoncreds-react-native'
+import { ariesAskar } from '@hyperledger/aries-askar-react-native'
+import appCheck from '@react-native-firebase/app-check'
+import { DidWebAnonCredsRegistry } from 'credo-ts-didweb-anoncreds'
+import { IndyVdrProxyDidResolver, IndyVdrProxyAnonCredsRegistry } from 'credo-ts-indy-vdr-proxy-client'
+import { MediaSharingModule } from 'credo-ts-media-sharing'
+import { ReceiptsModule } from 'credo-ts-receipts'
+import { UserProfileModule } from 'credo-ts-user-profile'
+
+import { DidCommCallsModule } from './calls/DidCommCallsModule'
+import { DidCommReactionsModule } from './reactions'
+
+const SECONDS_PER_DAY = 60 * 60 * 24
+
+export const getMobileAgentModules = (config: {
+  mediatorPickupStrategy?: MediatorPickupStrategy
+  indyVDRProxyBaseUrl: string
+}) => {
+  const proxyBaseUrl = config.indyVDRProxyBaseUrl
+
+  const getAppCheckHeaders = async () => ({ 'X-Firebase-AppCheck': (await appCheck().getToken()).token })
+  return {
+    askar: new AskarModule({ ariesAskar }),
+    anoncreds: new AnonCredsModule({
+      registries: [
+        new DidWebAnonCredsRegistry({
+          cacheOptions: { allowCaching: true, cacheDurationInSeconds: SECONDS_PER_DAY },
+        }),
+        new IndyVdrProxyAnonCredsRegistry({
+          proxyBaseUrl,
+          headers: getAppCheckHeaders,
+          cacheOptions: {
+            allowCaching: true,
+            cacheDurationInSeconds: SECONDS_PER_DAY,
+          },
+        }),
+      ],
+      anoncreds,
+    }),
+    actionMenu: new ActionMenuModule(),
+    dids: new DidsModule({
+      registrars: [new KeyDidRegistrar(), new PeerDidRegistrar(), new JwkDidRegistrar()],
+      resolvers: [
+        new JwkDidResolver(),
+        new WebDidResolver(),
+        new KeyDidResolver(),
+        new PeerDidResolver(),
+        new IndyVdrProxyDidResolver({ proxyBaseUrl, headers: getAppCheckHeaders }),
+      ],
+    }),
+    media: new MediaSharingModule(),
+    mediationRecipient: new MediationRecipientModule({
+      mediatorPickupStrategy: config.mediatorPickupStrategy,
+      baseMediatorReconnectionIntervalMs: 1000,
+      maximumMediatorReconnectionIntervalMs: 8000,
+    }),
+    calls: new DidCommCallsModule(),
+    reactions: new DidCommReactionsModule(),
+    connections: new ConnectionsModule({ autoAcceptConnections: true }),
+    credentials: new CredentialsModule({
+      autoAcceptCredentials: AutoAcceptCredential.Never,
+      credentialProtocols: [
+        new V1CredentialProtocol({ indyCredentialFormat: new LegacyIndyCredentialFormatService() }),
+        new V2CredentialProtocol({
+          credentialFormats: [
+            new AnonCredsCredentialFormatService(),
+            new LegacyIndyCredentialFormatService(),
+            new JsonLdCredentialFormatService(),
+          ],
+        }),
+      ],
+    }),
+    openId4VcHolder: new OpenId4VcHolderModule(),
+    proofs: new ProofsModule({
+      autoAcceptProofs: AutoAcceptProof.Never,
+      proofProtocols: [
+        new V1ProofProtocol({ indyProofFormat: new LegacyIndyProofFormatService() }),
+        new V2ProofProtocol({
+          proofFormats: [new AnonCredsProofFormatService(), new LegacyIndyProofFormatService()],
+        }),
+      ],
+    }),
+    profile: new UserProfileModule(),
+    pushNotifications: new PushNotificationsFcmModule(),
+    questionAnswer: new QuestionAnswerModule(),
+    receipts: new ReceiptsModule(),
+  } as const
+}
+
+export class MobileAgent extends Agent<ReturnType<typeof getMobileAgentModules>> {}
+
+export const isRegistered = async (agent: MobileAgent) => {
+  if (!agent.isInitialized) return false
+  const defaultMediator = await agent.mediationRecipient.findDefaultMediator()
+  return defaultMediator !== null
+}

@@ -1,0 +1,298 @@
+diff --git a/node_modules/react-native-cloud-store/ios/CloudStore.m b/node_modules/react-native-cloud-store/ios/CloudStore.m
+index e8916e0..7109be1 100644
+--- a/node_modules/react-native-cloud-store/ios/CloudStore.m
++++ b/node_modules/react-native-cloud-store/ios/CloudStore.m
+@@ -52,6 +52,8 @@ RCT_EXTERN_METHOD(exist: (NSString)path resolver:(RCTPromiseResolveBlock)resolve
+                   rejecter: (RCTPromiseRejectBlock)reject)
+ RCT_EXTERN_METHOD(stat: (NSString)path resolver:(RCTPromiseResolveBlock)resolve
+                   rejecter: (RCTPromiseRejectBlock)reject)
++RCT_EXTERN_METHOD(query: (NSString)path resolver:(RCTPromiseResolveBlock)resolve
++                  rejecter: (RCTPromiseRejectBlock)reject)
+ RCT_EXTERN_METHOD(evictUbiquitousItem: (NSString)path resolver:(RCTPromiseResolveBlock)resolve
+                   rejecter: (RCTPromiseRejectBlock)reject)
+ RCT_EXTERN_METHOD(startDownloadingUbiquitousItem: (NSString)path resolver:(RCTPromiseResolveBlock)resolve
+diff --git a/node_modules/react-native-cloud-store/ios/CloudStore.swift b/node_modules/react-native-cloud-store/ios/CloudStore.swift
+index a4b691a..bd6cb0c 100644
+--- a/node_modules/react-native-cloud-store/ios/CloudStore.swift
++++ b/node_modules/react-native-cloud-store/ios/CloudStore.swift
+@@ -322,7 +322,9 @@ extension CloudStoreModule {
+ enum ICloudGatheringFileType:String{
+     case upload = "upload"
+     case download = "download"
++    case info = "info"
+ }
++
+ struct ICloudGatheringFile {
+     let type: ICloudGatheringFileType
+     let path: String
+@@ -423,69 +425,128 @@ extension CloudStoreModule {
+     }
+ 
+     @objc
+-    func stat(_ path: String, resolver resolve: RCTPromiseResolveBlock,
++    func query(_ path: String, resolver resolve: @escaping RCTPromiseResolveBlock,
+               rejecter reject: RCTPromiseRejectBlock) {
+         if(icloudInvalid(then: reject)) {return}
++        Logger.log("init query\n")
+ 
+         let url = URL(fileURLWithPath: path)
+-        if(!FileManager.default.fileExists(atPath: url.path)) {
+-            reject("ERR_NOT_EXIST", "file/folder of \(url.path) not exists", NSError(domain: "", code: 0))
+-            return
+-        }
+ 
+-        do {
+-            let resources = try url.resourceValues(forKeys: [
+-                .isUbiquitousItemKey,
+-                .ubiquitousItemContainerDisplayNameKey,
+-                .ubiquitousItemDownloadRequestedKey,
+-                .ubiquitousItemIsDownloadingKey,
+-                .ubiquitousItemDownloadingStatusKey,
+-                .ubiquitousItemDownloadingErrorKey,
+-                .ubiquitousItemIsUploadedKey,
+-                .ubiquitousItemIsUploadingKey,
+-                .ubiquitousItemUploadingErrorKey,
+-                .ubiquitousItemHasUnresolvedConflictsKey,
+-                .contentModificationDateKey,
+-                .creationDateKey,
+-                .nameKey,
+-                .localizedNameKey,
+-                .fileSizeKey,
+-                .isDirectoryKey
+-            ])
++      
++        let query = NSMetadataQuery()
++        query.operationQueue = .main
++        query.searchScopes = [NSMetadataQueryUbiquitousDocumentsScope, NSMetadataQueryUbiquitousDataScope]
++        // We need use `==` here but not `CONTAINS` to fix files with same prefix
++        query.predicate = NSPredicate(format: "%K == %@", NSMetadataItemPathKey,url.path)
++        // query.predicate = NSPredicate(format: "TRUEPREDICATE", NSMetadataItemPathKey,url.path)
++        query.notificationBatchingInterval = 0.2
++
++        NotificationCenter.default.addObserver(forName: NSNotification.Name.NSMetadataQueryDidFinishGathering, object: query,  queue: query.operationQueue, using: { [self] notification in
++            Logger.log("finish results:\n")
++            query.stop()
++            NotificationCenter.default.removeObserver(self, name: NSNotification.Name.NSMetadataQueryDidFinishGathering, object: query)
++
+             let dict = NSMutableDictionary()
+ 
+-            dict["isInICloud"] = resources.isUbiquitousItem
+-            dict["containerDisplayName"] = resources.ubiquitousItemContainerDisplayName
+-            dict["isDownloading"] = resources.ubiquitousItemIsDownloading
+-            // TODO: curious why this is always `false` for calling `download` for a folder, maybe due to files under the folder was not downloaded entirely? have a test when your're free.
+-            dict["hasCalledDownload"] = resources.ubiquitousItemDownloadRequested
+-            dict["downloadStatus"] = resources.ubiquitousItemDownloadingStatus
+-            dict["downloadError"] = resources.ubiquitousItemDownloadingError?.localizedDescription
+-            dict["isUploaded"] = resources.ubiquitousItemIsUploaded
+-            dict["isUploading"] = resources.ubiquitousItemIsUploading
+-            dict["uploadError"] = resources.ubiquitousItemUploadingError?.localizedDescription
+-            dict["hasUnresolvedConflicts"] = resources.ubiquitousItemHasUnresolvedConflicts
+-
+-            if let modifyDate = resources.contentModificationDate {
+-                dict["modifyTimestamp"] = modifyDate.timeIntervalSince1970 * 1000
+-            } else {
+-                dict["modifyTimestamp"] = nil
++            let exists = query.results.count > 0
++            dict["isInICloud"] = exists
++            if (exists) {
++                let item = query.results[0] as! NSMetadataItem
++                
++                dict["containerDisplayName"] = item.value(forAttribute: NSMetadataUbiquitousItemContainerDisplayNameKey)
++                dict["isDownloading"] = item.value(forAttribute: NSMetadataUbiquitousItemIsDownloadingKey)
++                dict["hasCalledDownload"] = item.value(forAttribute: NSMetadataUbiquitousItemDownloadRequestedKey)
++                dict["downloadStatus"] = item.value(forAttribute: NSMetadataUbiquitousItemDownloadingStatusKey)
++                dict["downloadError"] = (item.value(forAttribute: NSMetadataUbiquitousItemDownloadingErrorKey) as? NSError)?.localizedDescription
++                dict["isUploaded"] = item.value(forAttribute: NSMetadataUbiquitousItemIsUploadedKey)
++                dict["isUploading"] = item.value(forAttribute: NSMetadataUbiquitousItemIsUploadingKey)
++                dict["uploadError"] = (item.value(forAttribute: NSMetadataUbiquitousItemUploadingErrorKey) as? NSError)?.localizedDescription
++                dict["hasUnresolvedConflicts"] = item.value(forAttribute: NSMetadataUbiquitousItemHasUnresolvedConflictsKey)
++
++                dict["name"] = item.value(forAttribute: NSMetadataItemFSNameKey)
++                dict["fileSize"] = item.value(forAttribute: NSMetadataItemFSSizeKey) as! Int
++                if let createDate = item.value(forAttribute: NSMetadataItemFSCreationDateKey) {
++                    dict["createTimestamp"] = (createDate as! Date).timeIntervalSince1970 * 1000
++                } else {
++                    dict["createTimestamp"] = nil
++                }
++                if let modifyDate = item.value(forAttribute: NSMetadataItemFSContentChangeDateKey) {
++                    dict["modifyTimestamp"] = (modifyDate as! Date).timeIntervalSince1970 * 1000
++                } else {
++                    dict["modifyTimestamp"] = nil
++                }
++                
+             }
+-            if let createDate = resources.contentModificationDate {
+-                dict["createTimestamp"] = createDate.timeIntervalSince1970 * 1000
+-            } else {
+-                dict["createTimestamp"] = nil
++            resolve(dict)
++        })
++
++        let _ = query.start()
++    }
++
++    @objc
++        func stat(_ path: String, resolver resolve: RCTPromiseResolveBlock,
++                  rejecter reject: RCTPromiseRejectBlock) {
++            if(icloudInvalid(then: reject)) {return}
++
++            let url = URL(fileURLWithPath: path)
++            if(!FileManager.default.fileExists(atPath: url.path)) {
++                reject("ERR_NOT_EXIST", "file/folder of \(url.path) not exists", NSError(domain: "", code: 0))
++                return
+             }
+-            dict["name"] = resources.name
+-            dict["localizedName"] = resources.localizedName
+-            dict["fileSize"] = resources.fileSize
+-            dict["isDirectory"] = resources.isDirectory
+ 
+-            resolve(dict)
+-        } catch {
+-            reject("ERR_STAT", error.localizedDescription, NSError(domain: "", code: 0))
++            do {
++                let resources = try url.resourceValues(forKeys: [
++                    .isUbiquitousItemKey,
++                    .ubiquitousItemContainerDisplayNameKey,
++                    .ubiquitousItemDownloadRequestedKey,
++                    .ubiquitousItemIsDownloadingKey,
++                    .ubiquitousItemDownloadingStatusKey,
++                    .ubiquitousItemDownloadingErrorKey,
++                    .ubiquitousItemIsUploadedKey,
++                    .ubiquitousItemIsUploadingKey,
++                    .ubiquitousItemUploadingErrorKey,
++                    .ubiquitousItemHasUnresolvedConflictsKey,
++                    .contentModificationDateKey,
++                    .creationDateKey,
++                    .nameKey,
++                    .localizedNameKey,
++                    .fileSizeKey,
++                    .isDirectoryKey
++                ])
++                let dict = NSMutableDictionary()
++
++                dict["isInICloud"] = resources.isUbiquitousItem
++                dict["containerDisplayName"] = resources.ubiquitousItemContainerDisplayName
++                dict["isDownloading"] = resources.ubiquitousItemIsDownloading
++                // TODO: curious why this is always `false` for calling `download` for a folder, maybe due to files under the folder was not downloaded entirely? have a test when your're free.
++                dict["hasCalledDownload"] = resources.ubiquitousItemDownloadRequested
++                dict["downloadStatus"] = resources.ubiquitousItemDownloadingStatus
++                dict["downloadError"] = resources.ubiquitousItemDownloadingError?.localizedDescription
++                dict["isUploaded"] = resources.ubiquitousItemIsUploaded
++                dict["isUploading"] = resources.ubiquitousItemIsUploading
++                dict["uploadError"] = resources.ubiquitousItemUploadingError?.localizedDescription
++                dict["hasUnresolvedConflicts"] = resources.ubiquitousItemHasUnresolvedConflicts
++
++                if let modifyDate = resources.contentModificationDate {
++                    dict["modifyTimestamp"] = modifyDate.timeIntervalSince1970 * 1000
++                } else {
++                    dict["modifyTimestamp"] = nil
++                }
++                if let createDate = resources.contentModificationDate {
++                    dict["createTimestamp"] = createDate.timeIntervalSince1970 * 1000
++                } else {
++                    dict["createTimestamp"] = nil
++                }
++                dict["name"] = resources.name
++                dict["localizedName"] = resources.localizedName
++                dict["fileSize"] = resources.fileSize
++                dict["isDirectory"] = resources.isDirectory
++
++                resolve(dict)
++            } catch {
++                reject("ERR_STAT", error.localizedDescription, NSError(domain: "", code: 0))
++            }
+         }
+-    }
+ 
+     @objc
+     func evictUbiquitousItem(_ path: String, resolver resolve: RCTPromiseResolveBlock,
+diff --git a/node_modules/react-native-cloud-store/lib/commonjs/icloud.js b/node_modules/react-native-cloud-store/lib/commonjs/icloud.js
+index e8b6d85..b1c4bdd 100644
+--- a/node_modules/react-native-cloud-store/lib/commonjs/icloud.js
++++ b/node_modules/react-native-cloud-store/lib/commonjs/icloud.js
+@@ -28,6 +28,7 @@ exports.registerICloudIdentityDidChangeEvent = registerICloudIdentityDidChangeEv
+ exports.setUbiquitous = setUbiquitous;
+ exports.startDownloadingUbiquitousItem = startDownloadingUbiquitousItem;
+ exports.stat = stat;
++exports.query = query;
+ exports.unlink = unlink;
+ exports.upload = upload;
+ exports.writeFile = writeFile;
+@@ -188,6 +189,14 @@ exports.DownloadStatus = DownloadStatus;
+   DownloadStatus["downloaded"] = "NSURLUbiquitousItemDownloadingStatusDownloaded";
+   DownloadStatus["notDownloaded"] = "NSURLUbiquitousItemDownloadingStatusNotDownloaded";
+ })(DownloadStatus || (exports.DownloadStatus = DownloadStatus = {}));
++/**
++ * Query for detailed info of a file/directory in iCloud. 
++ * @param path
++ * @category File / Directory
++ */
++async function query(path) {
++  return _module.default.query(path);
++}
+ /**
+  * Get the detailed info of the file/directory
+  * @param path
+diff --git a/node_modules/react-native-cloud-store/lib/module/icloud.js b/node_modules/react-native-cloud-store/lib/module/icloud.js
+index afdf98f..119705a 100644
+--- a/node_modules/react-native-cloud-store/lib/module/icloud.js
++++ b/node_modules/react-native-cloud-store/lib/module/icloud.js
+@@ -152,6 +152,16 @@ export let DownloadStatus;
+   DownloadStatus["downloaded"] = "NSURLUbiquitousItemDownloadingStatusDownloaded";
+   DownloadStatus["notDownloaded"] = "NSURLUbiquitousItemDownloadingStatusNotDownloaded";
+ })(DownloadStatus || (DownloadStatus = {}));
++/**
++ * Query for detailed info of a file/directory in iCloud. 
++ * @param path
++ * @category File / Directory
++ */
++export async function query(path) {
++  return CloudStore.query(path);
++}
++
++
+ /**
+  * Get the detailed info of the file/directory
+  * @param path
+diff --git a/node_modules/react-native-cloud-store/lib/typescript/icloud.d.ts b/node_modules/react-native-cloud-store/lib/typescript/icloud.d.ts
+index 3b47f07..f26e04b 100644
+--- a/node_modules/react-native-cloud-store/lib/typescript/icloud.d.ts
++++ b/node_modules/react-native-cloud-store/lib/typescript/icloud.d.ts
+@@ -132,6 +132,17 @@ export interface ICloudStat {
+     fileSize?: number;
+     isDirectory?: boolean;
+ }
++
++/**
++ * Get the detailed info of the file in iCloud by querying by its metadata.
++ * Note: it will return additional info only in case isInCloud is true. It does not check
++ * if file is present in local storage
++ * 
++ * @param path
++ * @category File / Directory
++ */
++export declare function query(path: ICloudPath): Promise<ICloudStat>;
++
+ /**
+  * Get the detailed info of the file/directory
+  * @param path
+diff --git a/node_modules/react-native-cloud-store/src/icloud.ts b/node_modules/react-native-cloud-store/src/icloud.ts
+index 40f4f2e..a2f609a 100644
+--- a/node_modules/react-native-cloud-store/src/icloud.ts
++++ b/node_modules/react-native-cloud-store/src/icloud.ts
+@@ -215,6 +215,15 @@ export interface ICloudStat {
+   isDirectory?: boolean;
+ }
+ 
++/**
++ * Query for detailed info of a file/directory in iCloud. 
++ * @param path
++ * @category File / Directory
++ */
++export async function query(path) {
++  return CloudStore.query(path);
++}
++
+ /**
+  * Get the detailed info of the file/directory
+  * @param path

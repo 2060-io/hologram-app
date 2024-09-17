@@ -1,0 +1,43 @@
+import { StyleSheet } from 'react-native'
+
+import { AppTheme } from '@2060/styles'
+import { widthPercentageToDP } from '@2060/utils/responsiveUtils'
+
+const styles = (theme: AppTheme) =>
+  StyleSheet.create({
+    root: {
+      flex: 1,
+    },
+    subContainer: {
+      marginTop: 15,
+      paddingHorizontal: 15,
+      paddingBottom: 40,
+    },
+    headerBtnText: {
+      fontSize: theme.fontSize.md2,
+      color: theme.colors.green,
+    },
+    headerLeft: {
+      paddingLeft: 15,
+    },
+    headerRight: {
+      paddingRight: 15,
+    },
+    credentialTitle: {
+      fontSize: theme.fontSize.md,
+      color: theme.colors.primaryText,
+      textAlign: 'center',
+    },
+    containerSectionIssuerInfo: {
+      alignSelf: 'center',
+      width: widthPercentageToDP('92%'),
+    },
+    titleIssuerInfo: {
+      color: theme.colors.primaryText,
+      fontSize: theme.fontSize.lg,
+      marginTop: 20,
+      marginBottom: 15,
+    },
+  })
+
+export default styles
