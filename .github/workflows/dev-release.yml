@@ -1,0 +1,91 @@
+name: Continuous Deployment - Dev release
+
+on:
+  push:
+    branches: [main, dev, 'release/**']
+
+  workflow_dispatch:
+
+env:
+  DH_USERNAME: ${{secrets.DOCKER_HUB_LOGIN}}
+  DH_TOKEN: ${{secrets.DOCKER_HUB_PWD}}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout hologram-app
+        uses: actions/checkout@v4
+
+      - name: Setup node v20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: |
+          yarn install
+
+      - uses: codfish/semantic-release-action@v3
+        id: semantic
+        with:
+          branches: |
+            [
+              'release',
+              { 
+                name: 'dev',
+                prerelease: 'dev'
+              }
+            ]
+          tagFormat: "${version}"
+          additional-packages: |
+            ['semantic-release-react-native@1.10.0']
+          plugins: |
+            [
+              [
+                "@semantic-release/commit-analyzer",
+                {
+                  "preset": "angular",
+                  "releaseRules": [
+                    {
+                      "type": "*!",
+                      "release": "major"
+                    },
+                    {
+                      "type": "refactor",
+                      "release": "patch"
+                    }
+                  ]
+                }
+              ],
+              [
+                "@semantic-release/npm",
+                {
+                  "npmPublish": false
+                }
+              ],
+              [
+                "semantic-release-react-native",
+                {
+                  "versionStrategy": {
+                    "android": {
+                      "buildNumber": "relative",
+                      "preRelease": true
+                    },
+                    "ios": {
+                      "buildNumber": "semantic",
+                      "preRelease": true
+                    }
+                  }
+                }
+              ],
+              "@semantic-release/release-notes-generator",
+            ]
+
+      - name: Log in to Docker Hub
+        if: steps.semantic.outputs.new-release-published == 'true'
+        run: |
+          echo "New release published!"
+          echo $RELEASE_VERSION
+          echo ${{fromJson(steps.semantic.outputs)}}
