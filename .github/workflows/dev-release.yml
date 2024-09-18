@@ -40,7 +40,7 @@ jobs:
                 prerelease: 'dev'
               }
             ]
-          tagFormat: "${version}"
+          tag-format: "${version}"
           additional-packages: |
             ['semantic-release-react-native@1.10.0']
           plugins: |
@@ -90,4 +90,4 @@ jobs:
         run: |
           echo "New release published!"
           echo $RELEASE_VERSION
-          echo ${{fromJson(steps.semantic.outputs)}}
+          echo ${{ steps.semantic.outputs }}
