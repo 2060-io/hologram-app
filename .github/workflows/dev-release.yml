@@ -90,4 +90,4 @@ jobs:
         run: |
           echo "New release published!"
           echo $RELEASE_VERSION
-          echo ${{ steps.semantic.outputs }}
+          echo ${{ fromJson(steps.semantic.outputs) }}
