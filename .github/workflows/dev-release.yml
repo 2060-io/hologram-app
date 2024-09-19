@@ -1,0 +1,177 @@
+name: Continuous Deployment - Dev release
+
+on:
+  push:
+    branches: [main, dev, 'release/**']
+
+  workflow_dispatch:
+
+env:
+  APPCENTER_API_TOKEN: ${{ secrets.APPCENTER_API_TOKEN }}
+
+jobs:
+  semantic-release:
+    runs-on: ubuntu-latest
+    outputs:
+      new-release-published: ${{ steps.semantic.outputs.new-release-published }}
+    steps:
+      - name: Checkout hologram-app
+        uses: actions/checkout@v4
+
+      - name: Setup node v20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: 'https://registry.npmjs.org/'
+          cache: yarn
+
+      - name: Install dependencies
+        run: |
+          yarn install --immutable
+
+      - uses: codfish/semantic-release-action@v3
+        id: semantic
+        with:
+          branches: |
+            [
+              'release',
+              { 
+                name: 'main',
+                prerelease: 'dev'
+              }
+            ]
+          tag-format: "v${version}"
+          additional-packages: |
+            ['@2060.io/semantic-release-react-native@1.11.0']
+          plugins: |
+            [
+              [
+                "@semantic-release/commit-analyzer",
+                {
+                  "preset": "angular",
+                  "releaseRules": [
+                    {
+                      "type": "*!",
+                      "release": "major"
+                    },
+                    {
+                      "type": "refactor",
+                      "release": "patch"
+                    }
+                  ]
+                }
+              ],
+              [
+                "@semantic-release/npm",
+                {
+                  "npmPublish": false
+                }
+              ],
+              [
+                "semantic-release-react-native",
+                {
+                  "versionStrategy": {
+                    "android": {
+                      "buildNumber": "relative",
+                      "preRelease": true
+                    },
+                    "ios": {
+                      "buildNumber": "semantic",
+                      "preRelease": true
+                    }
+                  }
+                }
+              ],
+              "@semantic-release/release-notes-generator",
+            ]
+
+      - name: Upload Version files
+        if: steps.semantic.outputs.new-release-published == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: version-files
+          path: |
+            ./ios/app2060/InfoPlist/Info-Dev.plist
+            ./ios/app2060/InfoPlist/Info-Staging.plist
+            ./ios/app2060/InfoPlist/Info-Prod.plist
+            ./ios/app2060.xcodeproj/project.pbxproj
+            ./android/app/build.gradle
+            ./package.json
+
+  build-android:
+    if: ${{needs.semantic-release.outputs.new-release-published == 'true'}}
+    runs-on: self-hosted
+    needs: [semantic-release]
+    env:
+      UPLOAD_KEYSTORE_PASSWORD: ${{ secrets.UPLOAD_KEY_KEYSTORE_PASSWORD }}
+      UPLOAD_KEY_PASSWORD: ${{ secrets.UPLOAD_KEY_PASSWORD }}
+      UPLOAD_KEY_KEYSTORE_B64: ${{ secrets.UPLOAD_KEY_KEYSTORE_B64 }}
+    steps:
+      - name: Checkout hologram-app
+        uses: actions/checkout@v4
+
+      - name: Setup node v20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: 'https://registry.npmjs.org/'
+          cache: yarn
+
+      - name: Install dependencies
+        run: |
+          yarn install --immutable
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: version-files
+
+      - name: Build Android
+        run: |
+          echo $UPLOAD_KEY_KEYSTORE_B64 | base64 --decode > ./android/app/upload-key.keystore
+          npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/build/intermediates/res/merged/release/
+          cd android
+          ./gradlew clean assembleDevRelease
+
+      - name: Distribute to App Center
+        run: |
+          npm install -g  appcenter-cli@2.10.8
+          appcenter login --token $APPCENTER_API_TOKEN
+          appcenter distribute release -f ./android/app/build/outputs/apk/dev/release/app-dev-release.apk -g Collaborators --app 2060/2060-android-prestaging -r "prestaging android"
+
+  build-ios:
+    if: ${{needs.semantic-release.outputs.new-release-published == 'true'}}
+    runs-on: self-hosted
+    needs: [semantic-release]
+    steps:
+      - name: Checkout hologram-app
+        uses: actions/checkout@v4
+
+      - name: Setup node v20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: 'https://registry.npmjs.org/'
+          cache: yarn
+
+      - name: Install dependencies
+        run: |
+          yarn install --immutable
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: version-files
+
+      - name: Build IOS
+        run: |
+          echo "New release published!"
+          echo $RELEASE_VERSION
+          cd ios
+          pod install --repo-update
+          xcodebuild clean archive -workspace  app2060.xcworkspace -scheme 2060Dev -allowProvisioningUpdates -sdk iphoneos -archivePath builds/app2060.xcarchive -destination "generic/platform=iOS" | xcpretty
+          xcodebuild -exportArchive -archivePath "builds/app2060.xcarchive" -exportPath "builds" -exportOptionsPlist app2060/ExportOptions.plist | xcpretty
+
+      - name: Distribute to App Center
+        run: |
+          npm install -g appcenter-cli@2.10.8
+          appcenter login --token $APPCENTER_API_TOKEN
+          appcenter distribute release -f ./ios/builds/2060Dev.ipa -g Collaborators --app 2060/2060-ios-prestaging -r "prestaging ios"

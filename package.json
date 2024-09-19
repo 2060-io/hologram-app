@@ -24,63 +24,6 @@
     "ios:staging": "react-native run-ios --scheme 2060Staging",
     "ios:prod": "react-native run-ios --scheme 2060Prod"
   },
-  "release": {
-    "branches": [
-      {
-        "name": "dev",
-        "prerelease": true
-      },
-      {
-        "name": "staging",
-        "prerelease": true
-      },
-      "ci/release-job",
-      "main"
-    ],
-    "tagFormat": "${version}",
-    "ci": true,
-    "plugins": [
-      [
-        "@semantic-release/commit-analyzer",
-        {
-          "preset": "conventionalcommits",
-          "releaseRules": [
-            {
-              "type": "*!",
-              "release": "major"
-            },
-            {
-              "type": "refactor",
-              "release": "patch"
-            }
-          ]
-        }
-      ],
-      [
-        "@semantic-release/npm",
-        {
-          "npmPublish": false
-        }
-      ],
-      [
-        "semantic-release-react-native",
-        {
-          "versionStrategy": {
-            "android": {
-              "buildNumber": "relative",
-              "preRelease": true
-            },
-            "ios": {
-              "buildNumber": "semantic",
-              "preRelease": true
-            }
-          }
-        }
-      ],
-      "@semantic-release/release-notes-generator",
-      "./release-exec.js"
-    ]
-  },
   "expo": {
     "autolinking": {
       "exclude": [
