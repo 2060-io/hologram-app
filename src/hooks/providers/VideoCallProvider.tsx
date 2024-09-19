@@ -5,6 +5,7 @@ import { View, Modal } from 'react-native'
 import InCallManager from 'react-native-incall-manager'
 
 import { useChats, useMobileAgent } from '../agent'
+import { useNetwork } from '../useNetwork'
 
 import { useLocalRealm } from './RealmProvider'
 import {
@@ -29,6 +30,7 @@ import {
 import { DidCommCallType } from '@2060/services/agent/calls/messages/CallOfferMessage'
 import { log } from '@2060/utils'
 import { handleCameraPermission, handleMicrophonePermission } from '@2060/utils/permissions'
+import { toast } from '@2060/utils/toast'
 
 const stateInitialValues: StateProps = {
   isCameraOn: false,
@@ -54,6 +56,13 @@ export const VideoCallProvider: React.FC<PropsWithChildren> = ({ children }) => 
   const { agent } = useMobileAgent()
   const { realm } = useLocalRealm()
   const { activeChatThread } = useChats()
+  const { assertConnectedNetwork } = useNetwork()
+  const isNetworkConnected = assertConnectedNetwork()
+  const isNetworkConnectedRef = useRef<boolean>()
+
+  useEffect(() => {
+    isNetworkConnectedRef.current = isNetworkConnected
+  }, [isNetworkConnected])
 
   const updateState = (newStateValues: Partial<StateProps>) => {
     setState(prevState => ({ ...prevState, ...newStateValues }))
@@ -102,7 +111,12 @@ export const VideoCallProvider: React.FC<PropsWithChildren> = ({ children }) => 
     onCallFinished(0)
   }
 
-  const startCall = async (args: StartCallPros) => {
+  const startCall = useCallback(async (args: StartCallPros) => {
+    log('isNetworkConnected', isNetworkConnectedRef.current)
+    if (!isNetworkConnectedRef.current) {
+      toast({ type: 'error', message: t('call.youNeedInternetConnection') })
+      return
+    }
     const microphonePermission = await handleMicrophonePermission()
     if (!microphonePermission) return
     updateState({
@@ -111,7 +125,7 @@ export const VideoCallProvider: React.FC<PropsWithChildren> = ({ children }) => 
       isVideoCall: args.callType === 'video',
       isInCall: true,
     })
-  }
+  }, [])
 
   const onMissedCall = () => {
     stopRingtone()
@@ -134,6 +148,10 @@ export const VideoCallProvider: React.FC<PropsWithChildren> = ({ children }) => 
   const joinToCallOffer = useCallback(
     async (connectionId: string, callType: DidCommCallType, incomingCallInfo: IncomingCallInfo) => {
       if (!agent || !connectionId || !callType || !incomingCallInfo) return
+      if (!isNetworkConnectedRef.current) {
+        toast({ type: 'error', message: t('call.youNeedInternetConnection') })
+        return
+      }
       const microphonePermission = await handleMicrophonePermission()
       if (!microphonePermission) return
       const cameraPermission = await handleCameraPermission()
