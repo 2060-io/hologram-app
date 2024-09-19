@@ -3,6 +3,7 @@ import React, { memo, useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, TouchableOpacity, ViewStyle } from 'react-native'
 
+import CallOfferChatView from '../CallOfferChatView'
 import DeletedMessageView from '../DeletedMessageView'
 import HtmlChatView from '../HtmlChatView'
 import ImageChatView from '../ImageChatView'
@@ -26,6 +27,7 @@ import { Text } from '@2060/components/common'
 import { useChat } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import {
+  CallOfferMetadata,
   ChatEntryRole,
   ChatEntryState,
   ChatEntryType,
@@ -167,6 +169,8 @@ const BaseCustomView: React.FC<BaseCustomMessageViewProps> = memo(props => {
               agent={agent}
             />
           )
+        case ChatEntryType.CallOffer:
+          return <CallOfferChatView metadata={chatEntry.metadata as CallOfferMetadata} />
         default:
           return <></>
       }

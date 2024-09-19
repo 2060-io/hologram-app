@@ -47,6 +47,11 @@ interface VideoCallProps extends StateProps {
   remotePeerClosedTimeoutRef: MutableRefObject<NodeJS.Timeout | undefined>
   connectionStatus: ConnectionStatus
   updateCallStatus: React.Dispatch<React.SetStateAction<ConnectionStatus>>
+  joinToCallOffer: (
+    connectionId: string,
+    callType: DidCommCallType,
+    incomingCallInfo: IncomingCallInfo,
+  ) => void
 }
 
 export const VideoCallContext = createContext<VideoCallProps | undefined>(undefined)

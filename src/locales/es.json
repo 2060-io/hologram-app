@@ -370,7 +370,8 @@
       "question": "❓ Pregunta",
       "video": "🎥 Video compartido",
       "voiceNote": "🔉 Nota de voz",
-      "reportMessage": "Reportaste un mensaje"
+      "reportMessage": "Reportaste un mensaje",
+      "callOffer": "Call offer"
     },
     "scan": {
       "errorCreatingInvitation": "Error al crear la invitación",

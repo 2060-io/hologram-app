@@ -100,3 +100,7 @@ export type InvitationMetadata = {
   imageUrl?: string
   did: string
 }
+
+export type CallOfferMetadata = {
+  callOfferInfo: string
+}

@@ -1,11 +1,12 @@
 import { AgentEventTypes, AgentMessageProcessedEvent, ConnectionRecord } from '@credo-ts/core'
-import React, { PropsWithChildren, useState, useEffect, useRef } from 'react'
+import React, { PropsWithChildren, useState, useEffect, useRef, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, Modal } from 'react-native'
 import InCallManager from 'react-native-incall-manager'
 
-import { useMobileAgent } from '../agent'
+import { useChats, useMobileAgent } from '../agent'
 
+import { useLocalRealm } from './RealmProvider'
 import {
   VideoCallContext,
   StateProps,
@@ -16,6 +17,9 @@ import {
 } from './useVideoCallContext'
 
 import { VideoCall, IncomingCall } from '@2060/components'
+import * as chatEntryService from '@2060/hooks/agent/chat/services/ChatEntryService'
+import * as chatThreadService from '@2060/hooks/agent/chat/services/ChatThreadService'
+import { ChatEntryRole, ChatEntryState, ChatEntryType } from '@2060/model'
 import {
   CallAcceptMessage,
   CallEndMessage,
@@ -24,6 +28,7 @@ import {
 } from '@2060/services/agent/calls'
 import { DidCommCallType } from '@2060/services/agent/calls/messages/CallOfferMessage'
 import { log } from '@2060/utils'
+import { handleCameraPermission, handleMicrophonePermission } from '@2060/utils/permissions'
 
 const stateInitialValues: StateProps = {
   isCameraOn: false,
@@ -47,16 +52,23 @@ export const VideoCallProvider: React.FC<PropsWithChildren> = ({ children }) => 
   const remotePeerClosedTimeoutRef = useRef<ReturnType<typeof setTimeout>>()
   const { isCameraOn, isInCall, isIncomingCall, didcommConnection, didcommCallType } = state
   const { agent } = useMobileAgent()
+  const { realm } = useLocalRealm()
+  const { activeChatThread } = useChats()
 
   const updateState = (newStateValues: Partial<StateProps>) => {
     setState(prevState => ({ ...prevState, ...newStateValues }))
     stateRef.current = { ...stateRef.current, ...newStateValues }
   }
 
-  const handleCamera = () => updateState({ isCameraOn: !isCameraOn })
+  const handleCamera = async () => {
+    const cameraPermission = await handleCameraPermission()
+    if (!cameraPermission) return
+    updateState({ isCameraOn: !isCameraOn })
+  }
 
   const stopRingtone = () => InCallManager.stopRingtone()
 
+  /*
   const startIncomingCall = (
     connection: ConnectionRecord,
     callType: DidCommCallType,
@@ -71,13 +83,14 @@ export const VideoCallProvider: React.FC<PropsWithChildren> = ({ children }) => 
       isIncomingCall: true,
     })
   }
-
+ */
   const answerIncomingCall = async () => {
     if (!agent || !didcommConnection || !didcommCallType) return
 
     stopRingtone()
+    const microphonePermission = await handleMicrophonePermission()
+    if (!microphonePermission) return
     updateState({ isIncomingCall: false, isInCall: true })
-
     await agent.modules.calls.accept({ connectionId: didcommConnection.id, parameters: {} })
   }
 
@@ -89,7 +102,9 @@ export const VideoCallProvider: React.FC<PropsWithChildren> = ({ children }) => 
     onCallFinished(0)
   }
 
-  const startCall = (args: StartCallPros) => {
+  const startCall = async (args: StartCallPros) => {
+    const microphonePermission = await handleMicrophonePermission()
+    if (!microphonePermission) return
     updateState({
       didcommConnection: args.connection,
       didcommCallType: args.callType,
@@ -116,6 +131,47 @@ export const VideoCallProvider: React.FC<PropsWithChildren> = ({ children }) => 
     }, timeout)
   }
 
+  const joinToCallOffer = useCallback(
+    async (connectionId: string, callType: DidCommCallType, incomingCallInfo: IncomingCallInfo) => {
+      if (!agent || !connectionId || !callType || !incomingCallInfo) return
+      const microphonePermission = await handleMicrophonePermission()
+      if (!microphonePermission) return
+      const cameraPermission = await handleCameraPermission()
+      if (!cameraPermission) return
+      const connection = await agent.connections.getById(connectionId)
+      updateState({
+        didcommConnection: connection,
+        didcommCallType: callType,
+        isVideoCall: callType === 'video',
+        incomingCallInfo,
+        isInCall: true,
+      })
+      await agent.modules.calls.accept({ connectionId: connection.id, parameters: {} })
+    },
+    [agent],
+  )
+
+  const createChatEntry = useCallback(
+    async (connection: ConnectionRecord, callType: DidCommCallType, incomingCallInfo: IncomingCallInfo) => {
+      if (!agent || !realm) return
+      const thread = chatThreadService.findOrCreateChatThread(realm, connection)
+      const chatEntry = chatEntryService.createChatEntry(realm, {
+        chatThreadId: thread.id,
+        type: ChatEntryType.CallOffer,
+        role: ChatEntryRole.Receiver,
+        state: ChatEntryState.Received,
+        metadata: { callOfferInfo: JSON.stringify({ callType, incomingCallInfo }) },
+        associatedRecordId: 'estevaloresfalso',
+        // createdAt: (options.receivedAt ?? new Date(basicMessageRecord.sentTime)).getTime(),
+      })
+      chatThreadService.updateThread(realm, thread.id, { lastChatEntry: chatEntry })
+      if (thread.id !== activeChatThread) {
+        chatThreadService.addUnread(realm, thread.id, 1)
+      }
+    },
+    [agent, realm, activeChatThread],
+  )
+
   useEffect(() => {
     if (agent) {
       const agentMessageProcessedListener = async (data: AgentMessageProcessedEvent) => {
@@ -131,7 +187,8 @@ export const VideoCallProvider: React.FC<PropsWithChildren> = ({ children }) => 
             log(`no incomingCallInfo Parameters: ${JSON.stringify(parameters)}`)
             return
           }
-          startIncomingCall(connection, callType, incomingCallInfo)
+          //startIncomingCall(connection, callType, incomingCallInfo)
+          createChatEntry(connection, callType, incomingCallInfo)
         }
 
         // Call reject
@@ -162,7 +219,7 @@ export const VideoCallProvider: React.FC<PropsWithChildren> = ({ children }) => 
         agent.events.off(AgentEventTypes.AgentMessageProcessed, agentMessageProcessedListener)
       }
     }
-  }, [agent])
+  }, [agent, realm, activeChatThread])
 
   return (
     <VideoCallContext.Provider
@@ -176,6 +233,7 @@ export const VideoCallProvider: React.FC<PropsWithChildren> = ({ children }) => 
         rejectIncomingCall,
         handleCamera,
         remotePeerClosedTimeoutRef,
+        joinToCallOffer,
       }}
     >
       <View style={{ flex: 1 }}>
