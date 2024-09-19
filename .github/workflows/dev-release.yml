@@ -11,9 +11,10 @@ env:
   DH_TOKEN: ${{secrets.DOCKER_HUB_PWD}}
 
 jobs:
-  build:
+  semantic-release:
     runs-on: ubuntu-latest
-
+    outputs:
+      new-release-published: ${{ steps.semantic.outputs.new-release-published }}
     steps:
       - name: Checkout hologram-app
         uses: actions/checkout@v4
@@ -85,9 +86,53 @@ jobs:
               "@semantic-release/release-notes-generator",
             ]
 
-      - name: Log in to Docker Hub
+      - name: Upload Version files
         if: steps.semantic.outputs.new-release-published == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: version-files
+          path: |
+            ./ios/app2060/InfoPlist/Info-Dev.plist
+            ./ios/app2060/InfoPlist/Info-Staging.plist
+            ./ios/app2060/InfoPlist/Info-Prod.plist
+            ./ios/app2060.xcodeproj/project.pbxproj
+            ./android/app/build.gradle
+            ./package.json
+
+  build-android:
+    if: ${{needs.semantic-release.outputs.new-release-published}}
+    runs-on: self-hosted
+    needs: [semantic-release]
+    steps:
+
+      - name: Checkout hologram-app
+        uses: actions/checkout@v4
+
+      - name: Setup node v20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: 'https://registry.npmjs.org/'
+          cache: yarn
+
+      - name: Install dependencies
+        run: |
+          yarn install --immutable
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: version-files
+
+      - name: Build Android
         run: |
           echo "New release published!"
           echo $RELEASE_VERSION
-          echo ${{ fromJson(steps.semantic.outputs) }}
+          npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/build/intermediates/res/merged/release/
+          cd android
+          ./gradlew clean assembleDevRelease
+
+      - name: Upload Android APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-dev-release.apk
+          path: ./android/app/build/outputs/apk/dev/release/app-dev-release.apk
