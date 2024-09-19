@@ -77,7 +77,7 @@ jobs:
                       "preRelease": true
                     },
                     "ios": {
-                      "buildNumber": "relative",
+                      "buildNumber": "strict",
                       "preRelease": true
                     }
                   }
