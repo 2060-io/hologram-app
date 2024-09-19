@@ -7,8 +7,7 @@ on:
   workflow_dispatch:
 
 env:
-  DH_USERNAME: ${{secrets.DOCKER_HUB_LOGIN}}
-  DH_TOKEN: ${{secrets.DOCKER_HUB_PWD}}
+  APPCENTER_API_TOKEN: ${{ secrets.APPCENTER_API_TOKEN }}
 
 jobs:
   semantic-release:
@@ -37,7 +36,7 @@ jobs:
             [
               'release',
               { 
-                name: 'dev',
+                name: 'main',
                 prerelease: 'dev'
               }
             ]
@@ -107,7 +106,6 @@ jobs:
       UPLOAD_KEYSTORE_PASSWORD: ${{ secrets.UPLOAD_KEY_KEYSTORE_PASSWORD }}
       UPLOAD_KEY_PASSWORD: ${{ secrets.UPLOAD_KEY_PASSWORD }}
       UPLOAD_KEY_KEYSTORE_B64: ${{ secrets.UPLOAD_KEY_KEYSTORE_B64 }}
-      APPCENTER_API_TOKEN: ${{ secrets.APPCENTER_API_TOKEN }}
     steps:
       - name: Checkout hologram-app
         uses: actions/checkout@v4
