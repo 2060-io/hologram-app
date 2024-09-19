@@ -1,6 +1,7 @@
 import { V1ProposeCredentialMessage, V1ProposePresentationMessage } from '@credo-ts/anoncreds'
 import {
   AgentEventTypes,
+  AgentMessage,
   AgentMessageProcessedEvent,
   AgentMessageSentEvent,
   BasicMessage,
@@ -30,6 +31,7 @@ import Realm from 'realm'
 import { AgentAction, AgentActionType } from '../actions/AgentAction'
 
 import { handleBasicMessageRecordChanges } from './recordChangeHandlers/handleBasicMessageRecordChanges'
+import { handleCallOfferMessageRecordChanges } from './recordChangeHandlers/handleCallOfferMessageRecordChanges'
 import { handleCredentialExchangeRecordChanges } from './recordChangeHandlers/handleCredentialRecordChanges'
 import { handleMediaSharingRecordChanges } from './recordChangeHandlers/handleMediaSharingRecordChanges'
 import { handleProofExchangeRecordChanges } from './recordChangeHandlers/handleProofExchangeRecordChanges'
@@ -68,6 +70,7 @@ export function manageAgentChatEvents(agent: MobileAgent, realm: Realm, activeCh
     threadId: string,
     connection?: ConnectionRecord,
     receivedAt?: Date,
+    message?: AgentMessage,
   ) => {
     if (messageType.protocolName === BasicMessage.type.protocolName) {
       const record = await agent.basicMessages.getByThreadId(threadId)
@@ -136,6 +139,16 @@ export function manageAgentChatEvents(agent: MobileAgent, realm: Realm, activeCh
         record,
         activeChatThreadId,
         receivedAt,
+      })
+    }
+
+    if (messageType.protocolName === 'calls') {
+      handleCallOfferMessageRecordChanges({
+        realm,
+        connection,
+        activeChatThreadId,
+        receivedAt,
+        message,
       })
     }
   }
@@ -228,7 +241,7 @@ export function manageAgentChatEvents(agent: MobileAgent, realm: Realm, activeCh
     // Ignore any message coming directly from mediator
     if (connection?.connectionTypes.includes(ConnectionType.Mediator)) return
 
-    await messageEventsListener(messageType, threadId, connection, receivedAt)
+    await messageEventsListener(messageType, threadId, connection, receivedAt, data.payload.message)
 
     // Send receipts
     const validMessagesTypesForReceipts = [

@@ -4,6 +4,8 @@ import { InvitationState } from './InvitationState'
 import { MediaDownloadState } from './MediaDownloadState'
 import { MediaUploadState } from './MediaUploadState'
 
+import { DidCommCallType } from '@2060/services/agent/calls/messages/CallOfferMessage'
+
 export type TextMessageMetadata = {
   content: string
 }
@@ -102,5 +104,7 @@ export type InvitationMetadata = {
 }
 
 export type CallOfferMetadata = {
-  callOfferInfo: string
+  callType: DidCommCallType
+  roomId: string
+  wsUrl: string
 }

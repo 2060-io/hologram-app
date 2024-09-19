@@ -17,7 +17,6 @@ export type ConnectionStatus = {
 
 export type IncomingCallInfo = {
   roomId: string
-  status: number
   wsUrl: string
 }
 

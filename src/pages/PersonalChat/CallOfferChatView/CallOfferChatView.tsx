@@ -7,8 +7,7 @@ import getStyles from './styles'
 
 import { useChat } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { IncomingCallInfo, useVideoCallContext } from '@2060/hooks/providers/useVideoCallContext'
-import { DidCommCallType } from '@2060/services/agent/calls/messages/CallOfferMessage'
+import { useVideoCallContext } from '@2060/hooks/providers/useVideoCallContext'
 
 const CallOfferChatView = ({ metadata }: Props) => {
   const theme = useTheme()
@@ -16,14 +15,10 @@ const CallOfferChatView = ({ metadata }: Props) => {
   const styles = getStyles(theme)
   const { joinToCallOffer } = useVideoCallContext()
   const { chatThread } = useChat()
-
-  const { callType, incomingCallInfo } = JSON.parse(metadata.callOfferInfo) as {
-    callType: DidCommCallType
-    incomingCallInfo: IncomingCallInfo
-  }
+  const { callType, roomId, wsUrl } = metadata
 
   const join = () => {
-    joinToCallOffer(chatThread?.data.connectionId!, callType, incomingCallInfo)
+    joinToCallOffer(chatThread?.data.connectionId!, callType, { roomId, wsUrl })
   }
 
   return (
