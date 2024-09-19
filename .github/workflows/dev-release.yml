@@ -41,7 +41,7 @@ jobs:
                 prerelease: 'dev'
               }
             ]
-          tag-format: "${version}"
+          tag-format: "v${version}"
           additional-packages: |
             ['semantic-release-react-native@1.10.0']
           plugins: |
@@ -100,7 +100,8 @@ jobs:
             ./package.json
 
   build-android:
-    if: ${{needs.semantic-release.outputs.new-release-published}}
+    #if: ${{needs.semantic-release.outputs.new-release-published}}
+    if: github.ref == 'refs/heads/main'
     runs-on: self-hosted
     needs: [semantic-release]
     env:
@@ -142,7 +143,8 @@ jobs:
           path: ./android/app/build/outputs/apk/dev/release/app-dev-release.apk
 
   build-ios:
-    if: ${{needs.semantic-release.outputs.new-release-published}}
+    #if: ${{needs.semantic-release.outputs.new-release-published}}
+    if: github.ref == 'refs/heads/main'
     runs-on: self-hosted
     needs: [semantic-release]
     steps:
