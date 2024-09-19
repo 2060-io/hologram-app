@@ -99,7 +99,7 @@ jobs:
             ./package.json
 
   build-android:
-    if: ${{needs.semantic-release.outputs.new-release-published}}
+    if: ${{needs.semantic-release.outputs.new-release-published == 'true'}}
     runs-on: self-hosted
     needs: [semantic-release]
     env:
@@ -139,7 +139,7 @@ jobs:
           appcenter distribute release -f ./android/app/build/outputs/apk/dev/release/app-dev-release.apk -g Collaborators --app 2060/2060-android-prestaging -r "prestaging android"
 
   build-ios:
-    if: ${{needs.semantic-release.outputs.new-release-published}}
+    if: ${{needs.semantic-release.outputs.new-release-published == 'true'}}
     runs-on: self-hosted
     needs: [semantic-release]
     steps:
