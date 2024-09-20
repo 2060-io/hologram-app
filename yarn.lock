@@ -10506,7 +10506,7 @@ __metadata:
   dependencies:
     "@babel/helper-get-function-arity": ^7.16.7
     "@babel/plugin-proposal-decorators": ^7.24.1
-    "@bam.tech/react-native-image-resizer": ^3.0.7
+    "@bam.tech/react-native-image-resizer": 3.0.10
     "@credo-ts/action-menu": 0.5.10
     "@credo-ts/anoncreds": 0.5.10
     "@credo-ts/askar": 0.5.10
