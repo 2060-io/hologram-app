@@ -37,6 +37,7 @@
     }
   },
   "dependencies": {
+    "@2060.io/credo-ts-didcomm-calls": "^0.0.3",
     "@bam.tech/react-native-image-resizer": "3.0.10",
     "@credo-ts/action-menu": "0.5.10",
     "@credo-ts/anoncreds": "0.5.10",

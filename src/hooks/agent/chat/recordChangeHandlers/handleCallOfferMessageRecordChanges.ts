@@ -1,3 +1,5 @@
+import { CallOfferMessage } from '@2060.io/credo-ts-didcomm-calls'
+import { DidCommCallType } from '@2060.io/credo-ts-didcomm-calls/build/messages/CallOfferMessage'
 import { AgentMessage, ConnectionRecord } from '@credo-ts/core'
 import Realm from 'realm'
 
@@ -6,8 +8,6 @@ import * as chatThreadService from '../services/ChatThreadService'
 
 import { IncomingCallInfo } from '@2060/hooks/providers/useVideoCallContext'
 import { ChatEntryRole, ChatEntryState, ChatEntryType } from '@2060/model'
-import { CallOfferMessage } from '@2060/services/agent/calls'
-import { DidCommCallType } from '@2060/services/agent/calls/messages/CallOfferMessage'
 import { log } from '@2060/utils'
 
 export const handleCallOfferMessageRecordChanges = (options: {

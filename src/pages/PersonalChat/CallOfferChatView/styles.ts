@@ -11,4 +11,7 @@ export default (theme: AppTheme) =>
       width: NORMAL_WIDTH,
       marginBottom: 6,
     },
+    text: {
+      color: theme.colors.black,
+    },
   })

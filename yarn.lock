@@ -17,6 +17,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@2060.io/credo-ts-didcomm-calls@npm:^0.0.3":
+  version: 0.0.3
+  resolution: "@2060.io/credo-ts-didcomm-calls@npm:0.0.3"
+  dependencies:
+    class-transformer: 0.5.1
+    class-validator: 0.14.1
+    tsyringe: ^4.8.0
+  peerDependencies:
+    "@credo-ts/core": ^0.5.10
+  checksum: 34dd218ef1d7addf3a1a8ec819f50479ea094677d0d73651241d0eb7c96f1ae35fd5d30abbab96622877de0d7de14c24daaa3e2bfbc47fee211da74773983d84
+  languageName: node
+  linkType: hard
+
 "@ampproject/remapping@npm:^2.2.0":
   version: 2.3.0
   resolution: "@ampproject/remapping@npm:2.3.0"
@@ -10504,6 +10517,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "hologram-app@workspace:."
   dependencies:
+    "@2060.io/credo-ts-didcomm-calls": ^0.0.3
     "@babel/helper-get-function-arity": ^7.16.7
     "@babel/plugin-proposal-decorators": ^7.24.1
     "@bam.tech/react-native-image-resizer": 3.0.10

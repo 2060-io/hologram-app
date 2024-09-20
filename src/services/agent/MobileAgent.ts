@@ -1,3 +1,4 @@
+import { DidCommCallsModule } from '@2060.io/credo-ts-didcomm-calls'
 import { ActionMenuModule } from '@credo-ts/action-menu'
 import {
   AnonCredsCredentialFormatService,
@@ -42,7 +43,6 @@ import { MediaSharingModule } from 'credo-ts-media-sharing'
 import { ReceiptsModule } from 'credo-ts-receipts'
 import { UserProfileModule } from 'credo-ts-user-profile'
 
-import { DidCommCallsModule } from './calls/DidCommCallsModule'
 import { DidCommReactionsModule } from './reactions'
 
 const SECONDS_PER_DAY = 60 * 60 * 24

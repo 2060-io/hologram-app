@@ -1,3 +1,4 @@
+import { DidCommCallType } from '@2060.io/credo-ts-didcomm-calls/build/messages/CallOfferMessage'
 import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, PanResponder, FlexStyle, Animated } from 'react-native'
@@ -12,6 +13,7 @@ import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 const BUTTONS_TIME_FOR_DISAPPEAR = 5000
 
 type Props = {
+  didcommCallType: DidCommCallType | undefined
   isVideoCall: boolean
   localVideoStream: MediaStream | undefined
   isRemoteVideoOn: boolean
@@ -28,6 +30,7 @@ type Props = {
 }
 
 const Connected = ({
+  didcommCallType,
   isVideoCall,
   localVideoStream,
   isRemoteVideoOn,
@@ -118,7 +121,7 @@ const Connected = ({
   return (
     <View style={styles.connectedContainer} {...panResponderForButtons.panHandlers}>
       {renderMainContent()}
-      {displayLocalStreaming && !!remoteStream && (
+      {didcommCallType === 'video' && displayLocalStreaming && !!remoteStream && (
         <Animated.View
           style={{
             transform: [{ translateX: panForLocalStream.x }, { translateY: panForLocalStream.y }],
@@ -135,7 +138,9 @@ const Connected = ({
         </Animated.View>
       )}
       <View style={[styles.buttonsContainer, { display: buttonsVisibility }]}>
-        <View style={styles.buttonsSubContainer}>
+        <View
+          style={{ ...styles.buttonsSubContainer, display: didcommCallType === 'service' ? 'none' : 'flex' }}
+        >
           <CallButton
             text={t('call.speaker')}
             iconName={isUsingSpeakers ? 'speakerOn' : 'speakerOff'}

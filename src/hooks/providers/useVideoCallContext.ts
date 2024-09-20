@@ -1,7 +1,6 @@
+import { DidCommCallType } from '@2060.io/credo-ts-didcomm-calls/build/messages/CallOfferMessage'
 import { ConnectionRecord } from '@credo-ts/core'
 import { createContext, useContext, MutableRefObject } from 'react'
-
-import { DidCommCallType } from '@2060/services/agent/calls/messages/CallOfferMessage'
 
 export enum CallStatus {
   Connecting = 'Connecting',

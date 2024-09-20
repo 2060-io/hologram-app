@@ -1,3 +1,4 @@
+import { CallOfferMessage, DidCommCallRole } from '@2060.io/credo-ts-didcomm-calls'
 import { ConnectionRecord, JsonTransformer, Protocol } from '@credo-ts/core'
 import { ShareMediaMessage } from 'credo-ts-media-sharing'
 import { MessageReceiptsMessage } from 'credo-ts-receipts'
@@ -7,7 +8,6 @@ import { PictureData, getConnectionProfile } from 'credo-ts-user-profile/build/m
 import { log } from './log'
 
 import { ConnectionType } from '@2060/model'
-import { CallOfferMessage, DidCommCallRole } from '@2060/services/agent/calls'
 import { MessageReactionsMessage } from '@2060/services/agent/reactions'
 
 export const getConnectionDisplayName = (connection: ConnectionRecord) => {

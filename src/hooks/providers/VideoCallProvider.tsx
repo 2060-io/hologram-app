@@ -1,3 +1,5 @@
+import { CallAcceptMessage, CallEndMessage, CallRejectMessage } from '@2060.io/credo-ts-didcomm-calls'
+import { DidCommCallType } from '@2060.io/credo-ts-didcomm-calls/build/messages/CallOfferMessage'
 import { AgentEventTypes, AgentMessageProcessedEvent } from '@credo-ts/core'
 import React, { PropsWithChildren, useState, useEffect, useRef, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -18,9 +20,6 @@ import {
 } from './useVideoCallContext'
 
 import { VideoCall, IncomingCall } from '@2060/components'
-import { CallAcceptMessage, CallEndMessage, CallRejectMessage } from '@2060/services/agent/calls'
-import { DidCommCallType } from '@2060/services/agent/calls/messages/CallOfferMessage'
-import { log } from '@2060/utils'
 import { handleCameraPermission, handleMicrophonePermission } from '@2060/utils/permissions'
 import { toast } from '@2060/utils/toast'
 
@@ -79,7 +78,7 @@ export const VideoCallProvider: React.FC<PropsWithChildren> = ({ children }) => 
     updateState({
       didcommConnection: connection,
       didcommCallType: callType,
-      isVideoCall: callType === 'video',
+      isVideoCall: callType !== 'audio',
       incomingCallInfo,
       isIncomingCall: true,
     })
@@ -104,7 +103,6 @@ export const VideoCallProvider: React.FC<PropsWithChildren> = ({ children }) => 
   }
 
   const startCall = useCallback(async (args: StartCallPros) => {
-    log('isNetworkConnected', isNetworkConnectedRef.current)
     if (!isNetworkConnectedRef.current) {
       toast({ type: 'error', message: t('call.youNeedInternetConnection') })
       return
@@ -114,7 +112,7 @@ export const VideoCallProvider: React.FC<PropsWithChildren> = ({ children }) => 
     updateState({
       didcommConnection: args.connection,
       didcommCallType: args.callType,
-      isVideoCall: args.callType === 'video',
+      isVideoCall: args.callType !== 'audio',
       isInCall: true,
     })
   }, [])
@@ -152,9 +150,10 @@ export const VideoCallProvider: React.FC<PropsWithChildren> = ({ children }) => 
       updateState({
         didcommConnection: connection,
         didcommCallType: callType,
-        isVideoCall: callType === 'video',
+        isVideoCall: callType !== 'audio',
         incomingCallInfo,
         isInCall: true,
+        isCameraOn: true,
       })
       await agent.modules.calls.accept({ connectionId: connection.id, parameters: {} })
     },

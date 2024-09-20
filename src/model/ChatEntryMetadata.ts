@@ -1,10 +1,9 @@
+import { DidCommCallType } from '@2060.io/credo-ts-didcomm-calls/build/messages/CallOfferMessage'
 import { CredentialState, ProofState } from '@credo-ts/core'
 
 import { InvitationState } from './InvitationState'
 import { MediaDownloadState } from './MediaDownloadState'
 import { MediaUploadState } from './MediaUploadState'
-
-import { DidCommCallType } from '@2060/services/agent/calls/messages/CallOfferMessage'
 
 export type TextMessageMetadata = {
   content: string

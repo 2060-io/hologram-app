@@ -535,6 +535,7 @@ export const useVideoCall = () => {
   }
 
   return {
+    didcommCallType,
     localVideoStream,
     remoteStream,
     handleSwitchCamera,
