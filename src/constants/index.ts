@@ -41,3 +41,10 @@ export const optionsNotificationsIOS = (options?: NotificationIOS): Notification
   critical: true,
   sound: 'default',
 })
+
+export const isAndroid13OrHigher = () => {
+  if (Platform.OS === 'android') {
+    return Platform.Version >= 33
+  }
+  return false
+}

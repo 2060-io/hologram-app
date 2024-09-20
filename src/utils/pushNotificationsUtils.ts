@@ -1,14 +1,21 @@
 import notifee, { AndroidColor, AndroidImportance } from '@notifee/react-native'
 import messaging from '@react-native-firebase/messaging'
+import { PERMISSIONS, request, RESULTS } from 'react-native-permissions'
 
 import { getStorageData, setStorageData } from './asyncStorage'
 
-import { IS_DEVICE_IOS } from '@2060/constants'
+import { IS_DEVICE_IOS, isAndroid13OrHigher } from '@2060/constants'
 
 const { AuthorizationStatus } = messaging
 export const LOCAL_NOTIFICATION_ID_PREFIX = 'local-notification'
 
-export const requestNotificationPermissionUser = async () => {
+const askUserPushNotificationPermissionAndroid13OrHigher = async () => {
+  const status = await request(PERMISSIONS.ANDROID.POST_NOTIFICATIONS)
+  const isGranted = status === RESULTS.GRANTED
+  return isGranted
+}
+
+const askUserPushNotificationPermission = async () => {
   const { AUTHORIZED } = AuthorizationStatus
   const authStatus = await messaging().requestPermission({
     alert: true,
@@ -19,6 +26,10 @@ export const requestNotificationPermissionUser = async () => {
   })
   return authStatus === AUTHORIZED
 }
+
+export const requestNotificationPermissionUser = isAndroid13OrHigher()
+  ? askUserPushNotificationPermissionAndroid13OrHigher
+  : askUserPushNotificationPermission
 
 export const getFcmDeviceToken = async () => {
   if (!messaging().isDeviceRegisteredForRemoteMessages) await messaging().registerDeviceForRemoteMessages()
