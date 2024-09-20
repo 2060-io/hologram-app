@@ -3069,12 +3069,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@notifee/react-native@npm:^7.8.2":
-  version: 7.8.2
-  resolution: "@notifee/react-native@npm:7.8.2"
+"@notifee/react-native@npm:9.0.0":
+  version: 9.0.0
+  resolution: "@notifee/react-native@npm:9.0.0"
   peerDependencies:
     react-native: "*"
-  checksum: f3b3ea116653d4dc7b50f8124898f9e22567ae30306225841d2057bc9ce40d451b15436dff3e60e0e042ffd7f34338054b202cd2dc61c5dc5eab7676b625b9f9
+  checksum: 29cc9785bf9be87aeb91968719a0693be67b51f5c478690770e19a39f1a9dc4c49225e1cf10b31ccd4e2a353e20caa88a44a26ec8767304a9aa0c8a46de92b64
   languageName: node
   linkType: hard
 
@@ -10519,7 +10519,7 @@ __metadata:
     "@hyperledger/anoncreds-shared": 0.2.3
     "@hyperledger/aries-askar-react-native": 0.2.3
     "@hyperledger/aries-askar-shared": 0.2.3
-    "@notifee/react-native": ^7.8.2
+    "@notifee/react-native": 9.0.0
     "@react-native-camera-roll/camera-roll": ^5.2.3
     "@react-native-clipboard/clipboard": ^1.14.1
     "@react-native-community/async-storage": ^1.12.1

@@ -1,13 +1,40 @@
-import notifee, { AndroidColor, AndroidImportance } from '@notifee/react-native'
+import notifee, {
+  AndroidBadgeIconType,
+  AndroidColor,
+  AndroidImportance,
+  NotificationAndroid,
+  NotificationIOS,
+} from '@notifee/react-native'
 import messaging from '@react-native-firebase/messaging'
 import { PERMISSIONS, request, RESULTS } from 'react-native-permissions'
 
 import { getStorageData, setStorageData } from './asyncStorage'
 
-import { IS_DEVICE_IOS, isAndroid13OrHigher } from '@2060/constants'
+import { IS_DEVICE_IOS, primaryColor, isAndroid13OrHigher } from '@2060/constants'
 
 const { AuthorizationStatus } = messaging
 export const LOCAL_NOTIFICATION_ID_PREFIX = 'local-notification'
+export const optionsNotificationAndroid = (options?: NotificationAndroid): NotificationAndroid => ({
+  ...options,
+  vibrationPattern: [300, 500],
+  pressAction: { id: 'default' },
+  lights: [AndroidColor.GREEN, 300, 600],
+  smallIcon: 'ic_notification',
+  sound: 'default',
+  importance: AndroidImportance.HIGH,
+  largeIcon: require('../assets/images/app-icon.png'),
+  smallIconLevel: AndroidBadgeIconType.LARGE,
+  color: primaryColor,
+  circularLargeIcon: true,
+})
+
+export const optionsNotificationsIOS = (options?: NotificationIOS): NotificationIOS => ({
+  ...options,
+  criticalVolume: 0.9,
+  foregroundPresentationOptions: { alert: true, sound: true, badge: true },
+  critical: true,
+  sound: 'default',
+})
 
 const askUserPushNotificationPermissionAndroid13OrHigher = async () => {
   const status = await request(PERMISSIONS.ANDROID.POST_NOTIFICATIONS)
