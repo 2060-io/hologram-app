@@ -10585,7 +10585,7 @@ __metadata:
     react-native-gesture-handler: ^2.12.1
     react-native-get-random-values: ^1.7.0
     react-native-gradle-plugin: ^0.70.0
-    react-native-image-crop-picker: ^0.38.0
+    react-native-image-crop-picker: 0.41.2
     react-native-incall-manager: ^4.2.0
     react-native-job-queue: ^0.5.1
     react-native-keyboard-aware-scroll-view: ^0.9.5
@@ -10609,7 +10609,7 @@ __metadata:
     react-native-vision-camera: 4.3.2
     react-native-webrtc: ^118.0.4
     react-native-webview: ^13.6.3
-    react-native-zip-archive: ^6.0.9
+    react-native-zip-archive: 7.0.1
     realm: ^12.0.0
     rn-emoji-keyboard: ^1.2.1
     semantic-release: ^23.0.2
@@ -15369,12 +15369,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-image-crop-picker@npm:^0.38.0":
-  version: 0.38.1
-  resolution: "react-native-image-crop-picker@npm:0.38.1"
+"react-native-image-crop-picker@npm:0.41.2":
+  version: 0.41.2
+  resolution: "react-native-image-crop-picker@npm:0.41.2"
   peerDependencies:
     react-native: ">=0.40.0"
-  checksum: e2705cfe5400cf30d372402e1d4933405aacc2cd07fd6fbd25a7a1b31f27ffefd5a033dd6dc71c0b40e62c5f1362919292327912315efc7dcd34bcdc49f1ee12
+  checksum: c1333b3b761e948bd0bc856773f68dcc859c7ce39dda3e14d2c32c17d55927735bfc5cbbb7ac5e8bac21feda87c93399f2a596aca7d5b0611cc1e8203d97ad2e
   languageName: node
   linkType: hard
 
@@ -15681,13 +15681,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-zip-archive@npm:^6.0.9":
-  version: 6.1.2
-  resolution: "react-native-zip-archive@npm:6.1.2"
+"react-native-zip-archive@npm:7.0.1":
+  version: 7.0.1
+  resolution: "react-native-zip-archive@npm:7.0.1"
   peerDependencies:
     react: ">=16.8.6"
     react-native: ">=0.60.0"
-  checksum: 2a7a594ef678cc45aa9548d46413cb9cdc5bf5d6cd8cb9ed47b8e51d0418f033874c85000dd8934516953beac350c038f98699b13ff00c8fb6432ea044bca23d
+  checksum: 2f7747d2ed903102e0d097921d1a019311f0c23c9ceb15304c39d699fba380e60b70cb1474b1fb516d114514af2a3c8a88ee5690f83d0a92d87500d095ba2b39
   languageName: node
   linkType: hard
 
