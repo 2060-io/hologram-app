@@ -2,10 +2,14 @@ import { ConnectionEventTypes, ConnectionStateChangedEvent } from '@credo-ts/cor
 import notifee from '@notifee/react-native'
 import { t } from 'i18next'
 
-import { optionsNotificationAndroid, optionsNotificationsIOS } from '@2060/constants'
 import { MobileAgent } from '@2060/services/agent'
 import { getConnectionDisplayName } from '@2060/utils/connectionUtils'
-import { createChannel, LOCAL_NOTIFICATION_ID_PREFIX } from '@2060/utils/pushNotificationsUtils'
+import {
+  createChannel,
+  LOCAL_NOTIFICATION_ID_PREFIX,
+  optionsNotificationsIOS,
+  optionsNotificationAndroid,
+} from '@2060/utils/pushNotificationsUtils'
 
 export const manageConnectionStateChangedEvent = (agent: MobileAgent) => {
   const connectionsListener = async (data: ConnectionStateChangedEvent) => {

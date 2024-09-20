@@ -3,11 +3,16 @@ import Realm from 'realm'
 
 import { getLocalizedPreview } from './preview'
 
-import { IS_DEVICE_IOS, optionsNotificationAndroid, optionsNotificationsIOS } from '@2060/constants'
+import { IS_DEVICE_IOS } from '@2060/constants'
 import { ChatEntry, ChatEntryRole, ChatThread } from '@2060/model'
 import { MobileAgent } from '@2060/services/agent'
 import { getConnectionDisplayName } from '@2060/utils/connectionUtils'
-import { createChannel, LOCAL_NOTIFICATION_ID_PREFIX } from '@2060/utils/pushNotificationsUtils'
+import {
+  createChannel,
+  LOCAL_NOTIFICATION_ID_PREFIX,
+  optionsNotificationAndroid,
+  optionsNotificationsIOS,
+} from '@2060/utils/pushNotificationsUtils'
 
 export const manageBackgroundChatEntryChanges = (realm: Realm, agent: MobileAgent) => {
   const entries = realm.objects(ChatEntry)

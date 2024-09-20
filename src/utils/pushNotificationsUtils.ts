@@ -1,12 +1,39 @@
-import notifee, { AndroidColor, AndroidImportance } from '@notifee/react-native'
+import notifee, {
+  AndroidBadgeIconType,
+  AndroidColor,
+  AndroidImportance,
+  NotificationAndroid,
+  NotificationIOS,
+} from '@notifee/react-native'
 import messaging from '@react-native-firebase/messaging'
 
 import { getStorageData, setStorageData } from './asyncStorage'
 
-import { IS_DEVICE_IOS } from '@2060/constants'
+import { IS_DEVICE_IOS, primaryColor } from '@2060/constants'
 
 const { AuthorizationStatus } = messaging
 export const LOCAL_NOTIFICATION_ID_PREFIX = 'local-notification'
+export const optionsNotificationAndroid = (options?: NotificationAndroid): NotificationAndroid => ({
+  ...options,
+  vibrationPattern: [300, 500],
+  pressAction: { id: 'default' },
+  lights: [AndroidColor.GREEN, 300, 600],
+  smallIcon: 'ic_notification',
+  sound: 'default',
+  importance: AndroidImportance.HIGH,
+  largeIcon: require('../assets/images/app-icon.png'),
+  smallIconLevel: AndroidBadgeIconType.LARGE,
+  color: primaryColor,
+  circularLargeIcon: true,
+})
+
+export const optionsNotificationsIOS = (options?: NotificationIOS): NotificationIOS => ({
+  ...options,
+  criticalVolume: 0.9,
+  foregroundPresentationOptions: { alert: true, sound: true, badge: true },
+  critical: true,
+  sound: 'default',
+})
 
 export const requestNotificationPermissionUser = async () => {
   const { AUTHORIZED } = AuthorizationStatus

@@ -50,7 +50,7 @@
     "@hyperledger/anoncreds-shared": "0.2.3",
     "@hyperledger/aries-askar-react-native": "0.2.3",
     "@hyperledger/aries-askar-shared": "0.2.3",
-    "@notifee/react-native": "^7.8.2",
+    "@notifee/react-native": "9.0.0",
     "@react-native-camera-roll/camera-roll": "^5.2.3",
     "@react-native-clipboard/clipboard": "^1.14.1",
     "@react-native-community/async-storage": "^1.12.1",
