@@ -17,8 +17,6 @@ import {
 } from '@2060/hooks/providers/useVideoCallContext'
 import { log, logError } from '@2060/utils'
 
-type RTCIceTransportPolicy = 'all' | 'relay'
-
 function generatePeerId(length = 8) {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
   let result = ''
@@ -29,11 +27,11 @@ function generatePeerId(length = 8) {
   return result
 }
 
-const fetchNewRoomId = async (webRtcServerHost: string) => {
+const fetchNewRoomId = async (webRtcServerBaseUrl: string) => {
   try {
     const { token } = await appCheck().getToken()
-    const response = await axios.get(`https://${webRtcServerHost}/getRoomId`, {
-      validateStatus: function (status) {
+    const response = await axios.post(`${webRtcServerBaseUrl}/rooms`, {
+      validateStatus: function (status: number) {
         return status === 200 // Resolve only if the status code 200
       },
       headers: {
@@ -47,13 +45,16 @@ const fetchNewRoomId = async (webRtcServerHost: string) => {
   }
 }
 
-type IceServiceConfig = {
-  enableIceServer: string
-  iceServerHost: string
-  iceServerProto: string
-  iceServerPort: string
-  iceServerUser: string
-  iceServerPass: string
+// These structures are the ones used by mediasoup-client, present in current 2060-mediasoup-v1 protocol
+
+//type RTCIceTransportPolicy = 'all' | 'relay'
+type RTCIceCredentialType = 'oauth' | 'password'
+
+type RTCIceServer = {
+  urls: string | string[]
+  username?: string
+  credential?: string
+  credentialType?: RTCIceCredentialType
 }
 
 type TransportInfo = {
@@ -62,13 +63,11 @@ type TransportInfo = {
   iceCandidates: types.IceCandidate[]
   dtlsParameters: types.DtlsParameters
   sctpParameters: types.SctpParameters
-  iceServer: IceServiceConfig
+  iceServers?: RTCIceServer[]
 }
 
 const getTransportOptions = (transportInfo: TransportInfo) => {
-  const { id, iceParameters, iceCandidates, dtlsParameters, sctpParameters } = transportInfo
-  const { iceServerHost, iceServerPort, iceServerProto, iceServerUser, iceServerPass } =
-    transportInfo.iceServer
+  const { id, iceParameters, iceCandidates, dtlsParameters, sctpParameters, iceServers } = transportInfo
   return {
     id,
     iceParameters,
@@ -78,14 +77,8 @@ const getTransportOptions = (transportInfo: TransportInfo) => {
       role: 'auto' as types.DtlsRole,
     },
     sctpParameters,
-    iceServers: [
-      {
-        urls: `turn:${iceServerHost}:${iceServerPort}?transport=${iceServerProto}`,
-        username: iceServerUser,
-        credential: iceServerPass,
-      },
-    ],
-    iceTransportPolicy: 'relay' as RTCIceTransportPolicy,
+    iceServers,
+    //iceTransportPolicy: 'relay' as RTCIceTransportPolicy, // TODO: check if it is needed
   }
 }
 
@@ -140,20 +133,17 @@ export const useVideoCall = () => {
         InCallManager.start({ media: 'audio' })
         const callInfo = incomingCallInfo
           ? incomingCallInfo
-          : await fetchNewRoomId(devEnvs.WEBRTC_SERVER_HOST)
+          : await fetchNewRoomId(devEnvs.WEBRTC_SERVER_BASE_URL)
         roomId.current = callInfo.roomId
-        peerId.current = generatePeerId()
-        const baseSocketUrl = incomingCallInfo
-          ? incomingCallInfo.wsUrl
-          : `wss://${devEnvs.WEBRTC_SERVER_HOST}:443/?roomId=${roomId.current}&peerId=`
-        const socketUrl = `${baseSocketUrl}${peerId.current}&consumerReplicas=undefined`
+        peerId.current = callInfo.peerId ?? generatePeerId()
+        const socketUrl = `${callInfo.wsUrl}?roomId=${roomId.current}&peerId=${peerId.current}`
         const webSocketTransport = new WebSocketTransport(socketUrl)
         peer.current = new Peer(webSocketTransport)
         peer.current.on('open', async () => {
           log('Socket Connection opened')
           await createSendTransport()
           await createRecvTransport()
-          await joinToRoom()
+          await joinRoom()
           await startToProduceStream()
           if (!incomingCallInfo && !lostConnection.current) {
             await agent.modules.calls.offer({
@@ -402,7 +392,7 @@ export const useVideoCall = () => {
     }
   }
 
-  const joinToRoom = async () => {
+  const joinRoom = async () => {
     const joinRoomResponse = await peer.current?.request('join', {
       displayName: 'test Name',
       device: device.current,

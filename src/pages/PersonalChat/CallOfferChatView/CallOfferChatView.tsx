@@ -11,12 +11,12 @@ import { useVideoCallContext } from '@2060/hooks/providers/useVideoCallContext'
 const CallOfferChatView = ({ metadata }: Props) => {
   const theme = useTheme()
   const styles = getStyles(theme)
-  const { joinToCallOffer } = useVideoCallContext()
+  const { joinCall } = useVideoCallContext()
   const { chatThread } = useChat()
   const { callType, roomId, wsUrl } = metadata
 
   const join = () => {
-    joinToCallOffer(chatThread?.data.connectionId!, callType, { roomId, wsUrl })
+    joinCall(chatThread?.data.connectionId!, callType, { roomId, wsUrl })
   }
 
   return (

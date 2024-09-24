@@ -1,5 +1,4 @@
-import { CallOfferMessage } from '@2060.io/credo-ts-didcomm-calls'
-import { DidCommCallType } from '@2060.io/credo-ts-didcomm-calls/build/messages/CallOfferMessage'
+import { CallOfferMessage, DidCommCallType } from '@2060.io/credo-ts-didcomm-calls'
 import { AgentMessage, ConnectionRecord } from '@credo-ts/core'
 import Realm from 'realm'
 

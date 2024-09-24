@@ -1,5 +1,9 @@
-import { CallAcceptMessage, CallEndMessage, CallRejectMessage } from '@2060.io/credo-ts-didcomm-calls'
-import { DidCommCallType } from '@2060.io/credo-ts-didcomm-calls/build/messages/CallOfferMessage'
+import {
+  CallAcceptMessage,
+  CallEndMessage,
+  CallRejectMessage,
+  DidCommCallType,
+} from '@2060.io/credo-ts-didcomm-calls'
 import { AgentEventTypes, AgentMessageProcessedEvent } from '@credo-ts/core'
 import React, { PropsWithChildren, useState, useEffect, useRef, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -135,7 +139,7 @@ export const VideoCallProvider: React.FC<PropsWithChildren> = ({ children }) => 
     }, timeout)
   }
 
-  const joinToCallOffer = useCallback(
+  const joinCall = useCallback(
     async (connectionId: string, callType: DidCommCallType, incomingCallInfo: IncomingCallInfo) => {
       if (!agent || !connectionId || !callType || !incomingCallInfo) return
       if (!isNetworkConnectedRef.current) {
@@ -206,7 +210,7 @@ export const VideoCallProvider: React.FC<PropsWithChildren> = ({ children }) => 
         rejectIncomingCall,
         handleCamera,
         remotePeerClosedTimeoutRef,
-        joinToCallOffer,
+        joinCall,
       }}
     >
       <View style={{ flex: 1 }}>

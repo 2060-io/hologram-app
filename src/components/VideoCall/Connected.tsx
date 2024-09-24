@@ -1,4 +1,4 @@
-import { DidCommCallType } from '@2060.io/credo-ts-didcomm-calls/build/messages/CallOfferMessage'
+import { DidCommCallType } from '@2060.io/credo-ts-didcomm-calls'
 import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, PanResponder, FlexStyle, Animated } from 'react-native'
