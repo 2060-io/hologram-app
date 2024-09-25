@@ -9,7 +9,7 @@ declare module 'react-native-config' {
     INDY_VDR_PROXY_BASE_URL: string
     BACKUP_NAME: string
     APP_CHECK_DEBUG_MODE: boolean
-    WEBRTC_SERVER_HOST: string
+    WEBRTC_SERVER_BASE_URL: string
   }
 
   export const Config: NativeConfig

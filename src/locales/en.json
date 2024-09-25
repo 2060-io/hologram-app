@@ -36,6 +36,9 @@
       "valueHere": "Value here",
       "confirm": "Confirm",
       "cancel": "Cancel",
+      "settings": "Settings",
+      "microphone": "Microphone",
+      "permissionNeededMessage": "To continue Hologram needs access to your {{permission}}. Tap settings and activate your {{permission}}",
       "instant": "Instant",
       "swipeToUndo": "Swipe to undo",
       "options": "Options",
@@ -370,7 +373,8 @@
       "question": "❓ Question",
       "video": "🎥 Video shared",
       "voiceNote": "🔉 Voice note shared",
-      "reportMessage": "You reported a message"
+      "reportMessage": "You reported a message",
+      "callOffer": "Call offer"
     },
     "scan": {
       "errorCreatingInvitation": "Error creating invitation",

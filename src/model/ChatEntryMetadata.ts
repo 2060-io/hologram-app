@@ -1,3 +1,4 @@
+import { DidCommCallType } from '@2060.io/credo-ts-didcomm-calls'
 import { CredentialState, ProofState } from '@credo-ts/core'
 
 import { InvitationState } from './InvitationState'
@@ -99,4 +100,10 @@ export type InvitationMetadata = {
   label: string
   imageUrl?: string
   did: string
+}
+
+export type CallOfferMetadata = {
+  callType: DidCommCallType
+  roomId: string
+  wsUrl: string
 }

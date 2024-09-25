@@ -1,7 +1,6 @@
+import { DidCommCallType } from '@2060.io/credo-ts-didcomm-calls'
 import { ConnectionRecord } from '@credo-ts/core'
 import { createContext, useContext, MutableRefObject } from 'react'
-
-import { DidCommCallType } from '@2060/services/agent/calls/messages/CallOfferMessage'
 
 export enum CallStatus {
   Connecting = 'Connecting',
@@ -17,7 +16,7 @@ export type ConnectionStatus = {
 
 export type IncomingCallInfo = {
   roomId: string
-  status: number
+  peerId?: string
   wsUrl: string
 }
 
@@ -47,6 +46,7 @@ interface VideoCallProps extends StateProps {
   remotePeerClosedTimeoutRef: MutableRefObject<NodeJS.Timeout | undefined>
   connectionStatus: ConnectionStatus
   updateCallStatus: React.Dispatch<React.SetStateAction<ConnectionStatus>>
+  joinCall: (connectionId: string, callType: DidCommCallType, incomingCallInfo: IncomingCallInfo) => void
 }
 
 export const VideoCallContext = createContext<VideoCallProps | undefined>(undefined)

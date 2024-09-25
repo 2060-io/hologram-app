@@ -13,6 +13,7 @@ export enum ChatEntryType {
   Link = 'Link',
   ReportMessage = 'ReportMessage',
   System = 'System',
+  CallOffer = 'CallOffer',
 }
 
 export const isMediaType = (type: ChatEntryType | string) =>
