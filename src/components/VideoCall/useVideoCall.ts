@@ -38,7 +38,10 @@ const fetchNewRoomId = async (webRtcServerBaseUrl: string) => {
         'X-Firebase-AppCheck': token,
       },
     })
-    return response.data as IncomingCallInfo
+    return {
+      ...response.data,
+      wsUrl: response.data.wsUrl.substring(0, response.data.wsUrl.indexOf('?')),
+    } as IncomingCallInfo
   } catch (error) {
     logError('Error fetching RoomId:', error)
     throw new Error(`${error}`)
@@ -136,7 +139,7 @@ export const useVideoCall = () => {
           : await fetchNewRoomId(devEnvs.WEBRTC_SERVER_BASE_URL)
         roomId.current = callInfo.roomId
         peerId.current = callInfo.peerId ?? generatePeerId()
-        const socketUrl = `${callInfo.wsUrl}?roomId=${roomId.current}&peerId=${peerId.current}`
+        const socketUrl = `${callInfo.wsUrl}/?roomId=${roomId.current}&peerId=${peerId.current}`
         const webSocketTransport = new WebSocketTransport(socketUrl)
         peer.current = new Peer(webSocketTransport)
         peer.current.on('open', async () => {
