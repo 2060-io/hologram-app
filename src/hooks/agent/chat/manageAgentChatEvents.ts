@@ -1,3 +1,4 @@
+import { CallOfferMessage } from '@2060.io/credo-ts-didcomm-calls'
 import { V1ProposeCredentialMessage, V1ProposePresentationMessage } from '@credo-ts/anoncreds'
 import {
   AgentEventTypes,
@@ -142,7 +143,8 @@ export function manageAgentChatEvents(agent: MobileAgent, realm: Realm, activeCh
       })
     }
 
-    if (messageType.protocolName === 'calls') {
+    // At the moment we only consider Call Offer message for chat actions
+    if (messageType.messageTypeUri === CallOfferMessage.type.messageTypeUri) {
       handleCallOfferMessageRecordChanges({
         realm,
         connection,
