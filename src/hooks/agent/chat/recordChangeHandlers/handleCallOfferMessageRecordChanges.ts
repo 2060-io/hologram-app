@@ -26,13 +26,13 @@ export const handleCallOfferMessageRecordChanges = (options: {
     return
   }
   const thread = chatThreadService.findOrCreateChatThread(realm, connection!)
-  const { roomId, wsUrl } = incomingCallInfo
+  const { roomId, wsUrl, peerId } = incomingCallInfo
   const chatEntry = chatEntryService.createChatEntry(realm, {
     chatThreadId: thread.id,
     type: ChatEntryType.CallOffer,
     role: ChatEntryRole.Receiver,
     state: ChatEntryState.Received,
-    metadata: { callType, roomId, wsUrl },
+    metadata: { callType, roomId, wsUrl, peerId },
     associatedRecordId: '',
     createdAt: (receivedAt ?? new Date()).getTime(),
   })

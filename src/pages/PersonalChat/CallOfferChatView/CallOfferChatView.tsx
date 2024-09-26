@@ -13,10 +13,10 @@ const CallOfferChatView = ({ metadata }: Props) => {
   const styles = getStyles(theme)
   const { joinCall } = useVideoCallContext()
   const { chatThread } = useChat()
-  const { callType, roomId, wsUrl } = metadata
+  const { callType, roomId, peerId, wsUrl } = metadata
 
   const join = () => {
-    joinCall(chatThread?.data.connectionId!, callType, { roomId, wsUrl })
+    joinCall(chatThread?.data.connectionId!, callType, { roomId, peerId, wsUrl })
   }
 
   return (
