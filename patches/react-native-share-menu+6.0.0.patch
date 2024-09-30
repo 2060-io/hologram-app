@@ -184,10 +184,19 @@ index f42bce6..ee36062 100644
      return Bundle.main.url(forResource: "main", withExtension: "jsbundle")
  #endif
 diff --git a/node_modules/react-native-share-menu/ios/ShareViewController.swift b/node_modules/react-native-share-menu/ios/ShareViewController.swift
-index 12d8c92..74367cf 100644
+index 12d8c92..4345976 100644
 --- a/node_modules/react-native-share-menu/ios/ShareViewController.swift
 +++ b/node_modules/react-native-share-menu/ios/ShareViewController.swift
-@@ -33,6 +33,8 @@ class ShareViewController: SLComposeServiceViewController {
+@@ -14,6 +14,8 @@ import UIKit
+ import Social
+ import RNShareMenu
+ 
++@available(iOSApplicationExtension, unavailable)
++
+ class ShareViewController: SLComposeServiceViewController {
+   var hostAppId: String?
+   var hostAppUrlScheme: String?
+@@ -33,6 +35,8 @@ class ShareViewController: SLComposeServiceViewController {
      } else {
        print("Error: \(NO_INFO_PLIST_URL_SCHEME_ERROR)")
      }
@@ -196,7 +205,7 @@ index 12d8c92..74367cf 100644
    }
  
      override func isContentValid() -> Bool {
-@@ -166,10 +168,6 @@ class ShareViewController: SLComposeServiceViewController {
+@@ -166,10 +170,6 @@ class ShareViewController: SLComposeServiceViewController {
          self.exit(withError: error.debugDescription)
          return
        }
@@ -207,7 +216,7 @@ index 12d8c92..74367cf 100644
        guard let hostAppId = self.hostAppId else {
          self.exit(withError: NO_INFO_PLIST_INDENTIFIER_ERROR)
          return
-@@ -181,18 +179,41 @@ class ShareViewController: SLComposeServiceViewController {
+@@ -181,18 +181,41 @@ class ShareViewController: SLComposeServiceViewController {
          return
        }
        
@@ -257,4 +266,31 @@ index 12d8c92..74367cf 100644
 -      self.sharedItems.append([DATA_KEY: filePath.absoluteString, MIME_TYPE_KEY: mimeType])
        semaphore.signal()
      }
+   }
+@@ -222,21 +245,15 @@ class ShareViewController: SLComposeServiceViewController {
+       return
+     }
+     
+-    let url = URL(string: urlScheme)
+-    let selectorOpenURL = sel_registerName("openURL:")
+-    var responder: UIResponder? = self
+-    
+-    while responder != nil {
+-      if responder?.responds(to: selectorOpenURL) == true {
+-        responder?.perform(selectorOpenURL, with: url)
+-      }
+-      responder = responder!.next
++     guard let url = URL(string: urlScheme) else {
++      exit(withError: NO_INFO_PLIST_URL_SCHEME_ERROR)
++      return //be safe
+     }
+  
+-    completeRequest()
++    UIApplication.shared.open(url, options: [:], completionHandler: completeRequest)
+   }
+   
+-  func completeRequest() {
++  func completeRequest(success: Bool) {
+     // Inform the host that we're done, so it un-blocks its UI. Note: Alternatively you could call super's -didSelectPost, which will similarly complete the extension context.
+     extensionContext!.completeRequest(returningItems: [], completionHandler: nil)
    }

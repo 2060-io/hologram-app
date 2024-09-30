@@ -105,5 +105,6 @@ export type InvitationMetadata = {
 export type CallOfferMetadata = {
   callType: DidCommCallType
   roomId: string
+  peerId: string
   wsUrl: string
 }
