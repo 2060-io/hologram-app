@@ -5,7 +5,7 @@ import { CustomModalProps } from './ModalProps'
 
 const CustomModal = forwardRef<Modal, CustomModalProps>((modalProps, ref) => {
   return (
-    <Modal ref={ref} {...modalProps}>
+    <Modal ref={ref} statusBarTranslucent {...modalProps}>
       {modalProps.children}
     </Modal>
   )
