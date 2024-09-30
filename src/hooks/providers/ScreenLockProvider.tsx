@@ -7,7 +7,7 @@ import React, {
   useRef,
   PropsWithChildren,
 } from 'react'
-import { View, PanResponder, Modal } from 'react-native'
+import { View, PanResponder } from 'react-native'
 
 import { useNavigation } from '../agent/NavigationProvider'
 import { useIsForeground } from '../useIsForeground'
@@ -15,6 +15,7 @@ import { useIsForeground } from '../useIsForeground'
 import { useVideoCallContext } from './useVideoCallContext'
 
 import Authentication from '@2060/components/Authentication'
+import { Modal } from '@2060/components/common'
 import { setStorageData, getStorageData } from '@2060/utils/asyncStorage'
 
 interface ScreenLockInterface {

@@ -1,5 +1,7 @@
 import React from 'react'
-import { View, StyleSheet, Modal, Dimensions } from 'react-native'
+import { View, StyleSheet, Dimensions } from 'react-native'
+
+import { Modal } from '../common'
 
 import { IS_DEVICE_IOS, mainTextColor } from '@2060/constants'
 import { useStatusBarHeight } from '@2060/hooks/useStatusBarHeight'
