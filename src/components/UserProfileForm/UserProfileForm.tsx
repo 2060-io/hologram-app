@@ -1,4 +1,4 @@
-import { PictureData } from 'credo-ts-user-profile/build/model'
+import { PictureData } from '@2060.io/credo-ts-didcomm-user-profile'
 import React, { memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, TouchableOpacity, Image } from 'react-native'

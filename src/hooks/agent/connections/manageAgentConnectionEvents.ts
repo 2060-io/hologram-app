@@ -1,4 +1,10 @@
 import {
+  ConnectionProfileUpdatedEvent,
+  ProfileEventTypes,
+  UserProfileApi,
+  UserProfileRequestedEvent,
+} from '@2060.io/credo-ts-didcomm-user-profile'
+import {
   DiscoverFeaturesDisclosureReceivedEvent,
   DidExchangeRole,
   ConnectionStateChangedEvent,
@@ -9,9 +15,9 @@ import {
   DiscoverFeaturesApi,
   EventEmitter,
 } from '@credo-ts/core'
-import { UserProfileApi } from 'credo-ts-user-profile'
 
 import { supportsUserProfile } from '@2060/utils/connectionUtils'
+import { language } from '@2060/utils/language'
 
 export function manageAgentConnectionEvents(context: AgentContext) {
   const eventEmitter = context.dependencyManager.resolve(EventEmitter)
@@ -28,8 +34,43 @@ export function manageAgentConnectionEvents(context: AgentContext) {
 
     if (supportsUserProfile(connection)) {
       if (connection.role === DidExchangeRole.Responder) {
-        await userProfileApi.sendUserProfile({ connectionId: connection.id, sendBackYours: true })
+        await userProfileApi.sendUserProfile({
+          connectionId: connection.id,
+          sendBackYours: true,
+          profileData: {
+            ...(await userProfileApi.getUserProfileData()),
+            preferredLanguage: language,
+          },
+        })
       }
+    }
+  }
+
+  const profileRequestListener = async (event: UserProfileRequestedEvent) => {
+    const userProfileApi = context.dependencyManager.resolve(UserProfileApi)
+    await userProfileApi.sendUserProfile({
+      connectionId: event.payload.connection.id,
+      sendBackYours: false,
+      threadId: event.payload.threadId,
+      profileData: {
+        ...(await userProfileApi.getUserProfileData()),
+        preferredLanguage: language,
+      },
+    })
+  }
+
+  const profileUpdatedListener = async (event: ConnectionProfileUpdatedEvent) => {
+    const userProfileApi = context.dependencyManager.resolve(UserProfileApi)
+    if (event.payload.sendBackYoursRequested) {
+      await userProfileApi.sendUserProfile({
+        connectionId: event.payload.connection.id,
+        sendBackYours: false,
+        threadId: event.payload.threadId,
+        profileData: {
+          ...(await userProfileApi.getUserProfileData()),
+          preferredLanguage: language,
+        },
+      })
     }
   }
 
@@ -55,9 +96,13 @@ export function manageAgentConnectionEvents(context: AgentContext) {
 
   eventEmitter.on(ConnectionEventTypes.ConnectionStateChanged, connectionListener)
   eventEmitter.on(DiscoverFeaturesEventTypes.DisclosureReceived, disclosureListener)
+  eventEmitter.on(ProfileEventTypes.UserProfileRequested, profileRequestListener)
+  eventEmitter.on(ProfileEventTypes.ConnectionProfileUpdated, profileUpdatedListener)
 
   return () => {
     eventEmitter.off(ConnectionEventTypes.ConnectionStateChanged, connectionListener)
     eventEmitter.off(DiscoverFeaturesEventTypes.DisclosureReceived, disclosureListener)
+    eventEmitter.off(ProfileEventTypes.UserProfileRequested, profileRequestListener)
+    eventEmitter.off(ProfileEventTypes.ConnectionProfileUpdated, profileUpdatedListener)
   }
 }
