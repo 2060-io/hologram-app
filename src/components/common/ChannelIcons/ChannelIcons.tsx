@@ -4,6 +4,7 @@ import { View, TouchableOpacity } from 'react-native'
 
 import SvgIcon, { IconsNames } from '../SvgIcon'
 
+import { useConfig } from '@2060/hooks/providers/ConfigProvider'
 import { useVideoCallContext } from '@2060/hooks/providers/useVideoCallContext'
 import { isBlocked, isTerminated, supportsAudioCalls, supportsVideoCalls } from '@2060/utils/connectionUtils'
 
@@ -24,8 +25,10 @@ const channelsIcons = { text: 'chat', audio: 'phoneUp', video: 'video' }
 
 const ChannelIcons = ({ defaultChannels = [], connection, iconColor }: Props) => {
   const { startCall } = useVideoCallContext()
+  const { isDeveloperMode } = useConfig()
 
   const channels = useMemo(() => {
+    if (!isDeveloperMode) return []
     const channelsToReturn: ChannelProps[] = defaultChannels
     if (supportsAudioCalls(connection)) {
       channelsToReturn.push({
@@ -40,7 +43,7 @@ const ChannelIcons = ({ defaultChannels = [], connection, iconColor }: Props) =>
       })
     }
     return channelsToReturn
-  }, [connection])
+  }, [connection, isDeveloperMode])
 
   return (
     <View style={{ flexDirection: 'row' }}>
