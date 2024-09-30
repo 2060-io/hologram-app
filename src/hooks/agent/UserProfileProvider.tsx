@@ -1,4 +1,4 @@
-import { UserProfileData } from 'credo-ts-user-profile'
+import { UserProfileData } from '@2060.io/credo-ts-didcomm-user-profile'
 import * as React from 'react'
 import { createContext, useState, useEffect } from 'react'
 

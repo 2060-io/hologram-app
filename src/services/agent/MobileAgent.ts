@@ -1,4 +1,5 @@
 import { DidCommCallsModule } from '@2060.io/credo-ts-didcomm-calls'
+import { UserProfileModule, UserProfileModuleConfig } from '@2060.io/credo-ts-didcomm-user-profile'
 import { ActionMenuModule } from '@credo-ts/action-menu'
 import {
   AnonCredsCredentialFormatService,
@@ -41,7 +42,6 @@ import { DidWebAnonCredsRegistry } from 'credo-ts-didweb-anoncreds'
 import { IndyVdrProxyDidResolver, IndyVdrProxyAnonCredsRegistry } from 'credo-ts-indy-vdr-proxy-client'
 import { MediaSharingModule } from 'credo-ts-media-sharing'
 import { ReceiptsModule } from 'credo-ts-receipts'
-import { UserProfileModule } from 'credo-ts-user-profile'
 
 import { DidCommReactionsModule } from './reactions'
 
@@ -115,7 +115,7 @@ export const getMobileAgentModules = (config: {
         }),
       ],
     }),
-    profile: new UserProfileModule(),
+    profile: new UserProfileModule(new UserProfileModuleConfig({ autoSendProfile: false })),
     pushNotifications: new PushNotificationsFcmModule(),
     questionAnswer: new QuestionAnswerModule(),
     receipts: new ReceiptsModule(),

@@ -1,4 +1,5 @@
 import { CallOfferMessage } from '@2060.io/credo-ts-didcomm-calls'
+import { ConnectionProfileUpdatedEvent, ProfileEventTypes } from '@2060.io/credo-ts-didcomm-user-profile'
 import { V1ProposeCredentialMessage, V1ProposePresentationMessage } from '@credo-ts/anoncreds'
 import {
   AgentEventTypes,
@@ -25,7 +26,6 @@ import {
   ShareMediaMessage,
 } from 'credo-ts-media-sharing'
 import { ReceiptsEventTypes, MessageReceiptsReceivedEvent, MessageState } from 'credo-ts-receipts'
-import { ConnectionProfileUpdatedEvent, ProfileEventTypes } from 'credo-ts-user-profile'
 import agentActionQueue from 'react-native-job-queue'
 import Realm from 'realm'
 
