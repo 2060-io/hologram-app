@@ -1,6 +1,6 @@
 import React, { memo, useEffect, useRef, useState } from 'react'
 import {
-  Modal,
+  Modal as NativeModal,
   View,
   Animated,
   Dimensions,
@@ -9,6 +9,8 @@ import {
   ViewStyle,
   TouchableWithoutFeedback,
 } from 'react-native'
+
+import { Modal } from '../common'
 
 import getStyles from './styles'
 
@@ -23,7 +25,7 @@ type ModalBottomHalfProps = {
 
 const ModalBottomHalf = ({ visible, onClose, styleContainer, children }: ModalBottomHalfProps) => {
   const screenHeight = Math.round(Dimensions.get('screen').height)
-  const modalRef = useRef<Modal | null>(null)
+  const modalRef = useRef<NativeModal | null>(null)
   const panY = useRef(new Animated.Value(screenHeight)).current
   const theme = useTheme()
   const styles = getStyles(theme)

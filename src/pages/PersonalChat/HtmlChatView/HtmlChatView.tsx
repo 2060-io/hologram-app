@@ -1,7 +1,7 @@
 import { OrientationLock, lockAsync, unlockAsync } from 'expo-screen-orientation'
 import React, { memo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Image, Modal, TouchableOpacity, View, SafeAreaView } from 'react-native'
+import { Image, TouchableOpacity, View, SafeAreaView } from 'react-native'
 import { SvgUri } from 'react-native-svg'
 import WebView from 'react-native-webview'
 
@@ -10,7 +10,7 @@ import { Header, BlueButton } from '../components'
 import { HtmlChatViewProps } from './HtmlChatViewProps'
 import getStyles from './styles'
 
-import { SvgIcon, Text } from '@2060/components/common'
+import { Modal, SvgIcon, Text } from '@2060/components/common'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { extractDomainFromUrl, log, logError } from '@2060/utils'
 
