@@ -1,4 +1,5 @@
 import { DidCommCallsModule } from '@2060.io/credo-ts-didcomm-calls'
+import { DidCommMrtdModule } from '@2060.io/credo-ts-didcomm-mrtd'
 import { UserProfileModule, UserProfileModuleConfig } from '@2060.io/credo-ts-didcomm-user-profile'
 import { ActionMenuModule } from '@credo-ts/action-menu'
 import {
@@ -83,12 +84,6 @@ export const getMobileAgentModules = (config: {
         new IndyVdrProxyDidResolver({ proxyBaseUrl, headers: getAppCheckHeaders }),
       ],
     }),
-    media: new MediaSharingModule(),
-    mediationRecipient: new MediationRecipientModule({
-      mediatorPickupStrategy: config.mediatorPickupStrategy,
-      baseMediatorReconnectionIntervalMs: 1000,
-      maximumMediatorReconnectionIntervalMs: 8000,
-    }),
     calls: new DidCommCallsModule(),
     reactions: new DidCommReactionsModule(),
     connections: new ConnectionsModule({ autoAcceptConnections: true }),
@@ -105,6 +100,13 @@ export const getMobileAgentModules = (config: {
         }),
       ],
     }),
+    media: new MediaSharingModule(),
+    mediationRecipient: new MediationRecipientModule({
+      mediatorPickupStrategy: config.mediatorPickupStrategy,
+      baseMediatorReconnectionIntervalMs: 1000,
+      maximumMediatorReconnectionIntervalMs: 8000,
+    }),
+    mrtd: new DidCommMrtdModule(),
     openId4VcHolder: new OpenId4VcHolderModule(),
     proofs: new ProofsModule({
       autoAcceptProofs: AutoAcceptProof.Never,

@@ -9,6 +9,7 @@ import HtmlChatView from '../HtmlChatView'
 import ImageChatView from '../ImageChatView'
 import InvitationChatView from '../InvitationChatView'
 import MessageTextView from '../MessageTextView'
+import MrzRequestChatView from '../MrzRequestChatView'
 import QuestionChatView from '../QuestionChatView'
 import RepliedMessageView from '../RepliedMessageView'
 import TicksView from '../TicksView'
@@ -34,6 +35,7 @@ import {
   InvitationMetadata,
   LinkMetadata,
   MediaSharingMetadata,
+  MrzRequestMetadata,
   QuestionMetadata,
   TextMessageMetadata,
   VCOfferMetadata,
@@ -171,6 +173,8 @@ const BaseCustomView: React.FC<BaseCustomMessageViewProps> = memo(props => {
           )
         case ChatEntryType.CallOffer:
           return <CallOfferChatView metadata={chatEntry.metadata as CallOfferMetadata} />
+        case ChatEntryType.MrzRequest:
+          return <MrzRequestChatView metadata={chatEntry.metadata as MrzRequestMetadata} />
         default:
           return <></>
       }
