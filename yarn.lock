@@ -30,6 +30,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@2060.io/credo-ts-didcomm-mrtd@npm:^0.0.3":
+  version: 0.0.3
+  resolution: "@2060.io/credo-ts-didcomm-mrtd@npm:0.0.3"
+  dependencies:
+    class-transformer: 0.5.1
+    class-validator: 0.14.1
+    mrz: ^4.2.0
+    tsyringe: ^4.8.0
+  peerDependencies:
+    "@credo-ts/core": ^0.5.10
+  checksum: 8f99663cfcaa2e7382fcc77c7d0c29da652b7714d59cb43b9692ccb5f6675a784317522bbfe9d7e939ae0d0a0dc0388dd5aeb7bad7437984001c705311fcb784
+  languageName: node
+  linkType: hard
+
 "@2060.io/credo-ts-didcomm-user-profile@npm:^0.0.6":
   version: 0.0.6
   resolution: "@2060.io/credo-ts-didcomm-user-profile@npm:0.0.6"
@@ -10518,6 +10532,7 @@ __metadata:
   resolution: "hologram-app@workspace:."
   dependencies:
     "@2060.io/credo-ts-didcomm-calls": ^0.0.4
+    "@2060.io/credo-ts-didcomm-mrtd": ^0.0.3
     "@2060.io/credo-ts-didcomm-user-profile": ^0.0.6
     "@babel/helper-get-function-arity": ^7.16.7
     "@babel/plugin-proposal-decorators": ^7.24.1
@@ -13383,6 +13398,13 @@ __metadata:
   peerDependencies:
     react-native-reanimated: "*"
   checksum: c93a403a11d5023782a95b2a0eb4c56842dbcd2c8e38e758c6439f0496d04e3f03a199939370b9855333af8251e7958a0f1e2c465cb1a1c6564d122adb3afe58
+  languageName: node
+  linkType: hard
+
+"mrz@npm:^4.2.0":
+  version: 4.2.0
+  resolution: "mrz@npm:4.2.0"
+  checksum: 9ea99d2292ed420aa96136324d831bb21a6d0f9fe801fef5c75680ed2d02bcc6d195967567ff41f0e13a0bcd0c94d3ee51d9d346788167482687b2d5d7a3e93a
   languageName: node
   linkType: hard
 

@@ -1,4 +1,5 @@
 import { CallOfferMessage } from '@2060.io/credo-ts-didcomm-calls'
+import { MrzDataRequestMessage } from '@2060.io/credo-ts-didcomm-mrtd'
 import { ConnectionProfileUpdatedEvent, ProfileEventTypes } from '@2060.io/credo-ts-didcomm-user-profile'
 import { V1ProposeCredentialMessage, V1ProposePresentationMessage } from '@credo-ts/anoncreds'
 import {
@@ -16,7 +17,6 @@ import {
   parseMessageType,
 } from '@credo-ts/core'
 import { tryParseDid } from '@credo-ts/core/build/modules/dids/domain/parse'
-import { ParsedMessageType } from '@credo-ts/core/build/utils/messageType'
 import { QuestionMessage, AnswerMessage } from '@credo-ts/question-answer'
 import {
   MediaSharingEventTypes,
@@ -31,12 +31,15 @@ import Realm from 'realm'
 
 import { AgentAction, AgentActionType } from '../actions/AgentAction'
 
-import { handleBasicMessageRecordChanges } from './recordChangeHandlers/handleBasicMessageRecordChanges'
-import { handleCallOfferMessageRecordChanges } from './recordChangeHandlers/handleCallOfferMessageRecordChanges'
-import { handleCredentialExchangeRecordChanges } from './recordChangeHandlers/handleCredentialRecordChanges'
+import { DidCommMessageDirection } from './DidCommMessageDirection'
+import { handleCallMessages, handleMrtdMessages } from './messageHandlers'
+import {
+  handleBasicMessageRecordChanges,
+  handleCredentialExchangeRecordChanges,
+  handleProofExchangeRecordChanges,
+  handleQuestionAnswerRecordChanges,
+} from './recordChangeHandlers'
 import { handleMediaSharingRecordChanges } from './recordChangeHandlers/handleMediaSharingRecordChanges'
-import { handleProofExchangeRecordChanges } from './recordChangeHandlers/handleProofExchangeRecordChanges'
-import { handleQuestionAnswerRecordChanges } from './recordChangeHandlers/handleQuestionAnswerRecordChanges'
 import * as chatEntryService from './services/ChatEntryService'
 import * as chatThreadService from './services/ChatThreadService'
 
@@ -66,15 +69,16 @@ export function manageAgentChatEvents(agent: MobileAgent, realm: Realm, activeCh
     }
   }
 
-  const messageEventsListener = async (
-    messageType: ParsedMessageType,
-    threadId: string,
-    connection?: ConnectionRecord,
-    receivedAt?: Date,
-    message?: AgentMessage,
-  ) => {
+  const messageEventsListener = async (options: {
+    message: AgentMessage
+    direction: DidCommMessageDirection
+    connection?: ConnectionRecord
+    receivedAt?: Date
+  }) => {
+    const { message, direction, connection, receivedAt } = options
+    const messageType = parseMessageType(message.type)
     if (messageType.protocolName === BasicMessage.type.protocolName) {
-      const record = await agent.basicMessages.getByThreadId(threadId)
+      const record = await agent.basicMessages.getByThreadId(message.threadId)
       await handleBasicMessageRecordChanges({
         agent,
         realm,
@@ -85,7 +89,7 @@ export function manageAgentChatEvents(agent: MobileAgent, realm: Realm, activeCh
     }
 
     if (messageType.protocolName === ShareMediaMessage.type.protocolName) {
-      const record = await agent.modules.media.findByThreadId(threadId)
+      const record = await agent.modules.media.findByThreadId(message.threadId)
       if (!record) return
       await handleMediaSharingRecordChanges({
         agent,
@@ -97,7 +101,7 @@ export function manageAgentChatEvents(agent: MobileAgent, realm: Realm, activeCh
     }
 
     if (messageType.protocolName === QuestionMessage.type.protocolName) {
-      const [record] = await agent.modules.questionAnswer.findAllByQuery({ threadId })
+      const [record] = await agent.modules.questionAnswer.findAllByQuery({ threadId: message.threadId })
       if (!record) return
       await handleQuestionAnswerRecordChanges({
         agent,
@@ -109,7 +113,7 @@ export function manageAgentChatEvents(agent: MobileAgent, realm: Realm, activeCh
     }
 
     if (messageType.protocolName === V1ProposeCredentialMessage.type.protocolName) {
-      const [record] = await agent.credentials.findAllByQuery({ threadId })
+      const [record] = await agent.credentials.findAllByQuery({ threadId: message.threadId })
       if (!record) return
       await handleCredentialExchangeRecordChanges({
         agent,
@@ -121,7 +125,7 @@ export function manageAgentChatEvents(agent: MobileAgent, realm: Realm, activeCh
     }
 
     if (messageType.protocolName === V1ProposePresentationMessage.type.protocolName) {
-      const [record] = await agent.proofs.findAllByQuery({ threadId })
+      const [record] = await agent.proofs.findAllByQuery({ threadId: message.threadId })
       if (!record) return
       await handleProofExchangeRecordChanges({
         agent,
@@ -132,7 +136,7 @@ export function manageAgentChatEvents(agent: MobileAgent, realm: Realm, activeCh
     }
 
     if (messageType.protocolName === V1ProposePresentationMessage.type.protocolName) {
-      const [record] = await agent.proofs.findAllByQuery({ threadId })
+      const [record] = await agent.proofs.findAllByQuery({ threadId: message.threadId })
       if (!record) return
       await handleProofExchangeRecordChanges({
         agent,
@@ -145,12 +149,22 @@ export function manageAgentChatEvents(agent: MobileAgent, realm: Realm, activeCh
 
     // At the moment we only consider Call Offer message for chat actions
     if (messageType.messageTypeUri === CallOfferMessage.type.messageTypeUri) {
-      handleCallOfferMessageRecordChanges({
+      handleCallMessages({
         realm,
         connection,
         activeChatThreadId,
         receivedAt,
         message,
+      })
+    }
+    if (messageType.protocolName === MrzDataRequestMessage.type.protocolName && connection) {
+      handleMrtdMessages({
+        realm,
+        connection,
+        activeChatThreadId,
+        receivedAt,
+        message,
+        direction,
       })
     }
   }
@@ -164,11 +178,11 @@ export function manageAgentChatEvents(agent: MobileAgent, realm: Realm, activeCh
       associatedRecord &&
       [OutboundMessageSendStatus.SentToSession, OutboundMessageSendStatus.SentToTransport].includes(status)
     ) {
-      await messageEventsListener(
-        parseMessageType(outboundMessage.message.type),
-        outboundMessage.message.threadId,
-        data.payload.message.connection,
-      )
+      await messageEventsListener({
+        message: outboundMessage.message,
+        direction: 'outbound',
+        connection: data.payload.message.connection,
+      })
 
       const entries = chatEntryService.findAllByAssociatedRecordId(realm, associatedRecord.id)
       for (const entry of entries) {
@@ -235,15 +249,18 @@ export function manageAgentChatEvents(agent: MobileAgent, realm: Realm, activeCh
   }
 
   const agentMessageProcessedListener = async (data: AgentMessageProcessedEvent) => {
-    const messageType = parseMessageType(data.payload.message.type)
-    const threadId = data.payload.message.threadId
     const connection = data.payload.connection
     const receivedAt = data.payload.receivedAt
 
     // Ignore any message coming directly from mediator
     if (connection?.connectionTypes.includes(ConnectionType.Mediator)) return
 
-    await messageEventsListener(messageType, threadId, connection, receivedAt, data.payload.message)
+    await messageEventsListener({
+      message: data.payload.message,
+      direction: 'inbound',
+      connection,
+      receivedAt,
+    })
 
     // Send receipts
     const validMessagesTypesForReceipts = [

@@ -9,12 +9,12 @@ import { IncomingCallInfo } from '@2060/hooks/providers/useVideoCallContext'
 import { ChatEntryRole, ChatEntryState, ChatEntryType } from '@2060/model'
 import { log } from '@2060/utils'
 
-export const handleCallOfferMessageRecordChanges = (options: {
+export const handleCallMessages = (options: {
   realm: Realm
   connection?: ConnectionRecord
   activeChatThreadId?: string
   receivedAt?: Date
-  message?: AgentMessage
+  message: AgentMessage
 }) => {
   const { realm, connection, activeChatThreadId, receivedAt, message } = options
 
