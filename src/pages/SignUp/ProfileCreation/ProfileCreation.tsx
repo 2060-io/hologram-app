@@ -1,6 +1,6 @@
+import { PictureData } from '@2060.io/credo-ts-didcomm-user-profile'
 import { CommonActions } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
-import { PictureData } from 'credo-ts-user-profile/build/model'
 import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Alert, View, SafeAreaView } from 'react-native'

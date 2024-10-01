@@ -1,10 +1,10 @@
 import React, { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, Image, Modal, TouchableOpacity, TouchableWithoutFeedback } from 'react-native'
+import { View, Image, TouchableOpacity, TouchableWithoutFeedback } from 'react-native'
 
 import getStyles from './styles'
 
-import { CardCredentialMainInformation, Text } from '@2060/components/common'
+import { CardCredentialMainInformation, Modal, Text } from '@2060/components/common'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { CredentialDetailsForDisplay } from '@2060/services/agent/display'
 import { formatCredentialSubject, CredentialAttributeRow } from '@2060/services/agent/formatCredentialSubject'

@@ -108,3 +108,5 @@ export type CallOfferMetadata = {
   peerId: string
   wsUrl: string
 }
+
+export type MrzRequestMetadata = {}

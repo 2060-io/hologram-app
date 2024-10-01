@@ -1,9 +1,12 @@
 import React from 'react'
+import { View } from 'react-native'
 
 import Loader from '../Loader'
 import Modal from '../Modal'
 
-import styles from './styles'
+import getStyles from './styles'
+
+import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 
 type Props = {
   visible: boolean
@@ -11,9 +14,14 @@ type Props = {
 }
 
 const ModalLoading = ({ visible, message }: Props) => {
+  const theme = useTheme()
+  const styles = getStyles(theme)
+
   return (
-    <Modal visible={visible} topHeight="0%" style={styles.container}>
-      <Loader message={message} />
+    <Modal visible={visible} animationType="slide">
+      <View style={styles.container}>
+        <Loader message={message} />
+      </View>
     </Modal>
   )
 }

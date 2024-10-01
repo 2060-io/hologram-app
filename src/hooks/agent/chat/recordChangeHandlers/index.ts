@@ -1,0 +1,5 @@
+export * from './handleBasicMessageRecordChanges'
+export * from './handleCredentialRecordChanges'
+export * from './handleMediaSharingRecordChanges'
+export * from './handleProofExchangeRecordChanges'
+export * from './handleQuestionAnswerRecordChanges'

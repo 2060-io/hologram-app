@@ -30,6 +30,35 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@2060.io/credo-ts-didcomm-mrtd@npm:^0.0.3":
+  version: 0.0.3
+  resolution: "@2060.io/credo-ts-didcomm-mrtd@npm:0.0.3"
+  dependencies:
+    class-transformer: 0.5.1
+    class-validator: 0.14.1
+    mrz: ^4.2.0
+    tsyringe: ^4.8.0
+  peerDependencies:
+    "@credo-ts/core": ^0.5.10
+  checksum: 8f99663cfcaa2e7382fcc77c7d0c29da652b7714d59cb43b9692ccb5f6675a784317522bbfe9d7e939ae0d0a0dc0388dd5aeb7bad7437984001c705311fcb784
+  languageName: node
+  linkType: hard
+
+"@2060.io/credo-ts-didcomm-user-profile@npm:^0.0.6":
+  version: 0.0.6
+  resolution: "@2060.io/credo-ts-didcomm-user-profile@npm:0.0.6"
+  dependencies:
+    class-transformer: 0.5.1
+    class-validator: 0.14.1
+    reflect-metadata: ^0.1.13
+    rxjs: ^7.2.0
+    tsyringe: ^4.8.0
+  peerDependencies:
+    "@credo-ts/core": ^0.5.10
+  checksum: 3133c9b807347fff4790de493bc37dbcb0e00723feda48ef4e1e3efb0dea1407d9d4d997b5aa0df1e3e1be9f62eab0e90863e47083608a0f381eb9ec6a4146ef
+  languageName: node
+  linkType: hard
+
 "@ampproject/remapping@npm:^2.2.0":
   version: 2.3.0
   resolution: "@ampproject/remapping@npm:2.3.0"
@@ -7131,7 +7160,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"class-validator@npm:0.14.1, class-validator@npm:^0.14.0, class-validator@npm:^0.14.1":
+"class-validator@npm:0.14.1, class-validator@npm:^0.14.1":
   version: 0.14.1
   resolution: "class-validator@npm:0.14.1"
   dependencies:
@@ -7712,21 +7741,6 @@ __metadata:
     tsyringe: ^4.8.0
     uuid: ^9.0.0
   checksum: 57347d41f31f89a9a9f0a669f649025d3733723eb86f82337daaa2511d6f509925ce91214bbcd485f04cf0ade41d4cc508dc60d69c7af1ca6cf6def51af3c253
-  languageName: node
-  linkType: hard
-
-"credo-ts-user-profile@npm:^0.0.1-alpha.6":
-  version: 0.0.1-alpha.6
-  resolution: "credo-ts-user-profile@npm:0.0.1-alpha.6"
-  dependencies:
-    "@credo-ts/core": ^0.5.0-alpha.116
-    class-transformer: ^0.5.1
-    class-validator: ^0.14.0
-    reflect-metadata: ^0.1.13
-    rxjs: ^7.2.0
-    tsyringe: ^4.8.0
-    uuid: ^9.0.0
-  checksum: 84d951bf34b1b106aabada4e1fc4bbd8c5784a087676cd7a9ca566d3d2b3ddc1e7655bf0b70c2370a91c6a7248934d531f06c554837da6d49cf42faba30cf1ae
   languageName: node
   linkType: hard
 
@@ -10518,6 +10532,8 @@ __metadata:
   resolution: "hologram-app@workspace:."
   dependencies:
     "@2060.io/credo-ts-didcomm-calls": ^0.0.4
+    "@2060.io/credo-ts-didcomm-mrtd": ^0.0.3
+    "@2060.io/credo-ts-didcomm-user-profile": ^0.0.6
     "@babel/helper-get-function-arity": ^7.16.7
     "@babel/plugin-proposal-decorators": ^7.24.1
     "@bam.tech/react-native-image-resizer": 3.0.10
@@ -10567,7 +10583,6 @@ __metadata:
     credo-ts-indy-vdr-proxy-client: ^0.2.2
     credo-ts-media-sharing: ^0.0.1-alpha.9
     credo-ts-receipts: ^0.0.1-alpha.5
-    credo-ts-user-profile: ^0.0.1-alpha.6
     dayjs: ^1.11.10
     eslint: ^8.52.0
     eslint-import-resolver-typescript: ^3.6.1
@@ -13383,6 +13398,13 @@ __metadata:
   peerDependencies:
     react-native-reanimated: "*"
   checksum: c93a403a11d5023782a95b2a0eb4c56842dbcd2c8e38e758c6439f0496d04e3f03a199939370b9855333af8251e7958a0f1e2c465cb1a1c6564d122adb3afe58
+  languageName: node
+  linkType: hard
+
+"mrz@npm:^4.2.0":
+  version: 4.2.0
+  resolution: "mrz@npm:4.2.0"
+  checksum: 9ea99d2292ed420aa96136324d831bb21a6d0f9fe801fef5c75680ed2d02bcc6d195967567ff41f0e13a0bcd0c94d3ee51d9d346788167482687b2d5d7a3e93a
   languageName: node
   linkType: hard
 

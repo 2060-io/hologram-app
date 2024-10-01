@@ -7,7 +7,7 @@ import {
 import { AgentEventTypes, AgentMessageProcessedEvent } from '@credo-ts/core'
 import React, { PropsWithChildren, useState, useEffect, useRef, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, Modal } from 'react-native'
+import { View } from 'react-native'
 import InCallManager from 'react-native-incall-manager'
 
 import { useChats, useMobileAgent } from '../agent'
@@ -24,6 +24,7 @@ import {
 } from './useVideoCallContext'
 
 import { VideoCall, IncomingCall } from '@2060/components'
+import { Modal } from '@2060/components/common'
 import { handleCameraPermission, handleMicrophonePermission } from '@2060/utils/permissions'
 import { toast } from '@2060/utils/toast'
 

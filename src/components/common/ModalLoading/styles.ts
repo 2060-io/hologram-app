@@ -1,8 +1,14 @@
 import { StyleSheet } from 'react-native'
 
-export default StyleSheet.create({
-  container: {
-    backgroundColor: 'transparent',
-    justifyContent: 'center',
-  },
-})
+import { AppTheme } from '@2060/styles'
+
+const styles = (theme: AppTheme) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: theme.colors.secondary,
+      justifyContent: 'center',
+    },
+  })
+
+export default styles

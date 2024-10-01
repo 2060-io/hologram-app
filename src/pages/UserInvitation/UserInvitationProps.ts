@@ -1,5 +1,5 @@
+import { UserProfileData } from '@2060.io/credo-ts-didcomm-user-profile'
 import { StackScreenProps } from '@react-navigation/stack'
-import { UserProfileData } from 'credo-ts-user-profile'
 
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
 
