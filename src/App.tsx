@@ -5,6 +5,7 @@ import 'dayjs/locale/fr'
 import React, { PropsWithChildren, ReactNode, useEffect, useState } from 'react'
 import SplashScreen from 'react-native-splash-screen'
 
+import TextRecognition from './TextRecognition'
 import { PushNotificationsProvider } from './hooks/providers'
 import { ConfigProvider } from './hooks/providers/ConfigProvider'
 import { SharedDataFromOtherAppsProvider } from './hooks/providers/SharedDataFromOtherAppsProvider'
@@ -76,11 +77,7 @@ const App = () => {
     }, 0)
   }, [])
 
-  return translationsLoaded ? (
-    <ProvidersTree>
-      <Navigation />
-    </ProvidersTree>
-  ) : null
+  return translationsLoaded ? <TextRecognition /> : null
 }
 
 export default App

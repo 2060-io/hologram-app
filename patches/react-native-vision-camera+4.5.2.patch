@@ -1,0 +1,12 @@
+diff --git a/node_modules/react-native-vision-camera/android/CMakeLists.txt b/node_modules/react-native-vision-camera/android/CMakeLists.txt
+index 1460dbd..9584ba6 100644
+--- a/node_modules/react-native-vision-camera/android/CMakeLists.txt
++++ b/node_modules/react-native-vision-camera/android/CMakeLists.txt
+@@ -4,6 +4,7 @@ cmake_minimum_required(VERSION 3.9.0)
+ set(PACKAGE_NAME "VisionCamera")
+ set(BUILD_DIR ${CMAKE_SOURCE_DIR}/build)
+ set(CMAKE_VERBOSE_MAKEFILE ON)
++set(ENABLE_FRAME_PROCESSORS ON)
+ set(CMAKE_CXX_STANDARD 17)
+ 
+ # Third party libraries (Prefabs)
