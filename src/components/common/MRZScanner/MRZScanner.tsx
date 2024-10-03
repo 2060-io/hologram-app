@@ -1,19 +1,16 @@
-import type { MRZProperties } from './mrzProperties'
+import type { MRZProperties } from './utils/mrzProperties'
 
 import React, { FC, PropsWithChildren, useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 
 import MRZCamera from './MRZCamera'
-import { parseMRZ } from './mrzParser'
-import { MRZScannerProps } from './types'
+import { parseMRZ } from './utils/mrzParser'
+import { MRZScannerProps } from './utils/types'
 
 const MRZScanner: FC<PropsWithChildren<MRZScannerProps>> = ({
   onSkipPressed,
   cameraProps,
-  onData,
-  skipButtonText,
   mrzFinalResults,
-  enableMRZFeedBack,
 }) => {
   const numQAChecks = 3
   const [scanSuccess, setScanSuccess] = useState(false)
@@ -178,68 +175,61 @@ const MRZScanner: FC<PropsWithChildren<MRZScannerProps>> = ({
     <View testID="scanDocumentView" style={StyleSheet.absoluteFill}>
       <MRZCamera
         onData={lines => {
-          if (onData) {
-            onData(lines)
-          } else {
-            const mrzResults = parseMRZ(lines)
-            if (mrzResults) {
-              if (currentMRZMatchesPreviousMRZs(numQAChecks, mrzResults)) {
-                setScanSuccess(true)
-                mrzFinalResults(mrzResults)
-              }
+          const mrzResults = parseMRZ(lines)
+          if (mrzResults) {
+            if (currentMRZMatchesPreviousMRZs(numQAChecks, mrzResults)) {
+              setScanSuccess(true)
+              mrzFinalResults(mrzResults)
             }
           }
         }}
         scanSuccess={scanSuccess}
-        skipButtonText={skipButtonText}
         onSkipPressed={onSkipPressed}
         cameraProps={cameraProps}
       />
-      {enableMRZFeedBack ? (
-        <View style={[styles.feedbackContainer]}>
-          <View style={styles.flexRow}>
-            <Text style={[styles.feedbackText, styles.givenNamesQAList]}>
-              {`Given name ${givenNamesQAList.length} / ${numQAChecks}`}
-            </Text>
-            <Text style={[styles.feedbackText, styles.lastNamesQAList]}>
-              {`Last name ${lastNamesQAList.length} / ${numQAChecks}`}
-            </Text>
-            <Text style={[styles.feedbackText, styles.dobQAList]}>
-              {`DOB ${dobQAList.length} / ${numQAChecks}`}
-            </Text>
-          </View>
-          <View style={styles.flexRow}>
-            <Text style={[styles.feedbackText, styles.nationalityQAList]}>
-              {`Nationality ${nationalityQAList.length} / ${numQAChecks}`}
-            </Text>
-            <Text style={[styles.feedbackText, styles.idNumberQAList]}>
-              {`ID Number ${idNumberQAList.length} / ${numQAChecks}`}
-            </Text>
-            <Text style={[styles.feedbackText, styles.issuingCountryQAList]}>
-              {`Issuing Country ${issuingCountryQAList.length} / ${numQAChecks}`}
-            </Text>
-          </View>
-          <View style={styles.flexRow}>
-            <Text style={[styles.feedbackText, styles.docExpirationDateQAList]}>
-              {`Expiration Date ${docExpirationDateQAList.length} / ${numQAChecks}`}
-            </Text>
-            <Text style={[styles.feedbackText, styles.additionalInformationQAList]}>
-              {`Additional Info ${additionalInformationQAList.length} / ${numQAChecks}`}
-            </Text>
-            <Text style={[styles.feedbackText, styles.docMRZQAList]}>
-              {`DocMRZ ${docMRZQAList.length} / ${1}`}
-            </Text>
-          </View>
-          <View style={styles.flexRow}>
-            <Text style={[styles.feedbackText, styles.genderQAList]}>
-              {`Gender ${genderQAList.length} / ${numQAChecks}`}
-            </Text>
-            <Text style={[styles.feedbackText, styles.docTypeQAList]}>
-              {`DocType ${docTypeQAList.length} / ${numQAChecks}`}
-            </Text>
-          </View>
+      <View style={[styles.feedbackContainer]}>
+        <View style={styles.flexRow}>
+          <Text style={[styles.feedbackText, styles.givenNamesQAList]}>
+            {`Given name ${givenNamesQAList.length} / ${numQAChecks}`}
+          </Text>
+          <Text style={[styles.feedbackText, styles.lastNamesQAList]}>
+            {`Last name ${lastNamesQAList.length} / ${numQAChecks}`}
+          </Text>
+          <Text style={[styles.feedbackText, styles.dobQAList]}>
+            {`DOB ${dobQAList.length} / ${numQAChecks}`}
+          </Text>
         </View>
-      ) : undefined}
+        <View style={styles.flexRow}>
+          <Text style={[styles.feedbackText, styles.nationalityQAList]}>
+            {`Nationality ${nationalityQAList.length} / ${numQAChecks}`}
+          </Text>
+          <Text style={[styles.feedbackText, styles.idNumberQAList]}>
+            {`ID Number ${idNumberQAList.length} / ${numQAChecks}`}
+          </Text>
+          <Text style={[styles.feedbackText, styles.issuingCountryQAList]}>
+            {`Issuing Country ${issuingCountryQAList.length} / ${numQAChecks}`}
+          </Text>
+        </View>
+        <View style={styles.flexRow}>
+          <Text style={[styles.feedbackText, styles.docExpirationDateQAList]}>
+            {`Expiration Date ${docExpirationDateQAList.length} / ${numQAChecks}`}
+          </Text>
+          <Text style={[styles.feedbackText, styles.additionalInformationQAList]}>
+            {`Additional Info ${additionalInformationQAList.length} / ${numQAChecks}`}
+          </Text>
+          <Text style={[styles.feedbackText, styles.docMRZQAList]}>
+            {`DocMRZ ${docMRZQAList.length} / ${1}`}
+          </Text>
+        </View>
+        <View style={styles.flexRow}>
+          <Text style={[styles.feedbackText, styles.genderQAList]}>
+            {`Gender ${genderQAList.length} / ${numQAChecks}`}
+          </Text>
+          <Text style={[styles.feedbackText, styles.docTypeQAList]}>
+            {`DocType ${docTypeQAList.length} / ${numQAChecks}`}
+          </Text>
+        </View>
+      </View>
     </View>
   )
 }

@@ -3,20 +3,32 @@ import { useEffect, useState } from 'react'
 import { Button, StyleSheet, Text, View } from 'react-native'
 import { useCameraDevices } from 'react-native-vision-camera'
 
-import MRZScanner from './MRZScanner'
-import { MRZProperties } from './mrzProperties'
 import { log } from './utils'
+
+import { MRZScanner } from '@2060/components/common'
+import { MRZProperties } from '@2060/components/common/MRZScanner/utils/mrzProperties'
 
 export default function App() {
   const devices = useCameraDevices()
   const device = devices.find(dev => dev.position === 'back')
   const [isActive, setIsActive] = useState(true)
   const [mrzResults, setMrzResults] = useState<MRZProperties>()
+
   useEffect(() => {
     return () => {
       setIsActive(false)
     }
   }, [])
+
+  const skipScan = () => {
+    setMrzResults(undefined)
+    setIsActive(false)
+  }
+
+  const retryScan = () => {
+    setMrzResults(undefined)
+    setIsActive(true)
+  }
 
   return (
     <View style={styles.container}>
@@ -27,27 +39,15 @@ export default function App() {
             setMrzResults(mrzFinalResults)
             setIsActive(false)
           }}
-          enableMRZFeedBack={true}
           cameraProps={{
             fps: 30,
             device: device,
             isActive: isActive,
           }}
-          onSkipPressed={() => {
-            setMrzResults(undefined)
-            setIsActive(false)
-          }}
+          onSkipPressed={skipScan}
         />
       ) : undefined}
-      {!isActive && !mrzResults ? (
-        <Button
-          onPress={() => {
-            setMrzResults(undefined)
-            setIsActive(true)
-          }}
-          title="Volver a intentar"
-        />
-      ) : undefined}
+      {!isActive && !mrzResults ? <Button onPress={retryScan} title="Volver a intentar" /> : undefined}
       {mrzResults ? (
         <View style={styles.results}>
           <Text style={styles.title}>MRZ Results</Text>
@@ -85,13 +85,7 @@ export default function App() {
               <Text style={styles.text}>{mrzResults.dob}</Text>
             </View>
           </View>
-          <Button
-            onPress={() => {
-              setMrzResults(undefined)
-              setIsActive(true)
-            }}
-            title="Rescan"
-          />
+          <Button onPress={retryScan} title="Rescan" />
         </View>
       ) : undefined}
     </View>

@@ -5,15 +5,14 @@ import { useTextRecognition } from 'react-native-vision-camera-text-recognition'
 import { Text as ResolvedText } from 'react-native-vision-camera-text-recognition/src/types'
 import { Worklets } from 'react-native-worklets-core'
 
-import { sortFormatsByResolution } from './generalUtil'
-import { MRZCameraProps } from './types'
+import { sortFormatsByResolution } from './utils/generalUtil'
+import { MRZCameraProps } from './utils/types'
 
 const MRZCamera: FC<PropsWithChildren<MRZCameraProps>> = ({
   onSkipPressed,
   cameraProps,
   onData,
   scanSuccess,
-  skipButtonText,
 }) => {
   const camera = useRef<Camera>(null)
   const { height: screenHeight, width: screenWidth } = useWindowDimensions()
@@ -21,17 +20,23 @@ const MRZCamera: FC<PropsWithChildren<MRZCameraProps>> = ({
   const formats = useMemo(() => device?.formats.sort(sortFormatsByResolution), [device?.formats])
   const [format, setFormat] = useState(formats && formats.length > 0 ? formats[0] : undefined)
   const [feedbackText, setFeedbackText] = useState<string>('')
+  const { scanText } = useTextRecognition({ language: 'latin' })
+
+  /* Setting the format to the first format in the formats array. */
+  useEffect(() => {
+    setFormat(formats && formats.length > 0 ? formats[0] : undefined)
+  }, [device])
 
   /**
    * Prevents sending copious amounts of scans
    */
   const handleScan = useCallback(
     (data: ResolvedText) => {
-      if (data && data.blocks && data.blocks.length === 0) {
+      if (data && data.blocks.length === 0) {
         setFeedbackText('')
       }
       /* Scanning the text from the image and then setting the state of the component. */
-      if (data && data.blocks && data.blocks.length > 0) {
+      if (data && data.blocks.length > 0) {
         data.blocks.forEach(block => {
           if (block.blockFrame.width / screenWidth < 0.8) {
             setFeedbackText('Hold Still')
@@ -51,13 +56,6 @@ const MRZCamera: FC<PropsWithChildren<MRZCameraProps>> = ({
     },
     [cameraProps.isActive, onData, screenWidth],
   )
-
-  /* Setting the format to the first format in the formats array. */
-  useEffect(() => {
-    setFormat(formats && formats.length > 0 ? formats[0] : undefined)
-  }, [device])
-
-  const { scanText } = useTextRecognition({ language: 'latin' })
 
   const handleScanRunOnJS = Worklets.createRunOnJS(handleScan)
 
@@ -110,12 +108,6 @@ const MRZCamera: FC<PropsWithChildren<MRZCameraProps>> = ({
           device={cameraProps?.device ?? device}
           torch={cameraProps?.torch}
           isActive={cameraProps?.isActive}
-          /*
-          codeScanner={{
-            regionOfInterest: { x: 0, y: 0, width: screenWidth, height: 100 },
-            codeTypes: ['ean-13'],
-          }}
-          */
           ref={camera}
           photo={cameraProps?.photo}
           video={cameraProps?.video}
@@ -134,7 +126,7 @@ const MRZCamera: FC<PropsWithChildren<MRZCameraProps>> = ({
         />
       ) : undefined}
       <View style={[styles.skipButtonContainer]}>
-        <Button title={skipButtonText ? skipButtonText : 'Skip'} onPress={onSkipPressed} />
+        <Button title={'Skip'} onPress={onSkipPressed} />
       </View>
       {feedbackText ? (
         <View style={styles.feedbackContainer}>

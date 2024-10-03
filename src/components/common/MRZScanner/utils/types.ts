@@ -8,16 +8,11 @@ export type MRZCameraProps = {
    */
   onSkipPressed?: () => void
   /**
-   * The text of the photo skip button.
-   */
-  skipButtonText?: string
-  /**
    * all options for the camera
    */
   cameraProps: CameraProps
   onData?: (OCRResults: string[]) => void | Promise<void>
   scanSuccess?: boolean
-  isActiveCamera?: boolean
 }
 
 export type MRZScannerProps = MRZCameraProps & {
@@ -27,8 +22,4 @@ export type MRZScannerProps = MRZCameraProps & {
    * @returns
    */
   mrzFinalResults: (mrzResults: MRZProperties) => void | Promise<void>
-  /**
-   * If true, the MRZ feedback will be enabled.
-   */
-  enableMRZFeedBack?: boolean
 }

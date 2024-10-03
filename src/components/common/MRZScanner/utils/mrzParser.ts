@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 // logging import and setup
 import { ListItemData } from './listItemData'
 
@@ -43,7 +44,8 @@ export const parseMRZ = (initialLines: string[]) => {
   const secondInitialLastLine = initialLines[initialLines.length - 2]
   // if lines.length >= 2, extract and parse two-line MRZ
   if (initialLines && initialLines.length >= 2 && firstInitialLastLine && secondInitialLastLine) {
-    // return undefined if a double left angle bracket character is found in either last line, or second to last line.
+    // return undefined if a double left angle bracket character is
+    // found in either last line, or second to last line.
     if (firstInitialLastLine.indexOf('«') !== -1 || secondInitialLastLine.indexOf('«') !== -1) {
       return undefined
     }
@@ -56,7 +58,8 @@ export const parseMRZ = (initialLines: string[]) => {
       while (line.indexOf('$') !== -1) {
         line = line.replace('$', 'S')
       }
-      // MLKIT sometimes add a new line character when it finds a new line instead of separating the lines into different elements.
+      // MLKIT sometimes add a new line character when it finds a new line instead of
+      // separating the lines into different elements.
       while (line.indexOf('\n') !== -1) {
         lines.push(line.substring(0, line.indexOf('\n')))
         line = line.substring(line.indexOf('\n') + 1)
@@ -165,7 +168,8 @@ const parse2LineMRZ = (firstRow: string, secondRow: string) => {
     dob: dob,
     gender: gender,
     docExpirationDate: docExpirationDate,
-    additionalInformation: undefined, // TODO remove? (The logic for extracting additional information was deleted since we're not using it)
+    additionalInformation: undefined, // TODO remove?
+    //(The logic for extracting additional information was deleted since we're not using it)
   }
 }
 
