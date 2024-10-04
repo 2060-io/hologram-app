@@ -47,56 +47,53 @@ const MRZScanner: FC<PropsWithChildren<MRZScannerProps>> = ({
    * Returns true if all QALists are full (their sizes are >= numberOfPreviousMRZsToCompareTo).
    * If one or more of them are not full, it updates them with the most recently captured
    * field that pertains to them.
-   * @param numberOfPreviousMRZsToCompareTo
+   * @param numOfQAChecks
    * @param mrzResults
    */
-  const currentMRZMatchesPreviousMRZs = (
-    numberOfPreviousMRZsToCompareTo: number,
-    mrzResults: MRZProperties,
-  ) => {
+  const allQAListAreFull = (numOfQAChecks: number, mrzResults: MRZProperties) => {
     if (
       docMRZQAList.length >= 1 &&
-      docTypeQAList.length >= numberOfPreviousMRZsToCompareTo &&
-      issuingCountryQAList.length >= numberOfPreviousMRZsToCompareTo &&
-      givenNamesQAList.length >= numberOfPreviousMRZsToCompareTo &&
-      lastNamesQAList.length >= numberOfPreviousMRZsToCompareTo &&
-      idNumberQAList.length >= numberOfPreviousMRZsToCompareTo &&
-      nationalityQAList.length >= numberOfPreviousMRZsToCompareTo &&
-      dobQAList.length >= numberOfPreviousMRZsToCompareTo &&
-      genderQAList.length >= numberOfPreviousMRZsToCompareTo &&
-      docExpirationDateQAList.length >= numberOfPreviousMRZsToCompareTo &&
-      issuingCountryQAList.length >= numberOfPreviousMRZsToCompareTo
+      docTypeQAList.length >= numOfQAChecks &&
+      issuingCountryQAList.length >= numOfQAChecks &&
+      givenNamesQAList.length >= numOfQAChecks &&
+      lastNamesQAList.length >= numOfQAChecks &&
+      idNumberQAList.length >= numOfQAChecks &&
+      nationalityQAList.length >= numOfQAChecks &&
+      dobQAList.length >= numOfQAChecks &&
+      genderQAList.length >= numOfQAChecks &&
+      docExpirationDateQAList.length >= numOfQAChecks &&
+      issuingCountryQAList.length >= numOfQAChecks
     ) {
       return true
     }
-    if (givenNamesQAList.length < numberOfPreviousMRZsToCompareTo) {
+    if (givenNamesQAList.length < numOfQAChecks) {
       setGivenNamesQAList(mrzQACheck(givenNamesQAList, mrzResults.givenNames))
     }
-    if (lastNamesQAList.length < numberOfPreviousMRZsToCompareTo) {
+    if (lastNamesQAList.length < numOfQAChecks) {
       setLastNamesQAList(mrzQACheck(lastNamesQAList, mrzResults.lastNames))
     }
-    if (idNumberQAList.length < numberOfPreviousMRZsToCompareTo) {
+    if (idNumberQAList.length < numOfQAChecks) {
       setIdNumberQAList(mrzQACheck(idNumberQAList, mrzResults.idNumber))
     }
-    if (nationalityQAList.length < numberOfPreviousMRZsToCompareTo) {
+    if (nationalityQAList.length < numOfQAChecks) {
       setNationalityQAList(mrzQACheck(nationalityQAList, mrzResults.nationality))
     }
-    if (dobQAList.length < numberOfPreviousMRZsToCompareTo) {
+    if (dobQAList.length < numOfQAChecks) {
       setDobQAList(mrzQACheck(dobQAList, mrzResults.dob))
     }
-    if (genderQAList.length < numberOfPreviousMRZsToCompareTo) {
+    if (genderQAList.length < numOfQAChecks) {
       setGenderQAList(mrzQACheck(genderQAList, mrzResults.gender))
     }
-    if (issuingCountryQAList.length < numberOfPreviousMRZsToCompareTo) {
+    if (issuingCountryQAList.length < numOfQAChecks) {
       setIssuingCountryQAList(mrzQACheck(issuingCountryQAList, mrzResults.issuingCountry))
     }
-    if (docTypeQAList.length < numberOfPreviousMRZsToCompareTo) {
+    if (docTypeQAList.length < numOfQAChecks) {
       setDocTypeQAList(mrzQACheck(docTypeQAList, mrzResults.docType))
     }
-    if (docExpirationDateQAList.length < numberOfPreviousMRZsToCompareTo) {
+    if (docExpirationDateQAList.length < numOfQAChecks) {
       setDocExpirationDateQAList(mrzQACheck(docExpirationDateQAList, mrzResults.docExpirationDate))
     }
-    if (additionalInformationQAList.length < numberOfPreviousMRZsToCompareTo) {
+    if (additionalInformationQAList.length < numOfQAChecks) {
       setAdditionalInformationQAList(
         mrzQACheck(additionalInformationQAList, mrzResults.additionalInformation),
       )
@@ -177,7 +174,7 @@ const MRZScanner: FC<PropsWithChildren<MRZScannerProps>> = ({
         onData={lines => {
           const mrzResults = parseMRZ(lines)
           if (mrzResults) {
-            if (currentMRZMatchesPreviousMRZs(numQAChecks, mrzResults)) {
+            if (allQAListAreFull(numQAChecks, mrzResults)) {
               setScanSuccess(true)
               mrzFinalResults(mrzResults)
             }
