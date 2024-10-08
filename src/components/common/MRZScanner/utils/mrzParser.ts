@@ -4,6 +4,9 @@ import { ListItemData } from './listItemData'
 
 const countryIsoJson = require('./CountryIsoCodes.json')
 
+const TD1_LINE_LONG = 30
+const TD2_LINE_LONG = 36
+const TD3_LINE_LONG = 44
 /**
  * It takes a string, and returns a number
  * @param {string} text - The text to be encoded.
@@ -49,7 +52,7 @@ export const parseMRZ = (initialLines: string[]) => {
     if (firstInitialLastLine.indexOf('«') !== -1 || secondInitialLastLine.indexOf('«') !== -1) {
       return undefined
     }
-    // remove all empty spaces in each line, capitalize all letters, change all '$' to 'S'
+    // remove all empty spaces in each line, capitalize all letters, change all '$' to 'S' and « to <
     initialLines.forEach((line: string) => {
       while (line.indexOf(' ') !== -1) {
         line = line.replace(' ', '')
@@ -57,6 +60,9 @@ export const parseMRZ = (initialLines: string[]) => {
       line = line.toUpperCase()
       while (line.indexOf('$') !== -1) {
         line = line.replace('$', 'S')
+      }
+      while (line.indexOf('«') !== -1) {
+        line = line.replace('«', '<')
       }
       // MLKIT sometimes add a new line character when it finds a new line instead of
       // separating the lines into different elements.
@@ -67,24 +73,22 @@ export const parseMRZ = (initialLines: string[]) => {
       lines.push(line)
     })
 
-    // parse 2 line MRZ if the current line, and the previous line  both have 43, 44, or 45 characters
+    // parse 2 line MRZ if the current line, and the previous line both have 44 characters (TD3)
+    // or 36 characters (TD2) or visas
     for (let i = 1; i < lines.length; i++) {
       const currentLine = lines[i]
       const lastLine = lines[i - 1]
       if (currentLine && lastLine) {
         if (
-          (currentLine.length > 42 &&
-            currentLine.length < 46 &&
-            lastLine.length > 42 &&
-            lastLine.length < 46) ||
-          (currentLine.length > 35 && currentLine.length < 37 && lastLine.length > 35 && lastLine.length < 37)
+          (currentLine.length === TD3_LINE_LONG && lastLine.length === TD3_LINE_LONG) ||
+          (currentLine.length === TD2_LINE_LONG && lastLine.length === TD2_LINE_LONG)
         ) {
           return parse2LineMRZ(lastLine, currentLine)
-          // return parse([lastLine, currentLine]).fields;
         }
       }
     }
   } // end (lines.length >= 2)
+  // if its a TD1 (ID cards)
   if (lines.length >= 3) {
     // At this point, empty spaces will already be removed and all letters will be capitalized.
     // return undefined if a double left angle bracket character is found in third to last line.
@@ -98,15 +102,11 @@ export const parseMRZ = (initialLines: string[]) => {
       const secondToLastLine = lines[i - 2]
       if (currentLine && lastLine && secondToLastLine) {
         if (
-          currentLine.length > 28 &&
-          currentLine.length < 32 &&
-          lastLine.length > 28 &&
-          lastLine.length < 32 &&
-          secondToLastLine.length > 28 &&
-          secondToLastLine.length < 32
+          currentLine.length === TD1_LINE_LONG &&
+          lastLine.length === TD1_LINE_LONG &&
+          secondToLastLine.length === TD1_LINE_LONG
         ) {
           return parse3LineMRZ(secondToLastLine, lastLine, currentLine)
-          // return parse([secondToLastLine, lastLine, currentLine]);
         }
       }
     }
