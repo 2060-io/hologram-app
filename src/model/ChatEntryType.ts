@@ -15,6 +15,7 @@ export enum ChatEntryType {
   System = 'System',
   CallOffer = 'CallOffer',
   MrzRequest = 'MrzRequest',
+  EMrtdReadRequest = 'EMrtdReadRequest',
 }
 
 export const isMediaType = (type: ChatEntryType | string) =>

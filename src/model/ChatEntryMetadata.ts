@@ -110,3 +110,5 @@ export type CallOfferMetadata = {
 }
 
 export type MrzRequestMetadata = {}
+
+export type EMrtdReadRequestMetadata = {}

@@ -37,6 +37,7 @@ export function getLocalizedPreview(chatEntry: ChatEntryData) {
     [ChatEntryType.System]: (chatEntry.metadata as SystemMessageMetadata).text,
     [ChatEntryType.CallOffer]: t('preview.callOffer'),
     [ChatEntryType.MrzRequest]: t('preview.mrzRequest'),
+    [ChatEntryType.EMrtdReadRequest]: t('preview.eMrtdReadRequest'),
   }
 
   return chatEntryTypePreviewMapping[chatEntry.type]

@@ -1,4 +1,4 @@
-import { MrzDataRequestMessage } from '@2060.io/credo-ts-didcomm-mrtd'
+import { EMrtdDataRequestMessage, MrzDataRequestMessage } from '@2060.io/credo-ts-didcomm-mrtd'
 import { AgentMessage, ConnectionRecord, parseMessageType } from '@credo-ts/core'
 import Realm from 'realm'
 
@@ -26,6 +26,22 @@ export const handleMrtdMessages = (options: {
     const chatEntry = chatEntryService.createChatEntry(realm, {
       chatThreadId: thread.id,
       type: ChatEntryType.MrzRequest,
+      role: direction === 'inbound' ? ChatEntryRole.Receiver : ChatEntryRole.Sender,
+      createdAt: (receivedAt ?? new Date()).getTime(),
+      state: ChatEntryState.Received,
+      associatedRecordId: '',
+    })
+    chatThreadService.updateThread(realm, thread.id, { lastChatEntry: chatEntry })
+    if (thread.id !== activeChatThreadId) {
+      chatThreadService.addUnread(realm, thread.id, 1)
+    }
+  }
+
+  // eMRTD Data Read Request
+  if (messageType.messageTypeUri === EMrtdDataRequestMessage.type.messageTypeUri) {
+    const chatEntry = chatEntryService.createChatEntry(realm, {
+      chatThreadId: thread.id,
+      type: ChatEntryType.EMrtdReadRequest,
       role: direction === 'inbound' ? ChatEntryRole.Receiver : ChatEntryRole.Sender,
       createdAt: (receivedAt ?? new Date()).getTime(),
       state: ChatEntryState.Received,
