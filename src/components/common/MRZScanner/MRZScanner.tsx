@@ -1,19 +1,20 @@
 import type { MRZProperties } from './utils/mrzProperties'
 
-import React, { FC, PropsWithChildren, useState } from 'react'
+import React, { FC, PropsWithChildren, useEffect, useRef, useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
+import { useCameraDevices } from 'react-native-vision-camera'
 
 import MRZCamera from './MRZCamera'
 import { parseMRZ } from './utils/mrzParser'
 import { MRZScannerProps } from './utils/types'
 
-const MRZScanner: FC<PropsWithChildren<MRZScannerProps>> = ({
-  onSkipPressed,
-  cameraProps,
-  mrzFinalResults,
-}) => {
+const MRZScanner: FC<PropsWithChildren<MRZScannerProps>> = ({ onMRZFinalResults, onSkipPressed }) => {
   const numQAChecks = 3
+  const devices = useCameraDevices()
+  const device = devices.find(dev => dev.position === 'back')
+  const [isActive, setIsActive] = useState(true)
   const [scanSuccess, setScanSuccess] = useState(false)
+  const scanSuccessAux = useRef(false)
   const [docMRZQAList, setDocMRZQAList] = useState<(string | undefined)[]>([])
   const [docTypeQAList, setDocTypeQAList] = useState<(string | undefined)[]>([])
   const [issuingCountryQAList, setIssuingCountryQAList] = useState<(string | undefined)[]>([])
@@ -25,6 +26,12 @@ const MRZScanner: FC<PropsWithChildren<MRZScannerProps>> = ({
   const [genderQAList, setGenderQAList] = useState<(string | undefined)[]>([])
   const [docExpirationDateQAList, setDocExpirationDateQAList] = useState<(string | undefined)[]>([])
   const [additionalInformationQAList, setAdditionalInformationQAList] = useState<(string | undefined)[]>([])
+
+  useEffect(() => {
+    return () => {
+      setIsActive(false)
+    }
+  }, [])
 
   /**
    * If all elements in list match element, add the new element.
@@ -168,22 +175,34 @@ const MRZScanner: FC<PropsWithChildren<MRZScannerProps>> = ({
     },
   })
 
+  const skipScan = () => {
+    setIsActive(false)
+    onSkipPressed()
+  }
+
+  const onData = (lines: string[]) => {
+    const mrzResults = parseMRZ(lines)
+    if (mrzResults) {
+      if (allQAListAreFull(numQAChecks, mrzResults) && !scanSuccessAux.current) {
+        scanSuccessAux.current = true
+        setScanSuccess(true)
+        setIsActive(false)
+        onMRZFinalResults(mrzResults)
+      }
+    }
+  }
+
   return (
     <View testID="scanDocumentView" style={StyleSheet.absoluteFill}>
-      <MRZCamera
-        onData={lines => {
-          const mrzResults = parseMRZ(lines)
-          if (mrzResults) {
-            if (allQAListAreFull(numQAChecks, mrzResults)) {
-              setScanSuccess(true)
-              mrzFinalResults(mrzResults)
-            }
-          }
-        }}
-        scanSuccess={scanSuccess}
-        onSkipPressed={onSkipPressed}
-        cameraProps={cameraProps}
-      />
+      {device && isActive ? (
+        <MRZCamera
+          onData={onData}
+          scanSuccess={scanSuccess}
+          onSkipPressed={skipScan}
+          cameraProps={{ device, isActive }}
+        />
+      ) : undefined}
+
       <View style={[styles.feedbackContainer]}>
         <View style={styles.flexRow}>
           <Text style={[styles.feedbackText, styles.givenNamesQAList]}>

@@ -5,6 +5,7 @@ import { useTextRecognition } from 'react-native-vision-camera-text-recognition'
 import { Text as ResolvedText } from 'react-native-vision-camera-text-recognition/src/types'
 import { Worklets } from 'react-native-worklets-core'
 
+import styles from './styles'
 import { sortFormatsByResolution } from './utils/generalUtil'
 import { MRZCameraProps } from './utils/types'
 
@@ -15,7 +16,7 @@ const MRZCamera: FC<PropsWithChildren<MRZCameraProps>> = ({
   scanSuccess,
 }) => {
   const camera = useRef<Camera>(null)
-  const { height: screenHeight, width: screenWidth } = useWindowDimensions()
+  const { width: screenWidth } = useWindowDimensions()
   const device = cameraProps?.device
   const formats = useMemo(() => device?.formats.sort(sortFormatsByResolution), [device?.formats])
   const [format, setFormat] = useState(formats && formats.length > 0 ? formats[0] : undefined)
@@ -71,61 +72,20 @@ const MRZCamera: FC<PropsWithChildren<MRZCameraProps>> = ({
     [handleScanRunOnJS],
   )
 
-  const styles = StyleSheet.create({
-    fixToText: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-    },
-    skipButtonContainer: {
-      position: 'absolute',
-      bottom: screenHeight * 0.05,
-      width: screenWidth,
-      alignItems: 'center',
-      justifyContent: 'center',
-      flexDirection: 'row',
-    },
-    feedbackContainer: {
-      position: 'absolute',
-      top: screenHeight * 0.3,
-      width: screenWidth,
-      alignItems: 'center',
-    },
-    feedbackText: {
-      backgroundColor: 'white',
-      color: 'black',
-      fontSize: 18,
-      paddingRight: 8,
-      paddingLeft: 8,
-      textAlign: 'center',
-    },
-  })
-
   return (
     <View style={StyleSheet.absoluteFill}>
       {device ? (
         <Camera
-          style={cameraProps?.style ?? StyleSheet.absoluteFill}
-          device={cameraProps?.device ?? device}
-          torch={cameraProps?.torch}
+          style={StyleSheet.absoluteFill}
+          device={device}
           isActive={cameraProps?.isActive}
           ref={camera}
-          photo={cameraProps?.photo}
-          video={cameraProps?.video}
-          audio={cameraProps?.audio}
-          zoom={cameraProps?.zoom}
-          enableZoomGesture={cameraProps?.enableZoomGesture}
-          format={cameraProps?.format ?? format}
-          fps={cameraProps?.fps ?? 10}
-          lowLightBoost={cameraProps?.lowLightBoost}
-          videoStabilizationMode={cameraProps?.videoStabilizationMode}
-          enableDepthData={cameraProps?.enableDepthData}
-          enablePortraitEffectsMatteDelivery={cameraProps?.enablePortraitEffectsMatteDelivery}
-          onError={cameraProps?.onError}
-          onInitialized={cameraProps?.onInitialized}
-          frameProcessor={cameraProps?.frameProcessor ?? frameProcessor}
+          format={format}
+          fps={30}
+          frameProcessor={frameProcessor}
         />
       ) : undefined}
-      <View style={[styles.skipButtonContainer]}>
+      <View style={styles.skipButtonContainer}>
         <Button title={'Skip'} onPress={onSkipPressed} />
       </View>
       {feedbackText ? (
