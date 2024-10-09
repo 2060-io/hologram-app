@@ -10610,10 +10610,10 @@ __metadata:
     react-native-cloud-store: 0.11.0
     react-native-config: ^1.5.1
     react-native-create-thumbnail: ^2.0.0
+    react-native-eid-reader: "npm:@2060.io/react-native-eid-reader@0.0.1-alpha.1"
     react-native-fs: ^2.20.0
     react-native-gesture-handler: ^2.12.1
     react-native-get-random-values: ^1.7.0
-    react-native-gradle-plugin: ^0.70.0
     react-native-image-crop-picker: 0.41.2
     react-native-incall-manager: ^4.2.0
     react-native-job-queue: ^0.5.1
@@ -15356,6 +15356,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-native-eid-reader@npm:@2060.io/react-native-eid-reader@0.0.1-alpha.1":
+  version: 0.0.1-alpha.1
+  resolution: "@2060.io/react-native-eid-reader@npm:0.0.1-alpha.1"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: 8e1a1b6c6e381682dfc9c34189b3fce15250d014ab995709d946cc325e4d9a2d2c9f78cbe1ee31223b87aca6f7305cdd106549b8ff2e0ce99647a8bc2cff3725
+  languageName: node
+  linkType: hard
+
 "react-native-fs@npm:^2.20.0":
   version: 2.20.0
   resolution: "react-native-fs@npm:2.20.0"
@@ -15395,13 +15405,6 @@ __metadata:
   peerDependencies:
     react-native: ">=0.56"
   checksum: 07729f70a007f7a3b8f98ebf687c1298ba288b87dd71d8ba385be6b5a377718b27b97547bbe1db6b225b83ee109dfce0b01721e6ed535d53892f3ac81e6bf975
-  languageName: node
-  linkType: hard
-
-"react-native-gradle-plugin@npm:^0.70.0":
-  version: 0.70.3
-  resolution: "react-native-gradle-plugin@npm:0.70.3"
-  checksum: 04a3379842bcb4709ac6b37e093a3de59acd33b28b200885843b13908fac685a77ab81d732c34090c56e5c0eec971d578b227f302bd04fe7901e8792d434f41f
   languageName: node
   linkType: hard
 
