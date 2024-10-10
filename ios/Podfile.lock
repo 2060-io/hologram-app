@@ -141,6 +141,7 @@ PODS:
     - nanopb/encode (= 2.30910.0)
   - nanopb/decode (2.30910.0)
   - nanopb/encode (2.30910.0)
+  - OpenSSL-Universal (1.1.1900)
   - Permission-Camera (3.10.1):
     - RNPermissions
   - Permission-Microphone (3.10.1):
@@ -1086,6 +1087,28 @@ PODS:
     - React-Core
   - react-native-create-thumbnail (2.0.0):
     - React-Core
+  - react-native-eid-reader (0.0.1-alpha.2):
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - OpenSSL-Universal (= 1.1.1900)
+    - RCT-Folly (= 2024.01.01.00)
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Codegen
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Yoga
   - react-native-get-random-values (1.11.0):
     - React-Core
   - react-native-image-resizer (3.0.10):
@@ -1636,6 +1659,7 @@ DEPENDENCIES:
   - react-native-cloud-store (from `../node_modules/react-native-cloud-store`)
   - react-native-config (from `../node_modules/react-native-config`)
   - react-native-create-thumbnail (from `../node_modules/react-native-create-thumbnail`)
+  - react-native-eid-reader (from `../node_modules/react-native-eid-reader`)
   - react-native-get-random-values (from `../node_modules/react-native-get-random-values`)
   - "react-native-image-resizer (from `../node_modules/@bam.tech/react-native-image-resizer`)"
   - react-native-job-queue (from `../node_modules/react-native-job-queue`)
@@ -1711,6 +1735,7 @@ SPEC REPOS:
     - GoogleUtilities
     - JitsiWebRTC
     - nanopb
+    - OpenSSL-Universal
     - PromisesObjC
     - SocketRocket
     - SSZipArchive
@@ -1804,6 +1829,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-config"
   react-native-create-thumbnail:
     :path: "../node_modules/react-native-create-thumbnail"
+  react-native-eid-reader:
+    :path: "../node_modules/react-native-eid-reader"
   react-native-get-random-values:
     :path: "../node_modules/react-native-get-random-values"
   react-native-image-resizer:
@@ -1949,6 +1976,7 @@ SPEC CHECKSUMS:
   hermes-engine: 8c1577f3fdb849cbe7729c2e7b5abc4b845e88f8
   JitsiWebRTC: 3a41671ef65a51d7204323814b055a2690b921c7
   nanopb: 438bc412db1928dac798aa6fd75726007be04262
+  OpenSSL-Universal: 84efb8a29841f2764ac5403e0c4119a28b713346
   Permission-Camera: 9b70902f34a83c10e198d2d01f0e453e58842776
   Permission-Microphone: 8d045745c0c12aed0370ba89c36b6bc1ba54d7eb
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
@@ -1981,6 +2009,7 @@ SPEC CHECKSUMS:
   react-native-cloud-store: 26562db64190ceb8a5fabb532791959fb920a365
   react-native-config: 8f7283449bbb048902f4e764affbbf24504454af
   react-native-create-thumbnail: ab55d24aea01723cf386f18b0b542aabb1982f27
+  react-native-eid-reader: fdd4ca81caabd045f63de142997877002decaac0
   react-native-get-random-values: 21325b2244dfa6b58878f51f9aa42821e7ba3d06
   react-native-image-resizer: fd0c333eca55147bd55c5e054cac95dcd0da6814
   react-native-job-queue: 039e742a627a99e3273fcc918e69597d108ef406
