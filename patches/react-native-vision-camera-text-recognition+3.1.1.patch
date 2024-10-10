@@ -1,0 +1,94 @@
+diff --git a/node_modules/react-native-vision-camera-text-recognition/lib/typescript/src/types.d.ts b/node_modules/react-native-vision-camera-text-recognition/lib/typescript/src/types.d.ts
+index cb0693a..e13af05 100644
+--- a/node_modules/react-native-vision-camera-text-recognition/lib/typescript/src/types.d.ts
++++ b/node_modules/react-native-vision-camera-text-recognition/lib/typescript/src/types.d.ts
+@@ -20,22 +20,22 @@ export type CameraTypes = {
+     options: TranslatorOptions;
+ });
+ export type TextRecognitionPlugin = {
+-    scanText: (frame: Frame) => Text[];
++    scanText: (frame: Frame) => Text;
+ };
+ export type TranslatorPlugin = {
+     translate: (frame: Frame) => string;
+ };
+ export type Text = {
+-    blocks: BlocksData;
++    blocks: BlocksData[];
+     resultText: string;
+ };
+-type BlocksData = [
++type BlocksData = {
+     blockFrame: FrameType,
+     blockCornerPoints: CornerPointsType,
+     lines: LinesData,
+     blockLanguages: string[] | [],
+     blockText: string
+-];
++};
+ type CornerPointsType = [{
+     x: number;
+     y: number;
+diff --git a/node_modules/react-native-vision-camera-text-recognition/src/Camera.tsx b/node_modules/react-native-vision-camera-text-recognition/src/Camera.tsx
+index 8ae84f5..3ab8371 100644
+--- a/node_modules/react-native-vision-camera-text-recognition/src/Camera.tsx
++++ b/node_modules/react-native-vision-camera-text-recognition/src/Camera.tsx
+@@ -44,7 +44,7 @@ export const Camera = forwardRef(function Camera(
+   const frameProcessor: ReadonlyFrameProcessor = useFrameProcessor(
+     (frame: Frame) => {
+       'worklet';
+-      const data: Text[] | string = plugin(frame);
++      const data: Text | string = plugin(frame);
+       // @ts-ignore
+       useWorklets(data);
+     },
+diff --git a/node_modules/react-native-vision-camera-text-recognition/src/scanText.ts b/node_modules/react-native-vision-camera-text-recognition/src/scanText.ts
+index fbd9d79..70fbeae 100644
+--- a/node_modules/react-native-vision-camera-text-recognition/src/scanText.ts
++++ b/node_modules/react-native-vision-camera-text-recognition/src/scanText.ts
+@@ -18,10 +18,10 @@ export function createTextRecognitionPlugin(
+     throw new Error(LINKING_ERROR);
+   }
+   return {
+-    scanText: (frame: Frame): Text[] => {
++    scanText: (frame: Frame): Text => {
+       'worklet';
+       // @ts-ignore
+-      return plugin.call(frame) as Text[];
++      return plugin.call(frame) as Text;
+     },
+   };
+ }
+diff --git a/node_modules/react-native-vision-camera-text-recognition/src/types.ts b/node_modules/react-native-vision-camera-text-recognition/src/types.ts
+index ad397e6..d6804d5 100644
+--- a/node_modules/react-native-vision-camera-text-recognition/src/types.ts
++++ b/node_modules/react-native-vision-camera-text-recognition/src/types.ts
+@@ -88,24 +88,24 @@ export type CameraTypes = {
+ 
+ 
+ export type TextRecognitionPlugin = {
+-  scanText: (frame: Frame) => Text[];
++  scanText: (frame: Frame) => Text;
+ };
+ export type TranslatorPlugin = {
+   translate: (frame: Frame) => string;
+ };
+ 
+ export type Text = {
+-  blocks: BlocksData;
++  blocks: BlocksData[];
+   resultText: string;
+ };
+ 
+-type BlocksData = [
++type BlocksData = {
+   blockFrame: FrameType,
+   blockCornerPoints: CornerPointsType,
+   lines: LinesData,
+   blockLanguages: string[] | [],
+   blockText: string,
+-];
++};
+ 
+ type CornerPointsType = [{ x: number; y: number }];
+ 

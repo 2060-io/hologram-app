@@ -1,0 +1,12 @@
+diff --git a/node_modules/react-native-vision-camera/android/CMakeLists.txt b/node_modules/react-native-vision-camera/android/CMakeLists.txt
+index 1460dbd..c100951 100644
+--- a/node_modules/react-native-vision-camera/android/CMakeLists.txt
++++ b/node_modules/react-native-vision-camera/android/CMakeLists.txt
+@@ -62,6 +62,7 @@ target_link_libraries(
+         ReactAndroid::jsi                   # <-- RN: JSI
+         ReactAndroid::reactnativejni        # <-- RN: React Native JNI bindings
+         fbjni::fbjni                        # <-- fbjni
++        "${NODE_MODULES_DIR}/react-native-worklets-core/android/build/intermediates/cmake/debug/obj/${ANDROID_ABI}/librnworklets.so"
+ )
+ 
+ # Optionally also add Frame Processors here

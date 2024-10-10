@@ -4,6 +4,7 @@ import ChannelIcons from './ChannelIcons'
 import Icon from './CustomIcon'
 import HeaderTitle from './HeaderTitle'
 import Loader from './Loader'
+import MRZScanner from './MRZScanner'
 import MessageStateIcon from './MessageStateIcon'
 import Modal from './Modal'
 import ModalLoading from './ModalLoading'
@@ -40,4 +41,5 @@ export {
   HeaderTitle,
   ProofOfTrust,
   RadioButton,
+  MRZScanner,
 }
