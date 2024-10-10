@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, Button, Alert } from 'react-native'
+import { View, Button } from 'react-native'
 
 import { Props } from './MrzRequestChatViewProps'
 import getStyles from './styles'
@@ -8,6 +8,7 @@ import { Modal, MRZScanner, Text } from '@2060/components/common'
 import { MRZProperties } from '@2060/components/common/MRZScanner/utils/mrzProperties'
 import { useChat, useMobileAgent } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
+import { log } from '@2060/utils'
 import { handleCameraPermission } from '@2060/utils/permissions'
 
 const MrzRequestChatView = (_props: Props) => {
@@ -25,7 +26,7 @@ const MrzRequestChatView = (_props: Props) => {
 
   const onMRZFinalResults = async (mrzFinalResults: MRZProperties) => {
     setDisplayMrz(false)
-    Alert.alert('MRZ Result', JSON.stringify(mrzFinalResults, null, 2))
+    log('MRZ Result', JSON.stringify(mrzFinalResults, null, 2))
     agent?.modules.mrtd.sendMrzString({
       mrzData: mrzFinalResults.docMRZ,
       connectionId: chatThread?.data.connectionId!,
