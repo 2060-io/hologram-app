@@ -1,0 +1,24 @@
+diff --git a/node_modules/react-native-vision-camera/android/CMakeLists.txt b/node_modules/react-native-vision-camera/android/CMakeLists.txt
+index 1460dbd..49ab4b6 100644
+--- a/node_modules/react-native-vision-camera/android/CMakeLists.txt
++++ b/node_modules/react-native-vision-camera/android/CMakeLists.txt
+@@ -15,6 +15,11 @@ find_library(LOG_LIB log)
+ add_definitions(-DEGL_EGLEXT_PROTOTYPES)
+ add_definitions(-DGL_GLEXT_PROTOTYPES)
+ 
++if (${CMAKE_BUILD_TYPE} MATCHES "Debug")
++        set(BUILD_TYPE "debug")
++else()
++        set(BUILD_TYPE "release")
++endif()
+ if (ENABLE_FRAME_PROCESSORS)
+         add_definitions(-DVISION_CAMERA_ENABLE_FRAME_PROCESSORS=true)
+ else()
+@@ -62,6 +67,7 @@ target_link_libraries(
+         ReactAndroid::jsi                   # <-- RN: JSI
+         ReactAndroid::reactnativejni        # <-- RN: React Native JNI bindings
+         fbjni::fbjni                        # <-- fbjni
++        "${NODE_MODULES_DIR}/react-native-worklets-core/android/build/intermediates/cmake/${BUILD_TYPE}/obj/${ANDROID_ABI}/librnworklets.so"
+ )
+ 
+ # Optionally also add Frame Processors here

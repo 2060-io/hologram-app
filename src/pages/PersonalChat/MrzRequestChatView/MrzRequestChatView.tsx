@@ -1,35 +1,49 @@
-import React from 'react'
-import { View, Text, Button } from 'react-native'
+import React, { useState } from 'react'
+import { View, Button } from 'react-native'
 
 import { Props } from './MrzRequestChatViewProps'
 import getStyles from './styles'
 
+import { Modal, MRZScanner, Text } from '@2060/components/common'
+import { MRZProperties } from '@2060/components/common/MRZScanner/utils/mrzProperties'
 import { useChat, useMobileAgent } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { log } from '@2060/utils'
+import { handleCameraPermission } from '@2060/utils/permissions'
 
 const MrzRequestChatView = (_props: Props) => {
   const theme = useTheme()
   const styles = getStyles(theme)
   const { agent } = useMobileAgent()
   const { chatThread } = useChat()
+  const [displayScanMrz, setDisplayMrz] = useState(false)
 
-  const scan = () => {
-    log('Scan pressed')
+  const handleScanMrz = async () => {
+    const cameraPermission = await handleCameraPermission()
+    if (!cameraPermission) return
+    setDisplayMrz(true)
+  }
+
+  const onMRZFinalResults = async (mrzFinalResults: MRZProperties) => {
+    setDisplayMrz(false)
+    log('MRZ Result', JSON.stringify(mrzFinalResults, null, 2))
     agent?.modules.mrtd.sendMrzString({
-      mrzData: [
-        'I<UTOD23145890<1233<<<<<<<<<<<',
-        '7408122F1204159UTO<<<<<<<<<<<6',
-        'ERIKSSON<<ANNA<MARIA<<<<<<<<<<',
-      ],
+      mrzData: mrzFinalResults.docMRZ,
       connectionId: chatThread?.data.connectionId!,
     })
   }
 
+  const onSkipPressed = () => {
+    setDisplayMrz(false)
+  }
+
   return (
     <View style={styles.container}>
+      <Modal visible={displayScanMrz}>
+        <MRZScanner onMRZFinalResults={onMRZFinalResults} onSkipPressed={onSkipPressed} />
+      </Modal>
       <Text>{'MRZ Request'}</Text>
-      <Button title="Scan" onPress={scan} />
+      <Button title="Scan" onPress={handleScanMrz} />
     </View>
   )
 }
