@@ -11,6 +11,7 @@
 -keep class io.realm.**  { * ; }
 -keep class org.webrtc.** { *; }
 -keep class io.twentysixty.mobileagent.BuildConfig { *; }
+-keep class io.twentysixty.rn.eidreader.** { *; }
 -keep class org.jmrtd.** { *; } 
 -keep class net.sf.scuba.**  { *; }
 -keep class org.bouncycastle.** { *; }
