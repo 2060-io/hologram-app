@@ -30,9 +30,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@2060.io/credo-ts-didcomm-mrtd@npm:^0.0.5":
-  version: 0.0.5
-  resolution: "@2060.io/credo-ts-didcomm-mrtd@npm:0.0.5"
+"@2060.io/credo-ts-didcomm-mrtd@npm:^0.0.6":
+  version: 0.0.6
+  resolution: "@2060.io/credo-ts-didcomm-mrtd@npm:0.0.6"
   dependencies:
     class-transformer: 0.5.1
     class-validator: 0.14.1
@@ -40,7 +40,7 @@ __metadata:
     tsyringe: ^4.8.0
   peerDependencies:
     "@credo-ts/core": ^0.5.10
-  checksum: ac7e802deb304fe0b0201a59cb5c0dd7ce553071832ecd4c7d51100916182c3b09dee00a8ce4d7f1d2039e35f1828f8da2861ef7630fd0e9ade74b31da05c482
+  checksum: 9a5b2debe086724f0ffc60225734bc9536e671d759e89672aecdf888130ddae1436481b60a7588684be449f419d0f4f2264c224673282d35ec165745f086fe4a
   languageName: node
   linkType: hard
 
@@ -10686,7 +10686,7 @@ __metadata:
   resolution: "hologram-app@workspace:."
   dependencies:
     "@2060.io/credo-ts-didcomm-calls": ^0.0.4
-    "@2060.io/credo-ts-didcomm-mrtd": ^0.0.5
+    "@2060.io/credo-ts-didcomm-mrtd": ^0.0.6
     "@2060.io/credo-ts-didcomm-user-profile": ^0.0.6
     "@babel/helper-get-function-arity": ^7.16.7
     "@babel/plugin-proposal-decorators": ^7.24.1
