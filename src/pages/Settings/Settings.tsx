@@ -4,7 +4,6 @@ import { StackScreenProps } from '@react-navigation/stack'
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, SafeAreaView, Image, TouchableOpacity, TouchableWithoutFeedback, Alert } from 'react-native'
-import EIdReader from 'react-native-eid-reader'
 import NotificationSetting from 'react-native-open-notification'
 
 import { version } from '../../../package.json'
@@ -20,7 +19,7 @@ import { useConfig } from '@2060/hooks/providers/ConfigProvider'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { deleteAllKeys } from '@2060/services/keys'
-import { log, logError } from '@2060/utils'
+import { logError } from '@2060/utils'
 import { dataUrl } from '@2060/utils/connectionUtils'
 import { toast } from '@2060/utils/toast'
 
@@ -56,20 +55,6 @@ const Settings = ({ navigation }: Props) => {
       { text: t('general.yesDelete'), style: 'default', onPress: deleteWallet },
       { text: t('general.cancel'), style: 'destructive', onPress: hideConfirmationDeleteModal },
     ])
-  }
-
-  const nfcRead = async () => {
-    const result = await EIdReader.startReading({
-      mrzInfo: {
-        expirationDate: '310411',
-        birthDate: '841102',
-        documentNumber: '123456789',
-      },
-      includeRawData: true,
-      includeImages: true,
-    })
-    log(`status: ${result.status}`)
-    log(`result: ${JSON.stringify(result)}`)
   }
 
   const deleteWallet = async () => {
@@ -151,11 +136,6 @@ const Settings = ({ navigation }: Props) => {
       text: t('settings.privacyAndDataUse'),
       onPress: () => onNavigate('Privacy'),
       rightContent: () => optionRightContent(),
-    },
-    {
-      iconName: 'chip',
-      text: 'NFC Read',
-      onPress: () => nfcRead(),
     },
     {
       iconName: 'trash',
