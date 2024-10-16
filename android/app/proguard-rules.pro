@@ -8,9 +8,12 @@
 #   http://developer.android.com/guide/developing/tools/proguard.html
 
 # Add any project specific keep options here:
--keep class io.realm.**  { * ;  }
+-keep class io.realm.**  { * ; }
 -keep class org.webrtc.** { *; }
 -keep class io.twentysixty.mobileagent.BuildConfig { *; }
-
+-keep class org.jmrtd.** { *; } 
+-keep class net.sf.scuba.**  { *; }
+-keep class org.bouncycastle.** { *; }
+-keep class org.ejbca.** { *; }
 -dontwarn java.applet.Applet
 -dontwarn java.awt.**

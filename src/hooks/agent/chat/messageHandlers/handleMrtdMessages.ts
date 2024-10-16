@@ -1,4 +1,5 @@
 import {
+  EMrtdDataMessage,
   EMrtdDataRequestMessage,
   MrzDataMessage,
   MrzDataRequestMessage,
@@ -62,7 +63,6 @@ export const handleMrtdMessages = (options: {
       message.threadId,
       ChatEntryType.MrzRequest,
     )
-    log(`chatentries encontradas; ${chatEntry}`)
     if (chatEntry) {
       const newMetadata = {
         ...chatEntry.metadata,
@@ -115,6 +115,22 @@ export const handleMrtdMessages = (options: {
     chatThreadService.updateThread(realm, thread.id, { lastChatEntry: chatEntry })
     if (thread.id !== activeChatThreadId) {
       chatThreadService.addUnread(realm, thread.id, 1)
+    }
+  }
+
+  if (messageType.messageTypeUri === EMrtdDataMessage.type.messageTypeUri) {
+    // Find the associated entry and update its status
+    const [chatEntry] = chatEntryService.findAllDidcommThreadId(
+      realm,
+      message.threadId,
+      ChatEntryType.EMrtdReadRequest,
+    )
+    if (chatEntry) {
+      const newMetadata = {
+        ...chatEntry.metadata,
+        state: 'scanned',
+      } as EMrtdReadRequestMetadata
+      chatEntryService.updateMetadata(realm, chatEntry.id, newMetadata)
     }
   }
 }
