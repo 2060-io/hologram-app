@@ -11,3 +11,6 @@
 -keep class io.realm.**  { * ;  }
 -keep class org.webrtc.** { *; }
 -keep class io.twentysixty.mobileagent.BuildConfig { *; }
+
+-dontwarn java.applet.Applet
+-dontwarn java.awt.**
