@@ -47,12 +47,12 @@ const EMrtdReadRequestChatView = (_props: Props) => {
         toast({ type: 'warning', message: `Passport read aborted. Status: ${result.status}` })
       }
     } catch (error) {
-      toast({ type: 'error', message: `Error: ${error.message}` })
+      toast({ type: 'error', message: `Error: ${(error as Error).message}` })
     }
   }
   return (
     <View style={styles.container}>
-      <Text>{`eMRTD Read Request (${_props.metadata.state})`}</Text>
+      <Text>{`eMRTD Read Request (${_props.metadata?.state})`}</Text>
       <Button title="Scan" onPress={scan} />
     </View>
   )

@@ -45,7 +45,7 @@ const MrzRequestChatView = (_props: Props) => {
       <Modal visible={displayScanMrz}>
         <MRZScanner onMRZFinalResults={onMRZFinalResults} onSkipPressed={onSkipPressed} />
       </Modal>
-      <Text>{`MRZ Request (${_props.metadata.state})`}</Text>
+      <Text>{`MRZ Request (${_props.metadata?.state})`}</Text>
       <Button title="Scan" onPress={handleScanMrz} />
     </View>
   )
