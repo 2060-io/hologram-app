@@ -16,13 +16,14 @@ const EMrtdReadRequestChatView = (_props: Props) => {
   const { chatThread } = useChat()
 
   const scan = async () => {
-    log('Scan pressed')
+    const mrzInfo = _props.metadata?.mrzInfo
+    log(`Scan pressed. MRZ info: ${JSON.stringify(mrzInfo)}`)
+    if (!mrzInfo) return
     const result = await EIdReader.startReading({
-      // TODO: Get MRZ Info from current user session
       mrzInfo: {
-        expirationDate: '310411',
-        birthDate: '841102',
-        documentNumber: '123456789',
+        birthDate: mrzInfo.birthDate,
+        documentNumber: mrzInfo.documentNumber,
+        expirationDate: mrzInfo.expirationDate,
       },
       includeRawData: true,
       includeImages: true,

@@ -176,9 +176,19 @@ const BaseCustomView: React.FC<BaseCustomMessageViewProps> = memo(props => {
         case ChatEntryType.CallOffer:
           return <CallOfferChatView metadata={chatEntry.metadata as CallOfferMetadata} />
         case ChatEntryType.MrzRequest:
-          return <MrzRequestChatView metadata={chatEntry.metadata as MrzRequestMetadata} />
+          return (
+            <MrzRequestChatView
+              didcommThreadId={chatEntry.didcommThreadId}
+              metadata={chatEntry.metadata as MrzRequestMetadata}
+            />
+          )
         case ChatEntryType.EMrtdReadRequest:
-          return <EMrtdReadRequestChatView metadata={chatEntry.metadata as EMrtdReadRequestMetadata} />
+          return (
+            <EMrtdReadRequestChatView
+              didcommThreadId={chatEntry.didcommThreadId}
+              metadata={chatEntry.metadata as EMrtdReadRequestMetadata}
+            />
+          )
         default:
           return <></>
       }
