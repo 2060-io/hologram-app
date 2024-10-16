@@ -109,4 +109,21 @@ export type CallOfferMetadata = {
   wsUrl: string
 }
 
-export type MrzRequestMetadata = {}
+export type MrzRequestState = 'received' | 'scanned' | 'aborted'
+export type MrzRequestMetadata = {
+  state: MrzRequestState
+  parentThreadId?: string
+  mrzData?: string
+}
+
+export type EmrtdReadRequestState = 'received' | 'scanned' | 'aborted'
+
+export type EMrtdReadRequestMetadata = {
+  state: MrzRequestState
+  parentThreadId?: string
+  mrzInfo?: {
+    expirationDate: string
+    birthDate: string
+    documentNumber: string
+  }
+}

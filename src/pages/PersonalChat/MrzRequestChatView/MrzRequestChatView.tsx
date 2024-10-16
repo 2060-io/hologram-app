@@ -30,6 +30,7 @@ const MrzRequestChatView = (_props: Props) => {
     agent?.modules.mrtd.sendMrzString({
       mrzData: mrzFinalResults.docMRZ,
       connectionId: chatThread?.data.connectionId!,
+      threadId: _props.didcommThreadId,
     })
   }
 

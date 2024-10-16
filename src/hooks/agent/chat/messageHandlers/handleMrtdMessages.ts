@@ -1,12 +1,24 @@
-import { MrzDataRequestMessage } from '@2060.io/credo-ts-didcomm-mrtd'
+import {
+  EMrtdDataRequestMessage,
+  MrzDataMessage,
+  MrzDataRequestMessage,
+} from '@2060.io/credo-ts-didcomm-mrtd'
 import { AgentMessage, ConnectionRecord, parseMessageType } from '@credo-ts/core'
+import * as Mrz from 'mrz'
 import Realm from 'realm'
 
 import { DidCommMessageDirection } from '../DidCommMessageDirection'
 import * as chatEntryService from '../services/ChatEntryService'
 import * as chatThreadService from '../services/ChatThreadService'
 
-import { ChatEntryRole, ChatEntryState, ChatEntryType } from '@2060/model'
+import {
+  ChatEntryRole,
+  ChatEntryState,
+  ChatEntryType,
+  EMrtdReadRequestMetadata,
+  MrzRequestMetadata,
+} from '@2060/model'
+import { log } from '@2060/utils'
 
 export const handleMrtdMessages = (options: {
   realm: Realm
@@ -30,6 +42,75 @@ export const handleMrtdMessages = (options: {
       createdAt: (receivedAt ?? new Date()).getTime(),
       state: ChatEntryState.Received,
       associatedRecordId: '',
+      associatedMessageId: message.id,
+      didcommThreadId: message.threadId,
+      metadata: {
+        state: 'received',
+        parentThreadId: message.thread?.parentThreadId,
+      } as MrzRequestMetadata,
+    })
+    chatThreadService.updateThread(realm, thread.id, { lastChatEntry: chatEntry })
+    if (thread.id !== activeChatThreadId) {
+      chatThreadService.addUnread(realm, thread.id, 1)
+    }
+  }
+
+  if (messageType.messageTypeUri === MrzDataMessage.type.messageTypeUri) {
+    // Find the associated entry and update it with MRZ
+    const [chatEntry] = chatEntryService.findAllDidcommThreadId(
+      realm,
+      message.threadId,
+      ChatEntryType.MrzRequest,
+    )
+    log(`chatentries encontradas; ${chatEntry}`)
+    if (chatEntry) {
+      const newMetadata = {
+        ...chatEntry.metadata,
+        state: 'scanned',
+        mrzData: (message as MrzDataMessage).mrzData,
+      } as MrzRequestMetadata
+      chatEntryService.updateMetadata(realm, chatEntry.id, newMetadata)
+    }
+  }
+
+  // eMRTD Data Read Request
+  if (messageType.messageTypeUri === EMrtdDataRequestMessage.type.messageTypeUri) {
+    // Find the related MRZ request and use MRZ data for eMRTD authentication
+    const parentThreadId = message.thread?.parentThreadId
+    let mrzInfo: { expirationDate: string; documentNumber: string; birthDate: string } | undefined
+    if (parentThreadId) {
+      const [mrzRequest] = chatEntryService.findAllDidcommThreadId(
+        realm,
+        parentThreadId,
+        ChatEntryType.MrzRequest,
+      )
+      if (mrzRequest) {
+        const mrzData = (mrzRequest.metadata as MrzRequestMetadata)?.mrzData
+        if (mrzData) {
+          const { documentNumber, birthDate, expirationDate } = Mrz.parse(mrzData).fields
+
+          if (documentNumber && birthDate && expirationDate) {
+            mrzInfo = { documentNumber, birthDate, expirationDate }
+          }
+        }
+      } else {
+        log('No MRZ Request found')
+      }
+    }
+
+    const chatEntry = chatEntryService.createChatEntry(realm, {
+      chatThreadId: thread.id,
+      type: ChatEntryType.EMrtdReadRequest,
+      role: direction === 'inbound' ? ChatEntryRole.Receiver : ChatEntryRole.Sender,
+      createdAt: (receivedAt ?? new Date()).getTime(),
+      state: ChatEntryState.Received,
+      associatedRecordId: '',
+      didcommThreadId: message.threadId,
+      metadata: {
+        state: 'received',
+        parentThreadId: message.thread?.parentThreadId,
+        mrzInfo,
+      } as EMrtdReadRequestMetadata,
     })
     chatThreadService.updateThread(realm, thread.id, { lastChatEntry: chatEntry })
     if (thread.id !== activeChatThreadId) {

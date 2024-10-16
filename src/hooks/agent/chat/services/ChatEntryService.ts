@@ -199,8 +199,16 @@ export function findAllByAssociatedMessageId(realm: Realm, associatedMessageId: 
 }
 
 // TODO: optimize query
-export function findAllDidcommThreadId(realm: Realm, didcommThreadId: string): ChatEntry[] {
-  return realm.objects(ChatEntry).filter(item => item.didcommThreadId === didcommThreadId)
+export function findAllDidcommThreadId(
+  realm: Realm,
+  didcommThreadId: string,
+  type?: ChatEntryType,
+): ChatEntry[] {
+  return realm
+    .objects(ChatEntry)
+    .filter(
+      item => item.didcommThreadId === didcommThreadId && (type !== undefined ? item.type === type : true),
+    )
 }
 
 // TODO: optimize query

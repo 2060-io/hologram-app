@@ -175,7 +175,6 @@ export function manageAgentChatEvents(agent: MobileAgent, realm: Realm, activeCh
     const associatedRecord = outboundMessage.associatedRecord
 
     if (
-      associatedRecord &&
       [OutboundMessageSendStatus.SentToSession, OutboundMessageSendStatus.SentToTransport].includes(status)
     ) {
       await messageEventsListener({
@@ -184,17 +183,19 @@ export function manageAgentChatEvents(agent: MobileAgent, realm: Realm, activeCh
         connection: data.payload.message.connection,
       })
 
-      const entries = chatEntryService.findAllByAssociatedRecordId(realm, associatedRecord.id)
-      for (const entry of entries) {
-        if (entry && entry.state === ChatEntryState.Created) {
-          // Associate chat entry with the outbound message
-          chatEntryService.updateState(realm, {
-            recordId: entry.id,
-            state: ChatEntryState.Created,
-            associatedMessageId: outboundMessage.message.id,
-          })
+      if (associatedRecord) {
+        const entries = chatEntryService.findAllByAssociatedRecordId(realm, associatedRecord.id)
+        for (const entry of entries) {
+          if (entry && entry.state === ChatEntryState.Created) {
+            // Associate chat entry with the outbound message
+            chatEntryService.updateState(realm, {
+              recordId: entry.id,
+              state: ChatEntryState.Created,
+              associatedMessageId: outboundMessage.message.id,
+            })
 
-          chatThreadService.updateThread(realm, entry.chatThreadId, { lastChatEntry: entry })
+            chatThreadService.updateThread(realm, entry.chatThreadId, { lastChatEntry: entry })
+          }
         }
       }
     }

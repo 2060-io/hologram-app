@@ -5,6 +5,7 @@ import { View, TouchableOpacity, ViewStyle } from 'react-native'
 
 import CallOfferChatView from '../CallOfferChatView'
 import DeletedMessageView from '../DeletedMessageView'
+import EMrtdReadRequestChatView from '../EMrtdReadRequestChatView'
 import HtmlChatView from '../HtmlChatView'
 import ImageChatView from '../ImageChatView'
 import InvitationChatView from '../InvitationChatView'
@@ -32,6 +33,7 @@ import {
   ChatEntryRole,
   ChatEntryState,
   ChatEntryType,
+  EMrtdReadRequestMetadata,
   InvitationMetadata,
   LinkMetadata,
   MediaSharingMetadata,
@@ -174,7 +176,19 @@ const BaseCustomView: React.FC<BaseCustomMessageViewProps> = memo(props => {
         case ChatEntryType.CallOffer:
           return <CallOfferChatView metadata={chatEntry.metadata as CallOfferMetadata} />
         case ChatEntryType.MrzRequest:
-          return <MrzRequestChatView metadata={chatEntry.metadata as MrzRequestMetadata} />
+          return (
+            <MrzRequestChatView
+              didcommThreadId={chatEntry.didcommThreadId}
+              metadata={chatEntry.metadata as MrzRequestMetadata}
+            />
+          )
+        case ChatEntryType.EMrtdReadRequest:
+          return (
+            <EMrtdReadRequestChatView
+              didcommThreadId={chatEntry.didcommThreadId}
+              metadata={chatEntry.metadata as EMrtdReadRequestMetadata}
+            />
+          )
         default:
           return <></>
       }
