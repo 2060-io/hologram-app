@@ -1,5 +1,8 @@
 import React, { useState } from 'react'
-import { View, Button } from 'react-native'
+import { useTranslation } from 'react-i18next'
+import { View } from 'react-native'
+
+import { BlueButton, Header } from '../components'
 
 import { Props } from './MrzRequestChatViewProps'
 import getStyles from './styles'
@@ -7,15 +10,24 @@ import getStyles from './styles'
 import { Modal, MRZScanner, Text } from '@2060/components/common'
 import { useChat, useMobileAgent } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
+import { MrzRequestState } from '@2060/model'
 import { handleCameraPermission } from '@2060/utils/permissions'
 import { toast } from '@2060/utils/toast'
 
-const MrzRequestChatView = (_props: Props) => {
+const MrzRequestChatView = (props: Props) => {
   const theme = useTheme()
   const styles = getStyles(theme)
+  const { t } = useTranslation()
   const { agent } = useMobileAgent()
   const { chatThread } = useChat()
   const [displayScanMrz, setDisplayMrz] = useState(false)
+  const canScanMrz = props.metadata?.state === 'received'
+
+  const stateToText: Record<MrzRequestState, string> = {
+    aborted: t('chat.mrzAborted'),
+    received: t('navigation.Scan'),
+    scanned: t('chat.mrzScanned'),
+  }
 
   const handleScanMrz = async () => {
     const cameraPermission = await handleCameraPermission()
@@ -28,7 +40,7 @@ const MrzRequestChatView = (_props: Props) => {
     agent?.modules.mrtd.sendMrzString({
       mrzData: mrzFinalResults.join('\n'),
       connectionId: chatThread?.data.connectionId!,
-      threadId: _props.didcommThreadId,
+      threadId: props.didcommThreadId,
     })
     toast({ type: 'success', message: 'MRZ scanned and sent' })
   }
@@ -42,8 +54,18 @@ const MrzRequestChatView = (_props: Props) => {
       <Modal visible={displayScanMrz}>
         <MRZScanner onMRZFinalResults={onMRZFinalResults} onSkipPressed={onSkipPressed} />
       </Modal>
-      <Text>{`MRZ Request (${_props.metadata?.state})`}</Text>
-      <Button title="Scan" onPress={handleScanMrz} />
+      <Header theme={theme} title={t('chat.mrzRequest')} leftIconName="scan" />
+      <View style={styles.subContainer}>
+        <Text style={styles.title} typography="EuclidCircularA-Regular">
+          Please scan your mrz
+        </Text>
+      </View>
+      <BlueButton
+        style={{ opacity: canScanMrz ? 1 : 0.5, marginHorizontal: 6 }}
+        text={props.metadata?.state ? stateToText[props.metadata.state] : ''}
+        onPress={handleScanMrz}
+        disabled={!canScanMrz}
+      />
     </View>
   )
 }

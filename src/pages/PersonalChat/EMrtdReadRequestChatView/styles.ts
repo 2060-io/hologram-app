@@ -11,7 +11,13 @@ export default (theme: AppTheme) =>
       width: NORMAL_WIDTH,
       marginBottom: 6,
     },
-    text: {
-      color: theme.colors.black,
+    subContainer: {
+      margin: 8,
+      marginBottom: 0,
+    },
+    title: {
+      fontSize: theme.fontSize.md - 1,
+      color: theme.colors.blue,
+      marginBottom: 8,
     },
   })
