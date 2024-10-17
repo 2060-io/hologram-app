@@ -130,7 +130,14 @@
       "messageDeleteChat": "This chat will be permanently deleted on this device",
       "conversations": "conversations",
       "noChatsFound": "No chats found",
-      "unsecureLink": "Unsecure Link"
+      "unsecureLink": "Unsecure Link",
+      "eMRTDRequest": "eMRTD Read Request",
+      "mrzRequest": "MRZ Request",
+      "eMRTDAborted": "eMRTD read cancelled",
+      "eMRTDReceived": "Read",
+      "eMRTDScanned": "Read successfully",
+      "mrzAborted": "Mrz scan cancelled",
+      "mrzScanned": "Scanned successfully"
     },
     "signUp": {
       "welcomeTitle": "Welcome to Hologram!",
@@ -374,7 +381,9 @@
       "video": "🎥 Video shared",
       "voiceNote": "🔉 Voice note shared",
       "reportMessage": "You reported a message",
-      "callOffer": "Call offer"
+      "callOffer": "Call offer",
+      "mrzRequest": "MRZ Request",
+      "eMrtdReadRequest": "eMRTD Read Request"
     },
     "scan": {
       "errorCreatingInvitation": "Error creating invitation",

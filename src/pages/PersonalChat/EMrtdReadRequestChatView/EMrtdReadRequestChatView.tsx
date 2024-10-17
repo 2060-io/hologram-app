@@ -1,24 +1,37 @@
 import React from 'react'
-import { View, Text, Button } from 'react-native'
+import { useTranslation } from 'react-i18next'
+import { View } from 'react-native'
 import EIdReader from 'react-native-eid-reader'
+
+import { BlueButton, Header } from '../components'
 
 import { Props } from './EMrtdReadRequestChatViewProps'
 import getStyles from './styles'
 
+import { Text } from '@2060/components/common'
 import { useChat, useMobileAgent } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
+import { MrzRequestState } from '@2060/model'
 import { log } from '@2060/utils'
 import { toast } from '@2060/utils/toast'
 
-const EMrtdReadRequestChatView = (_props: Props) => {
+const EMrtdReadRequestChatView = (props: Props) => {
   const theme = useTheme()
   const styles = getStyles(theme)
+  const { t } = useTranslation()
   const { agent } = useMobileAgent()
   const { chatThread } = useChat()
-  const { didcommThreadId } = _props
+  const { didcommThreadId } = props
+  const canReadeMRTD = props.metadata?.state === 'received'
+
+  const stateToText: Record<MrzRequestState, string> = {
+    aborted: t('chat.eMRTDAborted'),
+    received: t('chat.eMRTDReceived'),
+    scanned: t('chat.eMRTDScanned'),
+  }
 
   const scan = async () => {
-    let mrzInfo = _props.metadata?.mrzInfo
+    let mrzInfo = props.metadata?.mrzInfo
     log(`Scan pressed. MRZ info: ${JSON.stringify(mrzInfo)}`)
     if (!mrzInfo) {
       toast({ type: 'error', message: 'Cannot find MRZ info' })
@@ -52,8 +65,18 @@ const EMrtdReadRequestChatView = (_props: Props) => {
   }
   return (
     <View style={styles.container}>
-      <Text>{`eMRTD Read Request (${_props.metadata?.state})`}</Text>
-      <Button title="Scan" onPress={scan} />
+      <Header theme={theme} title={t('chat.eMRTDRequest')} leftIconName="id" />
+      <View style={styles.subContainer}>
+        <Text style={styles.title} typography="EuclidCircularA-Regular">
+          Please read your eMRTD
+        </Text>
+      </View>
+      <BlueButton
+        style={{ opacity: canReadeMRTD ? 1 : 0.5, marginHorizontal: 6 }}
+        text={props.metadata?.state ? stateToText[props.metadata.state] : ''}
+        onPress={scan}
+        disabled={!canReadeMRTD}
+      />
     </View>
   )
 }
