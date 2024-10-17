@@ -2,6 +2,8 @@
 // logging import and setup
 import * as Mrz from 'mrz'
 
+import { logWarn } from '@2060/utils'
+
 const TD1_LINE_LONG = 30
 const TD2_LINE_LONG = 36
 const TD3_LINE_LONG = 44
@@ -48,9 +50,17 @@ export const findAndParseMrz = (initialLines: string[]) => {
           (currentLine.length === TD3_LINE_LONG && lastLine.length === TD3_LINE_LONG) ||
           (currentLine.length === TD2_LINE_LONG && lastLine.length === TD2_LINE_LONG)
         ) {
-          const parseResult = Mrz.parse([lastLine, currentLine])
-          if (['TD2', 'TD3'].includes(parseResult.format)) {
+          const parseResult = Mrz.parse([lastLine, currentLine], { autocorrect: true })
+          if (parseResult.valid) {
             return { lines: [lastLine, currentLine], fields: parseResult.fields }
+          } else {
+            logWarn(
+              `invalid passport: ${JSON.stringify(
+                parseResult.details
+                  .filter(item => item.valid === false)
+                  .map(item => `${item.label}: ${item.error}`),
+              )}`,
+            )
           }
         }
       }
@@ -74,9 +84,17 @@ export const findAndParseMrz = (initialLines: string[]) => {
           lastLine.length === TD1_LINE_LONG &&
           secondToLastLine.length === TD1_LINE_LONG
         ) {
-          const parseResult = Mrz.parse([secondToLastLine, lastLine, currentLine])
-          if (parseResult.format === 'TD1') {
+          const parseResult = Mrz.parse([secondToLastLine, lastLine, currentLine], { autocorrect: true })
+          if (parseResult.valid) {
             return { lines: [secondToLastLine, lastLine, currentLine], fields: parseResult.fields }
+          } else {
+            logWarn(
+              `invalid passport: ${JSON.stringify(
+                parseResult.details
+                  .filter(item => item.valid === false)
+                  .map(item => `${item.label}: ${item.error}`),
+              )}`,
+            )
           }
         }
       }
