@@ -133,11 +133,11 @@
       "unsecureLink": "Enlace inseguro",
       "eMRTDRequest": "Solicitud de lectura del eMRTD",
       "mrzRequest": "Solicitud del MRZ",
-      "eMRTDAborted": "Lectura de eMRT cancelada",
+      "eMRTDAborted": "Lectura de eMRTD cancelada",
       "eMRTDReceived": "Leer",
       "eMRTDScanned": "Leído existosamente",
-      "mrzAborted": "Escaneo de mrz cancelado",
-      "mrzScanned": "Scaneo exitoso"
+      "mrzAborted": "Escaneo de MRZ cancelado",
+      "mrzScanned": "Escaneo exitoso"
     },
     "signUp": {
       "welcomeTitle": "Te damos la bienvenida a Hologram",
