@@ -136,7 +136,7 @@
       "eMRTDAborted": "eMRTD read cancelled",
       "eMRTDReceived": "Read",
       "eMRTDScanned": "Read successfully",
-      "mrzAborted": "Mrz scan cancelled",
+      "mrzAborted": "MRZ scan cancelled",
       "mrzScanned": "Scanned successfully"
     },
     "signUp": {
