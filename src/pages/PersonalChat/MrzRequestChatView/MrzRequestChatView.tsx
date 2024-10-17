@@ -5,10 +5,8 @@ import { Props } from './MrzRequestChatViewProps'
 import getStyles from './styles'
 
 import { Modal, MRZScanner, Text } from '@2060/components/common'
-import { MRZProperties } from '@2060/components/common/MRZScanner/utils/mrzProperties'
 import { useChat, useMobileAgent } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { log } from '@2060/utils'
 import { handleCameraPermission } from '@2060/utils/permissions'
 import { toast } from '@2060/utils/toast'
 
@@ -25,11 +23,10 @@ const MrzRequestChatView = (_props: Props) => {
     setDisplayMrz(true)
   }
 
-  const onMRZFinalResults = async (mrzFinalResults: MRZProperties) => {
+  const onMRZFinalResults = async (mrzFinalResults: string[]) => {
     setDisplayMrz(false)
-    log('MRZ Result', JSON.stringify(mrzFinalResults, null, 2))
     agent?.modules.mrtd.sendMrzString({
-      mrzData: mrzFinalResults.docMRZ,
+      mrzData: mrzFinalResults.join('\n'),
       connectionId: chatThread?.data.connectionId!,
       threadId: _props.didcommThreadId,
     })

@@ -1,4 +1,3 @@
-import type { MRZProperties } from './mrzProperties'
 import type { CameraProps } from 'react-native-vision-camera'
 
 export type MRZCameraProps = {
@@ -26,5 +25,5 @@ export type MRZScannerProps = {
    * @param mrzResults
    * @returns
    */
-  onMRZFinalResults: (mrzResults: MRZProperties) => void | Promise<void>
+  onMRZFinalResults: (mrzResults: string[]) => void | Promise<void>
 }
