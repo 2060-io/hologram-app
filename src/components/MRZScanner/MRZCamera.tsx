@@ -1,13 +1,18 @@
-import React, { FC, PropsWithChildren, useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { Button, StyleSheet, Text, useWindowDimensions, View } from 'react-native'
-import { Camera, useFrameProcessor } from 'react-native-vision-camera'
+import React, { FC, PropsWithChildren, useCallback, useMemo, useRef, useState } from 'react'
+import { Button, Dimensions, Platform, StyleSheet, Text, useWindowDimensions, View } from 'react-native'
+import { Camera, useCameraFormat, useFrameProcessor } from 'react-native-vision-camera'
 import { useTextRecognition } from 'react-native-vision-camera-text-recognition'
 import { Text as ResolvedText } from 'react-native-vision-camera-text-recognition/src/types'
 import { Worklets } from 'react-native-worklets-core'
 
+import { MRZCameraProps } from './MRZScannerProps'
 import styles from './styles'
-import { sortFormatsByResolution } from './utils/generalUtil'
-import { MRZCameraProps } from './utils/types'
+
+const SCREEN_WIDTH = Dimensions.get('window').width
+const SCREEN_HEIGHT = Platform.select<number>({
+  android: Dimensions.get('screen').height, // - StaticSafeAreaInsets.safeAreaInsetsBottom,
+  ios: Dimensions.get('window').height,
+}) as number
 
 const MRZCamera: FC<PropsWithChildren<MRZCameraProps>> = ({
   onSkipPressed,
@@ -18,15 +23,21 @@ const MRZCamera: FC<PropsWithChildren<MRZCameraProps>> = ({
   const camera = useRef<Camera>(null)
   const { width: screenWidth } = useWindowDimensions()
   const device = cameraProps?.device
-  const formats = useMemo(() => device?.formats.sort(sortFormatsByResolution), [device?.formats])
-  const [format, setFormat] = useState(formats && formats.length > 0 ? formats[0] : undefined)
   const [feedbackText, setFeedbackText] = useState<string>('')
   const { scanText } = useTextRecognition({ language: 'latin' })
 
-  /* Setting the format to the first format in the formats array. */
-  useEffect(() => {
-    setFormat(formats && formats.length > 0 ? formats[0] : undefined)
-  }, [device])
+  const screenAspectRatio = SCREEN_HEIGHT / SCREEN_WIDTH
+
+  const supports60Fps = useMemo(() => device?.formats.some(f => f.maxFps >= 60), [device?.formats])
+  const format = useCameraFormat(device, [
+    { fps: supports60Fps ? 60 : 30 },
+    { videoAspectRatio: screenAspectRatio },
+    { videoResolution: 'max' },
+    { photoAspectRatio: screenAspectRatio },
+    { photoResolution: 'max' },
+  ])
+
+  const fps = Math.min(format?.maxFps ?? 1, supports60Fps ? 60 : 30)
 
   /**
    * Prevents sending copious amounts of scans
@@ -81,7 +92,7 @@ const MRZCamera: FC<PropsWithChildren<MRZCameraProps>> = ({
           isActive={cameraProps?.isActive}
           ref={camera}
           format={format}
-          fps={30}
+          fps={fps}
           frameProcessor={frameProcessor}
         />
       ) : undefined}
