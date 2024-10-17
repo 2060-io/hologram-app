@@ -19,8 +19,20 @@ export const findAndParseMrz = (initialLines: string[]) => {
     if (firstInitialLastLine.indexOf('«') !== -1 || secondInitialLastLine.indexOf('«') !== -1) {
       return undefined
     }
-    // remove all empty spaces in each line, capitalize all letters, change all '$' to 'S' and « to <
+
+    // MLKIT sometimes add a new line character when it finds a new line instead of
+    // separating the lines into different elements.
+    const preprocessedLines: string[] = []
     initialLines.forEach((line: string) => {
+      while (line.indexOf('\n') !== -1) {
+        preprocessedLines.push(line.substring(0, line.indexOf('\n')))
+        line = line.substring(line.indexOf('\n') + 1)
+      }
+      preprocessedLines.push(line)
+    })
+
+    // remove all empty spaces in each line, capitalize all letters, change all '$' to 'S' and « to <
+    preprocessedLines.forEach((line: string) => {
       while (line.indexOf(' ') !== -1) {
         line = line.replace(' ', '')
       }
@@ -31,13 +43,14 @@ export const findAndParseMrz = (initialLines: string[]) => {
       while (line.indexOf('«') !== -1) {
         line = line.replace('«', '<')
       }
-      // MLKIT sometimes add a new line character when it finds a new line instead of
-      // separating the lines into different elements.
-      while (line.indexOf('\n') !== -1) {
-        lines.push(line.substring(0, line.indexOf('\n')))
-        line = line.substring(line.indexOf('\n') + 1)
+
+      if (line.endsWith('<') && line.length > TD1_LINE_LONG) {
+        line.padEnd(TD3_LINE_LONG, '<')
       }
-      lines.push(line)
+
+      if (line.length >= TD1_LINE_LONG && line.indexOf('<') !== -1) {
+        lines.push(line)
+      }
     })
 
     // parse 2 line MRZ if the current line, and the previous line both have 44 characters (TD3)
