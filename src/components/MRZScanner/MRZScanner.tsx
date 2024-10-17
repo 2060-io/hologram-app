@@ -27,7 +27,7 @@ const MRZScanner: FC<PropsWithChildren<MRZScannerProps>> = ({ onMRZFinalResults,
   const onData = (lines: string[]) => {
     const mrzResults = findAndParseMrz(lines)
 
-    if (mrzResults) {
+    if (mrzResults && !scanSuccessAux.current) {
       scanSuccessAux.current = true
       setScanSuccess(true)
       setIsActive(false)
