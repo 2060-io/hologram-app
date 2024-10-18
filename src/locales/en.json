@@ -137,7 +137,9 @@
       "eMRTDReceived": "Read",
       "eMRTDScanned": "Read successfully",
       "mrzAborted": "MRZ scan cancelled",
-      "mrzScanned": "Scanned successfully"
+      "mrzScanned": "Scanned successfully",
+      "eMRTDNotSupported": "Your device does not support NFC reading",
+      "eMRTDDisabled": "You have disabled NFC reading on your device, enable it and try again"
     },
     "signUp": {
       "welcomeTitle": "Welcome to Hologram!",

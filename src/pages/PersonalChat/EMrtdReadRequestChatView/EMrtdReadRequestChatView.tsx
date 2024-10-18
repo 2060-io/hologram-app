@@ -1,6 +1,6 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { View } from 'react-native'
+import { Alert, View } from 'react-native'
 import EIdReader from 'react-native-eid-reader'
 
 import { BlueButton, Header } from '../components'
@@ -9,6 +9,7 @@ import { Props } from './EMrtdReadRequestChatViewProps'
 import getStyles from './styles'
 
 import { Text } from '@2060/components/common'
+import { IS_DEVICE_IOS } from '@2060/constants'
 import { useChat, useMobileAgent } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { MrzRequestState } from '@2060/model'
@@ -28,6 +29,20 @@ const EMrtdReadRequestChatView = (props: Props) => {
     aborted: t('chat.eMRTDAborted'),
     received: t('chat.eMRTDReceived'),
     scanned: t('chat.eMRTDScanned'),
+  }
+
+  const checkIfDeviceCanScan = async () => {
+    const isNfcSupported = await EIdReader.isNfcSupported()
+    if (!isNfcSupported) {
+      Alert.alert('', t('chat.eMRTDNotSupported'))
+      return
+    }
+    const isNfcEnabled = await EIdReader.isNfcEnabled()
+    if (!isNfcEnabled) {
+      Alert.alert('', t('chat.eMRTDDisabled'))
+      return
+    }
+    scan()
   }
 
   const scan = async () => {
@@ -74,7 +89,7 @@ const EMrtdReadRequestChatView = (props: Props) => {
       <BlueButton
         style={{ opacity: canReadeMRTD ? 1 : 0.5, marginHorizontal: 6 }}
         text={props.metadata?.state ? stateToText[props.metadata.state] : ''}
-        onPress={scan}
+        onPress={IS_DEVICE_IOS ? scan : checkIfDeviceCanScan}
         disabled={!canReadeMRTD}
       />
     </View>
