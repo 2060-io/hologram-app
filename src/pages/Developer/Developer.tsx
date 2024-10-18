@@ -171,7 +171,7 @@ const Developer = ({ navigation }: Props) => {
                   value={tempCustomDevEnvValue}
                   onChangeText={setTempCustomDevEnvValue}
                   placeholder={t('general.valueHere')}
-                  textInputstyle={styles.textInput}
+                  style={styles.textInput}
                 />
                 <Text
                   disabled={!tempCustomDevEnvValue?.length}

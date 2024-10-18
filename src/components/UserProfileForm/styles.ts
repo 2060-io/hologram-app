@@ -35,7 +35,7 @@ const styles = (theme: AppTheme) =>
       flexDirection: 'row',
       justifyContent: 'space-between',
       width: widthPercentageToDP('46%'),
-      paddingBottom: 30,
+      paddingBottom: 20,
     },
     containerOption: {
       flexDirection: 'column',
@@ -69,7 +69,7 @@ const styles = (theme: AppTheme) =>
       color: theme.colors.secondaryText,
       fontSize: theme.fontSize.md + 1,
       paddingBottom: 12,
-      paddingTop: 30,
+      paddingTop: 18,
       textAlign: 'center',
     },
   })

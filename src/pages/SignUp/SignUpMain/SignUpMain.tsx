@@ -27,9 +27,7 @@ const SignUpMain = ({ navigation }: Props) => {
     <SafeAreaView style={styles.root}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.contentContainerStyle}>
         <View style={styles.innerRoot}>
-          <View style={styles.containerAppLogo}>
-            <AppLogo />
-          </View>
+          <AppLogo style={styles.containerAppLogo} />
           <Text typography="EuclidCircularA-Bold" style={styles.title}>
             {t('signUp.welcomeTitle')}
           </Text>

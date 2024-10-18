@@ -9,9 +9,10 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 
 import getStyles from './styles'
 
+import AppLogo from '@2060/assets/icons/AppLogo'
 import { UserProfileForm } from '@2060/components'
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
-import { ModalLoading, MainButton } from '@2060/components/common'
+import { ModalLoading, MainButton, Text } from '@2060/components/common'
 import { useSignUp, SignUpState, useWallet } from '@2060/hooks'
 import { useUserProfile } from '@2060/hooks/agent'
 import { useConfig } from '@2060/hooks/providers/ConfigProvider'
@@ -109,6 +110,10 @@ const ProfileCreation = ({ navigation }: Props) => {
         extraScrollHeight={70}
       >
         <View style={styles.container}>
+          <AppLogo style={styles.appLogoContainer} />
+          <Text typography="EuclidCircularA-Bold" style={styles.title}>
+            {t('signUp.welcomeTitle')}
+          </Text>
           <UserProfileForm
             displayName={displayName}
             displayPicture={displayPicture}

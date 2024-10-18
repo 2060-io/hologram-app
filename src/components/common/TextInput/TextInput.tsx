@@ -1,14 +1,10 @@
 import React, { forwardRef, useImperativeHandle, useRef } from 'react'
-import { TextInput, TextInputProps, StyleProp, TextStyle } from 'react-native'
+import { TextInput, TextInputProps } from 'react-native'
 
 import { TextInputForwardRefProps } from './TextInputProps'
 import styles from './styles'
 
-interface InputProps extends TextInputProps {
-  textInputstyle?: StyleProp<TextStyle>
-}
-
-const CustomTextInput = forwardRef<TextInputForwardRefProps, InputProps>((textInputProps, ref) => {
+const CustomTextInput = forwardRef<TextInputForwardRefProps, TextInputProps>((textInputProps, ref) => {
   const textInputRef = useRef<TextInput>(null)
 
   useImperativeHandle(ref, () => {
@@ -31,10 +27,10 @@ const CustomTextInput = forwardRef<TextInputForwardRefProps, InputProps>((textIn
   return (
     <TextInput
       ref={textInputRef}
-      style={[styles.input, textInputProps.textInputstyle]}
       keyboardType="default"
       autoCorrect={false}
       {...textInputProps}
+      style={[styles.input, textInputProps.style]}
     />
   )
 })

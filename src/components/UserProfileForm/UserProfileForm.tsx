@@ -43,10 +43,9 @@ const UserProfileForm: React.FC<Props> = props => {
 
   return (
     <View>
-      <Text typography="EuclidCircularA-Regular" style={styles.textInputDescription}>{`${t(
-        'signUp.textInputNicknameDescription',
-      )}`}</Text>
-
+      <Text typography="EuclidCircularA-Regular" style={styles.textInputDescription}>
+        {t('signUp.textInputNicknameDescription')}
+      </Text>
       <View style={styles.containerRootAvatar}>
         {imgUrl.length > 0 && (
           <TouchableOpacity
@@ -87,7 +86,7 @@ const UserProfileForm: React.FC<Props> = props => {
       </View>
       <TextInput
         value={displayName}
-        textInputstyle={styles.textInput}
+        style={styles.textInput}
         onChangeText={onHandleChangeName}
         placeholder={t('signUp.chooseNickname')}
         placeholderTextColor={theme.colors.secondaryText}
