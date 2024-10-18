@@ -10,6 +10,7 @@ import CredentialDetails from './CredentialDetails'
 import IncomingCall from './IncomingCall'
 import LayoutScreen from './LayoutScreen'
 import LightboxModal from './LightboxModal'
+import MRZScanner from './MRZScanner'
 import ModalBottomHalf from './ModalBottomHalf'
 import ModalConfirmAction from './ModalConfirmAction'
 import Picker from './Picker'
@@ -40,4 +41,5 @@ export {
   CommunicationChannels,
   VideoCall,
   IncomingCall,
+  MRZScanner,
 }

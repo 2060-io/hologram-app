@@ -7,14 +7,6 @@ export default StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-  skipButtonContainer: {
-    position: 'absolute',
-    bottom: screenHeight * 0.05,
-    width: screenWidth,
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'row',
-  },
   feedbackContainer: {
     position: 'absolute',
     top: screenHeight * 0.3,
@@ -28,5 +20,12 @@ export default StyleSheet.create({
     paddingRight: 8,
     paddingLeft: 8,
     textAlign: 'center',
+  },
+  cancelButton: {
+    position: 'absolute',
+    width: 'auto',
+    bottom: screenHeight * 0.05,
+    backgroundColor: 'transparent',
+    paddingHorizontal: 10,
   },
 })

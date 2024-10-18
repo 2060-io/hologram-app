@@ -1,9 +1,12 @@
 import React, { FC, PropsWithChildren, useCallback, useMemo, useRef, useState } from 'react'
-import { Button, Dimensions, Platform, StyleSheet, Text, useWindowDimensions, View } from 'react-native'
+import { useTranslation } from 'react-i18next'
+import { Dimensions, Platform, StyleSheet, Text, useWindowDimensions, View } from 'react-native'
 import { Camera, useCameraFormat, useFrameProcessor } from 'react-native-vision-camera'
 import { useTextRecognition } from 'react-native-vision-camera-text-recognition'
 import { Text as ResolvedText } from 'react-native-vision-camera-text-recognition/src/types'
 import { Worklets } from 'react-native-worklets-core'
+
+import { OutlinedGreenButton } from '../common'
 
 import { MRZCameraProps } from './MRZScannerProps'
 import styles from './styles'
@@ -20,6 +23,7 @@ const MRZCamera: FC<PropsWithChildren<MRZCameraProps>> = ({
   onData,
   scanSuccess,
 }) => {
+  const { t } = useTranslation()
   const camera = useRef<Camera>(null)
   const { width: screenWidth } = useWindowDimensions()
   const device = cameraProps?.device
@@ -96,9 +100,7 @@ const MRZCamera: FC<PropsWithChildren<MRZCameraProps>> = ({
           frameProcessor={frameProcessor}
         />
       ) : undefined}
-      <View style={styles.skipButtonContainer}>
-        <Button title={'Skip'} onPress={onSkipPressed} />
-      </View>
+      <OutlinedGreenButton text={t('general.cancel')} onPress={onSkipPressed} style={styles.cancelButton} />
       {feedbackText ? (
         <View style={styles.feedbackContainer}>
           <Text style={styles.feedbackText}>{feedbackText}</Text>

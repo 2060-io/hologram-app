@@ -57,10 +57,10 @@ const EMrtdReadRequestChatView = (props: Props) => {
           threadId: didcommThreadId,
         })
       } else {
-        toast({ type: 'warning', message: `Passport read aborted. Status: ${result.status}` })
+        toast({ type: 'warning', message: `Passport read aborted. Status: ${result.status}`, duration: 3000 })
       }
     } catch (error) {
-      toast({ type: 'error', message: `Error: ${(error as Error).message}` })
+      toast({ type: 'error', message: `Error: ${(error as Error).message}`, duration: 3000 })
     }
   }
   return (

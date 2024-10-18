@@ -1,5 +1,3 @@
-import MRZScanner from '../MRZScanner'
-
 import Avatar from './Avatar'
 import CardCredentialMainInformation from './CardCredentialMainInformation'
 import ChannelIcons from './ChannelIcons'
@@ -42,5 +40,4 @@ export {
   HeaderTitle,
   ProofOfTrust,
   RadioButton,
-  MRZScanner,
 }
