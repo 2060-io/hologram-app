@@ -1,3 +1,4 @@
+import { activateKeepAwakeAsync, deactivateKeepAwake } from 'expo-keep-awake'
 import React, { FC, PropsWithChildren, useEffect, useRef, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { useCameraDevices } from 'react-native-vision-camera'
@@ -14,7 +15,9 @@ const MRZScanner: FC<PropsWithChildren<MRZScannerProps>> = ({ onMRZFinalResults,
   const scanSuccessAux = useRef(false)
 
   useEffect(() => {
+    activateKeepAwakeAsync()
     return () => {
+      deactivateKeepAwake()
       setIsActive(false)
     }
   }, [])
