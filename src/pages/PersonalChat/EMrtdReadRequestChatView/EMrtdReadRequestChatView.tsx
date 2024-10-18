@@ -34,12 +34,15 @@ const EMrtdReadRequestChatView = (props: Props) => {
   const checkIfDeviceCanScan = async () => {
     const isNfcSupported = await EIdReader.isNfcSupported()
     if (!isNfcSupported) {
-      Alert.alert('', t('chat.eMRTDNotSupported'))
+      toast({ type: 'error', message: t('chat.eMRTDNotSupported'), duration: 3000 })
       return
     }
     const isNfcEnabled = await EIdReader.isNfcEnabled()
     if (!isNfcEnabled) {
-      Alert.alert('', t('chat.eMRTDDisabled'))
+      Alert.alert('', t('chat.eMRTDDisabled'), [
+        { text: t('general.cancel'), style: 'destructive' },
+        { text: t('general.settings'), style: 'default', onPress: () => EIdReader.openNfcSettings() },
+      ])
       return
     }
     scan()
