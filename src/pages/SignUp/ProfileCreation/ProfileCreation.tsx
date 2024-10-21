@@ -1,5 +1,4 @@
 import { PictureData } from '@2060.io/credo-ts-didcomm-user-profile'
-import { CommonActions } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -58,17 +57,13 @@ const ProfileCreation = ({ navigation }: Props) => {
     ])
   }
 
-  const goToChats = () => {
-    navigation.dispatch(CommonActions.reset({ index: 0, routes: [{ name: 'Home' }] }))
-  }
-  const onSaveUserProfileData = () => {
+  const saveUserProfileData = () => {
     setUserProfileData?.({ displayName: displayName.trim(), displayPicture })
   }
 
-  const onGetStarted = () => {
+  const getStart = () => {
     requestNotificationPermissions()
-    onSaveUserProfileData()
-    goToChats()
+    saveUserProfileData()
   }
 
   const handleLogStartError = (error: Error) => {
@@ -76,7 +71,7 @@ const ProfileCreation = ({ navigation }: Props) => {
     toast({ type: 'error', message: t('signUp.anErrorHasOccurred'), duration: 5000 })
   }
 
-  const onStartSignUp = async () => {
+  const signUp = async () => {
     setIsRegistering(true)
     try {
       await createNewWallet()
@@ -91,8 +86,7 @@ const ProfileCreation = ({ navigation }: Props) => {
   const handleRegistrationStatusUpdate = () => {
     if (signUpState === SignUpState.Init) return
     if (signUpState === SignUpState.AgentCreated) {
-      setIsRegistering(false)
-      onGetStarted()
+      getStart()
     }
   }
 
@@ -124,7 +118,7 @@ const ProfileCreation = ({ navigation }: Props) => {
             text={t('signUp.getStarted')}
             activeOpacity={0.6}
             disabled={disableGetStartedBtn}
-            onPress={onStartSignUp}
+            onPress={signUp}
             style={[styles.containerBtn, disableGetStartedBtn && styles.btnDisabled]}
           />
         </View>
