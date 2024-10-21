@@ -2,7 +2,6 @@ import React, { forwardRef, useImperativeHandle, useRef } from 'react'
 import { TextInput, TextInputProps } from 'react-native'
 
 import { TextInputForwardRefProps } from './TextInputProps'
-import styles from './styles'
 
 const CustomTextInput = forwardRef<TextInputForwardRefProps, TextInputProps>((textInputProps, ref) => {
   const textInputRef = useRef<TextInput>(null)
@@ -24,15 +23,7 @@ const CustomTextInput = forwardRef<TextInputForwardRefProps, TextInputProps>((te
     }
   })
 
-  return (
-    <TextInput
-      ref={textInputRef}
-      keyboardType="default"
-      autoCorrect={false}
-      {...textInputProps}
-      style={[styles.input, textInputProps.style]}
-    />
-  )
+  return <TextInput ref={textInputRef} keyboardType="default" autoCorrect={false} {...textInputProps} />
 })
 
 export default CustomTextInput
