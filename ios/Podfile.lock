@@ -1,5 +1,5 @@
 PODS:
-  - anoncreds (0.2.3):
+  - anoncreds (0.2.4):
     - React
     - React-callinvoker
     - React-Core
@@ -219,7 +219,7 @@ PODS:
     - nanopb/encode (= 2.30910.0)
   - nanopb/decode (2.30910.0)
   - nanopb/encode (2.30910.0)
-  - OpenSSL-Universal (1.1.1900)
+  - OpenSSL-Universal (3.2.2000)
   - Permission-Camera (3.10.1):
     - RNPermissions
   - Permission-Microphone (3.10.1):
@@ -1165,11 +1165,11 @@ PODS:
     - React-Core
   - react-native-create-thumbnail (2.0.0):
     - React-Core
-  - react-native-eid-reader (0.0.1-alpha.2):
+  - react-native-eid-reader (0.0.1-alpha.5):
     - DoubleConversion
     - glog
     - hermes-engine
-    - OpenSSL-Universal (= 1.1.1900)
+    - OpenSSL-Universal (= 3.2.2000)
     - RCT-Folly (= 2024.01.01.00)
     - RCTRequired
     - RCTTypeSafety
@@ -2072,7 +2072,7 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
-  anoncreds: aa7a9d86667fb789228ad994f67765e17027d333
+  anoncreds: 045f191123bb20d7dcdc2f7c19df57ae30c427f6
   AppCheckCore: 9feb4300caa596a36416cde10674dc5bec1e022e
   aries-askar: 3a78d5cfc8faedbfc55a9ff35e2309fc4574a147
   boost: d3f49c53809116a5d38da093a8aa78bf551aed09
@@ -2113,7 +2113,7 @@ SPEC CHECKSUMS:
   MLKitTranslate: a404df6fba19d2ddcbebf4f1fc51d9f5edd24ee5
   MLKitVision: e858c5f125ecc288e4a31127928301eaba9ae0c1
   nanopb: 438bc412db1928dac798aa6fd75726007be04262
-  OpenSSL-Universal: 84efb8a29841f2764ac5403e0c4119a28b713346
+  OpenSSL-Universal: f8a9c4fdab7e21cb70bda471c269e86e9212439c
   Permission-Camera: 9b70902f34a83c10e198d2d01f0e453e58842776
   Permission-Microphone: 8d045745c0c12aed0370ba89c36b6bc1ba54d7eb
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
@@ -2146,7 +2146,7 @@ SPEC CHECKSUMS:
   react-native-cloud-store: 26562db64190ceb8a5fabb532791959fb920a365
   react-native-config: 8f7283449bbb048902f4e764affbbf24504454af
   react-native-create-thumbnail: ab55d24aea01723cf386f18b0b542aabb1982f27
-  react-native-eid-reader: fdd4ca81caabd045f63de142997877002decaac0
+  react-native-eid-reader: 913329085870b83efd60c8a67b9d7d9f144db211
   react-native-get-random-values: 21325b2244dfa6b58878f51f9aa42821e7ba3d06
   react-native-image-resizer: fd0c333eca55147bd55c5e054cac95dcd0da6814
   react-native-job-queue: 039e742a627a99e3273fcc918e69597d108ef406
