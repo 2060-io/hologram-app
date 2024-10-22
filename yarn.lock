@@ -2777,23 +2777,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hyperledger/anoncreds-react-native@npm:0.2.3":
-  version: 0.2.3
-  resolution: "@hyperledger/anoncreds-react-native@npm:0.2.3"
+"@hyperledger/anoncreds-react-native@npm:0.2.4":
+  version: 0.2.4
+  resolution: "@hyperledger/anoncreds-react-native@npm:0.2.4"
   dependencies:
-    "@hyperledger/anoncreds-shared": 0.2.3
+    "@hyperledger/anoncreds-shared": 0.2.4
     "@mapbox/node-pre-gyp": ^1.0.10
   peerDependencies:
     react: ">= 16"
     react-native: ">= 0.66.0"
-  checksum: bc1cfb64ea5f353bf1c859ca9183fbd0f0006f1bfe9a148e657d02c1a9f2ec90053806dafb0689de5fa313b5f91fbf3fb74ef5195541ae943b29ce96189cb7da
+  checksum: 4122e7a7106ac0c8f657729ac29daecb0682fe01145b4634e55ddc9401598a87014747398f7203559a3768417c1dcfc0c81cc5a4669a2f2c30790be05f1eb5ae
   languageName: node
   linkType: hard
 
-"@hyperledger/anoncreds-shared@npm:0.2.3":
-  version: 0.2.3
-  resolution: "@hyperledger/anoncreds-shared@npm:0.2.3"
-  checksum: fadbaa5b318f48dc8fb0c2e5ef1ba1ac959cd29a07e668df6b6e079ea33c2dbe241f600075b2c23c56a4cca88e5721ccb4d89663b3fba2d37e914db33a00c1a7
+"@hyperledger/anoncreds-shared@npm:0.2.4":
+  version: 0.2.4
+  resolution: "@hyperledger/anoncreds-shared@npm:0.2.4"
+  checksum: 90d3ad2ce21f659e7de07bd5e883c5da83e027d9faee174b8e2f794717a00cb1d0fae34dabe143ed9ad49d8f05a3ab5840e3061b08036496974a240582f7fdd2
   languageName: node
   linkType: hard
 
@@ -10764,7 +10764,7 @@ __metadata:
     react-native-cloud-store: 0.11.0
     react-native-config: ^1.5.1
     react-native-create-thumbnail: ^2.0.0
-    react-native-eid-reader: "npm:@2060.io/react-native-eid-reader@0.0.1-alpha.3"
+    react-native-eid-reader: "npm:@2060.io/react-native-eid-reader@0.0.1-alpha.5"
     react-native-fs: ^2.20.0
     react-native-gesture-handler: ^2.12.1
     react-native-get-random-values: ^1.7.0
@@ -15659,13 +15659,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-eid-reader@npm:@2060.io/react-native-eid-reader@0.0.1-alpha.3":
-  version: 0.0.1-alpha.3
-  resolution: "@2060.io/react-native-eid-reader@npm:0.0.1-alpha.3"
+"react-native-eid-reader@npm:@2060.io/react-native-eid-reader@0.0.1-alpha.5":
+  version: 0.0.1-alpha.5
+  resolution: "@2060.io/react-native-eid-reader@npm:0.0.1-alpha.5"
   peerDependencies:
     react: "*"
     react-native: "*"
-  checksum: 57b1b7f600742254e2ad8a0ef71c9c9970b015dac1616eda22116c4fbe592df029ce351ba128b0220788e2b55071170d1d69c30eae47856a3584a932c301b9b0
+  checksum: cdf25a395152de09684d20df925b1743c2360885ab3eef9d81f425aab9fd433000756d34bc063e050c7c7dfb55f0d09cdefd08d11fd0e4ef85eed5ffc3eac9f1
   languageName: node
   linkType: hard
 
