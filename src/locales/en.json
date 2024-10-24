@@ -69,7 +69,8 @@
       "canNotOpenURL": "Cannot open ",
       "dismiss": "Dismiss",
       "selected": "1 selected",
-      "selected_plural": "{{ count }} selected"
+      "selected_plural": "{{ count }} selected",
+      "join": "Join"
     },
     "navigation": {
       "back": "Back",
@@ -132,6 +133,7 @@
       "noChatsFound": "No chats found",
       "unsecureLink": "Unsecure Link",
       "eMRTDRequest": "eMRTD Read Request",
+      "callOfferMessage": "{{sender}} invites you to a call",
       "mrzRequest": "MRZ Request",
       "eMRTDAborted": "eMRTD read cancelled",
       "eMRTDReceived": "Read",
