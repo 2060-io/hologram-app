@@ -1,4 +1,4 @@
-import { ChatParticipant } from '../ChatMessage'
+import { ChatParticipant } from '../ChatMessage/Props'
 
 import { CallOfferMetadata } from '@2060/model'
 
