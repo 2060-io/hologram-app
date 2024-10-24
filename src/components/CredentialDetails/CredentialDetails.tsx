@@ -1,6 +1,7 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, Image, TouchableOpacity, TouchableWithoutFeedback } from 'react-native'
+import EIdReader from 'react-native-eid-reader'
 
 import getStyles from './styles'
 
@@ -8,6 +9,7 @@ import { CardCredentialMainInformation, Modal, Text } from '@2060/components/com
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { CredentialDetailsForDisplay } from '@2060/services/agent/display'
 import { formatCredentialSubject, CredentialAttributeRow } from '@2060/services/agent/formatCredentialSubject'
+import { log, logError } from '@2060/utils'
 
 interface StyleObject {
   [key: string]: Object
@@ -18,6 +20,31 @@ type DetailSectionProps = {
   styles: StyleObject
   rowDetail: CredentialAttributeRow
   onPressDetailImage: (image: string) => void
+}
+
+type ImageSectionProps = {
+  image: string
+  onPressDetailImage: (image: string) => void
+  styles: StyleObject
+}
+
+const ImageSection = ({ image, onPressDetailImage, styles }: ImageSectionProps) => {
+  const [convertedImage, setConvertedImage] = useState<string>()
+  useEffect(() => {
+    EIdReader.imageDataUrlToJpegDataUrl(image)
+      .then(data => {
+        setConvertedImage(data)
+      })
+      .catch(error => {
+        logError('error converting image in component ImageSection', error)
+      })
+  }, [])
+
+  return convertedImage ? (
+    <TouchableOpacity onPress={() => onPressDetailImage(convertedImage)}>
+      <Image style={styles.sectionKeyImage} resizeMode="contain" source={{ uri: convertedImage }} />
+    </TouchableOpacity>
+  ) : null
 }
 
 const DetailSection = ({ isFirst, styles, rowDetail, onPressDetailImage }: DetailSectionProps) => (
@@ -31,9 +58,7 @@ const DetailSection = ({ isFirst, styles, rowDetail, onPressDetailImage }: Detai
       </Text>
     </View>
     {'image' in rowDetail && (
-      <TouchableOpacity onPress={() => onPressDetailImage(rowDetail.image)}>
-        <Image style={styles.sectionKeyImage} resizeMode="contain" source={{ uri: rowDetail.image }} />
-      </TouchableOpacity>
+      <ImageSection styles={styles} onPressDetailImage={onPressDetailImage} image={rowDetail.image} />
     )}
   </View>
 )
@@ -47,6 +72,11 @@ const CredentialDetails = ({ credentialDetails }: Props) => {
   const theme = useTheme()
   const styles = getStyles(theme)
   const detailsSections = formatCredentialSubject(credentialDetails.attributes)
+  detailsSections.forEach(section => {
+    section.rows.forEach(row => {
+      row.type === 'image' && log('row', row)
+    })
+  })
   const [showImageFullScreen, setShowImageFullScreen] = useState(false)
   const biggerImageRef = useRef<string | null>(null)
 
