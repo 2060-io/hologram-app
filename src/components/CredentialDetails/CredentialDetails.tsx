@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, Image, TouchableOpacity, TouchableWithoutFeedback } from 'react-native'
+import EIdReader from 'react-native-eid-reader'
 
 import getStyles from './styles'
 
@@ -20,6 +21,22 @@ type DetailSectionProps = {
   onPressDetailImage: (image: string) => void
 }
 
+type ImageSectionProps = {
+  image: string
+  onPressDetailImage: (image: string) => void
+  styles: StyleObject
+}
+
+const ImageSection = ({ image, onPressDetailImage, styles }: ImageSectionProps) => {
+  const jpegImage = EIdReader.imageDataUrlToJpegDataUrl(image)
+
+  return jpegImage ? (
+    <TouchableOpacity onPress={() => onPressDetailImage(jpegImage)}>
+      <Image style={styles.sectionKeyImage} resizeMode="contain" source={{ uri: jpegImage }} />
+    </TouchableOpacity>
+  ) : null
+}
+
 const DetailSection = ({ isFirst, styles, rowDetail, onPressDetailImage }: DetailSectionProps) => (
   <View style={styles.sectionContainer}>
     <View style={styles.container}>
@@ -31,9 +48,7 @@ const DetailSection = ({ isFirst, styles, rowDetail, onPressDetailImage }: Detai
       </Text>
     </View>
     {'image' in rowDetail && (
-      <TouchableOpacity onPress={() => onPressDetailImage(rowDetail.image)}>
-        <Image style={styles.sectionKeyImage} resizeMode="contain" source={{ uri: rowDetail.image }} />
-      </TouchableOpacity>
+      <ImageSection styles={styles} onPressDetailImage={onPressDetailImage} image={rowDetail.image} />
     )}
   </View>
 )
