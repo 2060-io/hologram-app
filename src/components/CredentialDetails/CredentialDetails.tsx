@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, Image, TouchableOpacity, TouchableWithoutFeedback } from 'react-native'
 import EIdReader from 'react-native-eid-reader'
@@ -9,7 +9,7 @@ import { CardCredentialMainInformation, Modal, Text } from '@2060/components/com
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { CredentialDetailsForDisplay } from '@2060/services/agent/display'
 import { formatCredentialSubject, CredentialAttributeRow } from '@2060/services/agent/formatCredentialSubject'
-import { log, logError } from '@2060/utils'
+import { log } from '@2060/utils'
 
 interface StyleObject {
   [key: string]: Object
@@ -29,20 +29,11 @@ type ImageSectionProps = {
 }
 
 const ImageSection = ({ image, onPressDetailImage, styles }: ImageSectionProps) => {
-  const [convertedImage, setConvertedImage] = useState<string>()
-  useEffect(() => {
-    EIdReader.imageDataUrlToJpegDataUrl(image)
-      .then(data => {
-        setConvertedImage(data)
-      })
-      .catch(error => {
-        logError('error converting image in component ImageSection', error)
-      })
-  }, [])
+  const jpegImage = EIdReader.imageDataUrlToJpegDataUrl(image)
 
-  return convertedImage ? (
-    <TouchableOpacity onPress={() => onPressDetailImage(convertedImage)}>
-      <Image style={styles.sectionKeyImage} resizeMode="contain" source={{ uri: convertedImage }} />
+  return jpegImage ? (
+    <TouchableOpacity onPress={() => onPressDetailImage(jpegImage)}>
+      <Image style={styles.sectionKeyImage} resizeMode="contain" source={{ uri: jpegImage }} />
     </TouchableOpacity>
   ) : null
 }
