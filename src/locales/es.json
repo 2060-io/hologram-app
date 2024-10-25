@@ -69,7 +69,8 @@
       "canNotOpenURL": "No se pudo abrir ",
       "dismiss": "Cerrar",
       "selected": "1 seleccionado",
-      "selected_plural": "{{ count }} seleccionados"
+      "selected_plural": "{{ count }} seleccionados",
+      "join": "Unirse"
     },
     "navigation": {
       "back": "Atras",
@@ -132,6 +133,7 @@
       "noChatsFound": "No se encontraron conversaciones",
       "unsecureLink": "Enlace inseguro",
       "eMRTDRequest": "Solicitud de lectura del eMRTD",
+      "callOfferMessage": "{{sender}} te invita a una llamada",
       "mrzRequest": "Solicitud del MRZ",
       "eMRTDAborted": "Lectura de eMRTD cancelada",
       "eMRTDReceived": "Leer",
