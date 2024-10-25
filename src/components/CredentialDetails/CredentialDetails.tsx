@@ -9,7 +9,6 @@ import { CardCredentialMainInformation, Modal, Text } from '@2060/components/com
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { CredentialDetailsForDisplay } from '@2060/services/agent/display'
 import { formatCredentialSubject, CredentialAttributeRow } from '@2060/services/agent/formatCredentialSubject'
-import { log } from '@2060/utils'
 
 interface StyleObject {
   [key: string]: Object
@@ -63,11 +62,6 @@ const CredentialDetails = ({ credentialDetails }: Props) => {
   const theme = useTheme()
   const styles = getStyles(theme)
   const detailsSections = formatCredentialSubject(credentialDetails.attributes)
-  detailsSections.forEach(section => {
-    section.rows.forEach(row => {
-      row.type === 'image' && log('row', row)
-    })
-  })
   const [showImageFullScreen, setShowImageFullScreen] = useState(false)
   const biggerImageRef = useRef<string | null>(null)
 
