@@ -29,7 +29,7 @@ const CallOfferChatView = ({ sender, metadata }: Props) => {
       <Header theme={theme} title={t('preview.callOffer')} leftIconName="video" />
       <View style={styles.subContainer}>
         <Text style={styles.title} typography="EuclidCircularA-Regular">
-          {t('chat.callOfferMessage', { sender: metadata.issuerName ?? sender?.name })}
+          {t('chat.callOfferMessage', { sender: sender?.name })}
         </Text>
       </View>
       <BlueButton text={t('general.join')} onPress={join} />

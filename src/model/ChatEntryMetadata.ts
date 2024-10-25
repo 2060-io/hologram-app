@@ -107,7 +107,6 @@ export type CallOfferMetadata = {
   roomId: string
   peerId: string
   wsUrl: string
-  issuerName: string | undefined
 }
 
 export type MrzRequestState = 'received' | 'scanned' | 'aborted'
