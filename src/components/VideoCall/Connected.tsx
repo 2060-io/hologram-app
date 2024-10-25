@@ -94,7 +94,7 @@ const Connected = ({
     }),
   ).current
 
-  const renderMainContent = () => {
+  const renderMainContentForVideoCall = () => {
     if (isRemoteVideoOn) {
       return (
         <RTCView
@@ -118,9 +118,29 @@ const Connected = ({
     return <View style={styles.callingAvatar}>{renderAvatar}</View>
   }
 
+  const renderMainContentForServiceCall = () => {
+    if (isRemoteVideoOn) {
+      return (
+        <RTCView
+          streamURL={remoteStream?.toURL()}
+          objectFit="cover"
+          style={styles.remoteStreamContainer}
+          zOrder={0}
+        />
+      )
+    }
+    return <View style={styles.callingAvatar}>{renderAvatar}</View>
+  }
+
+  const renderMainContent: Record<DidCommCallType, React.JSX.Element> = {
+    audio: <View style={styles.callingAvatar}>{renderAvatar}</View>,
+    video: renderMainContentForVideoCall(),
+    service: renderMainContentForServiceCall(),
+  }
+
   return (
     <View style={styles.connectedContainer} {...panResponderForButtons.panHandlers}>
-      {renderMainContent()}
+      {renderMainContent[didcommCallType!]}
       {didcommCallType === 'video' && displayLocalStreaming && !!remoteStream && (
         <Animated.View
           style={{
