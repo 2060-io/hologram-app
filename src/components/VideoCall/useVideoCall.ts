@@ -332,6 +332,11 @@ export const useVideoCall = () => {
       device.current = new Device()
       routerRtpCapabilities.current = await peer.current?.request('getRouterRtpCapabilities')
       if (!routerRtpCapabilities.current) return
+
+      // Remove video orientation extension due to incompatibilities with pymediasoup and other clients
+      routerRtpCapabilities.current.headerExtensions = routerRtpCapabilities.current.headerExtensions?.filter(
+        ext => ext.uri !== 'urn:3gpp:video-orientation',
+      )
       await device.current.load({
         routerRtpCapabilities: routerRtpCapabilities.current,
       })
