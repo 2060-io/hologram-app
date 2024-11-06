@@ -1,5 +1,10 @@
 import appCheck from '@react-native-firebase/app-check'
 import axios from 'axios'
+import {
+  OrientationLock,
+  lockAsync as setScreenOrientation,
+  unlockAsync as resetScreenOrientation,
+} from 'expo-screen-orientation'
 import { Device, types } from 'mediasoup-client'
 import { WebSocketTransport, Peer } from 'protoo-client'
 import { useEffect, useState, useRef } from 'react'
@@ -133,6 +138,7 @@ export const useVideoCall = () => {
     const initialize = async () => {
       if (!agent || !didcommConnection || !didcommCallType) return
       try {
+        setScreenOrientation(OrientationLock.PORTRAIT_UP)
         InCallManager.start({ media: 'audio' })
         const callInfo = incomingCallInfo
           ? incomingCallInfo
@@ -281,6 +287,7 @@ export const useVideoCall = () => {
 
     return () => {
       cleanObjects()
+      resetScreenOrientation()
     }
   }, [agent, devEnvs])
 
