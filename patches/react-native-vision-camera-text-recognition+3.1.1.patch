@@ -1,13 +1,402 @@
+diff --git a/node_modules/react-native-vision-camera-text-recognition/android/src/main/java/com/visioncameratextrecognition/BitmapUtils.java b/node_modules/react-native-vision-camera-text-recognition/android/src/main/java/com/visioncameratextrecognition/BitmapUtils.java
+new file mode 100644
+index 0000000..2fd0148
+--- /dev/null
++++ b/node_modules/react-native-vision-camera-text-recognition/android/src/main/java/com/visioncameratextrecognition/BitmapUtils.java
+@@ -0,0 +1,231 @@
++package com.visioncameratextrecognition;
++
++/*
++ * Copyright 2020 Google LLC. All rights reserved.
++ *
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ *     http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++
++import android.annotation.TargetApi;
++import android.graphics.Bitmap;
++import android.graphics.BitmapFactory;
++import android.graphics.ImageFormat;
++import android.graphics.Matrix;
++import android.graphics.Rect;
++import android.graphics.YuvImage;
++import android.media.Image;
++import android.media.Image.Plane;
++import android.os.Build.VERSION_CODES;
++import androidx.annotation.Nullable;
++
++import android.util.Base64;
++import android.util.Log;
++import androidx.annotation.RequiresApi;
++
++import com.mrousavy.camera.core.FrameInvalidError;
++import com.mrousavy.camera.frameprocessors.Frame;
++import com.mrousavy.camera.core.types.Orientation;
++
++import java.io.ByteArrayOutputStream;
++import java.nio.ByteBuffer;
++
++/** Utils functions for bitmap conversions. */
++public class BitmapUtils {
++    private static final String TAG = "BitmapUtils";
++
++    /** Converts NV21 format byte buffer to bitmap. */
++    @Nullable
++    public static Bitmap getBitmap(ByteBuffer data, FrameMetadata metadata) {
++        data.rewind();
++        byte[] imageInBuffer = new byte[data.limit()];
++        data.get(imageInBuffer, 0, imageInBuffer.length);
++        try {
++            YuvImage image =
++                    new YuvImage(
++                            imageInBuffer, ImageFormat.NV21, metadata.getWidth(), metadata.getHeight(), null);
++            ByteArrayOutputStream stream = new ByteArrayOutputStream();
++            image.compressToJpeg(new Rect(0, 0, metadata.getWidth(), metadata.getHeight()), 80, stream);
++
++            Bitmap bmp = BitmapFactory.decodeByteArray(stream.toByteArray(), 0, stream.size());
++
++            stream.close();
++            return rotateBitmap(bmp, metadata.getRotation(), false, false);
++        } catch (Exception e) {
++            Log.e("VisionProcessorBase", "Error: " + e.getMessage());
++        }
++        return null;
++    }
++
++    /** Converts a YUV_420_888 image from Vision Camera API to a bitmap. */
++    public static Bitmap getBitmap(Frame image) throws FrameInvalidError {
++        FrameMetadata frameMetadata =
++                new FrameMetadata.Builder()
++                        .setWidth(image.getWidth())
++                        .setHeight(image.getHeight())
++                        .setRotation(getRotationDegreeFromOrientation(image.getOrientation()))
++                        .build();
++
++        ByteBuffer nv21Buffer =
++                yuv420ThreePlanesToNV21(image.getImage().getPlanes(), image.getWidth(), image.getHeight());
++        return getBitmap(nv21Buffer, frameMetadata);
++    }
++
++    public static int getRotationDegreeFromOrientation(Orientation orientation) {
++        if (orientation.name().equals(Orientation.PORTRAIT.name())) {
++            return 0;
++        }else if (orientation.name().equals(Orientation.LANDSCAPE_LEFT.name())) {
++            return 270;
++        } else if (orientation.name().equals(Orientation.LANDSCAPE_RIGHT.name())) {
++            return 90;
++        }else if (orientation.name().equals(Orientation.PORTRAIT_UPSIDE_DOWN.name())) {
++            return 180;
++        }
++        return 0;
++    }
++
++    /** Rotates a bitmap if it is converted from a bytebuffer. */
++    private static Bitmap rotateBitmap(
++            Bitmap bitmap, int rotationDegrees, boolean flipX, boolean flipY) {
++        Matrix matrix = new Matrix();
++
++        // Rotate the image back to straight.
++        matrix.postRotate(rotationDegrees);
++
++        // Mirror the image along the X or Y axis.
++        matrix.postScale(flipX ? -1.0f : 1.0f, flipY ? -1.0f : 1.0f);
++        Bitmap rotatedBitmap =
++                Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
++
++        // Recycle the old bitmap if it has changed.
++        if (rotatedBitmap != bitmap) {
++            bitmap.recycle();
++        }
++        return rotatedBitmap;
++    }
++
++    /**
++     * Converts YUV_420_888 to NV21 bytebuffer.
++     *
++     * <p>The NV21 format consists of a single byte array containing the Y, U and V values. For an
++     * image of size S, the first S positions of the array contain all the Y values. The remaining
++     * positions contain interleaved V and U values. U and V are subsampled by a factor of 2 in both
++     * dimensions, so there are S/4 U values and S/4 V values. In summary, the NV21 array will contain
++     * S Y values followed by S/4 VU values: YYYYYYYYYYYYYY(...)YVUVUVUVU(...)VU
++     *
++     * <p>YUV_420_888 is a generic format that can describe any YUV image where U and V are subsampled
++     * by a factor of 2 in both dimensions. {@link Image#getPlanes} returns an array with the Y, U and
++     * V planes. The Y plane is guaranteed not to be interleaved, so we can just copy its values into
++     * the first part of the NV21 array. The U and V planes may already have the representation in the
++     * NV21 format. This happens if the planes share the same buffer, the V buffer is one position
++     * before the U buffer and the planes have a pixelStride of 2. If this is case, we can just copy
++     * them to the NV21 array.
++     */
++    @RequiresApi(VERSION_CODES.KITKAT)
++    private static ByteBuffer yuv420ThreePlanesToNV21(
++            Plane[] yuv420888planes, int width, int height) {
++        int imageSize = width * height;
++        byte[] out = new byte[imageSize + 2 * (imageSize / 4)];
++
++        if (areUVPlanesNV21(yuv420888planes, width, height)) {
++            // Copy the Y values.
++            yuv420888planes[0].getBuffer().get(out, 0, imageSize);
++
++            ByteBuffer uBuffer = yuv420888planes[1].getBuffer();
++            ByteBuffer vBuffer = yuv420888planes[2].getBuffer();
++            // Get the first V value from the V buffer, since the U buffer does not contain it.
++            vBuffer.get(out, imageSize, 1);
++            // Copy the first U value and the remaining VU values from the U buffer.
++            uBuffer.get(out, imageSize + 1, 2 * imageSize / 4 - 1);
++        } else {
++            // Fallback to copying the UV values one by one, which is slower but also works.
++            // Unpack Y.
++            unpackPlane(yuv420888planes[0], width, height, out, 0, 1);
++            // Unpack U.
++            unpackPlane(yuv420888planes[1], width, height, out, imageSize + 1, 2);
++            // Unpack V.
++            unpackPlane(yuv420888planes[2], width, height, out, imageSize, 2);
++        }
++
++        return ByteBuffer.wrap(out);
++    }
++
++    /** Checks if the UV plane buffers of a YUV_420_888 image are in the NV21 format. */
++    @RequiresApi(VERSION_CODES.KITKAT)
++    private static boolean areUVPlanesNV21(Plane[] planes, int width, int height) {
++        int imageSize = width * height;
++
++        ByteBuffer uBuffer = planes[1].getBuffer();
++        ByteBuffer vBuffer = planes[2].getBuffer();
++
++        // Backup buffer properties.
++        int vBufferPosition = vBuffer.position();
++        int uBufferLimit = uBuffer.limit();
++
++        // Advance the V buffer by 1 byte, since the U buffer will not contain the first V value.
++        vBuffer.position(vBufferPosition + 1);
++        // Chop off the last byte of the U buffer, since the V buffer will not contain the last U value.
++        uBuffer.limit(uBufferLimit - 1);
++
++        // Check that the buffers are equal and have the expected number of elements.
++        boolean areNV21 =
++                (vBuffer.remaining() == (2 * imageSize / 4 - 2)) && (vBuffer.compareTo(uBuffer) == 0);
++
++        // Restore buffers to their initial state.
++        vBuffer.position(vBufferPosition);
++        uBuffer.limit(uBufferLimit);
++
++        return areNV21;
++    }
++
++    /**
++     * Unpack an image plane into a byte array.
++     *
++     * <p>The input plane data will be copied in 'out', starting at 'offset' and every pixel will be
++     * spaced by 'pixelStride'. Note that there is no row padding on the output.
++     */
++    @TargetApi(VERSION_CODES.KITKAT)
++    private static void unpackPlane(
++            Plane plane, int width, int height, byte[] out, int offset, int pixelStride) {
++        ByteBuffer buffer = plane.getBuffer();
++        buffer.rewind();
++
++        // Compute the size of the current plane.
++        // We assume that it has the aspect ratio as the original image.
++        int numRow = (buffer.limit() + plane.getRowStride() - 1) / plane.getRowStride();
++        if (numRow == 0) {
++            return;
++        }
++        int scaleFactor = height / numRow;
++        int numCol = width / scaleFactor;
++
++        // Extract the data in the output buffer.
++        int outputPos = offset;
++        int rowStart = 0;
++        for (int row = 0; row < numRow; row++) {
++            int inputPos = rowStart;
++            for (int col = 0; col < numCol; col++) {
++                out[outputPos] = buffer.get(inputPos);
++                outputPos += pixelStride;
++                inputPos += plane.getPixelStride();
++            }
++            rowStart += plane.getRowStride();
++        }
++    }
++
++    public static Bitmap base642Bitmap(String base64) {
++        byte[] decode = Base64.decode(base64,Base64.DEFAULT);
++        return BitmapFactory.decodeByteArray(decode,0,decode.length);
++    }
++
++}
++
+diff --git a/node_modules/react-native-vision-camera-text-recognition/android/src/main/java/com/visioncameratextrecognition/FrameMetadata.java b/node_modules/react-native-vision-camera-text-recognition/android/src/main/java/com/visioncameratextrecognition/FrameMetadata.java
+new file mode 100644
+index 0000000..3ecd6f1
+--- /dev/null
++++ b/node_modules/react-native-vision-camera-text-recognition/android/src/main/java/com/visioncameratextrecognition/FrameMetadata.java
+@@ -0,0 +1,70 @@
++package com.visioncameratextrecognition;
++
++/*
++ * Copyright 2020 Google LLC. All rights reserved.
++ *
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ *     http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++
++/** Describing a frame info. */
++public class FrameMetadata {
++
++    private final int width;
++    private final int height;
++    private final int rotation;
++
++    public int getWidth() {
++        return width;
++    }
++
++    public int getHeight() {
++        return height;
++    }
++
++    public int getRotation() {
++        return rotation;
++    }
++
++    private FrameMetadata(int width, int height, int rotation) {
++        this.width = width;
++        this.height = height;
++        this.rotation = rotation;
++    }
++
++    /** Builder of {@link FrameMetadata}. */
++    public static class Builder {
++
++        private int width;
++        private int height;
++        private int rotation;
++
++        public Builder setWidth(int width) {
++            this.width = width;
++            return this;
++        }
++
++        public Builder setHeight(int height) {
++            this.height = height;
++            return this;
++        }
++
++        public Builder setRotation(int rotation) {
++            this.rotation = rotation;
++            return this;
++        }
++
++        public FrameMetadata build() {
++            return new FrameMetadata(width, height, rotation);
++        }
++    }
++}
+diff --git a/node_modules/react-native-vision-camera-text-recognition/android/src/main/java/com/visioncameratextrecognition/VisionCameraTextRecognitionPlugin.kt b/node_modules/react-native-vision-camera-text-recognition/android/src/main/java/com/visioncameratextrecognition/VisionCameraTextRecognitionPlugin.kt
+index f48c947..ae254e1 100644
+--- a/node_modules/react-native-vision-camera-text-recognition/android/src/main/java/com/visioncameratextrecognition/VisionCameraTextRecognitionPlugin.kt
++++ b/node_modules/react-native-vision-camera-text-recognition/android/src/main/java/com/visioncameratextrecognition/VisionCameraTextRecognitionPlugin.kt
+@@ -1,8 +1,10 @@
+ package com.visioncameratextrecognition
+ 
++import android.graphics.Bitmap
+ import android.graphics.Point
+ import android.graphics.Rect
+ import android.media.Image
++import android.util.Log
+ import com.facebook.react.bridge.WritableNativeArray
+ import com.facebook.react.bridge.WritableNativeMap
+ import com.google.android.gms.tasks.Task
+@@ -18,7 +20,7 @@ import com.google.mlkit.vision.text.latin.TextRecognizerOptions
+ import com.mrousavy.camera.frameprocessors.Frame
+ import com.mrousavy.camera.frameprocessors.FrameProcessorPlugin
+ import com.mrousavy.camera.frameprocessors.VisionCameraProxy
+-import java.util.HashMap
++
+ 
+ class VisionCameraTextRecognitionPlugin(proxy: VisionCameraProxy, options: Map<String, Any>?) :
+     FrameProcessorPlugin() {
+@@ -45,8 +47,41 @@ class VisionCameraTextRecognitionPlugin(proxy: VisionCameraProxy, options: Map<S
+     override fun callback(frame: Frame, arguments: Map<String, Any>?): HashMap<String, Any>? {
+         val data = WritableNativeMap()
+         val mediaImage: Image = frame.image
+-        val image =
+-            InputImage.fromMediaImage(mediaImage, frame.imageProxy.imageInfo.rotationDegrees)
++        /*
++        var bm: Bitmap = BitmapUtils.getBitmap(frame)
++        var bm = ImageUtils.convertYuv420888ImageToBitmap(mediaImage)
++        */
++        val inicioGetBitmap = System.currentTimeMillis()
++        var bm: Bitmap = BitmapUtils.getBitmap(frame)
++        val finalgetBitmap = System.currentTimeMillis()
++        val diff = finalgetBitmap- inicioGetBitmap
++        Log.i("VisionCameraTextRecognitionPlugin", "getBitmap le tomo $diff")
++        if (arguments != null && arguments.containsKey("scanRegion")) {
++            val scanRegion = arguments["scanRegion"] as Map<*, *>?
++            val left = (scanRegion!!["left"] as Double) / 100.0 * bm.width
++            val top = (scanRegion["top"] as Double) / 100.0 * bm.height
++            val width = (scanRegion["width"] as Double) / 100.0 * bm.width
++            val height = (scanRegion["height"] as Double) / 100.0 * bm.height
++            val iniciocreateBitmap = System.currentTimeMillis()
++            bm = Bitmap.createBitmap(
++                bm,
++                left.toInt(),
++                top.toInt(),
++                width.toInt(),
++                height.toInt(),
++                null,
++                false
++            )
++            val finalcreateBitmap = System.currentTimeMillis()
++            val diffcreateBitmap = finalcreateBitmap- iniciocreateBitmap
++            Log.i("VisionCameraTextRecognitionPlugin", " createBitmap le tomo $diffcreateBitmap")
++        }
++        val inicioFromBitMap= System.currentTimeMillis()
++        val image = InputImage.fromBitmap(bm,frame.imageProxy.imageInfo.rotationDegrees);
++        val finalFromBitMap = System.currentTimeMillis()
++        val diffFromBitMap = finalFromBitMap - inicioFromBitMap
++        Log.i("VisionCameraTextRecognitionPlugin", "fromBitmap le tomo $diffFromBitMap ")
++        // val image = InputImage.fromMediaImage(mediaImage, frame.imageProxy.imageInfo.rotationDegrees)
+         val task: Task<Text> = recognizer.process(image)
+         try {
+             val text: Text = Tasks.await(task)
 diff --git a/node_modules/react-native-vision-camera-text-recognition/lib/typescript/src/types.d.ts b/node_modules/react-native-vision-camera-text-recognition/lib/typescript/src/types.d.ts
-index cb0693a..e13af05 100644
+index cb0693a..16aa465 100644
 --- a/node_modules/react-native-vision-camera-text-recognition/lib/typescript/src/types.d.ts
 +++ b/node_modules/react-native-vision-camera-text-recognition/lib/typescript/src/types.d.ts
-@@ -20,22 +20,22 @@ export type CameraTypes = {
+@@ -19,23 +19,30 @@ export type CameraTypes = {
+     mode: 'translate';
      options: TranslatorOptions;
  });
++type ScanRegion = {
++    left: number;
++    top: number;
++    width: number;
++    height: number;
++};
++export type ScanTextConfig = { scanRegion: ScanRegion };
  export type TextRecognitionPlugin = {
 -    scanText: (frame: Frame) => Text[];
-+    scanText: (frame: Frame) => Text;
++  scanText: (frame: Frame, config?: ScanTextConfig) => Text;
  };
  export type TranslatorPlugin = {
      translate: (frame: Frame) => string;
@@ -43,33 +432,52 @@ index 8ae84f5..3ab8371 100644
        useWorklets(data);
      },
 diff --git a/node_modules/react-native-vision-camera-text-recognition/src/scanText.ts b/node_modules/react-native-vision-camera-text-recognition/src/scanText.ts
-index fbd9d79..70fbeae 100644
+index fbd9d79..3d906c7 100644
 --- a/node_modules/react-native-vision-camera-text-recognition/src/scanText.ts
 +++ b/node_modules/react-native-vision-camera-text-recognition/src/scanText.ts
-@@ -18,10 +18,10 @@ export function createTextRecognitionPlugin(
+@@ -4,6 +4,7 @@ import type {
+   TextRecognitionPlugin,
+   TextRecognitionOptions,
+   Text,
++  ScanTextConfig
+ } from './types';
+ 
+ const LINKING_ERROR = `Can't load plugin scanText.Try cleaning cache or reinstall plugin.`;
+@@ -18,10 +19,10 @@ export function createTextRecognitionPlugin(
      throw new Error(LINKING_ERROR);
    }
    return {
 -    scanText: (frame: Frame): Text[] => {
-+    scanText: (frame: Frame): Text => {
++    scanText: (frame: Frame, config?: ScanTextConfig): Text => {
        'worklet';
        // @ts-ignore
 -      return plugin.call(frame) as Text[];
-+      return plugin.call(frame) as Text;
++      return plugin.call(frame, config) as Text;
      },
    };
  }
 diff --git a/node_modules/react-native-vision-camera-text-recognition/src/types.ts b/node_modules/react-native-vision-camera-text-recognition/src/types.ts
-index ad397e6..d6804d5 100644
+index ad397e6..05e55ad 100644
 --- a/node_modules/react-native-vision-camera-text-recognition/src/types.ts
 +++ b/node_modules/react-native-vision-camera-text-recognition/src/types.ts
-@@ -88,24 +88,24 @@ export type CameraTypes = {
+@@ -86,26 +86,35 @@ export type CameraTypes = {
+   );;
  
+ 
++type ScanRegion = {
++  left: number,
++  top: number,
++  width: number,
++  height: number,
++}
++
++export type ScanTextConfig = { scanRegion: ScanRegion }
  
  export type TextRecognitionPlugin = {
 -  scanText: (frame: Frame) => Text[];
-+  scanText: (frame: Frame) => Text;
++  scanText: (frame: Frame, config?: ScanTextConfig) => Text;
  };
++
  export type TranslatorPlugin = {
    translate: (frame: Frame) => string;
  };

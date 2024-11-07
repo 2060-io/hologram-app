@@ -1,7 +1,8 @@
 import React, { FC, PropsWithChildren, useCallback, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Dimensions, Platform, StyleSheet, Text, useWindowDimensions, View } from 'react-native'
-import { Camera, useCameraFormat, useFrameProcessor } from 'react-native-vision-camera'
+import { Svg, Rect } from 'react-native-svg'
+import { Camera, runAtTargetFps, useCameraFormat, useFrameProcessor } from 'react-native-vision-camera'
 import { useTextRecognition } from 'react-native-vision-camera-text-recognition'
 import { Text as ResolvedText } from 'react-native-vision-camera-text-recognition/src/types'
 import { Worklets } from 'react-native-worklets-core'
@@ -16,6 +17,13 @@ const SCREEN_HEIGHT = Platform.select<number>({
   android: Dimensions.get('screen').height, // - StaticSafeAreaInsets.safeAreaInsetsBottom,
   ios: Dimensions.get('window').height,
 }) as number
+
+const scanRegion = {
+  left: 5,
+  top: 40,
+  width: 90,
+  height: 10,
+}
 
 const MRZCamera: FC<PropsWithChildren<MRZCameraProps>> = ({
   onSkipPressed,
@@ -36,9 +44,9 @@ const MRZCamera: FC<PropsWithChildren<MRZCameraProps>> = ({
   const format = useCameraFormat(device, [
     { fps: supports60Fps ? 60 : 30 },
     { videoAspectRatio: screenAspectRatio },
-    { videoResolution: 'max' },
+    { videoResolution: { width: 1280, height: 720 } },
     { photoAspectRatio: screenAspectRatio },
-    { photoResolution: 'max' },
+    { photoResolution: { width: 1280, height: 720 } },
   ])
 
   const fps = Math.min(format?.maxFps ?? 1, supports60Fps ? 60 : 30)
@@ -80,25 +88,41 @@ const MRZCamera: FC<PropsWithChildren<MRZCameraProps>> = ({
     frame => {
       'worklet'
       if (!scanSuccess) {
-        const ocrData = scanText(frame)
-        handleScanRunOnJS(ocrData)
+        runAtTargetFps(1, () => {
+          'worklet'
+          const ocrData = scanText(frame, { scanRegion: { left: 5, top: 40, width: 90, height: 10 } })
+          handleScanRunOnJS(ocrData)
+        })
       }
     },
     [handleScanRunOnJS],
   )
 
   return (
-    <View style={StyleSheet.absoluteFill}>
+    <>
       {device ? (
-        <Camera
-          style={StyleSheet.absoluteFill}
-          device={device}
-          isActive={cameraProps?.isActive}
-          ref={camera}
-          format={format}
-          fps={fps}
-          frameProcessor={frameProcessor}
-        />
+        <>
+          <Camera
+            style={StyleSheet.absoluteFill}
+            device={device}
+            isActive={cameraProps?.isActive}
+            ref={camera}
+            format={format}
+            fps={fps}
+            frameProcessor={frameProcessor}
+          />
+          <Svg preserveAspectRatio="xMidYMid slice" style={StyleSheet.absoluteFill}>
+            <Rect
+              x={(scanRegion.left / 100) * screenWidth}
+              y={(scanRegion.top / 100) * SCREEN_HEIGHT}
+              width={(scanRegion.width / 100) * screenWidth}
+              height={(scanRegion.height / 100) * SCREEN_HEIGHT}
+              strokeWidth="2"
+              stroke="red"
+              fillOpacity={0}
+            />
+          </Svg>
+        </>
       ) : undefined}
       <OutlinedGreenButton text={t('general.cancel')} onPress={onSkipPressed} style={styles.cancelButton} />
       {feedbackText ? (
@@ -106,7 +130,7 @@ const MRZCamera: FC<PropsWithChildren<MRZCameraProps>> = ({
           <Text style={styles.feedbackText}>{feedbackText}</Text>
         </View>
       ) : null}
-    </View>
+    </>
   )
 }
 
