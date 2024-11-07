@@ -1,12 +1,12 @@
 import { activateKeepAwakeAsync, deactivateKeepAwake } from 'expo-keep-awake'
-import React, { FC, PropsWithChildren, useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useCameraDevices } from 'react-native-vision-camera'
 
 import MRZCamera from './MRZCamera'
 import { MRZScannerProps } from './MRZScannerProps'
 import { findAndParseMrz } from './findAndParseMrz'
 
-const MRZScanner: FC<PropsWithChildren<MRZScannerProps>> = ({ onMRZFinalResults, onSkipPressed }) => {
+const MRZScanner = ({ onMRZFinalResults, onSkipPressed }: MRZScannerProps) => {
   const devices = useCameraDevices()
   const device = devices.find(dev => dev.position === 'back')
   const [isActive, setIsActive] = useState(true)
@@ -44,7 +44,7 @@ const MRZScanner: FC<PropsWithChildren<MRZScannerProps>> = ({ onMRZFinalResults,
       onSkipPressed={skipScan}
       cameraProps={{ device, isActive }}
     />
-  ) : undefined
+  ) : null
 }
 
 export default MRZScanner
