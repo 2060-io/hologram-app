@@ -506,14 +506,14 @@ index fbd9d79..3d906c7 100644
    };
  }
 diff --git a/node_modules/react-native-vision-camera-text-recognition/src/types.ts b/node_modules/react-native-vision-camera-text-recognition/src/types.ts
-index ad397e6..05e55ad 100644
+index ad397e6..e61f091 100644
 --- a/node_modules/react-native-vision-camera-text-recognition/src/types.ts
 +++ b/node_modules/react-native-vision-camera-text-recognition/src/types.ts
 @@ -86,26 +86,35 @@ export type CameraTypes = {
    );;
  
  
-+type ScanRegion = {
++export type ScanRegion = {
 +  left: number,
 +  top: number,
 +  width: number,

@@ -1,10 +1,10 @@
-import React, { FC, PropsWithChildren, useCallback, useMemo, useRef, useState } from 'react'
+import React, { useCallback, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Dimensions, Platform, StyleSheet, Text, useWindowDimensions, View } from 'react-native'
+import { Dimensions, Platform, StyleSheet, useWindowDimensions } from 'react-native'
 import { Svg, Rect } from 'react-native-svg'
 import { Camera, runAtTargetFps, useCameraFormat, useFrameProcessor } from 'react-native-vision-camera'
 import { useTextRecognition } from 'react-native-vision-camera-text-recognition'
-import { Text as ResolvedText } from 'react-native-vision-camera-text-recognition/src/types'
+import { Text as ResolvedText, ScanRegion } from 'react-native-vision-camera-text-recognition/src/types'
 import { Worklets } from 'react-native-worklets-core'
 
 import { OutlinedGreenButton } from '../common'
@@ -18,24 +18,18 @@ const SCREEN_HEIGHT = Platform.select<number>({
   ios: Dimensions.get('window').height,
 }) as number
 
-const scanRegion = {
+const scanRegion: ScanRegion = {
   left: 5,
   top: 40,
   width: 90,
   height: 10,
 }
 
-const MRZCamera: FC<PropsWithChildren<MRZCameraProps>> = ({
-  onSkipPressed,
-  cameraProps,
-  onData,
-  scanSuccess,
-}) => {
+const MRZCamera = ({ onSkipPressed, cameraProps, onData, scanSuccess }: MRZCameraProps) => {
   const { t } = useTranslation()
   const camera = useRef<Camera>(null)
   const { width: screenWidth } = useWindowDimensions()
   const device = cameraProps?.device
-  const [feedbackText, setFeedbackText] = useState<string>('')
   const { scanText } = useTextRecognition({ language: 'latin' })
 
   const screenAspectRatio = SCREEN_HEIGHT / SCREEN_WIDTH
@@ -56,19 +50,8 @@ const MRZCamera: FC<PropsWithChildren<MRZCameraProps>> = ({
    */
   const handleScan = useCallback(
     (data: ResolvedText) => {
-      if (data && data.blocks.length === 0) {
-        setFeedbackText('')
-      }
       /* Scanning the text from the image and then setting the state of the component. */
       if (data && data.blocks.length > 0) {
-        data.blocks.forEach(block => {
-          if (block.blockFrame.width / screenWidth < 0.8) {
-            setFeedbackText('Hold Still')
-          } else {
-            setFeedbackText('Scanning...')
-          }
-        })
-
         let lines: string[] = []
         data.blocks.forEach(block => {
           lines.push(block.blockText)
@@ -90,7 +73,7 @@ const MRZCamera: FC<PropsWithChildren<MRZCameraProps>> = ({
       if (!scanSuccess) {
         runAtTargetFps(1, () => {
           'worklet'
-          const ocrData = scanText(frame, { scanRegion: { left: 5, top: 40, width: 90, height: 10 } })
+          const ocrData = scanText(frame, { scanRegion: { ...scanRegion } })
           handleScanRunOnJS(ocrData)
         })
       }
@@ -117,19 +100,16 @@ const MRZCamera: FC<PropsWithChildren<MRZCameraProps>> = ({
               y={(scanRegion.top / 100) * SCREEN_HEIGHT}
               width={(scanRegion.width / 100) * screenWidth}
               height={(scanRegion.height / 100) * SCREEN_HEIGHT}
-              strokeWidth="2"
+              strokeWidth="1.5"
               stroke="red"
               fillOpacity={0}
+              rx="10"
+              ry="10"
             />
           </Svg>
         </>
       ) : undefined}
       <OutlinedGreenButton text={t('general.cancel')} onPress={onSkipPressed} style={styles.cancelButton} />
-      {feedbackText ? (
-        <View style={styles.feedbackContainer}>
-          <Text style={styles.feedbackText}>{feedbackText}</Text>
-        </View>
-      ) : null}
     </>
   )
 }
