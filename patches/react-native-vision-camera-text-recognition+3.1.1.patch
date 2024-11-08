@@ -371,10 +371,26 @@ index 8bf8aef..2739368 100644
              data["resultText"] = result.text
              data["blocks"] = blocks
 diff --git a/node_modules/react-native-vision-camera-text-recognition/lib/typescript/src/types.d.ts b/node_modules/react-native-vision-camera-text-recognition/lib/typescript/src/types.d.ts
-index cb0693a..16aa465 100644
+index cb0693a..8f6e0b8 100644
 --- a/node_modules/react-native-vision-camera-text-recognition/lib/typescript/src/types.d.ts
 +++ b/node_modules/react-native-vision-camera-text-recognition/lib/typescript/src/types.d.ts
-@@ -19,23 +19,30 @@ export type CameraTypes = {
+@@ -2,8 +2,15 @@ export type { Frame, ReadonlyFrameProcessor, FrameProcessorPlugin, FrameInternal
+ export type { ForwardedRef } from 'react';
+ import type { CameraProps, Frame } from 'react-native-vision-camera';
+ export type Languages = 'af' | 'sq' | 'ar' | 'be' | 'bn' | 'bg' | 'ca' | 'zh' | 'cs' | 'da' | 'nl' | 'en' | 'eo' | 'et' | 'fi' | 'fr' | 'gl' | 'ka' | 'de' | 'el' | 'gu' | 'ht' | 'he' | 'hi' | 'hu' | 'is' | 'id' | 'ga' | 'it' | 'ja' | 'kn' | 'ko' | 'lv' | 'lt' | 'mk' | 'ms' | 'mt' | 'mr' | 'no' | 'fa' | 'pl' | 'pt' | 'ro' | 'ru' | 'sk' | 'sl' | 'es' | 'sw' | 'tl' | 'ta' | 'te' | 'th' | 'tr' | 'uk' | 'ur' | 'vi' | 'cy';
++export type ScanRegion = {
++    left: number,
++    top: number,
++    width: number,
++    height: number,
++}
+ export type TextRecognitionOptions = {
+     language: 'latin' | 'chinese' | 'devanagari' | 'japanese' | 'korean';
++    scanRegion?: ScanRegion
+ };
+ export type TranslatorOptions = {
+     from: Languages;
+@@ -19,23 +26,30 @@ export type CameraTypes = {
      mode: 'translate';
      options: TranslatorOptions;
  });
