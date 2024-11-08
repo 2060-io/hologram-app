@@ -30,7 +30,7 @@ const MRZCamera = ({ onSkipPressed, cameraProps, onData, scanSuccess }: MRZCamer
   const camera = useRef<Camera>(null)
   const { width: screenWidth } = useWindowDimensions()
   const device = cameraProps?.device
-  const { scanText } = useTextRecognition({ language: 'latin' })
+  const { scanText } = useTextRecognition({ language: 'latin', scanRegion })
 
   const screenAspectRatio = SCREEN_HEIGHT / SCREEN_WIDTH
 
@@ -73,7 +73,7 @@ const MRZCamera = ({ onSkipPressed, cameraProps, onData, scanSuccess }: MRZCamer
       if (!scanSuccess) {
         runAtTargetFps(1, () => {
           'worklet'
-          const ocrData = scanText(frame, { scanRegion: { ...scanRegion } })
+          const ocrData = scanText(frame)
           handleScanRunOnJS(ocrData)
         })
       }
