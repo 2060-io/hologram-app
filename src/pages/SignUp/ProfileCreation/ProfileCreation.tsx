@@ -1,4 +1,5 @@
 import { PictureData } from '@2060.io/credo-ts-didcomm-user-profile'
+import { CommonActions } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -57,6 +58,10 @@ const ProfileCreation = ({ navigation }: Props) => {
     ])
   }
 
+  const goToChats = () => {
+    navigation.dispatch(CommonActions.reset({ index: 0, routes: [{ name: 'Home' }] }))
+  }
+
   const saveUserProfileData = () => {
     setUserProfileData?.({ displayName: displayName.trim(), displayPicture })
   }
@@ -64,6 +69,7 @@ const ProfileCreation = ({ navigation }: Props) => {
   const getStart = () => {
     requestNotificationPermissions()
     saveUserProfileData()
+    goToChats()
   }
 
   const handleLogStartError = (error: Error) => {
