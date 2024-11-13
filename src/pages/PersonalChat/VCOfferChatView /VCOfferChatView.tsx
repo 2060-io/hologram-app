@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
 
 import { ChatParticipant } from '../ChatMessage/Props'
-import { BlueButton, Header, OutlinedBlueButton } from '../components'
+import { BlueButton, Header, OutlinedBlueButton, State } from '../components'
 
 import getStyles from './styles'
 
@@ -134,27 +134,9 @@ const VCOfferChatView = ({ sender, associatedRecordId, metadata, agent }: Props)
         </Text>
       </View>
     ),
-    [CredentialState.Declined]: (
-      <View style={[styles.baseFooterContainer, styles.refusedContainer]}>
-        <Text typography="EuclidCircularA-Bold" style={styles.refusedText}>
-          {t('personalChat.youRefusedCredential')}
-        </Text>
-      </View>
-    ),
-    [CredentialState.CredentialReceived]: (
-      <View style={[styles.baseFooterContainer, styles.acceptedContainer]}>
-        <Text typography="EuclidCircularA-Bold" style={styles.acceptedText}>
-          {t('personalChat.credentialAdded')}
-        </Text>
-      </View>
-    ),
-    [CredentialState.Done]: (
-      <View style={[styles.baseFooterContainer, styles.acceptedContainer]}>
-        <Text typography="EuclidCircularA-Bold" style={styles.acceptedText}>
-          {t('personalChat.credentialAdded')}
-        </Text>
-      </View>
-    ),
+    [CredentialState.Declined]: <State text={t('personalChat.youRefusedCredential')} type="error" />,
+    [CredentialState.CredentialReceived]: <State text={t('personalChat.credentialAdded')} />,
+    [CredentialState.Done]: <State text={t('personalChat.credentialAdded')} />,
   }
   return (
     <View style={styles.container}>

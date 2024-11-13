@@ -4,7 +4,7 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
 
-import { BlueButton, Header, OutlinedBlueButton } from '../components'
+import { BlueButton, Header, OutlinedBlueButton, State } from '../components'
 
 import { Props } from './MrzRequestChatViewProps'
 import getStyles from './styles'
@@ -29,26 +29,14 @@ const MrzRequestChatView = (props: Props) => {
   }
 
   const footer: Record<MrzRequestState, React.ReactElement> = {
-    aborted: (
-      <View style={[styles.baseFooterContainer, styles.refusedContainer]}>
-        <Text typography="EuclidCircularA-Bold" style={styles.refusedText}>
-          {t('chat.mrzAborted')}
-        </Text>
-      </View>
-    ),
+    aborted: <State text={t('chat.mrzAborted')} type="error" />,
     received: (
       <View style={styles.buttonsContainer}>
         <OutlinedBlueButton text={t('general.refuse')} onPress={() => {}} style={styles.refuseButton} />
         <BlueButton text={t('general.accept')} onPress={handleScanMrz} style={styles.acceptButton} />
       </View>
     ),
-    scanned: (
-      <View style={[styles.baseFooterContainer, styles.acceptedContainer]}>
-        <Text typography="EuclidCircularA-Bold" style={styles.acceptedText}>
-          {t('chat.mrzScanned')}
-        </Text>
-      </View>
-    ),
+    scanned: <State text={t('chat.mrzScanned')} />,
   }
 
   return (
