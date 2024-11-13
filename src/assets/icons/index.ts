@@ -35,6 +35,7 @@ import leftArrow from './LeftArrow'
 import lightCredentialCardSkeleton from './LightCredentialCardSkeleton'
 import link from './Link'
 import lock from './Lock'
+import MRZ from './MRZ'
 import maximize from './Maximize'
 import menuOutline from './MenuOutline'
 import messages from './Messages'
@@ -158,4 +159,5 @@ export default {
   flipCamera,
   speakerOff,
   speakerOn,
+  MRZ,
 }

@@ -8,6 +8,7 @@ import Developer from './Developer'
 import ForwardMessages from './ForwardMessages'
 import HomeMain from './HomeMain'
 import ConnectionInvitation from './Invitation'
+import MRZScanner from './MRZScanner'
 import MessageDetails from './MessageDetails'
 import PersonalChat from './PersonalChat'
 import { DidcommPresentationRequest, OpenIdPresentationRequest } from './PresentationRequest'
@@ -54,4 +55,5 @@ export {
   MessageDetails,
   ForwardMessages,
   ShareMessages,
+  MRZScanner,
 }
