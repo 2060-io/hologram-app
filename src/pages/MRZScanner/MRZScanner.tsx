@@ -1,5 +1,10 @@
 import { StackScreenProps } from '@react-navigation/stack'
 import { activateKeepAwakeAsync, deactivateKeepAwake } from 'expo-keep-awake'
+import {
+  OrientationLock,
+  lockAsync as setScreenOrientation,
+  unlockAsync as resetScreenOrientation,
+} from 'expo-screen-orientation'
 import React, { useEffect, useRef, useState } from 'react'
 import { useCameraDevices } from 'react-native-vision-camera'
 
@@ -23,13 +28,16 @@ const MRZScanner = ({ navigation, route }: Props) => {
 
   useEffect(() => {
     activateKeepAwakeAsync()
-    return () => {
-      deactivateKeepAwake()
+    setScreenOrientation(OrientationLock.PORTRAIT_UP)
+    const unsubscribe = navigation.addListener('beforeRemove', () => {
       setIsActive(false)
-    }
-  }, [])
+      deactivateKeepAwake()
+      resetScreenOrientation()
+    })
+    return unsubscribe
+  }, [navigation])
 
-  const skipScan = () => navigation.goBack()
+  const leaveScreen = () => navigation.goBack()
 
   const onResult = async (mrzFinalResults: string[]) => {
     agent?.modules.mrtd.sendMrzString({
@@ -37,7 +45,7 @@ const MRZScanner = ({ navigation, route }: Props) => {
       connectionId: chatThread?.data.connectionId!,
       threadId: didcommThreadId,
     })
-    navigation.goBack()
+    leaveScreen()
   }
 
   const onData = (lines: string[]) => {
@@ -54,7 +62,7 @@ const MRZScanner = ({ navigation, route }: Props) => {
     <MRZCamera
       onData={onData}
       scanSuccess={scanSuccess}
-      skipScan={skipScan}
+      skipScan={leaveScreen}
       cameraProps={{ device, isActive }}
     />
   ) : null
