@@ -103,6 +103,7 @@ export const getMobileAgentModules = (config: {
     media: new MediaSharingModule(),
     mediationRecipient: new MediationRecipientModule({
       mediatorPickupStrategy: config.mediatorPickupStrategy,
+      maximumMessagePickup: 100,
       baseMediatorReconnectionIntervalMs: 1000,
       maximumMediatorReconnectionIntervalMs: 8000,
     }),
