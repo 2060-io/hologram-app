@@ -19,6 +19,14 @@ const MRZ: React.FC<SvgProps> = props => (
           </G>
         </G>
         <Rect
+          data-name="Rect\xE1ngulo 5912"
+          width={208.421}
+          height={12.984}
+          rx={6.492}
+          fill="#e8eeeb"
+          transform="translate(6703.335 8025.16)"
+        />
+        <Rect
           data-name="Rect\xE1ngulo 6095"
           width={96}
           height={8}
@@ -125,66 +133,54 @@ const MRZ: React.FC<SvgProps> = props => (
           />
         </G>
         <Text
-          data-name="&lt;COUNTRY&lt;&lt;LASTNAME&lt;&lt;FIRSTNAME&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;"
+          data-name="<COUNTRY<<LASTNAME<<FIRSTNAME<<<<<<<<<<<<<<<<<<<<"
           transform="translate(6716.583 8140.439)"
           fill="#052b38"
           fontSize={8.52}
           fontFamily="Helvetica"
         >
-          <TSpan x={-113.858} y={7}>
-            {'&lt;'}
+          <TSpan x={0} y={9}>
+            {'<'}
           </TSpan>
-          <TSpan y={7} fontSize={6.42}>
+          <TSpan y={9} fontSize={6.42}>
             {'COUNTRY'}
           </TSpan>
-          <TSpan y={7}>{'&lt;&lt;'}</TSpan>
-          <TSpan y={7} fontSize={6.42}>
+          <TSpan y={9}>{'<<'}</TSpan>
+          <TSpan y={9} fontSize={6.42}>
             {'LASTNAME'}
           </TSpan>
-          <TSpan y={7}>{'&lt;&lt;'}</TSpan>
-          <TSpan y={7} fontSize={6.42}>
+          <TSpan y={9}>{'<<'}</TSpan>
+          <TSpan y={9} fontSize={6.42}>
             {'FIRSTNAME'}
           </TSpan>
-          <TSpan y={7}>
-            {'&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;'}
-          </TSpan>
-          <TSpan x={-19.902} y={24.12}>
-            {'&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;'}
-          </TSpan>
+          <TSpan y={9}>{'<<<<<<<<<<<<<<<<<<<<'}</TSpan>
         </Text>
         <Text
-          data-name="&lt;PASSPORTNO&lt;&lt;CODE&lt;&lt;CODE&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;CODE&lt;&lt;"
+          data-name="<PASSPORTNO<<CODE<<CODE<<<<<<<<<<<<<<<<<<<CODE<<"
           transform="translate(6716.583 8157.439)"
           fill="#052b38"
           fontSize={8.52}
           fontFamily="Helvetica"
         >
-          <TSpan x={-112.697} y={7}>
-            {'&lt;'}
+          <TSpan x={0} y={9}>
+            {'<'}
           </TSpan>
-          <TSpan y={7} fontSize={6.42}>
+          <TSpan y={9} fontSize={6.42}>
             {'PASSPORTNO'}
           </TSpan>
-          <TSpan y={7}>{'&lt;&lt;'}</TSpan>
-          <TSpan y={7} fontSize={6.42}>
+          <TSpan y={9}>{'<<'}</TSpan>
+          <TSpan y={9} fontSize={6.42}>
             {'CODE'}
           </TSpan>
-          <TSpan y={7}>{'&lt;&lt;'}</TSpan>
-          <TSpan y={7} fontSize={6.42}>
+          <TSpan y={9}>{'<<'}</TSpan>
+          <TSpan y={9} fontSize={6.42}>
             {'CODE'}
           </TSpan>
-          <TSpan y={7}>
-            {
-              '&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;'
-            }
-          </TSpan>
-          <TSpan x={-21.713} y={24.12}>
-            {'&lt;&lt;&lt;'}
-          </TSpan>
-          <TSpan y={24.12} fontSize={6.42}>
+          <TSpan y={9}>{'<<<<<<<<<<<<<<<<<<<'}</TSpan>
+          <TSpan y={9} fontSize={6.42}>
             {'CODE'}
           </TSpan>
-          <TSpan y={24.12}>{'&lt;&lt;'}</TSpan>
+          <TSpan y={9}>{'<<'}</TSpan>
         </Text>
       </G>
     </G>

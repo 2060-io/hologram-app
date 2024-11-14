@@ -25,7 +25,7 @@ const MrzRequestChatView = (props: Props) => {
   const handleScanMrz = async () => {
     const cameraPermission = await handleCameraPermission()
     if (!cameraPermission) return
-    navigation.navigate('MRZScanner', { didcommThreadId: props.didcommThreadId! })
+    navigation.navigate('MRZScanner', { didcommThreadId: props.didcommThreadId })
   }
 
   const footer: Record<MrzRequestState, React.ReactElement> = {
@@ -44,10 +44,10 @@ const MrzRequestChatView = (props: Props) => {
       <Header theme={theme} title={t('chat.mrzRequest')} leftIconName="scan" />
       <View style={styles.subContainer}>
         <Text typography="EuclidCircularA-Regular" style={styles.instructions}>
-          {t('chat.mrzScanInst')}
+          {t('chat.mrzScanChatInst')}
         </Text>
         <SvgIcon name="MRZ" width={'100%'} height={widthPercentageToDP('43')} style={styles.icon} />
-        {footer[props.metadata!.state]}
+        {footer[props.metadata.state]}
       </View>
     </View>
   )

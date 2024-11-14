@@ -36,7 +36,7 @@ export default (theme: AppTheme) =>
       textAlign: 'center',
       fontSize: theme.fontSize.md2,
     },
-    overlayContainer: {
+    topOverlayContainer: {
       backgroundColor: theme.isDarkMode ? theme.colors.secondary : theme.colors.primary,
       position: 'absolute',
       top: 0,

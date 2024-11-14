@@ -10,6 +10,7 @@ import { MRZCameraProps } from './MRZScannerProps'
 import getStyles from './styles'
 
 import { HeaderTitle, SvgIcon, Text } from '@2060/components/common'
+import { IS_DEVICE_IOS } from '@2060/constants'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { widthPercentageToDP } from '@2060/utils/responsiveUtils'
 
@@ -25,6 +26,7 @@ const scanRegion: ScanRegion = {
   width: 90,
   height: 24,
 }
+const RUN_TARGET_FPS = IS_DEVICE_IOS ? 5 : 1
 
 const MRZCamera = ({ skipScan, cameraProps, onData, scanSuccess }: MRZCameraProps) => {
   const { t } = useTranslation()
@@ -43,7 +45,6 @@ const MRZCamera = ({ skipScan, cameraProps, onData, scanSuccess }: MRZCameraProp
     { photoAspectRatio: screenAspectRatio },
     { photoResolution: { width: 1280, height: 720 } },
   ])
-
   const fps = Math.min(format?.maxFps ?? 1, supports60Fps ? 60 : 30)
 
   /**
@@ -72,7 +73,7 @@ const MRZCamera = ({ skipScan, cameraProps, onData, scanSuccess }: MRZCameraProp
     frame => {
       'worklet'
       if (!scanSuccess) {
-        runAtTargetFps(1, () => {
+        runAtTargetFps(RUN_TARGET_FPS, () => {
           'worklet'
           const ocrData = scanText(frame)
           handleScanRunOnJS(ocrData)
@@ -100,7 +101,7 @@ const MRZCamera = ({ skipScan, cameraProps, onData, scanSuccess }: MRZCameraProp
           frameProcessor={frameProcessor}
         />
       </View>
-      <View style={{ ...styles.overlayContainer, height: containerHeight * 0.28 }}>
+      <View style={{ ...styles.topOverlayContainer, height: containerHeight * 0.28 }}>
         <View style={styles.headerContainer}>
           <TouchableOpacity style={styles.headerLeft} onPress={skipScan}>
             <Text typography="EuclidCircularA-Medium" style={styles.headerBtnText}>
