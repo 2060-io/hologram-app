@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Dimensions, LayoutChangeEvent, Platform, StyleSheet, TouchableOpacity, View } from 'react-native'
+import { Svg, Rect } from 'react-native-svg'
 import { Camera, runAtTargetFps, useCameraFormat, useFrameProcessor } from 'react-native-vision-camera'
 import { useTextRecognition } from 'react-native-vision-camera-text-recognition'
 import { Text as ResolvedText, ScanRegion } from 'react-native-vision-camera-text-recognition/src/types'
@@ -100,6 +101,17 @@ const MRZCamera = ({ skipScan, cameraProps, onData, scanSuccess }: MRZCameraProp
           fps={fps}
           frameProcessor={frameProcessor}
         />
+        <Svg preserveAspectRatio="xMidYMid slice" style={StyleSheet.absoluteFill}>
+          <Rect
+            x={0}
+            y={(scanRegion.top / 100) * containerHeight}
+            width={'100%'}
+            height={(scanRegion.height / 100) * containerHeight}
+            strokeWidth="3"
+            stroke={theme.colors.green}
+            fillOpacity={0}
+          />
+        </Svg>
       </View>
       <View style={{ ...styles.topOverlayContainer, height: containerHeight * 0.28 }}>
         <View style={styles.headerContainer}>
