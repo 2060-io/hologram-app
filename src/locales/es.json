@@ -141,7 +141,7 @@
       "eMRTDAborted": "Lectura de eMRTD cancelada",
       "eMRTDReceived": "Leer",
       "eMRTDScanned": "Leído existosamente",
-      "mrzAborted": "Escaeneo de documento cancelado",
+      "mrzRefused": "Escaeneo de documento cancelado",
       "mrzScanned": "Documento válidado",
       "eMRTDNotSupported": "Tu dispositivo no soporta lecturas NFC",
       "eMRTDDisabled": "Tienes deshabilitada la lectura de NFC en tu dispositivo, actívala y vuelve a intentar"

@@ -29,7 +29,7 @@ const MrzRequestChatView = (props: Props) => {
   }
 
   const footer: Record<MrzRequestState, React.ReactElement> = {
-    aborted: <State text={t('chat.mrzAborted')} type="error" />,
+    aborted: <State text={t('chat.mrzRefused')} type="error" />,
     received: (
       <View style={styles.buttonsContainer}>
         <OutlinedBlueButton text={t('general.refuse')} onPress={() => {}} style={styles.refuseButton} />
