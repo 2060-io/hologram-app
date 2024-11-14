@@ -11,7 +11,7 @@ import getStyles from './styles'
 import { PersonalChatProvider } from '@2060/hooks/agent'
 import { MediaPlayerProvider } from '@2060/hooks/agent/MediaPlayerProvider'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { PersonalChat, MessageDetails, ForwardMessages, ShareMessages } from '@2060/pages'
+import { PersonalChat, MessageDetails, ForwardMessages, ShareMessages, MRZScanner } from '@2060/pages'
 import { getGlobalStyles } from '@2060/styles'
 
 const PersonalChatStack = createStackNavigator<PersonalChatStackParams>()
@@ -48,6 +48,11 @@ const PersonalChatStackNavigator = () => {
             <PersonalChatStack.Screen name="MessageDetails" component={MessageDetails} />
             <PersonalChatStack.Screen name="ForwardMessages" component={ForwardMessages} />
             <PersonalChatStack.Screen name="ShareMessages" component={ShareMessages} />
+            <PersonalChatStack.Screen
+              name="MRZScanner"
+              component={MRZScanner}
+              options={{ presentation: 'modal', headerShown: false }}
+            />
           </PersonalChatStack.Group>
         </PersonalChatStack.Navigator>
       </MediaPlayerProvider>

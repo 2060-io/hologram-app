@@ -1,7 +1,6 @@
 import { StyleSheet } from 'react-native'
 
 import { AppTheme } from '@2060/styles'
-import { hexTransparency } from '@2060/utils/colorUtils'
 import { widthPercentageToDP } from '@2060/utils/responsiveUtils'
 
 export default (theme: AppTheme) =>
@@ -40,20 +39,6 @@ export default (theme: AppTheme) =>
       backgroundColor: theme.colors.blue,
     },
     acceptingText: {
-      color: theme.colors.green,
-      fontSize: theme.fontSize.md - 1,
-    },
-    refusedContainer: {
-      backgroundColor: hexTransparency(theme.colors.red, theme.isDarkMode ? '2E' : '33'),
-    },
-    refusedText: {
-      color: theme.colors.red,
-      fontSize: theme.fontSize.md - 1,
-    },
-    acceptedContainer: {
-      backgroundColor: hexTransparency(theme.colors.green, theme.isDarkMode ? '2E' : '40'),
-    },
-    acceptedText: {
       color: theme.colors.green,
       fontSize: theme.fontSize.md - 1,
     },

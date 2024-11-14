@@ -178,7 +178,7 @@ const BaseCustomView: React.FC<BaseCustomMessageViewProps> = memo(props => {
         case ChatEntryType.MrzRequest:
           return (
             <MrzRequestChatView
-              didcommThreadId={chatEntry.didcommThreadId}
+              didcommThreadId={chatEntry.didcommThreadId as string}
               metadata={chatEntry.metadata as MrzRequestMetadata}
             />
           )

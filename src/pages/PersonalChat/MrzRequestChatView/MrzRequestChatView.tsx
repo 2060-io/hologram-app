@@ -1,72 +1,54 @@
-import React, { useState } from 'react'
+import { useNavigation } from '@react-navigation/native'
+import { StackNavigationProp } from '@react-navigation/stack'
+import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
 
-import { BlueButton, Header } from '../components'
+import { BlueButton, Header, OutlinedBlueButton, State } from '../components'
 
 import { Props } from './MrzRequestChatViewProps'
 import getStyles from './styles'
 
-import { MRZScanner } from '@2060/components'
-import { Modal, Text } from '@2060/components/common'
-import { useChat, useMobileAgent } from '@2060/hooks/agent'
+import { PersonalChatStackParams } from '@2060/components/Navigation/NavigationProps'
+import { SvgIcon, Text } from '@2060/components/common'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { MrzRequestState } from '@2060/model'
 import { handleCameraPermission } from '@2060/utils/permissions'
-import { toast } from '@2060/utils/toast'
+import { widthPercentageToDP } from '@2060/utils/responsiveUtils'
 
 const MrzRequestChatView = (props: Props) => {
   const theme = useTheme()
   const styles = getStyles(theme)
   const { t } = useTranslation()
-  const { agent } = useMobileAgent()
-  const { chatThread } = useChat()
-  const [displayScanMrz, setDisplayMrz] = useState(false)
-  const canScanMrz = props.metadata?.state === 'received'
-
-  const stateToText: Record<MrzRequestState, string> = {
-    aborted: t('chat.mrzAborted'),
-    received: t('navigation.Scan'),
-    scanned: t('chat.mrzScanned'),
-  }
+  const navigation: StackNavigationProp<PersonalChatStackParams> = useNavigation()
 
   const handleScanMrz = async () => {
     const cameraPermission = await handleCameraPermission()
     if (!cameraPermission) return
-    setDisplayMrz(true)
+    navigation.navigate('MRZScanner', { didcommThreadId: props.didcommThreadId })
   }
 
-  const onMRZFinalResults = async (mrzFinalResults: string[]) => {
-    setDisplayMrz(false)
-    agent?.modules.mrtd.sendMrzString({
-      mrzData: mrzFinalResults.join('\n'),
-      connectionId: chatThread?.data.connectionId!,
-      threadId: props.didcommThreadId,
-    })
-    toast({ type: 'success', message: 'MRZ scanned and sent' })
-  }
-
-  const onSkipPressed = () => {
-    setDisplayMrz(false)
+  const footer: Record<MrzRequestState, React.ReactElement> = {
+    aborted: <State text={t('chat.mrzRefused')} type="error" />,
+    received: (
+      <View style={styles.buttonsContainer}>
+        <OutlinedBlueButton text={t('general.refuse')} onPress={() => {}} style={styles.refuseButton} />
+        <BlueButton text={t('general.accept')} onPress={handleScanMrz} style={styles.acceptButton} />
+      </View>
+    ),
+    scanned: <State text={t('chat.mrzScanned')} />,
   }
 
   return (
     <View style={styles.container}>
-      <Modal visible={displayScanMrz}>
-        <MRZScanner onMRZFinalResults={onMRZFinalResults} onSkipPressed={onSkipPressed} />
-      </Modal>
       <Header theme={theme} title={t('chat.mrzRequest')} leftIconName="scan" />
       <View style={styles.subContainer}>
-        <Text style={styles.title} typography="EuclidCircularA-Regular">
-          Please scan your mrz
+        <Text typography="EuclidCircularA-Regular" style={styles.instructions}>
+          {t('chat.mrzScanChatInst')}
         </Text>
+        <SvgIcon name="MRZ" width={'100%'} height={widthPercentageToDP('43')} style={styles.icon} />
+        {footer[props.metadata.state]}
       </View>
-      <BlueButton
-        style={{ opacity: canScanMrz ? 1 : 0.5, marginHorizontal: 6 }}
-        text={props.metadata?.state ? stateToText[props.metadata.state] : ''}
-        onPress={handleScanMrz}
-        disabled={!canScanMrz}
-      />
     </View>
   )
 }
