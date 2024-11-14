@@ -12,6 +12,7 @@
     "continue": "Continuar",
     "tryAgain": "Intentar nuevamente",
     "getStarted": "Comenzar",
+    "importantNote": "Importante:",
     "call": {
       "answerWithoutVideo": "Contestar sin video",
       "connecting": "Conectando...",
@@ -132,16 +133,17 @@
       "conversations": "conversaciones",
       "noChatsFound": "No se encontraron conversaciones",
       "unsecureLink": "Enlace inseguro",
-      "eMRTDRequest": "Solicitud de lectura del eMRTD",
+      "eMRTDRequest": "Escaneo de documento NFC",
       "callOfferMessage": "{{sender}} te invita a una llamada",
-      "mrzRequest": "Escanear documento",
+      "mrzRequest": "Escaneo de documento",
       "mrzScanTitle": "Ubica el MRZ en tu documento",
       "mrzScanInst": "Ubica tu documento delante de la cámara, alineándolo dentro del rectángulo que aparece a continuación. Asegúrate que la zona legible por máquina (MRZ) con símbolos es totalmente visible y bien iluminada.",
-      "mrzScanChatInst": "Por favor escanea la sección MRZ de tu documento ubicada en la parte inferior con los símbolos <<< . Asegúrate de que esté totalmente visible y bien iluminada.",
-      "eMRTDAborted": "Lectura de eMRTD cancelada",
-      "eMRTDReceived": "Leer",
-      "eMRTDScanned": "Leído existosamente",
-      "mrzRefused": "Escaeneo de documento cancelado",
+      "mrzScanChatInst": "Por favor escanea la sección MRZ de tu documento ubicada en la parte inferior con los símbolos <<<. Asegúrate de que esté totalmente visible y bien iluminada.",
+      "eMRTDScanChatInst": "<bold>Por favor escanea tu pasaporte o identificación nacional</bold>. Solo funciona con pasaportes electrónicos biométricos e ID con un chip RFID como se demuestra a continuación:",
+      "eMRTDScanInst": "Coloca tu pasaporte o tarjeta de identificación detrás de tu teléfono y presiona “Comenzar” para iniciar el escaneo NFC.\n\nEl chip puede estar ubicado en diferentes áreas (Por ejemplo: portada/reverso de un pasaporte o lados de una tarjeta de identificación), por lo que pueden ser necesarios <green>múltiples intentos</green> para escanear con éxito.",
+      "eMRTDAborted": "Escaneo del documento NFC cancelado",
+      "eMRTDScanned": "Documento escaneado",
+      "mrzRefused": "Escaneo del documento cancelado",
       "mrzScanned": "Documento válidado",
       "eMRTDNotSupported": "Tu dispositivo no soporta lecturas NFC",
       "eMRTDDisabled": "Tienes deshabilitada la lectura de NFC en tu dispositivo, actívala y vuelve a intentar"
@@ -389,8 +391,8 @@
       "voiceNote": "🔉 Nota de voz",
       "reportMessage": "Reportaste un mensaje",
       "callOffer": "Call offer",
-      "mrzRequest": "Solicitud del MRZ",
-      "eMrtdReadRequest": "Solicitud de lectura del eMRTD"
+      "mrzRequest": "Escaneo de documento",
+      "eMrtdReadRequest": "Escaneo de documento NFC"
     },
     "scan": {
       "errorCreatingInvitation": "Error al crear la invitación",

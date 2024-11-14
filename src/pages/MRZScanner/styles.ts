@@ -31,7 +31,7 @@ export default (theme: AppTheme) =>
       color: theme.colors.tertiaryText,
       marginHorizontal: 15,
     },
-    abort: {
+    refuse: {
       color: theme.colors.blue,
       textAlign: 'center',
       fontSize: theme.fontSize.md2,

@@ -1,19 +1,20 @@
-import React from 'react'
-import { useTranslation } from 'react-i18next'
-import { Alert, View } from 'react-native'
+import React, { useState } from 'react'
+import { Trans, useTranslation } from 'react-i18next'
+import { Alert, Modal, View } from 'react-native'
 import EIdReader from 'react-native-eid-reader'
 
-import { BlueButton, Header } from '../components'
+import { BlueButton, Header, OutlinedBlueButton, State } from '../components'
 
+import EMrtdInstruccions from './EMrtdInstruccions'
 import { Props } from './EMrtdReadRequestChatViewProps'
 import getStyles from './styles'
 
-import { Text } from '@2060/components/common'
-import { IS_DEVICE_IOS } from '@2060/constants'
+import { SvgIcon, Text } from '@2060/components/common'
 import { useChat, useMobileAgent } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { MrzRequestState } from '@2060/model'
 import { log } from '@2060/utils'
+import { widthPercentageToDP } from '@2060/utils/responsiveUtils'
 import { toast } from '@2060/utils/toast'
 
 const EMrtdReadRequestChatView = (props: Props) => {
@@ -23,13 +24,10 @@ const EMrtdReadRequestChatView = (props: Props) => {
   const { agent } = useMobileAgent()
   const { chatThread } = useChat()
   const { didcommThreadId } = props
-  const canReadeMRTD = props.metadata?.state === 'received'
+  const [displayInstructionsPopup, setDisplayInstructionsPopup] = useState(false)
 
-  const stateToText: Record<MrzRequestState, string> = {
-    aborted: t('chat.eMRTDAborted'),
-    received: t('chat.eMRTDReceived'),
-    scanned: t('chat.eMRTDScanned'),
-  }
+  const dismissPopup = () => setDisplayInstructionsPopup(false)
+  const displayPopup = () => setDisplayInstructionsPopup(true)
 
   const checkIfDeviceCanScan = async () => {
     const isNfcSupported = await EIdReader.isNfcSupported()
@@ -45,7 +43,7 @@ const EMrtdReadRequestChatView = (props: Props) => {
       ])
       return
     }
-    scan()
+    displayPopup()
   }
 
   const scan = async () => {
@@ -81,21 +79,40 @@ const EMrtdReadRequestChatView = (props: Props) => {
       toast({ type: 'error', message: `Error: ${(error as Error).message}`, duration: 3000 })
     }
   }
-  return (
-    <View style={styles.container}>
-      <Header theme={theme} title={t('chat.eMRTDRequest')} leftIconName="id" />
-      <View style={styles.subContainer}>
-        <Text style={styles.title} typography="EuclidCircularA-Regular">
-          Please read your eMRTD
-        </Text>
+
+  const footer: Record<MrzRequestState, React.ReactElement> = {
+    aborted: <State text={t('chat.eMRTDAborted')} type="error" />,
+    received: (
+      <View style={styles.buttonsContainer}>
+        <OutlinedBlueButton text={t('general.refuse')} onPress={() => {}} style={styles.refuseButton} />
+        <BlueButton text={t('general.accept')} onPress={checkIfDeviceCanScan} style={styles.acceptButton} />
       </View>
-      <BlueButton
-        style={{ opacity: canReadeMRTD ? 1 : 0.5, marginHorizontal: 6 }}
-        text={props.metadata?.state ? stateToText[props.metadata.state] : ''}
-        onPress={IS_DEVICE_IOS ? scan : checkIfDeviceCanScan}
-        disabled={!canReadeMRTD}
-      />
-    </View>
+    ),
+    scanned: <State text={t('chat.eMRTDScanned')} />,
+  }
+
+  return (
+    <>
+      <Modal visible={displayInstructionsPopup}>
+        <EMrtdInstruccions scan={scan} dismissPopup={dismissPopup} />
+      </Modal>
+      <View style={styles.container}>
+        <Header theme={theme} title={t('chat.eMRTDRequest')} leftIconName="id" />
+        <View style={styles.subContainer}>
+          <Trans
+            i18nKey={t('chat.eMRTDScanChatInst')}
+            typography="EuclidCircularA-Regular"
+            style={styles.instructions}
+            parent={Text}
+            components={{
+              bold: <Text typography="EuclidCircularA-Bold" style={styles.instructions} />,
+            }}
+          />
+          <SvgIcon name="NFC" width={'100%'} height={widthPercentageToDP('43')} style={styles.icon} />
+          {footer[props.metadata.state]}
+        </View>
+      </View>
+    </>
   )
 }
 
