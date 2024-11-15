@@ -66,7 +66,6 @@ const EMrtdReadRequestChatView = (props: Props) => {
       log(`status: ${result.status}`)
       log(`result: ${JSON.stringify(result)}`)
       if (result.status === 'OK') {
-        toast({ type: 'success', message: `Passport ${result.data.documentNo} read successfully` })
         await agent?.modules.mrtd.sendEMrtdData({
           connectionId: chatThread?.data.connectionId!,
           dataGroups: result.dataGroupsBase64,
