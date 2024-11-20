@@ -13,7 +13,7 @@ type Props = {
   dismissPopup: () => void
 }
 
-const EMrtdInstruccions = ({ scan, dismissPopup }: Props) => {
+const EMrtdInstructions = ({ scan, dismissPopup }: Props) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
@@ -62,4 +62,4 @@ const EMrtdInstruccions = ({ scan, dismissPopup }: Props) => {
   )
 }
 
-export default EMrtdInstruccions
+export default EMrtdInstructions

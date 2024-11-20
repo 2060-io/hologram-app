@@ -5,7 +5,7 @@ import EIdReader from 'react-native-eid-reader'
 
 import { BlueButton, Header, OutlinedBlueButton, State } from '../components'
 
-import EMrtdInstruccions from './EMrtdInstruccions'
+import EMrtdInstructions from './EMrtdInstructions'
 import { Props } from './EMrtdReadRequestChatViewProps'
 import getStyles from './styles'
 
@@ -96,7 +96,7 @@ const EMrtdReadRequestChatView = (props: Props) => {
   return (
     <>
       <Modal visible={displayInstructionsPopup}>
-        <EMrtdInstruccions scan={scan} dismissPopup={dismissPopup} />
+        <EMrtdInstructions scan={scan} dismissPopup={dismissPopup} />
       </Modal>
       <View style={styles.container}>
         <Header theme={theme} title={t('chat.eMRTDRequest')} leftIconName="id" />
