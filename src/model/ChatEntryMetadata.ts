@@ -121,9 +121,11 @@ export type EmrtdReadRequestState = 'received' | 'scanned' | 'aborted'
 export type EMrtdReadRequestMetadata = {
   state: MrzRequestState
   parentThreadId?: string
-  mrzInfo?: {
-    expirationDate: string
-    birthDate: string
-    documentNumber: string
-  }
+  mrzInfo?: string // It must be deserialized (JSON.parse) and casted to MrzInfo
+}
+
+export type MrzInfo = {
+  expirationDate: string
+  birthDate: string
+  documentNumber: string
 }

@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native'
 import { AppTheme } from '@2060/styles'
 import { widthPercentageToDP } from '@2060/utils/responsiveUtils'
 
-const NORMAL_WIDTH = widthPercentageToDP('70')
+const NORMAL_WIDTH = widthPercentageToDP('75')
 
 export default (theme: AppTheme) =>
   StyleSheet.create({
@@ -15,9 +15,22 @@ export default (theme: AppTheme) =>
       margin: 8,
       marginBottom: 0,
     },
-    title: {
+    instructions: {
       fontSize: theme.fontSize.md - 1,
       color: theme.colors.blue,
-      marginBottom: 8,
+      marginBottom: 4,
+    },
+    buttonsContainer: {
+      flexDirection: 'row',
+    },
+    refuseButton: {
+      flex: 1,
+      marginRight: 8,
+    },
+    acceptButton: {
+      flex: 1,
+    },
+    icon: {
+      marginBottom: 4,
     },
   })

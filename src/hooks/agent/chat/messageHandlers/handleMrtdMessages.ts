@@ -109,7 +109,7 @@ export const handleMrtdMessages = (options: {
       metadata: {
         state: 'received',
         parentThreadId: message.thread?.parentThreadId,
-        mrzInfo,
+        mrzInfo: JSON.stringify(mrzInfo),
       } as EMrtdReadRequestMetadata,
     })
     chatThreadService.updateThread(realm, thread.id, { lastChatEntry: chatEntry })

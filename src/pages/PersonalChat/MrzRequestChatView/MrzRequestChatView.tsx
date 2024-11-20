@@ -41,7 +41,7 @@ const MrzRequestChatView = (props: Props) => {
 
   return (
     <View style={styles.container}>
-      <Header theme={theme} title={t('chat.mrzRequest')} leftIconName="scan" />
+      <Header theme={theme} title={t('chat.mrzRequest')} leftIconName="id" />
       <View style={styles.subContainer}>
         <Text typography="EuclidCircularA-Regular" style={styles.instructions}>
           {t('chat.mrzScanChatInst')}

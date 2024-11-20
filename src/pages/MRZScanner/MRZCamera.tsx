@@ -132,8 +132,8 @@ const MRZCamera = ({ skipScan, cameraProps, onData, scanSuccess }: MRZCameraProp
       <View style={{ ...styles.bottomOverlayContainer, height: containerHeight * 0.48 }}>
         <SvgIcon name="MRZ" height={widthPercentageToDP('43')} width={widthPercentageToDP('72')} />
         <TouchableOpacity onPress={skipScan}>
-          <Text typography="EuclidCircularA-Medium" style={styles.abort}>
-            {t('general.abort')}
+          <Text typography="EuclidCircularA-Medium" style={styles.refuse}>
+            {t('general.refuse')}
           </Text>
         </TouchableOpacity>
       </View>

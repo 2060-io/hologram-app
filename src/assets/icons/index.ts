@@ -42,6 +42,8 @@ import messages from './Messages'
 import microphone from './Microphone'
 import microphoneOff from './MicrophoneOff'
 import minimize from './Minimize'
+import NFC from './NFC'
+import NFCGroup from './NFCGroup'
 import notifications from './Notifications'
 import password from './Password'
 import pending from './Pending'
@@ -160,4 +162,6 @@ export default {
   speakerOff,
   speakerOn,
   MRZ,
+  NFC,
+  NFCGroup,
 }

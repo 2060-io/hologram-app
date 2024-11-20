@@ -12,6 +12,7 @@ import { View, PanResponder } from 'react-native'
 import { useNavigation } from '../agent/NavigationProvider'
 import { useIsForeground } from '../useIsForeground'
 
+import { useConfig } from './ConfigProvider'
 import { useVideoCallContext } from './useVideoCallContext'
 
 import Authentication from '@2060/components/Authentication'
@@ -45,6 +46,7 @@ export const ScreenLockProvider: React.FC<PropsWithChildren> = ({ children }) =>
   const timerRef = useRef<ReturnType<typeof setTimeout>>()
   const isAppActive = useIsForeground()
   const makeLocalLogout = () => setLocalAuth(false)
+  const { isDoingNfcReaderSession } = useConfig()
 
   useEffect(() => {
     if (isInCall || isIncomingCall) clearInactivityTimeout()
@@ -58,8 +60,8 @@ export const ScreenLockProvider: React.FC<PropsWithChildren> = ({ children }) =>
    * This hook is exclusive when screen lock timeout is instant (0)
    */
   useEffect(() => {
-    if (!isAppActive && screenLockTimeout === INSTANT_TIMEOUT) makeLocalLogout()
-  }, [isAppActive])
+    if (!isAppActive && screenLockTimeout === INSTANT_TIMEOUT && !isDoingNfcReaderSession) makeLocalLogout()
+  }, [isAppActive, isDoingNfcReaderSession])
 
   useEffect(() => {
     const getStoredScreenLockedTimeout = async () => {
