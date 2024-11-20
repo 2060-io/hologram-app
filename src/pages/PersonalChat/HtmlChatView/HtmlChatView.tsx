@@ -132,9 +132,16 @@ const HtmlChatView = (props: HtmlChatViewProps) => {
       {openingMode === 'embedded' ? (
         <View style={[{ display: isShowingWebView ? 'flex' : 'none' }, dimensions]}>{renderWebView()}</View>
       ) : (
-        <Modal visible={isShowingWebView} transparent supportedOrientations={['portrait', 'landscape']}>
-          {!isFullScreen && renderCustomHeader({ onSomeActionDispatched: closeWebView })}
-          <SafeAreaView style={{ flex: 1 }}>{renderWebView()}</SafeAreaView>
+        <Modal
+          visible={isShowingWebView}
+          transparent
+          supportedOrientations={['portrait', 'landscape']}
+          statusBarTranslucent={false}
+        >
+          <SafeAreaView style={{ flex: 1 }}>
+            {!isFullScreen && renderCustomHeader({ onSomeActionDispatched: closeWebView })}
+            {renderWebView()}
+          </SafeAreaView>
         </Modal>
       )}
     </View>

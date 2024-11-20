@@ -3,12 +3,10 @@ import { StackNavigationProp } from '@react-navigation/stack'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, TouchableOpacity } from 'react-native'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import getStyles from './styles'
 
 import { Avatar, Text, SvgIcon, ChannelIcons } from '@2060/components/common'
-import { IS_DEVICE_IOS } from '@2060/constants'
 import { useConnectionById } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { ChatThreadData } from '@2060/model'
@@ -28,9 +26,7 @@ const CustomChatHeader: React.FC<Props> = props => {
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
-  const insets = useSafeAreaInsets()
 
-  const headerStatusBarHeight = insets.top
   const { primaryText, secondary } = theme.colors
 
   const connection = useConnectionById(chatThread.connectionId)
@@ -51,7 +47,6 @@ const CustomChatHeader: React.FC<Props> = props => {
 
   return (
     <View style={styles.container}>
-      {IS_DEVICE_IOS && <View style={{ height: headerStatusBarHeight }} />}
       <View style={styles.containerHeader}>
         <TouchableOpacity activeOpacity={0.4} onPress={goBack} style={styles.rowContainer}>
           <SvgIcon name="arrowBack" width={28} height={28} fill={primaryText} />
