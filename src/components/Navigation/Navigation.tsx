@@ -60,7 +60,7 @@ const Navigation = ({ isSignedUp, agent, theme }: NavigationProps) => {
   const { realm } = useLocalRealm()
   const styles = getStyles(theme)
   const globalStyles = getGlobalStyles(theme)
-  const { isDeveloperMode } = useConfig()
+  const { isDeveloperMode, isDoingNfcReaderSession } = useConfig()
 
   const InitialComponent = isSignedUp ? HomeMain : isDeveloperMode ? SignUpMain : ProfileCreation
 
@@ -104,11 +104,12 @@ const Navigation = ({ isSignedUp, agent, theme }: NavigationProps) => {
       )
       const { addConnectionChangeListener, removeConnectionChangeListener } =
         manageConnectionStateChangedEvent(agent)
-      if (!isForeground) {
-        log('App in background... registering to events')
+      if (isForeground) log('App in foreground')
+      if (!isForeground && !isDoingNfcReaderSession) {
+        log('App in background and not reading nfc ... registering to events')
         addChatEntryChangeListener()
         addConnectionChangeListener()
-      } else log('App in foreground')
+      }
 
       return () => {
         log('Unregistering events')
@@ -116,7 +117,7 @@ const Navigation = ({ isSignedUp, agent, theme }: NavigationProps) => {
         removeConnectionChangeListener()
       }
     }
-  }, [agent, realm, isForeground])
+  }, [agent, realm, isForeground, isDoingNfcReaderSession])
 
   return (
     <NavigationContainer linking={deepLinking} theme={theme.isDarkMode ? DarkTheme : DefaultTheme}>
