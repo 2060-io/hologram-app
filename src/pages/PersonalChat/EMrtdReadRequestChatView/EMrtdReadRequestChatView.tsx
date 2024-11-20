@@ -11,6 +11,7 @@ import getStyles from './styles'
 
 import { SvgIcon, Text } from '@2060/components/common'
 import { useChat, useMobileAgent } from '@2060/hooks/agent'
+import { useConfig } from '@2060/hooks/providers/ConfigProvider'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { MrzRequestState } from '@2060/model'
 import { log } from '@2060/utils'
@@ -25,6 +26,7 @@ const EMrtdReadRequestChatView = (props: Props) => {
   const { chatThread } = useChat()
   const { didcommThreadId } = props
   const [displayInstructionsPopup, setDisplayInstructionsPopup] = useState(false)
+  const { setIsDoingNfcReaderSession } = useConfig()
 
   const dismissPopup = () => setDisplayInstructionsPopup(false)
   const displayPopup = () => setDisplayInstructionsPopup(true)
@@ -54,6 +56,7 @@ const EMrtdReadRequestChatView = (props: Props) => {
       return
     }
     try {
+      setIsDoingNfcReaderSession(true)
       const result = await EIdReader.startReading({
         mrzInfo: {
           birthDate: mrzInfo.birthDate,
@@ -71,11 +74,11 @@ const EMrtdReadRequestChatView = (props: Props) => {
           dataGroups: result.dataGroupsBase64,
           threadId: didcommThreadId,
         })
-      } else {
-        toast({ type: 'warning', message: `Passport read aborted. Status: ${result.status}`, duration: 3000 })
       }
     } catch (error) {
       toast({ type: 'error', message: `Error: ${(error as Error).message}`, duration: 3000 })
+    } finally {
+      setIsDoingNfcReaderSession(false)
     }
   }
 
