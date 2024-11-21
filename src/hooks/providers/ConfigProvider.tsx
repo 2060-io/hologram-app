@@ -23,8 +23,6 @@ type ConfigProps = {
   storedCustomDevEnvs: DevEnvObject | undefined
   isDeveloperMode: boolean
   changeDeveloperModeStatus(): Promise<void>
-  isDoingNfcReaderSession: boolean
-  setIsDoingNfcReaderSession: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export const useConfig = () => {
@@ -39,7 +37,6 @@ export const ConfigProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [devEnvs, setDevEnvs] = useState<DevEnvsObject>(defaultDevEnvs)
   const [storedCustomDevEnvs, setStoredCustomDevEnvs] = useState<DevEnvObject>()
   const [isDeveloperMode, setIsDeveloperMode] = useState(false)
-  const [isDoingNfcReaderSession, setIsDoingNfcReaderSession] = useState(false)
 
   useEffect(() => {
     const setupDeveloperMode = async () => {
@@ -101,8 +98,6 @@ export const ConfigProvider: React.FC<PropsWithChildren> = ({ children }) => {
         saveCustomDevEnv,
         isDeveloperMode,
         changeDeveloperModeStatus,
-        isDoingNfcReaderSession,
-        setIsDoingNfcReaderSession,
       }}
     >
       {children}

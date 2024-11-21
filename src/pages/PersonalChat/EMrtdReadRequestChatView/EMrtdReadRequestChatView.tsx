@@ -11,7 +11,7 @@ import getStyles from './styles'
 
 import { SvgIcon, Text } from '@2060/components/common'
 import { useChat, useMobileAgent } from '@2060/hooks/agent'
-import { useConfig } from '@2060/hooks/providers/ConfigProvider'
+import { useScreenLock } from '@2060/hooks/providers/ScreenLockProvider'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { MrzInfo, MrzRequestState } from '@2060/model'
 import { log } from '@2060/utils'
@@ -26,7 +26,7 @@ const EMrtdReadRequestChatView = (props: Props) => {
   const { chatThread } = useChat()
   const { didcommThreadId } = props
   const [displayInstructionsPopup, setDisplayInstructionsPopup] = useState(false)
-  const { setIsDoingNfcReaderSession } = useConfig()
+  const { setScreenLockForcedDisabled } = useScreenLock()
 
   const dismissPopup = () => setDisplayInstructionsPopup(false)
   const displayPopup = () => setDisplayInstructionsPopup(true)
@@ -56,7 +56,7 @@ const EMrtdReadRequestChatView = (props: Props) => {
       return
     }
     try {
-      setIsDoingNfcReaderSession(true)
+      setScreenLockForcedDisabled(true)
       const result = await EIdReader.startReading({
         mrzInfo: {
           birthDate: mrzInfo.birthDate,
@@ -78,7 +78,7 @@ const EMrtdReadRequestChatView = (props: Props) => {
     } catch (error) {
       toast({ type: 'error', message: `Error: ${(error as Error).message}`, duration: 3000 })
     } finally {
-      setIsDoingNfcReaderSession(false)
+      setScreenLockForcedDisabled(false)
     }
   }
 
