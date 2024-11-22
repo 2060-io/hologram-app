@@ -18,7 +18,7 @@ import {
   ConnectionStatus,
   CallStatus,
   useVideoCallContext,
-  IncomingCallInfo,
+  isIncomingCallInfo,
 } from '@2060/hooks/providers/useVideoCallContext'
 import { log, logError } from '@2060/utils'
 
@@ -32,10 +32,10 @@ function generatePeerId(length = 8) {
   return result
 }
 
-const fetchNewRoomId = async (webRtcServerBaseUrl: string) => {
+const createRoom = async (webRtcServerBaseUrl: string) => {
   try {
     const { token } = await appCheck().getToken()
-    const response = await axios.post(`${webRtcServerBaseUrl}/rooms`, {
+    const response = await axios.post(`${webRtcServerBaseUrl}/rooms`, null, {
       validateStatus: function (status: number) {
         return status === 200 // Resolve only if the status code 200
       },
@@ -43,10 +43,10 @@ const fetchNewRoomId = async (webRtcServerBaseUrl: string) => {
         'X-Firebase-AppCheck': token,
       },
     })
-    return {
-      ...response.data,
-      wsUrl: response.data.wsUrl.substring(0, response.data.wsUrl.indexOf('?')),
-    } as IncomingCallInfo
+    if (!isIncomingCallInfo(response.data)) {
+      throw Error(`Invalid response from WebRTC server: ${JSON.stringify(response.data)}`)
+    }
+    return response.data
   } catch (error) {
     logError('Error fetching RoomId:', error)
     throw new Error(`${error}`)
@@ -141,7 +141,7 @@ export const useVideoCall = () => {
         InCallManager.start({ media: isVideoCall ? 'video' : 'audio' })
         const callInfo = incomingCallInfo
           ? incomingCallInfo
-          : await fetchNewRoomId(devEnvs.WEBRTC_SERVER_BASE_URL)
+          : await createRoom(devEnvs.WEBRTC_SERVER_BASE_URL)
         roomId.current = callInfo.roomId
         peerId.current = callInfo.peerId ?? generatePeerId()
         const socketUrl = `${callInfo.wsUrl}/?roomId=${roomId.current}&peerId=${peerId.current}`
