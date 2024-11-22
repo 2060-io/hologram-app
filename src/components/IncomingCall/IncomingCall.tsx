@@ -33,7 +33,7 @@ const IncomingCall = () => {
           <CallButton
             text={t('call.answerWithoutVideo')}
             iconName={isCameraOn ? 'video' : 'videoOff'}
-            onPress={handleCamera}
+            onPress={() => handleCamera()}
           />
         )}
       </View>

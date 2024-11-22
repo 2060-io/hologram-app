@@ -65,12 +65,12 @@ export const VideoCallProvider: React.FC<PropsWithChildren> = ({ children }) => 
     stateRef.current = { ...stateRef.current, ...newStateValues }
   }
 
-  const handleCamera = async (callBack: (isCameraOn: boolean) => {}) => {
+  const handleCamera = async (callBack?: (isCameraOn: boolean) => {}) => {
     const cameraPermission = await handleCameraPermission()
     if (!cameraPermission) return
     const newIsCameraOn = !isCameraOn
     updateState({ isCameraOn: newIsCameraOn })
-    callBack(newIsCameraOn)
+    callBack?.(newIsCameraOn)
   }
 
   const stopRingtone = () => InCallManager.stopRingtone()
