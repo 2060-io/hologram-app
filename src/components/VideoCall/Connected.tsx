@@ -24,7 +24,7 @@ type Props = {
   handleSwitchCamera: () => void
   isCameraOn: boolean
   isMicrophoneOn: boolean
-  handleCamera: () => void
+  handleCameraSwitched: () => void
   setIsMicrophoneOn: Dispatch<SetStateAction<boolean>>
   hangup: () => void
 }
@@ -41,7 +41,7 @@ const Connected = ({
   handleSwitchCamera,
   isCameraOn,
   isMicrophoneOn,
-  handleCamera,
+  handleCameraSwitched,
   setIsMicrophoneOn,
   hangup,
 }: Props) => {
@@ -172,7 +172,7 @@ const Connected = ({
               <CallButton
                 text={t('call.video')}
                 iconName={isCameraOn ? 'video' : 'videoOff'}
-                onPress={handleCamera}
+                onPress={handleCameraSwitched}
               />
             </>
           )}

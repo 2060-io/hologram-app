@@ -130,7 +130,6 @@ export const useVideoCall = () => {
   const routerRtpCapabilities = useRef<types.RtpCapabilities>()
   const isMicrophoneOnRef = useRef(true)
   const lostConnection = useRef(false)
-  const isCameraOnRef = useRef<boolean>()
   const newRemotePeerLastConnection = useRef<Date>()
   const { devEnvs } = useConfig()
 
@@ -139,7 +138,7 @@ export const useVideoCall = () => {
       if (!agent || !didcommConnection || !didcommCallType) return
       try {
         setScreenOrientation(OrientationLock.PORTRAIT_UP)
-        InCallManager.start({ media: 'audio' })
+        InCallManager.start({ media: isVideoCall ? 'video' : 'audio' })
         const callInfo = incomingCallInfo
           ? incomingCallInfo
           : await fetchNewRoomId(devEnvs.WEBRTC_SERVER_BASE_URL)
@@ -307,22 +306,20 @@ export const useVideoCall = () => {
   }, [isRejected])
 
   useEffect(() => {
-    const onChangeCameraVisibility = async () => {
-      if (isCameraOn) {
-        await startToProduceVideo()
-      } else {
-        stopToProduceVideo()
-      }
-    }
-    isCameraOnRef.current = isCameraOn
-    isVideoCall && onChangeCameraVisibility()
-  }, [isCameraOn])
-
-  useEffect(() => {
     if (!localAudioStreamRef.current) return
     isMicrophoneOnRef.current = isMicrophoneOn
     handleMicrophone()
   }, [isMicrophoneOn])
+
+  const handleCameraSwitched = () => {
+    handleCamera(async newIsCameraOn => {
+      if (newIsCameraOn) {
+        await startToProduceVideo()
+      } else {
+        stopToProduceVideo()
+      }
+    })
+  }
 
   const handleMicrophone = () => {
     if (micProducer.current?.id) {
@@ -416,9 +413,10 @@ export const useVideoCall = () => {
     })
     log('Joined successfully to the room ', joinRoomResponse, roomId.current)
   }
+
   const startToProduceStream = async () => {
     await startToProduceAudio()
-    if (isVideoCall && isCameraOnRef.current) {
+    if (isVideoCall && isCameraOn) {
       await startToProduceVideo()
     }
     await produceData()
@@ -448,7 +446,10 @@ export const useVideoCall = () => {
       track: videoTrack,
     })
   }
+
   const stopToProduceVideo = () => {
+    localVideoStream?.release()
+    setLocalVideoStream(undefined)
     if (videoProducer.current?.id) {
       peer.current?.request('closeProducer', { producerId: videoProducer.current?.id })
       videoProducer.current?.close()
@@ -519,6 +520,7 @@ export const useVideoCall = () => {
   }
 
   const cleanObjects = () => {
+    InCallManager.stop()
     audioConsumer.current = undefined
     videoConsumer.current = undefined
     micProducer.current = undefined
@@ -544,7 +546,7 @@ export const useVideoCall = () => {
     localVideoStream,
     remoteStream,
     handleSwitchCamera,
-    handleCamera,
+    handleCameraSwitched,
     handleSwitchSpeakers,
     isUsingSpeakers,
     setIsMicrophoneOn,
