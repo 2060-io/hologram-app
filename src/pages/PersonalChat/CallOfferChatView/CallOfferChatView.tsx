@@ -1,8 +1,8 @@
 import React from 'react'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import { View } from 'react-native'
 
-import { BlueButton, Header } from '../components'
+import { BlueButton, Header, OutlinedBlueButton, State } from '../components'
 
 import { Props } from './CallOfferChatViewProps'
 import getStyles from './styles'
@@ -12,7 +12,7 @@ import { useChat } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { useVideoCallContext } from '@2060/hooks/providers/useVideoCallContext'
 
-const CallOfferChatView = ({ sender, metadata }: Props) => {
+const CallOfferChatView = ({ metadata }: Props) => {
   const theme = useTheme()
   const styles = getStyles(theme)
   const { t } = useTranslation()
@@ -24,15 +24,39 @@ const CallOfferChatView = ({ sender, metadata }: Props) => {
     joinCall(chatThread?.data.connectionId!, callType, { roomId, peerId, wsUrl })
   }
 
-  return (
-    <View style={styles.container}>
-      <Header theme={theme} title={t('preview.callOffer')} leftIconName="video" />
-      <View style={styles.subContainer}>
-        <Text style={styles.title} typography="EuclidCircularA-Regular">
-          {t('chat.callOfferMessage', { sender: sender?.name })}
+  const footer: Record<string, React.ReactElement> = {
+    a: (
+      <View style={styles.buttonsContainer}>
+        <OutlinedBlueButton text={t('general.refuse')} onPress={() => {}} style={styles.refuseButton} />
+        <BlueButton text={t('general.join')} onPress={join} style={styles.joinButton} />
+      </View>
+    ),
+    b: <State text={'Call ended'} />,
+    c: <State text={'Call rejected'} type="error" />,
+    d: (
+      <View style={styles.expiredContainer}>
+        <Text typography="EuclidCircularA-Bold" style={styles.expiredText}>
+          expired call
         </Text>
       </View>
-      <BlueButton text={t('general.join')} onPress={join} />
+    ),
+  }
+
+  return (
+    <View style={styles.container}>
+      <Header theme={theme} title={t('preview.callOffer')} leftIconName="incomingCall" />
+      <View style={styles.subContainer}>
+        <Trans
+          i18nKey={t('chat.callOfferMessage')}
+          typography="EuclidCircularA-Regular"
+          style={styles.title}
+          parent={Text}
+          components={{
+            bold: <Text typography="EuclidCircularA-Bold" style={styles.title} />,
+          }}
+        />
+        {footer.d}
+      </View>
     </View>
   )
 }

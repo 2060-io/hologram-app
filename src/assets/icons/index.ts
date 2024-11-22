@@ -30,6 +30,7 @@ import flipCamera from './FlipCamera'
 import forward from './Forwad'
 import id from './Id'
 import image from './Image'
+import incomingCall from './IncomingCall'
 import info from './Info'
 import leftArrow from './LeftArrow'
 import lightCredentialCardSkeleton from './LightCredentialCardSkeleton'
@@ -164,4 +165,5 @@ export default {
   MRZ,
   NFC,
   NFCGroup,
+  incomingCall,
 }

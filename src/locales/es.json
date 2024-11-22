@@ -134,7 +134,7 @@
       "noChatsFound": "No se encontraron conversaciones",
       "unsecureLink": "Enlace inseguro",
       "eMRTDRequest": "Escaneo de documento NFC",
-      "callOfferMessage": "{{sender}} te invita a una llamada",
+      "callOfferMessage": "<bold>Ahora verificaremos tu rostro.</bold>\nCuando estés listo, presiona el boton “Join Call” para comenzar. Si la verifiación falla puedes volver a intentarlo.",
       "mrzRequest": "Escaneo de documento",
       "mrzScanTitle": "Ubica el MRZ en tu documento",
       "mrzScanInst": "Ubica tu documento delante de la cámara, alineándolo dentro del rectángulo que aparece a continuación. Asegúrate que la zona legible por máquina (MRZ) con símbolos es totalmente visible y bien iluminada.",

@@ -174,7 +174,7 @@ const BaseCustomView: React.FC<BaseCustomMessageViewProps> = memo(props => {
             />
           )
         case ChatEntryType.CallOffer:
-          return <CallOfferChatView metadata={chatEntry.metadata as CallOfferMetadata} sender={user} />
+          return <CallOfferChatView metadata={chatEntry.metadata as CallOfferMetadata} />
         case ChatEntryType.MrzRequest:
           return (
             <MrzRequestChatView
