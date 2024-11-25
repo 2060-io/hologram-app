@@ -23,7 +23,10 @@
       "connectionLost": "Connection lost",
       "reconnecting": "Reconnecting...",
       "endCall": "End call",
-      "callEnded": "Call ended",
+      "joinCall": "Join Call",
+      "callRejected": "Call Rejected",
+      "expiredCall": "Expired Call",
+      "callEnded": "Call Ended",
       "networkFailed": "Network Failed",
       "errorWhileConnecting": "Error establishing connection",
       "hasMutedTheCall": "has muted the call",
@@ -70,8 +73,7 @@
       "canNotOpenURL": "Cannot open ",
       "dismiss": "Dismiss",
       "selected": "1 selected",
-      "selected_plural": "{{ count }} selected",
-      "join": "Join"
+      "selected_plural": "{{ count }} selected"
     },
     "navigation": {
       "back": "Back",

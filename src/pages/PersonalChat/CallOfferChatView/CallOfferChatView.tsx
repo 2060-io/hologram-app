@@ -28,15 +28,15 @@ const CallOfferChatView = ({ metadata }: Props) => {
     a: (
       <View style={styles.buttonsContainer}>
         <OutlinedBlueButton text={t('general.refuse')} onPress={() => {}} style={styles.refuseButton} />
-        <BlueButton text={t('general.join')} onPress={join} style={styles.joinButton} />
+        <BlueButton text={t('call.joinCall')} onPress={join} style={styles.joinButton} />
       </View>
     ),
-    b: <State text={'Call ended'} />,
-    c: <State text={'Call rejected'} type="error" />,
+    b: <State text={t('call.callEnded')} />,
+    c: <State text={t('call.callRejected')} type="error" />,
     d: (
       <View style={styles.expiredContainer}>
         <Text typography="EuclidCircularA-Bold" style={styles.expiredText}>
-          expired call
+          {t('call.expiredCall')}
         </Text>
       </View>
     ),
@@ -55,7 +55,7 @@ const CallOfferChatView = ({ metadata }: Props) => {
             bold: <Text typography="EuclidCircularA-Bold" style={styles.title} />,
           }}
         />
-        {footer.d}
+        {footer.a}
       </View>
     </View>
   )
