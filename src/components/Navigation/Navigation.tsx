@@ -62,7 +62,7 @@ const Navigation = ({ isSignedUp, agent, theme }: NavigationProps) => {
   const styles = getStyles(theme)
   const globalStyles = getGlobalStyles(theme)
   const { isDeveloperMode } = useConfig()
-  const { isScreenLockForcedDisabled } = useScreenLock()
+  const { isScreenLockForceDisabled } = useScreenLock()
   const InitialComponent = isSignedUp ? HomeMain : isDeveloperMode ? SignUpMain : ProfileCreation
 
   useEffect(() => {
@@ -106,8 +106,8 @@ const Navigation = ({ isSignedUp, agent, theme }: NavigationProps) => {
       const { addConnectionChangeListener, removeConnectionChangeListener } =
         manageConnectionStateChangedEvent(agent)
       if (isForeground) log('App in foreground')
-      if (!isForeground && !isScreenLockForcedDisabled) {
-        log('App in background and not isScreenLockForcedDisabled ... registering to events')
+      if (!isForeground && !isScreenLockForceDisabled) {
+        log('App in background and not isScreenLockForceDisabled ... registering to events')
         addChatEntryChangeListener()
         addConnectionChangeListener()
       }
@@ -118,7 +118,7 @@ const Navigation = ({ isSignedUp, agent, theme }: NavigationProps) => {
         removeConnectionChangeListener()
       }
     }
-  }, [agent, realm, isForeground, isScreenLockForcedDisabled])
+  }, [agent, realm, isForeground, isScreenLockForceDisabled])
 
   return (
     <NavigationContainer linking={deepLinking} theme={theme.isDarkMode ? DarkTheme : DefaultTheme}>

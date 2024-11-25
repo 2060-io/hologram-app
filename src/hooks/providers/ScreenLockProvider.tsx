@@ -23,8 +23,8 @@ interface ScreenLockInterface {
   onToggleLockScreen: () => void
   changeScreenLockTimeout: (newLockTimeoutValue: number | null) => void
   screenLockTimeout: number | null
-  isScreenLockForcedDisabled: boolean
-  setScreenLockForcedDisabled: React.Dispatch<React.SetStateAction<boolean>>
+  isScreenLockForceDisabled: boolean
+  forceDisableScreenLock: (value: boolean) => void
 }
 
 const ScreenLockContext = createContext<ScreenLockInterface | undefined>(undefined)
@@ -39,7 +39,7 @@ export const INSTANT_TIMEOUT = 0
 export const FIVE_MINUTES_TIMEOUT = 300_000
 
 export const ScreenLockProvider: React.FC<PropsWithChildren> = ({ children }) => {
-  const [isScreenLockForcedDisabled, setScreenLockForcedDisabled] = useState(false)
+  const [isScreenLockForceDisabled, forceDisableScreenLock] = useState(false)
   const { isInCall, isIncomingCall, isFinishedCall } = useVideoCallContext()
   const [isScreenLockEnabled, setIsScreenLockEnabled] = useState(false)
   const [screenLockTimeout, setLockTimeout] = useState<number | null>(null)
@@ -61,10 +61,10 @@ export const ScreenLockProvider: React.FC<PropsWithChildren> = ({ children }) =>
    * This hook is exclusive when screen lock timeout is instant (0)
    */
   useEffect(() => {
-    if (!isAppActive && screenLockTimeout === INSTANT_TIMEOUT && !isScreenLockForcedDisabled) {
+    if (!isAppActive && screenLockTimeout === INSTANT_TIMEOUT && !isScreenLockForceDisabled) {
       makeLocalLogout()
     }
-  }, [isAppActive, isScreenLockForcedDisabled])
+  }, [isAppActive, isScreenLockForceDisabled])
 
   useEffect(() => {
     const getStoredScreenLockedTimeout = async () => {
@@ -127,8 +127,8 @@ export const ScreenLockProvider: React.FC<PropsWithChildren> = ({ children }) =>
         onToggleLockScreen,
         changeScreenLockTimeout,
         screenLockTimeout,
-        isScreenLockForcedDisabled,
-        setScreenLockForcedDisabled,
+        isScreenLockForceDisabled,
+        forceDisableScreenLock,
       }}
     >
       <View style={{ flex: 1 }} {...panResponder.panHandlers}>

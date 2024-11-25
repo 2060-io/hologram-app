@@ -26,7 +26,7 @@ const EMrtdReadRequestChatView = (props: Props) => {
   const { chatThread } = useChat()
   const { didcommThreadId } = props
   const [displayInstructionsPopup, setDisplayInstructionsPopup] = useState(false)
-  const { setScreenLockForcedDisabled } = useScreenLock()
+  const { forceDisableScreenLock } = useScreenLock()
 
   const dismissPopup = () => setDisplayInstructionsPopup(false)
   const displayPopup = () => setDisplayInstructionsPopup(true)
@@ -56,7 +56,7 @@ const EMrtdReadRequestChatView = (props: Props) => {
       return
     }
     try {
-      setScreenLockForcedDisabled(true)
+      forceDisableScreenLock(true)
       const result = await EIdReader.startReading({
         mrzInfo: {
           birthDate: mrzInfo.birthDate,
@@ -78,7 +78,7 @@ const EMrtdReadRequestChatView = (props: Props) => {
     } catch (error) {
       toast({ type: 'error', message: `Error: ${(error as Error).message}`, duration: 3000 })
     } finally {
-      setScreenLockForcedDisabled(false)
+      forceDisableScreenLock(false)
     }
   }
 
