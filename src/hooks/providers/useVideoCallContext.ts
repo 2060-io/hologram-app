@@ -56,3 +56,12 @@ export const useVideoCallContext = () => {
   if (!videoCallContext) throw new Error('useVideoCallContext must be used within a VideoCallContextProvider')
   return videoCallContext
 }
+
+export function isIncomingCallInfo(data: Record<string, unknown>): data is IncomingCallInfo {
+  return (
+    typeof data === 'object' &&
+    typeof data.roomId === 'string' &&
+    (data.peerId === undefined || typeof data.peerId === 'string') &&
+    typeof data.wsUrl === 'string'
+  )
+}
