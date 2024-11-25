@@ -66,9 +66,8 @@ const EMrtdReadRequestChatView = (props: Props) => {
         includeRawData: true,
         includeImages: true,
       })
-      log(`status: ${result.status}`)
-      log(`result: ${JSON.stringify(result)}`)
       if (result.status === 'OK') {
+        dismissPopup()
         await agent?.modules.mrtd.sendEMrtdData({
           connectionId: chatThread?.data.connectionId!,
           dataGroups: result.dataGroupsBase64,
