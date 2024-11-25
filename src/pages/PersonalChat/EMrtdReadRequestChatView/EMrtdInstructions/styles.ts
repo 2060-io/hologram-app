@@ -22,16 +22,16 @@ export default (theme: AppTheme) =>
     },
     title: {
       color: theme.colors.green,
-      fontSize: theme.fontSize.md2,
+      fontSize: theme.fontSize.lg,
       marginLeft: 8,
     },
     note: {
       color: theme.colors.red,
-      fontSize: theme.fontSize.md2,
+      fontSize: theme.fontSize.lg,
       marginVertical: 14,
     },
     instructions: {
-      fontSize: theme.fontSize.md,
+      fontSize: theme.fontSize.lg,
       color: theme.colors.tertiaryText,
     },
     instructionsGreen: {

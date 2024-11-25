@@ -18,11 +18,6 @@ const EMrtdInstructions = ({ scan, dismissPopup }: Props) => {
   const theme = useTheme()
   const styles = getStyles(theme)
 
-  const startToScan = () => {
-    dismissPopup()
-    scan()
-  }
-
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.subContainer}>
@@ -51,7 +46,7 @@ const EMrtdInstructions = ({ scan, dismissPopup }: Props) => {
             <SvgIcon name="NFCGroup" width="73%" height={widthPercentageToDP('64')} />
           </View>
         </View>
-        <MainButton text={t('getStarted')} onPress={startToScan} />
+        <MainButton text={t('getStarted')} onPress={scan} />
         <TouchableOpacity onPress={dismissPopup}>
           <Text typography="EuclidCircularA-Medium" style={styles.refuseText}>
             {t('general.refuse')}
