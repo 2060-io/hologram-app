@@ -20,6 +20,7 @@ import { manageBackgroundChatEntryChanges } from '@2060/hooks/agent/chat'
 import { manageConnectionStateChangedEvent } from '@2060/hooks/agent/connections/manageConnectionStateChangedEvent'
 import { useConfig } from '@2060/hooks/providers/ConfigProvider'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
+import { useScreenLock } from '@2060/hooks/providers/ScreenLockProvider'
 import {
   HomeMain,
   SignUpMain,
@@ -60,8 +61,8 @@ const Navigation = ({ isSignedUp, agent, theme }: NavigationProps) => {
   const { realm } = useLocalRealm()
   const styles = getStyles(theme)
   const globalStyles = getGlobalStyles(theme)
-  const { isDeveloperMode, isDoingNfcReaderSession } = useConfig()
-
+  const { isDeveloperMode } = useConfig()
+  const { isScreenLockForceDisabled } = useScreenLock()
   const InitialComponent = isSignedUp ? HomeMain : isDeveloperMode ? SignUpMain : ProfileCreation
 
   useEffect(() => {
@@ -105,8 +106,8 @@ const Navigation = ({ isSignedUp, agent, theme }: NavigationProps) => {
       const { addConnectionChangeListener, removeConnectionChangeListener } =
         manageConnectionStateChangedEvent(agent)
       if (isForeground) log('App in foreground')
-      if (!isForeground && !isDoingNfcReaderSession) {
-        log('App in background and not reading nfc ... registering to events')
+      if (!isForeground && !isScreenLockForceDisabled) {
+        log('App in background and not isScreenLockForceDisabled ... registering to events')
         addChatEntryChangeListener()
         addConnectionChangeListener()
       }
@@ -117,7 +118,7 @@ const Navigation = ({ isSignedUp, agent, theme }: NavigationProps) => {
         removeConnectionChangeListener()
       }
     }
-  }, [agent, realm, isForeground, isDoingNfcReaderSession])
+  }, [agent, realm, isForeground, isScreenLockForceDisabled])
 
   return (
     <NavigationContainer linking={deepLinking} theme={theme.isDarkMode ? DarkTheme : DefaultTheme}>
