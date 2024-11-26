@@ -36,6 +36,7 @@ export const handleCallMessages = (options: {
       metadata: { callType, roomId, wsUrl, peerId, state: CallOfferState.RECEIVED },
       associatedRecordId: '',
       createdAt: (receivedAt ?? new Date()).getTime(),
+      didcommThreadId: message.threadId,
     })
     chatThreadService.updateThread(realm, thread.id, { lastChatEntry: chatEntry })
     if (thread.id !== activeChatThreadId) {
@@ -48,7 +49,6 @@ export const handleCallMessages = (options: {
       message.threadId,
       ChatEntryType.CallOffer,
     )
-    log('chatEntry', chatEntry)
     if (chatEntry) {
       const newMetadata = {
         ...chatEntry.metadata,

@@ -13,7 +13,7 @@ import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { useVideoCallContext } from '@2060/hooks/providers/useVideoCallContext'
 import { CallOfferState } from '@2060/model'
 
-const CallOfferChatView = ({ metadata }: Props) => {
+const CallOfferChatView = ({ metadata, didcommThreadId }: Props) => {
   const theme = useTheme()
   const styles = getStyles(theme)
   const { t } = useTranslation()
@@ -27,7 +27,7 @@ const CallOfferChatView = ({ metadata }: Props) => {
   }
 
   const reject = () => {
-    agent?.modules.calls.reject({ connectionId: chatThread?.data.connectionId! })
+    agent?.modules.calls.reject({ connectionId: chatThread?.data.connectionId!, threadId: didcommThreadId })
   }
 
   const footer: Record<CallOfferState, React.ReactElement> = {
