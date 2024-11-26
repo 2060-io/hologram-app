@@ -14,7 +14,7 @@ export default (theme: AppTheme) =>
     },
     description: {
       color: theme.colors.blue,
-      fontSize: theme.fontSize.md2 + 1.12,
+      fontSize: theme.fontSize.md2,
       paddingVertical: 8,
       paddingLeft: 8,
     },

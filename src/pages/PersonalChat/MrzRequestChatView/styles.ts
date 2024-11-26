@@ -16,7 +16,7 @@ export default (theme: AppTheme) =>
       marginBottom: 0,
     },
     instructions: {
-      fontSize: theme.fontSize.md - 1,
+      fontSize: theme.fontSize.md2,
       color: theme.colors.blue,
       marginBottom: 4,
     },

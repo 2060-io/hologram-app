@@ -14,7 +14,7 @@ export default (theme: AppTheme) =>
       marginBottom: 0,
     },
     title: {
-      fontSize: theme.fontSize.md - 1,
+      fontSize: theme.fontSize.md2,
       color: theme.colors.blue,
     },
     buttonsContainer: {
