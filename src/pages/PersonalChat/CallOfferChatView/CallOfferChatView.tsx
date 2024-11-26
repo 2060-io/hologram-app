@@ -8,14 +8,16 @@ import { Props } from './CallOfferChatViewProps'
 import getStyles from './styles'
 
 import { Text } from '@2060/components/common'
-import { useChat } from '@2060/hooks/agent'
+import { useChat, useMobileAgent } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { useVideoCallContext } from '@2060/hooks/providers/useVideoCallContext'
+import { CallOfferState } from '@2060/model'
 
 const CallOfferChatView = ({ metadata }: Props) => {
   const theme = useTheme()
   const styles = getStyles(theme)
   const { t } = useTranslation()
+  const { agent } = useMobileAgent()
   const { joinCall } = useVideoCallContext()
   const { chatThread } = useChat()
   const { callType, roomId, peerId, wsUrl } = metadata
@@ -24,16 +26,20 @@ const CallOfferChatView = ({ metadata }: Props) => {
     joinCall(chatThread?.data.connectionId!, callType, { roomId, peerId, wsUrl })
   }
 
-  const footer: Record<string, React.ReactElement> = {
-    a: (
+  const reject = () => {
+    agent?.modules.calls.reject({ connectionId: chatThread?.data.connectionId! })
+  }
+
+  const footer: Record<CallOfferState, React.ReactElement> = {
+    [CallOfferState.RECEIVED]: (
       <View style={styles.buttonsContainer}>
-        <OutlinedBlueButton text={t('general.refuse')} onPress={() => {}} style={styles.refuseButton} />
+        <OutlinedBlueButton text={t('general.refuse')} onPress={reject} style={styles.refuseButton} />
         <BlueButton text={t('call.joinCall')} onPress={join} style={styles.joinButton} />
       </View>
     ),
-    b: <State text={t('call.callEnded')} />,
-    c: <State text={t('call.callRejected')} type="error" />,
-    d: (
+    [CallOfferState.FINISHED]: <State text={t('call.callEnded')} />,
+    [CallOfferState.REJECTED]: <State text={t('call.callRejected')} type="error" />,
+    [CallOfferState.EXPIRED]: (
       <View style={styles.expiredContainer}>
         <Text typography="EuclidCircularA-Bold" style={styles.expiredText}>
           {t('call.expiredCall')}
@@ -55,7 +61,7 @@ const CallOfferChatView = ({ metadata }: Props) => {
             bold: <Text typography="EuclidCircularA-Bold" style={styles.title} />,
           }}
         />
-        {footer.a}
+        {footer[metadata.state]}
       </View>
     </View>
   )
