@@ -129,11 +129,6 @@ export const VideoCallProvider: React.FC<PropsWithChildren> = ({ children }) => 
     onCallFinished(0)
   }
 
-  const finishCall = () => {
-    updateCallStatus({ status: CallStatus.Finished, statusMessage: t('call.callEnded') })
-    onCallFinished()
-  }
-
   const onCallFinished = (timeout = 2000) => {
     setTimeout(() => {
       updateState({ isFinishedCall: true })
@@ -186,7 +181,7 @@ export const VideoCallProvider: React.FC<PropsWithChildren> = ({ children }) => 
         // Call end (hangup)
         if (message.type === CallEndMessage.type.messageTypeUri) {
           if (remotePeerClosedTimeoutRef.current) clearTimeout(remotePeerClosedTimeoutRef.current)
-          stateRef.current.isIncomingCall ? onMissedCall() : finishCall()
+          if (stateRef.current.isIncomingCall) onMissedCall()
         }
       }
 
