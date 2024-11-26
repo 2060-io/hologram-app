@@ -208,6 +208,11 @@ export const useVideoCall = () => {
         })
         peer.current.on('notification', notification => {
           switch (notification.method) {
+            case 'peerLeft': {
+              log('other peer left call', notification.data)
+              finishCall()
+              break
+            }
             case 'producerScore': {
               break
             }
@@ -227,7 +232,7 @@ export const useVideoCall = () => {
               const peerClosedDate = new Date()
               /* This timeout before finish call is added because when
             remote peer had lost internet connection and could re-connect once again
-            this peer is called, so we need to wait 5 seconds (accurate number) to check if after close
+            this peer is called, so we need to wait 10 seconds (accurate number) to check if after close
             were a new peer connection (it means could re-connected once again) if so, we do not finishCall
             */
               remotePeerClosedTimeoutRef.current = setTimeout(() => {
@@ -235,7 +240,7 @@ export const useVideoCall = () => {
                   ? newRemotePeerLastConnection.current > peerClosedDate
                   : false
                 if (!wasThereNewPeerAfterClosed) finishCall()
-              }, 5000)
+              }, 10000)
               break
             }
             case 'peerDisplayNameChanged': {
@@ -504,8 +509,13 @@ export const useVideoCall = () => {
 
   const hangup = async () => {
     if (!agent || !didcommConnection) return
-    await agent.modules.calls.hangup({ connectionId: didcommConnection.id })
-    finishCall()
+    try {
+      agent.modules.calls.hangup({ connectionId: didcommConnection.id })
+      peer.current?.request('leaveRoom')
+      finishCall()
+    } catch (error) {
+      log(`error while hangup ${error}`)
+    }
   }
 
   const finishCall = (message?: string) => {
