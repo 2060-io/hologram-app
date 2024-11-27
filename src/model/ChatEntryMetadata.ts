@@ -115,6 +115,7 @@ export type CallOfferMetadata = {
   peerId: string
   wsUrl: string
   state: CallOfferState
+  description?: string
 }
 
 export type MrzRequestState = 'received' | 'scanned' | 'aborted'

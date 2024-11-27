@@ -177,6 +177,7 @@ const BaseCustomView: React.FC<BaseCustomMessageViewProps> = memo(props => {
           return (
             <CallOfferChatView
               metadata={chatEntry.metadata as CallOfferMetadata}
+              sender={user}
               didcommThreadId={chatEntry.didcommThreadId as string}
             />
           )

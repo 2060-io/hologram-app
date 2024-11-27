@@ -19,8 +19,9 @@ export const handleCallMessages = (options: {
   const { realm, connection, activeChatThreadId, receivedAt, message } = options
   const messageType = parseMessageType(message.type)
   if (messageType.messageTypeUri === CallOfferMessage.type.messageTypeUri) {
-    const callType = (message as CallOfferMessage).callType as DidCommCallType
-    const parameters = (message as CallOfferMessage).parameters
+    const callOfferMessage = message as CallOfferMessage
+    const callType = callOfferMessage.callType as DidCommCallType
+    const { parameters, description } = callOfferMessage
     const incomingCallInfo = parameters as IncomingCallInfo
     if (!incomingCallInfo) {
       log(`no incomingCallInfo Parameters: ${JSON.stringify(parameters)}`)
@@ -33,7 +34,7 @@ export const handleCallMessages = (options: {
       type: ChatEntryType.CallOffer,
       role: ChatEntryRole.Receiver,
       state: ChatEntryState.Received,
-      metadata: { callType, roomId, wsUrl, peerId, state: CallOfferState.RECEIVED },
+      metadata: { callType, roomId, wsUrl, peerId, state: CallOfferState.RECEIVED, description },
       associatedRecordId: '',
       createdAt: (receivedAt ?? new Date()).getTime(),
       didcommThreadId: message.threadId,

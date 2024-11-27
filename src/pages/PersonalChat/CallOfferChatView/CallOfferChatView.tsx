@@ -1,5 +1,5 @@
 import React from 'react'
-import { Trans, useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
 
 import { BlueButton, Header, OutlinedBlueButton, State } from '../components'
@@ -13,7 +13,7 @@ import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { useVideoCallContext } from '@2060/hooks/providers/useVideoCallContext'
 import { CallOfferState } from '@2060/model'
 
-const CallOfferChatView = ({ metadata, didcommThreadId }: Props) => {
+const CallOfferChatView = ({ metadata, sender, didcommThreadId }: Props) => {
   const theme = useTheme()
   const styles = getStyles(theme)
   const { t } = useTranslation()
@@ -52,15 +52,12 @@ const CallOfferChatView = ({ metadata, didcommThreadId }: Props) => {
     <View style={styles.container}>
       <Header theme={theme} title={t('preview.callOffer')} leftIconName="incomingCall" />
       <View style={styles.subContainer}>
-        <Trans
-          i18nKey={t('chat.callOfferMessage')}
-          typography="EuclidCircularA-Regular"
-          style={styles.title}
-          parent={Text}
-          components={{
-            bold: <Text typography="EuclidCircularA-Bold" style={styles.title} />,
-          }}
-        />
+        <Text style={styles.title} typography="EuclidCircularA-Bold">
+          {metadata.description ?? t('chat.callOfferDescription', { sender: sender?.name })}
+        </Text>
+        <Text style={styles.title} typography="EuclidCircularA-Regular">
+          {t('chat.callOfferMessage')}
+        </Text>
         {footer[metadata.state]}
       </View>
     </View>
