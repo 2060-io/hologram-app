@@ -14,7 +14,7 @@ import { useIsForeground } from '../useIsForeground'
 
 import { useVideoCallContext } from './useVideoCallContext'
 
-import { Authentication } from '@2060/components'
+import Authentication from '@2060/components/Authentication'
 import Modal from '@2060/components/common/Modal'
 import { setStorageData, getStorageData } from '@2060/utils/asyncStorage'
 

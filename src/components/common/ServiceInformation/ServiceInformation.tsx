@@ -4,7 +4,7 @@ import { View } from 'react-native'
 import ServiceMainInfo from './ServiceMainInfo'
 
 import ProofOfTrust from '@2060/components/common/ProofOfTrust'
-import { useFetchServiceInfo } from '@2060/hooks'
+import { useFetchServiceInfo } from '@2060/hooks/useFetchServiceInfo'
 import { ServiceInfo } from '@2060/services/api/trustRegistryService'
 
 type Props = {
