@@ -52,11 +52,8 @@ const CallOfferChatView = ({ metadata, sender, didcommThreadId }: Props) => {
     <View style={styles.container}>
       <Header theme={theme} title={t('preview.callOffer')} leftIconName="incomingCall" />
       <View style={styles.subContainer}>
-        <Text style={styles.title} typography="EuclidCircularA-Bold">
-          {metadata.description ?? t('chat.callOfferDescription', { sender: sender?.name })}
-        </Text>
         <Text style={styles.title} typography="EuclidCircularA-Regular">
-          {t('chat.callOfferMessage')}
+          {metadata.description ?? t('chat.callOfferDescription', { sender: sender?.name })}
         </Text>
         {footer[metadata.state]}
       </View>
