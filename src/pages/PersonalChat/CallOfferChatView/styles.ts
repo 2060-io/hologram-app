@@ -1,9 +1,10 @@
 import { StyleSheet } from 'react-native'
 
 import { AppTheme } from '@2060/styles'
+import { hexTransparency } from '@2060/utils/colorUtils'
 import { widthPercentageToDP } from '@2060/utils/responsiveUtils'
 
-const NORMAL_WIDTH = widthPercentageToDP('70')
+const NORMAL_WIDTH = widthPercentageToDP('75')
 
 export default (theme: AppTheme) =>
   StyleSheet.create({
@@ -16,8 +17,28 @@ export default (theme: AppTheme) =>
       marginBottom: 0,
     },
     title: {
-      fontSize: theme.fontSize.md - 1,
+      fontSize: theme.fontSize.md2,
       color: theme.colors.blue,
-      marginBottom: 8,
+      marginBottom: 4,
+    },
+    buttonsContainer: {
+      flexDirection: 'row',
+    },
+    refuseButton: {
+      flex: 1,
+      marginRight: 8,
+    },
+    joinButton: {
+      flex: 1,
+    },
+    expiredContainer: {
+      backgroundColor: hexTransparency(theme.colors.orange, theme.isDarkMode ? '2E' : '1A'),
+      borderRadius: 10,
+      padding: 4,
+      alignItems: 'center',
+    },
+    expiredText: {
+      fontSize: theme.fontSize.md - 1,
+      color: theme.colors.orange,
     },
   })

@@ -18,7 +18,7 @@ const Header = ({ theme, title, leftIconName, role = ChatEntryRole.Receiver, rig
   const styles = getStyles(theme, role)
   return (
     <View style={styles.headerContainer}>
-      <SvgIcon name={leftIconName} fill={theme.colors.blue} width={20} height={20} />
+      <SvgIcon name={leftIconName} fill={theme.colors.blue} width={22} height={22} />
       <Text typography="EuclidCircularA-Bold" style={styles.headerTitle} numberOfLines={1}>
         {title}
       </Text>

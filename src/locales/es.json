@@ -23,6 +23,9 @@
       "connectionLost": "Connección perdida",
       "reconnecting": "Reconectando...",
       "endCall": "Finalizar llamada",
+      "joinCall": "Unirse",
+      "callRejected": "Llamada rechazada",
+      "expiredCall": "Llamada expirada",
       "callEnded": "Llamada finalizada",
       "networkFailed": "Problema de conexión a internet",
       "errorWhileConnecting": "Error estableciendo conexión",
@@ -70,8 +73,7 @@
       "canNotOpenURL": "No se pudo abrir ",
       "dismiss": "Cerrar",
       "selected": "1 seleccionado",
-      "selected_plural": "{{ count }} seleccionados",
-      "join": "Unirse"
+      "selected_plural": "{{ count }} seleccionados"
     },
     "navigation": {
       "back": "Atras",
@@ -134,7 +136,7 @@
       "noChatsFound": "No se encontraron conversaciones",
       "unsecureLink": "Enlace inseguro",
       "eMRTDRequest": "Escaneo de documento NFC",
-      "callOfferMessage": "{{sender}} te invita a una llamada",
+      "callOfferDescription": "{{sender}} te invita a una llamada",
       "mrzRequest": "Escaneo de documento",
       "mrzScanTitle": "Ubica el MRZ en tu documento",
       "mrzScanInst": "Ubica tu documento delante de la cámara, alineándolo dentro del rectángulo que aparece a continuación. Asegúrate que la zona legible por máquina (MRZ) con símbolos es totalmente visible y bien iluminada.",

@@ -102,11 +102,20 @@ export type InvitationMetadata = {
   did: string
 }
 
+export enum CallOfferState {
+  RECEIVED = 'received',
+  REJECTED = 'rejected',
+  FINISHED = 'finished',
+  EXPIRED = 'expired',
+}
+
 export type CallOfferMetadata = {
   callType: DidCommCallType
   roomId: string
   peerId: string
   wsUrl: string
+  state: CallOfferState
+  description?: string
 }
 
 export type MrzRequestState = 'received' | 'scanned' | 'aborted'

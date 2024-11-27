@@ -147,8 +147,7 @@ export function manageAgentChatEvents(agent: MobileAgent, realm: Realm, activeCh
       })
     }
 
-    // At the moment we only consider Call Offer message for chat actions
-    if (messageType.messageTypeUri === CallOfferMessage.type.messageTypeUri) {
+    if (messageType.protocolName === CallOfferMessage.type.protocolName) {
       handleCallMessages({
         realm,
         connection,
