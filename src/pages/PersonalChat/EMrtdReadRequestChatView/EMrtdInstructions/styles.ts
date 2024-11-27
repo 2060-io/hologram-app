@@ -35,7 +35,7 @@ export default (theme: AppTheme) =>
       color: theme.colors.tertiaryText,
     },
     instructionsGreen: {
-      fontSize: theme.fontSize.md,
+      fontSize: theme.fontSize.lg,
       color: theme.colors.green,
     },
     imageContainer: {
