@@ -14,8 +14,8 @@ import { useIsForeground } from '../useIsForeground'
 
 import { useVideoCallContext } from './useVideoCallContext'
 
-import Authentication from '@2060/components/Authentication'
-import { Modal } from '@2060/components/common'
+import { Authentication } from '@2060/components'
+import Modal from '@2060/components/common/Modal'
 import { setStorageData, getStorageData } from '@2060/utils/asyncStorage'
 
 interface ScreenLockInterface {
@@ -56,6 +56,18 @@ export const ScreenLockProvider: React.FC<PropsWithChildren> = ({ children }) =>
   useEffect(() => {
     if (isFinishedCall) clearAndRestartInactivityTimeout()
   }, [isFinishedCall])
+
+  /**
+   * Disable or enable screen lock timeout only when lock timeout is different of INSTANT_TIMEOUT
+   */
+  useEffect(() => {
+    if (screenLockTimeout === INSTANT_TIMEOUT) return
+    if (isScreenLockForceDisabled) {
+      clearInactivityTimeout()
+    } else {
+      clearAndRestartInactivityTimeout()
+    }
+  }, [isScreenLockForceDisabled])
 
   /**
    * This hook is exclusive when screen lock timeout is instant (0)

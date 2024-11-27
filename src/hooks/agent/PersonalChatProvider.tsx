@@ -2,6 +2,8 @@ import * as React from 'react'
 import { createContext, useContext, useState, useCallback, useRef } from 'react'
 import { Keyboard, Vibration } from 'react-native'
 
+import { useScreenLock } from '../providers/ScreenLockProvider'
+
 import { ChatThreadWithParticipants } from './useChatThreads'
 
 import { ChatEntryRole, ChatEntryState, ChatEntryType, RelatedEntryProps, isMediaType } from '@2060/model'
@@ -98,7 +100,7 @@ const getMessageActions = (currentMessage: ChatEntryMessage) => {
 }
 
 export interface PersonalChatContextInterface extends PersonalChatState {
-  setRecordVoiceNote(isRecording?: boolean): void
+  setIsRecordVoiceNote(isRecording?: boolean): void
   setRepliedMessage(message?: RepliedMessage): void
   setChatThread(chatThread?: ChatThreadWithParticipants): void
   chatThread?: ChatThreadWithParticipants
@@ -132,6 +134,7 @@ export const useChat = () => {
 }
 
 export const PersonalChatProvider: React.FC<React.PropsWithChildren<Props>> = ({ children }) => {
+  const { forceDisableScreenLock } = useScreenLock()
   const [state, setState] = useState<PersonalChatState>({
     isRecordingVoiceNote: false,
     showMessageFloatingMenu: false,
@@ -142,7 +145,8 @@ export const PersonalChatProvider: React.FC<React.PropsWithChildren<Props>> = ({
   })
   const messageActions = useRef<MessageAction[]>([])
 
-  const setRecordVoiceNote = useCallback((isRecording: boolean = false) => {
+  const setIsRecordVoiceNote = useCallback((isRecording: boolean = false) => {
+    forceDisableScreenLock(isRecording)
     setState(prevState => ({ ...prevState, isRecordingVoiceNote: isRecording }))
   }, [])
 
@@ -221,7 +225,7 @@ export const PersonalChatProvider: React.FC<React.PropsWithChildren<Props>> = ({
     <PersonalChatStack.Provider
       value={{
         ...state,
-        setRecordVoiceNote,
+        setIsRecordVoiceNote,
         setRepliedMessage,
         setChatThread,
         messageActions,

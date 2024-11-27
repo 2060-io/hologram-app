@@ -2,7 +2,7 @@ import appCheck from '@react-native-firebase/app-check'
 import messaging from '@react-native-firebase/messaging'
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Platform, View } from 'react-native'
 import Config from 'react-native-config'
@@ -63,6 +63,7 @@ const Navigation = ({ isSignedUp, agent, theme }: NavigationProps) => {
   const globalStyles = getGlobalStyles(theme)
   const { isDeveloperMode } = useConfig()
   const { isScreenLockForceDisabled } = useScreenLock()
+  const isProcessingMessagesInBackground = useRef(false)
   const InitialComponent = isSignedUp ? HomeMain : isDeveloperMode ? SignUpMain : ProfileCreation
 
   useEffect(() => {
@@ -105,17 +106,20 @@ const Navigation = ({ isSignedUp, agent, theme }: NavigationProps) => {
       )
       const { addConnectionChangeListener, removeConnectionChangeListener } =
         manageConnectionStateChangedEvent(agent)
-      if (isForeground) log('App in foreground')
       if (!isForeground && !isScreenLockForceDisabled) {
         log('App in background and not isScreenLockForceDisabled ... registering to events')
+        isProcessingMessagesInBackground.current = true
         addChatEntryChangeListener()
         addConnectionChangeListener()
       }
 
       return () => {
-        log('Unregistering events')
-        removeChatEntryChangeListener()
-        removeConnectionChangeListener()
+        if (isProcessingMessagesInBackground.current) {
+          log('Unregistering background event listeners')
+          isProcessingMessagesInBackground.current = false
+          removeChatEntryChangeListener()
+          removeConnectionChangeListener()
+        }
       }
     }
   }, [agent, realm, isForeground, isScreenLockForceDisabled])

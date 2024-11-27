@@ -54,14 +54,12 @@ const InputToolbarView = (props: Props) => {
   const { t } = useTranslation()
   const [recordTime, setRecordTime] = useState(INITIAL_TIME_RECORDED)
   const secondsRecorded = useRef(0)
-  const [isRecording, setIsRecording] = useState(false)
   const [isAutomaticRecording, setIsAutomaticRecording] = useState(false)
   const recordedFile = useRef('')
   const [valueTextInput, setValueTextInput] = useState('')
-
   const textInputRef = useRef<TextInputForwardRefProps>(null)
   const recorder = useRef(new AudioRecorderPlayer()).current
-  const { setRepliedMessage, setRecordVoiceNote, repliedMessage } = useChat()
+  const { setRepliedMessage, isRecordingVoiceNote, setIsRecordVoiceNote, repliedMessage } = useChat()
   const { sendTextMessage, shareMediaToDidComm } = useChatActions()
   const { showMediaOptions, onShowMediaOptions } = props
   const isRepliedMessage = repliedMessage !== undefined
@@ -69,7 +67,7 @@ const InputToolbarView = (props: Props) => {
   const animatedOpacity = useSharedValue(1)
   const styleIconRecord = useAnimatedStyle(() => ({ opacity: animatedOpacity.value }), [])
   const theme = useTheme()
-  const styles = getStyles(theme, isRecording)
+  const styles = getStyles(theme, isRecordingVoiceNote)
 
   const shareFileAndSend = async () => {
     const { size } = await RNFS.stat(recordedFile.current)
@@ -104,7 +102,6 @@ const InputToolbarView = (props: Props) => {
         AVEncoderAudioQualityKeyIOS: AVEncoderAudioQualityIOSType.high,
         AVFormatIDKeyIOS: AVEncodingOption.aac,
       }
-      setIsRecording(true)
       setRecordTime(INITIAL_TIME_RECORDED)
       secondsRecorded.current = 0
       const pathFile = await recorder.startRecorder(path, audioSet, false)
@@ -116,7 +113,7 @@ const InputToolbarView = (props: Props) => {
       })
       recordedFile.current = pathFile
       startAnimationRecord()
-      setRecordVoiceNote(true)
+      setIsRecordVoiceNote(true)
     }
   }, [])
 
@@ -126,10 +123,9 @@ const InputToolbarView = (props: Props) => {
   }
 
   const onStopRecorder = async () => {
-    setIsRecording(false)
     await recorder.stopRecorder()
     recorder.removeRecordBackListener()
-    setRecordVoiceNote(false)
+    setIsRecordVoiceNote(false)
     onCancelAnimation()
   }
 
@@ -160,7 +156,7 @@ const InputToolbarView = (props: Props) => {
 
   useEffect(() => {
     return () => {
-      setRecordVoiceNote(false)
+      setIsRecordVoiceNote(false)
       onStopRecorder()
     }
   }, [])
@@ -233,17 +229,17 @@ const InputToolbarView = (props: Props) => {
             <SendButton hasContentTextInput={hasContentTextInput} sendMessage={sendMessage} />
           ) : (
             <AudioButton
-              onPress={isRecording ? sendVoiceMessage : handleMicrophonePermission}
+              onPress={isRecordingVoiceNote ? sendVoiceMessage : handleMicrophonePermission}
               onLongPress={startRecordVoice}
-              onTouchEnd={isRecording && !isAutomaticRecording ? sendVoiceMessage : undefined}
-              isRecording={isRecording}
+              onTouchEnd={isRecordingVoiceNote && !isAutomaticRecording ? sendVoiceMessage : undefined}
+              isRecording={isRecordingVoiceNote}
               isAutomaticRecording={isAutomaticRecording}
               setAutomaticRecording={setAutomaticRecording}
               cancelAudioRecording={cancelAudioRecording}
             />
           )}
         </View>
-        {isRecording && !isAutomaticRecording && (
+        {isRecordingVoiceNote && !isAutomaticRecording && (
           <View style={styles.containerRecordingSwipeUp}>
             <SvgIcon name="lock" fill={theme.colors.tertiaryText} />
             <SvgIcon name="upArrow" width={12} height={12} fill={theme.colors.tertiaryText} />
