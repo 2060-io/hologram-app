@@ -1,7 +1,5 @@
 import { StyleSheet } from 'react-native'
 
-import { headerHeight } from './Header/styles'
-
 import { AppTheme } from '@2060/styles'
 
 export default (theme: AppTheme) =>
@@ -10,10 +8,12 @@ export default (theme: AppTheme) =>
       flex: 1,
       backgroundColor: theme.isDarkMode ? theme.colors.secondary : theme.colors.primary,
     },
+    subContainer: {
+      flex: 1,
+    },
     containerStickyDate: {
       position: 'absolute',
       zIndex: 1,
-      top: headerHeight,
       alignSelf: 'center',
       backgroundColor: theme.isDarkMode ? '#182022' : '#E8F0F2',
       paddingHorizontal: 9,

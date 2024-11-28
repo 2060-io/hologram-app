@@ -3,12 +3,10 @@ import { StackNavigationProp } from '@react-navigation/stack'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, TouchableOpacity } from 'react-native'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import getStyles from './styles'
 
 import { Text, SvgIcon } from '@2060/components/common'
-import { IS_DEVICE_IOS } from '@2060/constants'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 
 interface Props {
@@ -20,15 +18,12 @@ const SelectingMessagesHeader: React.FC<Props> = ({ navigation, stopSelectingMes
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
-  const insets = useSafeAreaInsets()
-  const headerStatusBarHeight = insets.top
   const { primaryText } = theme.colors
 
   const goBack = () => navigation.goBack()
 
   return (
-    <View style={[styles.container, !IS_DEVICE_IOS && { marginTop: headerStatusBarHeight }]}>
-      {IS_DEVICE_IOS && <View style={{ height: headerStatusBarHeight }} />}
+    <View style={[styles.container]}>
       <View style={styles.subContainer}>
         <TouchableOpacity activeOpacity={0.4} onPress={goBack}>
           <SvgIcon name="arrowBack" width={28} height={28} fill={primaryText} />

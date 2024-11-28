@@ -2,7 +2,6 @@ import { StyleSheet } from 'react-native'
 
 import { MESSAGE_INPUT_INITIAL_HEIGHT } from '../InputToolbarView/styles'
 
-import { secondaryColor, whiteColor } from '@2060/constants'
 import { AppTheme } from '@2060/styles'
 
 export default (theme: AppTheme) =>
@@ -21,19 +20,19 @@ export default (theme: AppTheme) =>
     },
     containerMsgNew: {
       position: 'absolute',
-      backgroundColor: secondaryColor,
+      backgroundColor: theme.colors.green,
       alignItems: 'center',
       justifyContent: 'center',
       width: 25,
       height: 25,
       borderRadius: 12.5,
       right: 0,
-      left: -15,
-      top: -15,
+      left: -10,
+      top: -10,
       bottom: 0,
     },
     newMsgText: {
-      color: whiteColor,
-      fontSize: 16,
+      color: theme.colors.white,
+      fontSize: theme.fontSize.md,
     },
   })

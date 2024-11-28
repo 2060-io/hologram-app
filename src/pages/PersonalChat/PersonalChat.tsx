@@ -2,16 +2,24 @@ import { useFocusEffect } from '@react-navigation/native'
 import { FlashList } from '@shopify/flash-list'
 import React, { useState, useRef, useCallback, memo, useMemo, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, NativeSyntheticEvent, NativeScrollEvent, ViewToken } from 'react-native'
+import {
+  View,
+  NativeSyntheticEvent,
+  NativeScrollEvent,
+  ViewToken,
+  KeyboardAvoidingView,
+  SafeAreaView,
+  StatusBar,
+} from 'react-native'
 import { uses24HourClock } from 'react-native-localize'
-import Reanimated, { useAnimatedStyle } from 'react-native-reanimated'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import Realm from 'realm'
 
 import AttachmentOptions from './AttachmentOptions'
 import { CustomHeaderProps, ChatEntryMessage } from './ChatMessage/Props'
 import ContextualMenu from './ContextualMenu'
 import { CustomChatHeader, SelectingMessagesHeader } from './Header'
+import { headerHeight } from './Header/styles'
 import InputToolbarView from './InputToolbarView'
 import PersonalChatContainer, { WrapperPersonalChatProps } from './PersonalChatContainer'
 import ScrollToBottom from './ScrollToBottomView'
@@ -23,7 +31,8 @@ import { getSystemMessage, chatEntryEqual } from './utils'
 import { ModalBottomHalf, ModalConfirmAction } from '@2060/components'
 import MessageFloatingMenu from '@2060/components/MessageFloatingMenu'
 import { Text } from '@2060/components/common'
-import { useChatActions, useKeyboardAnimation } from '@2060/hooks'
+import { IS_DEVICE_IOS } from '@2060/constants'
+import { useChatActions, useKeyboard } from '@2060/hooks'
 import {
   useMobileAgent,
   useChat,
@@ -122,15 +131,14 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
   const showScrollBottomRef = useRef(false)
   const isScrolling = useRef(false)
   const listViewRef = useRef<FlashList<ChatEntryMessage> | null>(null)
+  const insets = useSafeAreaInsets()
+  const headerStatusBarHeight = insets.top
   const timerStickyDate = useRef<ReturnType<typeof setTimeout>>()
 
   const { data: chatThreadData, flags } = chatThread
   const { menu } = useActionMenu({ connectionId: chatThreadData.connectionId })
-  const { keyboardHeight } = useKeyboardAnimation()
-
+  const { isKeyboardVisible } = useKeyboard()
   const styles = getStyles(theme)
-
-  const fakeView = useAnimatedStyle(() => ({ height: Math.abs(keyboardHeight.value) }), [])
 
   const renderSystemMessage = useMemo(() => {
     const systemMessage = getSystemMessage({
@@ -295,117 +303,127 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
 
   const goToForwardMessages = () => navigation.navigate('ForwardMessages')
 
+  const containerStickyDate = {
+    ...styles.containerStickyDate,
+    top: headerHeight + (IS_DEVICE_IOS ? headerStatusBarHeight : 0),
+  }
+
   return (
-    <SafeAreaView edges={['bottom']} style={styles.container}>
-      {currentHeader}
-      {showStickyDate && (
-        <View style={[styles.containerStickyDate]}>
-          <Text typography="EuclidCircularA-Regular" style={styles.stickyDateText}>
-            {currentStickyDate && getFormattedDateRange(currentStickyDate)}
-          </Text>
-        </View>
-      )}
-      <ChatMessageList
-        commonMessageProps={{
-          agent,
-          supportsMessageReceipts: flags.supportsMessageReceipts,
-          using24HourFormat,
-          onTouchRepliedMessage: scrollToMessage,
-          renderCustomHeader,
-          isSelectingMessagesMode,
-          selectedMessages,
-          updateSelectedMessages,
-        }}
-        messages={chatEntries}
-        listViewProps={{
-          ref: listViewRef,
-          onScroll: handleOnScroll,
-          getItemType,
-          onContentSizeChange,
-          onViewableItemsChanged: updateStickyDate,
-          onEndReached: loadMoreMessages,
-          onScrollBeginDrag: onScrollBegin,
-          onScrollEndDrag: onScrollEnd,
-          onMomentumScrollBegin: onScrollBegin,
-          onMomentumScrollEnd: onScrollEnd,
-          ListHeaderComponent: renderSystemMessage,
-        }}
-      />
-      {showScrollBottomRef.current && (
-        <ScrollToBottom numberNewMessages={0} onScrollToBottom={onScrollToBottom} />
-      )}
-      {isSelectingMessagesMode && (
-        <SelectingMessagesBottomMenu
-          selectedMessages={selectedMessages}
-          deleteMessagesForMe={deleteMessagesForMe}
-          stopSelectingMessagesMode={stopSelectingMessagesMode}
-          deleteMessagesForEveryone={deleteMessagesForEveryone}
-          goToForwardMessages={goToForwardMessages}
+    <KeyboardAvoidingView
+      behavior={IS_DEVICE_IOS ? 'padding' : 'height'}
+      style={styles.container}
+      keyboardVerticalOffset={!IS_DEVICE_IOS && isKeyboardVisible ? StatusBar.currentHeight : 0}
+    >
+      <SafeAreaView style={styles.subContainer}>
+        {currentHeader}
+        {showStickyDate && (
+          <View style={containerStickyDate}>
+            <Text typography="EuclidCircularA-Regular" style={styles.stickyDateText}>
+              {currentStickyDate && getFormattedDateRange(currentStickyDate)}
+            </Text>
+          </View>
+        )}
+        <ChatMessageList
+          commonMessageProps={{
+            agent,
+            supportsMessageReceipts: flags.supportsMessageReceipts,
+            using24HourFormat,
+            onTouchRepliedMessage: scrollToMessage,
+            renderCustomHeader,
+            isSelectingMessagesMode,
+            selectedMessages,
+            updateSelectedMessages,
+          }}
+          messages={chatEntries}
+          listViewProps={{
+            ref: listViewRef,
+            onScroll: handleOnScroll,
+            getItemType,
+            onContentSizeChange,
+            onViewableItemsChanged: updateStickyDate,
+            onEndReached: loadMoreMessages,
+            onScrollBeginDrag: onScrollBegin,
+            onScrollEndDrag: onScrollEnd,
+            onMomentumScrollBegin: onScrollBegin,
+            onMomentumScrollEnd: onScrollEnd,
+            ListHeaderComponent: renderSystemMessage,
+          }}
         />
-      )}
-      {flags.isConnectionCompleted &&
-        !flags.isConnectionBlocked &&
-        !flags.isConnectionTerminated &&
-        !isSelectingMessagesMode && (
-          <InputToolbarView
-            onShowMediaOptions={() => setShowAttachmentOptions(true)}
-            showMediaOptions={flags.supportsMediaSharing}
+        {showScrollBottomRef.current && (
+          <ScrollToBottom numberNewMessages={0} onScrollToBottom={onScrollToBottom} />
+        )}
+        {isSelectingMessagesMode && (
+          <SelectingMessagesBottomMenu
+            selectedMessages={selectedMessages}
+            deleteMessagesForMe={deleteMessagesForMe}
+            stopSelectingMessagesMode={stopSelectingMessagesMode}
+            deleteMessagesForEveryone={deleteMessagesForEveryone}
+            goToForwardMessages={goToForwardMessages}
           />
         )}
-      <Reanimated.View style={fakeView} />
-      <ModalBottomHalf visible={showContextualMenu} onClose={() => setShowContextualMenu(false)}>
-        {menu ? (
-          <ContextualMenu
-            menu={menu}
-            connectionIconUrl={flags.connectionIconUrl}
-            onSelectOption={handleOptionSelectedContextualMenu}
-          />
-        ) : null}
-      </ModalBottomHalf>
-      <ModalBottomHalf visible={showAttachmentOptions} onClose={() => setShowAttachmentOptions(false)}>
-        <AttachmentOptions onCloseAttachmentOptions={() => setShowAttachmentOptions(false)} />
-      </ModalBottomHalf>
-      <MessageFloatingMenu
-        navigation={navigation}
-        agent={agent}
-        showMessageFloatingMenu={showMessageFloatingMenu}
-        supportsMessageReceipts={flags.supportsMessageReceipts}
-        supportsMessageReactions={flags.supportsMessageReactions}
-        using24HourFormat={using24HourFormat}
-        messageActions={messageActions.current}
-        selectedMessage={selectedMessage}
-        closeMessageFloatingMenu={closeMessageFloatingMenu}
-        setRepliedMessage={setRepliedMessage}
-        showReportMessageConfirmation={showReportMessageConfirmation}
-        showDeleteMessageConfirmation={showDeleteMessageConfirmation}
-        startSelectingMessagesMode={startSelectingMessagesMode}
-        updateSelectedMessages={updateSelectedMessages}
-        goToForwardMessages={goToForwardMessages}
-      />
-      <ModalConfirmAction
-        visible={displayReportMessageConfirmation}
-        title={t('personalChat.report')}
-        subTitle={t('personalChat.reportDetails')}
-        confirmText={t('personalChat.report')}
-        confirmTextSecondary={t('personalChat.reportAndBlock')}
-        cancelText={t('general.cancel')}
-        onClose={hideReportConfirmation}
-        onConfirm={() => report()}
-        onConfirmSecondary={reportAndBlock}
-        onCancel={hideReportConfirmation}
-      />
-      <ModalConfirmAction
-        visible={modalConfirmMessageDeletion}
-        title={t('personalChat.deleteMessageConfirmation', { count: 1 })}
-        confirmText={t('personalChat.deleteForMe')}
-        confirmTextSecondary={confirmDeleteForEveryone()}
-        cancelText={t('general.cancel')}
-        onClose={closeModalConfirmMessageDeletion}
-        onConfirm={deleteForMe}
-        onConfirmSecondary={deleteForEveryone}
-        onCancel={closeModalConfirmMessageDeletion}
-      />
-    </SafeAreaView>
+        {flags.isConnectionCompleted &&
+          !flags.isConnectionBlocked &&
+          !flags.isConnectionTerminated &&
+          !isSelectingMessagesMode && (
+            <InputToolbarView
+              onShowMediaOptions={() => setShowAttachmentOptions(true)}
+              showMediaOptions={flags.supportsMediaSharing}
+            />
+          )}
+        <ModalBottomHalf visible={showContextualMenu} onClose={() => setShowContextualMenu(false)}>
+          {menu ? (
+            <ContextualMenu
+              menu={menu}
+              connectionIconUrl={flags.connectionIconUrl}
+              onSelectOption={handleOptionSelectedContextualMenu}
+            />
+          ) : null}
+        </ModalBottomHalf>
+        <ModalBottomHalf visible={showAttachmentOptions} onClose={() => setShowAttachmentOptions(false)}>
+          <AttachmentOptions onCloseAttachmentOptions={() => setShowAttachmentOptions(false)} />
+        </ModalBottomHalf>
+        <MessageFloatingMenu
+          navigation={navigation}
+          agent={agent}
+          showMessageFloatingMenu={showMessageFloatingMenu}
+          supportsMessageReceipts={flags.supportsMessageReceipts}
+          supportsMessageReactions={flags.supportsMessageReactions}
+          using24HourFormat={using24HourFormat}
+          messageActions={messageActions.current}
+          selectedMessage={selectedMessage}
+          closeMessageFloatingMenu={closeMessageFloatingMenu}
+          setRepliedMessage={setRepliedMessage}
+          showReportMessageConfirmation={showReportMessageConfirmation}
+          showDeleteMessageConfirmation={showDeleteMessageConfirmation}
+          startSelectingMessagesMode={startSelectingMessagesMode}
+          updateSelectedMessages={updateSelectedMessages}
+          goToForwardMessages={goToForwardMessages}
+        />
+        <ModalConfirmAction
+          visible={displayReportMessageConfirmation}
+          title={t('personalChat.report')}
+          subTitle={t('personalChat.reportDetails')}
+          confirmText={t('personalChat.report')}
+          confirmTextSecondary={t('personalChat.reportAndBlock')}
+          cancelText={t('general.cancel')}
+          onClose={hideReportConfirmation}
+          onConfirm={() => report()}
+          onConfirmSecondary={reportAndBlock}
+          onCancel={hideReportConfirmation}
+        />
+        <ModalConfirmAction
+          visible={modalConfirmMessageDeletion}
+          title={t('personalChat.deleteMessageConfirmation', { count: 1 })}
+          confirmText={t('personalChat.deleteForMe')}
+          confirmTextSecondary={confirmDeleteForEveryone()}
+          cancelText={t('general.cancel')}
+          onClose={closeModalConfirmMessageDeletion}
+          onConfirm={deleteForMe}
+          onConfirmSecondary={deleteForEveryone}
+          onCancel={closeModalConfirmMessageDeletion}
+        />
+      </SafeAreaView>
+    </KeyboardAvoidingView>
   )
 }
 

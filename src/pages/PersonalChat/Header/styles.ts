@@ -1,10 +1,9 @@
 import { StyleSheet } from 'react-native'
 
-import { IS_DEVICE_IOS } from '@2060/constants'
 import { AppTheme } from '@2060/styles'
 import { heightPercentageToDP, widthPercentageToDP } from '@2060/utils/responsiveUtils'
 
-export const headerHeight = heightPercentageToDP(IS_DEVICE_IOS ? '12.10%' : '7.48%')
+export const headerHeight = heightPercentageToDP('7%')
 
 export default (theme: AppTheme) =>
   StyleSheet.create({
