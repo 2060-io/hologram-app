@@ -102,6 +102,7 @@ const InputToolbarView = (props: Props) => {
         AVEncoderAudioQualityKeyIOS: AVEncoderAudioQualityIOSType.high,
         AVFormatIDKeyIOS: AVEncodingOption.aac,
       }
+      setIsRecordVoiceNote(true)
       setRecordTime(INITIAL_TIME_RECORDED)
       secondsRecorded.current = 0
       const pathFile = await recorder.startRecorder(path, audioSet, false)
@@ -113,7 +114,6 @@ const InputToolbarView = (props: Props) => {
       })
       recordedFile.current = pathFile
       startAnimationRecord()
-      setIsRecordVoiceNote(true)
     }
   }, [])
 
@@ -123,9 +123,9 @@ const InputToolbarView = (props: Props) => {
   }
 
   const onStopRecorder = async () => {
+    setIsRecordVoiceNote(false)
     await recorder.stopRecorder()
     recorder.removeRecordBackListener()
-    setIsRecordVoiceNote(false)
     onCancelAnimation()
   }
 
