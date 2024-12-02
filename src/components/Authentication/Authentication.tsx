@@ -7,7 +7,7 @@ import getStyles from './styles'
 
 import AppIcon from '@2060/assets/icons/AppIcon'
 import { SvgIcon, Text } from '@2060/components/common'
-import { useNavigation } from '@2060/hooks/agent'
+import { useNavigation } from '@2060/hooks/agent/NavigationProvider'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 
 type Props = {

@@ -2,6 +2,8 @@ import * as React from 'react'
 import { createContext, useContext, useState, useRef, useEffect, useCallback } from 'react'
 import AudioRecorderPlayer, { PlayBackType } from 'react-native-audio-recorder-player'
 
+import { useScreenLock } from '../providers/ScreenLockProvider'
+
 import { LightboxModal } from '@2060/components'
 import { ChatEntryMessage } from '@2060/pages/PersonalChat/ChatMessage/Props'
 import LightboxHeader from '@2060/pages/PersonalChat/ImageChatView/LightboxHeader'
@@ -52,11 +54,13 @@ const MIN_AUDIO_PLAYBACK_SPEED = 0.5
 const DEFAULT_AUDIO_PLAYBACK_SPEED = 1
 
 export const MediaPlayerProvider: React.FC<React.PropsWithChildren<Props>> = ({ children }) => {
+  const { forceDisableScreenLock } = useScreenLock()
   const audioRecorderPlayer = useRef<AudioRecorderPlayer | undefined>()
   const currentAudioFilePath = useRef<string | undefined>()
   const currentAudioCallback = useRef<AudioCallback>(() => {})
   const currentAudioPosition = useRef(0)
-  const currentAudioStatus = useRef<AudioStatus>()
+  const currentAudioStatusRef = useRef<AudioStatus>()
+  const [currentAudioStatus, setCurrentAudioStatus] = useState<AudioStatus>()
   const [audioPlaybackSpeed, setAudioPlaybackSpeed] = useState(DEFAULT_AUDIO_PLAYBACK_SPEED)
   const [renderVideoPlayer, setRenderVideoPlayer] = useState(false)
   const [showControl, setShowControl] = useState(true)
@@ -68,13 +72,20 @@ export const MediaPlayerProvider: React.FC<React.PropsWithChildren<Props>> = ({ 
     }
   }, [])
 
+  useEffect(() => {
+    currentAudioStatusRef.current = currentAudioStatus
+    forceDisableScreenLock(currentAudioStatus === AudioStatus.PLAYING)
+  }, [currentAudioStatus])
+
   const addAudioPlayBackListener = () => {
     audioRecorderPlayer?.current?.addPlayBackListener(async e => {
       if (e.isFinished) {
         await finishAudioPlayer()
       } else {
         currentAudioPosition.current = e.currentPosition
-        currentAudioStatus.current = AudioStatus.PLAYING
+        if (currentAudioStatusRef.current !== AudioStatus.PLAYING) {
+          setCurrentAudioStatus(AudioStatus.PLAYING)
+        }
         currentAudioCallback.current({
           status: AudioStatus.PLAYING,
           data: e,
@@ -105,7 +116,7 @@ export const MediaPlayerProvider: React.FC<React.PropsWithChildren<Props>> = ({ 
       currentAudioCallback.current = callback
     }
     await startAudioPlayer()
-    currentAudioStatus.current = AudioStatus.STARTED
+    setCurrentAudioStatus(AudioStatus.STARTED)
     currentAudioCallback.current({
       status: AudioStatus.STARTED,
     })
@@ -114,7 +125,8 @@ export const MediaPlayerProvider: React.FC<React.PropsWithChildren<Props>> = ({ 
 
   const pauseAudio = async () => {
     await audioRecorderPlayer?.current?.pausePlayer()
-    currentAudioStatus.current = AudioStatus.PAUSED
+    audioRecorderPlayer?.current?.removePlayBackListener()
+    setCurrentAudioStatus(AudioStatus.PAUSED)
     currentAudioCallback.current({ status: AudioStatus.PAUSED })
   }
 
@@ -131,7 +143,7 @@ export const MediaPlayerProvider: React.FC<React.PropsWithChildren<Props>> = ({ 
       await seekToAudioPlayer(timePosition)
     }
     addAudioPlayBackListener()
-    currentAudioStatus.current = AudioStatus.RESUMED
+    setCurrentAudioStatus(AudioStatus.RESUMED)
     currentAudioCallback.current({
       status: AudioStatus.RESUMED,
     })
@@ -145,7 +157,7 @@ export const MediaPlayerProvider: React.FC<React.PropsWithChildren<Props>> = ({ 
   const finishAudioPlayer = async () => {
     await stopAudioPlayer()
     currentAudioCallback.current({ status: AudioStatus.FINISHED })
-    currentAudioStatus.current = undefined
+    setCurrentAudioStatus(undefined)
     currentAudioPosition.current = 0
     currentAudioFilePath.current = undefined
     audioRecorderPlayer.current = undefined
@@ -166,13 +178,16 @@ export const MediaPlayerProvider: React.FC<React.PropsWithChildren<Props>> = ({ 
     await audioRecorderPlayer?.current?.seekToPlayer(timePosition)
   }
 
-  const playVideo = useCallback(async (newVideoProps: VideoProps) => {
-    if (currentAudioStatus.current === AudioStatus.PLAYING) {
-      await pauseAudio()
-    }
-    setRenderVideoPlayer(true)
-    setVideoState(newVideoProps)
-  }, [])
+  const playVideo = useCallback(
+    async (newVideoProps: VideoProps) => {
+      if (currentAudioStatus === AudioStatus.PLAYING) {
+        await pauseAudio()
+      }
+      setRenderVideoPlayer(true)
+      setVideoState(newVideoProps)
+    },
+    [currentAudioStatus],
+  )
 
   return (
     <MediaPlayerContext.Provider

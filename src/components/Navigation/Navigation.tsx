@@ -105,17 +105,15 @@ const Navigation = ({ isSignedUp, agent, theme }: NavigationProps) => {
       )
       const { addConnectionChangeListener, removeConnectionChangeListener } =
         manageConnectionStateChangedEvent(agent)
-      if (isForeground) log('App in foreground')
       if (!isForeground && !isScreenLockForceDisabled) {
-        log('App in background and not isScreenLockForceDisabled ... registering to events')
+        log('App in background ... registering to events')
         addChatEntryChangeListener()
         addConnectionChangeListener()
-      }
-
-      return () => {
-        log('Unregistering events')
-        removeChatEntryChangeListener()
-        removeConnectionChangeListener()
+        return () => {
+          log('Unregistering background event listeners')
+          removeChatEntryChangeListener()
+          removeConnectionChangeListener()
+        }
       }
     }
   }, [agent, realm, isForeground, isScreenLockForceDisabled])
