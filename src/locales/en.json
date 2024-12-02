@@ -26,6 +26,7 @@
       "joinCall": "Join Call",
       "callRejected": "Call Rejected",
       "expiredCall": "Expired Call",
+      "expiredCallMessage": "Time to join has expired",
       "callEnded": "Call Ended",
       "networkFailed": "Network Failed",
       "errorWhileConnecting": "Error establishing connection",

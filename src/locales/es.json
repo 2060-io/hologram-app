@@ -26,6 +26,7 @@
       "joinCall": "Unirse",
       "callRejected": "Llamada rechazada",
       "expiredCall": "Llamada expirada",
+      "expiredCallMessage": "El tiempo para unirse se ha vencido",
       "callEnded": "Llamada finalizada",
       "networkFailed": "Problema de conexión a internet",
       "errorWhileConnecting": "Error estableciendo conexión",

@@ -116,6 +116,7 @@ export type CallOfferMetadata = {
   wsUrl: string
   state: CallOfferState
   description?: string
+  offerExpirationTime?: number
 }
 
 export type MrzRequestState = 'received' | 'scanned' | 'aborted'
