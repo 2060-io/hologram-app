@@ -54,6 +54,7 @@ const BaseCustomView: React.FC<BaseCustomMessageViewProps> = memo(props => {
     renderCustomHeader,
     using24HourFormat,
     nextMessage,
+    previousMessage,
     borders,
   } = props
   const { t } = useTranslation()
@@ -237,6 +238,8 @@ const BaseCustomView: React.FC<BaseCustomMessageViewProps> = memo(props => {
           mediaItem={chatEntry.metadata as MediaSharingMetadata}
           renderTimeAndTicks={renderTimeAndTicks}
           role={currentMessage.role}
+          messageId={chatEntry.id}
+          previousMessageId={previousMessage?.id}
         />
       )
     }
