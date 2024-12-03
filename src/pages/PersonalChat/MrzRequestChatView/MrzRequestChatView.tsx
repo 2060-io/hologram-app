@@ -1,3 +1,4 @@
+import { MrtdProblemReportReason } from '@2060.io/credo-ts-didcomm-mrtd'
 import { useNavigation } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import React from 'react'
@@ -11,6 +12,7 @@ import getStyles from './styles'
 
 import { PersonalChatStackParams } from '@2060/components/Navigation/NavigationProps'
 import { SvgIcon, Text } from '@2060/components/common'
+import { useChat, useMobileAgent } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { MrzRequestState } from '@2060/model'
 import { handleCameraPermission } from '@2060/utils/permissions'
@@ -20,6 +22,8 @@ const MrzRequestChatView = (props: Props) => {
   const theme = useTheme()
   const styles = getStyles(theme)
   const { t } = useTranslation()
+  const { agent } = useMobileAgent()
+  const { chatThread } = useChat()
   const navigation: StackNavigationProp<PersonalChatStackParams> = useNavigation()
 
   const handleScanMrz = async () => {
@@ -28,11 +32,19 @@ const MrzRequestChatView = (props: Props) => {
     navigation.navigate('MRZScanner', { didcommThreadId: props.didcommThreadId })
   }
 
+  const refuse = () => {
+    agent?.modules.mrtd.sendProblemReport({
+      connectionId: chatThread?.data.connectionId!,
+      reason: MrtdProblemReportReason.MrzRefused,
+      threadId: props.didcommThreadId,
+    })
+  }
+
   const footer: Record<MrzRequestState, React.ReactElement> = {
     aborted: <State text={t('chat.mrzRefused')} type="error" />,
     received: (
       <View style={styles.buttonsContainer}>
-        <OutlinedBlueButton text={t('general.refuse')} onPress={() => {}} style={styles.refuseButton} />
+        <OutlinedBlueButton text={t('general.refuse')} onPress={refuse} style={styles.refuseButton} />
         <BlueButton text={t('general.accept')} onPress={handleScanMrz} style={styles.acceptButton} />
       </View>
     ),

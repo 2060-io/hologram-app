@@ -1,10 +1,12 @@
 import {
   EMrtdDataMessage,
   EMrtdDataRequestMessage,
+  MrtdProblemReportMessage,
+  MrtdProblemReportReason,
   MrzDataMessage,
   MrzDataRequestMessage,
 } from '@2060.io/credo-ts-didcomm-mrtd'
-import { AgentMessage, ConnectionRecord, parseMessageType } from '@credo-ts/core'
+import { AgentMessage, ConnectionRecord, parseMessageType, ProblemReportMessage } from '@credo-ts/core'
 import * as Mrz from 'mrz'
 import Realm from 'realm'
 
@@ -130,6 +132,30 @@ export const handleMrtdMessages = (options: {
         ...chatEntry.metadata,
         state: 'scanned',
       } as EMrtdReadRequestMetadata
+      chatEntryService.updateMetadata(realm, chatEntry.id, newMetadata)
+    }
+  }
+
+  if (messageType.messageTypeUri === MrtdProblemReportMessage.type.messageTypeUri) {
+    const problemReportMessage = message as ProblemReportMessage
+    const code = problemReportMessage.description.code as MrtdProblemReportReason
+    if (![MrtdProblemReportReason.MrzRefused, MrtdProblemReportReason.EmrtdRefused].includes(code)) {
+      return
+    }
+    const isMrz = code === MrtdProblemReportReason.MrzRefused
+    const chatEntryType = isMrz ? ChatEntryType.MrzRequest : ChatEntryType.EMrtdReadRequest
+    // Find the associated entry and update its status
+    const [chatEntry] = chatEntryService.findAllDidcommThreadId(realm, message.threadId, chatEntryType)
+    if (chatEntry) {
+      const newMetadata = isMrz
+        ? ({
+            ...chatEntry.metadata,
+            state: 'aborted',
+          } as MrzRequestMetadata)
+        : ({
+            ...chatEntry.metadata,
+            state: 'aborted',
+          } as EMrtdReadRequestMetadata)
       chatEntryService.updateMetadata(realm, chatEntry.id, newMetadata)
     }
   }
