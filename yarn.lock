@@ -17,16 +17,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@2060.io/credo-ts-didcomm-calls@npm:0.0.6":
-  version: 0.0.6
-  resolution: "@2060.io/credo-ts-didcomm-calls@npm:0.0.6"
+"@2060.io/credo-ts-didcomm-calls@npm:^0.0.9":
+  version: 0.0.9
+  resolution: "@2060.io/credo-ts-didcomm-calls@npm:0.0.9"
   dependencies:
     class-transformer: 0.5.1
     class-validator: 0.14.1
     tsyringe: ^4.8.0
   peerDependencies:
     "@credo-ts/core": ^0.5.10
-  checksum: 48961eee6feab4edb7425d50b4221d5ed5d69f98e93a6cfcf5499ab9f8ade5544edcb86e9918b4c985cdfe626d2741e181e490e3d3b7d565ab7d5529d350419a
+  checksum: 12cb94d2cb88fa2c713158093c5f5e6cda2bd0d1b580d367c1c585ca50c0c8585b53f81bd3ba61a9b09140e5e1f951c42f364d0e284279d2454ec39769b81502
   languageName: node
   linkType: hard
 
@@ -10685,7 +10685,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "hologram-app@workspace:."
   dependencies:
-    "@2060.io/credo-ts-didcomm-calls": 0.0.6
+    "@2060.io/credo-ts-didcomm-calls": ^0.0.9
     "@2060.io/credo-ts-didcomm-mrtd": ^0.0.6
     "@2060.io/credo-ts-didcomm-user-profile": ^0.0.6
     "@babel/helper-get-function-arity": ^7.16.7
