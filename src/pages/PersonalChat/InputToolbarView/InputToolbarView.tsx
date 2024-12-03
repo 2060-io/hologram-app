@@ -59,7 +59,7 @@ const InputToolbarView = (props: Props) => {
   const [valueTextInput, setValueTextInput] = useState('')
   const textInputRef = useRef<TextInputForwardRefProps>(null)
   const recorder = useRef(new AudioRecorderPlayer()).current
-  const { setRepliedMessage, isRecordingVoiceNote, setIsRecordVoiceNote, repliedMessage } = useChat()
+  const { setRepliedMessage, isRecordingVoiceNote, setIsRecordingVoiceNote, repliedMessage } = useChat()
   const { sendTextMessage, shareMediaToDidComm } = useChatActions()
   const { showMediaOptions, onShowMediaOptions } = props
   const isRepliedMessage = repliedMessage !== undefined
@@ -102,7 +102,7 @@ const InputToolbarView = (props: Props) => {
         AVEncoderAudioQualityKeyIOS: AVEncoderAudioQualityIOSType.high,
         AVFormatIDKeyIOS: AVEncodingOption.aac,
       }
-      setIsRecordVoiceNote(true)
+      setIsRecordingVoiceNote(true)
       setRecordTime(INITIAL_TIME_RECORDED)
       secondsRecorded.current = 0
       const pathFile = await recorder.startRecorder(path, audioSet, false)
@@ -123,7 +123,7 @@ const InputToolbarView = (props: Props) => {
   }
 
   const onStopRecorder = async () => {
-    setIsRecordVoiceNote(false)
+    setIsRecordingVoiceNote(false)
     await recorder.stopRecorder()
     recorder.removeRecordBackListener()
     onCancelAnimation()
@@ -156,7 +156,7 @@ const InputToolbarView = (props: Props) => {
 
   useEffect(() => {
     return () => {
-      setIsRecordVoiceNote(false)
+      setIsRecordingVoiceNote(false)
       onStopRecorder()
     }
   }, [])
