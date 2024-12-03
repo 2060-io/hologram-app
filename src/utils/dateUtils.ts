@@ -44,12 +44,13 @@ export const getFormattedDateRangeWithTime = (date: Date, is24HourFormat: boolea
   return `${getFormattedDateRange(date)} ${time}`
 }
 /**
- * Format date using template YYYY-MM-DD @ HH:mm [GMT] Z
+ * Function that returns if now is after than given date
  *
  * @param {Date} date
- * @returns string containing the formatted dates
+ * @returns boolean
  */
-export const getDateTimeFormatString = (date: Date): string => {
-  const dateTimeFormatString = 'YYYY-MM-DD @ HH:mm [GMT] Z'
-  return dayjs(date).format(dateTimeFormatString)
+export const isNowAfterThanDate = (timestamp: number): boolean => {
+  const givenDate = dayjs(new Date(timestamp))
+  const currentDate = dayjs()
+  return currentDate.isAfter(givenDate)
 }

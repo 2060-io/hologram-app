@@ -21,7 +21,7 @@ export const handleCallMessages = (options: {
   if (messageType.messageTypeUri === CallOfferMessage.type.messageTypeUri) {
     const callOfferMessage = message as CallOfferMessage
     const callType = callOfferMessage.callType as DidCommCallType
-    const { parameters, description } = callOfferMessage
+    const { parameters, description, offerExpirationTime } = callOfferMessage
     const incomingCallInfo = parameters as IncomingCallInfo
     if (!incomingCallInfo) {
       log(`no incomingCallInfo Parameters: ${JSON.stringify(parameters)}`)
@@ -34,7 +34,15 @@ export const handleCallMessages = (options: {
       type: ChatEntryType.CallOffer,
       role: ChatEntryRole.Receiver,
       state: ChatEntryState.Received,
-      metadata: { callType, roomId, wsUrl, peerId, state: CallOfferState.RECEIVED, description },
+      metadata: {
+        callType,
+        roomId,
+        wsUrl,
+        peerId,
+        state: CallOfferState.RECEIVED,
+        description,
+        offerExpirationTime: offerExpirationTime?.getTime(),
+      } as CallOfferMetadata,
       associatedRecordId: '',
       createdAt: (receivedAt ?? new Date()).getTime(),
       didcommThreadId: message.threadId,

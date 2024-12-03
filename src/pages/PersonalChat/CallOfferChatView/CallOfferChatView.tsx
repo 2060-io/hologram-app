@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
 
@@ -12,6 +12,8 @@ import { useChat, useMobileAgent } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { useVideoCallContext } from '@2060/hooks/providers/useVideoCallContext'
 import { CallOfferState } from '@2060/model'
+import { isNowAfterThanDate } from '@2060/utils/dateUtils'
+import { toast } from '@2060/utils/toast'
 
 const CallOfferChatView = ({ metadata, sender, didcommThreadId }: Props) => {
   const theme = useTheme()
@@ -20,10 +22,28 @@ const CallOfferChatView = ({ metadata, sender, didcommThreadId }: Props) => {
   const { agent } = useMobileAgent()
   const { joinCall } = useVideoCallContext()
   const { chatThread } = useChat()
-  const { callType, roomId, peerId, wsUrl } = metadata
+  const { description, state, offerExpirationTime } = metadata
+  const [callState, setCallState] = useState<CallOfferState>(state)
+
+  useEffect(() => {
+    if (!offerExpirationTime || state !== CallOfferState.RECEIVED) {
+      setCallState(state)
+      return
+    }
+    const isExpired = isNowAfterThanDate(offerExpirationTime)
+    const newCallState = isExpired ? CallOfferState.EXPIRED : state
+    setCallState(newCallState)
+  }, [state])
 
   const join = () => {
-    joinCall(chatThread?.data.connectionId!, callType, { roomId, peerId, wsUrl })
+    const isExpired = offerExpirationTime ? isNowAfterThanDate(offerExpirationTime) : false
+    if (isExpired) {
+      setCallState(CallOfferState.EXPIRED)
+      toast({ type: 'error', message: t('call.expiredCallMessage'), duration: 3000 })
+    } else {
+      const { callType, roomId, peerId, wsUrl } = metadata
+      joinCall(chatThread?.data.connectionId!, callType, { roomId, peerId, wsUrl })
+    }
   }
 
   const reject = () => {
@@ -53,9 +73,9 @@ const CallOfferChatView = ({ metadata, sender, didcommThreadId }: Props) => {
       <Header theme={theme} title={t('preview.callOffer')} leftIconName="incomingCall" />
       <View style={styles.subContainer}>
         <Text style={styles.title} typography="EuclidCircularA-Regular">
-          {metadata.description ?? t('chat.callOfferDescription', { sender: sender?.name })}
+          {description ?? t('chat.callOfferDescription', { sender: sender?.name })}
         </Text>
-        {footer[metadata.state]}
+        {footer[callState]}
       </View>
     </View>
   )
