@@ -192,7 +192,7 @@ const BaseCustomView: React.FC<BaseCustomMessageViewProps> = memo(props => {
         case ChatEntryType.EMrtdReadRequest:
           return (
             <EMrtdReadRequestChatView
-              didcommThreadId={chatEntry.didcommThreadId}
+              didcommThreadId={chatEntry.didcommThreadId as string}
               metadata={chatEntry.metadata as EMrtdReadRequestMetadata}
             />
           )
