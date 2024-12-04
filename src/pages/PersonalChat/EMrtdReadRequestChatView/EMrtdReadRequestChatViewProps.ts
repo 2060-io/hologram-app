@@ -1,6 +1,6 @@
 import { EMrtdReadRequestMetadata } from '@2060/model'
 
 export type Props = {
-  didcommThreadId?: string
+  didcommThreadId: string
   metadata: EMrtdReadRequestMetadata
 }

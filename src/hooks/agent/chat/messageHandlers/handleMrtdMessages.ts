@@ -137,24 +137,29 @@ export const handleMrtdMessages = (options: {
   }
 
   if (messageType.messageTypeUri === MrtdProblemReportMessage.type.messageTypeUri) {
+    const { MrzRefused, EmrtdRefused } = MrtdProblemReportReason
     const problemReportMessage = message as ProblemReportMessage
     const code = problemReportMessage.description.code as MrtdProblemReportReason
-    if (![MrtdProblemReportReason.MrzRefused, MrtdProblemReportReason.EmrtdRefused].includes(code)) {
+    if (![MrzRefused, EmrtdRefused].includes(code) || !message.thread?.parentThreadId) {
       return
     }
-    const isMrz = code === MrtdProblemReportReason.MrzRefused
+    const isMrz = code === MrzRefused
     const chatEntryType = isMrz ? ChatEntryType.MrzRequest : ChatEntryType.EMrtdReadRequest
     // Find the associated entry and update its status
-    const [chatEntry] = chatEntryService.findAllDidcommThreadId(realm, message.threadId, chatEntryType)
+    const [chatEntry] = chatEntryService.findAllDidcommThreadId(
+      realm,
+      message.thread.parentThreadId,
+      chatEntryType,
+    )
     if (chatEntry) {
       const newMetadata = isMrz
         ? ({
             ...chatEntry.metadata,
-            state: 'aborted',
+            state: 'refused',
           } as MrzRequestMetadata)
         : ({
             ...chatEntry.metadata,
-            state: 'aborted',
+            state: 'refused',
           } as EMrtdReadRequestMetadata)
       chatEntryService.updateMetadata(realm, chatEntry.id, newMetadata)
     }

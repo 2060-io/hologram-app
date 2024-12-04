@@ -33,15 +33,16 @@ const MrzRequestChatView = (props: Props) => {
   }
 
   const refuse = () => {
+    if (!chatThread?.data.connectionId) return
     agent?.modules.mrtd.sendProblemReport({
-      connectionId: chatThread?.data.connectionId!,
+      connectionId: chatThread.data.connectionId,
       reason: MrtdProblemReportReason.MrzRefused,
       threadId: props.didcommThreadId,
     })
   }
 
   const footer: Record<MrzRequestState, React.ReactElement> = {
-    aborted: <State text={t('chat.mrzRefused')} type="error" />,
+    refused: <State text={t('chat.mrzRefused')} type="error" />,
     received: (
       <View style={styles.buttonsContainer}>
         <OutlinedBlueButton text={t('general.refuse')} onPress={refuse} style={styles.refuseButton} />

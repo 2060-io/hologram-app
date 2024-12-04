@@ -144,9 +144,9 @@
       "mrzScanChatInst": "Por favor escanea la sección MRZ de tu documento ubicada en la parte inferior con los símbolos <<<. Asegúrate de que esté totalmente visible y bien iluminada.",
       "eMRTDScanChatInst": "<bold>Por favor escanea tu pasaporte o identificación nacional</bold>. Solo funciona con pasaportes electrónicos biométricos e ID con un chip RFID como se demuestra a continuación:",
       "eMRTDScanInst": "Coloca tu pasaporte o tarjeta de identificación detrás de tu teléfono y presiona “Comenzar” para iniciar el escaneo NFC.\n\nEl chip puede estar ubicado en diferentes áreas (Por ejemplo: portada/reverso de un pasaporte o lados de una tarjeta de identificación), por lo que pueden ser necesarios <green>múltiples intentos</green> para escanear con éxito.",
-      "eMRTDAborted": "Escaneo del documento NFC cancelado",
+      "eMRTDAborted": "Escaneo de documento NFC cancelado",
       "eMRTDScanned": "Documento escaneado",
-      "mrzRefused": "Escaneo del documento cancelado",
+      "mrzRefused": "Escaneo de documento cancelado",
       "mrzScanned": "Documento válidado",
       "eMRTDNotSupported": "Tu dispositivo no soporta lecturas NFC",
       "eMRTDDisabled": "Tienes deshabilitada la lectura de NFC en tu dispositivo, actívala y vuelve a intentar"
