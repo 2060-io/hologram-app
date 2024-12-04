@@ -1,3 +1,4 @@
+import { MrtdProblemReportReason } from '@2060.io/credo-ts-didcomm-mrtd'
 import React, { useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { Alert, Modal, View } from 'react-native'
@@ -81,11 +82,20 @@ const EMrtdReadRequestChatView = (props: Props) => {
     }
   }
 
+  const refuse = () => {
+    if (!chatThread?.data.connectionId) return
+    agent?.modules.mrtd.sendProblemReport({
+      connectionId: chatThread.data.connectionId,
+      reason: MrtdProblemReportReason.EmrtdRefused,
+      threadId: didcommThreadId,
+    })
+  }
+
   const footer: Record<MrzRequestState, React.ReactElement> = {
-    aborted: <State text={t('chat.eMRTDAborted')} type="error" />,
+    refused: <State text={t('chat.eMRTDAborted')} type="error" />,
     received: (
       <View style={styles.buttonsContainer}>
-        <OutlinedBlueButton text={t('general.refuse')} onPress={() => {}} style={styles.refuseButton} />
+        <OutlinedBlueButton text={t('general.refuse')} onPress={refuse} style={styles.refuseButton} />
         <BlueButton text={t('general.accept')} onPress={checkIfDeviceCanScan} style={styles.acceptButton} />
       </View>
     ),
