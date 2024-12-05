@@ -105,7 +105,7 @@ const EMrtdReadRequestChatView = (props: Props) => {
   return (
     <>
       <Modal visible={displayInstructionsPopup}>
-        <EMrtdInstructions scan={scan} dismissPopup={dismissPopup} />
+        <EMrtdInstructions scan={scan} dismissPopup={dismissPopup} refuse={refuse} />
       </Modal>
       <View style={styles.container}>
         <Header theme={theme} title={t('chat.eMRTDRequest')} leftIconName="id" />
