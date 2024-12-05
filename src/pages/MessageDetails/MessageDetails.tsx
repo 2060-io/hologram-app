@@ -12,7 +12,7 @@ import { PersonalChatStackParams } from '@2060/components/Navigation/NavigationP
 import { Avatar, Text } from '@2060/components/common'
 import { useChat, useMobileAgent } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { ChatEntryRole, ChatEntryState } from '@2060/model'
+import { ChatEntryState } from '@2060/model'
 import { getFormattedDateRangeWithTime } from '@2060/utils/dateUtils'
 
 interface Props extends StackScreenProps<PersonalChatStackParams, 'MessageDetails'> {}
@@ -28,11 +28,6 @@ const MessageDetails = ({ route }: Props) => {
   const userSender = chatThread?.participants.find(p => p.id === selectedMessage.role)
   const receivedReceipt = selectedMessage.receipts.find(receipt => receipt.state === ChatEntryState.Received)
   const viewedReceipt = selectedMessage.receipts.find(receipt => receipt.state === ChatEntryState.Viewed)
-
-  const getReceivedReceiptLabel = () => {
-    const isSender = selectedMessage.role === ChatEntryRole.Sender
-    return isSender ? t('personalChat.delivered') : t('personalChat.received')
-  }
 
   const getTransformedDate = (date: number) => {
     return getFormattedDateRangeWithTime(new Date(date), using24HourFormat)
@@ -56,7 +51,7 @@ const MessageDetails = ({ route }: Props) => {
         </Text>
         {receivedReceipt && (
           <Text typography="EuclidCircularA-Regular" style={styles.infoText}>
-            {`${getReceivedReceiptLabel()} ${getTransformedDate(receivedReceipt.timestamp)}`}
+            {`${t('personalChat.received')} ${getTransformedDate(receivedReceipt.timestamp)}`}
           </Text>
         )}
         {viewedReceipt && (

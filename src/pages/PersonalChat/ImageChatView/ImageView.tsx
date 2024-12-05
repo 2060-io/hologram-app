@@ -1,6 +1,5 @@
-import dayjs, { Dayjs } from 'dayjs'
 import React, { memo, useState } from 'react'
-import { View, Image, StatusBar, StyleProp, ImageStyle } from 'react-native'
+import { Image, StatusBar, StyleProp, ImageStyle, TouchableOpacity } from 'react-native'
 
 import { MediaInfo } from '../PersonalChatProps'
 
@@ -20,7 +19,6 @@ type ImageView = {
 }
 
 const ImageView = memo((props: ImageView) => {
-  const [pressureTime, setPressureTime] = useState<Dayjs>()
   const [lightboxVisible, setLightboxVisible] = useState(false)
   const { imagePreviewUri, imageUri, ...lightboxHeaderProps } = props
   const theme = useTheme()
@@ -29,12 +27,6 @@ const ImageView = memo((props: ImageView) => {
   const onToggleModalLightbox = (value: boolean) => {
     setLightboxVisible(value)
     StatusBar.setHidden(value)
-  }
-  const handlePressIn = () => setPressureTime(dayjs(Date.now()))
-  const handlePressOut = () => {
-    const finalTimePressed = dayjs(Date.now()).format()
-    const diff = dayjs(finalTimePressed).diff(pressureTime?.format(), 'millisecond')
-    diff === 0 && onToggleModalLightbox(true)
   }
 
   return (
@@ -48,9 +40,9 @@ const ImageView = memo((props: ImageView) => {
           <Image source={{ uri: imageUri }} style={styles.imageLightbox} />
         </LightboxModal>
       ) : (
-        <View onTouchStart={handlePressIn} onTouchEnd={handlePressOut}>
+        <TouchableOpacity onPress={() => onToggleModalLightbox(true)}>
           <Image style={props.style} source={{ uri: imagePreviewUri }} />
-        </View>
+        </TouchableOpacity>
       )}
     </>
   )

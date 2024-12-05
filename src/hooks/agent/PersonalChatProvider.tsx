@@ -100,7 +100,7 @@ const getMessageActions = (currentMessage: ChatEntryMessage) => {
 }
 
 export interface PersonalChatContextInterface extends PersonalChatState {
-  setIsRecordVoiceNote(isRecording?: boolean): void
+  setIsRecordingVoiceNote(isRecording?: boolean): void
   setRepliedMessage(message?: RepliedMessage): void
   setChatThread(chatThread?: ChatThreadWithParticipants): void
   chatThread?: ChatThreadWithParticipants
@@ -145,7 +145,7 @@ export const PersonalChatProvider: React.FC<React.PropsWithChildren<Props>> = ({
   })
   const messageActions = useRef<MessageAction[]>([])
 
-  const setIsRecordVoiceNote = useCallback((isRecording: boolean = false) => {
+  const setIsRecordingVoiceNote = useCallback((isRecording: boolean = false) => {
     forceDisableScreenLock(isRecording)
     setState(prevState => ({ ...prevState, isRecordingVoiceNote: isRecording }))
   }, [])
@@ -225,7 +225,7 @@ export const PersonalChatProvider: React.FC<React.PropsWithChildren<Props>> = ({
     <PersonalChatStack.Provider
       value={{
         ...state,
-        setIsRecordVoiceNote,
+        setIsRecordingVoiceNote,
         setRepliedMessage,
         setChatThread,
         messageActions,

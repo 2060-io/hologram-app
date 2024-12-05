@@ -24,13 +24,19 @@ interface Props {
 }
 
 type MediaPlayerContextProps = {
-  playAudio: (filePath: string, callback: AudioCallback) => Promise<void>
+  playAudio: (messageId: string, filePath: string, callback: AudioCallback) => Promise<void>
   pauseAudio: () => Promise<void>
-  resumeAudio: (filePath: string, timePosition: number, callback: AudioCallback) => Promise<void>
+  resumeAudio: (
+    messageId: string,
+    filePath: string,
+    timePosition: number,
+    callback: AudioCallback,
+  ) => Promise<void>
   audioPlaybackSpeed: number
   changeAudioPlaybackSpeed: () => Promise<void>
   seekToAudioPlayer: (timePosition: number) => Promise<void>
   playVideo(newVideoProps: VideoProps): void
+  audioMessageIdFinished: string | undefined
 }
 
 const MediaPlayerContext = createContext<MediaPlayerContextProps | undefined>(undefined)
@@ -55,8 +61,10 @@ const DEFAULT_AUDIO_PLAYBACK_SPEED = 1
 
 export const MediaPlayerProvider: React.FC<React.PropsWithChildren<Props>> = ({ children }) => {
   const { forceDisableScreenLock } = useScreenLock()
+  const [audioMessageIdFinished, setAudioMessageIdFinished] = useState<string>()
   const audioRecorderPlayer = useRef<AudioRecorderPlayer | undefined>()
   const currentAudioFilePath = useRef<string | undefined>()
+  const currentAudioMessagePlayingId = useRef<string | undefined>()
   const currentAudioCallback = useRef<AudioCallback>(() => {})
   const currentAudioPosition = useRef(0)
   const currentAudioStatusRef = useRef<AudioStatus>()
@@ -68,7 +76,7 @@ export const MediaPlayerProvider: React.FC<React.PropsWithChildren<Props>> = ({ 
 
   useEffect(() => {
     return () => {
-      finishAudioPlayer()
+      finishAudioPlayer(undefined)
     }
   }, [])
 
@@ -80,7 +88,7 @@ export const MediaPlayerProvider: React.FC<React.PropsWithChildren<Props>> = ({ 
   const addAudioPlayBackListener = () => {
     audioRecorderPlayer?.current?.addPlayBackListener(async e => {
       if (e.isFinished) {
-        await finishAudioPlayer()
+        await finishAudioPlayer(currentAudioMessagePlayingId.current)
       } else {
         currentAudioPosition.current = e.currentPosition
         if (currentAudioStatusRef.current !== AudioStatus.PLAYING) {
@@ -102,7 +110,8 @@ export const MediaPlayerProvider: React.FC<React.PropsWithChildren<Props>> = ({ 
     await setAudioRecorderPlayerPlaybackSpeed(audioPlaybackSpeed)
   }
 
-  const playAudio = async (filePath: string, callback: AudioCallback) => {
+  const playAudio = async (messageId: string, filePath: string, callback: AudioCallback) => {
+    currentAudioMessagePlayingId.current = messageId
     if (currentAudioFilePath.current === undefined) {
       currentAudioFilePath.current = filePath
       currentAudioCallback.current = callback
@@ -130,7 +139,13 @@ export const MediaPlayerProvider: React.FC<React.PropsWithChildren<Props>> = ({ 
     currentAudioCallback.current({ status: AudioStatus.PAUSED })
   }
 
-  const resumeAudio = async (filePath: string, timePosition: number, callback: AudioCallback) => {
+  const resumeAudio = async (
+    messageId: string,
+    filePath: string,
+    timePosition: number,
+    callback: AudioCallback,
+  ) => {
+    currentAudioMessagePlayingId.current = messageId
     const isResumingSameAudio = currentAudioFilePath.current === filePath
     if (isResumingSameAudio) {
       await audioRecorderPlayer?.current?.resumePlayer()
@@ -154,13 +169,15 @@ export const MediaPlayerProvider: React.FC<React.PropsWithChildren<Props>> = ({ 
     audioRecorderPlayer?.current?.removePlayBackListener()
   }
 
-  const finishAudioPlayer = async () => {
+  const finishAudioPlayer = async (newMessageIdFinished?: string) => {
     await stopAudioPlayer()
-    currentAudioCallback.current({ status: AudioStatus.FINISHED })
     setCurrentAudioStatus(undefined)
     currentAudioPosition.current = 0
     currentAudioFilePath.current = undefined
     audioRecorderPlayer.current = undefined
+    setAudioMessageIdFinished(newMessageIdFinished)
+    currentAudioMessagePlayingId.current = undefined
+    currentAudioCallback.current({ status: AudioStatus.FINISHED })
   }
 
   const changeAudioPlaybackSpeed = async () => {
@@ -199,6 +216,7 @@ export const MediaPlayerProvider: React.FC<React.PropsWithChildren<Props>> = ({ 
         changeAudioPlaybackSpeed,
         seekToAudioPlayer,
         playVideo,
+        audioMessageIdFinished,
       }}
     >
       <LightboxModal
