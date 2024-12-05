@@ -1,6 +1,7 @@
 import { CacheModuleConfig, ConsoleLogger, Logger, LogLevel, MediatorPickupStrategy } from '@credo-ts/core'
 import { agentDependencies } from '@credo-ts/react-native'
 import React, { useState, createContext, useEffect, useContext, useCallback } from 'react'
+import EIdReader from 'react-native-eid-reader'
 
 import { useConfig } from '../providers/ConfigProvider'
 import { useNetwork } from '../useNetwork'
@@ -68,6 +69,9 @@ export const MobileAgentProvider: React.FC<Props> = ({ children }) => {
     try {
       if (!agent) throw new Error('Agent not defined')
       await agent.initialize()
+
+      // Set NFC support according to the response from EID module
+      await agent.modules.mrtd.setEMrtdCapabilities({ eMrtdReadSupported: await EIdReader.isNfcSupported() })
 
       // force loading agent LRU cache into memory (this is to prevent
       // some errors found while accesing it concurrently)
