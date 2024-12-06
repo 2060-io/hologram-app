@@ -1165,7 +1165,7 @@ PODS:
     - React-Core
   - react-native-create-thumbnail (2.0.0):
     - React-Core
-  - react-native-eid-reader (0.0.1-alpha.9):
+  - react-native-eid-reader (0.0.1-alpha.10):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -2146,7 +2146,7 @@ SPEC CHECKSUMS:
   react-native-cloud-store: 26562db64190ceb8a5fabb532791959fb920a365
   react-native-config: 8f7283449bbb048902f4e764affbbf24504454af
   react-native-create-thumbnail: ab55d24aea01723cf386f18b0b542aabb1982f27
-  react-native-eid-reader: 04962d7a08aea877e2c0a18cab853428241c745f
+  react-native-eid-reader: e25a674401e75d48644a21a7030234bf5692def2
   react-native-get-random-values: 21325b2244dfa6b58878f51f9aa42821e7ba3d06
   react-native-image-resizer: fd0c333eca55147bd55c5e054cac95dcd0da6814
   react-native-job-queue: 039e742a627a99e3273fcc918e69597d108ef406
