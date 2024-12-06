@@ -15,7 +15,7 @@ import { useChat, useMobileAgent } from '@2060/hooks/agent'
 import { useScreenLock } from '@2060/hooks/providers/ScreenLockProvider'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { MrzInfo, MrzRequestState } from '@2060/model'
-import { log } from '@2060/utils'
+import { log, logError } from '@2060/utils'
 import { widthPercentageToDP } from '@2060/utils/responsiveUtils'
 import { toast } from '@2060/utils/toast'
 
@@ -76,7 +76,7 @@ const EMrtdReadRequestChatView = (props: Props) => {
         })
       }
     } catch (error) {
-      toast({ type: 'error', message: `Error: ${(error as Error).message}`, duration: 3000 })
+      logError(`Error scanning NFC: ${(error as Error).message}`)
     } finally {
       forceDisableScreenLock(false)
     }
@@ -105,7 +105,7 @@ const EMrtdReadRequestChatView = (props: Props) => {
   return (
     <>
       <Modal visible={displayInstructionsPopup}>
-        <EMrtdInstructions scan={scan} dismissPopup={dismissPopup} />
+        <EMrtdInstructions scan={scan} dismissPopup={dismissPopup} refuse={refuse} />
       </Modal>
       <View style={styles.container}>
         <Header theme={theme} title={t('chat.eMRTDRequest')} leftIconName="id" />

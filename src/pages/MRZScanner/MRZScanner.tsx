@@ -1,3 +1,4 @@
+import { MrtdProblemReportReason } from '@2060.io/credo-ts-didcomm-mrtd'
 import { StackScreenProps } from '@react-navigation/stack'
 import { activateKeepAwakeAsync, deactivateKeepAwake } from 'expo-keep-awake'
 import {
@@ -58,12 +59,23 @@ const MRZScanner = ({ navigation, route }: Props) => {
     }
   }
 
+  const refuseAndLeaveScreen = () => {
+    if (!chatThread?.data.connectionId) return
+    agent?.modules.mrtd.sendProblemReport({
+      connectionId: chatThread.data.connectionId,
+      reason: MrtdProblemReportReason.MrzRefused,
+      threadId: didcommThreadId,
+    })
+    leaveScreen()
+  }
+
   return device && isActive ? (
     <MRZCamera
       onData={onData}
       scanSuccess={scanSuccess}
       skipScan={leaveScreen}
       cameraProps={{ device, isActive }}
+      refuse={refuseAndLeaveScreen}
     />
   ) : null
 }
