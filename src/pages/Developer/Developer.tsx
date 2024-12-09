@@ -1,5 +1,5 @@
 import { StackScreenProps } from '@react-navigation/stack'
-import React, { useMemo, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { SafeAreaView, Alert, View, TouchableOpacity } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
@@ -8,14 +8,23 @@ import getStyles from './styles'
 
 import { ModalBottomHalf } from '@2060/components'
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
-import { ModalLoading, OptionsList, Text, TextInput } from '@2060/components/common'
+import { ModalLoading, OptionsList, Text, TextInput, Switch } from '@2060/components/common'
 import { TextInputForwardRefProps } from '@2060/components/common/TextInput'
+import { IS_DEVICE_IOS } from '@2060/constants'
 import { useMobileAgent } from '@2060/hooks/agent'
 import { useConfig } from '@2060/hooks/providers/ConfigProvider'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { deleteAllKeys } from '@2060/services/keys'
-import { allDevEnvs, DevEnv, devEnvPlaceholder, DevEnvsKeys, DevEnvObject } from '@2060/utils/developer'
+import {
+  allDevEnvs,
+  DevEnv,
+  devEnvPlaceholder,
+  DevEnvsKeys,
+  DevEnvObject,
+  getAreBackgroundNotificationsEnabled,
+  saveAreBackgroundNotificationsEnabled,
+} from '@2060/utils/developer'
 
 interface Props extends StackScreenProps<NavigationStackParams, 'Developer'> {}
 
@@ -27,11 +36,20 @@ const Developer = ({ navigation }: Props) => {
   const [displayDevEnvOptions, setDisplayDevEnvOptions] = useState(false)
   const [tempCustomDevEnvValue, setTempCustomDevEnvValue] = useState<string>()
   const [isEditionCustomDevEnvMode, setIsEditionCustomDevEnvMode] = useState(false)
+  const [areBackgroundNotificationsEnabled, setAreBackgroundNotificationsEnabled] = useState(false)
   const customDevInputRef = useRef<TextInputForwardRefProps>(null)
   const { agent, shutdownAgent } = useMobileAgent()
   const { realm, closeRealm } = useLocalRealm()
   const { devEnvs, updateDevEnvs, storedCustomDevEnvs, saveCustomDevEnv } = useConfig()
   const { t } = useTranslation()
+
+  useEffect(() => {
+    const setupBackgroundNotificationsEnabled = async () => {
+      const persistedIsBackgroundNotificationsEnabled = await getAreBackgroundNotificationsEnabled()
+      setAreBackgroundNotificationsEnabled(persistedIsBackgroundNotificationsEnabled)
+    }
+    setupBackgroundNotificationsEnabled()
+  }, [])
 
   const devEnvsForRender = useMemo(() => {
     return Object.entries(devEnvs ?? {}).map(([key, value]) => ({
@@ -100,11 +118,28 @@ const Developer = ({ navigation }: Props) => {
     ])
   }
 
+  const toggleBackgroundNotifications = async () => {
+    let newAreEnabled = !areBackgroundNotificationsEnabled
+    setAreBackgroundNotificationsEnabled(newAreEnabled)
+    await saveAreBackgroundNotificationsEnabled(newAreEnabled)
+    Alert.alert(
+      IS_DEVICE_IOS ? t('settings.closeAppAfterBackNotiChanges') : '',
+      !IS_DEVICE_IOS ? t('settings.closeAppAfterBackNotiChanges') : '',
+    )
+  }
+
   const options = [
     {
       iconName: 'trash',
       text: t('settings.deleteWallet'),
       onPress: confirmWalletDeletion,
+    },
+    {
+      iconName: 'notifications',
+      text: t('settings.backgroundNotifications'),
+      rightContent: () => (
+        <Switch isChecked={areBackgroundNotificationsEnabled} onToggle={toggleBackgroundNotifications} />
+      ),
     },
   ]
 

@@ -450,6 +450,8 @@
       "passwordSaved": "Contraseña actualizada exitosamente",
       "autoBackup": "Copia de seguridad automática",
       "includeVideos": "Incluir videos",
+      "backgroundNotifications": "Background Notifications",
+      "closeAppAfterBackNotiChanges": "Para ver sus cambios reflejados, cierre la app completamente y vuelvala a abrir",
       "changePassword": "Cambiar contraseña",
       "preparingFiles": "Preparando archivos",
       "compressingFiles": "Comprimiendo archivos",
