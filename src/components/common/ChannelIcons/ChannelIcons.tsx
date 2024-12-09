@@ -6,7 +6,13 @@ import SvgIcon, { IconsNames } from '../SvgIcon'
 
 import { useConfig } from '@2060/hooks/providers/ConfigProvider'
 import { useVideoCallContext } from '@2060/hooks/providers/useVideoCallContext'
-import { isBlocked, isTerminated, supportsAudioCalls, supportsVideoCalls } from '@2060/utils/connectionUtils'
+import {
+  isBlocked,
+  isService,
+  isTerminated,
+  supportsAudioCalls,
+  supportsVideoCalls,
+} from '@2060/utils/connectionUtils'
 
 export type CommChannel = 'text' | 'video' | 'audio'
 
@@ -26,10 +32,11 @@ const channelsIcons = { text: 'chat', audio: 'phoneUp', video: 'video' }
 const ChannelIcons = ({ defaultChannels = [], connection, iconColor }: Props) => {
   const { startCall } = useVideoCallContext()
   const { isDeveloperMode } = useConfig()
+  const isConnectionService = isService(connection)
 
   const channels = useMemo(() => {
-    if (!isDeveloperMode) return []
     const channelsToReturn: ChannelProps[] = defaultChannels
+    if (!isDeveloperMode || isConnectionService) return channelsToReturn
     if (supportsAudioCalls(connection)) {
       channelsToReturn.push({
         value: 'audio',
