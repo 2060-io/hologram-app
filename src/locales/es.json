@@ -149,7 +149,17 @@
       "mrzRefused": "Escaneo de documento cancelado",
       "mrzScanned": "Documento válidado",
       "eMRTDNotSupported": "Tu dispositivo no soporta lecturas NFC",
-      "eMRTDDisabled": "Tienes deshabilitada la lectura de NFC en tu dispositivo, actívala y vuelve a intentar"
+      "eMRTDDisabled": "Tienes deshabilitada la lectura de NFC en tu dispositivo. Actívala y vuelve a intentar",
+      "eMRTDTitle": "Listo para escanear",
+      "eMRTDRequestPresentPassport": "Sostén tu teléfono cerca de un pasaporte habilitado para NFC.",
+      "eMRTDAuthenticatingWithPassport": "Autenticando pasaporte...",
+      "eMRTDReading": "Leyendo. Sostén tu documento...",
+      "eMRTDActiveAuthentication": "Autenticando...",
+      "eMRTDSuccessfulRead": "Pasaporte leído existosamente",
+      "eMRTDError": "Lo sentimos, hubo un problema leyendo el pasaporte. Por favor, inténtalo nuevamente.",
+      "eMRTDTagNotValid": "Etiqueta no valida",
+      "eMRTDMoreThanOneTagFound": "Se encontraron más de una etiqueta NFC. Por favor, presenta sólo una",
+      "eMRTDInvalidMRZKey": "El documento no corresponde a la MRZ previamente leída."
     },
     "signUp": {
       "welcomeTitle": "Te damos la bienvenida a Hologram",

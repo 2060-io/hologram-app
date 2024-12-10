@@ -66,6 +66,19 @@ const EMrtdReadRequestChatView = (props: Props) => {
         },
         includeRawData: true,
         includeImages: true,
+        labels: {
+          title: t('chat.eMRTDTitle'),
+          cancelButton: t('general.cancel'),
+          requestPresentPassport: t('chat.eMRTDRequestPresentPassport'),
+          authenticatingWithPassport: t('chat.eMRTDAuthenticatingWithPassport'),
+          reading: t('chat.eMRTDReading'),
+          activeAuthentication: t('chat.eMRTDActiveAuthentication'),
+          successfulRead: t('chat.eMRTDSuccessfulRead'),
+          tagNotValid: t('chat.eMRTDTagNotValid'),
+          moreThanOneTagFound: t('chat.eMRTDMoreThanOneTagFound'),
+          invalidMRZKey: t('chat.eMRTDInvalidMRZKey'),
+          error: t('chat.eMRTDError'),
+        },
       })
       if (result.status === 'OK') {
         dismissPopup()
