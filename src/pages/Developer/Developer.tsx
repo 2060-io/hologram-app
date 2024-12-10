@@ -22,8 +22,8 @@ import {
   devEnvPlaceholder,
   DevEnvsKeys,
   DevEnvObject,
-  getAreBackgroundNotificationsEnabled,
-  saveAreBackgroundNotificationsEnabled,
+  isBackgroundNotificationHandlerEnabled,
+  savePushNotificationHandlerEnabled,
 } from '@2060/utils/developer'
 
 interface Props extends StackScreenProps<NavigationStackParams, 'Developer'> {}
@@ -45,7 +45,7 @@ const Developer = ({ navigation }: Props) => {
 
   useEffect(() => {
     const setupBackgroundNotificationsEnabled = async () => {
-      const persistedIsBackgroundNotificationsEnabled = await getAreBackgroundNotificationsEnabled()
+      const persistedIsBackgroundNotificationsEnabled = await isBackgroundNotificationHandlerEnabled()
       setAreBackgroundNotificationsEnabled(persistedIsBackgroundNotificationsEnabled)
     }
     setupBackgroundNotificationsEnabled()
@@ -118,10 +118,10 @@ const Developer = ({ navigation }: Props) => {
     ])
   }
 
-  const toggleBackgroundNotifications = async () => {
+  const toggleBackgroundPushNotificationHandler = async () => {
     let newAreEnabled = !areBackgroundNotificationsEnabled
     setAreBackgroundNotificationsEnabled(newAreEnabled)
-    await saveAreBackgroundNotificationsEnabled(newAreEnabled)
+    await savePushNotificationHandlerEnabled(newAreEnabled)
     Alert.alert(
       IS_DEVICE_IOS ? t('settings.closeAppAfterBackNotiChanges') : '',
       !IS_DEVICE_IOS ? t('settings.closeAppAfterBackNotiChanges') : '',
@@ -138,7 +138,10 @@ const Developer = ({ navigation }: Props) => {
       iconName: 'notifications',
       text: t('settings.backgroundNotifications'),
       rightContent: () => (
-        <Switch isChecked={areBackgroundNotificationsEnabled} onToggle={toggleBackgroundNotifications} />
+        <Switch
+          isChecked={areBackgroundNotificationsEnabled}
+          onToggle={toggleBackgroundPushNotificationHandler}
+        />
       ),
     },
   ]

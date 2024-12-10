@@ -51,12 +51,14 @@ export const allDevEnvs: DevEnv[] = [
   },
 ]
 
-const ARE_BACKGROUND_NOTIFICATIONS_ENABLED_PERSIST_KEY = 'isBackgroundNotificationsEnabled'
+const BACKGROUND_PUSH_NOTIFICATION_HANDLER_ENABLED_PERSIST_KEY = 'backgroundPushNotificationsEnabled'
 
-export const getAreBackgroundNotificationsEnabled = async () => {
-  return ((await getStorageData(ARE_BACKGROUND_NOTIFICATIONS_ENABLED_PERSIST_KEY)) as boolean) ?? false
+export const isBackgroundNotificationHandlerEnabled = async () => {
+  return (
+    ((await getStorageData(BACKGROUND_PUSH_NOTIFICATION_HANDLER_ENABLED_PERSIST_KEY)) as boolean) ?? false
+  )
 }
 
-export const saveAreBackgroundNotificationsEnabled = async (newValue: boolean) => {
-  await setStorageData(ARE_BACKGROUND_NOTIFICATIONS_ENABLED_PERSIST_KEY, newValue)
+export const savePushNotificationHandlerEnabled = async (newValue: boolean) => {
+  await setStorageData(BACKGROUND_PUSH_NOTIFICATION_HANDLER_ENABLED_PERSIST_KEY, newValue)
 }
