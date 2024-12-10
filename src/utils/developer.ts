@@ -1,4 +1,8 @@
-import { getStorageData, setStorageData } from './asyncStorage'
+import {
+  getStorageData,
+  setStorageData,
+  BACKGROUND_PUSH_NOTIFICATION_HANDLER_ENABLED_PERSIST_KEY,
+} from '@2060/services/localStorage'
 
 export interface DevEnvsKeys {
   DATA_STORE_URL: string
@@ -50,8 +54,6 @@ export const allDevEnvs: DevEnv[] = [
     ],
   },
 ]
-
-const BACKGROUND_PUSH_NOTIFICATION_HANDLER_ENABLED_PERSIST_KEY = 'backgroundPushNotificationsEnabled'
 
 export const isBackgroundNotificationHandlerEnabled = async () => {
   return (

@@ -1,7 +1,13 @@
 import React, { useContext, createContext, PropsWithChildren, useState, useEffect, useCallback } from 'react'
 import Config from 'react-native-config'
 
-import { getStorageData, setStorageData } from '@2060/utils/asyncStorage'
+import {
+  CUSTOM_DEV_ENVS_PERSIST_KEY,
+  DEV_ENVS_PERSIST_KEY,
+  getStorageData,
+  IS_DEVELOPER_MODE_PERSIST_KEY,
+  setStorageData,
+} from '@2060/services/localStorage'
 import { DevEnvsObject, DevEnvObject } from '@2060/utils/developer'
 
 export const defaultDevEnvs: DevEnvsObject = {
@@ -11,10 +17,6 @@ export const defaultDevEnvs: DevEnvsObject = {
   WEBRTC_SERVER_BASE_URL: Config.WEBRTC_SERVER_BASE_URL as string,
   INDY_VDR_PROXY_BASE_URL: Config.INDY_VDR_PROXY_BASE_URL as string,
 }
-
-const IS_DEVELOPER_MODE_PERSIST_KEY = 'isDeveloperMode'
-export const DEV_ENVS_PERSIST_KEY = 'developmentEnvironments'
-const CUSTOM_DEV_ENVS_PERSIST_KEY = 'customDevelopmentEnvironments'
 
 type ConfigProps = {
   devEnvs: DevEnvsObject
