@@ -5,7 +5,7 @@ import {
   CUSTOM_DEV_ENVS_PERSIST_KEY,
   DEV_ENVS_PERSIST_KEY,
   getStorageData,
-  IS_DEVELOPER_MODE_PERSIST_KEY,
+  DEVELOPER_MODE_ENABLED_PERSIST_KEY,
   setStorageData,
 } from '@2060/services/localStorage'
 import { DevEnvsObject, DevEnvObject } from '@2060/utils/developer'
@@ -42,7 +42,7 @@ export const ConfigProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
   useEffect(() => {
     const setupDeveloperMode = async () => {
-      const persistedDeveloperMode = (await getStorageData(IS_DEVELOPER_MODE_PERSIST_KEY)) as boolean
+      const persistedDeveloperMode = (await getStorageData(DEVELOPER_MODE_ENABLED_PERSIST_KEY)) as boolean
       if (persistedDeveloperMode) setIsDeveloperMode(persistedDeveloperMode)
     }
     setupDeveloperMode()
@@ -70,7 +70,7 @@ export const ConfigProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const changeDeveloperModeStatus = useCallback(async () => {
     const newIsDeveloperMode = !isDeveloperMode
     setIsDeveloperMode(newIsDeveloperMode)
-    await setStorageData(IS_DEVELOPER_MODE_PERSIST_KEY, newIsDeveloperMode)
+    await setStorageData(DEVELOPER_MODE_ENABLED_PERSIST_KEY, newIsDeveloperMode)
   }, [isDeveloperMode])
 
   const updateDevEnvs = async (newDevEnvs: DevEnvsObject) => {

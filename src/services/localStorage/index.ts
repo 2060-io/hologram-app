@@ -27,7 +27,7 @@ each media item(audio, image, video) and its corresponding automatic download va
 export const AUTOMATIC_MEDIA_DOWNLOAD_VALUES_PERSIST_KEY = 'automaticMediaDownloadValues'
 
 // This storage key saves the value that indicates if user has developer mode enabled
-export const IS_DEVELOPER_MODE_PERSIST_KEY = 'isDeveloperMode'
+export const DEVELOPER_MODE_ENABLED_PERSIST_KEY = 'developerModeEnabled'
 
 /*
 This storage key saves (Object type of DevEnvsObject in String format) for
