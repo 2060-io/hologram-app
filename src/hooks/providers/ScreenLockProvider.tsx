@@ -16,7 +16,7 @@ import { useVideoCallContext } from './useVideoCallContext'
 
 import Authentication from '@2060/components/Authentication'
 import Modal from '@2060/components/common/Modal'
-import { setStorageData, getStorageData } from '@2060/utils/asyncStorage'
+import { setStorageData, getStorageData, SCREEN_LOCK_ENABLED_PERSIST_KEY } from '@2060/services/localStorage'
 
 interface ScreenLockInterface {
   isScreenLockEnabled: boolean
@@ -96,7 +96,7 @@ export const ScreenLockProvider: React.FC<PropsWithChildren> = ({ children }) =>
 
   useEffect(() => {
     const getStoredScreenLock = async () => {
-      const storedIsScreenLockEnabled = (await getStorageData('screenLockEnabled')) ?? true
+      const storedIsScreenLockEnabled = (await getStorageData(SCREEN_LOCK_ENABLED_PERSIST_KEY)) ?? true
       setIsScreenLockEnabled(Boolean(storedIsScreenLockEnabled))
     }
     getStoredScreenLock()
@@ -105,7 +105,7 @@ export const ScreenLockProvider: React.FC<PropsWithChildren> = ({ children }) =>
   const onToggleLockScreen = () => {
     const newIsScreenLockEnabled = !isScreenLockEnabled
     setIsScreenLockEnabled(newIsScreenLockEnabled)
-    setStorageData('screenLockEnabled', newIsScreenLockEnabled)
+    setStorageData(SCREEN_LOCK_ENABLED_PERSIST_KEY, newIsScreenLockEnabled)
     changeScreenLockTimeout(newIsScreenLockEnabled ? FIVE_MINUTES_TIMEOUT : null)
   }
 
