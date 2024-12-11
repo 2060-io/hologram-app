@@ -7,6 +7,7 @@ import {
   KeylistUpdateAction,
   MediationRecipientService,
   ConnectionService,
+  ConnectionRepository,
 } from '@credo-ts/core'
 import { tryParseDid } from '@credo-ts/core/build/modules/dids/domain/parse'
 
@@ -31,10 +32,21 @@ export const findExistingConnection = async (
 
 export const deleteConnection = async (agent: MobileAgent, record: ConnectionRecord) => {
   const outOfBandRecordId = record.outOfBandId
-  if (record.isReady && !isTerminated(record)) {
-    await agent.connections.hangup({ connectionId: record.id, deleteAfterHangup: true })
-  } else {
-    await agent.connections.deleteById(record.id)
+  try {
+    if (record.isReady && !isTerminated(record)) {
+      await agent.connections.hangup({ connectionId: record.id, deleteAfterHangup: true })
+    } else {
+      await agent.connections.deleteById(record.id)
+    }
+  } catch (error) {
+    // In case of error, delete the connection since it is already unusable.
+    // FIXME: This is not ideal, since a failure here means that either the hangup message or
+    // the keylist update
+    // weren't sent to the other party and/or mediator respectively. So the proper way to fix
+    // this is to retry sending these messages. However, since they are sent internally by Credo,
+    // we should wait until a good Message Sending refactoring is done there
+    logWarn(`Warning: error while hanging up connection ${record.id}. Record will be force-deleted.`)
+    await agent.context.dependencyManager.resolve(ConnectionRepository).deleteById(agent.context, record.id)
   }
 
   // Once the connection has been eliminated, delete its associated OOB record (only if we were invited, as

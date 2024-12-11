@@ -62,7 +62,7 @@ export const isService = (connection: ConnectionRecord) =>
 export const isBlocked = (connection: ConnectionRecord) => connection.getTag('blocked') === true
 
 export const isTerminated = (connection: ConnectionRecord) =>
-  connection.isReady && connection.theirDid === undefined
+  connection.isReady && (connection.theirDid === undefined || connection.did === undefined)
 
 export const supportsMessageReceipts = (connection: ConnectionRecord) =>
   connection.metadata.get('features-protocol')?.[MessageReceiptsMessage.type.protocolUri] !== undefined
