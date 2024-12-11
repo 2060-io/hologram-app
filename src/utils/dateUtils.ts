@@ -54,3 +54,13 @@ export const isNowAfterThanDate = (timestamp: number): boolean => {
   const currentDate = dayjs()
   return currentDate.isAfter(givenDate)
 }
+
+/**
+ * Format string date in format 'YYYYMMDD' to string date in format 'DD-MM-YYYY'
+ *
+ * @param {string} stringDate
+ * @returns string containing the formatted date
+ */
+export const stringToDate = (stringDate: string) => {
+  return dayjs(stringDate, 'YYYYMMDD').format('DD-MM-YYYY')
+}

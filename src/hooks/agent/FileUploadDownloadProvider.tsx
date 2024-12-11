@@ -26,6 +26,11 @@ import {
 
 import { IS_DEVICE_IOS } from '@2060/constants'
 import { MediaDownloadState, MediaUploadState, UploadChunkTask, UploadTask } from '@2060/model'
+import {
+  AUTOMATIC_MEDIA_DOWNLOAD_VALUES_PERSIST_KEY,
+  getStorageData,
+  setStorageData,
+} from '@2060/services/localStorage'
 import { log, logError, logWarn } from '@2060/utils'
 import {
   deleteFile,
@@ -34,11 +39,9 @@ import {
   mediaDirectoryPath,
   moveFile,
 } from '@2060/utils/RNFS'
-import { getStorageData, setStorageData } from '@2060/utils/asyncStorage'
 import { decryptFile, encryptFile } from '@2060/utils/ciphering'
 
 const { Pending, Uploading, Done, Canceled, ErrorCreating, ErrorUploading } = MediaUploadState
-const AUTOMATIC_DOWNLOAD_VALUES_PERSIST_KEY = 'automaticDownloadValues'
 
 const matchAutomaticDownloadTypes = (value: AutomaticDownloadTypes): value is AutomaticDownloadTypes =>
   Object.values(DownloadOptions).includes(value.audio) &&
@@ -113,12 +116,12 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
   useEffect(() => {
     const setupAutomaticDownloadValues = async () => {
       const persistedAutomaticDownloadValues = (await getStorageData(
-        AUTOMATIC_DOWNLOAD_VALUES_PERSIST_KEY,
+        AUTOMATIC_MEDIA_DOWNLOAD_VALUES_PERSIST_KEY,
       )) as AutomaticDownloadTypes
       if (persistedAutomaticDownloadValues && matchAutomaticDownloadTypes(persistedAutomaticDownloadValues)) {
         setAutomaticDownloadValues(persistedAutomaticDownloadValues)
       } else {
-        await setStorageData(AUTOMATIC_DOWNLOAD_VALUES_PERSIST_KEY, defaultAutomaticDownloadValues)
+        await setStorageData(AUTOMATIC_MEDIA_DOWNLOAD_VALUES_PERSIST_KEY, defaultAutomaticDownloadValues)
       }
     }
     setupAutomaticDownloadValues()
@@ -145,7 +148,7 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
       callback()
       const newAutomaticDownloadValues = { ...automaticDownloadValues, [key]: value }
       setAutomaticDownloadValues(newAutomaticDownloadValues)
-      await setStorageData(AUTOMATIC_DOWNLOAD_VALUES_PERSIST_KEY, newAutomaticDownloadValues)
+      await setStorageData(AUTOMATIC_MEDIA_DOWNLOAD_VALUES_PERSIST_KEY, newAutomaticDownloadValues)
     },
     [automaticDownloadValues],
   )

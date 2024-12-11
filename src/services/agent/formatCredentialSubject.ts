@@ -1,5 +1,7 @@
 import { sanitizeString } from './display'
 
+import { stringToDate } from '@2060/utils/dateUtils'
+
 /* eslint-disable max-len */
 export type CredentialAttributeRowString = {
   key: string
@@ -32,6 +34,12 @@ export type CredentialAttributeTable = {
   parent?: string // parent name
 }
 
+const transformToDateIfItIs = (key: string, value: string) => {
+  const couldBeADate = value.length === 8 && key.toLowerCase().includes('date')
+  if (couldBeADate) return stringToDate(value)
+  return value
+}
+
 /**
  * Formats the subject of a credential into a tables to display attributes.
  *
@@ -56,8 +64,13 @@ export function formatCredentialSubject(
     const value = subject[key]
 
     if (!value) return // omit properties with no value
-
-    if (typeof value === 'string' && value.startsWith('data:image/')) {
+    if (typeof value === 'number') {
+      stringRows.push({
+        key: sanitizeString(key),
+        value: transformToDateIfItIs(key, `${value}`),
+        type: 'string',
+      })
+    } else if (typeof value === 'string' && value.startsWith('data:image/')) {
       stringRows.push({
         key: sanitizeString(key),
         image: value,
@@ -66,7 +79,7 @@ export function formatCredentialSubject(
     } else if (typeof value === 'string') {
       stringRows.push({
         key: sanitizeString(key),
-        value: value,
+        value: transformToDateIfItIs(key, value),
         type: 'string',
       })
     }

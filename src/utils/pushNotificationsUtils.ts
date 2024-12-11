@@ -8,9 +8,12 @@ import notifee, {
 import messaging from '@react-native-firebase/messaging'
 import { PERMISSIONS, request, RESULTS } from 'react-native-permissions'
 
-import { getStorageData, setStorageData } from './asyncStorage'
-
 import { IS_DEVICE_IOS, primaryColor, isAndroid13OrHigher } from '@2060/constants'
+import {
+  getStorageData,
+  IS_PROCESSING_BACKGROUND_NOTIFICATIONS_PERSIST_KEY,
+  setStorageData,
+} from '@2060/services/localStorage'
 
 const { AuthorizationStatus } = messaging
 export const LOCAL_NOTIFICATION_ID_PREFIX = 'local-notification'
@@ -125,16 +128,16 @@ export const markNotificationsOfChatAsViewed = async (connectionId: string) => {
 }
 
 export const getIsProcessingBackgroundNotification = async () => {
-  return ((await getStorageData('isProcessingBackgroundNotification')) as boolean) ?? false
+  return ((await getStorageData(IS_PROCESSING_BACKGROUND_NOTIFICATIONS_PERSIST_KEY)) as boolean) ?? false
 }
 
 /**
 Function that updates the value of a boolean flag `isProcessingBackgroundNotification` in the storage.
 It takes a boolean parameter `isProcessing` which defaults to `false`if not provided. The function stores
-this boolean value in the storage under the key `'isProcessingBackgroundNotification'`.
+this boolean value in the storage under the key `IS_PROCESSING_BACKGROUND_NOTIFICATIONS_PERSIST_KEY`.
 This function is useful for keeping track of whether the application is currently
 processing a background notification.
 */
 export const updateIsProcessingBackgroundNotification = async (isProcessing = false) => {
-  await setStorageData('isProcessingBackgroundNotification', isProcessing)
+  await setStorageData(IS_PROCESSING_BACKGROUND_NOTIFICATIONS_PERSIST_KEY, isProcessing)
 }

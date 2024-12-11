@@ -12,8 +12,12 @@ import {
   RestoreProgress,
 } from './backup'
 
+import {
+  GOOGLE_ACCOUNT_BACKUP_PERSIST_KEY,
+  getStorageData,
+  setStorageData,
+} from '@2060/services/localStorage'
 import { log, logError } from '@2060/utils'
-import { getStorageData, setStorageData } from '@2060/utils/asyncStorage'
 import { BACKUP_NAME, BACKUP_ZIP_FILE_PATH } from '@2060/utils/walletBackUpUtils'
 
 const { FileChunkGeneratorModule, GDriveAuthorization } = NativeModules
@@ -23,7 +27,6 @@ global.Buffer ??= require('buffer').Buffer
 type FilesProps = {
   id: string
 }
-const BACKUP_ACCOUNT_STORED_KEY = 'selectedBackupAccount'
 
 export const useGoogleDrive = () => {
   const [googleDriveConnection, setGoogleDriveConnection] = useState<null | GDrive>(null)
@@ -33,7 +36,7 @@ export const useGoogleDrive = () => {
 
   useEffect(() => {
     const setup = async () => {
-      const storedGoogleAccount = await getStorageData(BACKUP_ACCOUNT_STORED_KEY)
+      const storedGoogleAccount = await getStorageData(GOOGLE_ACCOUNT_BACKUP_PERSIST_KEY)
       setSelectedGoogleAccount(String(storedGoogleAccount))
       storedGoogleAccount ? authorize(String(storedGoogleAccount)) : selectAccount()
     }
@@ -63,7 +66,7 @@ export const useGoogleDrive = () => {
       const newSelectedAccount = await GDriveAuthorization.selectAccount(selectedGoogleAccount)
       if (newSelectedAccount) {
         setSelectedGoogleAccount(newSelectedAccount)
-        setStorageData(BACKUP_ACCOUNT_STORED_KEY, newSelectedAccount)
+        setStorageData(GOOGLE_ACCOUNT_BACKUP_PERSIST_KEY, newSelectedAccount)
         await authorize(newSelectedAccount)
       }
     } catch (error) {

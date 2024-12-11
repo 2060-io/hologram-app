@@ -11,7 +11,6 @@ import Realm from 'realm'
 
 import { baseAgentConfig } from '../hooks/agent/MobileAgentProvider'
 import { manageAgentChatEvents } from '../hooks/agent/chat/manageAgentChatEvents'
-import { DEV_ENVS_PERSIST_KEY } from '../hooks/providers/ConfigProvider'
 import { CURRENT_REALM_SCHEMA_VERSION } from '../hooks/providers/RealmProvider'
 
 import { manageBackgroundChatEntryChanges } from '@2060/hooks/agent/chat'
@@ -19,8 +18,8 @@ import { manageConnectionStateChangedEvent } from '@2060/hooks/agent/connections
 import { ChatEntry, ChatThread } from '@2060/model'
 import { setupMobileAgent } from '@2060/services/initMobileAgent'
 import { KeyChainService, retrieveKey } from '@2060/services/keys'
+import { DEV_ENVS_PERSIST_KEY, getStorageData } from '@2060/services/localStorage'
 import { walletDirectoryPath } from '@2060/utils/RNFS'
-import { getStorageData } from '@2060/utils/asyncStorage'
 import { DevEnvsObject } from '@2060/utils/developer'
 import {
   deleteRemoteNotifications,
