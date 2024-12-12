@@ -33,9 +33,9 @@ const ForwardMessages = ({ navigation }: Props) => {
   const [selectedConnections, setSelectedConnections] = useState<SelectedConnection[]>([])
   const selectedConnectionNames = selectedConnections.map(({ name }) => name).join(', ')
   const isForwardButtonDisabled = !selectedConnections.length
-  const { records } = useConnections()
+  const { connections } = useConnections()
 
-  const excludedConnections = records
+  const excludedConnections = connections
     .filter(({ state }) => state !== DidExchangeState.Completed)
     .map(({ id }) => id)
   if (chatThread) excludedConnections.push(chatThread.data.connectionId)

@@ -83,7 +83,7 @@ export const useConnectionListForDisplay = (options: { search: string; excludedC
 
   const { search, excludedConnections } = options
   const rootConnections = useParentConnections()
-  const allConnections = useConnections()
+  const { connections } = useConnections()
 
   // FIXME: This is not very efficient, as it does multiple searches
   const searchByName = (dataList: ConnectionListSection[]) => {
@@ -118,7 +118,7 @@ export const useConnectionListForDisplay = (options: { search: string; excludedC
         rootConnections.filter(item => !excludedConnections.includes(item.id)),
         (connectionId: string) =>
           filterConnectionsByParentId(
-            allConnections.records.filter(item => !excludedConnections.includes(item.id)),
+            connections.filter(item => !excludedConnections.includes(item.id)),
             connectionId,
           ),
         agent,
@@ -128,7 +128,7 @@ export const useConnectionListForDisplay = (options: { search: string; excludedC
     }
 
     getSections()
-  }, [search, rootConnections, allConnections, agent])
+  }, [search, rootConnections, connections, agent])
 
   return { connectionListForDisplay: sections, isSearchingMode: search.length >= 2 }
 }

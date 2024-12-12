@@ -31,13 +31,13 @@ const ShareMessages = ({ navigation }: Props) => {
   const headerHeight = useHeaderHeight()
   const { shareMessages } = useChatActions()
   const { cancelShare, sharedData } = useSharedDataFromOtherApps()
-  const { records } = useConnections()
+  const { connections } = useConnections()
 
   const [selectedConnections, setSelectedConnections] = useState<SelectedConnection[]>([])
   const selectedConnectionNames = selectedConnections.map(({ name }) => name).join(', ')
   const isShareButtonDisabled = !selectedConnections.length
 
-  const excludedConnections = records
+  const excludedConnections = connections
     .filter(({ state }) => state !== DidExchangeState.Completed)
     .map(({ id }) => id)
 
