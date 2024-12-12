@@ -1,6 +1,6 @@
 import { StackActions } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
-import React, { useLayoutEffect, useState, useRef } from 'react'
+import React, { useLayoutEffect, useState, useRef, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TouchableOpacity, View, ScrollView } from 'react-native'
 
@@ -63,12 +63,23 @@ const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => 
   const styles = getStyles(theme)
   const { findOrCreateThread } = useChats()
   const { userProfileData } = useUserProfile()
-
+  const chatThreadId = useRef<string>()
   const outOfBandId = outOfBandRecord.id
   const parentConnectionId = outOfBandRecord.getTag('parentConnectionId') as string | undefined
   const invitationType = getInvitationType(invitationDid, parentConnectionId)
   const connectionParent = useConnectionById(parentConnectionId)
   const parentConnectionName = connectionParent ? getConnectionDisplayName(connectionParent) : ''
+
+  useEffect(() => {
+    if (!isAcceptingInvitation && chatThreadId.current) {
+      navigation.dispatch(
+        StackActions.replace('PersonalChatStack', {
+          screen: 'PersonalChat',
+          params: { chatThreadId: chatThreadId.current },
+        }),
+      )
+    }
+  }, [isAcceptingInvitation])
 
   const onRefuse = () => {
     if (navigation.canGoBack()) navigation.goBack()
@@ -87,10 +98,7 @@ const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => 
     try {
       if (!agent) throw new Error('Agent not initialized')
       const { connectionRecord } = await acceptInvitation(agent.context, invitationOptions)
-      const chatThreadId = findOrCreateThread({ connection: connectionRecord! }).id
-      navigation.dispatch(
-        StackActions.replace('PersonalChatStack', { screen: 'PersonalChat', params: { chatThreadId } }),
-      )
+      chatThreadId.current = findOrCreateThread({ connection: connectionRecord! }).id
     } catch (error) {
       toast({ type: 'error', message: `Failed to add connection ${error}` })
     } finally {
