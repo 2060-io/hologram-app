@@ -32,12 +32,11 @@ const ShareMessages = ({ navigation }: Props) => {
   const { shareMessages } = useChatActions()
   const { cancelShare, sharedData } = useSharedDataFromOtherApps()
   const { connections } = useConnections()
+  const excludedConnections = notAllowedConnectionsIdsToSendMessages(connections)
 
   const [selectedConnections, setSelectedConnections] = useState<SelectedConnection[]>([])
   const selectedConnectionNames = selectedConnections.map(({ name }) => name).join(', ')
   const isShareButtonDisabled = !selectedConnections.length
-
-  const excludedConnections = notAllowedConnectionsIdsToSendMessages(connections)
 
   useEffect(() => {
     return () => {
