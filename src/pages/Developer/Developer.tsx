@@ -1,3 +1,4 @@
+import { CacheModuleConfig } from '@credo-ts/core'
 import { StackScreenProps } from '@react-navigation/stack'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -98,6 +99,12 @@ const Developer = ({ navigation }: Props) => {
     try {
       realm?.write(() => realm?.deleteAll())
       await agent.wallet.delete()
+      // FIXME: Workaround to make sure cache is unloaded from memory
+      const cache = agent.dependencyManager.resolve(CacheModuleConfig).cache
+
+      // @ts-ignore
+      // eslint-disable-next-line no-underscore-dangle
+      cache._cache = undefined
       await shutdownAgent()
       await deleteAllKeys()
       closeRealm(true)
