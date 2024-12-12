@@ -27,6 +27,7 @@ export type StateProps = {
   isVideoCall: boolean
   isRejected: boolean | undefined
   incomingCallInfo: IncomingCallInfo | undefined
+  didcommThreadId: string | undefined
   didcommConnection: ConnectionRecord | undefined
   didcommCallType: DidCommCallType | undefined
   isFinishedCall: boolean
@@ -46,7 +47,12 @@ interface VideoCallProps extends StateProps {
   remotePeerClosedTimeoutRef: MutableRefObject<NodeJS.Timeout | undefined>
   connectionStatus: ConnectionStatus
   updateCallStatus: React.Dispatch<React.SetStateAction<ConnectionStatus>>
-  joinCall: (connectionId: string, callType: DidCommCallType, incomingCallInfo: IncomingCallInfo) => void
+  joinCall: (
+    connectionId: string,
+    callType: DidCommCallType,
+    incomingCallInfo: IncomingCallInfo,
+    didcommThreadId: string,
+  ) => void
 }
 
 export const VideoCallContext = createContext<VideoCallProps | undefined>(undefined)

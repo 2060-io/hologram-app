@@ -35,6 +35,7 @@ const stateInitialValues: StateProps = {
   isVideoCall: false,
   isRejected: undefined,
   incomingCallInfo: undefined,
+  didcommThreadId: undefined,
   didcommConnection: undefined,
   didcommCallType: undefined,
   isFinishedCall: false,
@@ -138,7 +139,12 @@ export const VideoCallProvider: React.FC<PropsWithChildren> = ({ children }) => 
   }
 
   const joinCall = useCallback(
-    async (connectionId: string, callType: DidCommCallType, incomingCallInfo: IncomingCallInfo) => {
+    async (
+      connectionId: string,
+      callType: DidCommCallType,
+      incomingCallInfo: IncomingCallInfo,
+      didcommThreadId: string,
+    ) => {
       if (!agent || !connectionId || !callType || !incomingCallInfo) return
       if (!isNetworkConnectedRef.current) {
         toast({ type: 'error', message: t('call.youNeedInternetConnection') })
@@ -150,6 +156,7 @@ export const VideoCallProvider: React.FC<PropsWithChildren> = ({ children }) => 
       if (!cameraPermission) return
       const connection = await agent.connections.getById(connectionId)
       updateState({
+        didcommThreadId,
         didcommConnection: connection,
         didcommCallType: callType,
         isVideoCall: callType !== 'audio',

@@ -42,7 +42,7 @@ const CallOfferChatView = ({ metadata, sender, didcommThreadId }: Props) => {
       toast({ type: 'error', message: t('call.expiredCallMessage'), duration: 3000 })
     } else {
       const { callType, roomId, peerId, wsUrl } = metadata
-      joinCall(chatThread?.data.connectionId!, callType, { roomId, peerId, wsUrl })
+      joinCall(chatThread?.data.connectionId!, callType, { roomId, peerId, wsUrl }, didcommThreadId)
     }
   }
 
