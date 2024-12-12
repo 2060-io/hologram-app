@@ -1,3 +1,4 @@
+import { DidExchangeState } from '@credo-ts/core'
 import { useHeaderHeight } from '@react-navigation/elements'
 import { StackScreenProps } from '@react-navigation/stack'
 import React, { useCallback, useEffect, useState } from 'react'
@@ -12,6 +13,7 @@ import { ConnectionItem } from '@2060/components/ConnectionsList/ConnectionListP
 import { PersonalChatStackParams } from '@2060/components/Navigation/NavigationProps'
 import { SvgIcon, Text } from '@2060/components/common'
 import { useChatActions } from '@2060/hooks'
+import { useConnections } from '@2060/hooks/agent'
 import { useSharedDataFromOtherApps } from '@2060/hooks/providers/SharedDataFromOtherAppsProvider'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 
@@ -29,10 +31,15 @@ const ShareMessages = ({ navigation }: Props) => {
   const headerHeight = useHeaderHeight()
   const { shareMessages } = useChatActions()
   const { cancelShare, sharedData } = useSharedDataFromOtherApps()
+  const { records } = useConnections()
 
   const [selectedConnections, setSelectedConnections] = useState<SelectedConnection[]>([])
   const selectedConnectionNames = selectedConnections.map(({ name }) => name).join(', ')
   const isShareButtonDisabled = !selectedConnections.length
+
+  const excludedConnections = records
+    .filter(({ state }) => state !== DidExchangeState.Completed)
+    .map(({ id }) => id)
 
   useEffect(() => {
     return () => {
@@ -85,6 +92,7 @@ const ShareMessages = ({ navigation }: Props) => {
           }}
           allowSelection
           selectedConnections={selectedConnections.map(connection => connection.id)}
+          excludedConnections={excludedConnections}
         />
       </View>
       <View style={styles.shareContainer}>

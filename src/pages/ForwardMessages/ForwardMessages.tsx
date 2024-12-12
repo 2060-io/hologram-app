@@ -1,3 +1,4 @@
+import { DidExchangeState } from '@credo-ts/core'
 import { useHeaderHeight } from '@react-navigation/elements'
 import { StackScreenProps } from '@react-navigation/stack'
 import React, { useCallback, useState } from 'react'
@@ -12,7 +13,7 @@ import { ConnectionItem } from '@2060/components/ConnectionsList/ConnectionListP
 import { PersonalChatStackParams } from '@2060/components/Navigation/NavigationProps'
 import { SvgIcon, Text } from '@2060/components/common'
 import { useChatActions } from '@2060/hooks'
-import { useChat } from '@2060/hooks/agent'
+import { useChat, useConnections } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 
 interface Props extends StackScreenProps<PersonalChatStackParams, 'ForwardMessages'> {}
@@ -32,6 +33,12 @@ const ForwardMessages = ({ navigation }: Props) => {
   const [selectedConnections, setSelectedConnections] = useState<SelectedConnection[]>([])
   const selectedConnectionNames = selectedConnections.map(({ name }) => name).join(', ')
   const isForwardButtonDisabled = !selectedConnections.length
+  const { records } = useConnections()
+
+  const excludedConnections = records
+    .filter(({ state }) => state !== DidExchangeState.Completed)
+    .map(({ id }) => id)
+  if (chatThread) excludedConnections.push(chatThread.data.connectionId)
 
   const onPressConnection = useCallback((connectionItem: ConnectionItem) => {
     setSelectedConnections(prevState => {
@@ -65,7 +72,7 @@ const ForwardMessages = ({ navigation }: Props) => {
           headerProps={{ height: headerHeight, title: t('navigation.ForwardTo') }}
           allowSelection
           selectedConnections={selectedConnections.map(connection => connection.id)}
-          excludedConnections={chatThread ? [chatThread.data.connectionId] : []}
+          excludedConnections={excludedConnections}
         />
       </View>
       <View style={styles.forwardContainer}>
