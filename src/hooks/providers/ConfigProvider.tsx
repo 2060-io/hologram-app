@@ -1,7 +1,13 @@
 import React, { useContext, createContext, PropsWithChildren, useState, useEffect, useCallback } from 'react'
 import Config from 'react-native-config'
 
-import { getStorageData, setStorageData } from '@2060/utils/asyncStorage'
+import {
+  CUSTOM_DEV_ENVS_PERSIST_KEY,
+  DEV_ENVS_PERSIST_KEY,
+  getStorageData,
+  DEVELOPER_MODE_ENABLED_PERSIST_KEY,
+  setStorageData,
+} from '@2060/services/localStorage'
 import { DevEnvsObject, DevEnvObject } from '@2060/utils/developer'
 
 export const defaultDevEnvs: DevEnvsObject = {
@@ -11,10 +17,6 @@ export const defaultDevEnvs: DevEnvsObject = {
   WEBRTC_SERVER_BASE_URL: Config.WEBRTC_SERVER_BASE_URL as string,
   INDY_VDR_PROXY_BASE_URL: Config.INDY_VDR_PROXY_BASE_URL as string,
 }
-
-const IS_DEVELOPER_MODE_PERSIST_KEY = 'isDeveloperMode'
-export const DEV_ENVS_PERSIST_KEY = 'developmentEnvironments'
-const CUSTOM_DEV_ENVS_PERSIST_KEY = 'customDevelopmentEnvironments'
 
 type ConfigProps = {
   devEnvs: DevEnvsObject
@@ -40,7 +42,7 @@ export const ConfigProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
   useEffect(() => {
     const setupDeveloperMode = async () => {
-      const persistedDeveloperMode = (await getStorageData(IS_DEVELOPER_MODE_PERSIST_KEY)) as boolean
+      const persistedDeveloperMode = (await getStorageData(DEVELOPER_MODE_ENABLED_PERSIST_KEY)) as boolean
       if (persistedDeveloperMode) setIsDeveloperMode(persistedDeveloperMode)
     }
     setupDeveloperMode()
@@ -68,7 +70,7 @@ export const ConfigProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const changeDeveloperModeStatus = useCallback(async () => {
     const newIsDeveloperMode = !isDeveloperMode
     setIsDeveloperMode(newIsDeveloperMode)
-    await setStorageData(IS_DEVELOPER_MODE_PERSIST_KEY, newIsDeveloperMode)
+    await setStorageData(DEVELOPER_MODE_ENABLED_PERSIST_KEY, newIsDeveloperMode)
   }, [isDeveloperMode])
 
   const updateDevEnvs = async (newDevEnvs: DevEnvsObject) => {

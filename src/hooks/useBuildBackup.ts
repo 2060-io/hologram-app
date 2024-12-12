@@ -10,9 +10,13 @@ import { BackupProgressProps, OnBackupFinish } from './backup'
 import { useMobileAgent } from '@2060/hooks/agent/MobileAgentProvider'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
 import { ChatEntry, ChatThread } from '@2060/model'
+import {
+  setStorageData,
+  getStorageData,
+  BACKUP_INCLUDES_MEDIA_PERSIST_KEY,
+} from '@2060/services/localStorage'
 import { logError } from '@2060/utils'
 import { writeFile } from '@2060/utils/RNFS'
-import { setStorageData, getStorageData } from '@2060/utils/asyncStorage'
 import * as BackupUtils from '@2060/utils/walletBackUpUtils'
 
 type Props = {
@@ -42,7 +46,7 @@ export const useBuildBackup = ({
 
   useEffect(() => {
     const getStoredConfig = async () => {
-      const storedIncludeVideos = await getStorageData('includeVideos')
+      const storedIncludeVideos = await getStorageData(BACKUP_INCLUDES_MEDIA_PERSIST_KEY)
       setIncludeVideos(Boolean(storedIncludeVideos))
     }
     getStoredConfig()
@@ -81,7 +85,7 @@ export const useBuildBackup = ({
 
   const onToggleIncludeVideos = () => {
     setIncludeVideos(!includeVideos)
-    setStorageData('includeVideos', !includeVideos)
+    setStorageData(BACKUP_INCLUDES_MEDIA_PERSIST_KEY, !includeVideos)
   }
 
   const onBackupUploadSuccess = async () => {

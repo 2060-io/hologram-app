@@ -29,7 +29,7 @@ const scanRegion: ScanRegion = {
 }
 const RUN_TARGET_FPS = IS_DEVICE_IOS ? 5 : 1
 
-const MRZCamera = ({ skipScan, cameraProps, onData, scanSuccess }: MRZCameraProps) => {
+const MRZCamera = ({ skipScan, cameraProps, onData, scanSuccess, refuse }: MRZCameraProps) => {
   const { t } = useTranslation()
   const camera = useRef<Camera>(null)
   const { device, isActive } = cameraProps
@@ -131,7 +131,7 @@ const MRZCamera = ({ skipScan, cameraProps, onData, scanSuccess }: MRZCameraProp
       </View>
       <View style={{ ...styles.bottomOverlayContainer, height: containerHeight * 0.48 }}>
         <SvgIcon name="MRZ" height={widthPercentageToDP('43')} width={widthPercentageToDP('72')} />
-        <TouchableOpacity onPress={skipScan}>
+        <TouchableOpacity onPress={refuse}>
           <Text typography="EuclidCircularA-Medium" style={styles.refuse}>
             {t('general.refuse')}
           </Text>

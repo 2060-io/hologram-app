@@ -1,5 +1,6 @@
+import { CacheModuleConfig } from '@credo-ts/core'
 import { StackScreenProps } from '@react-navigation/stack'
-import React, { useMemo, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { SafeAreaView, Alert, View, TouchableOpacity } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
@@ -8,14 +9,23 @@ import getStyles from './styles'
 
 import { ModalBottomHalf } from '@2060/components'
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
-import { ModalLoading, OptionsList, Text, TextInput } from '@2060/components/common'
+import { ModalLoading, OptionsList, Text, TextInput, Switch } from '@2060/components/common'
 import { TextInputForwardRefProps } from '@2060/components/common/TextInput'
+import { IS_DEVICE_IOS } from '@2060/constants'
 import { useMobileAgent } from '@2060/hooks/agent'
 import { useConfig } from '@2060/hooks/providers/ConfigProvider'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { deleteAllKeys } from '@2060/services/keys'
-import { allDevEnvs, DevEnv, devEnvPlaceholder, DevEnvsKeys, DevEnvObject } from '@2060/utils/developer'
+import {
+  allDevEnvs,
+  DevEnv,
+  devEnvPlaceholder,
+  DevEnvsKeys,
+  DevEnvObject,
+  isBackgroundNotificationHandlerEnabled,
+  savePushNotificationHandlerEnabled,
+} from '@2060/utils/developer'
 
 interface Props extends StackScreenProps<NavigationStackParams, 'Developer'> {}
 
@@ -27,11 +37,20 @@ const Developer = ({ navigation }: Props) => {
   const [displayDevEnvOptions, setDisplayDevEnvOptions] = useState(false)
   const [tempCustomDevEnvValue, setTempCustomDevEnvValue] = useState<string>()
   const [isEditionCustomDevEnvMode, setIsEditionCustomDevEnvMode] = useState(false)
+  const [areBackgroundNotificationsEnabled, setAreBackgroundNotificationsEnabled] = useState(false)
   const customDevInputRef = useRef<TextInputForwardRefProps>(null)
   const { agent, shutdownAgent } = useMobileAgent()
   const { realm, closeRealm } = useLocalRealm()
   const { devEnvs, updateDevEnvs, storedCustomDevEnvs, saveCustomDevEnv } = useConfig()
   const { t } = useTranslation()
+
+  useEffect(() => {
+    const setupBackgroundNotificationsEnabled = async () => {
+      const persistedIsBackgroundNotificationsEnabled = await isBackgroundNotificationHandlerEnabled()
+      setAreBackgroundNotificationsEnabled(persistedIsBackgroundNotificationsEnabled)
+    }
+    setupBackgroundNotificationsEnabled()
+  }, [])
 
   const devEnvsForRender = useMemo(() => {
     return Object.entries(devEnvs ?? {}).map(([key, value]) => ({
@@ -80,6 +99,12 @@ const Developer = ({ navigation }: Props) => {
     try {
       realm?.write(() => realm?.deleteAll())
       await agent.wallet.delete()
+      // FIXME: Workaround to make sure cache is unloaded from memory
+      const cache = agent.dependencyManager.resolve(CacheModuleConfig).cache
+
+      // @ts-ignore
+      // eslint-disable-next-line no-underscore-dangle
+      cache._cache = undefined
       await shutdownAgent()
       await deleteAllKeys()
       closeRealm(true)
@@ -100,11 +125,31 @@ const Developer = ({ navigation }: Props) => {
     ])
   }
 
+  const toggleBackgroundPushNotificationHandler = async () => {
+    let newAreEnabled = !areBackgroundNotificationsEnabled
+    setAreBackgroundNotificationsEnabled(newAreEnabled)
+    await savePushNotificationHandlerEnabled(newAreEnabled)
+    Alert.alert(
+      IS_DEVICE_IOS ? t('settings.closeAppAfterBackNotiChanges') : '',
+      !IS_DEVICE_IOS ? t('settings.closeAppAfterBackNotiChanges') : '',
+    )
+  }
+
   const options = [
     {
       iconName: 'trash',
       text: t('settings.deleteWallet'),
       onPress: confirmWalletDeletion,
+    },
+    {
+      iconName: 'notifications',
+      text: t('settings.backgroundNotifications'),
+      rightContent: () => (
+        <Switch
+          isChecked={areBackgroundNotificationsEnabled}
+          onToggle={toggleBackgroundPushNotificationHandler}
+        />
+      ),
     },
   ]
 

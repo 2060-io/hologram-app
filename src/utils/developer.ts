@@ -1,3 +1,9 @@
+import {
+  getStorageData,
+  setStorageData,
+  BACKGROUND_PUSH_NOTIFICATION_HANDLER_ENABLED_PERSIST_KEY,
+} from '@2060/services/localStorage'
+
 export interface DevEnvsKeys {
   DATA_STORE_URL: string
   CLOUD_AGENT_PUBLIC_DID: string
@@ -48,3 +54,13 @@ export const allDevEnvs: DevEnv[] = [
     ],
   },
 ]
+
+export const isBackgroundNotificationHandlerEnabled = async () => {
+  return (
+    ((await getStorageData(BACKGROUND_PUSH_NOTIFICATION_HANDLER_ENABLED_PERSIST_KEY)) as boolean) ?? false
+  )
+}
+
+export const savePushNotificationHandlerEnabled = async (newValue: boolean) => {
+  await setStorageData(BACKGROUND_PUSH_NOTIFICATION_HANDLER_ENABLED_PERSIST_KEY, newValue)
+}

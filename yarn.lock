@@ -11031,7 +11031,7 @@ __metadata:
     react-native-cloud-store: 0.11.0
     react-native-config: ^1.5.1
     react-native-create-thumbnail: ^2.0.0
-    react-native-eid-reader: "npm:@2060.io/react-native-eid-reader@0.0.1-alpha.8"
+    react-native-eid-reader: "npm:@2060.io/react-native-eid-reader@0.0.1-alpha.10"
     react-native-fs: ^2.20.0
     react-native-gesture-handler: ^2.12.1
     react-native-get-random-values: ^1.7.0
@@ -15933,13 +15933,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-eid-reader@npm:@2060.io/react-native-eid-reader@0.0.1-alpha.8":
-  version: 0.0.1-alpha.8
-  resolution: "@2060.io/react-native-eid-reader@npm:0.0.1-alpha.8"
+"react-native-eid-reader@npm:@2060.io/react-native-eid-reader@0.0.1-alpha.10":
+  version: 0.0.1-alpha.10
+  resolution: "@2060.io/react-native-eid-reader@npm:0.0.1-alpha.10"
   peerDependencies:
     react: "*"
     react-native: "*"
-  checksum: c4ac105bbc418f2e0e7a7314d7485c82e4787a60d2b39d639aa348f4d45275ca75a5262691914f5a996fca1a78e6301da17239b70773ffa2353d0bf3bd4daab8
+  checksum: 3bd0e3f5e64c258084faf4253ae027e95e16d54559eab4a3564156f0b2ab5feac5fbb5985101055179f38a94c84adcd791b6dada6d9a7d0cbb5b36f957acf5fc
   languageName: node
   linkType: hard
 

@@ -11,12 +11,18 @@ import { widthPercentageToDP } from '@2060/utils/responsiveUtils'
 type Props = {
   scan: () => void
   dismissPopup: () => void
+  refuse: () => void
 }
 
-const EMrtdInstructions = ({ scan, dismissPopup }: Props) => {
+const EMrtdInstructions = ({ scan, dismissPopup, refuse }: Props) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
+
+  const refuseAndDismissPopup = () => {
+    refuse()
+    dismissPopup()
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -47,7 +53,7 @@ const EMrtdInstructions = ({ scan, dismissPopup }: Props) => {
           </View>
         </View>
         <MainButton text={t('getStarted')} onPress={scan} />
-        <TouchableOpacity onPress={dismissPopup}>
+        <TouchableOpacity onPress={refuseAndDismissPopup}>
           <Text typography="EuclidCircularA-Medium" style={styles.refuseText}>
             {t('general.refuse')}
           </Text>
