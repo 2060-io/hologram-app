@@ -1,4 +1,3 @@
-import { DidExchangeState } from '@credo-ts/core'
 import { useHeaderHeight } from '@react-navigation/elements'
 import { StackScreenProps } from '@react-navigation/stack'
 import React, { useCallback, useState } from 'react'
@@ -15,6 +14,7 @@ import { SvgIcon, Text } from '@2060/components/common'
 import { useChatActions } from '@2060/hooks'
 import { useChat, useConnections } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
+import { notAllowedConnectionsIdsToSendMessages } from '@2060/utils/connectionUtils'
 
 interface Props extends StackScreenProps<PersonalChatStackParams, 'ForwardMessages'> {}
 
@@ -35,9 +35,7 @@ const ForwardMessages = ({ navigation }: Props) => {
   const isForwardButtonDisabled = !selectedConnections.length
   const { connections } = useConnections()
 
-  const excludedConnections = connections
-    .filter(({ state }) => state !== DidExchangeState.Completed)
-    .map(({ id }) => id)
+  const excludedConnections = notAllowedConnectionsIdsToSendMessages(connections)
   if (chatThread) excludedConnections.push(chatThread.data.connectionId)
 
   const onPressConnection = useCallback((connectionItem: ConnectionItem) => {

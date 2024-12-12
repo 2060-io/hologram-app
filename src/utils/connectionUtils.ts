@@ -1,6 +1,6 @@
 import { CallOfferMessage, DidCommCallRole } from '@2060.io/credo-ts-didcomm-calls'
 import { ProfileMessage, PictureData, getConnectionProfile } from '@2060.io/credo-ts-didcomm-user-profile'
-import { ConnectionRecord, JsonTransformer, Protocol } from '@credo-ts/core'
+import { ConnectionRecord, DidExchangeState, JsonTransformer, Protocol } from '@credo-ts/core'
 import { ShareMediaMessage } from 'credo-ts-media-sharing'
 import { MessageReceiptsMessage } from 'credo-ts-receipts'
 
@@ -116,3 +116,9 @@ export const filterConnectionsByTypes = (options: {
       (!options.onlyParentConnections || getConnectionParentId(connection) === undefined) &&
       options.types.includes(getConnectionType(connection)),
   )
+
+export const notAllowedConnectionsIdsToSendMessages = (connections: ConnectionRecord[]) => {
+  return connections
+    .filter(connection => connection.state !== DidExchangeState.Completed || isBlocked(connection))
+    .map(({ id }) => id)
+}

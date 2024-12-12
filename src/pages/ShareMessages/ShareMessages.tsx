@@ -1,4 +1,3 @@
-import { DidExchangeState } from '@credo-ts/core'
 import { useHeaderHeight } from '@react-navigation/elements'
 import { StackScreenProps } from '@react-navigation/stack'
 import React, { useCallback, useEffect, useState } from 'react'
@@ -16,6 +15,7 @@ import { useChatActions } from '@2060/hooks'
 import { useConnections } from '@2060/hooks/agent'
 import { useSharedDataFromOtherApps } from '@2060/hooks/providers/SharedDataFromOtherAppsProvider'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
+import { notAllowedConnectionsIdsToSendMessages } from '@2060/utils/connectionUtils'
 
 interface Props extends StackScreenProps<PersonalChatStackParams, 'ShareMessages'> {}
 
@@ -37,9 +37,7 @@ const ShareMessages = ({ navigation }: Props) => {
   const selectedConnectionNames = selectedConnections.map(({ name }) => name).join(', ')
   const isShareButtonDisabled = !selectedConnections.length
 
-  const excludedConnections = connections
-    .filter(({ state }) => state !== DidExchangeState.Completed)
-    .map(({ id }) => id)
+  const excludedConnections = notAllowedConnectionsIdsToSendMessages(connections)
 
   useEffect(() => {
     return () => {
