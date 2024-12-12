@@ -7,19 +7,22 @@ import {
 } from 'expo-screen-orientation'
 import { Device, types } from 'mediasoup-client'
 import { WebSocketTransport, Peer } from 'protoo-client'
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import InCallManager from 'react-native-incall-manager'
 import { MediaStream, mediaDevices, registerGlobals } from 'react-native-webrtc'
 
 import { useMobileAgent } from '@2060/hooks/agent'
+import * as chatEntryService from '@2060/hooks/agent/chat/services/ChatEntryService'
 import { useConfig } from '@2060/hooks/providers/ConfigProvider'
+import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
 import {
   ConnectionStatus,
   CallStatus,
   useVideoCallContext,
   isIncomingCallInfo,
 } from '@2060/hooks/providers/useVideoCallContext'
+import { CallOfferMetadata, CallOfferState, ChatEntryType } from '@2060/model'
 import { log, logError } from '@2060/utils'
 
 function generatePeerId(length = 8) {
@@ -100,6 +103,7 @@ export const useVideoCall = () => {
     onCallFinished,
     incomingCallInfo,
     didcommCallType,
+    didcommThreadId,
     didcommConnection,
     isVideoCall,
     isCameraOn,
@@ -108,6 +112,7 @@ export const useVideoCall = () => {
     remotePeerClosedTimeoutRef,
   } = useVideoCallContext()
   const { agent } = useMobileAgent()
+  const { realm } = useLocalRealm()
   const connectionStatusRef = useRef<ConnectionStatus>(connectionStatus)
   const [localVideoStream, setLocalVideoStream] = useState<MediaStream>()
   const localAudioStreamRef = useRef<MediaStream>()
@@ -132,6 +137,22 @@ export const useVideoCall = () => {
   const lostConnection = useRef(false)
   const newRemotePeerLastConnection = useRef<Date>()
   const { devEnvs } = useConfig()
+
+  const updateChatEntryMetadata = useCallback(() => {
+    if (!realm || !didcommThreadId) return
+    const [chatEntry] = chatEntryService.findAllDidcommThreadId(
+      realm,
+      didcommThreadId,
+      ChatEntryType.CallOffer,
+    )
+    if (chatEntry) {
+      const newMetadata = {
+        ...chatEntry.metadata,
+        state: CallOfferState.FINISHED,
+      } as CallOfferMetadata
+      chatEntryService.updateMetadata(realm, chatEntry.id, newMetadata)
+    }
+  }, [realm, didcommThreadId])
 
   useEffect(() => {
     const initialize = async () => {
@@ -211,6 +232,7 @@ export const useVideoCall = () => {
             case 'peerLeft': {
               log('other peer left call', notification.data)
               finishCall()
+              updateChatEntryMetadata()
               break
             }
             case 'producerScore': {
