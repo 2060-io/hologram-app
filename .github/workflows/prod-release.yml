@@ -1,0 +1,126 @@
+name: Continuous Deployment - Prod release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version-number:
+        type: string
+        description: Semantic Version to be published (e.g. 2.5.0')
+
+env:
+  APPCENTER_API_TOKEN: ${{ secrets.APPCENTER_API_TOKEN }}
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      VERSION_NUMBER: ${{ github.event.inputs.version-number }}
+    steps:
+      - name: Checkout hologram-app
+        uses: actions/checkout@v4
+
+      - name: Setup node v20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: 'https://registry.npmjs.org/'
+          cache: yarn
+
+      - name: Install dependencies
+        run: |
+          yarn install --immutable
+
+      - name: Update version
+        run: |
+          yarn version $VERSION_NUMBER
+          yarn postversion
+
+      - name: Upload Version files
+        uses: actions/upload-artifact@v4
+        with:
+          name: version-files
+          path: |
+            ./ios/app2060/InfoPlist/Info-Dev.plist
+            ./ios/app2060/InfoPlist/Info-Staging.plist
+            ./ios/app2060/InfoPlist/Info-Prod.plist
+            ./ios/app2060.xcodeproj/project.pbxproj
+            ./android/app/build.gradle
+            ./package.json
+
+  build-android:
+    runs-on: self-hosted
+    needs: [release]
+    env:
+      UPLOAD_KEYSTORE_PASSWORD: ${{ secrets.UPLOAD_KEY_KEYSTORE_PASSWORD }}
+      UPLOAD_KEY_PASSWORD: ${{ secrets.UPLOAD_KEY_PASSWORD }}
+      UPLOAD_KEY_KEYSTORE_B64: ${{ secrets.UPLOAD_KEY_KEYSTORE_B64 }}
+    steps:
+      - name: Checkout hologram-app
+        uses: actions/checkout@v4
+
+      - name: Setup node v20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: 'https://registry.npmjs.org/'
+          cache: yarn
+
+      - name: Install dependencies
+        run: |
+          yarn install --immutable
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: version-files
+
+      - name: Build Android
+        run: |
+          echo $UPLOAD_KEY_KEYSTORE_B64 | base64 --decode > ./android/app/upload-key.keystore
+          npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/build/intermediates/res/merged/release/
+          cd android
+          ./gradlew clean assembleProdRelease
+          ./gradlew bundleProdRelease
+
+      - name: Upload Android App Bundle to Google Play Store
+        id: upload_aab
+        uses: KevinRohn/github-action-upload-play-store@v1.0.0
+        with:
+          service_account_json: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON_B64 }}
+          package_name: "io.twentysixty.mobileagent.m"
+          aab_file_path: "./android/app/build/outputs/bundle/prodRelease/app-prod-release.aab"
+          track: "internal"
+          release_status: "draft"
+
+  build-ios:
+    runs-on: self-hosted
+    needs: [release]
+    steps:
+      - name: Checkout hologram-app
+        uses: actions/checkout@v4
+
+      - name: Setup node v20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: 'https://registry.npmjs.org/'
+          cache: yarn
+
+      - name: Install dependencies
+        run: |
+          yarn install --immutable
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: version-files
+
+      - name: Build IOS
+        run: |
+          cd ios
+          pod install --repo-update
+          xcodebuild clean archive -workspace  app2060.xcworkspace -scheme 2060Prod -allowProvisioningUpdates -sdk iphoneos -archivePath builds/app2060.xcarchive -destination "generic/platform=iOS" | xcpretty
+          xcodebuild -exportArchive -archivePath "builds/app2060.xcarchive" -exportPath "builds" -exportOptionsPlist app2060/ExportOptionsProd.plist | xcpretty
+
+      - name: Upload to AppStoreConnect
+        run: |
+          xcrun altool --upload-app -f ./ios/builds/2060Prod.ipa -u ${{ secrets.APPSTORECONNECT_USERNAME }} -p ${{ secrets.APPSTORECONNECT_PASSWORD }}
+
