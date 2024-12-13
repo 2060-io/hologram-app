@@ -53,8 +53,6 @@
 	<string>Hologram uses your camera to scan invitations and take pictures to share with your connections.</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>Hologram uses Face ID to protect your wallet.</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Hologram uses your microphone to record voice notes you can share with your connections. These notes are end-to-end encrypted.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
