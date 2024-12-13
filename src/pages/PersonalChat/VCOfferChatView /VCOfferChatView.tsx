@@ -30,7 +30,7 @@ const VCOfferChatView = ({ sender, associatedRecordId, metadata, agent }: Props)
   const [showModalRefuseConfirmation, setShowModalRefuseConfirmation] = useState(false)
   const navigation: StackNavigationProp<ParamListBase> = useNavigation()
   const { t } = useTranslation()
-  const credentialState = metadata.credentialState
+  const { credentialState } = metadata
   const opacity = credentialState !== CredentialState.OfferReceived ? 0.3 : 1
   const theme = useTheme()
   const styles = getStyles(theme)
@@ -51,31 +51,25 @@ const VCOfferChatView = ({ sender, associatedRecordId, metadata, agent }: Props)
     [metadata],
   )
 
-  const onPressBtn = async (option: string) => {
-    try {
-      // TODO: Move this logic to an AgentAction
-      if (option === 'accept') {
-        agent?.credentials
-          .acceptOffer({
-            credentialRecordId: associatedRecordId,
-            autoAcceptCredential: AutoAcceptCredential.ContentApproved,
-          })
-          .catch(error => logError(`error: ${error}`))
-      } else if (option === 'refuse') {
-        agent?.credentials
-          .declineOffer(associatedRecordId, {
-            sendProblemReport: true,
-            problemReportDescription: 'e.msg.refused',
-          })
-          .catch(error => logError(`error: ${error}`))
-      }
-    } catch (error) {
-      logError(`Error in ${option} action`)
-    }
+  const accept = () => {
+    // TODO: Move this logic to an AgentAction
+    agent?.credentials
+      .acceptOffer({
+        credentialRecordId: associatedRecordId,
+        autoAcceptCredential: AutoAcceptCredential.ContentApproved,
+      })
+      .catch(error => logError(`Error accepting credential ${error}`))
   }
 
-  const accept = () => onPressBtn('accept')
-  const refuse = () => onPressBtn('refuse')
+  const refuse = () => {
+    agent?.credentials
+      .declineOffer(associatedRecordId, {
+        sendProblemReport: true,
+        problemReportDescription: 'e.msg.refused',
+      })
+      .catch(error => logError(`Error refusing credential ${error}`))
+  }
+
   const refuseFromChat = () => {
     hideModalRefuseConfirmation()
     refuse()

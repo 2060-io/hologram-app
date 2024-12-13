@@ -121,6 +121,7 @@ export function manageAgentChatEvents(agent: MobileAgent, realm: Realm, activeCh
         record,
         activeChatThreadId,
         receivedAt,
+        message,
       })
     }
 
