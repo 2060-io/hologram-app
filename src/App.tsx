@@ -24,7 +24,7 @@ import {
 import RealmProvider from '@2060/hooks/providers/RealmProvider'
 import { ScreenLockProvider } from '@2060/hooks/providers/ScreenLockProvider'
 import { ThemeProvider } from '@2060/hooks/providers/ThemeProvider'
-import { initLanguage, language } from '@2060/utils/language'
+import { initializeI18n, language } from '@2060/utils/language'
 
 locale(language)
 extend(localizedFormat)
@@ -61,7 +61,7 @@ const ProvidersTree = buildProvidersTree([
 
 const App = () => {
   const [translationsLoaded, setTranslationsLoaded] = useState(false)
-  initLanguage.then(() => setTranslationsLoaded(true))
+  initializeI18n.then(() => setTranslationsLoaded(true))
 
   useEffect(() => {
     updateIsProcessingBackgroundNotification()
