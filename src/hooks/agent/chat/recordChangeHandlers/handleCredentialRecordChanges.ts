@@ -1,8 +1,10 @@
+import { V1CredentialProblemReportMessage } from '@credo-ts/anoncreds'
 import {
   AgentMessage,
   CredentialExchangeRecord,
   CredentialState,
   parseMessageType,
+  ProblemReportMessage,
   V2CredentialProblemReportMessage,
   W3cCredentialRepository,
 } from '@credo-ts/core'
@@ -47,10 +49,17 @@ export const handleCredentialExchangeRecordChanges = async (options: {
   )
   if (vcOfferEntry) {
     const { messageTypeUri } = parseMessageType(message.type)
-    const credentialState =
-      messageTypeUri === V2CredentialProblemReportMessage.type.messageTypeUri
-        ? CredentialState.Declined
-        : credentialExchangeRecord.state
+    let isRefused = false
+    const isProblemReportMessage = [
+      V1CredentialProblemReportMessage.type.messageTypeUri,
+      V2CredentialProblemReportMessage.type.messageTypeUri,
+    ].includes(messageTypeUri)
+    if (isProblemReportMessage) {
+      const problemReportMessage = message as ProblemReportMessage
+      const description = problemReportMessage?.description?.en
+      isRefused = description === 'e.msg.refused'
+    }
+    const credentialState = isRefused ? CredentialState.Declined : credentialExchangeRecord.state
     chatEntryService.updateState(realm, {
       recordId: vcOfferEntry.id,
       state: vcOfferEntry.state, // TODO: update state
