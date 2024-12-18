@@ -18,7 +18,8 @@
     <application
       android:name=".MainApplication"
       android:label="@string/app_name"
-      android:icon="@mipmap/ic_launcher"
+      android:icon="@mipmap/ic_launcher_foreground"
+      android:roundIcon="@mipmap/ic_launcher"
       android:allowBackup="false"
       tools:replace="android:theme"
       android:theme="@style/Theme.App.Starting"
@@ -31,7 +32,7 @@
           android:name="com.google.mlkit.vision.DEPENDENCIES"
           android:value="barcode" />
       <activity
-        android:name=".MainApplication"
+        android:name=".MainActivity"
         android:label="@string/app_name"
         android:exported="true"
         android:configChanges="keyboard|keyboardHidden|orientation|screenSize|uiMode"
