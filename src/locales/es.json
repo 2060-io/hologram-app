@@ -451,6 +451,7 @@
       "autoBackup": "Copia de seguridad automática",
       "includeVideos": "Incluir videos",
       "backgroundNotifications": "Notificaciones en segundo plano",
+      "displayLogs": "Mostrar logs",
       "closeAppAfterBackNotiChanges": "Para ver sus cambios reflejados, cierre la app completamente y vuelvala a abrir",
       "changePassword": "Cambiar contraseña",
       "preparingFiles": "Preparando archivos",

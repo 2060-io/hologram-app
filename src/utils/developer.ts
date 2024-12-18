@@ -2,6 +2,7 @@ import {
   getStorageData,
   setStorageData,
   BACKGROUND_PUSH_NOTIFICATION_HANDLER_ENABLED_PERSIST_KEY,
+  LOGS_ENABLED_PERSIST_KEY,
 } from '@2060/services/localStorage'
 
 export interface DevEnvsKeys {
@@ -63,4 +64,12 @@ export const isBackgroundNotificationHandlerEnabled = async () => {
 
 export const savePushNotificationHandlerEnabled = async (newValue: boolean) => {
   await setStorageData(BACKGROUND_PUSH_NOTIFICATION_HANDLER_ENABLED_PERSIST_KEY, newValue)
+}
+
+export const areLogsEnabled = async () => {
+  return ((await getStorageData(LOGS_ENABLED_PERSIST_KEY)) as boolean) ?? false
+}
+
+export const saveLogsEnabled = async (newValue: boolean) => {
+  await setStorageData(LOGS_ENABLED_PERSIST_KEY, newValue)
 }
