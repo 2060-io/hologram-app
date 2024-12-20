@@ -5,7 +5,7 @@
     <item name="windowSplashScreenBackground">@color/splashscreen_background_staging</item>
     <!-- Use windowSplashScreenAnimatedIcon to add a drawable or an animated
          drawable. One of these is required. -->
-    <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
+    <item name="windowSplashScreenAnimatedIcon">@drawable/splash_inset</item>
     <!-- Set the theme of the Activity that directly follows your splash
     screen. This is required. -->
     <item name="postSplashScreenTheme">@style/AppTheme</item>
