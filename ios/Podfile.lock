@@ -2575,7 +2575,7 @@ SPEC CHECKSUMS:
   react-native-cloud-store: 26562db64190ceb8a5fabb532791959fb920a365
   react-native-config: 8f7283449bbb048902f4e764affbbf24504454af
   react-native-create-thumbnail: ab55d24aea01723cf386f18b0b542aabb1982f27
-  react-native-eid-reader: 8f5413defca6daed0c77e62375dabc931487a4dc
+  react-native-eid-reader: 8a8ad4640dfefbb60933647b21f50cef86923404
   react-native-get-random-values: 21325b2244dfa6b58878f51f9aa42821e7ba3d06
   react-native-image-resizer: fd0c333eca55147bd55c5e054cac95dcd0da6814
   react-native-job-queue: 039e742a627a99e3273fcc918e69597d108ef406
