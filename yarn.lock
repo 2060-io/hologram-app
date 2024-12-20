@@ -11050,7 +11050,7 @@ __metadata:
     react-native-section-alphabet-list: ^2.1.0
     react-native-share: ^10.2.0
     react-native-share-menu: ^6.0.0
-    react-native-splash-screen: ^3.3.0
+    react-native-splash-screen: "npm:@2060.io/react-native-splash-screen@3.3.1"
     react-native-svg: ^13.14.0
     react-native-swipe-list-view: ^3.2.9
     react-native-vector-icons: ^10.0.3
@@ -16170,12 +16170,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-splash-screen@npm:^3.3.0":
-  version: 3.3.0
-  resolution: "react-native-splash-screen@npm:3.3.0"
+"react-native-splash-screen@npm:@2060.io/react-native-splash-screen@3.3.1":
+  version: 3.3.1
+  resolution: "@2060.io/react-native-splash-screen@npm:3.3.1"
   peerDependencies:
     react-native: ">=0.57.0"
-  checksum: 14c565d5d4214f55586dcf6f7abd12d99d3e0667f67de3bda7aa24988971567b283a4187fbc0c6269c83b3c21d59d1950335c61bb0780ec2d065e20b3b9199d0
+  checksum: c7fdeec131e13e6ba154673fd83f95828ea8c8383729cb859dd481c3d90456c68e4e167de12a75ab4d7fedb416d8318851a04e219c3a0599add8aaab4ee83a49
   languageName: node
   linkType: hard
 
