@@ -20,7 +20,7 @@ import { getConnectionType } from '@2060/utils/connectionUtils'
 
 export interface ConnectionContextInterface {
   loading: boolean
-  records: ConnectionRecord[]
+  connections: ConnectionRecord[]
 }
 
 const ConnectionContext = createContext<ConnectionContextInterface | undefined>(undefined)
@@ -33,7 +33,7 @@ export const useConnections = () => {
 }
 
 export const useConnectionById = (id?: string): ConnectionRecord | undefined => {
-  const { records: connections } = useConnections()
+  const { connections } = useConnections()
 
   if (!id) return undefined
   return connections.find((c: ConnectionRecord) => c.id === id)
@@ -48,7 +48,7 @@ export const useConnectionProfile = (connectionId: string): UserProfileData | nu
 }
 
 export const useConnectionByState = (state: DidExchangeState): ConnectionRecord[] => {
-  const { records: connections } = useConnections()
+  const { connections } = useConnections()
   const filteredConnections = useMemo(
     () => connections.filter((c: ConnectionRecord) => c.state === state),
     [connections, state],
@@ -57,7 +57,7 @@ export const useConnectionByState = (state: DidExchangeState): ConnectionRecord[
 }
 
 export const useParentConnections = (): ConnectionRecord[] => {
-  const { records: connections } = useConnections()
+  const { connections } = useConnections()
   const filteredConnections = useMemo(
     () =>
       connections.filter(
@@ -71,7 +71,7 @@ export const useParentConnections = (): ConnectionRecord[] => {
 }
 
 export const useConnectionByParentConnectionId = (parentConnectionId: string): ConnectionRecord[] => {
-  const { records: connections } = useConnections()
+  const { connections } = useConnections()
   const filteredConnections = useMemo(
     () => connections.filter((c: ConnectionRecord) => c.getTag('parentConnectionId') === parentConnectionId),
     [connections, parentConnectionId],
@@ -126,7 +126,11 @@ export const ConnectionProvider: React.FC<React.PropsWithChildren<Props>> = ({ c
 
   useAgentConnectionEvents()
 
-  return <ConnectionContext.Provider value={state}>{children}</ConnectionContext.Provider>
+  return (
+    <ConnectionContext.Provider value={{ connections: state.records, loading: state.loading }}>
+      {children}
+    </ConnectionContext.Provider>
+  )
 }
 
 export default ConnectionProvider

@@ -12,8 +12,10 @@ import { ConnectionItem } from '@2060/components/ConnectionsList/ConnectionListP
 import { PersonalChatStackParams } from '@2060/components/Navigation/NavigationProps'
 import { SvgIcon, Text } from '@2060/components/common'
 import { useChatActions } from '@2060/hooks'
+import { useConnections } from '@2060/hooks/agent'
 import { useSharedDataFromOtherApps } from '@2060/hooks/providers/SharedDataFromOtherAppsProvider'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
+import { notAllowedConnectionsIdsToSendMessages } from '@2060/utils/connectionUtils'
 
 interface Props extends StackScreenProps<PersonalChatStackParams, 'ShareMessages'> {}
 
@@ -29,6 +31,8 @@ const ShareMessages = ({ navigation }: Props) => {
   const headerHeight = useHeaderHeight()
   const { shareMessages } = useChatActions()
   const { cancelShare, sharedData } = useSharedDataFromOtherApps()
+  const { connections } = useConnections()
+  const excludedConnections = notAllowedConnectionsIdsToSendMessages(connections)
 
   const [selectedConnections, setSelectedConnections] = useState<SelectedConnection[]>([])
   const selectedConnectionNames = selectedConnections.map(({ name }) => name).join(', ')
@@ -85,6 +89,7 @@ const ShareMessages = ({ navigation }: Props) => {
           }}
           allowSelection
           selectedConnections={selectedConnections.map(connection => connection.id)}
+          excludedConnections={excludedConnections}
         />
       </View>
       <View style={styles.shareContainer}>
