@@ -2498,7 +2498,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   anoncreds: 045f191123bb20d7dcdc2f7c19df57ae30c427f6
   AppCheckCore: 9feb4300caa596a36416cde10674dc5bec1e022e
-  aries-askar: 3a78d5cfc8faedbfc55a9ff35e2309fc4574a147
+  aries-askar: cdcc9e1b5655fb9590a411c06b6133be94f7686a
   boost: 4cb898d0bf20404aab1850c656dcea009429d6c1
   DoubleConversion: 76ab83afb40bddeeee456813d9c04f67f78771b5
   Expo: 9b6666ef2fedcfc89c5b9be2aa1ce12b81f9e7f5
@@ -2646,4 +2646,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: ec04e7dcf7c7e2b81ed7782c8083a484c2804ec2
 
-COCOAPODS: 1.16.0
+COCOAPODS: 1.15.2
