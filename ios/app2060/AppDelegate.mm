@@ -7,6 +7,7 @@
 #import <React/RCTLinkingManager.h>
 #import "RNSplashScreen.h"
 #import <RNShareMenu/ShareMenuManager.h>
+#import "RNFBMessagingModule.h"
 
 @implementation AppDelegate
 
@@ -21,7 +22,7 @@
 
   // You can add your custom initial props in the dictionary below.
   // They will be passed down to the ViewController used by React Native.
-  self.initialProps = @{};
+  self.initialProps = [RNFBMessagingModule addCustomPropsToUserProps:nil withLaunchOptions:launchOptions];
 
   /*
   TODO: splash screen is not been displayed due to its causes that app display twice biometric auth which is wrong.
