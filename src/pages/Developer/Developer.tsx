@@ -25,6 +25,8 @@ import {
   DevEnvObject,
   isBackgroundNotificationHandlerEnabled,
   savePushNotificationHandlerEnabled,
+  saveLogsEnabled,
+  areLogsEnabled,
 } from '@2060/utils/developer'
 
 interface Props extends StackScreenProps<NavigationStackParams, 'Developer'> {}
@@ -38,6 +40,7 @@ const Developer = ({ navigation }: Props) => {
   const [tempCustomDevEnvValue, setTempCustomDevEnvValue] = useState<string>()
   const [isEditionCustomDevEnvMode, setIsEditionCustomDevEnvMode] = useState(false)
   const [areBackgroundNotificationsEnabled, setAreBackgroundNotificationsEnabled] = useState(false)
+  const [logsEnabled, setAreLogsEnabled] = useState(false)
   const customDevInputRef = useRef<TextInputForwardRefProps>(null)
   const { agent, shutdownAgent } = useMobileAgent()
   const { realm, closeRealm } = useLocalRealm()
@@ -49,7 +52,12 @@ const Developer = ({ navigation }: Props) => {
       const persistedIsBackgroundNotificationsEnabled = await isBackgroundNotificationHandlerEnabled()
       setAreBackgroundNotificationsEnabled(persistedIsBackgroundNotificationsEnabled)
     }
+    const setupAreLogsEnabled = async () => {
+      const persistedAreLogsEnabled = await areLogsEnabled()
+      setAreLogsEnabled(persistedAreLogsEnabled)
+    }
     setupBackgroundNotificationsEnabled()
+    setupAreLogsEnabled()
   }, [])
 
   const devEnvsForRender = useMemo(() => {
@@ -126,13 +134,19 @@ const Developer = ({ navigation }: Props) => {
   }
 
   const toggleBackgroundPushNotificationHandler = async () => {
-    let newAreEnabled = !areBackgroundNotificationsEnabled
+    const newAreEnabled = !areBackgroundNotificationsEnabled
     setAreBackgroundNotificationsEnabled(newAreEnabled)
     await savePushNotificationHandlerEnabled(newAreEnabled)
     Alert.alert(
       IS_DEVICE_IOS ? t('settings.closeAppAfterBackNotiChanges') : '',
       !IS_DEVICE_IOS ? t('settings.closeAppAfterBackNotiChanges') : '',
     )
+  }
+
+  const toggleLogsEnabled = async () => {
+    const newAreEnabled = !logsEnabled
+    setAreLogsEnabled(newAreEnabled)
+    await saveLogsEnabled(newAreEnabled)
   }
 
   const options = [
@@ -150,6 +164,11 @@ const Developer = ({ navigation }: Props) => {
           onToggle={toggleBackgroundPushNotificationHandler}
         />
       ),
+    },
+    {
+      iconName: 'edit',
+      text: t('settings.displayLogs'),
+      rightContent: () => <Switch isChecked={logsEnabled} onToggle={toggleLogsEnabled} />,
     },
   ]
 

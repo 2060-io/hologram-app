@@ -452,6 +452,7 @@
       "autoBackup": "Auto backup",
       "includeVideos": "Include videos",
       "backgroundNotifications": "Background Notifications",
+      "displayLogs": "Display Logs",
       "closeAppAfterBackNotiChanges": "To see your changes reflected, close the app completely and open it again",
       "changePassword": "Change password",
       "preparingFiles": "Preparing files",
