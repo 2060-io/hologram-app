@@ -26,6 +26,7 @@ export default (theme: AppTheme) =>
     subContainer: {
       maxWidth: widthPercentageToDP('75%'),
       minHeight: heightPercentageToDP('4.62%'),
+      overflow: 'hidden',
     },
     floatingMessageContainer: {
       marginTop: 12,
