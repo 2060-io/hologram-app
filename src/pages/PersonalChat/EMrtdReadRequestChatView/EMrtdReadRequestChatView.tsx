@@ -1,7 +1,7 @@
 import { MrtdProblemReportReason } from '@2060.io/credo-ts-didcomm-mrtd'
 import React, { useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
-import { Alert, Modal, View } from 'react-native'
+import { Alert, View } from 'react-native'
 import EIdReader from 'react-native-eid-reader'
 
 import { BlueButton, Header, OutlinedBlueButton, State } from '../components'
@@ -10,7 +10,7 @@ import EMrtdInstructions from './EMrtdInstructions'
 import { Props } from './EMrtdReadRequestChatViewProps'
 import getStyles from './styles'
 
-import { SvgIcon, Text } from '@2060/components/common'
+import { Modal, SvgIcon, Text } from '@2060/components/common'
 import { useChat, useMobileAgent } from '@2060/hooks/agent'
 import { useScreenLock } from '@2060/hooks/providers/ScreenLockProvider'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
@@ -117,7 +117,7 @@ const EMrtdReadRequestChatView = (props: Props) => {
 
   return (
     <>
-      <Modal visible={displayInstructionsPopup}>
+      <Modal visible={displayInstructionsPopup} statusBarTranslucent={false} transparent>
         <EMrtdInstructions scan={scan} dismissPopup={dismissPopup} refuse={refuse} />
       </Modal>
       <View style={styles.container}>
