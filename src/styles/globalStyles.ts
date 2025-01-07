@@ -25,7 +25,7 @@ export const getGlobalStyles = (theme: AppTheme) =>
 
 export const cardStyles = (theme: AppTheme) => ({
   backgroundColor: theme.isDarkMode ? theme.colors.grey : theme.colors.primary,
-  borderRadius: 8.56,
+  borderRadius: 9,
   padding: 15,
 })
 

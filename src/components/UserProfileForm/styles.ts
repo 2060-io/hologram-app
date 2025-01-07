@@ -57,7 +57,7 @@ const styles = (theme: AppTheme) =>
     textInput: {
       alignSelf: 'center',
       backgroundColor: theme.colors.primary,
-      borderRadius: 8.56,
+      borderRadius: 9,
       color: theme.colors.primaryText,
       fontFamily: 'EuclidCircularA-Medium',
       fontSize: theme.fontSize.md2,

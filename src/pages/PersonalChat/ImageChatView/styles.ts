@@ -5,10 +5,6 @@ import { hexTransparency } from '@2060/utils/colorUtils'
 
 export default (theme: AppTheme) =>
   StyleSheet.create({
-    containerRootImage: {
-      borderTopLeftRadius: 8.56,
-      borderTopRightRadius: 8.56,
-    },
     imageLightbox: {
       width: '100%',
       height: '100%',

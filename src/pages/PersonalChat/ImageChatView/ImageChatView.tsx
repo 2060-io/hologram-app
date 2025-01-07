@@ -77,67 +77,65 @@ const ImageChatView = (props: ImageProps) => {
 
   return (
     <View style={{ width: imageStyle.width }}>
-      <View style={styles.containerRootImage}>
-        {isDownloaded && imagePreviewUri ? (
-          <>
-            {isMediaUploadError ? (
-              <RetryMediaUploadView
-                containerStyle={imageStyle}
-                isRetryingUpload={isRetryingUpload}
-                onRetryMediaUpload={retryMediaUpload}
-                uri={imagePreviewUri}
+      {isDownloaded && imagePreviewUri ? (
+        <>
+          {isMediaUploadError ? (
+            <RetryMediaUploadView
+              containerStyle={imageStyle}
+              isRetryingUpload={isRetryingUpload}
+              onRetryMediaUpload={retryMediaUpload}
+              uri={imagePreviewUri}
+            />
+          ) : (
+            <>
+              <ImageView
+                currentMessage={props.currentMessage}
+                fileMediaInfo={fileMediaInfo}
+                imagePreviewUri={imagePreviewUri}
+                imageUri={imageUri!}
+                style={imageStyle}
               />
-            ) : (
-              <>
-                <ImageView
-                  currentMessage={props.currentMessage}
-                  fileMediaInfo={fileMediaInfo}
-                  imagePreviewUri={imagePreviewUri}
-                  imageUri={imageUri!}
-                  style={imageStyle}
+              {mediaUploadState === MediaUploadState.Uploading && (
+                <Progress
+                  progressColor={theme.colors.green}
+                  progress={mediaUploadProgress}
+                  style={styles.uploadProgressContainer}
                 />
-                {mediaUploadState === MediaUploadState.Uploading && (
-                  <Progress
-                    progressColor={theme.colors.green}
-                    progress={mediaUploadProgress}
-                    style={styles.uploadProgressContainer}
-                  />
-                )}
-              </>
-            )}
-          </>
-        ) : (
-          <>
-            <Image source={imagePreview} style={imageStyle} />
-            <View style={styles.containerSpinner}>
-              {isDownloading ? (
-                <React.Fragment>
-                  <ActivityIndicator color={theme.colors.green} size="large" />
-                  <Text typography="EuclidCircularA-Medium" style={styles.spinnerText}>
-                    {t('personalChat.downloadingImage')}
-                  </Text>
-                </React.Fragment>
-              ) : (
-                <TouchableOpacity style={styles.btnDownload} onPress={downloadMedia}>
-                  <Icon as="Ionicons" name="arrow-down-circle" size={30} color={theme.colors.primaryText} />
-                  {byteCount && (
-                    <Text typography="EuclidCircularA-Medium" style={styles.textsize}>
-                      {getFileSize(byteCount)}
-                    </Text>
-                  )}
-                </TouchableOpacity>
               )}
-            </View>
-            {mediaDownloadState === MediaDownloadState.Downloading && mediaDownloadProgress && (
-              <Progress
-                progressColor={theme.colors.green}
-                progress={mediaDownloadProgress}
-                style={styles.uploadProgressContainer}
-              />
+            </>
+          )}
+        </>
+      ) : (
+        <>
+          <Image source={imagePreview} style={imageStyle} />
+          <View style={styles.containerSpinner}>
+            {isDownloading ? (
+              <React.Fragment>
+                <ActivityIndicator color={theme.colors.green} size="large" />
+                <Text typography="EuclidCircularA-Medium" style={styles.spinnerText}>
+                  {t('personalChat.downloadingImage')}
+                </Text>
+              </React.Fragment>
+            ) : (
+              <TouchableOpacity style={styles.btnDownload} onPress={downloadMedia}>
+                <Icon as="Ionicons" name="arrow-down-circle" size={30} color={theme.colors.primaryText} />
+                {byteCount && (
+                  <Text typography="EuclidCircularA-Medium" style={styles.textsize}>
+                    {getFileSize(byteCount)}
+                  </Text>
+                )}
+              </TouchableOpacity>
             )}
-          </>
-        )}
-      </View>
+          </View>
+          {mediaDownloadState === MediaDownloadState.Downloading && mediaDownloadProgress && (
+            <Progress
+              progressColor={theme.colors.green}
+              progress={mediaDownloadProgress}
+              style={styles.uploadProgressContainer}
+            />
+          )}
+        </>
+      )}
       {description && (
         <ParsedText
           text={description}
