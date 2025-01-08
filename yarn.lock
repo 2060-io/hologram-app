@@ -11383,7 +11383,7 @@ __metadata:
     react-native-fs: ^2.20.0
     react-native-gesture-handler: ^2.12.1
     react-native-get-random-values: ^1.7.0
-    react-native-image-crop-picker: 0.41.2
+    react-native-image-crop-picker: 0.41.6
     react-native-incall-manager: ^4.2.0
     react-native-job-queue: ^0.5.2
     react-native-keyboard-aware-scroll-view: ^0.9.5
@@ -16366,12 +16366,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-image-crop-picker@npm:0.41.2":
-  version: 0.41.2
-  resolution: "react-native-image-crop-picker@npm:0.41.2"
+"react-native-image-crop-picker@npm:0.41.6":
+  version: 0.41.6
+  resolution: "react-native-image-crop-picker@npm:0.41.6"
   peerDependencies:
     react-native: ">=0.40.0"
-  checksum: c1333b3b761e948bd0bc856773f68dcc859c7ce39dda3e14d2c32c17d55927735bfc5cbbb7ac5e8bac21feda87c93399f2a596aca7d5b0611cc1e8203d97ad2e
+  checksum: 6e4ef44e9e74311f91ef783dd52105964cbe60ab1b0d6a48a7029f8faffed25451cfd62b3526ffa99d4e00feaeae473175d237f6bfb063f21691d5983ef78567
   languageName: node
   linkType: hard
 
