@@ -1,5 +1,5 @@
-import React, { memo } from 'react'
-import { View, Keyboard, TouchableOpacity } from 'react-native'
+import React, { memo, useEffect, useState } from 'react'
+import { View, Keyboard, TouchableOpacity, ViewStyle } from 'react-native'
 
 import { isSameUser } from '../utils'
 
@@ -18,7 +18,13 @@ const MessageCustomView: React.FC<MessageProps> = memo(props => {
   const theme = useTheme()
   const styles = getStyles(theme)
   const { previousMessage, currentMessage, nextMessage } = props
-  const { isSelectingMessagesMode, selectedMessages, updateSelectedMessages } = useChat()
+  const {
+    isSelectingMessagesMode,
+    selectedMessages,
+    updateSelectedMessages,
+    tappedRepliedMessageChatEntryId,
+  } = useChat()
+  const [temporaryStylesForRepliedMessage, setTemporaryStylesForRepliedMessage] = useState<ViewStyle>({})
   const sameUser = isSameUser(currentMessage, nextMessage)
   const prevMessageChatEntry = previousMessage
   const chatEntry = currentMessage
@@ -30,6 +36,13 @@ const MessageCustomView: React.FC<MessageProps> = memo(props => {
   const extraMarginBottom = hasReactions ? REACTIONS_MARGIN_BOTTOM : 0
   const containerMarginBottom = (sameUser ? 4.28 : 8.56) + extraMarginBottom
   const isMessageSelected = !!selectedMessages.find(entry => entry.id === currentMessage.id)
+
+  useEffect(() => {
+    if (tappedRepliedMessageChatEntryId === currentMessage.id) {
+      setTemporaryStylesForRepliedMessage(styles.tappedRepliedMessageTemporaryStyle)
+      setTimeout(() => setTemporaryStylesForRepliedMessage({}), 3000)
+    }
+  }, [tappedRepliedMessageChatEntryId])
 
   const handleDismissKeyboard = () => Keyboard.isVisible() && Keyboard.dismiss()
 
@@ -46,7 +59,13 @@ const MessageCustomView: React.FC<MessageProps> = memo(props => {
         style={[styles[`${position}Container`], { marginBottom: containerMarginBottom }]}
         pointerEvents={isSelectingMessagesMode ? 'none' : undefined}
       >
-        <View style={[styles.subContainer, styles[`${position}SubContainer`], { ...borders }]}>
+        <View
+          style={[
+            styles.subContainer,
+            styles[`${position}SubContainer`],
+            { ...borders, ...temporaryStylesForRepliedMessage },
+          ]}
+        >
           <TouchableOpacity
             onPress={handleDismissKeyboard}
             onLongPress={() => displayMessageFloatingMenu(currentMessage)}

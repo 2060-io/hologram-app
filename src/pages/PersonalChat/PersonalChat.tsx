@@ -97,7 +97,6 @@ const createReportedMessageChatEntry = (params: {
 
 const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }: PersonalChatProps) => {
   const { t } = useTranslation()
-  const [tappedRepliedMessageChatEntryId, setTappedRepliedMessageChatEntryId] = useState<string | null>(null)
   const [currentStickyDate, setCurrentStickyDate] = useState<Date>()
   const [showAttachmentOptions, setShowAttachmentOptions] = useState(false)
   const [showStickyDate, setShowStickyDate] = useState(false)
@@ -121,6 +120,8 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
     stopSelectingMessagesMode,
     selectedMessages,
     updateSelectedMessages,
+    tappedRepliedMessageChatEntryId,
+    setTappedRepliedMessageChatEntryId,
   } = useChat()
   const { deleteMessagesForMe, deleteMessagesForEveryone, onActionMenuSelection } = useChatActions()
   const { agent } = useMobileAgent()
@@ -222,7 +223,6 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
     (chatEntryId: string) => {
       const dataList = listViewRef.current?.props.data as Array<ChatEntryMessage>
       const messageIndex = dataList.findIndex(value => value.id === chatEntryId)
-
       if (tappedRepliedMessageChatEntryId === null) setTappedRepliedMessageChatEntryId(chatEntryId)
       if (messageIndex === -1) return loadMoreMessages()
       if (listViewRef.current && listViewRef.current?.props.data?.length! > messageIndex) {
