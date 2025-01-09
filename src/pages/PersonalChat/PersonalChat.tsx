@@ -223,10 +223,10 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
     (chatEntryId: string) => {
       const dataList = listViewRef.current?.props.data as Array<ChatEntryMessage>
       const messageIndex = dataList.findIndex(value => value.id === chatEntryId)
-      if (tappedRepliedMessageChatEntryId === null) setTappedRepliedMessageChatEntryId(chatEntryId)
+      setTappedRepliedMessageChatEntryId(chatEntryId)
       if (messageIndex === -1) return loadMoreMessages()
       if (listViewRef.current && listViewRef.current?.props.data?.length! > messageIndex) {
-        listViewRef.current.scrollToIndex({ animated: true, index: messageIndex, viewPosition: 0 })
+        listViewRef.current.scrollToIndex({ animated: true, index: messageIndex, viewPosition: 0.5 })
         setTimeout(() => {
           setTappedRepliedMessageChatEntryId(null)
         }, 1000)
