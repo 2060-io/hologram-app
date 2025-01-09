@@ -66,15 +66,15 @@
       "credentials": "Credenciales",
       "connect": "Conectar",
       "minute": "1 minuto",
-      "minute_plural": "{{count}} minutos",
+      "minute_other": "{{count}} minutos",
       "hour": "1 hora",
-      "hour_plural": "{{count}} horas",
+      "hour_other": "{{count}} horas",
       "warning": "Advertencia",
       "yesDelete": "Sí, eliminar",
       "canNotOpenURL": "No se pudo abrir ",
       "dismiss": "Cerrar",
       "selected": "1 seleccionado",
-      "selected_plural": "{{ count }} seleccionados"
+      "selected_other": "{{ count }} seleccionados"
     },
     "navigation": {
       "back": "Atras",
@@ -234,7 +234,7 @@
       "viewInChat": "Ver en la conversación",
       "presented": "Presentado",
       "selectCredential": "Seleccionar credencial",
-      "selectCredential_plural": "Seleccionar credenciales",
+      "selectCredential_other": "Seleccionar credenciales",
       "noCredentials": "Parece que no tienes una credencial compatible en tu billetera.",
       "noCompatibleCredentials": "Parece que no tienes una credencial compatible en tu billetera. Le puedes notificar a {{sender}} para poder ver si hay otras opciones y poder continuar.",
       "notify": "Notificar a {{sender}}",
@@ -242,7 +242,7 @@
       "credentialPresented": "Presentación recibida exitosamente por",
       "isRequestingYou": "te está solicitando: ",
       "youPresented": "Presentaste una credencial a {{verifier}}.",
-      "youPresented_plural": "Presentaste {{count}} credenciales a {{verifier}}."
+      "youPresented_other": "Presentaste {{count}} credenciales a {{verifier}}."
     },
     "connection": {
       "editName": "Editar nombre",
@@ -311,7 +311,7 @@
       "takeVideo": "Tomar video",
       "photoAndVideoLibrary": "Galería de fotos y vídeos",
       "presentCredential": "Presentar credencial",
-      "presentCredential_plural": "Presentar credenciales",
+      "presentCredential_other": "Presentar credenciales",
       "errorSendingMessage": "Error al enviar mensaje",
       "errorSendingMedia": "Error al enviar medios",
       "errorSendingAnswer": "Error al enviar respuesta",
@@ -341,7 +341,7 @@
       "saveSucceededFileMedia": "Guardado exitosamente",
       "saveFailedFileMedia": "Guardado fallido",
       "messageDeletedSuccessfully": "Mensaje eliminado con éxito",
-      "messageDeletedSuccessfully_plural": "Mensajes eliminados con éxito",
+      "messageDeletedSuccessfully_other": "Mensajes eliminados con éxito",
       "messageUnsuccessfulDeletion": "No se pudo eliminar el mesaje",
       "messageUnsuccessfulReaction": "No se pudo enviar la reacción",
       "addComment": "Añade un comentario",
@@ -355,7 +355,7 @@
       "deleteForMe": "Eliminar sólo para mí",
       "deleteForEveryone": "Eliminar para todos",
       "deleteMessageConfirmation": "¿Eliminar este mensaje?",
-      "deleteMessageConfirmation_plural": "¿Eliminar estos mensajes?",
+      "deleteMessageConfirmation_other": "¿Eliminar estos mensajes?",
       "messageDeleted": "Mensaje eliminado",
       "errorLoadingVideo": "Hubo un problema al cargar el video.",
       "connectionDeleted": "Esta conexión ha sido eliminada",
@@ -385,9 +385,9 @@
       "read": "Visto",
       "forward": "Reenviar",
       "messageForwarded": "Mensaje reenviado",
-      "messageForwarded_plural": "Mensajes reenviados",
+      "messageForwarded_other": "Mensajes reenviados",
       "messageShared": "Mensaje compartido",
-      "messageShared_plural": "Mensajes compartidos"
+      "messageShared_other": "Mensajes compartidos"
     },
     "preview": {
       "answer": "🟰 Respuesta",
