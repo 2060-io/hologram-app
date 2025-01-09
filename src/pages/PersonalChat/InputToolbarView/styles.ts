@@ -19,7 +19,7 @@ export default (theme: AppTheme, isRecording?: boolean) =>
       alignItems: 'flex-end',
     },
     replyViewInMsg: {
-      borderTopLeftRadius: 8.56,
+      borderTopLeftRadius: 9,
       borderTopRightRadius: 3,
     },
     leftAndCenterContainer: {
