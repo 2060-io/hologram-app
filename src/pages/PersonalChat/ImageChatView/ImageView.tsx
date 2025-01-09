@@ -1,5 +1,5 @@
 import React, { memo, useState } from 'react'
-import { Image, StatusBar, StyleProp, ImageStyle, TouchableOpacity } from 'react-native'
+import { Image, StyleProp, ImageStyle, TouchableOpacity } from 'react-native'
 
 import { MediaInfo } from '../PersonalChatProps'
 
@@ -29,7 +29,6 @@ const ImageView = memo((props: ImageView) => {
   const onToggleModalLightbox = () => {
     const newIsLightboxVisible = !lightboxVisible
     setLightboxVisible(newIsLightboxVisible)
-    StatusBar.setHidden(newIsLightboxVisible)
   }
   const onLongPress = () => displayMessageFloatingMenu(currentMessage)
 
