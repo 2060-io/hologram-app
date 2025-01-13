@@ -100,4 +100,8 @@ export default (theme: AppTheme) =>
       color: theme.colors.primaryText,
       marginLeft: 1,
     },
+    tappedRepliedMessageTemporaryStyle: {
+      borderWidth: 2,
+      borderColor: theme.colors.green,
+    },
   })

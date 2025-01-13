@@ -22,6 +22,7 @@ export interface PersonalChatState {
   modalConfirmMessageDeletion: boolean
   isSelectingMessagesMode: boolean
   selectedMessages: ChatEntryMessage[]
+  tappedRepliedMessageChatEntryId: string | null
 }
 
 const getMessageActions = (currentMessage: ChatEntryMessage) => {
@@ -116,6 +117,7 @@ export interface PersonalChatContextInterface extends PersonalChatState {
   stopSelectingMessagesMode(): void
   setIsSelectingMessagesMode(isSelectingMessagesMode: boolean): void
   updateSelectedMessages(selectedMessage: ChatEntryMessage): void
+  setTappedRepliedMessageChatEntryId(id: string | null): void
 }
 
 interface Props {
@@ -142,6 +144,7 @@ export const PersonalChatProvider: React.FC<React.PropsWithChildren<Props>> = ({
     modalConfirmMessageDeletion: false,
     isSelectingMessagesMode: false,
     selectedMessages: [],
+    tappedRepliedMessageChatEntryId: null,
   })
   const messageActions = useRef<MessageAction[]>([])
 
@@ -152,6 +155,10 @@ export const PersonalChatProvider: React.FC<React.PropsWithChildren<Props>> = ({
 
   const setRepliedMessage = useCallback((message?: RepliedMessage) => {
     setState(prevState => ({ ...prevState, repliedMessage: message }))
+  }, [])
+
+  const setTappedRepliedMessageChatEntryId = useCallback((id: string | null) => {
+    setState(prevState => ({ ...prevState, tappedRepliedMessageChatEntryId: id }))
   }, [])
 
   const setSelectedMessage = useCallback((selectedMessage: ChatEntryMessage) => {
@@ -238,6 +245,7 @@ export const PersonalChatProvider: React.FC<React.PropsWithChildren<Props>> = ({
         setIsSelectingMessagesMode,
         stopSelectingMessagesMode,
         updateSelectedMessages,
+        setTappedRepliedMessageChatEntryId,
       }}
     >
       {children}
