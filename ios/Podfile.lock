@@ -1923,12 +1923,12 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - RNImageCropPicker (0.41.2):
+  - RNImageCropPicker (0.41.6):
     - React-Core
     - React-RCTImage
-    - RNImageCropPicker/QBImagePickerController (= 0.41.2)
+    - RNImageCropPicker/QBImagePickerController (= 0.41.6)
     - TOCropViewController (~> 2.7.4)
-  - RNImageCropPicker/QBImagePickerController (0.41.2):
+  - RNImageCropPicker/QBImagePickerController (0.41.6):
     - React-Core
     - React-RCTImage
     - TOCropViewController (~> 2.7.4)
@@ -2626,7 +2626,7 @@ SPEC CHECKSUMS:
   RNFlashList: 115dd44377580761bff386a0caebf165424cf16f
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
   RNGestureHandler: 3b6fa2bfa341c413d3d08444b838515b58e48ee7
-  RNImageCropPicker: 771e2ca319d2cf92e04ebf334ece892ee9a6728f
+  RNImageCropPicker: 8e39c01f205e00d739c31e682f068aac315587bf
   RNLocalize: d4b8af4e442d4bcca54e68fc687a2129b4d71a81
   RNNotifee: e940770a09b9a3e7fe6c4155b7849fb00271b154
   RNPermissions: 4e3714e18afe7141d000beae3755e5b5fb2f5e05
@@ -2646,4 +2646,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: ec04e7dcf7c7e2b81ed7782c8083a484c2804ec2
 
-COCOAPODS: 1.15.2
+COCOAPODS: 1.16.0
