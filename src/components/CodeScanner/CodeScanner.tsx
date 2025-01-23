@@ -25,11 +25,11 @@ const SCREEN_HEIGHT = Platform.select<number>({
 
 interface Props {
   camera: React.MutableRefObject<Camera | null | undefined>
-  active: boolean
+  isActive: boolean
   onBarcodeScanned: (barcode: string) => void
 }
 
-const CodeScanner: React.FC<Props> = ({ camera, active, onBarcodeScanned }) => {
+const CodeScanner: React.FC<Props> = ({ camera, isActive, onBarcodeScanned }) => {
   const [cameraPermissionStatus, setCameraPermissionStatus] = useState<CameraPermissionStatus>()
   const devices = useCameraDevices()
   const device = devices.find(dev => dev.position === 'back')
@@ -41,7 +41,7 @@ const CodeScanner: React.FC<Props> = ({ camera, active, onBarcodeScanned }) => {
 
   useEffect(() => {
     setScannedCodes([])
-  }, [active])
+  }, [isActive])
 
   const codeScanner = useCodeScanner({
     codeTypes: ['qr'],
@@ -82,13 +82,13 @@ const CodeScanner: React.FC<Props> = ({ camera, active, onBarcodeScanned }) => {
 
   return (
     <React.Fragment>
-      {device !== undefined && hasPermission ? (
+      {device && isActive && hasPermission ? (
         <Camera
           style={{ height: screenHeight, zIndex: -1 }}
           ref={ref => (camera.current = ref)}
           device={device}
           format={format}
-          isActive={active}
+          isActive={isActive}
           onError={onError}
           fps={fps}
           codeScanner={codeScanner}
