@@ -156,7 +156,7 @@ const Scan = ({ navigation }: Props) => {
           {t('scan.textDescriptionScanner')}
         </Text>
       </View>
-      <CodeScanner camera={camera} active={isActive} onBarcodeScanned={processCode} />
+      <CodeScanner camera={camera} isActive={isActive} onBarcodeScanned={processCode} />
     </View>
   )
 
