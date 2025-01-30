@@ -42,9 +42,9 @@ const MRZCamera = ({ skipScan, cameraProps, onData, scanSuccess, refuse }: MRZCa
   const format = useCameraFormat(device, [
     { fps: supports60Fps ? 60 : 30 },
     { videoAspectRatio: screenAspectRatio },
-    { videoResolution: { width: 1280, height: 720 } },
+    { videoResolution: 'max' },
     { photoAspectRatio: screenAspectRatio },
-    { photoResolution: { width: 1280, height: 720 } },
+    { photoResolution: 'max' },
   ])
   const fps = Math.min(format?.maxFps ?? 1, supports60Fps ? 60 : 30)
 
