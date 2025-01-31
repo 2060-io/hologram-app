@@ -10,16 +10,8 @@ const TD3_LINE_LONG = 44
 
 export const findAndParseMrz = (initialLines: string[]) => {
   let lines: string[] = []
-  const firstInitialLastLine = initialLines[initialLines.length - 1]
-  const secondInitialLastLine = initialLines[initialLines.length - 2]
   // if lines.length >= 2, extract and parse two-line MRZ
-  if (initialLines && initialLines.length >= 2 && firstInitialLastLine && secondInitialLastLine) {
-    // return undefined if a double left angle bracket character is
-    // found in either last line, or second to last line.
-    if (firstInitialLastLine.indexOf('«') !== -1 || secondInitialLastLine.indexOf('«') !== -1) {
-      return undefined
-    }
-
+  if (initialLines.length >= 2) {
     // MLKIT sometimes add a new line character when it finds a new line instead of
     // separating the lines into different elements.
     const preprocessedLines: string[] = []
@@ -81,12 +73,6 @@ export const findAndParseMrz = (initialLines: string[]) => {
   } // end (lines.length >= 2)
   // if its a TD1 (ID cards)
   if (lines.length >= 3) {
-    // At this point, empty spaces will already be removed and all letters will be capitalized.
-    // return undefined if a double left angle bracket character is found in third to last line.
-    const thirdToLastLine = lines[lines.length - 3]
-    if (thirdToLastLine && thirdToLastLine.indexOf('«') !== -1) {
-      return undefined
-    }
     for (let i = 2; i < lines.length; i++) {
       const currentLine = lines[i]
       const lastLine = lines[i - 1]
