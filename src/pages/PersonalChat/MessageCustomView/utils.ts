@@ -28,7 +28,7 @@ const mustDisplayAckAndTime = ({
   }
 }
 
-export const ROUND_BORDER = 8.56
+export const ROUND_BORDER = 9
 const SQUARE_BORDER = 0
 
 type GetMessagesBordersProps = {

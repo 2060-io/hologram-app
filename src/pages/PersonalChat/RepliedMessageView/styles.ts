@@ -7,7 +7,7 @@ export default (theme: AppTheme) =>
   StyleSheet.create({
     containerReply: {
       backgroundColor: theme.isDarkMode ? theme.colors.primary : theme.colors.secondary,
-      borderLeftWidth: 8.56,
+      borderLeftWidth: 9,
       borderLeftColor: theme.colors.green,
       padding: 4,
       flexDirection: 'row',

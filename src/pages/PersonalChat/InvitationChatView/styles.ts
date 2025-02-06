@@ -8,8 +8,6 @@ export default (theme: AppTheme) =>
   StyleSheet.create({
     containerMain: {
       width: widthPercentageToDP('75%'),
-      borderTopLeftRadius: 8.56,
-      borderTopRightRadius: 8.56,
       paddingHorizontal: 8,
       paddingBottom: 6,
     },

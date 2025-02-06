@@ -89,6 +89,7 @@ export const useBuildBackup = ({
   }
 
   const onBackupUploadSuccess = async () => {
+    // Timeout is set to user sees in screen that backup progress reaches 100% done before update state
     setTimeout(() => {
       setUploadProgress({ ...backupProgressInitialValues, isUploadingBackup: false })
     }, 1000)

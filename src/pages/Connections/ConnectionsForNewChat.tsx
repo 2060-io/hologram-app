@@ -20,7 +20,7 @@ const ConnectionsForNewChat = ({ navigation }: Props) => {
   const theme = useTheme()
   const styles = getStyles(theme)
   const { findOrCreateThread } = useChats()
-  const { records: connections } = useConnections()
+  const { connections } = useConnections()
 
   const tryGoToChatScreen = useCallback((connectionItem: ConnectionItem) => {
     const connection = connections.find(conn => conn.id === connectionItem.id)

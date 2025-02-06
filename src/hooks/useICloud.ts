@@ -105,8 +105,12 @@ export const useICloud = () => {
           onProgress(data) {
             setUploadProgress(prev => ({ ...prev, progress: data?.progress }))
             if (data?.progress === 100) {
-              getBackupInfo()
               onBackupUploadSuccess()
+              // Timeout is set because after finish backup upload process to icloud drive it takes
+              // a while to have metadata of file updated to fetch info of it again
+              setTimeout(() => {
+                getBackupInfo()
+              }, 1000)
             }
           },
         })

@@ -27,7 +27,7 @@ export default (theme: AppTheme) =>
       borderColor: theme.colors.blue,
       borderWidth: 1,
       backgroundColor: theme.colors.primary,
-      borderRadius: 8.56,
+      borderRadius: 9,
       paddingVertical: 7,
       marginBottom: 8.56,
     },

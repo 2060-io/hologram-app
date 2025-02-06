@@ -32,8 +32,6 @@ const getStyles = (theme: AppTheme, role: ChatEntryRole) =>
     headerContainer: {
       flexDirection: 'row',
       padding: 8,
-      borderTopLeftRadius: 8.56,
-      borderTopRightRadius: 8.56,
       backgroundColor:
         role === ChatEntryRole.Receiver
           ? theme.isDarkMode

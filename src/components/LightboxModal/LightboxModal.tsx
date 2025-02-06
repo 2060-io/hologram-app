@@ -1,70 +1,40 @@
 import React from 'react'
-import { View, StyleSheet, Dimensions } from 'react-native'
+import { View } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { Modal } from '../common'
 
-import { IS_DEVICE_IOS, mainTextColor } from '@2060/constants'
-import { useStatusBarHeight } from '@2060/hooks/useStatusBarHeight'
+import getStyles from './styles'
 
-const heightScreen = Dimensions.get('screen').height
-const widthScreen = Dimensions.get('screen').width
+import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 
 type Props = {
   visible: boolean
   children: React.ReactElement
   onCloseModal(): void
   renderHeader(onClose: () => void): React.ReactNode
-  renderContent?(onClose: () => void): React.ReactNode
 }
 
-const LightboxModal = ({ visible, children, onCloseModal, renderHeader, renderContent }: Props) => {
-  const statusBarHeight = useStatusBarHeight()
-  const top = IS_DEVICE_IOS ? statusBarHeight + 35 : 0
-  const background = <View style={styles.background} />
+const LightboxModal = ({ visible, children, onCloseModal, renderHeader }: Props) => {
   const close = () => onCloseModal()
-
-  const header = <View style={{ ...styles.header, top }}>{renderHeader(close)}</View>
-  const content = <View style={styles.open}>{renderContent ? renderContent(close) : children}</View>
+  const theme = useTheme()
+  const insets = useSafeAreaInsets()
+  const styles = getStyles(theme)
 
   return (
     <Modal
       animationType="fade"
-      transparent={false}
+      transparent
+      statusBarTranslucent={false}
       visible={visible}
       onRequestClose={close}
-      presentationStyle="fullScreen"
     >
-      {background}
-      {content}
-      {header}
+      <View style={styles.container}>
+        <View style={{ ...styles.headerContainer, top: insets.top }}>{renderHeader(close)}</View>
+        <View style={styles.contentContainer}>{children}</View>
+      </View>
     </Modal>
   )
 }
-
-const styles = StyleSheet.create({
-  background: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: widthScreen,
-    height: heightScreen,
-    backgroundColor: mainTextColor,
-  },
-  open: {
-    position: 'absolute',
-    flex: 1,
-    justifyContent: 'center',
-    backgroundColor: 'transparent',
-    width: widthScreen,
-    height: heightScreen,
-  },
-  header: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: widthScreen,
-    backgroundColor: 'transparent',
-  },
-})
 
 export default LightboxModal

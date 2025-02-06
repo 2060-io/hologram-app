@@ -23,7 +23,6 @@ const options = [
 const AttachmentOptions: React.FC<Props> = ({ onCloseAttachmentOptions }) => {
   const { takePhotoOrVideo, takePhotoOrVideoFromGallery } = useImageCropPicker()
   const { shareMediaToDidComm } = useChatActions()
-  const optionsTakePhoto = { cropping: false, compressImageMaxWidth: 1280 }
   const theme = useTheme()
   const styles = getStyles(theme)
   const { t } = useTranslation()
@@ -41,16 +40,13 @@ const AttachmentOptions: React.FC<Props> = ({ onCloseAttachmentOptions }) => {
   const onSelectedOption = async (optionId: string) => {
     try {
       if (optionId === 'file-camera') {
-        await takePhotoOrVideo(onSendSharedFile, optionsTakePhoto)
+        await takePhotoOrVideo(onSendSharedFile)
       }
       if (optionId === 'file-video') {
         await takePhotoOrVideo(onSendSharedFile, { mediaType: 'video' })
       }
       if (optionId === 'file-gallery') {
-        await takePhotoOrVideoFromGallery(onSendSharedFile, {
-          mediaType: 'any',
-          ...optionsTakePhoto,
-        })
+        await takePhotoOrVideoFromGallery(onSendSharedFile, { mediaType: 'any' })
       }
     } catch (error) {
       log('Image capture error', error)

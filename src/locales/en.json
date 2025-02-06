@@ -66,15 +66,15 @@
       "credentials": "Credentials",
       "connect": "Connect",
       "minute": "1 minute",
-      "minute_plural": "{{count}} minutes",
+      "minute_other": "{{count}} minutes",
       "hour": "1 hour",
-      "hour_plural": "{{count}} hours",
+      "hour_other": "{{count}} hours",
       "warning": "Warning",
       "yesDelete": "Yes, delete",
       "canNotOpenURL": "Cannot open ",
       "dismiss": "Dismiss",
       "selected": "1 selected",
-      "selected_plural": "{{ count }} selected"
+      "selected_other": "{{ count }} selected"
     },
     "navigation": {
       "back": "Back",
@@ -235,7 +235,7 @@
       "viewInChat": "View in chat",
       "presented": "Presented",
       "selectCredential": "Select credential",
-      "selectCredential_plural": "Select credentials",
+      "selectCredential_other": "Select credentials",
       "noCredentials": "It looks you do not have a compatible credential in your wallet.",
       "noCompatibleCredentials": "It looks you do not have a compatible credential in your wallet. You can notify {{sender}} in order to see if there are other options to continue.",
       "notify": "Notify {{sender}}",
@@ -243,7 +243,7 @@
       "credentialPresented": "Presentation successfully received by",
       "isRequestingYou": "is requesting you: ",
       "youPresented": "You presented 1 credential to {{verifier}}.",
-      "youPresented_plural": "You presented {{count}} credentials to {{verifier}}."
+      "youPresented_other": "You presented {{count}} credentials to {{verifier}}."
     },
     "connection": {
       "editName": "Edit name",
@@ -312,7 +312,7 @@
       "takeVideo": "Take video",
       "photoAndVideoLibrary": "Photo & video library",
       "presentCredential": "Present Credential",
-      "presentCredential_plural": "Present Credentials",
+      "presentCredential_other": "Present Credentials",
       "errorSendingMessage": "Error sending message",
       "errorSendingMedia": "Error sending media",
       "errorSendingAnswer": "Error sending answer",
@@ -342,7 +342,7 @@
       "saveSucceededFileMedia": "Saved successfully",
       "saveFailedFileMedia": "Save failed",
       "messageDeletedSuccessfully": "Message deleted successfully",
-      "messageDeletedSuccessfully_plural": "Messages deleted successfully",
+      "messageDeletedSuccessfully_other": "Messages deleted successfully",
       "messageUnsuccessfulDeletion": "Unsuccessful deletion",
       "messageUnsuccessfulReaction": "Error while sending reaction",
       "addComment": "Add a comment",
@@ -356,7 +356,7 @@
       "deleteForMe": "Delete for me",
       "deleteForEveryone": "Delete for everyone",
       "deleteMessageConfirmation": "Delete message?",
-      "deleteMessageConfirmation_plural": "Delete messages?",
+      "deleteMessageConfirmation_other": "Delete messages?",
       "messageDeleted": "Message deleted",
       "errorLoadingVideo": "There was a problem loading the video.",
       "connectionDeleted": "This connection has been deleted",
@@ -386,9 +386,9 @@
       "read": "Read",
       "forward": "Forward",
       "messageForwarded": "Message has been forwarded",
-      "messageForwarded_plural": "Messages have been forwarded",
+      "messageForwarded_other": "Messages have been forwarded",
       "messageShared": "Message has been shared",
-      "messageShared_plural": "Messages have been shared"
+      "messageShared_other": "Messages have been shared"
     },
     "preview": {
       "answer": "🟰 Answer",
@@ -452,6 +452,7 @@
       "autoBackup": "Auto backup",
       "includeVideos": "Include videos",
       "backgroundNotifications": "Background Notifications",
+      "displayLogs": "Display Logs",
       "closeAppAfterBackNotiChanges": "To see your changes reflected, close the app completely and open it again",
       "changePassword": "Change password",
       "preparingFiles": "Preparing files",

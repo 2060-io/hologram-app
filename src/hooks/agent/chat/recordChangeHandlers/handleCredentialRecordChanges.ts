@@ -1,4 +1,13 @@
-import { CredentialExchangeRecord, W3cCredentialRepository } from '@credo-ts/core'
+import { V1CredentialProblemReportMessage } from '@credo-ts/anoncreds'
+import {
+  AgentMessage,
+  CredentialExchangeRecord,
+  CredentialState,
+  parseMessageType,
+  ProblemReportMessage,
+  V2CredentialProblemReportMessage,
+  W3cCredentialRepository,
+} from '@credo-ts/core'
 import Realm from 'realm'
 
 import * as chatEntryService from '../services/ChatEntryService'
@@ -18,8 +27,9 @@ export const handleCredentialExchangeRecordChanges = async (options: {
   record: CredentialExchangeRecord
   activeChatThreadId?: string
   receivedAt?: Date
+  message: AgentMessage
 }) => {
-  const { agent, realm, record: credentialExchangeRecord } = options
+  const { agent, realm, record: credentialExchangeRecord, message } = options
   if (!credentialExchangeRecord.connectionId) return
 
   const connection = await agent.connections.getById(credentialExchangeRecord.connectionId)
@@ -31,11 +41,6 @@ export const handleCredentialExchangeRecordChanges = async (options: {
   const credentialDefinitionId =
     formatData.offer?.anoncreds?.cred_def_id ?? formatData.offer?.indy?.cred_def_id
 
-  const didcommRecordMetadata = getDidCommCredentialDisplayMetadata(credentialExchangeRecord)
-
-  if (!didcommRecordMetadata) {
-  }
-
   // Find any VC Offer entry associated to this credential record and update its state
   const [vcOfferEntry] = chatEntryService.findAllByAssociatedRecordId(
     realm,
@@ -43,13 +48,25 @@ export const handleCredentialExchangeRecordChanges = async (options: {
     ChatEntryType.VCOffer,
   )
   if (vcOfferEntry) {
+    const { messageTypeUri } = parseMessageType(message.type)
+    let isRefused = false
+    const isProblemReportMessage = [
+      V1CredentialProblemReportMessage.type.messageTypeUri,
+      V2CredentialProblemReportMessage.type.messageTypeUri,
+    ].includes(messageTypeUri)
+    if (isProblemReportMessage) {
+      const problemReportMessage = message as ProblemReportMessage
+      const description = problemReportMessage?.description?.en
+      isRefused = description === 'e.msg.refused'
+    }
+    const credentialState = isRefused ? CredentialState.Declined : credentialExchangeRecord.state
     chatEntryService.updateState(realm, {
       recordId: vcOfferEntry.id,
       state: vcOfferEntry.state, // TODO: update state
       associatedMessageId,
       metadata: {
         ...vcOfferEntry.metadata,
-        credentialState: credentialExchangeRecord.state,
+        credentialState,
       },
     })
 

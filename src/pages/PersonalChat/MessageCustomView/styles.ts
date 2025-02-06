@@ -26,6 +26,7 @@ export default (theme: AppTheme) =>
     subContainer: {
       maxWidth: widthPercentageToDP('75%'),
       minHeight: heightPercentageToDP('4.62%'),
+      overflow: 'hidden',
     },
     floatingMessageContainer: {
       marginTop: 12,
@@ -98,5 +99,9 @@ export default (theme: AppTheme) =>
       fontSize: theme.fontSize.md - 1,
       color: theme.colors.primaryText,
       marginLeft: 1,
+    },
+    tappedRepliedMessageTemporaryStyle: {
+      borderWidth: 2,
+      borderColor: theme.colors.green,
     },
   })

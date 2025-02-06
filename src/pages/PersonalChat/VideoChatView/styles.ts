@@ -9,8 +9,6 @@ export default (theme: AppTheme) =>
     containerRootVideo: {
       minWidth: widthPercentageToDP('56%'),
       maxHeight: heightPercentageToDP('34.67%'),
-      borderTopLeftRadius: 8.56,
-      borderTopRightRadius: 8.56,
     },
     videoDescription: {
       paddingHorizontal: 8,

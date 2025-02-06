@@ -5,10 +5,6 @@ import { hexTransparency } from '@2060/utils/colorUtils'
 
 export default (theme: AppTheme) =>
   StyleSheet.create({
-    containerRootImage: {
-      borderTopLeftRadius: 8.56,
-      borderTopRightRadius: 8.56,
-    },
     imageLightbox: {
       width: '100%',
       height: '100%',
@@ -57,7 +53,6 @@ export default (theme: AppTheme) =>
     },
     // styles headerlightbox
     rootHeaderLightbox: {
-      flex: 1,
       flexDirection: 'row',
       paddingHorizontal: 5,
       justifyContent: 'space-between',
@@ -78,13 +73,9 @@ export default (theme: AppTheme) =>
       justifyContent: 'space-between',
       flexDirection: 'row',
     },
-    textUserName: {
+    text: {
       fontSize: theme.fontSize.md2,
-      color: theme.colors.secondary,
-    },
-    textDateReceived: {
-      fontSize: theme.fontSize.md2,
-      color: theme.colors.secondary,
+      color: theme.colors.primaryText,
     },
     uploadProgressContainer: {
       height: 5,

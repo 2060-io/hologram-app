@@ -1,13 +1,11 @@
 /* eslint-disable import/newline-after-import */
 import messaging from '@react-native-firebase/messaging'
-import React from 'react'
 import { AppRegistry } from 'react-native'
 
 import 'react-native-reanimated'
 import 'react-native-gesture-handler'
 import { name as appName } from './app.json'
-import App from './src/App'
-import CustomToast from './src/components/CustomToast'
+import AppHeadless from './src/AppHeadless'
 import { backgroundPushNotificationHandler } from './src/services/backgroundPushNotificationHandler'
 import { isBackgroundNotificationHandlerEnabled } from './src/utils/developer'
 ;(async function () {
@@ -18,9 +16,4 @@ import { isBackgroundNotificationHandlerEnabled } from './src/utils/developer'
   }
 })()
 
-AppRegistry.registerComponent(appName, () => () => (
-  <>
-    <CustomToast />
-    <App />
-  </>
-))
+AppRegistry.registerComponent(appName, () => AppHeadless)
