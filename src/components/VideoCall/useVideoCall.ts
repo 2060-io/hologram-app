@@ -40,7 +40,7 @@ const createRoom = async (webRtcServerBaseUrl: string) => {
     const { token } = await appCheck().getToken()
     const response = await axios.post(`${webRtcServerBaseUrl}/rooms`, null, {
       validateStatus: function (status: number) {
-        return status === 200 // Resolve only if the status code 200
+        return status === 201 // Resolve only if the status code 201
       },
       headers: {
         'X-Firebase-AppCheck': token,
