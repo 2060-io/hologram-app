@@ -39,9 +39,6 @@ const createRoom = async (webRtcServerBaseUrl: string) => {
   try {
     const { token } = await appCheck().getToken()
     const response = await axios.post(`${webRtcServerBaseUrl}/rooms`, null, {
-      validateStatus: function (status: number) {
-        return status === 201 // Resolve only if the status code 201
-      },
       headers: {
         'X-Firebase-AppCheck': token,
       },
@@ -165,7 +162,8 @@ export const useVideoCall = () => {
           : await createRoom(devEnvs.WEBRTC_SERVER_BASE_URL)
         roomId.current = callInfo.roomId
         peerId.current = callInfo.peerId ?? generatePeerId()
-        const socketUrl = `${callInfo.wsUrl}/?roomId=${roomId.current}&peerId=${peerId.current}`
+        const socketUrl = `wss://webrtc.dev.2060.io:443/?roomId=${roomId.current}&peerId=${peerId.current}`
+        log('Socket URL:', socketUrl)
         const webSocketTransport = new WebSocketTransport(socketUrl)
         peer.current = new Peer(webSocketTransport)
         peer.current.on('open', async () => {
