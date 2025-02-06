@@ -162,8 +162,7 @@ export const useVideoCall = () => {
           : await createRoom(devEnvs.WEBRTC_SERVER_BASE_URL)
         roomId.current = callInfo.roomId
         peerId.current = callInfo.peerId ?? generatePeerId()
-        const socketUrl = `wss://webrtc.dev.2060.io:443/?roomId=${roomId.current}&peerId=${peerId.current}`
-        log('Socket URL:', socketUrl)
+        const socketUrl = `${callInfo.wsUrl}/?roomId=${roomId.current}&peerId=${peerId.current}`
         const webSocketTransport = new WebSocketTransport(socketUrl)
         peer.current = new Peer(webSocketTransport)
         peer.current.on('open', async () => {
