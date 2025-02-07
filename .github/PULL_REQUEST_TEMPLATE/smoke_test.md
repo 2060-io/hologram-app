@@ -6,7 +6,6 @@ Next are some of the app basic features must be tested before a release to dev o
 
 ### Signup Section
 
-- [ ] Validate wallet restore works as expected (It can be let it to last becuase may be at this point backup is not created yet)
 - [ ] Validate user profile creation works setting name and profile picture
 
 ### Scan Section
@@ -16,7 +15,7 @@ Next are some of the app basic features must be tested before a release to dev o
 
 ### Services Validation
 
-- [ ] Test proper functioning of services: Demo Chat Bot Agent (https://chatbot-demo.dev.2060.io/invitation) and Digital Trust (https://digital.gov.bc.ca/digital-trust/showcase/demo)
+- [ ] Test proper functioning of services: Demo Chat Bot Agent (https://a.chatbot-demo.dev.2060.io/v1/qr) and Animo (https://demo.animo.id/)
 
 Note: Validate next items using: Demo Chat Bot Agent
 
@@ -25,12 +24,13 @@ Note: Validate next items using: Demo Chat Bot Agent
 - [ ] Question and answer, action menu
 - [ ] Invitation to services (did:web:em-vs.demos.2060.io for instance)
 - [ ] Invitation to subconnection
-- [ ] Links
+- [ ] Link command
+- [] Send "/mrz" command to test mrz scan and nfc reading
 
 ### Chat Screen
 
 - [ ] Allow to send messages type, video (using camera and video picker), image (using camera and image picker), audio and text between these connections
-- [ ] Make a video and audio call between tow p2p connections and validate everything works well
+- [ ] Make a video and audio call between tow p2p connections and validate everything works well (Must be enabled developer mode in both apps where two connections are going to be on the call)
 - [ ] Use all features inside chat screen (report, share, save, react to message) and verify other side is notified
 
 ### Connection Details Screen
@@ -65,12 +65,6 @@ Note: Validate next items using: Demo Chat Bot Agent
 
 ### Settings Section
 
-##### Backup
-
-- [ ] Check backup info appears if backup exists
-- [ ] In Android, choose account for backup and must works as expected
-- [ ] Validate correct backup creation
-
 ##### Connections
 
 - [ ] A list with all connections must be displayed
@@ -91,6 +85,16 @@ Note: Validate next items using: Demo Chat Bot Agent
 - [ ] In Developer screen press "Delete wallet" button and verify works and let user in SingUp Screen
 - [ ] Check delete wallet work and let user in SingUp screen
 
-### Migration
+##### Backup (Must be enabled developer mode to see it)
 
-- [ ] Create a wallet in the last dev version prior to the previous staging version, add a P2P contact, exchanging a video, an image and a voice note. Then connect with Chatbot Demo and receive credential/present proof. Upgrade the app to the latest dev version and verify everything keeps working and other messages can be exchanged
+- [ ] Check backup info appears if backup exists
+- [ ] In Android, choose account for backup and must works as expected
+- [ ] Validate correct backup creation
+
+### Wallet restore
+
+- [ ] Validate wallet restore works as expected
+
+### Wallet restore with Migration
+
+- [ ] Create a wallet in the last dev version prior to the previous staging version, add a P2P contact, exchanging a video, an image and a voice note. Then connect with Chatbot Demo and receive credential/present proof. Upgrade the app to the latest dev version and verify everything keeps working and more messages can be exchanged
