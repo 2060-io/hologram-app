@@ -15,7 +15,7 @@ Next are some of the app basic features must be tested before a release to dev o
 
 ### Services Validation
 
-- [ ] Test proper functioning of services: Demo Chat Bot Agent (https://a.chatbot-demo.dev.2060.io/v1/qr) and Animo (https://demo.animo.id/)
+- [ ] Test proper functioning of services: Demo Chat Bot Agent (https://chatbot-demo.dev.2060.io/qr) and Animo (https://demo.animo.id/)
 
 Note: Validate next items using: Demo Chat Bot Agent
 
