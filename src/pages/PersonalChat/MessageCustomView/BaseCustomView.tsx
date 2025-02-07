@@ -21,7 +21,6 @@ import VPRequestChatView from '../VPRequestChatView'
 import VideoChatView from '../VideoChatView'
 import VoiceNoteChatView from '../VoiceNoteChatView'
 
-import Reactions from './Reactions'
 import getStyles from './styles'
 import { mustDisplayAckAndTime } from './utils'
 
@@ -270,9 +269,6 @@ const BaseCustomView: React.FC<BaseCustomMessageViewProps> = memo(props => {
             </TouchableOpacity>
           )}
           {renderMessage}
-          {!!chatEntry.reactions.length && (
-            <Reactions role={chatEntry.role} reactions={chatEntry.reactions} />
-          )}
         </>
       )}
     </View>

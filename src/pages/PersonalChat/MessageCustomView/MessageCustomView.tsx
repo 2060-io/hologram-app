@@ -4,13 +4,14 @@ import { View, Keyboard, TouchableOpacity, ViewStyle } from 'react-native'
 import { isSameUser } from '../utils'
 
 import BaseCustomView from './BaseCustomView'
+import Reactions from './Reactions'
 import getStyles, { REACTIONS_MARGIN_BOTTOM } from './styles'
 import { getMessageBorders } from './utils'
 
 import { RadioButton } from '@2060/components/common'
 import { useChat } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { ChatEntryRole } from '@2060/model'
+import { ChatEntryRole, ChatEntryState } from '@2060/model'
 import { MessageProps } from '@2060/pages/PersonalChat/ChatMessage/Props'
 
 const MessageCustomView: React.FC<MessageProps> = memo(props => {
@@ -75,6 +76,9 @@ const MessageCustomView: React.FC<MessageProps> = memo(props => {
             <BaseCustomView {...props} borders={borders} />
           </TouchableOpacity>
         </View>
+        {!!chatEntry.reactions.length && chatEntry.state !== ChatEntryState.Deleted && (
+          <Reactions role={chatEntry.role} reactions={chatEntry.reactions} />
+        )}
       </View>
     </TouchableOpacity>
   )
