@@ -25,7 +25,7 @@ Note: Validate next items using: Demo Chat Bot Agent
 - [ ] Invitation to services (did:web:em-vs.demos.2060.io for instance)
 - [ ] Invitation to subconnection
 - [ ] Link command
-- [] Send "/mrz" command to test mrz scan and nfc reading
+- [ ] Send "/mrz" command to test mrz scan and nfc reading
 
 ### Chat Screen
 
