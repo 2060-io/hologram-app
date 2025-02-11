@@ -94,7 +94,7 @@ const OpenIdPresentationRequest: React.FC<Props> = ({ route, navigation }) => {
 
   return (
     <SafeAreaView style={styles.root}>
-      <ModalLoading visible={isAcceptingRequest || isProcessingCode} />
+      <ModalLoading visible={isProcessingCode} />
       {submission && (
         <BasePresentationRequest
           navigation={navigation}
@@ -103,6 +103,7 @@ const OpenIdPresentationRequest: React.FC<Props> = ({ route, navigation }) => {
           onSelectOpenIdCredential={onSelectCredential}
           accept={onAccept}
           refuse={onRefuse}
+          isAccepting={isAcceptingRequest}
         />
       )}
     </SafeAreaView>
