@@ -20,6 +20,8 @@ const styles = (theme: AppTheme) =>
       ...cardStyles(theme),
       ...cardShadowStyles(theme.colors),
       marginVertical: 25,
+      borderColor: theme.colors.red,
+      borderWidth: 1.3,
     },
     sectionContainer: {
       marginTop: 10,

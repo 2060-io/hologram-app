@@ -2,7 +2,14 @@ import { ParamListBase } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, TouchableOpacity, ScrollView, TouchableWithoutFeedback, SafeAreaView } from 'react-native'
+import {
+  View,
+  TouchableOpacity,
+  ScrollView,
+  TouchableWithoutFeedback,
+  SafeAreaView,
+  ActivityIndicator,
+} from 'react-native'
 
 import getStyles from './styles'
 
@@ -20,13 +27,15 @@ import { ServiceInfo } from '@2060/services/api/trustRegistryService'
 
 type Props = {
   navigation: StackNavigationProp<ParamListBase>
-  submission?: FormattedSubmission
+  submission: FormattedSubmission
   isFromDidComm?: boolean
   onSelectOpenIdCredential?: (...args: [number[]]) => void
   onSelectDidcommCredential?: (...args: [string, string]) => void
   accept: () => void
   refuse: () => void
   serviceInfo?: ServiceInfo | null
+  isAccepting: boolean
+  notifyNoCompatibleCredentials?: () => void
 }
 
 const BasePresentationRequest: React.FC<Props> = ({
@@ -38,24 +47,29 @@ const BasePresentationRequest: React.FC<Props> = ({
   accept,
   refuse,
   serviceInfo,
+  isAccepting,
+  notifyNoCompatibleCredentials = () => {},
 }) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
-  const defaultSelectedCredentialsIndexes = new Array(submission?.entries?.length).fill(-1)
+  const defaultSelectedCredentialsIndexes = new Array(submission.entries.length).fill(-1)
   const [selectedCredentialsIndexes, setSelectedCredentialsIndexes] = useState<number[]>(
     defaultSelectedCredentialsIndexes,
   )
   const [showModalRefuseConfirmation, setShowModalRefuseConfirmation] = useState(false)
+  const hasCompatibleCredentials = submission.entries.some(entry => entry.credentials.length > 0)
 
-  const hasCompatibleCredentials = submission
-    ? submission.entries.some(entry => entry.credentials.length > 0)
-    : false
+  useEffect(() => {
+    if (!hasCompatibleCredentials) {
+      notifyNoCompatibleCredentials()
+    }
+  }, [hasCompatibleCredentials])
 
   useEffect(() => {
     navigation.setOptions({
       headerLeft: () =>
-        hasCompatibleCredentials ? (
+        hasCompatibleCredentials && !isAccepting ? (
           <TouchableOpacity style={styles.headerLeft} onPress={displayModalRefuseConfirmation}>
             <Text style={styles.headerBtnText} typography="EuclidCircularA-Medium">
               {t('general.refuse')}
@@ -69,7 +83,7 @@ const BasePresentationRequest: React.FC<Props> = ({
           </TouchableOpacity>
         ),
     })
-  }, [hasCompatibleCredentials])
+  }, [hasCompatibleCredentials, isAccepting])
 
   const displayModalRefuseConfirmation = () => setShowModalRefuseConfirmation(true)
   const hideModalRefuseConfirmation = () => setShowModalRefuseConfirmation(false)
@@ -98,7 +112,7 @@ const BasePresentationRequest: React.FC<Props> = ({
   const goToCredentialDetails = (credentialRecordId: string) => {
     navigation.navigate('CredentialDetails', { credentialRecordId })
   }
-
+  if (isAccepting) return <ActivityIndicator color={theme.colors.green} size={'large'} />
   return (
     <SafeAreaView style={styles.root}>
       <ModalConfirmAction
@@ -111,73 +125,71 @@ const BasePresentationRequest: React.FC<Props> = ({
         onConfirm={onRefuse}
         onCancel={hideModalRefuseConfirmation}
       />
-      {submission && (
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <View style={styles.subContainer}>
-            {serviceInfo && <ServiceMainInfo serviceInfo={serviceInfo} />}
-            {hasCompatibleCredentials ? (
-              <>
-                <Text style={[styles.title, styles.mainTitle]} typography="EuclidCircularA-Regular">
-                  {t('presentationRequest.selectCredentialYouWouldLikeToPresentTo')}
-                  <Text style={styles.title} typography="EuclidCircularA-SemiBold">
-                    {submission?.verifier?.name}
-                  </Text>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View style={styles.subContainer}>
+          {serviceInfo && <ServiceMainInfo serviceInfo={serviceInfo} />}
+          {hasCompatibleCredentials ? (
+            <>
+              <Text style={[styles.title, styles.mainTitle]} typography="EuclidCircularA-Regular">
+                {t('presentationRequest.selectCredentialYouWouldLikeToPresentTo')}
+                <Text style={styles.title} typography="EuclidCircularA-SemiBold">
+                  {submission.verifier.name}
                 </Text>
-                {submission.entries.map((entry, entryIndex) => {
-                  const title = `${submission?.verifier?.name} ${t('presentationRequest.isRequestingYou')}`
-                  return (
-                    <View key={entry.name}>
-                      <Text style={styles.submissionSectionTitle} typography="EuclidCircularA-SemiBold">
-                        {entry.name}
+              </Text>
+              {submission.entries.map((entry, entryIndex) => {
+                const title = `${submission.verifier.name} ${t('presentationRequest.isRequestingYou')}`
+                return (
+                  <View key={entry.name}>
+                    <Text style={styles.submissionSectionTitle} typography="EuclidCircularA-SemiBold">
+                      {entry.name}
+                    </Text>
+                    <Text style={styles.title} typography="EuclidCircularA-Regular">
+                      {title}
+                      <Text style={styles.title} typography="EuclidCircularA-SemiBold">
+                        {entry?.requestedAttributes?.join(', ')}
                       </Text>
-                      <Text style={styles.title} typography="EuclidCircularA-Regular">
-                        {title}
-                        <Text style={styles.title} typography="EuclidCircularA-SemiBold">
-                          {entry?.requestedAttributes?.join(', ')}
-                        </Text>
-                      </Text>
-                      <View style={styles.sectionContainer}>
-                        {entry.credentials.map((credential, credentialIndex) => (
-                          <TouchableWithoutFeedback
-                            key={credential.id}
-                            onPress={() => {
-                              updateSelectedCredential(entryIndex, credentialIndex, entry.id, credential.id)
-                            }}
-                          >
-                            <View style={styles.credentialContainer}>
-                              <RadioButton
-                                style={styles.radioButton}
-                                isChecked={selectedCredentialsIndexes?.[entryIndex] === credentialIndex}
-                              />
-                              <CardCredentialMainInformation
-                                credentialMainInfo={credential}
-                                onPress={() => goToCredentialDetails(credential.recordId)}
-                                size="medium"
-                              />
-                            </View>
-                          </TouchableWithoutFeedback>
-                        ))}
-                      </View>
+                    </Text>
+                    <View style={styles.sectionContainer}>
+                      {entry.credentials.map((credential, credentialIndex) => (
+                        <TouchableWithoutFeedback
+                          key={credential.id}
+                          onPress={() => {
+                            updateSelectedCredential(entryIndex, credentialIndex, entry.id, credential.id)
+                          }}
+                        >
+                          <View style={styles.credentialContainer}>
+                            <RadioButton
+                              style={styles.radioButton}
+                              isChecked={selectedCredentialsIndexes?.[entryIndex] === credentialIndex}
+                            />
+                            <CardCredentialMainInformation
+                              credentialMainInfo={credential}
+                              onPress={() => goToCredentialDetails(credential.recordId)}
+                              size="medium"
+                            />
+                          </View>
+                        </TouchableWithoutFeedback>
+                      ))}
                     </View>
-                  )
-                })}
-                <MainButton
-                  disabled={!enabledPresentButton}
-                  text={t('personalChat.presentCredential', { count: submission?.entries?.length })}
-                  onPress={accept}
-                  style={{ opacity: enabledPresentButton ? 1 : 0.5 }}
-                />
-              </>
-            ) : (
-              <View style={styles.noCompatibleCredentialContainer}>
-                <Text style={styles.title} typography="EuclidCircularA-Regular">
-                  {t('presentationRequest.noCredentials')}
-                </Text>
-              </View>
-            )}
-          </View>
-        </ScrollView>
-      )}
+                  </View>
+                )
+              })}
+              <MainButton
+                disabled={!enabledPresentButton}
+                text={t('personalChat.presentCredential', { count: submission?.entries?.length })}
+                onPress={accept}
+                style={{ opacity: enabledPresentButton ? 1 : 0.5 }}
+              />
+            </>
+          ) : (
+            <View style={styles.noCompatibleCredentialContainer}>
+              <Text style={styles.title} typography="EuclidCircularA-Regular">
+                {t('presentationRequest.noCredentials')}
+              </Text>
+            </View>
+          )}
+        </View>
+      </ScrollView>
     </SafeAreaView>
   )
 }

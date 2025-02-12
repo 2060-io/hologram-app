@@ -1,20 +1,19 @@
 import { useFocusEffect } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
 import React, { useRef, useCallback, useState } from 'react'
-import { ActivityIndicator, LogBox } from 'react-native'
+import { LogBox } from 'react-native'
 
 import BasePresentationRequest from './BasePresentationRequest'
 
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
 import { useFetchServiceInfo } from '@2060/hooks'
 import { useMobileAgent } from '@2060/hooks/agent'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { CredentialMainInfo } from '@2060/services/agent/display'
 import {
   FormattedSubmission,
   formatDidcommPresentationSubmission,
 } from '@2060/services/agent/formatPresentation'
-import { presentProof } from '@2060/services/agent/proofs'
+import { notifyNoCompatibleCredentials, presentProof } from '@2060/services/agent/proofs'
 import { logError } from '@2060/utils'
 import { toast } from '@2060/utils/toast'
 
@@ -23,7 +22,6 @@ interface Props extends StackScreenProps<NavigationStackParams, 'DidcommPresenta
 const DidcommPresentationRequest: React.FC<Props> = ({ navigation, route }: Props) => {
   LogBox.ignoreLogs(['Non-serializable values were found in the navigation state'])
   const { agent } = useMobileAgent()
-  const theme = useTheme()
   const selectedCredentials = useRef({})
   const { proofRecordId, did } = route.params
   const { serviceInfo } = useFetchServiceInfo(did, true)
@@ -81,6 +79,11 @@ const DidcommPresentationRequest: React.FC<Props> = ({ navigation, route }: Prop
     }
   }
 
+  const notify = () => {
+    if (!agent) return
+    notifyNoCompatibleCredentials({ agent, proofRecordId })
+  }
+
   const afterPresented = () => {
     const routes = navigation.getState()?.routes
     const prevRoute = routes[routes.length - 2]
@@ -104,8 +107,7 @@ const DidcommPresentationRequest: React.FC<Props> = ({ navigation, route }: Prop
     })
   }
 
-  if (isAccepting) return <ActivityIndicator color={theme.colors.green} />
-  return (
+  return submission ? (
     <BasePresentationRequest
       navigation={navigation}
       submission={submission}
@@ -113,8 +115,10 @@ const DidcommPresentationRequest: React.FC<Props> = ({ navigation, route }: Prop
       accept={onAccept}
       refuse={onRefuse}
       serviceInfo={serviceInfo}
+      isAccepting={isAccepting}
+      notifyNoCompatibleCredentials={notify}
     />
-  )
+  ) : null
 }
 
 export default DidcommPresentationRequest
