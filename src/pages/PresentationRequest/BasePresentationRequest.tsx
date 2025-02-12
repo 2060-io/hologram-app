@@ -35,7 +35,7 @@ type Props = {
   refuse: () => void
   serviceInfo?: ServiceInfo | null
   isAccepting: boolean
-  notify?: () => void
+  notifyNoCompatibleCredentials?: () => void
 }
 
 const BasePresentationRequest: React.FC<Props> = ({
@@ -48,7 +48,7 @@ const BasePresentationRequest: React.FC<Props> = ({
   refuse,
   serviceInfo,
   isAccepting,
-  notify = () => {},
+  notifyNoCompatibleCredentials = () => {},
 }) => {
   const { t } = useTranslation()
   const theme = useTheme()
@@ -62,7 +62,7 @@ const BasePresentationRequest: React.FC<Props> = ({
 
   useEffect(() => {
     if (!hasCompatibleCredentials) {
-      notify()
+      notifyNoCompatibleCredentials()
     }
   }, [hasCompatibleCredentials])
 

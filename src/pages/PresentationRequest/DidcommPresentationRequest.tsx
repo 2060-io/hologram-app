@@ -116,7 +116,7 @@ const DidcommPresentationRequest: React.FC<Props> = ({ navigation, route }: Prop
       refuse={onRefuse}
       serviceInfo={serviceInfo}
       isAccepting={isAccepting}
-      notify={notify}
+      notifyNoCompatibleCredentials={notify}
     />
   ) : null
 }
