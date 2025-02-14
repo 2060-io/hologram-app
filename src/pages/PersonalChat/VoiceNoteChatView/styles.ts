@@ -13,6 +13,11 @@ export default (theme: AppTheme) =>
     },
     subContainer: {
       flexDirection: 'row',
+      alignItems: 'center',
+    },
+    waveFormContainer: {
+      height: 25,
+      flex: 1,
     },
     containerButtonPlay: {
       height: PLAY_BUTTON_WIDTH,

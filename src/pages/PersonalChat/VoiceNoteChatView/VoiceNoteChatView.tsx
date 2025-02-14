@@ -1,199 +1,247 @@
-import { Slider } from '@sharcoux/slider'
+import {
+  FinishMode,
+  IWaveformRef,
+  PlayerState,
+  Waveform,
+  useAudioPlayer,
+} from '@simform_solutions/react-native-audio-waveform'
 import React, { memo, useState, useEffect, useRef } from 'react'
 import { View, TouchableOpacity, ActivityIndicator, ViewStyle } from 'react-native'
-import { PlayBackType } from 'react-native-audio-recorder-player'
 
 import { getMinutesAndSeconds } from '../utils'
 
 import getStyles from './styles'
 
 import { Text, Icon } from '@2060/components/common'
+import { AUDIO_WAVE_FORM_NUMBER_OF_CANDLES } from '@2060/constants'
 import { useMedia } from '@2060/hooks'
 import { useChat } from '@2060/hooks/agent'
-import { AudioStatus, useMediaPlayer } from '@2060/hooks/agent/MediaPlayerProvider'
+import { useMediaPlayer } from '@2060/hooks/agent/MediaPlayerProvider'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { ChatEntryRole, MediaUploadState, VoiceNoteMetadata } from '@2060/model'
-import { getFileSize } from '@2060/utils'
+import { getFileSize, log, logWarn } from '@2060/utils'
 import { getFullLocalFilePath } from '@2060/utils/RNFS'
 
 export type VoiceNoteChatViewProps = {
   mediaRecordId: string
-  mediaItem: VoiceNoteMetadata
+  metadata: VoiceNoteMetadata
   renderTimeAndTicks: (containerStyle: ViewStyle) => false | React.JSX.Element
   role: ChatEntryRole
-  messageId: string
+  chatEntryId: string
   previousMessageId?: string
+  isLastMessage: boolean
 }
 
-const VoiceNoteChatView = memo((props: VoiceNoteChatViewProps) => {
-  const { mediaRecordId, mediaItem, renderTimeAndTicks, role, messageId, previousMessageId } = props
-  const theme = useTheme()
-  const styles = getStyles(theme)
-  const { localFilePath, byteCount, duration, mediaUploadState, mediaDownloadState } = mediaItem
-  const [currentPosition, setCurrentPosition] = useState(0)
-  const [isPaused, setIsPaused] = useState(false)
-  const [isPlaying, setIsPlaying] = useState(false)
-  const [playedTime, setPlayedTime] = useState('00:00')
-  const [audioDuration, setAudioDuration] = useState(0)
-  const isFirstTime = useRef(true)
-  const voiceNoteFilePath = localFilePath ? `file://${getFullLocalFilePath(localFilePath)}` : undefined
-  const { isRecordingVoiceNote } = useChat()
-  const {
-    playAudio,
-    pauseAudio,
-    resumeAudio,
-    audioPlaybackSpeed,
-    changeAudioPlaybackSpeed,
-    seekToAudioPlayer,
-    audioMessageIdFinished,
-  } = useMediaPlayer()
-  const { isDownloaded, isDownloading, downloadMedia, retryMediaUpload, isRetryingUpload } = useMedia({
+const demoWave = [
+  0.03, 0, 0, 0.014434843324124813, 0.025381654500961304, 0.02908831089735031, 0.010474978014826775,
+  0.031525325030088425, 0.03802556172013283, 0.054438233375549316, 0.0473533533513546, 0.0759645476937294,
+  0.08928661048412323, 0.0960187241435051, 0.042750537395477295, 0.01234029047191143, 0.11999999731779099,
+  0.05464605242013931, 0.05238320678472519, 0.049764033406972885, 0.0340985469520092, 0.024181611835956573,
+  0.03596886247396469, 0.010423753410577774, 0.06310930848121643, 0.059396903961896896, 0.036251100897789,
+  0.05482695996761322, 0.06250418722629547, 0.099825474739074707,
+]
+let currentPlayingRef: React.RefObject<IWaveformRef> | undefined
+
+const VoiceNoteChatView = memo(
+  ({
     mediaRecordId,
-    localFilePath,
-    type: 'audio',
-    mediaDownloadState,
+    metadata,
+    renderTimeAndTicks,
     role,
-  })
+    chatEntryId,
+    previousMessageId,
+    isLastMessage,
+  }: VoiceNoteChatViewProps) => {
+    const { stopPlayer } = useAudioPlayer()
+    const theme = useTheme()
+    const styles = getStyles(theme)
+    const { localFilePath, byteCount, duration, mediaUploadState, mediaDownloadState, waveForm } = metadata
+    const durationTime = getMinutesAndSeconds(duration ?? 0)
+    const isMediaUploadError =
+      mediaUploadState === MediaUploadState.ErrorCreating ||
+      mediaUploadState === MediaUploadState.ErrorUploading
+    const [playedTime, setPlayedTime] = useState('00:00')
+    const ref = useRef<IWaveformRef>(null)
+    const prevPlaterState = useRef<PlayerState>()
+    const [playerState, setPlayerState] = useState(PlayerState.stopped)
+    const playerStateAux = useRef(PlayerState.stopped)
+    const voiceNoteFilePath = localFilePath ? getFullLocalFilePath(localFilePath) : undefined
+    const { isRecordingVoiceNote } = useChat()
+    const {
+      audioPlaybackSpeed,
+      changeAudioPlaybackSpeed,
+      audioMessageIdFinished,
+      updateAudioMessageIdFinished,
+      updatePlayingAudioInfo,
+    } = useMediaPlayer()
+    const { isDownloaded, isDownloading, downloadMedia, retryMediaUpload, isRetryingUpload } = useMedia({
+      mediaRecordId,
+      localFilePath,
+      type: 'audio',
+      mediaDownloadState,
+      role,
+    })
+    log('wafeform en el componente', waveForm)
+    // hook to stop player when component unmounts (leaves screen) and its playing note voice
+    useEffect(() => {
+      return () => {
+        if (playerStateAux.current === PlayerState.playing) {
+          stopPlayer({ playerKey: `PlayerFor${voiceNoteFilePath}` })
+        }
+      }
+    }, [])
 
-  useEffect(() => {
-    const autoplay =
-      !!previousMessageId &&
-      !!audioMessageIdFinished &&
-      audioMessageIdFinished === previousMessageId &&
-      isDownloaded
-    if (autoplay) handleButtonPlay()
-  }, [audioMessageIdFinished, isDownloaded])
+    // hook to determine if note voice should autoplay
+    useEffect(() => {
+      const shouldAutoPlay = isDownloaded && previousMessageId && audioMessageIdFinished === previousMessageId
+      if (shouldAutoPlay) handlePlayPause()
+    }, [audioMessageIdFinished, isDownloaded])
 
-  useEffect(() => {
-    if (isRecordingVoiceNote && isPlaying) pauseAudio()
-  }, [isRecordingVoiceNote])
+    // hook to pause player if its playing audio and user starts to record note voice
+    useEffect(() => {
+      if (isRecordingVoiceNote && playerState === PlayerState.playing) pausePlayer()
+    }, [isRecordingVoiceNote])
 
-  const durationTime = getMinutesAndSeconds(duration ?? 0)
-  const isMediaUploadError =
-    mediaUploadState === MediaUploadState.ErrorCreating ||
-    mediaUploadState === MediaUploadState.ErrorUploading
+    useEffect(() => {
+      const wasPlaying = prevPlaterState.current === PlayerState.playing
+      const isStopped = playerState === PlayerState.stopped
+      const hasFinishedPlaying = wasPlaying && isStopped
+      if (hasFinishedPlaying) {
+        updateAudioMessageIdFinished(isLastMessage ? undefined : chatEntryId)
+      }
+      playerStateAux.current = playerState
+      updatePlayingAudioInfo(playerState, voiceNoteFilePath!)
+    }, [playerState])
 
-  const playerCallback = ({ status, data }: { status: AudioStatus; data?: PlayBackType }) => {
-    if (status === AudioStatus.STARTED) {
-      setIsPlaying(true)
-    } else if (status === AudioStatus.PLAYING) {
-      if ((data?.currentPosition as number) <= 0) return
-      if (isFirstTime.current && data?.duration) setAudioDuration(data.duration)
-      isFirstTime.current = false
-      setCurrentPosition(data?.currentPosition as number)
-      const playTimeFormatted = getMinutesAndSeconds(data?.currentPosition ?? 0)
+    const onPlayerStateChange = (newState: PlayerState) => {
+      setPlayerState(prevState => {
+        prevPlaterState.current = prevState
+        return newState
+      })
+    }
+
+    const onCurrentProgressChange = (currentProgress: number) => {
+      const playTimeFormatted = getMinutesAndSeconds(currentProgress)
       setPlayedTime(playTimeFormatted)
-    } else if (status === AudioStatus.PAUSED) {
-      setIsPaused(true)
-    } else if (status === AudioStatus.RESUMED) {
-      setIsPaused(false)
-    } else if (status === AudioStatus.FINISHED) {
-      onPlayFinish()
     }
-  }
 
-  const onPlayFinish = () => {
-    setCurrentPosition(0)
-    setIsPaused(false)
-    setIsPlaying(false)
-    setPlayedTime('00:00')
-  }
-
-  const onSlidingStart = async () => {
-    if (isPlaying) await pauseAudio()
-  }
-
-  const onSlidingComplete = async (timePosition: number) => {
-    if (!voiceNoteFilePath) return
-    await seekToAudioPlayer(timePosition)
-    await resumeAudio(messageId, voiceNoteFilePath, currentPosition, playerCallback)
-  }
-
-  const handleButtonPlay = () => {
-    if (!voiceNoteFilePath) return
-    if (!isPlaying && voiceNoteFilePath) {
-      playAudio(messageId, voiceNoteFilePath, playerCallback)
-      return
+    const pausePlayer = async () => {
+      await currentPlayingRef?.current?.pausePlayer()
     }
-    isPaused ? resumeAudio(messageId, voiceNoteFilePath, currentPosition, playerCallback) : pauseAudio()
-  }
 
-  const getIconName = () => {
-    if (!isPlaying || isPaused) return 'play'
-    return 'pause'
-  }
+    const startNewPlayer = async () => {
+      currentPlayingRef = ref
+      if (ref.current?.currentState === PlayerState.paused) {
+        await ref.current?.resumePlayer()
+      } else {
+        await ref.current?.startPlayer({
+          finishMode: FinishMode.stop,
+        })
+      }
+    }
 
-  return (
-    <View style={styles.container}>
-      <View style={styles.subContainer}>
-        <View style={styles.containerButtonPlay}>
-          {isDownloaded ? (
-            isMediaUploadError ? (
-              isRetryingUpload ? (
-                <ActivityIndicator color={theme.colors.white} />
+    const handlePlayPause = async () => {
+      // If no player or if current player is stopped just start the new player!
+      if (
+        currentPlayingRef == null ||
+        [PlayerState.stopped, PlayerState.paused].includes(
+          currentPlayingRef?.current?.currentState as PlayerState,
+        )
+      ) {
+        await startNewPlayer()
+      } else {
+        // Pause current player if it was playing
+        if (currentPlayingRef?.current?.currentState === PlayerState.playing) {
+          await pausePlayer()
+        }
+        // Start player when it is a different one!
+        if (currentPlayingRef?.current?.playerKey !== ref?.current?.playerKey) {
+          await startNewPlayer()
+        }
+      }
+    }
+
+    return (
+      <View style={styles.container}>
+        <View style={styles.subContainer}>
+          <View style={styles.containerButtonPlay}>
+            {isDownloaded ? (
+              isMediaUploadError ? (
+                isRetryingUpload ? (
+                  <ActivityIndicator color={theme.colors.white} />
+                ) : (
+                  <TouchableOpacity onPress={retryMediaUpload}>
+                    <Icon as="MaterialCommunityIcons" name="upload" size={24} color={theme.colors.white} />
+                  </TouchableOpacity>
+                )
               ) : (
-                <TouchableOpacity onPress={retryMediaUpload}>
-                  <Icon as="MaterialCommunityIcons" name="upload" size={24} color={theme.colors.white} />
+                <TouchableOpacity onPress={handlePlayPause}>
+                  <Icon
+                    as="MaterialCommunityIcons"
+                    name={playerState === PlayerState.playing ? 'pause' : 'play'}
+                    size={24}
+                    color={theme.colors.white}
+                  />
                 </TouchableOpacity>
               )
+            ) : isDownloading ? (
+              <ActivityIndicator color={theme.colors.white} />
             ) : (
-              <TouchableOpacity onPress={handleButtonPlay}>
-                <Icon as="MaterialCommunityIcons" name={getIconName()} size={24} color={theme.colors.white} />
+              <TouchableOpacity onPress={downloadMedia}>
+                <Icon as="MaterialCommunityIcons" name="arrow-down" size={24} color={theme.colors.white} />
               </TouchableOpacity>
-            )
-          ) : isDownloading ? (
-            <ActivityIndicator color={theme.colors.white} />
-          ) : (
-            <TouchableOpacity onPress={downloadMedia}>
-              <Icon as="MaterialCommunityIcons" name="arrow-down" size={24} color={theme.colors.white} />
-            </TouchableOpacity>
-          )}
+            )}
+          </View>
+          {voiceNoteFilePath ? (
+            <Waveform
+              ref={ref}
+              containerStyle={styles.waveFormContainer}
+              defaultWaveForm={waveForm ? JSON.parse(waveForm) : demoWave}
+              defaultNumberOfSamples={AUDIO_WAVE_FORM_NUMBER_OF_CANDLES}
+              mode="static"
+              playbackSpeed={audioPlaybackSpeed}
+              path={voiceNoteFilePath}
+              scrubColor={theme.colors.green}
+              waveColor={theme.colors.darkGrey}
+              onPlayerStateChange={onPlayerStateChange}
+              onCurrentProgressChange={onCurrentProgressChange}
+              onError={error => {
+                logWarn(`Error playing or loading voice note: ${error}`)
+              }}
+            />
+          ) : null}
         </View>
-        <Slider
-          value={Math.floor(currentPosition)}
-          minimumTrackTintColor={theme.colors.green}
-          maximumTrackTintColor={'#6A8994'}
-          thumbTintColor={theme.colors.green}
-          slideOnTap={true}
-          step={1}
-          thumbSize={10}
-          minimumValue={0}
-          maximumValue={audioDuration}
-          trackHeight={6}
-          onSlidingStart={onSlidingStart}
-          onSlidingComplete={onSlidingComplete}
-        />
-      </View>
-      <View style={styles.footerContainer}>
-        <View style={styles.footerSubContainer}>
-          {isDownloaded ? (
-            <Text typography="EuclidCircularA-Regular" style={{ ...styles.txtCounter, width: 30 }}>
-              {!isPlaying ? durationTime : playedTime}
-            </Text>
-          ) : (
-            byteCount && (
-              <Text typography="EuclidCircularA-Regular" style={styles.txtCounter}>
-                {getFileSize(byteCount)}
+        <View style={styles.footerContainer}>
+          <View style={styles.footerSubContainer}>
+            {isDownloaded ? (
+              <Text typography="EuclidCircularA-Regular" style={{ ...styles.txtCounter, width: 30 }}>
+                {playerState !== PlayerState.playing ? durationTime : playedTime}
               </Text>
-            )
-          )}
-          <TouchableOpacity
-            style={{
-              display: isPlaying && !isPaused ? 'flex' : 'none',
-              ...styles.playbackSpeedContainer,
-            }}
-            onPress={changeAudioPlaybackSpeed}
-          >
-            <Text
-              typography="EuclidCircularA-Medium"
-              style={[styles.txtCounter, { color: theme.colors.white }]}
-            >{`${audioPlaybackSpeed}x`}</Text>
-          </TouchableOpacity>
+            ) : (
+              byteCount && (
+                <Text typography="EuclidCircularA-Regular" style={styles.txtCounter}>
+                  {getFileSize(byteCount)}
+                </Text>
+              )
+            )}
+            <TouchableOpacity
+              style={{
+                display: playerState === PlayerState.playing ? 'flex' : 'none',
+                ...styles.playbackSpeedContainer,
+              }}
+              onPress={changeAudioPlaybackSpeed}
+            >
+              <Text
+                typography="EuclidCircularA-Medium"
+                style={[styles.txtCounter, { color: theme.colors.white }]}
+              >{`${audioPlaybackSpeed}x`}</Text>
+            </TouchableOpacity>
+          </View>
+          {renderTimeAndTicks(styles.subContainer)}
         </View>
-        {renderTimeAndTicks(styles.subContainer)}
       </View>
-    </View>
-  )
-})
+    )
+  },
+)
 
 export default VoiceNoteChatView

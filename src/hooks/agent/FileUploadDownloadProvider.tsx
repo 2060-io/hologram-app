@@ -1,6 +1,7 @@
 /* eslint-disable import/no-named-as-default-member */
 import { utils } from '@credo-ts/core'
 import appCheck from '@react-native-firebase/app-check'
+import { useAudioPlayer } from '@simform_solutions/react-native-audio-waveform'
 import axios from 'axios'
 import { SharedMediaItem } from 'credo-ts-media-sharing'
 import { t } from 'i18next'
@@ -24,7 +25,7 @@ import {
   FileUploadDownloadContext,
 } from './useFileUploadDownload'
 
-import { IS_DEVICE_IOS } from '@2060/constants'
+import { AUDIO_WAVE_FORM_NUMBER_OF_CANDLES, IS_DEVICE_IOS } from '@2060/constants'
 import { MediaDownloadState, MediaUploadState, UploadChunkTask, UploadTask } from '@2060/model'
 import {
   AUTOMATIC_MEDIA_DOWNLOAD_VALUES_PERSIST_KEY,
@@ -102,6 +103,7 @@ const uploadChunk = async (dataStoreUrl: string, filePath: string, fileId: strin
 export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
   const { agent } = useMobileAgent()
   const { devEnvs } = useConfig()
+  const { extractWaveformData } = useAudioPlayer()
   const [automaticDownloadValues, setAutomaticDownloadValues] = useState<AutomaticDownloadTypes>(
     defaultAutomaticDownloadValues,
   )
@@ -152,6 +154,21 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
     },
     [automaticDownloadValues],
   )
+
+  const getAudioWaveForm = useCallback(async (filePath: string) => {
+    const waveFormData = await extractWaveformData({
+      path: filePath,
+      playerKey: `PlayerFor${filePath}`,
+      noOfSamples: AUDIO_WAVE_FORM_NUMBER_OF_CANDLES,
+    })
+    if (waveFormData.length) {
+      const [waveForm] = waveFormData
+      if (waveForm.length) {
+        log('siii mireee waveForm', JSON.stringify(waveForm))
+        return JSON.stringify(waveForm)
+      }
+    }
+  }, [])
 
   const downloadMediaFile = useCallback(
     async (mediaRecordId: string) => {
@@ -211,17 +228,22 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
           // Now we are safe to delete encrypted file
           await deleteFile(downloadLocalFilePath)
         }
-
-        // In case of images and videos, create a local preview for it to show in conversations
-        const localPreviewFilePath = await createLocalPreview({ mimeType, localFilePath })
-
-        // Paths to media and preview are stored relative to app's documents directory
-        if (localPreviewFilePath) {
-          await agent.modules.media.setMetadata(
-            mediaRecord.id,
-            'localPreviewFilePath',
-            `media/previews/${filename}.jpeg`,
-          )
+        if (mimeType.startsWith('audio')) {
+          const waveForm = await getAudioWaveForm(localFilePath)
+          if (waveForm) {
+            await agent.modules.media.setMetadata(mediaRecord.id, 'waveForm', waveForm)
+          }
+        } else {
+          // In case of images and videos, create a local preview for it to show in conversations
+          const localPreviewFilePath = await createLocalPreview({ mimeType, localFilePath })
+          // Paths to media and preview are stored relative to app's documents directory
+          if (localPreviewFilePath) {
+            await agent.modules.media.setMetadata(
+              mediaRecord.id,
+              'localPreviewFilePath',
+              `media/previews/${filename}.jpeg`,
+            )
+          }
         }
 
         await agent.modules.media.setMetadata(mediaRecord.id, 'localFilePath', `media/${filename}`)
@@ -291,7 +313,11 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
 
       // In case of images and videos, create a local preview for it to show in conversations
       const localPreviewFilePath = await createLocalPreview({ mimeType, localFilePath })
-
+      let waveForm: string | undefined
+      const isAudioFile = mimeType.startsWith('audio')
+      if (isAudioFile) {
+        waveForm = await getAudioWaveForm(localFilePath)
+      }
       const mediaRecordIds: string[] = []
       for (const connectionId of didcommConnectionIds) {
         const mediaRecord = await agent?.modules.media.create({
@@ -318,6 +344,7 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
           metadata: {
             localFilePath: `media/${fileName}`,
             localPreviewFilePath: localPreviewFilePath ? `media/previews/${fileName}.jpeg` : undefined,
+            ...(isAudioFile && { waveForm }),
           },
         })
         mediaRecordIds.push(mediaRecord.id)

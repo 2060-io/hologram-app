@@ -18,6 +18,7 @@ import {
   MediaUploadState,
   RelatedEntryProps,
   VideoMetadata,
+  VoiceNoteMetadata,
 } from '@2060/model'
 import { MobileAgent } from '@2060/services/agent'
 
@@ -144,7 +145,8 @@ function getChatEntrySpecificData(record: MediaSharingRecord) {
       ...baseMetadata,
       preview: mediaSharingItem.metadata?.preview as string | undefined,
       duration: mediaSharingItem.metadata?.duration as number | undefined,
-    } as VideoMetadata
+      waveForm: mediaSharingItem.metadata?.waveForm as string | undefined,
+    } as VoiceNoteMetadata
   } else if (type === ChatEntryType.Link) {
     metadata = {
       ...baseMetadata,

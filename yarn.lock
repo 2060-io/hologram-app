@@ -5673,6 +5673,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@simform_solutions/react-native-audio-waveform@npm:2.1.3":
+  version: 2.1.3
+  resolution: "@simform_solutions/react-native-audio-waveform@npm:2.1.3"
+  dependencies:
+    lodash: ^4.17.21
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: fb792ddc80850e2773a91d8f7215a228f704d59675c208c6e28c80d19210a848dc3f46afb63b3ac0b635c6e45b6d706239b92f9f34c05908465854f45be980c8
+  languageName: node
+  linkType: hard
+
 "@sinclair/typebox@npm:^0.27.8":
   version: 0.27.8
   resolution: "@sinclair/typebox@npm:0.27.8"
@@ -11338,6 +11350,7 @@ __metadata:
     "@semantic-release/npm": ^11.0.2
     "@sharcoux/slider": ^6.1.1
     "@shopify/flash-list": ^1.7.1
+    "@simform_solutions/react-native-audio-waveform": 2.1.3
     "@tsconfig/react-native": ^3.0.0
     "@types/protoo-client": ^4.0.4
     "@types/react": 18.3.1

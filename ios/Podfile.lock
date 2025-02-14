@@ -1455,6 +1455,27 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
+  - react-native-audio-waveform (2.1.3):
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.01.01.00)
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Yoga
   - react-native-background-upload (6.6.0):
     - React
   - react-native-cameraroll (5.10.0):
@@ -2157,6 +2178,7 @@ DEPENDENCIES:
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
   - React-Mapbuffer (from `../node_modules/react-native/ReactCommon`)
   - React-microtasksnativemodule (from `../node_modules/react-native/ReactCommon/react/nativemodule/microtasks`)
+  - "react-native-audio-waveform (from `../node_modules/@simform_solutions/react-native-audio-waveform`)"
   - react-native-background-upload (from `../node_modules/react-native-background-upload`)
   - "react-native-cameraroll (from `../node_modules/@react-native-camera-roll/camera-roll`)"
   - react-native-cloud-store (from `../node_modules/react-native-cloud-store`)
@@ -2354,6 +2376,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   React-microtasksnativemodule:
     :path: "../node_modules/react-native/ReactCommon/react/nativemodule/microtasks"
+  react-native-audio-waveform:
+    :path: "../node_modules/@simform_solutions/react-native-audio-waveform"
   react-native-background-upload:
     :path: "../node_modules/react-native-background-upload"
   react-native-cameraroll:
@@ -2570,6 +2594,7 @@ SPEC CHECKSUMS:
   React-logger: 80d87daf2f98bf95ab668b79062c1e0c3f0c2f8a
   React-Mapbuffer: acffb35a53a5f474ede09f082ac609b41aafab2e
   React-microtasksnativemodule: 71ca9282bce93b319218d75362c0d646b376eb43
+  react-native-audio-waveform: 5b39a697619a0a0e84f3a96e935606779b10362a
   react-native-background-upload: 627de1e663b94336abed4a84e88fbfa2d1b6ed7f
   react-native-cameraroll: 9c9027acae394d1248b7255bbc1cd8fbddd7ba8f
   react-native-cloud-store: cc96ca8d9a4400a1a7d8ceb33d2605bccc4986cf
