@@ -25,7 +25,7 @@ import {
   FileUploadDownloadContext,
 } from './useFileUploadDownload'
 
-import { AUDIO_WAVE_FORM_NUMBER_OF_CANDLES, IS_DEVICE_IOS } from '@2060/constants'
+import { AUDIO_WAVEFORM_NUMBER_OF_CANDLES, IS_DEVICE_IOS } from '@2060/constants'
 import { MediaDownloadState, MediaUploadState, UploadChunkTask, UploadTask } from '@2060/model'
 import {
   AUTOMATIC_MEDIA_DOWNLOAD_VALUES_PERSIST_KEY,
@@ -155,18 +155,15 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
     [automaticDownloadValues],
   )
 
-  const getAudioWaveForm = useCallback(async (filePath: string) => {
-    const waveFormData = await extractWaveformData({
+  const getAudioWaveform = useCallback(async (filePath: string) => {
+    const waveformData = await extractWaveformData({
       path: filePath,
       playerKey: `PlayerFor${filePath}`,
-      noOfSamples: AUDIO_WAVE_FORM_NUMBER_OF_CANDLES,
+      noOfSamples: AUDIO_WAVEFORM_NUMBER_OF_CANDLES,
     })
-    if (waveFormData.length) {
-      const [waveForm] = waveFormData
-      if (waveForm.length) {
-        log('siii mireee waveForm', JSON.stringify(waveForm))
-        return JSON.stringify(waveForm)
-      }
+    if (waveformData.length) {
+      const [waveform] = waveformData
+      if (waveform.length) return JSON.stringify(waveform)
     }
   }, [])
 
@@ -229,9 +226,9 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
           await deleteFile(downloadLocalFilePath)
         }
         if (mimeType.startsWith('audio')) {
-          const waveForm = await getAudioWaveForm(localFilePath)
-          if (waveForm) {
-            await agent.modules.media.setMetadata(mediaRecord.id, 'waveForm', waveForm)
+          const waveform = await getAudioWaveform(localFilePath)
+          if (waveform) {
+            await agent.modules.media.setMetadata(mediaRecord.id, 'waveform', waveform)
           }
         } else {
           // In case of images and videos, create a local preview for it to show in conversations
@@ -313,10 +310,10 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
 
       // In case of images and videos, create a local preview for it to show in conversations
       const localPreviewFilePath = await createLocalPreview({ mimeType, localFilePath })
-      let waveForm: string | undefined
+      let waveform: string | undefined
       const isAudioFile = mimeType.startsWith('audio')
       if (isAudioFile) {
-        waveForm = await getAudioWaveForm(localFilePath)
+        waveform = await getAudioWaveform(localFilePath)
       }
       const mediaRecordIds: string[] = []
       for (const connectionId of didcommConnectionIds) {
@@ -344,7 +341,7 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
           metadata: {
             localFilePath: `media/${fileName}`,
             localPreviewFilePath: localPreviewFilePath ? `media/previews/${fileName}.jpeg` : undefined,
-            ...(isAudioFile && { waveForm }),
+            ...(isAudioFile && { waveform }),
           },
         })
         mediaRecordIds.push(mediaRecord.id)

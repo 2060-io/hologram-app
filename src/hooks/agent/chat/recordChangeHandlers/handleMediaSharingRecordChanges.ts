@@ -145,7 +145,7 @@ function getChatEntrySpecificData(record: MediaSharingRecord) {
       ...baseMetadata,
       preview: mediaSharingItem.metadata?.preview as string | undefined,
       duration: mediaSharingItem.metadata?.duration as number | undefined,
-      waveForm: mediaSharingItem.metadata?.waveForm as string | undefined,
+      waveform: (record.metadata.get('waveform') as string) ?? undefined,
     } as VoiceNoteMetadata
   } else if (type === ChatEntryType.Link) {
     metadata = {

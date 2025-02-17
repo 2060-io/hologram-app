@@ -13,13 +13,13 @@ import { getMinutesAndSeconds } from '../utils'
 import getStyles from './styles'
 
 import { Text, Icon } from '@2060/components/common'
-import { AUDIO_WAVE_FORM_NUMBER_OF_CANDLES } from '@2060/constants'
+import { AUDIO_WAVEFORM_NUMBER_OF_CANDLES } from '@2060/constants'
 import { useMedia } from '@2060/hooks'
 import { useChat } from '@2060/hooks/agent'
 import { useMediaPlayer } from '@2060/hooks/agent/MediaPlayerProvider'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { ChatEntryRole, MediaUploadState, VoiceNoteMetadata } from '@2060/model'
-import { getFileSize, log, logWarn } from '@2060/utils'
+import { getFileSize, logWarn } from '@2060/utils'
 import { getFullLocalFilePath } from '@2060/utils/RNFS'
 
 export type VoiceNoteChatViewProps = {
@@ -32,14 +32,6 @@ export type VoiceNoteChatViewProps = {
   isLastMessage: boolean
 }
 
-const demoWave = [
-  0.03, 0, 0, 0.014434843324124813, 0.025381654500961304, 0.02908831089735031, 0.010474978014826775,
-  0.031525325030088425, 0.03802556172013283, 0.054438233375549316, 0.0473533533513546, 0.0759645476937294,
-  0.08928661048412323, 0.0960187241435051, 0.042750537395477295, 0.01234029047191143, 0.11999999731779099,
-  0.05464605242013931, 0.05238320678472519, 0.049764033406972885, 0.0340985469520092, 0.024181611835956573,
-  0.03596886247396469, 0.010423753410577774, 0.06310930848121643, 0.059396903961896896, 0.036251100897789,
-  0.05482695996761322, 0.06250418722629547, 0.099825474739074707,
-]
 let currentPlayingRef: React.RefObject<IWaveformRef> | undefined
 
 const VoiceNoteChatView = memo(
@@ -55,7 +47,7 @@ const VoiceNoteChatView = memo(
     const { stopPlayer } = useAudioPlayer()
     const theme = useTheme()
     const styles = getStyles(theme)
-    const { localFilePath, byteCount, duration, mediaUploadState, mediaDownloadState, waveForm } = metadata
+    const { localFilePath, byteCount, duration, mediaUploadState, mediaDownloadState, waveform } = metadata
     const durationTime = getMinutesAndSeconds(duration ?? 0)
     const isMediaUploadError =
       mediaUploadState === MediaUploadState.ErrorCreating ||
@@ -81,7 +73,7 @@ const VoiceNoteChatView = memo(
       mediaDownloadState,
       role,
     })
-    log('wafeform en el componente', waveForm)
+
     // hook to stop player when component unmounts (leaves screen) and its playing note voice
     useEffect(() => {
       return () => {
@@ -196,8 +188,8 @@ const VoiceNoteChatView = memo(
             <Waveform
               ref={ref}
               containerStyle={styles.waveFormContainer}
-              defaultWaveForm={waveForm ? JSON.parse(waveForm) : demoWave}
-              defaultNumberOfSamples={AUDIO_WAVE_FORM_NUMBER_OF_CANDLES}
+              defaultWaveForm={waveform ? JSON.parse(waveform) : []}
+              defaultNumberOfSamples={AUDIO_WAVEFORM_NUMBER_OF_CANDLES}
               mode="static"
               playbackSpeed={audioPlaybackSpeed}
               path={voiceNoteFilePath}
