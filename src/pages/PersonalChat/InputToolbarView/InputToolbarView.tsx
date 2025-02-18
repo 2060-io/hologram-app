@@ -126,23 +126,20 @@ const InputToolbarView = (props: Props) => {
   const onStopRecorder = async () => {
     clearInterval(recorderTimerRef.current)
     setIsRecordingVoiceNote(false)
+    setIsAutomaticRecording(false)
+    onCancelAnimation()
     const [path, duration] = await stopRecording()
     recordedAudioFilePath.current = path
     millisecondsRecorded.current = Number(duration)
-    onCancelAnimation()
   }
 
   const sendVoiceMessage = async () => {
     await onStopRecorder()
-    setIsAutomaticRecording(false)
-    onCancelAnimation()
     shareFileAndSend()
   }
 
   const cancelAudioRecording = async () => {
     await onStopRecorder()
-    setIsAutomaticRecording(false)
-    onCancelAnimation()
     await deleteFile(recordedAudioFilePath.current)
   }
 
