@@ -50,7 +50,7 @@ const InputToolbarView = (props: Props) => {
   const recorderTimerRef = useRef<ReturnType<typeof setInterval>>()
   const { t } = useTranslation()
   const [recordTime, setRecordTime] = useState(INITIAL_TIME_RECORDED)
-  const secondsRecorded = useRef(0)
+  const millisecondsRecorded = useRef(0)
   const [isAutomaticRecording, setIsAutomaticRecording] = useState(false)
   const recordedAudioFilePath = useRef('')
   const [valueTextInput, setValueTextInput] = useState('')
@@ -82,7 +82,7 @@ const InputToolbarView = (props: Props) => {
   }, [repliedMessage])
 
   const shareFileAndSend = async () => {
-    if (secondsRecorded.current < MINIMUM_AUDIO_DURATION) {
+    if (millisecondsRecorded.current < MINIMUM_AUDIO_DURATION) {
       toast({ message: t('chat.recordedAudioTooShort'), type: 'info' })
       return
     }
@@ -95,7 +95,7 @@ const InputToolbarView = (props: Props) => {
       size,
       path: recordedAudioFilePath.current,
       fileName: filename,
-      duration: secondsRecorded.current,
+      duration: millisecondsRecorded.current,
     })
   }
 
@@ -109,10 +109,10 @@ const InputToolbarView = (props: Props) => {
       setIsRecordingVoiceNote(true)
       startRecording()
       setRecordTime(INITIAL_TIME_RECORDED)
-      secondsRecorded.current = 0
+      millisecondsRecorded.current = 0
       recorderTimerRef.current = setInterval(() => {
-        secondsRecorded.current += RECORDER_UPDATE_FREQUENCY
-        setRecordTime(getMinutesAndSeconds(secondsRecorded.current))
+        millisecondsRecorded.current += RECORDER_UPDATE_FREQUENCY
+        setRecordTime(getMinutesAndSeconds(millisecondsRecorded.current))
       }, RECORDER_UPDATE_FREQUENCY)
       startAnimationRecord()
     }
@@ -128,7 +128,7 @@ const InputToolbarView = (props: Props) => {
     setIsRecordingVoiceNote(false)
     const [path, duration] = await stopRecording()
     recordedAudioFilePath.current = path
-    secondsRecorded.current = Number(duration)
+    millisecondsRecorded.current = Number(duration)
     onCancelAnimation()
   }
 
