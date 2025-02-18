@@ -32,6 +32,7 @@ import {
   checkMicrophonePermission,
   askMicrophonePermission,
 } from '@2060/utils/permissions'
+import { toast } from '@2060/utils/toast'
 
 const IconAnimated = Reanimated.createAnimatedComponent(Icon)
 
@@ -40,8 +41,9 @@ interface Props {
   showMediaOptions: boolean
 }
 
+const MINIMUM_AUDIO_DURATION = 1000
 const INITIAL_TIME_RECORDED = '00:00'
-const RECORDER_UPDATE_TIME = 1000
+const RECORDER_UPDATE_FREQUENCY = 1000
 
 const InputToolbarView = (props: Props) => {
   const { startRecording, stopRecording } = useAudioRecorder()
@@ -80,6 +82,10 @@ const InputToolbarView = (props: Props) => {
   }, [repliedMessage])
 
   const shareFileAndSend = async () => {
+    if (secondsRecorded.current < MINIMUM_AUDIO_DURATION) {
+      toast({ message: t('chat.recordedAudioTooShort'), type: 'info' })
+      return
+    }
     const { size } = await RNFS.stat(recordedAudioFilePath.current)
     const subType = 'm4a'
     const mime = `audio/${subType}`
@@ -105,9 +111,9 @@ const InputToolbarView = (props: Props) => {
       setRecordTime(INITIAL_TIME_RECORDED)
       secondsRecorded.current = 0
       recorderTimerRef.current = setInterval(() => {
-        secondsRecorded.current += RECORDER_UPDATE_TIME
+        secondsRecorded.current += RECORDER_UPDATE_FREQUENCY
         setRecordTime(getMinutesAndSeconds(secondsRecorded.current))
-      }, RECORDER_UPDATE_TIME)
+      }, RECORDER_UPDATE_FREQUENCY)
       startAnimationRecord()
     }
   }, [])

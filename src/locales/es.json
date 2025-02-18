@@ -159,7 +159,8 @@
       "eMRTDError": "Lo sentimos, hubo un problema leyendo el pasaporte. Por favor, inténtalo nuevamente.",
       "eMRTDTagNotValid": "Etiqueta no valida",
       "eMRTDMoreThanOneTagFound": "Se encontraron más de una etiqueta NFC. Por favor, presenta sólo una",
-      "eMRTDInvalidMRZKey": "El documento no corresponde a la MRZ previamente leída."
+      "eMRTDInvalidMRZKey": "El documento no corresponde a la MRZ previamente leída.",
+      "recordedAudioTooShort": "El audio es muy corto. Por favor, graba uno más largo"
     },
     "signUp": {
       "welcomeTitle": "Te damos la bienvenida a Hologram",
