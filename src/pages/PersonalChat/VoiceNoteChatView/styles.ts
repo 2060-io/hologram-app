@@ -16,7 +16,7 @@ export default (theme: AppTheme) =>
       alignItems: 'center',
     },
     waveFormContainer: {
-      height: 25,
+      height: 21,
       flex: 1,
     },
     containerButtonPlay: {
