@@ -810,7 +810,7 @@ index 270406b..8d36384 100644
 +                    width: '34%',
 +                    marginRight: '66%',
 +                    height: `${height}%`, // Adjust the height scale as needed
-+                    minHeight: 2,
++                    minHeight: 5,
 +                    borderRadius: 2,
                  },
 -            ] })));

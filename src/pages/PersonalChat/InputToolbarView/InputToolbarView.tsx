@@ -1,16 +1,7 @@
-import type { AudioSet } from 'react-native-audio-recorder-player'
-
-import { uuid } from '@credo-ts/core/build/utils/uuid'
+import { useAudioRecorder } from '@simform_solutions/react-native-audio-waveform/lib/hooks'
 import React, { useRef, useEffect, useState, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, Platform, TouchableOpacity } from 'react-native'
-import AudioRecorderPlayer, {
-  AudioEncoderAndroidType,
-  AudioSourceAndroidType,
-  AVModeIOSOption,
-  AVEncoderAudioQualityIOSType,
-  AVEncodingOption,
-} from 'react-native-audio-recorder-player'
+import { View, TouchableOpacity } from 'react-native'
 import * as RNFS from 'react-native-fs'
 import Reanimated, {
   useSharedValue,
@@ -24,6 +15,7 @@ import Reanimated, {
 
 import ComposerInput from '../ComposerInput'
 import RepliedMessageView from '../RepliedMessageView/RepliedMessageView'
+import { getMinutesAndSeconds } from '../utils'
 
 import { SendButton, AudioButton } from './components'
 import getStyles from './styles'
@@ -49,8 +41,11 @@ interface Props {
 }
 
 const INITIAL_TIME_RECORDED = '00:00'
+const RECORDER_UPDATE_TIME = 1000
 
 const InputToolbarView = (props: Props) => {
+  const { startRecording, stopRecording } = useAudioRecorder()
+  const recorderTimerRef = useRef<ReturnType<typeof setInterval>>()
   const { t } = useTranslation()
   const [recordTime, setRecordTime] = useState(INITIAL_TIME_RECORDED)
   const secondsRecorded = useRef(0)
@@ -58,7 +53,6 @@ const InputToolbarView = (props: Props) => {
   const recordedFile = useRef('')
   const [valueTextInput, setValueTextInput] = useState('')
   const textInputRef = useRef<TextInputForwardRefProps>(null)
-  const recorder = useRef(new AudioRecorderPlayer()).current
   const { setRepliedMessage, isRecordingVoiceNote, setIsRecordingVoiceNote, repliedMessage } = useChat()
   const { sendTextMessage, shareMediaToDidComm } = useChatActions()
   const { showMediaOptions, onShowMediaOptions } = props
@@ -71,16 +65,15 @@ const InputToolbarView = (props: Props) => {
 
   const shareFileAndSend = async () => {
     const { size } = await RNFS.stat(recordedFile.current)
-    const subType = Platform.OS === 'ios' ? 'm4a' : 'mp4'
+    const subType = 'm4a'
     const mime = `audio/${subType}`
     const filename = generateFileName(mime, subType)
-
     await shareMediaToDidComm({
       mime,
       size,
       path: recordedFile.current,
       fileName: filename,
-      duration: Math.floor(secondsRecorded.current),
+      duration: secondsRecorded.current,
     })
   }
 
@@ -91,28 +84,14 @@ const InputToolbarView = (props: Props) => {
       canRecord && setAutomaticRecording()
     }
     if (canRecord) {
-      const path = Platform.select({
-        ios: `${uuid()}.m4a`,
-        android: `${RNFS.CachesDirectoryPath}/${uuid()}.mp4`,
-      })
-      const audioSet: AudioSet = {
-        AudioEncoderAndroid: AudioEncoderAndroidType.AAC,
-        AudioSourceAndroid: AudioSourceAndroidType.MIC,
-        AVModeIOS: AVModeIOSOption.voicechat,
-        AVEncoderAudioQualityKeyIOS: AVEncoderAudioQualityIOSType.high,
-        AVFormatIDKeyIOS: AVEncodingOption.aac,
-      }
       setIsRecordingVoiceNote(true)
+      startRecording()
       setRecordTime(INITIAL_TIME_RECORDED)
       secondsRecorded.current = 0
-      const pathFile = await recorder.startRecorder(path, audioSet, false)
-      recorder.addRecordBackListener(({ isRecording: arpIsRecording, currentPosition }) => {
-        if (arpIsRecording || currentPosition) {
-          secondsRecorded.current = currentPosition
-          setRecordTime(recorder.mmssss(Math.floor(currentPosition)).slice(0, 5))
-        }
-      })
-      recordedFile.current = pathFile
+      recorderTimerRef.current = setInterval(() => {
+        secondsRecorded.current += RECORDER_UPDATE_TIME
+        setRecordTime(getMinutesAndSeconds(secondsRecorded.current))
+      }, RECORDER_UPDATE_TIME)
       startAnimationRecord()
     }
   }, [])
@@ -123,25 +102,27 @@ const InputToolbarView = (props: Props) => {
   }
 
   const onStopRecorder = async () => {
+    clearInterval(recorderTimerRef.current)
     setIsRecordingVoiceNote(false)
-    await recorder.stopRecorder()
-    recorder.removeRecordBackListener()
+    const [path, duration] = await stopRecording()
+    recordedFile.current = path
+    secondsRecorded.current = Number(duration)
     onCancelAnimation()
   }
 
-  const sendVoiceMessage = useCallback(async () => {
+  const sendVoiceMessage = async () => {
+    await onStopRecorder()
     setIsAutomaticRecording(false)
     onCancelAnimation()
-    await onStopRecorder()
     shareFileAndSend()
-  }, [recordedFile.current])
+  }
 
-  const cancelAudioRecording = useCallback(async () => {
+  const cancelAudioRecording = async () => {
+    await onStopRecorder()
     setIsAutomaticRecording(false)
     onCancelAnimation()
-    await onStopRecorder()
     await deleteFile(recordedFile.current)
-  }, [recordedFile.current])
+  }
 
   const startAnimationRecord = () => {
     animatedOpacity.value = withRepeat(
