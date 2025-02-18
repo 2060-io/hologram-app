@@ -809,8 +809,9 @@ index 270406b..8d36384 100644
 -                    borderRadius: candleWidth,
 +                    width: '34%',
 +                    marginRight: '66%',
++                    maxHeight: '100%',
 +                    height: `${height}%`, // Adjust the height scale as needed
-+                    minHeight: 5,
++                    minHeight: 3,
 +                    borderRadius: 2,
                  },
 -            ] })));
