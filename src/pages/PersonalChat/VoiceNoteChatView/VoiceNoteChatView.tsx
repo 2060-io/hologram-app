@@ -113,6 +113,7 @@ const VoiceNoteChatView = memo(
     }
 
     const onCurrentProgressChange = (currentProgress: number) => {
+      if (!currentProgress) return
       const playTimeFormatted = getMinutesAndSeconds(currentProgress)
       setPlayedTime(playTimeFormatted)
     }
@@ -157,7 +158,9 @@ const VoiceNoteChatView = memo(
       <View style={styles.container}>
         <View style={styles.subContainer}>
           <View style={styles.containerButtonPlay}>
-            {isDownloaded ? (
+            {isDownloading ? (
+              <ActivityIndicator color={theme.colors.white} />
+            ) : isDownloaded ? (
               isMediaUploadError ? (
                 isRetryingUpload ? (
                   <ActivityIndicator color={theme.colors.white} />
@@ -176,8 +179,6 @@ const VoiceNoteChatView = memo(
                   />
                 </TouchableOpacity>
               )
-            ) : isDownloading ? (
-              <ActivityIndicator color={theme.colors.white} />
             ) : (
               <TouchableOpacity onPress={downloadMedia}>
                 <Icon as="MaterialCommunityIcons" name="arrow-down" size={24} color={theme.colors.white} />
@@ -201,6 +202,10 @@ const VoiceNoteChatView = memo(
                 logWarn(`Error playing or loading voice note: ${error}`)
               }}
             />
+          ) : isDownloading ? (
+            <View style={styles.waveFormContainer}>
+              <ActivityIndicator color={theme.colors.green} style={{ alignSelf: 'center' }} />
+            </View>
           ) : null}
         </View>
         <View style={styles.footerContainer}>

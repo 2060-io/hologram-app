@@ -1,5 +1,5 @@
 diff --git a/node_modules/@simform_solutions/react-native-audio-waveform/lib/components/Waveform/Waveform.js b/node_modules/@simform_solutions/react-native-audio-waveform/lib/components/Waveform/Waveform.js
-index a8d8e7e..4960e32 100644
+index a8d8e7e..e51924c 100644
 --- a/node_modules/@simform_solutions/react-native-audio-waveform/lib/components/Waveform/Waveform.js
 +++ b/node_modules/@simform_solutions/react-native-audio-waveform/lib/components/Waveform/Waveform.js
 @@ -1,38 +1,89 @@
@@ -46,7 +46,7 @@ index a8d8e7e..4960e32 100644
 +import styles from "./WaveformStyles";
 +import { } from "./WaveformTypes";
  export const Waveform = forwardRef((props, ref) => {
-     const {
+     const { 
 -    // The maximum number of candles set in the waveform. Once this limit is reached, the oldest candle will be removed as a new one is added to the waveform.
 -    maxCandlesToRender = 300, mode, path, volume = 3, 
 -    // The playback speed of the audio player. A value of 1.0 represents normal playback speed.
@@ -700,6 +700,7 @@ index a8d8e7e..4960e32 100644
 +    );
  });
  //# sourceMappingURL=Waveform.js.map
+\ No newline at end of file
 diff --git a/node_modules/@simform_solutions/react-native-audio-waveform/lib/components/Waveform/WaveformTypes.d.ts b/node_modules/@simform_solutions/react-native-audio-waveform/lib/components/Waveform/WaveformTypes.d.ts
 index 56f4d0b..895a07d 100644
 --- a/node_modules/@simform_solutions/react-native-audio-waveform/lib/components/Waveform/WaveformTypes.d.ts
@@ -755,7 +756,7 @@ index 56f4d0b..895a07d 100644
 -export {};
 +export { };
 diff --git a/node_modules/@simform_solutions/react-native-audio-waveform/lib/components/WaveformCandle/WaveformCandle.js b/node_modules/@simform_solutions/react-native-audio-waveform/lib/components/WaveformCandle/WaveformCandle.js
-index 270406b..8d36384 100644
+index 270406b..297f837 100644
 --- a/node_modules/@simform_solutions/react-native-audio-waveform/lib/components/WaveformCandle/WaveformCandle.js
 +++ b/node_modules/@simform_solutions/react-native-audio-waveform/lib/components/WaveformCandle/WaveformCandle.js
 @@ -1,10 +1,20 @@
@@ -785,7 +786,7 @@ index 270406b..8d36384 100644
      const getWaveColor = () => {
          return {
              backgroundColor: waveColor ? waveColor : Colors.waveStickBackground,
-@@ -17,19 +27,21 @@ export const WaveformCandle = ({ index, amplitude, parentViewLayout, candleWidth
+@@ -17,19 +27,20 @@ export const WaveformCandle = ({ index, amplitude, parentViewLayout, candleWidth
                  : Colors.waveStickCompleteBackground,
          };
      };
@@ -807,10 +808,9 @@ index 270406b..8d36384 100644
 -                        candleHeightScale, // Adjust the height scale as needed
 -                    minHeight: candleWidth,
 -                    borderRadius: candleWidth,
-+                    width: '34%',
-+                    marginRight: '66%',
++                    width: 2,
 +                    height: `${height}%`, // Adjust the height scale as needed
-+                    minHeight: 2,
++                    minHeight: 4,
 +                    borderRadius: 2,
                  },
 -            ] })));
@@ -819,6 +819,7 @@ index 270406b..8d36384 100644
 +    );
  };
  //# sourceMappingURL=WaveformCandle.js.map
+\ No newline at end of file
 diff --git a/node_modules/@simform_solutions/react-native-audio-waveform/lib/components/WaveformCandle/WaveformCandleStyles.js b/node_modules/@simform_solutions/react-native-audio-waveform/lib/components/WaveformCandle/WaveformCandleStyles.js
 index 27f6c36..a428dce 100644
 --- a/node_modules/@simform_solutions/react-native-audio-waveform/lib/components/WaveformCandle/WaveformCandleStyles.js
