@@ -47,7 +47,7 @@ const RECORDER_UPDATE_FREQUENCY = 1000
 
 const InputToolbarView = (props: Props) => {
   const { startRecording, stopRecording } = useAudioRecorder()
-  const recorderTimerRef = useRef<ReturnType<typeof setInterval>>()
+  const recorderTimerRef = useRef<ReturnType<typeof setTimeout>>()
   const { t } = useTranslation()
   const [recordTime, setRecordTime] = useState(INITIAL_TIME_RECORDED)
   const millisecondsRecorded = useRef(0)
@@ -99,6 +99,21 @@ const InputToolbarView = (props: Props) => {
     })
   }
 
+  const startRecordingVoiceTimer = () => {
+    setRecordTime(INITIAL_TIME_RECORDED)
+    millisecondsRecorded.current = 0
+    let lastTime = Date.now()
+    const tick = () => {
+      const now = Date.now()
+      const diffInMs = now - lastTime
+      lastTime = now
+      millisecondsRecorded.current += diffInMs
+      setRecordTime(getMinutesAndSeconds(millisecondsRecorded.current))
+      recorderTimerRef.current = setTimeout(tick, RECORDER_UPDATE_FREQUENCY)
+    }
+    recorderTimerRef.current = setTimeout(tick, RECORDER_UPDATE_FREQUENCY)
+  }
+
   const startRecordVoice = useCallback(async () => {
     let canRecord = await checkMicrophonePermission()
     if (!canRecord) {
@@ -108,12 +123,7 @@ const InputToolbarView = (props: Props) => {
     if (canRecord) {
       setIsRecordingVoiceNote(true)
       startRecording()
-      setRecordTime(INITIAL_TIME_RECORDED)
-      millisecondsRecorded.current = 0
-      recorderTimerRef.current = setInterval(() => {
-        millisecondsRecorded.current += RECORDER_UPDATE_FREQUENCY
-        setRecordTime(getMinutesAndSeconds(millisecondsRecorded.current))
-      }, RECORDER_UPDATE_FREQUENCY)
+      startRecordingVoiceTimer()
       startAnimationRecord()
     }
   }, [])
@@ -124,7 +134,7 @@ const InputToolbarView = (props: Props) => {
   }
 
   const onStopRecorder = async () => {
-    clearInterval(recorderTimerRef.current)
+    clearTimeout(recorderTimerRef.current)
     setIsRecordingVoiceNote(false)
     setIsAutomaticRecording(false)
     onCancelAnimation()
