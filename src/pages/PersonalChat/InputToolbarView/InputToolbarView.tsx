@@ -26,6 +26,7 @@ import { useChatActions } from '@2060/hooks'
 import { useChat } from '@2060/hooks/agent'
 import { generateFileName } from '@2060/hooks/media/files'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
+import { logWarn } from '@2060/utils'
 import { deleteFile } from '@2060/utils/RNFS'
 import {
   handleMicrophonePermission,
@@ -122,7 +123,7 @@ const InputToolbarView = (props: Props) => {
     }
     if (canRecord) {
       setIsRecordingVoiceNote(true)
-      startRecording()
+      startRecording().catch(error => logWarn(`Error starting recording note voice: ${error}`))
       startRecordingVoiceTimer()
       startAnimationRecord()
     }
@@ -138,9 +139,13 @@ const InputToolbarView = (props: Props) => {
     setIsRecordingVoiceNote(false)
     setIsAutomaticRecording(false)
     onCancelAnimation()
-    const [path, duration] = await stopRecording()
-    recordedAudioFilePath.current = path
-    millisecondsRecorded.current = Number(duration)
+    try {
+      const [path, duration] = await stopRecording()
+      recordedAudioFilePath.current = path
+      millisecondsRecorded.current = Number(duration)
+    } catch (e) {
+      logWarn(`Error stopping recording note voice: ${e}`)
+    }
   }
 
   const sendVoiceMessage = async () => {
