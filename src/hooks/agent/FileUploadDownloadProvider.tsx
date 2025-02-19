@@ -25,7 +25,7 @@ import {
   FileUploadDownloadContext,
 } from './useFileUploadDownload'
 
-import { AUDIO_WAVEFORM_NUMBER_OF_CANDLES, IS_DEVICE_IOS } from '@2060/constants'
+import { IS_DEVICE_IOS } from '@2060/constants'
 import { MediaDownloadState, MediaUploadState, UploadChunkTask, UploadTask } from '@2060/model'
 import {
   AUTOMATIC_MEDIA_DOWNLOAD_VALUES_PERSIST_KEY,
@@ -42,6 +42,7 @@ import {
 } from '@2060/utils/RNFS'
 import { decryptFile, encryptFile } from '@2060/utils/ciphering'
 
+const AUDIO_WAVEFORM_NUMBER_OF_CANDLES = 30
 const { Pending, Uploading, Done, Canceled, ErrorCreating, ErrorUploading } = MediaUploadState
 
 const matchAutomaticDownloadTypes = (value: AutomaticDownloadTypes): value is AutomaticDownloadTypes =>

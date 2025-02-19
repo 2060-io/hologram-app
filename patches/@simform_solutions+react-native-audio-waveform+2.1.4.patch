@@ -1,0 +1,188 @@
+diff --git a/node_modules/@simform_solutions/react-native-audio-waveform/lib/components/Waveform/Waveform.js b/node_modules/@simform_solutions/react-native-audio-waveform/lib/components/Waveform/Waveform.js
+index 9d19a80..db93b72 100644
+--- a/node_modules/@simform_solutions/react-native-audio-waveform/lib/components/Waveform/Waveform.js
++++ b/node_modules/@simform_solutions/react-native-audio-waveform/lib/components/Waveform/Waveform.js
+@@ -4,7 +4,7 @@ import head from 'lodash/head';
+ import isEmpty from 'lodash/isEmpty';
+ import isNil from 'lodash/isNil';
+ import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState, } from 'react';
+-import { PanResponder, ScrollView, View, } from 'react-native';
++import { PanResponder, View, } from 'react-native';
+ import { DurationType, FinishMode, PermissionStatus, playbackSpeedThreshold, PlayerState, RecorderState, UpdateFrequency, } from '../../constants';
+ import { useAudioPermission, useAudioPlayer, useAudioRecorder, } from '../../hooks';
+ import { WaveformCandle } from '../WaveformCandle';
+@@ -15,22 +15,23 @@ export const Waveform = forwardRef((props, ref) => {
+     // The maximum number of candles set in the waveform. Once this limit is reached, the oldest candle will be removed as a new one is added to the waveform.
+     maxCandlesToRender = 300, mode, path, volume = 3, 
+     // The playback speed of the audio player. A value of 1.0 represents normal playback speed.
+-    playbackSpeed = 1.0, candleSpace = 2, candleWidth = 5, containerStyle = {}, waveColor, scrubColor, onPlayerStateChange, onRecorderStateChange, onPanStateChange = () => { }, onError = (_error) => { }, onCurrentProgressChange = () => { }, candleHeightScale = 3, onChangeWaveformLoadState = (_state) => { }, } = props;
++    playbackSpeed = 1.0, candleSpace = 2, candleWidth = 5, containerStyle = {}, waveColor, scrubColor, onPlayerStateChange, onRecorderStateChange, onPanStateChange = () => { }, onError = (_error) => { }, onCurrentProgressChange = () => { }, candleHeightScale = 3, onChangeWaveformLoadState = (_state) => { }, defaultWaveForm } = props;
+     const viewRef = useRef(null);
+     const scrollRef = useRef(null);
+     const isLayoutCalculated = useRef(false);
+     const isAutoPaused = useRef(false);
+     const isAudioPlaying = useRef(false);
+-    const [waveform, setWaveform] = useState([]);
++    const [waveform, setWaveform] = useState(defaultWaveForm ?? []);
+     const [viewLayout, setViewLayout] = useState(null);
+     const [seekPosition, setSeekPosition] = useState(null);
+     const [songDuration, setSongDuration] = useState(0);
++    const songDurationRef = useRef(0)
+     const [noOfSamples, setNoOfSamples] = useState(0);
+     const [currentProgress, setCurrentProgress] = useState(0);
+     const [panMoving, setPanMoving] = useState(false);
+     const [playerState, setPlayerState] = useState(PlayerState.stopped);
+     const [recorderState, setRecorderState] = useState(RecorderState.stopped);
+-    const [isWaveformExtracted, setWaveformExtracted] = useState(false);
++    const [isWaveformExtracted, setWaveformExtracted] = useState(Boolean(defaultWaveForm?.length));
+     const audioSpeed = playbackSpeed > playbackSpeedThreshold ? 1.0 : playbackSpeed;
+     const { extractWaveformData, preparePlayer, getDuration, seekToPlayer, playPlayer, stopPlayer, pausePlayer, onCurrentDuration, onDidFinishPlayingAudio, onCurrentRecordingWaveformData, setPlaybackSpeed, markPlayerAsUnmounted, } = useAudioPlayer();
+     const { startRecording, stopRecording, pauseRecording, resumeRecording } = useAudioRecorder();
+@@ -60,7 +61,7 @@ export const Waveform = forwardRef((props, ref) => {
+                 const prepare = await preparePlayer({
+                     path,
+                     playerKey: `PlayerFor${path}`,
+-                    updateFrequency: UpdateFrequency.medium,
++                    updateFrequency: UpdateFrequency.high,
+                     volume: volume,
+                     progress,
+                 });
+@@ -82,7 +83,8 @@ export const Waveform = forwardRef((props, ref) => {
+             });
+             if (!isNil(duration)) {
+                 const audioDuration = Number(duration);
+-                setSongDuration(audioDuration > 0 ? audioDuration : 0);
++                setSongDuration(audioDuration);
++                songDurationRef.current = audioDuration;
+                 return Promise.resolve(audioDuration);
+             }
+             else {
+@@ -331,10 +333,14 @@ export const Waveform = forwardRef((props, ref) => {
+             if (viewLayout?.x === 0 && viewLayout?.y === 0) {
+                 isLayoutCalculated.current = false;
+             }
+-            setNoOfSamples(getNumberOfSamples);
+-            if (mode === 'static') {
+-                getAudioWaveFormForPath(getNumberOfSamples);
+-            }
++            if (!defaultWaveForm.length) setNoOfSamples(getNumberOfSamples);
++            if (mode === "static") {
++                if (defaultWaveForm) {
++                    preparePlayerAndGetDuration();
++                } else {
++                    getAudioWaveFormForPath(getNumberOfSamples);
++                }
++             }
+         }
+         // eslint-disable-next-line react-hooks/exhaustive-deps
+     }, [viewLayout?.width, mode, candleWidth, candleSpace]);
+@@ -373,6 +379,7 @@ export const Waveform = forwardRef((props, ref) => {
+         const tracePlayerState = onDidFinishPlayingAudio(async (data) => {
+             if (data.playerKey === `PlayerFor${path}`) {
+                 if (data.finishType === FinishMode.stop) {
++                    setCurrentProgress(songDurationRef.current);
+                     stopPlayerAction();
+                 }
+                 else if (data.finishType === FinishMode.pause) {
+@@ -511,13 +518,11 @@ export const Waveform = forwardRef((props, ref) => {
+     }));
+     return (React.createElement(View, { style: [styles.waveformContainer, containerStyle] },
+         React.createElement(View, { ref: viewRef, style: styles.waveformInnerContainer, onLayout: calculateLayout, ...(mode === 'static' ? panResponder.panHandlers : {}) },
+-            React.createElement(ScrollView, { horizontal: true, ref: scrollRef, style: styles.scrollContainer, scrollEnabled: mode === 'live' }, waveform?.map?.((amplitude, indexCandle) => (React.createElement(WaveformCandle, { key: indexCandle, index: indexCandle, amplitude: amplitude, parentViewLayout: viewLayout, candleWidth,
+-                candleSpace,
+-                noOfSamples,
++            waveform?.map?.((amplitude, indexCandle) => (React.createElement(WaveformCandle, { key: indexCandle, index: indexCandle, amplitude: amplitude,
++                noOfSamples: waveform?.length,
+                 songDuration,
+                 currentProgress,
+                 waveColor,
+-                scrubColor,
+-                candleHeightScale })))))));
++                scrubColor }))))));
+ });
+ //# sourceMappingURL=Waveform.js.map
+\ No newline at end of file
+diff --git a/node_modules/@simform_solutions/react-native-audio-waveform/lib/components/Waveform/WaveformTypes.d.ts b/node_modules/@simform_solutions/react-native-audio-waveform/lib/components/Waveform/WaveformTypes.d.ts
+index d4a6f68..6a854f6 100644
+--- a/node_modules/@simform_solutions/react-native-audio-waveform/lib/components/Waveform/WaveformTypes.d.ts
++++ b/node_modules/@simform_solutions/react-native-audio-waveform/lib/components/Waveform/WaveformTypes.d.ts
+@@ -2,14 +2,13 @@ import type { StyleProp, ViewStyle } from 'react-native';
+ import type { FinishMode, PlayerState, RecorderState } from '../../constants';
+ import type { IStartRecording } from '../../types';
+ type StaticOrLive = 'static' | 'live';
+-export type PlaybackSpeedType = 1.0 | 1.5 | 2.0;
++export type PlaybackSpeedType = number;
+ interface BaseWaveform {
+     candleSpace?: number;
+     candleWidth?: number;
+     containerStyle?: StyleProp<ViewStyle>;
+     waveColor?: string;
+     mode: StaticOrLive;
+-    candleHeightScale?: number;
+ }
+ export interface StaticWaveform extends BaseWaveform {
+     mode: 'static';
+@@ -22,6 +21,7 @@ export interface StaticWaveform extends BaseWaveform {
+     onCurrentProgressChange?: (currentProgress: number, songDuration: number) => void;
+     onChangeWaveformLoadState?: (state: boolean) => void;
+     playbackSpeed?: PlaybackSpeedType;
++    defaultWaveForm?: number[];
+ }
+ export interface LiveWaveform extends BaseWaveform {
+     mode: 'live';
+diff --git a/node_modules/@simform_solutions/react-native-audio-waveform/lib/components/WaveformCandle/WaveformCandle.js b/node_modules/@simform_solutions/react-native-audio-waveform/lib/components/WaveformCandle/WaveformCandle.js
+index 270406b..b7e2988 100644
+--- a/node_modules/@simform_solutions/react-native-audio-waveform/lib/components/WaveformCandle/WaveformCandle.js
++++ b/node_modules/@simform_solutions/react-native-audio-waveform/lib/components/WaveformCandle/WaveformCandle.js
+@@ -2,9 +2,11 @@ import React from 'react';
+ import { View } from 'react-native';
+ import { Colors } from '../../theme';
+ import styles from './WaveformCandleStyles';
+-export const WaveformCandle = ({ index, amplitude, parentViewLayout, candleWidth, candleSpace, noOfSamples = 0, songDuration = 1, currentProgress = 0, waveColor, scrubColor, candleHeightScale, }) => {
+-    const maxHeight = (parentViewLayout?.height ?? 0) - 10;
++export const WaveformCandle = ({ index, amplitude, noOfSamples = 0, songDuration = 1, currentProgress = 0, waveColor, scrubColor, }) => {
++    const width = `${100 / noOfSamples}%`;
++    const height = (isNaN(amplitude) ? 0 : amplitude) * 1000;
+     const completedIndex = (currentProgress / songDuration) * noOfSamples;
++    const isCompleted = completedIndex >= index && currentProgress !== 0
+     const getWaveColor = () => {
+         return {
+             backgroundColor: waveColor ? waveColor : Colors.waveStickBackground,
+@@ -17,18 +19,14 @@ export const WaveformCandle = ({ index, amplitude, parentViewLayout, candleWidth
+                 : Colors.waveStickCompleteBackground,
+         };
+     };
+-    return (React.createElement(View, { key: index, style: styles.candleContainer },
++    return (React.createElement(View, { key: index, style: [styles.candleContainer, { width }]},
+         React.createElement(View, { style: [
+-                completedIndex > index ? getScrubColor() : getWaveColor(),
++                isCompleted ? getScrubColor() : getWaveColor(),
+                 {
+-                    width: candleWidth,
+-                    marginRight: candleSpace,
+-                    maxHeight,
+-                    height: (isNaN(amplitude) ? 0 : amplitude) *
+-                        maxHeight *
+-                        candleHeightScale, // Adjust the height scale as needed
+-                    minHeight: candleWidth,
+-                    borderRadius: candleWidth,
++                    width: 2,
++                    height: `${height}%`, // Adjust the height scale as needed
++                    minHeight: 4,
++                    borderRadius: 2,
+                 },
+             ] })));
+ };
+diff --git a/node_modules/@simform_solutions/react-native-audio-waveform/lib/components/WaveformCandle/WaveformCandleStyles.js b/node_modules/@simform_solutions/react-native-audio-waveform/lib/components/WaveformCandle/WaveformCandleStyles.js
+index 27f6c36..a428dce 100644
+--- a/node_modules/@simform_solutions/react-native-audio-waveform/lib/components/WaveformCandle/WaveformCandleStyles.js
++++ b/node_modules/@simform_solutions/react-native-audio-waveform/lib/components/WaveformCandle/WaveformCandleStyles.js
+@@ -1,7 +1,7 @@
+ import { StyleSheet } from 'react-native';
+ import { Colors } from '../../theme';
+ const styles = StyleSheet.create({
+-    candleContainer: { justifyContent: 'center' },
++    candleContainer: { justifyContent: 'center', height: '100%' },
+     waveformCandle: { backgroundColor: Colors.waveStickBackground },
+     waveformCandleCompleted: {
+         backgroundColor: Colors.waveStickCompleteBackground,

@@ -13,7 +13,6 @@ import { getMinutesAndSeconds } from '../utils'
 import getStyles from './styles'
 
 import { Text, Icon } from '@2060/components/common'
-import { AUDIO_WAVEFORM_NUMBER_OF_CANDLES } from '@2060/constants'
 import { useMedia } from '@2060/hooks'
 import { useChat } from '@2060/hooks/agent'
 import { useMediaPlayer } from '@2060/hooks/agent/MediaPlayerProvider'
@@ -130,6 +129,12 @@ const VoiceNoteChatView = memo(
         await ref.current?.startPlayer({
           finishMode: FinishMode.stop,
         })
+
+        // If the player took too much time to initialize and another player
+        // started instead we pause the former one!
+        if (currentPlayingRef?.current?.playerKey !== ref?.current?.playerKey) {
+          await ref?.current?.pausePlayer()
+        }
       }
     }
 
@@ -190,7 +195,6 @@ const VoiceNoteChatView = memo(
               ref={ref}
               containerStyle={styles.waveFormContainer}
               defaultWaveForm={waveform ? JSON.parse(waveform) : []}
-              defaultNumberOfSamples={AUDIO_WAVEFORM_NUMBER_OF_CANDLES}
               mode="static"
               playbackSpeed={audioPlaybackSpeed}
               path={voiceNoteFilePath}
