@@ -6,6 +6,7 @@ import {
   useAudioPlayer,
 } from '@simform_solutions/react-native-audio-waveform'
 import React, { memo, useState, useEffect, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { View, TouchableOpacity, ActivityIndicator, ViewStyle } from 'react-native'
 
 import { getMinutesAndSeconds } from '../utils'
@@ -43,6 +44,7 @@ const VoiceNoteChatView = memo(
     previousMessageId,
     isLastMessage,
   }: VoiceNoteChatViewProps) => {
+    const { t } = useTranslation()
     const { stopPlayer } = useAudioPlayer()
     const theme = useTheme()
     const styles = getStyles(theme)
@@ -206,11 +208,13 @@ const VoiceNoteChatView = memo(
                 logWarn(`Error playing or loading voice note: ${error}`)
               }}
             />
-          ) : isDownloading ? (
-            <View style={styles.waveFormContainer}>
-              <ActivityIndicator color={theme.colors.green} style={{ alignSelf: 'center' }} />
+          ) : (
+            <View style={styles.noWaveFormContainer}>
+              <Text typography="EuclidCircularA-Regular" style={{ fontSize: theme.fontSize.sm }}>
+                {t('preview.voiceNote')}
+              </Text>
             </View>
-          ) : null}
+          )}
         </View>
         <View style={styles.footerContainer}>
           <View style={styles.footerSubContainer}>
