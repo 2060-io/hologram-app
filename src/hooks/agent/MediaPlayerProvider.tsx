@@ -1,8 +1,9 @@
 import { PlayerState } from '@simform_solutions/react-native-audio-waveform'
 import * as React from 'react'
-import { createContext, useContext, useState, useCallback, useRef } from 'react'
+import { createContext, useContext, useState, useCallback, useRef, useEffect } from 'react'
 
 import { useScreenLock } from '../providers/ScreenLockProvider'
+import { useVideoCallContext } from '../providers/useVideoCallContext'
 
 import { LightboxModal } from '@2060/components'
 import { ChatEntryMessage } from '@2060/pages/PersonalChat/ChatMessage/Props'
@@ -52,6 +53,7 @@ const MIN_AUDIO_PLAYBACK_SPEED = 0.5
 const DEFAULT_AUDIO_PLAYBACK_SPEED = 1
 
 export const MediaPlayerProvider: React.FC<React.PropsWithChildren<Props>> = ({ children }) => {
+  const { isInCall } = useVideoCallContext()
   const { forceDisableScreenLock } = useScreenLock()
   const currentAudioCallback = useRef<Callback>()
   const playingAudioInfo = useRef<PlayingAudioInfo>()
@@ -61,6 +63,17 @@ export const MediaPlayerProvider: React.FC<React.PropsWithChildren<Props>> = ({ 
   const [showControl, setShowControl] = useState(true)
   const [videoState, setVideoState] = useState<VideoProps | undefined>()
 
+  // hook to pause audio when app call is in progress
+  useEffect(() => {
+    if (isInCall) pauseAudioIfItIsPlaying()
+  }, [isInCall])
+
+  const pauseAudioIfItIsPlaying = useCallback(async () => {
+    if (playingAudioInfo.current?.state === PlayerState.playing) {
+      await currentAudioCallback.current?.()
+    }
+  }, [])
+
   const changeAudioPlaybackSpeed = useCallback(async () => {
     const newPlaybackSpeed =
       audioPlaybackSpeed === MAX_AUDIO_PLAYBACK_SPEED ? MIN_AUDIO_PLAYBACK_SPEED : audioPlaybackSpeed + 0.5
@@ -69,9 +82,7 @@ export const MediaPlayerProvider: React.FC<React.PropsWithChildren<Props>> = ({ 
 
   const playVideo = useCallback(
     async (newVideoProps: VideoProps) => {
-      if (playingAudioInfo.current?.state === PlayerState.playing) {
-        await currentAudioCallback.current?.()
-      }
+      await pauseAudioIfItIsPlaying()
       setRenderVideoPlayer(true)
       setVideoState(newVideoProps)
     },
