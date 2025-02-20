@@ -123,7 +123,10 @@ const InputToolbarView = (props: Props) => {
     }
     if (canRecord) {
       setIsRecordingVoiceNote(true)
-      startRecording().catch(error => logWarn(`Error starting recording note voice: ${error}`))
+      startRecording({
+        sampleRate: 11025, // A quarter of the standard value (44100)
+        bitRate: 32000, // A quarter of the standard value (128000)
+      }).catch(error => logWarn(`Error starting recording note voice: ${error}`))
       startRecordingVoiceTimer()
       startAnimationRecord()
     }
