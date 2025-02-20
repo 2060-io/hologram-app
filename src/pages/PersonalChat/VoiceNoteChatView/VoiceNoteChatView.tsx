@@ -220,7 +220,7 @@ const VoiceNoteChatView = memo(
           <View style={styles.footerSubContainer}>
             {isDownloaded ? (
               <Text typography="EuclidCircularA-Regular" style={{ ...styles.txtCounter, width: 30 }}>
-                {playerState !== PlayerState.playing ? durationTime : playedTime}
+                {playerState === PlayerState.stopped ? durationTime : playedTime}
               </Text>
             ) : (
               byteCount && (
