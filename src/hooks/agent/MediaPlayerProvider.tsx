@@ -1,6 +1,6 @@
-import { PlayerState, useAudioPlayer } from '@simform_solutions/react-native-audio-waveform'
+import { PlayerState } from '@simform_solutions/react-native-audio-waveform'
 import * as React from 'react'
-import { createContext, useContext, useState, useCallback } from 'react'
+import { createContext, useContext, useState, useCallback, useRef } from 'react'
 
 import { useScreenLock } from '../providers/ScreenLockProvider'
 
@@ -9,6 +9,8 @@ import { ChatEntryMessage } from '@2060/pages/PersonalChat/ChatMessage/Props'
 import LightboxHeader from '@2060/pages/PersonalChat/ImageChatView/LightboxHeader'
 import { MediaInfo } from '@2060/pages/PersonalChat/PersonalChatProps'
 import VideoPlayer from '@2060/pages/PersonalChat/VideoChatView/VideoPlayer'
+
+type Callback = () => Promise<void>
 
 interface Props {
   children: React.ReactNode
@@ -19,8 +21,9 @@ type MediaPlayerContextProps = {
   changeAudioPlaybackSpeed: () => Promise<void>
   playVideo(newVideoProps: VideoProps): void
   audioMessageIdFinished: string | undefined
-  updatePlayingAudioInfo: (newState: PlayerState, voiceNoteFilePath: string) => void
+  updatePlayingAudioInfo: (newState: PlayerState, voiceNoteFilePath: string, callBack: Callback) => void
   updateAudioMessageIdFinished: (newAudioMessageId: string | undefined) => void
+  playingAudioInfo?: PlayingAudioInfo
 }
 
 const MediaPlayerContext = createContext<MediaPlayerContextProps | undefined>(undefined)
@@ -49,9 +52,9 @@ const MIN_AUDIO_PLAYBACK_SPEED = 0.5
 const DEFAULT_AUDIO_PLAYBACK_SPEED = 1
 
 export const MediaPlayerProvider: React.FC<React.PropsWithChildren<Props>> = ({ children }) => {
-  const { pausePlayer } = useAudioPlayer()
   const { forceDisableScreenLock } = useScreenLock()
-  const [playingAudioInfo, setPlayingAudioInfo] = useState<PlayingAudioInfo>()
+  const currentAudioCallback = useRef<Callback>()
+  const playingAudioInfo = useRef<PlayingAudioInfo>()
   const [audioMessageIdFinished, setAudioMessageIdFinished] = useState<string>()
   const [audioPlaybackSpeed, setAudioPlaybackSpeed] = useState(DEFAULT_AUDIO_PLAYBACK_SPEED)
   const [renderVideoPlayer, setRenderVideoPlayer] = useState(false)
@@ -66,8 +69,8 @@ export const MediaPlayerProvider: React.FC<React.PropsWithChildren<Props>> = ({ 
 
   const playVideo = useCallback(
     async (newVideoProps: VideoProps) => {
-      if (playingAudioInfo?.state === PlayerState.playing) {
-        await pausePlayer({ playerKey: `PlayerFor${playingAudioInfo.voiceNoteFilePath}` })
+      if (playingAudioInfo.current?.state === PlayerState.playing) {
+        await currentAudioCallback.current?.()
       }
       setRenderVideoPlayer(true)
       setVideoState(newVideoProps)
@@ -75,11 +78,15 @@ export const MediaPlayerProvider: React.FC<React.PropsWithChildren<Props>> = ({ 
     [playingAudioInfo],
   )
 
-  const updatePlayingAudioInfo = useCallback((newState: PlayerState, voiceNoteFilePath: string) => {
-    const newInfo = newState === PlayerState.stopped ? undefined : { state: newState, voiceNoteFilePath }
-    setPlayingAudioInfo(newInfo)
-    forceDisableScreenLock(newState === PlayerState.playing)
-  }, [])
+  const updatePlayingAudioInfo = useCallback(
+    (newState: PlayerState, voiceNoteFilePath: string, callback: Callback) => {
+      currentAudioCallback.current = callback
+      const newInfo = newState === PlayerState.stopped ? undefined : { state: newState, voiceNoteFilePath }
+      playingAudioInfo.current = newInfo
+      forceDisableScreenLock(newState === PlayerState.playing)
+    },
+    [],
+  )
 
   const updateAudioMessageIdFinished = useCallback((newAudioMessageId: string | undefined) => {
     setAudioMessageIdFinished(newAudioMessageId)

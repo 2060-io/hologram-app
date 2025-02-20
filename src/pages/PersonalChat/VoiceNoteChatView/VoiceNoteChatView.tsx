@@ -103,7 +103,7 @@ const VoiceNoteChatView = memo(
         updateAudioMessageIdFinished(isLastMessage ? undefined : chatEntryId)
       }
       playerStateAux.current = playerState
-      updatePlayingAudioInfo(playerState, voiceNoteFilePath!)
+      updatePlayingAudioInfo(playerState, voiceNoteFilePath!, pausePlayer)
     }, [playerState])
 
     const onPlayerStateChange = (newState: PlayerState) => {
