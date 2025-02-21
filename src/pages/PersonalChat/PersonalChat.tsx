@@ -146,7 +146,7 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
   // listener to stop all players and extractors of audios
   // when component unmounts (leaves screen) to free up the maximum possible resources
   useEffect(() => {
-    const unsubscribe = navigation.addListener('beforeRemove', async () => {
+    const unsubscribe = navigation.addListener('beforeRemove', () => {
       stopPlayersAndExtractors()
     })
     return unsubscribe

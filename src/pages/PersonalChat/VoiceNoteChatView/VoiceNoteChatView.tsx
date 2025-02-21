@@ -199,7 +199,7 @@ const VoiceNoteChatView = memo(
             />
           ) : (
             <View style={styles.noWaveFormContainer}>
-              <Text typography="EuclidCircularA-Regular" style={{ fontSize: theme.fontSize.sm }}>
+              <Text typography="EuclidCircularA-Regular" style={styles.noWaveFormText}>
                 {t('preview.voiceNote')}
               </Text>
             </View>

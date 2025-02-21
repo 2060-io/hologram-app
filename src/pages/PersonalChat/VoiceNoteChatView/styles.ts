@@ -58,4 +58,8 @@ export default (theme: AppTheme) =>
       justifyContent: 'center',
       alignItems: 'center',
     },
+    noWaveFormText: {
+      fontSize: theme.fontSize.sm,
+      color: theme.colors.primaryText,
+    },
   })
