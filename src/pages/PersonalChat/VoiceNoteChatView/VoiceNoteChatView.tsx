@@ -3,7 +3,6 @@ import {
   IWaveformRef,
   PlayerState,
   Waveform,
-  useAudioPlayer,
 } from '@simform_solutions/react-native-audio-waveform'
 import React, { memo, useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -45,7 +44,6 @@ const VoiceNoteChatView = memo(
     isLastMessage,
   }: VoiceNoteChatViewProps) => {
     const { t } = useTranslation()
-    const { stopPlayer } = useAudioPlayer()
     const theme = useTheme()
     const styles = getStyles(theme)
     const { localFilePath, byteCount, duration, mediaUploadState, mediaDownloadState, waveform } = metadata
@@ -74,15 +72,6 @@ const VoiceNoteChatView = memo(
       mediaDownloadState,
       role,
     })
-
-    // hook to stop player when component unmounts (leaves screen) and its playing note voice
-    useEffect(() => {
-      return () => {
-        if (playerStateAux.current === PlayerState.playing) {
-          stopPlayer({ playerKey: `PlayerFor${voiceNoteFilePath}` })
-        }
-      }
-    }, [])
 
     // hook to determine if note voice should autoplay
     useEffect(() => {
