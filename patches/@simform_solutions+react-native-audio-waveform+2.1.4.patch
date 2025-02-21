@@ -73,6 +73,66 @@ index 9754d2c..08fbe57 100644
              }
          }
      }
+diff --git a/node_modules/@simform_solutions/react-native-audio-waveform/android/src/main/java/com/audiowaveform/AudioWaveformModule.kt b/node_modules/@simform_solutions/react-native-audio-waveform/android/src/main/java/com/audiowaveform/AudioWaveformModule.kt
+index 1266638..b7e1516 100644
+--- a/node_modules/@simform_solutions/react-native-audio-waveform/android/src/main/java/com/audiowaveform/AudioWaveformModule.kt
++++ b/node_modules/@simform_solutions/react-native-audio-waveform/android/src/main/java/com/audiowaveform/AudioWaveformModule.kt
+@@ -108,13 +108,13 @@ class AudioWaveformModule(context: ReactApplicationContext): ReactContextBaseJav
+         }
+ 
+         try {
++            stopEmittingRecorderValue()
+             val currentTime = System.currentTimeMillis()
+             if (currentTime - startTime < 500) {
+                 promise.reject("SHORT_RECORDING", "Recording is too short")
+                 return
+             }
+ 
+-            stopEmittingRecorderValue()
+             audioRecorder.stopRecording(recorder, path!!, promise)
+             recorder = null
+             path = null
+@@ -414,6 +414,9 @@ class AudioWaveformModule(context: ReactApplicationContext): ReactContextBaseJav
+         override fun run() {
+             val currentDecibel = getDecibel()
+             val args: WritableMap = Arguments.createMap()
++            val currentTime = System.currentTimeMillis()
++            val progress =  currentTime - startTime
++            args.putInt(Constants.progress, progress.toInt())
+             if (currentDecibel == Double.NEGATIVE_INFINITY) {
+                 args.putDouble(Constants.currentDecibel, 0.0)
+             } else {
+diff --git a/node_modules/@simform_solutions/react-native-audio-waveform/ios/AudioRecorder.swift b/node_modules/@simform_solutions/react-native-audio-waveform/ios/AudioRecorder.swift
+index d571ca0..9a735da 100644
+--- a/node_modules/@simform_solutions/react-native-audio-waveform/ios/AudioRecorder.swift
++++ b/node_modules/@simform_solutions/react-native-audio-waveform/ios/AudioRecorder.swift
+@@ -17,6 +17,7 @@ public class AudioRecorder: NSObject, AVAudioRecorderDelegate{
+   var recordedDuration: CMTime = CMTime.zero
+   private var timer: Timer?
+     var updateFrequency = UpdateFrequency.medium
++  var startTime: DispatchTime?
+   
+   private func createAudioRecordPath(fileNameFormat: String?) -> URL? {
+     let format = DateFormatter()
+@@ -70,6 +71,7 @@ public class AudioRecorder: NSObject, AVAudioRecorderDelegate{
+       audioRecorder?.isMeteringEnabled = true
+       audioRecorder?.record()
+         startListening()
++      startTime = DispatchTime.now() // Initialize startTime
+       resolve(true)
+     } catch let error as NSError {
+       print(error.localizedDescription)
+@@ -79,7 +81,9 @@ public class AudioRecorder: NSObject, AVAudioRecorderDelegate{
+     
+     @objc func timerUpdate(_ sender:Timer) {
+         if (audioRecorder?.isRecording ?? false) {
+-            EventEmitter.sharedInstance.dispatch(name: Constants.onCurrentRecordingWaveformData, body: [Constants.currentDecibel: getDecibelLevel()])
++            let currentTime = DispatchTime.now()
++            let progress = Double(currentTime.uptimeNanoseconds - startTime!.uptimeNanoseconds) / 1_000_000 // Convert to millisecond
++            EventEmitter.sharedInstance.dispatch(name: Constants.onCurrentRecordingWaveformData, body: [Constants.currentDecibel: getDecibelLevel(), Constants.progress: progress])
+         }
+     }
+     
 diff --git a/node_modules/@simform_solutions/react-native-audio-waveform/lib/components/Waveform/Waveform.js b/node_modules/@simform_solutions/react-native-audio-waveform/lib/components/Waveform/Waveform.js
 index 9d19a80..db93b72 100644
 --- a/node_modules/@simform_solutions/react-native-audio-waveform/lib/components/Waveform/Waveform.js
@@ -261,3 +321,15 @@ index 27f6c36..a428dce 100644
      waveformCandle: { backgroundColor: Colors.waveStickBackground },
      waveformCandleCompleted: {
          backgroundColor: Colors.waveStickCompleteBackground,
+diff --git a/node_modules/@simform_solutions/react-native-audio-waveform/lib/types/AudioWaveformTypes.d.ts b/node_modules/@simform_solutions/react-native-audio-waveform/lib/types/AudioWaveformTypes.d.ts
+index 0fbd6c1..31e8cfa 100644
+--- a/node_modules/@simform_solutions/react-native-audio-waveform/lib/types/AudioWaveformTypes.d.ts
++++ b/node_modules/@simform_solutions/react-native-audio-waveform/lib/types/AudioWaveformTypes.d.ts
+@@ -52,6 +52,7 @@ export interface IOnCurrentExtractedWaveForm extends IPlayerKey {
+ }
+ export interface IOnCurrentRecordingWaveForm {
+     currentDecibel: number;
++    progress: number;
+ }
+ export interface ISetPlaybackSpeed extends IPlayerKey {
+     speed: number;

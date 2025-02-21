@@ -1,4 +1,4 @@
-import { useAudioRecorder } from '@simform_solutions/react-native-audio-waveform/lib/hooks'
+import { useAudioRecorder, useAudioPlayer } from '@simform_solutions/react-native-audio-waveform/lib/hooks'
 import React, { useRef, useEffect, useState, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, TouchableOpacity } from 'react-native'
@@ -44,11 +44,10 @@ interface Props {
 
 const MINIMUM_AUDIO_DURATION = 1000
 const INITIAL_TIME_RECORDED = '00:00'
-const RECORDER_UPDATE_FREQUENCY = 1000
 
 const InputToolbarView = (props: Props) => {
   const { startRecording, stopRecording } = useAudioRecorder()
-  const recorderTimerRef = useRef<ReturnType<typeof setTimeout>>()
+  const { onCurrentRecordingWaveformData } = useAudioPlayer()
   const { t } = useTranslation()
   const [recordTime, setRecordTime] = useState(INITIAL_TIME_RECORDED)
   const millisecondsRecorded = useRef(0)
@@ -66,6 +65,15 @@ const InputToolbarView = (props: Props) => {
   const styleIconRecord = useAnimatedStyle(() => ({ opacity: animatedOpacity.value }), [])
   const theme = useTheme()
   const styles = getStyles(theme, isRecordingVoiceNote)
+
+  useEffect(() => {
+    const audioRecordingListener = onCurrentRecordingWaveformData(result => {
+      setRecordTime(getMinutesAndSeconds(result.progress))
+    })
+    return () => {
+      audioRecordingListener.remove()
+    }
+  }, [])
 
   useEffect(() => {
     isRecordingVoiceNoteAux.current = isRecordingVoiceNote
@@ -100,21 +108,6 @@ const InputToolbarView = (props: Props) => {
     })
   }
 
-  const startRecordingVoiceTimer = () => {
-    setRecordTime(INITIAL_TIME_RECORDED)
-    millisecondsRecorded.current = 0
-    let lastTime = Date.now()
-    const tick = () => {
-      const now = Date.now()
-      const diffInMs = now - lastTime
-      lastTime = now
-      millisecondsRecorded.current += diffInMs
-      setRecordTime(getMinutesAndSeconds(millisecondsRecorded.current))
-      recorderTimerRef.current = setTimeout(tick, RECORDER_UPDATE_FREQUENCY)
-    }
-    recorderTimerRef.current = setTimeout(tick, RECORDER_UPDATE_FREQUENCY)
-  }
-
   const startRecordVoice = useCallback(async () => {
     let canRecord = await checkMicrophonePermission()
     if (!canRecord) {
@@ -122,12 +115,12 @@ const InputToolbarView = (props: Props) => {
       canRecord && setAutomaticRecording()
     }
     if (canRecord) {
+      setRecordTime(INITIAL_TIME_RECORDED)
       setIsRecordingVoiceNote(true)
       startRecording({
         sampleRate: 11025, // A quarter of the standard value (44100)
         bitRate: 32000, // A quarter of the standard value (128000)
       }).catch(error => logWarn(`Error starting recording note voice: ${error}`))
-      startRecordingVoiceTimer()
       startAnimationRecord()
     }
   }, [])
@@ -138,7 +131,6 @@ const InputToolbarView = (props: Props) => {
   }
 
   const onStopRecorder = async () => {
-    clearTimeout(recorderTimerRef.current)
     setIsRecordingVoiceNote(false)
     setIsAutomaticRecording(false)
     onCancelAnimation()
