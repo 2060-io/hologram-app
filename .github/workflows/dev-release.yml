@@ -8,12 +8,16 @@ on:
 
 env:
   APPCENTER_API_TOKEN: ${{ secrets.APPCENTER_API_TOKEN }}
+  NEXUS_HOST: ${{ secrets.NEXUS_HOST }}
+  NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+  NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
 
 jobs:
   semantic-release:
     runs-on: ubuntu-latest
     outputs:
       new-release-published: ${{ steps.semantic.outputs.new-release-published }}
+      new-release-version: ${{ steps.semantic.outputs.new-release-version }}
     steps:
       - name: Checkout hologram-app
         uses: actions/checkout@v4
@@ -132,6 +136,14 @@ jobs:
           cd android
           ./gradlew clean assembleDevRelease
 
+      - name: Upload app.apk to Nexus
+        run: |
+          curl --fail-with-body -u $NEXUS_USERNAME:$NEXUS_PASSWORD \
+            -X PUT "https://$NEXUS_HOST/repository/android/hologram-app/$NEW_RELEASE_VERSION/app.ipa" \
+            --upload-file ./android/app/build/outputs/apk/dev/release/app-dev-release.apk
+          
+          echo "app.apk uploaded to Nexus successfully."
+
       - name: Distribute to App Center
         run: |
           npm install -g  appcenter-cli@2.10.8
@@ -142,6 +154,8 @@ jobs:
     if: ${{needs.semantic-release.outputs.new-release-published == 'true'}}
     runs-on: self-hosted
     needs: [semantic-release]
+    env:
+      NEW_RELEASE_VERSION: ${{needs.semantic-release.outputs.new-release-version}}
     steps:
       - name: Checkout hologram-app
         uses: actions/checkout@v4
@@ -170,8 +184,134 @@ jobs:
           xcodebuild clean archive -workspace  app2060.xcworkspace -scheme 2060Dev -allowProvisioningUpdates -sdk iphoneos -archivePath builds/app2060.xcarchive -destination "generic/platform=iOS" | xcpretty
           xcodebuild -exportArchive -archivePath "builds/app2060.xcarchive" -exportPath "builds" -exportOptionsPlist app2060/ExportOptions.plist | xcpretty
 
+      - name: Create manifest.plist
+        run: |
+          # Ensure the NEW_RELEASE_VERSION environment variable is set
+          if [ -z "$NEW_RELEASE_VERSION" ]; then
+            echo "ERROR: NEW_RELEASE_VERSION environment variable is not set."
+            exit 1
+          fi
+
+          # Create manifest.plist with dynamic content
+          cat > manifest.plist <<EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+              <dict>
+                  <key>items</key>
+                  <array>
+                      <dict>
+                          <key>assets</key>
+                          <array>
+                              <dict>
+                                  <key>kind</key>
+                                  <string>software-package</string>
+                                  <key>url</key>
+                                  <string>https://nexus.dev.2060.io/repository/ios/hologram-app/$NEW_RELEASE_VERSION/app.ipa</string>
+                              </dict>
+                          </array>
+                          <key>metadata</key>
+                          <dict>
+                              <key>bundle-identifier</key>
+                              <string>io.2060.mobileagent.dev</string>
+                              <key>bundle-version</key>
+                              <string>$NEW_RELEASE_VERSION</string>
+                              <key>kind</key>
+                              <string>software</string>
+                              <key>title</key>
+                              <string>Hologram App</string>
+                          </dict>
+                      </dict>
+                  </array>
+              </dict>
+          </plist>
+          EOF
+
+          echo "manifest.plist created successfully."
+
+          # Create web page to access from browser
+          cat > install.html <<EOF
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>Install Hologram App</title>
+          </head>
+          <body>
+              <button onclick="window.location.href='itms-services://?action=download-manifest&url=https%3A%2F%2F$NEXUS_HOST%2Frepository%2Fios%2Fhologram-app%2F$NEW_RELEASE_VERSION%2Fmanifest.plist'">
+                  Tap to Install
+              </button>
+          </body>
+          </html>
+          EOF
+
+          echo "install.html created successfully."
+
+      - name: Upload manifest.plist to Nexus
+        run: |
+          # Upload the manifest.plist to the Nexus repository
+          curl --fail-with-body -u $NEXUS_USERNAME:$NEXUS_PASSWORD \
+            -X PUT "https://$NEXUS_HOST/repository/ios/hologram-app/$NEW_RELEASE_VERSION/manifest.plist" \
+            --upload-file manifest.plist
+          
+          echo "manifest.plist uploaded to Nexus successfully."
+
+          curl --fail-with-body -u $NEXUS_USERNAME:$NEXUS_PASSWORD \
+            -X PUT "https://$NEXUS_HOST/repository/ios/hologram-app/$NEW_RELEASE_VERSION/install.html" \
+            --upload-file install.html
+          
+          echo "install.html uploaded to Nexus successfully."
+
+      - name: Upload app.ipa to Nexus
+        run: |
+          curl --fail-with-body -u $NEXUS_USERNAME:$NEXUS_PASSWORD \
+            -X PUT "https://$NEXUS_HOST/repository/ios/hologram-app/$NEW_RELEASE_VERSION/app.ipa" \
+            --upload-file ./ios/builds/2060Dev.ipa
+          
+          echo "app.ipa uploaded to Nexus successfully."
+
       - name: Distribute to App Center
         run: |
           npm install -g appcenter-cli@2.10.8
           appcenter login --token $APPCENTER_API_TOKEN
           appcenter distribute release -f ./ios/builds/2060Dev.ipa -g Collaborators --app 2060/2060-ios-prestaging -r "prestaging ios"
+
+
+  notify-subscribers:
+    if: ${{needs.semantic-release.outputs.new-release-published == 'true'}}
+    runs-on: self-hosted
+    needs: [semantic-release, build-android, build-ios]
+    env:
+      NEW_RELEASE_VERSION: ${{needs.semantic-release.outputs.new-release-version}}
+    steps:
+      - name: Notify subscribers
+        uses: dawidd6/action-send-mail@v4
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          secure: true
+          username: ${{secrets.DEPLOY_NOTIFICATION_USERNAME}}
+          password: ${{secrets.DEPLOY_NOTIFICATION_PASSWORD}}
+          subject: Version ${{ env.NEW_RELEASE_VERSION }} of Hologram is available
+          to: ${{ env.DEPLOY_NOTIFICATION_RECIPIENT_LIST }}
+          from: 2060.io dev team
+          # Optional HTML body read from file:
+          html_body: |
+            <html>
+            <body>
+            <p>Hello! We are glad to inform you that a new version of Hologram App is available.</p>
+
+            <b>For Android</b>
+            <a href=https://${{env.NEXUS_HOST}}/repository/android/hologram-app/${{env.NEW_RELEASE_VERSION}}/app.apk>Download the APK</a> and tap into the downloaded file to install the new version.
+
+            <b>For iOS</b>
+            <a href=https://${{env.NEXUS_HOST}}/repository/ios/hologram-app/${{env.NEW_RELEASE_VERSION}}/install.html>Tap here to download and install</a> 
+            <br />
+            <p>Kind regards,</p>
+            <p>2060.io Core Dev Team</p>
+            </body>
+            </html>
+          ignore_cert: true
+          convert_markdown: false
+
