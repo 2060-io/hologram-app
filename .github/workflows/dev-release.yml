@@ -139,7 +139,7 @@ jobs:
       - name: Upload app.apk to Nexus
         run: |
           curl --fail-with-body -u $NEXUS_USERNAME:$NEXUS_PASSWORD \
-            -X PUT "https://$NEXUS_HOST/repository/android/hologram-app/$NEW_RELEASE_VERSION/app.ipa" \
+            -X PUT "https://$NEXUS_HOST/repository/android/hologram-app/$NEW_RELEASE_VERSION/app.apk" \
             --upload-file ./android/app/build/outputs/apk/dev/release/app-dev-release.apk
           
           echo "app.apk uploaded to Nexus successfully."
