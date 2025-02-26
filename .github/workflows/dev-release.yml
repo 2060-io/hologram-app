@@ -11,7 +11,7 @@ env:
   NEXUS_HOST: ${{ secrets.NEXUS_HOST }}
   NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
   NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
-
+  NEXUS_DOWNLOAD_TOKEN: ${{ secrets.NEXUS_DOWNLOAD_TOKEN }}
 jobs:
   semantic-release:
     runs-on: ubuntu-latest
@@ -214,7 +214,7 @@ jobs:
                                   <key>kind</key>
                                   <string>software-package</string>
                                   <key>url</key>
-                                  <string>https://$NEXUS_HOST/repository/ios/hologram-app/$NEW_RELEASE_VERSION/app.ipa</string>
+                                  <string>https://downloader:$NEXUS_DOWNLOAD_TOKEN@$NEXUS_HOST/repository/ios/hologram-app/$NEW_RELEASE_VERSION/app.ipa</string>
                               </dict>
                           </array>
                           <key>metadata</key>
@@ -246,7 +246,7 @@ jobs:
               <title>Install Hologram App</title>
           </head>
           <body>
-              <button onclick="window.location.href='itms-services://?action=download-manifest&url=https%3A%2F%2F$NEXUS_HOST%2Frepository%2Fios%2Fhologram-app%2F$NEW_RELEASE_VERSION%2Fmanifest.plist'">
+              <button onclick="window.location.href='itms-services://?action=download-manifest&url=https%3A%2F%2Fdownloader%3A$NEXUS_DOWNLOAD_TOKEN%40$NEXUS_HOST%2Frepository%2Fios%2Fhologram-app%2F$NEW_RELEASE_VERSIO%2Fmanifest.plist'">
                   Tap to Install
               </button>
           </body>
@@ -304,13 +304,13 @@ jobs:
             <p>Hello! We are glad to inform you that a new version of Hologram App is available.</p>
 
             <b>For Android</b>
-            <a href=https://${{env.NEXUS_HOST}}/repository/android/hologram-app/${{env.NEW_RELEASE_VERSION}}/app.apk>Download the APK</a> and tap into the downloaded file to install the new version.
+            <a href=https://downloader:${{env.NEXUS_DOWNLOAD_TOKEN}}@${{env.NEXUS_HOST}}/repository/android/hologram-app/${{env.NEW_RELEASE_VERSION}}/app.apk>Download the APK</a> and tap into the downloaded file to install the new version.
 
             <b>For iOS</b>
-            <a href=https://${{env.NEXUS_HOST}}/repository/ios/hologram-app/${{env.NEW_RELEASE_VERSION}}/install.html>Tap here to download and install</a> 
+            <a href=https://downloader:${{env.NEXUS_DOWNLOAD_TOKEN}}@${{env.NEXUS_HOST}}/repository/ios/hologram-app/${{env.NEW_RELEASE_VERSION}}/install.html>Tap here to download and install</a> 
             <br />
             <p>Kind regards,</p>
-            <p>2060.io Core Dev Team</p>
+            <p>2060.io Dev Team</p>
             </body>
             </html>
           ignore_cert: true
