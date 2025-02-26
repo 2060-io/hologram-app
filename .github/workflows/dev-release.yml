@@ -246,7 +246,7 @@ jobs:
               <title>Install Hologram App</title>
           </head>
           <body>
-              <button onclick="window.location.href='itms-services://?action=download-manifest&url=https%3A%2F%2Fdownloader%3A$NEXUS_DOWNLOAD_TOKEN%40$NEXUS_HOST%2Frepository%2Fios%2Fhologram-app%2F$NEW_RELEASE_VERSIO%2Fmanifest.plist'">
+              <button onclick="window.location.href='itms-services://?action=download-manifest&url=https%3A%2F%2Fdownloader%3A$NEXUS_DOWNLOAD_TOKEN%40$NEXUS_HOST%2Frepository%2Fios%2Fhologram-app%2F$NEW_RELEASE_VERSION%2Fmanifest.plist'">
                   Tap to Install
               </button>
           </body>
