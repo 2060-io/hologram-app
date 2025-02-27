@@ -190,7 +190,7 @@ const VoiceNoteChatView = memo(
               playbackSpeed={audioPlaybackSpeed}
               path={voiceNoteFilePath}
               scrubColor={theme.colors.green}
-              waveColor={theme.colors.darkGrey}
+              waveColor={theme.isDarkMode ? '#B8D2D9' : '#6A8994'}
               onPlayerStateChange={onPlayerStateChange}
               onCurrentProgressChange={onCurrentProgressChange}
               onError={error => {
