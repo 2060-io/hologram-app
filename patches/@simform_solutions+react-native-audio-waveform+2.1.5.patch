@@ -1,80 +1,5 @@
-diff --git a/node_modules/@simform_solutions/react-native-audio-waveform/android/src/main/java/com/audiowaveform/AudioPlayer.kt b/node_modules/@simform_solutions/react-native-audio-waveform/android/src/main/java/com/audiowaveform/AudioPlayer.kt
-index 9754d2c..08fbe57 100644
---- a/node_modules/@simform_solutions/react-native-audio-waveform/android/src/main/java/com/audiowaveform/AudioPlayer.kt
-+++ b/node_modules/@simform_solutions/react-native-audio-waveform/android/src/main/java/com/audiowaveform/AudioPlayer.kt
-@@ -7,6 +7,7 @@ import android.media.AudioManager
- import android.net.Uri
- import android.os.Build
- import android.os.CountDownTimer
-+import android.os.Handler
- import com.facebook.react.bridge.Arguments
- import com.facebook.react.bridge.Promise
- import com.facebook.react.bridge.ReactApplicationContext
-@@ -54,33 +55,41 @@ class AudioPlayer(
-     private fun handleAudioFocusChange(focusChange: Int) {
-         when (focusChange) {
-             AudioManager.AUDIOFOCUS_GAIN -> {
--                // Audio focus granted; resume playback if necessary
--                if (!player.isPlaying) {
--                    player.play()
--                }
--                player.volume = 1.0f // Restore full volume
-+                player.applicationLooper.let { looper -> Handler(looper).post {
-+                    // Audio focus granted; resume playback if necessary
-+                    if (!player.isPlaying) {
-+                        player.play()
-+                    }
-+                    player.volume = 1.0f // Restore full volume
-+                }}
-             }
-             AudioManager.AUDIOFOCUS_LOSS -> {
--                // Permanent loss of audio focus; pause playback
--                if (player.isPlaying) {
--                    val args: WritableMap = Arguments.createMap()
--                    stopListening()
--                    player.pause()
--                    abandonAudioFocus()
--                    args.putInt(Constants.finishType, 1)
--                    args.putString(Constants.playerKey, key)
--                    appContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)?.emit("onDidFinishPlayingAudio", args)
--                }
-+                player.applicationLooper.let { looper -> Handler(looper).post {
-+                    // Permanent loss of audio focus; pause playback
-+                    if (player.isPlaying) {
-+                        val args: WritableMap = Arguments.createMap()
-+                        stopListening()
-+                        player.pause()
-+                        abandonAudioFocus()
-+                        args.putInt(Constants.finishType, 1)
-+                        args.putString(Constants.playerKey, key)
-+                        appContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)?.emit("onDidFinishPlayingAudio", args)
-+                    }
-+                }}
-             }
-             AudioManager.AUDIOFOCUS_LOSS_TRANSIENT -> {
--                // Temporary loss of audio focus; pause playback
--                if (player.isPlaying) {
--                    player.pause()
--                }
-+                player.applicationLooper.let { looper -> Handler(looper).post {
-+                    // Temporary loss of audio focus; pause playback
-+                    if (player.isPlaying) {
-+                        player.pause()
-+                    }
-+                }}
-             }
-             AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK -> {
--                // Temporarily loss of audio focus; but can continue playing at a lower volume.
--                player.volume = 0.2f
-+                player.applicationLooper.let { looper -> Handler(looper).post {
-+                    // Temporarily loss of audio focus; but can continue playing at a lower volume.
-+                    player.volume = 0.2f
-+                }}
-             }
-         }
-     }
 diff --git a/node_modules/@simform_solutions/react-native-audio-waveform/android/src/main/java/com/audiowaveform/AudioWaveformModule.kt b/node_modules/@simform_solutions/react-native-audio-waveform/android/src/main/java/com/audiowaveform/AudioWaveformModule.kt
-index 1266638..b7e1516 100644
+index 25b9376..cf5744a 100644
 --- a/node_modules/@simform_solutions/react-native-audio-waveform/android/src/main/java/com/audiowaveform/AudioWaveformModule.kt
 +++ b/node_modules/@simform_solutions/react-native-audio-waveform/android/src/main/java/com/audiowaveform/AudioWaveformModule.kt
 @@ -108,13 +108,13 @@ class AudioWaveformModule(context: ReactApplicationContext): ReactContextBaseJav
@@ -92,7 +17,7 @@ index 1266638..b7e1516 100644
              audioRecorder.stopRecording(recorder, path!!, promise)
              recorder = null
              path = null
-@@ -414,6 +414,9 @@ class AudioWaveformModule(context: ReactApplicationContext): ReactContextBaseJav
+@@ -415,6 +415,9 @@ class AudioWaveformModule(context: ReactApplicationContext): ReactContextBaseJav
          override fun run() {
              val currentDecibel = getDecibel()
              val args: WritableMap = Arguments.createMap()
@@ -134,7 +59,7 @@ index d571ca0..9a735da 100644
      }
      
 diff --git a/node_modules/@simform_solutions/react-native-audio-waveform/lib/components/Waveform/Waveform.js b/node_modules/@simform_solutions/react-native-audio-waveform/lib/components/Waveform/Waveform.js
-index 9d19a80..db93b72 100644
+index d6086fc..d1c7343 100644
 --- a/node_modules/@simform_solutions/react-native-audio-waveform/lib/components/Waveform/Waveform.js
 +++ b/node_modules/@simform_solutions/react-native-audio-waveform/lib/components/Waveform/Waveform.js
 @@ -4,7 +4,7 @@ import head from 'lodash/head';
@@ -150,8 +75,8 @@ index 9d19a80..db93b72 100644
      // The maximum number of candles set in the waveform. Once this limit is reached, the oldest candle will be removed as a new one is added to the waveform.
      maxCandlesToRender = 300, mode, path, volume = 3, 
      // The playback speed of the audio player. A value of 1.0 represents normal playback speed.
--    playbackSpeed = 1.0, candleSpace = 2, candleWidth = 5, containerStyle = {}, waveColor, scrubColor, onPlayerStateChange, onRecorderStateChange, onPanStateChange = () => { }, onError = (_error) => { }, onCurrentProgressChange = () => { }, candleHeightScale = 3, onChangeWaveformLoadState = (_state) => { }, } = props;
-+    playbackSpeed = 1.0, candleSpace = 2, candleWidth = 5, containerStyle = {}, waveColor, scrubColor, onPlayerStateChange, onRecorderStateChange, onPanStateChange = () => { }, onError = (_error) => { }, onCurrentProgressChange = () => { }, candleHeightScale = 3, onChangeWaveformLoadState = (_state) => { }, defaultWaveForm } = props;
+-    playbackSpeed = 1.0, candleSpace = 2, candleWidth = 5, containerStyle = {}, waveColor, scrubColor, onPlayerStateChange, onRecorderStateChange, onPanStateChange = () => { }, onError = (_error) => { }, onCurrentProgressChange = () => { }, candleHeightScale = 3, onChangeWaveformLoadState = (_state) => { }, showsHorizontalScrollIndicator = false, } = props;
++    playbackSpeed = 1.0, candleSpace = 2, candleWidth = 5, containerStyle = {}, waveColor, scrubColor, onPlayerStateChange, onRecorderStateChange, onPanStateChange = () => { }, onError = (_error) => { }, onCurrentProgressChange = () => { }, candleHeightScale = 3, onChangeWaveformLoadState = (_state) => { }, showsHorizontalScrollIndicator = false, defaultWaveForm } = props;
      const viewRef = useRef(null);
      const scrollRef = useRef(null);
      const isLayoutCalculated = useRef(false);
@@ -223,7 +148,7 @@ index 9d19a80..db93b72 100644
      }));
      return (React.createElement(View, { style: [styles.waveformContainer, containerStyle] },
          React.createElement(View, { ref: viewRef, style: styles.waveformInnerContainer, onLayout: calculateLayout, ...(mode === 'static' ? panResponder.panHandlers : {}) },
--            React.createElement(ScrollView, { horizontal: true, ref: scrollRef, style: styles.scrollContainer, scrollEnabled: mode === 'live' }, waveform?.map?.((amplitude, indexCandle) => (React.createElement(WaveformCandle, { key: indexCandle, index: indexCandle, amplitude: amplitude, parentViewLayout: viewLayout, candleWidth,
+-            React.createElement(ScrollView, { horizontal: true, showsHorizontalScrollIndicator: showsHorizontalScrollIndicator, ref: scrollRef, style: styles.scrollContainer, scrollEnabled: mode === 'live' }, waveform?.map?.((amplitude, indexCandle) => (React.createElement(WaveformCandle, { key: indexCandle, index: indexCandle, amplitude: amplitude, parentViewLayout: viewLayout, candleWidth,
 -                candleSpace,
 -                noOfSamples,
 +            waveform?.map?.((amplitude, indexCandle) => (React.createElement(WaveformCandle, { key: indexCandle, index: indexCandle, amplitude: amplitude,
@@ -238,7 +163,7 @@ index 9d19a80..db93b72 100644
  //# sourceMappingURL=Waveform.js.map
 \ No newline at end of file
 diff --git a/node_modules/@simform_solutions/react-native-audio-waveform/lib/components/Waveform/WaveformTypes.d.ts b/node_modules/@simform_solutions/react-native-audio-waveform/lib/components/Waveform/WaveformTypes.d.ts
-index d4a6f68..6a854f6 100644
+index 929b60d..2d5af20 100644
 --- a/node_modules/@simform_solutions/react-native-audio-waveform/lib/components/Waveform/WaveformTypes.d.ts
 +++ b/node_modules/@simform_solutions/react-native-audio-waveform/lib/components/Waveform/WaveformTypes.d.ts
 @@ -2,14 +2,13 @@ import type { StyleProp, ViewStyle } from 'react-native';
