@@ -294,7 +294,8 @@ jobs:
           username: ${{secrets.DEPLOY_NOTIFICATION_USERNAME}}
           password: ${{secrets.DEPLOY_NOTIFICATION_PASSWORD}}
           subject: Version ${{ env.NEW_RELEASE_VERSION }} of Hologram is available
-          to: ${{ vars.DEPLOY_NOTIFICATION_STAGING_RECIPIENT_LIST }}
+          to: ${{secrets.DEPLOY_NOTIFICATION_USERNAME}}
+          bcc: ${{ vars.DEPLOY_NOTIFICATION_STAGING_RECIPIENT_LIST }}
           from: 2060.io dev team
           # Optional HTML body read from file:
           html_body: |
