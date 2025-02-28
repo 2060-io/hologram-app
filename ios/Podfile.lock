@@ -1455,6 +1455,27 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
+  - react-native-audio-waveform (2.1.5):
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.01.01.00)
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Yoga
   - react-native-background-upload (6.6.0):
     - React
   - react-native-cameraroll (5.10.0):
@@ -1857,8 +1878,6 @@ PODS:
     - React-Core
   - RealmJS (12.13.1):
     - React
-  - RNAudioRecorderPlayer (3.6.11):
-    - React-Core
   - RNCAsyncStorage (1.12.1):
     - React-Core
   - RNCClipboard (1.14.1):
@@ -2157,6 +2176,7 @@ DEPENDENCIES:
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
   - React-Mapbuffer (from `../node_modules/react-native/ReactCommon`)
   - React-microtasksnativemodule (from `../node_modules/react-native/ReactCommon/react/nativemodule/microtasks`)
+  - "react-native-audio-waveform (from `../node_modules/@simform_solutions/react-native-audio-waveform`)"
   - react-native-background-upload (from `../node_modules/react-native-background-upload`)
   - "react-native-cameraroll (from `../node_modules/@react-native-camera-roll/camera-roll`)"
   - react-native-cloud-store (from `../node_modules/react-native-cloud-store`)
@@ -2202,7 +2222,6 @@ DEPENDENCIES:
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - ReactNativeIncallManager (from `../node_modules/react-native-incall-manager`)
   - RealmJS (from `../node_modules/realm`)
-  - RNAudioRecorderPlayer (from `../node_modules/react-native-audio-recorder-player`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-community/async-storage`)"
   - "RNCClipboard (from `../node_modules/@react-native-clipboard/clipboard`)"
   - "RNCMaskedView (from `../node_modules/@react-native-masked-view/masked-view`)"
@@ -2354,6 +2373,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   React-microtasksnativemodule:
     :path: "../node_modules/react-native/ReactCommon/react/nativemodule/microtasks"
+  react-native-audio-waveform:
+    :path: "../node_modules/@simform_solutions/react-native-audio-waveform"
   react-native-background-upload:
     :path: "../node_modules/react-native-background-upload"
   react-native-cameraroll:
@@ -2444,8 +2465,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-incall-manager"
   RealmJS:
     :path: "../node_modules/realm"
-  RNAudioRecorderPlayer:
-    :path: "../node_modules/react-native-audio-recorder-player"
   RNCAsyncStorage:
     :path: "../node_modules/@react-native-community/async-storage"
   RNCClipboard:
@@ -2570,6 +2589,7 @@ SPEC CHECKSUMS:
   React-logger: 80d87daf2f98bf95ab668b79062c1e0c3f0c2f8a
   React-Mapbuffer: acffb35a53a5f474ede09f082ac609b41aafab2e
   React-microtasksnativemodule: 71ca9282bce93b319218d75362c0d646b376eb43
+  react-native-audio-waveform: d6890f104ef4a05d2b5744f38a161e95649e48d6
   react-native-background-upload: 627de1e663b94336abed4a84e88fbfa2d1b6ed7f
   react-native-cameraroll: 9c9027acae394d1248b7255bbc1cd8fbddd7ba8f
   react-native-cloud-store: cc96ca8d9a4400a1a7d8ceb33d2605bccc4986cf
@@ -2615,7 +2635,6 @@ SPEC CHECKSUMS:
   ReactCommon: 36d48f542b4010786d6b2bcee615fe5f906b7105
   ReactNativeIncallManager: ef7b845e166f04cf8ddf433d8a23227b01cef87a
   RealmJS: fbeb1b56cd7b050128aeb8b0fc6e4419c4cfc949
-  RNAudioRecorderPlayer: a33b29ebcf697a58aa0e502e672604f688c0841d
   RNCAsyncStorage: 87d0d3d6193e79bd435e955f8998d2040aa60d67
   RNCClipboard: 4598dae0fe33e2aa130d9d213e2007be78310266
   RNCMaskedView: a1877193cec508d3524c70977d79ccdf3fd6623f

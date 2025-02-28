@@ -40,6 +40,7 @@ import {
   QuestionMetadata,
   TextMessageMetadata,
   VCOfferMetadata,
+  VoiceNoteMetadata,
   VPRequestMetadata,
 } from '@2060/model'
 import { BaseCustomMessageViewProps } from '@2060/pages/PersonalChat/ChatMessage/Props'
@@ -234,11 +235,12 @@ const BaseCustomView: React.FC<BaseCustomMessageViewProps> = memo(props => {
       return (
         <VoiceNoteChatView
           mediaRecordId={chatEntry.associatedRecordId}
-          mediaItem={chatEntry.metadata as MediaSharingMetadata}
+          metadata={chatEntry.metadata as VoiceNoteMetadata}
           renderTimeAndTicks={renderTimeAndTicks}
           role={currentMessage.role}
-          messageId={chatEntry.id}
+          chatEntryId={chatEntry.id}
           previousMessageId={previousMessage?.id}
+          isLastMessage={!nextMessage?.id}
         />
       )
     }
