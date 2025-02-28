@@ -146,7 +146,7 @@ jobs:
       - name: Upload app.apk to Nexus
         run: |
           curl --fail-with-body -u $NEXUS_USERNAME:$NEXUS_PASSWORD \
-            -X PUT "https://$NEXUS_HOST/repository/android/hologram-app/$NEW_RELEASE_VERSION/app.apk" \
+            -X PUT "https://$NEXUS_HOST/repository/dev/hologram-app/$NEW_RELEASE_VERSION/app.apk" \
             --upload-file ./android/app/build/outputs/apk/dev/release/app-dev-release.apk
           
           echo "app.apk uploaded to Nexus successfully."
@@ -214,7 +214,7 @@ jobs:
                                   <key>kind</key>
                                   <string>software-package</string>
                                   <key>url</key>
-                                  <string>https://downloader:$NEXUS_DOWNLOAD_TOKEN@$NEXUS_HOST/repository/ios/hologram-app/$NEW_RELEASE_VERSION/app.ipa</string>
+                                  <string>https://downloader:$NEXUS_DOWNLOAD_TOKEN@$NEXUS_HOST/repository/dev/hologram-app/$NEW_RELEASE_VERSION/app.ipa</string>
                               </dict>
                           </array>
                           <key>metadata</key>
@@ -259,13 +259,13 @@ jobs:
         run: |
           # Upload the manifest.plist to the Nexus repository
           curl --fail-with-body -u $NEXUS_USERNAME:$NEXUS_PASSWORD \
-            -X PUT "https://$NEXUS_HOST/repository/ios/hologram-app/$NEW_RELEASE_VERSION/manifest.plist" \
+            -X PUT "https://$NEXUS_HOST/repository/dev/hologram-app/$NEW_RELEASE_VERSION/manifest.plist" \
             --upload-file manifest.plist
           
           echo "manifest.plist uploaded to Nexus successfully."
 
           curl --fail-with-body -u $NEXUS_USERNAME:$NEXUS_PASSWORD \
-            -X PUT "https://$NEXUS_HOST/repository/ios/hologram-app/$NEW_RELEASE_VERSION/install.html" \
+            -X PUT "https://$NEXUS_HOST/repository/dev/hologram-app/$NEW_RELEASE_VERSION/install.html" \
             --upload-file install.html
           
           echo "install.html uploaded to Nexus successfully."
@@ -273,7 +273,7 @@ jobs:
       - name: Upload app.ipa to Nexus
         run: |
           curl --fail-with-body -u $NEXUS_USERNAME:$NEXUS_PASSWORD \
-            -X PUT "https://$NEXUS_HOST/repository/ios/hologram-app/$NEW_RELEASE_VERSION/app.ipa" \
+            -X PUT "https://$NEXUS_HOST/repository/dev/hologram-app/$NEW_RELEASE_VERSION/app.ipa" \
             --upload-file ./ios/builds/2060Dev.ipa
           
           echo "app.ipa uploaded to Nexus successfully."
@@ -295,7 +295,7 @@ jobs:
           username: ${{secrets.DEPLOY_NOTIFICATION_USERNAME}}
           password: ${{secrets.DEPLOY_NOTIFICATION_PASSWORD}}
           subject: Version ${{ env.NEW_RELEASE_VERSION }} of Hologram is available
-          to: ${{ vars.DEPLOY_NOTIFICATION_RECIPIENT_LIST }}
+          to: ${{ vars.DEPLOY_NOTIFICATION_DEV_RECIPIENT_LIST }}
           from: 2060.io dev team
           # Optional HTML body read from file:
           html_body: |
@@ -304,10 +304,10 @@ jobs:
             <p>Hello! We are glad to inform you that a new version of Hologram App is available.</p>
 
             <b>For Android</b>
-            <a href=https://downloader:${{env.NEXUS_DOWNLOAD_TOKEN}}@${{env.NEXUS_HOST}}/repository/android/hologram-app/${{env.NEW_RELEASE_VERSION}}/app.apk>Download the APK</a> and tap into the downloaded file to install the new version.
+            <a href=https://downloader:${{env.NEXUS_DOWNLOAD_TOKEN}}@${{env.NEXUS_HOST}}/repository/dev/hologram-app/${{env.NEW_RELEASE_VERSION}}/app.apk>Download the APK</a> and tap into the downloaded file to install the new version.
 
             <b>For iOS</b>
-            <a href=https://downloader:${{env.NEXUS_DOWNLOAD_TOKEN}}@${{env.NEXUS_HOST}}/repository/ios/hologram-app/${{env.NEW_RELEASE_VERSION}}/install.html>Tap here to download and install</a> 
+            <a href=https://downloader:${{env.NEXUS_DOWNLOAD_TOKEN}}@${{env.NEXUS_HOST}}/repository/dev/hologram-app/${{env.NEW_RELEASE_VERSION}}/install.html>Tap here to download and install</a> 
             <br />
             <p>Kind regards,</p>
             <p>2060.io Dev Team</p>
