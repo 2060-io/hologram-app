@@ -1,16 +1,7 @@
-import type { AudioSet } from 'react-native-audio-recorder-player'
-
-import { uuid } from '@credo-ts/core/build/utils/uuid'
+import { useAudioRecorder, useAudioPlayer } from '@simform_solutions/react-native-audio-waveform/lib/hooks'
 import React, { useRef, useEffect, useState, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, Platform, TouchableOpacity } from 'react-native'
-import AudioRecorderPlayer, {
-  AudioEncoderAndroidType,
-  AudioSourceAndroidType,
-  AVModeIOSOption,
-  AVEncoderAudioQualityIOSType,
-  AVEncodingOption,
-} from 'react-native-audio-recorder-player'
+import { View, TouchableOpacity } from 'react-native'
 import * as RNFS from 'react-native-fs'
 import Reanimated, {
   useSharedValue,
@@ -24,6 +15,7 @@ import Reanimated, {
 
 import ComposerInput from '../ComposerInput'
 import RepliedMessageView from '../RepliedMessageView/RepliedMessageView'
+import { getMinutesAndSeconds } from '../utils'
 
 import { SendButton, AudioButton } from './components'
 import getStyles from './styles'
@@ -34,12 +26,14 @@ import { useChatActions } from '@2060/hooks'
 import { useChat } from '@2060/hooks/agent'
 import { generateFileName } from '@2060/hooks/media/files'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
+import { logWarn } from '@2060/utils'
 import { deleteFile } from '@2060/utils/RNFS'
 import {
   handleMicrophonePermission,
   checkMicrophonePermission,
   askMicrophonePermission,
 } from '@2060/utils/permissions'
+import { toast } from '@2060/utils/toast'
 
 const IconAnimated = Reanimated.createAnimatedComponent(Icon)
 
@@ -48,18 +42,21 @@ interface Props {
   showMediaOptions: boolean
 }
 
+const MINIMUM_AUDIO_DURATION = 1000
 const INITIAL_TIME_RECORDED = '00:00'
 
 const InputToolbarView = (props: Props) => {
+  const { startRecording, stopRecording } = useAudioRecorder()
+  const { onCurrentRecordingWaveformData } = useAudioPlayer()
   const { t } = useTranslation()
   const [recordTime, setRecordTime] = useState(INITIAL_TIME_RECORDED)
-  const secondsRecorded = useRef(0)
+  const millisecondsRecorded = useRef(0)
   const [isAutomaticRecording, setIsAutomaticRecording] = useState(false)
-  const recordedFile = useRef('')
+  const recordedAudioFilePath = useRef('')
   const [valueTextInput, setValueTextInput] = useState('')
   const textInputRef = useRef<TextInputForwardRefProps>(null)
-  const recorder = useRef(new AudioRecorderPlayer()).current
   const { setRepliedMessage, isRecordingVoiceNote, setIsRecordingVoiceNote, repliedMessage } = useChat()
+  const isRecordingVoiceNoteAux = useRef(isRecordingVoiceNote)
   const { sendTextMessage, shareMediaToDidComm } = useChatActions()
   const { showMediaOptions, onShowMediaOptions } = props
   const isRepliedMessage = repliedMessage !== undefined
@@ -69,18 +66,45 @@ const InputToolbarView = (props: Props) => {
   const theme = useTheme()
   const styles = getStyles(theme, isRecordingVoiceNote)
 
+  useEffect(() => {
+    const audioRecordingListener = onCurrentRecordingWaveformData(result => {
+      setRecordTime(getMinutesAndSeconds(result.progress))
+    })
+    return () => {
+      audioRecordingListener.remove()
+    }
+  }, [])
+
+  useEffect(() => {
+    isRecordingVoiceNoteAux.current = isRecordingVoiceNote
+  }, [isRecordingVoiceNote])
+
+  // hook to cancel audio recording when component unmounts
+  useEffect(() => {
+    return () => {
+      if (isRecordingVoiceNoteAux.current) cancelAudioRecording()
+    }
+  }, [])
+
+  useEffect(() => {
+    if (repliedMessage) textInputRef?.current?.onFocus()
+  }, [repliedMessage])
+
   const shareFileAndSend = async () => {
-    const { size } = await RNFS.stat(recordedFile.current)
-    const subType = Platform.OS === 'ios' ? 'm4a' : 'mp4'
+    if (millisecondsRecorded.current < MINIMUM_AUDIO_DURATION) {
+      toast({ message: t('chat.recordedAudioTooShort'), type: 'info' })
+      return
+    }
+    const { size } = await RNFS.stat(recordedAudioFilePath.current)
+    const subType = 'm4a'
     const mime = `audio/${subType}`
     const filename = generateFileName(mime, subType)
-
     await shareMediaToDidComm({
       mime,
       size,
-      path: recordedFile.current,
+      path: recordedAudioFilePath.current,
       fileName: filename,
-      duration: Math.floor(secondsRecorded.current),
+      duration: millisecondsRecorded.current,
     })
   }
 
@@ -91,28 +115,12 @@ const InputToolbarView = (props: Props) => {
       canRecord && setAutomaticRecording()
     }
     if (canRecord) {
-      const path = Platform.select({
-        ios: `${uuid()}.m4a`,
-        android: `${RNFS.CachesDirectoryPath}/${uuid()}.mp4`,
-      })
-      const audioSet: AudioSet = {
-        AudioEncoderAndroid: AudioEncoderAndroidType.AAC,
-        AudioSourceAndroid: AudioSourceAndroidType.MIC,
-        AVModeIOS: AVModeIOSOption.voicechat,
-        AVEncoderAudioQualityKeyIOS: AVEncoderAudioQualityIOSType.high,
-        AVFormatIDKeyIOS: AVEncodingOption.aac,
-      }
-      setIsRecordingVoiceNote(true)
       setRecordTime(INITIAL_TIME_RECORDED)
-      secondsRecorded.current = 0
-      const pathFile = await recorder.startRecorder(path, audioSet, false)
-      recorder.addRecordBackListener(({ isRecording: arpIsRecording, currentPosition }) => {
-        if (arpIsRecording || currentPosition) {
-          secondsRecorded.current = currentPosition
-          setRecordTime(recorder.mmssss(Math.floor(currentPosition)).slice(0, 5))
-        }
-      })
-      recordedFile.current = pathFile
+      setIsRecordingVoiceNote(true)
+      startRecording({
+        sampleRate: 11025, // A quarter of the standard value (44100)
+        bitRate: 32000, // A quarter of the standard value (128000)
+      }).catch(error => logWarn(`Error starting recording note voice: ${error}`))
       startAnimationRecord()
     }
   }, [])
@@ -124,24 +132,26 @@ const InputToolbarView = (props: Props) => {
 
   const onStopRecorder = async () => {
     setIsRecordingVoiceNote(false)
-    await recorder.stopRecorder()
-    recorder.removeRecordBackListener()
+    setIsAutomaticRecording(false)
     onCancelAnimation()
+    try {
+      const [path, duration] = await stopRecording()
+      recordedAudioFilePath.current = path
+      millisecondsRecorded.current = Number(duration)
+    } catch (e) {
+      logWarn(`Error stopping recording note voice: ${e}`)
+    }
   }
 
-  const sendVoiceMessage = useCallback(async () => {
-    setIsAutomaticRecording(false)
-    onCancelAnimation()
+  const sendVoiceMessage = async () => {
     await onStopRecorder()
     shareFileAndSend()
-  }, [recordedFile.current])
+  }
 
-  const cancelAudioRecording = useCallback(async () => {
-    setIsAutomaticRecording(false)
-    onCancelAnimation()
+  const cancelAudioRecording = async () => {
     await onStopRecorder()
-    await deleteFile(recordedFile.current)
-  }, [recordedFile.current])
+    await deleteFile(recordedAudioFilePath.current)
+  }
 
   const startAnimationRecord = () => {
     animatedOpacity.value = withRepeat(
@@ -154,25 +164,12 @@ const InputToolbarView = (props: Props) => {
     )
   }
 
-  useEffect(() => {
-    return () => {
-      setIsRecordingVoiceNote(false)
-      onStopRecorder()
-    }
-  }, [])
-
   const sendMessage = async () => {
     setValueTextInput('')
     await sendTextMessage(valueTextInput)
   }
 
   const setAutomaticRecording = useCallback(() => setIsAutomaticRecording(true), [])
-
-  const handleRepliedMessageChangeToFocusTextInput = () => {
-    if (repliedMessage) textInputRef?.current?.onFocus()
-  }
-
-  useEffect(handleRepliedMessageChangeToFocusTextInput, [repliedMessage])
 
   return (
     <View style={styles.container}>

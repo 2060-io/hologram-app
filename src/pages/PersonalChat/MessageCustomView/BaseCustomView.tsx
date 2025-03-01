@@ -21,7 +21,6 @@ import VPRequestChatView from '../VPRequestChatView'
 import VideoChatView from '../VideoChatView'
 import VoiceNoteChatView from '../VoiceNoteChatView'
 
-import Reactions from './Reactions'
 import getStyles from './styles'
 import { mustDisplayAckAndTime } from './utils'
 
@@ -41,6 +40,7 @@ import {
   QuestionMetadata,
   TextMessageMetadata,
   VCOfferMetadata,
+  VoiceNoteMetadata,
   VPRequestMetadata,
 } from '@2060/model'
 import { BaseCustomMessageViewProps } from '@2060/pages/PersonalChat/ChatMessage/Props'
@@ -235,11 +235,12 @@ const BaseCustomView: React.FC<BaseCustomMessageViewProps> = memo(props => {
       return (
         <VoiceNoteChatView
           mediaRecordId={chatEntry.associatedRecordId}
-          mediaItem={chatEntry.metadata as MediaSharingMetadata}
+          metadata={chatEntry.metadata as VoiceNoteMetadata}
           renderTimeAndTicks={renderTimeAndTicks}
           role={currentMessage.role}
-          messageId={chatEntry.id}
+          chatEntryId={chatEntry.id}
           previousMessageId={previousMessage?.id}
+          isLastMessage={!nextMessage?.id}
         />
       )
     }
@@ -270,9 +271,6 @@ const BaseCustomView: React.FC<BaseCustomMessageViewProps> = memo(props => {
             </TouchableOpacity>
           )}
           {renderMessage}
-          {!!chatEntry.reactions.length && (
-            <Reactions role={chatEntry.role} reactions={chatEntry.reactions} />
-          )}
         </>
       )}
     </View>

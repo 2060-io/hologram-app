@@ -9,11 +9,15 @@ on:
 
 env:
   APPCENTER_API_TOKEN: ${{ secrets.APPCENTER_API_TOKEN }}
-
+  NEXUS_HOST: ${{ secrets.NEXUS_HOST }}
+  NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+  NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+  NEXUS_DOWNLOAD_TOKEN: ${{ secrets.NEXUS_DOWNLOAD_TOKEN }}
 jobs:
   semantic-release:
     runs-on: ubuntu-latest
     outputs:
+      new-release-version: ${{ steps.semantic.outputs.release-version }}
       new-release-published: ${{ steps.semantic.outputs.new-release-published }}
     steps:
       - name: Checkout hologram-app
@@ -107,6 +111,7 @@ jobs:
       UPLOAD_KEYSTORE_PASSWORD: ${{ secrets.UPLOAD_KEY_KEYSTORE_PASSWORD }}
       UPLOAD_KEY_PASSWORD: ${{ secrets.UPLOAD_KEY_PASSWORD }}
       UPLOAD_KEY_KEYSTORE_B64: ${{ secrets.UPLOAD_KEY_KEYSTORE_B64 }}
+      NEW_RELEASE_VERSION: ${{needs.semantic-release.outputs.new-release-version}}
     steps:
       - name: Checkout hologram-app
         uses: actions/checkout@v4
@@ -139,10 +144,20 @@ jobs:
           appcenter login --token $APPCENTER_API_TOKEN
           appcenter distribute release -f ./android/app/build/outputs/apk/staging/release/app-staging-release.apk -g Collaborators --app 2060/2060-android-staging -r "staging android"
 
+      - name: Upload app.apk to Nexus
+        run: |
+          curl --fail-with-body -u $NEXUS_USERNAME:$NEXUS_PASSWORD \
+            -X PUT "https://$NEXUS_HOST/repository/staging/hologram-app/$NEW_RELEASE_VERSION/app.apk" \
+            --upload-file ./android/app/build/outputs/apk/staging/release/app-staging-release.apk
+          
+          echo "app.apk uploaded to Nexus successfully."
+
   build-ios:
     if: ${{needs.semantic-release.outputs.new-release-published == 'true'}}
     runs-on: self-hosted
     needs: [semantic-release]
+    env:
+      NEW_RELEASE_VERSION: ${{needs.semantic-release.outputs.new-release-version}}
     steps:
       - name: Checkout hologram-app
         uses: actions/checkout@v4
@@ -176,3 +191,129 @@ jobs:
           npm install -g appcenter-cli@2.10.8
           appcenter login --token $APPCENTER_API_TOKEN
           appcenter distribute release -f ./ios/builds/2060Staging.ipa -g Collaborators --app 2060/2060-ios-staging -r "staging ios"
+
+      - name: Create manifest.plist
+        run: |
+          # Ensure the NEW_RELEASE_VERSION environment variable is set
+          if [ -z "$NEW_RELEASE_VERSION" ]; then
+            echo "ERROR: NEW_RELEASE_VERSION environment variable is not set."
+            exit 1
+          fi
+
+          # Create manifest.plist with dynamic content
+          cat > manifest.plist <<EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+              <dict>
+                  <key>items</key>
+                  <array>
+                      <dict>
+                          <key>assets</key>
+                          <array>
+                              <dict>
+                                  <key>kind</key>
+                                  <string>software-package</string>
+                                  <key>url</key>
+                                  <string>https://downloader:$NEXUS_DOWNLOAD_TOKEN@$NEXUS_HOST/repository/staging/hologram-app/$NEW_RELEASE_VERSION/app.ipa</string>
+                              </dict>
+                          </array>
+                          <key>metadata</key>
+                          <dict>
+                              <key>bundle-identifier</key>
+                              <string>io.2060.mobileagent.st</string>
+                              <key>bundle-version</key>
+                              <string>$NEW_RELEASE_VERSION</string>
+                              <key>kind</key>
+                              <string>software</string>
+                              <key>title</key>
+                              <string>Hologram App</string>
+                          </dict>
+                      </dict>
+                  </array>
+              </dict>
+          </plist>
+          EOF
+
+          echo "manifest.plist created successfully."
+
+          # Create web page to access from browser
+          cat > install.html <<EOF
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>Install Hologram App</title>
+          </head>
+          <body>
+              <button onclick="window.location.href='itms-services://?action=download-manifest&url=https%3A%2F%2Fdownloader%3A$NEXUS_DOWNLOAD_TOKEN%40$NEXUS_HOST%2Frepository%2Fstaging%2Fhologram-app%2F$NEW_RELEASE_VERSION%2Fmanifest.plist'">
+                  Tap to Install
+              </button>
+          </body>
+          </html>
+          EOF
+
+          echo "install.html created successfully."
+
+      - name: Upload manifest.plist to Nexus
+        run: |
+          # Upload the manifest.plist to the Nexus repository
+          curl --fail-with-body -u $NEXUS_USERNAME:$NEXUS_PASSWORD \
+            -X PUT "https://$NEXUS_HOST/repository/staging/hologram-app/$NEW_RELEASE_VERSION/manifest.plist" \
+            --upload-file manifest.plist
+            
+          echo "manifest.plist uploaded to Nexus successfully."
+  
+          curl --fail-with-body -u $NEXUS_USERNAME:$NEXUS_PASSWORD \
+            -X PUT "https://$NEXUS_HOST/repository/staging/hologram-app/$NEW_RELEASE_VERSION/install.html" \
+            --upload-file install.html
+            
+          echo "install.html uploaded to Nexus successfully."
+  
+      - name: Upload app.ipa to Nexus
+        run: |
+          curl --fail-with-body -u $NEXUS_USERNAME:$NEXUS_PASSWORD \
+            -X PUT "https://$NEXUS_HOST/repository/staging/hologram-app/$NEW_RELEASE_VERSION/app.ipa" \
+            --upload-file ./ios/builds/2060Staging.ipa
+            
+          echo "app.ipa uploaded to Nexus successfully."
+
+  notify-subscribers:
+    if: ${{needs.semantic-release.outputs.new-release-published == 'true'}}
+    runs-on: self-hosted
+    needs: [semantic-release, build-android, build-ios]
+    env:
+      NEW_RELEASE_VERSION: ${{needs.semantic-release.outputs.new-release-version}}
+    steps:
+      - name: Notify subscribers
+        uses: dawidd6/action-send-mail@v4
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          secure: true
+          username: ${{secrets.DEPLOY_NOTIFICATION_USERNAME}}
+          password: ${{secrets.DEPLOY_NOTIFICATION_PASSWORD}}
+          subject: Version ${{ env.NEW_RELEASE_VERSION }} of Hologram is available
+          to: ${{secrets.DEPLOY_NOTIFICATION_USERNAME}}
+          bcc: ${{ vars.DEPLOY_NOTIFICATION_STAGING_RECIPIENT_LIST }}
+          from: 2060.io dev team
+          # Optional HTML body read from file:
+          html_body: |
+            <html>
+            <body>
+            <p>Hello! We are glad to inform you that a new version of Hologram App is available.</p>
+  
+            <b>For Android</b>
+            <a href=https://downloader:${{env.NEXUS_DOWNLOAD_TOKEN}}@${{env.NEXUS_HOST}}/repository/staging/hologram-app/${{env.NEW_RELEASE_VERSION}}/app.apk>Download the APK</a> and tap into the downloaded file to install the new version.
+  
+            <b>For iOS</b>
+            <a href=https://downloader:${{env.NEXUS_DOWNLOAD_TOKEN}}@${{env.NEXUS_HOST}}/repository/staging/hologram-app/${{env.NEW_RELEASE_VERSION}}/install.html>Tap here to download and install</a> 
+            <br />
+            <p>Kind regards,</p>
+            <p>2060.io Dev Team</p>
+            </body>
+            </html>
+          ignore_cert: true
+          convert_markdown: false
+  

@@ -61,6 +61,7 @@ export type VideoMetadata = MediaSharingMetadata & {
 export type VoiceNoteMetadata = MediaSharingMetadata & {
   preview?: string
   duration?: number
+  waveform?: string
 }
 
 export type LinkMetadata = MediaSharingMetadata & {

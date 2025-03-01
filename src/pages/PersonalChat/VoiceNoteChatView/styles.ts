@@ -13,6 +13,11 @@ export default (theme: AppTheme) =>
     },
     subContainer: {
       flexDirection: 'row',
+      alignItems: 'center',
+    },
+    waveFormContainer: {
+      height: 22,
+      flex: 1,
     },
     containerButtonPlay: {
       height: PLAY_BUTTON_WIDTH,
@@ -47,5 +52,14 @@ export default (theme: AppTheme) =>
     txtCounter: {
       color: theme.colors.tertiaryText,
       fontSize: theme.fontSize.sm - 1,
+    },
+    noWaveFormContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    noWaveFormText: {
+      fontSize: theme.fontSize.sm,
+      color: theme.colors.primaryText,
     },
   })

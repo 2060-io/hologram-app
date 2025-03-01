@@ -1,5 +1,6 @@
 import { useFocusEffect } from '@react-navigation/native'
 import { FlashList } from '@shopify/flash-list'
+import { useAudioPlayer } from '@simform_solutions/react-native-audio-waveform'
 import React, { useState, useRef, useCallback, memo, useMemo, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
@@ -97,6 +98,7 @@ const createReportedMessageChatEntry = (params: {
 
 const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }: PersonalChatProps) => {
   const { t } = useTranslation()
+  const { stopPlayersAndExtractors } = useAudioPlayer()
   const [currentStickyDate, setCurrentStickyDate] = useState<Date>()
   const [showAttachmentOptions, setShowAttachmentOptions] = useState(false)
   const [showStickyDate, setShowStickyDate] = useState(false)
@@ -140,6 +142,15 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
   const { menu } = useActionMenu({ connectionId: chatThreadData.connectionId })
   const { isKeyboardVisible } = useKeyboard()
   const styles = getStyles(theme)
+
+  // listener to stop all players and extractors of audios
+  // when component unmounts (leaves screen) to free up the maximum possible resources
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('beforeRemove', () => {
+      stopPlayersAndExtractors()
+    })
+    return unsubscribe
+  }, [navigation])
 
   const renderSystemMessage = useMemo(() => {
     const systemMessage = getSystemMessage({
