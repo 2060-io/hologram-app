@@ -1,3 +1,7 @@
+# TODO: remove this variable which disable new architecture in iOS. It was added due to react-native-share-menu does not have support
+# for the new architecture. So, when this library has support to new architecture or be replaced by another one remove it
+ENV['RCT_NEW_ARCH_ENABLED'] = "0"
+
 require_relative '../node_modules/expo/scripts/autolinking'
 
 # Resolve react_native_pods.rb with node to allow for hoisting
@@ -10,6 +14,13 @@ require Pod::Executable.execute_command('node', ['-p',
 
 platform :ios, '15.6'
 install! 'cocoapods', :deterministic_uuids => false
+
+linkage = ENV['USE_FRAMEWORKS']
+if linkage != nil
+  Pod::UI.puts "Configuring Pod with #{linkage}ally linked Frameworks".green
+  use_frameworks! :linkage => linkage.to_sym
+end
+$RNFirebaseAsStaticFramework = true
 
 abstract_target '2060CommonPods' do
   target '2060Dev' do
@@ -31,7 +42,10 @@ abstract_target '2060CommonPods' do
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec', :modular_headers => false
 
   config = use_native_modules!
-  use_modular_headers!
+  pod 'Firebase', :modular_headers => true
+  pod 'FirebaseCoreInternal', :modular_headers => true
+  pod 'GoogleUtilities', :modular_headers => true
+  pod 'FirebaseCore', :modular_headers => true
 
   use_react_native!(
     :path => config[:reactNativePath],
