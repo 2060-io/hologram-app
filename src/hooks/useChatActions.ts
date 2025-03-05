@@ -1,7 +1,7 @@
 import { MessageReactionAction } from '@2060.io/credo-ts-didcomm-reactions'
+import { MessageReceiptOptions, MessageState } from '@2060.io/credo-ts-didcomm-receipts'
 import { ActionMenuRole, ActionMenuState } from '@credo-ts/action-menu'
 import { useCameraRoll } from '@react-native-camera-roll/camera-roll'
-import { MessageReceiptOptions, MessageState } from 'credo-ts-receipts'
 import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Platform, PermissionsAndroid } from 'react-native'

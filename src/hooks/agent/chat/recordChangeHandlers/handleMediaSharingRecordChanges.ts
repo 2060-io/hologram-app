@@ -1,4 +1,8 @@
-import { MediaSharingRecord, MediaSharingRole, MediaSharingState } from 'credo-ts-media-sharing'
+import {
+  MediaSharingRecord,
+  MediaSharingRole,
+  MediaSharingState,
+} from '@2060.io/credo-ts-didcomm-media-sharing'
 import Realm from 'realm'
 
 import { getLocalizedPreview, getThumbnail } from '../preview'

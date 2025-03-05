@@ -1,9 +1,9 @@
 /* eslint-disable import/no-named-as-default-member */
+import { SharedMediaItem } from '@2060.io/credo-ts-didcomm-media-sharing'
 import { utils } from '@credo-ts/core'
 import appCheck from '@react-native-firebase/app-check'
 import { useAudioPlayer } from '@simform_solutions/react-native-audio-waveform'
 import axios from 'axios'
-import { SharedMediaItem } from 'credo-ts-media-sharing'
 import { t } from 'i18next'
 import { default as React, useEffect, useCallback, useRef, useState } from 'react'
 import { NativeModules } from 'react-native'

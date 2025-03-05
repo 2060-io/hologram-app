@@ -1,15 +1,14 @@
+import { ShareMediaMessage } from '@2060.io/credo-ts-didcomm-media-sharing'
 import { MessageReactionsMessage, MessageReactionAction } from '@2060.io/credo-ts-didcomm-reactions'
+import { MessageReceiptsMessage, MessageState } from '@2060.io/credo-ts-didcomm-receipts'
 import { PerformMessage } from '@credo-ts/action-menu'
 import {
   BaseRecord,
   AgentMessageSentEvent,
   AgentEventTypes,
   MessageSendingError,
-  MessageSendingErrorReason,
   BasicMessage,
 } from '@credo-ts/core'
-import { ShareMediaMessage } from 'credo-ts-media-sharing'
-import { MessageReceiptsMessage, MessageState } from 'credo-ts-receipts'
 import { Realm } from 'realm'
 import { ReplaySubject, firstValueFrom, filter, first, timeout, catchError, map } from 'rxjs'
 
@@ -187,7 +186,7 @@ export class AgentActionExecuter {
       }
       return { status: ActionExecutionStatus.OK }
     } catch (error) {
-      if (error instanceof MessageSendingError && error.reason === MessageSendingErrorReason.Undeliverable) {
+      if (error instanceof MessageSendingError) {
         log(`**** Message sending error: ${JSON.stringify(error)}`)
         const { message, associatedRecord, connection } = error.outboundMessageContext
 

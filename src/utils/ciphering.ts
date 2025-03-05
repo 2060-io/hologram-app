@@ -1,4 +1,4 @@
-import { CipheringInfo } from 'credo-ts-media-sharing'
+import { CipheringInfo } from '@2060.io/credo-ts-didcomm-media-sharing'
 import { NativeModules } from 'react-native'
 
 import { logError } from './log'

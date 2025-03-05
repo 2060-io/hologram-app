@@ -1,5 +1,5 @@
+import { MediaSharingRecord } from '@2060.io/credo-ts-didcomm-media-sharing'
 import { BasicMessageRecord } from '@credo-ts/core'
-import { MediaSharingRecord } from 'credo-ts-media-sharing'
 import Realm from 'realm'
 
 import * as chatEntryService from '../services/ChatEntryService'

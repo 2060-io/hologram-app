@@ -1,5 +1,5 @@
+import { MessageState } from '@2060.io/credo-ts-didcomm-receipts'
 import { ConnectionRecord, utils } from '@credo-ts/core'
-import { MessageState } from 'credo-ts-receipts'
 import * as React from 'react'
 import { createContext, useCallback, useState, useEffect, useContext } from 'react'
 
