@@ -1,6 +1,7 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
+import { Pressable } from 'react-native'
 
 import Scan from '../Scan'
 import { Settings } from '../Settings'
@@ -54,9 +55,8 @@ const HomeMain = (props: HomeTabProps) => {
 
   return (
     <Tab.Navigator
-      id="tab_navigator_home"
+      key="tab_navigator_home"
       initialRouteName="Chats"
-      sceneContainerStyle={{ backgroundColor: theme.colors.secondary }}
       screenOptions={({ route }) => ({
         tabBarLabel: t(`navigation.${route.name}`),
         tabBarAccessibilityLabel: 'icon',
@@ -72,6 +72,7 @@ const HomeMain = (props: HomeTabProps) => {
           <HeaderTitle title={t(headerTitles[route.name] ?? `navigation.${route.name}`)} theme={theme} />
         ),
         tabBarIcon: iconProps => <TabBarIcon {...iconProps} routeName={route.name} theme={theme} />,
+        tabBarButton: buttonProps => <Pressable {...buttonProps} android_ripple={{ color: 'transparent' }} />,
       })}
     >
       <Tab.Screen name="Chats" component={ChatsStack} options={{ headerShown: false }} />
