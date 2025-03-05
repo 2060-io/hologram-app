@@ -1980,8 +1980,6 @@ PODS:
     - React-Core
   - RealmJS (12.14.1):
     - React
-  - RNAudioRecorderPlayer (3.6.11):
-    - React-Core
   - RNCAsyncStorage (1.12.1):
     - React-Core
   - RNCClipboard (1.16.2):
@@ -2331,7 +2329,6 @@ DEPENDENCIES:
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - ReactNativeIncallManager (from `../node_modules/react-native-incall-manager`)
   - RealmJS (from `../node_modules/realm`)
-  - RNAudioRecorderPlayer (from `../node_modules/react-native-audio-recorder-player`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-community/async-storage`)"
   - "RNCClipboard (from `../node_modules/@react-native-clipboard/clipboard`)"
   - "RNCMaskedView (from `../node_modules/@react-native-masked-view/masked-view`)"
@@ -2578,8 +2575,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-incall-manager"
   RealmJS:
     :path: "../node_modules/realm"
-  RNAudioRecorderPlayer:
-    :path: "../node_modules/react-native-audio-recorder-player"
   RNCAsyncStorage:
     :path: "../node_modules/@react-native-community/async-storage"
   RNCClipboard:
@@ -2752,7 +2747,6 @@ SPEC CHECKSUMS:
   ReactCommon: 3c1c8c6d777103c0e60e37c6c5f08e828e2a77c9
   ReactNativeIncallManager: ef7b845e166f04cf8ddf433d8a23227b01cef87a
   RealmJS: 5b0258b3c04b9f48536b2692965690afe024164c
-  RNAudioRecorderPlayer: a33b29ebcf697a58aa0e502e672604f688c0841d
   RNCAsyncStorage: 87d0d3d6193e79bd435e955f8998d2040aa60d67
   RNCClipboard: e1d17c9d093d8129ef50b39b63a17a0e8ccd0ade
   RNCMaskedView: a1877193cec508d3524c70977d79ccdf3fd6623f
