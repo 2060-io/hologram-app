@@ -2355,13 +2355,13 @@
     "@hyperledger/aries-askar-shared" "0.2.3"
     "@mapbox/node-pre-gyp" "^1.0.11"
 
-"@hyperledger/aries-askar-react-native@npm:@openwallet-foundation/askar-react-native@0.3.2-alpha-20250210081959":
-  version "0.3.2-alpha-20250210081959"
-  resolved "https://registry.yarnpkg.com/@openwallet-foundation/askar-react-native/-/askar-react-native-0.3.2-alpha-20250210081959.tgz#eeb6b712ea7f9e9d7a4e2739fe025d0b5adfa77b"
-  integrity sha512-xcNpnXEP5OxQHbAfxSqXFKpNzns7FMjLVeJMDaA6OqwIby1utqY6OxUUEmc0YFA0YMx2Qox4gpve3kxAVecCUA==
+"@hyperledger/aries-askar-react-native@npm:@openwallet-foundation/askar-react-native@0.3.2-alpha-20250306091539":
+  version "0.3.2-alpha-20250306091539"
+  resolved "https://registry.yarnpkg.com/@openwallet-foundation/askar-react-native/-/askar-react-native-0.3.2-alpha-20250306091539.tgz#d1a497df9d0bbd3797c60c461c46bb156289499c"
+  integrity sha512-x+rFvlhQTYfMdT1yk5QwYQXgKPAlfSMhQC4ZlQHlZevEurGP0S9K++n85FYf4N7zKoMv5zhLnnSX8WmrhVIOvw==
   dependencies:
     "@mapbox/node-pre-gyp" "^1.0.11"
-    "@openwallet-foundation/askar-shared" "0.3.2-alpha-20250210081959"
+    "@openwallet-foundation/askar-shared" "0.3.2-alpha-20250306091539"
 
 "@hyperledger/aries-askar-shared@0.2.3":
   version "0.2.3"
@@ -2370,10 +2370,10 @@
   dependencies:
     buffer "^6.0.3"
 
-"@hyperledger/aries-askar-shared@npm:@openwallet-foundation/askar-shared@0.3.1":
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/@openwallet-foundation/askar-shared/-/askar-shared-0.3.1.tgz#0f42832258a1d332c2755573123e4829b4e150a0"
-  integrity sha512-KpkVuLHnKkJ7nPYZ/6PJ8b9gq+elC6Mhg8UiG+wLOKchVi6Vbv/nOsAdKK9j1/CCZ3DzvfTbhV+KRk6YNXmIsA==
+"@hyperledger/aries-askar-shared@npm:@openwallet-foundation/askar-shared@0.3.2-alpha-20250306091539":
+  version "0.3.2-alpha-20250306091539"
+  resolved "https://registry.yarnpkg.com/@openwallet-foundation/askar-shared/-/askar-shared-0.3.2-alpha-20250306091539.tgz#9a939f9afb3f83c37a738a31fe9be4f04bfebbba"
+  integrity sha512-Cnyb/86wbR4l1AJ6tFXi+gQtB/wI8XGI6NM7mBdCzzWL0a3k+bVeoyv0lCdCJdMMr+eB83YesY/I3z5y9NPhUQ==
   dependencies:
     buffer "^6.0.3"
 
@@ -2961,10 +2961,10 @@
   resolved "https://registry.yarnpkg.com/@one-ini/wasm/-/wasm-0.1.1.tgz#6013659736c9dbfccc96e8a9c2b3de317df39323"
   integrity sha512-XuySG1E38YScSJoMlqovLru4KTUNSjgVTIjyh7qMX6aNN5HY5Ct5LhRJdxO79JtTzKfzV/bnWpz+zquYrISsvw==
 
-"@openwallet-foundation/askar-shared@0.3.2-alpha-20250210081959":
-  version "0.3.2-alpha-20250210081959"
-  resolved "https://registry.yarnpkg.com/@openwallet-foundation/askar-shared/-/askar-shared-0.3.2-alpha-20250210081959.tgz#2995add86500c846ee09b8feb30371994b7cfc1c"
-  integrity sha512-Rkc3q8YeCaNT2VUAh4H9cOBA3uj/kyyRptapqAE73s5ZIlQn7waOuGq4E0mbbQR7YE9xEs7slsWfgCNTsTiZ7Q==
+"@openwallet-foundation/askar-shared@0.3.2-alpha-20250306091539":
+  version "0.3.2-alpha-20250306091539"
+  resolved "https://registry.yarnpkg.com/@openwallet-foundation/askar-shared/-/askar-shared-0.3.2-alpha-20250306091539.tgz#9a939f9afb3f83c37a738a31fe9be4f04bfebbba"
+  integrity sha512-Cnyb/86wbR4l1AJ6tFXi+gQtB/wI8XGI6NM7mBdCzzWL0a3k+bVeoyv0lCdCJdMMr+eB83YesY/I3z5y9NPhUQ==
   dependencies:
     buffer "^6.0.3"
 
