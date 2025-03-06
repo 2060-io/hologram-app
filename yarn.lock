@@ -29,16 +29,18 @@
     tsyringe "^4.8.0"
     uuid "^9.0.0"
 
-"@2060.io/credo-ts-didcomm-mrtd@0.0.9":
-  version "0.0.9"
-  resolved "https://registry.yarnpkg.com/@2060.io/credo-ts-didcomm-mrtd/-/credo-ts-didcomm-mrtd-0.0.9.tgz#fb0780c16f4a391ee902c026811a97dcf48013e3"
-  integrity sha512-KlFhrjdaHDHKDH7zKevBr2H19ueZMSXj/kySd1NixIqiEyZW3hVDzhnu9GjXdO1olezOs80hc9Khu07xWdpdwA==
+"@2060.io/credo-ts-didcomm-mrtd@0.0.13":
+  version "0.0.13"
+  resolved "https://registry.yarnpkg.com/@2060.io/credo-ts-didcomm-mrtd/-/credo-ts-didcomm-mrtd-0.0.13.tgz#250b8da5f698a79c5e01d0f2fb7caf40a32b9c03"
+  integrity sha512-uzA5Fp/WvR/W37SLI1Fr570KfINk3rWTIAOM38Wy9ShPsxgwkeD5lxKi90CVBm2q2XteADmKSNF020ILSm2j6g==
   dependencies:
-    "@li0ard/tsemrtd" "^0.2.0"
+    "@li0ard/tsemrtd" "^0.2.2"
     class-transformer "0.5.1"
     class-validator "0.14.1"
     esbuild "^0.24.0"
     mrz "^4.2.0"
+    reflect-metadata "^0.1.13"
+    rxjs "^7.2.0"
     tsyringe "^4.8.0"
 
 <<<<<<< HEAD
@@ -2550,7 +2552,7 @@
   resolved "https://registry.yarnpkg.com/@js-joda/timezone/-/timezone-2.3.0.tgz#72878f6dc8afef20c29906e5d8d946f91618a2c3"
   integrity sha512-DHXdNs0SydSqC5f0oRJPpTcNfnpRojgBqMCFupQFv6WgeZAjU3DBx+A7JtaGPP3dHrP2Odi2N8Vf+uAm/8ynCQ==
 
-"@li0ard/tsemrtd@^0.2.0":
+"@li0ard/tsemrtd@^0.2.2":
   version "0.2.2"
   resolved "https://registry.yarnpkg.com/@li0ard/tsemrtd/-/tsemrtd-0.2.2.tgz#a6dfdca33f9f3b0737a16f6a8be00e13d214713c"
   integrity sha512-u+xw2AbsyMMyGx5tJI9chmwRiVcmJWCy3eO2fTx0BTL3sgQl0FwqmPWgbNqmREtZxrXv2SO4hkKvl2BXGGay6Q==
