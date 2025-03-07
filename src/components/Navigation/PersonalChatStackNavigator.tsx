@@ -28,7 +28,7 @@ const PersonalChatStackNavigator = () => {
           screenOptions={({ route }) => ({
             cardStyle: styles.cardStyle,
             headerStyle: globalStyles.headerStyle,
-            headerBackTitleVisible: false,
+            headerBackTitle: '',
             headerBackAllowFontScaling: true,
             headerTitleAlign: 'center',
             headerTitle: () => <HeaderTitle title={t(`navigation.${route.name}`)} theme={theme} />,
