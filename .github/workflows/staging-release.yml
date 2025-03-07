@@ -8,7 +8,6 @@ on:
   workflow_dispatch:
 
 env:
-  APPCENTER_API_TOKEN: ${{ secrets.APPCENTER_API_TOKEN }}
   NEXUS_HOST: ${{ secrets.NEXUS_HOST }}
   NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
   NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
@@ -138,12 +137,6 @@ jobs:
           cd android
           ./gradlew clean assembleStagingRelease
 
-      - name: Distribute to App Center
-        run: |
-          npm install -g  appcenter-cli@2.10.8
-          appcenter login --token $APPCENTER_API_TOKEN
-          appcenter distribute release -f ./android/app/build/outputs/apk/staging/release/app-staging-release.apk -g Collaborators --app 2060/2060-android-staging -r "staging android"
-
       - name: Upload app.apk to Nexus
         run: |
           curl --fail-with-body -u $NEXUS_USERNAME:$NEXUS_PASSWORD \
@@ -185,12 +178,6 @@ jobs:
           pod install --repo-update
           xcodebuild clean archive -workspace  app2060.xcworkspace -scheme 2060Staging -allowProvisioningUpdates -sdk iphoneos -archivePath builds/app2060.xcarchive -destination "generic/platform=iOS" | xcpretty
           xcodebuild -exportArchive -archivePath "builds/app2060.xcarchive" -exportPath "builds" -exportOptionsPlist app2060/ExportOptions.plist | xcpretty
-
-      - name: Distribute to App Center
-        run: |
-          npm install -g appcenter-cli@2.10.8
-          appcenter login --token $APPCENTER_API_TOKEN
-          appcenter distribute release -f ./ios/builds/2060Staging.ipa -g Collaborators --app 2060/2060-ios-staging -r "staging ios"
 
       - name: Create manifest.plist
         run: |

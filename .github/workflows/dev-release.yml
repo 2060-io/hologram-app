@@ -7,7 +7,6 @@ on:
   workflow_dispatch:
 
 env:
-  APPCENTER_API_TOKEN: ${{ secrets.APPCENTER_API_TOKEN }}
   NEXUS_HOST: ${{ secrets.NEXUS_HOST }}
   NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
   NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
@@ -136,12 +135,6 @@ jobs:
           npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/build/intermediates/res/merged/release/
           cd android
           ./gradlew clean assembleDevRelease
-
-      - name: Distribute to App Center
-        run: |
-          npm install -g  appcenter-cli@2.10.8
-          appcenter login --token $APPCENTER_API_TOKEN
-          appcenter distribute release -f ./android/app/build/outputs/apk/dev/release/app-dev-release.apk -g Collaborators --app 2060/2060-android-prestaging -r "prestaging android"
   
       - name: Upload app.apk to Nexus
         run: |
@@ -184,12 +177,6 @@ jobs:
           pod install --repo-update
           xcodebuild clean archive -workspace  app2060.xcworkspace -scheme 2060Dev -allowProvisioningUpdates -sdk iphoneos -archivePath builds/app2060.xcarchive -destination "generic/platform=iOS" | xcpretty
           xcodebuild -exportArchive -archivePath "builds/app2060.xcarchive" -exportPath "builds" -exportOptionsPlist app2060/ExportOptions.plist | xcpretty
-
-      - name: Distribute to App Center
-        run: |
-          npm install -g appcenter-cli@2.10.8
-          appcenter login --token $APPCENTER_API_TOKEN
-          appcenter distribute release -f ./ios/builds/2060Dev.ipa -g Collaborators --app 2060/2060-ios-prestaging -r "prestaging ios"
 
       - name: Create manifest.plist
         run: |
