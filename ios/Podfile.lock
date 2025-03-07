@@ -1615,7 +1615,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - react-native-netinfo (9.5.0):
+  - react-native-netinfo (11.4.1):
     - React-Core
   - react-native-safe-area-context (5.1.0):
     - React-Core
@@ -2711,7 +2711,7 @@ SPEC CHECKSUMS:
   react-native-image-resizer: 24c5d06fae2176dc0caed4b6396e02befb44064a
   react-native-job-queue: 0ad04875957147913e0ef48c645a0aa87fc1480d
   react-native-keyboard-controller: 291458d166d485b5bea92683167981f83360e307
-  react-native-netinfo: 26560022f28c06d8ef00a9ff1e03beefbbb60c2d
+  react-native-netinfo: cec9c4e86083cb5b6aba0e0711f563e2fbbff187
   react-native-safe-area-context: e134b241010ebe2aacdcea013565963d13826faa
   react-native-splash-screen: a3f3c31e39f4466e880296008749138b276929ed
   react-native-video: cab619600c0d1283080c80298a2abe3a6a9157f3

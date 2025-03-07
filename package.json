@@ -57,7 +57,7 @@
     "@react-native-camera-roll/camera-roll": "7.9.0",
     "@react-native-clipboard/clipboard": "^1.14.1",
     "@react-native-community/async-storage": "^1.12.1",
-    "@react-native-community/netinfo": "^9.3.0",
+    "@react-native-community/netinfo": "11.4.1",
     "@react-native-community/picker": "^1.8.1",
     "@react-native-firebase/app": "21.7.1",
     "@react-native-firebase/app-check": "21.7.1",
