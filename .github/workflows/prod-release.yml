@@ -7,9 +7,6 @@ on:
         type: string
         description: Semantic Version to be published (e.g. 2.5.0')
 
-env:
-  APPCENTER_API_TOKEN: ${{ secrets.APPCENTER_API_TOKEN }}
-
 jobs:
   release:
     runs-on: ubuntu-latest
