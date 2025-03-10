@@ -20,7 +20,7 @@ const HomeMainContainer = (HomeMainComponent: ElementType) => {
     const isValidParams = useMemo(() => {
       if (!route.params) return false
       const parameters = Object.keys(route.params)
-      return ['oob', 'd_m', 'c_i'].includes(parameters[0])
+      return ['oob', 'd_m', 'c_i', '_url'].includes(parameters[0])
     }, [route.params])
 
     const goToConnectionDetails = (connectionId: string) => navigate('ConnectionDetails', { connectionId })
