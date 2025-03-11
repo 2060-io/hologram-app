@@ -200,6 +200,12 @@ const BaseConnectionDetails = ({
     onPress: () => openConfirmationModal('deleteConnection'),
   })
 
+  connectionOptions.push({
+    iconName: 'forward',
+    text: t('personalChat.forward'),
+    onPress: () => navigation.navigate('ForwardConnection', { connectionId: connection.id }),
+  })
+
   const channels: ChannelProps[] = [{ value: 'text', onPress: goToChat }]
 
   return (

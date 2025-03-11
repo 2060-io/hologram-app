@@ -52,4 +52,7 @@ export type NavigationStackParams = {
     credentials: CredentialMainInfo[]
     presentedAt: string
   }
+  ForwardConnection: {
+    connectionId: string
+  }
 }
