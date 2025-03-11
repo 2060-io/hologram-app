@@ -13,7 +13,7 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
 
-  self.moduleName = @"app2060";
+  self.moduleName = @"hologram";
 
   [RNFBAppCheckModule sharedInstance];
 

@@ -15,7 +15,7 @@ class MainActivity : ReactActivity() {
      * rendering of the component.
      */
     override fun getMainComponentName(): String? {
-        return "app2060"
+        return "hologram"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

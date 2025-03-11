@@ -51,4 +51,4 @@ For iOS:
 yarn run ios
 ```
 
-Make sure to properly set-up your simulators in case of using them. You should probably open [XCode workspace](ios/app2060.xcworkspace/) to select a target matching the one in your system.
+Make sure to properly set-up your simulators in case of using them. You should probably open [XCode workspace](ios/hologram.xcworkspace/) to select a target matching the one in your system.
