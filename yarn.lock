@@ -2342,25 +2342,10 @@
     "@hyperledger/aries-askar-shared" "0.2.3"
     "@mapbox/node-pre-gyp" "^1.0.11"
 
-"@hyperledger/aries-askar-react-native@npm:@openwallet-foundation/askar-react-native@0.3.2-alpha-20250306091539":
-  version "0.3.2-alpha-20250306091539"
-  resolved "https://registry.yarnpkg.com/@openwallet-foundation/askar-react-native/-/askar-react-native-0.3.2-alpha-20250306091539.tgz#d1a497df9d0bbd3797c60c461c46bb156289499c"
-  integrity sha512-x+rFvlhQTYfMdT1yk5QwYQXgKPAlfSMhQC4ZlQHlZevEurGP0S9K++n85FYf4N7zKoMv5zhLnnSX8WmrhVIOvw==
-  dependencies:
-    "@mapbox/node-pre-gyp" "^1.0.11"
-    "@openwallet-foundation/askar-shared" "0.3.2-alpha-20250306091539"
-
 "@hyperledger/aries-askar-shared@0.2.3":
   version "0.2.3"
   resolved "https://registry.yarnpkg.com/@hyperledger/aries-askar-shared/-/aries-askar-shared-0.2.3.tgz#670fea675982e3b0a2f416131b04d0f1e058cd1b"
   integrity sha512-g9lao8qa80kPCLqqp02ovNqEfQIrm6cAf4xZVzD5P224VmOhf4zM6AKplQTvQx7USNKoXroe93JrOOSVxPeqrA==
-  dependencies:
-    buffer "^6.0.3"
-
-"@hyperledger/aries-askar-shared@npm:@openwallet-foundation/askar-shared@0.3.2-alpha-20250306091539":
-  version "0.3.2-alpha-20250306091539"
-  resolved "https://registry.yarnpkg.com/@openwallet-foundation/askar-shared/-/askar-shared-0.3.2-alpha-20250306091539.tgz#9a939f9afb3f83c37a738a31fe9be4f04bfebbba"
-  integrity sha512-Cnyb/86wbR4l1AJ6tFXi+gQtB/wI8XGI6NM7mBdCzzWL0a3k+bVeoyv0lCdCJdMMr+eB83YesY/I3z5y9NPhUQ==
   dependencies:
     buffer "^6.0.3"
 
@@ -2947,13 +2932,6 @@
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/@one-ini/wasm/-/wasm-0.1.1.tgz#6013659736c9dbfccc96e8a9c2b3de317df39323"
   integrity sha512-XuySG1E38YScSJoMlqovLru4KTUNSjgVTIjyh7qMX6aNN5HY5Ct5LhRJdxO79JtTzKfzV/bnWpz+zquYrISsvw==
-
-"@openwallet-foundation/askar-shared@0.3.2-alpha-20250306091539":
-  version "0.3.2-alpha-20250306091539"
-  resolved "https://registry.yarnpkg.com/@openwallet-foundation/askar-shared/-/askar-shared-0.3.2-alpha-20250306091539.tgz#9a939f9afb3f83c37a738a31fe9be4f04bfebbba"
-  integrity sha512-Cnyb/86wbR4l1AJ6tFXi+gQtB/wI8XGI6NM7mBdCzzWL0a3k+bVeoyv0lCdCJdMMr+eB83YesY/I3z5y9NPhUQ==
-  dependencies:
-    buffer "^6.0.3"
 
 "@peculiar/asn1-cms@^2.3.13", "@peculiar/asn1-cms@^2.3.15":
   version "2.3.15"
