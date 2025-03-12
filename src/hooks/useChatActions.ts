@@ -1,3 +1,4 @@
+import { MessageReactionAction } from '@2060.io/credo-ts-didcomm-reactions'
 import { ActionMenuRole, ActionMenuState } from '@credo-ts/action-menu'
 import { useCameraRoll } from '@react-native-camera-roll/camera-roll'
 import { MessageReceiptOptions, MessageState } from 'credo-ts-receipts'
@@ -35,7 +36,6 @@ import {
   isMediaType,
 } from '@2060/model'
 import { ChatEntryMessage } from '@2060/pages/PersonalChat/ChatMessage/Props'
-import { MessageReactionAction } from '@2060/services/agent/reactions/messages/MessageReactionsMessage'
 import { log, logError, requestAndroidPermissions } from '@2060/utils'
 import { getLocalFileUri } from '@2060/utils/RNFS'
 import { getMediaFileSharingData } from '@2060/utils/mediaFileUtils'

@@ -1,5 +1,6 @@
 import { DidCommCallsModule } from '@2060.io/credo-ts-didcomm-calls'
 import { DidCommMrtdModule } from '@2060.io/credo-ts-didcomm-mrtd'
+import { DidCommReactionsModule } from '@2060.io/credo-ts-didcomm-reactions'
 import { UserProfileModule, UserProfileModuleConfig } from '@2060.io/credo-ts-didcomm-user-profile'
 import { ActionMenuModule } from '@credo-ts/action-menu'
 import {
@@ -43,8 +44,6 @@ import { DidWebAnonCredsRegistry } from 'credo-ts-didweb-anoncreds'
 import { IndyVdrProxyDidResolver, IndyVdrProxyAnonCredsRegistry } from 'credo-ts-indy-vdr-proxy-client'
 import { MediaSharingModule } from 'credo-ts-media-sharing'
 import { ReceiptsModule } from 'credo-ts-receipts'
-
-import { DidCommReactionsModule } from './reactions'
 
 const SECONDS_PER_DAY = 60 * 60 * 24
 

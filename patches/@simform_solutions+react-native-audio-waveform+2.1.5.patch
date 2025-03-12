@@ -27,6 +27,19 @@ index 25b9376..cf5744a 100644
              if (currentDecibel == Double.NEGATIVE_INFINITY) {
                  args.putDouble(Constants.currentDecibel, 0.0)
              } else {
+diff --git a/node_modules/@simform_solutions/react-native-audio-waveform/ios/AudioPlayer.swift b/node_modules/@simform_solutions/react-native-audio-waveform/ios/AudioPlayer.swift
+index 059f127..71d2c9a 100644
+--- a/node_modules/@simform_solutions/react-native-audio-waveform/ios/AudioPlayer.swift
++++ b/node_modules/@simform_solutions/react-native-audio-waveform/ios/AudioPlayer.swift
+@@ -39,6 +39,8 @@ class AudioPlayer: NSObject, AVAudioPlayerDelegate {
+       }
+      
+       do {
++        try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: [])
++        try AVAudioSession.sharedInstance().setActive(true)
+         player = try AVAudioPlayer(contentsOf: audioUrl!)
+         player?.prepareToPlay()
+         player?.volume = Float(volume ?? 100.0)
 diff --git a/node_modules/@simform_solutions/react-native-audio-waveform/ios/AudioRecorder.swift b/node_modules/@simform_solutions/react-native-audio-waveform/ios/AudioRecorder.swift
 index d571ca0..9a735da 100644
 --- a/node_modules/@simform_solutions/react-native-audio-waveform/ios/AudioRecorder.swift

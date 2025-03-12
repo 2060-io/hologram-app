@@ -1,5 +1,6 @@
 import { CallOfferMessage } from '@2060.io/credo-ts-didcomm-calls'
 import { MrzDataRequestMessage } from '@2060.io/credo-ts-didcomm-mrtd'
+import { MessageReactionsReceivedEvent, ReactionsEventTypes } from '@2060.io/credo-ts-didcomm-reactions'
 import { ConnectionProfileUpdatedEvent, ProfileEventTypes } from '@2060.io/credo-ts-didcomm-user-profile'
 import { V1ProposeCredentialMessage, V1ProposePresentationMessage } from '@credo-ts/anoncreds'
 import {
@@ -50,7 +51,6 @@ import {
   OutOfBandInvitationEvent,
   OutOfBandInvitationEventTypes,
 } from '@2060/services/agent/oob/OutOfBandEvents'
-import { MessageReactionsReceivedEvent, ReactionsEventTypes } from '@2060/services/agent/reactions'
 import {
   getConnectionDisplayName,
   getConnectionDisplayPicture,
