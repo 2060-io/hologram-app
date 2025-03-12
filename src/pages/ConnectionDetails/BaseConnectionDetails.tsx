@@ -41,6 +41,7 @@ export interface ConnectionDetailsProps extends WrapperProps {
 export interface BaseConnectionDetailsProps extends ConnectionDetailsProps {
   mainInfo: ReactElement
   footerInfo?: ReactElement
+  isService: boolean
 }
 
 const BaseConnectionDetails = ({
@@ -48,6 +49,7 @@ const BaseConnectionDetails = ({
   connection,
   mainInfo,
   footerInfo,
+  isService,
 }: BaseConnectionDetailsProps) => {
   const [showConfirmationModal, setShowConfirmationModal] = useState(false)
   const [blockingConnection, setBlockingConnection] = useState(false)
@@ -199,12 +201,13 @@ const BaseConnectionDetails = ({
     text: t('connection.deleteConnection'),
     onPress: () => openConfirmationModal('deleteConnection'),
   })
-
-  connectionOptions.push({
-    iconName: 'forward',
-    text: t('personalChat.forward'),
-    onPress: () => navigation.navigate('ForwardConnection', { connectionId: connection.id }),
-  })
+  if (isService) {
+    connectionOptions.push({
+      iconName: 'forward',
+      text: t('personalChat.forward'),
+      onPress: () => navigation.navigate('ForwardConnection', { connection }),
+    })
+  }
 
   const channels: ChannelProps[] = [{ value: 'text', onPress: goToChat }]
 

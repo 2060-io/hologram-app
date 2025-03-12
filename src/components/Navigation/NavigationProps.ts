@@ -1,4 +1,4 @@
-import { OutOfBandRecord } from '@credo-ts/core'
+import { ConnectionRecord, OutOfBandRecord } from '@credo-ts/core'
 
 import { ChatEntryData } from '@2060/model'
 import { CredentialMainInfo } from '@2060/services/agent/display'
@@ -53,6 +53,6 @@ export type NavigationStackParams = {
     presentedAt: string
   }
   ForwardConnection: {
-    connectionId: string
+    connection: ConnectionRecord
   }
 }

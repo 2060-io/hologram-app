@@ -384,6 +384,9 @@ export function manageAgentChatEvents(agent: MobileAgent, realm: Realm, activeCh
         createdAt: new Date().getTime(),
       })
       chatThreadService.updateThread(realm, thread.id, { lastChatEntry: chatEntry })
+      if (thread.id !== activeChatThreadId) {
+        chatThreadService.addUnread(realm, thread.id, 1)
+      }
     }
   }
 

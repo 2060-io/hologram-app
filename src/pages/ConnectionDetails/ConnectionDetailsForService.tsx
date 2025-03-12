@@ -19,6 +19,7 @@ const ConnectionDetailsForService = (props: ConnectionDetailsProps) => {
         </View>
       }
       footerInfo={<View>{serviceInfo && <ProofOfTrust serviceInfo={serviceInfo} />}</View>}
+      isService
     />
   )
 }

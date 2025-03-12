@@ -81,6 +81,7 @@ const ConnectionDetails = (props: ConnectionDetailsProps) => {
           </View>
         </View>
       }
+      isService={false}
     />
   )
 }
