@@ -1594,7 +1594,7 @@ PODS:
     - React-Core
   - react-native-job-queue (0.5.2):
     - React
-  - react-native-keyboard-controller (1.16.6):
+  - react-native-keyboard-controller (1.16.7):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1667,7 +1667,7 @@ PODS:
   - react-native-webrtc (118.0.7):
     - JitsiWebRTC (~> 118.0.0)
     - React-Core
-  - react-native-webview (13.13.2):
+  - react-native-webview (13.13.4):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -2710,13 +2710,13 @@ SPEC CHECKSUMS:
   react-native-get-random-values: d16467cf726c618e9c7a8c3c39c31faa2244bbba
   react-native-image-resizer: 24c5d06fae2176dc0caed4b6396e02befb44064a
   react-native-job-queue: 0ad04875957147913e0ef48c645a0aa87fc1480d
-  react-native-keyboard-controller: 291458d166d485b5bea92683167981f83360e307
+  react-native-keyboard-controller: 8463f144f1b2255f732b8e4cf97ba4c967a49d5d
   react-native-netinfo: cec9c4e86083cb5b6aba0e0711f563e2fbbff187
   react-native-safe-area-context: e134b241010ebe2aacdcea013565963d13826faa
   react-native-splash-screen: a3f3c31e39f4466e880296008749138b276929ed
   react-native-video: cab619600c0d1283080c80298a2abe3a6a9157f3
   react-native-webrtc: eb8582f60b91e8883c290425bf1676c4bcedd63d
-  react-native-webview: 042b9dfd509d23e7ebc07da06c38a8bcc4679d46
+  react-native-webview: f38fd87322055d2ce09058cf19f50f708fb174da
   react-native-worklets-core: a7fb4fee321f4af49820f92bf6252b5fe9c41a74
   React-nativeconfig: 539ff4de6ce3b694e8e751080568c281c84903ce
   React-NativeModulesApple: 702246817c286d057e23fe4b1302019796e62521
