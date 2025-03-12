@@ -29,7 +29,6 @@ build/
 .gradle
 local.properties
 *.iml
-.cxx/
 ios/tmp.xcconfig
 *.keystore
 !debug.keystore
