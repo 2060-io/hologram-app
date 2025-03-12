@@ -1,3 +1,4 @@
+import { MessageReactionsMessage, MessageReactionAction } from '@2060.io/credo-ts-didcomm-reactions'
 import { PerformMessage } from '@credo-ts/action-menu'
 import {
   BaseRecord,
@@ -24,10 +25,6 @@ import {
 
 import { ChatEntry, ChatEntryState } from '@2060/model'
 import { MobileAgent } from '@2060/services/agent'
-import {
-  MessageReactionAction,
-  MessageReactionsMessage,
-} from '@2060/services/agent/reactions/messages/MessageReactionsMessage'
 import { log, logError } from '@2060/utils'
 
 export type ActionCallback = (options: { agent: MobileAgent }) => Promise<AgentCallbackReturnType<BaseRecord>>
