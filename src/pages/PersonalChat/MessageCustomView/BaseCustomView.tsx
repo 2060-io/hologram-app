@@ -172,6 +172,7 @@ const BaseCustomView: React.FC<BaseCustomMessageViewProps> = memo(props => {
               associatedRecordId={chatEntry.associatedRecordId}
               metadata={chatEntry.metadata as InvitationMetadata}
               agent={agent}
+              role={currentMessage.role}
             />
           )
         case ChatEntryType.CallOffer:

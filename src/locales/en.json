@@ -340,6 +340,7 @@
       "invitationRequestService": "Service Invitation",
       "invitationRequestSubConnection": "Managed connection",
       "invitationDescription": "You received an invitation to connect to",
+      "sentInvitationDescription": "You sent an invitation to connect to",
       "asASubConnectionOf": "as a managed connection of",
       "saveSucceededFileMedia": "Saved successfully",
       "saveFailedFileMedia": "Save failed",

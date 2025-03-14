@@ -12,7 +12,7 @@ import Avatar from '@2060/components/common/Avatar/Avatar'
 import { useFetchServiceInfo } from '@2060/hooks'
 import { useChatThreadById, useChats } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { InvitationMetadata } from '@2060/model'
+import { ChatEntryRole, InvitationMetadata } from '@2060/model'
 import { InvitationState } from '@2060/model/InvitationState'
 import { MobileAgent } from '@2060/services/agent/MobileAgent'
 import { acceptInvitation } from '@2060/services/agent/oob'
@@ -21,11 +21,12 @@ import { toast } from '@2060/utils/toast'
 interface Props {
   associatedRecordId: string
   metadata: InvitationMetadata
+  role: ChatEntryRole
   agent?: MobileAgent
 }
 const isService = (did?: string) => did !== undefined && !did.startsWith('did:peer')
 
-const InvitationChatView = ({ associatedRecordId: outOfBandId, metadata, agent }: Props) => {
+const InvitationChatView = ({ associatedRecordId: outOfBandId, metadata, role, agent }: Props) => {
   const [loadingRequest, setLoadingRequest] = useState(false)
   const { activeChatThread, findOrCreateThread } = useChats()
   const chatThread = useChatThreadById(activeChatThread ?? '')
@@ -33,10 +34,9 @@ const InvitationChatView = ({ associatedRecordId: outOfBandId, metadata, agent }
   const styles = getStyles(theme)
   const { t } = useTranslation()
   const navigation = useNavigation()
-
+  const isSender = role === ChatEntryRole.Sender
   const defaultUserImg = Image.resolveAssetSource(require('@2060/assets/images/defaultUser.png')).uri
   const { imageUrl, label, did, state } = metadata
-  const replied = state !== InvitationState.Received
   const invitationType = t(
     isService(did) ? 'personalChat.invitationRequestService' : 'personalChat.invitationRequestSubConnection',
   )
@@ -102,7 +102,7 @@ const InvitationChatView = ({ associatedRecordId: outOfBandId, metadata, agent }
         rightIcon={
           <TouchableOpacity
             onPress={state === InvitationState.AlreadyConnected ? goToExistingConnection : goToInvitation}
-            disabled={state !== InvitationState.AlreadyConnected && replied}
+            disabled={state === InvitationState.Received || state === InvitationState.Refused || isSender}
           >
             <SvgIcon name="info" fill={theme.colors.blue} width={20} height={20} />
           </TouchableOpacity>
@@ -122,7 +122,7 @@ const InvitationChatView = ({ associatedRecordId: outOfBandId, metadata, agent }
           </Text>
         </View>
         <Text typography="EuclidCircularA-Regular" style={styles.subTitle}>
-          {t('personalChat.invitationDescription')}
+          {isSender ? t('personalChat.sentInvitationDescription') : t('personalChat.invitationDescription')}
           <Text typography="EuclidCircularA-SemiBold" style={styles.textSemiBold}>
             {' '}
             {serviceInfo?.name ?? label}{' '}
