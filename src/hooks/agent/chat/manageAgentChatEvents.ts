@@ -23,6 +23,7 @@ import {
   BasicMessage,
   ConnectionRecord,
   ConnectionType,
+  OutOfBandInvitation,
   OutOfBandState,
   OutboundMessageSendStatus,
   RecordUpdatedEvent,
@@ -273,6 +274,7 @@ export function manageAgentChatEvents(agent: MobileAgent, realm: Realm, activeCh
       AnswerMessage.type.messageTypeUri,
       BasicMessage.type.messageTypeUri,
       ShareMediaMessage.type.messageTypeUri,
+      OutOfBandInvitation.type.messageTypeUri,
     ]
 
     if (connection) {
