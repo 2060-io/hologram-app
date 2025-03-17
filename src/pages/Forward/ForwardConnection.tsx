@@ -30,7 +30,7 @@ const ForwardConnection = ({ navigation, route }: Props) => {
     connectionsId.forEach(async connectionId => {
       // send invitation
       const connectionToSendInvitation = await agent.connections.getById(connectionId)
-      const json = {
+      const jsonInvitation = {
         '@type': OutOfBandInvitation.type.messageTypeUri,
         '@id': utils.uuid(),
         label: connection.theirLabel,
@@ -38,7 +38,7 @@ const ForwardConnection = ({ navigation, route }: Props) => {
         services: [connection.invitationDid],
         handshake_protocols: ['https://didcomm.org/didexchange/1.0'],
       }
-      const invitation = OutOfBandInvitation.fromJson(json)
+      const invitation = OutOfBandInvitation.fromJson(jsonInvitation)
       messageSender.sendMessage(
         new OutboundMessageContext(invitation, {
           agentContext: agent.context,
@@ -60,17 +60,15 @@ const ForwardConnection = ({ navigation, route }: Props) => {
         state: ChatEntryState.Created,
         metadata,
         createdAt: new Date().getTime(),
-        // Fixme: this is wrong needs correct associatedRecordId or
-        // make associatedRecordId optional and do not send it
-        associatedRecordId: utils.uuid(),
+        associatedRecordId: '',
       })
       updateThread(realm, chatThreadId, { lastChatEntry: chatEntry })
       addAgentActionToQueue({
         type: AgentActionType.SendInvitation,
         chatEntryId: chatEntry.id,
         parameters: {
-          invitation,
-          connectionToSendInvitation,
+          jsonInvitation,
+          didcommConnectionId: connectionId,
         },
       })
     })
