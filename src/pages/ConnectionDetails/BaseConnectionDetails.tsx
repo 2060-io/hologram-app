@@ -211,18 +211,17 @@ const BaseConnectionDetails = ({
       text: t('personalChat.forward'),
       onPress: () => navigation.navigate('ForwardConnection', { connection }),
     })
+    connectionOptions.push({
+      iconName: 'shareSocial',
+      text: t('connection.share'),
+      onPress: () => shareConnection(),
+    })
   }
-
-  connectionOptions.push({
-    iconName: 'shareSocial',
-    text: t('connection.share'),
-    onPress: () => shareConnection(),
-  })
 
   const channels: ChannelProps[] = [{ value: 'text', onPress: goToChat }]
 
   const shareConnection = async () => {
-    const json = {
+    const jsonInvitation = {
       '@type': OutOfBandInvitation.type.messageTypeUri,
       '@id': utils.uuid(),
       label: connection.theirLabel,
@@ -230,7 +229,7 @@ const BaseConnectionDetails = ({
       services: [connection.invitationDid],
       handshake_protocols: ['https://didcomm.org/didexchange/1.0'],
     }
-    const invitation = OutOfBandInvitation.fromJson(json)
+    const invitation = OutOfBandInvitation.fromJson(jsonInvitation)
     let invitationStr = JSON.stringify(invitation)
     let invitationBase64 = Buffer.from(invitationStr).toString('base64')
     const invitationUrl = `${Config.BASE_INVITATION_URL}?oob=${invitationBase64}`
