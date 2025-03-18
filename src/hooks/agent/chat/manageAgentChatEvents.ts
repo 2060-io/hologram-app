@@ -384,6 +384,7 @@ export function manageAgentChatEvents(agent: MobileAgent, realm: Realm, activeCh
         state: ChatEntryState.Received,
         metadata,
         createdAt: new Date().getTime(),
+        associatedMessageId: event.payload.messageId,
       })
       chatThreadService.updateThread(realm, thread.id, { lastChatEntry: chatEntry })
       if (thread.id !== activeChatThreadId) {

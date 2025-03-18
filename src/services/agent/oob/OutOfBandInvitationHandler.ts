@@ -28,6 +28,7 @@ export class OutOfBandInvitationHandler implements MessageHandler {
         // FIXME: should be clone() but it is not properly extracting services array in invitation
         outOfBandRecord: outOfBandRecord,
         connection: messageContext.connection,
+        messageId: messageContext.message.id,
       },
     })
   }
