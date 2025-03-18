@@ -100,12 +100,13 @@ const InvitationChatView = ({ associatedRecordId: outOfBandId, metadata, role, a
         theme={theme}
         leftIconName="personAdd"
         rightIcon={
-          <TouchableOpacity
-            onPress={state === InvitationState.AlreadyConnected ? goToExistingConnection : goToInvitation}
-            disabled={state === InvitationState.Received || state === InvitationState.Refused || isSender}
-          >
-            <SvgIcon name="info" fill={theme.colors.blue} width={20} height={20} />
-          </TouchableOpacity>
+          state === InvitationState.Refused || isSender ? null : (
+            <TouchableOpacity
+              onPress={state === InvitationState.Received ? goToInvitation : goToExistingConnection}
+            >
+              <SvgIcon name="info" fill={theme.colors.blue} width={20} height={20} />
+            </TouchableOpacity>
+          )
         }
         title={invitationType}
       />
