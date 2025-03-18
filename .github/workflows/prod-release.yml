@@ -30,11 +30,10 @@ jobs:
       - name: Update version
         run: |
           if [ -n "${{ github.event.inputs.version-number }}" ]; then
-            echo "VERSION_NUMBER=${{ github.event.inputs.version-number }}" >> $GITHUB_ENV
+            VERSION_NUMBER="${{ github.event.inputs.version-number }}"
           elif [ -n "${{ github.ref }}" ] && [[ "${{ github.ref }}" == refs/tags/* ]]; then
             TAG="${GITHUB_REF#refs/tags/}"
             VERSION_NUMBER="${TAG#v}"
-            echo "VERSION_NUMBER=${VERSION_NUMBER}" >> $GITHUB_ENV
           fi        
           yarn version $VERSION_NUMBER
           yarn postversion
