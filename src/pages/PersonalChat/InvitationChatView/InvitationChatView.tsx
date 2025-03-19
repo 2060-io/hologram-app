@@ -10,12 +10,13 @@ import getStyles from './styles'
 import { SvgIcon, Text, VerifiedIcon } from '@2060/components/common'
 import Avatar from '@2060/components/common/Avatar/Avatar'
 import { useFetchServiceInfo } from '@2060/hooks'
-import { useChatThreadById, useChats } from '@2060/hooks/agent'
+import { useChatThreadById, useChats, useUserProfile } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { ChatEntryRole, InvitationMetadata } from '@2060/model'
 import { InvitationState } from '@2060/model/InvitationState'
 import { MobileAgent } from '@2060/services/agent/MobileAgent'
 import { acceptInvitation } from '@2060/services/agent/oob'
+import { logError } from '@2060/utils'
 import { toast } from '@2060/utils/toast'
 
 interface Props {
@@ -30,6 +31,7 @@ const InvitationChatView = ({ associatedRecordId: outOfBandId, metadata, role, a
   const [loadingRequest, setLoadingRequest] = useState(false)
   const { activeChatThread, findOrCreateThread } = useChats()
   const chatThread = useChatThreadById(activeChatThread ?? '')
+  const { userProfileData } = useUserProfile()
   const theme = useTheme()
   const styles = getStyles(theme)
   const { t } = useTranslation()
@@ -53,13 +55,14 @@ const InvitationChatView = ({ associatedRecordId: outOfBandId, metadata, role, a
     try {
       const { connectionRecord } = await acceptInvitation(agent.context, {
         outOfBandId,
-        connectionId: chatThread.connectionId,
+        label: userProfileData?.displayName,
       })
       const chatThreadId = findOrCreateThread({ connection: connectionRecord! }).id
       navigation.dispatch(
         StackActions.replace('PersonalChatStack', { screen: 'PersonalChat', params: { chatThreadId } }),
       )
     } catch (error) {
+      logError('Error accepting invitation', error)
       toast({ type: 'error', message: `${error}` })
     } finally {
       setLoadingRequest(false)

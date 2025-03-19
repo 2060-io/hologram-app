@@ -18,7 +18,6 @@ export class OutOfBandInvitationHandler implements MessageHandler {
 
     const { outOfBandRecord } = await getOutOfBandRecord(agentContext, {
       invitation: messageContext.message,
-      parentConnectionId: messageContext.connection?.id,
     })
     // Emit event: OOB Invitation received
     agentContext.dependencyManager.resolve(EventEmitter).emit<OutOfBandInvitationEvent>(agentContext, {

@@ -36,7 +36,8 @@ const ForwardConnection = ({ navigation, route }: Props) => {
         label: connection.theirLabel,
         imageUrl: connection.imageUrl,
         services: [connection.invitationDid],
-        handshake_protocols: ['https://didcomm.org/didexchange/1.0'],
+        handshake_protocols: ['https://didcomm.org/didexchange/1.0', 'https://didcomm.org/connections/1.0'],
+        accept: ['didcomm/aip1', 'didcomm/aip2;env=rfc19'],
       }
       const invitation = OutOfBandInvitation.fromJson(jsonInvitation)
       messageSender.sendMessage(
