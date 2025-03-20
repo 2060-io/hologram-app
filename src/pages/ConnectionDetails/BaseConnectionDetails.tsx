@@ -227,12 +227,14 @@ const BaseConnectionDetails = ({
       label: connection.theirLabel,
       imageUrl: connection.imageUrl,
       services: [connection.invitationDid],
-      handshake_protocols: ['https://didcomm.org/didexchange/1.0', 'https://didcomm.org/connections/1.0'],
+      handshake_protocols: [connection.protocol ?? 'https://didcomm.org/didexchange/1.0'],
       accept: ['didcomm/aip1', 'didcomm/aip2;env=rfc19'],
     }
+
     const invitation = OutOfBandInvitation.fromJson(jsonInvitation)
+    invitation.setThread({ parentThreadId: connection.invitationDid })
     let invitationStr = JSON.stringify(invitation)
-    let invitationBase64 = Buffer.from(invitationStr).toString('base64')
+    let invitationBase64 = Buffer.from(invitationStr).toString('base64url')
     const invitationUrl = `${Config.BASE_INVITATION_URL}?oob=${invitationBase64}`
     const title = t('scanned.titleShare', { displayName: userProfileData?.displayName })
     try {
