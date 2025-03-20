@@ -1,4 +1,4 @@
-import { ConnectionRecord, OutOfBandInvitation, TypedArrayEncoder, utils } from '@credo-ts/core'
+import { ConnectionRecord, TypedArrayEncoder } from '@credo-ts/core'
 import { StackActions } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
 import React, { ReactElement, useEffect, useRef, useState } from 'react'
@@ -23,7 +23,7 @@ import {
 } from '@2060/hooks/agent'
 import { deleteConnection, blockConnection, unblockConnection } from '@2060/hooks/agent/connections'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { MobileAgent } from '@2060/services/agent'
+import { createOobInvitation, MobileAgent } from '@2060/services/agent'
 import { capitalizeFirstLetter, log, logError } from '@2060/utils'
 import {
   getConnectionDisplayName,
@@ -221,23 +221,12 @@ const BaseConnectionDetails = ({
   const channels: ChannelProps[] = [{ value: 'text', onPress: goToChat }]
 
   const shareConnection = async () => {
-    const jsonInvitation = {
-      '@type': OutOfBandInvitation.type.messageTypeUri,
-      '@id': utils.uuid(),
-      label: connection.theirLabel,
-      imageUrl: connection.imageUrl,
-      services: [connection.invitationDid],
-      handshake_protocols: [connection.protocol ?? 'https://didcomm.org/didexchange/1.0'],
-      accept: ['didcomm/aip1', 'didcomm/aip2;env=rfc19'],
-    }
-
-    const invitation = OutOfBandInvitation.fromJson(jsonInvitation)
-    invitation.setThread({ parentThreadId: connection.invitationDid })
-    let invitationStr = JSON.stringify(invitation)
-    let invitationBase64 = TypedArrayEncoder.toBase64URL(Buffer.from(invitationStr))
-    const invitationUrl = `${Config.BASE_INVITATION_URL}?oob=${invitationBase64}`
-    const title = t('scanned.titleShare', { displayName: userProfileData?.displayName })
     try {
+      const { outOfBandInvitation } = createOobInvitation(connection)
+      let invitationStr = JSON.stringify(outOfBandInvitation)
+      let invitationBase64 = TypedArrayEncoder.toBase64URL(Buffer.from(invitationStr))
+      const invitationUrl = `${Config.BASE_INVITATION_URL}?oob=${invitationBase64}`
+      const title = t('scanned.titleShare', { displayName: userProfileData?.displayName })
       await Share.open(
         Platform.select<ShareOptions>({
           ios: {

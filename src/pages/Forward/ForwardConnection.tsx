@@ -1,4 +1,4 @@
-import { MessageSender, OutboundMessageContext, OutOfBandInvitation, utils } from '@credo-ts/core'
+import { MessageSender, OutboundMessageContext } from '@credo-ts/core'
 import { StackScreenProps } from '@react-navigation/stack'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
@@ -12,6 +12,7 @@ import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
 import { ChatEntryRole, ChatEntryState, ChatEntryType } from '@2060/model'
 import { InvitationState } from '@2060/model/InvitationState'
+import { createOobInvitation } from '@2060/services/agent'
 import { toast } from '@2060/utils/toast'
 
 interface Props extends StackScreenProps<NavigationStackParams, 'ForwardConnection'> {}
@@ -29,20 +30,10 @@ const ForwardConnection = ({ navigation, route }: Props) => {
     if (!agent || !messageSender || !realm) return
     connectionsId.forEach(async connectionId => {
       // send invitation
+      const { jsonInvitation, outOfBandInvitation } = createOobInvitation(connection)
       const connectionToSendInvitation = await agent.connections.getById(connectionId)
-      const jsonInvitation = {
-        '@type': OutOfBandInvitation.type.messageTypeUri,
-        '@id': utils.uuid(),
-        label: connection.theirLabel,
-        imageUrl: connection.imageUrl,
-        services: [connection.invitationDid],
-        handshake_protocols: [connection.protocol ?? 'https://didcomm.org/didexchange/1.0'],
-        accept: ['didcomm/aip1', 'didcomm/aip2;env=rfc19'],
-      }
-      const invitation = OutOfBandInvitation.fromJson(jsonInvitation)
-      invitation.setThread({ parentThreadId: connection.invitationDid })
       messageSender.sendMessage(
-        new OutboundMessageContext(invitation, {
+        new OutboundMessageContext(outOfBandInvitation, {
           agentContext: agent.context,
           connection: connectionToSendInvitation,
         }),

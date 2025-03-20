@@ -22,6 +22,7 @@ import {
   parseMessageType,
   MediationRecipientApi,
   isDid,
+  utils,
 } from '@credo-ts/core'
 import { DidCommDocumentService } from '@credo-ts/core/build/modules/didcomm'
 import { tryParseDid } from '@credo-ts/core/build/modules/dids/domain/parse'
@@ -259,6 +260,21 @@ export const createInvitation = async (
   })
 
   return oobRecord.outOfBandInvitation
+}
+
+export const createOobInvitation = (connection: ConnectionRecord) => {
+  const jsonInvitation = {
+    '@type': OutOfBandInvitation.type.messageTypeUri,
+    '@id': utils.uuid(),
+    label: connection.theirLabel,
+    imageUrl: connection.imageUrl,
+    services: [connection.invitationDid],
+    handshake_protocols: [connection.protocol ?? 'https://didcomm.org/didexchange/1.0'],
+    accept: ['didcomm/aip1', 'didcomm/aip2;env=rfc19'],
+  }
+  const outOfBandInvitation = OutOfBandInvitation.fromJson(jsonInvitation)
+  outOfBandInvitation.setThread({ parentThreadId: connection.invitationDid })
+  return { outOfBandInvitation, jsonInvitation }
 }
 
 export async function acceptInvitation(
