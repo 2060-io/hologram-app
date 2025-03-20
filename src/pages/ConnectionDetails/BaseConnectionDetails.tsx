@@ -1,4 +1,4 @@
-import { ConnectionRecord, OutOfBandInvitation, utils } from '@credo-ts/core'
+import { ConnectionRecord, OutOfBandInvitation, TypedArrayEncoder, utils } from '@credo-ts/core'
 import { StackActions } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
 import React, { ReactElement, useEffect, useRef, useState } from 'react'
@@ -234,7 +234,7 @@ const BaseConnectionDetails = ({
     const invitation = OutOfBandInvitation.fromJson(jsonInvitation)
     invitation.setThread({ parentThreadId: connection.invitationDid })
     let invitationStr = JSON.stringify(invitation)
-    let invitationBase64 = Buffer.from(invitationStr).toString('base64url')
+    let invitationBase64 = TypedArrayEncoder.toBase64URL(Buffer.from(invitationStr))
     const invitationUrl = `${Config.BASE_INVITATION_URL}?oob=${invitationBase64}`
     const title = t('scanned.titleShare', { displayName: userProfileData?.displayName })
     try {
