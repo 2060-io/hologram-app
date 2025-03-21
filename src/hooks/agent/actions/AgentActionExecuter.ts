@@ -131,7 +131,7 @@ export class AgentActionExecuter {
       const { originDidcommConnectionId, didcommConnectionId } = parameters
       return async (options: { agent: MobileAgent }) => {
         const originDidcommConnection = await options.agent?.connections.getById(originDidcommConnectionId)
-        const { outOfBandInvitation } = createOobInvitation(originDidcommConnection)
+        const outOfBandInvitation = createOobInvitation(originDidcommConnection)
         const didcommConnection = await options.agent?.connections.getById(didcommConnectionId)
         const messageSender = options.agent?.context.dependencyManager.resolve(MessageSender)
         await messageSender.sendMessage(

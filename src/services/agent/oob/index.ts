@@ -274,7 +274,7 @@ export const createOobInvitation = (connection: ConnectionRecord) => {
   }
   const outOfBandInvitation = OutOfBandInvitation.fromJson(jsonInvitation)
   outOfBandInvitation.setThread({ parentThreadId: connection.invitationDid })
-  return { outOfBandInvitation, jsonInvitation }
+  return outOfBandInvitation
 }
 
 export async function acceptInvitation(

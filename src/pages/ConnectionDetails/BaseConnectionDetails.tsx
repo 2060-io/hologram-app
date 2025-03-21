@@ -222,7 +222,7 @@ const BaseConnectionDetails = ({
 
   const shareConnection = async () => {
     try {
-      const { outOfBandInvitation } = createOobInvitation(connection)
+      const outOfBandInvitation = createOobInvitation(connection)
       let invitationStr = JSON.stringify(outOfBandInvitation)
       let invitationBase64 = TypedArrayEncoder.toBase64URL(Buffer.from(invitationStr))
       const invitationUrl = `${Config.BASE_INVITATION_URL}?oob=${invitationBase64}`
