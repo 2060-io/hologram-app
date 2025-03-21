@@ -1,4 +1,4 @@
-import { MessageSender, OutboundMessageContext } from '@credo-ts/core'
+import { MessageSender } from '@credo-ts/core'
 import { StackScreenProps } from '@react-navigation/stack'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
@@ -12,7 +12,6 @@ import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
 import { ChatEntryRole, ChatEntryState, ChatEntryType } from '@2060/model'
 import { InvitationState } from '@2060/model/InvitationState'
-import { createOobInvitation } from '@2060/services/agent'
 import { toast } from '@2060/utils/toast'
 
 interface Props extends StackScreenProps<NavigationStackParams, 'ForwardConnection'> {}
@@ -29,23 +28,15 @@ const ForwardConnection = ({ navigation, route }: Props) => {
   const forwardConnection = async (connectionsId: string[]) => {
     if (!agent || !messageSender || !realm) return
     connectionsId.forEach(async connectionId => {
-      // send invitation
-      const { jsonInvitation, outOfBandInvitation } = createOobInvitation(connection)
-      const connectionToSendInvitation = await agent.connections.getById(connectionId)
-      messageSender.sendMessage(
-        new OutboundMessageContext(outOfBandInvitation, {
-          agentContext: agent.context,
-          connection: connectionToSendInvitation,
-        }),
-      )
-      // Create chat entry
+      const didcommConnection = await agent.connections.getById(connectionId)
+      const chatThreadId = findOrCreateThread({ connection: didcommConnection }).id
       const metadata = {
         state: InvitationState.AlreadyConnected,
         label: connection.theirLabel,
         imageUrl: connection.imageUrl,
         did: connection.invitationDid,
       }
-      const chatThreadId = findOrCreateThread({ connection: connectionToSendInvitation }).id
+      // Create chat entry
       const chatEntry = createChatEntry(realm, {
         chatThreadId,
         type: ChatEntryType.Invitation,
@@ -60,7 +51,7 @@ const ForwardConnection = ({ navigation, route }: Props) => {
         type: AgentActionType.SendInvitation,
         chatEntryId: chatEntry.id,
         parameters: {
-          jsonInvitation,
+          originDidcommConnectionId: connection.id,
           didcommConnectionId: connectionId,
         },
       })

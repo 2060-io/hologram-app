@@ -26,7 +26,7 @@ import {
 } from './AgentAction'
 
 import { ChatEntry, ChatEntryState } from '@2060/model'
-import { MobileAgent } from '@2060/services/agent'
+import { createOobInvitation, MobileAgent } from '@2060/services/agent'
 import { log, logError } from '@2060/utils'
 
 export type ActionCallback = (options: { agent: MobileAgent }) => Promise<AgentCallbackReturnType<BaseRecord>>
@@ -125,18 +125,19 @@ export class AgentActionExecuter {
       }
     } else if (action.type === AgentActionType.SendInvitation) {
       const parameters = action.parameters as {
-        jsonInvitation: Record<string, unknown>
+        originDidcommConnectionId: string
         didcommConnectionId: string
       }
-      const { jsonInvitation, didcommConnectionId } = parameters
+      const { originDidcommConnectionId, didcommConnectionId } = parameters
       return async (options: { agent: MobileAgent }) => {
-        const invitation = OutOfBandInvitation.fromJson(jsonInvitation)
-        const connectionToSendInvitation = await options.agent?.connections.getById(didcommConnectionId)
+        const originDidcommConnection = await options.agent?.connections.getById(originDidcommConnectionId)
+        const { outOfBandInvitation } = createOobInvitation(originDidcommConnection)
+        const didcommConnection = await options.agent?.connections.getById(didcommConnectionId)
         const messageSender = options.agent?.context.dependencyManager.resolve(MessageSender)
         await messageSender.sendMessage(
-          new OutboundMessageContext(invitation, {
+          new OutboundMessageContext(outOfBandInvitation, {
             agentContext: options.agent?.context,
-            connection: connectionToSendInvitation,
+            connection: didcommConnection,
           }),
         )
         return { outgoingMessageType: OutOfBandInvitation.type.messageTypeUri }
