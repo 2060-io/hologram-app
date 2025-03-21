@@ -28,6 +28,7 @@ import { capitalizeFirstLetter, log, logError } from '@2060/utils'
 import {
   getConnectionDisplayName,
   isBlocked,
+  isService,
   isTerminated,
   supportsUserProfile,
 } from '@2060/utils/connectionUtils'
@@ -44,7 +45,6 @@ export interface ConnectionDetailsProps extends WrapperProps {
 export interface BaseConnectionDetailsProps extends ConnectionDetailsProps {
   mainInfo: ReactElement
   footerInfo?: ReactElement
-  isService: boolean
 }
 
 const BaseConnectionDetails = ({
@@ -52,7 +52,6 @@ const BaseConnectionDetails = ({
   connection,
   mainInfo,
   footerInfo,
-  isService,
 }: BaseConnectionDetailsProps) => {
   const [showConfirmationModal, setShowConfirmationModal] = useState(false)
   const [blockingConnection, setBlockingConnection] = useState(false)
@@ -70,6 +69,7 @@ const BaseConnectionDetails = ({
   const isConnectionCompleted = connection.isReady
   const isConnectionBlocked = isBlocked(connection)
   const isConnectionTerminated = isTerminated(connection)
+  const isConnectionService = isService(connection)
 
   const { clearThread, findOrCreateThread } = useChats()
 
@@ -205,7 +205,7 @@ const BaseConnectionDetails = ({
     text: t('connection.deleteConnection'),
     onPress: () => openConfirmationModal('deleteConnection'),
   })
-  if (isService) {
+  if (isConnectionService) {
     connectionOptions.push({
       iconName: 'forward',
       text: t('personalChat.forward'),
