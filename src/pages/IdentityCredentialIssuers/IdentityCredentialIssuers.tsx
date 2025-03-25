@@ -2,6 +2,7 @@ import { Picker } from '@react-native-picker/picker'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { SafeAreaView, ScrollView } from 'react-native'
+import { getCountry } from 'react-native-localize'
 
 import countries from './countries.json'
 import getStyles from './styles'
@@ -16,10 +17,11 @@ const IdentityCredentialIssuers = () => {
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
-  const [selectedCountry, setSelectedCountry] = useState()
+  const [selectedCountry, setSelectedCountry] = useState(getCountry())
   const connect = (issuerId: string) => {
     log('connect to', issuerId)
   }
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.subContainer}>
