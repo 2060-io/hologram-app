@@ -150,6 +150,11 @@ const Settings = ({ navigation }: Props) => {
       text: t('settings.deleteWallet'),
       onPress: () => setShowConfirmationDeleteModal(true),
     },
+    {
+      iconName: 'id',
+      text: t('navigation.IdentityCredentialIssuers'),
+      onPress: () => onNavigate('IdentityCredentialIssuers'),
+    },
   ]
 
   const goToUserInvitation = () => navigation.dispatch(StackActions.push('UserInvitation'))

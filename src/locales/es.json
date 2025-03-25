@@ -104,7 +104,8 @@
       "shareWith": "Compartir con",
       "PresentCredential": "Presentar a",
       "Presentation": "Presentación",
-      "ParentalControl": "Control parental"
+      "ParentalControl": "Control parental",
+      "IdentityCredentialIssuers": "Emisores de credenciales de identidad"
     },
     "authentication": {
       "walletLocked": "Hologram bloqueada",
@@ -224,7 +225,14 @@
       "yesDelete": "Sí, eliminar permanentemente",
       "present": "Presentar credencial",
       "presented": "Credencial presentada",
-      "presentedOn": "Presentado el"
+      "presentedOn": "Presentado el",
+      "issuerInstructions": "Selecciona el país de ciudadanía. Basados en tu país te presentaremos una lista de Emisores de credenciales de identidad disponibles. Deberías omitir este paso ó realizarlo después",
+      "citizenship": "Selecciona el país de ciudadanía",
+      "availableIssuers": "Emisores de credenciales de identidad disponibles",
+      "serviceProvider": "Proveedor del servicio:",
+      "reputation": "Reputación",
+      "issuedCredentials": "Credenciales emitidas",
+      "verifiedCredentials": "Credenciales verificadas"
     },
     "credentialOffer": {
       "title": "Credencial ofrecida",

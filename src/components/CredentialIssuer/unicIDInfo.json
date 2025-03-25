@@ -1,0 +1,12 @@
+{
+  "did": "did:web:unic-id-issuer.demos.dev.2060.io",
+  "id": "did:web:unic-id-issuer.demos.dev.2060.io",
+  "description": " Global service for issuing Identity Verifiable Credentials. Supports all major NFC passports and ID cards. Uses biometric face verification for ID document binding. No user data is stored to our services",
+  "logoUrl": "https://i.unic-id-issuer.demos.dev.2060.io/avatar.png",
+  "minimumAgeRequired": 16,
+  "name": "Unic ID",
+  "status": "notFound",
+  "termsAndConditionsUrl": "https://unic-id-issuer.demos.dev.2060.io/terms-and-conditions",
+  "dataPrivacyUrl": "https://unic-id-issuer.demos.dev.2060.io/data-privacy",
+  "stars": 5
+}

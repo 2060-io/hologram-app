@@ -6,6 +6,7 @@ import CredentialPresented from './CredentialPresented'
 import Developer from './Developer'
 import { ForwardMessages, ForwardConnection } from './Forward'
 import HomeMain from './HomeMain'
+import IdentityCredentialIssuers from './IdentityCredentialIssuers'
 import ConnectionInvitation from './Invitation'
 import MRZScanner from './MRZScanner'
 import MessageDetails from './MessageDetails'
@@ -54,4 +55,5 @@ export {
   PresentCredential,
   Presentation,
   ParentalControl,
+  IdentityCredentialIssuers,
 }

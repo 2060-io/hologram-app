@@ -104,7 +104,8 @@
       "shareWith": "Share with",
       "PresentCredential": "Present to",
       "Presentation": "Presentation",
-      "ParentalControl": "Parental Control"
+      "ParentalControl": "Parental Control",
+      "IdentityCredentialIssuers": "Identity Credential Issuers"
     },
     "authentication": {
       "walletLocked": "Hologram Locked",
@@ -224,7 +225,14 @@
       "yesDelete": "Yes, delete permanently",
       "present": "Present credential",
       "presented": "Credential presented",
-      "presentedOn": "Presented on"
+      "presentedOn": "Presented on",
+      "issuerInstructions": "Select a country of citizenship. Based on your country We will then present a list of available Identity Credential Issuers. You may skip this step, or run it later",
+      "citizenship": "Select a country of citizenship",
+      "availableIssuers": "Available Identity Credential Issuers",
+      "serviceProvider": "Service provider:",
+      "reputation": "Reputation",
+      "issuedCredentials": "Issued credentials",
+      "verifiedCredentials": "Verified credentials"
     },
     "credentialOffer": {
       "title": "Credential Offer",

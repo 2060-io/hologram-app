@@ -60,4 +60,5 @@ export type NavigationStackParams = {
     proofState: ProofState
   }
   ParentalControl: undefined
+  IdentityCredentialIssuers: undefined
 }
