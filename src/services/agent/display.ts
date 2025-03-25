@@ -10,6 +10,7 @@ import {
   ClaimFormat,
   JsonTransformer,
   CredentialState,
+  MdocRecord,
 } from '@credo-ts/core'
 import { OpenId4VciResolvedCredentialOffer } from '@credo-ts/openid4vc'
 
@@ -267,7 +268,7 @@ export async function getCredentialDetailsFromExchange(
 }
 
 export function getCredentialMainInfo(
-  credentialRecord: W3cCredentialRecord | SdJwtVcRecord,
+  credentialRecord: W3cCredentialRecord | SdJwtVcRecord | MdocRecord,
   //@ts-ignore It incorrectly complains about no return, when both cases are fully covered
 ): CredentialMainInfo {
   if (credentialRecord instanceof W3cCredentialRecord) {

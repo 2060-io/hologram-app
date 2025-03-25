@@ -1,8 +1,7 @@
 #import "AppDelegate.h"
-
+#import <Firebase.h>
 #import <React/RCTBundleURLProvider.h>
 
-#import <FirebaseCore.h>
 #import "RNFBAppCheckModule.h"
 #import <React/RCTLinkingManager.h>
 #import "RNSplashScreen.h"
@@ -14,7 +13,7 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
 
-  self.moduleName = @"app2060";
+  self.moduleName = @"hologram";
 
   [RNFBAppCheckModule sharedInstance];
 
@@ -26,7 +25,7 @@
 
   /*
   TODO: splash screen is not been displayed due to its causes that app display twice biometric auth which is wrong.
-  The goal is to find a solution for this situation by knowing whats happening intenally
+  The goal is to find a solution for this situation by knowing whats happening internally
   [RNSplashScreen show];
   */
 

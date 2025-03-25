@@ -221,9 +221,9 @@
 		0DC0A0992C139F0300B45E18 /* SplashScreenDev.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SplashScreenDev.storyboard; sourceTree = "<group>"; };
 		0DC0A09B2C139F2100B45E18 /* SplashScreenStaging.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SplashScreenStaging.storyboard; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* 2060Prod.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = 2060Prod.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = app2060/AppDelegate.h; sourceTree = "<group>"; };
-		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = app2060/Images.xcassets; sourceTree = "<group>"; };
-		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = app2060/main.m; sourceTree = "<group>"; };
+		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = hologram/AppDelegate.h; sourceTree = "<group>"; };
+		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = hologram/Images.xcassets; sourceTree = "<group>"; };
+		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = hologram/main.m; sourceTree = "<group>"; };
 		18A1C893053FBC7C770BF718 /* Pods-ShareExtensionStaging.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ShareExtensionStaging.debug.xcconfig"; path = "Target Support Files/Pods-ShareExtensionStaging/Pods-ShareExtensionStaging.debug.xcconfig"; sourceTree = "<group>"; };
 		195C8E1101FC72DBE3F4A446 /* Pods-2060CommonPods-2060Prod.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-2060CommonPods-2060Prod.release.xcconfig"; path = "Target Support Files/Pods-2060CommonPods-2060Prod/Pods-2060CommonPods-2060Prod.release.xcconfig"; sourceTree = "<group>"; };
 		1CFF20AF3184C31ED7555CB9 /* Pods-CommonShareExtensionPods-ShareExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CommonShareExtensionPods-ShareExtension.debug.xcconfig"; path = "Target Support Files/Pods-CommonShareExtensionPods-ShareExtension/Pods-CommonShareExtensionPods-ShareExtension.debug.xcconfig"; sourceTree = "<group>"; };
@@ -231,22 +231,22 @@
 		29F4BBABC7D5EDD99249F6F0 /* Pods-2060CommonPods-2060Dev.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-2060CommonPods-2060Dev.debug.xcconfig"; path = "Target Support Files/Pods-2060CommonPods-2060Dev/Pods-2060CommonPods-2060Dev.debug.xcconfig"; sourceTree = "<group>"; };
 		3014A43B734340F48859D0AE /* EuclidCircularA-BoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "EuclidCircularA-BoldItalic.ttf"; path = "../src/assets/fonts/EuclidCircularA-BoldItalic.ttf"; sourceTree = "<group>"; };
 		3297C2FBDFD14E0A804AE09D /* EuclidCircularA-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "EuclidCircularA-Regular.ttf"; path = "../src/assets/fonts/EuclidCircularA-Regular.ttf"; sourceTree = "<group>"; };
-		371CAC732A211FCA002F2B41 /* RCTFileChunkGeneratorModule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RCTFileChunkGeneratorModule.h; path = app2060/RCTFileChunkGeneratorModule.h; sourceTree = "<group>"; };
-		371CAC742A212021002F2B41 /* RCTFileChunkGeneratorModule.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = RCTFileChunkGeneratorModule.m; path = app2060/RCTFileChunkGeneratorModule.m; sourceTree = "<group>"; };
-		37519991287F7CBD0066658E /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = app2060/AppDelegate.mm; sourceTree = "<group>"; };
+		371CAC732A211FCA002F2B41 /* RCTFileChunkGeneratorModule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RCTFileChunkGeneratorModule.h; path = hologram/RCTFileChunkGeneratorModule.h; sourceTree = "<group>"; };
+		371CAC742A212021002F2B41 /* RCTFileChunkGeneratorModule.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = RCTFileChunkGeneratorModule.m; path = hologram/RCTFileChunkGeneratorModule.m; sourceTree = "<group>"; };
+		37519991287F7CBD0066658E /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = hologram/AppDelegate.mm; sourceTree = "<group>"; };
 		375723202A86CEF500ECF0CE /* 2060Dev.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = 2060Dev.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3757233F2A86CF0D00ECF0CE /* 2060Staging.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = 2060Staging.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		375723412A87EB9700ECF0CE /* Firebase */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Firebase; path = app2060/Firebase; sourceTree = "<group>"; };
-		375723492A87F38B00ECF0CE /* InfoPlist */ = {isa = PBXFileReference; lastKnownFileType = folder; name = InfoPlist; path = app2060/InfoPlist; sourceTree = "<group>"; };
-		3795871F2A3B65C400E50FC2 /* RCTFileCipheringModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RCTFileCipheringModule.m; path = app2060/RCTFileCipheringModule.m; sourceTree = "<group>"; };
-		379587212A3B65C400E50FC2 /* RCTFileCipheringModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RCTFileCipheringModule.h; path = app2060/RCTFileCipheringModule.h; sourceTree = "<group>"; };
+		375723412A87EB9700ECF0CE /* Firebase */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Firebase; path = hologram/Firebase; sourceTree = "<group>"; };
+		375723492A87F38B00ECF0CE /* InfoPlist */ = {isa = PBXFileReference; lastKnownFileType = folder; name = InfoPlist; path = hologram/InfoPlist; sourceTree = "<group>"; };
+		3795871F2A3B65C400E50FC2 /* RCTFileCipheringModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RCTFileCipheringModule.m; path = hologram/RCTFileCipheringModule.m; sourceTree = "<group>"; };
+		379587212A3B65C400E50FC2 /* RCTFileCipheringModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RCTFileCipheringModule.h; path = hologram/RCTFileCipheringModule.h; sourceTree = "<group>"; };
 		379587242A3B65DD00E50FC2 /* AesCrypt.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AesCrypt.h; sourceTree = "<group>"; };
 		379587252A3B65DD00E50FC2 /* AesCrypt.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AesCrypt.m; sourceTree = "<group>"; };
-		37D01B7C2AA4048C00015826 /* ExportOptions.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = ExportOptions.plist; path = app2060/ExportOptions.plist; sourceTree = "<group>"; };
+		37D01B7C2AA4048C00015826 /* ExportOptions.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = ExportOptions.plist; path = hologram/ExportOptions.plist; sourceTree = "<group>"; };
 		3EB81A67598FD6570C5D8A1C /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-2060CommonPods-2060Dev/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		412551E7AC9A2BE084C41C80 /* libPods-CommonShareExtensionPods-ShareExtensionProd.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CommonShareExtensionPods-ShareExtensionProd.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		49194BE403CDCA84162379B7 /* Pods-CommonShareExtensionPods-ShareExtensionDev.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CommonShareExtensionPods-ShareExtensionDev.debug.xcconfig"; path = "Target Support Files/Pods-CommonShareExtensionPods-ShareExtensionDev/Pods-CommonShareExtensionPods-ShareExtensionDev.debug.xcconfig"; sourceTree = "<group>"; };
-		50B834172A4DDA74000609F0 /* app2060Release.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = app2060Release.entitlements; path = app2060/app2060Release.entitlements; sourceTree = "<group>"; };
+		50B834172A4DDA74000609F0 /* hologramRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = hologramRelease.entitlements; path = hologram/hologramRelease.entitlements; sourceTree = "<group>"; };
 		534D7C5FA3114B1F820675EB /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
 		556731D4013F4B29A41BA0E4 /* FontAwesome5_Brands.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Brands.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Brands.ttf"; sourceTree = "<group>"; };
 		57C7618046E04945B926DAE2 /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = SimpleLineIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; };
@@ -257,10 +257,10 @@
 		659FE320947836E780B4BFFB /* Pods-2060CommonPods-2060Staging.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-2060CommonPods-2060Staging.debug.xcconfig"; path = "Target Support Files/Pods-2060CommonPods-2060Staging/Pods-2060CommonPods-2060Staging.debug.xcconfig"; sourceTree = "<group>"; };
 		6CEEA9EEEDEF4E87B0DD5DF0 /* EuclidCircularA-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "EuclidCircularA-Bold.ttf"; path = "../src/assets/fonts/EuclidCircularA-Bold.ttf"; sourceTree = "<group>"; };
 		75319D4E285A19E20010C2AA /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
-		75319D53285A846A0010C2AA /* app2060.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = app2060.entitlements; path = app2060/app2060.entitlements; sourceTree = "<group>"; };
+		75319D53285A846A0010C2AA /* hologram.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = hologram.entitlements; path = hologram/hologram.entitlements; sourceTree = "<group>"; };
 		754389A0F33F48078970FF9B /* EuclidCircularA-LightItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "EuclidCircularA-LightItalic.ttf"; path = "../src/assets/fonts/EuclidCircularA-LightItalic.ttf"; sourceTree = "<group>"; };
 		75E99A4629A3F91800B8F57F /* libreact-native-cameraroll.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libreact-native-cameraroll.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		77F40464844DA2B356150915 /* Pods-app2060.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-app2060.debug.xcconfig"; path = "Target Support Files/Pods-app2060/Pods-app2060.debug.xcconfig"; sourceTree = "<group>"; };
+		77F40464844DA2B356150915 /* Pods-hologram.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-hologram.debug.xcconfig"; path = "Target Support Files/Pods-hologram/Pods-hologram.debug.xcconfig"; sourceTree = "<group>"; };
 		7A823EA4B905F4168276CBE6 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-2060CommonPods-2060Prod/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		83BE9E76CF604F3C87868F29 /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
 		854026CA966B4C67BDE12FF5 /* AntDesign.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = AntDesign.ttf; path = "../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf"; sourceTree = "<group>"; };
@@ -282,7 +282,7 @@
 		B0DFBEEF5D084C2A8EE22FC3 /* EuclidCircularA-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "EuclidCircularA-Medium.ttf"; path = "../src/assets/fonts/EuclidCircularA-Medium.ttf"; sourceTree = "<group>"; };
 		B9819FC4CA9E4B768A2929F0 /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
 		BE0136B2C0ABA88EB536D86A /* Pods-2060CommonPods-2060Dev.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-2060CommonPods-2060Dev.release.xcconfig"; path = "Target Support Files/Pods-2060CommonPods-2060Dev/Pods-2060CommonPods-2060Dev.release.xcconfig"; sourceTree = "<group>"; };
-		C753DF175C343D95204F6E65 /* Pods-app2060.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-app2060.release.xcconfig"; path = "Target Support Files/Pods-app2060/Pods-app2060.release.xcconfig"; sourceTree = "<group>"; };
+		C753DF175C343D95204F6E65 /* Pods-hologram.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-hologram.release.xcconfig"; path = "Target Support Files/Pods-hologram/Pods-hologram.release.xcconfig"; sourceTree = "<group>"; };
 		C7903EF7DED840A2872A1B95 /* Fontisto.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Fontisto.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Fontisto.ttf"; sourceTree = "<group>"; };
 		C9C3DA6238209032BC953F82 /* libPods-CommonShareExtensionPods-ShareExtensionDev.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CommonShareExtensionPods-ShareExtensionDev.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CA1C222C327D4A9A94CEC3C0 /* EuclidCircularA-Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "EuclidCircularA-Light.ttf"; path = "../src/assets/fonts/EuclidCircularA-Light.ttf"; sourceTree = "<group>"; };
@@ -296,7 +296,7 @@
 		E89B45A7C8FD4800A0E0390C /* Ionicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Ionicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
 		E8E9E3DAC211A8B69D53090B /* libPods-CommonShareExtensionPods-ShareExtensionStaging.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CommonShareExtensionPods-ShareExtensionStaging.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EBDBDCAE269EB89000E74BEF /* SplashScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SplashScreen.storyboard; sourceTree = "<group>"; };
-		EBF5FA8F26E712E0000D09F0 /* app2060-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "app2060-Bridging-Header.h"; sourceTree = "<group>"; };
+		EBF5FA8F26E712E0000D09F0 /* hologram-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "hologram-Bridging-Header.h"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F70B8F11703598B242E3BA09 /* Pods-CommonShareExtensionPods-ShareExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CommonShareExtensionPods-ShareExtension.release.xcconfig"; path = "Target Support Files/Pods-CommonShareExtensionPods-ShareExtension/Pods-CommonShareExtensionPods-ShareExtension.release.xcconfig"; sourceTree = "<group>"; };
 		F82AE937A5E24B96B280DC6A /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
@@ -385,20 +385,20 @@
 			path = ShareExtensionStaging;
 			sourceTree = "<group>";
 		};
-		13B07FAE1A68108700A75B9A /* app2060 */ = {
+		13B07FAE1A68108700A75B9A /* hologram */ = {
 			isa = PBXGroup;
 			children = (
 				0D133B6A2BFE7DC800B2AAFF /* PrivacyInfo.xcprivacy */,
 				37D01B7C2AA4048C00015826 /* ExportOptions.plist */,
 				375723492A87F38B00ECF0CE /* InfoPlist */,
 				375723412A87EB9700ECF0CE /* Firebase */,
-				50B834172A4DDA74000609F0 /* app2060Release.entitlements */,
+				50B834172A4DDA74000609F0 /* hologramRelease.entitlements */,
 				379587242A3B65DD00E50FC2 /* AesCrypt.h */,
 				379587252A3B65DD00E50FC2 /* AesCrypt.m */,
 				379587212A3B65C400E50FC2 /* RCTFileCipheringModule.h */,
 				3795871F2A3B65C400E50FC2 /* RCTFileCipheringModule.m */,
 				37519991287F7CBD0066658E /* AppDelegate.mm */,
-				75319D53285A846A0010C2AA /* app2060.entitlements */,
+				75319D53285A846A0010C2AA /* hologram.entitlements */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB71A68108700A75B9A /* main.m */,
@@ -410,7 +410,7 @@
 				0DB69D522C3C8B8C0007A29F /* VideoProperties.h */,
 				0DB69D532C3C8B9E0007A29F /* VideoProperties.m */,
 			);
-			name = app2060;
+			name = hologram;
 			sourceTree = "<group>";
 		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
@@ -488,7 +488,7 @@
 			children = (
 				0D665CA32C237B240038F106 /* ShareViewController.swift */,
 				75319D4E285A19E20010C2AA /* Config.xcconfig */,
-				13B07FAE1A68108700A75B9A /* app2060 */,
+				13B07FAE1A68108700A75B9A /* hologram */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				0D66D8F62C236695004F9B35 /* ShareExtensionStaging */,
 				0D22C1712C23707A00C87570 /* ShareExtensionProd */,
@@ -496,7 +496,7 @@
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				E27DFBC2D3BCD40576E0D11D /* Pods */,
-				EBF5FA8F26E712E0000D09F0 /* app2060-Bridging-Header.h */,
+				EBF5FA8F26E712E0000D09F0 /* hologram-Bridging-Header.h */,
 				3117EE94C5A54362BCA3B9A8 /* Resources */,
 				58B1A1C34A787817C3276915 /* ExpoModulesProviders */,
 			);
@@ -545,8 +545,8 @@
 		E27DFBC2D3BCD40576E0D11D /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				77F40464844DA2B356150915 /* Pods-app2060.debug.xcconfig */,
-				C753DF175C343D95204F6E65 /* Pods-app2060.release.xcconfig */,
+				77F40464844DA2B356150915 /* Pods-hologram.debug.xcconfig */,
+				C753DF175C343D95204F6E65 /* Pods-hologram.release.xcconfig */,
 				29F4BBABC7D5EDD99249F6F0 /* Pods-2060CommonPods-2060Dev.debug.xcconfig */,
 				BE0136B2C0ABA88EB536D86A /* Pods-2060CommonPods-2060Dev.release.xcconfig */,
 				8EB93268E7D7D1D69866955D /* Pods-2060CommonPods-2060Prod.debug.xcconfig */,
@@ -651,7 +651,7 @@
 				0D22C1792C23707A00C87570 /* PBXTargetDependency */,
 			);
 			name = 2060Prod;
-			productName = app2060;
+			productName = hologram;
 			productReference = 13B07F961A680F5B00A75B9A /* 2060Prod.app */;
 			productType = "com.apple.product-type.application";
 		};
@@ -678,7 +678,7 @@
 				0D665C9B2C2379930038F106 /* PBXTargetDependency */,
 			);
 			name = 2060Dev;
-			productName = app2060;
+			productName = hologram;
 			productReference = 375723202A86CEF500ECF0CE /* 2060Dev.app */;
 			productType = "com.apple.product-type.application";
 		};
@@ -705,7 +705,7 @@
 				0D66D8FE2C236695004F9B35 /* PBXTargetDependency */,
 			);
 			name = 2060Staging;
-			productName = app2060;
+			productName = hologram;
 			productReference = 3757233F2A86CF0D00ECF0CE /* 2060Staging.app */;
 			productType = "com.apple.product-type.application";
 		};
@@ -735,7 +735,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "app2060" */;
+			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "hologram" */;
 			compatibilityVersion = "Xcode 13.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -1101,7 +1101,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp -r \"${PROJECT_DIR}/app2060/Firebase/GoogleService-Info-Prod.plist\" \"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app/GoogleService-Info.plist\"\n";
+			shellScript = "cp -r \"${PROJECT_DIR}/hologram/Firebase/GoogleService-Info-Prod.plist\" \"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app/GoogleService-Info.plist\"\n";
 		};
 		375723462A87EECA00ECF0CE /* Google Services plist */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1119,7 +1119,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp -r \"${PROJECT_DIR}/app2060/Firebase/GoogleService-Info-Dev.plist\" \"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app/GoogleService-Info.plist\"\n\n";
+			shellScript = "cp -r \"${PROJECT_DIR}/hologram/Firebase/GoogleService-Info-Dev.plist\" \"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app/GoogleService-Info.plist\"\n\n";
 		};
 		375723482A87EEFB00ECF0CE /* Google Services plist */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1137,7 +1137,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp -r \"${PROJECT_DIR}/app2060/Firebase/GoogleService-Info-Staging.plist\" \"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app/GoogleService-Info.plist\"\n";
+			shellScript = "cp -r \"${PROJECT_DIR}/hologram/Firebase/GoogleService-Info-Staging.plist\" \"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app/GoogleService-Info.plist\"\n";
 		};
 		517FB10DB3E71E007A9FFCF5 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1744,7 +1744,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIconProd;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = app2060/app2060.entitlements;
+				CODE_SIGN_ENTITLEMENTS = hologram/hologram.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Distribution: 2060 OU (Y5A6KQ62S7)";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
@@ -1756,7 +1756,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Pods/Frameworks",
 				);
-				INFOPLIST_FILE = "app2060/InfoPlist/Info-Prod.plist";
+				INFOPLIST_FILE = "hologram/InfoPlist/Info-Prod.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = 2060;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1777,7 +1777,7 @@
 				PRODUCT_NAME = 2060Prod;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "2060 - prod";
-				SWIFT_OBJC_BRIDGING_HEADER = "app2060-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "hologram-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VALIDATE_WORKSPACE = YES;
@@ -1793,7 +1793,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIconProd;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = app2060/app2060Release.entitlements;
+				CODE_SIGN_ENTITLEMENTS = hologram/hologramRelease.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Distribution: 2060 OU (Y5A6KQ62S7)";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
@@ -1804,7 +1804,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Pods/Frameworks",
 				);
-				INFOPLIST_FILE = "app2060/InfoPlist/Info-Prod.plist";
+				INFOPLIST_FILE = "hologram/InfoPlist/Info-Prod.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = 2060;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1825,7 +1825,7 @@
 				PRODUCT_NAME = 2060Prod;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "2060 - prod";
-				SWIFT_OBJC_BRIDGING_HEADER = "app2060-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "hologram-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				VALIDATE_WORKSPACE = YES;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -1840,7 +1840,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIconDev;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = app2060/app2060.entitlements;
+				CODE_SIGN_ENTITLEMENTS = hologram/hologram.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -1851,8 +1851,8 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Pods/Frameworks",
 				);
-				INFOPLIST_FILE = "app2060/InfoPlist/Info-Dev.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = "2060 dev";
+				INFOPLIST_FILE = "hologram/InfoPlist/Info-Dev.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = hologram;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1871,7 +1871,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = io.2060.mobileagent.dev;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_OBJC_BRIDGING_HEADER = "app2060-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "hologram-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VALIDATE_WORKSPACE = YES;
@@ -1887,7 +1887,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIconDev;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = app2060/app2060Release.entitlements;
+				CODE_SIGN_ENTITLEMENTS = hologram/hologramRelease.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
@@ -1899,8 +1899,8 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Pods/Frameworks",
 				);
-				INFOPLIST_FILE = "app2060/InfoPlist/Info-Dev.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = "2060 dev";
+				INFOPLIST_FILE = "hologram/InfoPlist/Info-Dev.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = hologram;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1920,7 +1920,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "2060 - dev";
-				SWIFT_OBJC_BRIDGING_HEADER = "app2060-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "hologram-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				VALIDATE_WORKSPACE = YES;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -1934,7 +1934,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIconStaging;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = app2060/app2060.entitlements;
+				CODE_SIGN_ENTITLEMENTS = hologram/hologram.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -1945,8 +1945,8 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Pods/Frameworks",
 				);
-				INFOPLIST_FILE = "app2060/InfoPlist/Info-Staging.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = "2060 staging";
+				INFOPLIST_FILE = "hologram/InfoPlist/Info-Staging.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = hologram;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1965,7 +1965,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = io.2060.mobileagent.st;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_OBJC_BRIDGING_HEADER = "app2060-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "hologram-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VALIDATE_WORKSPACE = YES;
@@ -1980,7 +1980,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIconStaging;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = app2060/app2060Release.entitlements;
+				CODE_SIGN_ENTITLEMENTS = hologram/hologramRelease.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
@@ -1992,8 +1992,8 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Pods/Frameworks",
 				);
-				INFOPLIST_FILE = "app2060/InfoPlist/Info-Staging.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = "2060 staging";
+				INFOPLIST_FILE = "hologram/InfoPlist/Info-Staging.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = hologram;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2013,7 +2013,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "2060 - staging";
-				SWIFT_OBJC_BRIDGING_HEADER = "app2060-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "hologram-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				VALIDATE_WORKSPACE = YES;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -2234,7 +2234,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "app2060" */ = {
+		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "hologram" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				83CBBA201A601CBA00E9B192 /* Debug */,

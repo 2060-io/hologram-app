@@ -94,10 +94,10 @@ jobs:
         with:
           name: version-files
           path: |
-            ./ios/app2060/InfoPlist/Info-Dev.plist
-            ./ios/app2060/InfoPlist/Info-Staging.plist
-            ./ios/app2060/InfoPlist/Info-Prod.plist
-            ./ios/app2060.xcodeproj/project.pbxproj
+            ./ios/hologram/InfoPlist/Info-Dev.plist
+            ./ios/hologram/InfoPlist/Info-Staging.plist
+            ./ios/hologram/InfoPlist/Info-Prod.plist
+            ./ios/hologram.xcodeproj/project.pbxproj
             ./android/app/build.gradle
             ./package.json
 
@@ -175,8 +175,8 @@ jobs:
           echo $RELEASE_VERSION
           cd ios
           pod install --repo-update
-          xcodebuild clean archive -workspace  app2060.xcworkspace -scheme 2060Dev -allowProvisioningUpdates -sdk iphoneos -archivePath builds/app2060.xcarchive -destination "generic/platform=iOS" | xcpretty
-          xcodebuild -exportArchive -archivePath "builds/app2060.xcarchive" -exportPath "builds" -exportOptionsPlist app2060/ExportOptions.plist | xcpretty
+          xcodebuild clean archive -workspace  hologram.xcworkspace -scheme 2060Dev -allowProvisioningUpdates -sdk iphoneos -archivePath builds/hologram.xcarchive -destination "generic/platform=iOS" | xcpretty
+          xcodebuild -exportArchive -archivePath "builds/hologram.xcarchive" -exportPath "builds" -exportOptionsPlist hologram/ExportOptions.plist | xcpretty
 
       - name: Create manifest.plist
         run: |

@@ -62,8 +62,8 @@ export const useSignUp = (options: SignUpOptions) => {
     const mediationRecord = await agent.mediationRecipient.requestAndAwaitGrant(cloudAgentConnection, 5000)
     await agent.mediationRecipient.setDefaultMediator(mediationRecord)
     await agent.mediationRecipient.initialize()
-    const isSignedUp = await isRegistered(agent)
     setSignUpState(SignUpState.AgentCreated)
+    const isSignedUp = await isRegistered(agent)
     handleChangeAgentState({ isSignedUp })
 
     try {

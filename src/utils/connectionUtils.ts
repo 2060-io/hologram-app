@@ -1,9 +1,9 @@
 import { CallOfferMessage, DidCommCallRole } from '@2060.io/credo-ts-didcomm-calls'
+import { ShareMediaMessage } from '@2060.io/credo-ts-didcomm-media-sharing'
 import { MessageReactionsMessage } from '@2060.io/credo-ts-didcomm-reactions'
+import { MessageReceiptsMessage } from '@2060.io/credo-ts-didcomm-receipts'
 import { ProfileMessage, PictureData, getConnectionProfile } from '@2060.io/credo-ts-didcomm-user-profile'
 import { ConnectionRecord, DidExchangeState, JsonTransformer, Protocol } from '@credo-ts/core'
-import { ShareMediaMessage } from 'credo-ts-media-sharing'
-import { MessageReceiptsMessage } from 'credo-ts-receipts'
 
 import { log } from './log'
 

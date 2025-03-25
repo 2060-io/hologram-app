@@ -1,3 +1,4 @@
+import { MediaSharingRecord } from '@2060.io/credo-ts-didcomm-media-sharing'
 import { ActionMenuRecord, ActionMenuRepository } from '@credo-ts/action-menu'
 import {
   AgentMessage,
@@ -7,7 +8,6 @@ import {
   MessageSender,
   getOutboundMessageContext,
 } from '@credo-ts/core'
-import { MediaSharingRecord } from 'credo-ts-media-sharing'
 import { useCallback, useEffect, useState } from 'react'
 import queue, { Worker } from 'react-native-job-queue'
 

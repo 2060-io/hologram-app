@@ -1,6 +1,18 @@
 import { CallOfferMessage } from '@2060.io/credo-ts-didcomm-calls'
+import {
+  MediaSharingEventTypes,
+  MediaSharingRecord,
+  MediaSharingState,
+  MediaSharingStateChangedEvent,
+  ShareMediaMessage,
+} from '@2060.io/credo-ts-didcomm-media-sharing'
 import { MrzDataRequestMessage } from '@2060.io/credo-ts-didcomm-mrtd'
 import { MessageReactionsReceivedEvent, ReactionsEventTypes } from '@2060.io/credo-ts-didcomm-reactions'
+import {
+  ReceiptsEventTypes,
+  MessageReceiptsReceivedEvent,
+  MessageState,
+} from '@2060.io/credo-ts-didcomm-receipts'
 import { ConnectionProfileUpdatedEvent, ProfileEventTypes } from '@2060.io/credo-ts-didcomm-user-profile'
 import { V1ProposeCredentialMessage, V1ProposePresentationMessage } from '@credo-ts/anoncreds'
 import {
@@ -19,14 +31,6 @@ import {
 } from '@credo-ts/core'
 import { tryParseDid } from '@credo-ts/core/build/modules/dids/domain/parse'
 import { QuestionMessage, AnswerMessage } from '@credo-ts/question-answer'
-import {
-  MediaSharingEventTypes,
-  MediaSharingRecord,
-  MediaSharingState,
-  MediaSharingStateChangedEvent,
-  ShareMediaMessage,
-} from 'credo-ts-media-sharing'
-import { ReceiptsEventTypes, MessageReceiptsReceivedEvent, MessageState } from 'credo-ts-receipts'
 import agentActionQueue from 'react-native-job-queue'
 import Realm from 'realm'
 

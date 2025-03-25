@@ -1,0 +1,38 @@
+diff --git a/node_modules/@credo-ts/core/build/agent/Dispatcher.js b/node_modules/@credo-ts/core/build/agent/Dispatcher.js
+index 5105d49..39e89de 100644
+--- a/node_modules/@credo-ts/core/build/agent/Dispatcher.js
++++ b/node_modules/@credo-ts/core/build/agent/Dispatcher.js
+@@ -44,6 +44,16 @@ let Dispatcher = class Dispatcher {
+             if (outboundMessage) {
+                 inboundMessageContext.setResponseMessage(outboundMessage);
+             }
++            // Emit event that allows to hook into received messages
++            this.eventEmitter.emit(inboundMessageContext.agentContext, {
++                type: Events_1.AgentEventTypes.AgentMessageProcessed,
++                payload: {
++                    message: inboundMessageContext.message,
++                    connection: inboundMessageContext.connection,
++                    receivedAt: inboundMessageContext.receivedAt,
++                    encryptedMessage: inboundMessageContext.encryptedMessage,
++                },
++            });
+             await next();
+         };
+         this.messageSender = messageSender;
+@@ -109,16 +119,6 @@ let Dispatcher = class Dispatcher {
+             }
+             await this.messageSender.sendMessage(outboundMessage);
+         }
+-        // Emit event that allows to hook into received messages
+-        this.eventEmitter.emit(agentContext, {
+-            type: Events_1.AgentEventTypes.AgentMessageProcessed,
+-            payload: {
+-                message,
+-                connection,
+-                receivedAt: messageContext.receivedAt,
+-                encryptedMessage,
+-            },
+-        });
+     }
+ };
+ exports.Dispatcher = Dispatcher;

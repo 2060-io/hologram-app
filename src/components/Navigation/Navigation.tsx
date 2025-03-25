@@ -122,11 +122,11 @@ const Navigation = ({ isSignedUp, agent, theme }: NavigationProps) => {
     <NavigationContainer linking={deepLinking} theme={theme.isDarkMode ? DarkTheme : DefaultTheme}>
       <View style={styles.container}>
         <Stack.Navigator
-          id="stack_navigator_main"
+          key="stack_navigator_main"
           screenOptions={({ route }) => ({
             cardStyle: styles.cardStyle,
             headerStyle: globalStyles.headerStyle,
-            headerBackTitleVisible: false,
+            headerBackTitle: '',
             headerBackAllowFontScaling: true,
             headerTitleAlign: 'center',
             headerTitle: () => <HeaderTitle title={t(`navigation.${route.name}`)} theme={theme} />,

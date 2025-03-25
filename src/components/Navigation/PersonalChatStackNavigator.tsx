@@ -24,11 +24,11 @@ const PersonalChatStackNavigator = () => {
     <PersonalChatProvider>
       <MediaPlayerProvider>
         <PersonalChatStack.Navigator
-          id="stack_navigator_personal_chat"
+          key="stack_navigator_personal_chat"
           screenOptions={({ route }) => ({
             cardStyle: styles.cardStyle,
             headerStyle: globalStyles.headerStyle,
-            headerBackTitleVisible: false,
+            headerBackTitle: '',
             headerBackAllowFontScaling: true,
             headerTitleAlign: 'center',
             headerTitle: () => <HeaderTitle title={t(`navigation.${route.name}`)} theme={theme} />,

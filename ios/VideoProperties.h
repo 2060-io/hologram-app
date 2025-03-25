@@ -1,6 +1,6 @@
 //
 //  VideoProperties.h
-//  app2060
+//  hologram
 //
 //  Created by Daniel Fernando Rico León on 8/07/24.
 //
