@@ -107,3 +107,21 @@ index fffd69f..e62b949 100644
              case MediatorPickupStrategy_1.MediatorPickupStrategy.Implicit:
                  // Implicit means sending ping once and keeping connection open. This requires a long-lived transport
                  // such as WebSockets to work
+diff --git a/node_modules/@credo-ts/core/build/modules/oob/OutOfBandApi.js b/node_modules/@credo-ts/core/build/modules/oob/OutOfBandApi.js
+index ffc8936..909ddca 100644
+--- a/node_modules/@credo-ts/core/build/modules/oob/OutOfBandApi.js
++++ b/node_modules/@credo-ts/core/build/modules/oob/OutOfBandApi.js
+@@ -264,11 +264,12 @@ let OutOfBandApi = class OutOfBandApi {
+      * @returns out-of-band record and connection record if one has been created.
+      */
+     async receiveImplicitInvitation(config) {
+-        var _a, _b;
++        var _a, _b, _c;
+         const handshakeProtocols = this.getSupportedHandshakeProtocols((_a = config.handshakeProtocols) !== null && _a !== void 0 ? _a : [connections_1.HandshakeProtocol.DidExchange]).map((p) => p.parsedProtocolUri.protocolUri);
+         const invitation = new messages_1.OutOfBandInvitation({
+             id: config.did,
+             label: (_b = config.label) !== null && _b !== void 0 ? _b : '',
++            imageUrl: (_c = config.imageUrl) !== null && _c !== void 0 ? _c : '',
+             services: [config.did],
+             handshakeProtocols,
+         });
