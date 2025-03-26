@@ -43,6 +43,7 @@ import {
   DidcommPresentationRequest,
   OpenIdPresentationRequest,
   CredentialPresented,
+  ForwardConnection,
 } from '@2060/pages'
 import { MobileAgent } from '@2060/services/agent'
 import { AppTheme, getGlobalStyles } from '@2060/styles'
@@ -166,6 +167,7 @@ const Navigation = ({ isSignedUp, agent, theme }: NavigationProps) => {
           <Stack.Screen name="ChangeBackupPassword" component={ChangeBackupPassword} />
           <Stack.Screen name="CredentialDetails" component={CredentialDetails} />
           <Stack.Screen name="CredentialPresented" component={CredentialPresented} />
+          <Stack.Screen name="ForwardConnection" component={ForwardConnection} />
         </Stack.Navigator>
       </View>
     </NavigationContainer>

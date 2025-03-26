@@ -8,6 +8,9 @@ import {
   AgentEventTypes,
   MessageSendingError,
   BasicMessage,
+  MessageSender,
+  OutboundMessageContext,
+  OutOfBandInvitation,
 } from '@credo-ts/core'
 import { Realm } from 'realm'
 import { ReplaySubject, firstValueFrom, filter, first, timeout, catchError, map } from 'rxjs'
@@ -23,7 +26,7 @@ import {
 } from './AgentAction'
 
 import { ChatEntry, ChatEntryState } from '@2060/model'
-import { MobileAgent } from '@2060/services/agent'
+import { createOobInvitation, MobileAgent } from '@2060/services/agent'
 import { log, logError } from '@2060/utils'
 
 export type ActionCallback = (options: { agent: MobileAgent }) => Promise<AgentCallbackReturnType<BaseRecord>>
@@ -119,6 +122,25 @@ export class AgentActionExecuter {
         })
 
         return { outgoingMessageType: PerformMessage.type.messageTypeUri }
+      }
+    } else if (action.type === AgentActionType.ForwardConnection) {
+      const parameters = action.parameters as {
+        forwardedConnectionId: string
+        didcommConnectionId: string
+      }
+      const { forwardedConnectionId, didcommConnectionId } = parameters
+      return async (options: { agent: MobileAgent }) => {
+        const originDidcommConnection = await options.agent?.connections.getById(forwardedConnectionId)
+        const outOfBandInvitation = createOobInvitation(originDidcommConnection)
+        const didcommConnection = await options.agent?.connections.getById(didcommConnectionId)
+        const messageSender = options.agent?.context.dependencyManager.resolve(MessageSender)
+        await messageSender.sendMessage(
+          new OutboundMessageContext(outOfBandInvitation, {
+            agentContext: options.agent?.context,
+            connection: didcommConnection,
+          }),
+        )
+        return { outgoingMessageType: OutOfBandInvitation.type.messageTypeUri }
       }
     }
     logError(`No callback for type ${action.type}`)

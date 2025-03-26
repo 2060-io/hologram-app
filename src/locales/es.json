@@ -296,7 +296,8 @@
       "serviceNotVerifiable": "Este servicio no es verificable.",
       "noLiabilityDisclaimerDesc": "<bold>Descargo de responsabilidad: </bold>Ten en cuenta que <bold>Hologram</bold> actúa únicamente como un proveedor de conexión para <bold>{{serviceName}}</bold>. <bold>Hologram</bold> no controla este servicio y por lo tanto no puede ser considerado responsable de cualquier problema, daños o disputas que surjan del uso de <bold>{{serviceName}}</bold>. Cualquier inquietud debe dirigirse directamente a <bold>{{serviceName}}</bold>. \n\n<bold>ESTE SERVICIO NO ES VERIFICABLE.</bold> ÚSALO BAJO TU PROPIO RIESGO.",
       "newConnection": "New Connection",
-      "youAreNowConnectedTo": "You are now connected to"
+      "youAreNowConnectedTo": "Conexión establecida con",
+      "forwarded": "La conexión ha sido reenviada"
     },
     "scanned": {
       "scanConnectContacts": "Usa este código para conectarte con otros",
@@ -335,9 +336,10 @@
       "offeringCredential": "{{sender}} te está ofreciendo una credencial. El emisor de esta credencial es confiable, por lo cual es seguro aceptar esta credencial",
       "verifiablePresentationRequest": "Solicitud de presentación verificable",
       "isRequestingYou": "{{sender}} te está solicitando los siguientes datos desde una credencial {{ schemaName }}",
-      "invitationRequestService": "Servicio",
+      "invitationRequestService": "Invitación a un servicio",
       "invitationRequestSubConnection": "Conexión administrada",
       "invitationDescription": "Recibiste una invitación para conectarte con",
+      "sentInvitationDescription": "Enviaste una invitación para conectarse con",
       "asASubConnectionOf": "como una conexión administrada de",
       "saveSucceededFileMedia": "Guardado exitosamente",
       "saveFailedFileMedia": "Guardado fallido",

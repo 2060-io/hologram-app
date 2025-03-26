@@ -27,7 +27,6 @@ export default (theme: AppTheme) =>
       color: theme.colors.blue,
       fontSize: theme.fontSize.sm + 2,
       lineHeight: 18,
-      paddingBottom: 17,
     },
     textSemiBold: {
       fontSize: theme.fontSize.sm + 2,
@@ -43,6 +42,9 @@ export default (theme: AppTheme) =>
       justifyContent: 'center',
       alignSelf: 'center',
       marginBottom: 11,
+    },
+    footerContainer: {
+      marginTop: 18,
     },
     acceptedContainer: {
       borderRadius: 10,

@@ -1,9 +1,11 @@
-import { ConnectionRecord } from '@credo-ts/core'
+import { ConnectionRecord, TypedArrayEncoder } from '@credo-ts/core'
 import { StackActions } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
 import React, { ReactElement, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, SafeAreaView, ScrollView, TouchableOpacity } from 'react-native'
+import { View, SafeAreaView, ScrollView, TouchableOpacity, Platform } from 'react-native'
+import Config from 'react-native-config'
+import Share, { ShareOptions } from 'react-native-share'
 
 import getStyles from './styles'
 
@@ -17,14 +19,16 @@ import {
   useMobileAgent,
   useChats,
   useConnectionByParentConnectionId,
+  useUserProfile,
 } from '@2060/hooks/agent'
 import { deleteConnection, blockConnection, unblockConnection } from '@2060/hooks/agent/connections'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { MobileAgent } from '@2060/services/agent'
-import { capitalizeFirstLetter, log } from '@2060/utils'
+import { createOobInvitation, MobileAgent } from '@2060/services/agent'
+import { capitalizeFirstLetter, log, logError } from '@2060/utils'
 import {
   getConnectionDisplayName,
   isBlocked,
+  isService,
   isTerminated,
   supportsUserProfile,
 } from '@2060/utils/connectionUtils'
@@ -60,10 +64,12 @@ const BaseConnectionDetails = ({
   const { t } = useTranslation()
   const connectionName = getConnectionDisplayName(connection)
   const relatedConnections = useConnectionByParentConnectionId(connection.id)
+  const { userProfileData } = useUserProfile()
 
   const isConnectionCompleted = connection.isReady
   const isConnectionBlocked = isBlocked(connection)
   const isConnectionTerminated = isTerminated(connection)
+  const isConnectionService = isService(connection)
 
   const { clearThread, findOrCreateThread } = useChats()
 
@@ -199,8 +205,47 @@ const BaseConnectionDetails = ({
     text: t('connection.deleteConnection'),
     onPress: () => openConfirmationModal('deleteConnection'),
   })
+  if (isConnectionService) {
+    connectionOptions.push({
+      iconName: 'forward',
+      text: t('personalChat.forward'),
+      onPress: () => navigation.navigate('ForwardConnection', { connection }),
+    })
+    connectionOptions.push({
+      iconName: 'shareSocial',
+      text: t('connection.share'),
+      onPress: () => shareConnection(),
+    })
+  }
 
   const channels: ChannelProps[] = [{ value: 'text', onPress: goToChat }]
+
+  const shareConnection = async () => {
+    try {
+      const outOfBandInvitation = createOobInvitation(connection)
+      let invitationStr = JSON.stringify(outOfBandInvitation)
+      let invitationBase64 = TypedArrayEncoder.toBase64URL(Buffer.from(invitationStr))
+      const invitationUrl = `${Config.BASE_INVITATION_URL}?oob=${invitationBase64}`
+      const title = t('scanned.titleShare', { displayName: userProfileData?.displayName })
+      await Share.open(
+        Platform.select<ShareOptions>({
+          ios: {
+            failOnCancel: false,
+            activityItemSources: [
+              {
+                placeholderItem: { type: 'url', content: invitationUrl },
+                item: { default: { type: 'url', content: invitationUrl } },
+                linkMetadata: { originalUrl: invitationUrl, url: invitationUrl, title },
+              },
+            ],
+          },
+          default: { title, url: invitationUrl, message: title, failOnCancel: false },
+        }),
+      )
+    } catch (error) {
+      logError('Error sharing connection', error)
+    }
+  }
 
   return (
     <SafeAreaView style={styles.container}>

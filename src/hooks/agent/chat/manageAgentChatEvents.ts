@@ -23,6 +23,7 @@ import {
   BasicMessage,
   ConnectionRecord,
   ConnectionType,
+  OutOfBandInvitation,
   OutOfBandState,
   OutboundMessageSendStatus,
   RecordUpdatedEvent,
@@ -273,6 +274,7 @@ export function manageAgentChatEvents(agent: MobileAgent, realm: Realm, activeCh
       AnswerMessage.type.messageTypeUri,
       BasicMessage.type.messageTypeUri,
       ShareMediaMessage.type.messageTypeUri,
+      OutOfBandInvitation.type.messageTypeUri,
     ]
 
     if (connection) {
@@ -382,8 +384,12 @@ export function manageAgentChatEvents(agent: MobileAgent, realm: Realm, activeCh
         state: ChatEntryState.Received,
         metadata,
         createdAt: new Date().getTime(),
+        associatedMessageId: event.payload.messageId,
       })
       chatThreadService.updateThread(realm, thread.id, { lastChatEntry: chatEntry })
+      if (thread.id !== activeChatThreadId) {
+        chatThreadService.addUnread(realm, thread.id, 1)
+      }
     }
   }
 

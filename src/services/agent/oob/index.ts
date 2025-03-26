@@ -21,6 +21,8 @@ import {
   V2RequestPresentationMessage,
   parseMessageType,
   MediationRecipientApi,
+  isDid,
+  utils,
 } from '@credo-ts/core'
 import { DidCommDocumentService } from '@credo-ts/core/build/modules/didcomm'
 import { tryParseDid } from '@credo-ts/core/build/modules/dids/domain/parse'
@@ -85,11 +87,23 @@ export const getOutOfBandRecord = async (
   const existingOobRecord = await outOfBandApi.findByReceivedInvitationId(invitation.id)
   if (existingOobRecord) return { outOfBandRecord: existingOobRecord, existingConnection }
 
-  const { outOfBandRecord } = await outOfBandApi.receiveInvitation(invitation, {
-    autoAcceptInvitation: false,
-    autoAcceptConnection: true,
-    reuseConnection: true,
-  })
+  // Special case: public DID invitation (e.g. forward connection): replace invitation id with
+  // the did given on pthid
+  const { outOfBandRecord } =
+    invitation.thread?.parentThreadId && isDid(invitation.thread.parentThreadId)
+      ? await outOfBandApi.receiveImplicitInvitation({
+          did: invitation.thread.parentThreadId,
+          label: invitation.label,
+          imageUrl: invitation.imageUrl,
+          autoAcceptInvitation: false,
+          autoAcceptConnection: true,
+        })
+      : await outOfBandApi.receiveInvitation(invitation, {
+          autoAcceptInvitation: false,
+          autoAcceptConnection: true,
+          reuseConnection: true,
+        })
+
   if (parentConnectionId) {
     outOfBandRecord.setTag('parentConnectionId', parentConnectionId)
     await agentContext.dependencyManager.resolve(OutOfBandRepository).update(agentContext, outOfBandRecord)
@@ -246,6 +260,21 @@ export const createInvitation = async (
   })
 
   return oobRecord.outOfBandInvitation
+}
+
+export const createOobInvitation = (connection: ConnectionRecord) => {
+  const jsonInvitation = {
+    '@type': OutOfBandInvitation.type.messageTypeUri,
+    '@id': utils.uuid(),
+    label: connection.theirLabel,
+    imageUrl: connection.imageUrl,
+    services: [connection.invitationDid],
+    handshake_protocols: [connection.protocol ?? 'https://didcomm.org/didexchange/1.0'],
+    accept: ['didcomm/aip1', 'didcomm/aip2;env=rfc19'],
+  }
+  const outOfBandInvitation = OutOfBandInvitation.fromJson(jsonInvitation)
+  outOfBandInvitation.setThread({ parentThreadId: connection.invitationDid })
+  return outOfBandInvitation
 }
 
 export async function acceptInvitation(

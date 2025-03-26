@@ -7,6 +7,7 @@ import { HomeTabProps } from './HomeMainProps'
 import { Loader } from '@2060/components/common'
 import { useMobileAgent } from '@2060/hooks/agent'
 import { DidcommInvitationType, processInvitation } from '@2060/services/agent'
+import { logError } from '@2060/utils'
 import { toast } from '@2060/utils/toast'
 
 const HomeMainContainer = (HomeMainComponent: ElementType) => {
@@ -73,6 +74,7 @@ const HomeMainContainer = (HomeMainComponent: ElementType) => {
         const invitation = await agent?.oob.parseInvitation(invitationUrl)
         if (invitation) goToInvitation(invitation)
       } catch (error) {
+        logError('Error processing deep link', error)
         toast({ type: 'error', message: `${error}` })
       } finally {
         setLoading(false)

@@ -27,7 +27,7 @@ import { useIsForeground } from '@2060/hooks'
 import { useMobileAgent } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { DidcommInvitationType, processInvitation } from '@2060/services/agent/oob'
-import { log } from '@2060/utils'
+import { log, logError } from '@2060/utils'
 import { toast } from '@2060/utils/toast'
 
 interface Props extends BottomTabScreenProps<ParamListBase, 'Scan', 'tab_navigator_home'> {}
@@ -123,6 +123,7 @@ const Scan = ({ navigation }: Props) => {
         message: t('scan.errorProcessingCodeOrLink', { message: (error as Error).message }),
         duration: 5000,
       })
+      logError('Error processing code', error)
     }
   }
 

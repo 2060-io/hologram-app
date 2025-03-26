@@ -1,5 +1,6 @@
 import { useHeaderHeight } from '@react-navigation/elements'
-import { StackScreenProps } from '@react-navigation/stack'
+import { ParamListBase } from '@react-navigation/native'
+import { StackNavigationProp } from '@react-navigation/stack'
 import React, { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { SafeAreaView, TouchableOpacity, View } from 'react-native'
@@ -9,33 +10,33 @@ import { BaseConnections } from '../Connections'
 import getStyles from './styles'
 
 import { ConnectionItem } from '@2060/components/ConnectionsList/ConnectionListProps'
-import { PersonalChatStackParams } from '@2060/components/Navigation/NavigationProps'
 import { SvgIcon, Text } from '@2060/components/common'
-import { useChatActions } from '@2060/hooks'
-import { useChat, useConnections } from '@2060/hooks/agent'
+import { useConnections } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { notAllowedConnectionsIdsToSendMessages } from '@2060/utils/connectionUtils'
 
-interface Props extends StackScreenProps<PersonalChatStackParams, 'ForwardMessages'> {}
+interface Props {
+  navigation: StackNavigationProp<ParamListBase>
+  onPressForward: (connectionsId: string[]) => void
+  connectionId?: string
+}
 
 type SelectedConnection = {
   id: string
   name: string
 }
 
-const ForwardMessages = ({ navigation }: Props) => {
+const BaseForward = ({ navigation, onPressForward, connectionId }: Props) => {
   const theme = useTheme()
   const styles = getStyles(theme)
   const { t } = useTranslation()
   const headerHeight = useHeaderHeight()
-  const { forwardSelectedMessages } = useChatActions()
-  const { stopSelectingMessagesMode, chatThread } = useChat()
   const [selectedConnections, setSelectedConnections] = useState<SelectedConnection[]>([])
   const selectedConnectionNames = selectedConnections.map(({ name }) => name).join(', ')
   const isForwardButtonDisabled = !selectedConnections.length
   const { connections } = useConnections()
   const excludedConnections = notAllowedConnectionsIdsToSendMessages(connections)
-  if (chatThread) excludedConnections.push(chatThread.data.connectionId)
+  if (connectionId) excludedConnections.push(connectionId)
 
   const onPressConnection = useCallback((connectionItem: ConnectionItem) => {
     setSelectedConnections(prevState => {
@@ -54,10 +55,8 @@ const ForwardMessages = ({ navigation }: Props) => {
     })
   }, [])
 
-  const forwardMessages = () => {
-    forwardSelectedMessages(selectedConnections.map(connection => connection.id))
-    stopSelectingMessagesMode()
-    navigation.goBack()
+  const forward = () => {
+    onPressForward(selectedConnections.map(connection => connection.id))
   }
 
   return (
@@ -79,7 +78,7 @@ const ForwardMessages = ({ navigation }: Props) => {
         <TouchableOpacity
           style={[styles.forwardButton, { opacity: isForwardButtonDisabled ? 0.5 : 1 }]}
           disabled={isForwardButtonDisabled}
-          onPress={forwardMessages}
+          onPress={forward}
         >
           <SvgIcon name="send" fill={theme.colors.white} />
         </TouchableOpacity>
@@ -88,4 +87,4 @@ const ForwardMessages = ({ navigation }: Props) => {
   )
 }
 
-export default ForwardMessages
+export default BaseForward
