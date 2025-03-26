@@ -317,12 +317,15 @@
       "serviceNotVerifiable": "Este servicio no es verificable.",
       "noLiabilityDisclaimerDesc": "<bold>Descargo de responsabilidad: </bold>Ten en cuenta que <bold>Hologram</bold> actúa únicamente como un proveedor de conexión para <bold>{{serviceName}}</bold>. <bold>Hologram</bold> no controla este servicio y por lo tanto no puede ser considerado responsable de cualquier problema, daños o disputas que surjan del uso de <bold>{{serviceName}}</bold>. Cualquier inquietud debe dirigirse directamente a <bold>{{serviceName}}</bold>. \n\n<bold>ESTE SERVICIO NO ES VERIFICABLE.</bold> ÚSALO BAJO TU PROPIO RIESGO.",
       "newConnection": "New Connection",
-      "youAreNowConnectedTo": "Conexión establecida con",
       "forwarded": "La conexión ha sido reenviada",
       "youAreAlreadyConnected": "Ya estás conectando con {{ connectionName }}",
       "goToChat": "Ir al chat",
       "call": "Llamar",
-      "videoCall": "Video llamada"
+      "videoCall": "Video llamada",
+      "youAreNowConnectedTo": "Ahora estás conectando con",
+      "youAreAlreadyConnectedTo": "Ya estás conectando con {{ name }}",
+      "goToConnection": "Ir al servicio",
+      "errorConnecting": "Error conectándose a {{ name }}"
     },
     "scanned": {
       "scanConnectContacts": "Usa este código para conectarte con otros",

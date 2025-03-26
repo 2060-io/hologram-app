@@ -1,20 +1,33 @@
-import React, { useCallback } from 'react'
+import { ConnectionRecord } from '@credo-ts/core'
+import React, { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Linking, TouchableOpacity, View } from 'react-native'
+import { ActivityIndicator, TouchableOpacity, View } from 'react-native'
 
 import getStyles from './styles'
-import serviceInfo from './unicIDInfo.json'
 
 import { Avatar, Icon, MainButton, SvgIcon, Text, VerifiedIcon } from '@2060/components/common'
+import { useChats } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { ServiceStatus } from '@2060/services/api'
+import { MobileAgent } from '@2060/services/agent'
+import { ServiceInfo, ServiceStatus } from '@2060/services/api'
 import { getFlagEmoji, trimText } from '@2060/utils'
-import { toast } from '@2060/utils/toast'
 
-const CredentialIssuer = ({ connect }: { connect: (issuerId: string) => void }) => {
-  const { t } = useTranslation()
-  const theme = useTheme()
-  const styles = getStyles(theme)
+type Props = {
+  service: ServiceInfo
+  connect: (service: ServiceInfo) => Promise<ConnectionRecord | null>
+  tryToOpenURL: (url: string) => void
+  goToConnectionDetails: (connectionId: string) => void
+  goToChat: (chatThreadId: string) => void
+  agent: MobileAgent | undefined
+}
+const CredentialIssuer = ({
+  service,
+  connect,
+  tryToOpenURL,
+  goToConnectionDetails,
+  goToChat,
+  agent,
+}: Props) => {
   const {
     logoUrl,
     name,
@@ -24,17 +37,36 @@ const CredentialIssuer = ({ connect }: { connect: (issuerId: string) => void }) 
     dataPrivacyUrl,
     termsAndConditionsUrl,
     minimumAgeRequired,
-    stars,
-  } = serviceInfo
+  } = service
+  const { t } = useTranslation()
+  const theme = useTheme()
+  const styles = getStyles(theme)
+  const { findOrCreateThread } = useChats()
+  const [isConnecting, setIsConnecting] = useState(false)
+  const [connectionExists, setConnectionExists] = useState(false)
+  const connectionRef = useRef<ConnectionRecord>()
 
-  const tryToOpenURL = useCallback(async (url: string) => {
-    const supported = await Linking.canOpenURL(url)
-    if (supported) {
-      await Linking.openURL(url)
-    } else {
-      toast({ type: 'error', message: `${t('general.canNotOpenURL')} ${url}` })
+  useEffect(() => {
+    const verifyConnectionExists = async () => {
+      if (!agent) return
+      const [connection] = await agent.connections.findByInvitationDid(did)
+      setConnectionExists(!!connection)
+      connectionRef.current = connection
     }
-  }, [])
+    verifyConnectionExists()
+  }, [agent])
+
+  const connectToService = async () => {
+    setIsConnecting(true)
+    const connection = await connect(service)
+    if (connection) {
+      setConnectionExists(true)
+      connectionRef.current = connection
+      const chatThreadId = findOrCreateThread({ connection }).id
+      goToChat(chatThreadId)
+    }
+    setIsConnecting(false)
+  }
 
   return (
     <View style={styles.container}>
@@ -63,7 +95,7 @@ const CredentialIssuer = ({ connect }: { connect: (issuerId: string) => void }) 
           {t('credential.reputation')}
         </Text>
         <View style={styles.starsContainer}>
-          {Array.from({ length: stars }).map((_, index) => (
+          {Array.from({ length: 5 }).map((_, index) => (
             <Icon key={index} as="FontAwesome" name="star" size={14} color="gold" style={styles.star} />
           ))}
         </View>
@@ -107,11 +139,22 @@ const CredentialIssuer = ({ connect }: { connect: (issuerId: string) => void }) 
           <SvgIcon name="arrowUpRightFromSquare" fill={theme.colors.primaryText} width={15} height={15} />
         </TouchableOpacity>
       )}
-      <MainButton
-        text={t('connection.connect')}
-        style={styles.connectButton}
-        onPress={() => connect(serviceInfo.id)}
-      />
+      {connectionExists ? (
+        <>
+          <Text typography="EuclidCircularA-Bold" style={[styles.text, styles.alreadyConnectedText]}>
+            {t('connection.youAreAlreadyConnectedTo', { name: service.name })}
+          </Text>
+          <MainButton
+            text={t('connection.goToConnection')}
+            style={styles.button}
+            onPress={() => goToConnectionDetails(connectionRef.current!.id)}
+          />
+        </>
+      ) : isConnecting ? (
+        <ActivityIndicator color={theme.colors.green} size="large" />
+      ) : (
+        <MainButton text={t('connection.connect')} style={styles.button} onPress={connectToService} />
+      )}
     </View>
   )
 }

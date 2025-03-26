@@ -30,6 +30,10 @@ const styles = (theme: AppTheme) =>
       fontSize: theme.fontSize.md,
       color: theme.colors.primaryText,
     },
+    alreadyConnectedText: {
+      textAlign: 'center',
+      marginVertical: 6,
+    },
     rowContainer: {
       flexDirection: 'row',
       alignItems: 'center',
@@ -51,7 +55,7 @@ const styles = (theme: AppTheme) =>
       alignItems: 'center',
       marginBottom: 6,
     },
-    connectButton: {
+    button: {
       width: '100%',
       marginTop: 6,
     },
