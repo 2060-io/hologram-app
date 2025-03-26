@@ -48,10 +48,10 @@ const ForwardConnection = ({ navigation, route }: Props) => {
       })
       updateThread(realm, chatThreadId, { lastChatEntry: chatEntry })
       addAgentActionToQueue({
-        type: AgentActionType.SendInvitation,
+        type: AgentActionType.ForwardConnection,
         chatEntryId: chatEntry.id,
         parameters: {
-          originDidcommConnectionId: connection.id,
+          forwardedConnectionId: connection.id,
           didcommConnectionId: connectionId,
         },
       })

@@ -1,5 +1,5 @@
 import { StackActions, useNavigation } from '@react-navigation/native'
-import React, { useState, memo } from 'react'
+import React, { useState, memo, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, ActivityIndicator, Image, TouchableOpacity } from 'react-native'
 
@@ -28,7 +28,7 @@ interface Props {
 const isService = (did?: string) => did !== undefined && !did.startsWith('did:peer')
 
 const InvitationChatView = ({ associatedRecordId: outOfBandId, metadata, role, agent }: Props) => {
-  const [loadingRequest, setLoadingRequest] = useState(false)
+  const [isAcceptingInvitation, setIsAcceptingInvitation] = useState(false)
   const { activeChatThread, findOrCreateThread } = useChats()
   const chatThread = useChatThreadById(activeChatThread ?? '')
   const { userProfileData } = useUserProfile()
@@ -36,7 +36,7 @@ const InvitationChatView = ({ associatedRecordId: outOfBandId, metadata, role, a
   const styles = getStyles(theme)
   const { t } = useTranslation()
   const navigation = useNavigation()
-  const isSender = role === ChatEntryRole.Sender
+  const isReceiver = role === ChatEntryRole.Receiver
   const defaultUserImg = Image.resolveAssetSource(require('@2060/assets/images/defaultUser.png')).uri
   const { imageUrl, label, did, state } = metadata
   const invitationType = t(
@@ -50,8 +50,7 @@ const InvitationChatView = ({ associatedRecordId: outOfBandId, metadata, role, a
   }
   const onAccept = async () => {
     if (!agent) return
-    setLoadingRequest(true)
-
+    setIsAcceptingInvitation(true)
     try {
       const { connectionRecord } = await acceptInvitation(agent.context, {
         outOfBandId,
@@ -65,7 +64,7 @@ const InvitationChatView = ({ associatedRecordId: outOfBandId, metadata, role, a
       logError('Error accepting invitation', error)
       toast({ type: 'error', message: `${error}` })
     } finally {
-      setLoadingRequest(false)
+      setIsAcceptingInvitation(false)
     }
   }
 
@@ -97,19 +96,24 @@ const InvitationChatView = ({ associatedRecordId: outOfBandId, metadata, role, a
     ),
   }
 
+  const renderFooter = useMemo(() => {
+    if (isAcceptingInvitation) return <ActivityIndicator color={theme.colors.green} />
+    return footer[state]
+  }, [isAcceptingInvitation, state])
+
   return (
     <>
       <Header
         theme={theme}
         leftIconName="personAdd"
         rightIcon={
-          state === InvitationState.Refused || isSender ? null : (
+          state !== InvitationState.Refused && isReceiver ? (
             <TouchableOpacity
               onPress={state === InvitationState.Received ? goToInvitation : goToExistingConnection}
             >
               <SvgIcon name="info" fill={theme.colors.blue} width={20} height={20} />
             </TouchableOpacity>
-          )
+          ) : null
         }
         title={invitationType}
       />
@@ -126,10 +130,10 @@ const InvitationChatView = ({ associatedRecordId: outOfBandId, metadata, role, a
           </Text>
         </View>
         <Text typography="EuclidCircularA-Regular" style={styles.subTitle}>
-          {isSender ? t('personalChat.sentInvitationDescription') : t('personalChat.invitationDescription')}
+          {isReceiver ? t('personalChat.invitationDescription') : t('personalChat.sentInvitationDescription')}
           <Text typography="EuclidCircularA-SemiBold" style={styles.textSemiBold}>
             {' '}
-            {serviceInfo?.name ?? label}{' '}
+            {serviceInfo?.name ?? label}
           </Text>
           {!isService && t('personalChat.asASubConnectionOf')}
           {!isService && (
@@ -139,7 +143,7 @@ const InvitationChatView = ({ associatedRecordId: outOfBandId, metadata, role, a
             </Text>
           )}
         </Text>
-        {loadingRequest ? <ActivityIndicator color={theme.colors.green} /> : footer[state]}
+        {isReceiver && <View style={styles.footerContainer}>{renderFooter}</View>}
       </View>
     </>
   )

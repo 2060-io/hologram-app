@@ -296,8 +296,8 @@
       "proofOfTrust": "Proof of trust",
       "serviceNotVerifiable": "This service is not verifiable.",
       "noLiabilityDisclaimerDesc": "<bold>No-liability disclaimer: </bold> Please be aware that <bold>Hologram</bold> acts solely as a connection provider for <bold>{{serviceName}}</bold>. <bold>Hologram</bold> does not control this service and therefore cannot be held liable for any issues, damages, or disputes arising from the use of <bold>{{serviceName}}</bold>. Any concerns should be addressed directly to <bold>{{serviceName}}</bold>. \n\n<bold>THIS SERVICE IS NOT VERIFIABLE.</bold> USE IT AT YOUR OWN RISK",
-      "newConnection": "Nueva conexión",
-      "youAreNowConnectedTo": "Ahora estás conectando con",
+      "newConnection": "New connection",
+      "youAreNowConnectedTo": "You are now connected to",
       "forwarded": "Connection has been forwarded"
     },
     "scanned": {

@@ -123,14 +123,14 @@ export class AgentActionExecuter {
 
         return { outgoingMessageType: PerformMessage.type.messageTypeUri }
       }
-    } else if (action.type === AgentActionType.SendInvitation) {
+    } else if (action.type === AgentActionType.ForwardConnection) {
       const parameters = action.parameters as {
-        originDidcommConnectionId: string
+        forwardedConnectionId: string
         didcommConnectionId: string
       }
-      const { originDidcommConnectionId, didcommConnectionId } = parameters
+      const { forwardedConnectionId, didcommConnectionId } = parameters
       return async (options: { agent: MobileAgent }) => {
-        const originDidcommConnection = await options.agent?.connections.getById(originDidcommConnectionId)
+        const originDidcommConnection = await options.agent?.connections.getById(forwardedConnectionId)
         const outOfBandInvitation = createOobInvitation(originDidcommConnection)
         const didcommConnection = await options.agent?.connections.getById(didcommConnectionId)
         const messageSender = options.agent?.context.dependencyManager.resolve(MessageSender)
