@@ -35,7 +35,8 @@ const IdentityCredentialIssuers = ({ navigation }: Props) => {
     try {
       let { connectionRecord } = await agent.oob.receiveImplicitInvitation({
         did: service.did,
-        alias: service.name,
+        label: service.name,
+        imageUrl: service.logoUrl,
         autoAcceptConnection: true,
       })
       if (!connectionRecord) throw new Error('Error connecting')
