@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native'
 
+import { IS_DEVICE_IOS } from '@2060/constants'
 import { AppTheme } from '@2060/styles'
 
 const styles = (theme: AppTheme) =>
@@ -18,6 +19,9 @@ const styles = (theme: AppTheme) =>
       fontSize: theme.fontSize.md2,
       color: theme.colors.green,
     },
+    headerTitleContainerStyle: {
+      maxWidth: '100%',
+    },
     icon: {
       marginBottom: 10,
     },
@@ -34,7 +38,7 @@ const styles = (theme: AppTheme) =>
       fontSize: theme.fontSize.md2,
       fontFamily: 'EuclidCircularA-SemiBold',
       padding: 10,
-      borderWidth: 1,
+      borderWidth: IS_DEVICE_IOS ? 1 : 0.5,
       borderColor: theme.colors.tertiaryText,
       borderRadius: 6,
       color: theme.colors.tertiaryText,

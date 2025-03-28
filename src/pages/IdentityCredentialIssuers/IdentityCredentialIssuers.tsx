@@ -45,6 +45,7 @@ const IdentityCredentialIssuers = ({ navigation }: Props) => {
       gestureEnabled: !comesFromOnboarding,
       headerStyle: { ...globalStyles.headerStyle },
       headerLeft: props => (comesFromOnboarding ? null : <HeaderBackButton {...props} />),
+      headerTitleContainerStyle: styles.headerTitleContainerStyle,
       headerTitle: () => <HeaderTitle title={t('navigation.IdentityCredentialIssuers')} theme={theme} />,
       headerTitleAlign: 'center',
       headerRight: () =>
