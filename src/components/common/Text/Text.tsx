@@ -3,7 +3,7 @@ import { Text } from 'react-native'
 
 import { TextProps } from './TextProps'
 
-const CustomText = ({ style, children, typography, ...props }: TextProps) => {
+const CustomText = ({ style, typography, children, ...props }: TextProps) => {
   const fontFamily = typography ? typography : 'EuclidCircularA-Regular'
   return (
     <Text style={[style, { fontFamily }]} {...props}>
