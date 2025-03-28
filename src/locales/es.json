@@ -73,7 +73,8 @@
       "canNotOpenURL": "No se pudo abrir ",
       "dismiss": "Cerrar",
       "selected": "1 seleccionado",
-      "selected_other": "{{ count }} seleccionados"
+      "selected_other": "{{ count }} seleccionados",
+      "skip": "Omitir"
     },
     "navigation": {
       "back": "Atras",
@@ -209,7 +210,7 @@
       "errorConnectToSelf": "No es posible conectar consigo mismo",
       "serviceProvider": "Proveedor del servicio:",
       "termsAndConditions": "Términos y condiciones",
-      "privacyPolicy": "Política de privacidad.",
+      "privacyPolicy": "Política de privacidad",
       "ageRestrictions": "Restricciones de edad:",
       "noAgeRestrictions": "Sin restricciones",
       "serviceNotVerifiable": "Este servicio no es verificable.",
@@ -230,9 +231,10 @@
       "citizenship": "Selecciona el país de ciudadanía",
       "availableIssuers": "Emisores de credenciales de identidad disponibles",
       "serviceProvider": "Proveedor del servicio:",
-      "reputation": "Reputación",
-      "issuedCredentials": "Credenciales emitidas",
-      "verifiedCredentials": "Credenciales verificadas"
+      "reputation": "Reputación:",
+      "issuedCredentials": "Credenciales emitidas:",
+      "unknown": "Desconocido",
+      "verifiedCredentials": "Credenciales verificadas:"
     },
     "credentialOffer": {
       "title": "Credencial ofrecida",
@@ -322,7 +324,7 @@
       "goToChat": "Ir al chat",
       "call": "Llamar",
       "videoCall": "Video llamada",
-      "youAreNowConnectedTo": "Ahora estás conectando con",
+      "youAreNowConnectedTo": "Ahora estás conectando con {{ name }}",
       "youAreAlreadyConnectedTo": "Ya estás conectando con {{ name }}",
       "goToConnection": "Ir al servicio",
       "errorConnecting": "Error conectándose a {{ name }}"

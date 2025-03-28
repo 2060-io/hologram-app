@@ -28,7 +28,7 @@ const styles = (theme: AppTheme) =>
     },
     text: {
       fontSize: theme.fontSize.md,
-      color: theme.colors.primaryText,
+      color: theme.colors.tertiaryText,
     },
     alreadyConnectedText: {
       textAlign: 'center',

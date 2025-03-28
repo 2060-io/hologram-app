@@ -20,7 +20,7 @@ export const manageConnectionStateChangedEvent = (agent: MobileAgent) => {
       const newNotification = {
         id: `${LOCAL_NOTIFICATION_ID_PREFIX}-connection-${connection.id}`,
         title: t('connection.newConnection'),
-        body: `${t('connection.youAreNowConnectedTo')} ${getConnectionDisplayName(connection)}`,
+        body: t('connection.youAreNowConnectedTo', { name: getConnectionDisplayName(connection) }),
         data: {
           screen: 'ConnectionDetails',
           params: { connectionId: connection?.id },

@@ -9,28 +9,44 @@ const styles = (theme: AppTheme) =>
     },
     subContainer: {
       paddingHorizontal: 15,
-      paddingTop: 10,
+      paddingVertical: 10,
+    },
+    headerRight: {
+      paddingRight: 15,
+    },
+    headerText: {
+      fontSize: theme.fontSize.md2,
+      color: theme.colors.green,
     },
     icon: {
       marginBottom: 10,
     },
-    pickerContainer: {
-      width: '75%',
+    pickerIconContainer: {
+      top: 17,
+      right: '13%',
+    },
+    inputPickerContainer: {
+      minWidth: '75%',
+      maxWidth: '100%',
       alignSelf: 'center',
-    },
-    pickerItem: {
-      color: theme.colors.primaryText,
+      marginVertical: 10,
+      height: 45,
       fontSize: theme.fontSize.md2,
-      fontFamily: 'EuclidCircularA-Regular',
+      fontFamily: 'EuclidCircularA-SemiBold',
+      padding: 10,
+      borderWidth: 1,
+      borderColor: theme.colors.tertiaryText,
+      borderRadius: 6,
+      color: theme.colors.tertiaryText,
     },
-    issuerName: {
-      color: theme.colors.primaryText,
-      fontSize: theme.fontSize.lg,
+    citizenship: {
+      fontSize: theme.fontSize.md2,
+      color: theme.colors.tertiaryText,
       marginTop: 10,
     },
     text: {
       fontSize: theme.fontSize.md,
-      color: theme.colors.primaryText,
+      color: theme.colors.tertiaryText,
     },
   })
 
