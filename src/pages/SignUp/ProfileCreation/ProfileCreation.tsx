@@ -58,8 +58,8 @@ const ProfileCreation = ({ navigation }: Props) => {
     ])
   }
 
-  const goToChats = () => {
-    navigation.dispatch(CommonActions.reset({ index: 0, routes: [{ name: 'Home' }] }))
+  const goToOnboardingScreen = () => {
+    navigation.dispatch(CommonActions.reset({ index: 0, routes: [{ name: 'IdentityCredentialIssuers' }] }))
   }
 
   const saveUserProfileData = () => {
@@ -69,7 +69,7 @@ const ProfileCreation = ({ navigation }: Props) => {
   const getStart = () => {
     requestNotificationPermissions()
     saveUserProfileData()
-    goToChats()
+    goToOnboardingScreen()
   }
 
   const handleLogStartError = (error: Error) => {

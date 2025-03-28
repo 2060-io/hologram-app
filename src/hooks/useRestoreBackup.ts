@@ -154,9 +154,9 @@ export const useRestoreBackup = ({ restoreProgress, setRestoreProgress, download
     ])
   }
 
-  const goToHomeScreen = async () => {
+  const goToOnboardingScreen = async () => {
     requestNotificationPermissions()
-    navigation.dispatch(CommonActions.reset({ index: 0, routes: [{ name: 'Home' }] }))
+    navigation.dispatch(CommonActions.reset({ index: 0, routes: [{ name: 'IdentityCredentialIssuers' }] }))
   }
 
   return {
@@ -167,7 +167,7 @@ export const useRestoreBackup = ({ restoreProgress, setRestoreProgress, download
     abort,
     restore,
     restoreProgressToInitialValues,
-    goToHomeScreen,
+    goToOnboardingScreen,
     navigation,
   }
 }

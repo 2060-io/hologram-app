@@ -9,10 +9,10 @@ import { useUserProfile } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 
 type Props = {
-  goToHomeScreen: () => void
+  goToOnboardingScreen: () => void
 }
 
-const OnSuccessFinish = ({ goToHomeScreen }: Props) => {
+const OnSuccessFinish = ({ goToOnboardingScreen }: Props) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
@@ -32,7 +32,7 @@ const OnSuccessFinish = ({ goToHomeScreen }: Props) => {
       <Text typography="EuclidCircularA-Regular" style={styles.text}>
         {t('signUp.successfullyRestored', { name: userProfileData?.displayName })}
       </Text>
-      <MainButton onPress={goToHomeScreen} text={t('getStarted')} style={styles.continueButton} />
+      <MainButton onPress={goToOnboardingScreen} text={t('getStarted')} style={styles.continueButton} />
     </>
   )
 }

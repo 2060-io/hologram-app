@@ -52,7 +52,7 @@ const BaseRestoreWalletBackup = ({
     abort,
     restore,
     restoreProgressToInitialValues,
-    goToHomeScreen,
+    goToOnboardingScreen,
     navigation,
   } = useRestoreBackup({
     restoreProgress,
@@ -157,7 +157,7 @@ const BaseRestoreWalletBackup = ({
                     />
                   </>
                 )}
-                onSuccessFinish={() => <OnSuccessFinish goToHomeScreen={goToHomeScreen} />}
+                onSuccessFinish={() => <OnSuccessFinish goToOnboardingScreen={goToOnboardingScreen} />}
               />
             </View>
           ) : (
