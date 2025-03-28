@@ -160,6 +160,7 @@
       "eMRTDTagNotValid": "Etiqueta no valida",
       "eMRTDMoreThanOneTagFound": "Se encontraron más de una etiqueta NFC. Por favor, presenta sólo una",
       "eMRTDInvalidMRZKey": "El documento no corresponde a la MRZ previamente leída.",
+      "eMRTDNoMrzInfo": "No se encontró la información del MRZ",
       "recordedAudioTooShort": "El audio es muy corto. Por favor, graba uno más largo"
     },
     "signUp": {
