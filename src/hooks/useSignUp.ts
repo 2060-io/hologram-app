@@ -48,7 +48,8 @@ export const useSignUp = (options: SignUpOptions) => {
 
     let { connectionRecord: cloudAgentConnection } = await agent.oob.receiveImplicitInvitation({
       did: options.cloudAgentPublicDid,
-      alias: 'Cloud Agent',
+      label: options.defaultServiceAlias,
+      imageUrl: 'https://i.welcome.hologram.2060.io/avatar.png',
       autoAcceptConnection: true,
     })
     if (!cloudAgentConnection) throw new Error('Agency connection not created')
