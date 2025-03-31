@@ -161,6 +161,7 @@
       "eMRTDTagNotValid": "Tag not valid",
       "eMRTDMoreThanOneTagFound": "More than 1 tag were found. Please present only 1 tag",
       "eMRTDInvalidMRZKey": "This document does not match the MRZ read",
+      "eMRTDNoMrzInfo": "MRZ information not found",
       "recordedAudioTooShort": "Recorded audio is too short. Please record a longer one"
     },
     "signUp": {
