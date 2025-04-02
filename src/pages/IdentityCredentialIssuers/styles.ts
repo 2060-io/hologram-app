@@ -1,7 +1,6 @@
 import { StyleSheet } from 'react-native'
 
-import { IS_DEVICE_IOS } from '@2060/constants'
-import { AppTheme } from '@2060/styles'
+import { AppTheme, cardShadowStyles, cardStyles } from '@2060/styles'
 
 const styles = (theme: AppTheme) =>
   StyleSheet.create({
@@ -22,31 +21,27 @@ const styles = (theme: AppTheme) =>
     headerTitleContainerStyle: {
       maxWidth: '100%',
     },
-    icon: {
-      marginBottom: 10,
+    infoContainer: {
+      ...cardStyles(theme),
+      ...cardShadowStyles(theme.colors),
+      marginBottom: 12,
+    },
+    mb12: {
+      marginBottom: 12,
     },
     pickerIconContainer: {
-      top: 17,
-      right: '13%',
+      top: 18,
+      right: '2%',
     },
     inputPickerContainer: {
-      minWidth: '75%',
-      maxWidth: '100%',
-      alignSelf: 'center',
-      marginVertical: 10,
-      height: 45,
+      ...cardStyles(theme),
+      marginVertical: 12,
       fontSize: theme.fontSize.md2,
       fontFamily: 'EuclidCircularA-SemiBold',
-      padding: 10,
-      borderWidth: IS_DEVICE_IOS ? 1 : 0.5,
-      borderColor: theme.colors.tertiaryText,
-      borderRadius: 6,
       color: theme.colors.tertiaryText,
-    },
-    citizenship: {
-      fontSize: theme.fontSize.md2,
-      color: theme.colors.tertiaryText,
-      marginTop: 10,
+      paddingVertical: 12,
+      paddingRight: 30,
+      maxHeight: 45,
     },
     text: {
       fontSize: theme.fontSize.md,

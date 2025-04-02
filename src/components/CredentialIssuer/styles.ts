@@ -26,6 +26,10 @@ const styles = (theme: AppTheme) =>
       height: 30,
       borderRadius: 15,
     },
+    didText: {
+      fontSize: theme.fontSize.sm,
+      color: theme.colors.tertiaryText,
+    },
     text: {
       fontSize: theme.fontSize.md,
       color: theme.colors.tertiaryText,

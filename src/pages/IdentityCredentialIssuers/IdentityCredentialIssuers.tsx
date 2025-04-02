@@ -3,7 +3,7 @@ import { CommonActions } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
 import React, { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Linking, SafeAreaView, ScrollView, TouchableOpacity } from 'react-native'
+import { Linking, SafeAreaView, ScrollView, TouchableOpacity, View } from 'react-native'
 import { getCountry } from 'react-native-localize'
 import RNPickerSelect from 'react-native-picker-select'
 
@@ -103,11 +103,13 @@ const IdentityCredentialIssuers = ({ navigation }: Props) => {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.subContainer}>
-        <SvgIcon name="credential" width={'100%'} height={widthPercentageToDP('35')} style={styles.icon} />
-        <Text typography="EuclidCircularA-Regular" style={styles.text}>
-          {t('credential.issuerInstructions')}
-        </Text>
-        <Text typography="EuclidCircularA-SemiBold" style={styles.citizenship}>
+        <View style={styles.infoContainer}>
+          <SvgIcon name="credential" width={'100%'} height={widthPercentageToDP('35')} style={styles.mb12} />
+          <Text typography="EuclidCircularA-Regular" style={styles.text}>
+            {t('credential.issuerInstructions')}
+          </Text>
+        </View>
+        <Text typography="EuclidCircularA-SemiBold" style={styles.text}>
           {t('credential.citizenship')}
         </Text>
         <RNPickerSelect
@@ -141,7 +143,7 @@ const IdentityCredentialIssuers = ({ navigation }: Props) => {
             )
           }}
         />
-        <Text typography="EuclidCircularA-SemiBold" style={[styles.text, { marginBottom: 10 }]}>
+        <Text typography="EuclidCircularA-SemiBold" style={[styles.text, styles.mb12]}>
           {t('credential.availableIssuers')}
         </Text>
         <CredentialIssuer

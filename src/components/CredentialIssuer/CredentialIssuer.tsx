@@ -67,9 +67,7 @@ const CredentialIssuer = ({ service, connect, tryToOpenURL, goToConnectionDetail
           <Text typography="EuclidCircularA-Medium" style={styles.issuerName}>
             {name}
           </Text>
-          <Text typography="EuclidCircularA-SemiBold" style={styles.text}>
-            {trimText(did)}
-          </Text>
+          <Text style={styles.didText}>{trimText(did)}</Text>
         </View>
         <VerifiedIcon style={styles.containerIconValidity} status={status as ServiceStatus} />
       </View>
