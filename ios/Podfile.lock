@@ -1594,7 +1594,7 @@ PODS:
     - React-Core
   - react-native-job-queue (0.5.2):
     - React
-  - react-native-keyboard-controller (1.16.7):
+  - react-native-keyboard-controller (1.16.8):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -2710,7 +2710,7 @@ SPEC CHECKSUMS:
   react-native-get-random-values: d16467cf726c618e9c7a8c3c39c31faa2244bbba
   react-native-image-resizer: 24c5d06fae2176dc0caed4b6396e02befb44064a
   react-native-job-queue: 0ad04875957147913e0ef48c645a0aa87fc1480d
-  react-native-keyboard-controller: 8463f144f1b2255f732b8e4cf97ba4c967a49d5d
+  react-native-keyboard-controller: 83a2a5dc1215a6423ed093db2023fe4c93cf7e4b
   react-native-netinfo: cec9c4e86083cb5b6aba0e0711f563e2fbbff187
   react-native-safe-area-context: e134b241010ebe2aacdcea013565963d13826faa
   react-native-splash-screen: a3f3c31e39f4466e880296008749138b276929ed
