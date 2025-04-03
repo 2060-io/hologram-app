@@ -154,6 +154,7 @@ const Settings = ({ navigation }: Props) => {
       iconName: 'id',
       text: t('navigation.IdentityCredentialIssuers'),
       onPress: () => onNavigate('IdentityCredentialIssuers'),
+      rightContent: () => optionRightContent(),
     },
   ]
 
