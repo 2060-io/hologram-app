@@ -1615,6 +1615,27 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
+  - react-native-local-native-modules (0.0.0):
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.01.01.00)
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Yoga
   - react-native-netinfo (11.4.1):
     - React-Core
   - react-native-safe-area-context (5.1.0):
@@ -2293,6 +2314,7 @@ DEPENDENCIES:
   - "react-native-image-resizer (from `../node_modules/@bam.tech/react-native-image-resizer`)"
   - react-native-job-queue (from `../node_modules/react-native-job-queue`)
   - react-native-keyboard-controller (from `../node_modules/react-native-keyboard-controller`)
+  - react-native-local-native-modules (from `../node_modules/react-native-local-native-modules`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-splash-screen (from `../node_modules/react-native-splash-screen`)
@@ -2503,6 +2525,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-job-queue"
   react-native-keyboard-controller:
     :path: "../node_modules/react-native-keyboard-controller"
+  react-native-local-native-modules:
+    :path: "../node_modules/react-native-local-native-modules"
   react-native-netinfo:
     :path: "../node_modules/@react-native-community/netinfo"
   react-native-safe-area-context:
@@ -2711,6 +2735,7 @@ SPEC CHECKSUMS:
   react-native-image-resizer: 24c5d06fae2176dc0caed4b6396e02befb44064a
   react-native-job-queue: 0ad04875957147913e0ef48c645a0aa87fc1480d
   react-native-keyboard-controller: 83a2a5dc1215a6423ed093db2023fe4c93cf7e4b
+  react-native-local-native-modules: 1a30e6cf19464edc47f60a91f97881b9261774f3
   react-native-netinfo: cec9c4e86083cb5b6aba0e0711f563e2fbbff187
   react-native-safe-area-context: e134b241010ebe2aacdcea013565963d13826faa
   react-native-splash-screen: a3f3c31e39f4466e880296008749138b276929ed

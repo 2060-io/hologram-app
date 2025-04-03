@@ -1,9 +1,8 @@
-// RCTFileCipheringModule.m
-#import "RCTFileCipheringModule.h"
+// FileCipheringModule.m
+#import "FileCipheringModule.h"
 #import "AesCrypt.h"
 
-@implementation RCTFileCipheringModule
-
+@implementation FileCipheringModule
 RCT_EXPORT_MODULE()
 
 RCT_EXPORT_METHOD(encrypt:(NSString *)data key:(NSString *)key iv:(NSString *)iv algorithm:(NSString *)algorithm

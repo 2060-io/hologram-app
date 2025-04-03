@@ -1,11 +1,9 @@
-// RCTFileChunkGeneratorModule.m
-#import "RCTFileChunkGeneratorModule.h"
+// FileChunkGeneratorModule.m
+#import "FileChunkGeneratorModule.h"
 #import <React/RCTLog.h>
 
-@implementation RCTFileChunkGeneratorModule
-
-// To export a module named RCTCalendarModule
-RCT_EXPORT_MODULE(FileChunkGeneratorModule);
+@implementation FileChunkGeneratorModule
+RCT_EXPORT_MODULE();
 
 RCT_EXPORT_METHOD(createChunks:(NSString *)filePath
                   outputFilePathPrefix:(NSString *)outputFilePathPrefix

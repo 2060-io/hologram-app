@@ -6,7 +6,6 @@ import { useAudioPlayer } from '@simform_solutions/react-native-audio-waveform'
 import axios from 'axios'
 import { t } from 'i18next'
 import { default as React, useEffect, useCallback, useRef, useState } from 'react'
-import { NativeModules } from 'react-native'
 import Upload, { CompletedData, UploadOptions } from 'react-native-background-upload'
 import { copyFile, downloadFile } from 'react-native-fs'
 
@@ -41,6 +40,7 @@ import {
   moveFile,
 } from '@2060/utils/RNFS'
 import { decryptFile, encryptFile } from '@2060/utils/ciphering'
+import { nativeCreateChunks } from 'react-native-local-native-modules'
 
 const AUDIO_WAVEFORM_NUMBER_OF_CANDLES = 30
 const { Pending, Uploading, Done, Canceled, ErrorCreating, ErrorUploading } = MediaUploadState
@@ -57,8 +57,6 @@ const defaultAutomaticDownloadValues: AutomaticDownloadTypes = {
 }
 
 const CHUNK_SIZE = 2_000_000
-
-const { FileChunkGeneratorModule } = NativeModules
 
 interface Props {
   children?: React.ReactNode
@@ -300,7 +298,7 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
         destinationFilePath: uploadFilePath,
       })
 
-      const chunkFilePaths = await FileChunkGeneratorModule.createChunks(
+      const chunkFilePaths = await nativeCreateChunks(
         uploadFilePath,
         `${mediaDirectoryPath}/${fileId}`,
         CHUNK_SIZE,
