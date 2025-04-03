@@ -22,7 +22,7 @@ const ForwardMessages = ({ navigation }: Props) => {
   return (
     <BaseForward
       navigation={navigation}
-      onPressForward={forwardMessages}
+      onPressSend={forwardMessages}
       connectionId={chatThread?.data.connectionId}
     />
   )

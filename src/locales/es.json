@@ -218,7 +218,10 @@
       "delete": "Eliminar Credencial",
       "deleteConfirmation": "Confirmas eliminar ",
       "deleteConfirmationDescription": "Eliminar una credencial vigente no es recomendable.",
-      "yesDelete": "Sí, eliminar permanentemente"
+      "yesDelete": "Sí, eliminar permanentemente",
+      "present": "Presentar credencial",
+      "presentTo": "Presentar a",
+      "presented": "Credencial presentada"
     },
     "credentialOffer": {
       "title": "Credencial ofrecida",

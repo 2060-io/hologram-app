@@ -55,4 +55,7 @@ export type NavigationStackParams = {
   ForwardConnection: {
     connection: ConnectionRecord
   }
+  PresentCredential: {
+    credentialRecordId: string
+  }
 }

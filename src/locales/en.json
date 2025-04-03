@@ -219,7 +219,10 @@
       "delete": "Delete Credential",
       "deleteConfirmation": "Confirm delete",
       "deleteConfirmationDescription": "Delete an unexpired credential is not recommended.",
-      "yesDelete": "Yes, delete permanently"
+      "yesDelete": "Yes, delete permanently",
+      "present": "Present credential",
+      "presentTo": "Present to",
+      "presented": "Credential presented"
     },
     "credentialOffer": {
       "title": "Credential Offer",
