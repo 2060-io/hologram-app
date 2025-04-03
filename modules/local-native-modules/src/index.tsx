@@ -1,7 +1,7 @@
 import { NativeModules, Platform } from 'react-native'
 
-const LINKING_ERROR =
-  `The package 'react-native-local-native-modules' doesn't seem to be linked. Make sure: \n\n` +
+const LINKING_ERROR = (nativeModule: string) =>
+  `The package ${nativeModule} doesn't seem to be linked. Make sure: \n\n` +
   Platform.select({ ios: "- You have run 'pod install'\n", default: '' }) +
   '- You rebuilt the app after installing the package\n' +
   '- You are not using Expo Go\n'
@@ -13,7 +13,7 @@ const VideoPropertiesNativeModule = NativeModules.VideoPropertiesModule
       {},
       {
         get() {
-          throw new Error(LINKING_ERROR)
+          throw new Error(LINKING_ERROR('VideoPropertiesModule'))
         },
       },
     )
@@ -29,7 +29,7 @@ const FileCipheringNativeModule = NativeModules.FileCipheringModule
       {},
       {
         get() {
-          throw new Error(LINKING_ERROR)
+          throw new Error(LINKING_ERROR('FileCipheringModule'))
         },
       },
     )
@@ -65,7 +65,7 @@ const FileChunkGeneratorNativeModule = NativeModules.FileChunkGeneratorModule
       {},
       {
         get() {
-          throw new Error(LINKING_ERROR)
+          throw new Error(LINKING_ERROR('FileChunkGeneratorModule'))
         },
       },
     )
@@ -89,7 +89,7 @@ const GDriveAuthorizationNativeModule = NativeModules.GDriveAuthorizationModule
       {},
       {
         get() {
-          throw new Error(LINKING_ERROR)
+          throw new Error(LINKING_ERROR('GDriveAuthorizationModule'))
         },
       },
     )
