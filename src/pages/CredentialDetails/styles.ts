@@ -35,6 +35,17 @@ const styles = (theme: AppTheme) =>
       color: theme.colors.primaryText,
       marginLeft: 10,
     },
+    containerOptionCard: {
+      ...cardStyles(theme),
+      ...cardShadowStyles(theme.colors),
+      backgroundColor: theme.isDarkMode ? theme.colors.grey : theme.colors.white,
+      margin: 12,
+      paddingVertical: 13,
+    },
+    actionText: {
+      fontSize: theme.fontSize.md2,
+      color: theme.colors.primaryText,
+    },
   })
 
 export default styles

@@ -1,11 +1,15 @@
 import { StackScreenProps } from '@react-navigation/stack'
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ScrollView, TouchableOpacity, SafeAreaView, View } from 'react-native'
 
 import getStyles from './styles'
 
-import { CredentialDetails as CredentialDetailsComponent, ModalConfirmAction } from '@2060/components'
+import {
+  CredentialDetails as CredentialDetailsComponent,
+  ModalBottomHalf,
+  ModalConfirmAction,
+} from '@2060/components'
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
 import { SvgIcon, Text, ServiceInformation } from '@2060/components/common'
 import { useCredentialById, useMobileAgent } from '@2060/hooks/agent'
@@ -16,13 +20,14 @@ import { trimText } from '@2060/utils'
 
 interface Props extends StackScreenProps<NavigationStackParams, 'CredentialDetails'> {}
 const CredentialDetails = ({ route, navigation }: Props) => {
+  const { credentialRecordId } = route.params
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
   const [showConfirmationDeleteModal, setShowConfirmationDeleteModal] = useState(false)
-
+  const [showContextualMenu, setShowContextualMenu] = useState(false)
   const { agent } = useMobileAgent()
-  const credentialRecord = useCredentialById(route.params.credentialRecordId)
+  const credentialRecord = useCredentialById(credentialRecordId)
   const credentialDetails = credentialRecord ? getCredentialDetailsForDisplay(credentialRecord) : undefined
   const did = credentialRecord?.credential.issuerId ?? ''
   const serviceInfo = useRef<ServiceInfo>({
@@ -34,15 +39,31 @@ const CredentialDetails = ({ route, navigation }: Props) => {
     status: 'notFound',
   })
 
+  const handleShowContextMenu = () => setShowContextualMenu(prevState => !prevState)
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity onPress={handleShowContextMenu} style={{ marginRight: 15 }}>
+          <SvgIcon name="menuOutline" fill={theme.colors.primaryText} />
+        </TouchableOpacity>
+      ),
+    })
+  }, [theme.colors])
+
   const hideConfirmationDeleteModal = () => setShowConfirmationDeleteModal(false)
 
   const deleteCredential = async () => {
     if (credentialDetails) {
       await agent?.w3cCredentials.removeCredentialRecord(credentialDetails.mainInfo.id)
     }
-
     hideConfirmationDeleteModal()
     navigation.goBack()
+  }
+
+  const goToPresentCredential = () => {
+    handleShowContextMenu()
+    navigation.navigate('PresentCredential', { credentialRecordId })
   }
 
   return (
@@ -81,6 +102,13 @@ const CredentialDetails = ({ route, navigation }: Props) => {
           </View>
         </View>
       </ScrollView>
+      <ModalBottomHalf visible={showContextualMenu} onClose={handleShowContextMenu}>
+        <TouchableOpacity style={styles.containerOptionCard} onPress={goToPresentCredential}>
+          <Text typography="EuclidCircularA-Regular" style={styles.actionText}>
+            {t('credential.present')}
+          </Text>
+        </TouchableOpacity>
+      </ModalBottomHalf>
     </SafeAreaView>
   )
 }

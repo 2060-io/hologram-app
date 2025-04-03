@@ -17,8 +17,9 @@ import { notAllowedConnectionsIdsToSendMessages } from '@2060/utils/connectionUt
 
 interface Props {
   navigation: StackNavigationProp<ParamListBase>
-  onPressForward: (connectionsId: string[]) => void
+  onPressSend: (connectionsId: string[]) => void
   connectionId?: string
+  title?: string
 }
 
 type SelectedConnection = {
@@ -26,7 +27,7 @@ type SelectedConnection = {
   name: string
 }
 
-const BaseForward = ({ navigation, onPressForward, connectionId }: Props) => {
+const BaseForward = ({ navigation, onPressSend, connectionId, title }: Props) => {
   const theme = useTheme()
   const styles = getStyles(theme)
   const { t } = useTranslation()
@@ -55,8 +56,8 @@ const BaseForward = ({ navigation, onPressForward, connectionId }: Props) => {
     })
   }, [])
 
-  const forward = () => {
-    onPressForward(selectedConnections.map(connection => connection.id))
+  const send = () => {
+    onPressSend(selectedConnections.map(connection => connection.id))
   }
 
   return (
@@ -65,7 +66,7 @@ const BaseForward = ({ navigation, onPressForward, connectionId }: Props) => {
         <BaseConnections
           navigation={navigation}
           onPressConnection={onPressConnection}
-          headerProps={{ height: headerHeight, title: t('navigation.ForwardTo') }}
+          headerProps={{ height: headerHeight, title: title ?? t('navigation.ForwardTo') }}
           allowSelection
           selectedConnections={selectedConnections.map(connection => connection.id)}
           excludedConnections={excludedConnections}
@@ -78,7 +79,7 @@ const BaseForward = ({ navigation, onPressForward, connectionId }: Props) => {
         <TouchableOpacity
           style={[styles.forwardButton, { opacity: isForwardButtonDisabled ? 0.5 : 1 }]}
           disabled={isForwardButtonDisabled}
-          onPress={forward}
+          onPress={send}
         >
           <SvgIcon name="send" fill={theme.colors.white} />
         </TouchableOpacity>
