@@ -158,6 +158,8 @@ const BaseCustomView: React.FC<BaseCustomMessageViewProps> = memo(props => {
               metadata={chatEntry.metadata as VPResponseMetadata}
               role={chatEntry.role}
               verifierName={chatThread?.participants.find(p => p.id === ChatEntryRole.Receiver)?.name}
+              agent={agent}
+              proofRecordId={chatEntry.associatedRecordId}
             />
           )
         case ChatEntryType.VCOffer:

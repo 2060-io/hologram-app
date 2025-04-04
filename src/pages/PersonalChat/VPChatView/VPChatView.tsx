@@ -10,9 +10,9 @@ import { BlueButton, Header, OutlinedBlueButton } from '../components'
 import getStyles from './styles'
 
 import { CardCredentialMainInformation, Text } from '@2060/components/common'
-import { useMobileAgent } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { ChatEntryRole, VPResponseMetadata } from '@2060/model'
+import { MobileAgent } from '@2060/services/agent'
 import { CredentialMainInfo } from '@2060/services/agent/display'
 import { toast } from '@2060/utils/toast'
 
@@ -20,14 +20,15 @@ type Props = {
   metadata: VPResponseMetadata
   role: ChatEntryRole
   verifierName?: string
+  agent?: MobileAgent
+  proofRecordId: string
 }
 
-const VPChatView = ({ metadata, role, verifierName }: Props) => {
+const VPChatView = ({ metadata, role, verifierName, agent, proofRecordId }: Props) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
   const navigation: StackNavigationProp<ParamListBase> = useNavigation()
-  const { agent } = useMobileAgent()
   const { presentedCredentials, proofState } = metadata
   const presentedCredentialsForDisplay: CredentialMainInfo[] = presentedCredentials
     ? JSON.parse(presentedCredentials)
@@ -55,8 +56,14 @@ const VPChatView = ({ metadata, role, verifierName }: Props) => {
       toast({ type: 'error', message: t('personalChat.noCredentialFound') })
     }
   }
-  const acceptCredentialPresentation = () => {}
-  const refuseCredentialPresentation = () => {}
+
+  const acceptCredentialPresentation = async () => {
+    await agent?.proofs.acceptProposal({ proofRecordId })
+  }
+
+  const refuseCredentialPresentation = async () => {
+    await agent?.proofs.sendProblemReport({ proofRecordId, description: 'refused' })
+  }
 
   const status: Record<ProofState, React.ReactElement> = {
     [ProofState.RequestReceived]: (
