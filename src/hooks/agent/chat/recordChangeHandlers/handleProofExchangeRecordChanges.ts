@@ -1,4 +1,4 @@
-import { ProofExchangeRecord, ProofState, W3cCredentialRepository } from '@credo-ts/core'
+import { AgentMessage, ProofExchangeRecord, ProofState, W3cCredentialRepository } from '@credo-ts/core'
 import Realm from 'realm'
 
 import { createChatEntry, findAllByAssociatedRecordId, updateMetadata } from '../services/ChatEntryService'
@@ -13,6 +13,7 @@ import {
   getPresentationRequestForDisplay,
 } from '@2060/services/agent/display'
 import { VerifierInfo } from '@2060/services/api/trustRegistryService'
+import { log } from '@2060/utils'
 import { getConnectionDisplayName, getConnectionDisplayPicture } from '@2060/utils/connectionUtils'
 
 export const handleProofExchangeRecordChanges = async (options: {
@@ -21,8 +22,10 @@ export const handleProofExchangeRecordChanges = async (options: {
   record: ProofExchangeRecord
   activeChatThreadId?: string
   receivedAt?: Date
+  message: AgentMessage
 }) => {
-  const { agent, realm, record: proofRecord, activeChatThreadId } = options
+  const { agent, realm, record: proofRecord, activeChatThreadId, message } = options
+  log('handleProofExchangeRecordChanges', proofRecord, proofRecord.state === ProofState.ProposalSent)
   if (proofRecord.connectionId) {
     const connection = await agent.connections.getById(proofRecord.connectionId)
     const thread = findOrCreateChatThread(realm, connection)
@@ -111,6 +114,44 @@ export const handleProofExchangeRecordChanges = async (options: {
       if (vpRequestEntry) {
         const metadata = { ...vpRequestEntry.metadata, proofState: proofRecord.state, replied: true }
         updateMetadata(realm, vpRequestEntry.id, metadata)
+      }
+    } else if (
+      proofRecord.state === ProofState.ProposalSent ||
+      proofRecord.state === ProofState.ProposalReceived
+    ) {
+      const presentedCredentials: CredentialMainInfo[] = []
+      const credentialId = 'credentialId'
+      log('to solve to get right value of ', credentialId)
+      const credentialRecord = await agent.dependencyManager
+        .resolve(W3cCredentialRepository)
+        .findById(agent.context, credentialId)
+      if (credentialRecord) presentedCredentials.push(getCredentialMainInfo(credentialRecord))
+      let [chatEntry] = chatEntryService.findAllByAssociatedRecordId(
+        realm,
+        proofRecord.id,
+        ChatEntryType.VPResponse,
+      )
+      if (!chatEntry) {
+        const role =
+          proofRecord.state === ProofState.ProposalSent ? ChatEntryRole.Sender : ChatEntryRole.Receiver
+        const isReceiver = role === ChatEntryRole.Receiver
+        chatEntry = chatEntryService.createChatEntry(realm, {
+          associatedRecordId: proofRecord.id,
+          chatThreadId: thread.id,
+          type: ChatEntryType.VPResponse,
+          role,
+          state: ChatEntryState.Created,
+          createdAt: new Date().getTime(),
+          metadata: {
+            proofState: proofRecord.state,
+            presentedCredentials: JSON.stringify(presentedCredentials),
+          },
+          ...(isReceiver && { associatedMessageId: message.id }),
+        })
+        chatThreadService.updateThread(realm, thread.id, { lastChatEntry: chatEntry })
+        if (thread.id !== activeChatThreadId && isReceiver) {
+          chatThreadService.addUnread(realm, thread.id, 1)
+        }
       }
     }
   }

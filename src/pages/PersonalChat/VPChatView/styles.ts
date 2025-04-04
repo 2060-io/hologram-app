@@ -16,4 +16,18 @@ export default (theme: AppTheme) =>
       color: theme.colors.blue,
       marginBottom: 8,
     },
+    text: {
+      fontSize: theme.fontSize.md,
+      color: theme.colors.tertiaryText,
+    },
+    buttonsContainer: {
+      flexDirection: 'row',
+    },
+    refuseButton: {
+      flex: 1,
+      marginRight: 8,
+    },
+    acceptButton: {
+      flex: 1,
+    },
   })

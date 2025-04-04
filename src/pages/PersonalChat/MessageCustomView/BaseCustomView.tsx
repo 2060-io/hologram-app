@@ -42,6 +42,7 @@ import {
   VCOfferMetadata,
   VoiceNoteMetadata,
   VPRequestMetadata,
+  VPResponseMetadata,
 } from '@2060/model'
 import { BaseCustomMessageViewProps } from '@2060/pages/PersonalChat/ChatMessage/Props'
 
@@ -154,7 +155,7 @@ const BaseCustomView: React.FC<BaseCustomMessageViewProps> = memo(props => {
         case ChatEntryType.VPResponse:
           return (
             <VPChatView
-              presentedCredentials={chatEntry.metadata?.presentedCredentials as string}
+              metadata={chatEntry.metadata as VPResponseMetadata}
               role={chatEntry.role}
               verifierName={chatThread?.participants.find(p => p.id === ChatEntryRole.Receiver)?.name}
             />

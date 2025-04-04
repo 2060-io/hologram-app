@@ -247,7 +247,9 @@
       "credentialPresented": "Presentación recibida exitosamente por",
       "isRequestingYou": "te está solicitando: ",
       "youPresented": "Presentaste una credencial a {{verifier}}.",
-      "youPresented_other": "Presentaste {{count}} credenciales a {{verifier}}."
+      "youPresented_other": "Presentaste {{count}} credenciales a {{verifier}}.",
+      "isPresentingCredentialToYou": "{{ requestor }} te está presentado {{ count }} credencial.",
+      "isPresentingCredentialToYou_other": "{{ requestor }} te está presentado {{ count }} credenciales."
     },
     "connection": {
       "editName": "Editar nombre",

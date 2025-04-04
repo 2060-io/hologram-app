@@ -5,25 +5,22 @@ import { useTranslation } from 'react-i18next'
 import BaseForward from '../Forward/BaseForward'
 
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
-import { useCredentialById, useMobileAgent } from '@2060/hooks/agent'
+import { AgentActionType, useCredentialById, useMobileAgent } from '@2060/hooks/agent'
+import { AnoncredsAttribute } from '@2060/hooks/agent/actions/AgentActionExecuter'
+import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
 import { getDidCommCredentialDisplayMetadata } from '@2060/services/agent/RecordMetadata'
 import { getCredentialDetailsForDisplay } from '@2060/services/agent/display'
 import { formatCredentialSubject } from '@2060/services/agent/formatCredentialSubject'
-import { log } from '@2060/utils'
 import { toast } from '@2060/utils/toast'
 
 interface Props extends StackScreenProps<NavigationStackParams, 'PresentCredential'> {}
-
-type AnoncredsAttribute = {
-  name: string
-  credentialDefinitionId: string
-}
 
 const PresentCredential = ({ navigation, route }: Props) => {
   const { credentialRecordId } = route.params
   const { t } = useTranslation()
   const { agent } = useMobileAgent()
   const credentialRecord = useCredentialById(credentialRecordId)
+  const { addAgentActionToQueue } = useAgentActionQueue()
 
   const presentCredential = useCallback(
     (connectionsId: string[]) => {
@@ -41,14 +38,14 @@ const PresentCredential = ({ navigation, route }: Props) => {
           anoncredsAttributes.push({ name: row.key, credentialDefinitionId })
         })
       })
-
-      connectionsId.forEach(async connectionId => {
-        const response = await agent.proofs.proposeProof({
-          proofFormats: { anoncreds: { attributes: anoncredsAttributes } },
-          connectionId,
-          protocolVersion: 'v2',
+      connectionsId.forEach(connectionId => {
+        addAgentActionToQueue({
+          type: AgentActionType.PresentCredential,
+          parameters: {
+            anoncredsAttributes,
+            didcommConnectionId: connectionId,
+          },
         })
-        log('present to response', connectionsId, response)
       })
       toast({
         type: 'success',
