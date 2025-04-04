@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import Svg, { Defs, G, Rect, Path, Text, TSpan, SvgProps } from 'react-native-svg'
 
 const MRZ: React.FC<SvgProps> = props => (

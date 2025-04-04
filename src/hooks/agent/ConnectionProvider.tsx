@@ -1,7 +1,6 @@
 import { getConnectionProfile, UserProfileData } from '@2060.io/credo-ts-didcomm-user-profile'
 import { ConnectionRecord, DidExchangeState } from '@credo-ts/core'
-import * as React from 'react'
-import { createContext, useState, useEffect, useContext, useMemo } from 'react'
+import React, { createContext, useState, useEffect, useContext, useMemo } from 'react'
 
 import { useMobileAgent } from './MobileAgentProvider'
 import { useAgentConnectionEvents } from './connections/useAgentConnectionEvents'

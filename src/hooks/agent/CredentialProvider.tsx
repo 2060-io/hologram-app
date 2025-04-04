@@ -1,6 +1,5 @@
 import { W3cCredentialRecord } from '@credo-ts/core'
-import * as React from 'react'
-import { createContext, useState, useEffect, useContext } from 'react'
+import React, { createContext, useState, useEffect, useContext } from 'react'
 
 import { useMobileAgent } from './MobileAgentProvider'
 import {

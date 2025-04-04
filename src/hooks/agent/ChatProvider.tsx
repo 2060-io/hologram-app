@@ -1,7 +1,6 @@
 import { MessageState } from '@2060.io/credo-ts-didcomm-receipts'
 import { ConnectionRecord, utils } from '@credo-ts/core'
-import * as React from 'react'
-import { createContext, useCallback, useState, useEffect, useContext } from 'react'
+import React, { createContext, useCallback, useState, useEffect, useContext } from 'react'
 
 import { useMobileAgent } from './MobileAgentProvider'
 import { AgentActionOptions, AgentActionType } from './actions/AgentAction'

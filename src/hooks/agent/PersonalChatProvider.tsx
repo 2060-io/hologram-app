@@ -1,5 +1,4 @@
-import * as React from 'react'
-import { createContext, useContext, useState, useCallback, useRef } from 'react'
+import React, { createContext, useContext, useState, useCallback, useRef } from 'react'
 import { Keyboard, Vibration } from 'react-native'
 
 import { useScreenLock } from '../providers/ScreenLockProvider'
