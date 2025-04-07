@@ -234,8 +234,7 @@
     },
     "presentationRequest": {
       "title": "Presentation Request",
-      "sent": "Credential Presentation Sent",
-      "received": " Credential Presentation Received",
+      "credentialPresentation": "Credential Presentation",
       "selectCredentialYouWouldLikeToPresentTo": "Select the credential you would like to present to ",
       "successfullyReceived": "Presentation successfully received by ",
       "viewInChat": "View in chat",
@@ -252,7 +251,8 @@
       "youPresented_other": "You presented {{count}} credentials to {{verifier}}.",
       "isPresentingCredentialToYou": "{{ requestor }} is presenting you {{ count }} credential.",
       "isPresentingCredentialToYou_other": "{{ requestor }} is presenting you {{ count }} credentials.",
-      "refused": "Refused"
+      "refused": "Refused",
+      "accepted": "Accepted"
     },
     "connection": {
       "editName": "Edit name",

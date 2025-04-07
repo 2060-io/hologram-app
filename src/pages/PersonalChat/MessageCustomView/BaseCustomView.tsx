@@ -158,6 +158,7 @@ const BaseCustomView: React.FC<BaseCustomMessageViewProps> = memo(props => {
               role={chatEntry.role}
               agent={agent}
               proofRecordId={chatEntry.associatedRecordId}
+              chatEntryId={chatEntry.id}
             />
           )
         case ChatEntryType.VCOffer:

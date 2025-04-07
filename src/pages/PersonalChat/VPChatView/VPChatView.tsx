@@ -12,10 +12,13 @@ import getStyles from './styles'
 import { ModalConfirmAction } from '@2060/components'
 import { CardCredentialMainInformation, Text } from '@2060/components/common'
 import { useChat } from '@2060/hooks/agent'
+import { updateMetadata } from '@2060/hooks/agent/chat/services'
+import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { ChatEntryRole, VPResponseMetadata } from '@2060/model'
 import { MobileAgent } from '@2060/services/agent'
 import { CredentialMainInfo } from '@2060/services/agent/display'
+import { acceptProposal, sendProblemReport } from '@2060/services/agent/proofs'
 import { toast } from '@2060/utils/toast'
 
 type Props = {
@@ -23,13 +26,15 @@ type Props = {
   role: ChatEntryRole
   agent?: MobileAgent
   proofRecordId: string
+  chatEntryId: string
 }
 
-const VPChatView = ({ metadata, role, agent, proofRecordId }: Props) => {
+const VPChatView = ({ metadata, role, agent, proofRecordId, chatEntryId }: Props) => {
   const { chatThread } = useChat()
   const otherSidesName = chatThread?.participants.find(p => p.id === ChatEntryRole.Receiver)?.name
   const [showModalRefuseConfirmation, setShowModalRefuseConfirmation] = useState(false)
   const { t } = useTranslation()
+  const { realm } = useLocalRealm()
   const theme = useTheme()
   const styles = getStyles(theme)
   const navigation: StackNavigationProp<ParamListBase> = useNavigation()
@@ -65,12 +70,18 @@ const VPChatView = ({ metadata, role, agent, proofRecordId }: Props) => {
   }
 
   const acceptCredentialPresentation = async () => {
-    await agent?.proofs.acceptProposal({ proofRecordId })
+    if (!agent || !realm) return
+    const newMetadata = { ...metadata, proofState: ProofState.PresentationReceived }
+    updateMetadata(realm, chatEntryId, newMetadata)
+    await acceptProposal({ agent, proofRecordId })
   }
 
   const refuseCredentialPresentation = async () => {
     hideModalRefuseConfirmation()
-    await agent?.proofs.sendProblemReport({ proofRecordId, description: 'refused' })
+    if (!agent || !realm) return
+    const newMetadata = { ...metadata, proofState: ProofState.Abandoned }
+    updateMetadata(realm, chatEntryId, newMetadata)
+    await sendProblemReport({ agent, proofRecordId })
   }
 
   const status: Record<ProofState, React.ReactElement> = {
@@ -84,7 +95,7 @@ const VPChatView = ({ metadata, role, agent, proofRecordId }: Props) => {
         RequestSent
       </Text>
     ),
-    [ProofState.PresentationReceived]: <State text={t('presentationRequest.received')} />,
+    [ProofState.PresentationReceived]: <State text={t('presentationRequest.accepted')} />,
     [ProofState.PresentationSent]: <></>,
     [ProofState.ProposalReceived]: (
       <View style={styles.buttonsContainer}>
@@ -103,7 +114,7 @@ const VPChatView = ({ metadata, role, agent, proofRecordId }: Props) => {
     [ProofState.ProposalSent]: <></>,
     [ProofState.Declined]: <State text={t('presentationRequest.refused')} type="error" />,
     [ProofState.Abandoned]: <State text={t('presentationRequest.refused')} type="error" />,
-    [ProofState.Done]: <State text={t('presentationRequest.received')} />,
+    [ProofState.Done]: <State text={t('presentationRequest.accepted')} />,
   }
 
   return (
@@ -120,7 +131,7 @@ const VPChatView = ({ metadata, role, agent, proofRecordId }: Props) => {
       />
       <Header
         theme={theme}
-        title={isSender ? t('presentationRequest.sent') : t('presentationRequest.received')}
+        title={t('presentationRequest.credentialPresentation')}
         leftIconName="id"
         role={role}
       />

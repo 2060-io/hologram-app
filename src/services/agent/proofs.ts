@@ -117,3 +117,23 @@ export async function notifyNoCompatibleCredentials(options: { agent: MobileAgen
     },
   })
 }
+
+export async function acceptProposal(options: { agent: MobileAgent; proofRecordId: string }) {
+  const { agent, proofRecordId } = options
+  await agent?.proofs.acceptProposal({ proofRecordId })
+}
+
+export async function sendProblemReport(options: { agent: MobileAgent; proofRecordId: string }) {
+  const { agent, proofRecordId } = options
+  await agent.proofs.sendProblemReport({ proofRecordId, description: 'refused' })
+  const proofRecord = await agent.proofs.getById(proofRecordId)
+  proofRecord.state = ProofState.Abandoned
+  await agent.proofs.update(proofRecord)
+  agent.events.emit<ProofStateChangedEvent>(agent.context, {
+    type: ProofEventTypes.ProofStateChanged,
+    payload: {
+      proofRecord: proofRecord.clone(),
+      previousState: null,
+    },
+  })
+}

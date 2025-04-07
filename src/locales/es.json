@@ -233,8 +233,7 @@
     },
     "presentationRequest": {
       "title": "Solicitud de presentación",
-      "sent": "Presentación de credencial enviada",
-      "received": "Solicitud de presentación recibida",
+      "credentialPresentation": "Presentación de credencial",
       "selectCredentialYouWouldLikeToPresentTo": "Selecciona la credencial que te gustaría presentar a ",
       "successfullyReceived": "Presentation recibida exitosamente por ",
       "viewInChat": "Ver en la conversación",
@@ -251,7 +250,8 @@
       "youPresented_other": "Presentaste {{count}} credenciales a {{verifier}}.",
       "isPresentingCredentialToYou": "{{ requestor }} te está presentado {{ count }} credencial.",
       "isPresentingCredentialToYou_other": "{{ requestor }} te está presentado {{ count }} credenciales.",
-      "refused": "Rechazada"
+      "refused": "Rechazada",
+      "acepted": "Aceptada"
     },
     "connection": {
       "editName": "Editar nombre",
