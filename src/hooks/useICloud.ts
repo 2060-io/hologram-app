@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import * as CloudStore from 'react-native-cloud-store'
-import * as RNFS from 'react-native-fs'
 
 import { BACKUP_NAME, BACKUP_ZIP_FILE_PATH, existsBackupFile } from '../utils/walletBackUpUtils'
 
@@ -14,6 +13,7 @@ import {
 import { useIsForeground } from './useIsForeground'
 
 import { logError } from '@2060/utils'
+import { copyFile } from '@2060/utils/RNFS'
 
 export interface ICloudBackupInfo {
   exists: boolean
@@ -127,7 +127,7 @@ export const useICloud = () => {
         if (await CloudStore.exist(backupICloudPath)) {
           const alreadyDownloadBackup = await existsBackupFile()
           if (!alreadyDownloadBackup) {
-            await RNFS.copyFile(backupICloudPath, BACKUP_ZIP_FILE_PATH)
+            await copyFile(backupICloudPath, BACKUP_ZIP_FILE_PATH)
           }
           resolve(true)
         } else {
@@ -137,7 +137,7 @@ export const useICloud = () => {
               const progressLessOne = data?.progress ? data?.progress - 1 : data?.progress
               setRestoreProgress(prev => ({ ...prev, progress: progressLessOne }))
               if (data?.progress === 100) {
-                RNFS.copyFile(backupICloudPath, BACKUP_ZIP_FILE_PATH).then(_ => resolve(true))
+                copyFile(backupICloudPath, BACKUP_ZIP_FILE_PATH).then(_ => resolve(true))
               }
             },
           })

@@ -1,8 +1,8 @@
 import { ProofExchangeRecord, ProofState, W3cCredentialRepository } from '@credo-ts/core'
 import Realm from 'realm'
 
-import * as chatEntryService from '../services/ChatEntryService'
-import * as chatThreadService from '../services/ChatThreadService'
+import { createChatEntry, findAllByAssociatedRecordId, updateMetadata } from '../services/ChatEntryService'
+import { addUnread, findOrCreateChatThread, updateThread } from '../services/ChatThreadService'
 
 import { ChatEntryRole, ChatEntryState, ChatEntryType } from '@2060/model'
 import { MobileAgent } from '@2060/services/agent'
@@ -25,7 +25,7 @@ export const handleProofExchangeRecordChanges = async (options: {
   const { agent, realm, record: proofRecord, activeChatThreadId } = options
   if (proofRecord.connectionId) {
     const connection = await agent.connections.getById(proofRecord.connectionId)
-    const thread = chatThreadService.findOrCreateChatThread(realm, connection)
+    const thread = findOrCreateChatThread(realm, connection)
 
     if (proofRecord.state === ProofState.RequestReceived) {
       const verifierInfo: VerifierInfo = {
@@ -41,15 +41,11 @@ export const handleProofExchangeRecordChanges = async (options: {
         verifierInfo,
       })
 
-      let [chatEntry] = chatEntryService.findAllByAssociatedRecordId(
-        realm,
-        proofRecord.id,
-        ChatEntryType.VPRequest,
-      )
+      let [chatEntry] = findAllByAssociatedRecordId(realm, proofRecord.id, ChatEntryType.VPRequest)
 
       if (!chatEntry) {
         // TODO: Define metadata and update when state changes
-        chatEntry = chatEntryService.createChatEntry(realm, {
+        chatEntry = createChatEntry(realm, {
           associatedRecordId: proofRecord.id,
           associatedMessageId: proofRecord.threadId,
           chatThreadId: thread.id,
@@ -63,12 +59,10 @@ export const handleProofExchangeRecordChanges = async (options: {
             replied: false,
           },
         })
-
-        chatThreadService.updateThread(realm, thread.id, { lastChatEntry: chatEntry })
+        updateThread(realm, thread.id, { lastChatEntry: chatEntry })
       }
-
       if (thread.id !== activeChatThreadId) {
-        chatThreadService.addUnread(realm, thread.id, 1)
+        addUnread(realm, thread.id, 1)
       }
     } else if (
       proofRecord.state === ProofState.PresentationSent ||
@@ -92,14 +86,10 @@ export const handleProofExchangeRecordChanges = async (options: {
           if (credentialRecord) presentedCredentials.push(getCredentialMainInfo(credentialRecord))
         }
 
-        let [chatEntry] = chatEntryService.findAllByAssociatedRecordId(
-          realm,
-          proofRecord.id,
-          ChatEntryType.VPResponse,
-        )
+        let [chatEntry] = findAllByAssociatedRecordId(realm, proofRecord.id, ChatEntryType.VPResponse)
 
         if (!chatEntry) {
-          chatEntry = chatEntryService.createChatEntry(realm, {
+          chatEntry = createChatEntry(realm, {
             associatedRecordId: proofRecord.id,
             associatedMessageId,
             chatThreadId: thread.id,
@@ -112,20 +102,15 @@ export const handleProofExchangeRecordChanges = async (options: {
               presentedCredentials: JSON.stringify(presentedCredentials),
             },
           })
-
-          chatThreadService.updateThread(realm, thread.id, { lastChatEntry: chatEntry })
+          updateThread(realm, thread.id, { lastChatEntry: chatEntry })
         }
       }
       // Find any VP Request entry associated to this proof record and mark it as replied
-      const [vpRequestEntry] = chatEntryService.findAllByAssociatedRecordId(
-        realm,
-        proofRecord.id,
-        ChatEntryType.VPRequest,
-      )
+      const [vpRequestEntry] = findAllByAssociatedRecordId(realm, proofRecord.id, ChatEntryType.VPRequest)
 
       if (vpRequestEntry) {
         const metadata = { ...vpRequestEntry.metadata, proofState: proofRecord.state, replied: true }
-        chatEntryService.updateMetadata(realm, vpRequestEntry.id, metadata)
+        updateMetadata(realm, vpRequestEntry.id, metadata)
       }
     }
   }

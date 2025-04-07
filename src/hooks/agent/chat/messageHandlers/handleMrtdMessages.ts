@@ -7,12 +7,12 @@ import {
   MrzDataRequestMessage,
 } from '@2060.io/credo-ts-didcomm-mrtd'
 import { AgentMessage, ConnectionRecord, parseMessageType, ProblemReportMessage } from '@credo-ts/core'
-import * as Mrz from 'mrz'
+import { parse } from 'mrz'
 import Realm from 'realm'
 
 import { DidCommMessageDirection } from '../DidCommMessageDirection'
-import * as chatEntryService from '../services/ChatEntryService'
-import * as chatThreadService from '../services/ChatThreadService'
+import { createChatEntry, findAllDidcommThreadId, updateMetadata } from '../services/ChatEntryService'
+import { addUnread, updateThread, findOrCreateChatThread } from '../services/ChatThreadService'
 
 import {
   ChatEntryRole,
@@ -33,12 +33,12 @@ export const handleMrtdMessages = (options: {
 }) => {
   const { realm, connection, activeChatThreadId, receivedAt, message, direction } = options
   // find associated thread according to the connection id. If not found, create it
-  const thread = chatThreadService.findOrCreateChatThread(realm, connection)
+  const thread = findOrCreateChatThread(realm, connection)
   const messageType = parseMessageType(message.type)
 
   // MRZ Request
   if (messageType.messageTypeUri === MrzDataRequestMessage.type.messageTypeUri) {
-    const chatEntry = chatEntryService.createChatEntry(realm, {
+    const chatEntry = createChatEntry(realm, {
       chatThreadId: thread.id,
       type: ChatEntryType.MrzRequest,
       role: direction === 'inbound' ? ChatEntryRole.Receiver : ChatEntryRole.Sender,
@@ -52,26 +52,22 @@ export const handleMrtdMessages = (options: {
         parentThreadId: message.thread?.parentThreadId,
       } as MrzRequestMetadata,
     })
-    chatThreadService.updateThread(realm, thread.id, { lastChatEntry: chatEntry })
+    updateThread(realm, thread.id, { lastChatEntry: chatEntry })
     if (thread.id !== activeChatThreadId) {
-      chatThreadService.addUnread(realm, thread.id, 1)
+      addUnread(realm, thread.id, 1)
     }
   }
 
   if (messageType.messageTypeUri === MrzDataMessage.type.messageTypeUri) {
     // Find the associated entry and update it with MRZ
-    const [chatEntry] = chatEntryService.findAllDidcommThreadId(
-      realm,
-      message.threadId,
-      ChatEntryType.MrzRequest,
-    )
+    const [chatEntry] = findAllDidcommThreadId(realm, message.threadId, ChatEntryType.MrzRequest)
     if (chatEntry) {
       const newMetadata = {
         ...chatEntry.metadata,
         state: 'scanned',
         mrzData: (message as MrzDataMessage).mrzData,
       } as MrzRequestMetadata
-      chatEntryService.updateMetadata(realm, chatEntry.id, newMetadata)
+      updateMetadata(realm, chatEntry.id, newMetadata)
     }
   }
 
@@ -81,16 +77,11 @@ export const handleMrtdMessages = (options: {
     const parentThreadId = message.thread?.parentThreadId
     let mrzInfo: { expirationDate: string; documentNumber: string; birthDate: string } | undefined
     if (parentThreadId) {
-      const [mrzRequest] = chatEntryService.findAllDidcommThreadId(
-        realm,
-        parentThreadId,
-        ChatEntryType.MrzRequest,
-      )
+      const [mrzRequest] = findAllDidcommThreadId(realm, parentThreadId, ChatEntryType.MrzRequest)
       if (mrzRequest) {
         const mrzData = (mrzRequest.metadata as MrzRequestMetadata)?.mrzData
         if (mrzData) {
-          const { documentNumber, birthDate, expirationDate } = Mrz.parse(mrzData).fields
-
+          const { documentNumber, birthDate, expirationDate } = parse(mrzData).fields
           if (documentNumber && birthDate && expirationDate) {
             mrzInfo = { documentNumber, birthDate, expirationDate }
           }
@@ -100,7 +91,7 @@ export const handleMrtdMessages = (options: {
       }
     }
 
-    const chatEntry = chatEntryService.createChatEntry(realm, {
+    const chatEntry = createChatEntry(realm, {
       chatThreadId: thread.id,
       type: ChatEntryType.EMrtdReadRequest,
       role: direction === 'inbound' ? ChatEntryRole.Receiver : ChatEntryRole.Sender,
@@ -114,25 +105,21 @@ export const handleMrtdMessages = (options: {
         mrzInfo: JSON.stringify(mrzInfo),
       } as EMrtdReadRequestMetadata,
     })
-    chatThreadService.updateThread(realm, thread.id, { lastChatEntry: chatEntry })
+    updateThread(realm, thread.id, { lastChatEntry: chatEntry })
     if (thread.id !== activeChatThreadId) {
-      chatThreadService.addUnread(realm, thread.id, 1)
+      addUnread(realm, thread.id, 1)
     }
   }
 
   if (messageType.messageTypeUri === EMrtdDataMessage.type.messageTypeUri) {
     // Find the associated entry and update its status
-    const [chatEntry] = chatEntryService.findAllDidcommThreadId(
-      realm,
-      message.threadId,
-      ChatEntryType.EMrtdReadRequest,
-    )
+    const [chatEntry] = findAllDidcommThreadId(realm, message.threadId, ChatEntryType.EMrtdReadRequest)
     if (chatEntry) {
       const newMetadata = {
         ...chatEntry.metadata,
         state: 'scanned',
       } as EMrtdReadRequestMetadata
-      chatEntryService.updateMetadata(realm, chatEntry.id, newMetadata)
+      updateMetadata(realm, chatEntry.id, newMetadata)
     }
   }
 
@@ -146,11 +133,7 @@ export const handleMrtdMessages = (options: {
     const isMrz = code === MrzRefused
     const chatEntryType = isMrz ? ChatEntryType.MrzRequest : ChatEntryType.EMrtdReadRequest
     // Find the associated entry and update its status
-    const [chatEntry] = chatEntryService.findAllDidcommThreadId(
-      realm,
-      message.thread.parentThreadId,
-      chatEntryType,
-    )
+    const [chatEntry] = findAllDidcommThreadId(realm, message.thread.parentThreadId, chatEntryType)
     if (chatEntry) {
       const newMetadata = isMrz
         ? ({
@@ -161,7 +144,7 @@ export const handleMrtdMessages = (options: {
             ...chatEntry.metadata,
             state: 'refused',
           } as EMrtdReadRequestMetadata)
-      chatEntryService.updateMetadata(realm, chatEntry.id, newMetadata)
+      updateMetadata(realm, chatEntry.id, newMetadata)
     }
   }
 }

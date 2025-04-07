@@ -1,4 +1,4 @@
-import * as LocalAuthentication from 'expo-local-authentication'
+import { authenticateAsync, getEnrolledLevelAsync, SecurityLevel } from 'expo-local-authentication'
 import React, { useEffect, useState, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, TouchableOpacity } from 'react-native'
@@ -28,15 +28,15 @@ const Authentication = ({ isAppActive }: Props) => {
   }, [isAppActive])
 
   const makeBiometricAuth = async () => {
-    const enrolledLevel = await LocalAuthentication.getEnrolledLevelAsync()
+    const enrolledLevel = await getEnrolledLevelAsync()
 
-    if (enrolledLevel === LocalAuthentication.SecurityLevel.NONE) {
+    if (enrolledLevel === SecurityLevel.NONE) {
       promptMessage.current = 'enableOsAuthPrompt'
       setUserHasBiometricAuthEnable(false)
       return
     }
 
-    const result = await LocalAuthentication.authenticateAsync({
+    const result = await authenticateAsync({
       cancelLabel: t('authentication.cancelLabel'),
       promptMessage: t('authentication.promptMessage'),
       fallbackLabel: t('authentication.fallbackLabel'),

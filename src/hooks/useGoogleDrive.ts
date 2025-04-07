@@ -2,7 +2,7 @@ import { GDrive, ListQueryBuilder } from '@robinbobin/react-native-google-drive-
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { NativeModules } from 'react-native'
-import * as RNFS from 'react-native-fs'
+import { downloadFile, stat } from 'react-native-fs'
 
 import {
   restoreProgressInitialValues,
@@ -149,7 +149,7 @@ export const useGoogleDrive = () => {
       try {
         const TWO_MB = 256 * 1024 * 4 * 2
         const UPLOAD_SIZE_PER_CHUNK = TWO_MB
-        const fileToUploadInfo = await RNFS.stat(fileToUploadLocation)
+        const fileToUploadInfo = await stat(fileToUploadLocation)
         const numberOfChunks = Math.ceil(fileToUploadInfo.size / UPLOAD_SIZE_PER_CHUNK)
         const uploaderRequest = await googleDriveConnection?.files
           .newResumableUploader()
@@ -198,7 +198,7 @@ export const useGoogleDrive = () => {
   const downloadBackup =
     (setRestoreProgress: React.Dispatch<React.SetStateAction<RestoreProgress>>) => async () => {
       try {
-        const { promise } = RNFS.downloadFile({
+        const { promise } = downloadFile({
           fromUrl: backupHandler?.backup?.downloadUrl ?? '',
           progressInterval: 10000,
           headers: { Authorization: `Bearer ${googleDriveConnection?.accessToken}` },
