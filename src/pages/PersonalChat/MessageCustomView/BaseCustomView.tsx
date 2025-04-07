@@ -29,7 +29,6 @@ import { useChat } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import {
   CallOfferMetadata,
-  ChatEntryRole,
   ChatEntryState,
   ChatEntryType,
   EMrtdReadRequestMetadata,
@@ -157,7 +156,6 @@ const BaseCustomView: React.FC<BaseCustomMessageViewProps> = memo(props => {
             <VPChatView
               metadata={chatEntry.metadata as VPResponseMetadata}
               role={chatEntry.role}
-              verifierName={chatThread?.participants.find(p => p.id === ChatEntryRole.Receiver)?.name}
               agent={agent}
               proofRecordId={chatEntry.associatedRecordId}
             />
@@ -208,7 +206,7 @@ const BaseCustomView: React.FC<BaseCustomMessageViewProps> = memo(props => {
     }
     const Component = renderComponentByType(chatEntry.type)
     return Component
-  }, [chatEntry, chatThread])
+  }, [chatEntry, chatThread?.participants])
 
   const renderTimeAndTicks = useCallback(
     (containerStyle: ViewStyle) => {

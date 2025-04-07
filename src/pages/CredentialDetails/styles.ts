@@ -40,6 +40,7 @@ const styles = (theme: AppTheme) =>
       ...cardShadowStyles(theme.colors),
       backgroundColor: theme.isDarkMode ? theme.colors.grey : theme.colors.white,
       margin: 12,
+      marginBottom: 32,
       paddingVertical: 13,
     },
     actionText: {

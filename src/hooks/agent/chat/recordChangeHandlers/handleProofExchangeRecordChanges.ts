@@ -72,6 +72,11 @@ export const handleProofExchangeRecordChanges = async (options: {
       proofRecord.state === ProofState.Declined ||
       proofRecord.state === ProofState.Abandoned
     ) {
+      let [chatEntry] = chatEntryService.findAllByAssociatedRecordId(
+        realm,
+        proofRecord.id,
+        ChatEntryType.VPResponse,
+      )
       // If a presentation has been effectively done, create an additional chat entry
       // including the preview of the credentials that have been sent
       if (proofRecord.state === ProofState.PresentationSent) {
@@ -88,8 +93,6 @@ export const handleProofExchangeRecordChanges = async (options: {
             .findById(agent.context, item.credentialId)
           if (credentialRecord) presentedCredentials.push(getCredentialMainInfo(credentialRecord))
         }
-
-        let [chatEntry] = findAllByAssociatedRecordId(realm, proofRecord.id, ChatEntryType.VPResponse)
 
         if (!chatEntry) {
           chatEntry = createChatEntry(realm, {
@@ -108,6 +111,9 @@ export const handleProofExchangeRecordChanges = async (options: {
           updateThread(realm, thread.id, { lastChatEntry: chatEntry })
         }
       }
+      // Update the metadata of the chat entry with the new proof state
+      const newChatEntryMetadata = { ...chatEntry.metadata, proofState: proofRecord.state }
+      chatEntryService.updateMetadata(realm, chatEntry.id, newChatEntryMetadata)
       // Find any VP Request entry associated to this proof record and mark it as replied
       const [vpRequestEntry] = findAllByAssociatedRecordId(realm, proofRecord.id, ChatEntryType.VPRequest)
 
