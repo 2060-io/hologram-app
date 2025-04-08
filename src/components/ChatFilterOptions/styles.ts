@@ -22,7 +22,7 @@ const styles = (theme: AppTheme) =>
       ...cardShadowStyles(theme.colors),
       backgroundColor: theme.isDarkMode ? theme.colors.grey : theme.colors.white,
       padding: 0,
-      marginBottom: 8.56,
+      marginBottom: 8,
     },
     btnTextFilterOptionSelected: {
       backgroundColor: waterColor(theme.colors.green),
