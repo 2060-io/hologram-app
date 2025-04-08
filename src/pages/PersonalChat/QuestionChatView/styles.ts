@@ -29,7 +29,7 @@ export default (theme: AppTheme) =>
       backgroundColor: theme.colors.primary,
       borderRadius: 9,
       paddingVertical: 7,
-      marginBottom: 8.56,
+      marginBottom: theme.edges.messageMargin,
     },
     optionText: {
       fontSize: theme.fontSize.md2 - 1,
