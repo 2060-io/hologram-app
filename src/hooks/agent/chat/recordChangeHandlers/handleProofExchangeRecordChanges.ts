@@ -28,55 +28,70 @@ export const handleProofExchangeRecordChanges = async (options: {
   log('handleProofExchangeRecordChanges', proofRecord, proofRecord.state === ProofState.ProposalSent)
   if (proofRecord.connectionId) {
     const connection = await agent.connections.getById(proofRecord.connectionId)
-    const thread = findOrCreateChatThread(realm, connection)
-
+    const thread = chatThreadService.findOrCreateChatThread(realm, connection)
+    let [vpResponseChatEntry] = chatEntryService.findAllByAssociatedRecordId(
+      realm,
+      proofRecord.id,
+      ChatEntryType.VPResponse,
+    )
     if (proofRecord.state === ProofState.RequestReceived) {
-      const verifierInfo: VerifierInfo = {
-        id: connection.invitationDid ?? getConnectionDisplayName(connection),
-        logoUrl: getConnectionDisplayPicture(connection),
-        name: getConnectionDisplayName(connection),
-        status: 'trusted',
-      }
+      if (vpResponseChatEntry) {
+        // Update the metadata of the chat entry with the new proof state
+        const newChatEntryMetadata = {
+          ...vpResponseChatEntry.metadata,
+          proofState: ProofState.PresentationReceived,
+        }
+        chatEntryService.updateMetadata(realm, vpResponseChatEntry.id, newChatEntryMetadata)
+        await agent.proofs.acceptRequest({ proofRecordId: proofRecord.id })
+      } else {
+        const verifierInfo: VerifierInfo = {
+          id: connection.invitationDid ?? getConnectionDisplayName(connection),
+          logoUrl: getConnectionDisplayPicture(connection),
+          name: getConnectionDisplayName(connection),
+          status: 'trusted',
+        }
 
-      const presentationRequestForDisplay = await getPresentationRequestForDisplay({
-        agent,
-        proofRecordId: proofRecord.id,
-        verifierInfo,
-      })
-
-      let [chatEntry] = findAllByAssociatedRecordId(realm, proofRecord.id, ChatEntryType.VPRequest)
-
-      if (!chatEntry) {
-        // TODO: Define metadata and update when state changes
-        chatEntry = createChatEntry(realm, {
-          associatedRecordId: proofRecord.id,
-          associatedMessageId: proofRecord.threadId,
-          chatThreadId: thread.id,
-          type: ChatEntryType.VPRequest,
-          role: ChatEntryRole.Receiver,
-          state: ChatEntryState.Created,
-          createdAt: (options.receivedAt ?? new Date()).getTime(),
-          metadata: {
-            proofState: proofRecord.state,
-            requestedAttributes: JSON.stringify(presentationRequestForDisplay),
-            replied: false,
-          },
+        const presentationRequestForDisplay = await getPresentationRequestForDisplay({
+          agent,
+          proofRecordId: proofRecord.id,
+          verifierInfo,
         })
-        updateThread(realm, thread.id, { lastChatEntry: chatEntry })
-      }
-      if (thread.id !== activeChatThreadId) {
-        addUnread(realm, thread.id, 1)
+
+        let [vpRequestChatEntry] = chatEntryService.findAllByAssociatedRecordId(
+          realm,
+          proofRecord.id,
+          ChatEntryType.VPRequest,
+        )
+
+        if (!vpRequestChatEntry) {
+          // TODO: Define metadata and update when state changes
+          vpRequestChatEntry = chatEntryService.createChatEntry(realm, {
+            associatedRecordId: proofRecord.id,
+            associatedMessageId: proofRecord.threadId,
+            chatThreadId: thread.id,
+            type: ChatEntryType.VPRequest,
+            role: ChatEntryRole.Receiver,
+            state: ChatEntryState.Created,
+            createdAt: (options.receivedAt ?? new Date()).getTime(),
+            metadata: {
+              proofState: proofRecord.state,
+              requestedAttributes: JSON.stringify(presentationRequestForDisplay),
+              replied: false,
+            },
+          })
+
+          chatThreadService.updateThread(realm, thread.id, { lastChatEntry: vpRequestChatEntry })
+        }
+
+        if (thread.id !== activeChatThreadId) {
+          chatThreadService.addUnread(realm, thread.id, 1)
+        }
       }
     } else if (
       proofRecord.state === ProofState.PresentationSent ||
       proofRecord.state === ProofState.Declined ||
       proofRecord.state === ProofState.Abandoned
     ) {
-      let [chatEntry] = chatEntryService.findAllByAssociatedRecordId(
-        realm,
-        proofRecord.id,
-        ChatEntryType.VPResponse,
-      )
       // If a presentation has been effectively done, create an additional chat entry
       // including the preview of the credentials that have been sent
       if (proofRecord.state === ProofState.PresentationSent) {
@@ -94,8 +109,8 @@ export const handleProofExchangeRecordChanges = async (options: {
           if (credentialRecord) presentedCredentials.push(getCredentialMainInfo(credentialRecord))
         }
 
-        if (!chatEntry) {
-          chatEntry = createChatEntry(realm, {
+        if (!vpResponseChatEntry) {
+          vpResponseChatEntry = chatEntryService.createChatEntry(realm, {
             associatedRecordId: proofRecord.id,
             associatedMessageId,
             chatThreadId: thread.id,
@@ -108,15 +123,21 @@ export const handleProofExchangeRecordChanges = async (options: {
               presentedCredentials: JSON.stringify(presentedCredentials),
             },
           })
-          updateThread(realm, thread.id, { lastChatEntry: chatEntry })
+
+          chatThreadService.updateThread(realm, thread.id, { lastChatEntry: vpResponseChatEntry })
         }
       }
-      // Update the metadata of the chat entry with the new proof state
-      const newChatEntryMetadata = { ...chatEntry.metadata, proofState: proofRecord.state }
-      chatEntryService.updateMetadata(realm, chatEntry.id, newChatEntryMetadata)
+      // Update the metadata of the chat entry if exists with the new proof state
+      if (vpResponseChatEntry) {
+        const newChatEntryMetadata = { ...vpResponseChatEntry.metadata, proofState: proofRecord.state }
+        chatEntryService.updateMetadata(realm, vpResponseChatEntry.id, newChatEntryMetadata)
+      }
       // Find any VP Request entry associated to this proof record and mark it as replied
-      const [vpRequestEntry] = findAllByAssociatedRecordId(realm, proofRecord.id, ChatEntryType.VPRequest)
-
+      const [vpRequestEntry] = chatEntryService.findAllByAssociatedRecordId(
+        realm,
+        proofRecord.id,
+        ChatEntryType.VPRequest,
+      )
       if (vpRequestEntry) {
         const metadata = { ...vpRequestEntry.metadata, proofState: proofRecord.state, replied: true }
         updateMetadata(realm, vpRequestEntry.id, metadata)
