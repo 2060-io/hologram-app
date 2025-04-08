@@ -1,3 +1,4 @@
+import { ProofState } from '@credo-ts/core'
 import { useFocusEffect } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
 import React, { useRef, useCallback, useState } from 'react'
@@ -8,6 +9,9 @@ import BasePresentationRequest from './BasePresentationRequest'
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
 import { useFetchServiceInfo } from '@2060/hooks'
 import { useMobileAgent } from '@2060/hooks/agent'
+import { findAllByAssociatedRecordId, updateMetadata } from '@2060/hooks/agent/chat/services'
+import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
+import { ChatEntryType } from '@2060/model'
 import { CredentialMainInfo } from '@2060/services/agent/display'
 import {
   FormattedSubmission,
@@ -21,6 +25,10 @@ interface Props extends StackScreenProps<NavigationStackParams, 'DidcommPresenta
 
 const DidcommPresentationRequest: React.FC<Props> = ({ navigation, route }: Props) => {
   LogBox.ignoreLogs(['Non-serializable values were found in the navigation state'])
+  const routes = navigation.getState()?.routes
+  const prevRoute = routes[routes.length - 2]
+  const comesFromChat = prevRoute.name === 'PersonalChatStack'
+  const { realm } = useLocalRealm()
   const { agent } = useMobileAgent()
   const selectedCredentials = useRef({})
   const { proofRecordId, did } = route.params
@@ -53,7 +61,14 @@ const DidcommPresentationRequest: React.FC<Props> = ({ navigation, route }: Prop
 
   // TODO: Move to an AgentAction
   const refuse = async () => {
-    await agent?.proofs.declineRequest({ proofRecordId, sendProblemReport: true })
+    agent?.proofs.declineRequest({ proofRecordId, sendProblemReport: true })
+    if (realm && comesFromChat) {
+      let [vpRequestChatEntry] = findAllByAssociatedRecordId(realm, proofRecordId, ChatEntryType.VPRequest)
+      if (vpRequestChatEntry) {
+        const newMetadata = { ...vpRequestChatEntry.metadata, proofState: ProofState.Declined }
+        updateMetadata(realm, vpRequestChatEntry.id, newMetadata)
+      }
+    }
   }
 
   const onRefuse = () => {
@@ -85,9 +100,6 @@ const DidcommPresentationRequest: React.FC<Props> = ({ navigation, route }: Prop
   }
 
   const afterPresented = () => {
-    const routes = navigation.getState()?.routes
-    const prevRoute = routes[routes.length - 2]
-    const comesFromChat = prevRoute.name === 'PersonalChatStack'
     comesFromChat ? navigation.goBack() : goToCredentialPresented()
   }
 
