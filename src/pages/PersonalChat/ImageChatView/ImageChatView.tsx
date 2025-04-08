@@ -47,7 +47,7 @@ const ImageChatView = (props: ImageProps) => {
   const theme = useTheme()
   const styles = getStyles(theme)
   const { t } = useTranslation()
-  const { mediaRecordId, mediaItem, fileMediaInfo, currentMessage } = props
+  const { mediaRecordId, mediaItem, fileMediaInfo, currentMessage, displayTimeAndTicks } = props
   const {
     mediaDownloadState,
     mediaDownloadProgress,
@@ -76,7 +76,9 @@ const ImageChatView = (props: ImageProps) => {
     mediaUploadState === MediaUploadState.ErrorUploading
 
   return (
-    <View style={{ width: imageStyle.width }}>
+    <View
+      style={{ width: imageStyle.width, marginBottom: displayTimeAndTicks ? theme.edges.messageMargin : 0 }}
+    >
       {isDownloaded && imagePreviewUri ? (
         <>
           {isMediaUploadError ? (

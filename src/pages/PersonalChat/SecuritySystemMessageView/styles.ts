@@ -11,11 +11,11 @@ export default (theme: AppTheme) =>
       ...cardShadowStyles(theme.colors),
       width: widthPercentageToDP('84.81%'),
       paddingVertical: 4,
-      paddingHorizontal: 8,
+      paddingHorizontal: theme.edges.messageMargin,
       backgroundColor: theme.isDarkMode ? '#182022' : '#E8F0F2',
       alignSelf: 'center',
       borderRadius: 4,
-      marginBottom: 12.84,
+      marginBottom: 13,
     },
     textMessage: {
       color: theme.isDarkMode ? theme.colors.lightGrey : '#6A8994',

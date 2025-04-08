@@ -80,5 +80,6 @@ export default (theme: AppTheme) =>
     uploadProgressContainer: {
       height: 5,
       borderRadius: 0,
+      marginBottom: 0,
     },
   })

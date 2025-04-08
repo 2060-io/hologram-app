@@ -8,13 +8,10 @@ export default (theme: AppTheme) =>
       width: '100%',
     },
     responseMsg: {
-      paddingTop: 8,
-      paddingBottom: 5,
-      paddingRight: 8,
-      paddingLeft: 12,
+      marginBottom: theme.edges.messageMargin,
+      marginRight: theme.edges.messageMargin,
       textAlign: 'right',
-      color: theme.colors.blue,
-      fontSize: theme.fontSize.md + 1,
-      textTransform: 'none',
+      color: theme.colors.primaryText,
+      fontSize: theme.fontSize.md2,
     },
   })

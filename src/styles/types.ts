@@ -2,6 +2,7 @@ export type AppTheme = {
   colors: AppColors
   fontSize: FontSizeType
   isDarkMode: boolean
+  edges: { messageMargin: number }
 }
 
 export type FontSizeType = {

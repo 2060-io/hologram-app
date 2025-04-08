@@ -35,7 +35,7 @@ const MessageCustomView: React.FC<MessageProps> = memo(props => {
   const position: 'right' | 'left' = isSender ? 'right' : 'left'
   const hasReactions = !!chatEntry.reactions.length
   const extraMarginBottom = hasReactions ? REACTIONS_MARGIN_BOTTOM : 0
-  const containerMarginBottom = (sameUser ? 4.28 : 8.56) + extraMarginBottom
+  const containerMarginBottom = (sameUser ? 4 : theme.edges.messageMargin) + extraMarginBottom
   const isMessageSelected = !!selectedMessages.find(entry => entry.id === currentMessage.id)
 
   useEffect(() => {
