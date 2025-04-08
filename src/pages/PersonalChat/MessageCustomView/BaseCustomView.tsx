@@ -149,6 +149,7 @@ const BaseCustomView: React.FC<BaseCustomMessageViewProps> = memo(props => {
               metadata={chatEntry.metadata as VPRequestMetadata}
               agent={agent}
               sender={user}
+              chatEntryId={chatEntry.id}
             />
           )
         case ChatEntryType.VPResponse:

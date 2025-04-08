@@ -14,6 +14,8 @@ import getStyles from './styles'
 
 import { ModalConfirmAction } from '@2060/components'
 import { Text } from '@2060/components/common'
+import { updateMetadata } from '@2060/hooks/agent/chat/services'
+import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { VPRequestMetadata } from '@2060/model'
 import { MobileAgent } from '@2060/services/agent'
@@ -30,6 +32,7 @@ interface Props {
   proofRecordId: string
   metadata: VPRequestMetadata
   agent?: MobileAgent
+  chatEntryId: string
 }
 
 type RequestedCredentialsForDisplay = {
@@ -41,8 +44,15 @@ type MainButtonsProps = {
   proofState: ProofState
 }
 
-const VPRequestChatView = ({ sender, proofRecordId, metadata, agent }: Props): React.ReactElement => {
+const VPRequestChatView = ({
+  sender,
+  proofRecordId,
+  metadata,
+  agent,
+  chatEntryId,
+}: Props): React.ReactElement => {
   const { t } = useTranslation()
+  const { realm } = useLocalRealm()
   const navigation: StackNavigationProp<ParamListBase> = useNavigation()
   const theme = useTheme()
   const styles = getStyles(theme)
@@ -74,7 +84,9 @@ const VPRequestChatView = ({ sender, proofRecordId, metadata, agent }: Props): R
   const displayModalRefuseConfirmation = () => setShowModalRefuseConfirmation(true)
 
   const notify = async () => {
-    if (!agent) return
+    if (!agent || !realm) return
+    const newMetadata = { ...metadata, proofState: ProofState.Abandoned }
+    updateMetadata(realm, chatEntryId, newMetadata)
     await notifyNoCompatibleCredentials({ agent, proofRecordId })
   }
 
@@ -87,7 +99,10 @@ const VPRequestChatView = ({ sender, proofRecordId, metadata, agent }: Props): R
 
   // TODO: Move to an AgentAction
   const refuse = async () => {
-    await agent?.proofs.declineRequest({ proofRecordId, sendProblemReport: true })
+    if (!agent || !realm) return
+    const newMetadata = { ...metadata, proofState: ProofState.Declined }
+    updateMetadata(realm, chatEntryId, newMetadata)
+    await agent.proofs.declineRequest({ proofRecordId, sendProblemReport: true })
   }
 
   const refuseFromChat = async () => {
