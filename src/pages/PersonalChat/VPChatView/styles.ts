@@ -30,4 +30,7 @@ export default (theme: AppTheme) =>
     acceptButton: {
       flex: 1,
     },
+    footerContainer: {
+      marginTop: theme.edges.messageMargin,
+    },
   })

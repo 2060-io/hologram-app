@@ -84,19 +84,7 @@ const VPChatView = ({ metadata, role, agent, proofRecordId, chatEntryId }: Props
     await sendProblemReport({ agent, proofRecordId })
   }
 
-  const status: Record<ProofState, React.ReactElement> = {
-    [ProofState.RequestReceived]: (
-      <Text typography="EuclidCircularA-Regular" style={styles.text}>
-        RequestReceived
-      </Text>
-    ),
-    [ProofState.RequestSent]: (
-      <Text typography="EuclidCircularA-Regular" style={styles.text}>
-        RequestSent
-      </Text>
-    ),
-    [ProofState.PresentationReceived]: <State text={t('presentationRequest.accepted')} />,
-    [ProofState.PresentationSent]: <></>,
+  const status: Partial<Record<ProofState, React.ReactElement>> = {
     [ProofState.ProposalReceived]: (
       <View style={styles.buttonsContainer}>
         <OutlinedBlueButton
@@ -111,10 +99,10 @@ const VPChatView = ({ metadata, role, agent, proofRecordId, chatEntryId }: Props
         />
       </View>
     ),
-    [ProofState.ProposalSent]: <></>,
+    [ProofState.PresentationReceived]: <State text={t('presentationRequest.accepted')} />,
+    [ProofState.Done]: <State text={t('presentationRequest.accepted')} />,
     [ProofState.Declined]: <State text={t('presentationRequest.refused')} type="error" />,
     [ProofState.Abandoned]: <State text={t('presentationRequest.refused')} type="error" />,
-    [ProofState.Done]: <State text={t('presentationRequest.accepted')} />,
   }
 
   return (
@@ -151,7 +139,7 @@ const VPChatView = ({ metadata, role, agent, proofRecordId, chatEntryId }: Props
             />
           )
         })}
-        {status[proofState]}
+        {status[proofState] ? <View style={styles.footerContainer}>{status[proofState]}</View> : null}
       </View>
     </View>
   )
