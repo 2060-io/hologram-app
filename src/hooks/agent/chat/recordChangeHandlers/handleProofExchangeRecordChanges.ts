@@ -12,8 +12,8 @@ import {
   getCredentialMainInfo,
   getPresentationRequestForDisplay,
 } from '@2060/services/agent/display'
-import { VerifierInfo } from '@2060/services/api/trustRegistryService'
-import { log } from '@2060/utils'
+import { getServiceInfo, VerifierInfo } from '@2060/services/api/trustRegistryService'
+import { log, logError } from '@2060/utils'
 import { getConnectionDisplayName, getConnectionDisplayPicture } from '@2060/utils/connectionUtils'
 
 export const handleProofExchangeRecordChanges = async (options: {
@@ -25,7 +25,6 @@ export const handleProofExchangeRecordChanges = async (options: {
   message: AgentMessage
 }) => {
   const { agent, realm, record: proofRecord, activeChatThreadId, message } = options
-  log('handleProofExchangeRecordChanges', proofRecord, proofRecord.state === ProofState.ProposalSent)
   if (proofRecord.connectionId) {
     const connection = await agent.connections.getById(proofRecord.connectionId)
     const thread = chatThreadService.findOrCreateChatThread(realm, connection)
@@ -147,38 +146,65 @@ export const handleProofExchangeRecordChanges = async (options: {
       proofRecord.state === ProofState.ProposalReceived
     ) {
       const presentedCredentials: CredentialMainInfo[] = []
-      const credentialId = 'credentialId'
-      log('to solve to get right value of ', credentialId)
-      const credentialRecord = await agent.dependencyManager
-        .resolve(W3cCredentialRepository)
-        .findById(agent.context, credentialId)
-      if (credentialRecord) presentedCredentials.push(getCredentialMainInfo(credentialRecord))
-      let [chatEntry] = chatEntryService.findAllByAssociatedRecordId(
-        realm,
-        proofRecord.id,
-        ChatEntryType.VPResponse,
-      )
-      if (!chatEntry) {
-        const role =
-          proofRecord.state === ProofState.ProposalSent ? ChatEntryRole.Sender : ChatEntryRole.Receiver
-        const isReceiver = role === ChatEntryRole.Receiver
-        chatEntry = chatEntryService.createChatEntry(realm, {
-          associatedRecordId: proofRecord.id,
-          chatThreadId: thread.id,
-          type: ChatEntryType.VPResponse,
-          role,
-          state: ChatEntryState.Created,
-          createdAt: new Date().getTime(),
-          metadata: {
-            proofState: proofRecord.state,
-            presentedCredentials: JSON.stringify(presentedCredentials),
-          },
-          ...(isReceiver && { associatedMessageId: message.id }),
-        })
-        chatThreadService.updateThread(realm, thread.id, { lastChatEntry: chatEntry })
-        if (thread.id !== activeChatThreadId && isReceiver) {
-          chatThreadService.addUnread(realm, thread.id, 1)
+      try {
+        const formatData = await agent.proofs.getFormatData(proofRecord.id)
+        const requestedAttributes = formatData.proposal?.anoncreds?.requested_attributes
+
+        if (requestedAttributes) {
+          const firstAttribute = Object.values(requestedAttributes)[0]
+
+          if (firstAttribute.restrictions?.length) {
+            const credentialDefinitionId = firstAttribute.restrictions[0].cred_def_id
+
+            if (credentialDefinitionId) {
+              log('credentialDefinitionId', credentialDefinitionId)
+
+              const serviceInfo = await getServiceInfo({
+                did: credentialDefinitionId,
+                trustedServiceResolverBaseUrl: 'https://tsr.2060.io',
+              })
+              log('serviceInfoserviceInfo', serviceInfo)
+              if (serviceInfo) {
+                const finalCredentialMainInfo: CredentialMainInfo = {
+                  id: serviceInfo.id,
+                  recordId: credentialDefinitionId,
+                  createdAt: new Date(),
+                  // TODO: get schema name
+                  schemaName: 'We need to get schema name',
+                  issuer: {
+                    id: credentialDefinitionId,
+                    name: serviceInfo.name,
+                    logoUrl: serviceInfo.logoUrl,
+                    status: serviceInfo.status,
+                  },
+                }
+                presentedCredentials.push(finalCredentialMainInfo)
+              }
+            }
+          }
         }
+      } catch (e) {
+        logError(`Error getting credential presented info ${e}`)
+      }
+      const role =
+        proofRecord.state === ProofState.ProposalSent ? ChatEntryRole.Sender : ChatEntryRole.Receiver
+      const isReceiver = role === ChatEntryRole.Receiver
+      const chatEntry = chatEntryService.createChatEntry(realm, {
+        associatedRecordId: proofRecord.id,
+        chatThreadId: thread.id,
+        type: ChatEntryType.VPResponse,
+        role,
+        state: ChatEntryState.Created,
+        createdAt: new Date().getTime(),
+        metadata: {
+          proofState: proofRecord.state,
+          presentedCredentials: JSON.stringify(presentedCredentials),
+        },
+        ...(isReceiver && { associatedMessageId: message.id }),
+      })
+      chatThreadService.updateThread(realm, thread.id, { lastChatEntry: chatEntry })
+      if (thread.id !== activeChatThreadId && isReceiver) {
+        chatThreadService.addUnread(realm, thread.id, 1)
       }
     }
   }
