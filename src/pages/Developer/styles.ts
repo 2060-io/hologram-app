@@ -65,7 +65,7 @@ export default (theme: AppTheme) =>
       backgroundColor: theme.isDarkMode ? theme.colors.grey : theme.colors.white,
       padding: 0,
       height: heightPercentageToDP('5.8%'),
-      marginBottom: 8.56,
+      marginBottom: 8,
     },
     optionSelected: {
       backgroundColor: waterColor(theme.colors.green),

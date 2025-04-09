@@ -8,8 +8,8 @@ export default (theme: AppTheme) =>
   StyleSheet.create({
     containerMain: {
       width: widthPercentageToDP('75%'),
-      paddingHorizontal: 8,
-      paddingBottom: 6,
+      paddingHorizontal: theme.edges.messageMargin,
+      marginBottom: theme.edges.messageMargin,
     },
     containerInfo: {
       alignSelf: 'center',

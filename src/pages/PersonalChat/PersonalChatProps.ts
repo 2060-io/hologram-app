@@ -12,6 +12,7 @@ export type ImageProps = {
   mediaItem: ImageMetadata
   fileMediaInfo: MediaInfo
   currentMessage: ChatEntryMessage
+  displayTimeAndTicks: boolean
 }
 
 export type MediaProps = {
@@ -19,6 +20,7 @@ export type MediaProps = {
   mediaItem: VideoMetadata
   fileMediaInfo: MediaInfo
   currentMessage: ChatEntryMessage
+  displayTimeAndTicks: boolean
 }
 
 export type MessageAction = {

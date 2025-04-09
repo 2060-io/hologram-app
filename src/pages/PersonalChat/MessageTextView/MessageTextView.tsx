@@ -3,7 +3,7 @@ import { View, ViewStyle } from 'react-native'
 
 import { ParsedText } from '../components'
 
-import styles from './styles'
+import getStyles from './styles'
 
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 
@@ -14,7 +14,7 @@ type Props = {
 
 const MessageTextView: React.FC<Props> = memo(({ text, renderTimeAndTicks }) => {
   const theme = useTheme()
-
+  const styles = getStyles(theme)
   return (
     <View style={styles.container}>
       <View style={styles.textContainer}>

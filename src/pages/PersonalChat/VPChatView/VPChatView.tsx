@@ -62,7 +62,7 @@ const VPChatView = ({ presentedCredentials, role, verifierName }: Props) => {
             <CardCredentialMainInformation
               key={credential.id}
               credentialMainInfo={credential}
-              containerStyle={{ marginBottom: isLast ? 0 : 8 }}
+              containerStyle={{ marginBottom: isLast ? 0 : theme.edges.messageMargin }}
               onPress={() => goToDetails(credential.recordId)}
               size="medium"
             />

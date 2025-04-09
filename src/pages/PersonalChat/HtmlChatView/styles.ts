@@ -9,7 +9,7 @@ export default (theme: AppTheme) =>
   StyleSheet.create({
     container: {
       width: NORMAL_WIDTH,
-      marginBottom: 6,
+      marginBottom: theme.edges.messageMargin,
     },
     webView: {
       width: '100%',

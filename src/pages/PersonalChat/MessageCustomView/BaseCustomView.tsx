@@ -113,6 +113,7 @@ const BaseCustomView: React.FC<BaseCustomMessageViewProps> = memo(props => {
                   createdAt: new Date(chatEntry.createdAt),
                 },
                 currentMessage,
+                displayTimeAndTicks,
               }}
             />
           )
@@ -127,6 +128,7 @@ const BaseCustomView: React.FC<BaseCustomMessageViewProps> = memo(props => {
                   createdAt: new Date(chatEntry.createdAt),
                 },
                 currentMessage,
+                displayTimeAndTicks,
               }}
             />
           )
