@@ -57,6 +57,7 @@ const VPChatView = ({ metadata, role, agent, proofRecordId, chatEntryId }: Props
   const displayModalRefuseConfirmation = () => setShowModalRefuseConfirmation(true)
 
   const goToDetails = async (credentialRecordId: string) => {
+    if (role === ChatEntryRole.Receiver) return
     // FIXME: generalize for any type of credential
     const credentialRecord = await agent?.dependencyManager
       .resolve(W3cCredentialRepository)
@@ -73,7 +74,7 @@ const VPChatView = ({ metadata, role, agent, proofRecordId, chatEntryId }: Props
     if (!agent || !realm) return
     const newMetadata = { ...metadata, proofState: ProofState.PresentationReceived }
     updateMetadata(realm, chatEntryId, newMetadata)
-    await acceptProposal({ agent, proofRecordId })
+    acceptProposal({ agent, proofRecordId })
   }
 
   const refuseCredentialPresentation = async () => {
@@ -81,7 +82,7 @@ const VPChatView = ({ metadata, role, agent, proofRecordId, chatEntryId }: Props
     if (!agent || !realm) return
     const newMetadata = { ...metadata, proofState: ProofState.Abandoned }
     updateMetadata(realm, chatEntryId, newMetadata)
-    await sendProblemReport({ agent, proofRecordId })
+    sendProblemReport({ agent, proofRecordId, description: 'refused' })
   }
 
   const status: Partial<Record<ProofState, React.ReactElement>> = {
@@ -110,7 +111,6 @@ const VPChatView = ({ metadata, role, agent, proofRecordId, chatEntryId }: Props
       <ModalConfirmAction
         visible={showModalRefuseConfirmation}
         title={t('personalChat.confirmRefuseCredentialPresentation')}
-        subTitle=""
         confirmText={t('general.confirm')}
         cancelText="No"
         onClose={hideModalRefuseConfirmation}
