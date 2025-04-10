@@ -155,13 +155,15 @@ export class AgentActionExecuter {
       }
       const { didcommConnectionId, anoncredsAttributes } = parameters
       return async (options: { agent: MobileAgent }) => {
-        const proposeProofResponse = await options.agent.proofs.proposeProof({
+        const proofExchangeRecord = await options.agent.proofs.proposeProof({
           proofFormats: { anoncreds: { attributes: anoncredsAttributes } },
           connectionId: didcommConnectionId,
           protocolVersion: 'v2',
         })
-        log('present to response', didcommConnectionId, proposeProofResponse)
-        return { outgoingMessageType: V2ProposePresentationMessage.type.messageTypeUri }
+        return {
+          outgoingMessageType: V2ProposePresentationMessage.type.messageTypeUri,
+          associatedRecord: proofExchangeRecord,
+        }
       }
     }
     logError(`No callback for type ${action.type}`)
