@@ -12,7 +12,6 @@ import { createChatEntry } from '@2060/hooks/agent/chat/services'
 import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
 import { ChatEntryRole, ChatEntryState, ChatEntryType } from '@2060/model'
-import { getDidCommCredentialDisplayMetadata } from '@2060/services/agent/RecordMetadata'
 import { getCredentialDetailsForDisplay, getCredentialMainInfo } from '@2060/services/agent/display'
 import { formatCredentialSubject } from '@2060/services/agent/formatCredentialSubject'
 import { toast } from '@2060/utils/toast'
@@ -31,9 +30,8 @@ const PresentCredential = ({ navigation, route }: Props) => {
   const presentCredential = useCallback(
     (connectionsId: string[]) => {
       if (!agent || !realm) return
-      const metadata = credentialRecord ? getDidCommCredentialDisplayMetadata(credentialRecord) : undefined
-      const presentedCredential = credentialRecord ? getCredentialMainInfo(credentialRecord) : undefined
-      const credentialDefinitionId = metadata?.issuerId
+      const presentedCredential = credentialRecord ? [getCredentialMainInfo(credentialRecord)] : []
+      const credentialDefinitionId = credentialRecord?.getTag('anonCredsCredentialDefinitionId') as string
       if (!credentialDefinitionId) return
       const credentialDetails = credentialRecord
         ? getCredentialDetailsForDisplay(credentialRecord)
@@ -58,7 +56,7 @@ const PresentCredential = ({ navigation, route }: Props) => {
           createdAt: new Date().getTime(),
           metadata: {
             proofState: ProofState.ProposalSent,
-            presentedCredentials: JSON.stringify([presentedCredential]),
+            presentedCredentials: JSON.stringify(presentedCredential),
           },
         })
         addAgentActionToQueue({
