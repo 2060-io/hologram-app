@@ -100,22 +100,7 @@ export async function presentProof(options: PresentProofOptions) {
 }
 
 export async function notifyNoCompatibleCredentials(options: { agent: MobileAgent; proofRecordId: string }) {
-  const { agent, proofRecordId } = options
-  await agent.proofs.sendProblemReport({
-    proofRecordId,
-    description: 'e.req.no-compatible-credentials',
-  })
-
-  const proofRecord = await agent.proofs.getById(proofRecordId)
-  proofRecord.state = ProofState.Abandoned
-  await agent.proofs.update(proofRecord)
-  agent.events.emit<ProofStateChangedEvent>(agent.context, {
-    type: ProofEventTypes.ProofStateChanged,
-    payload: {
-      proofRecord: proofRecord.clone(),
-      previousState: null,
-    },
-  })
+  await sendProblemReport({ ...options, description: 'e.req.no-compatible-credentials' })
 }
 
 export async function acceptProposal(options: { agent: MobileAgent; proofRecordId: string }) {
@@ -123,12 +108,16 @@ export async function acceptProposal(options: { agent: MobileAgent; proofRecordI
   await agent?.proofs.acceptProposal({ proofRecordId })
 }
 
-export async function sendProblemReport(options: { agent: MobileAgent; proofRecordId: string }) {
-  const { agent, proofRecordId } = options
-  await agent.proofs.sendProblemReport({ proofRecordId, description: 'refused' })
+export async function sendProblemReport(options: {
+  agent: MobileAgent
+  proofRecordId: string
+  description: string
+}) {
+  const { agent, proofRecordId, description } = options
   const proofRecord = await agent.proofs.getById(proofRecordId)
   proofRecord.state = ProofState.Abandoned
   await agent.proofs.update(proofRecord)
+  agent.proofs.sendProblemReport({ proofRecordId, description })
   agent.events.emit<ProofStateChangedEvent>(agent.context, {
     type: ProofEventTypes.ProofStateChanged,
     payload: {

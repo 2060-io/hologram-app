@@ -87,7 +87,7 @@ const VPRequestChatView = ({
     if (!agent || !realm) return
     const newMetadata = { ...metadata, proofState: ProofState.Abandoned }
     updateMetadata(realm, chatEntryId, newMetadata)
-    await notifyNoCompatibleCredentials({ agent, proofRecordId })
+    notifyNoCompatibleCredentials({ agent, proofRecordId })
   }
 
   const goToDidCommPresentationRequest = () => {
