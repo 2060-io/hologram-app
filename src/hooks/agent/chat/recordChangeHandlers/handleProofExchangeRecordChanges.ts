@@ -14,7 +14,7 @@ import {
 } from '@2060/services/agent/display'
 import { getServiceInfo, VerifierInfo } from '@2060/services/api/trustRegistryService'
 import { DEV_ENVS_PERSIST_KEY, getStorageData } from '@2060/services/localStorage'
-import { log, logError } from '@2060/utils'
+import { logError } from '@2060/utils'
 import { getConnectionDisplayName, getConnectionDisplayPicture } from '@2060/utils/connectionUtils'
 import { DevEnvsObject } from '@2060/utils/developer'
 
@@ -148,8 +148,6 @@ export const handleProofExchangeRecordChanges = async (options: {
         const metadata = { ...vpRequestEntry.metadata, proofState: proofRecord.state, replied: true }
         updateMetadata(realm, vpRequestEntry.id, metadata)
       }
-    } else if (proofRecord.state === ProofState.ProposalSent) {
-      //update associatedRecordId: proofRecord.id of the already sender created chat entry
     } else if (proofRecord.state === ProofState.ProposalReceived) {
       const presentedCredentials: CredentialMainInfo[] = []
       try {
@@ -164,21 +162,23 @@ export const handleProofExchangeRecordChanges = async (options: {
 
             if (credentialDefinitionId) {
               const persistedEnvVariables = (await getStorageData(DEV_ENVS_PERSIST_KEY)) as DevEnvsObject
-              log('credentialDefinitionId', credentialDefinitionId)
               const serviceInfo = await getServiceInfo({
                 did: credentialDefinitionId,
                 trustedServiceResolverBaseUrl: persistedEnvVariables.TRUSTED_SERVICE_RESOLVER_BASE_URL,
               })
-              log('serviceInfoserviceInfo', serviceInfo)
 
               if (serviceInfo) {
+                const schemaId = (
+                  await agent.modules.anoncreds.getCredentialDefinition(credentialDefinitionId)
+                ).credentialDefinition?.schemaId
+                const schemaName = schemaId
+                  ? ((await agent.modules.anoncreds.getSchema(schemaId)).schema?.name ?? '')
+                  : ''
                 const credentialMainInfo: CredentialMainInfo = {
-                  id: serviceInfo.id,
-                  recordId: credentialDefinitionId,
-                  // FIXME: get the createdAt for sender and empty for receiver
+                  id: '',
+                  recordId: '',
                   createdAt: new Date(),
-                  // FIXME: get schema name
-                  schemaName: 'We need to get schema name',
+                  schemaName,
                   issuer: {
                     id: credentialDefinitionId,
                     name: serviceInfo.name,
