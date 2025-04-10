@@ -30,14 +30,14 @@ export const handleProofExchangeRecordChanges = async (options: {
   if (proofRecord.connectionId) {
     const connection = await agent.connections.getById(proofRecord.connectionId)
     const thread = chatThreadService.findOrCreateChatThread(realm, connection)
-    let [vpResponseChatEntry] = chatEntryService.findAllByAssociatedRecordId(
-      realm,
-      proofRecord.id,
-      ChatEntryType.VPResponse,
-    )
     if (proofRecord.state === ProofState.RequestReceived) {
+      const [vpResponseChatEntry] = chatEntryService.findAllByAssociatedRecordId(
+        realm,
+        proofRecord.id,
+        ChatEntryType.VPResponse,
+      )
+      // if exists a VPResponse related to this proofRecord, update its proofState to PresentationReceived
       if (vpResponseChatEntry) {
-        // Update the metadata of the chat entry with the new proof state
         const newChatEntryMetadata = {
           ...vpResponseChatEntry.metadata,
           proofState: ProofState.PresentationReceived,
@@ -93,6 +93,11 @@ export const handleProofExchangeRecordChanges = async (options: {
       proofRecord.state === ProofState.Declined ||
       proofRecord.state === ProofState.Abandoned
     ) {
+      let [vpResponseChatEntry] = chatEntryService.findAllByAssociatedRecordId(
+        realm,
+        proofRecord.id,
+        ChatEntryType.VPResponse,
+      )
       // If a presentation has been effectively done, create an additional chat entry
       // including the preview of the credentials that have been sent
       if (proofRecord.state === ProofState.PresentationSent) {
@@ -143,10 +148,9 @@ export const handleProofExchangeRecordChanges = async (options: {
         const metadata = { ...vpRequestEntry.metadata, proofState: proofRecord.state, replied: true }
         updateMetadata(realm, vpRequestEntry.id, metadata)
       }
-    } else if (
-      proofRecord.state === ProofState.ProposalSent ||
-      proofRecord.state === ProofState.ProposalReceived
-    ) {
+    } else if (proofRecord.state === ProofState.ProposalSent) {
+      //update associatedRecordId: proofRecord.id of the already sender created chat entry
+    } else if (proofRecord.state === ProofState.ProposalReceived) {
       const presentedCredentials: CredentialMainInfo[] = []
       try {
         const formatData = await agent.proofs.getFormatData(proofRecord.id)
@@ -171,8 +175,9 @@ export const handleProofExchangeRecordChanges = async (options: {
                 const credentialMainInfo: CredentialMainInfo = {
                   id: serviceInfo.id,
                   recordId: credentialDefinitionId,
+                  // FIXME: get the createdAt for sender and empty for receiver
                   createdAt: new Date(),
-                  // TODO: get schema name
+                  // FIXME: get schema name
                   schemaName: 'We need to get schema name',
                   issuer: {
                     id: credentialDefinitionId,
@@ -189,24 +194,22 @@ export const handleProofExchangeRecordChanges = async (options: {
       } catch (e) {
         logError(`Error getting credential presented info ${e}`)
       }
-      const role =
-        proofRecord.state === ProofState.ProposalSent ? ChatEntryRole.Sender : ChatEntryRole.Receiver
-      const isReceiver = role === ChatEntryRole.Receiver
+
       const chatEntry = chatEntryService.createChatEntry(realm, {
         associatedRecordId: proofRecord.id,
         chatThreadId: thread.id,
         type: ChatEntryType.VPResponse,
-        role,
+        role: ChatEntryRole.Receiver,
         state: ChatEntryState.Created,
         createdAt: new Date().getTime(),
         metadata: {
           proofState: proofRecord.state,
           presentedCredentials: JSON.stringify(presentedCredentials),
         },
-        ...(isReceiver && { associatedMessageId: message.id }),
+        associatedMessageId: message.id,
       })
       chatThreadService.updateThread(realm, thread.id, { lastChatEntry: chatEntry })
-      if (thread.id !== activeChatThreadId && isReceiver) {
+      if (thread.id !== activeChatThreadId) {
         chatThreadService.addUnread(realm, thread.id, 1)
       }
     }
