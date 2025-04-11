@@ -5,7 +5,7 @@ import { SafeAreaView, ScrollView, View } from 'react-native'
 import styles from './styles'
 
 import { CredentialDetails } from '@2060/components'
-import { NavigationStackParams } from '@2060/components/Navigation'
+import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
 
 interface Props extends StackScreenProps<NavigationStackParams, 'Presentation'> {}
 

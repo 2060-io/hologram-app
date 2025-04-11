@@ -10,7 +10,7 @@ import { BlueButton, Header, OutlinedBlueButton, State } from '../components'
 import getStyles from './styles'
 
 import { ModalConfirmAction } from '@2060/components'
-import { NavigationStackParams } from '@2060/components/Navigation'
+import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
 import { CardCredentialMainInformation, Text } from '@2060/components/common'
 import { useChat } from '@2060/hooks/agent'
 import { updateMetadata } from '@2060/hooks/agent/chat/services'
