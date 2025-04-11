@@ -167,27 +167,24 @@ export const handleProofExchangeRecordChanges = async (options: {
                 trustedServiceResolverBaseUrl: persistedEnvVariables.TRUSTED_SERVICE_RESOLVER_BASE_URL,
               })
 
-              if (serviceInfo) {
-                const schemaId = (
-                  await agent.modules.anoncreds.getCredentialDefinition(credentialDefinitionId)
-                ).credentialDefinition?.schemaId
-                const schemaName = schemaId
-                  ? ((await agent.modules.anoncreds.getSchema(schemaId)).schema?.name ?? '')
-                  : ''
-                const credentialMainInfo: CredentialMainInfo = {
-                  id: '',
-                  recordId: '',
-                  createdAt: new Date(),
-                  schemaName,
-                  issuer: {
-                    id: credentialDefinitionId,
-                    name: serviceInfo.name,
-                    logoUrl: serviceInfo.logoUrl,
-                    status: serviceInfo.status,
-                  },
-                }
-                presentedCredentials.push(credentialMainInfo)
+              const schemaId = (await agent.modules.anoncreds.getCredentialDefinition(credentialDefinitionId))
+                .credentialDefinition?.schemaId
+              const schemaName = schemaId
+                ? ((await agent.modules.anoncreds.getSchema(schemaId)).schema?.name ?? '')
+                : ''
+              const credentialMainInfo: CredentialMainInfo = {
+                id: '',
+                recordId: '',
+                createdAt: new Date(),
+                schemaName,
+                issuer: {
+                  id: credentialDefinitionId,
+                  name: serviceInfo?.name ?? credentialDefinitionId,
+                  logoUrl: serviceInfo?.logoUrl,
+                  status: serviceInfo?.status ?? 'notFound',
+                },
               }
+              presentedCredentials.push(credentialMainInfo)
             }
           }
         }

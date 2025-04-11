@@ -50,7 +50,7 @@ const CardCredentialMainInformation = ({
           {`${t('credential.issuedOn')}: ${credentialMainInfo.createdAt}`}
         </Text>
         <View style={styles.bottomContainer}>
-          <Text style={styles.bottomText} typography="EuclidCircularA-Medium">
+          <Text style={styles.bottomText} typography="EuclidCircularA-Medium" numberOfLines={1}>
             {serviceInfo?.name ?? credentialMainInfo.issuer.name}
           </Text>
           <VerifiedIcon status={serviceInfo?.status ?? 'notFound'} />
