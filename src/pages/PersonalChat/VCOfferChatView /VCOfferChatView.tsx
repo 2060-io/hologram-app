@@ -1,4 +1,4 @@
-import { AutoAcceptCredential, CredentialState } from '@credo-ts/core'
+import { AutoAcceptCredential, CredentialState, W3cCredentialRepository } from '@credo-ts/core'
 import { useNavigation, ParamListBase } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import React, { useState, memo, useMemo } from 'react'
@@ -83,20 +83,27 @@ const VCOfferChatView = ({ sender, associatedRecordId, metadata, agent }: Props)
       goToCredentialOffer()
     }
     if ([CredentialState.CredentialReceived, CredentialState.Done].includes(credentialState)) {
-      goToCredentialDetails()
+      verifyCanGoToCredentialDetails()
     }
   }
 
-  const goToCredentialDetails = async () => {
+  const verifyCanGoToCredentialDetails = async () => {
     if (!agent) return
     // FIXME: generalize for any credential type
     const credentialRecordId = (await agent.credentials.getById(associatedRecordId)).credentials[0]
       .credentialRecordId
-    if (credentialRecordId) {
-      navigation.navigate('CredentialDetails', { credentialRecordId })
+    const credentialRecord = await agent?.dependencyManager
+      .resolve(W3cCredentialRepository)
+      .findById(agent.context, credentialRecordId)
+    if (credentialRecord) {
+      goToCredentialDetails(credentialRecordId)
     } else {
       toast({ type: 'error', message: t('personalChat.noCredentialFound') })
     }
+  }
+
+  const goToCredentialDetails = async (credentialRecordId: string) => {
+    navigation.navigate('CredentialDetails', { credentialRecordId })
   }
 
   const goToCredentialOffer = async () => {
