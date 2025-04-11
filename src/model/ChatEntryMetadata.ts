@@ -84,6 +84,7 @@ export type VPRequestMetadata = {
 export type VPResponseMetadata = {
   proofState: ProofState
   presentedCredentials: string // they must be deserialized (JSON.parse) and casted to CredentialMainInfo[]
+  presentedCredentialClaims?: string
 }
 
 export type VCOfferMetadata = {

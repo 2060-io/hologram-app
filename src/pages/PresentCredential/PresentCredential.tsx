@@ -78,7 +78,11 @@ const PresentCredential = ({ navigation, route }: Props) => {
   )
 
   return (
-    <BaseForward navigation={navigation} onPressSend={presentCredential} title={t('credential.presentTo')} />
+    <BaseForward
+      navigation={navigation}
+      onPressSend={presentCredential}
+      title={t('navigation.PresentCredential')}
+    />
   )
 }
 

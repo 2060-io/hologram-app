@@ -1,5 +1,5 @@
 import { ProofState, W3cCredentialRepository } from '@credo-ts/core'
-import { ParamListBase, useNavigation } from '@react-navigation/native'
+import { useNavigation } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import React, { memo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -10,6 +10,7 @@ import { BlueButton, Header, OutlinedBlueButton, State } from '../components'
 import getStyles from './styles'
 
 import { ModalConfirmAction } from '@2060/components'
+import { NavigationStackParams } from '@2060/components/Navigation'
 import { CardCredentialMainInformation, Text } from '@2060/components/common'
 import { useChat } from '@2060/hooks/agent'
 import { updateMetadata } from '@2060/hooks/agent/chat/services'
@@ -37,8 +38,8 @@ const VPChatView = ({ metadata, role, agent, proofRecordId, chatEntryId }: Props
   const { realm } = useLocalRealm()
   const theme = useTheme()
   const styles = getStyles(theme)
-  const navigation: StackNavigationProp<ParamListBase> = useNavigation()
-  const { presentedCredentials, proofState } = metadata
+  const navigation: StackNavigationProp<NavigationStackParams> = useNavigation()
+  const { presentedCredentials, proofState, presentedCredentialClaims } = metadata
   const presentedCredentialsForDisplay: CredentialMainInfo[] = presentedCredentials
     ? JSON.parse(presentedCredentials)
     : []
@@ -55,6 +56,17 @@ const VPChatView = ({ metadata, role, agent, proofRecordId, chatEntryId }: Props
 
   const hideModalRefuseConfirmation = () => setShowModalRefuseConfirmation(false)
   const displayModalRefuseConfirmation = () => setShowModalRefuseConfirmation(true)
+
+  const chooseWhereToGo = (credentialMainInfo: CredentialMainInfo) => {
+    isSender ? goToDetails(credentialMainInfo.recordId) : goToPresentation(credentialMainInfo)
+  }
+
+  const goToPresentation = (credentialMainInfo: CredentialMainInfo) => {
+    navigation.navigate('Presentation', {
+      mainInfo: credentialMainInfo,
+      attributes: presentedCredentialClaims ? JSON.parse(presentedCredentialClaims) : {},
+    })
+  }
 
   const goToDetails = async (credentialRecordId: string) => {
     if (role === ChatEntryRole.Receiver) return
@@ -134,7 +146,7 @@ const VPChatView = ({ metadata, role, agent, proofRecordId, chatEntryId }: Props
               key={credential.id}
               credentialMainInfo={credential}
               containerStyle={{ marginBottom: isLast ? 0 : theme.edges.messageMargin }}
-              onPress={() => goToDetails(credential.recordId)}
+              onPress={() => chooseWhereToGo(credential)}
               size="medium"
             />
           )

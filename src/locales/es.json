@@ -102,7 +102,9 @@
       "CredentialPresented": "Credencial Presentada",
       "MessageDetails": "Detalles del Mensaje",
       "ForwardTo": "Reenviar a",
-      "shareWith": "Compartir con"
+      "shareWith": "Compartir con",
+      "PresentCredential": "Presentar a",
+      "Presentation": "Presentación"
     },
     "authentication": {
       "walletLocked": "Hologram bloqueada",
@@ -220,7 +222,6 @@
       "deleteConfirmationDescription": "Eliminar una credencial vigente no es recomendable.",
       "yesDelete": "Sí, eliminar permanentemente",
       "present": "Presentar credencial",
-      "presentTo": "Presentar a",
       "presented": "Credencial presentada"
     },
     "credentialOffer": {

@@ -102,7 +102,9 @@
       "CredentialPresented": "Credential Presented",
       "MessageDetails": "Message Details",
       "ForwardTo": "Forward to",
-      "shareWith": "Share with"
+      "shareWith": "Share with",
+      "PresentCredential": "Present to",
+      "Presentation": "Presentation"
     },
     "authentication": {
       "walletLocked": "Hologram Locked",
@@ -221,7 +223,6 @@
       "deleteConfirmationDescription": "Delete an unexpired credential is not recommended.",
       "yesDelete": "Yes, delete permanently",
       "present": "Present credential",
-      "presentTo": "Present to",
       "presented": "Credential presented"
     },
     "credentialOffer": {

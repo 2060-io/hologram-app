@@ -1,0 +1,12 @@
+import { StyleSheet } from 'react-native'
+
+export default StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  subContainer: {
+    flex: 1,
+    paddingTop: 15,
+    paddingHorizontal: 15,
+  },
+})
