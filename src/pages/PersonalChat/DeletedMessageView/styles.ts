@@ -12,7 +12,7 @@ export default (theme: AppTheme) =>
     deletedText: {
       color: theme.colors.primaryText,
       fontSize: theme.fontSize.md2,
-      margin: 8.56,
+      margin: theme.edges.messageMargin,
       marginRight: 4,
     },
     subContainerAckAndTime: {

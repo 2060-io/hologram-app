@@ -31,7 +31,7 @@ const getStyles = (theme: AppTheme, role: ChatEntryRole) =>
   StyleSheet.create({
     headerContainer: {
       flexDirection: 'row',
-      padding: 8,
+      padding: theme.edges.messageMargin,
       backgroundColor:
         role === ChatEntryRole.Receiver
           ? theme.isDarkMode
@@ -43,7 +43,7 @@ const getStyles = (theme: AppTheme, role: ChatEntryRole) =>
       alignItems: 'center',
     },
     headerTitle: {
-      marginHorizontal: 8,
+      marginHorizontal: theme.edges.messageMargin,
       color: theme.colors.blue,
       fontSize: theme.fontSize.md2,
     },

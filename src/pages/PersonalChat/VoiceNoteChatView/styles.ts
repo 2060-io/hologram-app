@@ -9,7 +9,7 @@ export default (theme: AppTheme) =>
   StyleSheet.create({
     container: {
       width: widthPercentageToDP('57%'),
-      padding: 8.56,
+      padding: theme.edges.messageMargin,
     },
     subContainer: {
       flexDirection: 'row',

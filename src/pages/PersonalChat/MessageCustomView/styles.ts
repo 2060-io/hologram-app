@@ -16,12 +16,12 @@ export default (theme: AppTheme) =>
     leftContainer: {
       flex: 1,
       alignItems: 'flex-start',
-      marginLeft: 8,
+      marginLeft: theme.edges.messageMargin,
     },
     rightContainer: {
       flex: 1,
       alignItems: 'flex-end',
-      marginRight: 8,
+      marginRight: theme.edges.messageMargin,
     },
     subContainer: {
       maxWidth: widthPercentageToDP('75%'),
@@ -37,17 +37,11 @@ export default (theme: AppTheme) =>
     rightSubContainer: {
       backgroundColor: theme.isDarkMode ? theme.colors.darkGrey : theme.colors.lightGrey,
     },
-    messageTextContainer: {
-      flexDirection: 'row',
-      flexWrap: 'wrap',
-      marginVertical: 8.56,
-      marginHorizontal: 8.56,
-    },
     containerAckAndTime: {
       flexDirection: 'row',
       justifyContent: 'flex-end',
-      marginVertical: 8.56,
-      marginRight: 8.56,
+      marginBottom: theme.edges.messageMargin,
+      marginRight: theme.edges.messageMargin,
     },
     containerTimeLeft: {
       marginLeft: 4.28,

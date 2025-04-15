@@ -22,7 +22,7 @@ const VideoChatView = memo((props: MediaProps) => {
   const theme = useTheme()
   const styles = getStyles(theme)
   const { t } = useTranslation()
-  const { mediaItem, mediaRecordId, fileMediaInfo, currentMessage } = props
+  const { mediaItem, mediaRecordId, fileMediaInfo, currentMessage, displayTimeAndTicks } = props
   const {
     localFilePath,
     duration,
@@ -127,7 +127,7 @@ const VideoChatView = memo((props: MediaProps) => {
   )
 
   return (
-    <>
+    <View style={{ marginBottom: displayTimeAndTicks ? theme.edges.messageMargin : 0 }}>
       <View style={styles.containerRootVideo}>
         {isDownloaded ? (
           <Fragment>
@@ -162,7 +162,7 @@ const VideoChatView = memo((props: MediaProps) => {
           textProps={{ numberOfLines: 10, style: styles.videoDescription }}
         />
       )}
-    </>
+    </View>
   )
 })
 
