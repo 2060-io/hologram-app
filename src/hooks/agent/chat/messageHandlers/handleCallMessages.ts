@@ -2,8 +2,8 @@ import { CallOfferMessage, CallRejectMessage, DidCommCallType } from '@2060.io/c
 import { AgentMessage, ConnectionRecord, parseMessageType } from '@credo-ts/core'
 import Realm from 'realm'
 
-import * as chatEntryService from '../services/ChatEntryService'
-import * as chatThreadService from '../services/ChatThreadService'
+import { createChatEntry, findAllDidcommThreadId, updateMetadata } from '../services/ChatEntryService'
+import { addUnread, findOrCreateChatThread, updateThread } from '../services/ChatThreadService'
 
 import { IncomingCallInfo } from '@2060/hooks/providers/useVideoCallContext'
 import { CallOfferMetadata, CallOfferState, ChatEntryRole, ChatEntryState, ChatEntryType } from '@2060/model'
@@ -27,9 +27,9 @@ export const handleCallMessages = (options: {
       log(`no incomingCallInfo Parameters: ${JSON.stringify(parameters)}`)
       return
     }
-    const thread = chatThreadService.findOrCreateChatThread(realm, connection!)
+    const thread = findOrCreateChatThread(realm, connection!)
     const { roomId, wsUrl, peerId } = incomingCallInfo
-    const chatEntry = chatEntryService.createChatEntry(realm, {
+    const chatEntry = createChatEntry(realm, {
       chatThreadId: thread.id,
       type: ChatEntryType.CallOffer,
       role: ChatEntryRole.Receiver,
@@ -47,23 +47,19 @@ export const handleCallMessages = (options: {
       createdAt: (receivedAt ?? new Date()).getTime(),
       didcommThreadId: message.threadId,
     })
-    chatThreadService.updateThread(realm, thread.id, { lastChatEntry: chatEntry })
+    updateThread(realm, thread.id, { lastChatEntry: chatEntry })
     if (thread.id !== activeChatThreadId) {
-      chatThreadService.addUnread(realm, thread.id, 1)
+      addUnread(realm, thread.id, 1)
     }
   }
   if (messageType.messageTypeUri === CallRejectMessage.type.messageTypeUri) {
-    const [chatEntry] = chatEntryService.findAllDidcommThreadId(
-      realm,
-      message.threadId,
-      ChatEntryType.CallOffer,
-    )
+    const [chatEntry] = findAllDidcommThreadId(realm, message.threadId, ChatEntryType.CallOffer)
     if (chatEntry) {
       const newMetadata = {
         ...chatEntry.metadata,
         state: CallOfferState.REJECTED,
       } as CallOfferMetadata
-      chatEntryService.updateMetadata(realm, chatEntry.id, newMetadata)
+      updateMetadata(realm, chatEntry.id, newMetadata)
     }
   }
 }

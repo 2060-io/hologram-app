@@ -2,8 +2,8 @@ import { BasicMessageRecord, BasicMessageRole } from '@credo-ts/core'
 import Realm from 'realm'
 
 import { getLocalizedPreview, getThumbnail } from '../preview'
-import * as chatEntryService from '../services/ChatEntryService'
-import * as chatThreadService from '../services/ChatThreadService'
+import { createChatEntry, findAllDidcommThreadId } from '../services/ChatEntryService'
+import { addUnread, findOrCreateChatThread, updateThread } from '../services/ChatThreadService'
 
 import { ChatEntryRole, ChatEntryState, ChatEntryType, RelatedEntryProps } from '@2060/model'
 import { MobileAgent } from '@2060/services/agent'
@@ -18,7 +18,7 @@ export const handleBasicMessageRecordChanges = async (options: {
   const { agent, realm, record: basicMessageRecord, activeChatThreadId } = options
   // find associated thread according to the connection id. If not found, create it
   const connection = await agent.connections.getById(basicMessageRecord.connectionId)
-  const thread = chatThreadService.findOrCreateChatThread(realm, connection)
+  const thread = findOrCreateChatThread(realm, connection)
 
   if (basicMessageRecord.role === BasicMessageRole.Receiver) {
     const chatEntry = createTextChatEntry({
@@ -35,10 +35,10 @@ export const handleBasicMessageRecordChanges = async (options: {
       parentThreadId: basicMessageRecord.parentThreadId,
     })
 
-    chatThreadService.updateThread(realm, thread.id, { lastChatEntry: chatEntry })
+    updateThread(realm, thread.id, { lastChatEntry: chatEntry })
 
     if (thread.id !== activeChatThreadId) {
-      chatThreadService.addUnread(realm, thread.id, 1)
+      addUnread(realm, thread.id, 1)
     }
   }
 }
@@ -69,7 +69,7 @@ export const createTextChatEntry = (options: {
 
   let relatedEntryProps: RelatedEntryProps | undefined
   if (parentThreadId) {
-    const [relatedChatEntry] = chatEntryService.findAllDidcommThreadId(realm, parentThreadId)
+    const [relatedChatEntry] = findAllDidcommThreadId(realm, parentThreadId)
 
     if (relatedChatEntry) {
       relatedEntryProps = {
@@ -83,7 +83,7 @@ export const createTextChatEntry = (options: {
     }
   }
 
-  const chatEntry = chatEntryService.createChatEntry(realm, {
+  const chatEntry = createChatEntry(realm, {
     associatedRecordId: associatedRecordId ?? 'dummy', // FIXME: make optional
     associatedMessageId,
     chatThreadId,
@@ -96,7 +96,7 @@ export const createTextChatEntry = (options: {
     relatedEntryProps,
   })
 
-  chatThreadService.updateThread(realm, chatThreadId, { lastChatEntry: chatEntry })
+  updateThread(realm, chatThreadId, { lastChatEntry: chatEntry })
 
   return chatEntry
 }

@@ -13,7 +13,7 @@ import InCallManager from 'react-native-incall-manager'
 import { MediaStream, mediaDevices, registerGlobals } from 'react-native-webrtc'
 
 import { useMobileAgent } from '@2060/hooks/agent'
-import * as chatEntryService from '@2060/hooks/agent/chat/services/ChatEntryService'
+import { findAllDidcommThreadId, updateMetadata } from '@2060/hooks/agent/chat/services/ChatEntryService'
 import { useConfig } from '@2060/hooks/providers/ConfigProvider'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
 import {
@@ -137,17 +137,13 @@ export const useVideoCall = () => {
 
   const updateChatEntryMetadata = useCallback(() => {
     if (!realm || !didcommThreadId) return
-    const [chatEntry] = chatEntryService.findAllDidcommThreadId(
-      realm,
-      didcommThreadId,
-      ChatEntryType.CallOffer,
-    )
+    const [chatEntry] = findAllDidcommThreadId(realm, didcommThreadId, ChatEntryType.CallOffer)
     if (chatEntry) {
       const newMetadata = {
         ...chatEntry.metadata,
         state: CallOfferState.FINISHED,
       } as CallOfferMetadata
-      chatEntryService.updateMetadata(realm, chatEntry.id, newMetadata)
+      updateMetadata(realm, chatEntry.id, newMetadata)
     }
   }, [realm, didcommThreadId])
 

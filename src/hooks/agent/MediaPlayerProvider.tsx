@@ -1,6 +1,5 @@
 import { PlayerState } from '@simform_solutions/react-native-audio-waveform'
-import * as React from 'react'
-import { createContext, useContext, useState, useCallback, useRef, useEffect } from 'react'
+import React, { createContext, useContext, useState, useCallback, useRef, useEffect } from 'react'
 
 import { useScreenLock } from '../providers/ScreenLockProvider'
 import { useVideoCallContext } from '../providers/useVideoCallContext'

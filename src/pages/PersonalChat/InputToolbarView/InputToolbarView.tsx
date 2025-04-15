@@ -2,7 +2,7 @@ import { useAudioRecorder, useAudioPlayer } from '@simform_solutions/react-nativ
 import React, { useRef, useEffect, useState, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, TouchableOpacity } from 'react-native'
-import * as RNFS from 'react-native-fs'
+import { stat } from 'react-native-fs'
 
 import ComposerInput from '../ComposerInput'
 import RepliedMessageView from '../RepliedMessageView/RepliedMessageView'
@@ -82,7 +82,7 @@ const InputToolbarView = (props: Props) => {
       toast({ message: t('chat.recordedAudioTooShort'), type: 'info' })
       return
     }
-    const { size } = await RNFS.stat(recordedAudioFilePath.current)
+    const { size } = await stat(recordedAudioFilePath.current)
     const subType = 'm4a'
     const mime = `audio/${subType}`
     const filename = generateFileName(mime, subType)

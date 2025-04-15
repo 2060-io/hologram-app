@@ -1,6 +1,5 @@
 import notifee, { Notification, EventType } from '@notifee/react-native'
-import * as React from 'react'
-import { createContext, useCallback, useContext, useEffect, useState } from 'react'
+import React, { createContext, useCallback, useContext, useEffect, useState } from 'react'
 
 import { log } from '@2060/utils'
 

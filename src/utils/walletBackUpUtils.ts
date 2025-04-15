@@ -1,5 +1,5 @@
 import Config from 'react-native-config'
-import * as RNFS from 'react-native-fs'
+import { readdir, TemporaryDirectoryPath } from 'react-native-fs'
 import { zip, unzip } from 'react-native-zip-archive'
 
 import { KeyChainService, createAndStoreKey, retrieveKey, deleteKey } from '../services/keys'
@@ -8,7 +8,7 @@ import { existsFile as exists, deleteDir, makeDirectory, mediaDirectoryPath } fr
 import { logError } from './log'
 
 const BACKUP_NAME = Config.BACKUP_NAME
-const ROOT_TEMP_FILES_DIRECTORY = `${RNFS.TemporaryDirectoryPath}/.Hologram`
+const ROOT_TEMP_FILES_DIRECTORY = `${TemporaryDirectoryPath}/.Hologram`
 const TEMP_BACKUP_FILES_DIRECTORY = `${ROOT_TEMP_FILES_DIRECTORY}/input`
 const BACKUP_ZIP_FILE_PATH = `${ROOT_TEMP_FILES_DIRECTORY}/${BACKUP_NAME}`
 const MEDIA_BACKUP_FILE_PATH = `${TEMP_BACKUP_FILES_DIRECTORY}/media.zip`
@@ -34,7 +34,7 @@ const createBackupDirectory = async () => await makeDirectory(TEMP_BACKUP_FILES_
 
 const zipBackup = async (includeMedia: boolean) => {
   const existsMediaDirectory =
-    (await exists(mediaDirectoryPath)) && (await RNFS.readdir(mediaDirectoryPath)).length
+    (await exists(mediaDirectoryPath)) && (await readdir(mediaDirectoryPath)).length
   if (includeMedia && existsMediaDirectory) await zipMediaFiles()
   try {
     const zipPath = await zip(TEMP_BACKUP_FILES_DIRECTORY, BACKUP_ZIP_FILE_PATH)

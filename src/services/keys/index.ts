@@ -1,10 +1,11 @@
 import { TypedArrayEncoder } from '@credo-ts/core'
 import { Key, KeyAlgs } from '@hyperledger/aries-askar-react-native'
-import * as RNFS from 'react-native-fs'
+import { readFile, DocumentDirectoryPath } from 'react-native-fs'
 
 import { logWarn } from '@2060/utils'
+import { writeFile } from '@2060/utils/RNFS'
 
-export const configFilePath = `${RNFS.DocumentDirectoryPath}/config.json`
+export const configFilePath = `${DocumentDirectoryPath}/config.json`
 
 export enum KeyChainService {
   AfjWallet = 'afj-wallet',
@@ -14,7 +15,7 @@ export enum KeyChainService {
 
 export async function retrieveKey(service: KeyChainService) {
   try {
-    const config = await RNFS.readFile(configFilePath)
+    const config = await readFile(configFilePath)
     const configJson = JSON.parse(config)
     return (configJson.keys[service] as string) ?? undefined
   } catch (error) {
@@ -28,7 +29,7 @@ export async function createAndStoreKey(service: KeyChainService, seed?: string)
 
   let configJson: { keys: Record<string, string> }
   try {
-    const config = await RNFS.readFile(configFilePath)
+    const config = await readFile(configFilePath)
     configJson = JSON.parse(config)
   } catch (error) {
     logWarn(`error reading config file: ${error}. Creating new config object`)
@@ -36,17 +37,17 @@ export async function createAndStoreKey(service: KeyChainService, seed?: string)
   }
 
   configJson.keys[service] = TypedArrayEncoder.toHex(key)
-  await RNFS.writeFile(configFilePath, JSON.stringify(configJson))
+  await writeFile(configFilePath, JSON.stringify(configJson))
 
   return configJson.keys[service]
 }
 
 export async function deleteKey(service: KeyChainService) {
   try {
-    const config = await RNFS.readFile(configFilePath)
+    const config = await readFile(configFilePath)
     const configJson = JSON.parse(config)
     delete configJson.keys[service]
-    await RNFS.writeFile(configFilePath, JSON.stringify(configJson))
+    await writeFile(configFilePath, JSON.stringify(configJson))
     return configJson.keys
   } catch (error) {
     logWarn(`error deleting key ${service}: ${error}`)
@@ -56,11 +57,11 @@ export async function deleteKey(service: KeyChainService) {
 
 export async function deleteAllKeys() {
   try {
-    const config = await RNFS.readFile(configFilePath)
+    const config = await readFile(configFilePath)
     const configJson = JSON.parse(config)
 
     configJson.keys = {}
-    await RNFS.writeFile(configFilePath, JSON.stringify(configJson))
+    await writeFile(configFilePath, JSON.stringify(configJson))
   } catch (error) {
     logWarn(`error deleting keys: ${error}`)
   }

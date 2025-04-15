@@ -1,6 +1,7 @@
 import { Image, NativeModules } from 'react-native'
-import * as RNFS from 'react-native-fs'
+import { stat, TemporaryDirectoryPath } from 'react-native-fs'
 
+import { copyFile } from './RNFS'
 import { logError } from './log'
 
 import { IS_DEVICE_IOS } from '@2060/constants'
@@ -18,7 +19,7 @@ type VideoProps = {
 export const getMediaFileSharingData = async (fileOriginalPath: string, mimeType: string) => {
   const filePath = await fromContentUriToFileUri(fileOriginalPath)
   const preview = await createDidCommPreview({ mimeType: mimeType, localFilePath: filePath })
-  const { size } = await RNFS.stat(filePath)
+  const { size } = await stat(filePath)
   const [fileName] = filePath.split('/').slice(-1)
   const finalFileName = fileName.includes('.') ? fileName : undefined
   const commonFileValues: DidCommMediaFileSharingData = {
@@ -47,8 +48,8 @@ const getVideoProperties = async (videoPath: string): Promise<VideoProps | null>
 const fromContentUriToFileUri = async (contentUri: string) => {
   const urlComponents = contentUri.split('/')
   const fileNameAndExtension = urlComponents[urlComponents.length - 1]
-  const destPath = `${RNFS.TemporaryDirectoryPath}/${fileNameAndExtension}`
-  await RNFS.copyFile(contentUri, destPath)
+  const destPath = `${TemporaryDirectoryPath}/${fileNameAndExtension}`
+  await copyFile(contentUri, destPath)
   return IS_DEVICE_IOS ? destPath : `file://${decodeURIComponent(destPath)}`
 }
 

@@ -10,8 +10,8 @@ import {
 } from '@credo-ts/core'
 import Realm from 'realm'
 
-import * as chatEntryService from '../services/ChatEntryService'
-import * as chatThreadService from '../services/ChatThreadService'
+import { createChatEntry, findAllByAssociatedRecordId, updateState } from '../services/ChatEntryService'
+import { addUnread, findOrCreateChatThread, updateThread } from '../services/ChatThreadService'
 
 import { ChatEntryRole, ChatEntryState, ChatEntryType } from '@2060/model'
 import { MobileAgent } from '@2060/services/agent'
@@ -29,11 +29,11 @@ export const handleCredentialExchangeRecordChanges = async (options: {
   receivedAt?: Date
   message: AgentMessage
 }) => {
-  const { agent, realm, record: credentialExchangeRecord, message } = options
+  const { agent, realm, record: credentialExchangeRecord, activeChatThreadId, message } = options
   if (!credentialExchangeRecord.connectionId) return
 
   const connection = await agent.connections.getById(credentialExchangeRecord.connectionId)
-  const thread = chatThreadService.findOrCreateChatThread(realm, connection)
+  const thread = findOrCreateChatThread(realm, connection)
   const associatedMessageId = (await agent.credentials.findRequestMessage(credentialExchangeRecord.id))?.id
 
   const formatData = await agent.credentials.getFormatData(credentialExchangeRecord.id)
@@ -42,7 +42,7 @@ export const handleCredentialExchangeRecordChanges = async (options: {
     formatData.offer?.anoncreds?.cred_def_id ?? formatData.offer?.indy?.cred_def_id
 
   // Find any VC Offer entry associated to this credential record and update its state
-  const [vcOfferEntry] = chatEntryService.findAllByAssociatedRecordId(
+  const [vcOfferEntry] = findAllByAssociatedRecordId(
     realm,
     credentialExchangeRecord.id,
     ChatEntryType.VCOffer,
@@ -60,7 +60,7 @@ export const handleCredentialExchangeRecordChanges = async (options: {
       isRefused = description === 'e.msg.refused'
     }
     const credentialState = isRefused ? CredentialState.Declined : credentialExchangeRecord.state
-    chatEntryService.updateState(realm, {
+    updateState(realm, {
       recordId: vcOfferEntry.id,
       state: vcOfferEntry.state, // TODO: update state
       associatedMessageId,
@@ -98,7 +98,7 @@ export const handleCredentialExchangeRecordChanges = async (options: {
   const issuerLogoUrl = getConnectionDisplayPicture(connection)
   const schemaName = schemaId ? (await agent.modules.anoncreds.getSchema(schemaId)).schema?.name : undefined
 
-  const chatEntry = chatEntryService.createChatEntry(realm, {
+  const chatEntry = createChatEntry(realm, {
     associatedRecordId: credentialExchangeRecord.id,
     associatedMessageId: credentialExchangeRecord.threadId,
     chatThreadId: thread.id,
@@ -128,5 +128,8 @@ export const handleCredentialExchangeRecordChanges = async (options: {
   })
   await agent.credentials.update(credentialExchangeRecord)
 
-  chatThreadService.updateThread(realm, thread.id, { lastChatEntry: chatEntry })
+  updateThread(realm, thread.id, { lastChatEntry: chatEntry })
+  if (thread.id !== activeChatThreadId) {
+    addUnread(realm, thread.id, 1)
+  }
 }

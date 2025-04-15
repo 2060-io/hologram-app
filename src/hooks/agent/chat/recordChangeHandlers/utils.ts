@@ -2,7 +2,7 @@ import { MediaSharingRecord } from '@2060.io/credo-ts-didcomm-media-sharing'
 import { BasicMessageRecord } from '@credo-ts/core'
 import Realm from 'realm'
 
-import * as chatEntryService from '../services/ChatEntryService'
+import { findAllByAssociatedRecordId } from '../services/ChatEntryService'
 
 import { ChatEntryType } from '@2060/model'
 import { MobileAgent } from '@2060/services/agent'
@@ -17,7 +17,7 @@ export async function getChatEntryByDidcommThreadId(agent: MobileAgent, realm: R
     // TODO: Use findByThreadId (update to media sharing is required)
     ;[originMessage] = (await agent.modules.media.getAll()).filter(item => item.threadId === threadId)
   }
-  const [chatEntryRecord] = chatEntryService.findAllByAssociatedRecordId(realm, originMessage.id)
+  const [chatEntryRecord] = findAllByAssociatedRecordId(realm, originMessage.id)
 
   return { chatEntryRecord, originMessage }
 }
