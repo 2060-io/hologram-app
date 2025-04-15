@@ -180,6 +180,7 @@ export const handleProofExchangeRecordChanges = async (options: {
                   logoUrl: serviceInfo?.logoUrl,
                   status: serviceInfo?.status ?? 'notFound',
                 },
+                itsOwn: false,
               }
               presentedCredentials.push(credentialMainInfo)
             }
