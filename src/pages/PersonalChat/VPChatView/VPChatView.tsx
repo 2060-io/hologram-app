@@ -31,15 +31,15 @@ type Props = {
 }
 
 const VPChatView = ({ metadata, role, agent, proofRecordId, chatEntryId }: Props) => {
-  const { chatThread } = useChat()
-  const otherSidesName = chatThread?.participants.find(p => p.id === ChatEntryRole.Receiver)?.name
-  const [showModalRefuseConfirmation, setShowModalRefuseConfirmation] = useState(false)
   const { t } = useTranslation()
-  const { realm } = useLocalRealm()
   const theme = useTheme()
   const styles = getStyles(theme)
+  const { chatThread } = useChat()
+  const { realm } = useLocalRealm()
   const navigation: StackNavigationProp<NavigationStackParams> = useNavigation()
+  const [showModalRefuseConfirmation, setShowModalRefuseConfirmation] = useState(false)
   const { presentedCredentials, proofState, presentedCredentialClaims } = metadata
+  const otherSidesName = chatThread?.participants.find(p => p.id === ChatEntryRole.Receiver)?.name
   const presentedCredentialsForDisplay: CredentialMainInfo[] = presentedCredentials
     ? JSON.parse(presentedCredentials)
     : []
@@ -112,6 +112,7 @@ const VPChatView = ({ metadata, role, agent, proofRecordId, chatEntryId }: Props
         />
       </View>
     ),
+    [ProofState.RequestReceived]: <State text={t('presentationRequest.accepted')} />,
     [ProofState.PresentationReceived]: <State text={t('presentationRequest.accepted')} />,
     [ProofState.Done]: <State text={t('presentationRequest.accepted')} />,
     [ProofState.Declined]: <State text={t('presentationRequest.refused')} type="error" />,
