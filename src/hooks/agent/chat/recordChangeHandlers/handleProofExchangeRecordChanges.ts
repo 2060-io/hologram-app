@@ -36,14 +36,24 @@ export const handleProofExchangeRecordChanges = async (options: {
         proofRecord.id,
         ChatEntryType.VPResponse,
       )
-      // if exists a VPResponse related to this proofRecord, update its proofState to PresentationReceived
+      // if exists a VPResponse related to this proofRecord, update its proofState to RequestReceived
       if (vpResponseChatEntry) {
         const newChatEntryMetadata = {
           ...vpResponseChatEntry.metadata,
-          proofState: ProofState.PresentationReceived,
+          proofState: proofRecord.state,
         }
         chatEntryService.updateMetadata(realm, vpResponseChatEntry.id, newChatEntryMetadata)
-        await agent.proofs.acceptRequest({ proofRecordId: proofRecord.id })
+        try {
+          const requestedCredentials = await agent.proofs.selectCredentialsForRequest({
+            proofRecordId: proofRecord.id,
+          })
+          await agent.proofs.acceptRequest({
+            proofRecordId: proofRecord.id,
+            proofFormats: { anoncreds: requestedCredentials.proofFormats.anoncreds },
+          })
+        } catch (e) {
+          logError(`Error accepting proof request ${e}`)
+        }
       } else {
         const verifierInfo: VerifierInfo = {
           id: connection.invitationDid ?? getConnectionDisplayName(connection),
@@ -166,7 +176,6 @@ export const handleProofExchangeRecordChanges = async (options: {
                 did: credentialDefinitionId,
                 trustedServiceResolverBaseUrl: persistedEnvVariables.TRUSTED_SERVICE_RESOLVER_BASE_URL,
               })
-
               const schemaId = (await agent.modules.anoncreds.getCredentialDefinition(credentialDefinitionId))
                 .credentialDefinition?.schemaId
               const schemaName = schemaId
