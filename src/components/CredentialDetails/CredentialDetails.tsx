@@ -61,7 +61,7 @@ const CredentialDetails = ({ credentialDetails }: Props) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
-  const detailsSections = formatCredentialSubject(credentialDetails.attributes)
+  const detailsSections = formatCredentialSubject({ subject: credentialDetails.attributes })
   const [showImageFullScreen, setShowImageFullScreen] = useState(false)
   const biggerImageRef = useRef<string | null>(null)
 

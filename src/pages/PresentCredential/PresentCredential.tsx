@@ -37,7 +37,9 @@ const PresentCredential = ({ navigation, route }: Props) => {
         ? getCredentialDetailsForDisplay(credentialRecord)
         : undefined
       const anoncredsAttributes: AnoncredsAttribute[] = []
-      const detailsSections = credentialDetails ? formatCredentialSubject(credentialDetails.attributes) : []
+      const detailsSections = credentialDetails
+        ? formatCredentialSubject({ subject: credentialDetails.attributes, sanitizeKey: false })
+        : []
       detailsSections.forEach(section => {
         section.rows.forEach(row => {
           anoncredsAttributes.push({ name: row.key, credentialDefinitionId })
