@@ -2,7 +2,7 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { TouchableOpacity, View } from 'react-native'
 
-import { withConnectionMainActions } from '../withConnectionMainActions'
+import { withRenderConnectionMainActions } from '../withRenderConnectionMainActions'
 
 import getStyles from './styles'
 
@@ -47,4 +47,4 @@ const AlreadyConnected = ({ defaultActions, connection, iconColor }: ConnectionM
   )
 }
 
-export default withConnectionMainActions(AlreadyConnected)
+export default withRenderConnectionMainActions(AlreadyConnected)

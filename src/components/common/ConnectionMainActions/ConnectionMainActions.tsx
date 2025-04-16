@@ -6,7 +6,7 @@ import SvgIcon, { IconsNames } from '../SvgIcon'
 import { ConnectionMainActionsProps, ActionIconsNames } from './Props'
 
 import { useConnectionMainActions } from '@2060/hooks/useConnectionMainActions'
-import { withConnectionMainActions } from '@2060/pages/ConnectionDetails/withConnectionMainActions'
+import { withRenderConnectionMainActions } from '@2060/pages/ConnectionDetails/withRenderConnectionMainActions'
 
 const ConnectionMainActions = ({
   defaultActions = [],
@@ -35,4 +35,4 @@ const ConnectionMainActions = ({
   )
 }
 
-export default withConnectionMainActions(ConnectionMainActions)
+export default withRenderConnectionMainActions(ConnectionMainActions)
