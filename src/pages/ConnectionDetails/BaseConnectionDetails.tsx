@@ -12,8 +12,8 @@ import getStyles from './styles'
 
 import { ModalConfirmAction } from '@2060/components'
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
-import { Text, ChannelIcons, SvgIcon, ModalLoading, OptionsList } from '@2060/components/common'
-import { ChannelProps } from '@2060/components/common/ChannelIcons/ChannelIconProps'
+import { Text, ConnectionMainActions, SvgIcon, ModalLoading, OptionsList } from '@2060/components/common'
+import { ActionProps } from '@2060/components/common/ConnectionMainActions/Props'
 import { IS_DEVICE_IOS } from '@2060/constants'
 import {
   useConnectionProfile,
@@ -221,7 +221,7 @@ const BaseConnectionDetails = ({
     })
   }
 
-  const channels: ChannelProps[] = [{ value: 'text', onPress: goToChat }]
+  const channels: ActionProps[] = [{ value: 'text', onPress: goToChat }]
 
   const shareConnection = async () => {
     try {
@@ -260,7 +260,7 @@ const BaseConnectionDetails = ({
           />
           {comesFromScan && (
             <AlreadyConnected
-              defaultChannels={channels}
+              defaultActions={channels}
               connection={connection}
               iconColor={theme.colors.primaryText}
             />
@@ -291,8 +291,8 @@ const BaseConnectionDetails = ({
             <Text typography="EuclidCircularA-Regular" style={styles.displayName}>
               {connectionName}
             </Text>
-            <ChannelIcons
-              defaultChannels={channels}
+            <ConnectionMainActions
+              defaultActions={channels}
               connection={connection}
               iconColor={theme.colors.primaryText}
             />

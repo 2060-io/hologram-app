@@ -7,18 +7,21 @@ import { withConnectionMainActions } from '../withConnectionMainActions'
 import getStyles from './styles'
 
 import { SvgIcon, Text } from '@2060/components/common'
-import { ChannelIconsProps, ChannelIconsNames } from '@2060/components/common/ChannelIcons/ChannelIconProps'
+import {
+  ConnectionMainActionsProps,
+  ActionIconsNames,
+} from '@2060/components/common/ConnectionMainActions/Props'
 import { IconsNames } from '@2060/components/common/SvgIcon'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { useConnectionChannels } from '@2060/hooks/useConnectionChannels'
+import { useConnectionMainActions } from '@2060/hooks/useConnectionMainActions'
 import { getConnectionDisplayName } from '@2060/utils/connectionUtils'
 
-const AlreadyConnected = ({ defaultChannels, connection, iconColor }: ChannelIconsProps) => {
+const AlreadyConnected = ({ defaultActions, connection, iconColor }: ConnectionMainActionsProps) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
-  const { channels } = useConnectionChannels({ defaultChannels, connection })
-  const channelText: Record<keyof typeof ChannelIconsNames, string> = {
+  const { actions } = useConnectionMainActions({ defaultActions, connection })
+  const actionLabel: Record<keyof typeof ActionIconsNames, string> = {
     audio: t('connection.call'),
     text: t('connection.goToChat'),
     video: t('connection.videoCall'),
@@ -31,11 +34,11 @@ const AlreadyConnected = ({ defaultChannels, connection, iconColor }: ChannelIco
         {t('connection.youAreAlreadyConnected', { connectionName })}
       </Text>
       <View style={styles.actionsContainer}>
-        {channels.map(channel => (
-          <TouchableOpacity key={channel.value} onPress={channel.onPress} style={styles.actionContainer}>
-            <SvgIcon name={ChannelIconsNames[channel.value] as keyof IconsNames} fill={iconColor} />
+        {actions.map(action => (
+          <TouchableOpacity key={action.value} onPress={action.onPress} style={styles.actionContainer}>
+            <SvgIcon name={ActionIconsNames[action.value] as keyof IconsNames} fill={iconColor} />
             <Text typography="EuclidCircularA-Regular" style={styles.actionText}>
-              {channelText[channel.value]}
+              {actionLabel[action.value]}
             </Text>
           </TouchableOpacity>
         ))}

@@ -6,7 +6,7 @@ import { View, TouchableOpacity } from 'react-native'
 
 import getStyles from './styles'
 
-import { Avatar, Text, SvgIcon, ChannelIcons } from '@2060/components/common'
+import { Avatar, Text, SvgIcon, ConnectionMainActions } from '@2060/components/common'
 import { useConnectionById } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { ChatThreadData } from '@2060/model'
@@ -69,7 +69,7 @@ const CustomChatHeader: React.FC<Props> = props => {
             </Text>
           )}
         </TouchableOpacity>
-        {connection && <ChannelIcons connection={connection} iconColor={theme.colors.primaryText} />}
+        {connection && <ConnectionMainActions connection={connection} iconColor={theme.colors.primaryText} />}
         {showMenuIcon && (
           <TouchableOpacity onPress={handleShowContextMenu} style={styles.containerIconMenu}>
             <SvgIcon name="menuOutline" fill={primaryText} />

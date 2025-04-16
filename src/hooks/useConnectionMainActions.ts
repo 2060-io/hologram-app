@@ -3,35 +3,35 @@ import { useMemo } from 'react'
 import { useConfig } from './providers/ConfigProvider'
 import { useVideoCallContext } from './providers/useVideoCallContext'
 
-import { ChannelProps, ChannelIconsProps } from '@2060/components/common/ChannelIcons/ChannelIconProps'
+import { ActionProps, ConnectionMainActionsProps } from '@2060/components/common/ConnectionMainActions/Props'
 import { isService, supportsAudioCalls, supportsVideoCalls } from '@2060/utils/connectionUtils'
 
-type Props = Omit<ChannelIconsProps, 'iconColor'>
+type Props = Omit<ConnectionMainActionsProps, 'iconColor'>
 
-export const useConnectionChannels = ({ defaultChannels = [], connection }: Props) => {
+export const useConnectionMainActions = ({ defaultActions = [], connection }: Props) => {
   const { startCall } = useVideoCallContext()
   const { isDeveloperMode } = useConfig()
   const isConnectionService = isService(connection)
 
-  const channels = useMemo(() => {
-    const channelsToReturn: ChannelProps[] = [...defaultChannels]
-    if (!isDeveloperMode || isConnectionService) return channelsToReturn
+  const actions = useMemo(() => {
+    const actionsToReturn: ActionProps[] = [...defaultActions]
+    if (!isDeveloperMode || isConnectionService) return actionsToReturn
     if (supportsAudioCalls(connection)) {
-      channelsToReturn.push({
+      actionsToReturn.push({
         value: 'audio',
         onPress: () => startCall({ connection, callType: 'audio' }),
       })
     }
     if (supportsVideoCalls(connection)) {
-      channelsToReturn.push({
+      actionsToReturn.push({
         value: 'video',
         onPress: () => startCall({ connection, callType: 'video' }),
       })
     }
-    return channelsToReturn
+    return actionsToReturn
   }, [connection, isDeveloperMode])
 
   return {
-    channels,
+    actions,
   }
 }

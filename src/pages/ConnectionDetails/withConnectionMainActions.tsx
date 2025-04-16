@@ -1,10 +1,10 @@
 import React from 'react'
 
-import { ChannelIconsProps } from '@2060/components/common/ChannelIcons/ChannelIconProps'
+import { ConnectionMainActionsProps } from '@2060/components/common/ConnectionMainActions/Props'
 import { isBlocked, isTerminated } from '@2060/utils/connectionUtils'
 
 export const withConnectionMainActions =
-  (Component: React.ComponentType<ChannelIconsProps>) => (props: ChannelIconsProps) => {
+  (Component: React.ComponentType<ConnectionMainActionsProps>) => (props: ConnectionMainActionsProps) => {
     const { connection } = props
     const isConnectionCompleted = connection.isReady
     const isConnectionBlocked = isBlocked(connection)

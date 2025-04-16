@@ -1,6 +1,6 @@
 import Avatar from './Avatar'
 import CardCredentialMainInformation from './CardCredentialMainInformation'
-import ChannelIcons from './ChannelIcons'
+import ConnectionMainActions from './ConnectionMainActions'
 import Icon from './CustomIcon'
 import HeaderTitle from './HeaderTitle'
 import Loader from './Loader'
@@ -22,7 +22,7 @@ export * from './ServiceInformation'
 export * from './Buttons'
 export {
   Avatar,
-  ChannelIcons,
+  ConnectionMainActions,
   Icon,
   Loader,
   Modal,
