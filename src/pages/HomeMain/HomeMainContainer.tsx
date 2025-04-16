@@ -24,7 +24,8 @@ const HomeMainContainer = (HomeMainComponent: ElementType) => {
       return ['oob', 'd_m', 'c_i', '_url'].includes(parameters[0])
     }, [route.params])
 
-    const goToConnectionDetails = (connectionId: string) => navigate('ConnectionDetails', { connectionId })
+    const goToConnectionDetails = (connectionId: string) =>
+      navigate('ConnectionDetails', { connectionId, comesFromScan: true })
 
     const processInvitation = async (invitation: OutOfBandInvitation) => {
       if (!agent) throw new Error('Agent not defined')

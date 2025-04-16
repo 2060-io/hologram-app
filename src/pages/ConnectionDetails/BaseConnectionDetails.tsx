@@ -7,12 +7,13 @@ import { View, SafeAreaView, ScrollView, TouchableOpacity, Platform } from 'reac
 import Config from 'react-native-config'
 import Share, { ShareOptions } from 'react-native-share'
 
+import AlreadyConnected from './AlreadyConnected'
 import getStyles from './styles'
 
 import { ModalConfirmAction } from '@2060/components'
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
 import { Text, ChannelIcons, SvgIcon, ModalLoading, OptionsList } from '@2060/components/common'
-import { ChannelProps } from '@2060/components/common/ChannelIcons/ChannelIcons'
+import { ChannelProps } from '@2060/components/common/ChannelIcons/ChannelIconProps'
 import { IS_DEVICE_IOS } from '@2060/constants'
 import {
   useConnectionProfile,
@@ -49,10 +50,12 @@ export interface BaseConnectionDetailsProps extends ConnectionDetailsProps {
 
 const BaseConnectionDetails = ({
   navigation,
+  route,
   connection,
   mainInfo,
   footerInfo,
 }: BaseConnectionDetailsProps) => {
+  const { comesFromScan } = route.params
   const [showConfirmationModal, setShowConfirmationModal] = useState(false)
   const [blockingConnection, setBlockingConnection] = useState(false)
   const modalConfirmationTypeRef = useRef<confirmationTypes>('deleteChat')
@@ -255,6 +258,13 @@ const BaseConnectionDetails = ({
             visible={blockingConnection}
             message={isConnectionBlocked ? t('connection.unblocking') : t('connection.blocking')}
           />
+          {comesFromScan && (
+            <AlreadyConnected
+              defaultChannels={channels}
+              connection={connection}
+              iconColor={theme.colors.primaryText}
+            />
+          )}
           {mainInfo}
           {isConnectionTerminated && (
             <View style={[styles.blockedContainer, styles.statusMainContainer]}>
