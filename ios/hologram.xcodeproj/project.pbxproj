@@ -20,9 +20,6 @@
 		0D665CA62C237B240038F106 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D665CA32C237B240038F106 /* ShareViewController.swift */; };
 		0D66D8FB2C236695004F9B35 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 0D66D8FA2C236695004F9B35 /* Base */; };
 		0D66D8FF2C236695004F9B35 /* ShareExtensionStaging.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 0D66D8F52C236695004F9B35 /* ShareExtensionStaging.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		0DB69D542C3C8B9E0007A29F /* VideoProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DB69D532C3C8B9E0007A29F /* VideoProperties.m */; };
-		0DB69D552C3C8B9E0007A29F /* VideoProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DB69D532C3C8B9E0007A29F /* VideoProperties.m */; };
-		0DB69D562C3C8B9E0007A29F /* VideoProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DB69D532C3C8B9E0007A29F /* VideoProperties.m */; };
 		0DC0A09A2C139F0300B45E18 /* SplashScreenDev.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0DC0A0992C139F0300B45E18 /* SplashScreenDev.storyboard */; };
 		0DC0A09C2C139F2100B45E18 /* SplashScreenStaging.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0DC0A09B2C139F2100B45E18 /* SplashScreenStaging.storyboard */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
@@ -34,24 +31,17 @@
 		2782B4076F0843349E94E4D1 /* EuclidCircularA-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CA1C222C327D4A9A94CEC3C0 /* EuclidCircularA-Light.ttf */; };
 		2AB9A2682120AAE8C0F28DD8 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A823EA4B905F4168276CBE6 /* ExpoModulesProvider.swift */; };
 		2BBE094411444140B1F06FC6 /* EuclidCircularA-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3297C2FBDFD14E0A804AE09D /* EuclidCircularA-Regular.ttf */; };
-		371CAC752A212021002F2B41 /* RCTFileChunkGeneratorModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 371CAC742A212021002F2B41 /* RCTFileChunkGeneratorModule.m */; };
 		37519992287F7CBD0066658E /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 37519991287F7CBD0066658E /* AppDelegate.mm */; };
-		375723072A86CEF500ECF0CE /* RCTFileCipheringModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 3795871F2A3B65C400E50FC2 /* RCTFileCipheringModule.m */; };
 		375723092A86CEF500ECF0CE /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 37519991287F7CBD0066658E /* AppDelegate.mm */; };
 		3757230A2A86CEF500ECF0CE /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		3757230B2A86CEF500ECF0CE /* AesCrypt.m in Sources */ = {isa = PBXBuildFile; fileRef = 379587252A3B65DD00E50FC2 /* AesCrypt.m */; };
-		3757230C2A86CEF500ECF0CE /* RCTFileChunkGeneratorModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 371CAC742A212021002F2B41 /* RCTFileChunkGeneratorModule.m */; };
 		375723112A86CEF500ECF0CE /* SFPro.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 966A172C27EC1283001E00A3 /* SFPro.ttf */; };
 		375723122A86CEF500ECF0CE /* SFPro-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = 966A172D27EC1283001E00A3 /* SFPro-Light.otf */; };
 		375723132A86CEF500ECF0CE /* SFPro-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 966A172E27EC1283001E00A3 /* SFPro-Bold.otf */; };
 		375723142A86CEF500ECF0CE /* SFPro-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 966A172F27EC1283001E00A3 /* SFPro-Medium.otf */; };
 		375723152A86CEF500ECF0CE /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		375723162A86CEF500ECF0CE /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EBDBDCAE269EB89000E74BEF /* SplashScreen.storyboard */; };
-		375723262A86CF0D00ECF0CE /* RCTFileCipheringModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 3795871F2A3B65C400E50FC2 /* RCTFileCipheringModule.m */; };
 		375723282A86CF0D00ECF0CE /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 37519991287F7CBD0066658E /* AppDelegate.mm */; };
 		375723292A86CF0D00ECF0CE /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		3757232A2A86CF0D00ECF0CE /* AesCrypt.m in Sources */ = {isa = PBXBuildFile; fileRef = 379587252A3B65DD00E50FC2 /* AesCrypt.m */; };
-		3757232B2A86CF0D00ECF0CE /* RCTFileChunkGeneratorModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 371CAC742A212021002F2B41 /* RCTFileChunkGeneratorModule.m */; };
 		375723302A86CF0D00ECF0CE /* SFPro.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 966A172C27EC1283001E00A3 /* SFPro.ttf */; };
 		375723312A86CF0D00ECF0CE /* SFPro-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = 966A172D27EC1283001E00A3 /* SFPro-Light.otf */; };
 		375723322A86CF0D00ECF0CE /* SFPro-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 966A172E27EC1283001E00A3 /* SFPro-Bold.otf */; };
@@ -64,8 +54,6 @@
 		3757234A2A87F38B00ECF0CE /* InfoPlist in Resources */ = {isa = PBXBuildFile; fileRef = 375723492A87F38B00ECF0CE /* InfoPlist */; };
 		3757234B2A87F38B00ECF0CE /* InfoPlist in Resources */ = {isa = PBXBuildFile; fileRef = 375723492A87F38B00ECF0CE /* InfoPlist */; };
 		3757234C2A87F38B00ECF0CE /* InfoPlist in Resources */ = {isa = PBXBuildFile; fileRef = 375723492A87F38B00ECF0CE /* InfoPlist */; };
-		379587222A3B65C400E50FC2 /* RCTFileCipheringModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 3795871F2A3B65C400E50FC2 /* RCTFileCipheringModule.m */; };
-		379587262A3B65DD00E50FC2 /* AesCrypt.m in Sources */ = {isa = PBXBuildFile; fileRef = 379587252A3B65DD00E50FC2 /* AesCrypt.m */; };
 		37D01B7D2AA4048D00015826 /* ExportOptions.plist in Resources */ = {isa = PBXBuildFile; fileRef = 37D01B7C2AA4048C00015826 /* ExportOptions.plist */; };
 		37D01B7E2AA4048D00015826 /* ExportOptions.plist in Resources */ = {isa = PBXBuildFile; fileRef = 37D01B7C2AA4048C00015826 /* ExportOptions.plist */; };
 		37D01B7F2AA4048D00015826 /* ExportOptions.plist in Resources */ = {isa = PBXBuildFile; fileRef = 37D01B7C2AA4048C00015826 /* ExportOptions.plist */; };
@@ -216,8 +204,6 @@
 		0D66D8FA2C236695004F9B35 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
 		0D66D8FC2C236695004F9B35 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0D66D9072C23677F004F9B35 /* ShareExtensionStaging.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ShareExtensionStaging.entitlements; sourceTree = "<group>"; };
-		0DB69D522C3C8B8C0007A29F /* VideoProperties.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VideoProperties.h; sourceTree = "<group>"; };
-		0DB69D532C3C8B9E0007A29F /* VideoProperties.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VideoProperties.m; sourceTree = "<group>"; };
 		0DC0A0992C139F0300B45E18 /* SplashScreenDev.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SplashScreenDev.storyboard; sourceTree = "<group>"; };
 		0DC0A09B2C139F2100B45E18 /* SplashScreenStaging.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SplashScreenStaging.storyboard; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* 2060Prod.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = 2060Prod.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -231,17 +217,11 @@
 		29F4BBABC7D5EDD99249F6F0 /* Pods-2060CommonPods-2060Dev.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-2060CommonPods-2060Dev.debug.xcconfig"; path = "Target Support Files/Pods-2060CommonPods-2060Dev/Pods-2060CommonPods-2060Dev.debug.xcconfig"; sourceTree = "<group>"; };
 		3014A43B734340F48859D0AE /* EuclidCircularA-BoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "EuclidCircularA-BoldItalic.ttf"; path = "../src/assets/fonts/EuclidCircularA-BoldItalic.ttf"; sourceTree = "<group>"; };
 		3297C2FBDFD14E0A804AE09D /* EuclidCircularA-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "EuclidCircularA-Regular.ttf"; path = "../src/assets/fonts/EuclidCircularA-Regular.ttf"; sourceTree = "<group>"; };
-		371CAC732A211FCA002F2B41 /* RCTFileChunkGeneratorModule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RCTFileChunkGeneratorModule.h; path = hologram/RCTFileChunkGeneratorModule.h; sourceTree = "<group>"; };
-		371CAC742A212021002F2B41 /* RCTFileChunkGeneratorModule.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = RCTFileChunkGeneratorModule.m; path = hologram/RCTFileChunkGeneratorModule.m; sourceTree = "<group>"; };
 		37519991287F7CBD0066658E /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = hologram/AppDelegate.mm; sourceTree = "<group>"; };
 		375723202A86CEF500ECF0CE /* 2060Dev.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = 2060Dev.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3757233F2A86CF0D00ECF0CE /* 2060Staging.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = 2060Staging.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		375723412A87EB9700ECF0CE /* Firebase */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Firebase; path = hologram/Firebase; sourceTree = "<group>"; };
 		375723492A87F38B00ECF0CE /* InfoPlist */ = {isa = PBXFileReference; lastKnownFileType = folder; name = InfoPlist; path = hologram/InfoPlist; sourceTree = "<group>"; };
-		3795871F2A3B65C400E50FC2 /* RCTFileCipheringModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RCTFileCipheringModule.m; path = hologram/RCTFileCipheringModule.m; sourceTree = "<group>"; };
-		379587212A3B65C400E50FC2 /* RCTFileCipheringModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RCTFileCipheringModule.h; path = hologram/RCTFileCipheringModule.h; sourceTree = "<group>"; };
-		379587242A3B65DD00E50FC2 /* AesCrypt.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AesCrypt.h; sourceTree = "<group>"; };
-		379587252A3B65DD00E50FC2 /* AesCrypt.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AesCrypt.m; sourceTree = "<group>"; };
 		37D01B7C2AA4048C00015826 /* ExportOptions.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = ExportOptions.plist; path = hologram/ExportOptions.plist; sourceTree = "<group>"; };
 		3EB81A67598FD6570C5D8A1C /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-2060CommonPods-2060Dev/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		412551E7AC9A2BE084C41C80 /* libPods-CommonShareExtensionPods-ShareExtensionProd.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CommonShareExtensionPods-ShareExtensionProd.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -393,22 +373,14 @@
 				375723492A87F38B00ECF0CE /* InfoPlist */,
 				375723412A87EB9700ECF0CE /* Firebase */,
 				50B834172A4DDA74000609F0 /* hologramRelease.entitlements */,
-				379587242A3B65DD00E50FC2 /* AesCrypt.h */,
-				379587252A3B65DD00E50FC2 /* AesCrypt.m */,
-				379587212A3B65C400E50FC2 /* RCTFileCipheringModule.h */,
-				3795871F2A3B65C400E50FC2 /* RCTFileCipheringModule.m */,
 				37519991287F7CBD0066658E /* AppDelegate.mm */,
 				75319D53285A846A0010C2AA /* hologram.entitlements */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB71A68108700A75B9A /* main.m */,
 				EBDBDCAE269EB89000E74BEF /* SplashScreen.storyboard */,
-				371CAC732A211FCA002F2B41 /* RCTFileChunkGeneratorModule.h */,
-				371CAC742A212021002F2B41 /* RCTFileChunkGeneratorModule.m */,
 				0DC0A0992C139F0300B45E18 /* SplashScreenDev.storyboard */,
 				0DC0A09B2C139F2100B45E18 /* SplashScreenStaging.storyboard */,
-				0DB69D522C3C8B8C0007A29F /* VideoProperties.h */,
-				0DB69D532C3C8B9E0007A29F /* VideoProperties.m */,
 			);
 			name = hologram;
 			sourceTree = "<group>";
@@ -1378,12 +1350,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0DB69D542C3C8B9E0007A29F /* VideoProperties.m in Sources */,
-				379587222A3B65C400E50FC2 /* RCTFileCipheringModule.m in Sources */,
 				37519992287F7CBD0066658E /* AppDelegate.mm in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
-				379587262A3B65DD00E50FC2 /* AesCrypt.m in Sources */,
-				371CAC752A212021002F2B41 /* RCTFileChunkGeneratorModule.m in Sources */,
 				2AB9A2682120AAE8C0F28DD8 /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1392,12 +1360,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0DB69D552C3C8B9E0007A29F /* VideoProperties.m in Sources */,
-				375723072A86CEF500ECF0CE /* RCTFileCipheringModule.m in Sources */,
 				375723092A86CEF500ECF0CE /* AppDelegate.mm in Sources */,
 				3757230A2A86CEF500ECF0CE /* main.m in Sources */,
-				3757230B2A86CEF500ECF0CE /* AesCrypt.m in Sources */,
-				3757230C2A86CEF500ECF0CE /* RCTFileChunkGeneratorModule.m in Sources */,
 				EA3C941F9C1088606B6EC679 /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1406,12 +1370,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0DB69D562C3C8B9E0007A29F /* VideoProperties.m in Sources */,
-				375723262A86CF0D00ECF0CE /* RCTFileCipheringModule.m in Sources */,
 				375723282A86CF0D00ECF0CE /* AppDelegate.mm in Sources */,
 				375723292A86CF0D00ECF0CE /* main.m in Sources */,
-				3757232A2A86CF0D00ECF0CE /* AesCrypt.m in Sources */,
-				3757232B2A86CF0D00ECF0CE /* RCTFileChunkGeneratorModule.m in Sources */,
 				E79B0D483F490428FAF5B398 /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -1,15 +1,14 @@
 //
-//  VideoProperties.m
+//  VideoPropertiesModule.m
 //  hologram
 //
 //  Created by Daniel Fernando Rico León on 8/07/24.
 //
 
-#import "VideoProperties.h"
+#import "VideoPropertiesModule.h"
 #import <AVFoundation/AVFoundation.h>
 
-@implementation VideoProperties
-
+@implementation VideoPropertiesModule
 RCT_EXPORT_MODULE()
 
 RCT_EXPORT_METHOD(getVideoProperties:(NSString *)videoPath

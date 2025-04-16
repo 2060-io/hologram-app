@@ -1,7 +1,6 @@
 import { GDrive, ListQueryBuilder } from '@robinbobin/react-native-google-drive-api-wrapper'
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
-import { NativeModules } from 'react-native'
 import { downloadFile, stat } from 'react-native-fs'
 
 import {
@@ -19,8 +18,12 @@ import {
 } from '@2060/services/localStorage'
 import { log, logError } from '@2060/utils'
 import { BACKUP_NAME, BACKUP_ZIP_FILE_PATH } from '@2060/utils/walletBackUpUtils'
-
-const { FileChunkGeneratorModule, GDriveAuthorization } = NativeModules
+import {
+  nativeReadChunk,
+  nativeGDGetAccessToken,
+  nativeGDSelectAccount,
+  nativeGDAuthorize,
+} from 'react-native-local-native-modules'
 
 global.Buffer ??= require('buffer').Buffer
 
@@ -53,7 +56,7 @@ export const useGoogleDrive = () => {
 
   const initializeGoogleDrive = async () => {
     const googleDrive = new GDrive()
-    const accessToken = await GDriveAuthorization.getAccessToken()
+    const accessToken = await nativeGDGetAccessToken()
     googleDrive.accessToken = accessToken
     googleDrive.fetchCoercesTypes = true
     googleDrive.fetchRejectsOnHttpErrors = true
@@ -63,7 +66,7 @@ export const useGoogleDrive = () => {
 
   const selectAccount = async () => {
     try {
-      const newSelectedAccount = await GDriveAuthorization.selectAccount(selectedGoogleAccount)
+      const newSelectedAccount = await nativeGDSelectAccount(selectedGoogleAccount)
       if (newSelectedAccount) {
         setSelectedGoogleAccount(newSelectedAccount)
         setStorageData(GOOGLE_ACCOUNT_BACKUP_PERSIST_KEY, newSelectedAccount)
@@ -77,7 +80,7 @@ export const useGoogleDrive = () => {
   const authorize = async (currentAccount: string) => {
     try {
       setIsCloudAvailable(false)
-      await GDriveAuthorization.authorize(currentAccount)
+      await nativeGDAuthorize(currentAccount)
       await initializeGoogleDrive()
       setIsCloudAvailable(true)
     } catch (error) {
@@ -162,11 +165,7 @@ export const useGoogleDrive = () => {
         for (let i = 0; i < numberOfChunks; i++) {
           const chunkSize =
             i + 1 < numberOfChunks ? UPLOAD_SIZE_PER_CHUNK : fileToUploadInfo.size % UPLOAD_SIZE_PER_CHUNK
-          const fileChunkBase64 = await FileChunkGeneratorModule.readChunk(
-            fileToUploadLocation,
-            start,
-            chunkSize,
-          )
+          const fileChunkBase64 = await nativeReadChunk(fileToUploadLocation, start, chunkSize)
           const base64ToBuffer = Buffer.from(fileChunkBase64)
           const end = start + base64ToBuffer.length - 1
           const contentRange = `bytes ${start}-${end}/${fileToUploadInfo.size}`
