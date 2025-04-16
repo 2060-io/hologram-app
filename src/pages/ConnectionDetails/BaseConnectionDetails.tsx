@@ -221,7 +221,7 @@ const BaseConnectionDetails = ({
     })
   }
 
-  const channels: ActionProps[] = [{ value: 'text', onPress: goToChat }]
+  const defaultActions: ActionProps[] = [{ value: 'text', onPress: goToChat }]
 
   const shareConnection = async () => {
     try {
@@ -260,7 +260,7 @@ const BaseConnectionDetails = ({
           />
           {comesFromScan && (
             <AlreadyConnected
-              defaultActions={channels}
+              defaultActions={defaultActions}
               connection={connection}
               iconColor={theme.colors.primaryText}
             />
@@ -292,7 +292,7 @@ const BaseConnectionDetails = ({
               {connectionName}
             </Text>
             <ConnectionMainActions
-              defaultActions={channels}
+              defaultActions={defaultActions}
               connection={connection}
               iconColor={theme.colors.primaryText}
             />
