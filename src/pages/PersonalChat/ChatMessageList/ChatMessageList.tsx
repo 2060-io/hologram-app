@@ -1,3 +1,4 @@
+import { CommonMessageProps, ChatEntryMessage } from '@2060/pages/PersonalChat/ChatMessage/Props'
 import { FlashList, FlashListProps } from '@shopify/flash-list'
 import React, { useState, useRef, memo } from 'react'
 import { View, Keyboard, TouchableWithoutFeedback, LayoutChangeEvent } from 'react-native'
@@ -5,9 +6,6 @@ import { View, Keyboard, TouchableWithoutFeedback, LayoutChangeEvent } from 'rea
 import { ChatMessage } from '../ChatMessage'
 
 import styles from './styles'
-
-import { CommonMessageProps, ChatEntryMessage } from '@2060/pages/PersonalChat/ChatMessage/Props'
-import { screenHeight, screenWidth } from '@2060/utils/responsiveUtils'
 
 interface ListViewProps<TMessage> extends FlashListProps<TMessage> {
   ref: React.MutableRefObject<FlashList<TMessage> | null>
@@ -27,8 +25,8 @@ type ItemProps = {
 
 const renderItem = ({ item, index, props }: ItemProps) => {
   const { messages, commonMessageProps } = props
-  const previousMessage = messages[index + 1]
-  const nextMessage = messages[index - 1]
+  const previousMessage = messages[index - 1]
+  const nextMessage = messages[index + 1]
   const messageProps = {
     ...commonMessageProps,
     currentMessage: item,
@@ -65,13 +63,12 @@ export const ChatMessageList = memo((props: ChatMessageListProps) => {
         <FlashList
           keyExtractor={keyExtractor}
           data={props.messages}
-          inverted
+          maintainVisibleContentPosition={{
+            startRenderingFromBottom: true,
+          }}
           renderItem={itemProps => renderItem({ ...itemProps, props })}
           keyboardShouldPersistTaps="handled"
           scrollEventThrottle={16}
-          onEndReachedThreshold={0.8}
-          estimatedItemSize={150}
-          estimatedListSize={{ height: screenHeight, width: screenWidth }}
           showsVerticalScrollIndicator={false}
           scrollEnabled={scrollEnabled}
           onLayout={onListLayout}

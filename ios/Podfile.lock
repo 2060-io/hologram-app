@@ -2440,7 +2440,7 @@ PODS:
     - FirebaseCoreExtension
     - React-Core
     - RNFBApp
-  - RNFlashList (1.7.6):
+  - RNFlashList (2.0.0-alpha.6):
     - DoubleConversion
     - glog
     - hermes-engine

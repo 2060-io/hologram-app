@@ -1,15 +1,3 @@
-import { StackActions } from '@react-navigation/native'
-import { StackScreenProps } from '@react-navigation/stack'
-import { FlashList } from '@shopify/flash-list'
-import React, { useLayoutEffect, useRef, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { View, TouchableOpacity } from 'react-native'
-import { uses24HourClock } from 'react-native-localize'
-import { SafeAreaView } from 'react-native-safe-area-context'
-import { SwipeRow } from 'react-native-swipe-list-view'
-
-import getStyles from './styles'
-
 import {
   ChatThread,
   SearchInput,
@@ -24,6 +12,17 @@ import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { ChatThreadData } from '@2060/model'
 import { ChatsStackParams } from '@2060/navigators/ChatStackParams'
 import { widthPercentageToDP } from '@2060/utils/responsiveUtils'
+import { StackActions } from '@react-navigation/native'
+import { StackScreenProps } from '@react-navigation/stack'
+import { FlashList } from '@shopify/flash-list'
+import React, { useLayoutEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { View, TouchableOpacity } from 'react-native'
+import { uses24HourClock } from 'react-native-localize'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import { SwipeRow } from 'react-native-swipe-list-view'
+
+import getStyles from './styles'
 
 type contextMenuTypes = 'confirm-deletion' | 'filter-options'
 interface Props extends StackScreenProps<ChatsStackParams, 'ChatsMain'> {}
@@ -150,7 +149,6 @@ const Chats = ({ navigation }: Props) => {
     <SafeAreaView style={styles.root} edges={['left', 'right']}>
       <View style={styles.root}>
         <FlashList
-          estimatedItemSize={97}
           showsVerticalScrollIndicator={false}
           data={threads}
           extraData={[selectedChatIds, theme.isDarkMode]}

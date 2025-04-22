@@ -1,28 +1,3 @@
-import { useFocusEffect } from '@react-navigation/native'
-import { FlashList } from '@shopify/flash-list'
-import { useAudioPlayer } from '@simform_solutions/react-native-audio-waveform'
-import React, { useState, useRef, useCallback, memo, useMemo, useEffect } from 'react'
-import { useTranslation } from 'react-i18next'
-import { View, NativeSyntheticEvent, NativeScrollEvent, ViewToken } from 'react-native'
-import { KeyboardAvoidingView } from 'react-native-keyboard-controller'
-import { uses24HourClock } from 'react-native-localize'
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
-import Realm from 'realm'
-
-import AttachmentOptions from './AttachmentOptions'
-import { CustomHeaderProps, ChatEntryMessage } from './ChatMessage/Props'
-import ContextualMenu from './ContextualMenu'
-import { CustomChatHeader, SelectingMessagesHeader } from './Header'
-import { headerHeight } from './Header/styles'
-import InputToolbarView from './InputToolbarView'
-import PersonalChatContainer, { WrapperPersonalChatProps } from './PersonalChatContainer'
-import ScrollToBottom from './ScrollToBottomView'
-import SelectingMessagesBottomMenu from './SelectingMessagesBottomMenu'
-import SystemMessage from './SystemMessage'
-import { CompressingVideo } from './components'
-import getStyles from './styles'
-import { getSystemMessage, chatEntryEqual } from './utils'
-
 import { ModalBottomHalf, ModalConfirmAction } from '@2060/components'
 import MessageFloatingMenu from '@2060/components/MessageFloatingMenu'
 import { Text } from '@2060/components/common'
@@ -54,6 +29,30 @@ import { getFormattedDateRange } from '@2060/utils/dateUtils'
 import { cancelVideoCompression } from '@2060/utils/mediaFileUtils'
 import { markNotificationsOfChatAsViewed } from '@2060/utils/pushNotificationsUtils'
 import { toast } from '@2060/utils/toast'
+import { useFocusEffect } from '@react-navigation/native'
+import { FlashList } from '@shopify/flash-list'
+import { useAudioPlayer } from '@simform_solutions/react-native-audio-waveform'
+import React, { useState, useRef, useCallback, memo, useMemo, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
+import { View, NativeSyntheticEvent, NativeScrollEvent, ViewToken } from 'react-native'
+import { KeyboardAvoidingView } from 'react-native-keyboard-controller'
+import { uses24HourClock } from 'react-native-localize'
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
+import Realm from 'realm'
+
+import AttachmentOptions from './AttachmentOptions'
+import { CustomHeaderProps, ChatEntryMessage } from './ChatMessage/Props'
+import ContextualMenu from './ContextualMenu'
+import { CustomChatHeader, SelectingMessagesHeader } from './Header'
+import { headerHeight } from './Header/styles'
+import InputToolbarView from './InputToolbarView'
+import PersonalChatContainer, { WrapperPersonalChatProps } from './PersonalChatContainer'
+import ScrollToBottom from './ScrollToBottomView'
+import SelectingMessagesBottomMenu from './SelectingMessagesBottomMenu'
+import SystemMessage from './SystemMessage'
+import { CompressingVideo } from './components'
+import getStyles from './styles'
+import { getSystemMessage, chatEntryEqual } from './utils'
 
 interface PersonalChatProps extends WrapperPersonalChatProps {
   chatEntries: ChatEntryData[]
@@ -194,23 +193,6 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
     }
   }
 
-  const scrollToBottom = useCallback(() => {
-    if (listViewRef && listViewRef.current) {
-      listViewRef.current.scrollToOffset({ animated: true, offset: 0 })
-    }
-  }, [])
-
-  const handleOnScroll = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const { nativeEvent } = event
-    const contentOffsetY = nativeEvent.contentOffset.y
-    const contentSizeHeight = nativeEvent.contentSize.height
-    const layoutMeasurementHeight = nativeEvent.layoutMeasurement.height
-    const scrollToBottomOffset = 200
-
-    showScrollBottomRef.current = contentOffsetY > scrollToBottomOffset
-    setShowStickyDate(contentOffsetY > 100 && contentSizeHeight - layoutMeasurementHeight > contentOffsetY)
-  }, [])
-
   const renderCustomHeader = (props: CustomHeaderProps) => {
     const { isConnectionBlocked, isConnectionTerminated, isConnectionDeleted, isConnectionCompleted } = flags
     const canPerformActions =
@@ -304,6 +286,28 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
     }, 1000)
   }
 
+  const scrollToBottom = useCallback(() => {
+    if (listViewRef && listViewRef.current) {
+      listViewRef.current.scrollToEnd({ animated: true })
+    }
+  }, [])
+
+  const onScroll = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const { nativeEvent } = event
+    const distanceToTop = nativeEvent.contentOffset.y
+    const hasScrolledToTop = distanceToTop === 0
+    if (hasScrolledToTop) {
+      loadMoreMessages()
+    }
+    const contentSizeHeight = nativeEvent.contentSize.height
+    const layoutMeasurementHeight = nativeEvent.layoutMeasurement.height
+    const scrollToBottomOffset = 50
+    const displayScrollToBottomButton =
+      distanceToTop + layoutMeasurementHeight <= contentSizeHeight - scrollToBottomOffset
+    showScrollBottomRef.current = displayScrollToBottomButton
+    setShowStickyDate(distanceToTop > 100 && contentSizeHeight - layoutMeasurementHeight > distanceToTop)
+  }, [])
+
   const deleteForMe = () => {
     if (!selectedMessage) return
     closeModalConfirmMessageDeletion()
@@ -364,16 +368,17 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
             messages={chatEntries}
             listViewProps={{
               ref: listViewRef,
-              onScroll: handleOnScroll,
+              onStartReached: loadMoreMessages,
+              onStartReachedThreshold: 0.5,
+              onScrollBeginDrag: onScrollBegin,
+              onMomentumScrollBegin: onScrollBegin,
+              onScroll,
+              onScrollEndDrag: onScrollEnd,
+              onMomentumScrollEnd: onScrollEnd,
               getItemType,
               onContentSizeChange,
               onViewableItemsChanged: updateStickyDate,
-              onEndReached: loadMoreMessages,
-              onScrollBeginDrag: onScrollBegin,
-              onScrollEndDrag: onScrollEnd,
-              onMomentumScrollBegin: onScrollBegin,
-              onMomentumScrollEnd: onScrollEnd,
-              ListHeaderComponent: renderSystemMessage,
+              ListFooterComponent: renderSystemMessage,
             }}
           />
           {flags.isConnectionCompleted &&
