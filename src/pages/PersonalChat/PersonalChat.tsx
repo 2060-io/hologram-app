@@ -1,19 +1,3 @@
-import { ModalBottomHalf, ModalConfirmAction } from '@2060/components'
-import MessageFloatingMenu from '@2060/components/MessageFloatingMenu'
-import { Text } from '@2060/components/common'
-import { IS_IOS } from '@2060/constants'
-import { useAppState, useChatActions } from '@2060/hooks'
-import {
-  useMobileAgent,
-  useChat,
-  useActionMenu,
-  useChats,
-  ChatThreadWithParticipants,
-} from '@2060/hooks/agent'
-import { createChatEntry, updateChatEntryMetadata } from '@2060/hooks/agent/chat/services/ChatEntryService'
-import { blockConnection } from '@2060/hooks/agent/connections'
-import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import {
   ChatEntryData,
   ChatEntryRole,
@@ -53,6 +37,22 @@ import SystemMessage from './SystemMessage'
 import { CompressingVideo } from './components'
 import getStyles from './styles'
 import { getSystemMessage, chatEntryEqual } from './utils'
+import { ModalBottomHalf, ModalConfirmAction } from '@2060/components'
+import MessageFloatingMenu from '@2060/components/MessageFloatingMenu'
+import { Text } from '@2060/components/common'
+import { IS_IOS } from '@2060/constants'
+import { useAppState, useChatActions } from '@2060/hooks'
+import {
+  useMobileAgent,
+  useChat,
+  useActionMenu,
+  useChats,
+  ChatThreadWithParticipants,
+} from '@2060/hooks/agent'
+import { createChatEntry, updateChatEntryMetadata } from '@2060/hooks/agent/chat/services/ChatEntryService'
+import { blockConnection } from '@2060/hooks/agent/connections'
+import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
+import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 
 interface PersonalChatProps extends WrapperPersonalChatProps {
   chatEntries: ChatEntryData[]
@@ -295,10 +295,6 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
   const onScroll = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const { nativeEvent } = event
     const distanceToTop = nativeEvent.contentOffset.y
-    const hasScrolledToTop = distanceToTop === 0
-    if (hasScrolledToTop) {
-      loadMoreMessages()
-    }
     const contentSizeHeight = nativeEvent.contentSize.height
     const layoutMeasurementHeight = nativeEvent.layoutMeasurement.height
     const scrollToBottomOffset = 50
@@ -368,6 +364,8 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
             messages={chatEntries}
             listViewProps={{
               ref: listViewRef,
+              onStartReached: loadMoreMessages,
+              onStartReachedThreshold: 0.5,
               onStartReached: loadMoreMessages,
               onStartReachedThreshold: 0.5,
               onScrollBeginDrag: onScrollBegin,
