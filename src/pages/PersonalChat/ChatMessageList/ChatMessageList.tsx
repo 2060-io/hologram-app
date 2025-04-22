@@ -65,6 +65,7 @@ export const ChatMessageList = memo((props: ChatMessageListProps) => {
           data={props.messages}
           maintainVisibleContentPosition={{
             startRenderingFromBottom: true,
+            autoscrollToBottomThreshold: 1,
           }}
           renderItem={itemProps => renderItem({ ...itemProps, props })}
           keyboardShouldPersistTaps="handled"
