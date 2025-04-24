@@ -11,6 +11,7 @@ import {
   CredentialMainInfo,
   getCredentialMainInfo,
   getPresentationRequestForDisplay,
+  sanitizeString,
 } from '@2060/services/agent/display'
 import { getServiceInfo, VerifierInfo } from '@2060/services/api/trustRegistryService'
 import { DEV_ENVS_PERSIST_KEY, getStorageData } from '@2060/services/localStorage'
@@ -173,7 +174,7 @@ export const handleProofExchangeRecordChanges = async (options: {
                 id: '',
                 recordId: '',
                 createdAt: new Date(),
-                schemaName,
+                schemaName: sanitizeString(schemaName),
                 issuer: {
                   id: credentialDefinitionId,
                   name: serviceInfo?.name ?? credentialDefinitionId,
