@@ -254,7 +254,8 @@
       "isPresentingCredentialToYou": "{{ requestor }} is presenting you {{ count }} credential.",
       "isPresentingCredentialToYou_other": "{{ requestor }} is presenting you {{ count }} credentials.",
       "refused": "Refused",
-      "accepted": "Accepted"
+      "accepted": "Accepted",
+      "waitingForAcceptance": "Waiting for acceptance"
     },
     "connection": {
       "editName": "Edit name",

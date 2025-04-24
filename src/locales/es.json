@@ -253,7 +253,8 @@
       "isPresentingCredentialToYou": "{{ requestor }} te está presentado {{ count }} credencial.",
       "isPresentingCredentialToYou_other": "{{ requestor }} te está presentado {{ count }} credenciales.",
       "refused": "Rechazada",
-      "acepted": "Aceptada"
+      "acepted": "Aceptada",
+      "waitingForAcceptance": "Esperando aceptación"
     },
     "connection": {
       "editName": "Editar nombre",

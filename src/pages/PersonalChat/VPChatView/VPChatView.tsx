@@ -98,6 +98,7 @@ const VPChatView = ({ metadata, role, agent, proofRecordId, chatEntryId }: Props
   }
 
   const status: Partial<Record<ProofState, React.ReactElement>> = {
+    [ProofState.ProposalSent]: <State text={t('presentationRequest.waitingForAcceptance')} type="warning" />,
     [ProofState.ProposalReceived]: (
       <View style={styles.buttonsContainer}>
         <OutlinedBlueButton
