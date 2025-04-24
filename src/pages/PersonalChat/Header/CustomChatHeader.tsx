@@ -72,7 +72,6 @@ const CustomChatHeader: React.FC<Props> = props => {
         {connection && (
           <ConnectionMainActions
             connectionId={connection.id}
-            iconColor={theme.colors.primaryText}
             navigation={props.navigation}
             includeDefaultActions={false}
           />

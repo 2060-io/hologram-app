@@ -8,7 +8,7 @@ import { useVideoCallContext } from './providers/useVideoCallContext'
 import { ActionProps, ConnectionMainActionsProps } from '@2060/components/common/ConnectionMainActions/Props'
 import { isService, supportsAudioCalls, supportsVideoCalls } from '@2060/utils/connectionUtils'
 
-type Props = Omit<ConnectionMainActionsProps, 'iconColor' | 'connectionId'>
+type Props = Omit<ConnectionMainActionsProps, 'connectionId'>
 
 export const useConnectionMainActions = ({ connection, navigation, includeDefaultActions }: Props) => {
   const { startCall } = useVideoCallContext()

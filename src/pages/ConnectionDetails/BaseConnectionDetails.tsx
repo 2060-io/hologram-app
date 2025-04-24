@@ -271,7 +271,6 @@ const BaseConnectionDetails = ({
             <ConnectionMainActions
               navigation={navigation}
               connectionId={connection.id}
-              iconColor={theme.colors.primaryText}
               includeDefaultActions={true}
             />
           </View>

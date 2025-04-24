@@ -5,16 +5,19 @@ import SvgIcon, { IconsNames } from '../SvgIcon'
 
 import { ConnectionMainActionsProps, ActionIconsNames } from './Props'
 
+import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { useConnectionMainActions } from '@2060/hooks/useConnectionMainActions'
 import { withRenderConnectionMainActions } from '@2060/pages/ConnectionDetails/withRenderConnectionMainActions'
 
 const ConnectionMainActions = ({
   navigation,
   connection,
-  iconColor,
   includeDefaultActions,
 }: ConnectionMainActionsProps) => {
+  const theme = useTheme()
   const { actions } = useConnectionMainActions({ navigation, connection, includeDefaultActions })
+  const iconColor = theme.colors.primaryText
+
   return (
     <View style={{ flexDirection: 'row' }}>
       {actions?.map((action, index) => (

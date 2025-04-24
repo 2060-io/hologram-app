@@ -149,7 +149,6 @@ const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => 
           <AlreadyConnected
             navigation={navigation}
             connectionId={existingConnectionId}
-            iconColor={theme.colors.primaryText}
             includeDefaultActions={true}
           />
         )}

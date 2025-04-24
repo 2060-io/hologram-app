@@ -16,11 +16,11 @@ import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { useConnectionMainActions } from '@2060/hooks/useConnectionMainActions'
 import { getConnectionDisplayName } from '@2060/utils/connectionUtils'
 
-const AlreadyConnected = (props: ConnectionMainActionsProps) => {
-  const { navigation, connection, iconColor, includeDefaultActions } = props
+const AlreadyConnected = ({ navigation, connection, includeDefaultActions }: ConnectionMainActionsProps) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
+  const iconColor = theme.colors.primaryText
   const { actions } = useConnectionMainActions({ navigation, connection, includeDefaultActions })
   const actionLabel: Record<keyof typeof ActionIconsNames, string> = {
     audio: t('connection.call'),

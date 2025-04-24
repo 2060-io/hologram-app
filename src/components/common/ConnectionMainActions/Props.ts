@@ -13,7 +13,6 @@ export type InitialConnectionMainActionsProps = {
   includeDefaultActions: boolean
   navigation: StackNavigationProp<ParamListBase>
   connectionId: string
-  iconColor: string
 }
 
 export type ConnectionMainActionsProps = InitialConnectionMainActionsProps & {
