@@ -4,6 +4,7 @@ import React, { useLayoutEffect, useState, useRef, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TouchableOpacity, View, ScrollView } from 'react-native'
 
+import AlreadyConnected from './AlreadyConnected'
 import getStyles from './styles'
 
 import { CommunicationChannels } from '@2060/components'
@@ -38,7 +39,8 @@ const invitationTypeTitles: Partial<Record<InvitationType, string>> = {
 interface Props extends StackScreenProps<NavigationStackParams, 'ConnectionInvitation'> {}
 
 const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => {
-  const { outOfBandRecord } = route.params
+  const { outOfBandRecord, existingConnectionId } = route.params
+  const isAlreadyConnected = !!existingConnectionId
   const [isAcceptingInvitation, setIsAcceptingInvitation] = useState(false)
   const [communicationChannels, setCommunicationChannels] = useState({
     allowChats: true,
@@ -88,7 +90,11 @@ const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => 
 
   const onFinishAddingConnection = () => setIsAcceptingInvitation(false)
 
-  const onAccept = async () => {
+  const onPressRightButton = () => {
+    isAlreadyConnected ? navigation.goBack() : accept()
+  }
+
+  const accept = async () => {
     const invitationOptions = {
       outOfBandId,
       label: userProfileData?.displayName,
@@ -114,17 +120,19 @@ const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => 
           theme={theme}
         />
       ),
-      headerLeft: () => (
-        <TouchableOpacity style={styles.btnRefuse} onPress={onRefuse}>
-          <Text typography="EuclidCircularA-Medium" style={styles.headerBtnText}>
-            {t('general.refuse')}
-          </Text>
-        </TouchableOpacity>
-      ),
+      headerLeft: isAlreadyConnected
+        ? () => <></>
+        : () => (
+            <TouchableOpacity style={styles.btnRefuse} onPress={onRefuse}>
+              <Text typography="EuclidCircularA-Medium" style={styles.headerBtnText}>
+                {t('general.refuse')}
+              </Text>
+            </TouchableOpacity>
+          ),
       headerRight: () => (
-        <TouchableOpacity style={styles.btnAccept} onPress={onAccept}>
+        <TouchableOpacity style={styles.btnAccept} onPress={onPressRightButton}>
           <Text typography="EuclidCircularA-Medium" style={styles.headerBtnText}>
-            {t('general.accept')}
+            {isAlreadyConnected ? t('general.done') : t('general.accept')}
           </Text>
         </TouchableOpacity>
       ),
@@ -135,8 +143,16 @@ const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => 
 
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
+      <ModalLoading visible={isAcceptingInvitation} />
       <View style={styles.root}>
-        <ModalLoading visible={isAcceptingInvitation} />
+        {isAlreadyConnected && (
+          <AlreadyConnected
+            navigation={navigation}
+            connectionId={existingConnectionId}
+            iconColor={theme.colors.primaryText}
+            includeDefaultActions={true}
+          />
+        )}
         {invitationType === 'public' ? (
           <ServiceInformation did={invitationDid} serviceInfoRef={serviceInfo} />
         ) : (

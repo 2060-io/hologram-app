@@ -1,5 +1,4 @@
 import { ConnectionRecord, TypedArrayEncoder } from '@credo-ts/core'
-import { StackActions } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
 import React, { ReactElement, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -7,13 +6,11 @@ import { View, SafeAreaView, ScrollView, TouchableOpacity, Platform } from 'reac
 import Config from 'react-native-config'
 import Share, { ShareOptions } from 'react-native-share'
 
-import AlreadyConnected from './AlreadyConnected'
 import getStyles from './styles'
 
 import { ModalConfirmAction } from '@2060/components'
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
 import { Text, ConnectionMainActions, SvgIcon, ModalLoading, OptionsList } from '@2060/components/common'
-import { ActionProps } from '@2060/components/common/ConnectionMainActions/Props'
 import { IS_DEVICE_IOS } from '@2060/constants'
 import {
   useConnectionProfile,
@@ -50,12 +47,10 @@ export interface BaseConnectionDetailsProps extends ConnectionDetailsProps {
 
 const BaseConnectionDetails = ({
   navigation,
-  route,
   connection,
   mainInfo,
   footerInfo,
 }: BaseConnectionDetailsProps) => {
-  const { comesFromScan } = route.params
   const [showConfirmationModal, setShowConfirmationModal] = useState(false)
   const [blockingConnection, setBlockingConnection] = useState(false)
   const modalConfirmationTypeRef = useRef<confirmationTypes>('deleteChat')
@@ -104,15 +99,6 @@ const BaseConnectionDetails = ({
   }
 
   const closeConfirmationModal = () => setShowConfirmationModal(false)
-
-  const goToChat = async () => {
-    if (!agent) throw new Error('Agent not defined')
-    if (!connection) throw new Error('Connection not defined')
-    const chatThreadId = findOrCreateThread({ connection }).id
-    navigation.dispatch(
-      StackActions.push('PersonalChatStack', { screen: 'PersonalChat', params: { chatThreadId } }),
-    )
-  }
 
   const handleDeleteConnection = async () => {
     if (agent) {
@@ -221,8 +207,6 @@ const BaseConnectionDetails = ({
     })
   }
 
-  const defaultActions: ActionProps[] = [{ value: 'text', onPress: goToChat }]
-
   const shareConnection = async () => {
     try {
       const outOfBandInvitation = createOobInvitation(connection)
@@ -258,13 +242,6 @@ const BaseConnectionDetails = ({
             visible={blockingConnection}
             message={isConnectionBlocked ? t('connection.unblocking') : t('connection.blocking')}
           />
-          {comesFromScan && (
-            <AlreadyConnected
-              defaultActions={defaultActions}
-              connection={connection}
-              iconColor={theme.colors.primaryText}
-            />
-          )}
           {mainInfo}
           {isConnectionTerminated && (
             <View style={[styles.blockedContainer, styles.statusMainContainer]}>
@@ -292,9 +269,10 @@ const BaseConnectionDetails = ({
               {connectionName}
             </Text>
             <ConnectionMainActions
-              defaultActions={defaultActions}
-              connection={connection}
+              navigation={navigation}
+              connectionId={connection.id}
               iconColor={theme.colors.primaryText}
+              includeDefaultActions={true}
             />
           </View>
           <OptionsList options={mainOptions} />

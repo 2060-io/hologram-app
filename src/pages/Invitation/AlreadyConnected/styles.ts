@@ -7,7 +7,7 @@ export default (theme: AppTheme) =>
     alreadyConnectedContainer: {
       ...cardStyles(theme),
       ...cardShadowStyles(theme.colors),
-      marginTop: 20,
+      marginBottom: 20,
     },
     alreadyConnectedText: {
       flex: 1,

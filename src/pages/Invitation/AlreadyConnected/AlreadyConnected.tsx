@@ -2,7 +2,7 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { TouchableOpacity, View } from 'react-native'
 
-import { withRenderConnectionMainActions } from '../withRenderConnectionMainActions'
+import { withRenderConnectionMainActions } from '../../ConnectionDetails/withRenderConnectionMainActions'
 
 import getStyles from './styles'
 
@@ -16,11 +16,12 @@ import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { useConnectionMainActions } from '@2060/hooks/useConnectionMainActions'
 import { getConnectionDisplayName } from '@2060/utils/connectionUtils'
 
-const AlreadyConnected = ({ defaultActions, connection, iconColor }: ConnectionMainActionsProps) => {
+const AlreadyConnected = (props: ConnectionMainActionsProps) => {
+  const { navigation, connection, iconColor, includeDefaultActions } = props
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
-  const { actions } = useConnectionMainActions({ defaultActions, connection })
+  const { actions } = useConnectionMainActions({ navigation, connection, includeDefaultActions })
   const actionLabel: Record<keyof typeof ActionIconsNames, string> = {
     audio: t('connection.call'),
     text: t('connection.goToChat'),

@@ -16,16 +16,12 @@ const HomeMainContainer = (HomeMainComponent: ElementType) => {
     const { agent } = useMobileAgent()
 
     const { navigation, route } = props
-    const navigate = navigation.navigate
 
     const isValidParams = useMemo(() => {
       if (!route.params) return false
       const parameters = Object.keys(route.params)
       return ['oob', 'd_m', 'c_i', '_url'].includes(parameters[0])
     }, [route.params])
-
-    const goToConnectionDetails = (connectionId: string) =>
-      navigate('ConnectionDetails', { connectionId, comesFromScan: true })
 
     const processInvitation = async (invitation: OutOfBandInvitation) => {
       if (!agent) throw new Error('Agent not defined')
@@ -37,12 +33,11 @@ const HomeMainContainer = (HomeMainComponent: ElementType) => {
         if (!success || !recordId) return
 
         if (invitationType === DidcommInvitationType.ConnectionRequest) {
-          if (existingConnectionId) {
-            goToConnectionDetails(existingConnectionId)
-          } else {
-            const outOfBandRecord = await agent.oob.getById(recordId)
-            navigation.navigate('ConnectionInvitation', { outOfBandRecord })
-          }
+          const outOfBandRecord = await agent.oob.getById(recordId)
+          navigation.navigate('ConnectionInvitation', {
+            outOfBandRecord,
+            existingConnectionId,
+          })
         } else if (invitationType === DidcommInvitationType.CredentialOffer) {
           navigation.navigate('DidcommCredentialOffer', {
             credentialRecordId: recordId,

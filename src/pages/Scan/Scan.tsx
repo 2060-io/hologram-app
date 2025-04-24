@@ -70,15 +70,11 @@ const Scan = ({ navigation }: Props) => {
       if (!success || !recordId) return
 
       if (invitationType === DidcommInvitationType.ConnectionRequest) {
-        if (existingConnectionId) {
-          navigation.navigate('ConnectionDetails', {
-            connectionId: existingConnectionId,
-            comesFromScan: true,
-          })
-        } else {
-          const outOfBandRecord = await agent.oob.getById(recordId)
-          navigation.navigate('ConnectionInvitation', { outOfBandRecord })
-        }
+        const outOfBandRecord = await agent.oob.getById(recordId)
+        navigation.navigate('ConnectionInvitation', {
+          outOfBandRecord,
+          existingConnectionId,
+        })
       } else if (invitationType === DidcommInvitationType.CredentialOffer) {
         navigation.navigate('DidcommCredentialOffer', {
           credentialRecordId: recordId,

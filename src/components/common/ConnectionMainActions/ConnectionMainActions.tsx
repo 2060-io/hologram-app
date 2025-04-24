@@ -9,11 +9,12 @@ import { useConnectionMainActions } from '@2060/hooks/useConnectionMainActions'
 import { withRenderConnectionMainActions } from '@2060/pages/ConnectionDetails/withRenderConnectionMainActions'
 
 const ConnectionMainActions = ({
-  defaultActions = [],
+  navigation,
   connection,
   iconColor,
+  includeDefaultActions,
 }: ConnectionMainActionsProps) => {
-  const { actions } = useConnectionMainActions({ defaultActions, connection })
+  const { actions } = useConnectionMainActions({ navigation, connection, includeDefaultActions })
   return (
     <View style={{ flexDirection: 'row' }}>
       {actions?.map((action, index) => (

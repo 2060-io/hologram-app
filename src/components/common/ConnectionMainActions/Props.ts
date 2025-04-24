@@ -1,4 +1,6 @@
 import { ConnectionRecord } from '@credo-ts/core'
+import { ParamListBase } from '@react-navigation/native'
+import { StackNavigationProp } from '@react-navigation/stack'
 
 export const ActionIconsNames = { text: 'chat', audio: 'phoneUp', video: 'video' }
 
@@ -7,8 +9,13 @@ export type ActionProps = {
   onPress: () => void
 }
 
-export type ConnectionMainActionsProps = {
-  defaultActions?: ActionProps[]
-  connection: ConnectionRecord
+export type InitialConnectionMainActionsProps = {
+  includeDefaultActions: boolean
+  navigation: StackNavigationProp<ParamListBase>
+  connectionId: string
   iconColor: string
+}
+
+export type ConnectionMainActionsProps = InitialConnectionMainActionsProps & {
+  connection: ConnectionRecord
 }
