@@ -254,7 +254,8 @@
       "isPresentingCredentialToYou_other": "{{ requestor }} te está presentado {{ count }} credenciales.",
       "refused": "Rechazada",
       "acepted": "Aceptada",
-      "waitingForAcceptance": "Esperando aceptación"
+      "waitingForAcceptance": "Esperando aceptación",
+      "valueNoRevealedYet": "El valor se revelará una vez sea aceptada la propuesta de presentación"
     },
     "connection": {
       "editName": "Editar nombre",
