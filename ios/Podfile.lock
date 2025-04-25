@@ -2194,8 +2194,28 @@ PODS:
     - Yoga
   - RNShare (10.2.1):
     - React-Core
-  - RNShareMenu (6.0.0):
+  - RNShareMenu (0.0.0):
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.01.01.00)
+    - RCTRequired
+    - RCTTypeSafety
     - React
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Yoga
   - RNSVG (15.11.1):
     - React-Core
   - RNVectorIcons (10.2.0):
@@ -2789,7 +2809,7 @@ SPEC CHECKSUMS:
   RNReanimated: 2f762cd9e6b74c1f6ec88c0545d773a68b8e1085
   RNScreens: 4a5ab20b324ed1e3fe3862796b8f8e0a6208c415
   RNShare: 694e19d7f74ac4c04de3a8af0649e9ccc03bd8b1
-  RNShareMenu: e1cdfa3b9af89416afc75a80377cfd0de4f30ded
+  RNShareMenu: 1abbc05ce5a5f966f370d4b8bbe3221b5b729a7d
   RNSVG: 86fecdfc637614ba9def63f7f3f2e7795e018356
   RNVectorIcons: 182892e7d1a2f27b52d3c627eca5d2665a22ee28
   RNZipArchive: f4a5af907d1581e995c879e34799be35c6bc3e21

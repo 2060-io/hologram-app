@@ -6,7 +6,6 @@ import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Platform, PermissionsAndroid } from 'react-native'
 import Share, { ShareOptions } from 'react-native-share'
-import { SharedData } from 'react-native-share-menu'
 
 import {
   useMobileAgent,
@@ -40,6 +39,7 @@ import { log, logError, requestAndroidPermissions } from '@2060/utils'
 import { getLocalFileUri } from '@2060/utils/RNFS'
 import { getMediaFileSharingData } from '@2060/utils/mediaFileUtils'
 import { toast } from '@2060/utils/toast'
+import { SharedData } from 'react-native-share-menu'
 
 export const useChatActions = () => {
   const [, , savePhoto] = useCameraRoll()
