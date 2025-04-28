@@ -16,9 +16,8 @@ import { useChat } from '@2060/hooks/agent'
 import { updateMetadata } from '@2060/hooks/agent/chat/services'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { ChatEntryRole, VPResponseMetadata } from '@2060/model'
+import { ChatEntryRole, VPResponseMetadata, VPResponsePresentedCredential } from '@2060/model'
 import { MobileAgent } from '@2060/services/agent'
-import { CredentialMainInfo } from '@2060/services/agent/display'
 import { acceptProposal, sendProblemReport } from '@2060/services/agent/proofs'
 import { toast } from '@2060/utils/toast'
 
@@ -38,35 +37,32 @@ const VPChatView = ({ metadata, role, agent, proofRecordId, chatEntryId }: Props
   const { realm } = useLocalRealm()
   const navigation: StackNavigationProp<NavigationStackParams> = useNavigation()
   const [showModalRefuseConfirmation, setShowModalRefuseConfirmation] = useState(false)
-  const { presentedCredentials, proofState, presentedCredentialClaims } = metadata
+  const { presentedCredentials: pc, proofState } = metadata
   const otherSidesName = chatThread?.participants.find(p => p.id === ChatEntryRole.Receiver)?.name
-  const presentedCredentialsForDisplay: CredentialMainInfo[] = presentedCredentials
-    ? JSON.parse(presentedCredentials)
-    : []
+  const presentedCredentials: VPResponsePresentedCredential[] = pc ? JSON.parse(pc) : []
+
   const isSender = role === ChatEntryRole.Sender
   const mainMessage = isSender
     ? t('presentationRequest.youPresented', {
         verifier: otherSidesName,
-        count: presentedCredentialsForDisplay.length,
+        count: presentedCredentials.length,
       })
     : t('presentationRequest.isPresentingCredentialToYou', {
         requestor: otherSidesName,
-        count: presentedCredentialsForDisplay.length,
+        count: presentedCredentials.length,
       })
 
   const hideModalRefuseConfirmation = () => setShowModalRefuseConfirmation(false)
   const displayModalRefuseConfirmation = () => setShowModalRefuseConfirmation(true)
 
-  const chooseWhereToGo = (credentialMainInfo: CredentialMainInfo) => {
-    isSender
-      ? verifyCanGoToCredentialDetails(credentialMainInfo.recordId)
-      : goToPresentation(credentialMainInfo)
+  const chooseWhereToGo = (credential: VPResponsePresentedCredential) => {
+    isSender ? verifyCanGoToCredentialDetails(credential.mainInfo.recordId) : goToPresentation(credential)
   }
 
-  const goToPresentation = (credentialMainInfo: CredentialMainInfo) => {
+  const goToPresentation = (credential: VPResponsePresentedCredential) => {
     navigation.navigate('Presentation', {
-      mainInfo: credentialMainInfo,
-      attributes: presentedCredentialClaims ? JSON.parse(presentedCredentialClaims) : {},
+      mainInfo: credential.mainInfo,
+      attributes: credential.attributes ?? {},
     })
   }
 
@@ -139,18 +135,20 @@ const VPChatView = ({ metadata, role, agent, proofRecordId, chatEntryId }: Props
         <Text style={styles.title} typography="EuclidCircularA-Regular">
           {mainMessage}
         </Text>
-        {presentedCredentialsForDisplay.map((credential, index) => {
-          const isLast = index === presentedCredentialsForDisplay.length - 1
+        {presentedCredentials.map((credential, index) => {
+          const isLast = index === presentedCredentials.length - 1
           const credentialMainInfo = {
-            ...credential,
+            ...credential.mainInfo,
             dateLabel: isSender ? t('credential.issuedOn') : t('credential.presentedOn'),
           }
           return (
             <CardCredentialMainInformation
-              key={credential.id}
+              key={credential.mainInfo.id}
               credentialMainInfo={credentialMainInfo}
               containerStyle={{ marginBottom: isLast ? 0 : theme.edges.messageMargin }}
-              onPress={() => chooseWhereToGo(credentialMainInfo)}
+              onPress={() => {
+                chooseWhereToGo({ mainInfo: credentialMainInfo, attributes: credential.attributes })
+              }}
               size="medium"
             />
           )
