@@ -176,8 +176,10 @@ export const handleProofExchangeRecordChanges = async (options: {
                 did: credentialDefinitionId,
                 trustedServiceResolverBaseUrl: persistedEnvVariables.TRUSTED_SERVICE_RESOLVER_BASE_URL,
               })
-              const schemaId = (await agent.modules.anoncreds.getCredentialDefinition(credentialDefinitionId))
-                .credentialDefinition?.schemaId
+              const credentialDefinition = (
+                await agent.modules.anoncreds.getCredentialDefinition(credentialDefinitionId)
+              ).credentialDefinition
+              const schemaId = credentialDefinition?.schemaId
               const schemaName = schemaId
                 ? ((await agent.modules.anoncreds.getSchema(schemaId)).schema?.name ?? '')
                 : ''
@@ -187,7 +189,7 @@ export const handleProofExchangeRecordChanges = async (options: {
                 createdAt: new Date(),
                 schemaName: sanitizeString(schemaName),
                 issuer: {
-                  id: credentialDefinitionId,
+                  id: credentialDefinition?.issuerId ?? '',
                   name: serviceInfo?.name ?? credentialDefinitionId,
                   logoUrl: serviceInfo?.logoUrl,
                   status: serviceInfo?.status ?? 'notFound',
