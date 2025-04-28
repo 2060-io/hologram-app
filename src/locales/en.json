@@ -256,7 +256,7 @@
       "refused": "Refused",
       "accepted": "Accepted",
       "waitingForAcceptance": "Waiting for acceptance",
-      "valueNoRevealedYet": "Value will be revealed once the presentation proposal is accepted"
+      "valuesNoRevealedYet": "Values will be revealed once the presentation proposal is accepted"
     },
     "connection": {
       "editName": "Edit name",

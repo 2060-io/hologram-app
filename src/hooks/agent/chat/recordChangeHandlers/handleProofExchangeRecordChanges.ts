@@ -1,5 +1,4 @@
 import { ProofExchangeRecord, ProofState, W3cCredentialRepository } from '@credo-ts/core'
-import { t } from 'i18next'
 import Realm from 'realm'
 
 import { createChatEntry, findAllByAssociatedRecordId, updateMetadata } from '../services/ChatEntryService'
@@ -162,10 +161,9 @@ export const handleProofExchangeRecordChanges = async (options: {
         const formatData = await agent.proofs.getFormatData(proofRecord.id)
         const requestedAttributes = formatData.proposal?.anoncreds?.requested_attributes
         if (requestedAttributes) {
-          const valueNoRevealedYet = t('presentationRequest.valueNoRevealedYet')
           for (const attributeId in requestedAttributes) {
             const key = requestedAttributes?.[attributeId]?.name ?? 'unknown'
-            attributes[key] = valueNoRevealedYet
+            attributes[key] = ''
           }
           const firstAttribute = Object.values(requestedAttributes)[0]
 

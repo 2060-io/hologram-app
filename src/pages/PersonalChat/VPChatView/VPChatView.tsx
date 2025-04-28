@@ -63,6 +63,7 @@ const VPChatView = ({ metadata, role, agent, proofRecordId, chatEntryId }: Props
     navigation.navigate('Presentation', {
       mainInfo: credential.mainInfo,
       attributes: credential.attributes ?? {},
+      proofState,
     })
   }
 

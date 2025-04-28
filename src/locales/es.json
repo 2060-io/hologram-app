@@ -255,7 +255,7 @@
       "refused": "Rechazada",
       "acepted": "Aceptada",
       "waitingForAcceptance": "Esperando aceptación",
-      "valueNoRevealedYet": "El valor se revelará una vez sea aceptada la propuesta de presentación"
+      "valuesNoRevealedYet": "Los valores se revelarán una vez sea aceptada la propuesta de presentación"
     },
     "connection": {
       "editName": "Editar nombre",

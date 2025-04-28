@@ -1,7 +1,7 @@
-import { ConnectionRecord, OutOfBandRecord } from '@credo-ts/core'
+import { ConnectionRecord, OutOfBandRecord, ProofState } from '@credo-ts/core'
 
 import { ChatEntryData } from '@2060/model'
-import { CredentialDetailsForDisplay, CredentialMainInfo } from '@2060/services/agent/display'
+import { CredentialMainInfo } from '@2060/services/agent/display'
 import { ServiceInfo } from '@2060/services/api/trustRegistryService'
 
 export type BiometricsAction = {
@@ -58,5 +58,9 @@ export type NavigationStackParams = {
   PresentCredential: {
     credentialRecordId: string
   }
-  Presentation: CredentialDetailsForDisplay
+  Presentation: {
+    mainInfo: CredentialMainInfo
+    attributes: Record<string, unknown>
+    proofState: ProofState
+  }
 }

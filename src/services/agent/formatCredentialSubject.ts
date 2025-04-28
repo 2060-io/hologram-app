@@ -67,7 +67,6 @@ export function formatCredentialSubject(args: FormatCredentialSubject): Credenti
 
     const value = subject[key]
 
-    if (!value) return // omit properties with no value
     const keyValue = sanitizeKey ? sanitizeString(key) : key
     if (typeof value === 'number') {
       stringRows.push({
