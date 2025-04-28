@@ -33,7 +33,7 @@ jobs:
         run: |
           yarn install --immutable
 
-      - uses: codfish/semantic-release-action@v4
+      - uses: codfish/semantic-release-action@v3
         id: semantic
         with:
           branches: |
