@@ -25,7 +25,6 @@ import {
 } from './useFileUploadDownload'
 
 import { IS_DEVICE_IOS } from '@2060/constants'
-import { nativeCreateChunks } from '@2060/local-native-modules'
 import { MediaDownloadState, MediaUploadState, UploadChunkTask, UploadTask } from '@2060/model'
 import {
   AUTOMATIC_MEDIA_DOWNLOAD_VALUES_PERSIST_KEY,
@@ -41,6 +40,7 @@ import {
   moveFile,
 } from '@2060/utils/RNFS'
 import { decryptFile, encryptFile } from '@2060/utils/ciphering'
+import { nativeCreateChunks } from 'react-native-local-native-modules'
 
 const AUDIO_WAVEFORM_NUMBER_OF_CANDLES = 30
 const { Pending, Uploading, Done, Canceled, ErrorCreating, ErrorUploading } = MediaUploadState

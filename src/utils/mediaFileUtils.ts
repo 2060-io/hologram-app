@@ -7,7 +7,8 @@ import { logError } from './log'
 import { IS_DEVICE_IOS } from '@2060/constants'
 import { DidCommMediaFileSharingData } from '@2060/hooks/agent'
 import { createDidCommPreview } from '@2060/hooks/media/preview'
-import { nativeGetVideoProperties } from '@2060/local-native-modules'
+
+import { nativeGetVideoProperties } from 'react-native-local-native-modules'
 
 type VideoProps = {
   duration: number
