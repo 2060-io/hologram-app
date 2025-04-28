@@ -8,7 +8,6 @@ import { t } from 'i18next'
 import { default as React, useEffect, useCallback, useRef, useState } from 'react'
 import Upload, { CompletedData, UploadOptions } from 'react-native-background-upload'
 import { copyFile, downloadFile } from 'react-native-fs'
-import { nativeCreateChunks } from 'react-native-local-native-modules'
 
 import { generateFileName } from '../media/files'
 import { createLocalPreview } from '../media/preview'
@@ -26,6 +25,7 @@ import {
 } from './useFileUploadDownload'
 
 import { IS_DEVICE_IOS } from '@2060/constants'
+import { nativeCreateChunks } from '@2060/local-native-modules'
 import { MediaDownloadState, MediaUploadState, UploadChunkTask, UploadTask } from '@2060/model'
 import {
   AUTOMATIC_MEDIA_DOWNLOAD_VALUES_PERSIST_KEY,

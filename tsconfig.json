@@ -11,7 +11,8 @@
     "jsx": "react",
     "baseUrl": ".",
     "paths": {
-      "@2060/*": ["src/*"]
+      "@2060/*": ["src/*"],
+      "@2060/local-native-modules": ["./modules/local-native-modules"],
     },
   },
   "include": ["src/**/*"],

@@ -1,6 +1,5 @@
 import { Image } from 'react-native'
 import { stat, TemporaryDirectoryPath } from 'react-native-fs'
-import { nativeGetVideoProperties } from 'react-native-local-native-modules'
 
 import { copyFile } from './RNFS'
 import { logError } from './log'
@@ -8,6 +7,7 @@ import { logError } from './log'
 import { IS_DEVICE_IOS } from '@2060/constants'
 import { DidCommMediaFileSharingData } from '@2060/hooks/agent'
 import { createDidCommPreview } from '@2060/hooks/media/preview'
+import { nativeGetVideoProperties } from '@2060/local-native-modules'
 
 type VideoProps = {
   duration: number

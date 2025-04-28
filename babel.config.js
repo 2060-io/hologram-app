@@ -11,6 +11,7 @@ module.exports = {
         alias: {
           // This has to be mirrored in tsconfig.json
           '^@2060/(.+)': './src/\\1',
+          '@2060/local-native-modules': './modules/local-native-modules',
         },
       },
     ],
