@@ -2,6 +2,12 @@ import { GDrive, ListQueryBuilder } from '@robinbobin/react-native-google-drive-
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { downloadFile, stat } from 'react-native-fs'
+import {
+  nativeReadChunk,
+  nativeGDGetAccessToken,
+  nativeGDSelectAccount,
+  nativeGDAuthorize,
+} from 'react-native-local-native-modules'
 
 import {
   restoreProgressInitialValues,
@@ -18,12 +24,6 @@ import {
 } from '@2060/services/localStorage'
 import { log, logError } from '@2060/utils'
 import { BACKUP_NAME, BACKUP_ZIP_FILE_PATH } from '@2060/utils/walletBackUpUtils'
-import {
-  nativeReadChunk,
-  nativeGDGetAccessToken,
-  nativeGDSelectAccount,
-  nativeGDAuthorize,
-} from 'react-native-local-native-modules'
 
 global.Buffer ??= require('buffer').Buffer
 

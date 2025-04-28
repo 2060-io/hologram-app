@@ -1,8 +1,7 @@
 import { CipheringInfo } from '@2060.io/credo-ts-didcomm-media-sharing'
+import { nativeRandomKey, nativeEncryptFile, nativeDecryptFile } from 'react-native-local-native-modules'
 
 import { logError } from './log'
-
-import { nativeRandomKey, nativeEncryptFile, nativeDecryptFile } from 'react-native-local-native-modules'
 
 export async function encryptFile(encryptOptions: {
   originFilePath: string

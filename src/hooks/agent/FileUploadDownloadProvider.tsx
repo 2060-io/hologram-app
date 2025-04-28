@@ -8,6 +8,7 @@ import { t } from 'i18next'
 import { default as React, useEffect, useCallback, useRef, useState } from 'react'
 import Upload, { CompletedData, UploadOptions } from 'react-native-background-upload'
 import { copyFile, downloadFile } from 'react-native-fs'
+import { nativeCreateChunks } from 'react-native-local-native-modules'
 
 import { generateFileName } from '../media/files'
 import { createLocalPreview } from '../media/preview'
@@ -40,7 +41,6 @@ import {
   moveFile,
 } from '@2060/utils/RNFS'
 import { decryptFile, encryptFile } from '@2060/utils/ciphering'
-import { nativeCreateChunks } from 'react-native-local-native-modules'
 
 const AUDIO_WAVEFORM_NUMBER_OF_CANDLES = 30
 const { Pending, Uploading, Done, Canceled, ErrorCreating, ErrorUploading } = MediaUploadState
