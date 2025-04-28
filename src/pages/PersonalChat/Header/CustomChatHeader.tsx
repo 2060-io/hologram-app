@@ -1,4 +1,3 @@
-import { ParamListBase } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
@@ -6,13 +5,14 @@ import { View, TouchableOpacity } from 'react-native'
 
 import getStyles from './styles'
 
-import { Avatar, Text, SvgIcon, ChannelIcons } from '@2060/components/common'
+import { PersonalChatStackParams } from '@2060/components/Navigation/NavigationProps'
+import { Avatar, Text, SvgIcon, ConnectionMainActions } from '@2060/components/common'
 import { useConnectionById } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { ChatThreadData } from '@2060/model'
 
 interface Props {
-  navigation: StackNavigationProp<ParamListBase>
+  navigation: StackNavigationProp<PersonalChatStackParams, 'PersonalChat', 'stack_navigator_main'>
   chatThread: ChatThreadData
   isTyping: boolean
   showMenuIcon: boolean
@@ -69,7 +69,13 @@ const CustomChatHeader: React.FC<Props> = props => {
             </Text>
           )}
         </TouchableOpacity>
-        {connection && <ChannelIcons connection={connection} iconColor={theme.colors.primaryText} />}
+        {connection && (
+          <ConnectionMainActions
+            connectionId={connection.id}
+            navigation={props.navigation}
+            includeDefaultActions={false}
+          />
+        )}
         {showMenuIcon && (
           <TouchableOpacity onPress={handleShowContextMenu} style={styles.containerIconMenu}>
             <SvgIcon name="menuOutline" fill={primaryText} />

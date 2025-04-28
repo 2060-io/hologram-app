@@ -1,5 +1,4 @@
 import { ConnectionRecord, TypedArrayEncoder } from '@credo-ts/core'
-import { StackActions } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
 import React, { ReactElement, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -11,8 +10,7 @@ import getStyles from './styles'
 
 import { ModalConfirmAction } from '@2060/components'
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
-import { Text, ChannelIcons, SvgIcon, ModalLoading, OptionsList } from '@2060/components/common'
-import { ChannelProps } from '@2060/components/common/ChannelIcons/ChannelIcons'
+import { Text, ConnectionMainActions, SvgIcon, ModalLoading, OptionsList } from '@2060/components/common'
 import { IS_DEVICE_IOS } from '@2060/constants'
 import {
   useConnectionProfile,
@@ -101,15 +99,6 @@ const BaseConnectionDetails = ({
   }
 
   const closeConfirmationModal = () => setShowConfirmationModal(false)
-
-  const goToChat = async () => {
-    if (!agent) throw new Error('Agent not defined')
-    if (!connection) throw new Error('Connection not defined')
-    const chatThreadId = findOrCreateThread({ connection }).id
-    navigation.dispatch(
-      StackActions.push('PersonalChatStack', { screen: 'PersonalChat', params: { chatThreadId } }),
-    )
-  }
 
   const handleDeleteConnection = async () => {
     if (agent) {
@@ -218,8 +207,6 @@ const BaseConnectionDetails = ({
     })
   }
 
-  const channels: ChannelProps[] = [{ value: 'text', onPress: goToChat }]
-
   const shareConnection = async () => {
     try {
       const outOfBandInvitation = createOobInvitation(connection)
@@ -281,10 +268,10 @@ const BaseConnectionDetails = ({
             <Text typography="EuclidCircularA-Regular" style={styles.displayName}>
               {connectionName}
             </Text>
-            <ChannelIcons
-              defaultChannels={channels}
-              connection={connection}
-              iconColor={theme.colors.primaryText}
+            <ConnectionMainActions
+              navigation={navigation}
+              connectionId={connection.id}
+              includeDefaultActions={true}
             />
           </View>
           <OptionsList options={mainOptions} />

@@ -34,7 +34,7 @@ export type NavigationStackParams = {
   OpenIdPresentationRequest: { url: string }
   DidcommCredentialOffer: { credentialRecordId: string }
   DidcommPresentationRequest: { did: string; proofRecordId: string }
-  ConnectionInvitation: { outOfBandRecord: OutOfBandRecord }
+  ConnectionInvitation: { outOfBandRecord: OutOfBandRecord; existingConnectionId?: string }
   ConnectionDetails: { connectionId: string }
   RelatedConnections: { parentConnectionId: string }
   UserInvitation: undefined

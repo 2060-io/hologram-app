@@ -56,7 +56,7 @@ const Scan = ({ navigation }: Props) => {
 
   const isTabSelected = (tab: string) => tab === tabType
 
-  const navigateToDidcommInvitation = async (invitation: OutOfBandInvitation) => {
+  const processDidcommInvitation = async (invitation: OutOfBandInvitation) => {
     if (!agent) return
     setProcessing(true)
     let processInvitationResult
@@ -70,12 +70,11 @@ const Scan = ({ navigation }: Props) => {
       if (!success || !recordId) return
 
       if (invitationType === DidcommInvitationType.ConnectionRequest) {
-        if (existingConnectionId) {
-          navigation.navigate('ConnectionDetails', { connectionId: existingConnectionId })
-        } else {
-          const outOfBandRecord = await agent.oob.getById(recordId)
-          navigation.navigate('ConnectionInvitation', { outOfBandRecord })
-        }
+        const outOfBandRecord = await agent.oob.getById(recordId)
+        navigation.navigate('ConnectionInvitation', {
+          outOfBandRecord,
+          existingConnectionId,
+        })
       } else if (invitationType === DidcommInvitationType.CredentialOffer) {
         navigation.navigate('DidcommCredentialOffer', {
           credentialRecordId: recordId,
@@ -113,7 +112,7 @@ const Scan = ({ navigation }: Props) => {
         const invitation = await agent.oob.parseInvitation(shortUrl ?? codeUrl)
 
         if (!invitation) throw new Error('Invitation undefined')
-        await navigateToDidcommInvitation(invitation)
+        await processDidcommInvitation(invitation)
       }
       setScannedCode('')
     } catch (error) {

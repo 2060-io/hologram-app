@@ -17,8 +17,7 @@ export default (theme: AppTheme) =>
       paddingHorizontal: 15,
     },
     mainInfoContainer: {
-      marginBottom: 20,
-      marginTop: 35,
+      marginVertical: 20,
     },
     relatedConnectionContainer: {
       alignItems: 'center',
