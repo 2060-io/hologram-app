@@ -26,7 +26,7 @@ export type CredentialMainInfo = {
   createdAt: Date
   schemaName: string
   issuer: IssuerInfo
-  itsOwn?: boolean
+  dateLabel?: string
 }
 
 export type CredentialDetailsForDisplay = {

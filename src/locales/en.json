@@ -236,7 +236,7 @@
     },
     "presentationRequest": {
       "title": "Presentation Request",
-      "credentialPresentation": "Credential Presentation",
+      "verifiablePresentation": "Verifiable Presentation",
       "selectCredentialYouWouldLikeToPresentTo": "Select the credential you would like to present to ",
       "successfullyReceived": "Presentation successfully received by ",
       "viewInChat": "View in chat",
@@ -391,7 +391,7 @@
       "credentialAdded": "Credential added to your Wallet",
       "confirmRefuseCredentialOffer": "Are you sure you want to refuse this credential?",
       "confirmRefusePresentCredential": "Are you sure you want to refuse presenting your credential?",
-      "confirmRefuseCredentialPresentation": "Are you sure you want to refuse this credential presentation?",
+      "confirmRefuseVerifiablePresentation": "Are you sure you want to refuse this verifiable presentation?",
       "acceptedInvitation": "You accepted the invitation",
       "alreadyConnected": "Already connected",
       "question": "Question",

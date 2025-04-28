@@ -235,7 +235,7 @@
     },
     "presentationRequest": {
       "title": "Solicitud de presentación",
-      "credentialPresentation": "Presentación de credencial",
+      "verifiablePresentation": "Presentación verificable",
       "selectCredentialYouWouldLikeToPresentTo": "Selecciona la credencial que te gustaría presentar a ",
       "successfullyReceived": "Presentation recibida exitosamente por ",
       "viewInChat": "Ver en la conversación",
@@ -390,7 +390,7 @@
       "credentialAdded": "Credencial agregada a tu billetera",
       "confirmRefuseCredentialOffer": "¿Confirmas rechazar esta credencial?",
       "confirmRefusePresentCredential": "¿Confirmas que quieres negarte a presentar tu credencial?",
-      "confirmRefuseCredentialPresentation": "Confirmas rechazar esta presentaición de credencial?",
+      "confirmRefuseVerifiablePresentation": "Confirmas rechazar esta presentación verificable?",
       "acceptedInvitation": "Aceptaste la invitación",
       "alreadyConnected": "Ya estás conectado",
       "question": "Pregunta",

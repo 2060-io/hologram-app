@@ -1,4 +1,4 @@
-import { AgentMessage, ProofExchangeRecord, ProofState, W3cCredentialRepository } from '@credo-ts/core'
+import { ProofExchangeRecord, ProofState, W3cCredentialRepository } from '@credo-ts/core'
 import { t } from 'i18next'
 import Realm from 'realm'
 
@@ -26,9 +26,8 @@ export const handleProofExchangeRecordChanges = async (options: {
   record: ProofExchangeRecord
   activeChatThreadId?: string
   receivedAt?: Date
-  message: AgentMessage
 }) => {
-  const { agent, realm, record: proofRecord, activeChatThreadId, message } = options
+  const { agent, realm, record: proofRecord, activeChatThreadId } = options
   if (proofRecord.connectionId) {
     const connection = await agent.connections.getById(proofRecord.connectionId)
     const thread = findOrCreateChatThread(realm, connection)
@@ -187,7 +186,6 @@ export const handleProofExchangeRecordChanges = async (options: {
                   logoUrl: serviceInfo?.logoUrl,
                   status: serviceInfo?.status ?? 'notFound',
                 },
-                itsOwn: false,
               }
               presentedCredentials.push(credentialMainInfo)
             }
@@ -209,7 +207,7 @@ export const handleProofExchangeRecordChanges = async (options: {
           presentedCredentials: JSON.stringify(presentedCredentials),
           presentedCredentialClaims: JSON.stringify(attributes),
         },
-        associatedMessageId: message.id,
+        associatedMessageId: proofRecord.threadId,
       })
       updateThread(realm, thread.id, { lastChatEntry: chatEntry })
       if (thread.id !== activeChatThreadId) {

@@ -30,8 +30,6 @@ const CardCredentialMainInformation = ({
   const styles = getStyles(theme, size)
   const { serviceInfo } = useFetchServiceInfo(credentialMainInfo.issuer.id)
   const uri = serviceInfo?.logoUrl ?? credentialMainInfo.issuer.logoUrl
-  const { itsOwn = true } = credentialMainInfo
-  const dateLabel = itsOwn ? t('credential.issuedOn') : t('credential.presentedOn')
 
   return (
     <TouchableOpacity style={[styles.container, containerStyle]} activeOpacity={1} onPress={onPress}>
@@ -49,7 +47,7 @@ const CardCredentialMainInformation = ({
       </View>
       <View>
         <Text style={styles.issuedOn} typography="EuclidCircularA-Regular">
-          {`${dateLabel}: ${credentialMainInfo.createdAt}`}
+          {`${credentialMainInfo.dateLabel ?? t('credential.issuedOn')}: ${credentialMainInfo.createdAt}`}
         </Text>
         <View style={styles.bottomContainer}>
           <Text style={styles.bottomText} typography="EuclidCircularA-Medium" numberOfLines={1}>

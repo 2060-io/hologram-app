@@ -1,4 +1,4 @@
-import { ProofState, W3cCredentialRepository } from '@credo-ts/core'
+import { ProofState } from '@credo-ts/core'
 import { useNavigation } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import React, { memo, useState } from 'react'
@@ -58,7 +58,9 @@ const VPChatView = ({ metadata, role, agent, proofRecordId, chatEntryId }: Props
   const displayModalRefuseConfirmation = () => setShowModalRefuseConfirmation(true)
 
   const chooseWhereToGo = (credentialMainInfo: CredentialMainInfo) => {
-    isSender ? goToDetails(credentialMainInfo.recordId) : goToPresentation(credentialMainInfo)
+    isSender
+      ? verifyCanGoToCredentialDetails(credentialMainInfo.recordId)
+      : goToPresentation(credentialMainInfo)
   }
 
   const goToPresentation = (credentialMainInfo: CredentialMainInfo) => {
@@ -68,16 +70,12 @@ const VPChatView = ({ metadata, role, agent, proofRecordId, chatEntryId }: Props
     })
   }
 
-  const goToDetails = async (credentialRecordId: string) => {
-    if (role === ChatEntryRole.Receiver) return
-    // FIXME: generalize for any type of credential
-    const credentialRecord = await agent?.dependencyManager
-      .resolve(W3cCredentialRepository)
-      .findById(agent.context, credentialRecordId)
-
-    if (credentialRecord) {
+  const verifyCanGoToCredentialDetails = async (credentialRecordId: string) => {
+    if (!agent) return
+    try {
+      await agent.w3cCredentials.getCredentialRecordById(credentialRecordId)
       navigation.navigate('CredentialDetails', { credentialRecordId })
-    } else {
+    } catch (error) {
       toast({ type: 'error', message: t('personalChat.noCredentialFound') })
     }
   }
@@ -124,7 +122,7 @@ const VPChatView = ({ metadata, role, agent, proofRecordId, chatEntryId }: Props
     <View style={styles.container}>
       <ModalConfirmAction
         visible={showModalRefuseConfirmation}
-        title={t('personalChat.confirmRefuseCredentialPresentation')}
+        title={t('personalChat.confirmRefuseVerifiablePresentation')}
         confirmText={t('general.confirm')}
         cancelText="No"
         onClose={hideModalRefuseConfirmation}
@@ -133,7 +131,7 @@ const VPChatView = ({ metadata, role, agent, proofRecordId, chatEntryId }: Props
       />
       <Header
         theme={theme}
-        title={t('presentationRequest.credentialPresentation')}
+        title={t('presentationRequest.verifiablePresentation')}
         leftIconName="id"
         role={role}
       />
@@ -143,12 +141,16 @@ const VPChatView = ({ metadata, role, agent, proofRecordId, chatEntryId }: Props
         </Text>
         {presentedCredentialsForDisplay.map((credential, index) => {
           const isLast = index === presentedCredentialsForDisplay.length - 1
+          const credentialMainInfo = {
+            ...credential,
+            dateLabel: isSender ? t('credential.issuedOn') : t('credential.presentedOn'),
+          }
           return (
             <CardCredentialMainInformation
               key={credential.id}
-              credentialMainInfo={credential}
+              credentialMainInfo={credentialMainInfo}
               containerStyle={{ marginBottom: isLast ? 0 : theme.edges.messageMargin }}
-              onPress={() => chooseWhereToGo(credential)}
+              onPress={() => chooseWhereToGo(credentialMainInfo)}
               size="medium"
             />
           )
