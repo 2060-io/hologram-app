@@ -1,11 +1,10 @@
 import React, { createContext, useCallback, useContext, useEffect, PropsWithChildren, useState } from 'react'
+import ShareMenu, { SharedData } from 'react-native-share-menu'
 
 import { useNavigation } from '../agent'
 import { useIsForeground } from '../useIsForeground'
 
 import { useScreenLock } from './ScreenLockProvider'
-
-import ShareMenu, { SharedData } from 'react-native-share-menu'
 
 interface SharedDataFromOtherAppsInterface {
   displayShareMessagesScreen: boolean
