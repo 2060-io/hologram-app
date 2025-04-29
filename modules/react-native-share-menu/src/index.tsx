@@ -1,9 +1,9 @@
-import { NativeEventEmitter } from 'react-native'
+import { NativeEventEmitter, NativeModule } from 'react-native'
 
 import ShareMenu from './NativeShareMenu'
 
 // Event emitter for listening to native events
-const EventEmitter = new NativeEventEmitter(ShareMenu)
+const EventEmitter = new NativeEventEmitter(ShareMenu as unknown as NativeModule)
 const NEW_SHARE_EVENT_NAME = 'NewShareEvent'
 
 type SharedItem = {
