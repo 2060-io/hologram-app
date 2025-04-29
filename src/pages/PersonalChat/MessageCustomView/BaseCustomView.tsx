@@ -29,7 +29,6 @@ import { useChat } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import {
   CallOfferMetadata,
-  ChatEntryRole,
   ChatEntryState,
   ChatEntryType,
   EMrtdReadRequestMetadata,
@@ -42,6 +41,7 @@ import {
   VCOfferMetadata,
   VoiceNoteMetadata,
   VPRequestMetadata,
+  VPResponseMetadata,
 } from '@2060/model'
 import { BaseCustomMessageViewProps } from '@2060/pages/PersonalChat/ChatMessage/Props'
 
@@ -149,14 +149,17 @@ const BaseCustomView: React.FC<BaseCustomMessageViewProps> = memo(props => {
               metadata={chatEntry.metadata as VPRequestMetadata}
               agent={agent}
               sender={user}
+              chatEntryId={chatEntry.id}
             />
           )
         case ChatEntryType.VPResponse:
           return (
             <VPChatView
-              presentedCredentials={chatEntry.metadata?.presentedCredentials as string}
+              metadata={chatEntry.metadata as VPResponseMetadata}
               role={chatEntry.role}
-              verifierName={chatThread?.participants.find(p => p.id === ChatEntryRole.Receiver)?.name}
+              agent={agent}
+              proofRecordId={chatEntry.associatedRecordId}
+              chatEntryId={chatEntry.id}
             />
           )
         case ChatEntryType.VCOffer:
@@ -205,7 +208,7 @@ const BaseCustomView: React.FC<BaseCustomMessageViewProps> = memo(props => {
     }
     const Component = renderComponentByType(chatEntry.type)
     return Component
-  }, [chatEntry, chatThread])
+  }, [chatEntry, chatThread?.participants])
 
   const renderTimeAndTicks = useCallback(
     (containerStyle: ViewStyle) => {

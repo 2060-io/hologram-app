@@ -11,6 +11,7 @@ import {
   MessageSender,
   OutboundMessageContext,
   OutOfBandInvitation,
+  V2ProposePresentationMessage,
 } from '@credo-ts/core'
 import { Realm } from 'realm'
 import { ReplaySubject, firstValueFrom, filter, first, timeout, catchError, map } from 'rxjs'
@@ -30,6 +31,11 @@ import { createOobInvitation, MobileAgent } from '@2060/services/agent'
 import { log, logError } from '@2060/utils'
 
 export type ActionCallback = (options: { agent: MobileAgent }) => Promise<AgentCallbackReturnType<BaseRecord>>
+
+export type AnoncredsAttribute = {
+  name: string
+  credentialDefinitionId: string
+}
 
 export class AgentActionExecuter {
   private getCallbackForAction(action: AgentAction): ActionCallback {
@@ -141,6 +147,23 @@ export class AgentActionExecuter {
           }),
         )
         return { outgoingMessageType: OutOfBandInvitation.type.messageTypeUri }
+      }
+    } else if (action.type === AgentActionType.PresentCredential) {
+      const parameters = action.parameters as {
+        didcommConnectionId: string
+        anoncredsAttributes: AnoncredsAttribute[]
+      }
+      const { didcommConnectionId, anoncredsAttributes } = parameters
+      return async (options: { agent: MobileAgent }) => {
+        const proofExchangeRecord = await options.agent.proofs.proposeProof({
+          proofFormats: { anoncreds: { attributes: anoncredsAttributes } },
+          connectionId: didcommConnectionId,
+          protocolVersion: 'v2',
+        })
+        return {
+          outgoingMessageType: V2ProposePresentationMessage.type.messageTypeUri,
+          associatedRecord: proofExchangeRecord,
+        }
       }
     }
     logError(`No callback for type ${action.type}`)

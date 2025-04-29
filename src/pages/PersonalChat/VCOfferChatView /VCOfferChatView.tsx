@@ -83,20 +83,23 @@ const VCOfferChatView = ({ sender, associatedRecordId, metadata, agent }: Props)
       goToCredentialOffer()
     }
     if ([CredentialState.CredentialReceived, CredentialState.Done].includes(credentialState)) {
-      goToCredentialDetails()
+      verifyCanGoToCredentialDetails()
     }
   }
 
-  const goToCredentialDetails = async () => {
+  const verifyCanGoToCredentialDetails = async () => {
     if (!agent) return
-    // FIXME: generalize for any credential type
-    const credentialRecordId = (await agent.credentials.getById(associatedRecordId)).credentials[0]
-      .credentialRecordId
-    if (credentialRecordId) {
-      navigation.navigate('CredentialDetails', { credentialRecordId })
-    } else {
+    try {
+      const credentialRecordId = (await agent.credentials.getById(associatedRecordId)).credentials[0]
+        .credentialRecordId
+      goToCredentialDetails(credentialRecordId)
+    } catch (error) {
       toast({ type: 'error', message: t('personalChat.noCredentialFound') })
     }
+  }
+
+  const goToCredentialDetails = async (credentialRecordId: string) => {
+    navigation.navigate('CredentialDetails', { credentialRecordId })
   }
 
   const goToCredentialOffer = async () => {

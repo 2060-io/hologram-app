@@ -11,6 +11,8 @@ import ConnectionInvitation from './Invitation'
 import MRZScanner from './MRZScanner'
 import MessageDetails from './MessageDetails'
 import PersonalChat from './PersonalChat'
+import PresentCredential from './PresentCredential'
+import Presentation from './Presentation'
 import { DidcommPresentationRequest, OpenIdPresentationRequest } from './PresentationRequest'
 import Privacy from './Privacy'
 import RelatedConnections from './RelatedConnections'
@@ -57,4 +59,6 @@ export {
   ForwardConnection,
   ShareMessages,
   MRZScanner,
+  PresentCredential,
+  Presentation,
 }

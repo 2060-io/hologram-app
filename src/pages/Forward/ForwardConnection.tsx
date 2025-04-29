@@ -63,9 +63,7 @@ const ForwardConnection = ({ navigation, route }: Props) => {
     navigation.goBack()
   }
 
-  return (
-    <BaseForward navigation={navigation} onPressForward={forwardConnection} connectionId={connection.id} />
-  )
+  return <BaseForward navigation={navigation} onPressSend={forwardConnection} connectionId={connection.id} />
 }
 
 export default ForwardConnection

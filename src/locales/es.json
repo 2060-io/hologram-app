@@ -102,7 +102,9 @@
       "CredentialPresented": "Credencial Presentada",
       "MessageDetails": "Detalles del Mensaje",
       "ForwardTo": "Reenviar a",
-      "shareWith": "Compartir con"
+      "shareWith": "Compartir con",
+      "PresentCredential": "Presentar a",
+      "Presentation": "Presentación"
     },
     "authentication": {
       "walletLocked": "Hologram bloqueada",
@@ -218,7 +220,10 @@
       "delete": "Eliminar Credencial",
       "deleteConfirmation": "Confirmas eliminar ",
       "deleteConfirmationDescription": "Eliminar una credencial vigente no es recomendable.",
-      "yesDelete": "Sí, eliminar permanentemente"
+      "yesDelete": "Sí, eliminar permanentemente",
+      "present": "Presentar credencial",
+      "presented": "Credencial presentada",
+      "presentedOn": "Presentado el"
     },
     "credentialOffer": {
       "title": "Credencial ofrecida",
@@ -230,7 +235,7 @@
     },
     "presentationRequest": {
       "title": "Solicitud de presentación",
-      "sent": "Presentación enviada",
+      "verifiablePresentation": "Presentación verificable",
       "selectCredentialYouWouldLikeToPresentTo": "Selecciona la credencial que te gustaría presentar a ",
       "successfullyReceived": "Presentation recibida exitosamente por ",
       "viewInChat": "Ver en la conversación",
@@ -244,7 +249,13 @@
       "credentialPresented": "Presentación recibida exitosamente por",
       "isRequestingYou": "te está solicitando: ",
       "youPresented": "Presentaste una credencial a {{verifier}}.",
-      "youPresented_other": "Presentaste {{count}} credenciales a {{verifier}}."
+      "youPresented_other": "Presentaste {{count}} credenciales a {{verifier}}.",
+      "isPresentingCredentialToYou": "{{ requestor }} te está presentado {{ count }} credencial.",
+      "isPresentingCredentialToYou_other": "{{ requestor }} te está presentado {{ count }} credenciales.",
+      "refused": "Rechazada",
+      "acepted": "Aceptada",
+      "waitingForAcceptance": "Esperando aceptación",
+      "valuesNoRevealedYet": "Los valores se revelarán una vez sea aceptada la propuesta de presentación"
     },
     "connection": {
       "editName": "Editar nombre",
@@ -379,6 +390,7 @@
       "credentialAdded": "Credencial agregada a tu billetera",
       "confirmRefuseCredentialOffer": "¿Confirmas rechazar esta credencial?",
       "confirmRefusePresentCredential": "¿Confirmas que quieres negarte a presentar tu credencial?",
+      "confirmRefuseVerifiablePresentation": "Confirmas rechazar esta presentación verificable?",
       "acceptedInvitation": "Aceptaste la invitación",
       "alreadyConnected": "Ya estás conectado",
       "question": "Pregunta",

@@ -11,6 +11,7 @@ const styles = (theme: AppTheme) =>
     subContainer: {
       width: '100%',
       marginTop: 32,
+      paddingHorizontal: theme.edges.messageMargin,
       marginBottom: 10,
       alignItems: 'center',
     },

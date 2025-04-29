@@ -102,7 +102,9 @@
       "CredentialPresented": "Credential Presented",
       "MessageDetails": "Message Details",
       "ForwardTo": "Forward to",
-      "shareWith": "Share with"
+      "shareWith": "Share with",
+      "PresentCredential": "Present to",
+      "Presentation": "Presentation"
     },
     "authentication": {
       "walletLocked": "Hologram Locked",
@@ -219,7 +221,10 @@
       "delete": "Delete Credential",
       "deleteConfirmation": "Confirm delete",
       "deleteConfirmationDescription": "Delete an unexpired credential is not recommended.",
-      "yesDelete": "Yes, delete permanently"
+      "yesDelete": "Yes, delete permanently",
+      "present": "Present credential",
+      "presented": "Credential presented",
+      "presentedOn": "Presented on"
     },
     "credentialOffer": {
       "title": "Credential Offer",
@@ -231,7 +236,7 @@
     },
     "presentationRequest": {
       "title": "Presentation Request",
-      "sent": "Presentation Sent",
+      "verifiablePresentation": "Verifiable Presentation",
       "selectCredentialYouWouldLikeToPresentTo": "Select the credential you would like to present to ",
       "successfullyReceived": "Presentation successfully received by ",
       "viewInChat": "View in chat",
@@ -245,7 +250,13 @@
       "credentialPresented": "Presentation successfully received by",
       "isRequestingYou": "is requesting you: ",
       "youPresented": "You presented 1 credential to {{verifier}}.",
-      "youPresented_other": "You presented {{count}} credentials to {{verifier}}."
+      "youPresented_other": "You presented {{count}} credentials to {{verifier}}.",
+      "isPresentingCredentialToYou": "{{ requestor }} is presenting you {{ count }} credential.",
+      "isPresentingCredentialToYou_other": "{{ requestor }} is presenting you {{ count }} credentials.",
+      "refused": "Refused",
+      "accepted": "Accepted",
+      "waitingForAcceptance": "Waiting for acceptance",
+      "valuesNoRevealedYet": "Values will be revealed once the presentation proposal is accepted"
     },
     "connection": {
       "editName": "Edit name",
@@ -380,6 +391,7 @@
       "credentialAdded": "Credential added to your Wallet",
       "confirmRefuseCredentialOffer": "Are you sure you want to refuse this credential?",
       "confirmRefusePresentCredential": "Are you sure you want to refuse presenting your credential?",
+      "confirmRefuseVerifiablePresentation": "Are you sure you want to refuse this verifiable presentation?",
       "acceptedInvitation": "You accepted the invitation",
       "alreadyConnected": "Already connected",
       "question": "Question",

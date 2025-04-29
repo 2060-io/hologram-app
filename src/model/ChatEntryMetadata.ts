@@ -5,6 +5,8 @@ import { InvitationState } from './InvitationState'
 import { MediaDownloadState } from './MediaDownloadState'
 import { MediaUploadState } from './MediaUploadState'
 
+import { CredentialMainInfo } from '@2060/services/agent/display'
+
 export type TextMessageMetadata = {
   content: string
 }
@@ -81,9 +83,14 @@ export type VPRequestMetadata = {
   replied: boolean
 }
 
+export type VPResponsePresentedCredential = {
+  mainInfo: CredentialMainInfo
+  attributes?: Record<string, string>
+}
+
 export type VPResponseMetadata = {
   proofState: ProofState
-  presentedCredentials: string // they must be deserialized (JSON.parse) and casted to CredentialMainInfo[]
+  presentedCredentials: string //deserialize it (JSON.parse) and castes to VPResponsePresentedCredential[]
 }
 
 export type VCOfferMetadata = {

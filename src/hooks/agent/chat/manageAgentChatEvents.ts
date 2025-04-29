@@ -14,7 +14,7 @@ import {
   MessageState,
 } from '@2060.io/credo-ts-didcomm-receipts'
 import { ConnectionProfileUpdatedEvent, ProfileEventTypes } from '@2060.io/credo-ts-didcomm-user-profile'
-import { V1ProposeCredentialMessage, V1ProposePresentationMessage } from '@credo-ts/anoncreds'
+import { V1ProposeCredentialMessage } from '@credo-ts/anoncreds'
 import {
   AgentEventTypes,
   AgentMessage,
@@ -28,6 +28,7 @@ import {
   OutboundMessageSendStatus,
   RecordUpdatedEvent,
   RepositoryEventTypes,
+  V2ProposePresentationMessage,
   parseMessageType,
 } from '@credo-ts/core'
 import { tryParseDid } from '@credo-ts/core/build/modules/dids/domain/parse'
@@ -136,18 +137,7 @@ export function manageAgentChatEvents(agent: MobileAgent, realm: Realm, activeCh
       })
     }
 
-    if (messageType.protocolName === V1ProposePresentationMessage.type.protocolName) {
-      const [record] = await agent.proofs.findAllByQuery({ threadId: message.threadId })
-      if (!record) return
-      await handleProofExchangeRecordChanges({
-        agent,
-        realm,
-        record,
-        activeChatThreadId,
-      })
-    }
-
-    if (messageType.protocolName === V1ProposePresentationMessage.type.protocolName) {
+    if (messageType.protocolName === V2ProposePresentationMessage.type.protocolName) {
       const [record] = await agent.proofs.findAllByQuery({ threadId: message.threadId })
       if (!record) return
       await handleProofExchangeRecordChanges({
@@ -281,6 +271,7 @@ export function manageAgentChatEvents(agent: MobileAgent, realm: Realm, activeCh
       BasicMessage.type.messageTypeUri,
       ShareMediaMessage.type.messageTypeUri,
       OutOfBandInvitation.type.messageTypeUri,
+      V2ProposePresentationMessage.type.messageTypeUri,
     ]
 
     if (connection) {
