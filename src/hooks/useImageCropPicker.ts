@@ -27,6 +27,7 @@ const defaultCamera: Options = {
 const defaultVideo: Options = {
   mediaType: 'video',
   compressVideoPreset: 'MediumQuality',
+  maximumVideoDuration: 60,
   ...optionsCommon,
 }
 
