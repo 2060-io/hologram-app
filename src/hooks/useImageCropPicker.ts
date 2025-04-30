@@ -7,6 +7,7 @@ import { MAX_VIDEO_DURATION } from '@2060/constants'
 import { logError } from '@2060/utils'
 import { toast } from '@2060/utils/toast'
 
+const MAX_VIDEO_SECONDS_DURATION = 60
 const optionsCommon: CommonOptions = {
   loadingLabelText: 'Applying changes...',
   useFrontCamera: true,
@@ -30,7 +31,7 @@ const defaultCamera: Options = {
 const defaultVideo: Options = {
   mediaType: 'video',
   compressVideoPreset: 'MediumQuality',
-  maximumVideoDuration: 60,
+  maximumVideoDuration: MAX_VIDEO_SECONDS_DURATION,
   ...optionsCommon,
 }
 
