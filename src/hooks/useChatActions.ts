@@ -23,6 +23,7 @@ import { createTextChatEntry } from './agent/chat/recordChangeHandlers/handleBas
 import { createChatEntry, findOrCreateChatThread, updateThread } from './agent/chat/services'
 import { useLocalRealm } from './providers/RealmProvider'
 
+import { MAX_VIDEO_DURATION } from '@2060/constants'
 import {
   ActionMenuSelectionMetadata,
   ChatEntry,
@@ -38,7 +39,7 @@ import { ChatEntryMessage } from '@2060/pages/PersonalChat/ChatMessage/Props'
 import { log, logError } from '@2060/utils'
 import { getLocalFileUri } from '@2060/utils/RNFS'
 import { getMediaFileSharingData } from '@2060/utils/mediaFileUtils'
-import { toast } from '@2060/utils/toast'
+import { toast, ToastOptions } from '@2060/utils/toast'
 
 export const useChatActions = () => {
   const { t } = useTranslation()
@@ -358,6 +359,7 @@ export const useChatActions = () => {
   const shareMessages = useCallback(
     async (connectionIds: string[], sharedData: SharedData) => {
       if (!agent || !realm) return
+      let excludedLongVideosCount = 0
       for (const message of sharedData.data) {
         const { mimeType } = message
         if (mimeType === 'text/plain') {
@@ -386,17 +388,22 @@ export const useChatActions = () => {
           }
         } else if (mimeType.startsWith('image') || mimeType.startsWith('video')) {
           const didcommMediaFileSharingData = await getMediaFileSharingData(message.data, mimeType)
-          startMediaUpload({
-            didcommConnectionIds: connectionIds,
-            didcommMediaFileSharingData,
-            deleteOriginalFile: true,
-          })
+          const { duration, mime } = didcommMediaFileSharingData
+          const isVideoAndExceedsDuration =
+            mime.startsWith('video') && duration && duration > MAX_VIDEO_DURATION
+          if (isVideoAndExceedsDuration) {
+            excludedLongVideosCount++
+          } else {
+            startMediaUpload({
+              didcommConnectionIds: connectionIds,
+              didcommMediaFileSharingData,
+              deleteOriginalFile: true,
+            })
+          }
         }
       }
-      toast({
-        type: 'success',
-        message: t('personalChat.messageShared', { count: sharedData.data.length }),
-      })
+      const toastOptions = getSharedMessagesToastOptions(excludedLongVideosCount, sharedData.data.length, t)
+      toast(toastOptions)
     },
     [agent, realm],
   )
@@ -472,6 +479,31 @@ export const useChatActions = () => {
     deleteMessagesForEveryone,
     forwardSelectedMessages,
     shareMessages,
+  }
+}
+
+const getSharedMessagesToastOptions = (
+  excludedLongVideosCount: number,
+  messagesSharedCount: number,
+  t: (key: string, options?: Record<string, unknown>) => string,
+): ToastOptions => {
+  if (excludedLongVideosCount === messagesSharedCount) {
+    return {
+      type: 'error',
+      message: t('personalChat.messagesNotShared', { count: messagesSharedCount }),
+      duration: 5000,
+    }
+  }
+  if (excludedLongVideosCount) {
+    return {
+      type: 'warning',
+      message: t('personalChat.messagesSharedExcept'),
+      duration: 5000,
+    }
+  }
+  return {
+    type: 'success',
+    message: t('personalChat.messageShared', { count: messagesSharedCount }),
   }
 }
 
