@@ -86,7 +86,7 @@ export const useImageCropPicker = () => {
       const { mime, duration } = fileInfo
       const isVideoAndExceedsDuration = mime.startsWith('video') && duration && duration > MAX_VIDEO_DURATION
       if (isVideoAndExceedsDuration) {
-        toast({ message: t('personalChat.videoExceedsDuration'), type: 'error' })
+        toast({ message: t('personalChat.videoExceedsDuration'), type: 'error', position: 'center' })
         return
       }
       const infoMedia = await uploadMedia(fileInfo, mediaType)
