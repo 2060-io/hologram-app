@@ -48,11 +48,16 @@ export const ScreenLockProvider: React.FC<PropsWithChildren> = ({ children }) =>
   const { isInCall, isIncomingCall, isFinishedCall } = useVideoCallContext()
   const [isScreenLockEnabled, setIsScreenLockEnabled] = useState(false)
   const [screenLockTimeout, setLockTimeout] = useState<number | null>(null)
+  const makeAutomaticAuth = useRef(true)
   const { getLocalAuth, setLocalAuth } = useNavigation()
   const isAuthenticated = getLocalAuth()
   const timerRef = useRef<ReturnType<typeof setTimeout>>()
   const { isAppActive } = useAppState()
   const makeLocalLogout = () => setLocalAuth(false)
+
+  useEffect(() => {
+    makeAutomaticAuth.current = !isAppActive
+  }, [isAppActive])
 
   useEffect(() => {
     if (isInCall || isIncomingCall) clearInactivityTimeout()
@@ -147,7 +152,7 @@ export const ScreenLockProvider: React.FC<PropsWithChildren> = ({ children }) =>
     >
       <View style={{ flex: 1 }} {...panResponder.panHandlers}>
         <Modal visible={!isAuthenticated}>
-          <Authentication isAppActive={isAppActive} />
+          <Authentication isAppActive={isAppActive} makeAutomaticAuth={makeAutomaticAuth.current} />
         </Modal>
         {children}
       </View>
