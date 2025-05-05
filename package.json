@@ -107,7 +107,6 @@
     "react-native-screens": "4.4.0",
     "react-native-section-alphabet-list": "^2.1.0",
     "react-native-share": "^10.2.0",
-    "react-native-share-menu": "^6.0.0",
     "react-native-splash-screen": "npm:@2060.io/react-native-splash-screen@3.3.2",
     "react-native-svg": "15.11.1",
     "react-native-swipe-list-view": "^3.2.9",
@@ -122,7 +121,8 @@
     "realm": "^12.0.0",
     "rn-emoji-keyboard": "^1.2.1",
     "text-encoding-polyfill": "^0.6.7",
-    "react-native-local-native-modules": "file:./modules/local-native-modules"
+    "react-native-local-native-modules": "file:./modules/local-native-modules",
+    "react-native-share-menu": "file:./modules/react-native-share-menu"
   },
   "devDependencies": {
     "@babel/helper-get-function-arity": "^7.16.7",
