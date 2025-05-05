@@ -23,7 +23,7 @@ import getStyles from './styles'
 
 import { CodeScanner } from '@2060/components'
 import { TextInput, Text, MainButton, ModalLoading } from '@2060/components/common'
-import { useIsForeground } from '@2060/hooks'
+import { useAppState } from '@2060/hooks'
 import { useMobileAgent } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { DidcommInvitationType, processInvitation } from '@2060/services/agent/oob'
@@ -42,15 +42,15 @@ const Scan = ({ navigation }: Props) => {
 
   // check if camera page is active
   const isFocused = useIsFocused()
-  const isForeground = useIsForeground()
+  const { isAppActive } = useAppState()
   const { agent } = useMobileAgent()
   const { t } = useTranslation()
 
   const [isActive, setIsActive] = useState(false)
 
   useEffect(() => {
-    setIsActive(isFocused && isForeground)
-  }, [isFocused, isForeground])
+    setIsActive(isFocused && isAppActive)
+  }, [isFocused, isAppActive])
 
   const behavior = Platform.OS === 'ios' ? 'padding' : 'height'
 

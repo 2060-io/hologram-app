@@ -23,7 +23,7 @@ import {
   RestoreProgress,
   restoreProgressInitialValues,
 } from './backup'
-import { useIsForeground } from './useIsForeground'
+import { useAppState } from './useAppState'
 
 import { logError } from '@2060/utils'
 import { copyFile } from '@2060/utils/RNFS'
@@ -40,7 +40,7 @@ export const useICloud = () => {
   const backupICloudPath = `${iCloudBackupFolderPath}/${BACKUP_NAME}`
   const [isCloudAvailable, setIsCloudAvailable] = useState(false)
   const [backupHandler, setBackupHandler] = useState<BackupHandler>({ isFetching: false })
-  const isForeground = useIsForeground()
+  const { isAppActive } = useAppState()
 
   useEffect(() => {
     const iCloudIdentityChangeEvent = registerICloudIdentityDidChangeEvent()
@@ -62,15 +62,15 @@ export const useICloud = () => {
         logError('Error getting if iCloud is available', error)
       }
     }
-    isForeground && isIcloudAvailable()
-  }, [isForeground])
+    isAppActive && isIcloudAvailable()
+  }, [isAppActive])
 
   useEffect(() => {
     const checkBackup = async () => {
       await getBackupInfo()
     }
     if (isCloudAvailable && !backupHandler.backup) checkBackup()
-  }, [isCloudAvailable, isForeground])
+  }, [isCloudAvailable, isAppActive])
 
   const existsBackup = async (): Promise<boolean> => {
     const info = await getBackupInfo()

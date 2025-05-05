@@ -10,7 +10,7 @@ import React, {
 import { View, PanResponder } from 'react-native'
 
 import { useNavigation } from '../agent/NavigationProvider'
-import { useIsForeground } from '../useIsForeground'
+import { useAppState } from '../useAppState'
 
 import { useVideoCallContext } from './useVideoCallContext'
 
@@ -46,7 +46,7 @@ export const ScreenLockProvider: React.FC<PropsWithChildren> = ({ children }) =>
   const { getLocalAuth, setLocalAuth } = useNavigation()
   const isAuthenticated = getLocalAuth()
   const timerRef = useRef<ReturnType<typeof setTimeout>>()
-  const isAppActive = useIsForeground()
+  const { isAppActive } = useAppState()
   const makeLocalLogout = () => setLocalAuth(false)
 
   useEffect(() => {
@@ -62,11 +62,7 @@ export const ScreenLockProvider: React.FC<PropsWithChildren> = ({ children }) =>
    */
   useEffect(() => {
     if (screenLockTimeout === INSTANT_TIMEOUT) return
-    if (isScreenLockForceDisabled) {
-      clearInactivityTimeout()
-    } else {
-      clearAndRestartInactivityTimeout()
-    }
+    isScreenLockForceDisabled ? clearInactivityTimeout() : clearAndRestartInactivityTimeout()
   }, [isScreenLockForceDisabled])
 
   /**
