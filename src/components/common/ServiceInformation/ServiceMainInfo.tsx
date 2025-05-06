@@ -1,6 +1,8 @@
-import React, { memo, useCallback } from 'react'
+import React, { memo, useCallback, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, Linking, TouchableOpacity } from 'react-native'
+
+import FullScreenImage from '../FullScreenImage'
 
 import getStyles from './styles'
 
@@ -22,6 +24,14 @@ const ServiceMainInfo = ({ serviceInfo }: Props) => {
   const theme = useTheme()
   const styles = getStyles(theme)
   const { serviceProvider, dataPrivacyUrl, termsAndConditionsUrl, minimumAgeRequired } = serviceInfo
+  const [showFullScreenImage, setShowFullScreenImage] = useState<boolean>(false)
+  const imageFullScreenUri = useRef<string | undefined>(undefined)
+
+  const onAvatarImagePressed = (avatarImageUri: string) => {
+    setShowFullScreenImage(true)
+    imageFullScreenUri.current = avatarImageUri
+  }
+  const closeFullScreenImage = () => setShowFullScreenImage(false)
 
   const tryToOpenURL = useCallback(async (url: string) => {
     const supported = await Linking.canOpenURL(url)
@@ -40,7 +50,17 @@ const ServiceMainInfo = ({ serviceInfo }: Props) => {
 
   return (
     <View style={styles.containerCardIssuerInfo}>
-      <Avatar uri={serviceInfo.logoUrl} label={serviceInfo.name} size="25%" />
+      <FullScreenImage
+        showFullScreenImage={showFullScreenImage}
+        closeFullScreenImage={closeFullScreenImage}
+        imageUri={imageFullScreenUri.current!}
+      />
+      <Avatar
+        uri={serviceInfo.logoUrl}
+        label={serviceInfo.name}
+        size="25%"
+        onImagePressed={onAvatarImagePressed}
+      />
       <Text typography="EuclidCircularA-Medium" style={styles.issuerName}>
         {serviceInfo.name}
       </Text>

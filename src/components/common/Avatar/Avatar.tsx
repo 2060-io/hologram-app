@@ -1,6 +1,6 @@
 import { isUri } from '@credo-ts/core/build/utils'
 import React, { useMemo, useState } from 'react'
-import { Image, View } from 'react-native'
+import { Image, TouchableOpacity, View } from 'react-native'
 import { SvgUri } from 'react-native-svg'
 
 import getStyles from './styles'
@@ -16,9 +16,17 @@ type Props = {
   size: string
   withBorder?: boolean
   bgAvatarInitials?: string
+  onImagePressed?: (imageUri: string) => void
 }
 
-const Avatar: React.FC<Props> = ({ uri, label, size, withBorder = false, bgAvatarInitials }) => {
+const Avatar: React.FC<Props> = ({
+  uri,
+  label,
+  size,
+  withBorder = false,
+  bgAvatarInitials,
+  onImagePressed,
+}) => {
   const [isValidImageUrl, setIsValidImageUrl] = useState<boolean>()
   useMemo(() => setIsValidImageUrl(uri?.length ? isUri(uri) : undefined), [uri])
   const theme = useTheme()
@@ -29,7 +37,11 @@ const Avatar: React.FC<Props> = ({ uri, label, size, withBorder = false, bgAvata
   const avatarSizeStyle = { height: avatarSize, width: avatarSize, borderRadius: avatarSize / 2 }
   const borderStyle = withBorder && { borderWidth: 1, borderColor: theme.colors.lightGrey }
   const renderAvatar = () => (
-    <View style={[styles.containerAvatar, styles.containerBgAvatar, avatarSizeStyle, borderStyle]}>
+    <TouchableOpacity
+      style={[styles.containerAvatar, styles.containerBgAvatar, avatarSizeStyle, borderStyle]}
+      disabled={!onImagePressed}
+      onPress={() => onImagePressed?.(uri!)}
+    >
       {uri?.endsWith('.svg') ? (
         <SvgUri
           uri={uri}
@@ -45,7 +57,7 @@ const Avatar: React.FC<Props> = ({ uri, label, size, withBorder = false, bgAvata
           onError={() => setIsValidImageUrl(false)}
         />
       )}
-    </View>
+    </TouchableOpacity>
   )
 
   const renderNameInitials = () => (

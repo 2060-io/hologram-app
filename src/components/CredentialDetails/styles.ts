@@ -38,13 +38,6 @@ const styles = (theme: AppTheme) =>
       height: 40,
       marginLeft: 10,
     },
-    biggerImageContainer: {
-      backgroundColor: 'rgba(0,0,0, 0.53)',
-    },
-    biggerImage: {
-      width: '100%',
-      height: '100%',
-    },
   })
 
 export default styles
