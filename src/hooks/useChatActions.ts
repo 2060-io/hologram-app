@@ -82,7 +82,7 @@ export const useChatActions = () => {
     return Share.open(options)
   }, [])
 
-  const onSaveFileToGallery = useCallback(async (message: ChatEntryMessage) => {
+  const saveFileToGallery = useCallback(async (message: ChatEntryMessage) => {
     const { READ_MEDIA_IMAGES, READ_EXTERNAL_STORAGE } = PermissionsAndroid.PERMISSIONS
     const permission = (Platform.Version as number) >= 33 ? READ_MEDIA_IMAGES : READ_EXTERNAL_STORAGE
     const hasPermissionsAndroid = !IS_DEVICE_IOS && (await requestAndroidPermissions(permission))
@@ -467,7 +467,7 @@ export const useChatActions = () => {
 
   return {
     shareMediaToApp,
-    onSaveFileToGallery,
+    saveFileToGallery,
     reactToMessage,
     onRepliedMessage,
     sendTextMessage,

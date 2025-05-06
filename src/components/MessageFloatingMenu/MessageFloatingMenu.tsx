@@ -57,7 +57,7 @@ const MessageFloatingMenu = ({
   const theme = useTheme()
   const styles = getStyles(theme)
   const { t } = useTranslation()
-  const { onSaveFileToGallery, shareMediaToApp, onRepliedMessage, reactToMessage } = useChatActions()
+  const { saveFileToGallery, shareMediaToApp, onRepliedMessage, reactToMessage } = useChatActions()
   const messageIsDeleted = selectedMessage?.state === ChatEntryState.Deleted
 
   const handleMessageReaction = (action: 'react' | 'unreact', emoji: string) => {
@@ -82,7 +82,7 @@ const MessageFloatingMenu = ({
         startSelectingMessagesMode()
         updateSelectedMessages(selectedMessage)
       },
-      'action-save': async () => await onSaveFileToGallery(selectedMessage),
+      'action-save': async () => await saveFileToGallery(selectedMessage),
       'action-share': async () => await shareMediaToApp(selectedMessage),
       'action-reply': () => {
         const message = onRepliedMessage(selectedMessage)
