@@ -93,7 +93,7 @@ export const useChatActions = () => {
 
     if (!IS_DEVICE_IOS && !hasPermissionsAndroid) return
     try {
-      await CameraRoll.saveAsset(path!)
+      await CameraRoll.saveAsset(path)
       toast({ type: 'success', message: t('personalChat.saveSucceededFileMedia') })
     } catch (error) {
       toast({ type: 'error', message: t('personalChat.saveFailedFileMedia') })

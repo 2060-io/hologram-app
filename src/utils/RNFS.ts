@@ -1,4 +1,3 @@
-import { Platform } from 'react-native'
 import {
   DocumentDirectoryPath,
   readFile as RNFSReadFile,
@@ -15,6 +14,8 @@ import {
 
 import { logError } from './log'
 
+import { IS_DEVICE_IOS } from '@2060/constants'
+
 type Encoding = 'utf8' | 'base64' | 'ascii'
 
 const documentDirectoryPath = DocumentDirectoryPath
@@ -25,14 +26,10 @@ const getLocalMediaFilePath = (fileName: string) => `${mediaDirectoryPath}/${fil
 const getLocalMediaPreviewFilePath = (fileName: string) => `${mediaPreviewsDirectoryPath}/${fileName}`
 const getFullLocalFilePath = (relativeFilePath: string) => `${documentDirectoryPath}/${relativeFilePath}`
 
-const getLocalFileUri = (relativeFilePath?: string) => {
-  return relativeFilePath
-    ? Platform.select({
-        ios: getFullLocalFilePath(relativeFilePath),
-        android: `file://${getFullLocalFilePath(relativeFilePath)}`,
-        default: '',
-      })
-    : undefined
+const getLocalFileUri = (relativeFilePath: string) => {
+  return IS_DEVICE_IOS
+    ? getFullLocalFilePath(relativeFilePath)
+    : `file://${getFullLocalFilePath(relativeFilePath)}`
 }
 
 const readFile = async (path: string, encodingOrOptions: Encoding = 'utf8') => {
