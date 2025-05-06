@@ -83,16 +83,13 @@ export const useChatActions = () => {
   }, [])
 
   const onSaveFileToGallery = useCallback(async (message: ChatEntryMessage) => {
-    const { PERMISSIONS } = PermissionsAndroid
-    const READ_MEDIA_IMAGES = PERMISSIONS.READ_MEDIA_IMAGES
-    const READ_EXTERNAL_STORAGE = PERMISSIONS.READ_EXTERNAL_STORAGE
+    const { READ_MEDIA_IMAGES, READ_EXTERNAL_STORAGE } = PermissionsAndroid.PERMISSIONS
     const permission = (Platform.Version as number) >= 33 ? READ_MEDIA_IMAGES : READ_EXTERNAL_STORAGE
-    const { localFilePath } = extractDataFromMessage(message)
-    const path = getLocalFileUri(localFilePath)
     const hasPermissionsAndroid = !IS_DEVICE_IOS && (await requestAndroidPermissions(permission))
-
     if (!IS_DEVICE_IOS && !hasPermissionsAndroid) return
+    const { localFilePath } = extractDataFromMessage(message)
     try {
+      const path = getLocalFileUri(localFilePath)
       await CameraRoll.saveAsset(path)
       toast({ type: 'success', message: t('personalChat.saveSucceededFileMedia') })
     } catch (error) {
