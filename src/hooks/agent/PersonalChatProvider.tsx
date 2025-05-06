@@ -84,8 +84,11 @@ const getMessageActions = (currentMessage: ChatEntryMessage) => {
   }
 
   if (isMedia || isText) messageActions.push(actionReplyMessage, actionForwardMessage)
-  if ([ChatEntryType.Video, ChatEntryType.Image].includes(type)) {
-    messageActions.push(actionSaveMessage, actionShareMessage)
+  if ([ChatEntryType.Video, ChatEntryType.Image, ChatEntryType.VoiceNote].includes(type)) {
+    if (type !== ChatEntryType.VoiceNote) {
+      messageActions.push(actionSaveMessage)
+    }
+    messageActions.push(actionShareMessage)
   }
   const isReported = currentMessage.metadata?.isReported === true
 
