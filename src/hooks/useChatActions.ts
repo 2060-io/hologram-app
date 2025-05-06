@@ -4,7 +4,7 @@ import { ActionMenuRole, ActionMenuState } from '@credo-ts/action-menu'
 import { CameraRoll } from '@react-native-camera-roll/camera-roll'
 import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Platform, PermissionsAndroid } from 'react-native'
+import { Platform } from 'react-native'
 import Share, { ShareOptions } from 'react-native-share'
 import { SharedData } from 'react-native-share-menu'
 
@@ -23,7 +23,6 @@ import { createTextChatEntry } from './agent/chat/recordChangeHandlers/handleBas
 import { createChatEntry, findOrCreateChatThread, updateThread } from './agent/chat/services'
 import { useLocalRealm } from './providers/RealmProvider'
 
-import { IS_DEVICE_IOS } from '@2060/constants'
 import {
   ActionMenuSelectionMetadata,
   ChatEntry,
@@ -36,7 +35,7 @@ import {
   isMediaType,
 } from '@2060/model'
 import { ChatEntryMessage } from '@2060/pages/PersonalChat/ChatMessage/Props'
-import { log, logError, requestAndroidPermissions } from '@2060/utils'
+import { log, logError } from '@2060/utils'
 import { getLocalFileUri } from '@2060/utils/RNFS'
 import { getMediaFileSharingData } from '@2060/utils/mediaFileUtils'
 import { toast } from '@2060/utils/toast'
@@ -83,12 +82,8 @@ export const useChatActions = () => {
   }, [])
 
   const saveFileToGallery = useCallback(async (message: ChatEntryMessage) => {
-    const { READ_MEDIA_IMAGES, READ_EXTERNAL_STORAGE } = PermissionsAndroid.PERMISSIONS
-    const permission = (Platform.Version as number) >= 33 ? READ_MEDIA_IMAGES : READ_EXTERNAL_STORAGE
-    const hasPermissionsAndroid = !IS_DEVICE_IOS && (await requestAndroidPermissions(permission))
-    if (!IS_DEVICE_IOS && !hasPermissionsAndroid) return
-    const { localFilePath } = extractDataFromMessage(message)
     try {
+      const { localFilePath } = extractDataFromMessage(message)
       const path = getLocalFileUri(localFilePath)
       await CameraRoll.saveAsset(path)
       toast({ type: 'success', message: t('personalChat.saveSucceededFileMedia') })
