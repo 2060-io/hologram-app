@@ -49,7 +49,7 @@ const VideoChatView = memo((props: MediaProps) => {
     mediaUploadState === MediaUploadState.ErrorCreating ||
     mediaUploadState === MediaUploadState.ErrorUploading
 
-  const videoFileUri = getLocalFileUri(localFilePath)
+  const videoFileUri = localFilePath ? getLocalFileUri(localFilePath) : undefined
   const localPreviewSource = localPreviewFilePath
     ? {
         uri: getLocalFileUri(localPreviewFilePath),
