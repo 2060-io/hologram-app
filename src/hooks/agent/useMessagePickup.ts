@@ -6,7 +6,7 @@ import { MobileAgent } from '@2060/services/agent'
 async function initiateMessagePickup(agent: MobileAgent) {
   agent.config.logger.info('Starting Message Pickup')
 
-  // Iniate message pickup from the mediator. Passing no mediator, will use default mediator
+  // Initiate message pickup from the mediator. Passing no mediator, will use default mediator
   await agent.mediationRecipient.initiateMessagePickup(undefined, MediatorPickupStrategy.PickUpV2LiveMode)
 }
 
