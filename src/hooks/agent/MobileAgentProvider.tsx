@@ -21,7 +21,7 @@ if (__DEV__) {
 export const baseAgentConfig: MobileAgentConfig = {
   agentDependencies,
   logger,
-  mediatorPickupStrategy: MediatorPickupStrategy.PickUpV2LiveMode,
+  mediatorPickupStrategy: MediatorPickupStrategy.None,
 }
 
 interface MobileAgentState {
