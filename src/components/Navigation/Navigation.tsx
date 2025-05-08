@@ -15,9 +15,10 @@ import PersonalChatStackNavigator from './PersonalChatStackNavigator'
 import deepLinking from './deepLinking'
 import getStyles from './styles'
 
-import { useIsForeground } from '@2060/hooks'
+import { useIsForeground, useNetwork } from '@2060/hooks'
 import { manageBackgroundChatEntryChanges } from '@2060/hooks/agent/chat'
 import { manageConnectionStateChangedEvent } from '@2060/hooks/agent/connections/manageConnectionStateChangedEvent'
+import { useMessagePickup } from '@2060/hooks/agent/useMessagePickup'
 import { useConfig } from '@2060/hooks/providers/ConfigProvider'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
 import { useScreenLock } from '@2060/hooks/providers/ScreenLockProvider'
@@ -67,6 +68,14 @@ const Navigation = ({ isSignedUp, agent, theme }: NavigationProps) => {
   const { isDeveloperMode } = useConfig()
   const { isScreenLockForceDisabled } = useScreenLock()
   const InitialComponent = isSignedUp ? HomeMain : isDeveloperMode ? SignUpMain : ProfileCreation
+
+  const { assertConnectedNetwork } = useNetwork()
+  const isNetworkConnected = assertConnectedNetwork()
+
+  useMessagePickup({
+    isEnabled: isSignedUp && isNetworkConnected,
+    agent,
+  })
 
   useEffect(() => {
     const provider = appCheck().newReactNativeFirebaseAppCheckProvider()
