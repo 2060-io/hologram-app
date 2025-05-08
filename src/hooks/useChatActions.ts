@@ -1,10 +1,10 @@
 import { MessageReactionAction } from '@2060.io/credo-ts-didcomm-reactions'
 import { MessageReceiptOptions, MessageState } from '@2060.io/credo-ts-didcomm-receipts'
 import { ActionMenuRole, ActionMenuState } from '@credo-ts/action-menu'
-import { useCameraRoll } from '@react-native-camera-roll/camera-roll'
+import { CameraRoll } from '@react-native-camera-roll/camera-roll'
 import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Platform, PermissionsAndroid } from 'react-native'
+import { Platform } from 'react-native'
 import Share, { ShareOptions } from 'react-native-share'
 import { SharedData } from 'react-native-share-menu'
 
@@ -23,7 +23,6 @@ import { createTextChatEntry } from './agent/chat/recordChangeHandlers/handleBas
 import { createChatEntry, findOrCreateChatThread, updateThread } from './agent/chat/services'
 import { useLocalRealm } from './providers/RealmProvider'
 
-import { IS_DEVICE_IOS } from '@2060/constants'
 import {
   ActionMenuSelectionMetadata,
   ChatEntry,
@@ -36,13 +35,12 @@ import {
   isMediaType,
 } from '@2060/model'
 import { ChatEntryMessage } from '@2060/pages/PersonalChat/ChatMessage/Props'
-import { log, logError, requestAndroidPermissions } from '@2060/utils'
+import { log, logError } from '@2060/utils'
 import { getLocalFileUri } from '@2060/utils/RNFS'
 import { getMediaFileSharingData } from '@2060/utils/mediaFileUtils'
 import { toast } from '@2060/utils/toast'
 
 export const useChatActions = () => {
-  const [, , savePhoto] = useCameraRoll()
   const { t } = useTranslation()
   const { agent } = useMobileAgent()
   const { userProfileData } = useUserProfile()
@@ -83,20 +81,11 @@ export const useChatActions = () => {
     return Share.open(options)
   }, [])
 
-  const onSaveFileToGallery = useCallback(async (message: ChatEntryMessage) => {
-    const { PERMISSIONS } = PermissionsAndroid
-    const READ_MEDIA_IMAGES = PERMISSIONS.READ_MEDIA_IMAGES
-    const READ_EXTERNAL_STORAGE = PERMISSIONS.READ_EXTERNAL_STORAGE
-    const permission = (Platform.Version as number) >= 33 ? READ_MEDIA_IMAGES : READ_EXTERNAL_STORAGE
-    const { fileType, localFilePath } = extractDataFromMessage(message)
-    const path = getLocalFileUri(localFilePath)
-    const isAudioFile = fileType === 'audio'
-    const hasPermissionsAndroid = !IS_DEVICE_IOS && (await requestAndroidPermissions(permission))
-
-    if (isAudioFile) return
-    if (!IS_DEVICE_IOS && !hasPermissionsAndroid) return
+  const saveFileToGallery = useCallback(async (message: ChatEntryMessage) => {
     try {
-      await savePhoto(path!)
+      const { localFilePath } = extractDataFromMessage(message)
+      const path = getLocalFileUri(localFilePath)
+      await CameraRoll.saveAsset(path)
       toast({ type: 'success', message: t('personalChat.saveSucceededFileMedia') })
     } catch (error) {
       toast({ type: 'error', message: t('personalChat.saveFailedFileMedia') })
@@ -473,7 +462,7 @@ export const useChatActions = () => {
 
   return {
     shareMediaToApp,
-    onSaveFileToGallery,
+    saveFileToGallery,
     reactToMessage,
     onRepliedMessage,
     sendTextMessage,

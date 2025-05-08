@@ -67,8 +67,8 @@ const ImageChatView = (props: ImageProps) => {
     role: currentMessage.role,
   })
 
-  const imageUri = getLocalFileUri(localFilePath)
-  const imagePreviewUri = getLocalFileUri(localPreviewFilePath)
+  const imageUri = localFilePath ? getLocalFileUri(localFilePath) : undefined
+  const imagePreviewUri = localPreviewFilePath ? getLocalFileUri(localPreviewFilePath) : undefined
   const imageStyle = getImageStyle(mediaItem)
   const imagePreview = { uri: preview ?? Image.resolveAssetSource(imagePlaceholder).uri }
   const isMediaUploadError =

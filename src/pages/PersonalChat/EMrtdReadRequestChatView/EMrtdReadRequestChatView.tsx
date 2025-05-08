@@ -125,7 +125,7 @@ const EMrtdReadRequestChatView = (props: Props) => {
         <Header theme={theme} title={t('chat.eMRTDRequest')} leftIconName="id" />
         <View style={styles.subContainer}>
           <Trans
-            i18nKey={t('chat.eMRTDScanChatInst')}
+            i18nKey="chat.eMRTDScanChatInst"
             typography="EuclidCircularA-Regular"
             style={styles.instructions}
             parent={Text}
