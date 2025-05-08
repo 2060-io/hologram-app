@@ -13,7 +13,7 @@ async function initiateMessagePickup(agent: MobileAgent) {
 async function stopMessagePickup(agent: MobileAgent) {
   agent.config.logger.info('Stopping Message Pickup')
 
-  // Stop message pickup. Will stopp all message pickup, not just from the mediator
+  // Stop message pickup. Will stop all message pickup, not just from the mediator
   await agent.mediationRecipient.stopMessagePickup()
 }
 
