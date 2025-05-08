@@ -7,7 +7,7 @@ export default (theme: AppTheme) =>
   StyleSheet.create({
     container: {
       flex: 1,
-      paddingHorizontal: 15,
+      marginHorizontal: 15,
     },
     subContainer: {
       flex: 1,

@@ -40,7 +40,7 @@ const EMrtdInstructions = ({ scan, dismissPopup, refuse }: Props) => {
             {t('importantNote')}
           </Text>
           <Trans
-            i18nKey={t('chat.eMRTDScanInst')}
+            i18nKey="chat.eMRTDScanInst"
             typography="EuclidCircularA-Regular"
             style={styles.instructions}
             parent={Text}
