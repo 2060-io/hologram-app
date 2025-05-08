@@ -24,14 +24,17 @@ async function stopMessagePickup(agent: MobileAgent) {
 export function useMessagePickup({ agent, isEnabled = true }: { agent?: MobileAgent; isEnabled?: boolean }) {
   useEffect(() => {
     if (!agent) return
-    if (!isEnabled) {
-      stopMessagePickup(agent)
-      return
-    }
-    initiateMessagePickup(agent)
-
-    return () => {
+    if (isEnabled) {
+      initiateMessagePickup(agent)
+    } else {
       stopMessagePickup(agent)
     }
   }, [isEnabled, agent])
+
+  useEffect(() => {
+    if (!agent) return
+    return () => {
+      stopMessagePickup(agent)
+    }
+  }, [agent])
 }
