@@ -122,7 +122,8 @@
     "rn-emoji-keyboard": "^1.2.1",
     "text-encoding-polyfill": "^0.6.7",
     "react-native-local-native-modules": "file:./modules/local-native-modules",
-    "react-native-share-menu": "file:./modules/react-native-share-menu"
+    "react-native-share-menu": "file:./modules/react-native-share-menu",
+    "react-native-video-properties": "file:./modules/react-native-video-properties"
   },
   "devDependencies": {
     "@babel/helper-get-function-arity": "^7.16.7",

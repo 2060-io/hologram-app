@@ -12940,6 +12940,9 @@ react-native-version@^4.0.0:
     resolve-from "^5.0.0"
     semver "^7.0.0"
 
+"react-native-video-properties@file:./modules/react-native-video-properties":
+  version "0.0.0"
+
 react-native-video@6.8.2:
   version "6.8.2"
   resolved "https://registry.yarnpkg.com/react-native-video/-/react-native-video-6.8.2.tgz#3c53524b9f74591b5e6d7964e7aa2e9f0328a95d"

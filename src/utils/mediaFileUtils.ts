@@ -1,6 +1,6 @@
 import { Image } from 'react-native'
 import { stat, TemporaryDirectoryPath } from 'react-native-fs'
-import { nativeGetVideoProperties } from 'react-native-local-native-modules'
+import { getVideoProperties } from 'react-native-video-properties'
 
 import { copyFile } from './RNFS'
 import { logError } from './log'
@@ -8,12 +8,6 @@ import { logError } from './log'
 import { IS_DEVICE_IOS } from '@2060/constants'
 import { DidCommMediaFileSharingData } from '@2060/hooks/agent'
 import { createDidCommPreview } from '@2060/hooks/media/preview'
-
-type VideoProps = {
-  duration: number
-  width: number
-  height: number
-}
 
 export const getMediaFileSharingData = async (fileOriginalPath: string, mimeType: string) => {
   const filePath = await fromContentUriToFileUri(fileOriginalPath)
@@ -47,7 +41,7 @@ const getDataForVideo = async (currentFileValues: DidCommMediaFileSharingData) =
   let width = 0
   let height = 0
   try {
-    const properties = (await nativeGetVideoProperties(currentFileValues.path)) as VideoProps
+    const properties = await getVideoProperties(currentFileValues.path)
     if (properties) {
       duration = properties.duration
       width = properties.width
