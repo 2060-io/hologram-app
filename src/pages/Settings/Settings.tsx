@@ -12,7 +12,7 @@ import { HomeMainTabParams } from '../HomeMain/HomeMainProps'
 import getStyles from './styles'
 
 import { ModalConfirmAction } from '@2060/components'
-import { Avatar, Text, SvgIcon, OptionsList } from '@2060/components/common'
+import { Avatar, Text, SvgIcon, OptionsList, FullScreenImage } from '@2060/components/common'
 import { OptionProps } from '@2060/components/common/OptionsList/OptionsListProps'
 import { useMobileAgent, useUserProfile } from '@2060/hooks/agent'
 import { useConfig } from '@2060/hooks/providers/ConfigProvider'
@@ -31,8 +31,10 @@ const TIMES_TO_ENABLE_DEV_MODE = 7
 const Settings = ({ navigation }: Props) => {
   const developerModeCounter = useRef(0)
   const lastTouch = useRef<number | undefined>(undefined)
+  const imageFullScreenUri = useRef<string | undefined>(undefined)
   const [showConfirmationDeleteModal, setShowConfirmationDeleteModal] = useState(false)
   const [options, setOptions] = useState<Array<OptionProps>>([])
+  const [showFullScreenImage, setShowFullScreenImage] = useState<boolean>(false)
   const { t } = useTranslation()
   const { agent, shutdownAgent, isConnectedToCloudAgent } = useMobileAgent()
   const { realm, closeRealm } = useLocalRealm()
@@ -46,6 +48,11 @@ const Settings = ({ navigation }: Props) => {
   const defaultAvatar = Image.resolveAssetSource(require('@2060/assets/images/defaultUser.png')).uri
   const avatarUri = imgUrl || (displayName && displayName.length > 0 ? '' : defaultAvatar)
 
+  const onAvatarImagePressed = (avatarImageUri: string) => {
+    setShowFullScreenImage(true)
+    imageFullScreenUri.current = avatarImageUri
+  }
+  const closeFullScreenImage = () => setShowFullScreenImage(false)
   const hideConfirmationDeleteModal = () => setShowConfirmationDeleteModal(false)
 
   const confirmWalletDeletion = () => {
@@ -194,6 +201,11 @@ const Settings = ({ navigation }: Props) => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <FullScreenImage
+        showFullScreenImage={showFullScreenImage}
+        closeFullScreenImage={closeFullScreenImage}
+        imageUri={imageFullScreenUri.current!}
+      />
       <TouchableWithoutFeedback style={styles.subContainer} onPress={handleDeveloperMode}>
         <View style={styles.subContainer}>
           <ModalConfirmAction
@@ -207,7 +219,12 @@ const Settings = ({ navigation }: Props) => {
             onCancel={hideConfirmationDeleteModal}
           />
           <View style={styles.containerProfile}>
-            <Avatar uri={avatarUri} label={userProfileData?.displayName} size="46%" />
+            <Avatar
+              uri={avatarUri}
+              label={userProfileData?.displayName}
+              size="46%"
+              onImagePressed={onAvatarImagePressed}
+            />
             {userProfileData?.displayName && (
               <Text typography="EuclidCircularA-Medium" style={styles.displayName}>
                 {userProfileData?.displayName}
