@@ -2,7 +2,7 @@ import React, { createContext, useCallback, useContext, useEffect, PropsWithChil
 import ShareMenu, { SharedData } from 'react-native-share-menu'
 
 import { useNavigation } from '../agent'
-import { useIsForeground } from '../useIsForeground'
+import { useAppState } from '../useAppState'
 
 import { useScreenLock } from './ScreenLockProvider'
 
@@ -25,7 +25,7 @@ export const useSharedDataFromOtherApps = () => {
 export const SharedDataFromOtherAppsProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const { getLocalAuth } = useNavigation()
   const isAuthenticated = getLocalAuth()
-  const isForeground = useIsForeground()
+  const { isAppActive } = useAppState()
 
   const [sharedData, setSharedData] = useState<SharedData>()
   const [displayShareMessagesScreen, setDisplayShareMessagesScreen] = useState(false)
@@ -50,9 +50,9 @@ export const SharedDataFromOtherAppsProvider: React.FC<PropsWithChildren> = ({ c
   }, [handleSharedAppData])
 
   useEffect(() => {
-    if (!isAuthenticated || !sharedData || !isForeground) return
+    if (!isAuthenticated || !sharedData || !isAppActive) return
     setDisplayShareMessagesScreen(true)
-  }, [isAuthenticated, sharedData, isForeground])
+  }, [isAuthenticated, sharedData, isAppActive])
 
   const cancelShare = useCallback(() => {
     setDisplayShareMessagesScreen(false)

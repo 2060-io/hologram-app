@@ -45,6 +45,9 @@ to default ones
 */
 export const CUSTOM_DEV_ENVS_PERSIST_KEY = 'customDevelopmentEnvironments'
 
+// This storage key saves the value that indicates how long the screen lock timeout is
+export const SCREEN_LOCK_TIMEOUT_PERSIST_KEY = 'screenLockTimeout'
+
 // This storage key saves the value that indicates if user has screen lock enabled
 export const SCREEN_LOCK_ENABLED_PERSIST_KEY = 'screenLockEnabled'
 

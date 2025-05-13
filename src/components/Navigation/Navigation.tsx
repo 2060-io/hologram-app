@@ -15,7 +15,7 @@ import PersonalChatStackNavigator from './PersonalChatStackNavigator'
 import deepLinking from './deepLinking'
 import getStyles from './styles'
 
-import { useIsForeground, useNetwork } from '@2060/hooks'
+import { useAppState, useNetwork } from '@2060/hooks'
 import { manageBackgroundChatEntryChanges } from '@2060/hooks/agent/chat'
 import { manageConnectionStateChangedEvent } from '@2060/hooks/agent/connections/manageConnectionStateChangedEvent'
 import { useMessagePickup } from '@2060/hooks/agent/useMessagePickup'
@@ -61,7 +61,7 @@ type NavigationProps = {
 
 const Navigation = ({ isSignedUp, agent, theme }: NavigationProps) => {
   const { t } = useTranslation()
-  const isForeground = useIsForeground()
+  const { isAppActive } = useAppState()
   const { realm } = useLocalRealm()
   const styles = getStyles(theme)
   const globalStyles = getGlobalStyles(theme)
@@ -117,7 +117,7 @@ const Navigation = ({ isSignedUp, agent, theme }: NavigationProps) => {
       )
       const { addConnectionChangeListener, removeConnectionChangeListener } =
         manageConnectionStateChangedEvent(agent)
-      if (!isForeground && !isScreenLockForceDisabled) {
+      if (!isAppActive && !isScreenLockForceDisabled) {
         log('App in background ... registering to events')
         addChatEntryChangeListener()
         addConnectionChangeListener()
@@ -128,7 +128,7 @@ const Navigation = ({ isSignedUp, agent, theme }: NavigationProps) => {
         }
       }
     }
-  }, [agent, realm, isForeground, isScreenLockForceDisabled])
+  }, [agent, realm, isAppActive, isScreenLockForceDisabled])
 
   return (
     <NavigationContainer linking={deepLinking} theme={theme.isDarkMode ? DarkTheme : DefaultTheme}>
