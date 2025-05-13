@@ -11,6 +11,7 @@ export const mainTextColor = '#000000'
 export const grayColor = '#727272'
 export const waterColor = (value: string) => hexTransparency(lightenDarken(value, 60), '20')
 export const IS_DEVICE_IOS = Platform.OS === 'ios'
+export const MAX_VIDEO_DURATION = 60000
 
 export const isAndroid13OrHigher = () => {
   if (Platform.OS === 'android') {
