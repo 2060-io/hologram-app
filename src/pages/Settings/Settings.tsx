@@ -106,13 +106,13 @@ const Settings = ({ navigation }: Props) => {
             {
               iconName: 'cloudDownload',
               text: t('settings.backup'),
-              onPress: () => onNavigate('WalletBackup'),
+              onPress: () => navigateTo('WalletBackup'),
               rightContent: () => optionRightContent(),
             },
             {
               iconName: 'developer',
               text: t('settings.developer'),
-              onPress: () => onNavigate('Developer'),
+              onPress: () => navigateTo('Developer'),
               rightContent: () => optionRightContent(),
             },
           ]
@@ -129,19 +129,19 @@ const Settings = ({ navigation }: Props) => {
     {
       iconName: 'notifications',
       text: t('settings.notifications'),
-      onPress: () => onNavigate('Notifications'),
+      onPress: () => navigateTo('Notifications'),
       rightContent: () => optionRightContent(),
     },
     {
       iconName: 'users',
       text: t('settings.connections'),
-      onPress: () => onNavigate('Connections'),
+      onPress: () => navigateTo('Connections'),
       rightContent: () => optionRightContent(),
     },
     {
       iconName: 'lock',
       text: t('settings.privacyAndDataUse'),
-      onPress: () => onNavigate('Privacy'),
+      onPress: () => navigateTo('Privacy'),
       rightContent: () => optionRightContent(),
     },
     {
@@ -152,7 +152,7 @@ const Settings = ({ navigation }: Props) => {
     {
       iconName: 'people',
       text: t('navigation.ParentalControl'),
-      onPress: () => onNavigate('ParentalControl'),
+      onPress: () => navigateTo('ParentalControl'),
       rightContent: () => optionRightContent(),
     },
   ]
@@ -160,7 +160,7 @@ const Settings = ({ navigation }: Props) => {
   const goToUserInvitation = () => navigation.dispatch(StackActions.push('UserInvitation'))
   const goToUserProfile = () => navigation.dispatch(StackActions.push('UserProfile'))
 
-  const onNavigate = (screen: string) => {
+  const navigateTo = (screen: string) => {
     if (screen === 'Notifications') return NotificationSetting.open()
     navigation.dispatch(StackActions.push(screen))
   }
