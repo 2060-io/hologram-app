@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native'
 
-import { AppTheme } from '@2060/styles'
+import { AppTheme, cardShadowStyles, cardStyles } from '@2060/styles'
 
 export default (theme: AppTheme) =>
   StyleSheet.create({
@@ -12,11 +12,11 @@ export default (theme: AppTheme) =>
     },
     contentContainer: {
       width: '85%',
+      ...cardStyles(theme),
+      ...cardShadowStyles(theme.colors),
       paddingHorizontal: 12,
       paddingVertical: 20,
-      backgroundColor: theme.colors.secondary,
       alignItems: 'center',
-      borderRadius: 8,
     },
     title: {
       fontSize: theme.fontSize.lg,
@@ -45,9 +45,9 @@ export default (theme: AppTheme) =>
       marginBottom: 24,
     },
     footerText: {
-      height: 65,
       fontSize: theme.fontSize.md,
       color: theme.colors.tertiaryText,
+      marginBottom: 12,
     },
     cancelButton: {
       alignSelf: 'flex-end',
