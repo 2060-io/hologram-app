@@ -22,7 +22,11 @@ const OptionsList = ({ options }: Props) => {
             onPress={option?.onPress}
           >
             {option.iconName && (
-              <SvgIcon name={option.iconName as keyof IconsNames} fill={theme.colors.tertiaryText} />
+              <SvgIcon
+                name={option.iconName as keyof IconsNames}
+                fill={theme.colors.tertiaryText}
+                style={styles.icon}
+              />
             )}
             <Text typography="EuclidCircularA-Regular" style={styles.text}>
               {option.text}

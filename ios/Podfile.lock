@@ -1570,7 +1570,6 @@ PODS:
     - DoubleConversion
     - glog
     - hermes-engine
-    - OpenSSL-Universal (= 3.2.2000)
     - RCT-Folly (= 2024.01.01.00)
     - RCTRequired
     - RCTTypeSafety
@@ -2328,6 +2327,7 @@ DEPENDENCIES:
   - react-native-cloud-store (from `../node_modules/react-native-cloud-store`)
   - react-native-config (from `../node_modules/react-native-config`)
   - react-native-create-thumbnail (from `../node_modules/react-native-create-thumbnail`)
+  - react-native-date-picker (from `../node_modules/react-native-date-picker`)
   - react-native-eid-reader (from `../node_modules/react-native-eid-reader`)
   - react-native-get-random-values (from `../node_modules/react-native-get-random-values`)
   - "react-native-image-resizer (from `../node_modules/@bam.tech/react-native-image-resizer`)"
@@ -2534,6 +2534,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-config"
   react-native-create-thumbnail:
     :path: "../node_modules/react-native-create-thumbnail"
+  react-native-date-picker:
+    :path: "../node_modules/react-native-date-picker"
   react-native-eid-reader:
     :path: "../node_modules/react-native-eid-reader"
   react-native-get-random-values:

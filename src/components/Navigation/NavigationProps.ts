@@ -63,4 +63,5 @@ export type NavigationStackParams = {
     attributes: Record<string, unknown>
     proofState: ProofState
   }
+  ParentalControl: undefined
 }

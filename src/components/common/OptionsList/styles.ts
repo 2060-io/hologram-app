@@ -21,9 +21,12 @@ export default (theme: AppTheme) =>
       borderBottomWidth: 1,
       borderBottomColor: hexTransparency('#6A8994', '29'),
     },
+    icon: {
+      marginRight: 12,
+    },
     text: {
       flex: 1,
-      paddingHorizontal: 12,
+      marginRight: 12,
       fontSize: theme.fontSize.md2,
       color: theme.colors.tertiaryText,
     },

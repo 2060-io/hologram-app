@@ -149,6 +149,12 @@ const Settings = ({ navigation }: Props) => {
       text: t('settings.deleteWallet'),
       onPress: () => setShowConfirmationDeleteModal(true),
     },
+    {
+      iconName: 'people',
+      text: t('navigation.ParentalControl'),
+      onPress: () => onNavigate('ParentalControl'),
+      rightContent: () => optionRightContent(),
+    },
   ]
 
   const goToUserInvitation = () => navigation.dispatch(StackActions.push('UserInvitation'))
