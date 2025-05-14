@@ -38,6 +38,8 @@ const ParentalControl = () => {
       if (storedValue) {
         const storedDate = convertStringToDate(storedValue)
         setKidBirthday(storedDate)
+      } else {
+        createAndStoreKeyWithoutHash(ParentalControlEnum.KidBirthday, dayjs(new Date()).format('DD/MM/YYYY'))
       }
     }
     loadIsParentalControlEnabled()
