@@ -14,7 +14,7 @@ import {
 
 import { logError } from './log'
 
-import { IS_DEVICE_IOS } from '@2060/constants'
+import { IS_IOS } from '@2060/constants'
 
 type Encoding = 'utf8' | 'base64' | 'ascii'
 
@@ -27,9 +27,7 @@ const getLocalMediaPreviewFilePath = (fileName: string) => `${mediaPreviewsDirec
 const getFullLocalFilePath = (relativeFilePath: string) => `${documentDirectoryPath}/${relativeFilePath}`
 
 const getLocalFileUri = (relativeFilePath: string) => {
-  return IS_DEVICE_IOS
-    ? getFullLocalFilePath(relativeFilePath)
-    : `file://${getFullLocalFilePath(relativeFilePath)}`
+  return IS_IOS ? getFullLocalFilePath(relativeFilePath) : `file://${getFullLocalFilePath(relativeFilePath)}`
 }
 
 const readFile = async (path: string, encodingOrOptions: Encoding = 'utf8') => {

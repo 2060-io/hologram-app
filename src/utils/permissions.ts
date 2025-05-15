@@ -4,10 +4,10 @@ import { check, request, PERMISSIONS, RESULTS, Permission } from 'react-native-p
 
 import { logError } from './log'
 
-import { IS_ANDROID_DEVICE, IS_DEVICE_IOS } from '@2060/constants'
+import { IS_ANDROID_DEVICE, IS_IOS } from '@2060/constants'
 
-const MICROPHONE_PERMISSION = IS_DEVICE_IOS ? PERMISSIONS.IOS.MICROPHONE : PERMISSIONS.ANDROID.RECORD_AUDIO
-const CAMERA_PERMISSION = IS_DEVICE_IOS ? PERMISSIONS.IOS.CAMERA : PERMISSIONS.ANDROID.CAMERA
+const MICROPHONE_PERMISSION = IS_IOS ? PERMISSIONS.IOS.MICROPHONE : PERMISSIONS.ANDROID.RECORD_AUDIO
+const CAMERA_PERMISSION = IS_IOS ? PERMISSIONS.IOS.CAMERA : PERMISSIONS.ANDROID.CAMERA
 
 const permissionText: Partial<Record<Permission, string>> = {
   [CAMERA_PERMISSION]: t('general.permissionNeededMessage', { permission: t('signUp.camera') }),
@@ -31,7 +31,7 @@ const askPermission = async (permission: Permission) => {
     const isGranted = status === RESULTS.GRANTED
     if (status === RESULTS.BLOCKED) {
       Alert.alert(
-        IS_DEVICE_IOS ? permissionText[permission]! : '',
+        IS_IOS ? permissionText[permission]! : '',
         IS_ANDROID_DEVICE ? permissionText[permission]! : '',
         [
           { text: t('general.cancel'), style: 'destructive' },

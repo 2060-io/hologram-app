@@ -25,7 +25,7 @@ import {
   FileUploadDownloadContext,
 } from './useFileUploadDownload'
 
-import { IS_DEVICE_IOS } from '@2060/constants'
+import { IS_IOS } from '@2060/constants'
 import { MediaDownloadState, MediaUploadState, UploadChunkTask, UploadTask } from '@2060/model'
 import {
   AUTOMATIC_MEDIA_DOWNLOAD_VALUES_PERSIST_KEY,
@@ -81,7 +81,7 @@ const uploadChunk = async (dataStoreUrl: string, filePath: string, fileId: strin
   const options: UploadOptions = {
     customUploadId: `${fileId}/${chunkNumber}`,
     url: `${dataStoreUrl}/u/${fileId}/${chunkNumber}`,
-    path: IS_DEVICE_IOS ? `file://${filePath}` : filePath,
+    path: IS_IOS ? `file://${filePath}` : filePath,
     method: 'PUT',
     field: 'chunk',
     type: 'multipart',

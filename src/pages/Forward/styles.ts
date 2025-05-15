@@ -1,10 +1,10 @@
 import { StyleSheet } from 'react-native'
 
-import { IS_DEVICE_IOS } from '@2060/constants'
+import { IS_IOS } from '@2060/constants'
 import { AppTheme } from '@2060/styles'
 import { widthPercentageToDP } from '@2060/utils/responsiveUtils'
 
-const FORWARD_BUTTON_WIDTH = widthPercentageToDP(IS_DEVICE_IOS ? '10%' : '12%')
+const FORWARD_BUTTON_WIDTH = widthPercentageToDP(IS_IOS ? '10%' : '12%')
 
 export default (theme: AppTheme) =>
   StyleSheet.create({

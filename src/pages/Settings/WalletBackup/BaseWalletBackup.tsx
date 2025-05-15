@@ -10,7 +10,7 @@ import getStyles from './styles'
 
 import { WalletBackupInfo, ModalConfirmAction } from '@2060/components'
 import { Text, Switch, SvgIcon, MainButton } from '@2060/components/common'
-import { IS_ANDROID_DEVICE, IS_DEVICE_IOS } from '@2060/constants'
+import { IS_ANDROID_DEVICE, IS_IOS } from '@2060/constants'
 import { useBuildBackup } from '@2060/hooks'
 import { BackupProgressProps } from '@2060/hooks/backup'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
@@ -114,7 +114,7 @@ const BaseWalletBackup = ({
         <View style={styles.subContainer}>
           <Text typography="EuclidCircularA-Medium" style={styles.makePasswordText}>
             {t('settings.noCloudAvailable', {
-              cloud: IS_DEVICE_IOS ? 'iCloud Drive' : 'Google Drive',
+              cloud: IS_IOS ? 'iCloud Drive' : 'Google Drive',
             })}
           </Text>
           {IS_ANDROID_DEVICE && <MainButton text={t('general.retry')} onPress={selectAccount} />}

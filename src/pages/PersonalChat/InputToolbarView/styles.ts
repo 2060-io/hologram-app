@@ -1,10 +1,10 @@
 import { StyleSheet } from 'react-native'
 
-import { IS_DEVICE_IOS } from '@2060/constants'
+import { IS_IOS } from '@2060/constants'
 import { AppTheme } from '@2060/styles'
 import { widthPercentageToDP } from '@2060/utils/responsiveUtils'
 
-export const MESSAGE_INPUT_INITIAL_HEIGHT = widthPercentageToDP(IS_DEVICE_IOS ? '10%' : '12%')
+export const MESSAGE_INPUT_INITIAL_HEIGHT = widthPercentageToDP(IS_IOS ? '10%' : '12%')
 const MICROPHONE_ICON_CONTAINER_WHILE_RECORDING = widthPercentageToDP('15%')
 
 export default (theme: AppTheme, isRecording?: boolean) =>

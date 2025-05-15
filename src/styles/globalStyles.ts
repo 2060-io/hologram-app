@@ -2,7 +2,7 @@ import { StyleSheet } from 'react-native'
 
 import { AppTheme, AppColors } from './types'
 
-import { IS_DEVICE_IOS } from '@2060/constants'
+import { IS_IOS } from '@2060/constants'
 import { hexTransparency } from '@2060/utils/colorUtils'
 import { heightPercentageToDP } from '@2060/utils/responsiveUtils'
 
@@ -19,7 +19,7 @@ export const getGlobalStyles = (theme: AppTheme) =>
       elevation: 0,
       shadowOpacity: 0,
       shadowColor: 'transparent',
-      height: heightPercentageToDP(IS_DEVICE_IOS ? '12.10%' : '7.48%'),
+      height: heightPercentageToDP(IS_IOS ? '12.10%' : '7.48%'),
     },
   })
 

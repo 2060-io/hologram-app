@@ -8,7 +8,7 @@ import notifee, {
 import messaging from '@react-native-firebase/messaging'
 import { PERMISSIONS, request, RESULTS } from 'react-native-permissions'
 
-import { IS_DEVICE_IOS, primaryColor, isAndroid13OrHigher } from '@2060/constants'
+import { IS_IOS, primaryColor, isAndroid13OrHigher } from '@2060/constants'
 import {
   getStorageData,
   IS_PROCESSING_BACKGROUND_NOTIFICATIONS_PERSIST_KEY,
@@ -96,7 +96,7 @@ export const createChannel = async () => {
 }
 
 export const deleteRemoteNotifications = async () => {
-  if (IS_DEVICE_IOS) {
+  if (IS_IOS) {
     notifee.cancelAllNotifications(['generic-new-messages'])
   } else {
     notifee.cancelAllNotifications(['0'], 'generic-new-messages')

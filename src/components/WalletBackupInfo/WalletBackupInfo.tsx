@@ -6,7 +6,7 @@ import { View, ActivityIndicator, TouchableOpacity } from 'react-native'
 import getStyles from './styles'
 
 import { Text, SvgIcon, MainButton } from '@2060/components/common'
-import { IS_ANDROID_DEVICE, IS_DEVICE_IOS } from '@2060/constants'
+import { IS_ANDROID_DEVICE, IS_IOS } from '@2060/constants'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import {
   WalletBackupInfoProps,
@@ -41,7 +41,7 @@ const WalletBackupInfo = ({
   const styles = getStyles(theme)
 
   const renderGoogleSelectedAccount = useMemo(() => {
-    if (IS_DEVICE_IOS || !selectedGoogleAccount) return null
+    if (IS_IOS || !selectedGoogleAccount) return null
     return (
       <TouchableOpacity onPress={selectAccount}>
         <Text typography="EuclidCircularA-Medium" style={[styles.smallText, styles.suggestionText]}>
@@ -76,7 +76,7 @@ const WalletBackupInfo = ({
             {renderGoogleSelectedAccount}
             {withSuggestionMessage && (
               <Text typography="EuclidCircularA-Regular" style={[styles.smallText, styles.suggestionText]}>
-                {t('settings.backupSuggestion', { cloud: IS_DEVICE_IOS ? 'iCloud Drive' : 'Google Drive' })}
+                {t('settings.backupSuggestion', { cloud: IS_IOS ? 'iCloud Drive' : 'Google Drive' })}
               </Text>
             )}
           </>
@@ -86,7 +86,7 @@ const WalletBackupInfo = ({
             <Text typography="EuclidCircularA-Medium" style={styles.mediumText}>
               {t('settings.noBackupFound')}
             </Text>
-            {IS_DEVICE_IOS && (
+            {IS_IOS && (
               <Text typography="EuclidCircularA-Medium" style={styles.smallText}>
                 {t('settings.cloudNotSync')}
               </Text>
