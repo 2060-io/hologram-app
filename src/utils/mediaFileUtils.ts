@@ -5,7 +5,7 @@ import { nativeGetVideoProperties } from 'react-native-local-native-modules'
 import { copyFile } from './RNFS'
 import { logError } from './log'
 
-import { IS_DEVICE_IOS } from '@2060/constants'
+import { IS_IOS } from '@2060/constants'
 import { DidCommMediaFileSharingData } from '@2060/hooks/agent'
 import { createDidCommPreview } from '@2060/hooks/media/preview'
 
@@ -39,7 +39,7 @@ const fromContentUriToFileUri = async (contentUri: string) => {
   const fileNameAndExtension = urlComponents[urlComponents.length - 1]
   const destPath = `${TemporaryDirectoryPath}/${fileNameAndExtension}`
   await copyFile(contentUri, destPath)
-  return IS_DEVICE_IOS ? destPath : `file://${decodeURIComponent(destPath)}`
+  return IS_IOS ? destPath : `file://${decodeURIComponent(destPath)}`
 }
 
 const getDataForVideo = async (currentFileValues: DidCommMediaFileSharingData) => {

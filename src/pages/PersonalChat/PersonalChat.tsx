@@ -32,7 +32,7 @@ import { getSystemMessage, chatEntryEqual } from './utils'
 import { ModalBottomHalf, ModalConfirmAction } from '@2060/components'
 import MessageFloatingMenu from '@2060/components/MessageFloatingMenu'
 import { Text } from '@2060/components/common'
-import { IS_DEVICE_IOS } from '@2060/constants'
+import { IS_ANDROID, IS_IOS } from '@2060/constants'
 import { useChatActions, useKeyboard } from '@2060/hooks'
 import {
   useMobileAgent,
@@ -316,14 +316,14 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
 
   const containerStickyDate = {
     ...styles.containerStickyDate,
-    top: headerHeight + (IS_DEVICE_IOS ? headerStatusBarHeight : 0),
+    top: headerHeight + (IS_IOS ? headerStatusBarHeight : 0),
   }
 
   return (
     <KeyboardAvoidingView
-      behavior={IS_DEVICE_IOS ? 'padding' : 'height'}
+      behavior={IS_IOS ? 'padding' : 'height'}
       style={styles.container}
-      keyboardVerticalOffset={!IS_DEVICE_IOS && isKeyboardVisible ? StatusBar.currentHeight : 0}
+      keyboardVerticalOffset={IS_ANDROID && isKeyboardVisible ? StatusBar.currentHeight : 0}
     >
       <SafeAreaView style={styles.subContainer}>
         {currentHeader}

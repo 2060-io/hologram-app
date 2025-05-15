@@ -11,7 +11,7 @@ import getStyles from './styles'
 import { ModalConfirmAction } from '@2060/components'
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
 import { Text, ConnectionMainActions, SvgIcon, ModalLoading, OptionsList } from '@2060/components/common'
-import { IS_DEVICE_IOS } from '@2060/constants'
+import { IS_IOS } from '@2060/constants'
 import {
   useConnectionProfile,
   useMobileAgent,
@@ -124,7 +124,7 @@ const BaseConnectionDetails = ({
           setBlockingConnection(false)
         }
       },
-      IS_DEVICE_IOS ? 600 : 0,
+      IS_IOS ? 600 : 0,
     )
   }
 
