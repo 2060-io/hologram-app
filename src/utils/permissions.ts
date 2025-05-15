@@ -4,7 +4,7 @@ import { check, request, PERMISSIONS, RESULTS, Permission } from 'react-native-p
 
 import { logError } from './log'
 
-import { IS_DEVICE_IOS } from '@2060/constants'
+import { IS_ANDROID_DEVICE, IS_DEVICE_IOS } from '@2060/constants'
 
 const MICROPHONE_PERMISSION = IS_DEVICE_IOS ? PERMISSIONS.IOS.MICROPHONE : PERMISSIONS.ANDROID.RECORD_AUDIO
 const CAMERA_PERMISSION = IS_DEVICE_IOS ? PERMISSIONS.IOS.CAMERA : PERMISSIONS.ANDROID.CAMERA
@@ -32,7 +32,7 @@ const askPermission = async (permission: Permission) => {
     if (status === RESULTS.BLOCKED) {
       Alert.alert(
         IS_DEVICE_IOS ? permissionText[permission]! : '',
-        !IS_DEVICE_IOS ? permissionText[permission]! : '',
+        IS_ANDROID_DEVICE ? permissionText[permission]! : '',
         [
           { text: t('general.cancel'), style: 'destructive' },
           { text: t('general.settings'), style: 'default', onPress: () => Linking.openSettings() },

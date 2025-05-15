@@ -6,7 +6,7 @@ import { View, ActivityIndicator, TouchableOpacity } from 'react-native'
 import getStyles from './styles'
 
 import { Text, SvgIcon, MainButton } from '@2060/components/common'
-import { IS_DEVICE_IOS } from '@2060/constants'
+import { IS_ANDROID_DEVICE, IS_DEVICE_IOS } from '@2060/constants'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import {
   WalletBackupInfoProps,
@@ -99,7 +99,7 @@ const WalletBackupInfo = ({
             <Text typography="EuclidCircularA-Medium" style={styles.smallText}>
               {t('general.errorGettingBackupInfoFromCloud')}
             </Text>
-            {!IS_DEVICE_IOS && (
+            {IS_ANDROID_DEVICE && (
               <MainButton text={t('general.retry')} onPress={selectAccount} style={styles.reLoginButton} />
             )}
           </View>

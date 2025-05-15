@@ -10,7 +10,7 @@ import getStyles from './styles'
 import AppLogo from '@2060/assets/icons/AppLogo'
 import { WalletBackupInfo, ModalConfirmAction } from '@2060/components'
 import { Text, TextInputPassword, MainButton, SvgIcon, Progress } from '@2060/components/common'
-import { IS_DEVICE_IOS } from '@2060/constants'
+import { IS_ANDROID_DEVICE, IS_DEVICE_IOS } from '@2060/constants'
 import { useRestoreBackup } from '@2060/hooks'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 
@@ -165,7 +165,7 @@ const BaseRestoreWalletBackup = ({
               <Text typography="EuclidCircularA-Medium" style={styles.noCloudAvailable}>
                 {t('settings.noCloudAvailable', { cloud: IS_DEVICE_IOS ? 'iCloud Drive' : 'Google Drive' })}
               </Text>
-              {!IS_DEVICE_IOS && <MainButton text={t('general.retry')} onPress={selectAccount} />}
+              {IS_ANDROID_DEVICE && <MainButton text={t('general.retry')} onPress={selectAccount} />}
             </View>
           )}
         </TouchableWithoutFeedback>
