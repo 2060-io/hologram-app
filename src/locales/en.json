@@ -213,7 +213,8 @@
       "privacyPolicy": "Privacy policy.",
       "ageRestrictions": "Age restrictions:",
       "noAgeRestrictions": "Not restrictions",
-      "serviceNotVerifiable": "This service is not verifiable."
+      "serviceNotVerifiable": "This service is not verifiable.",
+      "canNotConnect": "Hey there, You're just <bold>{{ age }}</bold> years old! You'll need to wait a few more years before you can connect to this service."
     },
     "credential": {
       "noCredentials": "You do not have any credential yet",

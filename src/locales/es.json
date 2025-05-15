@@ -212,7 +212,8 @@
       "privacyPolicy": "Política de privacidad.",
       "ageRestrictions": "Restricciones de edad:",
       "noAgeRestrictions": "Sin restricciones",
-      "serviceNotVerifiable": "Este servicio no es verificable."
+      "serviceNotVerifiable": "Este servicio no es verificable.",
+      "canNotConnect": "Holaa!, Solamente tienes <bold>{{ age }}</bold> años. Tendrás que esperar uno años más para poder conectarte a este servicio."
     },
     "credential": {
       "noCredentials": "Aún no tienes credenciales",

@@ -64,3 +64,14 @@ export const isNowAfterThanDate = (timestamp: number): boolean => {
 export const stringToDate = (stringDate: string) => {
   return dayjs(stringDate, 'YYYYMMDD').format('DD-MM-YYYY')
 }
+
+/**
+ * Receives a string date in format 'DD-MM-YYYY' and returns a number
+ * indicating how many years have passed until today
+ * @param {string} stringDate
+ * @returns number
+ */
+export const timeFromNow = (stringDate: string) => {
+  const years = dayjs().diff(dayjs(stringDate, 'DD-MM-YYYY'), 'year')
+  return years
+}

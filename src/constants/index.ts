@@ -20,3 +20,5 @@ export const isAndroid13OrHigher = () => {
   }
   return false
 }
+
+export const KID_BIRTHDATE_DATE_FORMAT = 'DD-MM-YYYY'

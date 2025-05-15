@@ -10,11 +10,12 @@ import SetPIN from './SetPIN'
 import getStyles from './styles'
 
 import { OptionsList, Switch, Text } from '@2060/components/common'
+import { KID_BIRTHDATE_DATE_FORMAT } from '@2060/constants'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { createAndStoreKeyWithoutHash, ParentalControlEnum, retrieveKey } from '@2060/services/keys'
 
-export const convertStringToDate = (dateString: string) => {
-  return dayjs(dateString, 'DD/MM/YYYY').toDate()
+const convertStringToDate = (dateString: string) => {
+  return dayjs(dateString, KID_BIRTHDATE_DATE_FORMAT).toDate()
 }
 
 const ParentalControl = () => {
@@ -39,7 +40,10 @@ const ParentalControl = () => {
         const storedDate = convertStringToDate(storedValue)
         setKidBirthday(storedDate)
       } else {
-        createAndStoreKeyWithoutHash(ParentalControlEnum.KidBirthday, dayjs(new Date()).format('DD/MM/YYYY'))
+        createAndStoreKeyWithoutHash(
+          ParentalControlEnum.KidBirthday,
+          dayjs(new Date()).format(KID_BIRTHDATE_DATE_FORMAT),
+        )
       }
     }
     loadIsParentalControlEnabled()
@@ -64,7 +68,10 @@ const ParentalControl = () => {
 
   const changeKidBirthdate = (date: Date) => {
     setKidBirthday(date)
-    createAndStoreKeyWithoutHash(ParentalControlEnum.KidBirthday, dayjs(date).format('DD/MM/YYYY'))
+    createAndStoreKeyWithoutHash(
+      ParentalControlEnum.KidBirthday,
+      dayjs(date).format(KID_BIRTHDATE_DATE_FORMAT),
+    )
   }
 
   const options = [
