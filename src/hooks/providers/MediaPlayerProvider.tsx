@@ -1,8 +1,8 @@
 import { PlayerState } from '@simform_solutions/react-native-audio-waveform'
 import React, { createContext, useContext, useState, useCallback, useRef, useEffect } from 'react'
 
-import { useScreenLock } from '../providers/ScreenLockProvider'
-import { useVideoCallContext } from '../providers/useVideoCallContext'
+import { useScreenLock } from './ScreenLockProvider'
+import { useVideoCallContext } from './useVideoCallContext'
 
 import { LightboxModal } from '@2060/components'
 import { ChatEntryMessage } from '@2060/pages/PersonalChat/ChatMessage/Props'
