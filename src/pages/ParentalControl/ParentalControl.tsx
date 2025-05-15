@@ -84,7 +84,11 @@ const ParentalControl = () => {
     {
       text: t('parentalControl.kidBirthday'),
       rightContent: () => (
-        <TouchableOpacity onPress={() => setOpenDatePicker(true)} style={styles.birthdayContainer}>
+        <TouchableOpacity
+          disabled={!isParentalControlEnabled}
+          onPress={() => setOpenDatePicker(true)}
+          style={styles.birthdayContainer}
+        >
           <Text typography="EuclidCircularA-Regular" style={styles.birthdayText}>
             {dayjs(kidBirthday).format('DD/MM/YYYY')}
           </Text>

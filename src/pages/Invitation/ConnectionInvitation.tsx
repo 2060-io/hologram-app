@@ -67,8 +67,8 @@ const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => 
   const invitationType = getInvitationType(invitationDid, parentConnectionId)
   const connectionParent = useConnectionById(parentConnectionId)
   const parentConnectionName = connectionParent ? getConnectionDisplayName(connectionParent) : ''
-  const [canConnect, setCanConnect] = useState(true)
-  const connectionCanNotBeEstablished = isAlreadyConnected || !canConnect
+  const [ageRestricted, setAgeRestricted] = useState(false)
+  const canConnect = !isAlreadyConnected && !ageRestricted
 
   useEffect(() => {
     if (!isAcceptingInvitation && chatThreadId.current) {
@@ -89,7 +89,7 @@ const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => 
   const onFinishAddingConnection = () => setIsAcceptingInvitation(false)
 
   const onPressRightButton = () => {
-    connectionCanNotBeEstablished ? navigation.goBack() : accept()
+    canConnect ? accept() : navigation.goBack()
   }
 
   const accept = async () => {
@@ -118,26 +118,26 @@ const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => 
     }
     navigation.setOptions({
       headerTitle: () => <HeaderTitle title={headerTitles[invitationType]} theme={theme} />,
-      headerLeft: connectionCanNotBeEstablished
-        ? () => <></>
-        : () => (
+      headerLeft: canConnect
+        ? () => (
             <TouchableOpacity style={styles.btnRefuse} onPress={onRefuse}>
               <Text typography="EuclidCircularA-Medium" style={styles.headerBtnText}>
                 {t('general.refuse')}
               </Text>
             </TouchableOpacity>
-          ),
+          )
+        : () => <></>,
       headerRight: () => (
         <TouchableOpacity style={styles.btnAccept} onPress={onPressRightButton}>
           <Text typography="EuclidCircularA-Medium" style={styles.headerBtnText}>
-            {connectionCanNotBeEstablished ? t('general.done') : t('general.accept')}
+            {canConnect ? t('general.accept') : t('general.done')}
           </Text>
         </TouchableOpacity>
       ),
     })
   }
 
-  useLayoutEffect(handleChangeHeaderOptions, [connectionCanNotBeEstablished])
+  useLayoutEffect(handleChangeHeaderOptions, [canConnect])
 
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
@@ -154,8 +154,8 @@ const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => 
           <PublicService
             did={invitationDid}
             initialServiceInfo={serviceInfo.current}
-            canConnect={canConnect}
-            setCanConnect={setCanConnect}
+            ageRestricted={ageRestricted}
+            setAgeRestricted={setAgeRestricted}
           />
         ) : (
           <View>

@@ -13,15 +13,15 @@ import { timeFromNow } from '@2060/utils/dateUtils'
 type Props = {
   did: string
   initialServiceInfo: ServiceInfo
-  canConnect: boolean
-  setCanConnect(canConnect: boolean): void
+  ageRestricted: boolean
+  setAgeRestricted(canConnect: boolean): void
 }
 
 const calculateAge = (kidBirthday: string) => {
   return timeFromNow(kidBirthday)
 }
 
-const PublicService = ({ did, initialServiceInfo, canConnect, setCanConnect }: Props) => {
+const PublicService = ({ did, initialServiceInfo, ageRestricted, setAgeRestricted }: Props) => {
   const [kidAge, setKidAge] = useState(0)
 
   const checkIfValidateKidAge = async (serviceInfo: ServiceInfo) => {
@@ -37,13 +37,13 @@ const PublicService = ({ did, initialServiceInfo, canConnect, setCanConnect }: P
     const age = calculateAge(kidBirthday)
     if (age < serviceInfo.minimumAgeRequired) {
       setKidAge(age)
-      setCanConnect(false)
+      setAgeRestricted(true)
     }
   }
 
   return (
     <View>
-      {!canConnect && <CanNotConnect kidAge={kidAge} />}
+      {ageRestricted && <CanNotConnect kidAge={kidAge} />}
       <ServiceInformation
         did={did}
         initialServiceInfo={initialServiceInfo}

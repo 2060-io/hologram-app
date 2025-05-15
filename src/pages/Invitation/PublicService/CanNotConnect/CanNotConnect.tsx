@@ -17,7 +17,7 @@ const CanNotConnect = ({ kidAge }: { kidAge: number }) => {
     <View style={styles.container}>
       <SvgIcon name="kid" width={iconWidth} height={iconWidth} />
       <Trans
-        i18nKey="invitation.canNotConnect"
+        i18nKey="invitation.connectionRefusedByAge"
         typography="EuclidCircularA-Regular"
         style={styles.text}
         parent={Text}
