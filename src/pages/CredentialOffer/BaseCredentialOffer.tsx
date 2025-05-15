@@ -100,7 +100,10 @@ const BaseCredentialOffer: React.FC<Props> = ({
               <Text typography="EuclidCircularA-Medium" style={styles.titleIssuerInfo}>
                 {t('credentialOffer.issuerInformation')}
               </Text>
-              <ServiceInformation did={credentialDetails.mainInfo.issuer.id} serviceInfoRef={serviceInfo} />
+              <ServiceInformation
+                did={credentialDetails.mainInfo.issuer.id}
+                initialServiceInfo={serviceInfo.current}
+              />
             </View>
           </View>
         </ScrollView>

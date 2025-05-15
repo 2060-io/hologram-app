@@ -12,7 +12,7 @@ import { timeFromNow } from '@2060/utils/dateUtils'
 
 type Props = {
   did: string
-  serviceInfoRef: React.MutableRefObject<ServiceInfo>
+  initialServiceInfo: ServiceInfo
   canConnect: boolean
   setCanConnect(canConnect: boolean): void
 }
@@ -21,7 +21,7 @@ const calculateAge = (kidBirthday: string) => {
   return timeFromNow(kidBirthday)
 }
 
-const PublicService = ({ did, serviceInfoRef, canConnect, setCanConnect }: Props) => {
+const PublicService = ({ did, initialServiceInfo, canConnect, setCanConnect }: Props) => {
   const [kidAge, setKidAge] = useState(0)
 
   const checkIfValidateKidAge = async (serviceInfo: ServiceInfo) => {
@@ -46,7 +46,7 @@ const PublicService = ({ did, serviceInfoRef, canConnect, setCanConnect }: Props
       {!canConnect && <CanNotConnect kidAge={kidAge} />}
       <ServiceInformation
         did={did}
-        serviceInfoRef={serviceInfoRef}
+        initialServiceInfo={initialServiceInfo}
         onServiceInfoUpdated={checkIfValidateKidAge}
       />
     </View>

@@ -153,7 +153,7 @@ const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => 
         {invitationType === 'public' ? (
           <PublicService
             did={invitationDid}
-            serviceInfoRef={serviceInfo}
+            initialServiceInfo={serviceInfo.current}
             canConnect={canConnect}
             setCanConnect={setCanConnect}
           />

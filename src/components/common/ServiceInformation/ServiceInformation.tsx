@@ -9,33 +9,30 @@ import { ServiceInfo } from '@2060/services/api/trustRegistryService'
 
 type Props = {
   did: string
-  serviceInfoRef: React.MutableRefObject<ServiceInfo>
+  initialServiceInfo: ServiceInfo
   onServiceInfoUpdated?: (serviceInfo: ServiceInfo) => void
 }
 
 const getServiceInfoToDisplay = ({
   serviceInfo,
-  serviceInfoRef,
+  initialServiceInfo,
   isFetching,
 }: {
   serviceInfo: ServiceInfo | undefined
-  serviceInfoRef: React.MutableRefObject<ServiceInfo>
+  initialServiceInfo: ServiceInfo
   isFetching: boolean
 }): ServiceInfo | undefined => {
   if (serviceInfo) return serviceInfo
   if (isFetching) return undefined
-  return serviceInfoRef.current
+  return initialServiceInfo
 }
 
-const ServiceInformation = ({ did, serviceInfoRef, onServiceInfoUpdated }: Props) => {
+const ServiceInformation = ({ did, initialServiceInfo, onServiceInfoUpdated }: Props) => {
   const { isFetching, serviceInfo } = useFetchServiceInfo(did, true)
-  const serviceInfoToDisplay = getServiceInfoToDisplay({ serviceInfo, serviceInfoRef, isFetching })
+  const serviceInfoToDisplay = getServiceInfoToDisplay({ serviceInfo, initialServiceInfo, isFetching })
 
   useEffect(() => {
-    if (serviceInfo) {
-      onServiceInfoUpdated?.(serviceInfo)
-      serviceInfoRef.current = serviceInfo
-    }
+    if (serviceInfo) onServiceInfoUpdated?.(serviceInfo)
   }, [serviceInfo])
 
   return serviceInfoToDisplay ? (
