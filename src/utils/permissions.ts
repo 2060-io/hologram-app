@@ -4,7 +4,7 @@ import { check, request, PERMISSIONS, RESULTS, Permission } from 'react-native-p
 
 import { logError } from './log'
 
-import { IS_ANDROID_DEVICE, IS_IOS } from '@2060/constants'
+import { IS_ANDROID, IS_IOS } from '@2060/constants'
 
 const MICROPHONE_PERMISSION = IS_IOS ? PERMISSIONS.IOS.MICROPHONE : PERMISSIONS.ANDROID.RECORD_AUDIO
 const CAMERA_PERMISSION = IS_IOS ? PERMISSIONS.IOS.CAMERA : PERMISSIONS.ANDROID.CAMERA
@@ -30,14 +30,10 @@ const askPermission = async (permission: Permission) => {
     const status = await request(permission)
     const isGranted = status === RESULTS.GRANTED
     if (status === RESULTS.BLOCKED) {
-      Alert.alert(
-        IS_IOS ? permissionText[permission]! : '',
-        IS_ANDROID_DEVICE ? permissionText[permission]! : '',
-        [
-          { text: t('general.cancel'), style: 'destructive' },
-          { text: t('general.settings'), style: 'default', onPress: () => Linking.openSettings() },
-        ],
-      )
+      Alert.alert(IS_IOS ? permissionText[permission]! : '', IS_ANDROID ? permissionText[permission]! : '', [
+        { text: t('general.cancel'), style: 'destructive' },
+        { text: t('general.settings'), style: 'default', onPress: () => Linking.openSettings() },
+      ])
     }
     return isGranted
   } catch (error) {

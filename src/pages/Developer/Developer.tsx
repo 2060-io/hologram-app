@@ -11,7 +11,7 @@ import { ModalBottomHalf } from '@2060/components'
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
 import { ModalLoading, OptionsList, Text, TextInput, Switch } from '@2060/components/common'
 import { TextInputForwardRefProps } from '@2060/components/common/TextInput'
-import { IS_ANDROID_DEVICE, IS_IOS } from '@2060/constants'
+import { IS_ANDROID, IS_IOS } from '@2060/constants'
 import { useMobileAgent } from '@2060/hooks/agent'
 import { useConfig } from '@2060/hooks/providers/ConfigProvider'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
@@ -139,7 +139,7 @@ const Developer = ({ navigation }: Props) => {
     await savePushNotificationHandlerEnabled(newAreEnabled)
     Alert.alert(
       IS_IOS ? t('settings.closeAppAfterBackNotiChanges') : '',
-      IS_ANDROID_DEVICE ? t('settings.closeAppAfterBackNotiChanges') : '',
+      IS_ANDROID ? t('settings.closeAppAfterBackNotiChanges') : '',
     )
   }
 

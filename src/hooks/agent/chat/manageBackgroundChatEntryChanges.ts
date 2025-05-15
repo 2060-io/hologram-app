@@ -3,7 +3,7 @@ import Realm from 'realm'
 
 import { getLocalizedPreview } from './preview'
 
-import { IS_ANDROID_DEVICE } from '@2060/constants'
+import { IS_ANDROID } from '@2060/constants'
 import { ChatEntry, ChatEntryRole, ChatThread } from '@2060/model'
 import { MobileAgent } from '@2060/services/agent'
 import { getConnectionDisplayName } from '@2060/utils/connectionUtils'
@@ -37,7 +37,7 @@ export const manageBackgroundChatEntryChanges = (realm: Realm, agent: MobileAgen
         screen: 'PersonalChat',
         params: { chatThreadId: entry.chatThreadId, connectionId: connection?.id },
       }
-      if (IS_ANDROID_DEVICE) {
+      if (IS_ANDROID) {
         await notifee.displayNotification({
           id: `summary-${LOCAL_NOTIFICATION_ID_PREFIX}-chat-${groupId}`,
           data,
