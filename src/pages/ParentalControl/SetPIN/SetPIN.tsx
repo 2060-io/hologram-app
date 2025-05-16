@@ -8,26 +8,29 @@ import getStyles from './styles'
 
 import { Modal, Text } from '@2060/components/common'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import {
-  retrieveKey,
-  createAndStoreKey,
-  deleteKey,
-  KeyChainService,
-  aes256KeyFromSeed,
-} from '@2060/services/keys'
+import { retrieveKey, KeyChainService, aes256KeyFromSeed } from '@2060/services/keys'
 
-type Mode = 'enable' | 'disable'
+type OnSuccessCallback = { action: ActionToTake; pinCode?: string }
+
+export type OnCloseSetPINCallback = {
+  wasSuccessful: boolean
+  action?: ActionToTake
+  pinCode?: string
+}
+
+type Mode = 'enable' | 'disable' | 'pinConfirmation'
 type Props = {
   visible: boolean
-  close: ({ withSuccess }: { withSuccess: boolean }) => void
+  onRequestClose: (args: OnCloseSetPINCallback) => void
   mode: Mode
 }
-type FlowState = 'initial' | 'confirmingPin' | 'pinDoesNotMatch'
 
+type FlowState = 'initial' | 'confirmingPin' | 'pinDoesNotMatch'
+type ActionToTake = 'store' | 'disable' | undefined
 const DIAL_PAD = [1, 2, 3, 4, 5, 6, 7, 8, 9, '', 0, 'del']
 const PIN_LENGTH = 4
 
-const SetPIN = ({ visible, close, mode }: Props) => {
+const SetPIN = ({ visible, onRequestClose, mode }: Props) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
@@ -37,13 +40,13 @@ const SetPIN = ({ visible, close, mode }: Props) => {
 
   const resetPinCode = () => setCurrentPinCode([])
 
-  const success = () => {
-    close({ withSuccess: true })
+  const success = (args: OnSuccessCallback) => {
+    onRequestClose({ wasSuccessful: true, ...args })
     cleanState()
   }
 
   const cancel = () => {
-    close({ withSuccess: false })
+    onRequestClose({ wasSuccessful: false })
     cleanState()
   }
 
@@ -68,27 +71,25 @@ const SetPIN = ({ visible, close, mode }: Props) => {
     const pinCodeToString = pinCode.join('')
     const pinMatches = firstPinCode.current.join('') === pinCodeToString
     if (pinMatches) {
-      createAndStoreKey(KeyChainService.ParentalControlPIN, pinCodeToString)
-      success()
+      success({ action: 'store', pinCode: pinCodeToString })
     } else {
       pinDoesNotMatch()
     }
   }
 
-  const validatePinCodeToDisable = async (pinCode: number[]) => {
+  const validatePIN = async (pinCode: number[]) => {
     const storedPIN = await retrieveKey(KeyChainService.ParentalControlPIN)
     const pinMatches = TypedArrayEncoder.toHex(aes256KeyFromSeed(pinCode.join(''))) === storedPIN
     if (pinMatches) {
-      deleteKey(KeyChainService.ParentalControlPIN)
-      success()
+      success({ action: mode === 'disable' ? 'disable' : undefined })
     } else {
       pinDoesNotMatch()
     }
   }
 
   const onPinSet = (pinCode: number[]) => {
-    if (mode === 'disable') {
-      validatePinCodeToDisable(pinCode)
+    if (mode === 'disable' || mode === 'pinConfirmation') {
+      validatePIN(pinCode)
       return
     }
     if (currentFlowState === 'initial') {
@@ -116,17 +117,20 @@ const SetPIN = ({ visible, close, mode }: Props) => {
     }
   }
 
+  const getTitleForInitialState: Record<Mode, string> = {
+    enable: t('parentalControl.setPIN'),
+    disable: t('parentalControl.disable'),
+    pinConfirmation: t('parentalControl.confirmPIN'),
+  }
+
   const getTitle = (flowState: FlowState) => {
-    if (flowState === 'initial') {
-      if (mode === 'enable') return t('parentalControl.setPIN')
-      return t('parentalControl.disable')
-    }
+    if (flowState === 'initial') return getTitleForInitialState[mode]
     if (flowState === 'confirmingPin') return t('parentalControl.confirmPIN')
-    return t('parentalControl.pinDoesNotMatch')
+    if (flowState === 'pinDoesNotMatch') return t('parentalControl.pinDoesNotMatch')
   }
 
   const getFooter = (flowState: FlowState) => {
-    if (mode === 'disable') return t('parentalControl.disablePINFooter')
+    if (mode === 'disable' || mode === 'pinConfirmation') return t('parentalControl.disablePINFooter')
     if (flowState !== 'pinDoesNotMatch') return t('parentalControl.setPINFooter')
     return t('parentalControl.pinDoesNotMatchFooter')
   }

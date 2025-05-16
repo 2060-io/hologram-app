@@ -1,18 +1,26 @@
 import dayjs, { extend } from 'dayjs'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { SafeAreaView, TouchableOpacity } from 'react-native'
 import DatePicker from 'react-native-date-picker'
 
 extend(customParseFormat)
 import SetPIN from './SetPIN'
+import { OnCloseSetPINCallback } from './SetPIN/SetPIN'
 import getStyles from './styles'
 
 import { OptionsList, Switch, Text } from '@2060/components/common'
 import { KID_BIRTHDATE_DATE_FORMAT } from '@2060/constants'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { createAndStoreKeyWithoutHash, ParentalControlEnum, retrieveKey } from '@2060/services/keys'
+import {
+  createAndStoreKey,
+  createAndStoreKeyWithoutHash,
+  deleteKey,
+  KeyChainService,
+  ParentalControlEnum,
+  retrieveKey,
+} from '@2060/services/keys'
 
 const convertStringToDate = (dateString: string) => {
   return dayjs(dateString, KID_BIRTHDATE_DATE_FORMAT).toDate()
@@ -26,6 +34,8 @@ const ParentalControl = () => {
   const [kidBirthday, setKidBirthday] = useState(new Date())
   const [openDatePicker, setOpenDatePicker] = useState(false)
   const [openSetControlPIN, setOpenSetControlPIN] = useState(false)
+  const [openPINConfirmation, setOpenPINConfirmation] = useState(false)
+  const canChangeBirthday = useRef(false)
 
   useEffect(() => {
     const loadIsParentalControlEnabled = async () => {
@@ -50,6 +60,10 @@ const ParentalControl = () => {
     loadKidBirthday()
   }, [])
 
+  useEffect(() => {
+    if (canChangeBirthday.current) setOpenDatePicker(true)
+  }, [openPINConfirmation])
+
   const changeParentalControlStatus = async () => {
     const newIsParentalControlEnabled = !isParentalControlEnabled
     setParentalControlEnabled(newIsParentalControlEnabled)
@@ -61,9 +75,14 @@ const ParentalControl = () => {
     changeParentalControlStatus()
   }
 
-  const closeSetPin = ({ withSuccess }: { withSuccess: boolean }) => {
-    if (!withSuccess) changeParentalControlStatus()
+  const closeSetPIN = (args: OnCloseSetPINCallback) => {
+    const { wasSuccessful, action, pinCode } = args
+    if (!wasSuccessful) changeParentalControlStatus()
     setOpenSetControlPIN(false)
+    if (action === 'store' && pinCode) {
+      createAndStoreKey(KeyChainService.ParentalControlPIN, pinCode)
+    }
+    if (action === 'disable') deleteKey(KeyChainService.ParentalControlPIN)
   }
 
   const changeKidBirthdate = (date: Date) => {
@@ -86,7 +105,7 @@ const ParentalControl = () => {
       rightContent: () => (
         <TouchableOpacity
           disabled={!isParentalControlEnabled}
-          onPress={() => setOpenDatePicker(true)}
+          onPress={() => setOpenPINConfirmation(true)}
           style={styles.birthdayContainer}
         >
           <Text typography="EuclidCircularA-Regular" style={styles.birthdayText}>
@@ -97,13 +116,25 @@ const ParentalControl = () => {
     },
   ]
 
+  const closePINConfirmation = (args: OnCloseSetPINCallback) => {
+    setOpenPINConfirmation(false)
+    if (args.wasSuccessful) canChangeBirthday.current = true
+  }
+
+  const onConfirmBirthdate = (date: Date) => {
+    setOpenDatePicker(false)
+    changeKidBirthdate(date)
+    canChangeBirthday.current = false
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <SetPIN
         visible={openSetControlPIN}
         mode={isParentalControlEnabled ? 'enable' : 'disable'}
-        close={closeSetPin}
+        onRequestClose={closeSetPIN}
       />
+      <SetPIN visible={openPINConfirmation} mode="pinConfirmation" onRequestClose={closePINConfirmation} />
       <DatePicker
         modal
         mode="date"
@@ -111,12 +142,10 @@ const ParentalControl = () => {
         title={t('parentalControl.kidBirthday')}
         date={kidBirthday}
         maximumDate={new Date()}
-        onConfirm={date => {
-          setOpenDatePicker(false)
-          changeKidBirthdate(date)
-        }}
+        onConfirm={onConfirmBirthdate}
         onCancel={() => {
           setOpenDatePicker(false)
+          canChangeBirthday.current = false
         }}
       />
       <Text typography="EuclidCircularA-Regular" style={styles.parentalControlMessage}>
