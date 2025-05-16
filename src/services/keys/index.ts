@@ -1,16 +1,12 @@
 import { TypedArrayEncoder } from '@credo-ts/core'
 import { Key, KeyAlgs } from '@hyperledger/aries-askar-react-native'
-import { readFile, DocumentDirectoryPath } from 'react-native-fs'
+import { readFile } from 'react-native-fs'
 
+import { ParentalControlEnum } from '../config'
+
+import { CONFIG_FILE_PATH } from '@2060/constants'
 import { logError } from '@2060/utils'
 import { writeFile } from '@2060/utils/RNFS'
-
-export const configFilePath = `${DocumentDirectoryPath}/config.json`
-
-export enum ParentalControlEnum {
-  Enabled = 'enabled',
-  KidBirthday = 'kid-birthday',
-}
 
 export enum KeyChainService {
   AfjWallet = 'afj-wallet',
@@ -21,7 +17,7 @@ export enum KeyChainService {
 
 export async function retrieveKey(service: KeyChainService | ParentalControlEnum) {
   try {
-    const config = await readFile(configFilePath)
+    const config = await readFile(CONFIG_FILE_PATH)
     const configJson = JSON.parse(config)
     return (configJson.keys[service] as string) ?? undefined
   } catch (error) {
@@ -30,28 +26,12 @@ export async function retrieveKey(service: KeyChainService | ParentalControlEnum
   }
 }
 
-export async function createAndStoreKeyWithoutHash(key: ParentalControlEnum, value: string) {
-  let configJson: { keys: Record<string, string> }
-  try {
-    const config = await readFile(configFilePath)
-    configJson = JSON.parse(config)
-  } catch (error) {
-    logError(`error reading config file: ${error}. Creating new config object`)
-    configJson = { keys: {} }
-  }
-
-  configJson.keys[key] = value
-  await writeFile(configFilePath, JSON.stringify(configJson))
-
-  return configJson.keys[key]
-}
-
 export async function createAndStoreKey(service: KeyChainService, seed?: string) {
   const key = seed ? aes256KeyFromSeed(seed) : Key.generate(KeyAlgs.AesA256CbcHs512).secretBytes
 
   let configJson: { keys: Record<string, string> }
   try {
-    const config = await readFile(configFilePath)
+    const config = await readFile(CONFIG_FILE_PATH)
     configJson = JSON.parse(config)
   } catch (error) {
     logError(`error reading config file: ${error}. Creating new config object`)
@@ -59,17 +39,17 @@ export async function createAndStoreKey(service: KeyChainService, seed?: string)
   }
 
   configJson.keys[service] = TypedArrayEncoder.toHex(key)
-  await writeFile(configFilePath, JSON.stringify(configJson))
+  await writeFile(CONFIG_FILE_PATH, JSON.stringify(configJson))
 
   return configJson.keys[service]
 }
 
 export async function deleteKey(service: KeyChainService) {
   try {
-    const config = await readFile(configFilePath)
+    const config = await readFile(CONFIG_FILE_PATH)
     const configJson = JSON.parse(config)
     delete configJson.keys[service]
-    await writeFile(configFilePath, JSON.stringify(configJson))
+    await writeFile(CONFIG_FILE_PATH, JSON.stringify(configJson))
     return configJson.keys
   } catch (error) {
     logError(`error deleting key ${service}: ${error}`)
@@ -79,11 +59,11 @@ export async function deleteKey(service: KeyChainService) {
 
 export async function deleteAllKeys() {
   try {
-    const config = await readFile(configFilePath)
+    const config = await readFile(CONFIG_FILE_PATH)
     const configJson = JSON.parse(config)
 
     configJson.keys = {}
-    await writeFile(configFilePath, JSON.stringify(configJson))
+    await writeFile(CONFIG_FILE_PATH, JSON.stringify(configJson))
   } catch (error) {
     logError(`error deleting keys: ${error}`)
   }

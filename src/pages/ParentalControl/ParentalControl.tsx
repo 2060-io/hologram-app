@@ -13,14 +13,8 @@ import getStyles from './styles'
 import { OptionsList, Switch, Text } from '@2060/components/common'
 import { KID_BIRTHDATE_DATE_FORMAT } from '@2060/constants'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import {
-  createAndStoreKey,
-  createAndStoreKeyWithoutHash,
-  deleteKey,
-  KeyChainService,
-  ParentalControlEnum,
-  retrieveKey,
-} from '@2060/services/keys'
+import { storeValueInConfigFile, ParentalControlEnum } from '@2060/services/config'
+import { createAndStoreKey, deleteKey, KeyChainService, retrieveKey } from '@2060/services/keys'
 
 const convertStringToDate = (dateString: string) => {
   return dayjs(dateString, KID_BIRTHDATE_DATE_FORMAT).toDate()
@@ -50,7 +44,7 @@ const ParentalControl = () => {
         const storedDate = convertStringToDate(storedValue)
         setKidBirthday(storedDate)
       } else {
-        createAndStoreKeyWithoutHash(
+        storeValueInConfigFile(
           ParentalControlEnum.KidBirthday,
           dayjs(new Date()).format(KID_BIRTHDATE_DATE_FORMAT),
         )
@@ -67,7 +61,7 @@ const ParentalControl = () => {
   const changeParentalControlStatus = async () => {
     const newIsParentalControlEnabled = !isParentalControlEnabled
     setParentalControlEnabled(newIsParentalControlEnabled)
-    await createAndStoreKeyWithoutHash(ParentalControlEnum.Enabled, newIsParentalControlEnabled.toString())
+    await storeValueInConfigFile(ParentalControlEnum.Enabled, newIsParentalControlEnabled.toString())
   }
 
   const onToggleParentalControlSwitch = () => {
@@ -79,18 +73,15 @@ const ParentalControl = () => {
     const { wasSuccessful, action, pinCode } = args
     if (!wasSuccessful) changeParentalControlStatus()
     setOpenSetControlPIN(false)
-    if (action === 'store' && pinCode) {
+    if (action === 'storePIN' && pinCode) {
       createAndStoreKey(KeyChainService.ParentalControlPIN, pinCode)
     }
-    if (action === 'disable') deleteKey(KeyChainService.ParentalControlPIN)
+    if (action === 'disablePIN') deleteKey(KeyChainService.ParentalControlPIN)
   }
 
   const changeKidBirthdate = (date: Date) => {
     setKidBirthday(date)
-    createAndStoreKeyWithoutHash(
-      ParentalControlEnum.KidBirthday,
-      dayjs(date).format(KID_BIRTHDATE_DATE_FORMAT),
-    )
+    storeValueInConfigFile(ParentalControlEnum.KidBirthday, dayjs(date).format(KID_BIRTHDATE_DATE_FORMAT))
   }
 
   const options = [

@@ -7,7 +7,8 @@ import CanNotConnect from './CanNotConnect'
 import { ServiceInformation } from '@2060/components/common'
 import { KID_BIRTHDATE_DATE_FORMAT } from '@2060/constants'
 import { ServiceInfo } from '@2060/services/api/trustRegistryService'
-import { ParentalControlEnum, retrieveKey } from '@2060/services/keys'
+import { ParentalControlEnum } from '@2060/services/config'
+import { retrieveKey } from '@2060/services/keys'
 import { timeFromNow } from '@2060/utils/dateUtils'
 
 type Props = {

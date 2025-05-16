@@ -26,7 +26,7 @@ type Props = {
 }
 
 type FlowState = 'initial' | 'confirmingPin' | 'pinDoesNotMatch'
-type ActionToTake = 'store' | 'disable' | undefined
+type ActionToTake = 'storePIN' | 'disablePIN' | undefined
 const DIAL_PAD = [1, 2, 3, 4, 5, 6, 7, 8, 9, '', 0, 'del']
 const PIN_LENGTH = 4
 
@@ -71,7 +71,7 @@ const SetPIN = ({ visible, onRequestClose, mode }: Props) => {
     const pinCodeToString = pinCode.join('')
     const pinMatches = firstPinCode.current.join('') === pinCodeToString
     if (pinMatches) {
-      success({ action: 'store', pinCode: pinCodeToString })
+      success({ action: 'storePIN', pinCode: pinCodeToString })
     } else {
       pinDoesNotMatch()
     }
@@ -81,7 +81,7 @@ const SetPIN = ({ visible, onRequestClose, mode }: Props) => {
     const storedPIN = await retrieveKey(KeyChainService.ParentalControlPIN)
     const pinMatches = TypedArrayEncoder.toHex(aes256KeyFromSeed(pinCode.join(''))) === storedPIN
     if (pinMatches) {
-      success({ action: mode === 'disable' ? 'disable' : undefined })
+      success({ action: mode === 'disable' ? 'disablePIN' : undefined })
     } else {
       pinDoesNotMatch()
     }
