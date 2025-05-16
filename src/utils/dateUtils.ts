@@ -1,8 +1,10 @@
 import dayjs, { extend } from 'dayjs'
+import customParseFormat from 'dayjs/plugin/customParseFormat'
 import isYesterday from 'dayjs/plugin/isYesterday'
 import { t } from 'i18next'
 
 extend(isYesterday)
+extend(customParseFormat)
 import { language } from './language'
 
 import { capitalizeFirstLetter } from './index'
@@ -61,7 +63,7 @@ export const isNowAfterThanDate = (timestamp: number): boolean => {
  * @param {string} stringDate
  * @returns string containing the formatted date
  */
-export const stringToDate = (stringDate: string) => {
+export const stringToStringDate = (stringDate: string) => {
   return dayjs(stringDate, 'YYYYMMDD').format('DD-MM-YYYY')
 }
 
@@ -74,4 +76,24 @@ export const stringToDate = (stringDate: string) => {
 export const timeFromNow = (stringDate: string) => {
   const years = dayjs().diff(dayjs(stringDate, 'DD-MM-YYYY'), 'year')
   return years
+}
+
+/**
+ * Receives a string date in format of stringDateFormat and convert it to Date object
+ * @param stringDate
+ * @param stringDateFormat
+ * @returns Date
+ */
+export const stringToDate = (stringDate: string, stringDateFormat: string) => {
+  return dayjs(stringDate, stringDateFormat).toDate()
+}
+
+/**
+ * Receives a date object and converted to string date in desired format
+ * @param date
+ * @param format
+ * @returns string date
+ */
+export const dateToString = (date: Date, format: string) => {
+  return dayjs(date).format(format)
 }

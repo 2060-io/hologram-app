@@ -1,4 +1,3 @@
-import dayjs from 'dayjs'
 import React, { useState } from 'react'
 import { View } from 'react-native'
 
@@ -9,7 +8,7 @@ import { KID_BIRTHDATE_DATE_FORMAT } from '@2060/constants'
 import { ServiceInfo } from '@2060/services/api/trustRegistryService'
 import { ParentalControlEnum } from '@2060/services/config'
 import { retrieveKey } from '@2060/services/keys'
-import { timeFromNow } from '@2060/utils/dateUtils'
+import { dateToString, timeFromNow } from '@2060/utils/dateUtils'
 
 type Props = {
   did: string
@@ -34,7 +33,7 @@ const PublicService = ({ did, initialServiceInfo, ageRestricted, setAgeRestricte
   const validateKidCanConnect = async (serviceInfo: ServiceInfo) => {
     const kidBirthday =
       (await retrieveKey(ParentalControlEnum.KidBirthday)) ??
-      dayjs(new Date()).format(KID_BIRTHDATE_DATE_FORMAT)
+      dateToString(new Date(), KID_BIRTHDATE_DATE_FORMAT)
     const age = calculateAge(kidBirthday)
     if (age < serviceInfo.minimumAgeRequired) {
       setKidAge(age)

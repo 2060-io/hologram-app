@@ -1,6 +1,6 @@
 import { sanitizeString } from './display'
 
-import { stringToDate } from '@2060/utils/dateUtils'
+import { stringToStringDate } from '@2060/utils/dateUtils'
 
 /* eslint-disable max-len */
 export type CredentialAttributeRowString = {
@@ -36,7 +36,7 @@ export type CredentialAttributeTable = {
 
 const transformToDateIfItIs = (key: string, value: string) => {
   const couldBeADate = value.length === 8 && key.toLowerCase().includes('date')
-  if (couldBeADate) return stringToDate(value)
+  if (couldBeADate) return stringToStringDate(value)
   return value
 }
 

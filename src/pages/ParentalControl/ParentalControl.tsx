@@ -1,11 +1,8 @@
-import dayjs, { extend } from 'dayjs'
-import customParseFormat from 'dayjs/plugin/customParseFormat'
 import React, { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { SafeAreaView, TouchableOpacity } from 'react-native'
 import DatePicker from 'react-native-date-picker'
 
-extend(customParseFormat)
 import SetPIN from './SetPIN'
 import { OnCloseSetPINCallback } from './SetPIN/SetPIN'
 import getStyles from './styles'
@@ -15,10 +12,7 @@ import { KID_BIRTHDATE_DATE_FORMAT } from '@2060/constants'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { storeValueInConfigFile, ParentalControlEnum } from '@2060/services/config'
 import { createAndStoreKey, deleteKey, KeyChainService, retrieveKey } from '@2060/services/keys'
-
-const convertStringToDate = (dateString: string) => {
-  return dayjs(dateString, KID_BIRTHDATE_DATE_FORMAT).toDate()
-}
+import { dateToString, stringToDate } from '@2060/utils/dateUtils'
 
 const ParentalControl = () => {
   const { t } = useTranslation()
@@ -33,20 +27,20 @@ const ParentalControl = () => {
 
   useEffect(() => {
     const loadIsParentalControlEnabled = async () => {
-      const storedValue = await retrieveKey(ParentalControlEnum.Enabled)
-      if (storedValue) {
-        setParentalControlEnabled(storedValue === 'true')
+      const storedParentalControlEnabled = await retrieveKey(ParentalControlEnum.Enabled)
+      if (storedParentalControlEnabled) {
+        setParentalControlEnabled(storedParentalControlEnabled === 'true')
       }
     }
     const loadKidBirthday = async () => {
-      const storedValue = await retrieveKey(ParentalControlEnum.KidBirthday)
-      if (storedValue) {
-        const storedDate = convertStringToDate(storedValue)
-        setKidBirthday(storedDate)
+      const storedStringKidBirthday = await retrieveKey(ParentalControlEnum.KidBirthday)
+      if (storedStringKidBirthday) {
+        const storedKidBirthdate = stringToDate(storedStringKidBirthday, KID_BIRTHDATE_DATE_FORMAT)
+        setKidBirthday(storedKidBirthdate)
       } else {
         storeValueInConfigFile(
           ParentalControlEnum.KidBirthday,
-          dayjs(new Date()).format(KID_BIRTHDATE_DATE_FORMAT),
+          dateToString(new Date(), KID_BIRTHDATE_DATE_FORMAT),
         )
       }
     }
@@ -81,7 +75,7 @@ const ParentalControl = () => {
 
   const changeKidBirthdate = (date: Date) => {
     setKidBirthday(date)
-    storeValueInConfigFile(ParentalControlEnum.KidBirthday, dayjs(date).format(KID_BIRTHDATE_DATE_FORMAT))
+    storeValueInConfigFile(ParentalControlEnum.KidBirthday, dateToString(date, KID_BIRTHDATE_DATE_FORMAT))
   }
 
   const options = [
@@ -100,7 +94,7 @@ const ParentalControl = () => {
           style={styles.birthdayContainer}
         >
           <Text typography="EuclidCircularA-Regular" style={styles.birthdayText}>
-            {dayjs(kidBirthday).format('DD/MM/YYYY')}
+            {dateToString(kidBirthday, 'DD/MM/YYYY')}
           </Text>
         </TouchableOpacity>
       ),
