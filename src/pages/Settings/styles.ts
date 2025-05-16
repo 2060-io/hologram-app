@@ -12,6 +12,9 @@ export default (theme: AppTheme) =>
     subContainer: {
       flex: 1,
     },
+    scrollViewContentContainerStyle: {
+      flexGrow: 1,
+    },
     btnQr: {
       paddingLeft: widthPercentageToDP('4%'),
     },

@@ -3,7 +3,7 @@ import { StackActions } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, SafeAreaView, Image, TouchableOpacity, TouchableWithoutFeedback, Alert } from 'react-native'
+import { View, Image, TouchableOpacity, TouchableWithoutFeedback, Alert, ScrollView } from 'react-native'
 import NotificationSetting from 'react-native-open-notification'
 
 import { version } from '../../../package.json'
@@ -145,15 +145,15 @@ const Settings = ({ navigation }: Props) => {
       rightContent: () => optionRightContent(),
     },
     {
-      iconName: 'trash',
-      text: t('settings.deleteWallet'),
-      onPress: () => setShowConfirmationDeleteModal(true),
-    },
-    {
       iconName: 'people',
       text: t('navigation.ParentalControl'),
       onPress: () => navigateTo('ParentalControl'),
       rightContent: () => optionRightContent(),
+    },
+    {
+      iconName: 'trash',
+      text: t('settings.deleteWallet'),
+      onPress: () => setShowConfirmationDeleteModal(true),
     },
   ]
 
@@ -206,44 +206,50 @@ const Settings = ({ navigation }: Props) => {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <FullScreenImage
         showFullScreenImage={showFullScreenImage}
         closeFullScreenImage={closeFullScreenImage}
         imageUri={imageFullScreenUri.current!}
       />
-      <TouchableWithoutFeedback style={styles.subContainer} onPress={handleDeveloperMode}>
-        <View style={styles.subContainer}>
-          <ModalConfirmAction
-            visible={showConfirmationDeleteModal}
-            title={t('settings.deleteWalletTitle')}
-            subTitle={t('settings.deleteWalletMessage')}
-            confirmText={t('general.ok')}
-            cancelText={t('general.cancel')}
-            onClose={hideConfirmationDeleteModal}
-            onConfirm={confirmWalletDeletion}
-            onCancel={hideConfirmationDeleteModal}
-          />
-          <View style={styles.containerProfile}>
-            <Avatar
-              uri={avatarUri}
-              label={userProfileData?.displayName}
-              size="46%"
-              onImagePressed={onAvatarImagePressed}
-            />
-            {userProfileData?.displayName && (
-              <Text typography="EuclidCircularA-Medium" style={styles.displayName}>
-                {userProfileData?.displayName}
-              </Text>
-            )}
+      <ModalConfirmAction
+        visible={showConfirmationDeleteModal}
+        title={t('settings.deleteWalletTitle')}
+        subTitle={t('settings.deleteWalletMessage')}
+        confirmText={t('general.ok')}
+        cancelText={t('general.cancel')}
+        onClose={hideConfirmationDeleteModal}
+        onConfirm={confirmWalletDeletion}
+        onCancel={hideConfirmationDeleteModal}
+      />
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        style={styles.subContainer}
+        contentContainerStyle={styles.scrollViewContentContainerStyle}
+      >
+        <TouchableWithoutFeedback onPress={handleDeveloperMode} style={styles.subContainer}>
+          <View style={styles.subContainer}>
+            <View style={styles.containerProfile}>
+              <Avatar
+                uri={avatarUri}
+                label={userProfileData?.displayName}
+                size="46%"
+                onImagePressed={onAvatarImagePressed}
+              />
+              {userProfileData?.displayName && (
+                <Text typography="EuclidCircularA-Medium" style={styles.displayName}>
+                  {userProfileData?.displayName}
+                </Text>
+              )}
+            </View>
+            <OptionsList options={options} />
+            <View style={styles.appVersionContainer}>
+              <Text style={styles.appVersionText}>{version}</Text>
+            </View>
           </View>
-          <OptionsList options={options} />
-          <View style={styles.appVersionContainer}>
-            <Text style={styles.appVersionText}>{version}</Text>
-          </View>
-        </View>
-      </TouchableWithoutFeedback>
-    </SafeAreaView>
+        </TouchableWithoutFeedback>
+      </ScrollView>
+    </View>
   )
 }
 
