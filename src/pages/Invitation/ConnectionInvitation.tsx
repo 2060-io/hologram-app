@@ -137,7 +137,7 @@ const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => 
     })
   }
 
-  useLayoutEffect(handleChangeHeaderOptions, [canConnect])
+  useLayoutEffect(handleChangeHeaderOptions, [canConnect, theme.colors])
 
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
@@ -154,8 +154,8 @@ const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => 
           <PublicService
             did={invitationDid}
             initialServiceInfo={serviceInfo.current}
-            ageRestricted={ageRestricted}
             setAgeRestricted={setAgeRestricted}
+            userName={userProfileData?.displayName}
           />
         ) : (
           <View>
