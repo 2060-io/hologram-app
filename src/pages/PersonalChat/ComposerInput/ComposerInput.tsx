@@ -53,7 +53,6 @@ const ComposerInput: React.FC<Props> = ({
         value={valueTextInput}
         enablesReturnKeyAutomatically
         underlineColorAndroid="transparent"
-        keyboardAppearance={theme.isDarkMode ? 'dark' : 'light'}
         autoCorrect={true}
         autoCapitalize="sentences"
         {...textInputProps}
