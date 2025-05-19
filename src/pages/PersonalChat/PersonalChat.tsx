@@ -1,18 +1,3 @@
-import {
-  ChatEntryData,
-  ChatEntryRole,
-  ChatEntryState,
-  ChatEntryType,
-  ChatThreadData,
-  SystemMessageMetadata,
-} from '@2060/model'
-import { ChatMessageList } from '@2060/pages/PersonalChat/ChatMessageList'
-import { logWarn } from '@2060/utils'
-import { isService } from '@2060/utils/connectionUtils'
-import { getFormattedDateRange } from '@2060/utils/dateUtils'
-import { cancelVideoCompression } from '@2060/utils/mediaFileUtils'
-import { markNotificationsOfChatAsViewed } from '@2060/utils/pushNotificationsUtils'
-import { toast } from '@2060/utils/toast'
 import { useFocusEffect } from '@react-navigation/native'
 import { FlashList } from '@shopify/flash-list'
 import { useAudioPlayer } from '@simform_solutions/react-native-audio-waveform'
@@ -37,6 +22,7 @@ import SystemMessage from './SystemMessage'
 import { CompressingVideo } from './components'
 import getStyles from './styles'
 import { getSystemMessage, chatEntryEqual } from './utils'
+
 import { ModalBottomHalf, ModalConfirmAction } from '@2060/components'
 import MessageFloatingMenu from '@2060/components/MessageFloatingMenu'
 import { Text } from '@2060/components/common'
@@ -53,6 +39,21 @@ import { createChatEntry, updateChatEntryMetadata } from '@2060/hooks/agent/chat
 import { blockConnection } from '@2060/hooks/agent/connections'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
+import {
+  ChatEntryData,
+  ChatEntryRole,
+  ChatEntryState,
+  ChatEntryType,
+  ChatThreadData,
+  SystemMessageMetadata,
+} from '@2060/model'
+import { ChatMessageList } from '@2060/pages/PersonalChat/ChatMessageList'
+import { logWarn } from '@2060/utils'
+import { isService } from '@2060/utils/connectionUtils'
+import { getFormattedDateRange } from '@2060/utils/dateUtils'
+import { cancelVideoCompression } from '@2060/utils/mediaFileUtils'
+import { markNotificationsOfChatAsViewed } from '@2060/utils/pushNotificationsUtils'
+import { toast } from '@2060/utils/toast'
 
 interface PersonalChatProps extends WrapperPersonalChatProps {
   chatEntries: ChatEntryData[]
