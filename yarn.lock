@@ -4120,10 +4120,10 @@
     react-dom ">=16.13.1"
     react-native-web ">=0.13.4"
 
-"@shopify/flash-list@v2.0.0-alpha.10":
-  version "2.0.0-alpha.10"
-  resolved "https://registry.yarnpkg.com/@shopify/flash-list/-/flash-list-2.0.0-alpha.10.tgz#a5f98d6bb67d8cb900e05d852cbb1693fae11946"
-  integrity sha512-V2Kz1advecSLTX16C/n5X4Jv3mIA1e+/0cRnnMBDDNi4SjSJYG3YzicwQMtscW1wvWFmz2pg3NzEjkS/iOlgaQ==
+"@shopify/flash-list@v2.0.0-alpha.11":
+  version "2.0.0-alpha.11"
+  resolved "https://registry.yarnpkg.com/@shopify/flash-list/-/flash-list-2.0.0-alpha.11.tgz#6c067631402b3a50659004dd01a42893fd08bb24"
+  integrity sha512-yc3zzNBJIvvmjvaGZEguozFK9hGZoZVJoHdup0kUILdpFvuGDnCPZs/tgRrTRfTKpSk+LNswDhwaEE4q/CVOJg==
   dependencies:
     recyclerlistview "4.2.3"
     tslib "2.8.1"
