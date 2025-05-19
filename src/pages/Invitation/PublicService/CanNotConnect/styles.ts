@@ -11,6 +11,7 @@ const styles = (theme: AppTheme) =>
       justifyContent: 'center',
       alignItems: 'center',
       marginBottom: 22,
+      paddingHorizontal: 8,
     },
     text: {
       flex: 1,

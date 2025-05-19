@@ -15,7 +15,7 @@ type Props = {
 const CanNotConnect = ({ kidAge, userName }: Props) => {
   const theme = useTheme()
   const styles = getStyles(theme)
-  const iconWidth = widthPercentageToDP('15')
+  const iconWidth = widthPercentageToDP('16.5%')
 
   return (
     <View style={styles.container}>
