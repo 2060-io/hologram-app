@@ -10,16 +10,16 @@ const calculateAge = (kidBirthday: string) => {
 }
 
 type Props = {
-  serviceMinimumAgeRequired: number
+  minimumAgeRequired: number
 }
 
-export const useValidateKidAgeRestrictions = ({ serviceMinimumAgeRequired }: Props) => {
+export const useValidateKidAgeRestrictions = ({ minimumAgeRequired }: Props) => {
   const [kidAge, setKidAge] = useState(0)
   const [ageRestricted, setAgeRestricted] = useState(false)
 
   useEffect(() => {
     const checkIfValidateKidAge = async () => {
-      if (serviceMinimumAgeRequired <= 0) return
+      if (minimumAgeRequired <= 0) return
       const isParentalControlEnabled = await retrieveKey(ParentalControlEnum.Enabled)
       if (isParentalControlEnabled === 'true') validateKidCanConnect()
     }
@@ -29,13 +29,13 @@ export const useValidateKidAgeRestrictions = ({ serviceMinimumAgeRequired }: Pro
         (await retrieveKey(ParentalControlEnum.KidBirthday)) ??
         dateToString(new Date(), KID_BIRTHDATE_DATE_FORMAT)
       const age = calculateAge(kidBirthday)
-      if (age < serviceMinimumAgeRequired) {
+      if (age < minimumAgeRequired) {
         setKidAge(age)
         setAgeRestricted(true)
       }
     }
     checkIfValidateKidAge()
-  }, [serviceMinimumAgeRequired])
+  }, [minimumAgeRequired])
 
   return {
     kidAge,

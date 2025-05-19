@@ -15,8 +15,8 @@ type Props = {
 }
 
 const PublicService = ({ did, initialServiceInfo, setAgeRestricted, userName }: Props) => {
-  const [serviceMinimumAgeRequired, setServiceMinimumAgeRequired] = useState(0)
-  const { kidAge, ageRestricted } = useValidateKidAgeRestrictions({ serviceMinimumAgeRequired })
+  const [minimumAgeRequired, setMinimumAgeRequired] = useState(0)
+  const { kidAge, ageRestricted } = useValidateKidAgeRestrictions({ minimumAgeRequired })
 
   useEffect(() => {
     setAgeRestricted(ageRestricted)
@@ -28,7 +28,7 @@ const PublicService = ({ did, initialServiceInfo, setAgeRestricted, userName }: 
       <ServiceInformation
         did={did}
         initialServiceInfo={initialServiceInfo}
-        onServiceInfoUpdated={({ minimumAgeRequired }) => setServiceMinimumAgeRequired(minimumAgeRequired)}
+        onServiceInfoUpdated={serviceInfo => setMinimumAgeRequired(serviceInfo.minimumAgeRequired)}
       />
     </View>
   )

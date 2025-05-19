@@ -27,9 +27,7 @@ const ServiceMainInfo = ({ serviceInfo }: Props) => {
   const { serviceProvider, dataPrivacyUrl, termsAndConditionsUrl, minimumAgeRequired } = serviceInfo
   const [showFullScreenImage, setShowFullScreenImage] = useState<boolean>(false)
   const imageFullScreenUri = useRef<string | undefined>(undefined)
-  const { ageRestricted } = useValidateKidAgeRestrictions({
-    serviceMinimumAgeRequired: minimumAgeRequired,
-  })
+  const { ageRestricted } = useValidateKidAgeRestrictions({ minimumAgeRequired })
 
   const onAvatarImagePressed = (avatarImageUri: string) => {
     setShowFullScreenImage(true)
