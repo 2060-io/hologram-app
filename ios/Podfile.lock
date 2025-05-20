@@ -1566,10 +1566,13 @@ PODS:
     - React-Core
   - react-native-create-thumbnail (2.0.0):
     - React-Core
+  - react-native-date-picker (5.0.12):
+    - React-Core
   - react-native-eid-reader (0.0.1-alpha.11):
     - DoubleConversion
     - glog
     - hermes-engine
+    - OpenSSL-Universal (= 3.2.2000)
     - RCT-Folly (= 2024.01.01.00)
     - RCTRequired
     - RCTTypeSafety
@@ -2751,6 +2754,7 @@ SPEC CHECKSUMS:
   react-native-cloud-store: cc96ca8d9a4400a1a7d8ceb33d2605bccc4986cf
   react-native-config: 644074ab88db883fcfaa584f03520ec29589d7df
   react-native-create-thumbnail: dbee035105fdc88463f435030fe0f0fc1843801c
+  react-native-date-picker: 2eb0ed05ab9dcb4f337deda77deaa779807c4c61
   react-native-eid-reader: e7422aceb576fab13ccc77e5d820247d34a67981
   react-native-get-random-values: d16467cf726c618e9c7a8c3c39c31faa2244bbba
   react-native-image-resizer: 24c5d06fae2176dc0caed4b6396e02befb44064a
@@ -2821,6 +2825,6 @@ SPEC CHECKSUMS:
   VisionCameraTextRecognition: d183547eed78b904622eac9e6860d0690a0c3f0c
   Yoga: be6f55a028e86c83ae066f018e9b5d24ffc45436
 
-PODFILE CHECKSUM: b72a6c5733a84bdf4372f17f2d2be3784a6dc6f1
+PODFILE CHECKSUM: 8f65f2980b0f3af7a27a434ea4f96255a3798c87
 
 COCOAPODS: 1.16.2
