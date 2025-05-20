@@ -189,21 +189,26 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
     setShowStickyDate(contentOffsetY > 100 && contentSizeHeight - layoutMeasurementHeight > contentOffsetY)
   }, [])
 
-  const renderCustomHeader = (props: CustomHeaderProps) => (
-    <CustomChatHeader
-      {...props}
-      navigation={navigation}
-      chatThread={chatThreadData}
-      isTyping={false}
-      showMenuIcon={Boolean(menu)}
-      onShowContextMenu={() => setShowContextualMenu(true)}
-      onGoToConnectionDetails={() => {
-        if (chatThreadData.connectionId) {
-          navigation.navigate('ConnectionDetails', { connectionId: chatThreadData.connectionId })
-        }
-      }}
-    />
-  )
+  const renderCustomHeader = (props: CustomHeaderProps) => {
+    const { isConnectionBlocked, isConnectionTerminated, isConnectionDeleted, isConnectionCompleted } = flags
+    const canPerformActions =
+      !isConnectionBlocked && !isConnectionTerminated && !isConnectionDeleted && isConnectionCompleted
+    return (
+      <CustomChatHeader
+        {...props}
+        navigation={navigation}
+        chatThread={chatThreadData}
+        isTyping={false}
+        showMenuIcon={Boolean(menu) && canPerformActions}
+        onShowContextMenu={() => setShowContextualMenu(true)}
+        onGoToConnectionDetails={() => {
+          if (chatThreadData.connectionId) {
+            navigation.navigate('ConnectionDetails', { connectionId: chatThreadData.connectionId })
+          }
+        }}
+      />
+    )
+  }
 
   const startSelectingMessagesMode = () => setIsSelectingMessagesMode(true)
 
@@ -213,7 +218,7 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
 
   const currentHeader = useMemo(() => {
     return isSelectingMessagesMode ? renderSelectingMessagesHeader() : renderCustomHeader({})
-  }, [chatThread, menu, isSelectingMessagesMode])
+  }, [chatThread, menu, isSelectingMessagesMode, flags])
 
   useEffect(() => {
     markThreadAsRead({ id: chatThreadData.id, lastReadAt: new Date() })

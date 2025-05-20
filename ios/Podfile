@@ -1,3 +1,7 @@
+# TODO: remove this variable which disable new architecture in iOS. It was added due to KeyboardAvoidingView animations does works well
+# with the new architecture. So, when this animation issue be fixed in new architecture, we can remove this variable.
+ENV['RCT_NEW_ARCH_ENABLED'] = "0"
+
 require_relative '../node_modules/expo/scripts/autolinking'
 
 # Resolve react_native_pods.rb with node to allow for hoisting
