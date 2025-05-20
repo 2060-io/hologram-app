@@ -10,8 +10,8 @@ import getStyles from './styles'
 import { OptionsList, Switch, Text } from '@2060/components/common'
 import { KID_BIRTHDATE_DATE_FORMAT } from '@2060/constants'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { storeValueInConfigFile, ParentalControlEnum } from '@2060/services/config'
-import { createAndStoreKey, deleteKey, KeyChainService, retrieveKey } from '@2060/services/keys'
+import { storeKeyInConfigFile, retrieveKeyInConfigFile, ParentalControlEnum } from '@2060/services/config'
+import { createAndStoreEncryptedKey, deleteEncryptedKey, KeyChainService } from '@2060/services/keys'
 import { dateToString, stringToDate } from '@2060/utils/dateUtils'
 
 const ParentalControl = () => {
@@ -27,18 +27,18 @@ const ParentalControl = () => {
 
   useEffect(() => {
     const loadIsParentalControlEnabled = async () => {
-      const storedParentalControlEnabled = await retrieveKey(ParentalControlEnum.Enabled)
+      const storedParentalControlEnabled = await retrieveKeyInConfigFile(ParentalControlEnum.Enabled)
       if (storedParentalControlEnabled) {
         setParentalControlEnabled(storedParentalControlEnabled === 'true')
       }
     }
     const loadKidBirthday = async () => {
-      const storedStringKidBirthday = await retrieveKey(ParentalControlEnum.KidBirthday)
+      const storedStringKidBirthday = await retrieveKeyInConfigFile(ParentalControlEnum.KidBirthday)
       if (storedStringKidBirthday) {
         const storedKidBirthdate = stringToDate(storedStringKidBirthday, KID_BIRTHDATE_DATE_FORMAT)
         setKidBirthday(storedKidBirthdate)
       } else {
-        storeValueInConfigFile(
+        storeKeyInConfigFile(
           ParentalControlEnum.KidBirthday,
           dateToString(new Date(), KID_BIRTHDATE_DATE_FORMAT),
         )
@@ -55,7 +55,7 @@ const ParentalControl = () => {
   const changeParentalControlStatus = async () => {
     const newIsParentalControlEnabled = !isParentalControlEnabled
     setParentalControlEnabled(newIsParentalControlEnabled)
-    await storeValueInConfigFile(ParentalControlEnum.Enabled, newIsParentalControlEnabled.toString())
+    await storeKeyInConfigFile(ParentalControlEnum.Enabled, newIsParentalControlEnabled.toString())
   }
 
   const onToggleParentalControlSwitch = () => {
@@ -68,14 +68,14 @@ const ParentalControl = () => {
     if (!wasSuccessful) changeParentalControlStatus()
     setOpenSetControlPIN(false)
     if (action === 'storePIN' && pinCode) {
-      createAndStoreKey(KeyChainService.ParentalControlPIN, pinCode)
+      createAndStoreEncryptedKey(KeyChainService.ParentalControlPIN, pinCode)
     }
-    if (action === 'disablePIN') deleteKey(KeyChainService.ParentalControlPIN)
+    if (action === 'disablePIN') deleteEncryptedKey(KeyChainService.ParentalControlPIN)
   }
 
   const changeKidBirthdate = (date: Date) => {
     setKidBirthday(date)
-    storeValueInConfigFile(ParentalControlEnum.KidBirthday, dateToString(date, KID_BIRTHDATE_DATE_FORMAT))
+    storeKeyInConfigFile(ParentalControlEnum.KidBirthday, dateToString(date, KID_BIRTHDATE_DATE_FORMAT))
   }
 
   const options = [

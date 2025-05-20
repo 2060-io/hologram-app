@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { KID_BIRTHDATE_DATE_FORMAT } from '@2060/constants'
-import { ParentalControlEnum } from '@2060/services/config'
-import { retrieveKey } from '@2060/services/keys'
+import { ParentalControlEnum, retrieveKeyInConfigFile } from '@2060/services/config'
 import { dateToString, timeFromNow } from '@2060/utils/dateUtils'
 
 const calculateAge = (kidBirthday: string) => {
@@ -20,13 +19,13 @@ export const useValidateKidAgeRestrictions = ({ minimumAgeRequired }: Props) => 
   useEffect(() => {
     const checkIfValidateKidAge = async () => {
       if (minimumAgeRequired <= 0) return
-      const isParentalControlEnabled = await retrieveKey(ParentalControlEnum.Enabled)
+      const isParentalControlEnabled = await retrieveKeyInConfigFile(ParentalControlEnum.Enabled)
       if (isParentalControlEnabled === 'true') validateKidCanConnect()
     }
 
     const validateKidCanConnect = async () => {
       const kidBirthday =
-        (await retrieveKey(ParentalControlEnum.KidBirthday)) ??
+        (await retrieveKeyInConfigFile(ParentalControlEnum.KidBirthday)) ??
         dateToString(new Date(), KID_BIRTHDATE_DATE_FORMAT)
       const age = calculateAge(kidBirthday)
       if (age < minimumAgeRequired) {
