@@ -115,7 +115,7 @@ const ServiceMainInfo = ({ serviceInfo }: Props) => {
           {minimumAgeRequired && (
             <Text
               typography="EuclidCircularA-Regular"
-              style={{ ...styles.text, ...(ageRestricted && styles.notEnoughAgeTextColor) }}
+              style={{ ...styles.text, ...(ageRestricted && styles.notOldEnoughTextColor) }}
             >
               {`${t('invitation.ageRestrictions')} ${minimumAgeRequired}+`}
             </Text>
