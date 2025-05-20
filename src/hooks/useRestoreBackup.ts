@@ -8,7 +8,7 @@ import { RestoreProgress, restoreProgressInitialValues } from './backup'
 import { useMobileAgent } from '@2060/hooks/agent/MobileAgentProvider'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
 import { useWallet } from '@2060/hooks/useWallet'
-import { KeyChainService, createAndStoreKey } from '@2060/services/keys'
+import { KeyChainService, createAndStoreEncryptedKey } from '@2060/services/keys'
 import { logError } from '@2060/utils'
 import { deleteDir, makeDirectory, walletDirectoryPath } from '@2060/utils/RNFS'
 import { getFcmDeviceToken, requestNotificationPermissionUser } from '@2060/utils/pushNotificationsUtils'
@@ -91,7 +91,7 @@ export const useRestoreBackup = ({ restoreProgress, setRestoreProgress, download
 
   const importWallet = async (backupKey: string) => {
     try {
-      const key = await createAndStoreKey(KeyChainService.AfjWallet)
+      const key = await createAndStoreEncryptedKey(KeyChainService.AfjWallet)
       const walletConfig = {
         id: 'afj',
         key,

@@ -2,8 +2,6 @@ import { TypedArrayEncoder } from '@credo-ts/core'
 import { Key, KeyAlgs } from '@hyperledger/aries-askar-react-native'
 import { readFile } from 'react-native-fs'
 
-import { ParentalControlEnum } from '../config'
-
 import { CONFIG_FILE_PATH } from '@2060/constants'
 import { logError } from '@2060/utils'
 import { writeFile } from '@2060/utils/RNFS'
@@ -15,7 +13,7 @@ export enum KeyChainService {
   ParentalControlPIN = 'parental-control-pin',
 }
 
-export async function retrieveKey(service: KeyChainService | ParentalControlEnum) {
+export async function retrieveEncryptedKey(service: KeyChainService) {
   try {
     const config = await readFile(CONFIG_FILE_PATH)
     const configJson = JSON.parse(config)
@@ -26,7 +24,7 @@ export async function retrieveKey(service: KeyChainService | ParentalControlEnum
   }
 }
 
-export async function createAndStoreKey(service: KeyChainService, seed?: string) {
+export async function createAndStoreEncryptedKey(service: KeyChainService, seed?: string) {
   const key = seed ? aes256KeyFromSeed(seed) : Key.generate(KeyAlgs.AesA256CbcHs512).secretBytes
 
   let configJson: { keys: Record<string, string> }
@@ -44,7 +42,7 @@ export async function createAndStoreKey(service: KeyChainService, seed?: string)
   return configJson.keys[service]
 }
 
-export async function deleteKey(service: KeyChainService) {
+export async function deleteEncryptedKey(service: KeyChainService) {
   try {
     const config = await readFile(CONFIG_FILE_PATH)
     const configJson = JSON.parse(config)
@@ -59,9 +57,7 @@ export async function deleteKey(service: KeyChainService) {
 
 export async function deleteAllKeys() {
   try {
-    const config = await readFile(CONFIG_FILE_PATH)
-    const configJson = JSON.parse(config)
-
+    const configJson = {} as { keys: Record<string, string> }
     configJson.keys = {}
     await writeFile(CONFIG_FILE_PATH, JSON.stringify(configJson))
   } catch (error) {

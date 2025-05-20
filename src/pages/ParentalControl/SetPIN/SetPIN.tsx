@@ -8,7 +8,7 @@ import getStyles from './styles'
 
 import { Modal, Text } from '@2060/components/common'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { retrieveKey, KeyChainService, aes256KeyFromSeed } from '@2060/services/keys'
+import { retrieveEncryptedKey, KeyChainService, aes256KeyFromSeed } from '@2060/services/keys'
 
 type OnSuccessCallback = { action: ActionToTake; pinCode?: string }
 
@@ -78,7 +78,7 @@ const SetPIN = ({ visible, onRequestClose, mode }: Props) => {
   }
 
   const validatePIN = async (pinCode: number[]) => {
-    const storedPIN = await retrieveKey(KeyChainService.ParentalControlPIN)
+    const storedPIN = await retrieveEncryptedKey(KeyChainService.ParentalControlPIN)
     const pinMatches = TypedArrayEncoder.toHex(aes256KeyFromSeed(pinCode.join(''))) === storedPIN
     if (pinMatches) {
       success({ action: mode === 'disable' ? 'disablePIN' : undefined })
