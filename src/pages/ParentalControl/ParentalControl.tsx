@@ -8,7 +8,7 @@ import { OnCloseSetPINCallback } from './SetPIN/SetPIN'
 import getStyles from './styles'
 
 import { OptionsList, Switch, Text } from '@2060/components/common'
-import { KID_BIRTHDATE_DATE_FORMAT } from '@2060/constants'
+import { IS_ANDROID, KID_BIRTHDATE_DATE_FORMAT } from '@2060/constants'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { storeKeyInConfigFile, retrieveKeyInConfigFile, ParentalControlEnum } from '@2060/services/config'
 import { createAndStoreEncryptedKey, deleteEncryptedKey, KeyChainService } from '@2060/services/keys'
@@ -49,8 +49,12 @@ const ParentalControl = () => {
   }, [])
 
   useEffect(() => {
-    if (canChangeBirthday.current) setOpenDatePicker(true)
+    if (canChangeBirthday.current && IS_ANDROID) setOpenDatePicker(true)
   }, [openPINConfirmation])
+
+  const oniOSDismissPINConfirmation = () => {
+    if (canChangeBirthday.current) setOpenDatePicker(true)
+  }
 
   const changeParentalControlStatus = async () => {
     const newIsParentalControlEnabled = !isParentalControlEnabled
@@ -119,7 +123,12 @@ const ParentalControl = () => {
         mode={isParentalControlEnabled ? 'enable' : 'disable'}
         onRequestClose={closeSetPIN}
       />
-      <SetPIN visible={openPINConfirmation} mode="pinConfirmation" onRequestClose={closePINConfirmation} />
+      <SetPIN
+        visible={openPINConfirmation}
+        mode="pinConfirmation"
+        onRequestClose={closePINConfirmation}
+        oniOSDismiss={oniOSDismissPINConfirmation}
+      />
       <DatePicker
         modal
         mode="date"

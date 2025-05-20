@@ -23,6 +23,7 @@ type Props = {
   visible: boolean
   onRequestClose: (args: OnCloseSetPINCallback) => void
   mode: Mode
+  oniOSDismiss?: () => void
 }
 
 type FlowState = 'initial' | 'confirmingPin' | 'pinDoesNotMatch'
@@ -30,7 +31,7 @@ type ActionToTake = 'storePIN' | 'disablePIN' | undefined
 const DIAL_PAD = [1, 2, 3, 4, 5, 6, 7, 8, 9, '', 0, 'del']
 const PIN_LENGTH = 4
 
-const SetPIN = ({ visible, onRequestClose, mode }: Props) => {
+const SetPIN = ({ visible, onRequestClose, mode, oniOSDismiss }: Props) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
@@ -136,7 +137,7 @@ const SetPIN = ({ visible, onRequestClose, mode }: Props) => {
   }
 
   return (
-    <Modal visible={visible} transparent>
+    <Modal visible={visible} transparent onDismiss={oniOSDismiss}>
       <SafeAreaView style={styles.modalContainer}>
         <View style={styles.contentContainer}>
           <Text typography="EuclidCircularA-SemiBold" style={styles.title}>
