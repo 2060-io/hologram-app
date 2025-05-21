@@ -2,6 +2,8 @@ import { TypedArrayEncoder } from '@credo-ts/core'
 import { Key, KeyAlgs } from '@hyperledger/aries-askar-react-native'
 import { readFile } from 'react-native-fs'
 
+import { ConfigJsonSignature, PARENTAL_CONTROL } from '../config'
+
 import { CONFIG_FILE_PATH } from '@2060/constants'
 import { logError } from '@2060/utils'
 import { writeFile } from '@2060/utils/RNFS'
@@ -27,13 +29,13 @@ export async function retrieveEncryptedKey(service: KeyChainService) {
 export async function createAndStoreEncryptedKey(service: KeyChainService, seed?: string) {
   const key = seed ? aes256KeyFromSeed(seed) : Key.generate(KeyAlgs.AesA256CbcHs512).secretBytes
 
-  let configJson: { keys: Record<string, string> }
+  let configJson: ConfigJsonSignature
   try {
     const config = await readFile(CONFIG_FILE_PATH)
     configJson = JSON.parse(config)
   } catch (error) {
     logError(`error reading config file: ${error}. Creating new config object`)
-    configJson = { keys: {} }
+    configJson = { keys: {}, [PARENTAL_CONTROL]: {} }
   }
 
   configJson.keys[service] = TypedArrayEncoder.toHex(key)
@@ -57,8 +59,9 @@ export async function deleteEncryptedKey(service: KeyChainService) {
 
 export async function deleteAllKeys() {
   try {
-    const configJson = {} as { keys: Record<string, string> }
+    const configJson = {} as ConfigJsonSignature
     configJson.keys = {}
+    configJson[PARENTAL_CONTROL] = {}
     await writeFile(CONFIG_FILE_PATH, JSON.stringify(configJson))
   } catch (error) {
     logError(`error deleting keys: ${error}`)

@@ -9,42 +9,40 @@ export enum ParentalControlEnum {
   KidBirthday = 'kid-birthday',
 }
 
+export const PARENTAL_CONTROL = 'parental-control'
+
+export type ConfigJsonSignature = {
+  keys: Record<string, string>
+  [PARENTAL_CONTROL]: Record<string, string>
+}
+
 export async function storeKeyInConfigFile(key: ParentalControlEnum, value: string) {
-  let configJson: Record<string, string>
+  let configJson: ConfigJsonSignature
   try {
     const config = await readFile(CONFIG_FILE_PATH)
     configJson = JSON.parse(config)
+    if (!configJson[PARENTAL_CONTROL]) {
+      configJson[PARENTAL_CONTROL] = {}
+    }
   } catch (error) {
     logError(`error reading config file: ${error}. Creating new config object`)
-    configJson = {}
+    configJson = { keys: {}, [PARENTAL_CONTROL]: {} }
   }
 
-  configJson[key] = value
+  configJson[PARENTAL_CONTROL][key] = value
   await writeFile(CONFIG_FILE_PATH, JSON.stringify(configJson))
 
-  return configJson[key]
+  return configJson[PARENTAL_CONTROL][key]
 }
 
 export async function retrieveKeyInConfigFile(key: ParentalControlEnum) {
   try {
     const config = await readFile(CONFIG_FILE_PATH)
     const configJson = JSON.parse(config)
-    return (configJson[key] as string) ?? undefined
+    if (!configJson[PARENTAL_CONTROL]) return undefined
+    return (configJson[PARENTAL_CONTROL][key] as string) ?? undefined
   } catch (error) {
     logError(`error reading config file: ${error}`)
-    return undefined
-  }
-}
-
-export async function deleteKeyInConfigFile(key: ParentalControlEnum) {
-  try {
-    const config = await readFile(CONFIG_FILE_PATH)
-    const configJson = JSON.parse(config)
-    delete configJson[key]
-    await writeFile(CONFIG_FILE_PATH, JSON.stringify(configJson))
-    return configJson
-  } catch (error) {
-    logError(`error deleting key ${key}: ${error}`)
     return undefined
   }
 }
