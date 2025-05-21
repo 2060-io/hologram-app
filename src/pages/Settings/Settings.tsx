@@ -146,15 +146,15 @@ const Settings = ({ navigation }: Props) => {
       rightContent: () => optionRightContent(),
     },
     {
+      iconName: 'id',
+      text: t('navigation.IdentityCredentialIssuers'),
+      onPress: () => navigateTo('IdentityCredentialIssuers'),
+      rightContent: () => optionRightContent(),
+    },
+    {
       iconName: 'trash',
       text: t('settings.deleteWallet'),
       onPress: () => setShowConfirmationDeleteModal(true),
-    },
-    {
-      iconName: 'id',
-      text: t('navigation.IdentityCredentialIssuers'),
-      onPress: () => onNavigate('IdentityCredentialIssuers'),
-      rightContent: () => optionRightContent(),
     },
   ]
 
