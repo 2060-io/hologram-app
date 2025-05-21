@@ -7,11 +7,12 @@ import { BlueButton, Header } from '../components'
 
 import getStyles from './styles'
 
-import { SvgIcon, Text, VerifiedIcon } from '@2060/components/common'
+import { ConnectionRefusedByAge, SvgIcon, Text, VerifiedIcon } from '@2060/components/common'
 import Avatar from '@2060/components/common/Avatar/Avatar'
 import { useFetchServiceInfo } from '@2060/hooks'
 import { useChatThreadById, useChats, useUserProfile } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
+import { useValidateKidAgeRestrictions } from '@2060/hooks/useValidateKidAgeRestrictions'
 import { ChatEntryRole, InvitationMetadata } from '@2060/model'
 import { InvitationState } from '@2060/model/InvitationState'
 import { MobileAgent } from '@2060/services/agent/MobileAgent'
@@ -43,6 +44,8 @@ const InvitationChatView = ({ associatedRecordId: outOfBandId, metadata, role, a
     isService(did) ? 'personalChat.invitationRequestService' : 'personalChat.invitationRequestSubConnection',
   )
   const { serviceInfo } = useFetchServiceInfo(did)
+  const minimumAgeRequired = serviceInfo?.minimumAgeRequired ?? 0
+  const { kidAge, ageRestricted } = useValidateKidAgeRestrictions({ minimumAgeRequired })
 
   const goToInvitation = async () => {
     const outOfBandRecord = await agent?.oob.findById(outOfBandId)
@@ -79,7 +82,23 @@ const InvitationChatView = ({ associatedRecordId: outOfBandId, metadata, role, a
   }
 
   const footer: Partial<Record<InvitationState, React.ReactElement>> = {
-    [InvitationState.Received]: <BlueButton text={t('general.connect')} onPress={onAccept} />,
+    [InvitationState.Received]: (
+      <>
+        <BlueButton
+          disabled={ageRestricted}
+          text={t('general.connect')}
+          onPress={onAccept}
+          style={{ opacity: ageRestricted ? 0.3 : 1 }}
+        />
+        {ageRestricted && (
+          <ConnectionRefusedByAge
+            style={styles.connectionRefusedByAgeText}
+            kidAge={kidAge}
+            userName={userProfileData?.displayName}
+          />
+        )}
+      </>
+    ),
     [InvitationState.Accepted]: (
       <View style={styles.acceptedContainer}>
         <Text typography="EuclidCircularA-Bold" style={styles.acceptedText}>
@@ -99,7 +118,7 @@ const InvitationChatView = ({ associatedRecordId: outOfBandId, metadata, role, a
   const renderFooter = useMemo(() => {
     if (isAcceptingInvitation) return <ActivityIndicator color={theme.colors.green} />
     return footer[state]
-  }, [isAcceptingInvitation, state])
+  }, [isAcceptingInvitation, state, ageRestricted, theme.colors])
 
   return (
     <>

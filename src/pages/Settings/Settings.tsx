@@ -3,7 +3,7 @@ import { StackActions } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, SafeAreaView, Image, TouchableOpacity, TouchableWithoutFeedback, Alert } from 'react-native'
+import { View, Image, TouchableOpacity, TouchableWithoutFeedback, Alert, ScrollView } from 'react-native'
 import NotificationSetting from 'react-native-open-notification'
 
 import { version } from '../../../package.json'
@@ -106,13 +106,13 @@ const Settings = ({ navigation }: Props) => {
             {
               iconName: 'cloudDownload',
               text: t('settings.backup'),
-              onPress: () => onNavigate('WalletBackup'),
+              onPress: () => navigateTo('WalletBackup'),
               rightContent: () => optionRightContent(),
             },
             {
               iconName: 'developer',
               text: t('settings.developer'),
-              onPress: () => onNavigate('Developer'),
+              onPress: () => navigateTo('Developer'),
               rightContent: () => optionRightContent(),
             },
           ]
@@ -129,19 +129,25 @@ const Settings = ({ navigation }: Props) => {
     {
       iconName: 'notifications',
       text: t('settings.notifications'),
-      onPress: () => onNavigate('Notifications'),
+      onPress: () => navigateTo('Notifications'),
       rightContent: () => optionRightContent(),
     },
     {
       iconName: 'users',
       text: t('settings.connections'),
-      onPress: () => onNavigate('Connections'),
+      onPress: () => navigateTo('Connections'),
       rightContent: () => optionRightContent(),
     },
     {
       iconName: 'lock',
       text: t('settings.privacyAndDataUse'),
-      onPress: () => onNavigate('Privacy'),
+      onPress: () => navigateTo('Privacy'),
+      rightContent: () => optionRightContent(),
+    },
+    {
+      iconName: 'people',
+      text: t('navigation.ParentalControl'),
+      onPress: () => navigateTo('ParentalControl'),
       rightContent: () => optionRightContent(),
     },
     {
@@ -154,7 +160,7 @@ const Settings = ({ navigation }: Props) => {
   const goToUserInvitation = () => navigation.dispatch(StackActions.push('UserInvitation'))
   const goToUserProfile = () => navigation.dispatch(StackActions.push('UserProfile'))
 
-  const onNavigate = (screen: string) => {
+  const navigateTo = (screen: string) => {
     if (screen === 'Notifications') return NotificationSetting.open()
     navigation.dispatch(StackActions.push(screen))
   }
@@ -200,44 +206,50 @@ const Settings = ({ navigation }: Props) => {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <FullScreenImage
         showFullScreenImage={showFullScreenImage}
         closeFullScreenImage={closeFullScreenImage}
         imageUri={imageFullScreenUri.current!}
       />
-      <TouchableWithoutFeedback style={styles.subContainer} onPress={handleDeveloperMode}>
-        <View style={styles.subContainer}>
-          <ModalConfirmAction
-            visible={showConfirmationDeleteModal}
-            title={t('settings.deleteWalletTitle')}
-            subTitle={t('settings.deleteWalletMessage')}
-            confirmText={t('general.ok')}
-            cancelText={t('general.cancel')}
-            onClose={hideConfirmationDeleteModal}
-            onConfirm={confirmWalletDeletion}
-            onCancel={hideConfirmationDeleteModal}
-          />
-          <View style={styles.containerProfile}>
-            <Avatar
-              uri={avatarUri}
-              label={userProfileData?.displayName}
-              size="46%"
-              onImagePressed={onAvatarImagePressed}
-            />
-            {userProfileData?.displayName && (
-              <Text typography="EuclidCircularA-Medium" style={styles.displayName}>
-                {userProfileData?.displayName}
-              </Text>
-            )}
+      <ModalConfirmAction
+        visible={showConfirmationDeleteModal}
+        title={t('settings.deleteWalletTitle')}
+        subTitle={t('settings.deleteWalletMessage')}
+        confirmText={t('general.ok')}
+        cancelText={t('general.cancel')}
+        onClose={hideConfirmationDeleteModal}
+        onConfirm={confirmWalletDeletion}
+        onCancel={hideConfirmationDeleteModal}
+      />
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        style={styles.subContainer}
+        contentContainerStyle={styles.scrollViewContentContainerStyle}
+      >
+        <TouchableWithoutFeedback onPress={handleDeveloperMode} style={styles.subContainer}>
+          <View style={styles.subContainer}>
+            <View style={styles.containerProfile}>
+              <Avatar
+                uri={avatarUri}
+                label={userProfileData?.displayName}
+                size="46%"
+                onImagePressed={onAvatarImagePressed}
+              />
+              {userProfileData?.displayName && (
+                <Text typography="EuclidCircularA-Medium" style={styles.displayName}>
+                  {userProfileData?.displayName}
+                </Text>
+              )}
+            </View>
+            <OptionsList options={options} />
+            <View style={styles.appVersionContainer}>
+              <Text style={styles.appVersionText}>{version}</Text>
+            </View>
           </View>
-          <OptionsList options={options} />
-          <View style={styles.appVersionContainer}>
-            <Text style={styles.appVersionText}>{version}</Text>
-          </View>
-        </View>
-      </TouchableWithoutFeedback>
-    </SafeAreaView>
+        </TouchableWithoutFeedback>
+      </ScrollView>
+    </View>
   )
 }
 

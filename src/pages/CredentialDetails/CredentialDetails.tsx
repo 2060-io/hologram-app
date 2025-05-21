@@ -86,7 +86,7 @@ const CredentialDetails = ({ route, navigation }: Props) => {
               <Text typography="EuclidCircularA-SemiBold" style={styles.titleIssuerInfo}>
                 {t('credentialOffer.issuerInformation')}
               </Text>
-              {serviceInfo && <ServiceInformation did={did} serviceInfoRef={serviceInfo} />}
+              <ServiceInformation did={did} initialServiceInfo={serviceInfo.current} />
             </>
           )}
           <View style={styles.containerCardBtnDelete}>

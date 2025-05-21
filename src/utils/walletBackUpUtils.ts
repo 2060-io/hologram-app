@@ -2,10 +2,15 @@ import Config from 'react-native-config'
 import { readdir, TemporaryDirectoryPath } from 'react-native-fs'
 import { zip, unzip } from 'react-native-zip-archive'
 
-import { KeyChainService, createAndStoreKey, retrieveKey, deleteKey } from '../services/keys'
-
 import { existsFile as exists, deleteDir, makeDirectory, mediaDirectoryPath } from './RNFS'
 import { logError } from './log'
+
+import {
+  KeyChainService,
+  createAndStoreEncryptedKey,
+  retrieveEncryptedKey,
+  deleteEncryptedKey,
+} from '@2060/services/keys'
 
 const BACKUP_NAME = Config.BACKUP_NAME
 const ROOT_TEMP_FILES_DIRECTORY = `${TemporaryDirectoryPath}/.Hologram`
@@ -78,11 +83,11 @@ const unzipMediaFiles = async () => {
   }
 }
 
-const getBackupKey = async () => retrieveKey(KeyChainService.Backup)
+const getBackupKey = async () => retrieveEncryptedKey(KeyChainService.Backup)
 
-const setBackupKey = (seed: string) => createAndStoreKey(KeyChainService.Backup, seed)
+const setBackupKey = (seed: string) => createAndStoreEncryptedKey(KeyChainService.Backup, seed)
 
-const deleteBackupKey = async () => deleteKey(KeyChainService.Backup)
+const deleteBackupKey = async () => deleteEncryptedKey(KeyChainService.Backup)
 
 export {
   BACKUP_NAME,

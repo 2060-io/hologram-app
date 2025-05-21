@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react'
 
-import { KeyChainService, createAndStoreKey, retrieveKey } from '../services/keys'
+import { KeyChainService, createAndStoreEncryptedKey, retrieveEncryptedKey } from '../services/keys'
 import { deleteDir, makeDirectory, mediaDirectoryPath, walletDirectoryPath } from '../utils/RNFS'
 
 import { useMobileAgent } from './agent'
@@ -20,7 +20,7 @@ export const useWallet = () => {
   const openWallet = useCallback(async () => {
     if (!agent || agent.isInitialized) return
     try {
-      const key = await retrieveKey(KeyChainService.AfjWallet)
+      const key = await retrieveEncryptedKey(KeyChainService.AfjWallet)
       if (!key) throw new Error('No wallet key stored')
 
       await agent.wallet.open(getWalletConfig(key))
@@ -44,7 +44,7 @@ export const useWallet = () => {
         await deleteDir(walletDirectoryPath)
         await deleteDir(mediaDirectoryPath)
 
-        const key = await createAndStoreKey(KeyChainService.AfjWallet)
+        const key = await createAndStoreEncryptedKey(KeyChainService.AfjWallet)
         await makeDirectory(mediaDirectoryPath)
         await makeDirectory(walletDirectoryPath)
 

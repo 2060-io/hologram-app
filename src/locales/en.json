@@ -104,7 +104,8 @@
       "ForwardTo": "Forward to",
       "shareWith": "Share with",
       "PresentCredential": "Present to",
-      "Presentation": "Presentation"
+      "Presentation": "Presentation",
+      "ParentalControl": "Parental Control"
     },
     "authentication": {
       "walletLocked": "Hologram Locked",
@@ -211,8 +212,9 @@
       "termsAndConditions": "Terms and conditions",
       "privacyPolicy": "Privacy policy.",
       "ageRestrictions": "Age restrictions:",
-      "noAgeRestrictions": "Not restrictions",
-      "serviceNotVerifiable": "This service is not verifiable."
+      "noAgeRestrictions": "No restrictions",
+      "serviceNotVerifiable": "This service is not verifiable.",
+      "connectionRefusedByAge": "Hey there {{ name }}! You're just <bold>{{ age }}</bold> years old! You'll need to wait a few more years before you can connect to this service."
     },
     "credential": {
       "noCredentials": "You do not have any credential yet",
@@ -507,6 +509,17 @@
       "never": "Never",
       "wifi": "Wi-Fi",
       "wifiAndMobileData": "Wi-Fi and mobile data"
+    },
+    "parentalControl": {
+      "message": "Set your child's birthday and a PIN to help block access to age-inappropriate services. Keep in mind that your child can still reinstall Hologram to remove parental controls. However, this will erase all existing connections. If your connection with your child disappear, it may be a sign that they reinstalled Hologram.",
+      "kidBirthday": "Kid birthday",
+      "setPIN": "Set Parental Control PIN",
+      "disable": "Disable Parental Control",
+      "confirmPIN": "Confirm Parental Control PIN",
+      "pinDoesNotMatch": "PIN does not match",
+      "disablePINFooter": "Please enter the PIN you set when you enabled Parental Control",
+      "pinDoesNotMatchFooter": "Make sure to enter the same PIN, or press Cancel to restart the process",
+      "setPINFooter": "Be sure to write down your PIN carefully. There is no way to recover it if it's lost"
     }
   }
 }

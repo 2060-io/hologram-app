@@ -89,6 +89,7 @@
     "react-native-cloud-store": "0.11.0",
     "react-native-config": "1.5.5",
     "react-native-create-thumbnail": "2.0.0",
+    "react-native-date-picker": "5.0.12",
     "react-native-eid-reader": "npm:@2060.io/react-native-eid-reader@0.0.1-alpha.11",
     "react-native-fs": "^2.20.0",
     "react-native-gesture-handler": "^2.12.1",
@@ -98,6 +99,7 @@
     "react-native-job-queue": "^0.5.2",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
     "react-native-keyboard-controller": "1.16.8",
+    "react-native-local-native-modules": "file:./modules/local-native-modules",
     "react-native-localize": "^2.2.2",
     "react-native-open-notification": "^0.1.4",
     "react-native-permissions": "^3.10.1",
@@ -107,6 +109,7 @@
     "react-native-screens": "4.4.0",
     "react-native-section-alphabet-list": "^2.1.0",
     "react-native-share": "12.0.10",
+    "react-native-share-menu": "file:./modules/react-native-share-menu",
     "react-native-splash-screen": "npm:@2060.io/react-native-splash-screen@3.3.2",
     "react-native-svg": "15.11.1",
     "react-native-swipe-list-view": "^3.2.9",
@@ -120,9 +123,7 @@
     "react-native-zip-archive": "7.0.1",
     "realm": "^12.0.0",
     "rn-emoji-keyboard": "^1.2.1",
-    "text-encoding-polyfill": "^0.6.7",
-    "react-native-local-native-modules": "file:./modules/local-native-modules",
-    "react-native-share-menu": "file:./modules/react-native-share-menu"
+    "text-encoding-polyfill": "^0.6.7"
   },
   "devDependencies": {
     "@babel/helper-get-function-arity": "^7.16.7",

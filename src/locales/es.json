@@ -104,7 +104,8 @@
       "ForwardTo": "Reenviar a",
       "shareWith": "Compartir con",
       "PresentCredential": "Presentar a",
-      "Presentation": "Presentación"
+      "Presentation": "Presentación",
+      "ParentalControl": "Control parental"
     },
     "authentication": {
       "walletLocked": "Hologram bloqueada",
@@ -211,7 +212,8 @@
       "privacyPolicy": "Política de privacidad.",
       "ageRestrictions": "Restricciones de edad:",
       "noAgeRestrictions": "Sin restricciones",
-      "serviceNotVerifiable": "Este servicio no es verificable."
+      "serviceNotVerifiable": "Este servicio no es verificable.",
+      "connectionRefusedByAge": "Holaa {{ name }}! Solamente tienes <bold>{{ age }}</bold> años. Tendrás que esperar unos años más para poder conectarte a este servicio."
     },
     "credential": {
       "noCredentials": "Aún no tienes credenciales",
@@ -506,6 +508,17 @@
       "never": "Nunca",
       "wifi": "Wi-Fi",
       "wifiAndMobileData": "Wi-Fi y datos móviles"
+    },
+    "parentalControl": {
+      "message": "Establezca la fecha de nacimiento su hijo/a y un PIN para bloquear el aceso a servicios no adecuados para su edad. Tenga en cuenta que su hijo/a aún puede reinstalar Hologram para eliminar los controles parentales. Sin embargo, esto eliminará toda las conexiones existentes. Si la conexión con su hijo/a desaparece, podría ser una señal de que reinstaló Hologram.",
+      "kidBirthday": "Fecha de nacimiento de su hijo/a",
+      "setPIN": "Asignar PIN de Control Parental",
+      "disable": "Deshabilitar el Control Parental",
+      "confirmPIN": "Confirmar PIN de Control Parental",
+      "pinDoesNotMatch": "PIN no coincide",
+      "disablePINFooter": "Por favor ingresa el PIN que asignaste cuando habilitaste el Control Parental",
+      "pinDoesNotMatchFooter": "Asegúrate de ingresar el mismo PIN, ó presiona Cancelar para volver a realizar el proceso",
+      "setPINFooter": "Asegúrate cuidadosamente de ingresar tu PIN. No hay forma de recuperarlo si lo pierdes"
     }
   }
 }

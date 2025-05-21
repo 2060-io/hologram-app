@@ -5,11 +5,12 @@ import { useTranslation } from 'react-i18next'
 import { TouchableOpacity, View, ScrollView } from 'react-native'
 
 import AlreadyConnected from './AlreadyConnected'
+import PublicService from './PublicService'
 import getStyles from './styles'
 
 import { CommunicationChannels } from '@2060/components'
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
-import { Avatar, HeaderTitle, ModalLoading, Text, ServiceInformation } from '@2060/components/common'
+import { Avatar, HeaderTitle, ModalLoading, Text } from '@2060/components/common'
 import { useChats, useConnectionById, useMobileAgent, useUserProfile } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { acceptInvitation } from '@2060/services/agent/oob'
@@ -29,11 +30,6 @@ const getInvitationType = (
   if (isService) return 'public'
   if (!isService && !isSubInvitation) return 'peer'
   return 'subInvitation'
-}
-
-const invitationTypeTitles: Partial<Record<InvitationType, string>> = {
-  peer: 'invitationPeer',
-  public: 'invitationPublic',
 }
 
 interface Props extends StackScreenProps<NavigationStackParams, 'ConnectionInvitation'> {}
@@ -71,6 +67,8 @@ const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => 
   const invitationType = getInvitationType(invitationDid, parentConnectionId)
   const connectionParent = useConnectionById(parentConnectionId)
   const parentConnectionName = connectionParent ? getConnectionDisplayName(connectionParent) : ''
+  const [ageRestricted, setAgeRestricted] = useState(false)
+  const canConnect = !isAlreadyConnected && !ageRestricted
 
   useEffect(() => {
     if (!isAcceptingInvitation && chatThreadId.current) {
@@ -91,7 +89,7 @@ const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => 
   const onFinishAddingConnection = () => setIsAcceptingInvitation(false)
 
   const onPressRightButton = () => {
-    isAlreadyConnected ? navigation.goBack() : accept()
+    canConnect ? accept() : navigation.goBack()
   }
 
   const accept = async () => {
@@ -113,33 +111,33 @@ const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => 
   }
 
   const handleChangeHeaderOptions = () => {
+    const headerTitles: Record<InvitationType, string> = {
+      peer: t('invitation.invitationPeer'),
+      public: t('invitation.invitationPublic'),
+      subInvitation: t('invitation.invitation'),
+    }
     navigation.setOptions({
-      headerTitle: () => (
-        <HeaderTitle
-          title={t(`invitation.${invitationTypeTitles[invitationType] ?? 'invitation'}`)}
-          theme={theme}
-        />
-      ),
-      headerLeft: isAlreadyConnected
-        ? () => <></>
-        : () => (
+      headerTitle: () => <HeaderTitle title={headerTitles[invitationType]} theme={theme} />,
+      headerLeft: canConnect
+        ? () => (
             <TouchableOpacity style={styles.btnRefuse} onPress={onRefuse}>
               <Text typography="EuclidCircularA-Medium" style={styles.headerBtnText}>
                 {t('general.refuse')}
               </Text>
             </TouchableOpacity>
-          ),
+          )
+        : () => <></>,
       headerRight: () => (
         <TouchableOpacity style={styles.btnAccept} onPress={onPressRightButton}>
           <Text typography="EuclidCircularA-Medium" style={styles.headerBtnText}>
-            {isAlreadyConnected ? t('general.done') : t('general.accept')}
+            {canConnect ? t('general.accept') : t('general.done')}
           </Text>
         </TouchableOpacity>
       ),
     })
   }
 
-  useLayoutEffect(handleChangeHeaderOptions, [invitationType])
+  useLayoutEffect(handleChangeHeaderOptions, [canConnect, theme.colors])
 
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
@@ -153,7 +151,12 @@ const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => 
           />
         )}
         {invitationType === 'public' ? (
-          <ServiceInformation did={invitationDid} serviceInfoRef={serviceInfo} />
+          <PublicService
+            did={invitationDid}
+            initialServiceInfo={serviceInfo.current}
+            setAgeRestricted={setAgeRestricted}
+            userName={userProfileData?.displayName}
+          />
         ) : (
           <View>
             <View style={styles.card}>

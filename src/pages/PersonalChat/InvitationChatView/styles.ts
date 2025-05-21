@@ -56,4 +56,9 @@ export default (theme: AppTheme) =>
       color: theme.colors.green,
       fontSize: theme.fontSize.md - 1,
     },
+    connectionRefusedByAgeText: {
+      marginTop: 4,
+      fontSize: theme.fontSize.sm,
+      color: theme.colors.primaryText,
+    },
   })

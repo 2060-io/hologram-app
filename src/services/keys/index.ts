@@ -1,69 +1,70 @@
 import { TypedArrayEncoder } from '@credo-ts/core'
 import { Key, KeyAlgs } from '@hyperledger/aries-askar-react-native'
-import { readFile, DocumentDirectoryPath } from 'react-native-fs'
+import { readFile } from 'react-native-fs'
 
-import { logWarn } from '@2060/utils'
+import { ConfigJsonSignature, PARENTAL_CONTROL } from '../config'
+
+import { CONFIG_FILE_PATH } from '@2060/constants'
+import { logError } from '@2060/utils'
 import { writeFile } from '@2060/utils/RNFS'
-
-export const configFilePath = `${DocumentDirectoryPath}/config.json`
 
 export enum KeyChainService {
   AfjWallet = 'afj-wallet',
   RealmMain = 'realm-main',
   Backup = 'backup',
+  ParentalControlPIN = 'parental-control-pin',
 }
 
-export async function retrieveKey(service: KeyChainService) {
+export async function retrieveEncryptedKey(service: KeyChainService) {
   try {
-    const config = await readFile(configFilePath)
+    const config = await readFile(CONFIG_FILE_PATH)
     const configJson = JSON.parse(config)
     return (configJson.keys[service] as string) ?? undefined
   } catch (error) {
-    logWarn(`error reading config file: ${error}`)
+    logError(`error reading config file: ${error}`)
     return undefined
   }
 }
 
-export async function createAndStoreKey(service: KeyChainService, seed?: string) {
+export async function createAndStoreEncryptedKey(service: KeyChainService, seed?: string) {
   const key = seed ? aes256KeyFromSeed(seed) : Key.generate(KeyAlgs.AesA256CbcHs512).secretBytes
 
-  let configJson: { keys: Record<string, string> }
+  let configJson: ConfigJsonSignature
   try {
-    const config = await readFile(configFilePath)
+    const config = await readFile(CONFIG_FILE_PATH)
     configJson = JSON.parse(config)
   } catch (error) {
-    logWarn(`error reading config file: ${error}. Creating new config object`)
-    configJson = { keys: {} }
+    logError(`error reading config file: ${error}. Creating new config object`)
+    configJson = { keys: {}, [PARENTAL_CONTROL]: {} }
   }
 
   configJson.keys[service] = TypedArrayEncoder.toHex(key)
-  await writeFile(configFilePath, JSON.stringify(configJson))
+  await writeFile(CONFIG_FILE_PATH, JSON.stringify(configJson))
 
   return configJson.keys[service]
 }
 
-export async function deleteKey(service: KeyChainService) {
+export async function deleteEncryptedKey(service: KeyChainService) {
   try {
-    const config = await readFile(configFilePath)
+    const config = await readFile(CONFIG_FILE_PATH)
     const configJson = JSON.parse(config)
     delete configJson.keys[service]
-    await writeFile(configFilePath, JSON.stringify(configJson))
+    await writeFile(CONFIG_FILE_PATH, JSON.stringify(configJson))
     return configJson.keys
   } catch (error) {
-    logWarn(`error deleting key ${service}: ${error}`)
+    logError(`error deleting key ${service}: ${error}`)
     return undefined
   }
 }
 
 export async function deleteAllKeys() {
   try {
-    const config = await readFile(configFilePath)
-    const configJson = JSON.parse(config)
-
+    const configJson = {} as ConfigJsonSignature
     configJson.keys = {}
-    await writeFile(configFilePath, JSON.stringify(configJson))
+    configJson[PARENTAL_CONTROL] = {}
+    await writeFile(CONFIG_FILE_PATH, JSON.stringify(configJson))
   } catch (error) {
-    logWarn(`error deleting keys: ${error}`)
+    logError(`error deleting keys: ${error}`)
   }
 }
 

@@ -12748,6 +12748,11 @@ react-native-create-thumbnail@2.0.0:
   resolved "https://registry.yarnpkg.com/react-native-create-thumbnail/-/react-native-create-thumbnail-2.0.0.tgz#4eae9b4198cd484a1420608b53ce5872209b9a25"
   integrity sha512-1GA0PHGlhSirKUqbtlLLk++3Wkd/fo8H8YUi71Lp5Y2z+AxZMKmY1/IcB9ooDiMzI1Pxr006Kq99JWuXowoykg==
 
+react-native-date-picker@5.0.12:
+  version "5.0.12"
+  resolved "https://registry.yarnpkg.com/react-native-date-picker/-/react-native-date-picker-5.0.12.tgz#12540b6a58500811ee7e4fc0244e3accc7cca9c1"
+  integrity sha512-R/mUnCKhcuxbhKPFwYdBQCxQt9HHLqpM4ruRUqlcBjiUZ3N2wdnwOMyc888Ps8qp8e7v29PrDHtUlG8LPuFn9w==
+
 "react-native-eid-reader@npm:@2060.io/react-native-eid-reader@0.0.1-alpha.11":
   version "0.0.1-alpha.11"
   resolved "https://registry.yarnpkg.com/@2060.io/react-native-eid-reader/-/react-native-eid-reader-0.0.1-alpha.11.tgz#8a47e612b753ea40c50cb1e35867257ababe68b1"

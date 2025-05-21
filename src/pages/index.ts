@@ -10,6 +10,7 @@ import HomeMain from './HomeMain'
 import ConnectionInvitation from './Invitation'
 import MRZScanner from './MRZScanner'
 import MessageDetails from './MessageDetails'
+import ParentalControl from './ParentalControl'
 import PersonalChat from './PersonalChat'
 import PresentCredential from './PresentCredential'
 import Presentation from './Presentation'
@@ -61,4 +62,5 @@ export {
   MRZScanner,
   PresentCredential,
   Presentation,
+  ParentalControl,
 }
