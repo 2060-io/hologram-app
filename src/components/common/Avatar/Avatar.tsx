@@ -3,6 +3,7 @@ import React, { useMemo, useState } from 'react'
 import { Image, TouchableOpacity, View } from 'react-native'
 import { SvgUri } from 'react-native-svg'
 
+import SmartImage from './SmartImage'
 import getStyles from './styles'
 
 import Text from '@2060/components/common/Text'
@@ -17,6 +18,14 @@ type Props = {
   withBorder?: boolean
   bgAvatarInitials?: string
   onImagePressed?: (imageUri: string) => void
+}
+
+const isHttpUrl = (uri: string) => {
+  try {
+    return uri.startsWith('https://') || uri.startsWith('http://')
+  } catch (e) {
+    return false
+  }
 }
 
 const Avatar: React.FC<Props> = ({
@@ -36,6 +45,7 @@ const Avatar: React.FC<Props> = ({
   const styles = getStyles(theme)
   const avatarSizeStyle = { height: avatarSize, width: avatarSize, borderRadius: avatarSize / 2 }
   const borderStyle = withBorder && { borderWidth: 1, borderColor: theme.colors.lightGrey }
+
   const renderAvatar = () => (
     <TouchableOpacity
       style={[styles.containerAvatar, styles.containerBgAvatar, avatarSizeStyle, borderStyle]}
@@ -50,12 +60,10 @@ const Avatar: React.FC<Props> = ({
           height={styles.avatar.height}
           onError={() => setIsValidImageUrl(false)}
         />
+      ) : isHttpUrl(uri!) ? (
+        <SmartImage uri={uri!} setIsValidImageUrl={setIsValidImageUrl} style={styles.avatar} />
       ) : (
-        <Image
-          source={{ uri, cache: 'force-cache' }}
-          style={styles.avatar}
-          onError={() => setIsValidImageUrl(false)}
-        />
+        <Image source={{ uri }} style={styles.avatar} onError={() => setIsValidImageUrl(false)} />
       )}
     </TouchableOpacity>
   )
