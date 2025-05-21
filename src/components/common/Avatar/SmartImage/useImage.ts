@@ -31,11 +31,16 @@ const fetchLastModified = async (url: string) => {
 type Props = {
   uri: string
   onError: () => void
+  onImageContent: (imageContent: string) => void
 }
 
-export const useImage = ({ uri, onError }: Props) => {
+export const useImage = ({ uri, onError, onImageContent }: Props) => {
   const { realm } = useLocalRealm()
   const [imageContent, setImageContent] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (imageContent) onImageContent(imageContent)
+  }, [imageContent])
 
   useEffect(() => {
     const downloadAndSaveImageRecord = async () => {

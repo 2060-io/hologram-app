@@ -1,5 +1,5 @@
 import { isUri } from '@credo-ts/core/build/utils'
-import React, { useMemo, useState } from 'react'
+import React, { useMemo, useRef, useState } from 'react'
 import { Image, TouchableOpacity, View } from 'react-native'
 import { SvgUri } from 'react-native-svg'
 
@@ -36,6 +36,7 @@ const Avatar: React.FC<Props> = ({
   bgAvatarInitials,
   onImagePressed,
 }) => {
+  const imageUri = useRef(uri)
   const [isValidImageUrl, setIsValidImageUrl] = useState<boolean>()
   useMemo(() => setIsValidImageUrl(uri?.length ? isUri(uri) : undefined), [uri])
   const theme = useTheme()
@@ -46,11 +47,15 @@ const Avatar: React.FC<Props> = ({
   const avatarSizeStyle = { height: avatarSize, width: avatarSize, borderRadius: avatarSize / 2 }
   const borderStyle = withBorder && { borderWidth: 1, borderColor: theme.colors.lightGrey }
 
+  const onSmartImageContent = (imageContent: string) => {
+    imageUri.current = imageContent
+  }
+
   const renderAvatar = () => (
     <TouchableOpacity
       style={[styles.containerAvatar, styles.containerBgAvatar, avatarSizeStyle, borderStyle]}
       disabled={!onImagePressed}
-      onPress={() => onImagePressed?.(uri!)}
+      onPress={() => onImagePressed?.(imageUri.current!)}
     >
       {uri?.endsWith('.svg') ? (
         <SvgUri
@@ -61,7 +66,12 @@ const Avatar: React.FC<Props> = ({
           onError={() => setIsValidImageUrl(false)}
         />
       ) : isHttpUrl(uri!) ? (
-        <SmartImage uri={uri!} setIsValidImageUrl={setIsValidImageUrl} style={styles.avatar} />
+        <SmartImage
+          uri={uri!}
+          setIsValidImageUrl={setIsValidImageUrl}
+          onImageContent={onSmartImageContent}
+          style={styles.avatar}
+        />
       ) : (
         <Image source={{ uri }} style={styles.avatar} onError={() => setIsValidImageUrl(false)} />
       )}

@@ -6,12 +6,13 @@ import { useImage } from './useImage'
 type Props = {
   uri: string
   setIsValidImageUrl: (isValid: boolean) => void
+  onImageContent: (imageContent: string) => void
   style?: StyleProp<ImageStyle>
 }
 
-const SmartImage = ({ uri, setIsValidImageUrl, style }: Props) => {
+const SmartImage = ({ uri, setIsValidImageUrl, onImageContent, style }: Props) => {
   const onError = () => setIsValidImageUrl(false)
-  const { imageContent } = useImage({ uri, onError })
+  const { imageContent } = useImage({ uri, onError, onImageContent })
 
   return imageContent ? <Image source={{ uri: imageContent }} style={style} /> : null
 }
