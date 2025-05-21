@@ -7,7 +7,7 @@ export class ImageRecord extends Realm.Object<ImageRecord> {
   content!: string
 
   static schema: ObjectSchema = {
-    name: 'Image',
+    name: 'ImageRecord',
     properties: {
       id: { type: 'string' },
       url: { type: 'string' },
