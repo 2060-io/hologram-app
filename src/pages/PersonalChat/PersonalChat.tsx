@@ -200,6 +200,7 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
         chatThread={chatThreadData}
         isTyping={false}
         showMenuIcon={Boolean(menu) && canPerformActions}
+        isConnectionDeleted={isConnectionDeleted}
         onShowContextMenu={() => setShowContextualMenu(true)}
         onGoToConnectionDetails={() => {
           if (chatThreadData.connectionId) {
