@@ -20,6 +20,14 @@ type Props = {
   onImagePressed?: (imageUri: string) => void
 }
 
+const isHttpUrl = (uri: string) => {
+  try {
+    return uri.startsWith('https://') || uri.startsWith('http://')
+  } catch (e) {
+    return false
+  }
+}
+
 const Avatar: React.FC<Props> = ({
   uri,
   label,
@@ -57,7 +65,7 @@ const Avatar: React.FC<Props> = ({
           height={styles.avatar.height}
           onError={() => setIsValidImageUrl(false)}
         />
-      ) : isUri(uri!) ? (
+      ) : isHttpUrl(uri!) ? (
         <SmartImage
           uri={uri!}
           setIsValidImageUrl={setIsValidImageUrl}
