@@ -121,17 +121,17 @@ export async function createResizedImage(options: {
 }) {
   try {
     const { imageUrl, maxWidth, maxHeight, quality } = options
-    const preview = await ImageResizer.createResizedImage(
+    const resizedImage = await ImageResizer.createResizedImage(
       imageUrl,
       maxWidth ?? DIDCOMM_PREVIEW_IMAGE_WIDTH,
       maxHeight ?? DIDCOMM_PREVIEW_IMAGE_HEIGHT,
       'JPEG',
       quality ?? DIDCOMM_PREVIEW_IMAGE_QUALITY,
     )
-    const data = await readFile(preview.path, 'base64')
-    return { path: preview.path, base64: dataUrl('image/jpeg', data) }
+    const data = await readFile(resizedImage.path, 'base64')
+    return { path: resizedImage.path, base64: dataUrl('image/jpeg', data) }
   } catch (error) {
-    logError(`Error creating image preview: ${error}`)
+    logError(`Error creating resized image: ${error}`)
     return null
   }
 }
