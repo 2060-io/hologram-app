@@ -4,13 +4,13 @@ import { useCallback, useEffect, useState } from 'react'
 
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
 import { ImageRecord } from '@2060/model'
-import { logError } from '@2060/utils'
+import { logError, dataUrl } from '@2060/utils'
 
 const downloadImage = async (url: string) => {
   try {
     const response = await axios.get(url, { responseType: 'arraybuffer' })
     const base64 = Buffer.from(response.data, 'binary').toString('base64')
-    return `data:${response.headers['content-type']};base64,${base64}`
+    return dataUrl(response.headers['content-type'], base64)
   } catch (error) {
     logError(`Error downloading image from ${url}: ${error}`)
     return null

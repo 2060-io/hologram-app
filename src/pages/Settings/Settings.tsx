@@ -19,8 +19,7 @@ import { useConfig } from '@2060/hooks/providers/ConfigProvider'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { deleteAllKeys } from '@2060/services/keys'
-import { logError } from '@2060/utils'
-import { dataUrl } from '@2060/utils/connectionUtils'
+import { logError, dataUrl } from '@2060/utils'
 import { toast } from '@2060/utils/toast'
 
 interface Props extends StackScreenProps<HomeMainTabParams, 'Settings'> {}

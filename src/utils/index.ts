@@ -70,3 +70,5 @@ export const trimText = (text: string, limit?: number) => {
 
   return result
 }
+
+export const dataUrl = (mime?: string, data?: string) => (data && mime ? `data:${mime};base64,${data}` : '')

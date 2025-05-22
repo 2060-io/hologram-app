@@ -2,7 +2,7 @@ import ImageResizer from '@bam.tech/react-native-image-resizer'
 import { createThumbnail } from 'react-native-create-thumbnail'
 import { moveFile } from 'react-native-fs'
 
-import { logError } from '@2060/utils'
+import { dataUrl, logError } from '@2060/utils'
 import {
   deleteFile,
   existsFile,
@@ -106,7 +106,7 @@ async function createVideoThumbnail(options: {
       quality: quality ?? DIDCOMM_PREVIEW_IMAGE_QUALITY,
     })
     const data = await readFile(path, 'base64')
-    return { path, base64: `data:image/jpeg;base64,${data}` }
+    return { path, base64: dataUrl('image/jpeg', data) }
   } catch (error) {
     logError('error in createVideoThumbnail', error)
     return undefined
@@ -129,5 +129,5 @@ async function createImagePreview(options: {
   )
 
   const data = await readFile(preview.path, 'base64')
-  return { path: preview.path, base64: `data:image/jpeg;base64,${data}` }
+  return { path: preview.path, base64: dataUrl('image/jpeg', data) }
 }
