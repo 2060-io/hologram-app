@@ -68,10 +68,7 @@
 		A41A5FEA2A8D4967B72DD55C /* EuclidCircularA-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 049DE2D9187F4C75BAE23BDD /* EuclidCircularA-MediumItalic.ttf */; };
 		A851E91D72D64E9CE3950549 /* libPods-2060CommonPods-2060Staging.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EBF03A6063B069CAE755D1AA /* libPods-2060CommonPods-2060Staging.a */; };
 		B3DCDAE3C72AA3B759AF74A9 /* libPods-CommonShareExtensionPods-ShareExtensionDev.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DCFEFE356C0AFD1423FFF398 /* libPods-CommonShareExtensionPods-ShareExtensionDev.a */; };
-		BFAD8A344464EB901B85EF39 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE1D456CA52FDC02158A48B1 /* ExpoModulesProvider.swift */; };
 		C36A10283A124387AD849E0F /* EuclidCircularA-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6239256A6AB540339CECB738 /* EuclidCircularA-Italic.ttf */; };
-		C74816115AF92FEF3A52412B /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C19DF33A85866CB9642F2CCC /* ExpoModulesProvider.swift */; };
-		C8265532B1884B424EF80C6C /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7822531BEBF95A955F8534A /* ExpoModulesProvider.swift */; };
 		E068008F2ABCB463002EC287 /* EuclidCircularA-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6CEEA9EEEDEF4E87B0DD5DF0 /* EuclidCircularA-Bold.ttf */; };
 		E06800902ABCB464002EC287 /* EuclidCircularA-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6CEEA9EEEDEF4E87B0DD5DF0 /* EuclidCircularA-Bold.ttf */; };
 		E06800912ABCB467002EC287 /* EuclidCircularA-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3014A43B734340F48859D0AE /* EuclidCircularA-BoldItalic.ttf */; };
@@ -263,10 +260,8 @@
 		AE543BC9A119E4386D2400E9 /* Pods-CommonShareExtensionPods-ShareExtensionStaging.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CommonShareExtensionPods-ShareExtensionStaging.debug.xcconfig"; path = "Target Support Files/Pods-CommonShareExtensionPods-ShareExtensionStaging/Pods-CommonShareExtensionPods-ShareExtensionStaging.debug.xcconfig"; sourceTree = "<group>"; };
 		AF869844D7664810B76756A5 /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
 		B0DFBEEF5D084C2A8EE22FC3 /* EuclidCircularA-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "EuclidCircularA-Medium.ttf"; path = "../src/assets/fonts/EuclidCircularA-Medium.ttf"; sourceTree = "<group>"; };
-		B7822531BEBF95A955F8534A /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-CommonShareExtensionPods-ShareExtensionProd/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		B9819FC4CA9E4B768A2929F0 /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
 		BE0136B2C0ABA88EB536D86A /* Pods-2060CommonPods-2060Dev.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-2060CommonPods-2060Dev.release.xcconfig"; path = "Target Support Files/Pods-2060CommonPods-2060Dev/Pods-2060CommonPods-2060Dev.release.xcconfig"; sourceTree = "<group>"; };
-		C19DF33A85866CB9642F2CCC /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-CommonShareExtensionPods-ShareExtensionDev/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		C753DF175C343D95204F6E65 /* Pods-hologram.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-hologram.release.xcconfig"; path = "Target Support Files/Pods-hologram/Pods-hologram.release.xcconfig"; sourceTree = "<group>"; };
 		C7903EF7DED840A2872A1B95 /* Fontisto.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Fontisto.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Fontisto.ttf"; sourceTree = "<group>"; };
 		CA1C222C327D4A9A94CEC3C0 /* EuclidCircularA-Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "EuclidCircularA-Light.ttf"; path = "../src/assets/fonts/EuclidCircularA-Light.ttf"; sourceTree = "<group>"; };
@@ -285,7 +280,6 @@
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F70B8F11703598B242E3BA09 /* Pods-CommonShareExtensionPods-ShareExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CommonShareExtensionPods-ShareExtension.release.xcconfig"; path = "Target Support Files/Pods-CommonShareExtensionPods-ShareExtension/Pods-CommonShareExtensionPods-ShareExtension.release.xcconfig"; sourceTree = "<group>"; };
 		F82AE937A5E24B96B280DC6A /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
-		FE1D456CA52FDC02158A48B1 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-CommonShareExtensionPods-ShareExtensionStaging/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -391,14 +385,6 @@
 			name = hologram;
 			sourceTree = "<group>";
 		};
-		23D5B38242BEDEB18DCD8225 /* ShareExtensionProd */ = {
-			isa = PBXGroup;
-			children = (
-				B7822531BEBF95A955F8534A /* ExpoModulesProvider.swift */,
-			);
-			name = ShareExtensionProd;
-			sourceTree = "<group>";
-		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -452,23 +438,12 @@
 			name = Resources;
 			sourceTree = "<group>";
 		};
-		32E52287939782C80C6CA402 /* ShareExtensionStaging */ = {
-			isa = PBXGroup;
-			children = (
-				FE1D456CA52FDC02158A48B1 /* ExpoModulesProvider.swift */,
-			);
-			name = ShareExtensionStaging;
-			sourceTree = "<group>";
-		};
 		58B1A1C34A787817C3276915 /* ExpoModulesProviders */ = {
 			isa = PBXGroup;
 			children = (
 				B8C007461407302707A3D23E /* 2060Dev */,
 				A24EED6740591B2086DBD3A7 /* 2060Prod */,
 				A7B55DB010B8467CA4C3DF63 /* 2060Staging */,
-				CFDE5BB5682FAA5B3335823D /* ShareExtensionDev */,
-				23D5B38242BEDEB18DCD8225 /* ShareExtensionProd */,
-				32E52287939782C80C6CA402 /* ShareExtensionStaging */,
 			);
 			name = ExpoModulesProviders;
 			sourceTree = "<group>";
@@ -539,14 +514,6 @@
 			name = 2060Dev;
 			sourceTree = "<group>";
 		};
-		CFDE5BB5682FAA5B3335823D /* ShareExtensionDev */ = {
-			isa = PBXGroup;
-			children = (
-				C19DF33A85866CB9642F2CCC /* ExpoModulesProvider.swift */,
-			);
-			name = ShareExtensionDev;
-			sourceTree = "<group>";
-		};
 		E27DFBC2D3BCD40576E0D11D /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -582,7 +549,6 @@
 			buildConfigurationList = 0D22C17E2C23707A00C87570 /* Build configuration list for PBXNativeTarget "ShareExtensionProd" */;
 			buildPhases = (
 				FB634D575A9036E4AF0A3938 /* [CP] Check Pods Manifest.lock */,
-				C239BAC157608CE5770F21A8 /* [Expo] Configure project */,
 				0D22C16C2C23707A00C87570 /* Sources */,
 				0D22C16D2C23707A00C87570 /* Frameworks */,
 				0D22C16E2C23707A00C87570 /* Resources */,
@@ -602,7 +568,6 @@
 			buildConfigurationList = 0D665C9D2C2379940038F106 /* Build configuration list for PBXNativeTarget "ShareExtensionDev" */;
 			buildPhases = (
 				A01FE3617D4029BDFEDEFC32 /* [CP] Check Pods Manifest.lock */,
-				9CE18D802AB26D626B363B8D /* [Expo] Configure project */,
 				0D665C8E2C2379930038F106 /* Sources */,
 				0D665C8F2C2379930038F106 /* Frameworks */,
 				0D665C902C2379930038F106 /* Resources */,
@@ -622,7 +587,6 @@
 			buildConfigurationList = 0D66D9002C236695004F9B35 /* Build configuration list for PBXNativeTarget "ShareExtensionStaging" */;
 			buildPhases = (
 				93DEA908C5D1264491AD6CFC /* [CP] Check Pods Manifest.lock */,
-				590492FDF4B0CC43DF69F8BE /* [Expo] Configure project */,
 				0D66D8F12C236695004F9B35 /* Sources */,
 				0D66D8F22C236695004F9B35 /* Frameworks */,
 				0D66D8F32C236695004F9B35 /* Resources */,
@@ -1164,25 +1128,6 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-2060CommonPods-2060Prod/Pods-2060CommonPods-2060Prod-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		590492FDF4B0CC43DF69F8BE /* [Expo] Configure project */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "[Expo] Configure project";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-CommonShareExtensionPods-ShareExtensionStaging/expo-configure-project.sh\"\n";
-		};
 		72E0AD31996C504712C0D32C /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1241,25 +1186,6 @@
 			shellPath = /bin/sh;
 			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-2060CommonPods-2060Prod/expo-configure-project.sh\"\n";
 		};
-		9CE18D802AB26D626B363B8D /* [Expo] Configure project */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "[Expo] Configure project";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-CommonShareExtensionPods-ShareExtensionDev/expo-configure-project.sh\"\n";
-		};
 		A01FE3617D4029BDFEDEFC32 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1281,25 +1207,6 @@
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
-		};
-		C239BAC157608CE5770F21A8 /* [Expo] Configure project */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "[Expo] Configure project";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-CommonShareExtensionPods-ShareExtensionProd/expo-configure-project.sh\"\n";
 		};
 		CBDDEF57B79CCEA30B07306D /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1420,7 +1327,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				0D665CA52C237B240038F106 /* ShareViewController.swift in Sources */,
-				C8265532B1884B424EF80C6C /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1429,7 +1335,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				0D665CA62C237B240038F106 /* ShareViewController.swift in Sources */,
-				C74816115AF92FEF3A52412B /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1438,7 +1343,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				0D665CA42C237B240038F106 /* ShareViewController.swift in Sources */,
-				BFAD8A344464EB901B85EF39 /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
