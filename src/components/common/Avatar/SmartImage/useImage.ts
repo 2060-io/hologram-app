@@ -1,4 +1,3 @@
-import { utils } from '@credo-ts/core'
 import axios from 'axios'
 import { useCallback, useEffect, useState } from 'react'
 
@@ -8,7 +7,7 @@ import {
   LOCAL_PREVIEW_IMAGE_WIDTH,
 } from '@2060/hooks/media/preview'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
-import { ImageRecord } from '@2060/model'
+import { CacheRecord } from '@2060/model'
 import { logError } from '@2060/utils'
 import { deleteFile } from '@2060/utils/RNFS'
 
@@ -65,7 +64,7 @@ export const useImage = ({ uri, onError, onImageContent }: Props) => {
       }
     }
 
-    const downloadAndUpdateImageRecord = async (imageRecord: ImageRecord) => {
+    const downloadAndUpdateImageRecord = async (imageRecord: CacheRecord) => {
       const newImageDataUrl = await downloadImage(uri)
       if (newImageDataUrl) {
         setImageContent(newImageDataUrl)
@@ -73,7 +72,7 @@ export const useImage = ({ uri, onError, onImageContent }: Props) => {
       }
     }
 
-    const checkIfImageNeedsUpdate = async (imageRecord: ImageRecord) => {
+    const checkIfImageNeedsUpdate = async (imageRecord: CacheRecord) => {
       const originLastModified = await fetchLastModified(uri)
       if (!originLastModified) return
       const needsUpdate = imageRecord.lastModified < originLastModified
@@ -94,7 +93,7 @@ export const useImage = ({ uri, onError, onImageContent }: Props) => {
 
   const findImageRecord = useCallback(
     (url: string) => {
-      return realm ? realm.objects(ImageRecord).find(item => item.url === url) : undefined
+      return realm ? realm.objects(CacheRecord).find(item => item.url === url) : undefined
     },
     [realm],
   )
@@ -103,8 +102,7 @@ export const useImage = ({ uri, onError, onImageContent }: Props) => {
     (image: { url: string; content: string }) => {
       if (!realm) return
       realm.write(() => {
-        return new ImageRecord(realm, {
-          id: utils.uuid(),
+        return new CacheRecord(realm, {
           url: image.url,
           content: image.content,
           lastModified: new Date().getTime(),
@@ -115,7 +113,7 @@ export const useImage = ({ uri, onError, onImageContent }: Props) => {
   )
 
   const updateImageRecord = useCallback(
-    (image: { imageRecord: ImageRecord; newContent: string }) => {
+    (image: { imageRecord: CacheRecord; newContent: string }) => {
       if (!realm) return
       const { imageRecord, newContent } = image
       realm.write(() => {

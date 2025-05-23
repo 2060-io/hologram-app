@@ -1,19 +1,17 @@
 import Realm, { ObjectSchema } from 'realm'
 
-export class ImageRecord extends Realm.Object<ImageRecord> {
-  id!: string
+export class CacheRecord extends Realm.Object<CacheRecord> {
   url!: string
   lastModified!: number
   content!: string
 
   static schema: ObjectSchema = {
-    name: 'ImageRecord',
+    name: 'CacheRecord',
     properties: {
-      id: { type: 'string' },
       url: { type: 'string' },
       content: { type: 'string' },
       lastModified: { type: 'int' },
     },
-    primaryKey: 'id',
+    primaryKey: 'url',
   }
 }
