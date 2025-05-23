@@ -76,7 +76,7 @@ export const useImage = ({ uri, onError, onImageContent }: Props) => {
     const checkIfImageNeedsUpdate = async (imageRecord: ImageRecord) => {
       const originLastModified = await fetchLastModified(uri)
       if (!originLastModified) return
-      const needsUpdate = imageRecord.lastModified <= originLastModified
+      const needsUpdate = imageRecord.lastModified < originLastModified
       if (needsUpdate) downloadAndUpdateImageRecord(imageRecord)
     }
 

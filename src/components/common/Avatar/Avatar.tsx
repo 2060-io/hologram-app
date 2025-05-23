@@ -21,11 +21,7 @@ type Props = {
 }
 
 const isHttpUrl = (uri: string) => {
-  try {
-    return uri.startsWith('https://') || uri.startsWith('http://')
-  } catch (e) {
-    return false
-  }
+  return uri.startsWith('https://') || uri.startsWith('http://')
 }
 
 const Avatar: React.FC<Props> = ({
@@ -55,7 +51,7 @@ const Avatar: React.FC<Props> = ({
     <TouchableOpacity
       style={[styles.containerAvatar, styles.containerBgAvatar, avatarSizeStyle, borderStyle]}
       disabled={!onImagePressed}
-      onPress={() => onImagePressed?.(imageUri.current!)}
+      onPress={() => (imageUri.current ? onImagePressed?.(imageUri.current) : null)}
     >
       {uri?.endsWith('.svg') ? (
         <SvgUri
