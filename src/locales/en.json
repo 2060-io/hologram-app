@@ -227,7 +227,6 @@
       "present": "Present credential",
       "presented": "Credential presented",
       "presentedOn": "Presented on",
-      "issuerInstructions": "Select a country of citizenship. Based on your country We will then present a list of available Identity Credential Issuers. You may skip this step, or run it later",
       "citizenship": "Select a country of citizenship",
       "availableIssuers": "Available Identity Credential Issuers",
       "serviceProvider": "Service provider:",

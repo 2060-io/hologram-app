@@ -3,7 +3,7 @@ import { CommonActions } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
 import React, { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Linking, SafeAreaView, ScrollView, TouchableOpacity, View } from 'react-native'
+import { Linking, SafeAreaView, ScrollView, TouchableOpacity } from 'react-native'
 import { getCountry } from 'react-native-localize'
 import RNPickerSelect from 'react-native-picker-select'
 
@@ -13,13 +13,12 @@ import unicIDService from './unicIDInfo.json'
 
 import { CredentialIssuer } from '@2060/components'
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
-import { HeaderTitle, Icon, SvgIcon, Text } from '@2060/components/common'
+import { HeaderTitle, Icon, Text } from '@2060/components/common'
 import { useChats, useMobileAgent } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { ServiceInfo } from '@2060/services/api'
 import { getGlobalStyles } from '@2060/styles'
 import { getFlagEmoji, logError } from '@2060/utils'
-import { widthPercentageToDP } from '@2060/utils/responsiveUtils'
 import { toast } from '@2060/utils/toast'
 
 interface Props extends StackScreenProps<NavigationStackParams, 'IdentityCredentialIssuers'> {}
@@ -103,12 +102,6 @@ const IdentityCredentialIssuers = ({ navigation }: Props) => {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.subContainer}>
-        <View style={styles.infoContainer}>
-          <SvgIcon name="credential" width={'100%'} height={widthPercentageToDP('35')} style={styles.mb12} />
-          <Text typography="EuclidCircularA-Regular" style={styles.text}>
-            {t('credential.issuerInstructions')}
-          </Text>
-        </View>
         <Text typography="EuclidCircularA-SemiBold" style={styles.text}>
           {t('credential.citizenship')}
         </Text>

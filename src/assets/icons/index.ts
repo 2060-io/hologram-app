@@ -16,7 +16,6 @@ import chevronForward from './ChevronForward'
 import close from './Close'
 import cloudDownload from './CloudDownload'
 import cloudOff from './CloudOff'
-import credential from './Credential'
 import darkCredentialCardSkeleton from './DarkCredentialCardSkeleton'
 import defaultIcon from './Default'
 import developer from './Developer'
@@ -110,7 +109,6 @@ export default {
   wallet,
   lightCredentialCardSkeleton,
   darkCredentialCardSkeleton,
-  credential,
   camera,
   microphone,
   microphoneOff,

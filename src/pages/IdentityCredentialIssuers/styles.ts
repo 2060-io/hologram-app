@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native'
 
-import { AppTheme, cardShadowStyles, cardStyles } from '@2060/styles'
+import { AppTheme, cardStyles } from '@2060/styles'
 
 const styles = (theme: AppTheme) =>
   StyleSheet.create({
@@ -20,11 +20,6 @@ const styles = (theme: AppTheme) =>
     },
     headerTitleContainerStyle: {
       maxWidth: '100%',
-    },
-    infoContainer: {
-      ...cardStyles(theme),
-      ...cardShadowStyles(theme.colors),
-      marginBottom: 12,
     },
     mb12: {
       marginBottom: 12,
