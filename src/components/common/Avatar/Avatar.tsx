@@ -52,7 +52,7 @@ const Avatar: React.FC<Props> = ({
     <TouchableOpacity
       style={[styles.containerAvatar, avatarDimensions, borderStyle]}
       disabled={!onImagePressed}
-      onPress={() => (imageUri.current ? onImagePressed?.(imageUri.current) : null)}
+      onPress={() => onImagePressed?.(imageUri.current ?? '')}
     >
       {uri?.endsWith('.svg') ? (
         <SvgUri
