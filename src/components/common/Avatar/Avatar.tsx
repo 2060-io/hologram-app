@@ -18,6 +18,7 @@ type Props = {
   withBorder?: boolean
   bgAvatarInitials?: string
   onImagePressed?: (imageUri: string) => void
+  enableImageRefresh?: boolean
 }
 
 const isHttpUrl = (uri: string) => {
@@ -31,6 +32,7 @@ const Avatar: React.FC<Props> = ({
   withBorder = false,
   bgAvatarInitials,
   onImagePressed,
+  enableImageRefresh = true,
 }) => {
   const imageUri = useRef(uri)
   const [isValidImageUrl, setIsValidImageUrl] = useState<boolean>()
@@ -67,6 +69,7 @@ const Avatar: React.FC<Props> = ({
           setIsValidImageUrl={setIsValidImageUrl}
           onImageContent={onSmartImageContent}
           style={styles.avatar}
+          enableImageRefresh={enableImageRefresh}
         />
       ) : (
         <Image source={{ uri }} style={styles.avatar} onError={() => setIsValidImageUrl(false)} />

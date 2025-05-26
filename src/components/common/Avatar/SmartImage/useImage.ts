@@ -43,9 +43,10 @@ type Props = {
   uri: string
   onError: () => void
   onImageContent: (imageContent: string) => void
+  enableImageRefresh: boolean
 }
 
-export const useImage = ({ uri, onError, onImageContent }: Props) => {
+export const useImage = ({ uri, onError, onImageContent, enableImageRefresh }: Props) => {
   const { realm } = useLocalRealm()
   const [imageContent, setImageContent] = useState<string | null>(null)
 
@@ -83,7 +84,7 @@ export const useImage = ({ uri, onError, onImageContent }: Props) => {
       const imageRecord = findImageRecord(uri)
       if (imageRecord) {
         setImageContent(imageRecord.content)
-        checkIfImageNeedsUpdate(imageRecord)
+        if (enableImageRefresh) checkIfImageNeedsUpdate(imageRecord)
       } else {
         downloadAndSaveImageRecord()
       }

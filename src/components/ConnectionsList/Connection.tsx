@@ -47,6 +47,7 @@ const Connection = ({
         label={connection.name}
         size="8.41%"
         bgAvatarInitials={theme.colors.secondary}
+        enableImageRefresh={false}
       />
       <Text typography="EuclidCircularA-Medium" style={styles.listItemText}>
         {connection.name}{' '}
