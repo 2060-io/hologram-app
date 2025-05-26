@@ -45,7 +45,10 @@ const InvitationChatView = ({ associatedRecordId: outOfBandId, metadata, role, a
   )
   const { serviceInfo } = useFetchServiceInfo(did)
   const minimumAgeRequired = serviceInfo?.minimumAgeRequired ?? 0
-  const { kidAge, ageRestricted } = useValidateKidAgeRestrictions({ minimumAgeRequired })
+  const { kidAge, ageRestricted } = useValidateKidAgeRestrictions({
+    minimumAgeRequired,
+    serviceStatus: serviceInfo?.status ?? 'notFound',
+  })
 
   const goToInvitation = async () => {
     const outOfBandRecord = await agent?.oob.findById(outOfBandId)

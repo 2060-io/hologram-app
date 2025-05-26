@@ -5,7 +5,7 @@ import CanNotConnect from './CanNotConnect'
 
 import { ServiceInformation } from '@2060/components/common'
 import { useValidateKidAgeRestrictions } from '@2060/hooks/useValidateKidAgeRestrictions'
-import { ServiceInfo } from '@2060/services/api/trustRegistryService'
+import { ServiceInfo, ServiceStatus } from '@2060/services/api/trustRegistryService'
 
 type Props = {
   did: string
@@ -15,8 +15,9 @@ type Props = {
 }
 
 const PublicService = ({ did, initialServiceInfo, setAgeRestricted, userName }: Props) => {
-  const [minimumAgeRequired, setMinimumAgeRequired] = useState(0)
-  const { kidAge, ageRestricted } = useValidateKidAgeRestrictions({ minimumAgeRequired })
+  const [minimumAgeRequired, setMinimumAgeRequired] = useState(initialServiceInfo.minimumAgeRequired)
+  const [serviceStatus, setServiceStatus] = useState<ServiceStatus>(initialServiceInfo.status)
+  const { kidAge, ageRestricted } = useValidateKidAgeRestrictions({ minimumAgeRequired, serviceStatus })
 
   useEffect(() => {
     setAgeRestricted(ageRestricted)
@@ -28,7 +29,10 @@ const PublicService = ({ did, initialServiceInfo, setAgeRestricted, userName }: 
       <ServiceInformation
         did={did}
         initialServiceInfo={initialServiceInfo}
-        onServiceInfoUpdated={serviceInfo => setMinimumAgeRequired(serviceInfo.minimumAgeRequired)}
+        onServiceInfoUpdated={serviceInfo => {
+          setMinimumAgeRequired(serviceInfo.minimumAgeRequired)
+          setServiceStatus(serviceInfo.status)
+        }}
       />
     </View>
   )
