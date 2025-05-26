@@ -99,6 +99,12 @@ const Settings = ({ navigation }: Props) => {
       ...(isDeveloperMode
         ? [
             {
+              iconName: 'id',
+              text: t('navigation.IdentityCredentialIssuers'),
+              onPress: () => navigateTo('IdentityCredentialIssuers'),
+              rightContent: () => optionRightContent(),
+            },
+            {
               iconName: 'cloudDownload',
               text: t('settings.backup'),
               onPress: () => navigateTo('WalletBackup'),
@@ -143,12 +149,6 @@ const Settings = ({ navigation }: Props) => {
       iconName: 'people',
       text: t('navigation.ParentalControl'),
       onPress: () => navigateTo('ParentalControl'),
-      rightContent: () => optionRightContent(),
-    },
-    {
-      iconName: 'id',
-      text: t('navigation.IdentityCredentialIssuers'),
-      onPress: () => navigateTo('IdentityCredentialIssuers'),
       rightContent: () => optionRightContent(),
     },
     {

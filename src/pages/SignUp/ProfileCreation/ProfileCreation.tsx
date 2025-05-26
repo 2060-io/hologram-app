@@ -30,7 +30,7 @@ const ProfileCreation = ({ navigation }: Props) => {
   const { createNewWallet } = useWallet()
   const [isRegistering, setIsRegistering] = useState(false)
   const { setUserProfileData } = useUserProfile()
-  const { devEnvs } = useConfig()
+  const { devEnvs, isDeveloperMode } = useConfig()
   const [displayName, setDisplayName] = useState('')
   const [displayPicture, setDisplayPicture] = useState<PictureData | undefined>()
   const { signUpState, startSignUp, updateNotificationInfo } = useSignUp({
@@ -58,8 +58,9 @@ const ProfileCreation = ({ navigation }: Props) => {
     ])
   }
 
-  const goToOnboardingScreen = () => {
-    navigation.dispatch(CommonActions.reset({ index: 0, routes: [{ name: 'IdentityCredentialIssuers' }] }))
+  const navigateTo = () => {
+    const screenToNavigate = isDeveloperMode ? 'IdentityCredentialIssuers' : 'Home'
+    navigation.dispatch(CommonActions.reset({ index: 0, routes: [{ name: screenToNavigate }] }))
   }
 
   const saveUserProfileData = () => {
@@ -69,7 +70,7 @@ const ProfileCreation = ({ navigation }: Props) => {
   const getStart = () => {
     requestNotificationPermissions()
     saveUserProfileData()
-    goToOnboardingScreen()
+    navigateTo()
   }
 
   const handleLogStartError = (error: Error) => {
