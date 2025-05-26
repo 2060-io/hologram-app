@@ -64,11 +64,11 @@ export const useImage = ({ uri, onError, onImageContent }: Props) => {
       }
     }
 
-    const downloadAndUpdateImageRecord = async (imageRecord: CacheRecord) => {
+    const downloadAndUpdateImageRecord = async (imageRecord: CacheRecord, originLastModified: number) => {
       const newImageDataUrl = await downloadImage(uri)
       if (newImageDataUrl) {
         setImageContent(newImageDataUrl)
-        updateImageRecord({ imageRecord, newContent: newImageDataUrl })
+        updateImageRecord({ imageRecord, newContent: newImageDataUrl, lastModified: originLastModified })
       }
     }
 
@@ -76,7 +76,7 @@ export const useImage = ({ uri, onError, onImageContent }: Props) => {
       const originLastModified = await fetchLastModified(uri)
       if (!originLastModified) return
       const needsUpdate = imageRecord.lastModified < originLastModified
-      if (needsUpdate) downloadAndUpdateImageRecord(imageRecord)
+      if (needsUpdate) downloadAndUpdateImageRecord(imageRecord, originLastModified)
     }
 
     const checkImage = async () => {
@@ -113,12 +113,12 @@ export const useImage = ({ uri, onError, onImageContent }: Props) => {
   )
 
   const updateImageRecord = useCallback(
-    (image: { imageRecord: CacheRecord; newContent: string }) => {
+    (args: { imageRecord: CacheRecord; newContent: string; lastModified: number }) => {
       if (!realm) return
-      const { imageRecord, newContent } = image
+      const { imageRecord, newContent, lastModified } = args
       realm.write(() => {
         imageRecord.content = newContent
-        imageRecord.lastModified = new Date().getTime()
+        imageRecord.lastModified = lastModified
       })
     },
     [realm],
