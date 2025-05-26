@@ -64,7 +64,7 @@ const Avatar: React.FC<Props> = ({
         />
       ) : isHttpUrl(uri!) ? (
         <SmartImage
-          uri={uri!}
+          uri={'https://5752-2800-e2-3d80-3f3-f4cf-be79-d55b-d3ba.ngrok-free.app/images/ico-hologram.png'}
           setIsValidImageUrl={setIsValidImageUrl}
           onImageContent={onSmartImageContent}
           style={styles.avatar}

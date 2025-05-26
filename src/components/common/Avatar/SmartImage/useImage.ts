@@ -6,8 +6,8 @@ import {
   LOCAL_PREVIEW_IMAGE_QUALITY,
   LOCAL_PREVIEW_IMAGE_WIDTH,
 } from '@2060/hooks/media/preview'
-import { useAvatarsUrls } from '@2060/hooks/providers/AvatarsUrlsProvider'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
+import { useRefreshedAvatarsUrls } from '@2060/hooks/providers/RefreshedAvatarsUrlsProvider'
 import { CacheRecord } from '@2060/model'
 import { logError } from '@2060/utils'
 import { deleteFile } from '@2060/utils/RNFS'
@@ -51,7 +51,7 @@ export const useImage = ({ uri, onError, onImageContent, enableImageRefresh }: P
   const { realm } = useLocalRealm()
   const [imageContent, setImageContent] = useState<string | null>(null)
   const wasAvatarRefreshedHere = useRef(false)
-  const { avatarsUrlsRefreshedList, updateAvatarsUrlsRefreshedList } = useAvatarsUrls()
+  const { refreshedAvatarsUrlsList, updateRefreshedAvatarsUrlsList } = useRefreshedAvatarsUrls()
 
   useEffect(() => {
     if (imageContent) onImageContent(imageContent)
@@ -80,7 +80,7 @@ export const useImage = ({ uri, onError, onImageContent, enableImageRefresh }: P
 
     const afterSaveOrUpdate = () => {
       wasAvatarRefreshedHere.current = true
-      updateAvatarsUrlsRefreshedList(uri)
+      updateRefreshedAvatarsUrlsList(uri)
     }
 
     const checkIfImageNeedsUpdate = async (imageRecord: CacheRecord) => {
@@ -105,7 +105,7 @@ export const useImage = ({ uri, onError, onImageContent, enableImageRefresh }: P
   useEffect(() => {
     const checkIfNeedRefresh = () => {
       if (wasAvatarRefreshedHere.current) return
-      const wasRefreshed = avatarsUrlsRefreshedList.includes(uri)
+      const wasRefreshed = refreshedAvatarsUrlsList.includes(uri)
       if (wasRefreshed) {
         const imageRecord = findImageRecord(uri)
         if (imageRecord) {
@@ -114,7 +114,7 @@ export const useImage = ({ uri, onError, onImageContent, enableImageRefresh }: P
       }
     }
     checkIfNeedRefresh()
-  }, [avatarsUrlsRefreshedList])
+  }, [refreshedAvatarsUrlsList])
 
   const findImageRecord = useCallback(
     (url: string) => {
