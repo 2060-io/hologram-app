@@ -1,11 +1,12 @@
 import axios from 'axios'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import {
   createResizedImage,
   LOCAL_PREVIEW_IMAGE_QUALITY,
   LOCAL_PREVIEW_IMAGE_WIDTH,
 } from '@2060/hooks/media/preview'
+import { useAvatarsUrls } from '@2060/hooks/providers/AvatarsUrlsProvider'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
 import { CacheRecord } from '@2060/model'
 import { logError } from '@2060/utils'
@@ -49,6 +50,8 @@ type Props = {
 export const useImage = ({ uri, onError, onImageContent, enableImageRefresh }: Props) => {
   const { realm } = useLocalRealm()
   const [imageContent, setImageContent] = useState<string | null>(null)
+  const wasAvatarRefreshedHere = useRef(false)
+  const { avatarsUrlsRefreshedList, updateAvatarsUrlsRefreshedList } = useAvatarsUrls()
 
   useEffect(() => {
     if (imageContent) onImageContent(imageContent)
@@ -59,6 +62,7 @@ export const useImage = ({ uri, onError, onImageContent, enableImageRefresh }: P
       const imageDataUrl = await downloadImage(uri)
       if (imageDataUrl) {
         setImageContent(imageDataUrl)
+        afterSaveOrUpdate()
         saveImageRecord({ url: uri, content: imageDataUrl })
       } else {
         onError()
@@ -69,8 +73,14 @@ export const useImage = ({ uri, onError, onImageContent, enableImageRefresh }: P
       const newImageDataUrl = await downloadImage(uri)
       if (newImageDataUrl) {
         setImageContent(newImageDataUrl)
+        afterSaveOrUpdate()
         updateImageRecord({ imageRecord, newContent: newImageDataUrl, lastModified: originLastModified })
       }
+    }
+
+    const afterSaveOrUpdate = () => {
+      wasAvatarRefreshedHere.current = true
+      updateAvatarsUrlsRefreshedList(uri)
     }
 
     const checkIfImageNeedsUpdate = async (imageRecord: CacheRecord) => {
@@ -91,6 +101,20 @@ export const useImage = ({ uri, onError, onImageContent, enableImageRefresh }: P
     }
     checkImage()
   }, [])
+
+  useEffect(() => {
+    const checkIfNeedRefresh = () => {
+      if (wasAvatarRefreshedHere.current) return
+      const wasRefreshed = avatarsUrlsRefreshedList.includes(uri)
+      if (wasRefreshed) {
+        const imageRecord = findImageRecord(uri)
+        if (imageRecord) {
+          setImageContent(imageRecord.content)
+        }
+      }
+    }
+    checkIfNeedRefresh()
+  }, [avatarsUrlsRefreshedList])
 
   const findImageRecord = useCallback(
     (url: string) => {
