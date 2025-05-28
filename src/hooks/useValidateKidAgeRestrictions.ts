@@ -13,7 +13,6 @@ type Props = {
   minimumAgeRequired: number
   serviceStatus: ServiceStatus
 }
-const DEFAULT_SERVICE_AGE_RESTRICTION = 18
 export const useValidateKidAgeRestrictions = ({ minimumAgeRequired, serviceStatus }: Props) => {
   const [kidAge, setKidAge] = useState(0)
   const [ageRestricted, setAgeRestricted] = useState(false)
@@ -31,9 +30,8 @@ export const useValidateKidAgeRestrictions = ({ minimumAgeRequired, serviceStatu
         (await retrieveKeyInConfigFile(ParentalControlEnum.KidBirthday)) ??
         dateToString(new Date(), KID_BIRTHDATE_DATE_FORMAT)
       const age = calculateAge(kidBirthday)
-      const minimumAgeRequiredToCompare =
-        serviceStatus === 'trusted' ? minimumAgeRequired : DEFAULT_SERVICE_AGE_RESTRICTION
-      if (age < minimumAgeRequiredToCompare) {
+      const canNotConnect = age < minimumAgeRequired || serviceStatus !== 'trusted'
+      if (canNotConnect) {
         setKidAge(age)
         setAgeRestricted(true)
       }
