@@ -17,15 +17,15 @@ Next are some of the app basic features must be tested before a release to dev o
 
 - [ ] Test proper functioning of services: Demo Chat Bot Agent (https://chatbot-demo.dev.2060.io/qr) and complete BCGov flow (https://digital.gov.bc.ca/digital-trust/showcase/)
 
-Note: Validate next items using: Demo Chat Bot Agent
+Note: Validate next items and commands using: Demo Chat Bot Agent
 
 - [ ] Receive a credential
 - [ ] Receive a proof request (before and after receiving the credential)
 - [ ] Question and answer, action menu
 - [ ] Invitation to services. Send next message: invitation/ did:web:em-vs.demos.2060.io
 - [ ] Invitation to subconnection. Send next message: invitation/ this_is_a_child_connection
-- [ ] Link command. Send next message: /link https://hologram.zone/ Hologram zone https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRSfGMjlS818F78B84hXGsf9DAFmNpMfmx0fA&s
-- [ ] Send next message to test mrz scan and nfc reading: /mrz
+- [ ] Web view. Send next message: /link https://hologram.zone/ Hologram zone https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRSfGMjlS818F78B84hXGsf9DAFmNpMfmx0fA&s
+- [ ] Mrz read and nfc scan. Send next message: /mrz
 
 ### Chat Screen
 
