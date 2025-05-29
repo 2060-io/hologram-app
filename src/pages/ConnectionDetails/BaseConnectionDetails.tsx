@@ -60,7 +60,7 @@ const BaseConnectionDetails = ({
   const profile = getConnectionProfile(connection)
   const { agent } = useMobileAgent()
   const { t } = useTranslation()
-  const connectionName = getConnectionDisplayName(connection, profile?.displayName)
+  const connectionName = getConnectionDisplayName(connection)
   const relatedConnections = useConnectionByParentConnectionId(connection.id)
   const { userProfileData } = useUserProfile()
 
