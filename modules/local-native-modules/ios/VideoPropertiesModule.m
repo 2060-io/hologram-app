@@ -50,7 +50,7 @@ RCT_EXPORT_METHOD(getVideoProperties:(NSString *)videoPath
     
     if (durationStatus == AVKeyValueStatusLoaded && tracksStatus == AVKeyValueStatusLoaded) {
       CMTime duration = [asset duration];
-      Float64 durationMilliseconds = CMTimeGetSeconds(duration) * 1000;
+      Float64 durationMilliseconds = floor(CMTimeGetSeconds(duration)) * 1000;
       
       AVAssetTrack *videoTrack = [[asset tracksWithMediaType:AVMediaTypeVideo] firstObject];
       
