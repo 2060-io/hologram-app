@@ -61,6 +61,18 @@ index ec3bc8d..cb66aed 100644
          const ids = [];
          for (const attachment of appendedAttachments) {
              ids.push(attachment.id);
+diff --git a/node_modules/@credo-ts/core/build/modules/oob/OutOfBandApi.js b/node_modules/@credo-ts/core/build/modules/oob/OutOfBandApi.js
+index b5e3b76..8e6f8e4 100644
+--- a/node_modules/@credo-ts/core/build/modules/oob/OutOfBandApi.js
++++ b/node_modules/@credo-ts/core/build/modules/oob/OutOfBandApi.js
+@@ -270,6 +270,7 @@ let OutOfBandApi = class OutOfBandApi {
+         const invitation = new messages_1.OutOfBandInvitation({
+             id: config.did,
+             label: config.label ?? '',
++            imageUrl: config.imageUrl ?? '',
+             services: [config.did],
+             handshakeProtocols,
+         });
 diff --git a/node_modules/@credo-ts/core/build/modules/routing/MediationRecipientApi.js b/node_modules/@credo-ts/core/build/modules/routing/MediationRecipientApi.js
 index fffd69f..e62b949 100644
 --- a/node_modules/@credo-ts/core/build/modules/routing/MediationRecipientApi.js
@@ -107,21 +119,3 @@ index fffd69f..e62b949 100644
              case MediatorPickupStrategy_1.MediatorPickupStrategy.Implicit:
                  // Implicit means sending ping once and keeping connection open. This requires a long-lived transport
                  // such as WebSockets to work
-diff --git a/node_modules/@credo-ts/core/build/modules/oob/OutOfBandApi.js b/node_modules/@credo-ts/core/build/modules/oob/OutOfBandApi.js
-index ffc8936..909ddca 100644
---- a/node_modules/@credo-ts/core/build/modules/oob/OutOfBandApi.js
-+++ b/node_modules/@credo-ts/core/build/modules/oob/OutOfBandApi.js
-@@ -264,11 +264,12 @@ let OutOfBandApi = class OutOfBandApi {
-      * @returns out-of-band record and connection record if one has been created.
-      */
-     async receiveImplicitInvitation(config) {
--        var _a, _b;
-+        var _a, _b, _c;
-         const handshakeProtocols = this.getSupportedHandshakeProtocols((_a = config.handshakeProtocols) !== null && _a !== void 0 ? _a : [connections_1.HandshakeProtocol.DidExchange]).map((p) => p.parsedProtocolUri.protocolUri);
-         const invitation = new messages_1.OutOfBandInvitation({
-             id: config.did,
-             label: (_b = config.label) !== null && _b !== void 0 ? _b : '',
-+            imageUrl: (_c = config.imageUrl) !== null && _c !== void 0 ? _c : '',
-             services: [config.did],
-             handshakeProtocols,
-         });
