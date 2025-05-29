@@ -21,7 +21,7 @@ const FloatingChatMessage: React.FC<FloatingChatMessageProps> = memo(props => {
   const containerMarginBottom = hasReactions ? REACTIONS_MARGIN_BOTTOM + 12 : 12
 
   return (
-    <View style={[styles.floatingMessageContainer, { marginBottom: containerMarginBottom }]}>
+    <View style={[styles.floatingMessageContainer, props.style, { marginBottom: containerMarginBottom }]}>
       <View
         style={[styles.subContainer, styles[`${position}SubContainer`], { ...borders }]}
         pointerEvents="none"
