@@ -14,15 +14,12 @@ const styles = (theme: AppTheme) =>
       shadowColor: 'transparent',
     },
     tabBarLabelStyle: {
-      fontSize: theme.fontSize.sm,
+      fontSize: theme.fontSize.sm - 1,
       fontFamily: 'EuclidCircularA-Medium',
-      paddingTop: heightPercentageToDP('0.92%'),
     },
     tabBarItemStyle: {
       flexGrow: 1,
       height: heightPercentageToDP('8.64%'),
-      paddingBottom: heightPercentageToDP('1.85%'),
-      paddingTop: heightPercentageToDP('1.62%'),
     },
     headerStyle: {
       backgroundColor: theme.colors.secondary,

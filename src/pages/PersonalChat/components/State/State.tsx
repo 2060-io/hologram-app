@@ -8,12 +8,17 @@ import { hexTransparency } from '@2060/utils/colorUtils'
 
 type Props = {
   text: string
-  type?: 'success' | 'error'
+  type?: 'success' | 'error' | 'warning'
 }
 
 const State = ({ text, type = 'success' }: Props) => {
   const theme = useTheme()
-  const mainColor = type === 'success' ? theme.colors.green : theme.colors.red
+  const getMainColor: Record<'success' | 'error' | 'warning', string> = {
+    success: theme.colors.green,
+    error: theme.colors.red,
+    warning: theme.colors.orange,
+  }
+  const mainColor = getMainColor[type]
   const styles = getStyles(theme, mainColor)
   return (
     <View style={styles.container}>

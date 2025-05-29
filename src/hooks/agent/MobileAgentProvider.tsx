@@ -21,7 +21,7 @@ if (__DEV__) {
 export const baseAgentConfig: MobileAgentConfig = {
   agentDependencies,
   logger,
-  mediatorPickupStrategy: MediatorPickupStrategy.PickUpV2LiveMode,
+  mediatorPickupStrategy: MediatorPickupStrategy.None,
 }
 
 interface MobileAgentState {
@@ -71,7 +71,7 @@ export const MobileAgentProvider: React.FC<Props> = ({ children }) => {
       await agent.initialize()
 
       // Set NFC support according to the response from EID module
-      await agent.modules.mrtd.setEMrtdCapabilities({ eMrtdReadSupported: await EIdReader.isNfcSupported() })
+      await agent.modules.mrtd.setMrtdCapabilities({ eMrtdReadSupported: await EIdReader.isNfcSupported() })
 
       // force loading agent LRU cache into memory (this is to prevent
       // some errors found while accesing it concurrently)

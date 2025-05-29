@@ -1,4 +1,4 @@
-import { OutOfBandRecord } from '@credo-ts/core'
+import { ConnectionRecord, OutOfBandRecord, ProofState } from '@credo-ts/core'
 
 import { ChatEntryData } from '@2060/model'
 import { CredentialMainInfo } from '@2060/services/agent/display'
@@ -34,7 +34,7 @@ export type NavigationStackParams = {
   OpenIdPresentationRequest: { url: string }
   DidcommCredentialOffer: { credentialRecordId: string }
   DidcommPresentationRequest: { did: string; proofRecordId: string }
-  ConnectionInvitation: { outOfBandRecord: OutOfBandRecord }
+  ConnectionInvitation: { outOfBandRecord: OutOfBandRecord; existingConnectionId?: string }
   ConnectionDetails: { connectionId: string }
   RelatedConnections: { parentConnectionId: string }
   UserInvitation: undefined
@@ -52,4 +52,16 @@ export type NavigationStackParams = {
     credentials: CredentialMainInfo[]
     presentedAt: string
   }
+  ForwardConnection: {
+    connection: ConnectionRecord
+  }
+  PresentCredential: {
+    credentialRecordId: string
+  }
+  Presentation: {
+    mainInfo: CredentialMainInfo
+    attributes: Record<string, unknown>
+    proofState: ProofState
+  }
+  ParentalControl: undefined
 }

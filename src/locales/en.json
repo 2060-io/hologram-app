@@ -102,7 +102,10 @@
       "CredentialPresented": "Credential Presented",
       "MessageDetails": "Message Details",
       "ForwardTo": "Forward to",
-      "shareWith": "Share with"
+      "shareWith": "Share with",
+      "PresentCredential": "Present to",
+      "Presentation": "Presentation",
+      "ParentalControl": "Parental Control"
     },
     "authentication": {
       "walletLocked": "Hologram Locked",
@@ -161,6 +164,7 @@
       "eMRTDTagNotValid": "Tag not valid",
       "eMRTDMoreThanOneTagFound": "More than 1 tag were found. Please present only 1 tag",
       "eMRTDInvalidMRZKey": "This document does not match the MRZ read",
+      "eMRTDNoMrzInfo": "MRZ information not found",
       "recordedAudioTooShort": "Recorded audio is too short. Please record a longer one"
     },
     "signUp": {
@@ -208,8 +212,9 @@
       "termsAndConditions": "Terms and conditions",
       "privacyPolicy": "Privacy policy.",
       "ageRestrictions": "Age restrictions:",
-      "noAgeRestrictions": "Not restrictions",
-      "serviceNotVerifiable": "This service is not verifiable."
+      "noAgeRestrictions": "No restrictions",
+      "serviceNotVerifiable": "This service is not verifiable.",
+      "connectionRefusedByAge": "Hey there {{ name }}! You're just <bold>{{ age }}</bold> years old! You'll need to wait a few more years before you can connect to this service."
     },
     "credential": {
       "noCredentials": "You do not have any credential yet",
@@ -218,7 +223,10 @@
       "delete": "Delete Credential",
       "deleteConfirmation": "Confirm delete",
       "deleteConfirmationDescription": "Delete an unexpired credential is not recommended.",
-      "yesDelete": "Yes, delete permanently"
+      "yesDelete": "Yes, delete permanently",
+      "present": "Present credential",
+      "presented": "Credential presented",
+      "presentedOn": "Presented on"
     },
     "credentialOffer": {
       "title": "Credential Offer",
@@ -230,7 +238,7 @@
     },
     "presentationRequest": {
       "title": "Presentation Request",
-      "sent": "Presentation Sent",
+      "verifiablePresentation": "Verifiable Presentation",
       "selectCredentialYouWouldLikeToPresentTo": "Select the credential you would like to present to ",
       "successfullyReceived": "Presentation successfully received by ",
       "viewInChat": "View in chat",
@@ -244,7 +252,13 @@
       "credentialPresented": "Presentation successfully received by",
       "isRequestingYou": "is requesting you: ",
       "youPresented": "You presented 1 credential to {{verifier}}.",
-      "youPresented_other": "You presented {{count}} credentials to {{verifier}}."
+      "youPresented_other": "You presented {{count}} credentials to {{verifier}}.",
+      "isPresentingCredentialToYou": "{{ requestor }} is presenting you {{ count }} credential.",
+      "isPresentingCredentialToYou_other": "{{ requestor }} is presenting you {{ count }} credentials.",
+      "refused": "Refused",
+      "accepted": "Accepted",
+      "waitingForAcceptance": "Waiting for acceptance",
+      "valuesNoRevealedYet": "Values will be revealed once the presentation proposal is accepted"
     },
     "connection": {
       "editName": "Edit name",
@@ -296,8 +310,13 @@
       "proofOfTrust": "Proof of trust",
       "serviceNotVerifiable": "This service is not verifiable.",
       "noLiabilityDisclaimerDesc": "<bold>No-liability disclaimer: </bold> Please be aware that <bold>Hologram</bold> acts solely as a connection provider for <bold>{{serviceName}}</bold>. <bold>Hologram</bold> does not control this service and therefore cannot be held liable for any issues, damages, or disputes arising from the use of <bold>{{serviceName}}</bold>. Any concerns should be addressed directly to <bold>{{serviceName}}</bold>. \n\n<bold>THIS SERVICE IS NOT VERIFIABLE.</bold> USE IT AT YOUR OWN RISK",
-      "newConnection": "Nueva conexión",
-      "youAreNowConnectedTo": "Ahora estás conectando con"
+      "newConnection": "New connection",
+      "youAreNowConnectedTo": "You are now connected to",
+      "forwarded": "Connection has been forwarded",
+      "youAreAlreadyConnected": "You are already connected to {{ connectionName }}",
+      "goToChat": "Go to chat",
+      "call": "Call",
+      "videoCall": "Video call"
     },
     "scanned": {
       "scanConnectContacts": "you can scan to connect with different contacts.",
@@ -339,6 +358,7 @@
       "invitationRequestService": "Service Invitation",
       "invitationRequestSubConnection": "Managed connection",
       "invitationDescription": "You received an invitation to connect to",
+      "sentInvitationDescription": "You sent an invitation to connect to",
       "asASubConnectionOf": "as a managed connection of",
       "saveSucceededFileMedia": "Saved successfully",
       "saveFailedFileMedia": "Save failed",
@@ -373,6 +393,7 @@
       "credentialAdded": "Credential added to your Wallet",
       "confirmRefuseCredentialOffer": "Are you sure you want to refuse this credential?",
       "confirmRefusePresentCredential": "Are you sure you want to refuse presenting your credential?",
+      "confirmRefuseVerifiablePresentation": "Are you sure you want to refuse this verifiable presentation?",
       "acceptedInvitation": "You accepted the invitation",
       "alreadyConnected": "Already connected",
       "question": "Question",
@@ -389,7 +410,11 @@
       "messageForwarded": "Message has been forwarded",
       "messageForwarded_other": "Messages have been forwarded",
       "messageShared": "Message has been shared",
-      "messageShared_other": "Messages have been shared"
+      "messageShared_other": "Messages have been shared",
+      "messagesSharedExcept": "Messages have been shared except those that exceeded 1 minute",
+      "messagesNotShared": "Message has not been shared because video exceeded 1 minute",
+      "messageNotShared_other": "Messages were not forwarded because videos exceeded 1 minute",
+      "videoExceedsDuration": "Your video exceeds 1 minute, please select a shorter one"
     },
     "preview": {
       "answer": "🟰 Answer",
@@ -484,6 +509,17 @@
       "never": "Never",
       "wifi": "Wi-Fi",
       "wifiAndMobileData": "Wi-Fi and mobile data"
+    },
+    "parentalControl": {
+      "message": "Set your child's birthday and a PIN to help block access to age-inappropriate services. Keep in mind that your child can still reinstall Hologram to remove parental controls. However, this will erase all existing connections. If your connection with your child disappear, it may be a sign that they reinstalled Hologram.",
+      "kidBirthday": "Kid birthday",
+      "setPIN": "Set Parental Control PIN",
+      "disable": "Disable Parental Control",
+      "confirmPIN": "Confirm Parental Control PIN",
+      "pinDoesNotMatch": "PIN does not match",
+      "disablePINFooter": "Please enter the PIN you set when you enabled Parental Control",
+      "pinDoesNotMatchFooter": "Make sure to enter the same PIN, or press Cancel to restart the process",
+      "setPINFooter": "Be sure to write down your PIN carefully. There is no way to recover it if it's lost"
     }
   }
 }

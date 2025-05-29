@@ -36,7 +36,9 @@ const Chats = ({ navigation }: Props) => {
   const [selectedChatIds, setSelectedChatIds] = useState<string[]>([])
   const [chatIdToDelete, setChatIdToDelete] = useState<string>('')
   const using24HourFormat = uses24HourClock()
-  const { deleteThreads, archiveThreads, unarchiveThreads, filters, setFilters, threads } = useChats()
+  /* eslint-disable object-curly-newline */
+  const { loading, deleteThreads, archiveThreads, unarchiveThreads, filters, setFilters, threads } =
+    useChats()
   const { t } = useTranslation()
   const isCategoryAll = filters.category === 'all'
   const isCategoryArchived = isCategoryAll && filters.archived
@@ -203,9 +205,11 @@ const Chats = ({ navigation }: Props) => {
           }}
           keyExtractor={item => item.id}
           ListEmptyComponent={
-            <View style={styles.containerListEmpty}>
-              <Text style={styles.textListEmpty}>{t('chat.emptyListDescription')}</Text>
-            </View>
+            !loading ? (
+              <View style={styles.containerListEmpty}>
+                <Text style={styles.textListEmpty}>{t('chat.emptyListDescription')}</Text>
+              </View>
+            ) : null
           }
         />
         {showContextMenu && contextMenutypeRef.current === 'confirm-deletion' && (

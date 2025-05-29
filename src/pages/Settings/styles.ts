@@ -7,10 +7,13 @@ export default (theme: AppTheme) =>
   StyleSheet.create({
     container: {
       flex: 1,
-      paddingHorizontal: 15,
+      marginHorizontal: 15,
     },
     subContainer: {
       flex: 1,
+    },
+    scrollViewContentContainerStyle: {
+      flexGrow: 1,
     },
     btnQr: {
       paddingLeft: widthPercentageToDP('4%'),

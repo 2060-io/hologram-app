@@ -1,6 +1,8 @@
 import { DidCommCallsModule } from '@2060.io/credo-ts-didcomm-calls'
+import { MediaSharingModule } from '@2060.io/credo-ts-didcomm-media-sharing'
 import { DidCommMrtdModule } from '@2060.io/credo-ts-didcomm-mrtd'
 import { DidCommReactionsModule } from '@2060.io/credo-ts-didcomm-reactions'
+import { ReceiptsModule } from '@2060.io/credo-ts-didcomm-receipts'
 import { UserProfileModule, UserProfileModuleConfig } from '@2060.io/credo-ts-didcomm-user-profile'
 import { ActionMenuModule } from '@credo-ts/action-menu'
 import {
@@ -42,8 +44,6 @@ import { ariesAskar } from '@hyperledger/aries-askar-react-native'
 import appCheck from '@react-native-firebase/app-check'
 import { DidWebAnonCredsRegistry } from 'credo-ts-didweb-anoncreds'
 import { IndyVdrProxyDidResolver, IndyVdrProxyAnonCredsRegistry } from 'credo-ts-indy-vdr-proxy-client'
-import { MediaSharingModule } from 'credo-ts-media-sharing'
-import { ReceiptsModule } from 'credo-ts-receipts'
 
 const SECONDS_PER_DAY = 60 * 60 * 24
 

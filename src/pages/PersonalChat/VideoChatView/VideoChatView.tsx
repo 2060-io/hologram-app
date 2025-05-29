@@ -12,7 +12,7 @@ import getStyles from './styles'
 import placeHolderVideo from '@2060/assets/images/placeholderVideo.png'
 import { Text, SvgIcon, Progress } from '@2060/components/common'
 import { useMedia } from '@2060/hooks'
-import { useMediaPlayer } from '@2060/hooks/agent/MediaPlayerProvider'
+import { useMediaPlayer } from '@2060/hooks/providers/MediaPlayerProvider'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { MediaDownloadState, MediaUploadState } from '@2060/model'
 import { getFileSize } from '@2060/utils'
@@ -22,7 +22,7 @@ const VideoChatView = memo((props: MediaProps) => {
   const theme = useTheme()
   const styles = getStyles(theme)
   const { t } = useTranslation()
-  const { mediaItem, mediaRecordId, fileMediaInfo, currentMessage } = props
+  const { mediaItem, mediaRecordId, fileMediaInfo, currentMessage, displayTimeAndTicks } = props
   const {
     localFilePath,
     duration,
@@ -49,7 +49,7 @@ const VideoChatView = memo((props: MediaProps) => {
     mediaUploadState === MediaUploadState.ErrorCreating ||
     mediaUploadState === MediaUploadState.ErrorUploading
 
-  const videoFileUri = getLocalFileUri(localFilePath)
+  const videoFileUri = localFilePath ? getLocalFileUri(localFilePath) : undefined
   const localPreviewSource = localPreviewFilePath
     ? {
         uri: getLocalFileUri(localPreviewFilePath),
@@ -127,7 +127,7 @@ const VideoChatView = memo((props: MediaProps) => {
   )
 
   return (
-    <>
+    <View style={{ marginBottom: displayTimeAndTicks ? theme.edges.messageMargin : 0 }}>
       <View style={styles.containerRootVideo}>
         {isDownloaded ? (
           <Fragment>
@@ -162,7 +162,7 @@ const VideoChatView = memo((props: MediaProps) => {
           textProps={{ numberOfLines: 10, style: styles.videoDescription }}
         />
       )}
-    </>
+    </View>
   )
 })
 

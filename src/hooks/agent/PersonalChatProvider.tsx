@@ -1,5 +1,4 @@
-import * as React from 'react'
-import { createContext, useContext, useState, useCallback, useRef } from 'react'
+import React, { createContext, useContext, useState, useCallback, useRef } from 'react'
 import { Keyboard, Vibration } from 'react-native'
 
 import { useScreenLock } from '../providers/ScreenLockProvider'
@@ -85,8 +84,11 @@ const getMessageActions = (currentMessage: ChatEntryMessage) => {
   }
 
   if (isMedia || isText) messageActions.push(actionReplyMessage, actionForwardMessage)
-  if ([ChatEntryType.Video, ChatEntryType.VoiceNote].includes(type)) {
-    messageActions.push(actionSaveMessage, actionShareMessage)
+  if ([ChatEntryType.Video, ChatEntryType.Image, ChatEntryType.VoiceNote].includes(type)) {
+    if (type !== ChatEntryType.VoiceNote) {
+      messageActions.push(actionSaveMessage)
+    }
+    messageActions.push(actionShareMessage)
   }
   const isReported = currentMessage.metadata?.isReported === true
 

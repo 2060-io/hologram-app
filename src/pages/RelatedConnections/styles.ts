@@ -82,15 +82,6 @@ export default (theme: AppTheme) =>
       fontFamily: 'EuclidCircularA-Medium',
       textTransform: 'uppercase',
     },
-
-    // sectionHeaderContainer: {
-    //   backgroundColor: '#EEEDED',
-    //   padding: 8,
-    // },
-    // sectionHeaderLabel: {
-    //   fontSize: 18,
-    //   color: secondaryColor,
-    // },
     rightHeaderButton: {
       paddingRight: 17.12,
     },

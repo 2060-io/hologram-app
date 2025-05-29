@@ -1,3 +1,7 @@
+# TODO: remove this variable which disable new architecture in iOS. It was added due to KeyboardAvoidingView animations does works well
+# with the new architecture. So, when this animation issue be fixed in new architecture, we can remove this variable.
+ENV['RCT_NEW_ARCH_ENABLED'] = "0"
+
 require_relative '../node_modules/expo/scripts/autolinking'
 
 # Resolve react_native_pods.rb with node to allow for hoisting
@@ -11,6 +15,35 @@ require Pod::Executable.execute_command('node', ['-p',
 platform :ios, '15.6'
 install! 'cocoapods', :deterministic_uuids => false
 
+linkage = ENV['USE_FRAMEWORKS']
+if linkage != nil
+  Pod::UI.puts "Configuring Pod with #{linkage}ally linked Frameworks".green
+  use_frameworks! :linkage => linkage.to_sym
+end
+$RNFirebaseAsStaticFramework = true
+
+# Shared method to configure React Native
+def configure_react_native(config)
+  use_expo_modules!
+  use_react_native!(
+    :path => config[:reactNativePath],
+    :fabric_enabled => true,
+    :hermes_enabled => true,
+    :app_path => "#{Pod::Config.instance.installation_root}/.."
+  )
+end
+
+# Shared dependencies
+def add_common_dependencies()
+  pod 'Firebase', :modular_headers => true
+  pod 'FirebaseCoreInternal', :modular_headers => true
+  pod 'GoogleUtilities', :modular_headers => true
+  pod 'FirebaseCore', :modular_headers => true
+  permissions_path = '../node_modules/react-native-permissions/ios'
+  pod 'Permission-Microphone', :path => "#{permissions_path}/Microphone"
+  pod 'Permission-Camera', :path => "#{permissions_path}/Camera"
+end
+
 abstract_target '2060CommonPods' do
   target '2060Dev' do
    end
@@ -20,7 +53,8 @@ abstract_target '2060CommonPods' do
 
    target '2060Prod' do
    end
-  use_expo_modules!
+  config = use_native_modules!
+  configure_react_native(config)
   post_integrate do |installer|
     begin
       expo_patch_react_imports!(installer)
@@ -28,21 +62,8 @@ abstract_target '2060CommonPods' do
       Pod::UI.warn e
     end
   end
+  add_common_dependencies()
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec', :modular_headers => false
-
-  config = use_native_modules!
-  use_modular_headers!
-
-  use_react_native!(
-    :path => config[:reactNativePath],
-    # An absolute path to your application root.
-    :app_path => "#{Pod::Config.instance.installation_root}/.."
-  )
-
-  permissions_path = '../node_modules/react-native-permissions/ios'
-  pod 'Permission-Microphone', :path => "#{permissions_path}/Microphone"
-  pod 'Permission-Camera', :path => "#{permissions_path}/Camera"
-
   pre_install do |installer|
     Pod::Installer::Xcode::TargetValidator.send(:define_method, :verify_no_static_framework_transitive_dependencies) {}
   end
@@ -64,8 +85,11 @@ abstract_target '2060CommonPods' do
 end
 
 abstract_target 'CommonShareExtensionPods' do
+  #TODO: When enable new architecture uncomment the next 3 lines and remove use_react_native!
+  #config = use_native_modules!
+  #configure_react_native(config)
+  #add_common_dependencies()
   use_react_native!
-
   pod 'RNShareMenu', :path => '../node_modules/react-native-share-menu'
 
   target 'ShareExtensionDev' do

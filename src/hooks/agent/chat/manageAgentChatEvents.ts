@@ -1,8 +1,20 @@
 import { CallOfferMessage } from '@2060.io/credo-ts-didcomm-calls'
+import {
+  MediaSharingEventTypes,
+  MediaSharingRecord,
+  MediaSharingState,
+  MediaSharingStateChangedEvent,
+  ShareMediaMessage,
+} from '@2060.io/credo-ts-didcomm-media-sharing'
 import { MrzDataRequestMessage } from '@2060.io/credo-ts-didcomm-mrtd'
 import { MessageReactionsReceivedEvent, ReactionsEventTypes } from '@2060.io/credo-ts-didcomm-reactions'
+import {
+  ReceiptsEventTypes,
+  MessageReceiptsReceivedEvent,
+  MessageState,
+} from '@2060.io/credo-ts-didcomm-receipts'
 import { ConnectionProfileUpdatedEvent, ProfileEventTypes } from '@2060.io/credo-ts-didcomm-user-profile'
-import { V1ProposeCredentialMessage, V1ProposePresentationMessage } from '@credo-ts/anoncreds'
+import { V1ProposeCredentialMessage } from '@credo-ts/anoncreds'
 import {
   AgentEventTypes,
   AgentMessage,
@@ -11,22 +23,16 @@ import {
   BasicMessage,
   ConnectionRecord,
   ConnectionType,
+  OutOfBandInvitation,
   OutOfBandState,
   OutboundMessageSendStatus,
   RecordUpdatedEvent,
   RepositoryEventTypes,
+  V2ProposePresentationMessage,
   parseMessageType,
 } from '@credo-ts/core'
 import { tryParseDid } from '@credo-ts/core/build/modules/dids/domain/parse'
 import { QuestionMessage, AnswerMessage } from '@credo-ts/question-answer'
-import {
-  MediaSharingEventTypes,
-  MediaSharingRecord,
-  MediaSharingState,
-  MediaSharingStateChangedEvent,
-  ShareMediaMessage,
-} from 'credo-ts-media-sharing'
-import { ReceiptsEventTypes, MessageReceiptsReceivedEvent, MessageState } from 'credo-ts-receipts'
 import agentActionQueue from 'react-native-job-queue'
 import Realm from 'realm'
 
@@ -41,8 +47,14 @@ import {
   handleQuestionAnswerRecordChanges,
 } from './recordChangeHandlers'
 import { handleMediaSharingRecordChanges } from './recordChangeHandlers/handleMediaSharingRecordChanges'
-import * as chatEntryService from './services/ChatEntryService'
-import * as chatThreadService from './services/ChatThreadService'
+import {
+  addReceiptToRelatedEntries,
+  createChatEntry,
+  findAllByAssociatedMessageId,
+  findAllByAssociatedRecordId,
+  updateState,
+} from './services/ChatEntryService'
+import { addUnread, findChatThread, findOrCreateChatThread, updateThread } from './services/ChatThreadService'
 
 import { ChatEntryType, ChatEntryRole, ChatEntryState, ChatEntry, InvitationMetadata } from '@2060/model'
 import { InvitationState } from '@2060/model/InvitationState'
@@ -60,9 +72,9 @@ import {
 export function manageAgentChatEvents(agent: MobileAgent, realm: Realm, activeChatThreadId?: string) {
   const connectionProfileListener = async (event: ConnectionProfileUpdatedEvent) => {
     const { connection } = event.payload
-    const thread = chatThreadService.findChatThread(realm, connection)
+    const thread = findChatThread(realm, connection)
     if (thread) {
-      chatThreadService.updateThread(realm, thread.id, {
+      updateThread(realm, thread.id, {
         topic: getConnectionDisplayName(connection),
         picture: getConnectionDisplayPicture(connection),
       })
@@ -125,18 +137,7 @@ export function manageAgentChatEvents(agent: MobileAgent, realm: Realm, activeCh
       })
     }
 
-    if (messageType.protocolName === V1ProposePresentationMessage.type.protocolName) {
-      const [record] = await agent.proofs.findAllByQuery({ threadId: message.threadId })
-      if (!record) return
-      await handleProofExchangeRecordChanges({
-        agent,
-        realm,
-        record,
-        activeChatThreadId,
-      })
-    }
-
-    if (messageType.protocolName === V1ProposePresentationMessage.type.protocolName) {
+    if (messageType.protocolName === V2ProposePresentationMessage.type.protocolName) {
       const [record] = await agent.proofs.findAllByQuery({ threadId: message.threadId })
       if (!record) return
       await handleProofExchangeRecordChanges({
@@ -184,17 +185,17 @@ export function manageAgentChatEvents(agent: MobileAgent, realm: Realm, activeCh
       })
 
       if (associatedRecord) {
-        const entries = chatEntryService.findAllByAssociatedRecordId(realm, associatedRecord.id)
+        const entries = findAllByAssociatedRecordId(realm, associatedRecord.id)
         for (const entry of entries) {
           if (entry && entry.state === ChatEntryState.Created) {
             // Associate chat entry with the outbound message
-            chatEntryService.updateState(realm, {
+            updateState(realm, {
               recordId: entry.id,
               state: ChatEntryState.Created,
               associatedMessageId: outboundMessage.message.id,
             })
 
-            chatThreadService.updateThread(realm, entry.chatThreadId, { lastChatEntry: entry })
+            updateThread(realm, entry.chatThreadId, { lastChatEntry: entry })
           }
         }
       }
@@ -206,12 +207,12 @@ export function manageAgentChatEvents(agent: MobileAgent, realm: Realm, activeCh
   const messageReceiptsReceivedListener = async (data: MessageReceiptsReceivedEvent) => {
     const receipts = data.payload.receipts
     const connection = await agent.connections.getById(data.payload.connectionId)
-    const thread = chatThreadService.findChatThread(realm, connection)
+    const thread = findChatThread(realm, connection)
 
     let lastChatEntry: ChatEntry | undefined
 
     for (const receipt of receipts) {
-      const entry = chatEntryService.addReceiptToRelatedEntries(realm, receipt)
+      const entry = addReceiptToRelatedEntries(realm, receipt)
       if (entry && (!lastChatEntry || lastChatEntry?.createdAt < entry.createdAt)) lastChatEntry = entry
     }
 
@@ -219,7 +220,7 @@ export function manageAgentChatEvents(agent: MobileAgent, realm: Realm, activeCh
       lastChatEntry &&
       (!thread.lastActivityAt || thread.lastActivityAt.getTime() <= lastChatEntry.createdAt)
     ) {
-      chatThreadService.updateThread(realm, thread.id, { lastChatEntry })
+      updateThread(realm, thread.id, { lastChatEntry })
     }
   }
 
@@ -228,7 +229,7 @@ export function manageAgentChatEvents(agent: MobileAgent, realm: Realm, activeCh
 
     realm.write(() => {
       for (const reaction of reactions) {
-        const relatedEntries = chatEntryService.findAllByAssociatedMessageId(realm, reaction.messageId)
+        const relatedEntries = findAllByAssociatedMessageId(realm, reaction.messageId)
         for (const entry of relatedEntries) {
           const entryReactions = entry.reactions ? entry.reactions : []
 
@@ -269,6 +270,8 @@ export function manageAgentChatEvents(agent: MobileAgent, realm: Realm, activeCh
       AnswerMessage.type.messageTypeUri,
       BasicMessage.type.messageTypeUri,
       ShareMediaMessage.type.messageTypeUri,
+      OutOfBandInvitation.type.messageTypeUri,
+      V2ProposePresentationMessage.type.messageTypeUri,
     ]
 
     if (connection) {
@@ -277,7 +280,7 @@ export function manageAgentChatEvents(agent: MobileAgent, realm: Realm, activeCh
         validMessagesTypesForReceipts.includes(data.payload.message.type)
       ) {
         // Find associated thread and see if it's the active one
-        const thread = chatThreadService.findChatThread(realm, connection)
+        const thread = findChatThread(realm, connection)
 
         // If message is part of current active chat thread, send it as viewed directly
         const state = thread && thread.id === activeChatThreadId ? MessageState.Viewed : MessageState.Received
@@ -285,7 +288,7 @@ export function manageAgentChatEvents(agent: MobileAgent, realm: Realm, activeCh
         // TODO: Add to a queue and send receipts in a batch
         const receipt = { messageId: data.payload.message.id, state, timestamp: new Date() }
 
-        chatEntryService.addReceiptToRelatedEntries(realm, receipt)
+        addReceiptToRelatedEntries(realm, receipt)
 
         agentActionQueue.addJob(
           'AgentAction',
@@ -318,7 +321,7 @@ export function manageAgentChatEvents(agent: MobileAgent, realm: Realm, activeCh
     // of the chat thread it belongs to
     if (action === 'Accepted' || action === 'Refused') {
       // Find Invitation entry associated to this record and mark it as replied
-      const invitationEntries = chatEntryService.findAllByAssociatedRecordId(
+      const invitationEntries = findAllByAssociatedRecordId(
         realm,
         outOfBandRecord.id,
         ChatEntryType.Invitation,
@@ -327,7 +330,7 @@ export function manageAgentChatEvents(agent: MobileAgent, realm: Realm, activeCh
       for (const invitationEntry of invitationEntries) {
         // only update those entries that are not already marked as "replied"
         if (invitationEntry.metadata?.state === InvitationState.Received) {
-          chatEntryService.updateState(realm, {
+          updateState(realm, {
             recordId: invitationEntry.id,
             state: ChatEntryState.Viewed,
             metadata: {
@@ -346,7 +349,7 @@ export function manageAgentChatEvents(agent: MobileAgent, realm: Realm, activeCh
     const connection = event.payload.connection
     if (!connection) return
 
-    const thread = chatThreadService.findOrCreateChatThread(realm, connection)
+    const thread = findOrCreateChatThread(realm, connection)
     let chatEntry: ChatEntry | undefined
     if (action === 'Received') {
       const { label, imageUrl, invitationDids, id } = outOfBandRecord.outOfBandInvitation
@@ -370,7 +373,7 @@ export function manageAgentChatEvents(agent: MobileAgent, realm: Realm, activeCh
             }
 
       // New Invitation Received ChatEntry
-      chatEntry = chatEntryService.createChatEntry(realm, {
+      chatEntry = createChatEntry(realm, {
         associatedRecordId: outOfBandRecord.id,
         chatThreadId: thread.id,
         type: ChatEntryType.Invitation,
@@ -378,8 +381,12 @@ export function manageAgentChatEvents(agent: MobileAgent, realm: Realm, activeCh
         state: ChatEntryState.Received,
         metadata,
         createdAt: new Date().getTime(),
+        associatedMessageId: event.payload.messageId,
       })
-      chatThreadService.updateThread(realm, thread.id, { lastChatEntry: chatEntry })
+      updateThread(realm, thread.id, { lastChatEntry: chatEntry })
+      if (thread.id !== activeChatThreadId) {
+        addUnread(realm, thread.id, 1)
+      }
     }
   }
 

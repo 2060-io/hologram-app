@@ -1,9 +1,13 @@
-import { MediaSharingRecord, MediaSharingRole, MediaSharingState } from 'credo-ts-media-sharing'
+import {
+  MediaSharingRecord,
+  MediaSharingRole,
+  MediaSharingState,
+} from '@2060.io/credo-ts-didcomm-media-sharing'
 import Realm from 'realm'
 
 import { getLocalizedPreview, getThumbnail } from '../preview'
-import * as chatEntryService from '../services/ChatEntryService'
-import * as chatThreadService from '../services/ChatThreadService'
+import { createChatEntry, findAllByAssociatedRecordId, updateState } from '../services/ChatEntryService'
+import { addUnread, findOrCreateChatThread, updateThread } from '../services/ChatThreadService'
 
 import { getChatEntryByDidcommThreadId, getChatEntryTypeFromMimeType } from './utils'
 
@@ -32,14 +36,14 @@ export const handleMediaSharingRecordChanges = async (options: {
   const { agent, realm, record, activeChatThreadId } = options
   // find associated thread according to the connection id. If not found, create it
   const connection = await agent.connections.getById(record.connectionId)
-  const thread = chatThreadService.findOrCreateChatThread(realm, connection)
+  const thread = findOrCreateChatThread(realm, connection)
 
   const data = getChatEntrySpecificData(record)
   // TODO: Log/handle error?
   if (!data) return
   const { type, metadata } = data
 
-  let [chatEntry] = chatEntryService.findAllByAssociatedRecordId(realm, record.id)
+  let [chatEntry] = findAllByAssociatedRecordId(realm, record.id)
   if (!chatEntry) {
     let relatedEntryProps: RelatedEntryProps | undefined
     if (record.parentThreadId) {
@@ -61,7 +65,7 @@ export const handleMediaSharingRecordChanges = async (options: {
         : undefined
     }
 
-    chatEntry = chatEntryService.createChatEntry(realm, {
+    chatEntry = createChatEntry(realm, {
       associatedRecordId: record.id,
       associatedMessageId: record.threadId,
       didcommThreadId: record.threadId,
@@ -75,7 +79,7 @@ export const handleMediaSharingRecordChanges = async (options: {
       relatedEntryProps,
     })
   } else {
-    chatEntryService.updateState(realm, {
+    updateState(realm, {
       recordId: chatEntry.id,
       state:
         record.state === MediaSharingState.MediaShared
@@ -87,10 +91,10 @@ export const handleMediaSharingRecordChanges = async (options: {
       metadata,
     })
   }
-  chatThreadService.updateThread(realm, thread.id, { lastChatEntry: chatEntry })
+  updateThread(realm, thread.id, { lastChatEntry: chatEntry })
 
   if (record.role === MediaSharingRole.Receiver && thread.id !== activeChatThreadId) {
-    chatThreadService.addUnread(realm, thread.id, 1)
+    addUnread(realm, thread.id, 1)
   }
 }
 

@@ -1,6 +1,5 @@
 import { UserProfileData } from '@2060.io/credo-ts-didcomm-user-profile'
-import * as React from 'react'
-import { createContext, useState, useEffect } from 'react'
+import React, { createContext, useState, useEffect, useContext, useCallback } from 'react'
 
 import { useMobileAgent } from './MobileAgentProvider'
 
@@ -13,7 +12,7 @@ export interface UserProfileContextInterface {
 const UserProfileContext = createContext<UserProfileContextInterface | undefined>(undefined)
 
 export const useUserProfile = () => {
-  const context = React.useContext(UserProfileContext)
+  const context = useContext(UserProfileContext)
   if (!context) throw new Error('useUserProfile must be used within a UserProfileContextProvider')
 
   return context
@@ -30,7 +29,7 @@ export const UserProfileProvider: React.FC<Props> = ({ children }) => {
     loading: true,
   })
 
-  const setUserProfileDataInternal = React.useCallback(
+  const setUserProfileDataInternal = useCallback(
     async (data: Partial<UserProfileData>) => {
       if (agent && agent.isInitialized) {
         const newUserProfileData = await agent?.modules.profile.updateUserProfileData(data)

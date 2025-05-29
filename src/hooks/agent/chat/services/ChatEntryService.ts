@@ -1,5 +1,5 @@
+import { MessageReceipt, MessageState } from '@2060.io/credo-ts-didcomm-receipts'
 import { utils } from '@credo-ts/core'
-import { MessageReceipt, MessageState } from 'credo-ts-receipts'
 import Realm from 'realm'
 
 import {

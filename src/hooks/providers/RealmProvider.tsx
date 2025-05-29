@@ -16,7 +16,7 @@ import {
   UploadTask,
 } from '@2060/model'
 import { InvitationState } from '@2060/model/InvitationState'
-import { createAndStoreKey, retrieveKey, KeyChainService } from '@2060/services/keys'
+import { createAndStoreEncryptedKey, retrieveEncryptedKey, KeyChainService } from '@2060/services/keys'
 import { logError } from '@2060/utils'
 import { deleteFile, walletDirectoryPath } from '@2060/utils/RNFS'
 
@@ -207,7 +207,8 @@ export const RealmProvider: React.FC<React.PropsWithChildren<Props>> = ({ childr
 
   const openRealm = useCallback(async () => {
     const key =
-      (await retrieveKey(KeyChainService.RealmMain)) ?? (await createAndStoreKey(KeyChainService.RealmMain))
+      (await retrieveEncryptedKey(KeyChainService.RealmMain)) ??
+      (await createAndStoreEncryptedKey(KeyChainService.RealmMain))
 
     const realmConfig: Realm.Configuration = {
       encryptionKey: TypedArrayEncoder.fromHex(key),
@@ -228,7 +229,7 @@ export const RealmProvider: React.FC<React.PropsWithChildren<Props>> = ({ childr
 
   const importAndOpenRealm = useCallback(
     async (backupFilePath: string, backupKeyHex: string) => {
-      const key = await createAndStoreKey(KeyChainService.RealmMain)
+      const key = await createAndStoreEncryptedKey(KeyChainService.RealmMain)
 
       const realmConfig: Realm.Configuration = {
         encryptionKey: TypedArrayEncoder.fromHex(key),

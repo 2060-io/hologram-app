@@ -1,20 +1,23 @@
+import { ShareMediaMessage } from '@2060.io/credo-ts-didcomm-media-sharing'
 import { MessageReactionsMessage, MessageReactionAction } from '@2060.io/credo-ts-didcomm-reactions'
+import { MessageReceiptsMessage, MessageState } from '@2060.io/credo-ts-didcomm-receipts'
 import { PerformMessage } from '@credo-ts/action-menu'
 import {
   BaseRecord,
   AgentMessageSentEvent,
   AgentEventTypes,
   MessageSendingError,
-  MessageSendingErrorReason,
   BasicMessage,
+  MessageSender,
+  OutboundMessageContext,
+  OutOfBandInvitation,
+  V2ProposePresentationMessage,
 } from '@credo-ts/core'
-import { ShareMediaMessage } from 'credo-ts-media-sharing'
-import { MessageReceiptsMessage, MessageState } from 'credo-ts-receipts'
 import { Realm } from 'realm'
 import { ReplaySubject, firstValueFrom, filter, first, timeout, catchError, map } from 'rxjs'
 
-import * as chatEntryService from '../chat/services/ChatEntryService'
-import * as chatThreadService from '../chat/services/ChatThreadService'
+import { updateState } from '../chat/services/ChatEntryService'
+import { updateThread } from '../chat/services/ChatThreadService'
 
 import {
   ActionExecutionStatus,
@@ -24,10 +27,15 @@ import {
 } from './AgentAction'
 
 import { ChatEntry, ChatEntryState } from '@2060/model'
-import { MobileAgent } from '@2060/services/agent'
+import { createOobInvitation, MobileAgent } from '@2060/services/agent'
 import { log, logError } from '@2060/utils'
 
 export type ActionCallback = (options: { agent: MobileAgent }) => Promise<AgentCallbackReturnType<BaseRecord>>
+
+export type AnoncredsAttribute = {
+  name: string
+  credentialDefinitionId: string
+}
 
 export class AgentActionExecuter {
   private getCallbackForAction(action: AgentAction): ActionCallback {
@@ -121,6 +129,42 @@ export class AgentActionExecuter {
 
         return { outgoingMessageType: PerformMessage.type.messageTypeUri }
       }
+    } else if (action.type === AgentActionType.ForwardConnection) {
+      const parameters = action.parameters as {
+        forwardedConnectionId: string
+        didcommConnectionId: string
+      }
+      const { forwardedConnectionId, didcommConnectionId } = parameters
+      return async (options: { agent: MobileAgent }) => {
+        const originDidcommConnection = await options.agent?.connections.getById(forwardedConnectionId)
+        const outOfBandInvitation = createOobInvitation(originDidcommConnection)
+        const didcommConnection = await options.agent?.connections.getById(didcommConnectionId)
+        const messageSender = options.agent?.context.dependencyManager.resolve(MessageSender)
+        await messageSender.sendMessage(
+          new OutboundMessageContext(outOfBandInvitation, {
+            agentContext: options.agent?.context,
+            connection: didcommConnection,
+          }),
+        )
+        return { outgoingMessageType: OutOfBandInvitation.type.messageTypeUri }
+      }
+    } else if (action.type === AgentActionType.PresentCredential) {
+      const parameters = action.parameters as {
+        didcommConnectionId: string
+        anoncredsAttributes: AnoncredsAttribute[]
+      }
+      const { didcommConnectionId, anoncredsAttributes } = parameters
+      return async (options: { agent: MobileAgent }) => {
+        const proofExchangeRecord = await options.agent.proofs.proposeProof({
+          proofFormats: { anoncreds: { attributes: anoncredsAttributes } },
+          connectionId: didcommConnectionId,
+          protocolVersion: 'v2',
+        })
+        return {
+          outgoingMessageType: V2ProposePresentationMessage.type.messageTypeUri,
+          associatedRecord: proofExchangeRecord,
+        }
+      }
     }
     logError(`No callback for type ${action.type}`)
     throw new Error(`Execution callback not defined for action of type ${action.type}`)
@@ -176,31 +220,31 @@ export class AgentActionExecuter {
 
       // Message is submitted: update the associated chat entry to the corresponding state
       if (chatEntry && chatEntry.state === ChatEntryState.Created) {
-        chatEntryService.updateState(realm, {
+        updateState(realm, {
           recordId: chatEntry.id,
           state: ChatEntryState.Submitted,
           associatedMessageId: message.message.id,
           associatedRecordId: associatedRecord?.id,
         })
 
-        chatThreadService.updateThread(realm, chatEntry.chatThreadId, { lastChatEntry: chatEntry })
+        updateThread(realm, chatEntry.chatThreadId, { lastChatEntry: chatEntry })
       }
       return { status: ActionExecutionStatus.OK }
     } catch (error) {
-      if (error instanceof MessageSendingError && error.reason === MessageSendingErrorReason.Undeliverable) {
+      if (error instanceof MessageSendingError) {
         log(`**** Message sending error: ${JSON.stringify(error)}`)
         const { message, associatedRecord, connection } = error.outboundMessageContext
 
         // Message failed to be sent. However we can already associate it to the chat entry
         if (chatEntry && chatEntry.state === ChatEntryState.Created) {
-          chatEntryService.updateState(realm, {
+          updateState(realm, {
             recordId: chatEntry.id,
             state: chatEntry.state, // state will not change, since the message was not submitted
             associatedMessageId: message.id,
             associatedRecordId: associatedRecord?.id,
           })
 
-          chatThreadService.updateThread(realm, chatEntry.chatThreadId, {
+          updateThread(realm, chatEntry.chatThreadId, {
             lastChatEntry: chatEntry,
           })
         }

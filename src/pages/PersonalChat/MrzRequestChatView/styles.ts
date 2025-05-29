@@ -9,11 +9,9 @@ export default (theme: AppTheme) =>
   StyleSheet.create({
     container: {
       width: NORMAL_WIDTH,
-      marginBottom: 6,
     },
     subContainer: {
-      margin: 8,
-      marginBottom: 0,
+      margin: theme.edges.messageMargin,
     },
     instructions: {
       fontSize: theme.fontSize.md2,

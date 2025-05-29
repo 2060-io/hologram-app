@@ -2,16 +2,7 @@ import { useAudioRecorder, useAudioPlayer } from '@simform_solutions/react-nativ
 import React, { useRef, useEffect, useState, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, TouchableOpacity } from 'react-native'
-import * as RNFS from 'react-native-fs'
-import Reanimated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withTiming,
-  cancelAnimation,
-  withRepeat,
-  Easing,
-  withSequence,
-} from 'react-native-reanimated'
+import { stat } from 'react-native-fs'
 
 import ComposerInput from '../ComposerInput'
 import RepliedMessageView from '../RepliedMessageView/RepliedMessageView'
@@ -34,8 +25,6 @@ import {
   askMicrophonePermission,
 } from '@2060/utils/permissions'
 import { toast } from '@2060/utils/toast'
-
-const IconAnimated = Reanimated.createAnimatedComponent(Icon)
 
 interface Props {
   onShowMediaOptions(): void
@@ -61,8 +50,6 @@ const InputToolbarView = (props: Props) => {
   const { showMediaOptions, onShowMediaOptions } = props
   const isRepliedMessage = repliedMessage !== undefined
   const hasContentTextInput = valueTextInput.trim().length !== 0
-  const animatedOpacity = useSharedValue(1)
-  const styleIconRecord = useAnimatedStyle(() => ({ opacity: animatedOpacity.value }), [])
   const theme = useTheme()
   const styles = getStyles(theme, isRecordingVoiceNote)
 
@@ -95,7 +82,7 @@ const InputToolbarView = (props: Props) => {
       toast({ message: t('chat.recordedAudioTooShort'), type: 'info' })
       return
     }
-    const { size } = await RNFS.stat(recordedAudioFilePath.current)
+    const { size } = await stat(recordedAudioFilePath.current)
     const subType = 'm4a'
     const mime = `audio/${subType}`
     const filename = generateFileName(mime, subType)
@@ -121,19 +108,12 @@ const InputToolbarView = (props: Props) => {
         sampleRate: 11025, // A quarter of the standard value (44100)
         bitRate: 32000, // A quarter of the standard value (128000)
       }).catch(error => logWarn(`Error starting recording note voice: ${error}`))
-      startAnimationRecord()
     }
   }, [])
-
-  const onCancelAnimation = () => {
-    cancelAnimation(animatedOpacity)
-    animatedOpacity.value = 1
-  }
 
   const onStopRecorder = async () => {
     setIsRecordingVoiceNote(false)
     setIsAutomaticRecording(false)
-    onCancelAnimation()
     try {
       const [path, duration] = await stopRecording()
       recordedAudioFilePath.current = path
@@ -151,17 +131,6 @@ const InputToolbarView = (props: Props) => {
   const cancelAudioRecording = async () => {
     await onStopRecorder()
     await deleteFile(recordedAudioFilePath.current)
-  }
-
-  const startAnimationRecord = () => {
-    animatedOpacity.value = withRepeat(
-      withSequence(
-        withTiming(0, { duration: 400, easing: Easing.out(Easing.ease) }),
-        withTiming(1, { duration: 400, easing: Easing.in(Easing.ease) }),
-      ),
-      -1,
-      false,
-    )
   }
 
   const sendMessage = async () => {
@@ -195,13 +164,7 @@ const InputToolbarView = (props: Props) => {
             valueTextInput={valueTextInput}
           />
           <View style={[styles.containerRecording, isRepliedMessage && styles.recordingStylesWhenResponding]}>
-            <IconAnimated
-              as="FontAwesome"
-              name="microphone"
-              size={20}
-              color={theme.colors.red}
-              style={styleIconRecord}
-            />
+            <Icon as="FontAwesome" name="microphone" size={20} color={theme.colors.red} />
             <Text typography="EuclidCircularA-Regular" style={styles.recordTime}>
               {recordTime}
             </Text>

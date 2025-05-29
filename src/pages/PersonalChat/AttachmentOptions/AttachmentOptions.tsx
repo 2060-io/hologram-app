@@ -8,7 +8,7 @@ import { SvgIcon, Text } from '@2060/components/common'
 import { IconsNames } from '@2060/components/common/SvgIcon'
 import { useImageCropPicker, ImageOrVideo, useChatActions } from '@2060/hooks'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { log, logError } from '@2060/utils'
+import { logError } from '@2060/utils'
 
 type Props = {
   onCloseAttachmentOptions(): void
@@ -38,18 +38,14 @@ const AttachmentOptions: React.FC<Props> = ({ onCloseAttachmentOptions }) => {
   }
 
   const onSelectedOption = async (optionId: string) => {
-    try {
-      if (optionId === 'file-camera') {
-        await takePhotoOrVideo(onSendSharedFile)
-      }
-      if (optionId === 'file-video') {
-        await takePhotoOrVideo(onSendSharedFile, { mediaType: 'video' })
-      }
-      if (optionId === 'file-gallery') {
-        await takePhotoOrVideoFromGallery(onSendSharedFile, { mediaType: 'any' })
-      }
-    } catch (error) {
-      log('Image capture error', error)
+    if (optionId === 'file-camera') {
+      await takePhotoOrVideo(onSendSharedFile)
+    }
+    if (optionId === 'file-video') {
+      await takePhotoOrVideo(onSendSharedFile, { mediaType: 'video' })
+    }
+    if (optionId === 'file-gallery') {
+      await takePhotoOrVideoFromGallery(onSendSharedFile, { mediaType: 'any' })
     }
   }
 

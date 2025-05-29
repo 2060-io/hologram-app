@@ -1,4 +1,3 @@
-import { View as MotiView, AnimatePresence } from 'moti'
 import React, { useState, memo } from 'react'
 import { View, TouchableOpacity } from 'react-native'
 import EmojiPicker from 'rn-emoji-keyboard'
@@ -63,27 +62,19 @@ const ReactionMenu = ({ message, onClose, onReaction }: Props) => {
         enableRecentlyUsed
         categoryPosition="top"
       />
-      <AnimatePresence exitBeforeEnter>
-        <MotiView from={{ opacity: 0 }} animate={{ opacity: 1 }}>
-          <View style={styles.emojiBox}>
-            {mainEmojis.map(emoji => (
-              <EmojiItem
-                onPress={() => handleOnEmojiSelected(emoji)}
-                key={emoji.name}
-                data={emoji}
-                isEmojiSelected={getIsEmojiSelected(emoji.emoji)}
-              />
-            ))}
-            <TouchableOpacity
-              onPress={handleOnshowEmojiPicker}
-              activeOpacity={0.7}
-              style={styles.iconEllipsis}
-            >
-              <Icon as="Ionicons" name="add" color={theme.colors.blue} size={25} />
-            </TouchableOpacity>
-          </View>
-        </MotiView>
-      </AnimatePresence>
+      <View style={styles.emojiBox}>
+        {mainEmojis.map(emoji => (
+          <EmojiItem
+            onPress={() => handleOnEmojiSelected(emoji)}
+            key={emoji.name}
+            data={emoji}
+            isEmojiSelected={getIsEmojiSelected(emoji.emoji)}
+          />
+        ))}
+        <TouchableOpacity onPress={handleOnshowEmojiPicker} activeOpacity={0.7} style={styles.iconEllipsis}>
+          <Icon as="Ionicons" name="add" color={theme.colors.blue} size={25} />
+        </TouchableOpacity>
+      </View>
     </View>
   )
 }

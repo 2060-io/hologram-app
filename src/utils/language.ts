@@ -1,13 +1,13 @@
 import { use } from 'i18next'
 import { initReactI18next } from 'react-i18next'
-import * as RNLocalize from 'react-native-localize'
+import { getLocales } from 'react-native-localize'
 
 import en from '../locales/en.json'
 import es from '../locales/es.json'
 
 import { logError } from './log'
 
-export const languageClient = RNLocalize.getLocales() // get list of locales
+export const languageClient = getLocales() // get list of locales
 export const language = languageClient[0].languageCode
 export const initializeI18n = new Promise(resolve => {
   use(initReactI18next).init(

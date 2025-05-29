@@ -9,7 +9,7 @@ import { PersonalChatStackParams } from './NavigationProps'
 import getStyles from './styles'
 
 import { PersonalChatProvider } from '@2060/hooks/agent'
-import { MediaPlayerProvider } from '@2060/hooks/agent/MediaPlayerProvider'
+import { MediaPlayerProvider } from '@2060/hooks/providers'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { PersonalChat, MessageDetails, ForwardMessages, ShareMessages, MRZScanner } from '@2060/pages'
 import { getGlobalStyles } from '@2060/styles'
@@ -24,11 +24,11 @@ const PersonalChatStackNavigator = () => {
     <PersonalChatProvider>
       <MediaPlayerProvider>
         <PersonalChatStack.Navigator
-          id="stack_navigator_personal_chat"
+          key="stack_navigator_personal_chat"
           screenOptions={({ route }) => ({
             cardStyle: styles.cardStyle,
             headerStyle: globalStyles.headerStyle,
-            headerBackTitleVisible: false,
+            headerBackTitle: '',
             headerBackAllowFontScaling: true,
             headerTitleAlign: 'center',
             headerTitle: () => <HeaderTitle title={t(`navigation.${route.name}`)} theme={theme} />,

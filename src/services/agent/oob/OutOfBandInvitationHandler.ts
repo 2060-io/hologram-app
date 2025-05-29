@@ -18,7 +18,6 @@ export class OutOfBandInvitationHandler implements MessageHandler {
 
     const { outOfBandRecord } = await getOutOfBandRecord(agentContext, {
       invitation: messageContext.message,
-      parentConnectionId: messageContext.connection?.id,
     })
     // Emit event: OOB Invitation received
     agentContext.dependencyManager.resolve(EventEmitter).emit<OutOfBandInvitationEvent>(agentContext, {
@@ -28,6 +27,7 @@ export class OutOfBandInvitationHandler implements MessageHandler {
         // FIXME: should be clone() but it is not properly extracting services array in invitation
         outOfBandRecord: outOfBandRecord,
         connection: messageContext.connection,
+        messageId: messageContext.message.id,
       },
     })
   }

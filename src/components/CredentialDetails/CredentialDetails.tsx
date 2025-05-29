@@ -1,11 +1,11 @@
 import React, { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, Image, TouchableOpacity, TouchableWithoutFeedback } from 'react-native'
+import { View, Image, TouchableOpacity } from 'react-native'
 import EIdReader from 'react-native-eid-reader'
 
 import getStyles from './styles'
 
-import { CardCredentialMainInformation, Modal, Text } from '@2060/components/common'
+import { CardCredentialMainInformation, FullScreenImage, Text } from '@2060/components/common'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { CredentialDetailsForDisplay } from '@2060/services/agent/display'
 import { formatCredentialSubject, CredentialAttributeRow } from '@2060/services/agent/formatCredentialSubject'
@@ -61,37 +61,23 @@ const CredentialDetails = ({ credentialDetails }: Props) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
-  const detailsSections = formatCredentialSubject(credentialDetails.attributes)
+  const detailsSections = formatCredentialSubject({ subject: credentialDetails.attributes })
   const [showImageFullScreen, setShowImageFullScreen] = useState(false)
   const biggerImageRef = useRef<string | null>(null)
-
-  const closeImageFullScreen = () => setShowImageFullScreen(false)
 
   const onPressDetailImage = (imageUrl: string) => {
     biggerImageRef.current = imageUrl
     setShowImageFullScreen(true)
   }
+  const closeFullScreenImage = () => setShowImageFullScreen(false)
 
   return (
     <View style={styles.container}>
-      <Modal
-        animationType="fade"
-        transparent
-        visible={showImageFullScreen}
-        onRequestClose={closeImageFullScreen}
-      >
-        {biggerImageRef.current && (
-          <TouchableWithoutFeedback onPress={closeImageFullScreen}>
-            <View style={styles.biggerImageContainer}>
-              <Image
-                style={styles.biggerImage}
-                resizeMode="contain"
-                source={{ uri: biggerImageRef.current }}
-              />
-            </View>
-          </TouchableWithoutFeedback>
-        )}
-      </Modal>
+      <FullScreenImage
+        showFullScreenImage={showImageFullScreen}
+        closeFullScreenImage={closeFullScreenImage}
+        imageUri={biggerImageRef.current!}
+      />
       <View style={styles.credentialCardContainer}>
         <CardCredentialMainInformation
           credentialMainInfo={credentialDetails.mainInfo}

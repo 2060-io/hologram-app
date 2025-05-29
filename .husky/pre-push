@@ -1,4 +1,19 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-yarn prettier -c && yarn lint && yarn build
+# Read from stdin what is being pushed
+while read local_ref local_sha remote_ref remote_sha
+do
+  # If we are pushing a branch (refs/heads/*), we want the hook to run
+  if echo "$local_ref" | grep -q "refs/heads/"; then
+    echo "Pushing branch: running checks..."
+    yarn prettier -c && yarn lint && yarn build
+    exit 0
+  fi
+done
+
+# If no branches are being pushed, skip
+echo "Only pushing tags. Skipping pre-push hook."
+exit 0
+
+

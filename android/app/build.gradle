@@ -221,17 +221,13 @@ dependencies {
     // When using the BoM, don't specify versions in Firebase dependencies
     implementation 'com.google.firebase:firebase-analytics'
 
-    // For AES encryption (TODO: remove when the module is extracted from  the app)
-    implementation 'com.madgag.spongycastle:core:1.58.0.0'
-    implementation 'com.madgag.spongycastle:prov:1.54.0.0'
-    implementation 'com.madgag.spongycastle:pg:1.54.0.0'
-
     implementation project(':react-native-fs')
-    implementation 'com.google.android.gms:play-services-auth:21.2.0'
     implementation project(':react-native-splash-screen')
+    implementation 'androidx.core:core-ktx:1.15.0'
 }
 
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'org.jetbrains.kotlin.android'
 
 def isNewArchitectureEnabled() {
     return project.hasProperty("newArchEnabled") && project.newArchEnabled == "true"

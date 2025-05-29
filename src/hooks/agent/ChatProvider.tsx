@@ -1,12 +1,17 @@
+import { MessageState } from '@2060.io/credo-ts-didcomm-receipts'
 import { ConnectionRecord, utils } from '@credo-ts/core'
-import { MessageState } from 'credo-ts-receipts'
-import * as React from 'react'
-import { createContext, useCallback, useState, useEffect, useContext } from 'react'
+import React, { createContext, useCallback, useState, useEffect, useContext } from 'react'
 
 import { useMobileAgent } from './MobileAgentProvider'
 import { AgentActionOptions, AgentActionType } from './actions/AgentAction'
-import * as chatEntryService from './chat/services/ChatEntryService'
-import * as chatThreadService from './chat/services/ChatThreadService'
+import { addReceiptToRelatedEntries } from './chat/services/ChatEntryService'
+import {
+  findOrCreateChatThread,
+  archiveThreads as chatESArchiveThreads,
+  unarchiveThreads as chatESUnarchiveThreads,
+  markThreadAsRead as chatESMarkThreadAsRead,
+  deleteThreads as chatESDeleteThreads,
+} from './chat/services/ChatThreadService'
 import { useAgentChatEvents } from './chat/useAgentChatEvents'
 import { useAgentActionQueue } from './useAgentActionQueue'
 
@@ -90,7 +95,7 @@ export const ChatProvider: React.FC<Props> = ({ children }) => {
   const findOrCreateThread = useCallback(
     (options: CreateThreadOptions): ChatThreadData => {
       if (!realm) throw new Error('Realm Unavailable')
-      const record = chatThreadService.findOrCreateChatThread(realm, options.connection)
+      const record = findOrCreateChatThread(realm, options.connection)
 
       return getChatThreadData(record)
     },
@@ -100,7 +105,7 @@ export const ChatProvider: React.FC<Props> = ({ children }) => {
   const archiveThreads = useCallback(
     (chatThreadIds: string[]) => {
       if (!realm) throw new Error('Realm Unavailable')
-      chatThreadService.archiveThreads(realm, chatThreadIds)
+      chatESArchiveThreads(realm, chatThreadIds)
     },
     [realm],
   )
@@ -108,7 +113,7 @@ export const ChatProvider: React.FC<Props> = ({ children }) => {
   const unarchiveThreads = useCallback(
     (chatThreadIds: string[]) => {
       if (!realm) throw new Error('Realm Unavailable')
-      chatThreadService.unarchiveThreads(realm, chatThreadIds)
+      chatESUnarchiveThreads(realm, chatThreadIds)
     },
     [realm],
   )
@@ -118,7 +123,7 @@ export const ChatProvider: React.FC<Props> = ({ children }) => {
       if (!realm) throw new Error('Realm Unavailable')
       const { id, lastReadAt } = options
 
-      const { messageIds, connectionId } = chatThreadService.markThreadAsRead(realm, id, lastReadAt)
+      const { messageIds, connectionId } = chatESMarkThreadAsRead(realm, id, lastReadAt)
       const connection = await agent?.connections.findById(connectionId)
 
       // No receipts to send
@@ -131,7 +136,7 @@ export const ChatProvider: React.FC<Props> = ({ children }) => {
       }))
 
       for (const receipt of receipts) {
-        chatEntryService.addReceiptToRelatedEntries(realm, receipt)
+        addReceiptToRelatedEntries(realm, receipt)
       }
 
       addAgentActionToQueue({
@@ -153,7 +158,7 @@ export const ChatProvider: React.FC<Props> = ({ children }) => {
     (chatThreadIds: string[]) => {
       if (!realm) throw new Error('Realm Unavailable')
       for (const chatThreadId of chatThreadIds) clearThread(chatThreadId)
-      chatThreadService.deleteThreads(realm, chatThreadIds)
+      chatESDeleteThreads(realm, chatThreadIds)
     },
     [realm],
   )

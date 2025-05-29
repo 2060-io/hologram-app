@@ -8,8 +8,8 @@ export default (theme: AppTheme) =>
   StyleSheet.create({
     containerMain: {
       width: widthPercentageToDP('75%'),
-      paddingHorizontal: 8,
-      paddingBottom: 6,
+      paddingHorizontal: theme.edges.messageMargin,
+      marginBottom: theme.edges.messageMargin,
     },
     containerInfo: {
       alignSelf: 'center',
@@ -27,7 +27,6 @@ export default (theme: AppTheme) =>
       color: theme.colors.blue,
       fontSize: theme.fontSize.sm + 2,
       lineHeight: 18,
-      paddingBottom: 17,
     },
     textSemiBold: {
       fontSize: theme.fontSize.sm + 2,
@@ -44,6 +43,9 @@ export default (theme: AppTheme) =>
       alignSelf: 'center',
       marginBottom: 11,
     },
+    footerContainer: {
+      marginTop: 18,
+    },
     acceptedContainer: {
       borderRadius: 10,
       padding: 4,
@@ -53,5 +55,10 @@ export default (theme: AppTheme) =>
     acceptedText: {
       color: theme.colors.green,
       fontSize: theme.fontSize.md - 1,
+    },
+    connectionRefusedByAgeText: {
+      marginTop: 4,
+      fontSize: theme.fontSize.sm,
+      color: theme.colors.primaryText,
     },
   })

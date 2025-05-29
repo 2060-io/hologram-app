@@ -1,7 +1,9 @@
 import Avatar from './Avatar'
 import CardCredentialMainInformation from './CardCredentialMainInformation'
-import ChannelIcons from './ChannelIcons'
+import ConnectionMainActions from './ConnectionMainActions'
+import ConnectionRefusedByAge from './ConnectionRefusedByAge'
 import Icon from './CustomIcon'
+import FullScreenImage from './FullScreenImage'
 import HeaderTitle from './HeaderTitle'
 import Loader from './Loader'
 import MessageStateIcon from './MessageStateIcon'
@@ -22,7 +24,7 @@ export * from './ServiceInformation'
 export * from './Buttons'
 export {
   Avatar,
-  ChannelIcons,
+  ConnectionMainActions,
   Icon,
   Loader,
   Modal,
@@ -40,4 +42,6 @@ export {
   HeaderTitle,
   ProofOfTrust,
   RadioButton,
+  FullScreenImage,
+  ConnectionRefusedByAge,
 }

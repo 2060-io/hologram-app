@@ -7,6 +7,7 @@ const themeContextInitialValues = {
   isDarkMode: false,
   colors: getThemeColors(false),
   fontSize: fontSizesForMediumPhones,
+  edges: { messageMargin: 8 },
 }
 
 export const useTheme = () => {
@@ -26,6 +27,7 @@ export const ThemeProvider: React.FC<PropsWithChildren> = ({ children }) => {
       colors,
       fontSize: fontSizesForMediumPhones,
       isDarkMode,
+      edges: themeContextInitialValues.edges,
     }
   }, [isDarkMode])
 

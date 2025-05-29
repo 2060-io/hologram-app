@@ -1,13 +1,13 @@
-import { Image, NativeModules } from 'react-native'
-import * as RNFS from 'react-native-fs'
+import { Image } from 'react-native'
+import { stat, TemporaryDirectoryPath } from 'react-native-fs'
+import { nativeGetVideoProperties } from 'react-native-local-native-modules'
 
+import { copyFile } from './RNFS'
 import { logError } from './log'
 
-import { IS_DEVICE_IOS } from '@2060/constants'
+import { IS_IOS } from '@2060/constants'
 import { DidCommMediaFileSharingData } from '@2060/hooks/agent'
 import { createDidCommPreview } from '@2060/hooks/media/preview'
-
-const { VideoProperties } = NativeModules
 
 type VideoProps = {
   duration: number
@@ -18,7 +18,7 @@ type VideoProps = {
 export const getMediaFileSharingData = async (fileOriginalPath: string, mimeType: string) => {
   const filePath = await fromContentUriToFileUri(fileOriginalPath)
   const preview = await createDidCommPreview({ mimeType: mimeType, localFilePath: filePath })
-  const { size } = await RNFS.stat(filePath)
+  const { size } = await stat(filePath)
   const [fileName] = filePath.split('/').slice(-1)
   const finalFileName = fileName.includes('.') ? fileName : undefined
   const commonFileValues: DidCommMediaFileSharingData = {
@@ -34,39 +34,34 @@ export const getMediaFileSharingData = async (fileOriginalPath: string, mimeType
   return mediaFileSharingData
 }
 
-const getVideoProperties = async (videoPath: string): Promise<VideoProps | null> => {
-  try {
-    const properties: VideoProps = await VideoProperties.getVideoProperties(videoPath)
-    return properties
-  } catch (error) {
-    logError('Error getting video properties:', error)
-    return null
-  }
-}
-
 const fromContentUriToFileUri = async (contentUri: string) => {
   const urlComponents = contentUri.split('/')
   const fileNameAndExtension = urlComponents[urlComponents.length - 1]
-  const destPath = `${RNFS.TemporaryDirectoryPath}/${fileNameAndExtension}`
-  await RNFS.copyFile(contentUri, destPath)
-  return IS_DEVICE_IOS ? destPath : `file://${decodeURIComponent(destPath)}`
+  const destPath = `${TemporaryDirectoryPath}/${fileNameAndExtension}`
+  await copyFile(contentUri, destPath)
+  return IS_IOS ? destPath : `file://${decodeURIComponent(destPath)}`
 }
 
 const getDataForVideo = async (currentFileValues: DidCommMediaFileSharingData) => {
   let duration = 0
   let width = 0
   let height = 0
-  const properties = await getVideoProperties(currentFileValues.path)
-  if (properties) {
-    duration = properties.duration
-    width = properties.width
-    height = properties.height
-  }
-  return {
-    ...currentFileValues,
-    duration,
-    width,
-    height,
+  try {
+    const properties = (await nativeGetVideoProperties(currentFileValues.path)) as VideoProps
+    if (properties) {
+      duration = properties.duration
+      width = properties.width
+      height = properties.height
+    }
+  } catch (error) {
+    logError('Error getting video properties:', error)
+  } finally {
+    return {
+      ...currentFileValues,
+      duration,
+      width,
+      height,
+    }
   }
 }
 

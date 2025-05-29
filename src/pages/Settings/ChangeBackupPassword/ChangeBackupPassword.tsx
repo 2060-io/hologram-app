@@ -13,7 +13,7 @@ import getStyles from './styles'
 
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
 import { SvgIcon, Text, TextInputPassword, MainButton, VerifiedIcon } from '@2060/components/common'
-import { IS_DEVICE_IOS } from '@2060/constants'
+import { IS_IOS } from '@2060/constants'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { toast } from '@2060/utils/toast'
 import { setBackupKey } from '@2060/utils/walletBackUpUtils'
@@ -93,7 +93,7 @@ const ChangeBackupPassword = ({ navigation }: Props) => {
   }
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior={IS_DEVICE_IOS ? 'padding' : 'height'}>
+    <KeyboardAvoidingView style={styles.container} behavior={IS_IOS ? 'padding' : 'height'}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.subContainer}>
           {currentStep === PasswordSteps.TypePass && (

@@ -17,7 +17,7 @@ import { manageBackgroundChatEntryChanges } from '@2060/hooks/agent/chat'
 import { manageConnectionStateChangedEvent } from '@2060/hooks/agent/connections/manageConnectionStateChangedEvent'
 import { ChatEntry, ChatThread } from '@2060/model'
 import { setupMobileAgent } from '@2060/services/initMobileAgent'
-import { KeyChainService, retrieveKey } from '@2060/services/keys'
+import { KeyChainService, retrieveEncryptedKey } from '@2060/services/keys'
 import { DEV_ENVS_PERSIST_KEY, getStorageData } from '@2060/services/localStorage'
 import { walletDirectoryPath } from '@2060/utils/RNFS'
 import { DevEnvsObject } from '@2060/utils/developer'
@@ -69,7 +69,7 @@ export async function backgroundPushNotificationHandler(remoteMessage: FirebaseM
       indyVDRProxyBaseUrl,
     )
 
-    const realmKey = await retrieveKey(KeyChainService.RealmMain)
+    const realmKey = await retrieveEncryptedKey(KeyChainService.RealmMain)
 
     const realmConfig: Realm.Configuration = {
       encryptionKey: TypedArrayEncoder.fromHex(realmKey as string),
@@ -89,7 +89,7 @@ export async function backgroundPushNotificationHandler(remoteMessage: FirebaseM
     addConnectionChangeListener()
     const storage = { type: 'sqlite', config: { path: `${walletDirectoryPath}/afj.sqlite` } }
     const getWalletConfig = (storeKey: string) => ({ id: 'afj', key: storeKey, storage })
-    const key = await retrieveKey(KeyChainService.AfjWallet)
+    const key = await retrieveEncryptedKey(KeyChainService.AfjWallet)
     await agent.wallet.open(getWalletConfig(key as string))
 
     agent.events.on<AgentMessageProcessedEvent>(AgentEventTypes.AgentMessageProcessed, async data => {

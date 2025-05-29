@@ -6,11 +6,7 @@ import { ChatMessage } from '../ChatMessage'
 
 import styles from './styles'
 
-import {
-  CommonMessageProps,
-  ChatEntryMessage,
-  MessageProps,
-} from '@2060/pages/PersonalChat/ChatMessage/Props'
+import { CommonMessageProps, ChatEntryMessage } from '@2060/pages/PersonalChat/ChatMessage/Props'
 import { screenHeight, screenWidth } from '@2060/utils/responsiveUtils'
 
 interface ListViewProps<TMessage> extends FlashListProps<TMessage> {
@@ -33,14 +29,13 @@ const renderItem = ({ item, index, props }: ItemProps) => {
   const { messages, commonMessageProps } = props
   const previousMessage = messages[index + 1]
   const nextMessage = messages[index - 1]
-  const messageProps: MessageProps = {
+  const messageProps = {
     ...commonMessageProps,
-    key: item.id,
     currentMessage: item,
     previousMessage,
     nextMessage,
   }
-  return <ChatMessage {...messageProps} />
+  return <ChatMessage key={item.id} {...messageProps} />
 }
 
 export const ChatMessageList = memo((props: ChatMessageListProps) => {

@@ -1,14 +1,14 @@
 /* eslint-disable import/no-named-as-default-member */
+import { SharedMediaItem } from '@2060.io/credo-ts-didcomm-media-sharing'
 import { utils } from '@credo-ts/core'
 import appCheck from '@react-native-firebase/app-check'
 import { useAudioPlayer } from '@simform_solutions/react-native-audio-waveform'
 import axios from 'axios'
-import { SharedMediaItem } from 'credo-ts-media-sharing'
 import { t } from 'i18next'
 import { default as React, useEffect, useCallback, useRef, useState } from 'react'
-import { NativeModules } from 'react-native'
 import Upload, { CompletedData, UploadOptions } from 'react-native-background-upload'
 import { copyFile, downloadFile } from 'react-native-fs'
+import { nativeCreateChunks } from 'react-native-local-native-modules'
 
 import { generateFileName } from '../media/files'
 import { createLocalPreview } from '../media/preview'
@@ -25,7 +25,7 @@ import {
   FileUploadDownloadContext,
 } from './useFileUploadDownload'
 
-import { IS_DEVICE_IOS } from '@2060/constants'
+import { IS_IOS } from '@2060/constants'
 import { MediaDownloadState, MediaUploadState, UploadChunkTask, UploadTask } from '@2060/model'
 import {
   AUTOMATIC_MEDIA_DOWNLOAD_VALUES_PERSIST_KEY,
@@ -58,8 +58,6 @@ const defaultAutomaticDownloadValues: AutomaticDownloadTypes = {
 
 const CHUNK_SIZE = 2_000_000
 
-const { FileChunkGeneratorModule } = NativeModules
-
 interface Props {
   children?: React.ReactNode
 }
@@ -83,7 +81,7 @@ const uploadChunk = async (dataStoreUrl: string, filePath: string, fileId: strin
   const options: UploadOptions = {
     customUploadId: `${fileId}/${chunkNumber}`,
     url: `${dataStoreUrl}/u/${fileId}/${chunkNumber}`,
-    path: IS_DEVICE_IOS ? `file://${filePath}` : filePath,
+    path: IS_IOS ? `file://${filePath}` : filePath,
     method: 'PUT',
     field: 'chunk',
     type: 'multipart',
@@ -300,7 +298,7 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
         destinationFilePath: uploadFilePath,
       })
 
-      const chunkFilePaths = await FileChunkGeneratorModule.createChunks(
+      const chunkFilePaths = await nativeCreateChunks(
         uploadFilePath,
         `${mediaDirectoryPath}/${fileId}`,
         CHUNK_SIZE,

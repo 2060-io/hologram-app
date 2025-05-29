@@ -1,8 +1,8 @@
 import { QuestionAnswerRecord, QuestionAnswerState } from '@credo-ts/question-answer'
 import Realm from 'realm'
 
-import * as chatEntryService from '../services/ChatEntryService'
-import * as chatThreadService from '../services/ChatThreadService'
+import { createChatEntry, findAllByAssociatedRecordId, updateMetadata } from '../services/ChatEntryService'
+import { addUnread, findOrCreateChatThread, updateThread } from '../services/ChatThreadService'
 
 import {
   AnswerMetadata,
@@ -24,7 +24,7 @@ export const handleQuestionAnswerRecordChanges = async (options: {
   const { agent, realm, record: questionAnswerRecord, activeChatThreadId } = options
   // Find associated thread according to the connection id. If not found, create it
   const connection = await agent.connections.getById(questionAnswerRecord.connectionId)
-  const thread = chatThreadService.findOrCreateChatThread(realm, connection)
+  const thread = findOrCreateChatThread(realm, connection)
 
   const recordState = questionAnswerRecord.state
 
@@ -35,7 +35,7 @@ export const handleQuestionAnswerRecordChanges = async (options: {
       description: questionAnswerRecord.questionDetail,
       options: JSON.stringify(questionAnswerRecord.validResponses.map(({ text }) => ({ text, value: text }))),
     }
-    chatEntry = chatEntryService.createChatEntry(realm, {
+    chatEntry = createChatEntry(realm, {
       associatedRecordId: questionAnswerRecord.id,
       associatedMessageId: questionAnswerRecord.threadId,
       chatThreadId: thread.id,
@@ -46,11 +46,11 @@ export const handleQuestionAnswerRecordChanges = async (options: {
       metadata,
     })
     if (thread.id !== activeChatThreadId) {
-      chatThreadService.addUnread(realm, thread.id, 1)
+      addUnread(realm, thread.id, 1)
     }
   } else if (recordState === QuestionAnswerState.AnswerSent) {
     const metadata: AnswerMetadata = { response: questionAnswerRecord.response ?? '' }
-    chatEntry = chatEntryService.createChatEntry(realm, {
+    chatEntry = createChatEntry(realm, {
       associatedRecordId: questionAnswerRecord.id,
       chatThreadId: thread.id,
       type: ChatEntryType.Answer,
@@ -61,7 +61,7 @@ export const handleQuestionAnswerRecordChanges = async (options: {
     })
 
     // Find any Question entry associated to this question-answer record and mark it as replied
-    const [questionEntry] = chatEntryService.findAllByAssociatedRecordId(
+    const [questionEntry] = findAllByAssociatedRecordId(
       realm,
       questionAnswerRecord.id,
       ChatEntryType.Question,
@@ -72,11 +72,11 @@ export const handleQuestionAnswerRecordChanges = async (options: {
         ...questionEntry.metadata,
         response: questionAnswerRecord.response ?? '',
       }
-      chatEntryService.updateMetadata(realm, questionEntry.id, questionMetadata)
+      updateMetadata(realm, questionEntry.id, questionMetadata)
     }
   } else if (recordState === QuestionAnswerState.AnswerReceived) {
     const metadata: AnswerMetadata = { response: questionAnswerRecord.response ?? '' }
-    chatEntry = chatEntryService.createChatEntry(realm, {
+    chatEntry = createChatEntry(realm, {
       associatedRecordId: questionAnswerRecord.id,
       chatThreadId: thread.id,
       type: ChatEntryType.Answer,
@@ -86,7 +86,7 @@ export const handleQuestionAnswerRecordChanges = async (options: {
       metadata,
     })
     if (thread.id !== activeChatThreadId) {
-      chatThreadService.addUnread(realm, thread.id, 1)
+      addUnread(realm, thread.id, 1)
     }
   } else if (recordState === QuestionAnswerState.QuestionSent) {
     const metadata: QuestionMetadata = {
@@ -94,7 +94,7 @@ export const handleQuestionAnswerRecordChanges = async (options: {
       description: questionAnswerRecord.questionDetail,
       options: JSON.stringify(questionAnswerRecord.validResponses.map(({ text }) => ({ text, value: text }))),
     }
-    chatEntry = chatEntryService.createChatEntry(realm, {
+    chatEntry = createChatEntry(realm, {
       associatedRecordId: questionAnswerRecord.id,
       associatedMessageId: questionAnswerRecord.threadId,
       chatThreadId: thread.id,
@@ -106,5 +106,5 @@ export const handleQuestionAnswerRecordChanges = async (options: {
     })
   }
 
-  chatThreadService.updateThread(realm, thread.id, { lastChatEntry: chatEntry })
+  updateThread(realm, thread.id, { lastChatEntry: chatEntry })
 }

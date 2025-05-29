@@ -10,5 +10,6 @@ export interface OutOfBandInvitationEvent extends BaseEvent {
     action: 'Received' | 'Accepted' | 'Refused'
     outOfBandRecord: OutOfBandRecord
     connection?: ConnectionRecord | null
+    messageId?: string
   }
 }

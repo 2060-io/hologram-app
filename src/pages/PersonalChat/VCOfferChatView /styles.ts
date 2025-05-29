@@ -9,8 +9,7 @@ export default (theme: AppTheme) =>
       width: widthPercentageToDP('75%'),
     },
     subContainer: {
-      margin: 8,
-      marginBottom: 0,
+      margin: theme.edges.messageMargin,
     },
     title: {
       fontSize: theme.fontSize.md2,

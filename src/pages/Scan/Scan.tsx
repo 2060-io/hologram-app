@@ -23,11 +23,11 @@ import getStyles from './styles'
 
 import { CodeScanner } from '@2060/components'
 import { TextInput, Text, MainButton, ModalLoading } from '@2060/components/common'
-import { useIsForeground } from '@2060/hooks'
+import { useAppState } from '@2060/hooks'
 import { useMobileAgent } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { DidcommInvitationType, processInvitation } from '@2060/services/agent/oob'
-import { log } from '@2060/utils'
+import { log, logError } from '@2060/utils'
 import { toast } from '@2060/utils/toast'
 
 interface Props extends BottomTabScreenProps<ParamListBase, 'Scan', 'tab_navigator_home'> {}
@@ -42,21 +42,21 @@ const Scan = ({ navigation }: Props) => {
 
   // check if camera page is active
   const isFocused = useIsFocused()
-  const isForeground = useIsForeground()
+  const { isAppActive } = useAppState()
   const { agent } = useMobileAgent()
   const { t } = useTranslation()
 
   const [isActive, setIsActive] = useState(false)
 
   useEffect(() => {
-    setIsActive(isFocused && isForeground)
-  }, [isFocused, isForeground])
+    setIsActive(isFocused && isAppActive)
+  }, [isFocused, isAppActive])
 
   const behavior = Platform.OS === 'ios' ? 'padding' : 'height'
 
   const isTabSelected = (tab: string) => tab === tabType
 
-  const navigateToDidcommInvitation = async (invitation: OutOfBandInvitation) => {
+  const processDidcommInvitation = async (invitation: OutOfBandInvitation) => {
     if (!agent) return
     setProcessing(true)
     let processInvitationResult
@@ -70,12 +70,11 @@ const Scan = ({ navigation }: Props) => {
       if (!success || !recordId) return
 
       if (invitationType === DidcommInvitationType.ConnectionRequest) {
-        if (existingConnectionId) {
-          navigation.navigate('ConnectionDetails', { connectionId: existingConnectionId })
-        } else {
-          const outOfBandRecord = await agent.oob.getById(recordId)
-          navigation.navigate('ConnectionInvitation', { outOfBandRecord })
-        }
+        const outOfBandRecord = await agent.oob.getById(recordId)
+        navigation.navigate('ConnectionInvitation', {
+          outOfBandRecord,
+          existingConnectionId,
+        })
       } else if (invitationType === DidcommInvitationType.CredentialOffer) {
         navigation.navigate('DidcommCredentialOffer', {
           credentialRecordId: recordId,
@@ -113,7 +112,7 @@ const Scan = ({ navigation }: Props) => {
         const invitation = await agent.oob.parseInvitation(shortUrl ?? codeUrl)
 
         if (!invitation) throw new Error('Invitation undefined')
-        await navigateToDidcommInvitation(invitation)
+        await processDidcommInvitation(invitation)
       }
       setScannedCode('')
     } catch (error) {
@@ -123,6 +122,7 @@ const Scan = ({ navigation }: Props) => {
         message: t('scan.errorProcessingCodeOrLink', { message: (error as Error).message }),
         duration: 5000,
       })
+      logError('Error processing code', error)
     }
   }
 

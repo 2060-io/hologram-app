@@ -3,7 +3,7 @@ import { StackActions } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, SafeAreaView, Image, TouchableOpacity, TouchableWithoutFeedback, Alert } from 'react-native'
+import { View, Image, TouchableOpacity, TouchableWithoutFeedback, Alert, ScrollView } from 'react-native'
 import NotificationSetting from 'react-native-open-notification'
 
 import { version } from '../../../package.json'
@@ -12,7 +12,7 @@ import { HomeMainTabParams } from '../HomeMain/HomeMainProps'
 import getStyles from './styles'
 
 import { ModalConfirmAction } from '@2060/components'
-import { Avatar, Text, SvgIcon, OptionsList } from '@2060/components/common'
+import { Avatar, Text, SvgIcon, OptionsList, FullScreenImage } from '@2060/components/common'
 import { OptionProps } from '@2060/components/common/OptionsList/OptionsListProps'
 import { useMobileAgent, useUserProfile } from '@2060/hooks/agent'
 import { useConfig } from '@2060/hooks/providers/ConfigProvider'
@@ -31,8 +31,10 @@ const TIMES_TO_ENABLE_DEV_MODE = 7
 const Settings = ({ navigation }: Props) => {
   const developerModeCounter = useRef(0)
   const lastTouch = useRef<number | undefined>(undefined)
+  const imageFullScreenUri = useRef<string | undefined>(undefined)
   const [showConfirmationDeleteModal, setShowConfirmationDeleteModal] = useState(false)
   const [options, setOptions] = useState<Array<OptionProps>>([])
+  const [showFullScreenImage, setShowFullScreenImage] = useState<boolean>(false)
   const { t } = useTranslation()
   const { agent, shutdownAgent, isConnectedToCloudAgent } = useMobileAgent()
   const { realm, closeRealm } = useLocalRealm()
@@ -46,6 +48,11 @@ const Settings = ({ navigation }: Props) => {
   const defaultAvatar = Image.resolveAssetSource(require('@2060/assets/images/defaultUser.png')).uri
   const avatarUri = imgUrl || (displayName && displayName.length > 0 ? '' : defaultAvatar)
 
+  const onAvatarImagePressed = (avatarImageUri: string) => {
+    setShowFullScreenImage(true)
+    imageFullScreenUri.current = avatarImageUri
+  }
+  const closeFullScreenImage = () => setShowFullScreenImage(false)
   const hideConfirmationDeleteModal = () => setShowConfirmationDeleteModal(false)
 
   const confirmWalletDeletion = () => {
@@ -99,13 +106,13 @@ const Settings = ({ navigation }: Props) => {
             {
               iconName: 'cloudDownload',
               text: t('settings.backup'),
-              onPress: () => onNavigate('WalletBackup'),
+              onPress: () => navigateTo('WalletBackup'),
               rightContent: () => optionRightContent(),
             },
             {
               iconName: 'developer',
               text: t('settings.developer'),
-              onPress: () => onNavigate('Developer'),
+              onPress: () => navigateTo('Developer'),
               rightContent: () => optionRightContent(),
             },
           ]
@@ -122,19 +129,25 @@ const Settings = ({ navigation }: Props) => {
     {
       iconName: 'notifications',
       text: t('settings.notifications'),
-      onPress: () => onNavigate('Notifications'),
+      onPress: () => navigateTo('Notifications'),
       rightContent: () => optionRightContent(),
     },
     {
       iconName: 'users',
       text: t('settings.connections'),
-      onPress: () => onNavigate('Connections'),
+      onPress: () => navigateTo('Connections'),
       rightContent: () => optionRightContent(),
     },
     {
       iconName: 'lock',
       text: t('settings.privacyAndDataUse'),
-      onPress: () => onNavigate('Privacy'),
+      onPress: () => navigateTo('Privacy'),
+      rightContent: () => optionRightContent(),
+    },
+    {
+      iconName: 'people',
+      text: t('navigation.ParentalControl'),
+      onPress: () => navigateTo('ParentalControl'),
       rightContent: () => optionRightContent(),
     },
     {
@@ -147,7 +160,7 @@ const Settings = ({ navigation }: Props) => {
   const goToUserInvitation = () => navigation.dispatch(StackActions.push('UserInvitation'))
   const goToUserProfile = () => navigation.dispatch(StackActions.push('UserProfile'))
 
-  const onNavigate = (screen: string) => {
+  const navigateTo = (screen: string) => {
     if (screen === 'Notifications') return NotificationSetting.open()
     navigation.dispatch(StackActions.push(screen))
   }
@@ -193,34 +206,50 @@ const Settings = ({ navigation }: Props) => {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <TouchableWithoutFeedback style={styles.subContainer} onPress={handleDeveloperMode}>
-        <View style={styles.subContainer}>
-          <ModalConfirmAction
-            visible={showConfirmationDeleteModal}
-            title={t('settings.deleteWalletTitle')}
-            subTitle={t('settings.deleteWalletMessage')}
-            confirmText={t('general.ok')}
-            cancelText={t('general.cancel')}
-            onClose={hideConfirmationDeleteModal}
-            onConfirm={confirmWalletDeletion}
-            onCancel={hideConfirmationDeleteModal}
-          />
-          <View style={styles.containerProfile}>
-            <Avatar uri={avatarUri} label={userProfileData?.displayName} size="46%" />
-            {userProfileData?.displayName && (
-              <Text typography="EuclidCircularA-Medium" style={styles.displayName}>
-                {userProfileData?.displayName}
-              </Text>
-            )}
+    <View style={styles.container}>
+      <FullScreenImage
+        showFullScreenImage={showFullScreenImage}
+        closeFullScreenImage={closeFullScreenImage}
+        imageUri={imageFullScreenUri.current!}
+      />
+      <ModalConfirmAction
+        visible={showConfirmationDeleteModal}
+        title={t('settings.deleteWalletTitle')}
+        subTitle={t('settings.deleteWalletMessage')}
+        confirmText={t('general.ok')}
+        cancelText={t('general.cancel')}
+        onClose={hideConfirmationDeleteModal}
+        onConfirm={confirmWalletDeletion}
+        onCancel={hideConfirmationDeleteModal}
+      />
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        style={styles.subContainer}
+        contentContainerStyle={styles.scrollViewContentContainerStyle}
+      >
+        <TouchableWithoutFeedback onPress={handleDeveloperMode} style={styles.subContainer}>
+          <View style={styles.subContainer}>
+            <View style={styles.containerProfile}>
+              <Avatar
+                uri={avatarUri}
+                label={userProfileData?.displayName}
+                size="46%"
+                onImagePressed={onAvatarImagePressed}
+              />
+              {userProfileData?.displayName && (
+                <Text typography="EuclidCircularA-Medium" style={styles.displayName}>
+                  {userProfileData?.displayName}
+                </Text>
+              )}
+            </View>
+            <OptionsList options={options} />
+            <View style={styles.appVersionContainer}>
+              <Text style={styles.appVersionText}>{version}</Text>
+            </View>
           </View>
-          <OptionsList options={options} />
-          <View style={styles.appVersionContainer}>
-            <Text style={styles.appVersionText}>{version}</Text>
-          </View>
-        </View>
-      </TouchableWithoutFeedback>
-    </SafeAreaView>
+        </TouchableWithoutFeedback>
+      </ScrollView>
+    </View>
   )
 }
 

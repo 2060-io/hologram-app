@@ -1,9 +1,13 @@
+import { useTranslation } from 'react-i18next'
 import { openPicker, openCamera, Options, Image, Video, CommonOptions } from 'react-native-image-crop-picker'
 
 import { createDidCommPreview } from './media/preview'
 
-import { log } from '@2060/utils'
+import { MAX_VIDEO_DURATION } from '@2060/constants'
+import { logError } from '@2060/utils'
+import { toast } from '@2060/utils/toast'
 
+const MAX_VIDEO_SECONDS_DURATION = 60
 const optionsCommon: CommonOptions = {
   loadingLabelText: 'Applying changes...',
   useFrontCamera: true,
@@ -27,6 +31,7 @@ const defaultCamera: Options = {
 const defaultVideo: Options = {
   mediaType: 'video',
   compressVideoPreset: 'MediumQuality',
+  maximumVideoDuration: MAX_VIDEO_SECONDS_DURATION,
   ...optionsCommon,
 }
 
@@ -37,16 +42,13 @@ const optionsDefault = {
 }
 
 export interface ImageOrVideo extends Image, Video {
-  urlBase64?: string
   preview?: string
 }
 
 export const useImageCropPicker = () => {
-  const uploadMedia = async (fileInfo: ImageOrVideo, mediaType: string) => {
-    const existsData = fileInfo.data
-
-    if (['photo', 'any'].includes(mediaType) && existsData) {
-      fileInfo.urlBase64 = `data:${fileInfo.mime};base64,${fileInfo.data}`
+  const { t } = useTranslation()
+  const createPreview = async (fileInfo: ImageOrVideo, mediaType: string) => {
+    if (['photo', 'any'].includes(mediaType) && fileInfo.data) {
       const previewResult = await createDidCommPreview({
         localFilePath: fileInfo.path,
         mimeType: fileInfo.mime,
@@ -67,10 +69,10 @@ export const useImageCropPicker = () => {
     const mediaType = options?.mediaType || 'photo'
     try {
       const fileInfo = (await openCamera({ ...optionsDefault[mediaType], ...options })) as ImageOrVideo
-      const infoMedia = await uploadMedia(fileInfo, mediaType)
+      const infoMedia = await createPreview(fileInfo, mediaType)
       callBack(infoMedia)
     } catch (error) {
-      log(JSON.stringify(error))
+      logError(`${error}`)
     }
   }
 
@@ -78,10 +80,16 @@ export const useImageCropPicker = () => {
     const mediaType = options?.mediaType || 'photo'
     try {
       const fileInfo = (await openPicker({ ...optionsDefault[mediaType], ...options })) as ImageOrVideo
-      const infoMedia = await uploadMedia(fileInfo, mediaType)
+      const { mime, duration } = fileInfo
+      const isVideoAndExceedsDuration = mime.startsWith('video') && duration && duration > MAX_VIDEO_DURATION
+      if (isVideoAndExceedsDuration) {
+        toast({ message: t('personalChat.videoExceedsDuration'), type: 'error', position: 'center' })
+        return
+      }
+      const infoMedia = await createPreview(fileInfo, mediaType)
       callBack(infoMedia)
     } catch (error) {
-      log(JSON.stringify(error))
+      logError(`${error}`)
     }
   }
 

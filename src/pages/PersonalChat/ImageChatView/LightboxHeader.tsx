@@ -26,14 +26,14 @@ const Button = ({ iconName, onPress, color }: { iconName: string; onPress(): voi
 )
 
 const LightboxHeader = memo(({ fileMediaInfo, onBack, currentMessage }: LightboxHeaderProps) => {
-  const { shareMediaToApp, onSaveFileToGallery, deleteMessagesForMe } = useChatActions()
+  const { shareMediaToApp, saveFileToGallery, deleteMessagesForMe } = useChatActions()
   const theme = useTheme()
   const styles = getStyles(theme)
   const using24HourFormat = uses24HourClock()
   const iconColor = theme.colors.tertiaryText
 
   const handleSaveFileToGallery = () => {
-    onSaveFileToGallery(currentMessage).then(() => {
+    saveFileToGallery(currentMessage).then(() => {
       onBack()
     })
   }

@@ -2,7 +2,7 @@ import { ParamListBase, StackActions } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { useEffect } from 'react'
 
-import { usePushNotifications } from '@2060/hooks/providers'
+import { usePushNotifications } from '@2060/hooks/providers/PushNotificationsProvider'
 import { useSharedDataFromOtherApps } from '@2060/hooks/providers/SharedDataFromOtherAppsProvider'
 import {
   markNewConnectionNotificationAsViewed,

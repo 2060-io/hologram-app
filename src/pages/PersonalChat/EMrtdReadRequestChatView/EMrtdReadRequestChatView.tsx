@@ -53,7 +53,8 @@ const EMrtdReadRequestChatView = (props: Props) => {
     let mrzInfo = props.metadata?.mrzInfo ? (JSON.parse(props.metadata.mrzInfo) as MrzInfo) : undefined
     log(`Scan pressed. MRZ info: ${JSON.stringify(mrzInfo)}`)
     if (!mrzInfo) {
-      toast({ type: 'error', message: 'Cannot find MRZ info' })
+      dismissPopup()
+      toast({ type: 'error', message: t('chat.eMRTDNoMrzInfo'), duration: 5000 })
       return
     }
     try {
@@ -124,7 +125,7 @@ const EMrtdReadRequestChatView = (props: Props) => {
         <Header theme={theme} title={t('chat.eMRTDRequest')} leftIconName="id" />
         <View style={styles.subContainer}>
           <Trans
-            i18nKey={t('chat.eMRTDScanChatInst')}
+            i18nKey="chat.eMRTDScanChatInst"
             typography="EuclidCircularA-Regular"
             style={styles.instructions}
             parent={Text}

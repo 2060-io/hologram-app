@@ -32,6 +32,7 @@ import id from './Id'
 import image from './Image'
 import incomingCall from './IncomingCall'
 import info from './Info'
+import kid from './Kid'
 import leftArrow from './LeftArrow'
 import lightCredentialCardSkeleton from './LightCredentialCardSkeleton'
 import link from './Link'
@@ -166,4 +167,5 @@ export default {
   NFC,
   NFCGroup,
   incomingCall,
+  kid,
 }

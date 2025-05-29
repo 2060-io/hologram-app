@@ -15,9 +15,10 @@ import PersonalChatStackNavigator from './PersonalChatStackNavigator'
 import deepLinking from './deepLinking'
 import getStyles from './styles'
 
-import { useIsForeground } from '@2060/hooks'
+import { useAppState, useNetwork } from '@2060/hooks'
 import { manageBackgroundChatEntryChanges } from '@2060/hooks/agent/chat'
 import { manageConnectionStateChangedEvent } from '@2060/hooks/agent/connections/manageConnectionStateChangedEvent'
+import { useMessagePickup } from '@2060/hooks/agent/useMessagePickup'
 import { useConfig } from '@2060/hooks/providers/ConfigProvider'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
 import { useScreenLock } from '@2060/hooks/providers/ScreenLockProvider'
@@ -43,6 +44,10 @@ import {
   DidcommPresentationRequest,
   OpenIdPresentationRequest,
   CredentialPresented,
+  ForwardConnection,
+  PresentCredential,
+  Presentation,
+  ParentalControl,
 } from '@2060/pages'
 import { MobileAgent } from '@2060/services/agent'
 import { AppTheme, getGlobalStyles } from '@2060/styles'
@@ -57,13 +62,21 @@ type NavigationProps = {
 
 const Navigation = ({ isSignedUp, agent, theme }: NavigationProps) => {
   const { t } = useTranslation()
-  const isForeground = useIsForeground()
+  const { isAppActive } = useAppState()
   const { realm } = useLocalRealm()
   const styles = getStyles(theme)
   const globalStyles = getGlobalStyles(theme)
   const { isDeveloperMode } = useConfig()
   const { isScreenLockForceDisabled } = useScreenLock()
   const InitialComponent = isSignedUp ? HomeMain : isDeveloperMode ? SignUpMain : ProfileCreation
+
+  const { assertConnectedNetwork } = useNetwork()
+  const isNetworkConnected = assertConnectedNetwork()
+
+  useMessagePickup({
+    isEnabled: isSignedUp && isNetworkConnected,
+    agent,
+  })
 
   useEffect(() => {
     const provider = appCheck().newReactNativeFirebaseAppCheckProvider()
@@ -105,7 +118,7 @@ const Navigation = ({ isSignedUp, agent, theme }: NavigationProps) => {
       )
       const { addConnectionChangeListener, removeConnectionChangeListener } =
         manageConnectionStateChangedEvent(agent)
-      if (!isForeground && !isScreenLockForceDisabled) {
+      if (!isAppActive && !isScreenLockForceDisabled) {
         log('App in background ... registering to events')
         addChatEntryChangeListener()
         addConnectionChangeListener()
@@ -116,17 +129,17 @@ const Navigation = ({ isSignedUp, agent, theme }: NavigationProps) => {
         }
       }
     }
-  }, [agent, realm, isForeground, isScreenLockForceDisabled])
+  }, [agent, realm, isAppActive, isScreenLockForceDisabled])
 
   return (
     <NavigationContainer linking={deepLinking} theme={theme.isDarkMode ? DarkTheme : DefaultTheme}>
       <View style={styles.container}>
         <Stack.Navigator
-          id="stack_navigator_main"
+          key="stack_navigator_main"
           screenOptions={({ route }) => ({
             cardStyle: styles.cardStyle,
             headerStyle: globalStyles.headerStyle,
-            headerBackTitleVisible: false,
+            headerBackTitle: '',
             headerBackAllowFontScaling: true,
             headerTitleAlign: 'center',
             headerTitle: () => <HeaderTitle title={t(`navigation.${route.name}`)} theme={theme} />,
@@ -166,6 +179,10 @@ const Navigation = ({ isSignedUp, agent, theme }: NavigationProps) => {
           <Stack.Screen name="ChangeBackupPassword" component={ChangeBackupPassword} />
           <Stack.Screen name="CredentialDetails" component={CredentialDetails} />
           <Stack.Screen name="CredentialPresented" component={CredentialPresented} />
+          <Stack.Screen name="ForwardConnection" component={ForwardConnection} />
+          <Stack.Screen name="PresentCredential" component={PresentCredential} />
+          <Stack.Screen name="Presentation" component={Presentation} />
+          <Stack.Screen name="ParentalControl" component={ParentalControl} />
         </Stack.Navigator>
       </View>
     </NavigationContainer>

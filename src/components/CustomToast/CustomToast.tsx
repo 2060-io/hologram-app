@@ -5,13 +5,11 @@ import styles from './styles'
 
 import { SvgIcon, Text } from '@2060/components/common'
 import { SHOW_TOAST_MESSAGE, COLORS } from '@2060/constants/toast'
-import { useStatusBarHeight } from '@2060/hooks'
 import { ToastOptions } from '@2060/utils/toast'
 
 const CustomToast = () => {
   const [message, setMessage] = useState<ToastOptions | null>(null)
   const [timeOutDuration, setTimeOutDuration] = useState(2000)
-  const barHeight = useStatusBarHeight()
   const timeOutRef = useRef<ReturnType<typeof setInterval>>()
   const animatedOpacity = useRef(new Animated.Value(0)).current
   const typeMessage = message?.type ?? 'info'
@@ -19,8 +17,8 @@ const CustomToast = () => {
   const { backgroundColor, color, borderColor } = COLORS[typeMessage]
   const stylePosition: Record<string, StyleProp<ViewStyle>> = {
     center: { bottom: '50%' },
-    bottom: { bottom: barHeight + 45 },
-    top: { top: barHeight },
+    bottom: { bottom: 45 },
+    top: { top: 0 },
   }
 
   const onNewToast = (data: ToastOptions) => {
