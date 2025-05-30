@@ -1,5 +1,4 @@
 import { Platform } from 'react-native'
-import { DocumentDirectoryPath } from 'react-native-fs'
 
 import { hexTransparency, lightenDarken } from '../utils/colorUtils'
 
@@ -23,4 +22,3 @@ export const isAndroid13OrHigher = () => {
 }
 
 export const KID_BIRTHDATE_DATE_FORMAT = 'DD-MM-YYYY'
-export const CONFIG_FILE_PATH = `${DocumentDirectoryPath}/config.json`
