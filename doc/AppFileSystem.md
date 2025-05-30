@@ -51,7 +51,7 @@ Everything under "keys" are encrypted values.
 
 - realm-main: Encrypted string value that is used to open Realm
 
-- backup: Encrypted string value for backup password that user set when builds backup and need to provide when restores this wallet backup
+- backup: Encrypted string value for backup password that user set when builds backup and needs to provide when restores this wallet backup
 
 - parental-control-pin: Encrypted string value that indicates the PIN that user set to enable parental control and its necessary to provide if want to disable parental control or change kid birthdate
 
@@ -63,17 +63,20 @@ Everything under "keys" are encrypted values.
 
 ### What about media content?
 
-All media content (note voices, images and audios) are stored into app package context. It means these files lives in a secure and sandboxed place where only app code can access to those files. Both Android and iOS have implemented security rules so that we or another apps have no access to those files outside app context. For media content We have main directory called "media" where lives all media content. But also we have a subdirectory inside it called "previews" in this subdirectory we place all previews (thumbnails videos and images in lower resolution). Purpose of this "previews" is to displayed them in chat app to avoid render in chat list large media items. Only when user press image is going to see the image in full screen and the best resolution. To sump up per every image and video in "media" there is its corresponding image inside "previews" subdirectory
+All media content (note voices, images and audios) are stored into app package context. It means these files lives in a secure and sandboxed place where only app code can access to those files. Both Android and iOS have implemented security rules so that we or another apps have no access to those files outside app context. For media content We have main directory called "media" where lives all media content. But also we have a subdirectory inside it called "previews" in this subdirectory we place all previews (thumbnails videos and images in lower resolution). Purpose of this "previews" is to displayed them in chat screen to avoid to render large media items in screen (Performance reason). Only when user press image is going to see the image in full screen and with the best resolution. To sump up per every image and video in "media" there is its corresponding image inside "previews" subdirectory
 
 ### Precise location of all these files:
 
 All app stored content except for Async Storage (it uses a different locations) is stored in "DocumentDirectoryPath" where DocumentDirectoryPath location varies between Android and iOS.
 
 For iOS DocumentDirectoryPath in app dev release resolves to:
+
 /var/mobile/Containers/Data/Application/io.2060.mobileagent.dev/Documents
 
 For Android DocumentDirectoryPath in app dev release resolves to:
-/data/user/0/io.twentysixty.mobileagent.dev/files or
+
+/data/user/0/io.twentysixty.mobileagent.dev/files
+or
 /data/data/io.twentysixty.mobileagent.dev/files
 
 Let's remember those routes are not accessible without root unless via the app itself
@@ -85,10 +88,10 @@ Let's see how looks a files structure in Android
 Explanation of structure:
 
 1. **io.twentysixty.mobileagent** directory: Refers to app it self main container
-2. **/files** directory: Refers to created or assigned root directory for DocumentDirectoryPath in android all values that uses that DocumentDirectoryPath are going to be located inside it
-3. **./files/media** directory: Refers to directory where all media content are going to live. Inside it there is a subdirectory called "previews" where you know thumbnails for videos and images in lower resolution are stores
+2. **/files** directory: Refers to created or assigned root directory for DocumentDirectoryPath in android. All values that uses that DocumentDirectoryPath are going to be located inside it
+3. **./files/media** directory: Refers to directory where all media content lives. Inside it there is a subdirectory called "previews" where you know thumbnails for videos and images in lower resolution are stores
 4. **./files/wallet** directory: Refers to DB files are stored. Realm and afj sqlite wallet files
-5. **./files/config.json**: Refers to explained config file above
+5. **./files/config.json**: Refers to explained .json config file above
 
 ### Which of all this information is saved when user builds a wallet backup?
 
