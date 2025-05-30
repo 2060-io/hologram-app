@@ -16,7 +16,7 @@ Description: As you can see in image there are 9 Chats. Technically speaking the
 
 ![](./images/ChatEntryExample.jpg)
 
-UploadTask: This entity is responsible for storage an upload task and its chunks for each media item (note voice, image or video) to be upload to [2060 Data Store API](https://github.com/2060-io/2060-datastore) and then share it using DIDComm [Media Sharing](https://didcomm.org/media-sharing/1.0/) protocol. Main purpose of this entity is to storage current media item upload status and allow to app to resume uploading file if something is wrong (internet connection is lost, user closes app)
+**UploadTask**: This entity is responsible for storage an upload task and its chunks for each media item (note voice, image or video) to be upload to [2060 Data Store API](https://github.com/2060-io/2060-datastore) and then share it using DIDComm [Media Sharing](https://didcomm.org/media-sharing/1.0/) protocol. Main purpose of this entity is to storage current media item upload status and allow to app to resume uploading file if something is wrong (internet connection is lost, user closes app)
 
 ### What do We store with Async Storage?
 
