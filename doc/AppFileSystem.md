@@ -9,6 +9,7 @@ For local databases We use [Realm](https://github.com/realm/realm-js). In this m
 **ChatThread**: This entity is responsible for storage every single chat thread. A new ChatThread is created when user is connected to a new service or p2p connection. Let's see it better with an example.
 
 ![](./images/ChatThreadExample.jpg)
+
 Description: As you can see in image there are 9 Chats. Technically speaking they are 9 ChatEntry objects
 
 **ChatEntry**: This entity is responsible for storage every single item in chats. In other words, it represents a single chat message, no matter what type of message is. With the exception of chat system message (First and main message in Chat screen) whose value is calculated on the fly. Let's see it better with an example.
