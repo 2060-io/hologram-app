@@ -89,7 +89,7 @@ Explanation of structure:
 
 1. **io.twentysixty.mobileagent** directory: Refers to app it self main container
 2. **/files** directory: Refers to created or assigned root directory for DocumentDirectoryPath in android. All values that uses that DocumentDirectoryPath are going to be located inside it
-3. **./files/media** directory: Refers to directory where all media content lives. Inside it there is a subdirectory called "previews" where you know thumbnails for videos and images in lower resolution are stores
+3. **./files/media** directory: Refers to directory where all media content lives. Inside it there is a subdirectory called "previews" where you know thumbnails for videos and images in lower resolution are stored
 4. **./files/wallet** directory: Refers to DB files are stored. Realm and afj sqlite wallet files
 5. **./files/config.json**: Refers to explained .json config file above
 
