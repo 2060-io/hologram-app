@@ -13,7 +13,7 @@ interface BackupInfo {
 
 export interface BackupState {
   progress: number
-  isUploadingBackup: boolean
+  isBuildingBackup: boolean
   error: string
 }
 

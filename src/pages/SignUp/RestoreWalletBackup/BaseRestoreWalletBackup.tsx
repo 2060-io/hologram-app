@@ -93,7 +93,7 @@ const BaseRestoreWalletBackup = ({
                       withSuggestionMessage={false}
                       selectAccount={selectAccount}
                       selectedGoogleAccount={selectedGoogleAccount}
-                      isUploadingBackup={false}
+                      isBuildingBackup={false}
                     />
                     {!!backupInfoHandler?.backup && isCloudAvailable && (
                       <>

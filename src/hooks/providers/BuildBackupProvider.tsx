@@ -50,7 +50,7 @@ const BuildBackupContext = createContext<BuildBackupInterface | undefined>(undef
 
 export const backupStateInitialValues: BackupState = {
   progress: 0,
-  isUploadingBackup: false,
+  isBuildingBackup: false,
   error: '',
 }
 
@@ -132,7 +132,7 @@ export const BuildBackupProvider: React.FC<PropsWithChildren> = ({ children }) =
     toast({ type: 'success', message: t('settings.buildBackupSuccessfully') })
     // Timeout is set to user sees in screen that backup progress reaches 100% done before update state
     setTimeout(() => {
-      setBackupState({ ...backupStateInitialValues, isUploadingBackup: false })
+      setBackupState({ ...backupStateInitialValues, isBuildingBackup: false })
     }, 1000)
     await deleteBackupDirectory()
   }

@@ -66,10 +66,10 @@ const BaseWalletBackup = ({
               backupInfoHandler={backupInfoHandler}
               selectAccount={selectAccount}
               selectedGoogleAccount={selectedGoogleAccount}
-              isUploadingBackup={backupState.isUploadingBackup}
+              isBuildingBackup={backupState.isBuildingBackup}
             />
             {backupPassword ? (
-              backupState.isUploadingBackup || backupState.error ? (
+              backupState.isBuildingBackup || backupState.error ? (
                 <Building
                   backupState={backupState}
                   startBackupProcess={startBackupProcess}

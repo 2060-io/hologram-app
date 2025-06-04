@@ -68,7 +68,7 @@ export const useBuildBackup = ({ uploadBackup, setBackupState }: Props) => {
   const abortRetryBackup = () => setBackupState({ ...backupStateInitialValues })
 
   const startBackupProcess = async () => {
-    setBackupState({ ...backupStateInitialValues, isUploadingBackup: true })
+    setBackupState({ ...backupStateInitialValues, isBuildingBackup: true })
     await BackupUtils.deleteBackupDirectory()
     await BackupUtils.createBackupDirectory()
     const backupKey = (await BackupUtils.getBackupKey()) ?? ''
@@ -83,7 +83,7 @@ export const useBuildBackup = ({ uploadBackup, setBackupState }: Props) => {
       setBackupState(prev => ({
         ...backupStateInitialValues,
         error: prev.error,
-        isUploadingBackup: false,
+        isBuildingBackup: false,
       }))
     }
   }

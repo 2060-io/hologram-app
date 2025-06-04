@@ -18,7 +18,7 @@ const Building = ({ backupState, startBackupProcess, abortRetryBackup }: Props) 
   const theme = useTheme()
   const styles = getStyles(theme)
   const { t } = useTranslation()
-  const progressColor = backupState.isUploadingBackup ? theme.colors.green : theme.colors.secondaryGrey
+  const progressColor = backupState.isBuildingBackup ? theme.colors.green : theme.colors.secondaryGrey
   const color = theme.colors.secondaryGrey
   return (
     <>

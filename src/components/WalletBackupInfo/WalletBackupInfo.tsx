@@ -38,7 +38,7 @@ const WalletBackupInfo = ({
   withSuggestionMessage = true,
   selectAccount = () => {},
   selectedGoogleAccount,
-  isUploadingBackup,
+  isBuildingBackup,
 }: WalletBackupInfoProps) => {
   const { t } = useTranslation()
   const theme = useTheme()
@@ -47,7 +47,7 @@ const WalletBackupInfo = ({
   const renderGoogleSelectedAccount = () => {
     if (IS_IOS || !selectedGoogleAccount) return null
     return (
-      <TouchableOpacity onPress={selectAccount} disabled={isUploadingBackup}>
+      <TouchableOpacity onPress={selectAccount} disabled={isBuildingBackup}>
         <Text typography="EuclidCircularA-Medium" style={[styles.smallText, styles.suggestionText]}>
           {t('settings.googleAccount')}
         </Text>
