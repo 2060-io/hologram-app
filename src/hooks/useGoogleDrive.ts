@@ -7,7 +7,7 @@ import {
   nativeGDAuthorize,
 } from 'react-native-local-native-modules'
 
-import { restoreProgressInitialValues, BackupHandler, RestoreProgress } from './backup'
+import { restoreProgressInitialValues, BackupInfoHandler, RestoreProgress } from './backup'
 import { useGlobalBuildBackup } from './providers/BuildBackupProvider'
 
 import {
@@ -15,7 +15,7 @@ import {
   getStorageData,
   setStorageData,
 } from '@2060/services/localStorage'
-import { logError } from '@2060/utils'
+import { log, logError } from '@2060/utils'
 import { BACKUP_NAME, BACKUP_ZIP_FILE_PATH } from '@2060/utils/walletBackUpUtils'
 
 global.Buffer ??= require('buffer').Buffer
@@ -27,7 +27,7 @@ type FilesProps = {
 export const useGoogleDrive = () => {
   const [googleDriveConnection, setGoogleDriveConnection] = useState<null | GDrive>(null)
   const [isCloudAvailable, setIsCloudAvailable] = useState(false)
-  const [backupHandler, setBackupHandler] = useState<BackupHandler>({ isFetching: false })
+  const [backupInfoHandler, setBackupInfoHandler] = useState<BackupInfoHandler>({ isFetching: false })
   const [selectedGoogleAccount, setSelectedGoogleAccount] = useState<string>()
   const { globalUploadFileToGoogleDrive } = useGlobalBuildBackup()
 
@@ -83,30 +83,30 @@ export const useGoogleDrive = () => {
   }
 
   const existsBackup = async () => {
-    setBackupHandler({ isFetching: true })
+    setBackupInfoHandler({ isFetching: true })
     try {
       const { files } = await googleDriveConnection?.files.list({
         q: new ListQueryBuilder().e('name', BACKUP_NAME).and().in('appDataFolder', 'parents'),
         spaces: 'appDataFolder',
       })
       const response = { exists: !!files?.length, backup: files?.[0] }
-      if (!response.exists) setBackupHandler({ isFetching: false })
+      if (!response.exists) setBackupInfoHandler({ isFetching: false })
       return response
     } catch (error) {
-      setBackupHandler({ isFetching: false, error: true })
+      setBackupInfoHandler({ isFetching: false, error: true })
       logError('Error checking if file exists in Google Drive', JSON.stringify(error))
       return { exists: false, backup: undefined }
     }
   }
 
   const getBackupInfo = async (fileId: string) => {
-    setBackupHandler({ isFetching: true })
+    setBackupInfoHandler({ isFetching: true })
     try {
       const info = await googleDriveConnection?.files.getMetadata(fileId, {
         fields: 'id, name, size, modifiedTime',
         spaces: ['appDataFolder'],
       })
-      setBackupHandler({
+      setBackupInfoHandler({
         isFetching: false,
         backup: {
           name: info.name,
@@ -116,7 +116,7 @@ export const useGoogleDrive = () => {
         },
       })
     } catch (error) {
-      setBackupHandler({ isFetching: false, error: true })
+      setBackupInfoHandler({ isFetching: false, error: true })
       logError('Error getting back up info', JSON.stringify(error))
     }
   }
@@ -159,7 +159,7 @@ export const useGoogleDrive = () => {
     (setRestoreProgress: React.Dispatch<React.SetStateAction<RestoreProgress>>) => async () => {
       try {
         const { promise } = downloadFile({
-          fromUrl: backupHandler?.backup?.downloadUrl ?? '',
+          fromUrl: backupInfoHandler?.backup?.downloadUrl ?? '',
           progressInterval: 5000,
           headers: { Authorization: `Bearer ${googleDriveConnection?.accessToken}` },
           toFile: BACKUP_ZIP_FILE_PATH,
@@ -181,7 +181,7 @@ export const useGoogleDrive = () => {
 
   return {
     isCloudAvailable,
-    backupHandler,
+    backupInfoHandler,
     uploadFileToGoogleDrive,
     downloadBackup,
     selectAccount,

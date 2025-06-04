@@ -1,4 +1,4 @@
-export interface BackupHandler {
+export interface BackupInfoHandler {
   isFetching: boolean
   error?: boolean
   backup?: BackupInfo

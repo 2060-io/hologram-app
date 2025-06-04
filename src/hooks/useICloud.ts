@@ -15,7 +15,7 @@ import {
 
 import { BACKUP_NAME, BACKUP_ZIP_FILE_PATH, existsBackupFile } from '../utils/walletBackUpUtils'
 
-import { BackupHandler, RestoreProgress, restoreProgressInitialValues } from './backup'
+import { BackupInfoHandler, RestoreProgress, restoreProgressInitialValues } from './backup'
 import { ICloudBackupInfo, useGlobalBuildBackup } from './providers/BuildBackupProvider'
 import { useAppState } from './useAppState'
 
@@ -26,7 +26,7 @@ export const useICloud = () => {
   const iCloudBackupFolderPath = PathUtils.join(defaultICloudContainerPath ?? '', 'Documents')
   const backupICloudPath = `${iCloudBackupFolderPath}/${BACKUP_NAME}`
   const [isCloudAvailable, setIsCloudAvailable] = useState(false)
-  const [backupHandler, setBackupHandler] = useState<BackupHandler>({ isFetching: false })
+  const [backupInfoHandler, setBackupInfoHandler] = useState<BackupInfoHandler>({ isFetching: false })
   const { isAppActive } = useAppState()
   const { globalUploadFileToIcloud } = useGlobalBuildBackup()
 
@@ -57,7 +57,7 @@ export const useICloud = () => {
     const checkBackup = async () => {
       await getBackupInfo()
     }
-    if (isCloudAvailable && !backupHandler.backup) checkBackup()
+    if (isCloudAvailable && !backupInfoHandler.backup) checkBackup()
   }, [isCloudAvailable, isAppActive])
 
   const existsBackup = async (): Promise<boolean> => {
@@ -66,10 +66,10 @@ export const useICloud = () => {
   }
 
   const getBackupInfo = async (): Promise<ICloudBackupInfo> => {
-    setBackupHandler({ isFetching: true })
+    setBackupInfoHandler({ isFetching: true })
     try {
       const info = await query(backupICloudPath)
-      setBackupHandler({
+      setBackupInfoHandler({
         isFetching: false,
         backup: info.isInICloud
           ? {
@@ -84,7 +84,7 @@ export const useICloud = () => {
         size: info.fileSize,
       }
     } catch (error) {
-      setBackupHandler({ isFetching: false, error: true })
+      setBackupInfoHandler({ isFetching: false, error: true })
       logError('Error getting file info', error)
       return { exists: false }
     }
@@ -126,7 +126,7 @@ export const useICloud = () => {
 
   return {
     isCloudAvailable,
-    backupHandler,
+    backupInfoHandler,
     uploadFileToIcloud,
     downloadBackup,
   }

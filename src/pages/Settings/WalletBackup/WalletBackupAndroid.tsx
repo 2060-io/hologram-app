@@ -7,14 +7,19 @@ import { useGoogleDrive } from '@2060/hooks'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const WalletBackupAndroid = (props: WalletBackupPageProps) => {
-  const { isCloudAvailable, backupHandler, uploadFileToGoogleDrive, selectAccount, selectedGoogleAccount } =
-    useGoogleDrive()
+  const {
+    isCloudAvailable,
+    backupInfoHandler,
+    uploadFileToGoogleDrive,
+    selectAccount,
+    selectedGoogleAccount,
+  } = useGoogleDrive()
 
   return (
     <BaseWalletBackup
       isCloudAvailable={isCloudAvailable}
       makeBackup={uploadFileToGoogleDrive}
-      backupHandler={backupHandler}
+      backupInfoHandler={backupInfoHandler}
       selectAccount={selectAccount}
       selectedGoogleAccount={selectedGoogleAccount}
     />

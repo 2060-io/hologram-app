@@ -18,7 +18,7 @@ import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 const BaseWalletBackup = ({
   isCloudAvailable,
   makeBackup,
-  backupHandler,
+  backupInfoHandler,
   selectAccount = () => {},
   selectedGoogleAccount,
 }: WalletBackupProps) => {
@@ -63,7 +63,7 @@ const BaseWalletBackup = ({
         <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
           <View style={styles.subContainer}>
             <WalletBackupInfo
-              backupHandler={backupHandler}
+              backupInfoHandler={backupInfoHandler}
               selectAccount={selectAccount}
               selectedGoogleAccount={selectedGoogleAccount}
             />
@@ -87,8 +87,8 @@ const BaseWalletBackup = ({
                 />
               )
             ) : (
-              !backupHandler?.error &&
-              !backupHandler?.isFetching && (
+              !backupInfoHandler?.error &&
+              !backupInfoHandler?.isFetching && (
                 <PasswordDoesNotExists
                   styles={{
                     container: [styles.card, styles.passwordDoesNotExistsContainer],

@@ -1,10 +1,10 @@
-import { BackupHandler, RestoreProgress } from '@2060/hooks/backup'
+import { BackupInfoHandler, RestoreProgress } from '@2060/hooks/backup'
 
 export interface RestoreProgressProps extends RestoreProgress {}
 
 export type BaseRestoreWalletBackupProps = {
   isCloudAvailable: boolean
-  backupHandler: BackupHandler | undefined
+  backupInfoHandler: BackupInfoHandler | undefined
   downloadBackup: () => Promise<boolean | unknown>
   restoreProgress: RestoreProgressProps
   setRestoreProgress: React.Dispatch<React.SetStateAction<RestoreProgressProps>>

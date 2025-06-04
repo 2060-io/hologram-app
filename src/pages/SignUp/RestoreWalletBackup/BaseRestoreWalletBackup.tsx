@@ -34,7 +34,7 @@ const Restore = ({
 
 const BaseRestoreWalletBackup = ({
   isCloudAvailable,
-  backupHandler,
+  backupInfoHandler,
   downloadBackup,
   restoreProgress,
   setRestoreProgress,
@@ -89,12 +89,12 @@ const BaseRestoreWalletBackup = ({
                 onInitialState={() => (
                   <View>
                     <WalletBackupInfo
-                      backupHandler={backupHandler}
+                      backupInfoHandler={backupInfoHandler}
                       withSuggestionMessage={false}
                       selectAccount={selectAccount}
                       selectedGoogleAccount={selectedGoogleAccount}
                     />
-                    {!!backupHandler?.backup && isCloudAvailable && (
+                    {!!backupInfoHandler?.backup && isCloudAvailable && (
                       <>
                         <Text
                           style={[styles.title, styles.recoveryPassText]}

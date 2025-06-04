@@ -7,14 +7,14 @@ import { useGoogleDrive } from '@2060/hooks'
 import { restoreProgressInitialValues } from '@2060/hooks/backup'
 
 const RestoreWalletBackupAndroid = () => {
-  const { isCloudAvailable, backupHandler, downloadBackup, selectAccount, selectedGoogleAccount } =
+  const { isCloudAvailable, backupInfoHandler, downloadBackup, selectAccount, selectedGoogleAccount } =
     useGoogleDrive()
   const [restoreProgress, setRestoreProgress] = useState<RestoreProgressProps>(restoreProgressInitialValues)
 
   return (
     <BaseRestoreWalletBackup
       isCloudAvailable={isCloudAvailable}
-      backupHandler={backupHandler}
+      backupInfoHandler={backupInfoHandler}
       downloadBackup={downloadBackup(setRestoreProgress)}
       restoreProgress={restoreProgress}
       setRestoreProgress={setRestoreProgress}
