@@ -8,6 +8,7 @@ const styles = StyleSheet.create({
   closeIcon: {
     top: 50,
     left: 20,
+    zIndex: 1,
   },
   image: {
     flex: 1,
