@@ -9,7 +9,7 @@ export interface WalletBackupPageProps extends StackScreenProps<NavigationStackP
 
 export interface WalletBackupProps {
   isCloudAvailable: boolean
-  makeBackup: (fileToUploadLocation: string) => Promise<void>
+  uploadBackupToCloud: (fileToUploadLocation: string) => Promise<void>
   backupInfoHandler?: BackupInfoHandler
   selectAccount?: () => void
   selectedGoogleAccount?: string

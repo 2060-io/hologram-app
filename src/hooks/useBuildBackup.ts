@@ -21,11 +21,11 @@ import { writeFile } from '@2060/utils/RNFS'
 import * as BackupUtils from '@2060/utils/walletBackUpUtils'
 
 type Props = {
-  uploadBackup: (fileToUploadLocation: string) => Promise<void>
+  uploadBackupToCloud: (fileToUploadLocation: string) => Promise<void>
   setBackupState: React.Dispatch<React.SetStateAction<BackupState>>
 }
 
-export const useBuildBackup = ({ uploadBackup, setBackupState }: Props) => {
+export const useBuildBackup = ({ uploadBackupToCloud, setBackupState }: Props) => {
   const [includeVideos, setIncludeVideos] = useState<boolean>(false)
   const [backupPassword, setBackupPassword] = useState<string | undefined>('')
   const [showConfirmLeaveScreen, setShowConfirmLeaveScreen] = useState(false)
@@ -78,7 +78,7 @@ export const useBuildBackup = ({ uploadBackup, setBackupState }: Props) => {
 
     const zipPath = await BackupUtils.zipBackup(includeVideos)
     if (zipPath) {
-      uploadBackup(zipPath)
+      uploadBackupToCloud(zipPath)
     } else {
       setBackupState(prev => ({
         ...backupStateInitialValues,

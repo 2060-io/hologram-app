@@ -18,7 +18,7 @@ const WalletBackupAndroid = (props: WalletBackupPageProps) => {
   return (
     <BaseWalletBackup
       isCloudAvailable={isCloudAvailable}
-      makeBackup={uploadFileToGoogleDrive}
+      uploadBackupToCloud={uploadFileToGoogleDrive}
       backupInfoHandler={backupInfoHandler}
       selectAccount={selectAccount}
       selectedGoogleAccount={selectedGoogleAccount}

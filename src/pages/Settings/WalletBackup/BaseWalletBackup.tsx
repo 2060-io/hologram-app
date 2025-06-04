@@ -17,7 +17,7 @@ import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 
 const BaseWalletBackup = ({
   isCloudAvailable,
-  makeBackup,
+  uploadBackupToCloud,
   backupInfoHandler,
   selectAccount = () => {},
   selectedGoogleAccount,
@@ -36,10 +36,7 @@ const BaseWalletBackup = ({
     showConfirmLeaveScreen,
     closeConfirmLeaveScreen,
     leaveScreen,
-  } = useBuildBackup({
-    uploadBackup: makeBackup,
-    setBackupState,
-  })
+  } = useBuildBackup({ uploadBackupToCloud, setBackupState })
 
   const options = [
     {

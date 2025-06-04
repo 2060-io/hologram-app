@@ -12,7 +12,7 @@ const WalletBackupiOS = (props: WalletBackupPageProps) => {
   return (
     <BaseWalletBackup
       isCloudAvailable={isCloudAvailable}
-      makeBackup={uploadFileToIcloud}
+      uploadBackupToCloud={uploadFileToIcloud}
       backupInfoHandler={backupInfoHandler}
     />
   )
