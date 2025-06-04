@@ -14,13 +14,15 @@ import {
   MediaDownloadState,
   SystemMessageMetadata,
   UploadTask,
+  VPResponsePresentedCredential,
 } from '@2060/model'
 import { InvitationState } from '@2060/model/InvitationState'
+import { CredentialMainInfo } from '@2060/services/agent/display'
 import { createAndStoreEncryptedKey, retrieveEncryptedKey, KeyChainService } from '@2060/services/keys'
 import { logError } from '@2060/utils'
 import { deleteFile, walletDirectoryPath } from '@2060/utils/RNFS'
 
-export const CURRENT_REALM_SCHEMA_VERSION = 16
+export const CURRENT_REALM_SCHEMA_VERSION = 17
 
 interface Props {
   children?: React.ReactNode
@@ -200,6 +202,30 @@ export const RealmProvider: React.FC<React.PropsWithChildren<Props>> = ({ childr
           const localFilePath = newChatEntries[i]?.metadata?.localFilePath
           const mediaDownloadState = localFilePath ? MediaDownloadState.Done : MediaDownloadState.Pending
           newChatEntries[i].metadata!.mediaDownloadState = mediaDownloadState
+        }
+      }
+    }
+    if (oldRealm.schemaVersion < 17) {
+      const oldChatEntries = oldRealm.objects<ChatEntry>(
+        oldRealm.schemaVersion >= 9 ? 'ChatEntry' : 'ChatEntryRealmObject',
+      )
+      const newChatEntries = newRealm.objects<ChatEntry>('ChatEntry')
+      for (let i = 0; i < oldChatEntries.length; i++) {
+        if (oldChatEntries[i].type === ChatEntryType.VPResponse) {
+          const presentedCredentialsString = newChatEntries[i]?.metadata?.presentedCredentials as string
+          const presentedCredentials: CredentialMainInfo[] = presentedCredentialsString
+            ? JSON.parse(presentedCredentialsString)
+            : []
+          if (presentedCredentials.length) {
+            const newPresentedCredentialsStruct: VPResponsePresentedCredential[] = []
+            for (const presentedCredential of presentedCredentials) {
+              const newPresentedCredentialStruct: VPResponsePresentedCredential = {
+                mainInfo: { ...presentedCredential },
+              }
+              newPresentedCredentialsStruct.push(newPresentedCredentialStruct)
+            }
+            newChatEntries[i].metadata!.presentedCredentials = JSON.stringify(newPresentedCredentialsStruct)
+          }
         }
       }
     }
