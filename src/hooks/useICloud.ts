@@ -9,31 +9,18 @@ import {
   query,
   unlink,
   createDir,
-  upload,
   download,
   exist,
 } from 'react-native-cloud-store'
 
 import { BACKUP_NAME, BACKUP_ZIP_FILE_PATH, existsBackupFile } from '../utils/walletBackUpUtils'
 
-import {
-  BackupHandler,
-  BackupProgressProps,
-  OnBackupFinish,
-  RestoreProgress,
-  restoreProgressInitialValues,
-} from './backup'
+import { BackupHandler, RestoreProgress, restoreProgressInitialValues } from './backup'
+import { ICloudBackupInfo, useGlobalBuildBackup } from './providers/BuildBackupProvider'
 import { useAppState } from './useAppState'
 
 import { logError } from '@2060/utils'
 import { copyFile } from '@2060/utils/RNFS'
-
-interface ICloudBackupInfo {
-  exists: boolean
-  path?: string
-  size?: number
-  lastModifiedDate?: string
-}
 
 export const useICloud = () => {
   const iCloudBackupFolderPath = PathUtils.join(defaultICloudContainerPath ?? '', 'Documents')
@@ -41,6 +28,7 @@ export const useICloud = () => {
   const [isCloudAvailable, setIsCloudAvailable] = useState(false)
   const [backupHandler, setBackupHandler] = useState<BackupHandler>({ isFetching: false })
   const { isAppActive } = useAppState()
+  const { globalUploadFileToIcloud } = useGlobalBuildBackup()
 
   useEffect(() => {
     const iCloudIdentityChangeEvent = registerICloudIdentityDidChangeEvent()
@@ -102,35 +90,11 @@ export const useICloud = () => {
     }
   }
 
-  const uploadFileToIcloud =
-    (setUploadProgress: React.Dispatch<React.SetStateAction<BackupProgressProps>>) =>
-    async (
-      fileToUploadLocation: string,
-      onBackupUploadSuccess: OnBackupFinish,
-      onBackupUploadFailure: (error: string) => void,
-    ) => {
-      try {
-        if (await existsBackup()) await unlink(backupICloudPath)
-        else createDir(iCloudBackupFolderPath)
-
-        upload(fileToUploadLocation, backupICloudPath, {
-          onProgress(data) {
-            setUploadProgress(prev => ({ ...prev, progress: data?.progress }))
-            if (data?.progress === 100) {
-              onBackupUploadSuccess()
-              // Timeout is set because after finish backup upload process to icloud drive it takes
-              // a while to have metadata of file updated to fetch info of it again
-              setTimeout(() => {
-                getBackupInfo()
-              }, 1000)
-            }
-          },
-        })
-      } catch (error) {
-        onBackupUploadFailure(`${error}`)
-        logError('Error uploading file to iCloud', error)
-      }
-    }
+  const uploadFileToIcloud = async (fileToUploadLocation: string) => {
+    if (await existsBackup()) await unlink(backupICloudPath)
+    else createDir(iCloudBackupFolderPath)
+    globalUploadFileToIcloud({ backupICloudPath, fileToUploadLocation, getBackupInfo })
+  }
 
   const downloadBackup = (setRestoreProgress: React.Dispatch<React.SetStateAction<RestoreProgress>>) => () =>
     new Promise(async resolve => {

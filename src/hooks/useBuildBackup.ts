@@ -5,7 +5,8 @@ import { useEffect, useState } from 'react'
 
 import { version } from '../../package.json'
 
-import { BackupProgressProps, OnBackupFinish } from './backup'
+import { BackupState } from './backup'
+import { backupStateInitialValues } from './providers/BuildBackupProvider'
 
 import { useMobileAgent } from '@2060/hooks/agent/MobileAgentProvider'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
@@ -20,22 +21,11 @@ import { writeFile } from '@2060/utils/RNFS'
 import * as BackupUtils from '@2060/utils/walletBackUpUtils'
 
 type Props = {
-  backupProgressInitialValues: BackupProgressProps
-  uploadBackup: (
-    fileToUploadLocation: string,
-    onBackupUploadSuccess: OnBackupFinish,
-    onBackupUploadFailure: (error: string) => void,
-  ) => Promise<void>
-  uploadProgress: BackupProgressProps
-  setUploadProgress: React.Dispatch<React.SetStateAction<BackupProgressProps>>
+  uploadBackup: (fileToUploadLocation: string) => Promise<void>
+  setBackupState: React.Dispatch<React.SetStateAction<BackupState>>
 }
 
-export const useBuildBackup = ({
-  backupProgressInitialValues,
-  uploadBackup,
-  uploadProgress,
-  setUploadProgress,
-}: Props) => {
+export const useBuildBackup = ({ uploadBackup, setBackupState }: Props) => {
   const [includeVideos, setIncludeVideos] = useState<boolean>(false)
   const [backupPassword, setBackupPassword] = useState<string | undefined>('')
   const [showConfirmLeaveScreen, setShowConfirmLeaveScreen] = useState(false)
@@ -60,19 +50,6 @@ export const useBuildBackup = ({
     isFocused && getStoredBackupPassword()
   }, [isFocused])
 
-  useEffect(
-    () =>
-      navigation.addListener('beforeRemove', e => {
-        const canLeave = !uploadProgress.isUploadingBackup || e.data.action.type === 'GO_BACK'
-        if (canLeave) {
-          return
-        }
-        setShowConfirmLeaveScreen(true)
-        e.preventDefault()
-      }),
-    [navigation, uploadProgress.isUploadingBackup],
-  )
-
   const closeConfirmLeaveScreen = () => setShowConfirmLeaveScreen(false)
 
   const leaveScreen = async () => {
@@ -88,23 +65,10 @@ export const useBuildBackup = ({
     setStorageData(BACKUP_INCLUDES_MEDIA_PERSIST_KEY, !includeVideos)
   }
 
-  const onBackupUploadSuccess = async () => {
-    // Timeout is set to user sees in screen that backup progress reaches 100% done before update state
-    setTimeout(() => {
-      setUploadProgress({ ...backupProgressInitialValues, isUploadingBackup: false })
-    }, 1000)
-    await BackupUtils.deleteBackupDirectory()
-  }
-
-  const onBackupUploadFailure = async (error: string) => {
-    setUploadProgress({ ...backupProgressInitialValues, error })
-    await BackupUtils.deleteBackupDirectory()
-  }
-
-  const abortRetryBackup = () => setUploadProgress({ ...backupProgressInitialValues })
+  const abortRetryBackup = () => setBackupState({ ...backupStateInitialValues })
 
   const startBackupProcess = async () => {
-    setUploadProgress({ ...backupProgressInitialValues, isUploadingBackup: true })
+    setBackupState({ ...backupStateInitialValues, isUploadingBackup: true })
     await BackupUtils.deleteBackupDirectory()
     await BackupUtils.createBackupDirectory()
     const backupKey = (await BackupUtils.getBackupKey()) ?? ''
@@ -114,10 +78,10 @@ export const useBuildBackup = ({
 
     const zipPath = await BackupUtils.zipBackup(includeVideos)
     if (zipPath) {
-      uploadBackup(zipPath, onBackupUploadSuccess, onBackupUploadFailure)
+      uploadBackup(zipPath)
     } else {
-      setUploadProgress(prev => ({
-        ...backupProgressInitialValues,
+      setBackupState(prev => ({
+        ...backupStateInitialValues,
         error: prev.error,
         isUploadingBackup: false,
       }))
@@ -131,7 +95,7 @@ export const useBuildBackup = ({
         path: BackupUtils.AFJ_BACKUP_FILE_PATH,
       })
     } catch (error) {
-      setUploadProgress(prev => ({ ...prev, error: `${error}` }))
+      setBackupState(prev => ({ ...prev, error: `${error}` }))
       logError('Error creating wallet file', error)
     }
   }
@@ -145,7 +109,7 @@ export const useBuildBackup = ({
         schema: [ChatEntry, ChatThread, CacheRecord],
       })
     } catch (error) {
-      setUploadProgress(prev => ({ ...prev, error: `${error}` }))
+      setBackupState(prev => ({ ...prev, error: `${error}` }))
       logError('Error creating realm chats file', error)
     }
   }

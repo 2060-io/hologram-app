@@ -1,28 +1,21 @@
 import { GDrive, ListQueryBuilder } from '@robinbobin/react-native-google-drive-api-wrapper'
-import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { downloadFile, stat } from 'react-native-fs'
 import {
-  nativeReadChunk,
   nativeGDGetAccessToken,
   nativeGDSelectAccount,
   nativeGDAuthorize,
 } from 'react-native-local-native-modules'
 
-import {
-  restoreProgressInitialValues,
-  BackupHandler,
-  OnBackupFinish,
-  BackupProgressProps,
-  RestoreProgress,
-} from './backup'
+import { restoreProgressInitialValues, BackupHandler, RestoreProgress } from './backup'
+import { useGlobalBuildBackup } from './providers/BuildBackupProvider'
 
 import {
   GOOGLE_ACCOUNT_BACKUP_PERSIST_KEY,
   getStorageData,
   setStorageData,
 } from '@2060/services/localStorage'
-import { log, logError } from '@2060/utils'
+import { logError } from '@2060/utils'
 import { BACKUP_NAME, BACKUP_ZIP_FILE_PATH } from '@2060/utils/walletBackUpUtils'
 
 global.Buffer ??= require('buffer').Buffer
@@ -36,6 +29,7 @@ export const useGoogleDrive = () => {
   const [isCloudAvailable, setIsCloudAvailable] = useState(false)
   const [backupHandler, setBackupHandler] = useState<BackupHandler>({ isFetching: false })
   const [selectedGoogleAccount, setSelectedGoogleAccount] = useState<string>()
+  const { globalUploadFileToGoogleDrive } = useGlobalBuildBackup()
 
   useEffect(() => {
     const setup = async () => {
@@ -142,57 +136,24 @@ export const useGoogleDrive = () => {
     }
   }
 
-  const uploadFileToGoogleDrive =
-    (setUploadProgress: React.Dispatch<React.SetStateAction<BackupProgressProps>>) =>
-    async (
-      fileToUploadLocation: string,
-      onBackupUploadSuccess: OnBackupFinish,
-      onBackupUploadFailure: (error: string) => void,
-    ) => {
-      try {
-        const TWO_MB = 256 * 1024 * 4 * 2
-        const UPLOAD_SIZE_PER_CHUNK = TWO_MB
-        const fileToUploadInfo = await stat(fileToUploadLocation)
-        const numberOfChunks = Math.ceil(fileToUploadInfo.size / UPLOAD_SIZE_PER_CHUNK)
-        const uploaderRequest = await googleDriveConnection?.files
-          .newResumableUploader()
-          .setDataType('application/zip')
-          .setShouldUseMultipleRequests(true)
-          .setRequestBody({ name: BACKUP_NAME, parents: ['appDataFolder'] })
-          .execute()
-        uploaderRequest.setContentLength(fileToUploadInfo.size)
-        let start = 0
-        for (let i = 0; i < numberOfChunks; i++) {
-          const chunkSize =
-            i + 1 < numberOfChunks ? UPLOAD_SIZE_PER_CHUNK : fileToUploadInfo.size % UPLOAD_SIZE_PER_CHUNK
-          const fileChunkBase64 = await nativeReadChunk(fileToUploadLocation, start, chunkSize)
-          const base64ToBuffer = Buffer.from(fileChunkBase64)
-          const end = start + base64ToBuffer.length - 1
-          const contentRange = `bytes ${start}-${end}/${fileToUploadInfo.size}`
-          const chunkResponse = await axios({
-            method: 'PUT',
-            url: uploaderRequest.location,
-            headers: { 'Content-Range': contentRange },
-            data: base64ToBuffer,
-          }).catch(() => log('Uploading backup file chunk'))
-          const response = typeof chunkResponse === 'object' ? chunkResponse.data : null
-          const progress = Number(((end / fileToUploadInfo.size) * 100).toFixed())
-          setUploadProgress(prev => ({ ...prev, progress }))
-          if (response) {
-            await initializeGoogleDrive()
-            setTimeout(() => {
-              getBackupInfo(response.id)
-              deletePreviousBackups(response.id)
-            }, 500)
-          }
-          start = end + 1
-        }
-        onBackupUploadSuccess()
-      } catch (error) {
-        onBackupUploadFailure(`${error}`)
-        logError('Error uploading file to google drive', `${error}`)
-      }
-    }
+  const uploadFileToGoogleDrive = async (fileToUploadLocation: string) => {
+    const fileToUploadInfo = await stat(fileToUploadLocation)
+    const uploaderRequest = await googleDriveConnection?.files
+      .newResumableUploader()
+      .setDataType('application/zip')
+      .setShouldUseMultipleRequests(true)
+      .setRequestBody({ name: BACKUP_NAME, parents: ['appDataFolder'] })
+      .execute()
+    uploaderRequest.setContentLength(fileToUploadInfo.size)
+    globalUploadFileToGoogleDrive({
+      fileToUploadSize: fileToUploadInfo.size,
+      fileToUploadLocation,
+      chunkUploadUrl: uploaderRequest.location,
+      getBackupInfo,
+      initializeGoogleDrive,
+      deletePreviousBackups,
+    })
+  }
 
   const downloadBackup =
     (setRestoreProgress: React.Dispatch<React.SetStateAction<RestoreProgress>>) => async () => {

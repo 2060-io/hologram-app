@@ -465,6 +465,7 @@
       "backupNow": "Realizar copia de seguridad ahora",
       "buildBackup": "Realizando copia de seguridad",
       "buildBackupError": "No se pudo realizar la copia de seguridad",
+      "buildBackupSuccessfully": "Copia de seguridad realizada",
       "setPassword": "Crear contraseña",
       "firsCreatePassBeforeBackup": "Para realizar la copia de seguridad, primero crea una contraseña",
       "abortBackupBuild": "¿Cancelar copia de seguridad?",

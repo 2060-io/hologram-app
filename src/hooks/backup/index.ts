@@ -11,7 +11,7 @@ interface BackupInfo {
   downloadUrl?: string
 }
 
-export interface BackupProgressProps {
+export interface BackupState {
   progress: number
   isUploadingBackup: boolean
   error: string

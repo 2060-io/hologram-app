@@ -12,28 +12,20 @@ import { WalletBackupInfo, ModalConfirmAction } from '@2060/components'
 import { Text, Switch, SvgIcon, MainButton } from '@2060/components/common'
 import { IS_ANDROID, IS_IOS } from '@2060/constants'
 import { useBuildBackup } from '@2060/hooks'
-import { BackupProgressProps } from '@2060/hooks/backup'
+import { useGlobalBuildBackup } from '@2060/hooks/providers/BuildBackupProvider'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-
-export const backupProgressInitialValues: BackupProgressProps = {
-  progress: 0,
-  isUploadingBackup: false,
-  error: '',
-}
 
 const BaseWalletBackup = ({
   isCloudAvailable,
   makeBackup,
   backupHandler,
-  uploadProgress,
-  setUploadProgress,
   selectAccount = () => {},
   selectedGoogleAccount,
 }: WalletBackupProps) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
-
+  const { backupState, setBackupState } = useGlobalBuildBackup()
   const {
     backupPassword,
     startBackupProcess,
@@ -45,10 +37,8 @@ const BaseWalletBackup = ({
     closeConfirmLeaveScreen,
     leaveScreen,
   } = useBuildBackup({
-    backupProgressInitialValues,
     uploadBackup: makeBackup,
-    uploadProgress,
-    setUploadProgress,
+    setBackupState,
   })
 
   const options = [
@@ -78,9 +68,9 @@ const BaseWalletBackup = ({
               selectedGoogleAccount={selectedGoogleAccount}
             />
             {backupPassword ? (
-              uploadProgress.isUploadingBackup || uploadProgress.error ? (
+              backupState.isUploadingBackup || backupState.error ? (
                 <Building
-                  uploadProgress={uploadProgress}
+                  backupState={backupState}
                   startBackupProcess={startBackupProcess}
                   abortRetryBackup={abortRetryBackup}
                 />
