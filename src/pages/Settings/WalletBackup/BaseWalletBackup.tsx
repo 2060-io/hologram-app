@@ -8,7 +8,7 @@ import PasswordDoesNotExists from './PasswordDoesNotExists'
 import { WalletBackupProps } from './WalletBackupProps'
 import getStyles from './styles'
 
-import { WalletBackupInfo, ModalConfirmAction } from '@2060/components'
+import { WalletBackupInfo } from '@2060/components'
 import { Text, Switch, SvgIcon, MainButton } from '@2060/components/common'
 import { IS_ANDROID, IS_IOS } from '@2060/constants'
 import { useBuildBackup } from '@2060/hooks'
@@ -33,9 +33,6 @@ const BaseWalletBackup = ({
     goToChangePassword,
     includeVideos,
     onToggleIncludeVideos,
-    showConfirmLeaveScreen,
-    closeConfirmLeaveScreen,
-    leaveScreen,
   } = useBuildBackup({ uploadBackupToCloud, setBackupState })
 
   const options = [
@@ -108,16 +105,6 @@ const BaseWalletBackup = ({
           {IS_ANDROID && <MainButton text={t('general.retry')} onPress={selectAccount} />}
         </View>
       )}
-      <ModalConfirmAction
-        visible={showConfirmLeaveScreen}
-        title={t('settings.abortBackupBuild')}
-        subTitle={''}
-        confirmText={t('settings.yesAbort')}
-        cancelText={'No'}
-        onClose={closeConfirmLeaveScreen}
-        onConfirm={leaveScreen}
-        onCancel={closeConfirmLeaveScreen}
-      />
     </SafeAreaView>
   )
 }

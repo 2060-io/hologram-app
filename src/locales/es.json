@@ -468,7 +468,6 @@
       "buildBackupSuccessfully": "Copia de seguridad realizada",
       "setPassword": "Crear contraseña",
       "firsCreatePassBeforeBackup": "Para realizar la copia de seguridad, primero crea una contraseña",
-      "abortBackupBuild": "¿Cancelar copia de seguridad?",
       "yesAbort": "Sí, cancelar",
       "savePassMessage": "¡Guarda tu contraseña! Si la pierdes, no podrás restaurar tu billetera.",
       "passwordsDontMatch": "Las contraseñas no coinciden. Revisa que coincidan e inténtalo nuevamente",

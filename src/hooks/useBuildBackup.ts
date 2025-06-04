@@ -28,7 +28,6 @@ type Props = {
 export const useBuildBackup = ({ uploadBackupToCloud, setBackupState }: Props) => {
   const [includeVideos, setIncludeVideos] = useState<boolean>(false)
   const [backupPassword, setBackupPassword] = useState<string | undefined>('')
-  const [showConfirmLeaveScreen, setShowConfirmLeaveScreen] = useState(false)
   const { agent } = useMobileAgent()
   const { realm } = useLocalRealm()
   const navigation: StackNavigationProp<ParamListBase> = useNavigation()
@@ -49,14 +48,6 @@ export const useBuildBackup = ({ uploadBackupToCloud, setBackupState }: Props) =
     }
     isFocused && getStoredBackupPassword()
   }, [isFocused])
-
-  const closeConfirmLeaveScreen = () => setShowConfirmLeaveScreen(false)
-
-  const leaveScreen = async () => {
-    closeConfirmLeaveScreen()
-    navigation.goBack()
-    await BackupUtils.deleteBackupDirectory()
-  }
 
   const goToChangePassword = () => navigation.navigate('ChangeBackupPassword')
 
@@ -130,8 +121,5 @@ export const useBuildBackup = ({ uploadBackupToCloud, setBackupState }: Props) =
     goToChangePassword,
     includeVideos,
     onToggleIncludeVideos,
-    showConfirmLeaveScreen,
-    closeConfirmLeaveScreen,
-    leaveScreen,
   }
 }

@@ -468,7 +468,6 @@
       "buildBackupSuccessfully": "Backup completed successfully",
       "setPassword": "Set password",
       "firsCreatePassBeforeBackup": "You must set a password in order to backup your Wallet",
-      "abortBackupBuild": "Abort Backup Build?",
       "yesAbort": "Yes, abort",
       "savePassMessage": "Save your password! If you lose it, you won't be able to restore your wallet.",
       "passwordsDontMatch": "Passwords do not match. Check that they match and try again",
