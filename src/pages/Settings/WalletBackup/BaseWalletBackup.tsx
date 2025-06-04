@@ -66,6 +66,7 @@ const BaseWalletBackup = ({
               backupInfoHandler={backupInfoHandler}
               selectAccount={selectAccount}
               selectedGoogleAccount={selectedGoogleAccount}
+              isUploadingBackup={backupState.isUploadingBackup}
             />
             {backupPassword ? (
               backupState.isUploadingBackup || backupState.error ? (

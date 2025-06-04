@@ -20,6 +20,7 @@ export type WalletBackupInfoProps = {
   withSuggestionMessage?: boolean
   selectAccount?: () => void
   selectedGoogleAccount?: string
+  isUploadingBackup: boolean
 }
 
 export type WalletBackupHandlerProps = {
