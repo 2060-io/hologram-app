@@ -20,7 +20,7 @@ Description: As you can see in image there are 9 Chats. Technically speaking the
 
 ### What do We store with Async Storage?
 
-Async Storage is an asynchronous, unencrypted, persistent, key-value storage system [for React Native](https://github.com/react-native-async-storage/async-storage). Async Storage can only store string data. So, to persist objects and other type of typos We need to use JSON.stringify() when saving the data and JSON.parse() when loading the data. This storage system is mainly used to store no sensitive user or app information. E.g: A key-value to indicates if user has enable developer mode in app or a key-value to indicates if backup must include media files when built. If you want to see full key-values used in app you can go to [src/services/localStorage/index.ts](../src/services/localStorage/index.ts)
+Async Storage is an asynchronous, unencrypted, persistent, key-value storage system [for React Native](https://github.com/react-native-async-storage/async-storage). Async Storage can only store string data. So, to persist objects and other type of typos We need to use JSON.stringify() when saving the data and JSON.parse() when loading the data. This storage system is mainly used to store no sensitive user or app information. (e.g. A key-value to indicates if user has enable developer mode in app or a key-value to indicates if backup must include media files when built). If you want to see full key-values used in app you can go to [src/services/localStorage/index.ts](../src/services/localStorage/index.ts)
 
 ### What do We store in .json config file?
 
@@ -47,19 +47,19 @@ This is nothing more than a .json file stored with the next structure:
 
 Everything under "keys" are encrypted values.
 
-- afj-wallet: Encrypted string value that is used to create and import sqlite db agent wallet
+- `afj-wallet`: Encrypted string value that is used to create and import sqlite db agent wallet
 
-- realm-main: Encrypted string value that is used to open Realm
+- `realm-main`: Encrypted string value that is used to open Realm
 
-- backup: Encrypted string value for backup password that user set when builds backup and needs to provide when restores his wallet
+- `backup`: Encrypted string value for backup password that user set when builds backup and needs to provide when restores his wallet
 
-- parental-control-pin: Encrypted string value that indicates the PIN that user set to enable parental control and its necessary to provide if want to disable parental control or change kid birthdate
+- `parental-control-pin`: Encrypted string value that indicates the PIN that user set to enable parental control and its necessary to provide if want to disable parental control or change kid birthdate
 
 **parental-control**
 
-- enabled: A boolean value in string format that indicates if user has enabled parental control in app
+- `enabled`: A boolean value in string format that indicates if user has enabled parental control in app
 
-- kid-birthday: A date string in format DD-MM-YYYY that indicates kid birthdate set by parent
+- `kid-birthday`: A date string in format DD-MM-YYYY that indicates kid birthdate set by parent
 
 ### What about media content?
 
@@ -88,7 +88,7 @@ Let's see how looks a files structure in Android
 Explanation of structure:
 
 1. **io.twentysixty.mobileagent** directory: Refers to app it self main container
-2. **/files** directory: Refers to created or assigned root directory for DocumentDirectoryPath in android. All values that uses that DocumentDirectoryPath are going to be located inside it
+2. **files** directory: Refers to created or assigned root directory for DocumentDirectoryPath in android. All values that uses that DocumentDirectoryPath are going to be located inside it
 3. **media** directory: Refers to directory where all media content lives. Inside it there is a subdirectory called **previews** where you know thumbnails for videos and images in lower resolution are stored
 4. **wallet** directory: Refers to DB files stored. Realm and afj sqlite wallet files
 5. **config.json**: Refers to explained .json config file above
@@ -117,10 +117,16 @@ Before start, Hologram creates a .zip file and upload it to cloud on each platfo
 
 As you can in image above there is a directory called **.Hologram** in cache directory. It contains a .zip file which will be uploaded to cloud and also contains a directory called **input**. In that vein let's talk about each file that composes this **.zip** file or otherwise **input** directory.
 
-- afj.sqlite: Wallet DB. It contains information such as user credentials
+- `info.json`: Manifest file containing information about the backup itself. It is mostly used to let future versions of Hologram how to treat the backup based on this version (as file structure may differ)
+- `afj.sqlite`: Credo's wallet in SQLite format (might also include sch and wal file, needed for later importing of the DB)
+- `main.realm`: Realm's main database. Which will allow to user to see his created chats and chats history conversations when restores wallet
+- `media.zip`: This zip contains both images, videos, note voices and previews images for videos and images in chats conversations to avoid to user has to re-download them when restores wallet. Compressed in zip format
 
-- info.json: This the manifest file
+#### Manifest file
 
-- main.realm: Realm DB. Which will allow to user to see his created chats and chats history conversations when restores wallet
+`info.json` has been introduced in Hologram 2.3.0. If not present, the backup must be considered to be following the first backup schema (`1`).
 
-- media.zip: This zip contains both images, videos, note voices and previews images for videos and images in chats conversations to avoid to user has to re-download them when restores wallet
+It is a JSON file that currently includes the following fields:
+
+- `schemaVersion`: numeric field indicating the backup schema version. It starts with `1`. Every time something changes within the backup file structure and policy (e.g. options to select or ignore files in backup), it should be increased
+- `appVersion`: string containing app version used to generate this backup (e.g. `2.3.0`)
