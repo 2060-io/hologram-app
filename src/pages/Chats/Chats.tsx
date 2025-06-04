@@ -152,6 +152,7 @@ const Chats = ({ navigation }: Props) => {
       <View style={styles.root}>
         <FlashList
           estimatedItemSize={97}
+          showsVerticalScrollIndicator={false}
           data={threads}
           extraData={[selectedChatIds, theme.isDarkMode]}
           renderItem={({ item: chat }) => {

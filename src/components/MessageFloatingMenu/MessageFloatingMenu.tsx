@@ -112,6 +112,7 @@ const MessageFloatingMenu = ({
       )}
       {selectedMessage && (
         <FloatingChatMessage
+          style={styles.messageContainer}
           currentMessage={selectedMessage}
           agent={agent}
           supportsMessageReceipts={supportsMessageReceipts}
