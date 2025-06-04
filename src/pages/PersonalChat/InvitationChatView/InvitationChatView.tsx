@@ -45,7 +45,8 @@ const InvitationChatView = ({ associatedRecordId: outOfBandId, metadata, role, a
   )
   const { serviceInfo } = useFetchServiceInfo(did)
   const minimumAgeRequired = serviceInfo?.minimumAgeRequired ?? 0
-  const { kidAge, ageRestricted } = useValidateKidAgeRestrictions({ minimumAgeRequired })
+  const serviceStatus = serviceInfo?.status ?? 'notFound'
+  const { kidAge, ageRestricted } = useValidateKidAgeRestrictions({ minimumAgeRequired, serviceStatus })
 
   const goToInvitation = async () => {
     const outOfBandRecord = await agent?.oob.findById(outOfBandId)
@@ -139,9 +140,7 @@ const InvitationChatView = ({ associatedRecordId: outOfBandId, metadata, role, a
       <View style={styles.containerMain}>
         <View style={styles.containerInfo}>
           <View style={styles.containerAvatar}>
-            {isService(did) && (
-              <VerifiedIcon style={styles.containerVerifiedMark} status={serviceInfo?.status ?? 'notFound'} />
-            )}
+            {isService(did) && <VerifiedIcon style={styles.containerVerifiedMark} status={serviceStatus} />}
             <Avatar uri={serviceInfo?.logoUrl ?? imageUrl ?? defaultUserImg} label={label} size="19.16%" />
           </View>
           <Text typography="EuclidCircularA-Medium" style={styles.label}>
