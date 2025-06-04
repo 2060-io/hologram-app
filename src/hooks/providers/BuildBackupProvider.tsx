@@ -67,6 +67,7 @@ export const BuildBackupProvider: React.FC<PropsWithChildren> = ({ children }) =
       upload(fileToUploadLocation, backupICloudPath, {
         onProgress(data) {
           setBackupState(prev => ({ ...prev, progress: data?.progress }))
+          log(`Uploading backup progress ${data?.progress}`)
           if (data?.progress === 100) {
             onBackupUploadSuccess()
             // Timeout is set because after finish backup upload process to icloud drive it takes
@@ -108,7 +109,7 @@ export const BuildBackupProvider: React.FC<PropsWithChildren> = ({ children }) =
           url: chunkUploadUrl,
           headers: { 'Content-Range': contentRange },
           data: base64ToBuffer,
-        }).catch(() => log('Uploading backup file chunk'))
+        }).catch(() => log(`Uploaded backup file chunk ${i + 1} of ${numberOfChunks}`))
         const response = typeof chunkUploadResponse === 'object' ? chunkUploadResponse.data : null
         const progress = Number(((end / fileToUploadSize) * 100).toFixed())
         setBackupState(prev => ({ ...prev, progress }))
