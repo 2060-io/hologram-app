@@ -106,3 +106,21 @@ Not included:
 - .json config file
 
 It means that if user creates a backup and then restore it. Values in Async Storage and json config file are going to start from scratch it means with default app installation values. Only agent wallet db and local realm database are going to be restored
+
+### To conclude let's talk a little bit about Backup created file structure
+
+One of Hologram features is to allow to user to create a backup of his wallet. This functionality helps user to restore his wallet in other device. At the moment, is not a cross-OS backup. In other words, if backup was built in Android only in an Android device is going to be able to restore his wallet, same way occurs for iOS. Not because files has a different structure or varies something on each platform. By the way, technically speaking would be possible. The constraint is that we upload those backups in Google Drive for Android and iCloud for iOS. In that way, when user wants to restore his wallet in Android is going to looks for backup file in Google Drive and in iCloud for iOS.
+
+Before start, Hologram creates a .zip file and upload it to cloud on each platform. This is done to decrease the final file upload size. When Hologram creates this .zip file only keeps it until backup upload to cloud is finished or backup built process fails, after all Hologram deletes it. But, let's see how is the structure of this temporary backup file.
+
+![](./images/BackupFileStruc.png)
+
+As you can in image above there is a directory called **.Hologram** in cache directory. It contains a .zip file which will be uploaded to cloud and also contains a directory called **input**. In that vein let's talk about each file that composes this **.zip** file or otherwise **input** directory.
+
+- afj.sqlite: Wallet DB. It contains information such as user credentials
+
+- info.json: This the manifest file
+
+- main.realm: Realm DB. Which will allow to user to see his created chats and chats history conversations when restores wallet
+
+- media.zip: This zip contains both images, videos, note voices and previews images for videos and images in chats conversations to avoid to user has to re-download them when restores wallet
