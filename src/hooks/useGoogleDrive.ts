@@ -202,6 +202,7 @@ export const useGoogleDrive = () => {
           progressInterval: 5000,
           headers: { Authorization: `Bearer ${googleDriveConnection?.accessToken}` },
           toFile: BACKUP_ZIP_FILE_PATH,
+          begin: () => log('Download of backup file begin'),
           progress: res => {
             const progress = Number(((res.bytesWritten / res.contentLength) * 100).toFixed())
             const progressLessOne = progress ? progress - 1 : progress
