@@ -15,17 +15,17 @@ Next are some of the app basic features must be tested before a release to dev o
 
 ### Services Validation
 
-- [ ] Test proper functioning of services: Demo Chat Bot Agent (https://chatbot-demo.dev.2060.io/qr) and Animo (https://demo.animo.id/)
+- [ ] Test proper functioning of services: Demo Chat Bot Agent (https://chatbot-demo.dev.2060.io/qr) and complete BCGov flow (https://digital.gov.bc.ca/digital-trust/showcase/)
 
-Note: Validate next items using: Demo Chat Bot Agent
+Note: Validate next items and commands using: Demo Chat Bot Agent
 
 - [ ] Receive a credential
 - [ ] Receive a proof request (before and after receiving the credential)
 - [ ] Question and answer, action menu
-- [ ] Invitation to services (did:web:em-vs.demos.2060.io for instance)
-- [ ] Invitation to subconnection
-- [ ] Link command
-- [ ] Send "/mrz" command to test mrz scan and nfc reading
+- [ ] Invitation to services. Send next message: invitation/ did:web:em-vs.demos.2060.io
+- [ ] Invitation to subconnection. Send next message: invitation/ this_is_a_child_connection
+- [ ] Web view. Send next message: /link https://hologram.zone/ Hologram zone https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRSfGMjlS818F78B84hXGsf9DAFmNpMfmx0fA&s
+- [ ] Mrz read and nfc scan. Send next message: /mrz
 
 ### Chat Screen
 
@@ -39,6 +39,7 @@ Note: Validate next items using: Demo Chat Bot Agent
 - [ ] Unblock connection and verify that can send message again
 - [ ] Clear conversation and check chat screen for this connection is now empty
 - [ ] Delete connection and verify that can not be found it connections list and can not send messages anymore
+- [ ] In a Service connection details Forward and Share it to another connection (p2p). Now, in this receiver coonection accept invitation and verify connection is correctly stableshid
 
 ### Deep links and Share App Data
 
@@ -51,17 +52,19 @@ Note: Validate next items using: Demo Chat Bot Agent
 
 - [ ] Share text, images and videos from other apps (Slack, Signal, Whatsapp, Google Photos, etc) to app
 
-### Conversations Section
+### Chats Screen
 
 - [ ] Filter conversations by type
 - [ ] Search connections by name
 - [ ] Search a connection and select and send a message
 - [ ] Delete, archive, unarchive a conversation
 
-### Wallet Section
+### Wallet Screen
 
-- [ ] Check that if a wallet is added it appears in this list (animo, chatbot, etc)
-- [ ] Tap a wallet and check all possible information is displayed and delete option works
+- [ ] Check that if a credential is added it appears in this list (BCGov, chatbot, gaia etc)
+- [ ] Tap a credential and check all possible information is displayed and delete option works
+- [ ] Tab a credential and in credential details screen press contextual menu and choose "Present credential" and send it to a connection. Now, in approver(receiver) side Accept this credential presentation and check status changes to "Accepted" in both sides. Also, in approver(receiver) side press Credential Card and veriy main credential details and claims with its values are displayed
+- [ ] Tab a credential and in its credential details screen press contextual menu and choose "Present credential" and send it to a connection. Now, in receiver side Refuse credential presentation and check status changes to "Refused" in both sides.
 
 ### Settings Section
 
@@ -70,11 +73,17 @@ Note: Validate next items using: Demo Chat Bot Agent
 - [ ] A list with all connections must be displayed
 - [ ] Can filter connections by name
 
-##### Privacy
+##### Privacy and data usage
 
 - [ ] Disable screen lock and verify is not asking any local auth to open app
 - [ ] Set instant screen lock and verify any time I let app and re-open ask for local auth before enter to app
 - [ ] set 1 minute screen timeout and verify after 1 minute of inactivity in app local auth screen appears
+
+##### Parental Control
+
+- [ ] Press switch to enable Parental Control and set PIN
+- [ ] Press Kid birtday value box and set an age that does not be older to 18 years for kid
+- [ ] Go to Scan screen, scan next service https://unic-id-issuer.demos.dev.2060.io/qr and verify that due to age restriccions user can not connect to this service
 
 ##### Other settings screen options
 

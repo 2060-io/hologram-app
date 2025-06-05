@@ -144,6 +144,7 @@ const SubChats: React.FC<Props> = ({ route, navigation }) => {
       <View style={styles.root}>
         <FlashList
           estimatedItemSize={97}
+          showsVerticalScrollIndicator={false}
           data={subChatsList}
           extraData={[selectedChatIds, theme.isDarkMode]}
           keyExtractor={item => item.id}

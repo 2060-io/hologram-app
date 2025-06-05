@@ -15,6 +15,10 @@ export default (theme: AppTheme) =>
       alignItems: 'center',
       zIndex: 2,
     },
+    messageContainer: {
+      maxHeight: '50%',
+      overflow: 'hidden',
+    },
     menuContainer: {
       ...cardStyles(theme),
       ...cardShadowStyles(theme.colors),

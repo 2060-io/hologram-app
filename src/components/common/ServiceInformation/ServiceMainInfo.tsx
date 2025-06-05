@@ -24,10 +24,10 @@ const ServiceMainInfo = ({ serviceInfo }: Props) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
-  const { serviceProvider, dataPrivacyUrl, termsAndConditionsUrl, minimumAgeRequired } = serviceInfo
+  const { serviceProvider, dataPrivacyUrl, termsAndConditionsUrl, minimumAgeRequired, status } = serviceInfo
   const [showFullScreenImage, setShowFullScreenImage] = useState<boolean>(false)
   const imageFullScreenUri = useRef<string | undefined>(undefined)
-  const { ageRestricted } = useValidateKidAgeRestrictions({ minimumAgeRequired })
+  const { ageRestricted } = useValidateKidAgeRestrictions({ minimumAgeRequired, serviceStatus: status })
 
   const onAvatarImagePressed = (avatarImageUri: string) => {
     setShowFullScreenImage(true)
