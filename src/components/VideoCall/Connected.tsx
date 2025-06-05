@@ -168,7 +168,9 @@ const Connected = ({
           />
           {isVideoCall && (
             <>
-              <CallButton text={t('call.flip')} iconName="flipCamera" onPress={handleSwitchCamera} />
+              {isCameraOn && (
+                <CallButton text={t('call.flip')} iconName="flipCamera" onPress={handleSwitchCamera} />
+              )}
               <CallButton
                 text={t('call.video')}
                 iconName={isCameraOn ? 'video' : 'videoOff'}
