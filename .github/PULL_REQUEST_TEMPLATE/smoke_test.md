@@ -11,7 +11,7 @@ Next are some of the app basic features must be tested before a release to dev o
 ### Scan Section
 
 - [ ] Scan a p2p connection and a service connection (could be this https://gaiaid.io/) using the camera
-- [ ] Scan connection using link could be this https://2060.io/i?oob=eyJAdHlwZSI6Imh0dHBzOi8vZGlkY29tbS5vcmcvb3V0LW9mLWJhbmQvMS4xL2ludml0YXRpb24iLCJAaWQiOiJhNDE5ODg2Yy05ZDY0LTRjYjQtODBkNS1jM2Y5ZjRmNWM2YmIiLCJsYWJlbCI6IkRlbW8gQ2hhdGJvdCBBZ2VudCIsImFjY2VwdCI6WyJkaWRjb21tL2FpcDEiLCJkaWRjb21tL2FpcDI7ZW52PXJmYzE5Il0sImhhbmRzaGFrZV9wcm90b2NvbHMiOlsiaHR0cHM6Ly9kaWRjb21tLm9yZy9kaWRleGNoYW5nZS8xLjEiLCJodHRwczovL2RpZGNvbW0ub3JnL2Nvbm5lY3Rpb25zLzEuMCJdLCJzZXJ2aWNlcyI6WyJkaWQ6d2ViOmNoYXRib3QtZGVtby5kZXYuMjA2MC5pbyJdLCJpbWFnZVVybCI6Imh0dHBzOi8vZC5jaGF0Ym90LWRlbW8uZGV2LjIwNjAuaW8vYXZhdGFyLnBuZyJ9
+- [ ] Scan connection using link could be this https://hologram.zone/?oob=eyJAdHlwZSI6Imh0dHBzOi8vZGlkY29tbS5vcmcvb3V0LW9mLWJhbmQvMS4xL2ludml0YXRpb24iLCJAaWQiOiIwYWI1Mzc4YS05YzM4LTRlZWYtYWM0Yy1iZGE1MWJjMDY0ODYiLCJsYWJlbCI6IkRlbW8gQ2hhdGJvdCBBZ2VudCIsImFjY2VwdCI6WyJkaWRjb21tL2FpcDEiLCJkaWRjb21tL2FpcDI7ZW52PXJmYzE5Il0sImhhbmRzaGFrZV9wcm90b2NvbHMiOlsiaHR0cHM6Ly9kaWRjb21tLm9yZy9kaWRleGNoYW5nZS8xLjEiLCJodHRwczovL2RpZGNvbW0ub3JnL2Nvbm5lY3Rpb25zLzEuMCJdLCJzZXJ2aWNlcyI6WyJkaWQ6d2ViOmNoYXRib3QtZGVtby5kZXYuMjA2MC5pbyJdLCJpbWFnZVVybCI6Imh0dHBzOi8vZC5jaGF0Ym90LWRlbW8uZGV2LjIwNjAuaW8vYXZhdGFyLnBuZyJ9
 
 ### Services Validation
 
@@ -45,10 +45,10 @@ Note: Validate next items and commands using: Demo Chat Bot Agent
 
 - [ ] Test next deep linkings works and are open in app
 
-| Schema  | Value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
-| ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| didcomm | didcomm://aries_connection_invitation?c_i=eyJAdHlwZSI6ImRpZDpzb3Y6QnpDYnNOWWhNcmpIaXFaRFRVQVNIZztzcGVjL2Nvbm5lY3Rpb25zLzEuMC9pbnZpdGF0aW9uIiwiQGlkIjoiYzU5MmNmZTEtYjhiZS00ZDQxLWE1NDMtMWI1MTQxODhmMzhhIiwibGFiZWwiOiJBbmltbyIsImltYWdlVXJsIjoiaHR0cHM6Ly9pLmltZ3VyLmNvbS9nM2FiY0NPLnBuZyIsInJlY2lwaWVudEtleXMiOlsiQ3NZQkZBclVjRXk4c0VoWjhRRzI0UHhrZGpXNHpoSDluS3NjY3BUNTV1VjIiXSwic2VydmljZUVuZHBvaW50IjoiaHR0cHM6Ly9kaWRjb21tLmRlbW8uYW5pbW8uaWQiLCJyb3V0aW5nS2V5cyI6W119/                                                                                    |
-| https   | https://2060.io/i?oob=eyJAdHlwZSI6Imh0dHBzOi8vZGlkY29tbS5vcmcvb3V0LW9mLWJhbmQvMS4xL2ludml0YXRpb24iLCJAaWQiOiI4Y2MwOTViMS01YmI1LTRjMDYtYjk5NC0zNWIyYzQzZmUyMWUiLCJsYWJlbCI6IkRlbW8gQ2hhdGJvdCBBZ2VudCIsImFjY2VwdCI6WyJkaWRjb21tL2FpcDEiLCJkaWRjb21tL2FpcDI7ZW52PXJmYzE5Il0sImhhbmRzaGFrZV9wcm90b2NvbHMiOlsiaHR0cHM6Ly9kaWRjb21tLm9yZy9kaWRleGNoYW5nZS8xLjEiLCJodHRwczovL2RpZGNvbW0ub3JnL2Nvbm5lY3Rpb25zLzEuMCJdLCJzZXJ2aWNlcyI6WyJkaWQ6d2ViOmNoYXRib3QtZGVtby5kZXYuMjA2MC5pbyJdLCJpbWFnZVVybCI6Imh0dHBzOi8vZC5jaGF0Ym90LWRlbW8uZGV2LjIwNjAuaW8vYXZhdGFyLnBuZyJ9 |
+| Schema  | Value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| didcomm | didcomm://aries_connection_invitation?c_i=eyJAdHlwZSI6ImRpZDpzb3Y6QnpDYnNOWWhNcmpIaXFaRFRVQVNIZztzcGVjL2Nvbm5lY3Rpb25zLzEuMC9pbnZpdGF0aW9uIiwiQGlkIjoiYzU5MmNmZTEtYjhiZS00ZDQxLWE1NDMtMWI1MTQxODhmMzhhIiwibGFiZWwiOiJBbmltbyIsImltYWdlVXJsIjoiaHR0cHM6Ly9pLmltZ3VyLmNvbS9nM2FiY0NPLnBuZyIsInJlY2lwaWVudEtleXMiOlsiQ3NZQkZBclVjRXk4c0VoWjhRRzI0UHhrZGpXNHpoSDluS3NjY3BUNTV1VjIiXSwic2VydmljZUVuZHBvaW50IjoiaHR0cHM6Ly9kaWRjb21tLmRlbW8uYW5pbW8uaWQiLCJyb3V0aW5nS2V5cyI6W119/                                                                                         |
+| https   | https://hologram.zone/?oob=eyJAdHlwZSI6Imh0dHBzOi8vZGlkY29tbS5vcmcvb3V0LW9mLWJhbmQvMS4xL2ludml0YXRpb24iLCJAaWQiOiIwYWI1Mzc4YS05YzM4LTRlZWYtYWM0Yy1iZGE1MWJjMDY0ODYiLCJsYWJlbCI6IkRlbW8gQ2hhdGJvdCBBZ2VudCIsImFjY2VwdCI6WyJkaWRjb21tL2FpcDEiLCJkaWRjb21tL2FpcDI7ZW52PXJmYzE5Il0sImhhbmRzaGFrZV9wcm90b2NvbHMiOlsiaHR0cHM6Ly9kaWRjb21tLm9yZy9kaWRleGNoYW5nZS8xLjEiLCJodHRwczovL2RpZGNvbW0ub3JnL2Nvbm5lY3Rpb25zLzEuMCJdLCJzZXJ2aWNlcyI6WyJkaWQ6d2ViOmNoYXRib3QtZGVtby5kZXYuMjA2MC5pbyJdLCJpbWFnZVVybCI6Imh0dHBzOi8vZC5jaGF0Ym90LWRlbW8uZGV2LjIwNjAuaW8vYXZhdGFyLnBuZyJ9 |
 
 - [ ] Share text, images and videos from other apps (Slack, Signal, Whatsapp, Google Photos, etc) to app
 
@@ -88,11 +88,9 @@ Note: Validate next items and commands using: Demo Chat Bot Agent
 ##### Other settings screen options
 
 - [ ] Touch Settings screen 7 times and see a new option called "Developer" appears
-- [ ] In Developer screen change any Environment Values of List and verify change its applied instantly in app
 - [ ] Modify profile info (name, and picture)
 - [ ] Generate qr code invitation and share to other app
-- [ ] In Developer screen press "Delete wallet" button and verify works and let user in SingUp Screen
-- [ ] Check delete wallet work and let user in SingUp screen
+- [ ] Check delete wallet work and let user in SingUp screen (Do this after creation of wallet backup)
 
 ##### Backup (Must be enabled developer mode to see it)
 
@@ -100,10 +98,17 @@ Note: Validate next items and commands using: Demo Chat Bot Agent
 - [ ] In Android, choose account for backup and must works as expected
 - [ ] Validate correct backup creation
 
+#### Developer
+
+- [ ] Change any Environment Values of List and verify change its applied instantly in app
+- [ ] Press "Delete wallet" button and verify works and let user in SingUp Screen
+
 ### Wallet restore
 
 - [ ] Validate wallet restore works as expected
 
 ### Wallet restore with Migration
+
+It is recommended for this Migration to have a chat o several chats where user has almost all types of possible messages. This is due to chat entries model can change over time so testing this migration with all possible kind of messages makes this migration test coverage more reliable
 
 - [ ] Create a wallet in the last dev version prior to the previous staging version, add a P2P contact, exchanging a video, an image and a voice note. Then connect with Chatbot Demo and receive credential/present proof. Upgrade the app to the latest dev version and verify everything keeps working and more messages can be exchanged
