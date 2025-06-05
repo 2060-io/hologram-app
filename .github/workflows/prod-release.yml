@@ -35,7 +35,7 @@ jobs:
             TAG="${GITHUB_REF#refs/tags/}"
             VERSION_NUMBER="${TAG#v}"
           fi        
-          yarn version $VERSION_NUMBER
+          yarn version --new-version $VERSION_NUMBER --no-git-tag
           yarn postversion
 
       - name: Upload Version files
