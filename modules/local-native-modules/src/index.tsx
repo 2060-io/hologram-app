@@ -84,7 +84,7 @@ export function nativeCreateChunks(
   return FileChunkGeneratorNativeModule.createChunks(filePath, outputFilePathPrefix, chunkSize)
 }
 
-export function nativeReadChunk(filePath: string, offset: number, length: number): Promise<number[]> {
+export function nativeReadChunk(filePath: string, offset: number, length: number): Promise<string> {
   return FileChunkGeneratorNativeModule.readChunk(filePath, offset, length)
 }
 

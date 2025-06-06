@@ -1,5 +1,6 @@
 package com.localnativemodules
 
+import android.util.Base64
 import android.util.Log
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.Promise
@@ -80,11 +81,10 @@ class FileChunkGeneratorModule internal constructor(context: ReactApplicationCon
             Log.d("FileChunkGeneratorModule", "reading chunk")
             fis.read(data)
             Log.d("FileChunkGeneratorModule", "chunk succesfully read")
-            val result = Arguments.createArray()
-            for (b in data) {
-                result.pushInt(b.toInt())
-            }
-            promise.resolve(result)
+            // Encode to base64 string
+            val base64String = Base64.encodeToString(data, Base64.NO_WRAP)
+            promise.resolve(base64String)
+
         } catch (e: Exception) {
             Log.d("FileChunkGeneratorModule", "Error: " + e.message)
             promise.reject("-1", e.message)
