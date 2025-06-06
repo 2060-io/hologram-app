@@ -11,8 +11,11 @@ const CustomSwitch = ({ ...props }: CustomSwitchProps) => {
   const theme = useTheme()
 
   const onThumbColor = theme.colors.green
-  const offThumbColor = theme.isDarkMode ? hexTransparency('#F5F7F8', '1A') : '#CDD8DB'
-  const trackColor = { false: theme.colors.primary, true: hexTransparency(theme.colors.green, '4f') }
+  const offThumbColor = theme.isDarkMode ? theme.colors.secondaryGrey : '#CDD8DB'
+  const trackColor = {
+    false: theme.isDarkMode ? hexTransparency('#F5F7F8', '1A') : theme.colors.grey,
+    true: hexTransparency(theme.colors.green, '4f'),
+  }
 
   return (
     <Switch

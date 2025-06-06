@@ -199,13 +199,15 @@ export const useGoogleDrive = () => {
       try {
         const { promise } = downloadFile({
           fromUrl: backupHandler?.backup?.downloadUrl ?? '',
-          progressInterval: 10000,
+          progressInterval: 5000,
           headers: { Authorization: `Bearer ${googleDriveConnection?.accessToken}` },
           toFile: BACKUP_ZIP_FILE_PATH,
+          begin: () => log('Download of backup file begin'),
           progress: res => {
             const progress = Number(((res.bytesWritten / res.contentLength) * 100).toFixed())
             const progressLessOne = progress ? progress - 1 : progress
             setRestoreProgress(prev => ({ ...prev, progress: progressLessOne }))
+            log(`Downloading backup progress: ${progress}%`)
           },
         })
         await promise
