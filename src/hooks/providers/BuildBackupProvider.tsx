@@ -54,6 +54,16 @@ export const backupStateInitialValues: BackupState = {
   error: '',
 }
 
+const base64ToArrayBuffer = (base64: string) => {
+  const binaryString = atob(base64)
+  const len = binaryString.length
+  const bytes = new Uint8Array(len)
+  for (let i = 0; i < len; i++) {
+    bytes[i] = binaryString.charCodeAt(i)
+  }
+  return bytes
+}
+
 export const BuildBackupProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const { t } = useTranslation()
   const [backupState, setBackupState] = useState<BackupState>(backupStateInitialValues)
@@ -101,7 +111,7 @@ export const BuildBackupProvider: React.FC<PropsWithChildren> = ({ children }) =
         const chunkSize =
           i + 1 < numberOfChunks ? UPLOAD_SIZE_PER_CHUNK : fileToUploadSize % UPLOAD_SIZE_PER_CHUNK
         const fileChunkBase64 = await nativeReadChunk(fileToUploadLocation, start, chunkSize)
-        const base64ToBuffer = Buffer.from(fileChunkBase64)
+        const base64ToBuffer = base64ToArrayBuffer(fileChunkBase64)
         const end = start + base64ToBuffer.length - 1
         const contentRange = `bytes ${start}-${end}/${fileToUploadSize}`
         const chunkUploadResponse = await axios({
@@ -133,7 +143,7 @@ export const BuildBackupProvider: React.FC<PropsWithChildren> = ({ children }) =
     toast({ type: 'success', message: t('settings.buildBackupSuccessfully') })
     // Timeout is set to user sees in screen that backup progress reaches 100% done before update state
     setTimeout(() => {
-      setBackupState({ ...backupStateInitialValues, isBuildingBackup: false })
+      setBackupState({ ...backupStateInitialValues })
     }, 1000)
     await deleteBackupDirectory()
   }
