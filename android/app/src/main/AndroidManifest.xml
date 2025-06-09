@@ -1,10 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Support only phone-sized screens -->
+    <!-- Support normal and large phone-sized screens -->
     <supports-screens
-      android:smallScreens="true"
+      android:smallScreens="false"
       android:normalScreens="true"
-      android:largeScreens="false"
+      android:largeScreens="true"
       android:xlargeScreens="false"
       android:anyDensity="true" />
     <uses-permission android:name="android.permission.INTERNET" />
