@@ -32,19 +32,6 @@ const AttachmentOptions: React.FC<Props> = ({ closeAttachmentOptions, onCompress
   const styles = getStyles(theme)
   const { t } = useTranslation()
 
-  const sendFile = async (fileInfo: ImageOrVideo) => {
-    let mediaFileInfo = { ...fileInfo }
-    if (IS_ANDROID && mediaFileInfo.mime.startsWith('video')) {
-      mediaFileInfo = await compressVideo(mediaFileInfo)
-    }
-    shareMediaToDidComm({
-      ...mediaFileInfo,
-      duration: mediaFileInfo.duration ?? undefined,
-      width: mediaFileInfo.width ?? undefined,
-      height: mediaFileInfo.height ?? undefined,
-    }).catch(logError)
-  }
-
   const compressVideo = async (fileInfo: ImageOrVideo): Promise<ImageOrVideo> => {
     try {
       const compressedVideoPath = await VideoCompressor.compress(
@@ -64,8 +51,21 @@ const AttachmentOptions: React.FC<Props> = ({ closeAttachmentOptions, onCompress
     }
   }
 
-  const onSelectedOption = async (optionId: string) => {
+  const sendFile = async (fileInfo: ImageOrVideo) => {
     closeAttachmentOptions()
+    let mediaFileInfo = { ...fileInfo }
+    if (IS_ANDROID && mediaFileInfo.mime.startsWith('video')) {
+      mediaFileInfo = await compressVideo(mediaFileInfo)
+    }
+    shareMediaToDidComm({
+      ...mediaFileInfo,
+      duration: mediaFileInfo.duration ?? undefined,
+      width: mediaFileInfo.width ?? undefined,
+      height: mediaFileInfo.height ?? undefined,
+    }).catch(logError)
+  }
+
+  const onSelectedOption = async (optionId: string) => {
     if (optionId === 'file-camera') {
       await takePhotoOrVideo(sendFile)
     }
