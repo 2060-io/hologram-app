@@ -51,7 +51,7 @@ const AttachmentOptions: React.FC<Props> = ({ closeAttachmentOptions, onCompress
     }
   }
 
-  const sendFile = async (fileInfo: ImageOrVideo) => {
+  const onMediaFile = async (fileInfo: ImageOrVideo) => {
     closeAttachmentOptions()
     let mediaFileInfo = { ...fileInfo }
     if (IS_ANDROID && mediaFileInfo.mime.startsWith('video')) {
@@ -67,13 +67,13 @@ const AttachmentOptions: React.FC<Props> = ({ closeAttachmentOptions, onCompress
 
   const onSelectedOption = async (optionId: string) => {
     if (optionId === 'file-camera') {
-      await takePhotoOrVideo(sendFile)
+      await takePhotoOrVideo(onMediaFile)
     }
     if (optionId === 'file-video') {
-      await takePhotoOrVideo(sendFile, { mediaType: 'video' })
+      await takePhotoOrVideo(onMediaFile, { mediaType: 'video' })
     }
     if (optionId === 'file-gallery') {
-      await takePhotoOrVideoFromGallery(sendFile, { mediaType: 'any' })
+      await takePhotoOrVideoFromGallery(onMediaFile, { mediaType: 'any' })
     }
   }
 
