@@ -9,12 +9,6 @@ import { IS_IOS } from '@2060/constants'
 import { DidCommMediaFileSharingData } from '@2060/hooks/agent'
 import { createDidCommPreview } from '@2060/hooks/media/preview'
 
-type VideoProps = {
-  duration: number
-  width: number
-  height: number
-}
-
 export const getMediaFileSharingData = async (fileOriginalPath: string, mimeType: string) => {
   const filePath = await fromContentUriToFileUri(fileOriginalPath)
   const preview = await createDidCommPreview({ mimeType: mimeType, localFilePath: filePath })
@@ -39,7 +33,7 @@ const fromContentUriToFileUri = async (contentUri: string) => {
   const fileNameAndExtension = urlComponents[urlComponents.length - 1]
   const destPath = `${TemporaryDirectoryPath}/${fileNameAndExtension}`
   await copyFile(contentUri, destPath)
-  return IS_IOS ? destPath : `file://${decodeURIComponent(destPath)}`
+  return IS_IOS ? destPath : decodeURIComponent(destPath)
 }
 
 const getDataForVideo = async (currentFileValues: DidCommMediaFileSharingData) => {
@@ -47,7 +41,7 @@ const getDataForVideo = async (currentFileValues: DidCommMediaFileSharingData) =
   let width = 0
   let height = 0
   try {
-    const properties = (await nativeGetVideoProperties(currentFileValues.path)) as VideoProps
+    const properties = await nativeGetVideoProperties(currentFileValues.path)
     if (properties) {
       duration = properties.duration
       width = properties.width
