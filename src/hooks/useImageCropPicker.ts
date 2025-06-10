@@ -1,10 +1,13 @@
 import { useTranslation } from 'react-i18next'
+import { Video as VideoCompressor } from 'react-native-compressor'
+import { stat } from 'react-native-fs'
 import { openPicker, openCamera, Options, Image, Video, CommonOptions } from 'react-native-image-crop-picker'
 
 import { createDidCommPreview } from './media/preview'
 
-import { MAX_VIDEO_DURATION } from '@2060/constants'
-import { logError } from '@2060/utils'
+import { IS_ANDROID, MAX_VIDEO_DURATION } from '@2060/constants'
+import { log, logError } from '@2060/utils'
+import { deleteFile } from '@2060/utils/RNFS'
 import { toast } from '@2060/utils/toast'
 
 const MAX_VIDEO_SECONDS_DURATION = 60
@@ -65,10 +68,29 @@ export const useImageCropPicker = () => {
     return fileInfo
   }
 
+  const tryToCompressVideo = async (fileInfo: ImageOrVideo): Promise<ImageOrVideo> => {
+    try {
+      const compressedVideoPath = await VideoCompressor.compress(fileInfo.path, {}, progress => {
+        log('Compressing video progress: ', progress)
+      })
+      await deleteFile(fileInfo.path)
+      fileInfo.path = compressedVideoPath
+      const { size } = await stat(compressedVideoPath)
+      fileInfo.size = size
+    } catch (error) {
+      logError(`Error compressing video: ${error}`)
+    } finally {
+      return fileInfo
+    }
+  }
+
   const takePhotoOrVideo = async (callBack: (values: ImageOrVideo) => void, options?: Options) => {
     const mediaType = options?.mediaType || 'photo'
     try {
-      const fileInfo = (await openCamera({ ...optionsDefault[mediaType], ...options })) as ImageOrVideo
+      let fileInfo = (await openCamera({ ...optionsDefault[mediaType], ...options })) as ImageOrVideo
+      if (IS_ANDROID && fileInfo.mime.startsWith('video')) {
+        fileInfo = await tryToCompressVideo(fileInfo)
+      }
       const infoMedia = await createPreview(fileInfo, mediaType)
       callBack(infoMedia)
     } catch (error) {
@@ -79,12 +101,15 @@ export const useImageCropPicker = () => {
   const takePhotoOrVideoFromGallery = async (callBack: (values: ImageOrVideo) => void, options?: Options) => {
     const mediaType = options?.mediaType || 'photo'
     try {
-      const fileInfo = (await openPicker({ ...optionsDefault[mediaType], ...options })) as ImageOrVideo
+      let fileInfo = (await openPicker({ ...optionsDefault[mediaType], ...options })) as ImageOrVideo
       const { mime, duration } = fileInfo
       const isVideoAndExceedsDuration = mime.startsWith('video') && duration && duration > MAX_VIDEO_DURATION
       if (isVideoAndExceedsDuration) {
         toast({ message: t('personalChat.videoExceedsDuration'), type: 'error', position: 'center' })
         return
+      }
+      if (IS_ANDROID && fileInfo.mime.startsWith('video')) {
+        fileInfo = await tryToCompressVideo(fileInfo)
       }
       const infoMedia = await createPreview(fileInfo, mediaType)
       callBack(infoMedia)
