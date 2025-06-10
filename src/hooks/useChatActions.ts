@@ -23,7 +23,7 @@ import { createTextChatEntry } from './agent/chat/recordChangeHandlers/handleBas
 import { createChatEntry, findOrCreateChatThread, updateThread } from './agent/chat/services'
 import { useLocalRealm } from './providers/RealmProvider'
 
-import { MAX_VIDEO_DURATION } from '@2060/constants'
+import { IS_ANDROID, MAX_VIDEO_DURATION } from '@2060/constants'
 import {
   ActionMenuSelectionMetadata,
   ChatEntry,
@@ -38,7 +38,7 @@ import {
 import { ChatEntryMessage } from '@2060/pages/PersonalChat/ChatMessage/Props'
 import { log, logError } from '@2060/utils'
 import { getLocalFileUri } from '@2060/utils/RNFS'
-import { getMediaFileSharingData } from '@2060/utils/mediaFileUtils'
+import { compressVideo, getMediaFileSharingData } from '@2060/utils/mediaFileUtils'
 import { toast, ToastOptions } from '@2060/utils/toast'
 
 export const useChatActions = () => {
@@ -387,13 +387,18 @@ export const useChatActions = () => {
             })
           }
         } else if (mimeType.startsWith('image') || mimeType.startsWith('video')) {
-          const didcommMediaFileSharingData = await getMediaFileSharingData(message.data, mimeType)
+          let didcommMediaFileSharingData = await getMediaFileSharingData(message.data, mimeType)
           const { duration, mime } = didcommMediaFileSharingData
           const isVideoAndExceedsDuration =
             mime.startsWith('video') && duration && duration > MAX_VIDEO_DURATION
           if (isVideoAndExceedsDuration) {
             excludedLongVideosCount++
           } else {
+            if (IS_ANDROID && mime.startsWith('video')) {
+              didcommMediaFileSharingData = (await compressVideo(didcommMediaFileSharingData, progress => {
+                log('compressing progress', progress)
+              })) as DidCommMediaFileSharingData
+            }
             startMediaUpload({
               didcommConnectionIds: connectionIds,
               didcommMediaFileSharingData,
