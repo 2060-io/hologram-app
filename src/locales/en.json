@@ -413,7 +413,8 @@
       "messagesSharedExcept": "Messages have been shared except those that exceeded 1 minute",
       "messagesNotShared": "Message has not been shared because video exceeded 1 minute",
       "messageNotShared_other": "Messages were not forwarded because videos exceeded 1 minute",
-      "videoExceedsDuration": "Your video exceeds 1 minute, please select a shorter one"
+      "videoExceedsDuration": "Your video exceeds 1 minute, please select a shorter one",
+      "processingVideo": "Processing video..."
     },
     "preview": {
       "answer": "🟰 Answer",

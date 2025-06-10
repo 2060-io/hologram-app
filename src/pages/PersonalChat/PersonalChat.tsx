@@ -26,6 +26,7 @@ import PersonalChatContainer, { WrapperPersonalChatProps } from './PersonalChatC
 import ScrollToBottom from './ScrollToBottomView'
 import SelectingMessagesBottomMenu from './SelectingMessagesBottomMenu'
 import SystemMessage from './SystemMessage'
+import { CompressingVideo } from './components'
 import getStyles from './styles'
 import { getSystemMessage, chatEntryEqual } from './utils'
 
@@ -103,6 +104,7 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
   const [showAttachmentOptions, setShowAttachmentOptions] = useState(false)
   const [showStickyDate, setShowStickyDate] = useState(false)
   const [showContextualMenu, setShowContextualMenu] = useState(false)
+  const [compressingVideoProgress, setCompressingVideoProgress] = useState(0)
   const { realm } = useLocalRealm()
   const {
     setChatThread,
@@ -387,6 +389,7 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
               showMediaOptions={flags.supportsMediaSharing}
             />
           )}
+        {compressingVideoProgress > 0 && <CompressingVideo progress={compressingVideoProgress} />}
         <ModalBottomHalf visible={showContextualMenu} onClose={() => setShowContextualMenu(false)}>
           {menu ? (
             <ContextualMenu
@@ -397,7 +400,10 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
           ) : null}
         </ModalBottomHalf>
         <ModalBottomHalf visible={showAttachmentOptions} onClose={() => setShowAttachmentOptions(false)}>
-          <AttachmentOptions closeAttachmentOptions={() => setShowAttachmentOptions(false)} />
+          <AttachmentOptions
+            closeAttachmentOptions={() => setShowAttachmentOptions(false)}
+            onCompressingVideoProgress={setCompressingVideoProgress}
+          />
         </ModalBottomHalf>
         <MessageFloatingMenu
           navigation={navigation}
