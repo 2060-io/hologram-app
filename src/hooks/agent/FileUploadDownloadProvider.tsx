@@ -500,7 +500,9 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
 
       if (isTaskFinished) {
         // Delete all chunk files
-        for (const chunk of task.chunks) await deleteFile(chunk.filePath)
+        for (const chunk of task.chunks) {
+          deleteFile(chunk.filePath)
+        }
 
         realm?.write(() => {
           realm.delete(task)
