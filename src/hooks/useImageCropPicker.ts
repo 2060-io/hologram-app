@@ -88,7 +88,7 @@ export const useImageCropPicker = () => {
     return fileInfo
   }
 
-  const takePhotoOrVideo = async (callBack: (values: ImageOrVideo) => void, options?: Options) => {
+  const takePhotoOrVideo = async (onSuccess: (values: ImageOrVideo) => void, options?: Options) => {
     const mediaType = options?.mediaType || 'photo'
     try {
       let fileInfo = (await openCamera({ ...optionsDefault[mediaType], ...options })) as ImageOrVideo
@@ -96,13 +96,16 @@ export const useImageCropPicker = () => {
         fileInfo = await compressVideo(fileInfo)
       }
       const infoMedia = await createPreview(fileInfo, mediaType)
-      callBack(infoMedia)
+      onSuccess(infoMedia)
     } catch (error) {
       logError(`${error}`)
     }
   }
 
-  const takePhotoOrVideoFromGallery = async (callBack: (values: ImageOrVideo) => void, options?: Options) => {
+  const takePhotoOrVideoFromGallery = async (
+    onSuccess: (values: ImageOrVideo) => void,
+    options?: Options,
+  ) => {
     const mediaType = options?.mediaType || 'photo'
     try {
       let fileInfo = (await openPicker({ ...optionsDefault[mediaType], ...options })) as ImageOrVideo
@@ -116,7 +119,7 @@ export const useImageCropPicker = () => {
         fileInfo = await compressVideo(fileInfo)
       }
       const infoMedia = await createPreview(fileInfo, mediaType)
-      callBack(infoMedia)
+      onSuccess(infoMedia)
     } catch (error) {
       logError(`${error}`)
     }

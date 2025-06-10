@@ -11,7 +11,7 @@ import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { logError } from '@2060/utils'
 
 type Props = {
-  onCloseAttachmentOptions(): void
+  closeAttachmentOptions(): void
 }
 
 const options = [
@@ -20,15 +20,15 @@ const options = [
   { id: 'file-gallery', icon: 'image', label: 'photoAndVideoLibrary' },
 ]
 
-const AttachmentOptions: React.FC<Props> = ({ onCloseAttachmentOptions }) => {
+const AttachmentOptions: React.FC<Props> = ({ closeAttachmentOptions }) => {
   const { takePhotoOrVideo, takePhotoOrVideoFromGallery } = useImageCropPicker()
   const { shareMediaToDidComm } = useChatActions()
   const theme = useTheme()
   const styles = getStyles(theme)
   const { t } = useTranslation()
 
-  const onSendSharedFile = (mediaFileInfo: ImageOrVideo) => {
-    onCloseAttachmentOptions()
+  const sendFile = (mediaFileInfo: ImageOrVideo) => {
+    closeAttachmentOptions()
     shareMediaToDidComm({
       ...mediaFileInfo,
       duration: mediaFileInfo.duration ?? undefined,
@@ -39,13 +39,13 @@ const AttachmentOptions: React.FC<Props> = ({ onCloseAttachmentOptions }) => {
 
   const onSelectedOption = async (optionId: string) => {
     if (optionId === 'file-camera') {
-      await takePhotoOrVideo(onSendSharedFile)
+      await takePhotoOrVideo(sendFile)
     }
     if (optionId === 'file-video') {
-      await takePhotoOrVideo(onSendSharedFile, { mediaType: 'video' })
+      await takePhotoOrVideo(sendFile, { mediaType: 'video' })
     }
     if (optionId === 'file-gallery') {
-      await takePhotoOrVideoFromGallery(onSendSharedFile, { mediaType: 'any' })
+      await takePhotoOrVideoFromGallery(sendFile, { mediaType: 'any' })
     }
   }
 

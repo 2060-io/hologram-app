@@ -397,7 +397,7 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
           ) : null}
         </ModalBottomHalf>
         <ModalBottomHalf visible={showAttachmentOptions} onClose={() => setShowAttachmentOptions(false)}>
-          <AttachmentOptions onCloseAttachmentOptions={() => setShowAttachmentOptions(false)} />
+          <AttachmentOptions closeAttachmentOptions={() => setShowAttachmentOptions(false)} />
         </ModalBottomHalf>
         <MessageFloatingMenu
           navigation={navigation}
