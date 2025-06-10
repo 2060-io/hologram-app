@@ -48,6 +48,26 @@ export interface ImageOrVideo extends Image, Video {
   preview?: string
 }
 
+const compressVideo = async (fileInfo: ImageOrVideo): Promise<ImageOrVideo> => {
+  try {
+    const compressedVideoPath = await VideoCompressor.compress(
+      fileInfo.path,
+      { compressionMethod: 'manual', bitrate: 691200, progressDivider: 5 },
+      progress => {
+        log('Compressing video progress: ', progress)
+      },
+    )
+    await deleteFile(fileInfo.path)
+    fileInfo.path = compressedVideoPath
+    const { size } = await stat(compressedVideoPath)
+    fileInfo.size = size
+  } catch (error) {
+    logError(`Error compressing video: ${error}`)
+  } finally {
+    return fileInfo
+  }
+}
+
 export const useImageCropPicker = () => {
   const { t } = useTranslation()
   const createPreview = async (fileInfo: ImageOrVideo, mediaType: string) => {
@@ -68,28 +88,12 @@ export const useImageCropPicker = () => {
     return fileInfo
   }
 
-  const tryToCompressVideo = async (fileInfo: ImageOrVideo): Promise<ImageOrVideo> => {
-    try {
-      const compressedVideoPath = await VideoCompressor.compress(fileInfo.path, {}, progress => {
-        log('Compressing video progress: ', progress)
-      })
-      await deleteFile(fileInfo.path)
-      fileInfo.path = compressedVideoPath
-      const { size } = await stat(compressedVideoPath)
-      fileInfo.size = size
-    } catch (error) {
-      logError(`Error compressing video: ${error}`)
-    } finally {
-      return fileInfo
-    }
-  }
-
   const takePhotoOrVideo = async (callBack: (values: ImageOrVideo) => void, options?: Options) => {
     const mediaType = options?.mediaType || 'photo'
     try {
       let fileInfo = (await openCamera({ ...optionsDefault[mediaType], ...options })) as ImageOrVideo
       if (IS_ANDROID && fileInfo.mime.startsWith('video')) {
-        fileInfo = await tryToCompressVideo(fileInfo)
+        fileInfo = await compressVideo(fileInfo)
       }
       const infoMedia = await createPreview(fileInfo, mediaType)
       callBack(infoMedia)
@@ -109,7 +113,7 @@ export const useImageCropPicker = () => {
         return
       }
       if (IS_ANDROID && fileInfo.mime.startsWith('video')) {
-        fileInfo = await tryToCompressVideo(fileInfo)
+        fileInfo = await compressVideo(fileInfo)
       }
       const infoMedia = await createPreview(fileInfo, mediaType)
       callBack(infoMedia)
