@@ -1,8 +1,10 @@
 import { Image } from 'react-native'
+import { Video as VideoCompressor } from 'react-native-compressor'
 import { stat, TemporaryDirectoryPath } from 'react-native-fs'
+import { ImageOrVideo } from 'react-native-image-crop-picker'
 import { nativeGetVideoProperties } from 'react-native-local-native-modules'
 
-import { copyFile } from './RNFS'
+import { copyFile, deleteFile } from './RNFS'
 import { logError } from './log'
 
 import { IS_IOS } from '@2060/constants'
@@ -86,4 +88,26 @@ const getImageDimensions = (filePath: string) => {
       },
     )
   })
+}
+
+export const compressVideo = async (
+  fileInfo: ImageOrVideo | DidCommMediaFileSharingData,
+  onProgress: (progress: number) => void,
+): Promise<ImageOrVideo | DidCommMediaFileSharingData> => {
+  try {
+    const compressedVideoPath = await VideoCompressor.compress(
+      fileInfo.path,
+      { compressionMethod: 'manual', bitrate: 691200, progressDivider: 5 },
+      progress => onProgress(Math.ceil(progress * 100)),
+    )
+    await deleteFile(fileInfo.path)
+    fileInfo.path = compressedVideoPath
+    const { size } = await stat(compressedVideoPath)
+    fileInfo.size = size
+  } catch (error) {
+    logError(`Error compressing video: ${error}`)
+  } finally {
+    onProgress(0)
+    return fileInfo
+  }
 }

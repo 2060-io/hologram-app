@@ -1,8 +1,6 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, TouchableOpacity } from 'react-native'
-import { Video as VideoCompressor } from 'react-native-compressor'
-import { stat } from 'react-native-fs'
 
 import getStyles from './styles'
 
@@ -12,7 +10,7 @@ import { IS_ANDROID } from '@2060/constants'
 import { useImageCropPicker, ImageOrVideo, useChatActions } from '@2060/hooks'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { logError } from '@2060/utils'
-import { deleteFile } from '@2060/utils/RNFS'
+import { compressVideo } from '@2060/utils/mediaFileUtils'
 
 type Props = {
   closeAttachmentOptions(): void
@@ -32,30 +30,11 @@ const AttachmentOptions: React.FC<Props> = ({ closeAttachmentOptions, onCompress
   const styles = getStyles(theme)
   const { t } = useTranslation()
 
-  const compressVideo = async (fileInfo: ImageOrVideo): Promise<ImageOrVideo> => {
-    try {
-      const compressedVideoPath = await VideoCompressor.compress(
-        fileInfo.path,
-        { compressionMethod: 'manual', bitrate: 691200, progressDivider: 5 },
-        progress => onCompressingVideoProgress(Math.ceil(progress * 100)),
-      )
-      await deleteFile(fileInfo.path)
-      fileInfo.path = compressedVideoPath
-      const { size } = await stat(compressedVideoPath)
-      fileInfo.size = size
-    } catch (error) {
-      logError(`Error compressing video: ${error}`)
-    } finally {
-      onCompressingVideoProgress(0)
-      return fileInfo
-    }
-  }
-
   const onMediaFile = async (fileInfo: ImageOrVideo) => {
     closeAttachmentOptions()
     let mediaFileInfo = { ...fileInfo }
     if (IS_ANDROID && mediaFileInfo.mime.startsWith('video')) {
-      mediaFileInfo = await compressVideo(mediaFileInfo)
+      mediaFileInfo = (await compressVideo(mediaFileInfo, onCompressingVideoProgress)) as ImageOrVideo
     }
     shareMediaToDidComm({
       ...mediaFileInfo,
