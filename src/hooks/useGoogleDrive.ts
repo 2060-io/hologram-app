@@ -18,8 +18,6 @@ import {
 import { log, logError } from '@2060/utils'
 import { BACKUP_NAME, BACKUP_ZIP_FILE_PATH } from '@2060/utils/walletBackUpUtils'
 
-global.Buffer ??= require('buffer').Buffer
-
 type FilesProps = {
   id: string
 }
