@@ -33,7 +33,8 @@ const AttachmentOptions: React.FC<Props> = ({ closeAttachmentOptions, onCompress
   const onMediaFile = async (fileInfo: ImageOrVideo) => {
     closeAttachmentOptions()
     let mediaFileInfo = { ...fileInfo }
-    if (IS_ANDROID && mediaFileInfo.mime.startsWith('video')) {
+    const isVideo = mediaFileInfo.mime.startsWith('video')
+    if (IS_ANDROID && isVideo) {
       mediaFileInfo = (await compressVideo(mediaFileInfo, onCompressingVideoProgress)) as ImageOrVideo
     }
     shareMediaToDidComm({

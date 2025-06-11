@@ -389,12 +389,12 @@ export const useChatActions = () => {
         } else if (mimeType.startsWith('image') || mimeType.startsWith('video')) {
           let didcommMediaFileSharingData = await getMediaFileSharingData(message.data, mimeType)
           const { duration, mime } = didcommMediaFileSharingData
-          const isVideoAndExceedsDuration =
-            mime.startsWith('video') && duration && duration > MAX_VIDEO_DURATION
+          const isVideo = mime.startsWith('video')
+          const isVideoAndExceedsDuration = isVideo && duration && duration > MAX_VIDEO_DURATION
           if (isVideoAndExceedsDuration) {
             excludedLongVideosCount++
           } else {
-            if (IS_ANDROID && mime.startsWith('video')) {
+            if (IS_ANDROID && isVideo) {
               didcommMediaFileSharingData = (await compressVideo(didcommMediaFileSharingData, progress => {
                 log('compressing progress', progress)
               })) as DidCommMediaFileSharingData

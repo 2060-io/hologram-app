@@ -90,6 +90,8 @@ const getImageDimensions = (filePath: string) => {
   })
 }
 
+// This is 3 times default compression bitrate for compressionMethod manual
+const COMPRESSION_BITRATE = 1036800
 export const compressVideo = async (
   fileInfo: ImageOrVideo | DidCommMediaFileSharingData,
   onProgress: (progress: number) => void,
@@ -97,7 +99,7 @@ export const compressVideo = async (
   try {
     const compressedVideoPath = await VideoCompressor.compress(
       fileInfo.path,
-      { compressionMethod: 'manual', bitrate: 691200, progressDivider: 5 },
+      { compressionMethod: 'manual', bitrate: COMPRESSION_BITRATE, progressDivider: 5 },
       progress => onProgress(Math.ceil(progress * 100)),
     )
     await deleteFile(fileInfo.path)
