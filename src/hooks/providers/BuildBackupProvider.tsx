@@ -1,14 +1,29 @@
+import { TypedArrayEncoder } from '@credo-ts/core'
+import { GDrive } from '@robinbobin/react-native-google-drive-api-wrapper'
 import axios from 'axios'
-import React, { createContext, PropsWithChildren, useContext, useState } from 'react'
+import React, { createContext, PropsWithChildren, useCallback, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { upload } from 'react-native-cloud-store'
+import { stat } from 'react-native-fs'
 import { nativeReadChunk } from 'react-native-local-native-modules'
 
+import { version } from '../../../package.json'
+import { useMobileAgent } from '../agent'
 import { BackupState } from '../backup'
 
+import { useLocalRealm } from './RealmProvider'
+
+import { ChatEntry, ChatThread } from '@2060/model'
+import {
+  BACKUP_INCLUDES_MEDIA_PERSIST_KEY,
+  getStorageData,
+  setStorageData,
+} from '@2060/services/localStorage'
 import { log, logError } from '@2060/utils'
+import { writeFile } from '@2060/utils/RNFS'
 import { toast } from '@2060/utils/toast'
-import { deleteBackupDirectory } from '@2060/utils/walletBackUpUtils'
+import { BACKUP_NAME, deleteBackupDirectory } from '@2060/utils/walletBackUpUtils'
+import * as BackupUtils from '@2060/utils/walletBackUpUtils'
 
 export interface ICloudBackupInfo {
   exists: boolean
@@ -19,16 +34,12 @@ export interface ICloudBackupInfo {
 
 type UploadFileToIcloud = {
   backupICloudPath: string
-  fileToUploadLocation: string
   getBackupInfo: () => Promise<ICloudBackupInfo>
 }
 
 type UploadFileToGoogleDrive = {
-  fileToUploadSize: number
-  fileToUploadLocation: string
-  chunkUploadUrl: string
+  googleDriveConnection: GDrive | null
   getBackupInfo: (fileId: string) => Promise<void>
-  initializeGoogleDrive: () => Promise<void>
   deletePreviousBackups: (justCreatedId: string) => Promise<void>
 }
 
@@ -36,7 +47,9 @@ type BuildBackupInterface = {
   globalUploadFileToIcloud: (args: UploadFileToIcloud) => void
   globalUploadFileToGoogleDrive: (args: UploadFileToGoogleDrive) => void
   backupState: BackupState
-  setBackupState: React.Dispatch<React.SetStateAction<BackupState>>
+  includeVideos: boolean
+  onToggleIncludeVideos: () => void
+  abortRetryBackup: () => void
 }
 
 export const useGlobalBuildBackup = () => {
@@ -66,15 +79,85 @@ const base64ToArrayBuffer = (base64: string) => {
 
 export const BuildBackupProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const { t } = useTranslation()
+  const { agent } = useMobileAgent()
+  const { realm } = useLocalRealm()
   const [backupState, setBackupState] = useState<BackupState>(backupStateInitialValues)
+  const [includeVideos, setIncludeVideos] = useState<boolean>(false)
 
-  const globalUploadFileToIcloud = ({
-    backupICloudPath,
-    fileToUploadLocation,
-    getBackupInfo,
-  }: UploadFileToIcloud) => {
+  useEffect(() => {
+    const getStoredConfig = async () => {
+      const storedIncludeVideos = await getStorageData(BACKUP_INCLUDES_MEDIA_PERSIST_KEY)
+      setIncludeVideos(Boolean(storedIncludeVideos))
+    }
+    getStoredConfig()
+  }, [])
+
+  const onToggleIncludeVideos = () => {
+    setIncludeVideos(!includeVideos)
+    setStorageData(BACKUP_INCLUDES_MEDIA_PERSIST_KEY, !includeVideos)
+  }
+
+  const startBackupProcess = useCallback(async () => {
+    setBackupState({ ...backupStateInitialValues, isBuildingBackup: true })
+    await BackupUtils.deleteBackupDirectory()
+    await BackupUtils.createBackupDirectory()
+    const backupKey = (await BackupUtils.getBackupKey()) ?? ''
+    await createWalletFile(backupKey)
+    createChatsFile(backupKey)
+    await createManifest()
+    const zipPath = await BackupUtils.zipBackup(includeVideos)
+    if (zipPath) {
+      return zipPath
+    } else {
+      setBackupState(prev => ({
+        ...backupStateInitialValues,
+        error: prev.error,
+        isBuildingBackup: false,
+      }))
+      return null
+    }
+  }, [includeVideos])
+
+  const createWalletFile = async (backupKey: string) => {
     try {
-      upload(fileToUploadLocation, backupICloudPath, {
+      await agent?.wallet.export({
+        key: backupKey,
+        path: BackupUtils.AFJ_BACKUP_FILE_PATH,
+      })
+    } catch (error) {
+      setBackupState(prev => ({ ...prev, error: `${error}` }))
+      logError('Error creating wallet file', error)
+    }
+  }
+
+  const createChatsFile = (backupKey: string) => {
+    try {
+      realm?.writeCopyTo({
+        encryptionKey: TypedArrayEncoder.fromHex(backupKey),
+        path: BackupUtils.REALM_BACKUP_FILE_PATH,
+        // FIXME: Figure out why writeCopyTo is ignoring schema parameter and exporting everything
+        schema: [ChatEntry, ChatThread],
+      })
+    } catch (error) {
+      setBackupState(prev => ({ ...prev, error: `${error}` }))
+      logError('Error creating realm chats file', error)
+    }
+  }
+
+  const createManifest = async () => {
+    const info = {
+      schemaVersion: 1,
+      appVersion: version,
+    }
+
+    await writeFile(BackupUtils.BACKUP_MANIFEST_FILE_PATH, JSON.stringify(info))
+  }
+
+  const globalUploadFileToIcloud = async ({ backupICloudPath, getBackupInfo }: UploadFileToIcloud) => {
+    try {
+      const backupFilePath = await startBackupProcess()
+      if (!backupFilePath) return
+      upload(backupFilePath, backupICloudPath, {
         onProgress(data) {
           setBackupState(prev => ({ ...prev, progress: data?.progress }))
           log(`Uploading backup progress ${data?.progress}`)
@@ -95,14 +178,23 @@ export const BuildBackupProvider: React.FC<PropsWithChildren> = ({ children }) =
   }
 
   const globalUploadFileToGoogleDrive = async ({
-    fileToUploadSize,
-    fileToUploadLocation,
-    chunkUploadUrl,
-    initializeGoogleDrive,
+    googleDriveConnection,
     getBackupInfo,
     deletePreviousBackups,
   }: UploadFileToGoogleDrive) => {
     try {
+      const backupFilePath = await startBackupProcess()
+      if (!backupFilePath) return
+      const fileToUploadInfo = await stat(backupFilePath)
+      const fileToUploadSize = fileToUploadInfo.size
+      const uploaderRequest = await googleDriveConnection?.files
+        .newResumableUploader()
+        .setDataType('application/zip')
+        .setShouldUseMultipleRequests(true)
+        .setRequestBody({ name: BACKUP_NAME, parents: ['appDataFolder'] })
+        .execute()
+      uploaderRequest.setContentLength(fileToUploadInfo.size)
+      const chunkUploadUrl = uploaderRequest.location
       const TWO_MB = 256 * 1024 * 4 * 2
       const UPLOAD_SIZE_PER_CHUNK = TWO_MB
       const numberOfChunks = Math.ceil(fileToUploadSize / UPLOAD_SIZE_PER_CHUNK)
@@ -110,7 +202,7 @@ export const BuildBackupProvider: React.FC<PropsWithChildren> = ({ children }) =
       for (let i = 0; i < numberOfChunks; i++) {
         const chunkSize =
           i + 1 < numberOfChunks ? UPLOAD_SIZE_PER_CHUNK : fileToUploadSize % UPLOAD_SIZE_PER_CHUNK
-        const fileChunkBase64 = await nativeReadChunk(fileToUploadLocation, start, chunkSize)
+        const fileChunkBase64 = await nativeReadChunk(backupFilePath, start, chunkSize)
         const base64ToBuffer = base64ToArrayBuffer(fileChunkBase64)
         const end = start + base64ToBuffer.length - 1
         const contentRange = `bytes ${start}-${end}/${fileToUploadSize}`
@@ -124,7 +216,6 @@ export const BuildBackupProvider: React.FC<PropsWithChildren> = ({ children }) =
         const progress = Number(((end / fileToUploadSize) * 100).toFixed())
         setBackupState(prev => ({ ...prev, progress }))
         if (response) {
-          await initializeGoogleDrive()
           setTimeout(() => {
             getBackupInfo(response.id)
             deletePreviousBackups(response.id)
@@ -154,13 +245,17 @@ export const BuildBackupProvider: React.FC<PropsWithChildren> = ({ children }) =
     await deleteBackupDirectory()
   }
 
+  const abortRetryBackup = () => setBackupState({ ...backupStateInitialValues })
+
   return (
     <BuildBackupContext.Provider
       value={{
         globalUploadFileToIcloud,
         globalUploadFileToGoogleDrive,
         backupState,
-        setBackupState,
+        includeVideos,
+        onToggleIncludeVideos,
+        abortRetryBackup,
       }}
     >
       {children}

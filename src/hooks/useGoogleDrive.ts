@@ -1,6 +1,6 @@
 import { GDrive, ListQueryBuilder } from '@robinbobin/react-native-google-drive-api-wrapper'
 import React, { useEffect, useState } from 'react'
-import { downloadFile, stat } from 'react-native-fs'
+import { downloadFile } from 'react-native-fs'
 import {
   nativeGDGetAccessToken,
   nativeGDSelectAccount,
@@ -136,21 +136,10 @@ export const useGoogleDrive = () => {
     }
   }
 
-  const uploadFileToGoogleDrive = async (fileToUploadLocation: string) => {
-    const fileToUploadInfo = await stat(fileToUploadLocation)
-    const uploaderRequest = await googleDriveConnection?.files
-      .newResumableUploader()
-      .setDataType('application/zip')
-      .setShouldUseMultipleRequests(true)
-      .setRequestBody({ name: BACKUP_NAME, parents: ['appDataFolder'] })
-      .execute()
-    uploaderRequest.setContentLength(fileToUploadInfo.size)
+  const uploadFileToGoogleDrive = () => {
     globalUploadFileToGoogleDrive({
-      fileToUploadSize: fileToUploadInfo.size,
-      fileToUploadLocation,
-      chunkUploadUrl: uploaderRequest.location,
+      googleDriveConnection,
       getBackupInfo,
-      initializeGoogleDrive,
       deletePreviousBackups,
     })
   }

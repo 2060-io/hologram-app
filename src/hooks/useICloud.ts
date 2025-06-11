@@ -90,10 +90,10 @@ export const useICloud = () => {
     }
   }
 
-  const uploadFileToIcloud = async (fileToUploadLocation: string) => {
+  const uploadFileToIcloud = async () => {
     if (await existsBackup()) await unlink(backupICloudPath)
     else createDir(iCloudBackupFolderPath)
-    globalUploadFileToIcloud({ backupICloudPath, fileToUploadLocation, getBackupInfo })
+    globalUploadFileToIcloud({ backupICloudPath, getBackupInfo })
   }
 
   const downloadBackup = (setRestoreProgress: React.Dispatch<React.SetStateAction<RestoreProgress>>) => () =>

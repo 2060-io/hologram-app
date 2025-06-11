@@ -10,7 +10,7 @@ import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 
 type Props = {
   backupState: BackupState
-  startBackupProcess: () => Promise<void>
+  startBackupProcess: () => void
   abortRetryBackup: () => void
 }
 

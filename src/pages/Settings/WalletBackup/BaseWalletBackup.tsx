@@ -1,4 +1,6 @@
-import React from 'react'
+import { ParamListBase, useIsFocused, useNavigation } from '@react-navigation/native'
+import { StackNavigationProp } from '@react-navigation/stack'
+import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ScrollView, View, SafeAreaView } from 'react-native'
 
@@ -11,9 +13,9 @@ import getStyles from './styles'
 import { WalletBackupInfo } from '@2060/components'
 import { Text, Switch, SvgIcon, MainButton } from '@2060/components/common'
 import { IS_ANDROID, IS_IOS } from '@2060/constants'
-import { useBuildBackup } from '@2060/hooks'
 import { useGlobalBuildBackup } from '@2060/hooks/providers/BuildBackupProvider'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
+import { getBackupKey } from '@2060/utils/walletBackUpUtils'
 
 const BaseWalletBackup = ({
   isCloudAvailable,
@@ -25,15 +27,20 @@ const BaseWalletBackup = ({
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
-  const { backupState, setBackupState } = useGlobalBuildBackup()
-  const {
-    backupPassword,
-    startBackupProcess,
-    abortRetryBackup,
-    goToChangePassword,
-    includeVideos,
-    onToggleIncludeVideos,
-  } = useBuildBackup({ uploadBackupToCloud, setBackupState })
+  const { backupState, includeVideos, onToggleIncludeVideos, abortRetryBackup } = useGlobalBuildBackup()
+  const [backupPassword, setBackupPassword] = useState<string | undefined>('')
+  const navigation: StackNavigationProp<ParamListBase> = useNavigation()
+  const isFocused = useIsFocused()
+
+  useEffect(() => {
+    const getStoredBackupPassword = async () => {
+      const storedBackup = await getBackupKey()
+      setBackupPassword(storedBackup)
+    }
+    isFocused && getStoredBackupPassword()
+  }, [isFocused])
+
+  const goToChangePassword = () => navigation.navigate('ChangeBackupPassword')
 
   const options = [
     {
@@ -66,7 +73,7 @@ const BaseWalletBackup = ({
               backupState.isBuildingBackup || backupState.error ? (
                 <Building
                   backupState={backupState}
-                  startBackupProcess={startBackupProcess}
+                  startBackupProcess={uploadBackupToCloud}
                   abortRetryBackup={abortRetryBackup}
                 />
               ) : (
@@ -78,7 +85,7 @@ const BaseWalletBackup = ({
                     mediumText: styles.mediumText,
                   }}
                   tertiaryText={theme.colors.tertiaryText}
-                  startBackupProcess={startBackupProcess}
+                  startBackupProcess={uploadBackupToCloud}
                 />
               )
             ) : (
