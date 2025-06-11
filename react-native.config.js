@@ -5,12 +5,5 @@ module.exports = {
     },
     android: {},
   },
-  dependencies: {
-    'react-native-compressor': {
-      platforms: {
-        ios: null,
-      },
-    },
-  },
   assets: ['./src/assets/fonts'],
 }

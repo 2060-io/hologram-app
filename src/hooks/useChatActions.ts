@@ -23,7 +23,7 @@ import { createTextChatEntry } from './agent/chat/recordChangeHandlers/handleBas
 import { createChatEntry, findOrCreateChatThread, updateThread } from './agent/chat/services'
 import { useLocalRealm } from './providers/RealmProvider'
 
-import { IS_ANDROID, MAX_VIDEO_DURATION } from '@2060/constants'
+import { MAX_VIDEO_DURATION } from '@2060/constants'
 import {
   ActionMenuSelectionMetadata,
   ChatEntry,
@@ -394,7 +394,7 @@ export const useChatActions = () => {
           if (isVideoAndExceedsDuration) {
             excludedLongVideosCount++
           } else {
-            if (IS_ANDROID && isVideo) {
+            if (isVideo) {
               didcommMediaFileSharingData = (await compressVideo(didcommMediaFileSharingData, progress => {
                 log('compressing progress', progress)
               })) as DidCommMediaFileSharingData
