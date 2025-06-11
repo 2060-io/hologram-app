@@ -11,7 +11,6 @@ const MAX_VIDEO_SECONDS_DURATION = 60
 const optionsCommon: CommonOptions = {
   loadingLabelText: 'Applying changes...',
   useFrontCamera: true,
-  sortOrder: 'desc',
 }
 
 const defaultCamera: Options = {
