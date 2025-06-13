@@ -95,21 +95,32 @@ const COMPRESSION_BITRATE = 1036800
 export const compressVideo = async (
   fileInfo: ImageOrVideo | DidCommMediaFileSharingData,
   onProgress: (progress: number) => void,
-): Promise<ImageOrVideo | DidCommMediaFileSharingData> => {
+  getCancellationId?: (cancellationId: string) => void,
+): Promise<ImageOrVideo | DidCommMediaFileSharingData | null> => {
   try {
     const compressedVideoPath = await VideoCompressor.compress(
       fileInfo.path,
-      { compressionMethod: 'manual', bitrate: COMPRESSION_BITRATE, progressDivider: 5 },
+      {
+        compressionMethod: 'manual',
+        bitrate: COMPRESSION_BITRATE,
+        progressDivider: 5,
+        getCancellationId,
+      },
       progress => onProgress(Math.ceil(progress * 100)),
     )
     await deleteFile(fileInfo.path)
     fileInfo.path = compressedVideoPath
     const { size } = await stat(compressedVideoPath)
     fileInfo.size = size
+    return fileInfo
   } catch (error) {
     logError(`Error compressing video: ${error}`)
+    return null
   } finally {
     onProgress(0)
-    return fileInfo
   }
+}
+
+export const cancelVideoCompression = (cancellationId: string) => {
+  VideoCompressor.cancelCompression(cancellationId)
 }

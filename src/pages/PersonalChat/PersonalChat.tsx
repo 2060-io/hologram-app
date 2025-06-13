@@ -60,6 +60,7 @@ import { ChatMessageList } from '@2060/pages/PersonalChat/ChatMessageList'
 import { reportMessage } from '@2060/services/api/trustRegistryService'
 import { isService } from '@2060/utils/connectionUtils'
 import { getFormattedDateRange } from '@2060/utils/dateUtils'
+import { cancelVideoCompression } from '@2060/utils/mediaFileUtils'
 import { markNotificationsOfChatAsViewed } from '@2060/utils/pushNotificationsUtils'
 import { toast } from '@2060/utils/toast'
 
@@ -139,6 +140,7 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
   const insets = useSafeAreaInsets()
   const headerStatusBarHeight = insets.top
   const timerStickyDate = useRef<ReturnType<typeof setTimeout>>()
+  const videoCompressionCancellationId = useRef<string>('')
 
   const { data: chatThreadData, flags } = chatThread
   const { menu } = useActionMenu({ connectionId: chatThreadData.connectionId })
@@ -327,6 +329,14 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
     top: headerHeight + (IS_IOS ? headerStatusBarHeight : 0),
   }
 
+  const getVideoCompressionCancellationId = (cancellationId: string) => {
+    videoCompressionCancellationId.current = cancellationId
+  }
+
+  const cancelCompression = () => {
+    cancelVideoCompression(videoCompressionCancellationId.current)
+  }
+
   return (
     <KeyboardAvoidingView
       behavior={IS_IOS ? 'padding' : 'height'}
@@ -389,7 +399,9 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
               showMediaOptions={flags.supportsMediaSharing}
             />
           )}
-        {compressingVideoProgress > 0 && <CompressingVideo progress={compressingVideoProgress} />}
+        {compressingVideoProgress > 0 && (
+          <CompressingVideo progress={compressingVideoProgress} cancelCompression={cancelCompression} />
+        )}
         <ModalBottomHalf visible={showContextualMenu} onClose={() => setShowContextualMenu(false)}>
           {menu ? (
             <ContextualMenu
@@ -403,6 +415,7 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
           <AttachmentOptions
             closeAttachmentOptions={() => setShowAttachmentOptions(false)}
             onCompressingVideoProgress={setCompressingVideoProgress}
+            getVideoCompressionCancellationId={getVideoCompressionCancellationId}
           />
         </ModalBottomHalf>
         <MessageFloatingMenu

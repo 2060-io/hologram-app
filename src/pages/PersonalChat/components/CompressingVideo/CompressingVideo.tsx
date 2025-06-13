@@ -2,11 +2,16 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { StyleSheet, View } from 'react-native'
 
-import { Progress, Text } from '@2060/components/common'
+import { MainButton, Progress, Text } from '@2060/components/common'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { AppTheme } from '@2060/styles'
 
-const CompressingVideo = ({ progress }: { progress: number }) => {
+type Props = {
+  progress: number
+  cancelCompression: () => void
+}
+
+const CompressingVideo = ({ progress, cancelCompression }: Props) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
@@ -17,6 +22,7 @@ const CompressingVideo = ({ progress }: { progress: number }) => {
         style={styles.text}
       >{`${t('personalChat.processingVideo')} ${progress}%`}</Text>
       <Progress progress={progress} progressColor={theme.colors.green} />
+      <MainButton text={t('general.cancel')} onPress={cancelCompression} />
     </View>
   )
 }

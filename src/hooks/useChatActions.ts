@@ -387,7 +387,10 @@ export const useChatActions = () => {
             })
           }
         } else if (mimeType.startsWith('image') || mimeType.startsWith('video')) {
-          let didcommMediaFileSharingData = await getMediaFileSharingData(message.data, mimeType)
+          let didcommMediaFileSharingData: DidCommMediaFileSharingData | null = await getMediaFileSharingData(
+            message.data,
+            mimeType,
+          )
           const { duration, mime } = didcommMediaFileSharingData
           const isVideo = mime.startsWith('video')
           const isVideoAndExceedsDuration = isVideo && duration && duration > MAX_VIDEO_DURATION
@@ -397,13 +400,15 @@ export const useChatActions = () => {
             if (isVideo) {
               didcommMediaFileSharingData = (await compressVideo(didcommMediaFileSharingData, progress => {
                 log('compressing progress', progress)
-              })) as DidCommMediaFileSharingData
+              })) as DidCommMediaFileSharingData | null
             }
-            startMediaUpload({
-              didcommConnectionIds: connectionIds,
-              didcommMediaFileSharingData,
-              deleteOriginalFile: true,
-            })
+            if (didcommMediaFileSharingData) {
+              startMediaUpload({
+                didcommConnectionIds: connectionIds,
+                didcommMediaFileSharingData,
+                deleteOriginalFile: true,
+              })
+            }
           }
         }
       }

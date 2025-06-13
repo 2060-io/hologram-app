@@ -15,6 +15,7 @@ import { compressVideo } from '@2060/utils/mediaFileUtils'
 type Props = {
   closeAttachmentOptions(): void
   onCompressingVideoProgress: (progress: number) => void
+  getVideoCompressionCancellationId: (cancellationId: string) => void
 }
 
 const options = [
@@ -23,7 +24,11 @@ const options = [
   { id: 'file-gallery', icon: 'image', label: 'photoAndVideoLibrary' },
 ]
 
-const AttachmentOptions: React.FC<Props> = ({ closeAttachmentOptions, onCompressingVideoProgress }) => {
+const AttachmentOptions: React.FC<Props> = ({
+  closeAttachmentOptions,
+  onCompressingVideoProgress,
+  getVideoCompressionCancellationId,
+}) => {
   const { takePhotoOrVideo, takePhotoOrVideoFromGallery } = useImageCropPicker()
   const { shareMediaToDidComm } = useChatActions()
   const theme = useTheme()
@@ -32,17 +37,23 @@ const AttachmentOptions: React.FC<Props> = ({ closeAttachmentOptions, onCompress
 
   const onMediaFile = async (fileInfo: ImageOrVideo) => {
     closeAttachmentOptions()
-    let mediaFileInfo = { ...fileInfo }
+    let mediaFileInfo: ImageOrVideo | null = { ...fileInfo }
     const isVideo = mediaFileInfo.mime.startsWith('video')
     if (IS_ANDROID && isVideo) {
-      mediaFileInfo = (await compressVideo(mediaFileInfo, onCompressingVideoProgress)) as ImageOrVideo
+      mediaFileInfo = (await compressVideo(
+        mediaFileInfo,
+        onCompressingVideoProgress,
+        getVideoCompressionCancellationId,
+      )) as ImageOrVideo | null
     }
-    shareMediaToDidComm({
-      ...mediaFileInfo,
-      duration: mediaFileInfo.duration ?? undefined,
-      width: mediaFileInfo.width ?? undefined,
-      height: mediaFileInfo.height ?? undefined,
-    }).catch(logError)
+    if (mediaFileInfo) {
+      shareMediaToDidComm({
+        ...mediaFileInfo,
+        duration: mediaFileInfo.duration ?? undefined,
+        width: mediaFileInfo.width ?? undefined,
+        height: mediaFileInfo.height ?? undefined,
+      }).catch(logError)
+    }
   }
 
   const onSelectedOption = async (optionId: string) => {
