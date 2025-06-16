@@ -90,8 +90,8 @@ const getImageDimensions = (filePath: string) => {
   })
 }
 
-// This is 3 times default compression bitrate for compressionMethod manual
-const COMPRESSION_BITRATE = 1036800
+// This is 2 millions of bits per second (0.25 MB)
+const COMPRESSION_BITRATE = 2_000_000
 export const compressVideo = async (
   fileInfo: ImageOrVideo | DidCommMediaFileSharingData,
   onProgress: (progress: number) => void,
