@@ -13,7 +13,7 @@ import { BackupState } from '../backup'
 
 import { useLocalRealm } from './RealmProvider'
 
-import { ChatEntry, ChatThread } from '@2060/model'
+import { CacheRecord, ChatEntry, ChatThread } from '@2060/model'
 import {
   BACKUP_INCLUDES_MEDIA_PERSIST_KEY,
   getStorageData,
@@ -136,7 +136,7 @@ export const BuildBackupProvider: React.FC<PropsWithChildren> = ({ children }) =
         encryptionKey: TypedArrayEncoder.fromHex(backupKey),
         path: BackupUtils.REALM_BACKUP_FILE_PATH,
         // FIXME: Figure out why writeCopyTo is ignoring schema parameter and exporting everything
-        schema: [ChatEntry, ChatThread],
+        schema: [ChatEntry, ChatThread, CacheRecord],
       })
     } catch (error) {
       setBackupState(prev => ({ ...prev, error: `${error}` }))
