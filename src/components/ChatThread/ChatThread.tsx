@@ -40,7 +40,13 @@ const ChatThread = ({
 
   return (
     <TouchableOpacity activeOpacity={0.5} onPress={onPressChatThread} style={styles.container}>
-      <Avatar uri={picture} label={topic} size="13%" bgAvatarInitials={theme.colors.secondary} />
+      <Avatar
+        uri={picture}
+        label={topic}
+        size="13%"
+        bgAvatarInitials={theme.colors.secondary}
+        enableImageRefresh={false}
+      />
       <View style={styles.contentText}>
         <Text typography="EuclidCircularA-Medium" style={styles.nameUser} numberOfLines={1}>
           {topic}

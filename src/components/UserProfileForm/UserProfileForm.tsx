@@ -10,7 +10,7 @@ import getStyles from './styles'
 import { Text, TextInput, SvgIcon } from '@2060/components/common'
 import { useImageCropPicker, ImageOrVideo } from '@2060/hooks'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { dataUrl } from '@2060/utils/connectionUtils'
+import { dataUrl } from '@2060/utils'
 
 type Props = {
   displayPicture: PictureData | undefined

@@ -9,7 +9,7 @@ import { BackupProgressProps, OnBackupFinish } from './backup'
 
 import { useMobileAgent } from '@2060/hooks/agent/MobileAgentProvider'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
-import { ChatEntry, ChatThread } from '@2060/model'
+import { ChatEntry, ChatThread, CacheRecord } from '@2060/model'
 import {
   setStorageData,
   getStorageData,
@@ -142,7 +142,7 @@ export const useBuildBackup = ({
         encryptionKey: TypedArrayEncoder.fromHex(backupKey),
         path: BackupUtils.REALM_BACKUP_FILE_PATH,
         // FIXME: Figure out why writeCopyTo is ignoring schema parameter and exporting everything
-        schema: [ChatEntry, ChatThread],
+        schema: [ChatEntry, ChatThread, CacheRecord],
       })
     } catch (error) {
       setUploadProgress(prev => ({ ...prev, error: `${error}` }))

@@ -149,7 +149,6 @@
       "eMRTDScanInst": "Place your passport or ID card behind your phone and tap “Start” to begin the NFC scan.\n\nThe chip may be located in different areas (e.g., front/back cover of a passport or sides of an ID card), so <green>multiple attempts</green> may be needed for successful scanning.",
       "eMRTDAborted": "Document NFC Scan Refused",
       "eMRTDScanned": "Document Scanned",
-      "eMRTD": "Document Scanned",
       "mrzRefused": "Document Camera Scan Refused",
       "mrzScanned": "Document Validated",
       "eMRTDNotSupported": "Your device does not support NFC reading",
