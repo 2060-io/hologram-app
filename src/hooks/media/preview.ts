@@ -44,8 +44,8 @@ export async function createLocalPreview(options: { mimeType: string; localFileP
   // save preview under previews directory
   // TODO: this should be actually done directly by createVideoThumbnail/createResizedImage
   if (localPreviewFilePath) {
-    const [previewFileNameAndExtension] = localFilePath.split('/').slice(-1)
-    const previewFileName = `${previewFileNameAndExtension.split('.').at(0)}.jpeg`
+    const [previewFileNameWithExtension] = localFilePath.split('/').slice(-1)
+    const previewFileName = `${previewFileNameWithExtension.split('.').at(0)}.jpeg`
     const previewMediaDestinationPath = `${getLocalMediaPreviewFilePath(previewFileName)}`
     const existPreviewFile = await existsFile(previewMediaDestinationPath)
     if (!existPreviewFile) {
