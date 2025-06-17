@@ -25,9 +25,8 @@ import {
   ChatEntryRole,
   SystemMessageMetadata,
   ChatEntryState,
-  MediaSharingMetadata,
 } from '@2060/model'
-import { deleteFile, getLocalFileUri } from '@2060/utils/RNFS'
+import { checkIfDeleteFilesFromMedia } from '@2060/pages/PersonalChat/utils'
 import { supportsMessageReceipts } from '@2060/utils/connectionUtils'
 import { getOtherChatEntriesTypeMedia, queryOfTypeMedia } from '@2060/utils/realmQueries'
 
@@ -196,20 +195,7 @@ export const ChatProvider: React.FC<Props> = ({ children }) => {
           const otherChatEntriesTypeMedia = getOtherChatEntriesTypeMedia(realm, threadId)
           // iterates all chat entries of type media and check if can delete media files
           for (const entryTypeMedia of entriesTypeMedia) {
-            const metadata = entryTypeMedia.metadata as MediaSharingMetadata
-            if (metadata.localFilePath) {
-              const isLocalFilePathReferencedInOtherChatEntry = otherChatEntriesTypeMedia.some(
-                otherChatEntryTypeMedia =>
-                  (otherChatEntryTypeMedia.metadata as MediaSharingMetadata).localFilePath ===
-                  metadata.localFilePath,
-              )
-              if (!isLocalFilePathReferencedInOtherChatEntry) {
-                deleteFile(getLocalFileUri(metadata.localFilePath))
-                if (metadata.localPreviewFilePath) {
-                  deleteFile(getLocalFileUri(metadata.localPreviewFilePath))
-                }
-              }
-            }
+            checkIfDeleteFilesFromMedia(entryTypeMedia.metadata, otherChatEntriesTypeMedia)
           }
         }
       }

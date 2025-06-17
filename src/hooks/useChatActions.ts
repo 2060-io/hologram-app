@@ -7,7 +7,6 @@ import { useTranslation } from 'react-i18next'
 import { Platform } from 'react-native'
 import Share, { ShareOptions } from 'react-native-share'
 import { SharedData } from 'react-native-share-menu'
-import { Results } from 'realm'
 
 import {
   useMobileAgent,
@@ -28,7 +27,6 @@ import { MAX_VIDEO_DURATION } from '@2060/constants'
 import {
   ActionMenuSelectionMetadata,
   ChatEntry,
-  ChatEntryMetadata,
   ChatEntryRole,
   ChatEntryState,
   ChatEntryType,
@@ -38,30 +36,12 @@ import {
   isMediaType,
 } from '@2060/model'
 import { ChatEntryMessage } from '@2060/pages/PersonalChat/ChatMessage/Props'
+import { checkIfDeleteFilesFromMedia } from '@2060/pages/PersonalChat/utils'
 import { log, logError } from '@2060/utils'
-import { deleteFile, getLocalFileUri } from '@2060/utils/RNFS'
+import { getLocalFileUri } from '@2060/utils/RNFS'
 import { compressVideo, getMediaFileSharingData } from '@2060/utils/mediaFileUtils'
 import { getOtherChatEntriesTypeMedia } from '@2060/utils/realmQueries'
 import { toast, ToastOptions } from '@2060/utils/toast'
-
-const checkIfDeleteFilesFromMedia = (
-  messageMetadata: ChatEntryMetadata | undefined,
-  otherChatEntriesTypeMedia: never[] | Results<ChatEntry>,
-) => {
-  const metadata = messageMetadata as MediaSharingMetadata
-  if (metadata.localFilePath) {
-    const isLocalFilePathReferencedInOtherChatEntry = otherChatEntriesTypeMedia.some(
-      otherEntryTypeMedia =>
-        (otherEntryTypeMedia.metadata as MediaSharingMetadata).localFilePath === metadata.localFilePath,
-    )
-    if (!isLocalFilePathReferencedInOtherChatEntry) {
-      deleteFile(getLocalFileUri(metadata.localFilePath))
-      if (metadata.localPreviewFilePath) {
-        deleteFile(getLocalFileUri(metadata.localPreviewFilePath))
-      }
-    }
-  }
-}
 
 export const useChatActions = () => {
   const { t } = useTranslation()

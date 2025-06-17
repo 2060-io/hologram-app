@@ -1,6 +1,7 @@
 import { uuid } from '@credo-ts/core/build/utils/uuid'
 import dayjs from 'dayjs'
 import { t } from 'i18next'
+import { Results } from 'realm'
 
 import {
   isMediaType,
@@ -11,8 +12,11 @@ import {
   ChatEntryRole,
   ChatEntryState,
   SystemMessageMetadata,
+  ChatEntryMetadata,
+  ChatEntry,
 } from '@2060/model'
 import { ChatEntryMessage } from '@2060/pages/PersonalChat/ChatMessage/Props'
+import { deleteFile, getLocalFileUri } from '@2060/utils/RNFS'
 
 const buildSystemMessage = (options: {
   kind: SystemMessageKind
@@ -137,4 +141,23 @@ export const getMinutesAndSeconds = (milliseconds: number) => {
   const minutes = Math.floor(secs / 60)
   const seconds = secs % 60
   return `${pad(minutes)}:${pad(seconds)}`
+}
+
+export const checkIfDeleteFilesFromMedia = (
+  messageMetadata: ChatEntryMetadata | undefined,
+  otherChatEntriesTypeMedia: never[] | Results<ChatEntry>,
+) => {
+  const metadata = messageMetadata as MediaSharingMetadata
+  if (metadata.localFilePath) {
+    const isLocalFilePathReferencedInOtherChatEntry = otherChatEntriesTypeMedia.some(
+      otherEntryTypeMedia =>
+        (otherEntryTypeMedia.metadata as MediaSharingMetadata).localFilePath === metadata.localFilePath,
+    )
+    if (!isLocalFilePathReferencedInOtherChatEntry) {
+      deleteFile(getLocalFileUri(metadata.localFilePath))
+      if (metadata.localPreviewFilePath) {
+        deleteFile(getLocalFileUri(metadata.localPreviewFilePath))
+      }
+    }
+  }
 }
