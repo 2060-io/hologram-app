@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next'
 import { Platform } from 'react-native'
 import Share, { ShareOptions } from 'react-native-share'
 import { SharedData } from 'react-native-share-menu'
+import { Results } from 'realm'
 
 import {
   useMobileAgent,
@@ -27,6 +28,7 @@ import { MAX_VIDEO_DURATION } from '@2060/constants'
 import {
   ActionMenuSelectionMetadata,
   ChatEntry,
+  ChatEntryMetadata,
   ChatEntryRole,
   ChatEntryState,
   ChatEntryType,
@@ -37,9 +39,29 @@ import {
 } from '@2060/model'
 import { ChatEntryMessage } from '@2060/pages/PersonalChat/ChatMessage/Props'
 import { log, logError } from '@2060/utils'
-import { getLocalFileUri } from '@2060/utils/RNFS'
+import { deleteFile, getLocalFileUri } from '@2060/utils/RNFS'
 import { compressVideo, getMediaFileSharingData } from '@2060/utils/mediaFileUtils'
+import { getOtherChatEntriesTypeMedia } from '@2060/utils/realmQueries'
 import { toast, ToastOptions } from '@2060/utils/toast'
+
+const checkIfDeleteFilesFromMedia = (
+  messageMetadata: ChatEntryMetadata | undefined,
+  otherChatEntriesTypeMedia: never[] | Results<ChatEntry>,
+) => {
+  const metadata = messageMetadata as MediaSharingMetadata
+  if (metadata.localFilePath) {
+    const isLocalFilePathReferencedInOtherChatEntry = otherChatEntriesTypeMedia.some(
+      otherEntryTypeMedia =>
+        (otherEntryTypeMedia.metadata as MediaSharingMetadata).localFilePath === metadata.localFilePath,
+    )
+    if (!isLocalFilePathReferencedInOtherChatEntry) {
+      deleteFile(getLocalFileUri(metadata.localFilePath))
+      if (metadata.localPreviewFilePath) {
+        deleteFile(getLocalFileUri(metadata.localPreviewFilePath))
+      }
+    }
+  }
+}
 
 export const useChatActions = () => {
   const { t } = useTranslation()
@@ -96,8 +118,12 @@ export const useChatActions = () => {
   const deleteMessagesForMe = useCallback(
     (messages: ChatEntryMessage[]) => {
       return new Promise<void>((resolve, reject) => {
-        if (!realm) throw new Error('No active Realm')
+        if (!realm) return
         try {
+          const isSomeMessageTypeMedia = messages.some(message => isMediaType(message.type))
+          const otherChatEntriesTypeMedia = isSomeMessageTypeMedia
+            ? getOtherChatEntriesTypeMedia(realm, messages[0].chatThreadId)
+            : []
           messages.forEach(message => {
             const { id } = message
             realm.write(() => {
@@ -105,6 +131,9 @@ export const useChatActions = () => {
               if (!object) throw new Error(`ChatEntry with id ${id} not found`)
               realm.delete(object)
             })
+            if (isMediaType(message.type)) {
+              checkIfDeleteFilesFromMedia(message.metadata, otherChatEntriesTypeMedia)
+            }
           })
           toast({
             type: 'success',
@@ -125,11 +154,14 @@ export const useChatActions = () => {
     async (messages: ChatEntryMessage[]) => {
       return new Promise<void>((resolve, reject) => {
         try {
-          if (!agent || !connectionId) throw new Error('Agent is undefined')
+          if (!agent || !connectionId || !realm) return
           const receipts: MessageReceiptOptions[] = []
+          const isSomeMessageTypeMedia = messages.some(message => isMediaType(message.type))
+          const otherChatEntriesTypeMedia = isSomeMessageTypeMedia
+            ? getOtherChatEntriesTypeMedia(realm, messages[0].chatThreadId)
+            : []
           messages.forEach(message => {
             const { id: entryId, associatedMessageId } = message
-            if (!realm) throw new Error('No active Realm')
             realm.write(() => {
               const object = realm.objectForPrimaryKey(ChatEntry, entryId)
               if (!object) throw new Error(`ChatEntry with id ${entryId} not found`)
@@ -140,6 +172,9 @@ export const useChatActions = () => {
                 thread.preview = getLocalizedPreview({ ...message, state: ChatEntryState.Deleted })
               }
             })
+            if (isMediaType(message.type)) {
+              checkIfDeleteFilesFromMedia(message.metadata, otherChatEntriesTypeMedia)
+            }
             receipts.push({ messageId: associatedMessageId ?? '', state: MessageState.Deleted })
           })
 

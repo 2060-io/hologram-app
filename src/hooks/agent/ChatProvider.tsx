@@ -25,8 +25,11 @@ import {
   ChatEntryRole,
   SystemMessageMetadata,
   ChatEntryState,
+  MediaSharingMetadata,
 } from '@2060/model'
+import { deleteFile, getLocalFileUri } from '@2060/utils/RNFS'
 import { supportsMessageReceipts } from '@2060/utils/connectionUtils'
+import { getOtherChatEntriesTypeMedia, queryOfTypeMedia } from '@2060/utils/realmQueries'
 
 export type ChatCategory = 'all' | 'people' | 'services'
 export type ChatFilters = { topic: string; archived: boolean; category: ChatCategory; parentId?: string }
@@ -168,10 +171,9 @@ export const ChatProvider: React.FC<Props> = ({ children }) => {
       if (!realm) throw new Error('Realm unavailable')
       let thread = realm.objects(ChatThread).find(item => item.id === threadId)
       if (thread) {
+        const filteredEntries = realm.objects(ChatEntry).filtered(`chatThreadId == '${threadId}'`)
         realm.write(() => {
-          const filteredEntries = realm.objects(ChatEntry).filtered(`chatThreadId == '${threadId}'`)
           realm.delete(filteredEntries)
-
           // Create security message
           if (!thread) return
           thread.preview = ''
@@ -189,6 +191,27 @@ export const ChatProvider: React.FC<Props> = ({ children }) => {
             unread: false,
           })
         })
+        const entriesTypeMedia = filteredEntries.filtered(queryOfTypeMedia)
+        if (entriesTypeMedia.length) {
+          const otherChatEntriesTypeMedia = getOtherChatEntriesTypeMedia(realm, threadId)
+          // iterates all chat entries of type media and check if can delete media files
+          for (const entryTypeMedia of entriesTypeMedia) {
+            const metadata = entryTypeMedia.metadata as MediaSharingMetadata
+            if (metadata.localFilePath) {
+              const isLocalFilePathReferencedInOtherChatEntry = otherChatEntriesTypeMedia.some(
+                otherChatEntryTypeMedia =>
+                  (otherChatEntryTypeMedia.metadata as MediaSharingMetadata).localFilePath ===
+                  metadata.localFilePath,
+              )
+              if (!isLocalFilePathReferencedInOtherChatEntry) {
+                deleteFile(getLocalFileUri(metadata.localFilePath))
+                if (metadata.localPreviewFilePath) {
+                  deleteFile(getLocalFileUri(metadata.localPreviewFilePath))
+                }
+              }
+            }
+          }
+        }
       }
     },
     [realm],
