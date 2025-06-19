@@ -106,7 +106,7 @@ const Navigation = ({ isSignedUp, agent, theme }: NavigationProps) => {
       })
     })
     return () => unsubscribe()
-  })
+  }, [])
 
   useEffect(() => {
     // FIXME: accessing realm is currently making the app crash in dev environment.
@@ -123,7 +123,7 @@ const Navigation = ({ isSignedUp, agent, theme }: NavigationProps) => {
         addChatEntryChangeListener()
         addConnectionChangeListener()
         return () => {
-          log('Unregistering background event listeners')
+          log('App in foreground ... unregistering background event listeners')
           removeChatEntryChangeListener()
           removeConnectionChangeListener()
         }
