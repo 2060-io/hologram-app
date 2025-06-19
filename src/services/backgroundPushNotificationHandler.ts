@@ -21,14 +21,13 @@ import { walletDirectoryPath } from '@2060/utils/RNFS'
 import { DevEnvsObject } from '@2060/utils/developer'
 import {
   deleteRemoteNotifications,
-  checkApplicationPermission,
   getIsProcessingBackgroundNotification,
   updateIsProcessingBackgroundNotification,
 } from '@2060/utils/pushNotificationsUtils'
 
 const makeRequestToLocalServer = (payload: Record<string, string>) => {
   if (__DEV__) {
-    fetch('http://192.168.1.3:3000/api/echo', {
+    fetch('http://192.168.1.10:3000/api/echo', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
@@ -49,9 +48,6 @@ export async function backgroundPushNotificationHandler(remoteMessage: FirebaseM
   const isProcessingBackgroundNotification = await getIsProcessingBackgroundNotification()
   if (isProcessingBackgroundNotification) {
     makeRequestToLocalServer({ data: 'is executing at the moment, does not continue' })
-    return
-  }
-  if (!(await checkApplicationPermission())) {
     return
   }
   deleteRemoteNotifications()
@@ -100,14 +96,14 @@ export async function backgroundPushNotificationHandler(remoteMessage: FirebaseM
         baseAgentConfig.logger?.info(`Status message received. Remaining messages: ${messageCount}`)
 
         if (messageCount === 0) {
+          makeRequestToLocalServer({ data: 'finish execution' })
+          updateIsProcessingBackgroundNotification(false)
           deleteRemoteNotifications()
           removeChatEntryChangeListener()
           removeConnectionChangeListener()
           unsubscribeFromAgentChatEvents()
           await agent.shutdown()
           realm.close()
-          makeRequestToLocalServer({ data: 'finish execution' })
-          updateIsProcessingBackgroundNotification()
         }
       }
     })
@@ -120,7 +116,7 @@ export async function backgroundPushNotificationHandler(remoteMessage: FirebaseM
       protocolVersion: 'v2',
     })
   } catch (error) {
-    updateIsProcessingBackgroundNotification()
+    updateIsProcessingBackgroundNotification(false)
     makeRequestToLocalServer({ error: JSON.stringify(error) })
   }
 }

@@ -67,17 +67,6 @@ export const getFcmDeviceToken = async () => {
   return fcmToken
 }
 
-export const checkApplicationPermission = async () => {
-  const settings = await notifee.requestPermission({
-    sound: true,
-    alert: true,
-    criticalAlert: true,
-    badge: true,
-    provisional: true,
-  })
-  return settings.authorizationStatus !== AuthorizationStatus.DENIED
-}
-
 /**
  * Create a channel (required for Android)
  * @returns channelId
@@ -132,12 +121,11 @@ export const getIsProcessingBackgroundNotification = async () => {
 }
 
 /**
-Function that updates the value of a boolean flag `isProcessingBackgroundNotification` in the storage.
-It takes a boolean parameter `isProcessing` which defaults to `false`if not provided. The function stores
-this boolean value in the storage under the key `IS_PROCESSING_BACKGROUND_NOTIFICATIONS_PERSIST_KEY`.
-This function is useful for keeping track of whether the application is currently
-processing a background notification.
-*/
-export const updateIsProcessingBackgroundNotification = async (isProcessing = false) => {
+ * Updates the persistent storage flag indicating whether background notifications are being processed.
+ *
+ * @param isProcessing - A boolean value representing if background notification processing is ongoing.
+ * @returns A promise that resolves when the storage update is complete.
+ */
+export const updateIsProcessingBackgroundNotification = async (isProcessing: boolean) => {
   await setStorageData(IS_PROCESSING_BACKGROUND_NOTIFICATIONS_PERSIST_KEY, isProcessing)
 }

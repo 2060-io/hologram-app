@@ -68,7 +68,7 @@ const App = () => {
   initializeI18n.then(() => setTranslationsLoaded(true))
 
   useEffect(() => {
-    updateIsProcessingBackgroundNotification()
+    updateIsProcessingBackgroundNotification(false)
     /**
      * FIXME: The SplashScreen.hide() was added inside a 0 timeout to
      * works well in android. So a probably reason could be the order
