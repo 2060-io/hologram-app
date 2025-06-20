@@ -2133,10 +2133,10 @@ PODS:
     - Yoga
   - RNLocalize (2.2.6):
     - React-Core
-  - RNNotifee (9.0.0):
+  - RNNotifee (9.1.8):
     - React-Core
-    - RNNotifee/NotifeeCore (= 9.0.0)
-  - RNNotifee/NotifeeCore (9.0.0):
+    - RNNotifee/NotifeeCore (= 9.1.8)
+  - RNNotifee/NotifeeCore (9.1.8):
     - React-Core
   - RNPermissions (3.10.1):
     - React-Core
@@ -2860,7 +2860,7 @@ SPEC CHECKSUMS:
   RNGestureHandler: fc491c834d09b0538618a3f328ab75fe8f90f5b4
   RNImageCropPicker: 02f22ce2f267d858ca14679944ce578c541121db
   RNLocalize: 8bf466de4c92d4721b254aabe1ff0a1456e7b9f4
-  RNNotifee: 3978eab0eb24f9c2ee6ee0440ee7c50748803559
+  RNNotifee: 5e3b271e8ea7456a36eec994085543c9adca9168
   RNPermissions: bd0d9ca7969ff7b999aa605ee2e5919c12522bfe
   RNReanimated: 2f762cd9e6b74c1f6ec88c0545d773a68b8e1085
   RNScreens: 4a5ab20b324ed1e3fe3862796b8f8e0a6208c415
