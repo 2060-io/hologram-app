@@ -338,6 +338,14 @@ export const useChatActions = () => {
               'localPreviewFilePath',
               originalRecord.metadata.get('localPreviewFilePath') as string,
             )
+            if (message.type === ChatEntryType.VoiceNote) {
+              await agent.modules.media.setMetadata(
+                newRecord.id,
+                'waveform',
+                originalRecord.metadata.get('waveform') as string,
+              )
+            }
+
             // Add share action
             addAgentActionToQueue({
               type: AgentActionType.ShareMedia,
