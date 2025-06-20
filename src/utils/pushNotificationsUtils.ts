@@ -9,11 +9,6 @@ import messaging from '@react-native-firebase/messaging'
 import { PERMISSIONS, request, RESULTS } from 'react-native-permissions'
 
 import { IS_IOS, isAndroid13OrHigher } from '@2060/constants'
-import {
-  getStorageData,
-  IS_PROCESSING_BACKGROUND_NOTIFICATIONS_PERSIST_KEY,
-  setStorageData,
-} from '@2060/services/localStorage'
 
 const { AuthorizationStatus } = messaging
 export const LOCAL_NOTIFICATION_ID_PREFIX = 'local-notification'
@@ -114,18 +109,4 @@ export const markNotificationsOfChatAsViewed = async (connectionId: string) => {
   notifee.cancelAllNotifications(localChatNotificationsOfConnection)
   const newBadgeCount = localNotifications.length - localChatNotificationsOfConnection.length
   notifee.setBadgeCount(newBadgeCount)
-}
-
-export const getIsProcessingBackgroundNotification = async () => {
-  return ((await getStorageData(IS_PROCESSING_BACKGROUND_NOTIFICATIONS_PERSIST_KEY)) as boolean) ?? false
-}
-
-/**
- * Updates the persistent storage flag indicating whether background notifications are being processed.
- *
- * @param isProcessing - A boolean value representing if background notification processing is ongoing.
- * @returns A promise that resolves when the storage update is complete.
- */
-export const updateIsProcessingBackgroundNotification = async (isProcessing: boolean) => {
-  await setStorageData(IS_PROCESSING_BACKGROUND_NOTIFICATIONS_PERSIST_KEY, isProcessing)
 }

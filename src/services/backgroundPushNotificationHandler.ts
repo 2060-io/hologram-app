@@ -19,15 +19,11 @@ import { KeyChainService, retrieveEncryptedKey } from '@2060/services/keys'
 import { DEV_ENVS_PERSIST_KEY, getStorageData } from '@2060/services/localStorage'
 import { walletDirectoryPath } from '@2060/utils/RNFS'
 import { DevEnvsObject } from '@2060/utils/developer'
-import {
-  deleteRemoteNotifications,
-  getIsProcessingBackgroundNotification,
-  updateIsProcessingBackgroundNotification,
-} from '@2060/utils/pushNotificationsUtils'
+import { deleteRemoteNotifications } from '@2060/utils/pushNotificationsUtils'
 
 const makeRequestToLocalServer = (payload: Record<string, string>) => {
   if (__DEV__) {
-    fetch('http://192.168.1.10:3000/api/echo', {
+    fetch('http://192.168.1.13:3000/api/echo', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
@@ -43,16 +39,17 @@ const getIndyVDRProxyBaseUrl = async () => {
   return Config.INDY_VDR_PROXY_BASE_URL
 }
 
+let isProcessingBackgroundNotification = false
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function backgroundPushNotificationHandler(remoteMessage: FirebaseMessagingTypes.RemoteMessage) {
-  const isProcessingBackgroundNotification = await getIsProcessingBackgroundNotification()
   if (isProcessingBackgroundNotification) {
-    makeRequestToLocalServer({ data: 'is executing at the moment, does not continue' })
+    makeRequestToLocalServer({ data: 'BACKGROUND PUSH NOTIFICATIONS HANDLER is executing at the moment!!' })
     return
   }
+  isProcessingBackgroundNotification = true
   deleteRemoteNotifications()
-  updateIsProcessingBackgroundNotification(true)
-  makeRequestToLocalServer({ data: 'executing' })
+  makeRequestToLocalServer({ data: 'START EXECUTING BACKGROUND PUSH NOTIFICATIONS HANDLER' })
   try {
     const indyVDRProxyBaseUrl = await getIndyVDRProxyBaseUrl()
     const agent = setupMobileAgent(
@@ -91,13 +88,18 @@ export async function backgroundPushNotificationHandler(remoteMessage: FirebaseM
       baseAgentConfig.logger?.info(
         `Message processed for connection id ${data.payload.connection?.id} Type: ${message.type}`,
       )
+      makeRequestToLocalServer({
+        data: `Message processed for connection id ${data.payload.connection?.id}`,
+      })
       if (message.type === V2StatusMessage.type.messageTypeUri) {
         const messageCount = (message as V2StatusMessage).messageCount
         baseAgentConfig.logger?.info(`Status message received. Remaining messages: ${messageCount}`)
-
+        makeRequestToLocalServer({
+          data: `Status message received. Remaining messages: ${messageCount}`,
+        })
         if (messageCount === 0) {
-          makeRequestToLocalServer({ data: 'finish execution' })
-          updateIsProcessingBackgroundNotification(false)
+          makeRequestToLocalServer({ data: 'BACKGROUND PUSH NOTIFICATIONS HANDLER EXECUTION FINISHED' })
+          isProcessingBackgroundNotification = false
           deleteRemoteNotifications()
           removeChatEntryChangeListener()
           removeConnectionChangeListener()
@@ -116,7 +118,7 @@ export async function backgroundPushNotificationHandler(remoteMessage: FirebaseM
       protocolVersion: 'v2',
     })
   } catch (error) {
-    updateIsProcessingBackgroundNotification(false)
+    isProcessingBackgroundNotification = false
     makeRequestToLocalServer({ error: JSON.stringify(error) })
   }
 }

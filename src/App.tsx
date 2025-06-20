@@ -5,8 +5,6 @@ import 'dayjs/locale/fr'
 import React, { PropsWithChildren, ReactNode, useEffect, useState } from 'react'
 import SplashScreen from 'react-native-splash-screen'
 
-import { updateIsProcessingBackgroundNotification } from './utils/pushNotificationsUtils'
-
 import Navigation from '@2060/components/Navigation'
 import {
   MobileAgentProvider,
@@ -68,7 +66,6 @@ const App = () => {
   initializeI18n.then(() => setTranslationsLoaded(true))
 
   useEffect(() => {
-    updateIsProcessingBackgroundNotification(false)
     /**
      * FIXME: The SplashScreen.hide() was added inside a 0 timeout to
      * works well in android. So a probably reason could be the order
