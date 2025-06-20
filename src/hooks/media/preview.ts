@@ -44,20 +44,18 @@ export async function createLocalPreview(options: { mimeType: string; localFileP
   // save preview under previews directory
   // TODO: this should be actually done directly by createVideoThumbnail/createResizedImage
   if (localPreviewFilePath) {
-    const [previewFileName] = localFilePath.split('/').slice(-1)
-    const previewMediaDestinationPath = `${getLocalMediaPreviewFilePath(previewFileName)}.jpeg`
-
+    const previewFileNameWithoutExtension = localFilePath.split('/').at(-1)?.split('.').at(0)
+    const previewFileName = `${previewFileNameWithoutExtension}.jpeg`
+    const previewMediaDestinationPath = `${getLocalMediaPreviewFilePath(previewFileName)}`
     const existPreviewFile = await existsFile(previewMediaDestinationPath)
     if (!existPreviewFile) {
-      // Create media previews directory if not existant
+      // Create media previews directory if not exists
       await makeDirectory(mediaPreviewsDirectoryPath)
-
       await moveFile(localPreviewFilePath, previewMediaDestinationPath)
-      localPreviewFilePath = previewMediaDestinationPath
     }
+    return `media/previews/${previewFileName}`
   }
-
-  return localPreviewFilePath
+  return undefined
 }
 
 export async function createDidCommPreview(options: { mimeType: string; localFilePath: string }) {
