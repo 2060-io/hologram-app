@@ -119,6 +119,6 @@ export async function backgroundPushNotificationHandler(remoteMessage: FirebaseM
     })
   } catch (error) {
     isProcessingBackgroundNotification = false
-    makeRequestToLocalServer({ error: JSON.stringify(error) })
+    makeRequestToLocalServer({ error: `${error}` })
   }
 }
