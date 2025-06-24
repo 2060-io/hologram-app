@@ -11,7 +11,6 @@ import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 
 type Props = {
   uri: string
-  aspectRatio: number
   showControl: boolean
   setShowControl: React.Dispatch<React.SetStateAction<boolean>>
   initialPlay?: boolean
@@ -20,7 +19,6 @@ type Props = {
 
 const VideoPlayer = ({
   uri,
-  aspectRatio,
   showControl,
   setShowControl,
   initialPlay = true,
@@ -89,9 +87,10 @@ const VideoPlayer = ({
         <Video
           ref={videoRef}
           source={{ uri }}
-          style={{ ...styles.video, aspectRatio }}
+          style={styles.video}
           repeat={false}
           controls={false}
+          resizeMode="contain"
           paused={!play && isReadyVideo}
           volume={10}
           onLoad={onLoadEnd}
@@ -134,7 +133,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   video: {
-    height: undefined,
+    height: '100%',
     width: '100%',
   },
   controlOverlay: {

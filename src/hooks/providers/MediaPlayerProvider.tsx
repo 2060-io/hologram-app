@@ -5,7 +5,6 @@ import { useScreenLock } from './ScreenLockProvider'
 import { useVideoCallContext } from './useVideoCallContext'
 
 import { LightboxModal } from '@2060/components'
-import { VideoMetadata } from '@2060/model'
 import { ChatEntryMessage } from '@2060/pages/PersonalChat/ChatMessage/Props'
 import LightboxHeader from '@2060/pages/PersonalChat/ImageChatView/LightboxHeader'
 import { MediaInfo } from '@2060/pages/PersonalChat/PersonalChatProps'
@@ -129,10 +128,6 @@ export const MediaPlayerProvider: React.FC<React.PropsWithChildren<Props>> = ({ 
         onCloseModal={() => setRenderVideoPlayer(false)}
       >
         <VideoPlayer
-          aspectRatio={
-            ((videoState?.chatEntry.metadata as VideoMetadata)?.width ?? 1) /
-            ((videoState?.chatEntry.metadata as VideoMetadata)?.height ?? 1)
-          }
           uri={videoState?.videoFileUri ?? ''}
           showControl={showControl}
           setShowControl={setShowControl}
