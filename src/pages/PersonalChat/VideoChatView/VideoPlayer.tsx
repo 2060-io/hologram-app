@@ -11,6 +11,7 @@ import { whiteColor } from '@2060/constants'
 
 type Props = {
   uri: string
+  aspectRatio: number
   showControl: boolean
   setShowControl: React.Dispatch<React.SetStateAction<boolean>>
   initialPlay?: boolean
@@ -19,6 +20,7 @@ type Props = {
 
 const VideoPlayer = ({
   uri,
+  aspectRatio,
   showControl,
   setShowControl,
   initialPlay = true,
@@ -89,7 +91,7 @@ const VideoPlayer = ({
         <Video
           ref={videoRef}
           source={{ uri }}
-          style={styles.video}
+          style={{ ...styles.video, aspectRatio }}
           repeat={false}
           controls={false}
           resizeMode="cover"
@@ -135,11 +137,11 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: '#ebebeb',
     height: '100%',
+    justifyContent: 'center',
   },
   video: {
-    height: '100%',
+    height: undefined,
     width: '100%',
-    backgroundColor: 'black',
   },
   controlOverlay: {
     position: 'absolute',
