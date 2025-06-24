@@ -2,9 +2,9 @@
 
 Hologram uses different strategies to store files and information in devices. Some of them are encrypted due to security reasons and they can not be stored as plain info. Another files are just stored as plain data due to they does not contain sensitive information just settings or configuration values. Strategies or engines used range from encrypted databases to .json archives
 
-### What do We store in local encrypted databases?
+### What do we store in local encrypted databases?
 
-For local databases We use [Realm](https://github.com/realm/realm-js). In this mobile encrypted database We store information in Entities structure such as:
+For local databases we use [Realm](https://github.com/realm/realm-js). In this mobile encrypted database we store information in Entities structure such as:
 
 **ChatThread**: This entity is responsible for storage every single chat thread. A new ChatThread is created when user is connected to a new service or p2p connection. Let's see it better with an example.
 
@@ -16,13 +16,13 @@ Description: As you can see in image there are 9 Chats. Technically speaking the
 
 ![](./images/ChatEntryExample.jpg)
 
-**UploadTask**: This entity is responsible for storage an upload task and its chunks for each media item (note voice, image or video) to be upload to [2060 Data Store API](https://github.com/2060-io/2060-datastore) and then share it using DIDComm [Media Sharing](https://didcomm.org/media-sharing/1.0/) protocol. Main purpose of this entity is to storage current media item upload status and allow to app to resume uploading file if something is wrong (internet connection is lost, user closes app)
+**UploadTask**: This entity is responsible for storage an upload task and its chunks for each media item (voice note, image or video) to be upload to [2060 Data Store API](https://github.com/2060-io/2060-datastore) and then share it using DIDComm [Media Sharing](https://didcomm.org/media-sharing/1.0/) protocol. Main purpose of this entity is to storage current media item upload status and allow to app to resume uploading file if something is wrong (internet connection is lost, user closes app)
 
-### What do We store with Async Storage?
+### What do we store with Async Storage?
 
-Async Storage is an asynchronous, unencrypted, persistent, key-value storage system [for React Native](https://github.com/react-native-async-storage/async-storage). Async Storage can only store string data. So, to persist objects and other type of typos We need to use JSON.stringify() when saving the data and JSON.parse() when loading the data. This storage system is mainly used to store no sensitive user or app information. (e.g. A key-value to indicates if user has enable developer mode in app or a key-value to indicates if backup must include media files when built). If you want to see full key-values used in app you can go to [src/services/localStorage/index.ts](../src/services/localStorage/index.ts)
+Async Storage is an asynchronous, unencrypted, persistent, key-value storage system [for React Native](https://github.com/react-native-async-storage/async-storage). Async Storage can only store string data. So, to persist objects and other type of typos we need to use JSON.stringify() when saving the data and JSON.parse() when loading the data. This storage system is mainly used to store no sensitive user or app information. (e.g. A key-value to indicates if user has enable developer mode in app or a key-value to indicates if backup must include media files when built). If you want to see full key-values used in app you can go to [src/services/localStorage/index.ts](../src/services/localStorage/index.ts)
 
-### What do We store in .json config file?
+### What do we store in .json config file?
 
 This is nothing more than a .json file stored with the next structure:
 
@@ -63,7 +63,7 @@ Everything under "keys" are encrypted values.
 
 ### What about media content?
 
-All media content (note voices, images and audios) are stored into app package context. It means these files lives in a secure and sandboxed place where only app code can access to those files. Both Android and iOS have implemented security rules so that we or another apps have no access to those files outside app context. For media content We have main directory called **media** where lives all media content. But also we have a subdirectory inside it called **previews** in this subdirectory we place all previews (thumbnails videos and images in lower resolution). Purpose of this **previews** is to displayed them in chat screen to avoid to render large media items in screen (Performance reason). Only when user press image is going to see the image in full screen and with the best resolution. To sump up per every image and video in **media** there is its corresponding image inside **previews** subdirectory
+All media content (voice notes, images and videos) are stored into app package context. It means these files lives in a secure and sandboxed place where only app code can access to those files. Both Android and iOS have implemented security rules so that we or another apps have no access to those files outside app context. For media content we have main directory called **media** where lives all media content. But also we have a subdirectory inside it called **previews** in this subdirectory we place all previews (thumbnails videos and images in lower resolution). Purpose of this **previews** is to displayed them in chat screen to avoid to render large media items in screen (Performance reason). Only when user press image is going to see the image in full screen and with the best resolution. To sump up per every image and video in **media** there is its corresponding image inside **previews** subdirectory
 
 ### Precise location of all these files:
 
@@ -107,26 +107,4 @@ Not included:
 
 It means that if user creates a backup and then restore it. Values in Async Storage and json config file are going to start from scratch it means with default app installation values. Only agent wallet db and local realm database are going to be restored
 
-### To conclude let's talk a little bit about Backup created file structure
-
-One of Hologram features is to allow to user to create a backup of his wallet. This functionality helps user to restore his wallet in other device. At the moment, is not a cross-OS backup. In other words, if backup was built in Android only in an Android device is going to be able to restore his wallet, same way occurs for iOS. Not because files has a different structure or varies something on each platform. By the way, technically speaking would be possible. The constraint is that we upload those backups in Google Drive for Android and iCloud for iOS. In that way, when user wants to restore his wallet in Android is going to looks for backup file in Google Drive and in iCloud for iOS.
-
-Before start, Hologram creates a .zip file and upload it to cloud on each platform. This is done to decrease the final file upload size. When Hologram creates this .zip file only keeps it until backup upload to cloud is finished or backup built process fails, after all Hologram deletes it. But, let's see how is the structure of this temporary backup file.
-
-![](./images/BackupFileStruc.png)
-
-As you can in image above there is a directory called **.Hologram** in cache directory. It contains a .zip file which will be uploaded to cloud and also contains a directory called **input**. In that vein let's talk about each file that composes this **.zip** file or otherwise **input** directory.
-
-- `info.json`: Manifest file containing information about the backup itself. It is mostly used to let future versions of Hologram how to treat the backup based on this version (as file structure may differ)
-- `afj.sqlite`: Credo's wallet in SQLite format (might also include sch and wal file, needed for later importing of the DB)
-- `main.realm`: Realm's main database. Which will allow to user to see his created chats and chats history conversations when restores wallet
-- `media.zip`: This zip contains both images, videos, note voices and previews images for videos and images in chats conversations to avoid to user has to re-download them when restores wallet. Compressed in zip format
-
-#### Manifest file
-
-`info.json` has been introduced in Hologram 2.3.0. If not present, the backup must be considered to be following the first backup schema (`1`).
-
-It is a JSON file that currently includes the following fields:
-
-- `schemaVersion`: numeric field indicating the backup schema version. It starts with `1`. Every time something changes within the backup file structure and policy (e.g. options to select or ignore files in backup), it should be increased
-- `appVersion`: string containing app version used to generate this backup (e.g. `2.3.0`)
+### For detailed information about backup process see [Backup.md](./Backup.md)
