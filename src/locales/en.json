@@ -57,7 +57,6 @@
       "send": "Send",
       "name": "Name",
       "description": "Description",
-      "loading": "Loading...",
       "retry": "Retry",
       "abort": "Abort",
       "open": "Open",
