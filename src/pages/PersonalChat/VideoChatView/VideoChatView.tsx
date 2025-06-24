@@ -23,7 +23,7 @@ const VideoChatView = memo((props: MediaProps) => {
   const styles = getStyles(theme)
   const { t } = useTranslation()
   const { mediaRecordId, fileMediaInfo, chatEntry, displayTimeAndTicks } = props
-  const mediaItem = chatEntry.metadata as VideoMetadata
+  const metadata = chatEntry.metadata as VideoMetadata
   const {
     localFilePath,
     duration,
@@ -35,7 +35,7 @@ const VideoChatView = memo((props: MediaProps) => {
     description,
     mediaDownloadState,
     mediaDownloadProgress,
-  } = mediaItem
+  } = metadata
   const { playVideo } = useMediaPlayer()
   const { isDownloaded, isDownloading, downloadMedia, retryMediaUpload, isRetryingUpload } = useMedia({
     mediaRecordId,

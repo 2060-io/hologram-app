@@ -22,8 +22,8 @@ const MINIMUM_ASPECT_RATIO = 2 / 3
 const SCREEN_WIDTH_TO_75_PERCENTAGE = screenWidth * 0.75
 const HALF_SCREEN_SIZE = screenWidth * 0.5
 
-const getImageDimensions = (mediaItem: ImageMetadata) => {
-  if (mediaItem.height && mediaItem.width) return { width: mediaItem.width, height: mediaItem.height }
+const getImageDimensions = (metadata: ImageMetadata) => {
+  if (metadata.height && metadata.width) return { width: metadata.width, height: metadata.height }
   return { width: HALF_SCREEN_SIZE, height: HALF_SCREEN_SIZE }
 }
 
@@ -33,8 +33,8 @@ const getFinalImageWidth = (imageWidth: number) => {
   return imageWidth
 }
 
-const getImageStyle = (mediaItem: ImageMetadata) => {
-  const { width, height } = getImageDimensions(mediaItem)
+const getImageStyle = (metadata: ImageMetadata) => {
+  const { width, height } = getImageDimensions(metadata)
   const imageAspectRatio = width / height
   const mustSetToMinimumAspectRatio = imageAspectRatio < MINIMUM_ASPECT_RATIO
   const aspectRatio = mustSetToMinimumAspectRatio ? MINIMUM_ASPECT_RATIO : imageAspectRatio
@@ -48,7 +48,7 @@ const ImageChatView = (props: ImageProps) => {
   const styles = getStyles(theme)
   const { t } = useTranslation()
   const { mediaRecordId, fileMediaInfo, chatEntry, displayTimeAndTicks } = props
-  const mediaItem = chatEntry.metadata as ImageMetadata
+  const metadata = chatEntry.metadata as ImageMetadata
   const {
     mediaDownloadState,
     mediaDownloadProgress,
@@ -59,7 +59,7 @@ const ImageChatView = (props: ImageProps) => {
     mediaUploadProgress,
     byteCount,
     description,
-  } = mediaItem
+  } = metadata
   const { isDownloaded, isDownloading, downloadMedia, retryMediaUpload, isRetryingUpload } = useMedia({
     mediaRecordId,
     localFilePath,
@@ -70,7 +70,7 @@ const ImageChatView = (props: ImageProps) => {
 
   const imageUri = localFilePath ? getLocalFileUri(localFilePath) : undefined
   const imagePreviewUri = localPreviewFilePath ? getLocalFileUri(localPreviewFilePath) : undefined
-  const imageStyle = getImageStyle(mediaItem)
+  const imageStyle = getImageStyle(metadata)
   const imagePreview = { uri: preview ?? Image.resolveAssetSource(imagePlaceholder).uri }
   const isMediaUploadError =
     mediaUploadState === MediaUploadState.ErrorCreating ||
