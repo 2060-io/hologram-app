@@ -238,7 +238,7 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
             await agent.modules.media.setMetadata(
               mediaRecord.id,
               'localPreviewFilePath',
-              `media/previews/${filename}.jpeg`,
+              localPreviewFilePath,
             )
           }
         }
@@ -340,7 +340,7 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
           // Store relative path for files and previews to avoid issues with new builds in iOS
           metadata: {
             localFilePath: `media/${fileName}`,
-            localPreviewFilePath: localPreviewFilePath ? `media/previews/${fileName}.jpeg` : undefined,
+            localPreviewFilePath: localPreviewFilePath ?? undefined,
             ...(isAudioFile && { waveform }),
           },
         })
