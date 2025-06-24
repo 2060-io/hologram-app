@@ -1,16 +1,16 @@
-diff --git a/node_modules/react-native-image-crop-picker/android/src/main/java/com/reactnative/ivpusic/imagepicker/PickerModule.java b/node_modules/react-native-image-crop-picker/android/src/main/java/com/reactnative/ivpusic/imagepicker/PickerModule.java
-index c183fee..51fffe3 100644
---- a/node_modules/react-native-image-crop-picker/android/src/main/java/com/reactnative/ivpusic/imagepicker/PickerModule.java
-+++ b/node_modules/react-native-image-crop-picker/android/src/main/java/com/reactnative/ivpusic/imagepicker/PickerModule.java
-@@ -102,6 +102,7 @@ class PickerModule extends ReactContextBaseJavaModule implements ActivityEventLi
+diff --git a/node_modules/react-native-image-crop-picker/android/src/main/java/com/reactnative/ivpusic/imagepicker/ImageCropPicker.java b/node_modules/react-native-image-crop-picker/android/src/main/java/com/reactnative/ivpusic/imagepicker/ImageCropPicker.java
+index fd01e11..a97eb77 100644
+--- a/node_modules/react-native-image-crop-picker/android/src/main/java/com/reactnative/ivpusic/imagepicker/ImageCropPicker.java
++++ b/node_modules/react-native-image-crop-picker/android/src/main/java/com/reactnative/ivpusic/imagepicker/ImageCropPicker.java
+@@ -101,6 +101,7 @@ class ImageCropPicker implements ActivityEventListener {
  
      private int width = 0;
      private int height = 0;
 +    private int maximumVideoDuration = -1;
  
-     private Uri mCameraCaptureURI;
-     private String mCurrentMediaPath;
-@@ -148,6 +149,7 @@ class PickerModule extends ReactContextBaseJavaModule implements ActivityEventLi
+     private int maxFiles = 5;
+ 
+@@ -144,6 +145,7 @@ class ImageCropPicker implements ActivityEventListener {
          enableRotationGesture = options.hasKey("enableRotationGesture") && options.getBoolean("enableRotationGesture");
          disableCropperColorSetters = options.hasKey("disableCropperColorSetters") && options.getBoolean("disableCropperColorSetters");
          useFrontCamera = options.hasKey("useFrontCamera") && options.getBoolean("useFrontCamera");
@@ -18,26 +18,25 @@ index c183fee..51fffe3 100644
          this.options = options;
      }
  
-@@ -353,6 +355,10 @@ class PickerModule extends ReactContextBaseJavaModule implements ActivityEventLi
+@@ -341,6 +343,9 @@ class ImageCropPicker implements ActivityEventListener {
+                 cameraIntent.putExtra("android.intent.extras.LENS_FACING_FRONT", 1);
                  cameraIntent.putExtra("android.intent.extra.USE_FRONT_CAMERA", true);
              }
- 
 +            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && maximumVideoDuration > 0) {
 +                cameraIntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, maximumVideoDuration);
 +            }
-+
+ 
              if (cameraIntent.resolveActivity(activity.getPackageManager()) == null) {
                  resultCollector.notifyProblem(E_CANNOT_LAUNCH_CAMERA, "Cannot launch camera");
-                 return;
 diff --git a/node_modules/react-native-image-crop-picker/index.d.ts b/node_modules/react-native-image-crop-picker/index.d.ts
-index 0ce849f..e4e6dad 100644
+index 0ce849f..437c516 100644
 --- a/node_modules/react-native-image-crop-picker/index.d.ts
 +++ b/node_modules/react-native-image-crop-picker/index.d.ts
 @@ -359,6 +359,13 @@ declare module "react-native-image-crop-picker" {
           * @default 'MediumQuality'
           */
          compressVideoPreset?: CompressVideoPresets;
-+
++        
 +        /**
 +         * The maximum duration a video can have. If `undefined` or `-1`, no limit is set.
 +         *
@@ -47,11 +46,11 @@ index 0ce849f..e4e6dad 100644
      };
  
      type AnyOptions = Omit<ImageOptions, 'mediaType'> & Omit<VideoOptions, 'mediaType'> & {
-diff --git a/node_modules/react-native-image-crop-picker/ios/src/ImageCropPicker.m b/node_modules/react-native-image-crop-picker/ios/src/ImageCropPicker.m
-index 9f20973..0769efb 100644
---- a/node_modules/react-native-image-crop-picker/ios/src/ImageCropPicker.m
-+++ b/node_modules/react-native-image-crop-picker/ios/src/ImageCropPicker.m
-@@ -65,6 +65,7 @@ - (instancetype)init
+diff --git a/node_modules/react-native-image-crop-picker/ios/src/ImageCropPicker.mm b/node_modules/react-native-image-crop-picker/ios/src/ImageCropPicker.mm
+index 354ad09..a6d9163 100644
+--- a/node_modules/react-native-image-crop-picker/ios/src/ImageCropPicker.mm
++++ b/node_modules/react-native-image-crop-picker/ios/src/ImageCropPicker.mm
+@@ -68,6 +68,7 @@ - (instancetype)init
              @"avoidEmptySpaceAroundImage": @YES,
              @"compressImageQuality": @0.8,
              @"compressVideoPreset": @"MediumQuality",
@@ -59,7 +58,7 @@ index 9f20973..0769efb 100644
              @"loadingLabelText": @"Processing assets...",
              @"mediaType": @"any",
              @"showsSelectedCount": @YES,
-@@ -157,6 +158,13 @@ - (UIViewController*) getRootVC {
+@@ -160,6 +161,12 @@ - (UIViewController*) getRootVC {
              picker.allowsEditing = NO;
              picker.sourceType = UIImagePickerControllerSourceTypeCamera;
              
@@ -69,7 +68,6 @@ index 9f20973..0769efb 100644
 +                    picker.videoMaximumDuration = [maxDuration doubleValue];
 +                }
 +            }
-+            
              NSString *mediaType = [self.options objectForKey:@"mediaType"];
              
              if ([mediaType isEqualToString:@"video"]) {

@@ -95,7 +95,7 @@
     "react-native-fs": "^2.20.0",
     "react-native-gesture-handler": "^2.12.1",
     "react-native-get-random-values": "^1.7.0",
-    "react-native-image-crop-picker": "0.42.0",
+    "react-native-image-crop-picker": "0.50.1",
     "react-native-incall-manager": "^4.2.0",
     "react-native-job-queue": "^0.5.2",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
