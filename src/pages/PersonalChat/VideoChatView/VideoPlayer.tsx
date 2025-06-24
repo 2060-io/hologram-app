@@ -1,13 +1,13 @@
 import React, { useState, createRef, Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, StyleSheet, TouchableHighlight, ActivityIndicator } from 'react-native'
+import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import Video, { OnLoadData, OnProgressData, VideoRef } from 'react-native-video'
 
 import PlayerControls from './PlayerControls'
 import ProgressBar from './ProgressBar'
 
 import { Text } from '@2060/components/common'
-import { whiteColor } from '@2060/constants'
+import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 
 type Props = {
   uri: string
@@ -26,7 +26,7 @@ const VideoPlayer = ({
   initialPlay = true,
   showProgressBar = true,
 }: Props) => {
-  const [isLoadingVideo, setIsLoadingVideo] = useState(false)
+  const theme = useTheme()
   const [isReadyVideo, setIsReadyVideo] = useState(false)
   const [errorLoadingVideo, setErrorLoadingVideo] = useState(false)
   const [currentTime, setCurrentTime] = useState(0)
@@ -60,12 +60,10 @@ const VideoPlayer = ({
     setDuration(Math.floor(data.duration))
     setCurrentTime(Math.floor(data.currentTime))
     setIsReadyVideo(true)
-    setIsLoadingVideo(false)
   }
 
   const onErrorLoadingVideo = () => {
     setIsReadyVideo(false)
-    setIsLoadingVideo(false)
     setErrorLoadingVideo(true)
   }
 
@@ -86,7 +84,7 @@ const VideoPlayer = ({
   }
 
   return (
-    <TouchableHighlight onPress={handleControls} style={styles.container}>
+    <TouchableOpacity onPress={handleControls} style={styles.container} activeOpacity={1}>
       <Fragment>
         <Video
           ref={videoRef}
@@ -94,24 +92,21 @@ const VideoPlayer = ({
           style={{ ...styles.video, aspectRatio }}
           repeat={false}
           controls={false}
-          resizeMode="cover"
           paused={!play && isReadyVideo}
           volume={10}
           onLoad={onLoadEnd}
           onProgress={onProgress}
           onError={onErrorLoadingVideo}
           onEnd={onEnd}
-          onLoadStart={() => setIsLoadingVideo(true)}
         />
         {errorLoadingVideo && (
           <View style={styles.contentCenter}>
-            <Text style={styles.styleText}>{t('personalChat.errorLoadingVideo')}</Text>
-          </View>
-        )}
-        {isLoadingVideo && (
-          <View style={styles.contentCenter}>
-            <ActivityIndicator size="large" color={whiteColor} accessibilityLabel="loading video..." />
-            <Text style={styles.styleText}>{t('general.loading')}</Text>
+            <Text
+              typography="EuclidCircularA-Regular"
+              style={{ color: theme.colors.primaryText, fontSize: theme.fontSize.lg, marginTop: 10 }}
+            >
+              {t('personalChat.errorLoadingVideo')}
+            </Text>
           </View>
         )}
         {showControl && isReadyVideo && (
@@ -129,13 +124,12 @@ const VideoPlayer = ({
           </View>
         )}
       </Fragment>
-    </TouchableHighlight>
+    </TouchableOpacity>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#ebebeb',
     height: '100%',
     justifyContent: 'center',
   },
@@ -157,15 +151,8 @@ const styles = StyleSheet.create({
     left: 0,
     bottom: 0,
     right: 0,
-    zIndex: 999,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  styleText: {
-    textAlign: 'center',
-    fontWeight: 'bold',
-    fontSize: 18,
-    color: whiteColor,
   },
 })
 
