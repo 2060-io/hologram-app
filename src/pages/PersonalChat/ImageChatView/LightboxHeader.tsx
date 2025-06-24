@@ -15,7 +15,7 @@ import { getFormattedDateRangeWithTime } from '@2060/utils/dateUtils'
 
 type LightboxHeaderProps = {
   fileMediaInfo: MediaInfo
-  currentMessage: ChatEntryMessage
+  chatEntry: ChatEntryMessage
   onBack(): void
 }
 
@@ -25,7 +25,7 @@ const Button = ({ iconName, onPress, color }: { iconName: string; onPress(): voi
   </TouchableOpacity>
 )
 
-const LightboxHeader = memo(({ fileMediaInfo, onBack, currentMessage }: LightboxHeaderProps) => {
+const LightboxHeader = memo(({ fileMediaInfo, onBack, chatEntry }: LightboxHeaderProps) => {
   const { shareMediaToApp, saveFileToGallery, deleteMessagesForMe } = useChatActions()
   const theme = useTheme()
   const styles = getStyles(theme)
@@ -33,19 +33,19 @@ const LightboxHeader = memo(({ fileMediaInfo, onBack, currentMessage }: Lightbox
   const iconColor = theme.colors.tertiaryText
 
   const handleSaveFileToGallery = () => {
-    saveFileToGallery(currentMessage).then(() => {
+    saveFileToGallery(chatEntry).then(() => {
       onBack()
     })
   }
 
   const handleShareMediaToApp = () => {
-    shareMediaToApp(currentMessage)
+    shareMediaToApp(chatEntry)
       .then(() => onBack())
       .catch(log)
   }
 
   const handleMessageDelete = () => {
-    deleteMessagesForMe([currentMessage])
+    deleteMessagesForMe([chatEntry])
     onBack()
   }
 

@@ -47,7 +47,8 @@ const ImageChatView = (props: ImageProps) => {
   const theme = useTheme()
   const styles = getStyles(theme)
   const { t } = useTranslation()
-  const { mediaRecordId, mediaItem, fileMediaInfo, currentMessage, displayTimeAndTicks } = props
+  const { mediaRecordId, fileMediaInfo, chatEntry, displayTimeAndTicks } = props
+  const mediaItem = chatEntry.metadata as ImageMetadata
   const {
     mediaDownloadState,
     mediaDownloadProgress,
@@ -64,7 +65,7 @@ const ImageChatView = (props: ImageProps) => {
     localFilePath,
     type: 'images',
     mediaDownloadState,
-    role: currentMessage.role,
+    role: chatEntry.role,
   })
 
   const imageUri = localFilePath ? getLocalFileUri(localFilePath) : undefined
@@ -91,7 +92,7 @@ const ImageChatView = (props: ImageProps) => {
           ) : (
             <>
               <ImageView
-                currentMessage={props.currentMessage}
+                chatEntry={props.chatEntry}
                 fileMediaInfo={fileMediaInfo}
                 imagePreviewUri={imagePreviewUri}
                 imageUri={imageUri!}
