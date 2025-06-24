@@ -47,7 +47,7 @@ index 0ce849f..437c516 100644
  
      type AnyOptions = Omit<ImageOptions, 'mediaType'> & Omit<VideoOptions, 'mediaType'> & {
 diff --git a/node_modules/react-native-image-crop-picker/ios/src/ImageCropPicker.mm b/node_modules/react-native-image-crop-picker/ios/src/ImageCropPicker.mm
-index 354ad09..a6d9163 100644
+index 354ad09..7bf98f2 100644
 --- a/node_modules/react-native-image-crop-picker/ios/src/ImageCropPicker.mm
 +++ b/node_modules/react-native-image-crop-picker/ios/src/ImageCropPicker.mm
 @@ -68,6 +68,7 @@ - (instancetype)init
@@ -71,3 +71,24 @@ index 354ad09..a6d9163 100644
              NSString *mediaType = [self.options objectForKey:@"mediaType"];
              
              if ([mediaType isEqualToString:@"video"]) {
+@@ -442,14 +449,18 @@ - (void) handleVideo:(AVAsset*)asset withFileName:(NSString*)fileName withLocalI
+             AVURLAsset *durationFromUrl = [AVURLAsset assetWithURL:outputURL];
+             CMTime time = [durationFromUrl duration];
+             int milliseconds = ceil(time.value/time.timescale) * 1000;
++            CGAffineTransform transform = [track preferredTransform];
++            BOOL isPortrait = transform.a == 0 && transform.d == 0;
++            CGFloat width = isPortrait ? track.naturalSize.height : track.naturalSize.width;
++            CGFloat height = isPortrait ? track.naturalSize.width : track.naturalSize.height;
+             
+             completion([self createAttachmentResponse:[outputURL absoluteString]
+                                              withExif:nil
+                                         withSourceURL:[sourceURL absoluteString]
+                                   withLocalIdentifier:localIdentifier
+                                          withFilename:fileName
+-                                            withWidth:[NSNumber numberWithFloat:track.naturalSize.width]
+-                                           withHeight:[NSNumber numberWithFloat:track.naturalSize.height]
++                                            withWidth:@(width)
++                                           withHeight:@(height)
+                                              withMime:@"video/mp4"
+                                              withSize:fileSizeValue
+                                          withDuration:[NSNumber numberWithFloat:milliseconds]
