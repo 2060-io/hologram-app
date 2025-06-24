@@ -12716,6 +12716,11 @@ react-native-cloud-store@0.11.0:
   resolved "https://registry.yarnpkg.com/react-native-cloud-store/-/react-native-cloud-store-0.11.0.tgz#7446fa5e3f45a660b6629572879a50eb66c2b9bd"
   integrity sha512-Nd8a7mOo21Cpj++0TpKHfXRt3xJQ2E/SPxZe8S8lgN7VP54asEJVDt48Tv7OJq0iYypVJZqskHyh4iPvgrUn6g==
 
+react-native-compressor@1.11.0:
+  version "1.11.0"
+  resolved "https://registry.yarnpkg.com/react-native-compressor/-/react-native-compressor-1.11.0.tgz#e297fa650b09cc754392153c38ae2ca510aee024"
+  integrity sha512-XaI0U2CtlW6ZYjwdQ4jdpnJa3C9CD1pc1a4jiUMtnUxWtCqgT7PNjOiEqlYLLwwGTvorXXNuby5In1yy7Vdmhg==
+
 react-native-config@1.5.5:
   version "1.5.5"
   resolved "https://registry.yarnpkg.com/react-native-config/-/react-native-config-1.5.5.tgz#5977db58ff20b6fe9dd6fb28c815a9ba43d018d2"

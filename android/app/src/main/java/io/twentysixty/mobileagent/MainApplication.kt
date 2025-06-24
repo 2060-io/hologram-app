@@ -12,6 +12,7 @@ import com.facebook.react.defaults.DefaultReactHost.getDefaultReactHost
 import com.facebook.react.defaults.DefaultReactNativeHost
 import com.facebook.react.soloader.OpenSourceMergedSoMapping
 import com.facebook.soloader.SoLoader
+import com.reactnativecompressor.CompressorPackage
 import expo.modules.ApplicationLifecycleDispatcher.onApplicationCreate
 import expo.modules.ApplicationLifecycleDispatcher.onConfigurationChanged
 import expo.modules.ReactNativeHostWrapper
@@ -30,7 +31,7 @@ class MainApplication : Application(), ReactApplication {
                 val packages: MutableList<ReactPackage> = PackageList(this).packages
 
                 // Packages that cannot be autolinked yet can be added manually here, for example:
-                // packages.add(new MyReactNativePackage());
+                 packages.add(CompressorPackage());
                 return packages
             }
 

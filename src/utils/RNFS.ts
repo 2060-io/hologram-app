@@ -81,7 +81,7 @@ const deleteFile = async (filePath: string) => {
   try {
     if (await existsFile(filePath)) await RNFSUnlink(filePath)
   } catch (error) {
-    logError(`deleteFile: ${error}`)
+    logError(`Error deleting file: ${filePath} - ${error}`)
   }
 }
 

@@ -38,7 +38,7 @@ import {
 import { ChatEntryMessage } from '@2060/pages/PersonalChat/ChatMessage/Props'
 import { log, logError } from '@2060/utils'
 import { getLocalFileUri } from '@2060/utils/RNFS'
-import { getMediaFileSharingData } from '@2060/utils/mediaFileUtils'
+import { compressVideo, getMediaFileSharingData } from '@2060/utils/mediaFileUtils'
 import { toast, ToastOptions } from '@2060/utils/toast'
 
 export const useChatActions = () => {
@@ -395,18 +395,28 @@ export const useChatActions = () => {
             })
           }
         } else if (mimeType.startsWith('image') || mimeType.startsWith('video')) {
-          const didcommMediaFileSharingData = await getMediaFileSharingData(message.data, mimeType)
+          let didcommMediaFileSharingData: DidCommMediaFileSharingData | null = await getMediaFileSharingData(
+            message.data,
+            mimeType,
+          )
           const { duration, mime } = didcommMediaFileSharingData
-          const isVideoAndExceedsDuration =
-            mime.startsWith('video') && duration && duration > MAX_VIDEO_DURATION
+          const isVideo = mime.startsWith('video')
+          const isVideoAndExceedsDuration = isVideo && duration && duration > MAX_VIDEO_DURATION
           if (isVideoAndExceedsDuration) {
             excludedLongVideosCount++
           } else {
-            startMediaUpload({
-              didcommConnectionIds: connectionIds,
-              didcommMediaFileSharingData,
-              deleteOriginalFile: true,
-            })
+            if (isVideo) {
+              didcommMediaFileSharingData = (await compressVideo(didcommMediaFileSharingData, progress => {
+                log('compressing progress', progress)
+              })) as DidCommMediaFileSharingData | null
+            }
+            if (didcommMediaFileSharingData) {
+              startMediaUpload({
+                didcommConnectionIds: connectionIds,
+                didcommMediaFileSharingData,
+                deleteOriginalFile: true,
+              })
+            }
           }
         }
       }
