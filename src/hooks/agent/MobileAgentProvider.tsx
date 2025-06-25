@@ -60,6 +60,48 @@ export const MobileAgentProvider: React.FC<Props> = ({ children }) => {
   const { assertConnectedNetwork } = useNetwork()
   const isNetworkConnected = assertConnectedNetwork()
 
+  useEffect(() => {
+    const setAgentInitialState = () => {
+      const newAgent = setupMobileAgent(baseAgentConfig, devEnvs.INDY_VDR_PROXY_BASE_URL)
+      handleChangeAgentState({ agent: newAgent })
+      return () => {
+        newAgent.shutdown()
+        handleChangeAgentState({ agent: undefined })
+      }
+    }
+    setAgentInitialState()
+  }, [devEnvs.INDY_VDR_PROXY_BASE_URL])
+
+  useEffect(() => {
+    if (agent) {
+      const connectedListener = () => handleCloudAgentConnectionUpdate(true)
+      const disconnectedListener = () => handleCloudAgentConnectionUpdate(false)
+
+      agent.events.on(MediatorEventTypes.MediatorConnected, connectedListener)
+      agent.events.on(MediatorEventTypes.MediatorDisconnected, disconnectedListener)
+
+      return () => {
+        agent.events.off(MediatorEventTypes.MediatorConnected, connectedListener)
+        agent.events.off(MediatorEventTypes.MediatorDisconnected, disconnectedListener)
+      }
+    }
+  }, [agent])
+
+  useEffect(() => {
+    if (!isNetworkConnected) handleCloudAgentConnectionUpdate(false)
+  }, [isNetworkConnected])
+
+  useEffect(() => {
+    handleMessagePickupStatus()
+  }, [agent, isNetworkConnected])
+
+  const handleCloudAgentConnectionUpdate = useCallback(
+    (isConnectedToCloudAgent: boolean) => {
+      handleChangeAgentState({ isConnectedToCloudAgent: isConnectedToCloudAgent && isNetworkConnected })
+    },
+    [isNetworkConnected],
+  )
+
   const handleChangeAgentState = (state: Partial<MobileAgentState>) => {
     setAgentState(prevState => ({ ...prevState, ...state }))
   }
@@ -118,48 +160,6 @@ export const MobileAgentProvider: React.FC<Props> = ({ children }) => {
       log(JSON.stringify(error))
     }
   }
-
-  const handleCloudAgentConnectionUpdate = useCallback(
-    (isConnectedToCloudAgent: boolean) => {
-      handleChangeAgentState({ isConnectedToCloudAgent: isConnectedToCloudAgent && isNetworkConnected })
-    },
-    [isNetworkConnected],
-  )
-
-  useEffect(() => {
-    const setInitialState = () => {
-      const newAgent = setupMobileAgent(baseAgentConfig, devEnvs.INDY_VDR_PROXY_BASE_URL)
-      handleChangeAgentState({ agent: newAgent })
-      return () => {
-        newAgent.shutdown()
-        handleChangeAgentState({ agent: undefined })
-      }
-    }
-    setInitialState()
-  }, [devEnvs.INDY_VDR_PROXY_BASE_URL])
-
-  useEffect(() => {
-    if (!isNetworkConnected) handleCloudAgentConnectionUpdate(false)
-  }, [isNetworkConnected])
-
-  useEffect(() => {
-    handleMessagePickupStatus()
-  }, [agent, isNetworkConnected])
-
-  useEffect(() => {
-    if (agent) {
-      const connectedListener = () => handleCloudAgentConnectionUpdate(true)
-      const disconnectedListener = () => handleCloudAgentConnectionUpdate(false)
-
-      agent.events.on(MediatorEventTypes.MediatorConnected, connectedListener)
-      agent.events.on(MediatorEventTypes.MediatorDisconnected, disconnectedListener)
-
-      return () => {
-        agent.events.off(MediatorEventTypes.MediatorConnected, connectedListener)
-        agent.events.off(MediatorEventTypes.MediatorDisconnected, disconnectedListener)
-      }
-    }
-  }, [agent])
 
   return (
     <AgentContext.Provider value={{ ...agentState, initMobileAgent, shutdownAgent, handleChangeAgentState }}>
