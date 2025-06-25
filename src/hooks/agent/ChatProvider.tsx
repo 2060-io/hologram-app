@@ -169,14 +169,14 @@ export const ChatProvider: React.FC<Props> = ({ children }) => {
   const clearThread = useCallback(
     (threadId: string) => {
       if (!realm) return
-      const filteredEntries = realm.objects(ChatEntry).filtered(`chatThreadId == '${threadId}'`)
+      const chatEntriesToDelete = realm.objects(ChatEntry).filtered(`chatThreadId == '${threadId}'`)
       // Create metadata deep copy of entries type media before delete them
-      const metadataOfEntriesTypeMedia: MediaSharingMetadata[] = filteredEntries
+      const metadataOfEntriesTypeMedia: MediaSharingMetadata[] = chatEntriesToDelete
         .filtered(queryOfTypeMedia)
         .map((chatEntry: ChatEntry) => ({ ...(chatEntry.metadata as MediaSharingMetadata) }))
       const thread = realm.objects(ChatThread).find(item => item.id === threadId)
       realm.write(() => {
-        realm.delete(filteredEntries)
+        realm.delete(chatEntriesToDelete)
         // Create security message
         if (!thread) return
         thread.preview = ''
