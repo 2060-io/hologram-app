@@ -169,36 +169,35 @@ export const ChatProvider: React.FC<Props> = ({ children }) => {
   const clearThread = useCallback(
     (threadId: string) => {
       if (!realm) return
-      let thread = realm.objects(ChatThread).find(item => item.id === threadId)
-      if (thread) {
-        const filteredEntries = realm.objects(ChatEntry).filtered(`chatThreadId == '${threadId}'`)
-        const metadataOfEntriesTypeMedia = filteredEntries
-          .filtered(queryOfTypeMedia)
-          .map((item: ChatEntry) => ({ ...(item.metadata as ChatEntryMetadata) }))
-        realm.write(() => {
-          realm.delete(filteredEntries)
-          // Create security message
-          thread.preview = ''
-          realm.create<ChatEntry>('ChatEntry', {
-            id: utils.uuid(),
-            chatThreadId: thread.id,
-            didcommThreadId: '',
-            associatedMessageId: '',
-            associatedRecordId: '',
-            type: ChatEntryType.System,
-            role: ChatEntryRole.None,
-            state: ChatEntryState.Viewed,
-            metadata: { kind: 'security' } as SystemMessageMetadata,
-            createdAt: thread.createdAt.getTime(),
-            unread: false,
-          })
+      const filteredEntries = realm.objects(ChatEntry).filtered(`chatThreadId == '${threadId}'`)
+      const metadataOfEntriesTypeMedia = filteredEntries
+        .filtered(queryOfTypeMedia)
+        .map((item: ChatEntry) => ({ ...(item.metadata as ChatEntryMetadata) }))
+      const thread = realm.objects(ChatThread).find(item => item.id === threadId)
+      realm.write(() => {
+        realm.delete(filteredEntries)
+        // Create security message
+        if (!thread) return
+        thread.preview = ''
+        realm.create<ChatEntry>('ChatEntry', {
+          id: utils.uuid(),
+          chatThreadId: thread.id,
+          didcommThreadId: '',
+          associatedMessageId: '',
+          associatedRecordId: '',
+          type: ChatEntryType.System,
+          role: ChatEntryRole.None,
+          state: ChatEntryState.Viewed,
+          metadata: { kind: 'security' } as SystemMessageMetadata,
+          createdAt: thread.createdAt.getTime(),
+          unread: false,
         })
-        if (metadataOfEntriesTypeMedia.length) {
-          const otherChatEntriesTypeMedia = getOtherChatEntriesTypeMedia(realm, threadId)
-          // iterates all chat entries of type media and check if can delete media files
-          for (const metadataOfEntryTypeMedia of metadataOfEntriesTypeMedia) {
-            checkIfDeleteFilesFromMedia(metadataOfEntryTypeMedia, otherChatEntriesTypeMedia)
-          }
+      })
+      if (metadataOfEntriesTypeMedia.length) {
+        const otherChatEntriesTypeMedia = getOtherChatEntriesTypeMedia(realm, threadId)
+        // iterates all chat entries of type media and check if can delete media files
+        for (const metadataOfEntryTypeMedia of metadataOfEntriesTypeMedia) {
+          checkIfDeleteFilesFromMedia(metadataOfEntryTypeMedia, otherChatEntriesTypeMedia)
         }
       }
     },
