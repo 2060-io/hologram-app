@@ -8,7 +8,7 @@ import { useNetwork } from '../useNetwork'
 
 import { isRegistered, MobileAgent } from '@2060/services/agent/MobileAgent'
 import { migrateAnonCredsRecords } from '@2060/services/agent/migrateAnonCredsRecords'
-import { setupMobileAgent as createMobileAgent, MobileAgentConfig } from '@2060/services/initMobileAgent'
+import { setupMobileAgent, MobileAgentConfig } from '@2060/services/initMobileAgent'
 import { MediatorEventTypes } from '@2060/services/transport/MediatorEventTypes'
 import { TunedMobileWsOutboundTransport } from '@2060/services/transport/TunedMobileWsOutboundTransport'
 import { logError, log } from '@2060/utils'
@@ -55,8 +55,7 @@ export const MobileAgentProvider: React.FC<Props> = ({ children }) => {
     isInitialized: false,
     isSignedUp: false,
   })
-
-  const agent = agentState.agent
+  const { agent } = agentState
   const { devEnvs } = useConfig()
   const { assertConnectedNetwork } = useNetwork()
   const isNetworkConnected = assertConnectedNetwork()
@@ -74,7 +73,7 @@ export const MobileAgentProvider: React.FC<Props> = ({ children }) => {
       await agent.modules.mrtd.setMrtdCapabilities({ eMrtdReadSupported: await EIdReader.isNfcSupported() })
 
       // force loading agent LRU cache into memory (this is to prevent
-      // some errors found while accesing it concurrently)
+      // some errors found while accessing it concurrently)
       const cache = agent.dependencyManager.resolve(CacheModuleConfig).cache
       await cache.get(agent.context, 'dummy')
 
@@ -129,9 +128,8 @@ export const MobileAgentProvider: React.FC<Props> = ({ children }) => {
 
   useEffect(() => {
     const setInitialState = () => {
-      const newAgent = createMobileAgent(baseAgentConfig, devEnvs.INDY_VDR_PROXY_BASE_URL)
+      const newAgent = setupMobileAgent(baseAgentConfig, devEnvs.INDY_VDR_PROXY_BASE_URL)
       handleChangeAgentState({ agent: newAgent })
-      setAgentState(prevState => ({ ...prevState, agent: newAgent }))
       return () => {
         newAgent.shutdown()
         handleChangeAgentState({ agent: undefined })
