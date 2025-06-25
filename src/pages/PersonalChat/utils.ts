@@ -143,7 +143,17 @@ export const getMinutesAndSeconds = (milliseconds: number) => {
   return `${pad(minutes)}:${pad(seconds)}`
 }
 
-export const checkIfDeleteFilesFromMedia = (
+/**
+ * Checks if the media file associated with a chat message should be deleted from local storage.
+ * This function examines the provided message metadata to determine if its local file path is still
+ * referenced by any other chat entries of type media. If the file path is not referenced elsewhere,
+ * it deletes the file and its preview (if present) from local storage.
+ *
+ * @param messageMetadata - The metadata of the chat entry whose media files may be deleted.
+ * @param otherChatEntriesTypeMedia - Array of other chat entries of type media to check for references
+ *  to the same file path.
+ */
+export const checkIfDeleteFilesFromMedia = async (
   messageMetadata: ChatEntryMetadata | undefined,
   otherChatEntriesTypeMedia: never[] | Results<ChatEntry>,
 ) => {
@@ -154,9 +164,9 @@ export const checkIfDeleteFilesFromMedia = (
         (otherEntryTypeMedia.metadata as MediaSharingMetadata).localFilePath === metadata.localFilePath,
     )
     if (!isLocalFilePathReferencedInOtherChatEntry) {
-      deleteFile(getLocalFileUri(metadata.localFilePath))
+      await deleteFile(getLocalFileUri(metadata.localFilePath))
       if (metadata.localPreviewFilePath) {
-        deleteFile(getLocalFileUri(metadata.localPreviewFilePath))
+        await deleteFile(getLocalFileUri(metadata.localPreviewFilePath))
       }
     }
   }
