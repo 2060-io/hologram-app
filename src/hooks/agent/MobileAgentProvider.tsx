@@ -8,7 +8,7 @@ import { useNetwork } from '../useNetwork'
 
 import { isRegistered, MobileAgent } from '@2060/services/agent/MobileAgent'
 import { migrateAnonCredsRecords } from '@2060/services/agent/migrateAnonCredsRecords'
-import { setupMobileAgent, MobileAgentConfig } from '@2060/services/initMobileAgent'
+import { setupMobileAgent, MobileAgentConfig } from '@2060/services/setupMobileAgent'
 import { MediatorEventTypes } from '@2060/services/transport/MediatorEventTypes'
 import { TunedMobileWsOutboundTransport } from '@2060/services/transport/TunedMobileWsOutboundTransport'
 import { logError, log } from '@2060/utils'
