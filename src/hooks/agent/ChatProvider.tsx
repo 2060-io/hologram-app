@@ -10,7 +10,7 @@ import {
   archiveThreads as chatESArchiveThreads,
   unarchiveThreads as chatESUnarchiveThreads,
   markThreadAsRead as chatESMarkThreadAsRead,
-  deleteThreads as chatESDeleteThreads,
+  deleteThread as chatESDeleteThread,
 } from './chat/services/ChatThreadService'
 import { useAgentChatEvents } from './chat/useAgentChatEvents'
 import { useAgentActionQueue } from './useAgentActionQueue'
@@ -55,7 +55,7 @@ export interface ChatContextInterface extends ChatState {
   archiveThreads(chatThreadIds: string[]): void
   unarchiveThreads(chatThreadIds: string[]): void
   markThreadAsRead(options: MarkThreadAsReadOptions): void
-  deleteThreads(chatThreadIds: string[]): void
+  deleteThread(chatThreadId: string): void
   clearThread(threadId: string): void
   setFilters(filters: Partial<ChatFilters>): void
   setActiveChatThread(id: string | undefined): void
@@ -157,11 +157,11 @@ export const ChatProvider: React.FC<Props> = ({ children }) => {
     [realm],
   )
 
-  const deleteThreads = useCallback(
-    (chatThreadIds: string[]) => {
-      if (!realm) throw new Error('Realm Unavailable')
-      for (const chatThreadId of chatThreadIds) clearThread(chatThreadId)
-      chatESDeleteThreads(realm, chatThreadIds)
+  const deleteThread = useCallback(
+    (chatThreadId: string) => {
+      if (!realm) return
+      clearThread(chatThreadId)
+      chatESDeleteThread(realm, chatThreadId)
     },
     [realm],
   )
@@ -278,7 +278,7 @@ export const ChatProvider: React.FC<Props> = ({ children }) => {
         archiveThreads,
         unarchiveThreads,
         markThreadAsRead,
-        deleteThreads,
+        deleteThread,
         clearThread,
         addAgentActionToQueue,
       }}

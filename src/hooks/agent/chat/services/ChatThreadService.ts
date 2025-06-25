@@ -168,34 +168,32 @@ export function updateThread(
   })
 }
 
-export function deleteThreads(realm: Realm, threadIds: string[]) {
+export function deleteThread(realm: Realm, threadId: string) {
   realm.write(() => {
-    for (const threadId of threadIds) {
-      const thread = realm.objectForPrimaryKey(ChatThread, threadId)
-      if (!thread) throw new Error(`Cannot find chat thread with id ${threadId}`)
+    const thread = realm.objectForPrimaryKey(ChatThread, threadId)
+    if (!thread) throw new Error(`Cannot find chat thread with id ${threadId}`)
 
-      // If it is a parent thread, don't delete but mark it as inactive
-      if (thread.subthreads.length > 0) {
-        thread.active = false
-        return
-      }
+    // If it is a parent thread, don't delete but mark it as inactive
+    if (thread.subthreads.length > 0) {
+      thread.active = false
+      return
+    }
 
-      // Find parent chat thread
-      const parentThreadId = thread.parentId
-      if (parentThreadId) {
-        const parentThread = realm.objectForPrimaryKey(ChatThread, parentThreadId)
-        // Update parent thread subthreads
-        if (parentThread) {
-          const index = parentThread.subthreads.findIndex(item => item.id === thread.id)
-          if (index > 0) parentThread.subthreads.splice(index, 1)
+    // Find parent chat thread
+    const parentThreadId = thread.parentId
+    if (parentThreadId) {
+      const parentThread = realm.objectForPrimaryKey(ChatThread, parentThreadId)
+      // Update parent thread subthreads
+      if (parentThread) {
+        const index = parentThread.subthreads.findIndex(item => item.id === thread.id)
+        if (index > 0) parentThread.subthreads.splice(index, 1)
 
-          // In case this was the only child and the parent was marked for deletion, delete it as well
-          if (parentThread.subthreads.length === 0 && !parentThread.active) {
-            realm.delete(parentThread)
-          }
+        // In case this was the only child and the parent was marked for deletion, delete it as well
+        if (parentThread.subthreads.length === 0 && !parentThread.active) {
+          realm.delete(parentThread)
         }
       }
-      realm.delete(thread)
     }
+    realm.delete(thread)
   })
 }
