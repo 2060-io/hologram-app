@@ -112,7 +112,7 @@ export const useChatActions = () => {
               realm.delete(object)
             })
             if (isMediaType(message.type)) {
-              checkIfDeleteFilesFromMedia(message.metadata, otherChatEntriesTypeMedia)
+              checkIfDeleteFilesFromMedia(message.metadata as MediaSharingMetadata, otherChatEntriesTypeMedia)
             }
           })
           toast({
@@ -153,7 +153,7 @@ export const useChatActions = () => {
               }
             })
             if (isMediaType(message.type)) {
-              checkIfDeleteFilesFromMedia(message.metadata, otherChatEntriesTypeMedia)
+              checkIfDeleteFilesFromMedia(message.metadata as MediaSharingMetadata, otherChatEntriesTypeMedia)
             }
             receipts.push({ messageId: associatedMessageId ?? '', state: MessageState.Deleted })
           })

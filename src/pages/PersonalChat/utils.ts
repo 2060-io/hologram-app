@@ -12,7 +12,6 @@ import {
   ChatEntryRole,
   ChatEntryState,
   SystemMessageMetadata,
-  ChatEntryMetadata,
   ChatEntry,
 } from '@2060/model'
 import { ChatEntryMessage } from '@2060/pages/PersonalChat/ChatMessage/Props'
@@ -154,11 +153,10 @@ export const getMinutesAndSeconds = (milliseconds: number) => {
  *  to the same file path.
  */
 export const checkIfDeleteFilesFromMedia = async (
-  messageMetadata: ChatEntryMetadata | undefined,
+  metadata: MediaSharingMetadata | undefined,
   otherChatEntriesTypeMedia: never[] | Results<ChatEntry>,
 ) => {
-  const metadata = messageMetadata as MediaSharingMetadata
-  if (metadata.localFilePath) {
+  if (metadata?.localFilePath) {
     const isLocalFilePathReferencedInOtherChatEntry = otherChatEntriesTypeMedia.some(
       otherEntryTypeMedia =>
         (otherEntryTypeMedia.metadata as MediaSharingMetadata).localFilePath === metadata.localFilePath,

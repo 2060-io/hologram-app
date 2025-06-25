@@ -25,7 +25,7 @@ import {
   ChatEntryRole,
   SystemMessageMetadata,
   ChatEntryState,
-  ChatEntryMetadata,
+  MediaSharingMetadata,
 } from '@2060/model'
 import { checkIfDeleteFilesFromMedia } from '@2060/pages/PersonalChat/utils'
 import { supportsMessageReceipts } from '@2060/utils/connectionUtils'
@@ -170,9 +170,10 @@ export const ChatProvider: React.FC<Props> = ({ children }) => {
     (threadId: string) => {
       if (!realm) return
       const filteredEntries = realm.objects(ChatEntry).filtered(`chatThreadId == '${threadId}'`)
-      const metadataOfEntriesTypeMedia = filteredEntries
+      // Create metadata deep copy of entries type media before delete them
+      const metadataOfEntriesTypeMedia: MediaSharingMetadata[] = filteredEntries
         .filtered(queryOfTypeMedia)
-        .map((item: ChatEntry) => ({ ...(item.metadata as ChatEntryMetadata) }))
+        .map((chatEntry: ChatEntry) => ({ ...(chatEntry.metadata as MediaSharingMetadata) }))
       const thread = realm.objects(ChatThread).find(item => item.id === threadId)
       realm.write(() => {
         realm.delete(filteredEntries)
