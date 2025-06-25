@@ -25,6 +25,7 @@ import {
   ChatEntryRole,
   SystemMessageMetadata,
   ChatEntryState,
+  ChatEntryMetadata,
 } from '@2060/model'
 import { checkIfDeleteFilesFromMedia } from '@2060/pages/PersonalChat/utils'
 import { supportsMessageReceipts } from '@2060/utils/connectionUtils'
@@ -167,14 +168,16 @@ export const ChatProvider: React.FC<Props> = ({ children }) => {
 
   const clearThread = useCallback(
     (threadId: string) => {
-      if (!realm) throw new Error('Realm unavailable')
+      if (!realm) return
       let thread = realm.objects(ChatThread).find(item => item.id === threadId)
       if (thread) {
         const filteredEntries = realm.objects(ChatEntry).filtered(`chatThreadId == '${threadId}'`)
+        const metadataOfEntriesTypeMedia = filteredEntries
+          .filtered(queryOfTypeMedia)
+          .map((item: ChatEntry) => ({ ...(item.metadata as ChatEntryMetadata) }))
         realm.write(() => {
           realm.delete(filteredEntries)
           // Create security message
-          if (!thread) return
           thread.preview = ''
           realm.create<ChatEntry>('ChatEntry', {
             id: utils.uuid(),
@@ -190,12 +193,11 @@ export const ChatProvider: React.FC<Props> = ({ children }) => {
             unread: false,
           })
         })
-        const entriesTypeMedia = filteredEntries.filtered(queryOfTypeMedia)
-        if (entriesTypeMedia.length) {
+        if (metadataOfEntriesTypeMedia.length) {
           const otherChatEntriesTypeMedia = getOtherChatEntriesTypeMedia(realm, threadId)
           // iterates all chat entries of type media and check if can delete media files
-          for (const entryTypeMedia of entriesTypeMedia) {
-            checkIfDeleteFilesFromMedia(entryTypeMedia.metadata, otherChatEntriesTypeMedia)
+          for (const metadataOfEntryTypeMedia of metadataOfEntriesTypeMedia) {
+            checkIfDeleteFilesFromMedia(metadataOfEntryTypeMedia, otherChatEntriesTypeMedia)
           }
         }
       }
