@@ -10,14 +10,14 @@ const LIMIT_STEP_SIZE = 25
 
 export const useChatEntries = (threadId: string) => {
   const { realm } = useLocalRealm()
-  const { loading, setActiveChatThread } = useChats()
+  const { loading, setActiveChatThreadId } = useChats()
   const limit = useRef<number>(LIMIT_STEP_SIZE)
   const [chatEntries, setChatEntries] = useState<ChatEntryData[]>([])
 
   const loadChatEntries = () => {
     if (!realm || loading) return
 
-    setActiveChatThread(threadId)
+    setActiveChatThreadId(threadId)
     const entries = realm
       .objects(ChatEntry)
       .filtered(`chatThreadId == '${threadId}' SORT(createdAt DESC) LIMIT(${limit.current})`)
@@ -33,7 +33,7 @@ export const useChatEntries = (threadId: string) => {
 
     return () => {
       entries.removeListener(onChatEntryChange)
-      setActiveChatThread(undefined)
+      setActiveChatThreadId(undefined)
     }
   }
 

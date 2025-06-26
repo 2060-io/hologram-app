@@ -52,7 +52,7 @@ export const VideoCallProvider: React.FC<PropsWithChildren> = ({ children }) => 
   const { isCameraOn, isInCall, isIncomingCall, didcommConnection, didcommCallType } = state
   const { agent } = useMobileAgent()
   const { realm } = useLocalRealm()
-  const { activeChatThread } = useChats()
+  const { activeChatThreadId } = useChats()
   const { assertConnectedNetwork } = useNetwork()
   const isNetworkConnected = assertConnectedNetwork()
   const isNetworkConnectedRef = useRef<boolean>()
@@ -201,7 +201,7 @@ export const VideoCallProvider: React.FC<PropsWithChildren> = ({ children }) => 
         agent.events.off(AgentEventTypes.AgentMessageProcessed, agentMessageProcessedListener)
       }
     }
-  }, [agent, realm, activeChatThread])
+  }, [agent, realm, activeChatThreadId])
 
   return (
     <VideoCallContext.Provider

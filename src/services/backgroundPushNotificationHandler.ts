@@ -113,7 +113,7 @@ export async function backgroundPushNotificationHandler(remoteMessage: FirebaseM
         }
       }
     })
-    const unsubscribeFromEvents = manageAgentChatEvents(agent, realm)
+    const unsubscribeFromEvents = manageAgentChatEvents(agent, realm, () => undefined)
 
     await agent.initialize()
     const mediatorConnection = await agent.mediationRecipient.findDefaultMediatorConnection()
