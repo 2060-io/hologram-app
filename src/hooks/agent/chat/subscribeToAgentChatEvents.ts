@@ -69,7 +69,7 @@ import {
   supportsMessageReceipts,
 } from '@2060/utils/connectionUtils'
 
-export function manageAgentChatEvents(
+export function subscribeToAgentChatEvents(
   agent: MobileAgent,
   realm: Realm,
   getActiveChatThreadId: () => string | undefined,

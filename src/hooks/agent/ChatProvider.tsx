@@ -4,7 +4,6 @@ import React, { createContext, useCallback, useState, useEffect, useContext, use
 
 import { useMobileAgent } from './MobileAgentProvider'
 import { AgentActionOptions, AgentActionType } from './actions/AgentAction'
-import { manageAgentChatEvents } from './chat/manageAgentChatEvents'
 import { addReceiptToRelatedEntries } from './chat/services/ChatEntryService'
 import {
   findOrCreateChatThread,
@@ -13,6 +12,7 @@ import {
   markThreadAsRead as chatESMarkThreadAsRead,
   deleteThreads as chatESDeleteThreads,
 } from './chat/services/ChatThreadService'
+import { subscribeToAgentChatEvents } from './chat/subscribeToAgentChatEvents'
 import { useAgentActionQueue } from './useAgentActionQueue'
 
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
@@ -89,7 +89,7 @@ export const ChatProvider: React.FC<Props> = ({ children }) => {
       const getActiveChatThreadId = () => {
         return activeChatThreadId.current
       }
-      manageAgentChatEvents(agent, realm, getActiveChatThreadId)
+      subscribeToAgentChatEvents(agent, realm, getActiveChatThreadId)
     }
   }, [agent, realm])
 

@@ -10,7 +10,7 @@ import Config from 'react-native-config'
 import Realm from 'realm'
 
 import { baseAgentConfig } from '../hooks/agent/MobileAgentProvider'
-import { manageAgentChatEvents } from '../hooks/agent/chat/manageAgentChatEvents'
+import { subscribeToAgentChatEvents } from '../hooks/agent/chat/subscribeToAgentChatEvents'
 import { CURRENT_REALM_SCHEMA_VERSION } from '../hooks/providers/RealmProvider'
 
 import { manageBackgroundChatEntryChanges } from '@2060/hooks/agent/chat'
@@ -105,7 +105,7 @@ export async function backgroundPushNotificationHandler(remoteMessage: FirebaseM
           deleteRemoteNotifications()
           removeChatEntryChangeListener()
           removeConnectionChangeListener()
-          unsubscribeFromEvents()
+          unsubscribeFromAgentChatEvents()
           await agent.shutdown()
           realm.close()
           makeRequestToLocalServer({ data: 'finish execution' })
@@ -113,7 +113,7 @@ export async function backgroundPushNotificationHandler(remoteMessage: FirebaseM
         }
       }
     })
-    const unsubscribeFromEvents = manageAgentChatEvents(agent, realm, () => undefined)
+    const unsubscribeFromAgentChatEvents = subscribeToAgentChatEvents(agent, realm, () => undefined)
 
     await agent.initialize()
     const mediatorConnection = await agent.mediationRecipient.findDefaultMediatorConnection()
