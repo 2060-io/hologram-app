@@ -19,6 +19,7 @@ import { IS_IOS } from '@2060/constants'
 type Encoding = 'utf8' | 'base64' | 'ascii'
 
 const documentDirectoryPath = DocumentDirectoryPath
+const CONFIG_FILE_PATH = `${documentDirectoryPath}/config.json`
 const mediaDirectoryPath = `${documentDirectoryPath}/media`
 const mediaPreviewsDirectoryPath = `${documentDirectoryPath}/media/previews`
 const walletDirectoryPath = `${documentDirectoryPath}/wallet`
@@ -141,4 +142,5 @@ export {
   getFileExtension,
   getLocalFileUri,
   existsFile,
+  CONFIG_FILE_PATH,
 }
