@@ -40,7 +40,7 @@ import { checkIfDeleteFilesFromMedia } from '@2060/pages/PersonalChat/utils'
 import { log, logError } from '@2060/utils'
 import { getLocalFileUri } from '@2060/utils/RNFS'
 import { compressVideo, getMediaFileSharingData } from '@2060/utils/mediaFileUtils'
-import { getOtherChatEntriesTypeMedia } from '@2060/utils/realmQueries'
+import { getMediaChatEntriesExcludingThread } from '@2060/utils/realmQueries'
 import { toast, ToastOptions } from '@2060/utils/toast'
 
 export const useChatActions = () => {
@@ -102,7 +102,7 @@ export const useChatActions = () => {
         try {
           const isSomeMessageTypeMedia = messages.some(message => isMediaType(message.type))
           const otherChatEntriesTypeMedia = isSomeMessageTypeMedia
-            ? getOtherChatEntriesTypeMedia(realm, messages[0].chatThreadId)
+            ? getMediaChatEntriesExcludingThread(realm, messages[0].chatThreadId)
             : []
           messages.forEach(message => {
             const { id } = message
@@ -138,7 +138,7 @@ export const useChatActions = () => {
           const receipts: MessageReceiptOptions[] = []
           const isSomeMessageTypeMedia = messages.some(message => isMediaType(message.type))
           const otherChatEntriesTypeMedia = isSomeMessageTypeMedia
-            ? getOtherChatEntriesTypeMedia(realm, messages[0].chatThreadId)
+            ? getMediaChatEntriesExcludingThread(realm, messages[0].chatThreadId)
             : []
           messages.forEach(message => {
             const { id: entryId, associatedMessageId } = message

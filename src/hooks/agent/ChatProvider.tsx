@@ -29,7 +29,7 @@ import {
 } from '@2060/model'
 import { checkIfDeleteFilesFromMedia } from '@2060/pages/PersonalChat/utils'
 import { supportsMessageReceipts } from '@2060/utils/connectionUtils'
-import { getOtherChatEntriesTypeMedia, queryOfTypeMedia } from '@2060/utils/realmQueries'
+import { getMediaChatEntriesExcludingThread, queryOfTypeMedia } from '@2060/utils/realmQueries'
 
 export type ChatCategory = 'all' | 'people' | 'services'
 export type ChatFilters = { topic: string; archived: boolean; category: ChatCategory; parentId?: string }
@@ -195,7 +195,7 @@ export const ChatProvider: React.FC<Props> = ({ children }) => {
         })
       })
       if (metadataOfEntriesTypeMedia.length) {
-        const otherChatEntriesTypeMedia = getOtherChatEntriesTypeMedia(realm, threadId)
+        const otherChatEntriesTypeMedia = getMediaChatEntriesExcludingThread(realm, threadId)
         // iterates all chat entries of type media and check if can delete media files
         for (const metadataOfEntryTypeMedia of metadataOfEntriesTypeMedia) {
           checkIfDeleteFilesFromMedia(metadataOfEntryTypeMedia, otherChatEntriesTypeMedia)

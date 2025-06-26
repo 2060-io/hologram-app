@@ -14,7 +14,7 @@ OR type == '${ChatEntryType.VoiceNote}'`
  * @param threadId - The ID of the chat thread to exclude from the results.
  * @returns A Realm.Results collection containing the filtered chat entries.
  */
-export const getOtherChatEntriesTypeMedia = (realm: Realm, threadId: string) => {
+export const getMediaChatEntriesExcludingThread = (realm: Realm, threadId: string) => {
   const otherEntriesTypeMedia = realm
     .objects(ChatEntry)
     .filtered(`chatThreadId != '${threadId}'`)
