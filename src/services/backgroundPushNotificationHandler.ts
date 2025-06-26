@@ -2,7 +2,6 @@ import {
   AgentMessageProcessedEvent,
   V2StatusMessage,
   AgentEventTypes,
-  MediatorPickupStrategy,
   TypedArrayEncoder,
 } from '@credo-ts/core'
 import { FirebaseMessagingTypes } from '@react-native-firebase/messaging'
@@ -52,13 +51,7 @@ export async function backgroundPushNotificationHandler(remoteMessage: FirebaseM
   makeRequestToLocalServer({ data: 'START EXECUTING BACKGROUND PUSH NOTIFICATIONS HANDLER' })
   try {
     const indyVDRProxyBaseUrl = await getIndyVDRProxyBaseUrl()
-    const agent = setupMobileAgent(
-      {
-        ...baseAgentConfig,
-        mediatorPickupStrategy: MediatorPickupStrategy.None,
-      },
-      indyVDRProxyBaseUrl,
-    )
+    const agent = setupMobileAgent(baseAgentConfig, indyVDRProxyBaseUrl)
 
     const realmKey = await retrieveEncryptedKey(KeyChainService.RealmMain)
 
