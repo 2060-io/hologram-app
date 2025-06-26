@@ -57,7 +57,6 @@
       "send": "Enviar",
       "name": "Nombre",
       "description": "Descripción",
-      "loading": "Cargando...",
       "retry": "Reintentar",
       "abort": "Cancelar",
       "open": "Abrir",

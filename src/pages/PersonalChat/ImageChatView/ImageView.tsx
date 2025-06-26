@@ -15,7 +15,7 @@ type ImageView = {
   imagePreviewUri: string
   imageUri: string
   fileMediaInfo: MediaInfo
-  currentMessage: ChatEntryMessage
+  chatEntry: ChatEntryMessage
   style: StyleProp<ImageStyle>
 }
 
@@ -23,7 +23,7 @@ const ImageView = memo((props: ImageView) => {
   const { displayMessageFloatingMenu } = useChat()
   const [lightboxVisible, setLightboxVisible] = useState(false)
   const [showControl, setShowControl] = useState(true)
-  const { imagePreviewUri, imageUri, fileMediaInfo, currentMessage } = props
+  const { imagePreviewUri, imageUri, fileMediaInfo, chatEntry } = props
   const theme = useTheme()
   const styles = getStyles(theme)
 
@@ -31,7 +31,7 @@ const ImageView = memo((props: ImageView) => {
     const newIsLightboxVisible = !lightboxVisible
     setLightboxVisible(newIsLightboxVisible)
   }
-  const onLongPress = () => displayMessageFloatingMenu(currentMessage)
+  const onLongPress = () => displayMessageFloatingMenu(chatEntry)
 
   const handleControls = () => setShowControl(!showControl)
 
@@ -41,9 +41,7 @@ const ImageView = memo((props: ImageView) => {
         visible={lightboxVisible}
         onCloseModal={onToggleModalLightbox}
         renderHeader={close =>
-          showControl && (
-            <LightboxHeader fileMediaInfo={fileMediaInfo} onBack={close} currentMessage={currentMessage} />
-          )
+          showControl && <LightboxHeader fileMediaInfo={fileMediaInfo} onBack={close} chatEntry={chatEntry} />
         }
       >
         <TouchableOpacity onPress={handleControls} activeOpacity={1}>

@@ -14,7 +14,7 @@ import { Text, SvgIcon, Progress } from '@2060/components/common'
 import { useMedia } from '@2060/hooks'
 import { useMediaPlayer } from '@2060/hooks/providers/MediaPlayerProvider'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { MediaDownloadState, MediaUploadState } from '@2060/model'
+import { MediaDownloadState, MediaUploadState, VideoMetadata } from '@2060/model'
 import { getFileSize } from '@2060/utils'
 import { getLocalFileUri } from '@2060/utils/RNFS'
 
@@ -22,7 +22,8 @@ const VideoChatView = memo((props: MediaProps) => {
   const theme = useTheme()
   const styles = getStyles(theme)
   const { t } = useTranslation()
-  const { mediaItem, mediaRecordId, fileMediaInfo, currentMessage, displayTimeAndTicks } = props
+  const { mediaRecordId, fileMediaInfo, chatEntry, displayTimeAndTicks } = props
+  const metadata = chatEntry.metadata as VideoMetadata
   const {
     localFilePath,
     duration,
@@ -34,14 +35,14 @@ const VideoChatView = memo((props: MediaProps) => {
     description,
     mediaDownloadState,
     mediaDownloadProgress,
-  } = mediaItem
+  } = metadata
   const { playVideo } = useMediaPlayer()
   const { isDownloaded, isDownloading, downloadMedia, retryMediaUpload, isRetryingUpload } = useMedia({
     mediaRecordId,
     localFilePath,
     type: 'videos',
     mediaDownloadState,
-    role: currentMessage.role,
+    role: chatEntry.role,
   })
 
   const textDuration = getMinutesAndSeconds(duration as number)
@@ -68,7 +69,7 @@ const VideoChatView = memo((props: MediaProps) => {
         >
           <TouchableOpacity
             style={styles.btnPlayVideo}
-            onPress={() => videoFileUri && playVideo({ videoFileUri, fileMediaInfo, currentMessage })}
+            onPress={() => videoFileUri && playVideo({ videoFileUri, fileMediaInfo, chatEntry })}
           >
             <SvgIcon name="playCircle" fill={theme.colors.primary} width={70} height={70} />
           </TouchableOpacity>
