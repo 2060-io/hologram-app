@@ -101,7 +101,7 @@ export const useChatActions = () => {
         if (!realm) return
         try {
           const isSomeMessageTypeMedia = messages.some(message => isMediaType(message.type))
-          const otherChatEntriesTypeMedia = isSomeMessageTypeMedia
+          const mediaChatEntriesExcludingThread = isSomeMessageTypeMedia
             ? getMediaChatEntriesExcludingThread(realm, messages[0].chatThreadId)
             : []
           messages.forEach(message => {
@@ -112,7 +112,10 @@ export const useChatActions = () => {
               realm.delete(object)
             })
             if (isMediaType(message.type)) {
-              checkIfDeleteFilesFromMedia(message.metadata as MediaSharingMetadata, otherChatEntriesTypeMedia)
+              checkIfDeleteFilesFromMedia(
+                message.metadata as MediaSharingMetadata,
+                mediaChatEntriesExcludingThread,
+              )
             }
           })
           toast({
@@ -137,7 +140,7 @@ export const useChatActions = () => {
           if (!agent || !connectionId || !realm) return
           const receipts: MessageReceiptOptions[] = []
           const isSomeMessageTypeMedia = messages.some(message => isMediaType(message.type))
-          const otherChatEntriesTypeMedia = isSomeMessageTypeMedia
+          const mediaChatEntriesExcludingThread = isSomeMessageTypeMedia
             ? getMediaChatEntriesExcludingThread(realm, messages[0].chatThreadId)
             : []
           messages.forEach(message => {
@@ -153,7 +156,10 @@ export const useChatActions = () => {
               }
             })
             if (isMediaType(message.type)) {
-              checkIfDeleteFilesFromMedia(message.metadata as MediaSharingMetadata, otherChatEntriesTypeMedia)
+              checkIfDeleteFilesFromMedia(
+                message.metadata as MediaSharingMetadata,
+                mediaChatEntriesExcludingThread,
+              )
             }
             receipts.push({ messageId: associatedMessageId ?? '', state: MessageState.Deleted })
           })

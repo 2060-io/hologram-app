@@ -15,11 +15,10 @@ OR type == '${ChatEntryType.VoiceNote}'`
  * @returns A Realm.Results collection containing the filtered chat entries.
  */
 export const getMediaChatEntriesExcludingThread = (realm: Realm, threadId: string) => {
-  const otherEntriesTypeMedia = realm
+  const mediaChatEntriesExcludingThread = realm
     .objects(ChatEntry)
     .filtered(`chatThreadId != '${threadId}'`)
     .filtered(queryOfTypeMedia)
     .filtered(`state != '${ChatEntryState.Deleted}'`)
-
-  return otherEntriesTypeMedia
+  return mediaChatEntriesExcludingThread
 }

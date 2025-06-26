@@ -195,10 +195,10 @@ export const ChatProvider: React.FC<Props> = ({ children }) => {
         })
       })
       if (metadataOfEntriesTypeMedia.length) {
-        const otherChatEntriesTypeMedia = getMediaChatEntriesExcludingThread(realm, threadId)
+        const mediaChatEntriesExcludingThread = getMediaChatEntriesExcludingThread(realm, threadId)
         // iterates all chat entries of type media and check if can delete media files
         for (const metadataOfEntryTypeMedia of metadataOfEntriesTypeMedia) {
-          checkIfDeleteFilesFromMedia(metadataOfEntryTypeMedia, otherChatEntriesTypeMedia)
+          checkIfDeleteFilesFromMedia(metadataOfEntryTypeMedia, mediaChatEntriesExcludingThread)
         }
       }
     },
