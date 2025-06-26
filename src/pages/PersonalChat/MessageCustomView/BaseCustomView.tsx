@@ -34,7 +34,6 @@ import {
   EMrtdReadRequestMetadata,
   InvitationMetadata,
   LinkMetadata,
-  MediaSharingMetadata,
   MrzRequestMetadata,
   QuestionMetadata,
   TextMessageMetadata,
@@ -107,12 +106,11 @@ const BaseCustomView: React.FC<BaseCustomMessageViewProps> = memo(props => {
             <ImageChatView
               {...{
                 mediaRecordId: chatEntry.associatedRecordId,
-                mediaItem: chatEntry.metadata as MediaSharingMetadata,
                 fileMediaInfo: {
                   user,
                   createdAt: new Date(chatEntry.createdAt),
                 },
-                currentMessage,
+                chatEntry,
                 displayTimeAndTicks,
               }}
             />
@@ -122,12 +120,11 @@ const BaseCustomView: React.FC<BaseCustomMessageViewProps> = memo(props => {
             <VideoChatView
               {...{
                 mediaRecordId: chatEntry.associatedRecordId,
-                mediaItem: chatEntry.metadata as MediaSharingMetadata,
                 fileMediaInfo: {
                   user,
                   createdAt: new Date(chatEntry.createdAt),
                 },
-                currentMessage,
+                chatEntry,
                 displayTimeAndTicks,
               }}
             />
