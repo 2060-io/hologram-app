@@ -1,4 +1,3 @@
-import { getConnectionProfile, UserProfileData } from '@2060.io/credo-ts-didcomm-user-profile'
 import { ConnectionRecord, DidExchangeState } from '@credo-ts/core'
 import React, { createContext, useState, useEffect, useContext, useMemo } from 'react'
 
@@ -36,14 +35,6 @@ export const useConnectionById = (id?: string): ConnectionRecord | undefined => 
 
   if (!id) return undefined
   return connections.find((c: ConnectionRecord) => c.id === id)
-}
-
-export const useConnectionProfile = (connectionId: string): UserProfileData | null | undefined => {
-  const connection = useConnectionById(connectionId)
-  if (!connection) return
-
-  const profile = getConnectionProfile(connection)
-  return profile
 }
 
 export const useConnectionByState = (state: DidExchangeState): ConnectionRecord[] => {
