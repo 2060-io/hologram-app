@@ -12,7 +12,9 @@ For local databases we use [Realm](https://github.com/realm/realm-js). In this m
 
 Description: As you can see in image there are 9 Chats. Technically speaking they are 9 ChatThread objects
 
-**ChatEntry**: This entity is responsible for storage every single item in chat. In other words, it represents a single chat message, no matter what type of message is. With the exception of chat system message (First and main message in Chat screen) whose value is calculated on the fly. Let's see it better with an example.
+**ChatEntry**: This entity is responsible for storage every single item in chat. In other words, it represents a single chat message, no matter what type of message is. As you can see in image bellow pointed messages are ChatEntry objects from first system message until last message in chat are ChatEntry objects.
+
+**Disclaimer:** Sticky dates are visual elements that are part of a chat and are calculated on the fly but they are not ChatEntry objects
 
 ![](./images/ChatEntryExample.jpg)
 
