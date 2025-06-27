@@ -21,7 +21,7 @@ export const handleBasicMessageRecordChanges = async (options: {
   const thread = findOrCreateChatThread(realm, connection)
 
   if (basicMessageRecord.role === BasicMessageRole.Receiver) {
-    const chatEntry = createTextChatEntry({
+    createTextChatEntry({
       agent,
       realm,
       associatedRecordId: basicMessageRecord.id,
@@ -34,8 +34,6 @@ export const handleBasicMessageRecordChanges = async (options: {
       content: basicMessageRecord.content,
       parentThreadId: basicMessageRecord.parentThreadId,
     })
-
-    updateThread(realm, thread.id, { lastChatEntry: chatEntry })
 
     if (thread.id !== activeChatThreadId) {
       addUnread(realm, thread.id, 1)
