@@ -4,9 +4,8 @@ import { readFile } from 'react-native-fs'
 
 import { ConfigJsonSignature, PARENTAL_CONTROL } from '../config'
 
-import { CONFIG_FILE_PATH } from '@2060/constants'
 import { logError } from '@2060/utils'
-import { writeFile } from '@2060/utils/RNFS'
+import { CONFIG_FILE_PATH, writeFile } from '@2060/utils/RNFS'
 
 export enum KeyChainService {
   AfjWallet = 'afj-wallet',

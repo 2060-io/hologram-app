@@ -12,17 +12,12 @@ import { dataUrl } from './index'
 import { ConnectionType } from '@2060/model'
 
 export const getConnectionDisplayName = (connection: ConnectionRecord) => {
-  if (!connection) return ''
-
   const profile = getConnectionProfile(connection)
   const nameDisplayName = profile?.displayName
   const nameAlias = connection.alias
   const namelabel = connection?.theirLabel
   const nameDid = connection.did
-
-  let displayName = ''
-  displayName = nameAlias || nameDisplayName || namelabel || nameDid || ''
-
+  let displayName = nameAlias || nameDisplayName || namelabel || nameDid || ''
   return displayName
 }
 
