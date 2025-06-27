@@ -88,7 +88,7 @@ export function markEntryAsRead(realm: Realm, recordId: string) {
   })
 }
 
-export function updateState(
+export function updateChatEntry(
   realm: Realm,
   options: {
     recordId: string

@@ -52,7 +52,7 @@ import {
   createChatEntry,
   findAllByAssociatedMessageId,
   findAllByAssociatedRecordId,
-  updateState,
+  updateChatEntry,
 } from './services/ChatEntryService'
 import { addUnread, findChatThread, findOrCreateChatThread, updateThread } from './services/ChatThreadService'
 
@@ -193,7 +193,7 @@ export function subscribeToAgentChatEvents(
         for (const entry of entries) {
           if (entry && entry.state === ChatEntryState.Created) {
             // Associate chat entry with the outbound message
-            updateState(realm, {
+            updateChatEntry(realm, {
               recordId: entry.id,
               state: ChatEntryState.Created,
               associatedMessageId: outboundMessage.message.id,
@@ -334,7 +334,7 @@ export function subscribeToAgentChatEvents(
       for (const invitationEntry of invitationEntries) {
         // only update those entries that are not already marked as "replied"
         if (invitationEntry.metadata?.state === InvitationState.Received) {
-          updateState(realm, {
+          updateChatEntry(realm, {
             recordId: invitationEntry.id,
             state: ChatEntryState.Viewed,
             metadata: {
