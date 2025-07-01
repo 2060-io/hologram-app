@@ -10,7 +10,7 @@ import {
   archiveThreads as chatESArchiveThreads,
   unarchiveThreads as chatESUnarchiveThreads,
   markThreadAsRead as chatESMarkThreadAsRead,
-  deleteThreads as chatESDeleteThreads,
+  deleteThread as chatESDeleteThread,
 } from './chat/services/ChatThreadService'
 import { subscribeToAgentChatEvents } from './chat/subscribeToAgentChatEvents'
 import { useAgentActionQueue } from './useAgentActionQueue'
@@ -25,8 +25,11 @@ import {
   ChatEntryRole,
   SystemMessageMetadata,
   ChatEntryState,
+  MediaSharingMetadata,
 } from '@2060/model'
+import { checkIfDeleteFilesFromMedia } from '@2060/pages/PersonalChat/utils'
 import { supportsMessageReceipts } from '@2060/utils/connectionUtils'
+import { getMediaChatEntriesExcludingThread, queryOfTypeMedia } from '@2060/utils/realmQueries'
 
 export type ChatCategory = 'all' | 'people' | 'services'
 export type ChatFilters = { topic: string; archived: boolean; category: ChatCategory; parentId?: string }
@@ -52,7 +55,7 @@ export interface ChatContextInterface extends ChatState {
   archiveThreads(chatThreadIds: string[]): void
   unarchiveThreads(chatThreadIds: string[]): void
   markThreadAsRead(options: MarkThreadAsReadOptions): void
-  deleteThreads(chatThreadIds: string[]): void
+  deleteThread(chatThreadId: string): void
   clearThread(threadId: string): void
   setFilters(filters: Partial<ChatFilters>): void
   setActiveChatThreadId(id: string | undefined): void
@@ -228,41 +231,49 @@ export const ChatProvider: React.FC<Props> = ({ children }) => {
     [realm],
   )
 
-  const deleteThreads = useCallback(
-    (chatThreadIds: string[]) => {
-      if (!realm) throw new Error('Realm Unavailable')
-      for (const chatThreadId of chatThreadIds) clearThread(chatThreadId)
-      chatESDeleteThreads(realm, chatThreadIds)
+  const deleteThread = useCallback(
+    (chatThreadId: string) => {
+      if (!realm) return
+      clearThread(chatThreadId)
+      chatESDeleteThread(realm, chatThreadId)
     },
     [realm],
   )
 
   const clearThread = useCallback(
     (threadId: string) => {
-      if (!realm) throw new Error('Realm unavailable')
-      let thread = realm.objects(ChatThread).find(item => item.id === threadId)
-      if (thread) {
-        realm.write(() => {
-          const filteredEntries = realm.objects(ChatEntry).filtered(`chatThreadId == '${threadId}'`)
-          realm.delete(filteredEntries)
-
-          // Create security message
-          if (!thread) return
-          thread.preview = ''
-          realm.create<ChatEntry>('ChatEntry', {
-            id: utils.uuid(),
-            chatThreadId: thread.id,
-            didcommThreadId: '',
-            associatedMessageId: '',
-            associatedRecordId: '',
-            type: ChatEntryType.System,
-            role: ChatEntryRole.None,
-            state: ChatEntryState.Viewed,
-            metadata: { kind: 'security' } as SystemMessageMetadata,
-            createdAt: thread.createdAt.getTime(),
-            unread: false,
-          })
+      if (!realm) return
+      const chatEntriesToDelete = realm.objects(ChatEntry).filtered(`chatThreadId == '${threadId}'`)
+      // Create metadata deep copy of entries type media before delete them
+      const metadataOfEntriesTypeMedia: MediaSharingMetadata[] = chatEntriesToDelete
+        .filtered(queryOfTypeMedia)
+        .map((chatEntry: ChatEntry) => ({ ...(chatEntry.metadata as MediaSharingMetadata) }))
+      const thread = realm.objects(ChatThread).find(item => item.id === threadId)
+      realm.write(() => {
+        realm.delete(chatEntriesToDelete)
+        // Create security message
+        if (!thread) return
+        thread.preview = ''
+        realm.create<ChatEntry>('ChatEntry', {
+          id: utils.uuid(),
+          chatThreadId: thread.id,
+          didcommThreadId: '',
+          associatedMessageId: '',
+          associatedRecordId: '',
+          type: ChatEntryType.System,
+          role: ChatEntryRole.None,
+          state: ChatEntryState.Viewed,
+          metadata: { kind: 'security' } as SystemMessageMetadata,
+          createdAt: thread.createdAt.getTime(),
+          unread: false,
         })
+      })
+      if (metadataOfEntriesTypeMedia.length) {
+        const mediaChatEntriesExcludingThread = getMediaChatEntriesExcludingThread(realm, threadId)
+        // iterates all chat entries of type media and check if can delete media files
+        for (const metadataOfEntryTypeMedia of metadataOfEntriesTypeMedia) {
+          checkIfDeleteFilesFromMedia(metadataOfEntryTypeMedia, mediaChatEntriesExcludingThread)
+        }
       }
     },
     [realm],
@@ -278,7 +289,7 @@ export const ChatProvider: React.FC<Props> = ({ children }) => {
         archiveThreads,
         unarchiveThreads,
         markThreadAsRead,
-        deleteThreads,
+        deleteThread,
         clearThread,
         addAgentActionToQueue,
       }}
