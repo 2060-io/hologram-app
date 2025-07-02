@@ -1,18 +1,12 @@
-import {
-  AgentMessageProcessedEvent,
-  V2StatusMessage,
-  AgentEventTypes,
-  TypedArrayEncoder,
-} from '@credo-ts/core'
+import { AgentMessageProcessedEvent, V2StatusMessage, AgentEventTypes } from '@credo-ts/core'
 import { FirebaseMessagingTypes } from '@react-native-firebase/messaging'
 import Config from 'react-native-config'
-import Realm from 'realm'
+
+import RealmSingleton from './RealmSingleton'
 
 import { baseAgentConfig } from '@2060/hooks/agent/MobileAgentProvider'
 import { manageBackgroundChatEntryChanges, subscribeToAgentChatEvents } from '@2060/hooks/agent/chat'
 import { manageConnectionStateChangedEvent } from '@2060/hooks/agent/connections/manageConnectionStateChangedEvent'
-import { CURRENT_REALM_SCHEMA_VERSION } from '@2060/hooks/providers/RealmProvider'
-import { ChatEntry, ChatThread } from '@2060/model'
 import { KeyChainService, retrieveEncryptedKey } from '@2060/services/keys'
 import { DEV_ENVS_PERSIST_KEY, getStorageData } from '@2060/services/localStorage'
 import { setupMobileAgent } from '@2060/services/setupMobileAgent'
@@ -20,7 +14,7 @@ import { walletDirectoryPath } from '@2060/utils/RNFS'
 import { DevEnvsObject } from '@2060/utils/developer'
 import { deleteRemoteNotifications } from '@2060/utils/pushNotificationsUtils'
 
-const makeRequestToLocalServer = (payload: Record<string, string>) => {
+export const makeRequestToLocalServer = (payload: Record<string, string>) => {
   if (__DEV__) {
     fetch('http://192.168.1.13:3000/api/echo', {
       method: 'POST',
@@ -50,19 +44,12 @@ export async function backgroundPushNotificationHandler(remoteMessage: FirebaseM
   deleteRemoteNotifications()
   makeRequestToLocalServer({ data: 'START EXECUTING BACKGROUND PUSH NOTIFICATIONS HANDLER' })
   try {
+    const realmInstance = RealmSingleton.getInstance()
+    await realmInstance.initialize()
+    const realm = realmInstance.getRealm()
+    if (!realm) return
     const indyVDRProxyBaseUrl = await getIndyVDRProxyBaseUrl()
     const agent = setupMobileAgent(baseAgentConfig, indyVDRProxyBaseUrl)
-
-    const realmKey = await retrieveEncryptedKey(KeyChainService.RealmMain)
-
-    const realmConfig: Realm.Configuration = {
-      encryptionKey: TypedArrayEncoder.fromHex(realmKey as string),
-      schema: [ChatEntry, ChatThread],
-      path: `${walletDirectoryPath}/main.realm`,
-      schemaVersion: CURRENT_REALM_SCHEMA_VERSION,
-    }
-
-    const realm = await Realm.open(realmConfig)
     const { addChatEntryChangeListener, removeChatEntryChangeListener } = manageBackgroundChatEntryChanges(
       realm,
       agent,
@@ -98,7 +85,7 @@ export async function backgroundPushNotificationHandler(remoteMessage: FirebaseM
           removeConnectionChangeListener()
           unsubscribeFromAgentChatEvents()
           await agent.shutdown()
-          realm.close()
+          // realm.close()
         }
       }
     })
