@@ -76,11 +76,12 @@ export const RealmProvider: React.FC<React.PropsWithChildren<Props>> = ({ childr
     [realm],
   )
 
-  const closeRealm = useCallback(() => {
+  const closeRealm = useCallback(async () => {
     if (realm) {
       const { path } = realm
-      realm.close()
-      deleteFile(path)
+      await deleteFile(path)
+      const realmInstance = RealmSingleton.getInstance()
+      realmInstance.closeRealm()
       setRealm(undefined)
     }
   }, [realm])

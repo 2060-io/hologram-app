@@ -2,7 +2,7 @@ import Realm from 'realm'
 
 import { createAndStoreEncryptedKey, KeyChainService, retrieveEncryptedKey } from './keys'
 
-import { logError } from '@2060/utils'
+import { log, logError } from '@2060/utils'
 import { getRealmConfig } from '@2060/utils/realm'
 
 export class RealmSingleton {
@@ -34,6 +34,13 @@ export class RealmSingleton {
 
   getRealm(): Realm | null {
     return this.realm
+  }
+
+  closeRealm() {
+    log('Closing realm')
+    this.realm?.close()
+    this.realm = null
+    this.isInitialized = false
   }
 }
 
