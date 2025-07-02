@@ -66,7 +66,7 @@ export const useRestoreBackup = ({ restoreProgress, setRestoreProgress, download
   }
 
   const importWalletAndRealm = async () => {
-    if (!agent || !importAndOpenRealm) {
+    if (!agent) {
       throw new Error('Agent not defined in BaseRestoreWalletBackup')
     }
 

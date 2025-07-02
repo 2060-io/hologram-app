@@ -17,14 +17,14 @@ export class RealmSingleton {
     return RealmSingleton.instance
   }
 
-  async initialize() {
+  async initialize(realmConfig?: Realm.Configuration) {
     if (this.isInitialized) return
     try {
       const key =
         (await retrieveEncryptedKey(KeyChainService.RealmMain)) ??
         (await createAndStoreEncryptedKey(KeyChainService.RealmMain))
-      const realmConfig = getRealmConfig(key)
-      const realm = await Realm.open(realmConfig)
+      const config = realmConfig ?? getRealmConfig(key)
+      const realm = await Realm.open(config)
       this.realm = realm
       this.isInitialized = true
     } catch (error) {

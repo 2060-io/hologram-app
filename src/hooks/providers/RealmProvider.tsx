@@ -19,7 +19,7 @@ interface RealmState {
 
 interface RealmContextInterface extends RealmState {
   openRealm(): Promise<void>
-  importAndOpenRealm: (backupFilePath: string, backupKeySeed: string) => Promise<void>
+  importAndOpenRealm: (realmFilePath: string, backupKeySeed: string) => Promise<void>
   closeRealm: (andDelete?: boolean) => void
 }
 
@@ -45,18 +45,21 @@ export const RealmProvider: React.FC<React.PropsWithChildren<Props>> = ({ childr
   }, [])
 
   const importAndOpenRealm = useCallback(
-    async (backupFilePath: string, backupKeyHex: string) => {
+    async (realmFilePath: string, backupKeyHex: string) => {
       const key = await createAndStoreEncryptedKey(KeyChainService.RealmMain)
       const realmConfig = getRealmConfig(key)
       const backupRealm = await Realm.open({
         ...realmConfig,
         encryptionKey: TypedArrayEncoder.fromHex(backupKeyHex),
-        path: backupFilePath,
+        path: realmFilePath,
       })
       backupRealm.writeCopyTo(realmConfig)
       backupRealm.close()
       try {
-        const newRealm = await Realm.open(realmConfig)
+        const realmInstance = RealmSingleton.getInstance()
+        await realmInstance.initialize(realmConfig)
+        const newRealm = realmInstance.getRealm()
+        if (!newRealm) return
         /**
         delete all UploadTask is done due to writeCopyTo or realm does not take into account
         schema parameter and it is including all objects in the backup
