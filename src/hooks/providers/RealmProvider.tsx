@@ -20,7 +20,7 @@ interface RealmState {
 interface RealmContextInterface extends RealmState {
   openRealm(): Promise<void>
   importAndOpenRealm: (realmFilePath: string, backupKeySeed: string) => Promise<void>
-  closeRealm: (andDelete?: boolean) => void
+  closeRealm: () => void
 }
 
 const LocalRealmContext = createContext<RealmContextInterface | undefined>(undefined)
@@ -76,20 +76,14 @@ export const RealmProvider: React.FC<React.PropsWithChildren<Props>> = ({ childr
     [realm],
   )
 
-  const closeRealm = useCallback(
-    (andDelete?: boolean) => {
-      if (realm) {
-        const path = realm.path
-        realm.close()
-
-        if (andDelete) {
-          deleteFile(path)
-        }
-      }
+  const closeRealm = useCallback(() => {
+    if (realm) {
+      const { path } = realm
+      realm.close()
+      deleteFile(path)
       setRealm(undefined)
-    },
-    [realm],
-  )
+    }
+  }, [realm])
 
   return (
     <LocalRealmContext.Provider value={{ realm, openRealm, importAndOpenRealm, closeRealm }}>

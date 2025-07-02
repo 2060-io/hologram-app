@@ -106,7 +106,7 @@ const Developer = ({ navigation }: Props) => {
       cache._cache = undefined
       await shutdownAgent()
       await deleteAllKeys()
-      closeRealm(true)
+      closeRealm()
       navigation.navigate('Home')
     } catch (error) {
       Alert.alert('Error', `${error}`)

@@ -85,7 +85,6 @@ export async function backgroundPushNotificationHandler(remoteMessage: FirebaseM
           removeConnectionChangeListener()
           unsubscribeFromAgentChatEvents()
           await agent.shutdown()
-          // realm.close()
         }
       }
     })
