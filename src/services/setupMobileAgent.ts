@@ -7,17 +7,31 @@ import {
   Logger,
   MediatorPickupStrategy,
   AgentMessageReceivedEvent,
+  ConsoleLogger,
+  LogLevel,
 } from '@credo-ts/core'
+import { agentDependencies } from '@credo-ts/react-native'
 
 import { MobileAgent } from './agent/MobileAgent'
 import { createMobileAgent } from './agent/createMobileAgent'
 import { duplicatedMessagesMiddleware } from './agent/duplicatedMessagesMiddleware'
 import { TunedMobileWsOutboundTransport } from './transport/TunedMobileWsOutboundTransport'
 
-export interface MobileAgentConfig {
+interface MobileAgentConfig {
   agentDependencies: AgentDependencies
   mediatorPickupStrategy?: MediatorPickupStrategy
   logger?: Logger
+}
+
+let logger: Logger | undefined
+if (__DEV__) {
+  logger = new ConsoleLogger(LogLevel.debug)
+}
+
+export const baseAgentConfig: MobileAgentConfig = {
+  agentDependencies,
+  logger,
+  mediatorPickupStrategy: MediatorPickupStrategy.None,
 }
 
 export const setupMobileAgent = (config: MobileAgentConfig, indyVDRProxyBaseUrl: string): MobileAgent => {

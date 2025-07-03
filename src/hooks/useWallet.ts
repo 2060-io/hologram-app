@@ -18,7 +18,7 @@ export const useWallet = () => {
   const getWalletConfig = (storeKey: string) => ({ id: 'afj', key: storeKey, storage })
 
   const openWallet = useCallback(async () => {
-    if (!agent || agent.isInitialized) return
+    if (!agent) return
     try {
       await openAndInitMobileAgent()
       await openRealm()
@@ -57,6 +57,5 @@ export const useWallet = () => {
     creatingNewWallet,
     openWallet,
     createNewWallet,
-    isWalletOpen: agent?.isInitialized,
   }
 }

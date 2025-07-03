@@ -1,30 +1,16 @@
-import { CacheModuleConfig, ConsoleLogger, Logger, LogLevel, MediatorPickupStrategy } from '@credo-ts/core'
-import { agentDependencies } from '@credo-ts/react-native'
-import React, { useState, createContext, useEffect, useContext, useCallback } from 'react'
+import { CacheModuleConfig } from '@credo-ts/core'
+import React, { useState, createContext, useEffect, useContext, useCallback, useRef } from 'react'
 import EIdReader from 'react-native-eid-reader'
 
 import { useConfig } from '../providers/ConfigProvider'
 import { useNetwork } from '../useNetwork'
 
+import AgentSingleton from '@2060/services/AgentSingeton'
 import { isRegistered, MobileAgent } from '@2060/services/agent/MobileAgent'
 import { migrateAnonCredsRecords } from '@2060/services/agent/migrateAnonCredsRecords'
-import { KeyChainService, retrieveEncryptedKey } from '@2060/services/keys'
-import { setupMobileAgent, MobileAgentConfig } from '@2060/services/setupMobileAgent'
 import { MediatorEventTypes } from '@2060/services/transport/MediatorEventTypes'
 import { TunedMobileWsOutboundTransport } from '@2060/services/transport/TunedMobileWsOutboundTransport'
-import { logError, log, logWarn } from '@2060/utils'
-import { walletDirectoryPath } from '@2060/utils/RNFS'
-
-let logger: Logger | undefined
-if (__DEV__) {
-  logger = new ConsoleLogger(LogLevel.debug)
-}
-
-export const baseAgentConfig: MobileAgentConfig = {
-  agentDependencies,
-  logger,
-  mediatorPickupStrategy: MediatorPickupStrategy.None,
-}
+import { logError, log } from '@2060/utils'
 
 interface MobileAgentState {
   agent?: MobileAgent
@@ -61,10 +47,13 @@ export const MobileAgentProvider: React.FC<Props> = ({ children }) => {
   const { devEnvs } = useConfig()
   const { assertConnectedNetwork } = useNetwork()
   const isNetworkConnected = assertConnectedNetwork()
+  const mobileAgentInstance = useRef<AgentSingleton>(AgentSingleton.getInstance())
 
   useEffect(() => {
-    const setAgentInitialState = () => {
-      const newAgent = setupMobileAgent(baseAgentConfig, devEnvs.INDY_VDR_PROXY_BASE_URL)
+    const setAgentInitialState = async () => {
+      await mobileAgentInstance.current.initialize()
+      const newAgent = mobileAgentInstance.current.getMobileAgent()
+      if (!newAgent) return
       handleChangeAgentState({ agent: newAgent })
       return () => {
         newAgent.shutdown()
@@ -111,16 +100,9 @@ export const MobileAgentProvider: React.FC<Props> = ({ children }) => {
   const openAndInitMobileAgent = useCallback(async () => {
     try {
       if (!agent) return
-      const storage = { type: 'sqlite', config: { path: `${walletDirectoryPath}/afj.sqlite` } }
-      const getWalletConfig = (storeKey: string) => ({ id: 'afj', key: storeKey, storage })
-      const key = await retrieveEncryptedKey(KeyChainService.AfjWallet)
-      if (!key) throw new Error('No wallet key stored')
-      logWarn('opening agent...')
-      await agent.wallet.open(getWalletConfig(key))
-
-      logWarn('initializing agent...')
-      await agent.initialize()
-
+      if (!mobileAgentInstance.current.getMobileAgent()?.isInitialized) {
+        await mobileAgentInstance.current.openAndInitMobileAgent()
+      }
       // Set NFC support according to the response from EID module
       await agent.modules.mrtd.setMrtdCapabilities({ eMrtdReadSupported: await EIdReader.isNfcSupported() })
 
@@ -149,7 +131,7 @@ export const MobileAgentProvider: React.FC<Props> = ({ children }) => {
     } catch (error) {
       logError(`error initializing agent: ${error}`)
     }
-  }, [agentState])
+  }, [agent])
 
   const shutdownAgent = useCallback(async () => {
     try {
