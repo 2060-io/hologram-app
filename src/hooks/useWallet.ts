@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react'
 
-import { KeyChainService, createAndStoreEncryptedKey, retrieveEncryptedKey } from '../services/keys'
+import { KeyChainService, createAndStoreEncryptedKey } from '../services/keys'
 import { deleteDir, makeDirectory, mediaDirectoryPath, walletDirectoryPath } from '../utils/RNFS'
 
 import { useMobileAgent } from './agent'
@@ -11,7 +11,7 @@ import { log } from '@2060/utils'
 export const useWallet = () => {
   const [openingWallet, setOpeningWallet] = useState(true)
   const [creatingNewWallet, setCreatingNewWallet] = useState(false)
-  const { agent, initMobileAgent } = useMobileAgent()
+  const { agent, openAndInitMobileAgent } = useMobileAgent()
   const { openRealm } = useLocalRealm()
 
   const storage = { type: 'sqlite', config: { path: `${walletDirectoryPath}/afj.sqlite` } }
@@ -20,12 +20,7 @@ export const useWallet = () => {
   const openWallet = useCallback(async () => {
     if (!agent || agent.isInitialized) return
     try {
-      const key = await retrieveEncryptedKey(KeyChainService.AfjWallet)
-      if (!key) throw new Error('No wallet key stored')
-
-      await agent.wallet.open(getWalletConfig(key))
-      // If wallet could be opened, initialize agent to see if it is registered
-      await initMobileAgent()
+      await openAndInitMobileAgent()
       await openRealm()
     } catch (error) {
       log(`wallet opening error: ${error}`)
@@ -44,12 +39,12 @@ export const useWallet = () => {
         await deleteDir(walletDirectoryPath)
         await deleteDir(mediaDirectoryPath)
 
-        const key = await createAndStoreEncryptedKey(KeyChainService.AfjWallet)
-        await makeDirectory(mediaDirectoryPath)
         await makeDirectory(walletDirectoryPath)
+        await makeDirectory(mediaDirectoryPath)
 
-        await agent.wallet.createAndOpen(getWalletConfig(key))
-        await initMobileAgent()
+        const key = await createAndStoreEncryptedKey(KeyChainService.AfjWallet)
+        await agent.wallet.create(getWalletConfig(key))
+        await openAndInitMobileAgent()
         await openRealm()
       } finally {
         setCreatingNewWallet(false)

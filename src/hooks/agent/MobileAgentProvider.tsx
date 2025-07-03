@@ -8,10 +8,12 @@ import { useNetwork } from '../useNetwork'
 
 import { isRegistered, MobileAgent } from '@2060/services/agent/MobileAgent'
 import { migrateAnonCredsRecords } from '@2060/services/agent/migrateAnonCredsRecords'
+import { KeyChainService, retrieveEncryptedKey } from '@2060/services/keys'
 import { setupMobileAgent, MobileAgentConfig } from '@2060/services/setupMobileAgent'
 import { MediatorEventTypes } from '@2060/services/transport/MediatorEventTypes'
 import { TunedMobileWsOutboundTransport } from '@2060/services/transport/TunedMobileWsOutboundTransport'
-import { logError, log } from '@2060/utils'
+import { logError, log, logWarn } from '@2060/utils'
+import { walletDirectoryPath } from '@2060/utils/RNFS'
 
 let logger: Logger | undefined
 if (__DEV__) {
@@ -31,7 +33,7 @@ interface MobileAgentState {
   isConnectedToCloudAgent: boolean
 }
 interface MobileAgentContextInterface extends MobileAgentState {
-  initMobileAgent(): Promise<void>
+  openAndInitMobileAgent(): Promise<void>
   shutdownAgent(): Promise<void>
   handleChangeAgentState(state: Partial<MobileAgentState>): void
 }
@@ -106,9 +108,17 @@ export const MobileAgentProvider: React.FC<Props> = ({ children }) => {
     setAgentState(prevState => ({ ...prevState, ...state }))
   }
 
-  const initMobileAgent = useCallback(async () => {
+  const openAndInitMobileAgent = useCallback(async () => {
     try {
-      if (!agent) throw new Error('Agent not defined')
+      if (!agent) return
+      const storage = { type: 'sqlite', config: { path: `${walletDirectoryPath}/afj.sqlite` } }
+      const getWalletConfig = (storeKey: string) => ({ id: 'afj', key: storeKey, storage })
+      const key = await retrieveEncryptedKey(KeyChainService.AfjWallet)
+      if (!key) throw new Error('No wallet key stored')
+      logWarn('opening agent...')
+      await agent.wallet.open(getWalletConfig(key))
+
+      logWarn('initializing agent...')
       await agent.initialize()
 
       // Set NFC support according to the response from EID module
@@ -162,7 +172,9 @@ export const MobileAgentProvider: React.FC<Props> = ({ children }) => {
   }
 
   return (
-    <AgentContext.Provider value={{ ...agentState, initMobileAgent, shutdownAgent, handleChangeAgentState }}>
+    <AgentContext.Provider
+      value={{ ...agentState, openAndInitMobileAgent, shutdownAgent, handleChangeAgentState }}
+    >
       {children}
     </AgentContext.Provider>
   )
