@@ -5,7 +5,7 @@ import EIdReader from 'react-native-eid-reader'
 import { useConfig } from '../providers/ConfigProvider'
 import { useNetwork } from '../useNetwork'
 
-import AgentSingleton from '@2060/services/AgentSingeton'
+import AgentSingleton from '@2060/services/AgentSingleton'
 import { isRegistered, MobileAgent } from '@2060/services/agent/MobileAgent'
 import { migrateAnonCredsRecords } from '@2060/services/agent/migrateAnonCredsRecords'
 import { MediatorEventTypes } from '@2060/services/transport/MediatorEventTypes'

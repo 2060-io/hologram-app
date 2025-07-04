@@ -21,6 +21,7 @@ export class AgentSingleton {
   private static instance: AgentSingleton | null = null
   private isInitialized = false
   private mobileAgent: MobileAgent | null = null
+  private isAppSubscribedToEvents = false
 
   static getInstance() {
     if (!AgentSingleton.instance) {
@@ -54,6 +55,14 @@ export class AgentSingleton {
 
   getMobileAgent(): MobileAgent | null {
     return this.mobileAgent
+  }
+
+  setAppIsSubscribedToEvents() {
+    this.isAppSubscribedToEvents = true
+  }
+
+  getIsAppSubscribedToEvents(): boolean {
+    return this.isAppSubscribedToEvents
   }
 }
 

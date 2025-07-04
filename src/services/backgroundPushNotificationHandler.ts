@@ -1,7 +1,7 @@
 import { AgentMessageProcessedEvent, V2StatusMessage, AgentEventTypes } from '@credo-ts/core'
 import { FirebaseMessagingTypes } from '@react-native-firebase/messaging'
 
-import AgentSingleton from './AgentSingeton'
+import AgentSingleton from './AgentSingleton'
 import RealmSingleton from './RealmSingleton'
 import { baseAgentConfig } from './setupMobileAgent'
 
@@ -11,7 +11,7 @@ import { deleteRemoteNotifications } from '@2060/utils/pushNotificationsUtils'
 
 export const makeRequestToLocalServer = (payload: Record<string, string>) => {
   if (__DEV__) {
-    fetch('http://192.168.1.1:3000/api/echo', {
+    fetch('http://192.168.1.9:3000/api/echo', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
@@ -50,7 +50,7 @@ export async function backgroundPushNotificationHandler(remoteMessage: FirebaseM
     if (!mobileAgentInstance.getMobileAgent()?.isInitialized) {
       await mobileAgentInstance.openAndInitMobileAgent()
     }
-    const unsubscribeFromAgentChatEvents = subscribeToAgentChatEvents(agent, realm, () => undefined)
+    subscribeToAgentChatEvents(agent, realm, false, () => undefined)
     const mediatorConnection = await agent.mediationRecipient.findDefaultMediatorConnection()
     await agent.messagePickup.pickupMessages({
       connectionId: mediatorConnection!.id,
@@ -78,7 +78,6 @@ export async function backgroundPushNotificationHandler(remoteMessage: FirebaseM
           deleteRemoteNotifications()
           removeChatEntryChangeListener()
           removeConnectionChangeListener()
-          unsubscribeFromAgentChatEvents()
         }
       }
     })

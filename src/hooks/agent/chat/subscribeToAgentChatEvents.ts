@@ -58,22 +58,49 @@ import { addUnread, findChatThread, findOrCreateChatThread, updateThread } from 
 
 import { ChatEntryType, ChatEntryRole, ChatEntryState, InvitationMetadata } from '@2060/model'
 import { InvitationState } from '@2060/model/InvitationState'
+import AgentSingleton from '@2060/services/AgentSingleton'
 import { MobileAgent } from '@2060/services/agent'
 import {
   OutOfBandInvitationEvent,
   OutOfBandInvitationEventTypes,
 } from '@2060/services/agent/oob/OutOfBandEvents'
+import { logWarn } from '@2060/utils'
 import {
   getConnectionDisplayName,
   getConnectionDisplayPicture,
   supportsMessageReceipts,
 } from '@2060/utils/connectionUtils'
 
+let getActiveChatThreadId: () => string | undefined
+
+/**
+ * Subscribes to agent chat-related events and sets up corresponding event listeners
+ * to handle chat entries and thread updates, message processing, media sharing, receipts,
+ * reactions, and invitations.
+ * This function ensures that only one subscription is active at a time and provides a cleanup function
+ * to remove all event listeners when no longer needed.
+ * @param agent - The mobile agent instance used for event subscriptions and data fetching.
+ * @param realm - The Realm database instance for chat data persistence and updates.
+ * @param forceRefreshFunctionReference - If true, sets the active chat thread ID getter to the provided
+ *  function
+ * @param receivedGetActiveChatThreadId - A function that returns the currently active chat thread ID,
+ * or undefined if none is active.
+ * @returns A cleanup function that, when called, unsubscribes all event
+ * listeners registered by this function.
+ */
 export function subscribeToAgentChatEvents(
   agent: MobileAgent,
   realm: Realm,
-  getActiveChatThreadId: () => string | undefined,
+  forceRefreshFunctionReference: boolean,
+  receivedGetActiveChatThreadId: () => string | undefined,
 ) {
+  getActiveChatThreadId = forceRefreshFunctionReference ? receivedGetActiveChatThreadId : () => undefined
+  const mobileAgentInstance = AgentSingleton.getInstance()
+  if (mobileAgentInstance.getIsAppSubscribedToEvents()) {
+    logWarn('App is already subscribed to agent events')
+    return
+  }
+  mobileAgentInstance.setAppIsSubscribedToEvents()
   const connectionProfileListener = async (event: ConnectionProfileUpdatedEvent) => {
     const { connection } = event.payload
     const thread = findChatThread(realm, connection)
