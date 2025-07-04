@@ -10,7 +10,7 @@ import { isRegistered, MobileAgent } from '@2060/services/agent/MobileAgent'
 import { migrateAnonCredsRecords } from '@2060/services/agent/migrateAnonCredsRecords'
 import { MediatorEventTypes } from '@2060/services/transport/MediatorEventTypes'
 import { TunedMobileWsOutboundTransport } from '@2060/services/transport/TunedMobileWsOutboundTransport'
-import { logError, log } from '@2060/utils'
+import { logError } from '@2060/utils'
 
 interface MobileAgentState {
   agent?: MobileAgent
@@ -82,10 +82,6 @@ export const MobileAgentProvider: React.FC<Props> = ({ children }) => {
     if (!isNetworkConnected) handleCloudAgentConnectionUpdate(false)
   }, [isNetworkConnected])
 
-  useEffect(() => {
-    handleMessagePickupStatus()
-  }, [agent, isNetworkConnected])
-
   const handleCloudAgentConnectionUpdate = useCallback(
     (isConnectedToCloudAgent: boolean) => {
       handleChangeAgentState({ isConnectedToCloudAgent: isConnectedToCloudAgent && isNetworkConnected })
@@ -142,16 +138,6 @@ export const MobileAgentProvider: React.FC<Props> = ({ children }) => {
       logError(`error initializing agent: ${error}`)
     }
   }, [agentState])
-
-  const handleMessagePickupStatus = async () => {
-    if (!agent?.isInitialized) return
-    try {
-      await agent.mediationRecipient.stopMessagePickup()
-      if (isNetworkConnected) await agent.mediationRecipient.initiateMessagePickup()
-    } catch (error) {
-      log(JSON.stringify(error))
-    }
-  }
 
   return (
     <AgentContext.Provider

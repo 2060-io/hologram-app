@@ -21,7 +21,7 @@ async function stopMessagePickup(agent: MobileAgent) {
  * Hook to manage message pickup initialization and stopping based on a flag and component mount/unmount.
  *
  */
-export function useMessagePickup({ agent, isEnabled = true }: { agent?: MobileAgent; isEnabled?: boolean }) {
+export function useMessagePickup({ agent, isEnabled }: { agent?: MobileAgent; isEnabled: boolean }) {
   useEffect(() => {
     if (!agent) return
     if (isEnabled) {
