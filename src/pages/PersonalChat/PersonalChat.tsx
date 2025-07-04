@@ -34,7 +34,7 @@ import { ModalBottomHalf, ModalConfirmAction } from '@2060/components'
 import MessageFloatingMenu from '@2060/components/MessageFloatingMenu'
 import { Text } from '@2060/components/common'
 import { IS_ANDROID, IS_IOS } from '@2060/constants'
-import { useChatActions, useKeyboard } from '@2060/hooks'
+import { useAppState, useChatActions, useKeyboard } from '@2060/hooks'
 import {
   useMobileAgent,
   useChat,
@@ -97,6 +97,7 @@ const createReportedMessageChatEntry = (params: {
 
 const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }: PersonalChatProps) => {
   const { t } = useTranslation()
+  const { isAppActive } = useAppState()
   const { stopPlayersAndExtractors } = useAudioPlayer()
   const [currentStickyDate, setCurrentStickyDate] = useState<Date>()
   const [showAttachmentOptions, setShowAttachmentOptions] = useState(false)
@@ -127,7 +128,7 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
   } = useChat()
   const { deleteMessagesForMe, deleteMessagesForEveryone, onActionMenuSelection } = useChatActions()
   const { agent } = useMobileAgent()
-  const { markThreadAsRead } = useChats()
+  const { markThreadAsRead, setActiveChatThreadId } = useChats()
   const using24HourFormat = uses24HourClock()
   const theme = useTheme()
   const { devEnvs } = useConfig()
@@ -152,6 +153,14 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
     })
     return unsubscribe
   }, [navigation])
+
+  useEffect(() => {
+    if (isAppActive) {
+      setActiveChatThreadId(chatThreadData.id)
+    } else {
+      setActiveChatThreadId(undefined)
+    }
+  }, [isAppActive])
 
   const renderSystemMessage = useMemo(() => {
     const systemMessage = getSystemMessage({
@@ -230,11 +239,12 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
   useFocusEffect(
     useCallback(() => {
       setChatThread(chatThread)
-
+      setActiveChatThreadId(chatThread.data.id)
       return () => {
         clearTimeout(timerStickyDate.current)
+        setActiveChatThreadId(undefined)
       }
-    }, [chatThread]),
+    }, []),
   )
 
   const scrollToMessage = useCallback(
