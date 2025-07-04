@@ -139,11 +139,25 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
   const headerStatusBarHeight = insets.top
   const timerStickyDate = useRef<ReturnType<typeof setTimeout>>()
   const videoCompressionCancellationId = useRef<string>('')
+  const isAlreadyMounted = useRef(false)
 
   const { data: chatThreadData, flags } = chatThread
   const { menu } = useActionMenu({ connectionId: chatThreadData.connectionId })
   const { isKeyboardVisible } = useKeyboard()
   const styles = getStyles(theme)
+
+  useFocusEffect(
+    useCallback(() => {
+      setChatThread(chatThread)
+      setActiveChatThreadId(chatThread.data.id)
+      markThreadAsRead({ id: chatThreadData.id, lastReadAt: new Date() })
+      markNotificationsOfChatAsViewed(chatThreadData.connectionId)
+      return () => {
+        clearTimeout(timerStickyDate.current)
+        setActiveChatThreadId(undefined)
+      }
+    }, []),
+  )
 
   // listener to stop all players and extractors of audios
   // when component unmounts (leaves screen) to free up the maximum possible resources
@@ -156,11 +170,19 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
 
   useEffect(() => {
     if (isAppActive) {
-      setActiveChatThreadId(chatThreadData.id)
+      if (isAlreadyMounted.current) {
+        setActiveChatThreadId(chatThreadData.id)
+        markThreadAsRead({ id: chatThreadData.id, lastReadAt: new Date() })
+        markNotificationsOfChatAsViewed(chatThreadData.connectionId)
+      }
     } else {
       setActiveChatThreadId(undefined)
     }
   }, [isAppActive])
+
+  useEffect(() => {
+    isAlreadyMounted.current = true
+  }, [])
 
   const renderSystemMessage = useMemo(() => {
     const systemMessage = getSystemMessage({
@@ -230,22 +252,6 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
   const currentHeader = useMemo(() => {
     return isSelectingMessagesMode ? renderSelectingMessagesHeader() : renderCustomHeader({})
   }, [chatThread, menu, isSelectingMessagesMode, flags])
-
-  useEffect(() => {
-    markThreadAsRead({ id: chatThreadData.id, lastReadAt: new Date() })
-    markNotificationsOfChatAsViewed(chatThreadData.connectionId)
-  }, [])
-
-  useFocusEffect(
-    useCallback(() => {
-      setChatThread(chatThread)
-      setActiveChatThreadId(chatThread.data.id)
-      return () => {
-        clearTimeout(timerStickyDate.current)
-        setActiveChatThreadId(undefined)
-      }
-    }, []),
-  )
 
   const scrollToMessage = useCallback(
     (chatEntryId: string) => {
