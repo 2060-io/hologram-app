@@ -3,14 +3,14 @@ import { useEffect } from 'react'
 
 import { MobileAgent } from '@2060/services/agent'
 
-async function initiateMessagePickup(agent: MobileAgent) {
+export async function initiateMessagePickup(agent: MobileAgent) {
   agent.config.logger.info('Starting Message Pickup')
 
   // Initiate message pickup from the mediator. Passing no mediator, will use default mediator
   await agent.mediationRecipient.initiateMessagePickup(undefined, MediatorPickupStrategy.PickUpV2LiveMode)
 }
 
-async function stopMessagePickup(agent: MobileAgent) {
+export async function stopMessagePickup(agent: MobileAgent) {
   agent.config.logger.info('Stopping Message Pickup')
 
   // Stop message pickup. Will stop all message pickup, not just from the mediator

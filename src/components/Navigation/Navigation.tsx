@@ -16,9 +16,11 @@ import deepLinking from './deepLinking'
 import getStyles from './styles'
 
 import { useAppState, useNetwork } from '@2060/hooks'
-import { manageBackgroundChatEntryChanges } from '@2060/hooks/agent/chat'
-import { manageConnectionStateChangedEvent } from '@2060/hooks/agent/connections/manageConnectionStateChangedEvent'
-import { useMessagePickup } from '@2060/hooks/agent/useMessagePickup'
+import {
+  initiateMessagePickup,
+  stopMessagePickup,
+  useMessagePickup,
+} from '@2060/hooks/agent/useMessagePickup'
 import { useConfig } from '@2060/hooks/providers/ConfigProvider'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
 import { useScreenLock } from '@2060/hooks/providers/ScreenLockProvider'
@@ -112,20 +114,13 @@ const Navigation = ({ isSignedUp, agent, theme }: NavigationProps) => {
     // FIXME: accessing realm is currently making the app crash in dev environment.
     // We can probably disable the whole logic if running under __DEV__
     if (agent && agent.isInitialized && realm) {
-      const { addChatEntryChangeListener, removeChatEntryChangeListener } = manageBackgroundChatEntryChanges(
-        realm,
-        agent,
-      )
-      const { addConnectionChangeListener, removeConnectionChangeListener } =
-        manageConnectionStateChangedEvent(agent)
       if (!isAppActive && !isScreenLockForceDisabled) {
-        log('App in background ... registering to events')
-        addChatEntryChangeListener()
-        addConnectionChangeListener()
+        log('App in background ... stopping message pickup and closing websocket')
+        stopMessagePickup(agent)
+        agent.outboundTransports[1].stop()
         return () => {
-          log('App in foreground ... unregistering background event listeners')
-          removeChatEntryChangeListener()
-          removeConnectionChangeListener()
+          initiateMessagePickup(agent)
+          log('App in foreground ... restarting message pickup')
         }
       }
     }
