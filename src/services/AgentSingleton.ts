@@ -30,7 +30,7 @@ export class AgentSingleton {
     return AgentSingleton.instance
   }
 
-  async initialize() {
+  async initializeMobileAgent() {
     if (this.isInitialized) return
     const indyVDRProxyBaseUrl = await getIndyVDRProxyBaseUrl()
     const agent = setupMobileAgent(baseAgentConfig, indyVDRProxyBaseUrl)

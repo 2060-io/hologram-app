@@ -17,7 +17,7 @@ export class RealmSingleton {
     return RealmSingleton.instance
   }
 
-  async initialize(realmConfig?: Realm.Configuration) {
+  async initializeRealm(realmConfig?: Realm.Configuration) {
     if (this.isInitialized) return
     try {
       const key =

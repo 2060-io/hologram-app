@@ -51,7 +51,7 @@ export const MobileAgentProvider: React.FC<Props> = ({ children }) => {
 
   useEffect(() => {
     const setAgentInitialState = async () => {
-      await mobileAgentInstance.current.initialize()
+      await mobileAgentInstance.current.initializeMobileAgent()
       const newAgent = mobileAgentInstance.current.getMobileAgent()
       if (!newAgent) return
       handleChangeAgentState({ agent: newAgent })

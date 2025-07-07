@@ -33,11 +33,11 @@ export async function backgroundPushNotificationHandler(remoteMessage: FirebaseM
   makeRequestToLocalServer({ data: 'START EXECUTING BACKGROUND PUSH NOTIFICATIONS HANDLER' })
   try {
     const realmInstance = RealmSingleton.getInstance()
-    await realmInstance.initialize()
+    await realmInstance.initializeRealm()
     const realm = realmInstance.getRealm()
     if (!realm) return
     const mobileAgentInstance = AgentSingleton.getInstance()
-    await mobileAgentInstance.initialize()
+    await mobileAgentInstance.initializeMobileAgent()
     const agent = mobileAgentInstance.getMobileAgent()
     if (!agent) return
     const { addChatEntryChangeListener, removeChatEntryChangeListener } = manageBackgroundChatEntryChanges(
