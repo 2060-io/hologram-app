@@ -7,7 +7,7 @@ import { getRealmConfig } from '@2060/utils/realm'
 
 export class RealmSingleton {
   private static instance: RealmSingleton | null = null
-  private isInitialized = false
+  private isOpen = false
   private realm: Realm | null = null
 
   static getInstance() {
@@ -17,8 +17,8 @@ export class RealmSingleton {
     return RealmSingleton.instance
   }
 
-  async initializeRealm(realmConfig?: Realm.Configuration) {
-    if (this.isInitialized) return
+  async openRealm(realmConfig?: Realm.Configuration) {
+    if (this.isOpen) return
     try {
       const key =
         (await retrieveEncryptedKey(KeyChainService.RealmMain)) ??
@@ -26,7 +26,7 @@ export class RealmSingleton {
       const config = realmConfig ?? getRealmConfig(key)
       const realm = await Realm.open(config)
       this.realm = realm
-      this.isInitialized = true
+      this.isOpen = true
     } catch (error) {
       logError(`couldn't open realm: ${error}`)
     }
@@ -40,7 +40,7 @@ export class RealmSingleton {
     log('Closing realm')
     this.realm?.close()
     this.realm = null
-    this.isInitialized = false
+    this.isOpen = false
   }
 }
 

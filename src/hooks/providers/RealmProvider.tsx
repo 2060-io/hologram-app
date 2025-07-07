@@ -39,7 +39,7 @@ export const RealmProvider: React.FC<React.PropsWithChildren<Props>> = ({ childr
 
   const openRealm = useCallback(async () => {
     const realmInstance = RealmSingleton.getInstance()
-    await realmInstance.initializeRealm()
+    await realmInstance.openRealm()
     const newRealm = realmInstance.getRealm()
     if (newRealm) setRealm(newRealm)
   }, [])
@@ -57,7 +57,7 @@ export const RealmProvider: React.FC<React.PropsWithChildren<Props>> = ({ childr
       backupRealm.close()
       try {
         const realmInstance = RealmSingleton.getInstance()
-        await realmInstance.initializeRealm(realmConfig)
+        await realmInstance.openRealm(realmConfig)
         const newRealm = realmInstance.getRealm()
         if (!newRealm) return
         /**

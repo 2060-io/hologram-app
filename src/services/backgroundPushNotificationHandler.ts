@@ -12,7 +12,7 @@ import { deleteRemoteNotifications } from '@2060/utils/pushNotificationsUtils'
 
 const makeRequestToLocalServer = (payload: Record<string, string>) => {
   if (__DEV__) {
-    fetch('http://192.168.1.9:3000/api/echo', {
+    fetch('http://192.168.1.6:3000/api/echo', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
@@ -33,7 +33,7 @@ export async function backgroundPushNotificationHandler(remoteMessage: FirebaseM
   makeRequestToLocalServer({ data: 'START EXECUTING BACKGROUND PUSH NOTIFICATIONS HANDLER' })
   try {
     const realmInstance = RealmSingleton.getInstance()
-    await realmInstance.initializeRealm()
+    await realmInstance.openRealm()
     const realm = realmInstance.getRealm()
     if (!realm) return
     const mobileAgentInstance = AgentSingleton.getInstance()
