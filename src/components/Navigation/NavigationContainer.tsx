@@ -9,6 +9,7 @@ import { Loader } from '@2060/components/common'
 import { useWallet } from '@2060/hooks'
 import { useNavigation, useMobileAgent } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
+import { KeyChainService, retrieveEncryptedKey } from '@2060/services/keys'
 import { language } from '@2060/utils/language'
 
 const NavigationContainer = (Navigation: ElementType) => {
@@ -26,7 +27,11 @@ const NavigationContainer = (Navigation: ElementType) => {
     }, [])
 
     useEffect(() => {
-      if (isAuthenticated) openWallet()
+      const checkIfCanOpenWallet = async () => {
+        const walletKey = await retrieveEncryptedKey(KeyChainService.AfjWallet)
+        if (walletKey) openWallet()
+      }
+      if (isAuthenticated) checkIfCanOpenWallet()
     }, [isAuthenticated])
 
     return (

@@ -135,7 +135,7 @@ export const MobileAgentProvider: React.FC<Props> = ({ children }) => {
       await agent.shutdown()
       handleChangeAgentState({ isConnectedToCloudAgent: false, isInitialized: false, isSignedUp: false })
     } catch (error) {
-      logError(`error initializing agent: ${error}`)
+      logError(`error shutting down agent: ${error}`)
     }
   }, [agentState])
 

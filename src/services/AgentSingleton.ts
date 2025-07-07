@@ -49,7 +49,7 @@ export class AgentSingleton {
       logWarn('initializing agent...')
       await this.mobileAgent?.initialize()
     } catch (error) {
-      logError(`error initializing agent: ${error}`)
+      logError(`error initializing singleton agent: ${error}`)
     }
   }
 
