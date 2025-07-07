@@ -17,7 +17,7 @@ export class RealmSingleton {
     return RealmSingleton.instance
   }
 
-  async openRealm(realmConfig?: Realm.Configuration) {
+  async openRealmIfIsClosed(realmConfig?: Realm.Configuration) {
     if (this.isOpen) return
     try {
       const key =

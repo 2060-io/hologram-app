@@ -33,7 +33,7 @@ export async function backgroundPushNotificationHandler(remoteMessage: FirebaseM
   makeRequestToLocalServer({ data: 'START EXECUTING BACKGROUND PUSH NOTIFICATIONS HANDLER' })
   try {
     const realmInstance = RealmSingleton.getInstance()
-    await realmInstance.openRealm()
+    await realmInstance.openRealmIfIsClosed()
     const realm = realmInstance.getRealm()
     if (!realm) return
     const mobileAgentInstance = AgentSingleton.getInstance()
