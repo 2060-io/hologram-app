@@ -12775,10 +12775,10 @@ react-native-is-edge-to-edge@^1.1.6:
   resolved "https://registry.yarnpkg.com/react-native-is-edge-to-edge/-/react-native-is-edge-to-edge-1.1.6.tgz#69ec13f70d76e9245e275eed4140d0873a78f902"
   integrity sha512-1pHnFTlBahins6UAajXUqeCOHew9l9C2C8tErnpGC3IyLJzvxD+TpYAixnCbrVS52f7+NvMttbiSI290XfwN0w==
 
-react-native-job-queue@^0.5.2:
-  version "0.5.2"
-  resolved "https://registry.yarnpkg.com/react-native-job-queue/-/react-native-job-queue-0.5.2.tgz#a7830cf6576f0cf9bd105e1069976fe1301479c8"
-  integrity sha512-oqavYlO1fiYxlLBpYR7U7X+LzPEeTENGgxxuBRbOGMHr+o21bxWL/8obTn8MNpD4wSkyMpC7E06/W/M4fbg6Xw==
+react-native-job-queue@0.5.3:
+  version "0.5.3"
+  resolved "https://registry.yarnpkg.com/react-native-job-queue/-/react-native-job-queue-0.5.3.tgz#5babdf5584db2264eb1d592f4c46b00f536b5caf"
+  integrity sha512-y9CjZhRozxzFer2ZZcu+JbbZ1VXD6qHwRZ22nXKNvpwo01OHDGPqFNIDNz+3qs3T/n7QjzsAPm1dvKypM4YS2g==
 
 react-native-keyboard-aware-scroll-view@^0.9.5:
   version "0.9.5"

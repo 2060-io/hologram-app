@@ -1615,7 +1615,7 @@ PODS:
     - React-Core
   - react-native-image-resizer (3.0.11):
     - React-Core
-  - react-native-job-queue (0.5.2):
+  - react-native-job-queue (0.5.3):
     - React
   - react-native-keyboard-controller (1.16.8):
     - DoubleConversion
@@ -2811,7 +2811,7 @@ SPEC CHECKSUMS:
   react-native-eid-reader: e7422aceb576fab13ccc77e5d820247d34a67981
   react-native-get-random-values: d16467cf726c618e9c7a8c3c39c31faa2244bbba
   react-native-image-resizer: 24c5d06fae2176dc0caed4b6396e02befb44064a
-  react-native-job-queue: 0ad04875957147913e0ef48c645a0aa87fc1480d
+  react-native-job-queue: cfd8b0a4e23743b702efedf109f64692250c1dc3
   react-native-keyboard-controller: 83a2a5dc1215a6423ed093db2023fe4c93cf7e4b
   react-native-local-native-modules: 1a30e6cf19464edc47f60a91f97881b9261774f3
   react-native-netinfo: cec9c4e86083cb5b6aba0e0711f563e2fbbff187
