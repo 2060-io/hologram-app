@@ -1,5 +1,5 @@
 import { TypedArrayEncoder } from '@credo-ts/core'
-import React, { createContext, useCallback, useContext, useState } from 'react'
+import React, { createContext, useCallback, useContext, useRef, useState } from 'react'
 import Realm from 'realm'
 
 import { UploadTask } from '@2060/model'
@@ -36,11 +36,11 @@ export const useLocalRealm = () => {
 
 export const RealmProvider: React.FC<React.PropsWithChildren<Props>> = ({ children }) => {
   const [realm, setRealm] = useState<Realm | undefined>()
+  const realmInstance = useRef(RealmSingleton.instance)
 
   const openRealm = useCallback(async () => {
-    const realmInstance = RealmSingleton.getInstance()
-    await realmInstance.openRealmIfIsClosed()
-    const newRealm = realmInstance.getRealm()
+    await realmInstance.current.openRealmIfIsClosed()
+    const newRealm = realmInstance.current.getRealm()
     if (newRealm) setRealm(newRealm)
   }, [])
 
@@ -56,9 +56,8 @@ export const RealmProvider: React.FC<React.PropsWithChildren<Props>> = ({ childr
       backupRealm.writeCopyTo(realmConfig)
       backupRealm.close()
       try {
-        const realmInstance = RealmSingleton.getInstance()
-        await realmInstance.openRealmIfIsClosed(realmConfig)
-        const newRealm = realmInstance.getRealm()
+        await realmInstance.current.openRealmIfIsClosed(realmConfig)
+        const newRealm = realmInstance.current.getRealm()
         if (!newRealm) return
         /**
         delete all UploadTask is done due to writeCopyTo or realm does not take into account
@@ -80,8 +79,7 @@ export const RealmProvider: React.FC<React.PropsWithChildren<Props>> = ({ childr
     if (realm) {
       const { path } = realm
       await deleteFile(path)
-      const realmInstance = RealmSingleton.getInstance()
-      realmInstance.closeRealm()
+      realmInstance.current.closeRealm()
       setRealm(undefined)
     }
   }, [realm])

@@ -47,7 +47,7 @@ export const MobileAgentProvider: React.FC<Props> = ({ children }) => {
   const { devEnvs } = useConfig()
   const { assertConnectedNetwork } = useNetwork()
   const isNetworkConnected = assertConnectedNetwork()
-  const mobileAgentInstance = useRef<AgentSingleton>(AgentSingleton.getInstance())
+  const mobileAgentInstance = useRef(AgentSingleton.instance)
 
   useEffect(() => {
     const setAgentInitialState = async () => {

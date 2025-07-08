@@ -24,19 +24,19 @@ let isProcessingBackgroundNotification = false
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function backgroundPushNotificationHandler(remoteMessage: FirebaseMessagingTypes.RemoteMessage) {
+  deleteRemoteNotifications()
   if (isProcessingBackgroundNotification) {
     makeRequestToLocalServer({ data: 'BACKGROUND PUSH NOTIFICATIONS HANDLER is executing at the moment!!' })
     return
   }
   isProcessingBackgroundNotification = true
-  deleteRemoteNotifications()
   makeRequestToLocalServer({ data: 'START EXECUTING BACKGROUND PUSH NOTIFICATIONS HANDLER' })
   try {
-    const realmInstance = RealmSingleton.getInstance()
+    const realmInstance = RealmSingleton.instance
     await realmInstance.openRealmIfIsClosed()
     const realm = realmInstance.getRealm()
     if (!realm) return
-    const mobileAgentInstance = AgentSingleton.getInstance()
+    const mobileAgentInstance = AgentSingleton.instance
     await mobileAgentInstance.initializeMobileAgent()
     const agent = mobileAgentInstance.getMobileAgent()
     if (!agent) return

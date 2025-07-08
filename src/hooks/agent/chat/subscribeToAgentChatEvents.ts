@@ -95,7 +95,7 @@ export function subscribeToAgentChatEvents(
   receivedGetActiveChatThreadId: () => string | undefined,
 ) {
   getActiveChatThreadId = forceRefreshFunctionReference ? receivedGetActiveChatThreadId : () => undefined
-  const mobileAgentInstance = AgentSingleton.getInstance()
+  const mobileAgentInstance = AgentSingleton.instance
   if (mobileAgentInstance.getIsAppSubscribedToEvents()) {
     logWarn('App is already subscribed to agent events')
     return

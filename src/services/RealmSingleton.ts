@@ -6,15 +6,15 @@ import { log, logError } from '@2060/utils'
 import { getRealmConfig } from '@2060/utils/realm'
 
 export class RealmSingleton {
-  private static instance: RealmSingleton | null = null
+  private static realmInstance: RealmSingleton
   private isOpen = false
   private realm: Realm | null = null
 
-  static getInstance() {
-    if (!RealmSingleton.instance) {
-      RealmSingleton.instance = new RealmSingleton()
+  static get instance() {
+    if (!this.realmInstance) {
+      this.realmInstance = new RealmSingleton()
     }
-    return RealmSingleton.instance
+    return this.realmInstance
   }
 
   async openRealmIfIsClosed(realmConfig?: Realm.Configuration) {

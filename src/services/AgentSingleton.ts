@@ -18,16 +18,16 @@ const getIndyVDRProxyBaseUrl = async () => {
 }
 
 export class AgentSingleton {
-  private static instance: AgentSingleton | null = null
+  private static agentInstance: AgentSingleton
   private isInitialized = false
   private mobileAgent: MobileAgent | null = null
   private isAppSubscribedToEvents = false
 
-  static getInstance() {
-    if (!AgentSingleton.instance) {
-      AgentSingleton.instance = new AgentSingleton()
+  static get instance() {
+    if (!this.agentInstance) {
+      this.agentInstance = new AgentSingleton()
     }
-    return AgentSingleton.instance
+    return this.agentInstance
   }
 
   async initializeMobileAgent() {
