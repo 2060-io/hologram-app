@@ -11,6 +11,7 @@ import { ModalBottomHalf } from '@2060/components'
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
 import { ModalLoading, OptionsList, Text, TextInput, Switch } from '@2060/components/common'
 import { TextInputForwardRefProps } from '@2060/components/common/TextInput'
+import { IS_ANDROID, IS_IOS } from '@2060/constants'
 import { useMobileAgent } from '@2060/hooks/agent'
 import { useConfig } from '@2060/hooks/providers/ConfigProvider'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
@@ -66,10 +67,18 @@ const Developer = ({ navigation }: Props) => {
     changeDevEnvOptionsVisibility()
   }
 
+  const displayAlertAfterChangeIndyProxyValue = () => {
+    Alert.alert(
+      IS_IOS ? t('settings.closeAppAfterChangeIndyValue') : '',
+      IS_ANDROID ? t('settings.closeAppAfterChangeIndyValue') : '',
+    )
+  }
+
   const onSelectDevEnvOption = async (key: keyof DevEnvsKeys, value: string) => {
     changeDevEnvOptionsVisibility()
     const newDevEnvsToPersist = { ...devEnvs, [key]: value }
     await updateDevEnvs(newDevEnvsToPersist)
+    if (key === 'INDY_VDR_PROXY_BASE_URL') displayAlertAfterChangeIndyProxyValue()
   }
 
   const currentCustomDevEnvValue = currentDevEnv?.key ? storedCustomDevEnvs?.[currentDevEnv.key] : ''
@@ -81,6 +90,7 @@ const Developer = ({ navigation }: Props) => {
     await saveCustomDevEnv(newCustomDevEnvValue)
     setTempCustomDevEnvValue('')
     setIsEditionCustomDevEnvMode(false)
+    if (currentDevEnv?.key === 'INDY_VDR_PROXY_BASE_URL') displayAlertAfterChangeIndyProxyValue()
   }
 
   const switchToEditionCustomDevEnv = () => {

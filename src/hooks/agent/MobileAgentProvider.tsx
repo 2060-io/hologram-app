@@ -2,7 +2,6 @@ import { CacheModuleConfig } from '@credo-ts/core'
 import React, { useState, createContext, useEffect, useContext, useCallback, useRef } from 'react'
 import EIdReader from 'react-native-eid-reader'
 
-import { useConfig } from '../providers/ConfigProvider'
 import { useNetwork } from '../useNetwork'
 
 import AgentSingleton from '@2060/services/AgentSingleton'
@@ -44,7 +43,6 @@ export const MobileAgentProvider: React.FC<Props> = ({ children }) => {
     isSignedUp: false,
   })
   const { agent } = agentState
-  const { devEnvs } = useConfig()
   const { assertConnectedNetwork } = useNetwork()
   const isNetworkConnected = assertConnectedNetwork()
   const mobileAgentInstance = useRef(AgentSingleton.instance)
@@ -61,7 +59,7 @@ export const MobileAgentProvider: React.FC<Props> = ({ children }) => {
       }
     }
     setAgentInitialState()
-  }, [devEnvs.INDY_VDR_PROXY_BASE_URL])
+  }, [])
 
   useEffect(() => {
     if (agent) {

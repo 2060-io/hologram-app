@@ -477,6 +477,7 @@
       "autoBackup": "Copia de seguridad automática",
       "includeVideos": "Incluir videos",
       "displayLogs": "Mostrar logs",
+      "closeAppAfterChangeIndyValue": "Para ver sus cambios reflejados, cierre la app completamente y vuelvala a abrir",
       "changePassword": "Cambiar contraseña",
       "preparingFiles": "Preparando archivos",
       "compressingFiles": "Comprimiendo archivos",

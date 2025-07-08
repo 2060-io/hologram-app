@@ -11,11 +11,15 @@ import {
   LogLevel,
 } from '@credo-ts/core'
 import { agentDependencies } from '@credo-ts/react-native'
+import Config from 'react-native-config'
 
 import { MobileAgent } from './agent/MobileAgent'
 import { createMobileAgent } from './agent/createMobileAgent'
 import { duplicatedMessagesMiddleware } from './agent/duplicatedMessagesMiddleware'
+import { DEV_ENVS_PERSIST_KEY, getStorageData } from './localStorage'
 import { TunedMobileWsOutboundTransport } from './transport/TunedMobileWsOutboundTransport'
+
+import { DevEnvsObject } from '@2060/utils/developer'
 
 interface MobileAgentConfig {
   agentDependencies: AgentDependencies
@@ -34,7 +38,16 @@ export const baseAgentConfig: MobileAgentConfig = {
   mediatorPickupStrategy: MediatorPickupStrategy.None,
 }
 
-export const setupMobileAgent = (config: MobileAgentConfig, indyVDRProxyBaseUrl: string): MobileAgent => {
+const getIndyVDRProxyBaseUrl = async () => {
+  const persistedDevEnvs = await getStorageData(DEV_ENVS_PERSIST_KEY)
+  if (persistedDevEnvs) {
+    return (persistedDevEnvs as DevEnvsObject).INDY_VDR_PROXY_BASE_URL
+  }
+  return Config.INDY_VDR_PROXY_BASE_URL
+}
+
+export const setupMobileAgent = async (config: MobileAgentConfig): Promise<MobileAgent> => {
+  const indyVDRProxyBaseUrl = await getIndyVDRProxyBaseUrl()
   const agent = createMobileAgent({
     config: {
       label: 'Hologram',

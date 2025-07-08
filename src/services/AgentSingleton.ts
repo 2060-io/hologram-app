@@ -1,21 +1,9 @@
-import Config from 'react-native-config'
-
 import { MobileAgent } from './agent/MobileAgent'
 import { KeyChainService, retrieveEncryptedKey } from './keys'
-import { DEV_ENVS_PERSIST_KEY, getStorageData } from './localStorage'
 import { baseAgentConfig, setupMobileAgent } from './setupMobileAgent'
 
 import { logError, logWarn } from '@2060/utils'
 import { walletDirectoryPath } from '@2060/utils/RNFS'
-import { DevEnvsObject } from '@2060/utils/developer'
-
-const getIndyVDRProxyBaseUrl = async () => {
-  const persistedDevEnvs = await getStorageData(DEV_ENVS_PERSIST_KEY)
-  if (persistedDevEnvs) {
-    return (persistedDevEnvs as DevEnvsObject).INDY_VDR_PROXY_BASE_URL
-  }
-  return Config.INDY_VDR_PROXY_BASE_URL
-}
 
 export class AgentSingleton {
   private static agentInstance: AgentSingleton
@@ -32,8 +20,7 @@ export class AgentSingleton {
 
   async initializeMobileAgent() {
     if (this.isInitialized) return
-    const indyVDRProxyBaseUrl = await getIndyVDRProxyBaseUrl()
-    const agent = setupMobileAgent(baseAgentConfig, indyVDRProxyBaseUrl)
+    const agent = await setupMobileAgent(baseAgentConfig)
     this.mobileAgent = agent
     this.isInitialized = true
   }
