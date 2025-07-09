@@ -8,11 +8,11 @@ import { baseAgentConfig } from './setupMobileAgent'
 import { manageBackgroundChatEntryChanges, subscribeToAgentChatEvents } from '@2060/hooks/agent/chat'
 import { manageConnectionStateChangedEvent } from '@2060/hooks/agent/connections/manageConnectionStateChangedEvent'
 import { logWarn } from '@2060/utils'
-import { deleteRemoteNotifications } from '@2060/utils/pushNotificationsUtils'
+import { arePushNotificationsAllowed, deleteRemoteNotifications } from '@2060/utils/pushNotificationsUtils'
 
 const makeRequestToLocalServer = (payload: Record<string, string>) => {
   if (__DEV__) {
-    fetch('http://192.168.1.6:3000/api/echo', {
+    fetch('http://192.168.1.8:3000/api/echo', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
@@ -24,6 +24,7 @@ let isProcessingBackgroundNotification = false
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function backgroundPushNotificationHandler(remoteMessage: FirebaseMessagingTypes.RemoteMessage) {
+  if (await arePushNotificationsAllowed()) return
   deleteRemoteNotifications()
   if (isProcessingBackgroundNotification) {
     makeRequestToLocalServer({ data: 'BACKGROUND PUSH NOTIFICATIONS HANDLER is executing at the moment!!' })

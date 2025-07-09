@@ -62,6 +62,12 @@ export const getFcmDeviceToken = async () => {
   return fcmToken
 }
 
+export const arePushNotificationsAllowed = async () => {
+  const { AUTHORIZED } = AuthorizationStatus
+  const authorizationStatus = await messaging().hasPermission()
+  return authorizationStatus === AUTHORIZED
+}
+
 /**
  * Create a channel (required for Android)
  * @returns channelId

@@ -35,6 +35,7 @@ export class AgentSingleton {
       await this.mobileAgent?.wallet.open(getWalletConfig(key))
       logWarn('initializing agent...')
       await this.mobileAgent?.initialize()
+      logWarn('¡agent initialized!')
     } catch (error) {
       logError(`error initializing singleton agent: ${error}`)
     }
