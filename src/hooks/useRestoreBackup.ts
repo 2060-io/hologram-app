@@ -1,7 +1,7 @@
 import { CommonActions, useNavigation } from '@react-navigation/native'
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Alert, Platform } from 'react-native'
+import { Platform } from 'react-native'
 
 import { RestoreProgress, restoreProgressInitialValues } from './backup'
 
@@ -139,24 +139,14 @@ export const useRestoreBackup = ({ restoreProgress, setRestoreProgress, download
     })
   }, [agent])
 
-  const requestNotificationPermissions = () => {
-    const message = t('signUp.requestPermissionsNotification')
-    Alert.alert('Hologram', message, [
-      { text: t('signUp.dontAllow'), style: 'destructive' },
-      {
-        text: t('signUp.allow'),
-        style: 'default',
-        onPress: async () => {
-          const allowed = await requestNotificationPermissionUser()
-          if (allowed) await updateNotificationInfo()
-        },
-      },
-    ])
+  const requestNotificationPermissions = async () => {
+    const allowed = await requestNotificationPermissionUser()
+    if (allowed) await updateNotificationInfo()
   }
 
   const goToHomeScreen = async () => {
-    requestNotificationPermissions()
     navigation.dispatch(CommonActions.reset({ index: 0, routes: [{ name: 'Home' }] }))
+    requestNotificationPermissions()
   }
 
   return {

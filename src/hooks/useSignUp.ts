@@ -12,7 +12,6 @@ export enum SignUpState {
   Started = 'Started',
   Connected = 'Connected',
   AgentCreated = 'AgentCreated',
-  DeviceRegistered = 'DeviceRegistered',
 }
 
 interface SignUpOptions {
@@ -37,8 +36,6 @@ export const useSignUp = (options: SignUpOptions) => {
       deviceToken,
       devicePlatform: Platform.OS,
     })
-
-    setSignUpState(SignUpState.DeviceRegistered)
   }, [agent])
 
   const startSignUp = useCallback(async () => {

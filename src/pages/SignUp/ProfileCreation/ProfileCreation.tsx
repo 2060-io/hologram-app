@@ -3,7 +3,7 @@ import { CommonActions } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import React, { useState, useEffect, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Alert, View, SafeAreaView } from 'react-native'
+import { View, SafeAreaView } from 'react-native'
 import Config from 'react-native-config'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
@@ -46,33 +46,23 @@ const ProfileCreation = ({ navigation }: Props) => {
   const styles = getStyles(theme)
   const disableGetStartedBtn = displayName.trim() === ''
 
-  const requestNotificationPermissions = () => {
-    const message = t('signUp.requestPermissionsNotification')
-    Alert.alert('Hologram', message, [
-      { text: t('signUp.dontAllow'), style: 'destructive' },
-      {
-        text: t('signUp.allow'),
-        style: 'default',
-        onPress: async () => {
-          const allowed = await requestNotificationPermissionUser()
-          if (allowed) await updateNotificationInfo()
-        },
-      },
-    ])
-  }
-
-  const goToChats = () => {
-    navigation.dispatch(CommonActions.reset({ index: 0, routes: [{ name: 'Home' }] }))
-  }
-
   const saveUserProfileData = () => {
     setUserProfileData?.({ displayName: displayName.trim(), displayPicture })
   }
 
-  const getStart = () => {
-    requestNotificationPermissions()
+  const goHome = () => {
+    navigation.dispatch(CommonActions.reset({ index: 0, routes: [{ name: 'Home' }] }))
+  }
+
+  const requestNotificationPermissions = async () => {
+    const allowed = await requestNotificationPermissionUser()
+    if (allowed) await updateNotificationInfo()
+  }
+
+  const getStart = async () => {
     saveUserProfileData()
-    goToChats()
+    goHome()
+    requestNotificationPermissions()
   }
 
   const handleLogStartError = (error: Error) => {
