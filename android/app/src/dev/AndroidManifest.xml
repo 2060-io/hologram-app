@@ -74,15 +74,6 @@
           <category android:name="android.intent.category.DEFAULT"/>
           <category android:name="android.intent.category.BROWSABLE"/>
           <data android:scheme="https" />
-          <data android:host="*.2060.io" />
-          <data android:host="2060.io" />
-          <data android:pathPrefix="/i" />
-        </intent-filter>
-        <intent-filter android:autoVerify="true">
-          <action android:name="android.intent.action.VIEW"/>
-          <category android:name="android.intent.category.DEFAULT"/>
-          <category android:name="android.intent.category.BROWSABLE"/>
-          <data android:scheme="https" />
           <data android:host="hologram.zone" />
         </intent-filter>
       </activity>

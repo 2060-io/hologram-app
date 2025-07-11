@@ -2,7 +2,7 @@ import { getStateFromPath } from '@react-navigation/native'
 import Config from 'react-native-config'
 
 export default {
-  prefixes: ['didcomm://', Config.BASE_INVITATION_URL as string, 'https://2060.io/i'],
+  prefixes: ['didcomm://', Config.BASE_INVITATION_URL as string],
   config: {
     screens: {
       Home: '',
