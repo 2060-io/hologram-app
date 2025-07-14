@@ -48,6 +48,19 @@ index 6374d4d..478d869 100644
      }
  };
  exports.Dispatcher = Dispatcher;
+diff --git a/node_modules/@credo-ts/core/build/modules/message-pickup/protocol/v2/V2MessagePickupProtocol.js b/node_modules/@credo-ts/core/build/modules/message-pickup/protocol/v2/V2MessagePickupProtocol.js
+index ec3bc8d..cb66aed 100644
+--- a/node_modules/@credo-ts/core/build/modules/message-pickup/protocol/v2/V2MessagePickupProtocol.js
++++ b/node_modules/@credo-ts/core/build/modules/message-pickup/protocol/v2/V2MessagePickupProtocol.js
+@@ -217,6 +217,8 @@ let V2MessagePickupProtocol = class V2MessagePickupProtocol extends BaseMessageP
+             throw new problem_reports_1.ProblemReportError('Error processing attachments', {
+                 problemCode: error_1.RoutingProblemReportReason.ErrorProcessingAttachments,
+             });
++        //sort asc array of appendedAttachments by lastmodTime
++        appendedAttachments.sort((a,b)=> a?.lastmodTime - b?.lastmodTime)
+         const ids = [];
+         for (const attachment of appendedAttachments) {
+             ids.push(attachment.id);
 diff --git a/node_modules/@credo-ts/core/build/modules/routing/MediationRecipientApi.js b/node_modules/@credo-ts/core/build/modules/routing/MediationRecipientApi.js
 index fffd69f..e62b949 100644
 --- a/node_modules/@credo-ts/core/build/modules/routing/MediationRecipientApi.js
