@@ -1,5 +1,17 @@
+diff --git a/node_modules/@credo-ts/core/build/agent/Agent.js b/node_modules/@credo-ts/core/build/agent/Agent.js
+index 2db29e1..0bb1be0 100644
+--- a/node_modules/@credo-ts/core/build/agent/Agent.js
++++ b/node_modules/@credo-ts/core/build/agent/Agent.js
+@@ -113,6 +113,7 @@ class Agent extends BaseAgent_1.BaseAgent {
+             connection: e.payload.connection,
+             contextCorrelationId: e.payload.contextCorrelationId,
+             session: e.payload.session,
++            receivedAt: e.payload.receivedAt,
+         })
+             .catch((error) => {
+             this.logger.error('Failed to process message', { error });
 diff --git a/node_modules/@credo-ts/core/build/agent/Dispatcher.js b/node_modules/@credo-ts/core/build/agent/Dispatcher.js
-index 5105d49..39e89de 100644
+index 6374d4d..478d869 100644
 --- a/node_modules/@credo-ts/core/build/agent/Dispatcher.js
 +++ b/node_modules/@credo-ts/core/build/agent/Dispatcher.js
 @@ -44,6 +44,16 @@ let Dispatcher = class Dispatcher {
@@ -36,8 +48,21 @@ index 5105d49..39e89de 100644
      }
  };
  exports.Dispatcher = Dispatcher;
+diff --git a/node_modules/@credo-ts/core/build/modules/message-pickup/protocol/v2/V2MessagePickupProtocol.js b/node_modules/@credo-ts/core/build/modules/message-pickup/protocol/v2/V2MessagePickupProtocol.js
+index ec3bc8d..cb66aed 100644
+--- a/node_modules/@credo-ts/core/build/modules/message-pickup/protocol/v2/V2MessagePickupProtocol.js
++++ b/node_modules/@credo-ts/core/build/modules/message-pickup/protocol/v2/V2MessagePickupProtocol.js
+@@ -217,6 +217,8 @@ let V2MessagePickupProtocol = class V2MessagePickupProtocol extends BaseMessageP
+             throw new problem_reports_1.ProblemReportError('Error processing attachments', {
+                 problemCode: error_1.RoutingProblemReportReason.ErrorProcessingAttachments,
+             });
++        //sort asc array of appendedAttachments by lastmodTime
++        appendedAttachments.sort((a,b)=> a?.lastmodTime - b?.lastmodTime)
+         const ids = [];
+         for (const attachment of appendedAttachments) {
+             ids.push(attachment.id);
 diff --git a/node_modules/@credo-ts/core/build/modules/routing/MediationRecipientApi.js b/node_modules/@credo-ts/core/build/modules/routing/MediationRecipientApi.js
-index 62a957a..abc503e 100644
+index fffd69f..e62b949 100644
 --- a/node_modules/@credo-ts/core/build/modules/routing/MediationRecipientApi.js
 +++ b/node_modules/@credo-ts/core/build/modules/routing/MediationRecipientApi.js
 @@ -25,6 +25,7 @@ const constants_1 = require("../../constants");
