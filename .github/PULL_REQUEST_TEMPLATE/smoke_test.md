@@ -25,7 +25,6 @@ Note: Validate next items and commands using: Demo Chat Bot Agent
 - [ ] Invitation to services. Send next message: invitation/ did:web:em-vs.demos.2060.io
 - [ ] Invitation to subconnection. Send next message: invitation/ this_is_a_child_connection
 - [ ] Web view. Send next message: /link https://hologram.zone/ Hologram zone https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRSfGMjlS818F78B84hXGsf9DAFmNpMfmx0fA&s
-- [ ] Mrz read and nfc scan. Send next message: /mrz
 
 ### Chat Screen
 
@@ -41,7 +40,7 @@ Note: Validate next items and commands using: Demo Chat Bot Agent
 - [ ] Delete connection and verify that can not be found it connections list and can not send messages anymore
 - [ ] In a Service connection details Forward and Share it to another connection (p2p). Now, in this receiver coonection accept invitation and verify connection is correctly stableshid
 
-### Deep links and Share App Data
+### Deep links, Share App Data and Verana Demo
 
 - [ ] Test next deep linkings works and are open in app
 
@@ -51,6 +50,8 @@ Note: Validate next items and commands using: Demo Chat Bot Agent
 | https   | https://hologram.zone/?oob=eyJAdHlwZSI6Imh0dHBzOi8vZGlkY29tbS5vcmcvb3V0LW9mLWJhbmQvMS4xL2ludml0YXRpb24iLCJAaWQiOiIwYWI1Mzc4YS05YzM4LTRlZWYtYWM0Yy1iZGE1MWJjMDY0ODYiLCJsYWJlbCI6IkRlbW8gQ2hhdGJvdCBBZ2VudCIsImFjY2VwdCI6WyJkaWRjb21tL2FpcDEiLCJkaWRjb21tL2FpcDI7ZW52PXJmYzE5Il0sImhhbmRzaGFrZV9wcm90b2NvbHMiOlsiaHR0cHM6Ly9kaWRjb21tLm9yZy9kaWRleGNoYW5nZS8xLjEiLCJodHRwczovL2RpZGNvbW0ub3JnL2Nvbm5lY3Rpb25zLzEuMCJdLCJzZXJ2aWNlcyI6WyJkaWQ6d2ViOmNoYXRib3QtZGVtby5kZXYuMjA2MC5pbyJdLCJpbWFnZVVybCI6Imh0dHBzOi8vZC5jaGF0Ym90LWRlbW8uZGV2LjIwNjAuaW8vYXZhdGFyLnBuZyJ9 |
 
 - [ ] Share text, images and videos from other apps (Slack, Signal, Whatsapp, Google Photos, etc) to app
+
+- [ ] Realize next verana flow https://verana.foundation/page/demos/
 
 ### Chats Screen
 
