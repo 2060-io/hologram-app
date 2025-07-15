@@ -35,7 +35,7 @@ const fromContentUriToFileUri = async (contentUri: string) => {
   const fileNameAndExtension = urlComponents[urlComponents.length - 1]
   const destPath = `${TemporaryDirectoryPath}/${fileNameAndExtension}`
   await copyFile(contentUri, destPath)
-  return IS_IOS ? destPath : decodeURIComponent(destPath)
+  return IS_IOS ? destPath : `file://${decodeURIComponent(destPath)}`
 }
 
 const getDataForVideo = async (currentFileValues: DidCommMediaFileSharingData) => {
