@@ -5,7 +5,7 @@ export type ServiceStatus = 'trusted' | 'notTrusted' | 'notFound'
 export type BaseEntity = {
   countryCode: string
   entityName: string
-  officialPublicRegistryNumber: number
+  officialPublicRegistryNumber: string
   status: ServiceStatus
 }
 
