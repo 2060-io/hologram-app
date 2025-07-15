@@ -15,7 +15,7 @@ import { logError, log } from '@2060/utils'
 
 let logger: Logger | undefined
 if (__DEV__) {
-  logger = new ConsoleLogger(LogLevel.debug)
+  logger = new ConsoleLogger(LogLevel.off)
 }
 
 export const baseAgentConfig: MobileAgentConfig = {

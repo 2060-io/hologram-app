@@ -1,0 +1,39 @@
+diff --git a/node_modules/web-did-resolver/lib/resolver.cjs b/node_modules/web-did-resolver/lib/resolver.cjs
+index 4ece603..2e511c0 100644
+--- a/node_modules/web-did-resolver/lib/resolver.cjs
++++ b/node_modules/web-did-resolver/lib/resolver.cjs
+@@ -203,7 +203,7 @@ function getResolver() {
+       if (id.length > 1) {
+         path = id.map(decodeURIComponent).join('/') + '/did.json';
+       }
+-      const url = `https://${path}`;
++      const url = `http://${path}`;
+       const didDocumentMetadata = {};
+       let didDocument = null;
+       const _temp3 = _do(function () {
+diff --git a/node_modules/web-did-resolver/lib/resolver.module.js b/node_modules/web-did-resolver/lib/resolver.module.js
+index 34971c2..54e22c7 100644
+--- a/node_modules/web-did-resolver/lib/resolver.module.js
++++ b/node_modules/web-did-resolver/lib/resolver.module.js
+@@ -199,7 +199,7 @@ function getResolver() {
+       if (id.length > 1) {
+         path = id.map(decodeURIComponent).join('/') + '/did.json';
+       }
+-      const url = `https://${path}`;
++      const url = `http://${path}`;
+       const didDocumentMetadata = {};
+       let didDocument = null;
+       const _temp3 = _do(function () {
+diff --git a/node_modules/web-did-resolver/lib/resolver.umd.js b/node_modules/web-did-resolver/lib/resolver.umd.js
+index 3adaa5a..4155480 100644
+--- a/node_modules/web-did-resolver/lib/resolver.umd.js
++++ b/node_modules/web-did-resolver/lib/resolver.umd.js
+@@ -206,7 +206,7 @@
+         if (id.length > 1) {
+           path = id.map(decodeURIComponent).join('/') + '/did.json';
+         }
+-        const url = `https://${path}`;
++        const url = `http://${path}`;
+         const didDocumentMetadata = {};
+         let didDocument = null;
+         const _temp3 = _do(function () {
