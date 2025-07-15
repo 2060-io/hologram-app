@@ -80,10 +80,9 @@ export const useRestoreBackup = ({ restoreProgress, setRestoreProgress, download
     if (agent.isInitialized) await agent.shutdown()
 
     const backupKey = await BackupUtils.setBackupKey(recoveryPassword)
-    const successfullyImported = await importWallet(backupKey)
-    if (successfullyImported) {
-      await importAndOpenRealm(BackupUtils.REALM_BACKUP_FILE_PATH, backupKey)
-      onSuccessFinish()
+    const successfullyWalletImported = await importWallet(backupKey)
+    if (successfullyWalletImported) {
+      onSuccessFinish(backupKey)
     } else {
       await BackupUtils.deleteBackupKey()
     }
@@ -120,8 +119,10 @@ export const useRestoreBackup = ({ restoreProgress, setRestoreProgress, download
 
   const restoreProgressToInitialValues = () => setRestoreProgress(restoreProgressInitialValues)
 
-  const onSuccessFinish = async () => {
+  const onSuccessFinish = async (backupKey: string) => {
+    await importAndOpenRealm(BackupUtils.REALM_BACKUP_FILE_PATH, backupKey)
     await openWallet()
+    await requestNotificationPermissions()
     setRestoreProgress(prev => ({ ...prev, isDownloadingBackUp: false, done: true, progress: 100 }))
     await BackupUtils.deleteBackupDirectory()
   }
@@ -146,7 +147,6 @@ export const useRestoreBackup = ({ restoreProgress, setRestoreProgress, download
 
   const goToHomeScreen = async () => {
     navigation.dispatch(CommonActions.reset({ index: 0, routes: [{ name: 'Home' }] }))
-    requestNotificationPermissions()
   }
 
   return {

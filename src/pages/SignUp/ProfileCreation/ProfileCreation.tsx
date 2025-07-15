@@ -62,7 +62,6 @@ const ProfileCreation = ({ navigation }: Props) => {
   const getStart = async () => {
     saveUserProfileData()
     goHome()
-    requestNotificationPermissions()
   }
 
   const handleLogStartError = (error: Error) => {
@@ -93,6 +92,7 @@ const ProfileCreation = ({ navigation }: Props) => {
     try {
       await createNewWallet()
       await openWallet()
+      await requestNotificationPermissions()
       await startSignUp()
     } catch (error) {
       if (error instanceof Error) handleLogStartError(error)
