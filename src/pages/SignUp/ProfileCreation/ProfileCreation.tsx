@@ -20,7 +20,6 @@ import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { createAndStoreEncryptedKey, KeyChainService } from '@2060/services/keys'
 import { logError } from '@2060/utils'
 import { deleteDir, makeDirectory, mediaDirectoryPath, walletDirectoryPath } from '@2060/utils/RNFS'
-import { requestNotificationPermissionUser } from '@2060/utils/pushNotificationsUtils'
 import { toast } from '@2060/utils/toast'
 
 type Props = {
@@ -36,7 +35,7 @@ const ProfileCreation = ({ navigation }: Props) => {
   const { devEnvs } = useConfig()
   const [displayName, setDisplayName] = useState('')
   const [displayPicture, setDisplayPicture] = useState<PictureData | undefined>()
-  const { signUpState, startSignUp, updateNotificationInfo } = useSignUp({
+  const { signUpState, startSignUp } = useSignUp({
     defaultServicePublicDid: Config.DEFAULT_SERVICE_PUBLIC_DID as string,
     defaultServiceAlias: Config.DEFAULT_SERVICE_ALIAS as string,
     cloudAgentPublicDid: devEnvs.CLOUD_AGENT_PUBLIC_DID as string,
@@ -52,11 +51,6 @@ const ProfileCreation = ({ navigation }: Props) => {
 
   const goHome = () => {
     navigation.dispatch(CommonActions.reset({ index: 0, routes: [{ name: 'Home' }] }))
-  }
-
-  const requestNotificationPermissions = async () => {
-    const allowed = await requestNotificationPermissionUser()
-    if (allowed) await updateNotificationInfo()
   }
 
   const getStart = async () => {
@@ -92,7 +86,6 @@ const ProfileCreation = ({ navigation }: Props) => {
     try {
       await createNewWallet()
       await openWallet()
-      await requestNotificationPermissions()
       await startSignUp()
     } catch (error) {
       if (error instanceof Error) handleLogStartError(error)

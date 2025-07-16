@@ -5,7 +5,7 @@ import { useMobileAgent } from '../hooks/agent'
 
 import { isRegistered } from '@2060/services/agent'
 import { log, logError } from '@2060/utils'
-import { getFcmDeviceToken } from '@2060/utils/pushNotificationsUtils'
+import { getFcmDeviceToken, requestNotificationPermissionUser } from '@2060/utils/pushNotificationsUtils'
 
 export enum SignUpState {
   Init = 'Init',
@@ -24,6 +24,11 @@ export const useSignUp = (options: SignUpOptions) => {
   const { agent, handleChangeAgentState } = useMobileAgent()
 
   const [signUpState, setSignUpState] = useState<SignUpState>(SignUpState.Init)
+
+  const requestNotificationPermissions = async () => {
+    const allowed = await requestNotificationPermissionUser()
+    if (allowed) await updateNotificationInfo()
+  }
 
   const updateNotificationInfo = useCallback(async () => {
     if (!agent) return
@@ -59,6 +64,7 @@ export const useSignUp = (options: SignUpOptions) => {
     const mediationRecord = await agent.mediationRecipient.requestAndAwaitGrant(cloudAgentConnection, 5000)
     await agent.mediationRecipient.setDefaultMediator(mediationRecord)
     await agent.mediationRecipient.initialize()
+    await requestNotificationPermissions()
     setSignUpState(SignUpState.AgentCreated)
     const isSignedUp = await isRegistered(agent)
     handleChangeAgentState({ isSignedUp })
@@ -81,5 +87,5 @@ export const useSignUp = (options: SignUpOptions) => {
     }
   }, [agent])
 
-  return { signUpState, startSignUp, updateNotificationInfo }
+  return { signUpState, startSignUp }
 }
