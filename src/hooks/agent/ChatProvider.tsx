@@ -121,21 +121,21 @@ export const ChatProvider: React.FC<Props> = ({ children }) => {
     ${categoryFilterMapping[category]} 
     && ${parentFilter} 
     SORT(lastChildActivityAt DESC)`
-    const entries = realm.objects(ChatThread).filtered(query).sorted('lastChildActivityAt', true)
+    const chatThreads = realm.objects(ChatThread).filtered(query).sorted('lastChildActivityAt', true)
 
     // TODO: implement pagination
-    const threads = getFilteredEntries(entries, archived)
+    const threads = getFilteredEntries(chatThreads, archived)
     setChatState(prevState => ({ ...prevState, threads, loading: false }))
 
-    const onChatThreadChange: Realm.CollectionChangeCallback<ChatThread> = newEntries => {
-      const newThreads = getFilteredEntries(newEntries as Realm.Results<ChatThread>, archived)
+    const onChatThreadChange: Realm.CollectionChangeCallback<ChatThread> = newChatThreads => {
+      const newThreads = getFilteredEntries(newChatThreads as Realm.Results<ChatThread>, archived)
       setChatState(prevState => ({ ...prevState, threads: newThreads }))
     }
 
-    entries.addListener(onChatThreadChange)
+    chatThreads.addListener(onChatThreadChange)
 
     return () => {
-      entries.removeListener(onChatThreadChange)
+      chatThreads.removeListener(onChatThreadChange)
     }
   }
 

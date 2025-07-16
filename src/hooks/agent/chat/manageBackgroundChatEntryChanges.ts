@@ -17,12 +17,12 @@ import {
 export const manageBackgroundChatEntryChanges = (realm: Realm, agent: MobileAgent) => {
   const entries = realm.objects(ChatEntry)
 
-  const onChatEntryChange: Realm.CollectionChangeCallback<ChatEntry> = async (newEntries, changes) => {
+  const onChatEntryChange: Realm.CollectionChangeCallback<ChatEntry> = async (newChatEntries, changes) => {
     const insertions = changes.insertions
     const channelId = await createChannel()
 
     for (const index of insertions) {
-      const entry = newEntries[index]
+      const entry = newChatEntries[index]
 
       // Only process receiver role entries
       if (entry.role !== ChatEntryRole.Receiver) return
