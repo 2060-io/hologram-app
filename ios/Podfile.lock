@@ -1560,6 +1560,27 @@ PODS:
     - Yoga
   - react-native-cloud-store (0.11.0):
     - React-Core
+  - react-native-compressor (1.11.0):
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.01.01.00)
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Yoga
   - react-native-config (1.5.5):
     - react-native-config/App (= 1.5.5)
   - react-native-config/App (1.5.5):
@@ -2067,15 +2088,53 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - RNImageCropPicker (0.42.0):
+  - RNImageCropPicker (0.50.1):
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.01.01.00)
+    - RCTRequired
+    - RCTTypeSafety
     - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-NativeModulesApple
+    - React-RCTFabric
     - React-RCTImage
-    - RNImageCropPicker/QBImagePickerController (= 0.42.0)
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - RNImageCropPicker/QBImagePickerController (= 0.50.1)
     - TOCropViewController (~> 2.7.4)
-  - RNImageCropPicker/QBImagePickerController (0.42.0):
+    - Yoga
+  - RNImageCropPicker/QBImagePickerController (0.50.1):
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.01.01.00)
+    - RCTRequired
+    - RCTTypeSafety
     - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-NativeModulesApple
+    - React-RCTFabric
     - React-RCTImage
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
     - TOCropViewController (~> 2.7.4)
+    - Yoga
   - RNLocalize (2.2.6):
     - React-Core
   - RNNotifee (9.0.0):
@@ -2328,6 +2387,7 @@ DEPENDENCIES:
   - react-native-background-upload (from `../node_modules/react-native-background-upload`)
   - "react-native-cameraroll (from `../node_modules/@react-native-camera-roll/camera-roll`)"
   - react-native-cloud-store (from `../node_modules/react-native-cloud-store`)
+  - react-native-compressor (from `../node_modules/react-native-compressor`)
   - react-native-config (from `../node_modules/react-native-config`)
   - react-native-create-thumbnail (from `../node_modules/react-native-create-thumbnail`)
   - react-native-date-picker (from `../node_modules/react-native-date-picker`)
@@ -2533,6 +2593,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-camera-roll/camera-roll"
   react-native-cloud-store:
     :path: "../node_modules/react-native-cloud-store"
+  react-native-compressor:
+    :path: "../node_modules/react-native-compressor"
   react-native-config:
     :path: "../node_modules/react-native-config"
   react-native-create-thumbnail:
@@ -2752,6 +2814,7 @@ SPEC CHECKSUMS:
   react-native-background-upload: 627de1e663b94336abed4a84e88fbfa2d1b6ed7f
   react-native-cameraroll: 5f180ef5e9b52b6c3c3a2645fa33a921d1e37a6c
   react-native-cloud-store: cc96ca8d9a4400a1a7d8ceb33d2605bccc4986cf
+  react-native-compressor: 714a28082d542e82fd2039824f0fbd29137b222e
   react-native-config: 644074ab88db883fcfaa584f03520ec29589d7df
   react-native-create-thumbnail: dbee035105fdc88463f435030fe0f0fc1843801c
   react-native-date-picker: 2eb0ed05ab9dcb4f337deda77deaa779807c4c61
@@ -2807,7 +2870,7 @@ SPEC CHECKSUMS:
   RNFlashList: fad82b8b2d3ee447fcc4723d747f43b38710c4fc
   RNFS: 89de7d7f4c0f6bafa05343c578f61118c8282ed8
   RNGestureHandler: fc491c834d09b0538618a3f328ab75fe8f90f5b4
-  RNImageCropPicker: b0afedeefd8655254a15c34103718455fde6ce59
+  RNImageCropPicker: 02f22ce2f267d858ca14679944ce578c541121db
   RNLocalize: 8bf466de4c92d4721b254aabe1ff0a1456e7b9f4
   RNNotifee: 3978eab0eb24f9c2ee6ee0440ee7c50748803559
   RNPermissions: bd0d9ca7969ff7b999aa605ee2e5919c12522bfe

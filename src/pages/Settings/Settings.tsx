@@ -19,8 +19,7 @@ import { useConfig } from '@2060/hooks/providers/ConfigProvider'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { deleteAllKeys } from '@2060/services/keys'
-import { logError } from '@2060/utils'
-import { dataUrl } from '@2060/utils/connectionUtils'
+import { logError, dataUrl } from '@2060/utils'
 import { toast } from '@2060/utils/toast'
 
 interface Props extends StackScreenProps<HomeMainTabParams, 'Settings'> {}
@@ -31,7 +30,6 @@ const TIMES_TO_ENABLE_DEV_MODE = 7
 const Settings = ({ navigation }: Props) => {
   const developerModeCounter = useRef(0)
   const lastTouch = useRef<number | undefined>(undefined)
-  const imageFullScreenUri = useRef<string | undefined>(undefined)
   const [showConfirmationDeleteModal, setShowConfirmationDeleteModal] = useState(false)
   const [options, setOptions] = useState<Array<OptionProps>>([])
   const [showFullScreenImage, setShowFullScreenImage] = useState<boolean>(false)
@@ -48,10 +46,7 @@ const Settings = ({ navigation }: Props) => {
   const defaultAvatar = Image.resolveAssetSource(require('@2060/assets/images/defaultUser.png')).uri
   const avatarUri = imgUrl || (displayName && displayName.length > 0 ? '' : defaultAvatar)
 
-  const onAvatarImagePressed = (avatarImageUri: string) => {
-    setShowFullScreenImage(true)
-    imageFullScreenUri.current = avatarImageUri
-  }
+  const onAvatarImagePressed = () => setShowFullScreenImage(true)
   const closeFullScreenImage = () => setShowFullScreenImage(false)
   const hideConfirmationDeleteModal = () => setShowConfirmationDeleteModal(false)
 
@@ -210,7 +205,7 @@ const Settings = ({ navigation }: Props) => {
       <FullScreenImage
         showFullScreenImage={showFullScreenImage}
         closeFullScreenImage={closeFullScreenImage}
-        imageUri={imageFullScreenUri.current!}
+        imageUri={avatarUri}
       />
       <ModalConfirmAction
         visible={showConfirmationDeleteModal}

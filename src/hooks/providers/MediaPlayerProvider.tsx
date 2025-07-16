@@ -39,7 +39,7 @@ export const useMediaPlayer = () => {
 type VideoProps = {
   videoFileUri: string
   fileMediaInfo: MediaInfo
-  currentMessage: ChatEntryMessage
+  chatEntry: ChatEntryMessage
 }
 
 type PlayingAudioInfo = {
@@ -119,7 +119,7 @@ export const MediaPlayerProvider: React.FC<React.PropsWithChildren<Props>> = ({ 
           showControl &&
           videoState && (
             <LightboxHeader
-              currentMessage={videoState.currentMessage}
+              chatEntry={videoState.chatEntry}
               fileMediaInfo={videoState.fileMediaInfo}
               onBack={close}
             />

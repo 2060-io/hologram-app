@@ -10,6 +10,7 @@ import {
   ChatEntryState,
   ChatEntryType,
   ChatThread,
+  CacheRecord,
   isMediaType,
   MediaDownloadState,
   SystemMessageMetadata,
@@ -238,7 +239,7 @@ export const RealmProvider: React.FC<React.PropsWithChildren<Props>> = ({ childr
 
     const realmConfig: Realm.Configuration = {
       encryptionKey: TypedArrayEncoder.fromHex(key),
-      schema: [ChatEntry, ChatThread, UploadTask],
+      schema: [ChatEntry, ChatThread, UploadTask, CacheRecord],
       path: `${walletDirectoryPath}/main.realm`,
       schemaVersion: CURRENT_REALM_SCHEMA_VERSION,
       onMigration,
@@ -260,7 +261,7 @@ export const RealmProvider: React.FC<React.PropsWithChildren<Props>> = ({ childr
       const realmConfig: Realm.Configuration = {
         encryptionKey: TypedArrayEncoder.fromHex(key),
         path: `${walletDirectoryPath}/main.realm`,
-        schema: [ChatEntry, ChatThread, UploadTask],
+        schema: [ChatEntry, ChatThread, UploadTask, CacheRecord],
         schemaVersion: CURRENT_REALM_SCHEMA_VERSION,
         onMigration,
       }

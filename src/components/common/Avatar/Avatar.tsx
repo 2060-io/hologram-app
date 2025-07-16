@@ -1,8 +1,9 @@
 import { isUri } from '@credo-ts/core/build/utils'
-import React, { useMemo, useState } from 'react'
+import React, { useMemo, useRef, useState } from 'react'
 import { Image, TouchableOpacity, View } from 'react-native'
 import { SvgUri } from 'react-native-svg'
 
+import SmartImage from './SmartImage'
 import getStyles from './styles'
 
 import Text from '@2060/components/common/Text'
@@ -17,6 +18,11 @@ type Props = {
   withBorder?: boolean
   bgAvatarInitials?: string
   onImagePressed?: (imageUri: string) => void
+  enableImageRefresh?: boolean
+}
+
+const isHttpUrl = (uri: string) => {
+  return uri.startsWith('https://') || uri.startsWith('http://')
 }
 
 const Avatar: React.FC<Props> = ({
@@ -26,21 +32,27 @@ const Avatar: React.FC<Props> = ({
   withBorder = false,
   bgAvatarInitials,
   onImagePressed,
+  enableImageRefresh = true,
 }) => {
+  const imageUri = useRef(uri)
   const [isValidImageUrl, setIsValidImageUrl] = useState<boolean>()
   useMemo(() => setIsValidImageUrl(uri?.length ? isUri(uri) : undefined), [uri])
   const theme = useTheme()
+  const styles = getStyles(theme)
   const avatarSize = widthPercentageToDP(size.includes('%') ? size : `${size}%`)
   const initialsFontSize = avatarSize * 0.4
-
-  const styles = getStyles(theme)
-  const avatarSizeStyle = { height: avatarSize, width: avatarSize, borderRadius: avatarSize / 2 }
+  const avatarDimensions = { height: avatarSize, width: avatarSize, borderRadius: avatarSize / 2 }
   const borderStyle = withBorder && { borderWidth: 1, borderColor: theme.colors.lightGrey }
+
+  const onSmartImageContent = (imageContent: string) => {
+    imageUri.current = imageContent
+  }
+
   const renderAvatar = () => (
     <TouchableOpacity
-      style={[styles.containerAvatar, styles.containerBgAvatar, avatarSizeStyle, borderStyle]}
+      style={[styles.containerAvatar, avatarDimensions, borderStyle]}
       disabled={!onImagePressed}
-      onPress={() => onImagePressed?.(uri!)}
+      onPress={() => onImagePressed?.(imageUri.current ?? '')}
     >
       {uri?.endsWith('.svg') ? (
         <SvgUri
@@ -50,12 +62,16 @@ const Avatar: React.FC<Props> = ({
           height={styles.avatar.height}
           onError={() => setIsValidImageUrl(false)}
         />
-      ) : (
-        <Image
-          source={{ uri, cache: 'force-cache' }}
+      ) : uri && isHttpUrl(uri) ? (
+        <SmartImage
+          uri={uri}
+          setIsValidImageUrl={setIsValidImageUrl}
+          onImageContent={onSmartImageContent}
           style={styles.avatar}
-          onError={() => setIsValidImageUrl(false)}
+          enableImageRefresh={enableImageRefresh}
         />
+      ) : (
+        <Image source={{ uri }} style={styles.avatar} onError={() => setIsValidImageUrl(false)} />
       )}
     </TouchableOpacity>
   )
@@ -65,7 +81,7 @@ const Avatar: React.FC<Props> = ({
       style={[
         styles.containerAvatar,
         { backgroundColor: bgAvatarInitials ?? '#E5E9EA' },
-        avatarSizeStyle,
+        avatarDimensions,
         borderStyle,
       ]}
     >

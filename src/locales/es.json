@@ -57,7 +57,6 @@
       "send": "Enviar",
       "name": "Nombre",
       "description": "Descripción",
-      "loading": "Cargando...",
       "retry": "Reintentar",
       "abort": "Cancelar",
       "open": "Abrir",
@@ -413,7 +412,8 @@
       "messagesSharedExcept": "Mensajes compartidos excepto aquellos videos que tenian una duracion mayor a 1 minuto",
       "messagesNotShared": "El mensaje no ha sido compartido porque el video tenía una duración mayor a 1 minuto",
       "messageNotShared_other": "Los mensajes no ha sido compartidos porque los videos tenían una duración mayor a 1 minuto",
-      "videoExceedsDuration": "El video excede la duración máxima de 1 minuto, por favor selecciona uno más corto"
+      "videoExceedsDuration": "El video excede la duración máxima de 1 minuto, por favor selecciona uno más corto",
+      "processingVideo": "Procesando video..."
     },
     "preview": {
       "answer": "🟰 Respuesta",

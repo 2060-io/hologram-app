@@ -7,20 +7,17 @@ import { ConnectionRecord, DidExchangeState, JsonTransformer, Protocol } from '@
 
 import { log } from './log'
 
+import { dataUrl } from './index'
+
 import { ConnectionType } from '@2060/model'
 
 export const getConnectionDisplayName = (connection: ConnectionRecord) => {
-  if (!connection) return ''
-
   const profile = getConnectionProfile(connection)
   const nameDisplayName = profile?.displayName
   const nameAlias = connection.alias
   const namelabel = connection?.theirLabel
   const nameDid = connection.did
-
-  let displayName = ''
-  displayName = nameAlias || nameDisplayName || namelabel || nameDid || ''
-
+  let displayName = nameAlias || nameDisplayName || namelabel || nameDid || ''
   return displayName
 }
 
@@ -48,8 +45,6 @@ export const getConnectionDisplayIcon = (connection: ConnectionRecord) => {
   }
   return displayIcon
 }
-
-export const dataUrl = (mime?: string, data?: string) => (data && mime ? `data:${mime};base64,${data}` : '')
 
 export const getPictureDataUrl = (displayPictureData?: PictureData) =>
   displayPictureData?.links

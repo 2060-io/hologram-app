@@ -25,6 +25,7 @@ import {
   SharedDataFromOtherAppsProvider,
   ThemeProvider,
   VideoCallProvider,
+  RefreshedAvatarsUrlsProvider,
 } from '@2060/hooks/providers'
 import { initializeI18n, language } from '@2060/utils/language'
 
@@ -56,6 +57,7 @@ const ProvidersTree = buildProvidersTree([
   [NavigationProvider],
   [PushNotificationsProvider],
   [FileUploadDownloadProvider],
+  [RefreshedAvatarsUrlsProvider],
   [VideoCallProvider],
   [ScreenLockProvider],
   [SharedDataFromOtherAppsProvider],

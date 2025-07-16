@@ -201,17 +201,18 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
           fromUrl: uri,
           toFile: downloadLocalFilePath,
           progressInterval: 2000,
-          progress(progress) {
+          begin: () => log('Download of file begin'),
+          progress: progress => {
             if (item.byteCount) {
               const currentProgress = Math.ceil((progress.bytesWritten / item.byteCount) * 100)
               agent.modules.media.setMetadata(mediaRecord.id, 'mediaDownloadProgress', currentProgress)
+              log(`Download media from ${uri} progress: ${currentProgress}%`)
             }
           },
         })
         const result = await promise
         if (result.statusCode !== 200) {
-          logError(`download status code ${result.statusCode}`)
-          throw new Error(`download status code ${result.statusCode}`)
+          throw new Error(`code ${result.statusCode} / url ${uri}`)
         }
 
         if (ciphering) {
@@ -237,7 +238,7 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
             await agent.modules.media.setMetadata(
               mediaRecord.id,
               'localPreviewFilePath',
-              `media/previews/${filename}.jpeg`,
+              localPreviewFilePath,
             )
           }
         }
@@ -246,7 +247,7 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
         await agent.modules.media.setMetadata(mediaRecord.id, 'mediaDownloadState', MediaDownloadState.Done)
       } catch (error) {
         await agent.modules.media.setMetadata(mediaRecord.id, 'mediaDownloadState', MediaDownloadState.Failed)
-        logError(`downloading file: ${error}`)
+        logError(`Error downloading file: ${error}`)
         throw error
       } finally {
         await agent.modules.media.setMetadata(mediaRecord.id, 'mediaDownloadProgress', undefined)
@@ -339,7 +340,7 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
           // Store relative path for files and previews to avoid issues with new builds in iOS
           metadata: {
             localFilePath: `media/${fileName}`,
-            localPreviewFilePath: localPreviewFilePath ? `media/previews/${fileName}.jpeg` : undefined,
+            localPreviewFilePath: localPreviewFilePath ?? undefined,
             ...(isAudioFile && { waveform }),
           },
         })
@@ -499,7 +500,9 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
 
       if (isTaskFinished) {
         // Delete all chunk files
-        for (const chunk of task.chunks) await deleteFile(chunk.filePath)
+        for (const chunk of task.chunks) {
+          deleteFile(chunk.filePath)
+        }
 
         realm?.write(() => {
           realm.delete(task)

@@ -72,7 +72,7 @@ const Privacy = () => {
         iconName: mediaIconName[typedKey],
       }
     })
-  }, [automaticDownloadValues])
+  }, [automaticDownloadValues, theme.colors])
 
   const onPressAutomaticDownloadOption = (key: keyof AutomaticDownloadTypes, value: DownloadOptions) => {
     currentAutomaticOptionForModal.current = { key, value }

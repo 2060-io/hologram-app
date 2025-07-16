@@ -1,3 +1,4 @@
+import { getConnectionProfile } from '@2060.io/credo-ts-didcomm-user-profile'
 import { ConnectionRecord, TypedArrayEncoder } from '@credo-ts/core'
 import { StackScreenProps } from '@react-navigation/stack'
 import React, { ReactElement, useEffect, useRef, useState } from 'react'
@@ -13,7 +14,6 @@ import { NavigationStackParams } from '@2060/components/Navigation/NavigationPro
 import { Text, ConnectionMainActions, SvgIcon, ModalLoading, OptionsList } from '@2060/components/common'
 import { IS_IOS } from '@2060/constants'
 import {
-  useConnectionProfile,
   useMobileAgent,
   useChats,
   useConnectionByParentConnectionId,
@@ -57,7 +57,7 @@ const BaseConnectionDetails = ({
   const theme = useTheme()
   const styles = getStyles(theme)
 
-  const profile = useConnectionProfile(connection.id)
+  const profile = getConnectionProfile(connection)
   const { agent } = useMobileAgent()
   const { t } = useTranslation()
   const connectionName = getConnectionDisplayName(connection)

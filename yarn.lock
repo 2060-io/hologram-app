@@ -12716,6 +12716,11 @@ react-native-cloud-store@0.11.0:
   resolved "https://registry.yarnpkg.com/react-native-cloud-store/-/react-native-cloud-store-0.11.0.tgz#7446fa5e3f45a660b6629572879a50eb66c2b9bd"
   integrity sha512-Nd8a7mOo21Cpj++0TpKHfXRt3xJQ2E/SPxZe8S8lgN7VP54asEJVDt48Tv7OJq0iYypVJZqskHyh4iPvgrUn6g==
 
+react-native-compressor@1.11.0:
+  version "1.11.0"
+  resolved "https://registry.yarnpkg.com/react-native-compressor/-/react-native-compressor-1.11.0.tgz#e297fa650b09cc754392153c38ae2ca510aee024"
+  integrity sha512-XaI0U2CtlW6ZYjwdQ4jdpnJa3C9CD1pc1a4jiUMtnUxWtCqgT7PNjOiEqlYLLwwGTvorXXNuby5In1yy7Vdmhg==
+
 react-native-config@1.5.5:
   version "1.5.5"
   resolved "https://registry.yarnpkg.com/react-native-config/-/react-native-config-1.5.5.tgz#5977db58ff20b6fe9dd6fb28c815a9ba43d018d2"
@@ -12760,10 +12765,10 @@ react-native-get-random-values@^1.7.0:
   dependencies:
     fast-base64-decode "^1.0.0"
 
-react-native-image-crop-picker@0.42.0:
-  version "0.42.0"
-  resolved "https://registry.yarnpkg.com/react-native-image-crop-picker/-/react-native-image-crop-picker-0.42.0.tgz#0672c080feb8ffefd65ba00a4e64bc8a1066136e"
-  integrity sha512-EOEkekPJ7g+CNf92HrWAGM4kcDJyVY02gQJUVH7MSNUOK11SHnurXVM0TnwIt410Y4T+lBkq3rfJEA1qDaDDwA==
+react-native-image-crop-picker@0.50.1:
+  version "0.50.1"
+  resolved "https://registry.yarnpkg.com/react-native-image-crop-picker/-/react-native-image-crop-picker-0.50.1.tgz#db627a378daa7cfc7500a6bc6188510bb2325f5a"
+  integrity sha512-2xtyKLU08AFqjRb1hUsSanO2OK9aCtfjggKzVhq/GDSfOI+WRGhoElcMuKeQEi3ey6mivz7UNFOOvNCqGjzKBA==
 
 react-native-incall-manager@^4.2.0:
   version "4.2.0"

@@ -11,7 +11,6 @@ const MAX_VIDEO_SECONDS_DURATION = 60
 const optionsCommon: CommonOptions = {
   loadingLabelText: 'Applying changes...',
   useFrontCamera: true,
-  sortOrder: 'desc',
 }
 
 const defaultCamera: Options = {
@@ -65,18 +64,21 @@ export const useImageCropPicker = () => {
     return fileInfo
   }
 
-  const takePhotoOrVideo = async (callBack: (values: ImageOrVideo) => void, options?: Options) => {
+  const takePhotoOrVideo = async (onSuccess: (values: ImageOrVideo) => void, options?: Options) => {
     const mediaType = options?.mediaType || 'photo'
     try {
       const fileInfo = (await openCamera({ ...optionsDefault[mediaType], ...options })) as ImageOrVideo
       const infoMedia = await createPreview(fileInfo, mediaType)
-      callBack(infoMedia)
+      onSuccess(infoMedia)
     } catch (error) {
       logError(`${error}`)
     }
   }
 
-  const takePhotoOrVideoFromGallery = async (callBack: (values: ImageOrVideo) => void, options?: Options) => {
+  const takePhotoOrVideoFromGallery = async (
+    onSuccess: (values: ImageOrVideo) => void,
+    options?: Options,
+  ) => {
     const mediaType = options?.mediaType || 'photo'
     try {
       const fileInfo = (await openPicker({ ...optionsDefault[mediaType], ...options })) as ImageOrVideo
@@ -87,7 +89,7 @@ export const useImageCropPicker = () => {
         return
       }
       const infoMedia = await createPreview(fileInfo, mediaType)
-      callBack(infoMedia)
+      onSuccess(infoMedia)
     } catch (error) {
       logError(`${error}`)
     }

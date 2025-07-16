@@ -36,9 +36,11 @@ import {
   isMediaType,
 } from '@2060/model'
 import { ChatEntryMessage } from '@2060/pages/PersonalChat/ChatMessage/Props'
+import { checkIfDeleteFilesFromMedia } from '@2060/pages/PersonalChat/utils'
 import { log, logError } from '@2060/utils'
 import { getLocalFileUri } from '@2060/utils/RNFS'
-import { getMediaFileSharingData } from '@2060/utils/mediaFileUtils'
+import { compressVideo, getMediaFileSharingData } from '@2060/utils/mediaFileUtils'
+import { getMediaChatEntriesExcludingThread } from '@2060/utils/realmQueries'
 import { toast, ToastOptions } from '@2060/utils/toast'
 
 export const useChatActions = () => {
@@ -96,8 +98,12 @@ export const useChatActions = () => {
   const deleteMessagesForMe = useCallback(
     (messages: ChatEntryMessage[]) => {
       return new Promise<void>((resolve, reject) => {
-        if (!realm) throw new Error('No active Realm')
+        if (!realm) return
         try {
+          const isSomeMessageTypeMedia = messages.some(message => isMediaType(message.type))
+          const mediaChatEntriesExcludingThread = isSomeMessageTypeMedia
+            ? getMediaChatEntriesExcludingThread(realm, messages[0].chatThreadId)
+            : []
           messages.forEach(message => {
             const { id } = message
             realm.write(() => {
@@ -105,6 +111,12 @@ export const useChatActions = () => {
               if (!object) throw new Error(`ChatEntry with id ${id} not found`)
               realm.delete(object)
             })
+            if (isMediaType(message.type)) {
+              checkIfDeleteFilesFromMedia(
+                message.metadata as MediaSharingMetadata,
+                mediaChatEntriesExcludingThread,
+              )
+            }
           })
           toast({
             type: 'success',
@@ -125,11 +137,14 @@ export const useChatActions = () => {
     async (messages: ChatEntryMessage[]) => {
       return new Promise<void>((resolve, reject) => {
         try {
-          if (!agent || !connectionId) throw new Error('Agent is undefined')
+          if (!agent || !connectionId || !realm) return
           const receipts: MessageReceiptOptions[] = []
+          const isSomeMessageTypeMedia = messages.some(message => isMediaType(message.type))
+          const mediaChatEntriesExcludingThread = isSomeMessageTypeMedia
+            ? getMediaChatEntriesExcludingThread(realm, messages[0].chatThreadId)
+            : []
           messages.forEach(message => {
             const { id: entryId, associatedMessageId } = message
-            if (!realm) throw new Error('No active Realm')
             realm.write(() => {
               const object = realm.objectForPrimaryKey(ChatEntry, entryId)
               if (!object) throw new Error(`ChatEntry with id ${entryId} not found`)
@@ -140,6 +155,12 @@ export const useChatActions = () => {
                 thread.preview = getLocalizedPreview({ ...message, state: ChatEntryState.Deleted })
               }
             })
+            if (isMediaType(message.type)) {
+              checkIfDeleteFilesFromMedia(
+                message.metadata as MediaSharingMetadata,
+                mediaChatEntriesExcludingThread,
+              )
+            }
             receipts.push({ messageId: associatedMessageId ?? '', state: MessageState.Deleted })
           })
 
@@ -338,6 +359,14 @@ export const useChatActions = () => {
               'localPreviewFilePath',
               originalRecord.metadata.get('localPreviewFilePath') as string,
             )
+            if (message.type === ChatEntryType.VoiceNote) {
+              await agent.modules.media.setMetadata(
+                newRecord.id,
+                'waveform',
+                originalRecord.metadata.get('waveform') as string,
+              )
+            }
+
             // Add share action
             addAgentActionToQueue({
               type: AgentActionType.ShareMedia,
@@ -387,18 +416,28 @@ export const useChatActions = () => {
             })
           }
         } else if (mimeType.startsWith('image') || mimeType.startsWith('video')) {
-          const didcommMediaFileSharingData = await getMediaFileSharingData(message.data, mimeType)
+          let didcommMediaFileSharingData: DidCommMediaFileSharingData | null = await getMediaFileSharingData(
+            message.data,
+            mimeType,
+          )
           const { duration, mime } = didcommMediaFileSharingData
-          const isVideoAndExceedsDuration =
-            mime.startsWith('video') && duration && duration > MAX_VIDEO_DURATION
+          const isVideo = mime.startsWith('video')
+          const isVideoAndExceedsDuration = isVideo && duration && duration > MAX_VIDEO_DURATION
           if (isVideoAndExceedsDuration) {
             excludedLongVideosCount++
           } else {
-            startMediaUpload({
-              didcommConnectionIds: connectionIds,
-              didcommMediaFileSharingData,
-              deleteOriginalFile: true,
-            })
+            if (isVideo) {
+              didcommMediaFileSharingData = (await compressVideo(didcommMediaFileSharingData, progress => {
+                log('compressing progress', progress)
+              })) as DidCommMediaFileSharingData | null
+            }
+            if (didcommMediaFileSharingData) {
+              startMediaUpload({
+                didcommConnectionIds: connectionIds,
+                didcommMediaFileSharingData,
+                deleteOriginalFile: true,
+              })
+            }
           }
         }
       }

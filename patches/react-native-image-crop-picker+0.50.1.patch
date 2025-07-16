@@ -1,0 +1,94 @@
+diff --git a/node_modules/react-native-image-crop-picker/android/src/main/java/com/reactnative/ivpusic/imagepicker/ImageCropPicker.java b/node_modules/react-native-image-crop-picker/android/src/main/java/com/reactnative/ivpusic/imagepicker/ImageCropPicker.java
+index fd01e11..a97eb77 100644
+--- a/node_modules/react-native-image-crop-picker/android/src/main/java/com/reactnative/ivpusic/imagepicker/ImageCropPicker.java
++++ b/node_modules/react-native-image-crop-picker/android/src/main/java/com/reactnative/ivpusic/imagepicker/ImageCropPicker.java
+@@ -101,6 +101,7 @@ class ImageCropPicker implements ActivityEventListener {
+ 
+     private int width = 0;
+     private int height = 0;
++    private int maximumVideoDuration = -1;
+ 
+     private int maxFiles = 5;
+ 
+@@ -144,6 +145,7 @@ class ImageCropPicker implements ActivityEventListener {
+         enableRotationGesture = options.hasKey("enableRotationGesture") && options.getBoolean("enableRotationGesture");
+         disableCropperColorSetters = options.hasKey("disableCropperColorSetters") && options.getBoolean("disableCropperColorSetters");
+         useFrontCamera = options.hasKey("useFrontCamera") && options.getBoolean("useFrontCamera");
++        maximumVideoDuration = options.hasKey("maximumVideoDuration") ? options.getInt("maximumVideoDuration") : -1;
+         this.options = options;
+     }
+ 
+@@ -341,6 +343,9 @@ class ImageCropPicker implements ActivityEventListener {
+                 cameraIntent.putExtra("android.intent.extras.LENS_FACING_FRONT", 1);
+                 cameraIntent.putExtra("android.intent.extra.USE_FRONT_CAMERA", true);
+             }
++            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && maximumVideoDuration > 0) {
++                cameraIntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, maximumVideoDuration);
++            }
+ 
+             if (cameraIntent.resolveActivity(activity.getPackageManager()) == null) {
+                 resultCollector.notifyProblem(E_CANNOT_LAUNCH_CAMERA, "Cannot launch camera");
+diff --git a/node_modules/react-native-image-crop-picker/index.d.ts b/node_modules/react-native-image-crop-picker/index.d.ts
+index 0ce849f..437c516 100644
+--- a/node_modules/react-native-image-crop-picker/index.d.ts
++++ b/node_modules/react-native-image-crop-picker/index.d.ts
+@@ -359,6 +359,13 @@ declare module "react-native-image-crop-picker" {
+          * @default 'MediumQuality'
+          */
+         compressVideoPreset?: CompressVideoPresets;
++        
++        /**
++         * The maximum duration a video can have. If `undefined` or `-1`, no limit is set.
++         *
++         * @default undefined
++         */
++        maximumVideoDuration?: number;
+     };
+ 
+     type AnyOptions = Omit<ImageOptions, 'mediaType'> & Omit<VideoOptions, 'mediaType'> & {
+diff --git a/node_modules/react-native-image-crop-picker/ios/src/ImageCropPicker.mm b/node_modules/react-native-image-crop-picker/ios/src/ImageCropPicker.mm
+index 354ad09..7bf98f2 100644
+--- a/node_modules/react-native-image-crop-picker/ios/src/ImageCropPicker.mm
++++ b/node_modules/react-native-image-crop-picker/ios/src/ImageCropPicker.mm
+@@ -68,6 +68,7 @@ - (instancetype)init
+             @"avoidEmptySpaceAroundImage": @YES,
+             @"compressImageQuality": @0.8,
+             @"compressVideoPreset": @"MediumQuality",
++            @"maximumVideoDuration": @-1,
+             @"loadingLabelText": @"Processing assets...",
+             @"mediaType": @"any",
+             @"showsSelectedCount": @YES,
+@@ -160,6 +161,12 @@ - (UIViewController*) getRootVC {
+             picker.allowsEditing = NO;
+             picker.sourceType = UIImagePickerControllerSourceTypeCamera;
+             
++            id maxDuration = [self.options objectForKey:@"maximumVideoDuration"];
++            if (maxDuration) {
++                if ([maxDuration doubleValue] > 0) {
++                    picker.videoMaximumDuration = [maxDuration doubleValue];
++                }
++            }
+             NSString *mediaType = [self.options objectForKey:@"mediaType"];
+             
+             if ([mediaType isEqualToString:@"video"]) {
+@@ -442,14 +449,18 @@ - (void) handleVideo:(AVAsset*)asset withFileName:(NSString*)fileName withLocalI
+             AVURLAsset *durationFromUrl = [AVURLAsset assetWithURL:outputURL];
+             CMTime time = [durationFromUrl duration];
+             int milliseconds = ceil(time.value/time.timescale) * 1000;
++            CGAffineTransform transform = [track preferredTransform];
++            BOOL isPortrait = transform.a == 0 && transform.d == 0;
++            CGFloat width = isPortrait ? track.naturalSize.height : track.naturalSize.width;
++            CGFloat height = isPortrait ? track.naturalSize.width : track.naturalSize.height;
+             
+             completion([self createAttachmentResponse:[outputURL absoluteString]
+                                              withExif:nil
+                                         withSourceURL:[sourceURL absoluteString]
+                                   withLocalIdentifier:localIdentifier
+                                          withFilename:fileName
+-                                            withWidth:[NSNumber numberWithFloat:track.naturalSize.width]
+-                                           withHeight:[NSNumber numberWithFloat:track.naturalSize.height]
++                                            withWidth:@(width)
++                                           withHeight:@(height)
+                                              withMime:@"video/mp4"
+                                              withSize:fileSizeValue
+                                          withDuration:[NSNumber numberWithFloat:milliseconds]

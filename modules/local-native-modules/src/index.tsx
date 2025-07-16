@@ -18,7 +18,13 @@ const VideoPropertiesNativeModule = NativeModules.VideoPropertiesModule
       },
     )
 
-export function nativeGetVideoProperties(videoPath: string): Promise<Record<string, unknown> | null> {
+type VideoProps = {
+  duration: number
+  width: number
+  height: number
+}
+
+export function nativeGetVideoProperties(videoPath: string): Promise<VideoProps | null> {
   return VideoPropertiesNativeModule.getVideoProperties(videoPath)
 }
 

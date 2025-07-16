@@ -9,12 +9,10 @@ import { FirebaseMessagingTypes } from '@react-native-firebase/messaging'
 import Config from 'react-native-config'
 import Realm from 'realm'
 
-import { baseAgentConfig } from '../hooks/agent/MobileAgentProvider'
-import { manageAgentChatEvents } from '../hooks/agent/chat/manageAgentChatEvents'
-import { CURRENT_REALM_SCHEMA_VERSION } from '../hooks/providers/RealmProvider'
-
-import { manageBackgroundChatEntryChanges } from '@2060/hooks/agent/chat'
+import { baseAgentConfig } from '@2060/hooks/agent/MobileAgentProvider'
+import { manageBackgroundChatEntryChanges, subscribeToAgentChatEvents } from '@2060/hooks/agent/chat'
 import { manageConnectionStateChangedEvent } from '@2060/hooks/agent/connections/manageConnectionStateChangedEvent'
+import { CURRENT_REALM_SCHEMA_VERSION } from '@2060/hooks/providers/RealmProvider'
 import { ChatEntry, ChatThread } from '@2060/model'
 import { setupMobileAgent } from '@2060/services/initMobileAgent'
 import { KeyChainService, retrieveEncryptedKey } from '@2060/services/keys'
@@ -105,7 +103,7 @@ export async function backgroundPushNotificationHandler(remoteMessage: FirebaseM
           deleteRemoteNotifications()
           removeChatEntryChangeListener()
           removeConnectionChangeListener()
-          unsubscribeFromEvents()
+          unsubscribeFromAgentChatEvents()
           await agent.shutdown()
           realm.close()
           makeRequestToLocalServer({ data: 'finish execution' })
@@ -113,7 +111,7 @@ export async function backgroundPushNotificationHandler(remoteMessage: FirebaseM
         }
       }
     })
-    const unsubscribeFromEvents = manageAgentChatEvents(agent, realm)
+    const unsubscribeFromAgentChatEvents = subscribeToAgentChatEvents(agent, realm, () => undefined)
 
     await agent.initialize()
     const mediatorConnection = await agent.mediationRecipient.findDefaultMediatorConnection()
