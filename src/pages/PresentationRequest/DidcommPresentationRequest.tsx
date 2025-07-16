@@ -9,7 +9,7 @@ import BasePresentationRequest from './BasePresentationRequest'
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
 import { useFetchServiceInfo } from '@2060/hooks'
 import { useMobileAgent } from '@2060/hooks/agent'
-import { findAllByAssociatedRecordId, updateMetadata } from '@2060/hooks/agent/chat/services'
+import { findAllByAssociatedRecordId, updateChatEntryMetadata } from '@2060/hooks/agent/chat/services'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
 import { ChatEntryType } from '@2060/model'
 import { CredentialMainInfo } from '@2060/services/agent/display'
@@ -66,7 +66,7 @@ const DidcommPresentationRequest: React.FC<Props> = ({ navigation, route }: Prop
       let [vpRequestChatEntry] = findAllByAssociatedRecordId(realm, proofRecordId, ChatEntryType.VPRequest)
       if (vpRequestChatEntry) {
         const newMetadata = { ...vpRequestChatEntry.metadata, proofState: ProofState.Declined }
-        updateMetadata(realm, vpRequestChatEntry.id, newMetadata)
+        updateChatEntryMetadata(realm, vpRequestChatEntry.id, newMetadata)
       }
     }
   }

@@ -1,7 +1,11 @@
 import { QuestionAnswerRecord, QuestionAnswerState } from '@credo-ts/question-answer'
 import Realm from 'realm'
 
-import { createChatEntry, findAllByAssociatedRecordId, updateMetadata } from '../services/ChatEntryService'
+import {
+  createChatEntry,
+  findAllByAssociatedRecordId,
+  updateChatEntryMetadata,
+} from '../services/ChatEntryService'
 import { addUnread, findOrCreateChatThread, updateThread } from '../services/ChatThreadService'
 
 import {
@@ -72,7 +76,7 @@ export const handleQuestionAnswerRecordChanges = async (options: {
         ...questionEntry.metadata,
         response: questionAnswerRecord.response ?? '',
       }
-      updateMetadata(realm, questionEntry.id, questionMetadata)
+      updateChatEntryMetadata(realm, questionEntry.id, questionMetadata)
     }
   } else if (recordState === QuestionAnswerState.AnswerReceived) {
     const metadata: AnswerMetadata = { response: questionAnswerRecord.response ?? '' }

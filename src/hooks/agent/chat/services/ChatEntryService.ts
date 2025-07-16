@@ -183,7 +183,7 @@ export function addReceiptToRelatedEntries(realm: Realm, receipt: MessageReceipt
   return lastChatEntry
 }
 
-export function updateMetadata(realm: Realm, recordId: string, metadata: Record<string, unknown>) {
+export function updateChatEntryMetadata(realm: Realm, recordId: string, metadata: Record<string, unknown>) {
   const record = realm.objectForPrimaryKey(ChatEntry, recordId)
   if (!record) throw new Error(`Cannot find chat element with id ${recordId}`)
 
