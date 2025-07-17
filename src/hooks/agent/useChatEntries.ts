@@ -18,8 +18,8 @@ export const useChatEntries = (threadId: string) => {
 
   const updateChatEntryListener = () => {
     const onChatEntryChange: Realm.CollectionChangeCallback<ChatEntry> = (newEntries, changes) => {
-      const { newModifications } = changes
-      if (newModifications.length) {
+      const { newModifications, deletions } = changes
+      if (newModifications.length || deletions) {
         setChatEntries(newEntries.map(getChatEntryData))
       }
     }
