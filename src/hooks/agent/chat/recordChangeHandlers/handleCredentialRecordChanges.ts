@@ -10,7 +10,7 @@ import {
 } from '@credo-ts/core'
 import Realm from 'realm'
 
-import { createChatEntry, findAllByAssociatedRecordId, updateState } from '../services/ChatEntryService'
+import { createChatEntry, findAllByAssociatedRecordId, updateChatEntry } from '../services/ChatEntryService'
 import { addUnread, findOrCreateChatThread, updateThread } from '../services/ChatThreadService'
 
 import { ChatEntryRole, ChatEntryState, ChatEntryType } from '@2060/model'
@@ -60,7 +60,7 @@ export const handleCredentialExchangeRecordChanges = async (options: {
       isRefused = description === 'e.msg.refused'
     }
     const credentialState = isRefused ? CredentialState.Declined : credentialExchangeRecord.state
-    updateState(realm, {
+    updateChatEntry(realm, {
       recordId: vcOfferEntry.id,
       state: vcOfferEntry.state, // TODO: update state
       associatedMessageId,

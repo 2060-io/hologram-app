@@ -42,7 +42,7 @@ import {
   useChats,
   ChatThreadWithParticipants,
 } from '@2060/hooks/agent'
-import { createChatEntry, updateMetadata } from '@2060/hooks/agent/chat/services/ChatEntryService'
+import { createChatEntry, updateChatEntryMetadata } from '@2060/hooks/agent/chat/services/ChatEntryService'
 import { updateThread } from '@2060/hooks/agent/chat/services/ChatThreadService'
 import { blockConnection } from '@2060/hooks/agent/connections'
 import { useConfig } from '@2060/hooks/providers/ConfigProvider'
@@ -90,7 +90,7 @@ const createReportedMessageChatEntry = (params: {
       role: messageToReport.role,
     },
   })
-  updateMetadata(realm, messageToReport.id, {
+  updateChatEntryMetadata(realm, messageToReport.id, {
     ...messageToReport.metadata,
     isReported: true,
   })

@@ -16,7 +16,7 @@ import {
 import { Realm } from 'realm'
 import { ReplaySubject, firstValueFrom, filter, first, timeout, catchError, map } from 'rxjs'
 
-import { updateState } from '../chat/services/ChatEntryService'
+import { updateChatEntry } from '../chat/services/ChatEntryService'
 import { updateThread } from '../chat/services/ChatThreadService'
 
 import {
@@ -220,7 +220,7 @@ export class AgentActionExecuter {
 
       // Message is submitted: update the associated chat entry to the corresponding state
       if (chatEntry && chatEntry.state === ChatEntryState.Created) {
-        updateState(realm, {
+        updateChatEntry(realm, {
           recordId: chatEntry.id,
           state: ChatEntryState.Submitted,
           associatedMessageId: message.message.id,
@@ -237,7 +237,7 @@ export class AgentActionExecuter {
 
         // Message failed to be sent. However we can already associate it to the chat entry
         if (chatEntry && chatEntry.state === ChatEntryState.Created) {
-          updateState(realm, {
+          updateChatEntry(realm, {
             recordId: chatEntry.id,
             state: chatEntry.state, // state will not change, since the message was not submitted
             associatedMessageId: message.id,

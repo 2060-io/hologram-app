@@ -1,7 +1,11 @@
 import { ProofExchangeRecord, ProofState, W3cCredentialRepository } from '@credo-ts/core'
 import Realm from 'realm'
 
-import { createChatEntry, findAllByAssociatedRecordId, updateMetadata } from '../services/ChatEntryService'
+import {
+  createChatEntry,
+  findAllByAssociatedRecordId,
+  updateChatEntryMetadata,
+} from '../services/ChatEntryService'
 import { addUnread, findOrCreateChatThread, updateThread } from '../services/ChatThreadService'
 
 import {
@@ -48,7 +52,7 @@ export const handleProofExchangeRecordChanges = async (options: {
           ...vpResponseChatEntry.metadata,
           proofState: proofRecord.state,
         } as VPResponseMetadata
-        updateMetadata(realm, vpResponseChatEntry.id, newChatEntryMetadata)
+        updateChatEntryMetadata(realm, vpResponseChatEntry.id, newChatEntryMetadata)
         try {
           const requestedCredentials = await agent.proofs.selectCredentialsForRequest({
             proofRecordId: proofRecord.id,
@@ -146,13 +150,13 @@ export const handleProofExchangeRecordChanges = async (options: {
           ...vpResponseChatEntry.metadata,
           proofState: proofRecord.state,
         } as VPResponseMetadata
-        updateMetadata(realm, vpResponseChatEntry.id, newChatEntryMetadata)
+        updateChatEntryMetadata(realm, vpResponseChatEntry.id, newChatEntryMetadata)
       }
       // Find any VP Request entry associated to this proof record and mark it as replied
       const [vpRequestEntry] = findAllByAssociatedRecordId(realm, proofRecord.id, ChatEntryType.VPRequest)
       if (vpRequestEntry) {
         const metadata = { ...vpRequestEntry.metadata, proofState: proofRecord.state, replied: true }
-        updateMetadata(realm, vpRequestEntry.id, metadata)
+        updateChatEntryMetadata(realm, vpRequestEntry.id, metadata)
       }
     } else if (proofRecord.state === ProofState.ProposalReceived) {
       const presentedCredentials: VPResponsePresentedCredential[] = []
@@ -250,7 +254,7 @@ export const handleProofExchangeRecordChanges = async (options: {
           ...vpResponseChatEntry.metadata,
           presentedCredentials: JSON.stringify([presentedCredentialInfoUpdated]),
         } as VPResponseMetadata
-        updateMetadata(realm, vpResponseChatEntry.id, newChatEntryMetadata)
+        updateChatEntryMetadata(realm, vpResponseChatEntry.id, newChatEntryMetadata)
       }
     }
   }
