@@ -20,7 +20,7 @@ import {
 } from './agent'
 import { getLocalizedPreview, getThumbnail } from './agent/chat/preview'
 import { createTextChatEntry } from './agent/chat/recordChangeHandlers/handleBasicMessageRecordChanges'
-import { createChatEntry, findOrCreateChatThread, updateThread } from './agent/chat/services'
+import { createChatEntry, findOrCreateChatThread } from './agent/chat/services'
 import { useLocalRealm } from './providers/RealmProvider'
 
 import { MAX_VIDEO_DURATION } from '@2060/constants'
@@ -467,9 +467,6 @@ export const useChatActions = () => {
           associatedRecordId: actionMenuRecord?.id,
           metadata: { selectedItemName } as ActionMenuSelectionMetadata,
         })
-
-        updateThread(realm, chatThread.data.id, { lastChatEntry: chatEntry })
-
         // Now add to agent action queue
         addAgentActionToQueue({
           type: AgentActionType.ActionMenuSelection,

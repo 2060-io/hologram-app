@@ -6,7 +6,7 @@ import {
   findAllByAssociatedRecordId,
   updateChatEntryMetadata,
 } from '../services/ChatEntryService'
-import { addUnread, findOrCreateChatThread, updateThread } from '../services/ChatThreadService'
+import { addUnread, findOrCreateChatThread } from '../services/ChatThreadService'
 
 import {
   ChatEntryRole,
@@ -96,7 +96,6 @@ export const handleProofExchangeRecordChanges = async (options: {
               replied: false,
             },
           })
-          updateThread(realm, thread.id, { lastChatEntry: vpRequestChatEntry })
         }
         if (thread.id !== activeChatThreadId) {
           addUnread(realm, thread.id, 1)
@@ -141,7 +140,6 @@ export const handleProofExchangeRecordChanges = async (options: {
             createdAt: new Date().getTime(),
             metadata,
           })
-          updateThread(realm, thread.id, { lastChatEntry: vpResponseChatEntry })
         }
       }
       // Update the metadata of the chat entry if exists with the new proof state
@@ -211,7 +209,7 @@ export const handleProofExchangeRecordChanges = async (options: {
         proofState: proofRecord.state,
         presentedCredentials: JSON.stringify(presentedCredentials),
       }
-      const chatEntry = createChatEntry(realm, {
+      createChatEntry(realm, {
         associatedRecordId: proofRecord.id,
         chatThreadId: thread.id,
         type: ChatEntryType.VPResponse,
@@ -221,7 +219,6 @@ export const handleProofExchangeRecordChanges = async (options: {
         metadata,
         associatedMessageId: proofRecord.threadId,
       })
-      updateThread(realm, thread.id, { lastChatEntry: chatEntry })
       if (thread.id !== activeChatThreadId) {
         addUnread(realm, thread.id, 1)
       }

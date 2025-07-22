@@ -7,7 +7,7 @@ import Realm from 'realm'
 
 import { getLocalizedPreview, getThumbnail } from '../preview'
 import { createChatEntry, findAllByAssociatedRecordId, updateChatEntry } from '../services/ChatEntryService'
-import { addUnread, findOrCreateChatThread, updateThread } from '../services/ChatThreadService'
+import { addUnread, findOrCreateChatThread } from '../services/ChatThreadService'
 
 import { getChatEntryByDidcommThreadId, getChatEntryTypeFromMimeType } from './utils'
 
@@ -91,8 +91,6 @@ export const handleMediaSharingRecordChanges = async (options: {
       metadata,
     })
   }
-  updateThread(realm, thread.id, { lastChatEntry: chatEntry })
-
   if (record.role === MediaSharingRole.Receiver && thread.id !== activeChatThreadId) {
     addUnread(realm, thread.id, 1)
   }
