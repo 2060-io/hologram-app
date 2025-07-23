@@ -8,11 +8,9 @@ import ConfirmChatDeletion from './ConfirmChatDeletion'
 import ConnectionList from './ConnectionsList'
 import CredentialDetails from './CredentialDetails'
 import IncomingCall from './IncomingCall'
-import LayoutScreen from './LayoutScreen'
 import LightboxModal from './LightboxModal'
 import ModalBottomHalf from './ModalBottomHalf'
 import ModalConfirmAction from './ModalConfirmAction'
-import Picker from './Picker'
 import ReactionMenu from './ReactionMenu'
 import SearchInput from './SearchInput'
 import UserProfileForm from './UserProfileForm'
@@ -24,10 +22,8 @@ export {
   ChatSwipeOptions,
   ChatThread,
   CodeScanner,
-  LayoutScreen,
   LightboxModal,
   ModalBottomHalf,
-  Picker,
   ReactionMenu,
   SearchInput,
   UserProfileForm,
