@@ -1,10 +1,8 @@
 import React from 'react'
-import { TextProps as NativeTextProps, StyleProp, TextStyle } from 'react-native'
+import { TextProps as NativeTextProps } from 'react-native'
 
 export interface TextProps extends NativeTextProps {
-  style?: StyleProp<TextStyle>
   children?: React.ReactNode
-  error?: boolean
   typography?:
     | 'SFPro'
     | 'SFPro-Bold'
