@@ -12,6 +12,7 @@ import {
   ChatEntryType,
   ChatEntryRole,
 } from '@2060/model'
+import { getLastChatEntryOfThread } from '@2060/utils/realmQueries'
 
 export interface ChatEntryBaseProps {
   chatThreadId: string
@@ -126,10 +127,7 @@ export function updateChatEntry(
 }
 
 export function updateThreadIfIsLastChatEntry(realm: Realm, chatEntryModified: ChatEntry) {
-  const lastChatEntryOfThread = realm
-    .objects(ChatEntry)
-    .filtered(`chatThreadId == '${chatEntryModified.chatThreadId}' SORT(createdAt DESC) LIMIT(1)`)
-    .at(0)
+  const lastChatEntryOfThread = getLastChatEntryOfThread(realm, chatEntryModified.chatThreadId)
   if (lastChatEntryOfThread) {
     const isThisLastMessageOfChat = chatEntryModified.id === lastChatEntryOfThread.id
     if (isThisLastMessageOfChat) {

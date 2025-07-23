@@ -8,6 +8,7 @@ import { Platform } from 'react-native'
 import Share, { ShareOptions } from 'react-native-share'
 import { SharedData } from 'react-native-share-menu'
 
+import { getLastChatEntryOfThread, getMediaChatEntriesExcludingThread } from './../utils/realmQueries'
 import {
   useMobileAgent,
   useUserProfile,
@@ -20,7 +21,7 @@ import {
 } from './agent'
 import { getLocalizedPreview, getThumbnail } from './agent/chat/preview'
 import { createTextChatEntry } from './agent/chat/recordChangeHandlers/handleBasicMessageRecordChanges'
-import { createChatEntry, findOrCreateChatThread } from './agent/chat/services'
+import { createChatEntry, findOrCreateChatThread, updateThread } from './agent/chat/services'
 import { useLocalRealm } from './providers/RealmProvider'
 
 import { MAX_VIDEO_DURATION } from '@2060/constants'
@@ -40,7 +41,6 @@ import { checkIfDeleteFilesFromMedia } from '@2060/pages/PersonalChat/utils'
 import { log, logError } from '@2060/utils'
 import { getLocalFileUri } from '@2060/utils/RNFS'
 import { compressVideo, getMediaFileSharingData } from '@2060/utils/mediaFileUtils'
-import { getMediaChatEntriesExcludingThread } from '@2060/utils/realmQueries'
 import { toast, ToastOptions } from '@2060/utils/toast'
 
 export const useChatActions = () => {
@@ -118,6 +118,9 @@ export const useChatActions = () => {
               )
             }
           })
+          const { chatThreadId } = messages[0]
+          const lastChatEntryOfThread = getLastChatEntryOfThread(realm, chatThreadId)
+          updateThread(realm, chatThreadId, { lastChatEntry: lastChatEntryOfThread })
           toast({
             type: 'success',
             message: t('personalChat.messageDeletedSuccessfully', { count: messages.length }),
