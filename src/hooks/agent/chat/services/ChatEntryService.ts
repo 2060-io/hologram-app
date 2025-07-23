@@ -78,20 +78,6 @@ export function createChatEntry(realm: Realm, props: ChatEntryStorageProps) {
   return chatEntryRecord
 }
 
-/**
- * Mark a record as read
- *
- * @returns updated record
- */
-export function markEntryAsRead(realm: Realm, recordId: string) {
-  const record = realm.objectForPrimaryKey(ChatEntry, recordId)
-  if (!record) throw new Error(`Cannot find chat element with id ${recordId}`)
-
-  realm.write(() => {
-    record.unread = false
-  })
-}
-
 export function updateChatEntry(
   realm: Realm,
   options: {
