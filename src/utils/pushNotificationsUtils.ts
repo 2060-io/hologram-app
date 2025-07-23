@@ -8,7 +8,7 @@ import notifee, {
 import messaging from '@react-native-firebase/messaging'
 import { PERMISSIONS, request, RESULTS } from 'react-native-permissions'
 
-import { IS_IOS, primaryColor, isAndroid13OrHigher } from '@2060/constants'
+import { IS_IOS, isAndroid13OrHigher } from '@2060/constants'
 import {
   getStorageData,
   IS_PROCESSING_BACKGROUND_NOTIFICATIONS_PERSIST_KEY,
@@ -27,7 +27,7 @@ export const optionsNotificationAndroid = (options?: NotificationAndroid): Notif
   importance: AndroidImportance.HIGH,
   largeIcon: require('../assets/images/app-icon.png'),
   smallIconLevel: AndroidBadgeIconType.LARGE,
-  color: primaryColor,
+  color: '7678EC',
   circularLargeIcon: true,
 })
 

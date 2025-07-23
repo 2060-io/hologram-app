@@ -23,7 +23,7 @@ const ScrollToBottom: React.FC<Props> = ({ numberNewMessages, onScrollToBottom }
       <Icon as="Ionicons" name="arrow-down-sharp" size={22} color={theme.colors.primaryText} />
       {!!numberNewMessages && (
         <View style={styles.containerMsgNew}>
-          <Text typography="SFPro-Medium" style={styles.newMsgText}>
+          <Text typography="EuclidCircularA-SemiBold" style={styles.newMsgText}>
             {numberNewMessages}
           </Text>
         </View>
