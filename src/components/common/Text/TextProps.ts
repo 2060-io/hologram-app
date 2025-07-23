@@ -4,10 +4,6 @@ import { TextProps as NativeTextProps } from 'react-native'
 export interface TextProps extends NativeTextProps {
   children?: React.ReactNode
   typography?:
-    | 'SFPro'
-    | 'SFPro-Bold'
-    | 'SFPro-Light'
-    | 'SFPro-Medium'
     | 'EuclidCircularA-Bold'
     | 'EuclidCircularA-BoldItalic'
     | 'EuclidCircularA-Italic'
