@@ -21,7 +21,7 @@ import {
 } from './agent'
 import { getLocalizedPreview, getThumbnail } from './agent/chat/preview'
 import { createTextChatEntry } from './agent/chat/recordChangeHandlers/handleBasicMessageRecordChanges'
-import { createChatEntry, findOrCreateChatThread, updateThread } from './agent/chat/services'
+import { createChatEntry, findOrCreateChatThread, updateChatEntry, updateThread } from './agent/chat/services'
 import { useLocalRealm } from './providers/RealmProvider'
 
 import { MAX_VIDEO_DURATION } from '@2060/constants'
@@ -31,7 +31,6 @@ import {
   ChatEntryRole,
   ChatEntryState,
   ChatEntryType,
-  ChatThread,
   MediaSharingMetadata,
   TextMessageMetadata,
   isMediaType,
@@ -148,15 +147,9 @@ export const useChatActions = () => {
             : []
           messages.forEach(message => {
             const { id: entryId, associatedMessageId } = message
-            realm.write(() => {
-              const object = realm.objectForPrimaryKey(ChatEntry, entryId)
-              if (!object) throw new Error(`ChatEntry with id ${entryId} not found`)
-              object.state = ChatEntryState.Deleted
-              const thread = realm.objectForPrimaryKey(ChatThread, object.chatThreadId)
-              if (!thread) throw new Error(`Thread with id ${object.chatThreadId} not found`)
-              if (thread?.lastActivityAt?.getTime() === object.createdAt) {
-                thread.preview = getLocalizedPreview({ ...message, state: ChatEntryState.Deleted })
-              }
+            updateChatEntry(realm, {
+              recordId: entryId,
+              state: ChatEntryState.Deleted,
             })
             if (isMediaType(message.type)) {
               checkIfDeleteFilesFromMedia(
