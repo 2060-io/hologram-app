@@ -9,7 +9,7 @@ import getStyles from './styles'
 import { Text, MessageStateIcon, SvgIcon } from '@2060/components/common'
 import { useConnectionById } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { ChatThreadData } from '@2060/model'
+import { ChatEntryState, ChatThreadData } from '@2060/model'
 import { chatDateFormat } from '@2060/utils/dateUtils'
 
 interface Props extends ChatThreadData {
@@ -75,7 +75,7 @@ const ChatThread = ({
           {lastActivityDate ? chatDateFormat(lastActivityDate, using24HourFormat) : ''}
         </Text>
         <View style={styles.containerUnreadAndStateIcon}>
-          {!hasChildren && lastChatEntryState && (
+          {!hasChildren && lastChatEntryState && lastChatEntryState !== ChatEntryState.Deleted && (
             <MessageStateIcon theme={theme} state={lastChatEntryState} />
           )}
           {unreadCount > 0 && (
