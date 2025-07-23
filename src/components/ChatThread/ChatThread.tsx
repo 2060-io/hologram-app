@@ -70,18 +70,22 @@ const ChatThread = ({
           <SvgIcon name="chevronForward" fill={theme.colors.primaryText} />
         </View>
       )}
-      <View style={styles.contentDate}>
+      <View style={styles.rightContent}>
         <Text typography="EuclidCircularA-Regular" style={styles.textDate}>
           {lastActivityDate ? chatDateFormat(lastActivityDate, using24HourFormat) : ''}
         </Text>
-        {unreadCount > 0 && (
-          <View style={styles.unread}>
-            <Text typography="EuclidCircularA-Medium" style={styles.textNumber}>
-              {unreadCount}
-            </Text>
-          </View>
-        )}
-        {!hasChildren && lastChatEntryState && <MessageStateIcon theme={theme} state={lastChatEntryState} />}
+        <View style={styles.containerUnreadAndStateIcon}>
+          {!hasChildren && lastChatEntryState && (
+            <MessageStateIcon theme={theme} state={lastChatEntryState} />
+          )}
+          {unreadCount > 0 && (
+            <View style={styles.unread}>
+              <Text typography="EuclidCircularA-Medium" style={styles.textNumber}>
+                {unreadCount}
+              </Text>
+            </View>
+          )}
+        </View>
       </View>
     </TouchableOpacity>
   )
