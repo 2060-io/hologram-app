@@ -1,1 +1,2 @@
-export * from './manageBackgroundChatEntryChanges'
+export { manageBackgroundChatEntryChanges } from './manageBackgroundChatEntryChanges'
+export { subscribeToAgentChatEvents } from './subscribeToAgentChatEvents'

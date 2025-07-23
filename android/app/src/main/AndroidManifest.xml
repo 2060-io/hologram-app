@@ -21,10 +21,6 @@
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-feature android:name="android.hardware.camera" android:required="false" />
     <uses-feature android:name="android.hardware.camera.front" android:required="false" />
-    <!-- Exclude watches, TVs, Chromebooks -->
-    <uses-feature android:name="android.hardware.type.watch" android:required="false" />
-    <uses-feature android:name="android.hardware.type.television" android:required="false" />
-    <uses-feature android:name="android.hardware.type.pc" android:required="false" />
     <uses-feature android:name="android.hardware.touchscreen" android:required="true" />
     <uses-feature android:name="android.hardware.telephony" android:required="true" />
 
@@ -68,15 +64,6 @@
           <category android:name="android.intent.category.DEFAULT"/>
           <category android:name="android.intent.category.BROWSABLE"/>
           <data android:scheme="didcomm" />
-        </intent-filter>
-        <intent-filter android:autoVerify="true">
-          <action android:name="android.intent.action.VIEW"/>
-          <category android:name="android.intent.category.DEFAULT"/>
-          <category android:name="android.intent.category.BROWSABLE"/>
-          <data android:scheme="https" />
-          <data android:host="*.2060.io" />
-          <data android:host="2060.io" />
-          <data android:pathPrefix="/i" />
         </intent-filter>
         <intent-filter android:autoVerify="true">
           <action android:name="android.intent.action.VIEW"/>

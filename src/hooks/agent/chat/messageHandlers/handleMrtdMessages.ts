@@ -11,7 +11,11 @@ import { parse } from 'mrz'
 import Realm from 'realm'
 
 import { DidCommMessageDirection } from '../DidCommMessageDirection'
-import { createChatEntry, findAllDidcommThreadId, updateMetadata } from '../services/ChatEntryService'
+import {
+  createChatEntry,
+  findAllDidcommThreadId,
+  updateChatEntryMetadata,
+} from '../services/ChatEntryService'
 import { addUnread, updateThread, findOrCreateChatThread } from '../services/ChatThreadService'
 
 import {
@@ -67,7 +71,7 @@ export const handleMrtdMessages = (options: {
         state: 'scanned',
         mrzData: (message as MrzDataMessage).mrzData,
       } as MrzRequestMetadata
-      updateMetadata(realm, chatEntry.id, newMetadata)
+      updateChatEntryMetadata(realm, chatEntry.id, newMetadata)
     }
   }
 
@@ -119,7 +123,7 @@ export const handleMrtdMessages = (options: {
         ...chatEntry.metadata,
         state: 'scanned',
       } as EMrtdReadRequestMetadata
-      updateMetadata(realm, chatEntry.id, newMetadata)
+      updateChatEntryMetadata(realm, chatEntry.id, newMetadata)
     }
   }
 
@@ -144,7 +148,7 @@ export const handleMrtdMessages = (options: {
             ...chatEntry.metadata,
             state: 'refused',
           } as EMrtdReadRequestMetadata)
-      updateMetadata(realm, chatEntry.id, newMetadata)
+      updateChatEntryMetadata(realm, chatEntry.id, newMetadata)
     }
   }
 }

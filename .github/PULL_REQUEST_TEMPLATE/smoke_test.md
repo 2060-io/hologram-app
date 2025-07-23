@@ -11,21 +11,20 @@ Next are some of the app basic features must be tested before a release to dev o
 ### Scan Section
 
 - [ ] Scan a p2p connection and a service connection (could be this https://gaiaid.io/) using the camera
-- [ ] Scan connection using link could be this https://hologram.zone/?oob=eyJAdHlwZSI6Imh0dHBzOi8vZGlkY29tbS5vcmcvb3V0LW9mLWJhbmQvMS4xL2ludml0YXRpb24iLCJAaWQiOiIwYWI1Mzc4YS05YzM4LTRlZWYtYWM0Yy1iZGE1MWJjMDY0ODYiLCJsYWJlbCI6IkRlbW8gQ2hhdGJvdCBBZ2VudCIsImFjY2VwdCI6WyJkaWRjb21tL2FpcDEiLCJkaWRjb21tL2FpcDI7ZW52PXJmYzE5Il0sImhhbmRzaGFrZV9wcm90b2NvbHMiOlsiaHR0cHM6Ly9kaWRjb21tLm9yZy9kaWRleGNoYW5nZS8xLjEiLCJodHRwczovL2RpZGNvbW0ub3JnL2Nvbm5lY3Rpb25zLzEuMCJdLCJzZXJ2aWNlcyI6WyJkaWQ6d2ViOmNoYXRib3QtZGVtby5kZXYuMjA2MC5pbyJdLCJpbWFnZVVybCI6Imh0dHBzOi8vZC5jaGF0Ym90LWRlbW8uZGV2LjIwNjAuaW8vYXZhdGFyLnBuZyJ9
+- [ ] Scan connection using link could be this (Gov ID Issuer) https://hologram.zone/?oob=eyJAdHlwZSI6Imh0dHBzOi8vZGlkY29tbS5vcmcvb3V0LW9mLWJhbmQvMS4xL2ludml0YXRpb24iLCJAaWQiOiI5NDI4NWMxZC1mYWRiLTQ4Y2MtOWFjNy1kOTU0NjZlYzNlMTciLCJsYWJlbCI6IkdvdiBJRCBJc3N1ZXIiLCJhY2NlcHQiOlsiZGlkY29tbS9haXAxIiwiZGlkY29tbS9haXAyO2Vudj1yZmMxOSJdLCJoYW5kc2hha2VfcHJvdG9jb2xzIjpbImh0dHBzOi8vZGlkY29tbS5vcmcvZGlkZXhjaGFuZ2UvMS4xIiwiaHR0cHM6Ly9kaWRjb21tLm9yZy9jb25uZWN0aW9ucy8xLjAiXSwic2VydmljZXMiOlsiZGlkOndlYjpkbS5nb3YtaWQtaXNzdWVyLmRlbW9zLjIwNjAuaW8iXSwiaW1hZ2VVcmwiOiJodHRwczovL3Jlc291cmNlcy5kZW1vcy4yMDYwLmlvL2dvdi1pZC1pc3N1ZXIucG5nIn0
 
 ### Services Validation
 
-- [ ] Test proper functioning of services: Demo Chat Bot Agent (https://chatbot-demo.dev.2060.io/qr) and complete BCGov flow (https://digital.gov.bc.ca/digital-trust/showcase/)
+- [ ] Test proper functioning of services: Demo Chat Bot Agent (https://dm.chatbot.demos.dev.2060.io/qr) and complete BCGov flow (https://digital.gov.bc.ca/digital-trust/showcase/)
 
 Note: Validate next items and commands using: Demo Chat Bot Agent
 
 - [ ] Receive a credential
 - [ ] Receive a proof request (before and after receiving the credential)
 - [ ] Question and answer, action menu
-- [ ] Invitation to services. Send next message: invitation/ did:web:em-vs.demos.2060.io
-- [ ] Invitation to subconnection. Send next message: invitation/ this_is_a_child_connection
+- [ ] Invitation to services. Send next message: /invitation did:web:em-vs.demos.2060.io
+- [ ] Invitation to subconnection. Send next message: /invitation this_is_a_child_connection
 - [ ] Web view. Send next message: /link https://hologram.zone/ Hologram zone https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRSfGMjlS818F78B84hXGsf9DAFmNpMfmx0fA&s
-- [ ] Mrz read and nfc scan. Send next message: /mrz
 
 ### Chat Screen
 
@@ -41,16 +40,18 @@ Note: Validate next items and commands using: Demo Chat Bot Agent
 - [ ] Delete connection and verify that can not be found it connections list and can not send messages anymore
 - [ ] In a Service connection details Forward and Share it to another connection (p2p). Now, in this receiver coonection accept invitation and verify connection is correctly stableshid
 
-### Deep links and Share App Data
+### Deep links, Share App Data and Verana Demo
 
 - [ ] Test next deep linkings works and are open in app
 
 | Schema  | Value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | didcomm | didcomm://aries_connection_invitation?c_i=eyJAdHlwZSI6ImRpZDpzb3Y6QnpDYnNOWWhNcmpIaXFaRFRVQVNIZztzcGVjL2Nvbm5lY3Rpb25zLzEuMC9pbnZpdGF0aW9uIiwiQGlkIjoiYzU5MmNmZTEtYjhiZS00ZDQxLWE1NDMtMWI1MTQxODhmMzhhIiwibGFiZWwiOiJBbmltbyIsImltYWdlVXJsIjoiaHR0cHM6Ly9pLmltZ3VyLmNvbS9nM2FiY0NPLnBuZyIsInJlY2lwaWVudEtleXMiOlsiQ3NZQkZBclVjRXk4c0VoWjhRRzI0UHhrZGpXNHpoSDluS3NjY3BUNTV1VjIiXSwic2VydmljZUVuZHBvaW50IjoiaHR0cHM6Ly9kaWRjb21tLmRlbW8uYW5pbW8uaWQiLCJyb3V0aW5nS2V5cyI6W119/                                                                                         |
-| https   | https://hologram.zone/?oob=eyJAdHlwZSI6Imh0dHBzOi8vZGlkY29tbS5vcmcvb3V0LW9mLWJhbmQvMS4xL2ludml0YXRpb24iLCJAaWQiOiIwYWI1Mzc4YS05YzM4LTRlZWYtYWM0Yy1iZGE1MWJjMDY0ODYiLCJsYWJlbCI6IkRlbW8gQ2hhdGJvdCBBZ2VudCIsImFjY2VwdCI6WyJkaWRjb21tL2FpcDEiLCJkaWRjb21tL2FpcDI7ZW52PXJmYzE5Il0sImhhbmRzaGFrZV9wcm90b2NvbHMiOlsiaHR0cHM6Ly9kaWRjb21tLm9yZy9kaWRleGNoYW5nZS8xLjEiLCJodHRwczovL2RpZGNvbW0ub3JnL2Nvbm5lY3Rpb25zLzEuMCJdLCJzZXJ2aWNlcyI6WyJkaWQ6d2ViOmNoYXRib3QtZGVtby5kZXYuMjA2MC5pbyJdLCJpbWFnZVVybCI6Imh0dHBzOi8vZC5jaGF0Ym90LWRlbW8uZGV2LjIwNjAuaW8vYXZhdGFyLnBuZyJ9 |
+| https   | https://hologram.zone/?oob=eyJAdHlwZSI6Imh0dHBzOi8vZGlkY29tbS5vcmcvb3V0LW9mLWJhbmQvMS4xL2ludml0YXRpb24iLCJAaWQiOiIwYWI1Mzc4YS05YzM4LTRlZWYtYWM0Yy1iZGE1MWJjMDY0ODYiLCJsYWJlbCI6IkRlbW8gQ2hhdGJvdCBBZ2VudCIsImFjY2VwdCI6WyJkaWRjb21tL2FpcDEiLCJkaWRjb21tL2FpcDI7ZW52PXJmYzE5Il0sImhhbmRzaGFrZV9wcm90b2NvbHMiOlsiaHR0cHM6Ly9kaWRjb21tLm9yZy9kaWRleGNoYW5nZS8xLjEiLCJodHRwczovL2RpZGNvbW0ub3JnL2Nvbm5lY3Rpb25zLzEuMCJdLCJzZXJ2aWNlcyI6WyJkaWQ6d2ViOmNoYXRib3QtZGVtby5kZXYuMjA2MC5pbyJdLCJpbWFnZVVybCI6Imh0dHBzOi8vZC5jaGF0Ym90LWRlbW8uZGV2LjIwNjAuaW8vYXZhdGFyLnBuZyJ9 For this url app show display toast error indicating could not process invitation|
 
 - [ ] Share text, images and videos from other apps (Slack, Signal, Whatsapp, Google Photos, etc) to app
+
+- [ ] Realize next verana flow https://verana.foundation/page/demos/
 
 ### Chats Screen
 

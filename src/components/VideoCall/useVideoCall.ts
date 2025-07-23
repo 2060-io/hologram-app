@@ -13,7 +13,10 @@ import InCallManager from 'react-native-incall-manager'
 import { MediaStream, mediaDevices, registerGlobals } from 'react-native-webrtc'
 
 import { useMobileAgent } from '@2060/hooks/agent'
-import { findAllDidcommThreadId, updateMetadata } from '@2060/hooks/agent/chat/services/ChatEntryService'
+import {
+  findAllDidcommThreadId,
+  updateChatEntryMetadata,
+} from '@2060/hooks/agent/chat/services/ChatEntryService'
 import { useConfig } from '@2060/hooks/providers/ConfigProvider'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
 import {
@@ -135,7 +138,7 @@ export const useVideoCall = () => {
   const newRemotePeerLastConnection = useRef<Date>()
   const { devEnvs } = useConfig()
 
-  const updateChatEntryMetadata = useCallback(() => {
+  const changeChatEntryMetadata = useCallback(() => {
     if (!realm || !didcommThreadId) return
     const [chatEntry] = findAllDidcommThreadId(realm, didcommThreadId, ChatEntryType.CallOffer)
     if (chatEntry) {
@@ -143,7 +146,7 @@ export const useVideoCall = () => {
         ...chatEntry.metadata,
         state: CallOfferState.FINISHED,
       } as CallOfferMetadata
-      updateMetadata(realm, chatEntry.id, newMetadata)
+      updateChatEntryMetadata(realm, chatEntry.id, newMetadata)
     }
   }, [realm, didcommThreadId])
 
@@ -225,7 +228,7 @@ export const useVideoCall = () => {
             case 'peerLeft': {
               log('other peer left call', notification.data)
               finishCall()
-              updateChatEntryMetadata()
+              changeChatEntryMetadata()
               break
             }
             case 'producerScore': {

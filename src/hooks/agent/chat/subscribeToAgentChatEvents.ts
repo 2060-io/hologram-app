@@ -52,7 +52,7 @@ import {
   createChatEntry,
   findAllByAssociatedMessageId,
   findAllByAssociatedRecordId,
-  updateState,
+  updateChatEntry,
 } from './services/ChatEntryService'
 import { addUnread, findChatThread, findOrCreateChatThread, updateThread } from './services/ChatThreadService'
 
@@ -69,7 +69,11 @@ import {
   supportsMessageReceipts,
 } from '@2060/utils/connectionUtils'
 
-export function manageAgentChatEvents(agent: MobileAgent, realm: Realm, activeChatThreadId?: string) {
+export function subscribeToAgentChatEvents(
+  agent: MobileAgent,
+  realm: Realm,
+  getActiveChatThreadId: () => string | undefined,
+) {
   const connectionProfileListener = async (event: ConnectionProfileUpdatedEvent) => {
     const { connection } = event.payload
     const thread = findChatThread(realm, connection)
@@ -95,7 +99,7 @@ export function manageAgentChatEvents(agent: MobileAgent, realm: Realm, activeCh
         agent,
         realm,
         record,
-        activeChatThreadId,
+        activeChatThreadId: getActiveChatThreadId(),
         receivedAt,
       })
     }
@@ -107,7 +111,7 @@ export function manageAgentChatEvents(agent: MobileAgent, realm: Realm, activeCh
         agent,
         realm,
         record,
-        activeChatThreadId,
+        activeChatThreadId: getActiveChatThreadId(),
         receivedAt,
       })
     }
@@ -119,7 +123,7 @@ export function manageAgentChatEvents(agent: MobileAgent, realm: Realm, activeCh
         agent,
         realm,
         record,
-        activeChatThreadId,
+        activeChatThreadId: getActiveChatThreadId(),
         receivedAt,
       })
     }
@@ -131,7 +135,7 @@ export function manageAgentChatEvents(agent: MobileAgent, realm: Realm, activeCh
         agent,
         realm,
         record,
-        activeChatThreadId,
+        activeChatThreadId: getActiveChatThreadId(),
         receivedAt,
         message,
       })
@@ -144,7 +148,7 @@ export function manageAgentChatEvents(agent: MobileAgent, realm: Realm, activeCh
         agent,
         realm,
         record,
-        activeChatThreadId,
+        activeChatThreadId: getActiveChatThreadId(),
         receivedAt,
       })
     }
@@ -153,7 +157,7 @@ export function manageAgentChatEvents(agent: MobileAgent, realm: Realm, activeCh
       handleCallMessages({
         realm,
         connection,
-        activeChatThreadId,
+        activeChatThreadId: getActiveChatThreadId(),
         receivedAt,
         message,
       })
@@ -162,7 +166,7 @@ export function manageAgentChatEvents(agent: MobileAgent, realm: Realm, activeCh
       handleMrtdMessages({
         realm,
         connection,
-        activeChatThreadId,
+        activeChatThreadId: getActiveChatThreadId(),
         receivedAt,
         message,
         direction,
@@ -189,7 +193,7 @@ export function manageAgentChatEvents(agent: MobileAgent, realm: Realm, activeCh
         for (const entry of entries) {
           if (entry && entry.state === ChatEntryState.Created) {
             // Associate chat entry with the outbound message
-            updateState(realm, {
+            updateChatEntry(realm, {
               recordId: entry.id,
               state: ChatEntryState.Created,
               associatedMessageId: outboundMessage.message.id,
@@ -283,7 +287,7 @@ export function manageAgentChatEvents(agent: MobileAgent, realm: Realm, activeCh
         const thread = findChatThread(realm, connection)
 
         // If message is part of current active chat thread, send it as viewed directly
-        const state = thread && thread.id === activeChatThreadId ? MessageState.Viewed : MessageState.Received
+        const state = thread.id === getActiveChatThreadId() ? MessageState.Viewed : MessageState.Received
 
         // TODO: Add to a queue and send receipts in a batch
         const receipt = { messageId: data.payload.message.id, state, timestamp: new Date() }
@@ -330,7 +334,7 @@ export function manageAgentChatEvents(agent: MobileAgent, realm: Realm, activeCh
       for (const invitationEntry of invitationEntries) {
         // only update those entries that are not already marked as "replied"
         if (invitationEntry.metadata?.state === InvitationState.Received) {
-          updateState(realm, {
+          updateChatEntry(realm, {
             recordId: invitationEntry.id,
             state: ChatEntryState.Viewed,
             metadata: {
@@ -384,7 +388,7 @@ export function manageAgentChatEvents(agent: MobileAgent, realm: Realm, activeCh
         associatedMessageId: event.payload.messageId,
       })
       updateThread(realm, thread.id, { lastChatEntry: chatEntry })
-      if (thread.id !== activeChatThreadId) {
+      if (thread.id !== getActiveChatThreadId()) {
         addUnread(realm, thread.id, 1)
       }
     }
@@ -399,7 +403,7 @@ export function manageAgentChatEvents(agent: MobileAgent, realm: Realm, activeCh
         agent,
         realm,
         record,
-        activeChatThreadId,
+        activeChatThreadId: getActiveChatThreadId(),
       })
     }
   }
@@ -410,7 +414,7 @@ export function manageAgentChatEvents(agent: MobileAgent, realm: Realm, activeCh
       agent,
       realm,
       record,
-      activeChatThreadId,
+      activeChatThreadId: getActiveChatThreadId(),
     })
   }
 

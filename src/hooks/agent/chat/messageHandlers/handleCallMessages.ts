@@ -2,7 +2,11 @@ import { CallOfferMessage, CallRejectMessage, DidCommCallType } from '@2060.io/c
 import { AgentMessage, ConnectionRecord, parseMessageType } from '@credo-ts/core'
 import Realm from 'realm'
 
-import { createChatEntry, findAllDidcommThreadId, updateMetadata } from '../services/ChatEntryService'
+import {
+  createChatEntry,
+  findAllDidcommThreadId,
+  updateChatEntryMetadata,
+} from '../services/ChatEntryService'
 import { addUnread, findOrCreateChatThread, updateThread } from '../services/ChatThreadService'
 
 import { IncomingCallInfo } from '@2060/hooks/providers/useVideoCallContext'
@@ -59,7 +63,7 @@ export const handleCallMessages = (options: {
         ...chatEntry.metadata,
         state: CallOfferState.REJECTED,
       } as CallOfferMetadata
-      updateMetadata(realm, chatEntry.id, newMetadata)
+      updateChatEntryMetadata(realm, chatEntry.id, newMetadata)
     }
   }
 }

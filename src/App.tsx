@@ -57,10 +57,10 @@ const ProvidersTree = buildProvidersTree([
   [NavigationProvider],
   [PushNotificationsProvider],
   [FileUploadDownloadProvider],
+  [RefreshedAvatarsUrlsProvider],
   [VideoCallProvider],
   [ScreenLockProvider],
   [SharedDataFromOtherAppsProvider],
-  [RefreshedAvatarsUrlsProvider],
 ])
 
 const App = () => {

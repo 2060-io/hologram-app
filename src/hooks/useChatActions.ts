@@ -36,9 +36,11 @@ import {
   isMediaType,
 } from '@2060/model'
 import { ChatEntryMessage } from '@2060/pages/PersonalChat/ChatMessage/Props'
+import { checkIfDeleteFilesFromMedia } from '@2060/pages/PersonalChat/utils'
 import { log, logError } from '@2060/utils'
 import { getLocalFileUri } from '@2060/utils/RNFS'
 import { compressVideo, getMediaFileSharingData } from '@2060/utils/mediaFileUtils'
+import { getMediaChatEntriesExcludingThread } from '@2060/utils/realmQueries'
 import { toast, ToastOptions } from '@2060/utils/toast'
 
 export const useChatActions = () => {
@@ -96,8 +98,12 @@ export const useChatActions = () => {
   const deleteMessagesForMe = useCallback(
     (messages: ChatEntryMessage[]) => {
       return new Promise<void>((resolve, reject) => {
-        if (!realm) throw new Error('No active Realm')
+        if (!realm) return
         try {
+          const isSomeMessageTypeMedia = messages.some(message => isMediaType(message.type))
+          const mediaChatEntriesExcludingThread = isSomeMessageTypeMedia
+            ? getMediaChatEntriesExcludingThread(realm, messages[0].chatThreadId)
+            : []
           messages.forEach(message => {
             const { id } = message
             realm.write(() => {
@@ -105,6 +111,12 @@ export const useChatActions = () => {
               if (!object) throw new Error(`ChatEntry with id ${id} not found`)
               realm.delete(object)
             })
+            if (isMediaType(message.type)) {
+              checkIfDeleteFilesFromMedia(
+                message.metadata as MediaSharingMetadata,
+                mediaChatEntriesExcludingThread,
+              )
+            }
           })
           toast({
             type: 'success',
@@ -125,11 +137,14 @@ export const useChatActions = () => {
     async (messages: ChatEntryMessage[]) => {
       return new Promise<void>((resolve, reject) => {
         try {
-          if (!agent || !connectionId) throw new Error('Agent is undefined')
+          if (!agent || !connectionId || !realm) return
           const receipts: MessageReceiptOptions[] = []
+          const isSomeMessageTypeMedia = messages.some(message => isMediaType(message.type))
+          const mediaChatEntriesExcludingThread = isSomeMessageTypeMedia
+            ? getMediaChatEntriesExcludingThread(realm, messages[0].chatThreadId)
+            : []
           messages.forEach(message => {
             const { id: entryId, associatedMessageId } = message
-            if (!realm) throw new Error('No active Realm')
             realm.write(() => {
               const object = realm.objectForPrimaryKey(ChatEntry, entryId)
               if (!object) throw new Error(`ChatEntry with id ${entryId} not found`)
@@ -140,6 +155,12 @@ export const useChatActions = () => {
                 thread.preview = getLocalizedPreview({ ...message, state: ChatEntryState.Deleted })
               }
             })
+            if (isMediaType(message.type)) {
+              checkIfDeleteFilesFromMedia(
+                message.metadata as MediaSharingMetadata,
+                mediaChatEntriesExcludingThread,
+              )
+            }
             receipts.push({ messageId: associatedMessageId ?? '', state: MessageState.Deleted })
           })
 

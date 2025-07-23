@@ -30,8 +30,8 @@ const isService = (did?: string) => did !== undefined && !did.startsWith('did:pe
 
 const InvitationChatView = ({ associatedRecordId: outOfBandId, metadata, role, agent }: Props) => {
   const [isAcceptingInvitation, setIsAcceptingInvitation] = useState(false)
-  const { activeChatThread, findOrCreateThread } = useChats()
-  const chatThread = useChatThreadById(activeChatThread ?? '')
+  const { activeChatThreadId, findOrCreateThread } = useChats()
+  const chatThread = useChatThreadById(activeChatThreadId ?? '')
   const { userProfileData } = useUserProfile()
   const theme = useTheme()
   const styles = getStyles(theme)

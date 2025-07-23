@@ -1,6 +1,6 @@
 import { MessageState } from '@2060.io/credo-ts-didcomm-receipts'
 import { ConnectionRecord, utils } from '@credo-ts/core'
-import React, { createContext, useCallback, useState, useEffect, useContext } from 'react'
+import React, { createContext, useCallback, useState, useEffect, useContext, useRef } from 'react'
 
 import { useMobileAgent } from './MobileAgentProvider'
 import { AgentActionOptions, AgentActionType } from './actions/AgentAction'
@@ -10,9 +10,9 @@ import {
   archiveThreads as chatESArchiveThreads,
   unarchiveThreads as chatESUnarchiveThreads,
   markThreadAsRead as chatESMarkThreadAsRead,
-  deleteThreads as chatESDeleteThreads,
+  deleteThread as chatESDeleteThread,
 } from './chat/services/ChatThreadService'
-import { useAgentChatEvents } from './chat/useAgentChatEvents'
+import { subscribeToAgentChatEvents } from './chat/subscribeToAgentChatEvents'
 import { useAgentActionQueue } from './useAgentActionQueue'
 
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
@@ -25,8 +25,11 @@ import {
   ChatEntryRole,
   SystemMessageMetadata,
   ChatEntryState,
+  MediaSharingMetadata,
 } from '@2060/model'
+import { checkIfDeleteFilesFromMedia } from '@2060/pages/PersonalChat/utils'
 import { supportsMessageReceipts } from '@2060/utils/connectionUtils'
+import { getMediaChatEntriesExcludingThread, queryOfTypeMedia } from '@2060/utils/realmQueries'
 
 export type ChatCategory = 'all' | 'people' | 'services'
 export type ChatFilters = { topic: string; archived: boolean; category: ChatCategory; parentId?: string }
@@ -43,7 +46,7 @@ export interface MarkThreadAsReadOptions {
 interface ChatState {
   loading: boolean
   filters: ChatFilters
-  activeChatThread: string | undefined
+  activeChatThreadId: string | undefined
   threads: ChatThreadData[]
 }
 
@@ -52,10 +55,10 @@ export interface ChatContextInterface extends ChatState {
   archiveThreads(chatThreadIds: string[]): void
   unarchiveThreads(chatThreadIds: string[]): void
   markThreadAsRead(options: MarkThreadAsReadOptions): void
-  deleteThreads(chatThreadIds: string[]): void
+  deleteThread(chatThreadId: string): void
   clearThread(threadId: string): void
   setFilters(filters: Partial<ChatFilters>): void
-  setActiveChatThread(id: string | undefined): void
+  setActiveChatThreadId(id: string | undefined): void
   addAgentActionToQueue(action: AgentActionOptions): void
 }
 
@@ -73,23 +76,97 @@ interface Props {
 }
 
 export const ChatProvider: React.FC<Props> = ({ children }) => {
-  const [chatState, setChatState] = useState<ChatState>({
-    loading: true,
-    filters: { topic: '', category: 'all', archived: false },
-    activeChatThread: undefined,
-    threads: [],
-  })
-
   const { realm } = useLocalRealm()
   const { agent } = useMobileAgent()
   const { addAgentActionToQueue } = useAgentActionQueue()
+  const [chatState, setChatState] = useState<ChatState>({
+    loading: true,
+    filters: { topic: '', category: 'all', archived: false },
+    activeChatThreadId: undefined,
+    threads: [],
+  })
+  const activeChatThreadId = useRef<undefined | string>(undefined)
+
+  useEffect(() => {
+    if (agent && realm) {
+      const getActiveChatThreadId = () => {
+        return activeChatThreadId.current
+      }
+      subscribeToAgentChatEvents(agent, realm, getActiveChatThreadId)
+    }
+  }, [agent, realm])
+
+  useEffect(() => {
+    return setInitialState()
+  }, [agent, realm, chatState.filters])
+
+  useEffect(() => {
+    activeChatThreadId.current = chatState.activeChatThreadId
+  }, [chatState.activeChatThreadId])
+
+  const setInitialState = () => {
+    if (!agent || !realm) return
+    const { parentId, category, topic, archived } = chatState.filters
+
+    const categoryFilterMapping: Record<ChatCategory, string> = {
+      all: '',
+      people: '&& isService == false',
+      services: '&& isService == true',
+    }
+
+    const parentFilter = 'parentId == ' + (parentId ? `'${parentId}'` : 'null')
+
+    // TODO: implement pagination
+    const query = `topic CONTAINS[c] '${topic}' 
+    ${categoryFilterMapping[category]} 
+    && ${parentFilter} 
+    SORT(lastChildActivityAt DESC)`
+    const chatThreads = realm.objects(ChatThread).filtered(query).sorted('lastChildActivityAt', true)
+
+    // TODO: implement pagination
+    const threads = getFilteredEntries(chatThreads, archived)
+    setChatState(prevState => ({ ...prevState, threads, loading: false }))
+
+    const onChatThreadChange: Realm.CollectionChangeCallback<ChatThread> = newChatThreads => {
+      const newThreads = getFilteredEntries(newChatThreads as Realm.Results<ChatThread>, archived)
+      setChatState(prevState => ({ ...prevState, threads: newThreads }))
+    }
+
+    chatThreads.addListener(onChatThreadChange)
+
+    return () => {
+      chatThreads.removeListener(onChatThreadChange)
+    }
+  }
+
+  const getFilteredEntries = (entries: Realm.Results<ChatThread>, archived: boolean) => {
+    return entries.length > 0
+      ? entries
+          // If thread has not any children, check its own archived status. Otherwise, consider not only its
+          // own status but also of its children (if any of them matches, accept it)
+          .filter(item =>
+            item.subthreads.length === 0
+              ? archived === item.archived
+              : archived === item.archived ||
+                item.subthreads.find(subthread => archived === subthread.archived),
+          )
+          .map((item: ChatThread) => {
+            const threadData = getChatThreadData(item)
+            // Expand archived/unarchived status filtering to subthreads
+            return {
+              ...threadData,
+              subthreads: threadData.subthreads.filter(subthread => archived === subthread.archived),
+            }
+          })
+      : []
+  }
 
   const setFilters = useCallback((filters: Partial<ChatFilters>) => {
     setChatState(prevState => ({ ...prevState, filters: { ...prevState.filters, ...filters } }))
   }, [])
 
-  const setActiveChatThread = useCallback((id: string | undefined) => {
-    setChatState(prevState => ({ ...prevState, activeChatThread: id }))
+  const setActiveChatThreadId = useCallback((id: string | undefined) => {
+    setChatState(prevState => ({ ...prevState, activeChatThreadId: id }))
   }, [])
 
   const findOrCreateThread = useCallback(
@@ -154,120 +231,65 @@ export const ChatProvider: React.FC<Props> = ({ children }) => {
     [realm],
   )
 
-  const deleteThreads = useCallback(
-    (chatThreadIds: string[]) => {
-      if (!realm) throw new Error('Realm Unavailable')
-      for (const chatThreadId of chatThreadIds) clearThread(chatThreadId)
-      chatESDeleteThreads(realm, chatThreadIds)
+  const deleteThread = useCallback(
+    (chatThreadId: string) => {
+      if (!realm) return
+      clearThread(chatThreadId)
+      chatESDeleteThread(realm, chatThreadId)
     },
     [realm],
   )
 
   const clearThread = useCallback(
     (threadId: string) => {
-      if (!realm) throw new Error('Realm unavailable')
-      let thread = realm.objects(ChatThread).find(item => item.id === threadId)
-      if (thread) {
-        realm.write(() => {
-          const filteredEntries = realm.objects(ChatEntry).filtered(`chatThreadId == '${threadId}'`)
-          realm.delete(filteredEntries)
-
-          // Create security message
-          if (!thread) return
-          thread.preview = ''
-          realm.create<ChatEntry>('ChatEntry', {
-            id: utils.uuid(),
-            chatThreadId: thread.id,
-            didcommThreadId: '',
-            associatedMessageId: '',
-            associatedRecordId: '',
-            type: ChatEntryType.System,
-            role: ChatEntryRole.None,
-            state: ChatEntryState.Viewed,
-            metadata: { kind: 'security' } as SystemMessageMetadata,
-            createdAt: thread.createdAt.getTime(),
-            unread: false,
-          })
+      if (!realm) return
+      const chatEntriesToDelete = realm.objects(ChatEntry).filtered(`chatThreadId == '${threadId}'`)
+      // Create metadata deep copy of entries type media before delete them
+      const metadataOfEntriesTypeMedia: MediaSharingMetadata[] = chatEntriesToDelete
+        .filtered(queryOfTypeMedia)
+        .map((chatEntry: ChatEntry) => ({ ...(chatEntry.metadata as MediaSharingMetadata) }))
+      const thread = realm.objects(ChatThread).find(item => item.id === threadId)
+      realm.write(() => {
+        realm.delete(chatEntriesToDelete)
+        // Create security message
+        if (!thread) return
+        thread.preview = ''
+        realm.create<ChatEntry>('ChatEntry', {
+          id: utils.uuid(),
+          chatThreadId: thread.id,
+          didcommThreadId: '',
+          associatedMessageId: '',
+          associatedRecordId: '',
+          type: ChatEntryType.System,
+          role: ChatEntryRole.None,
+          state: ChatEntryState.Viewed,
+          metadata: { kind: 'security' } as SystemMessageMetadata,
+          createdAt: thread.createdAt.getTime(),
+          unread: false,
         })
+      })
+      if (metadataOfEntriesTypeMedia.length) {
+        const mediaChatEntriesExcludingThread = getMediaChatEntriesExcludingThread(realm, threadId)
+        // iterates all chat entries of type media and check if can delete media files
+        for (const metadataOfEntryTypeMedia of metadataOfEntriesTypeMedia) {
+          checkIfDeleteFilesFromMedia(metadataOfEntryTypeMedia, mediaChatEntriesExcludingThread)
+        }
       }
     },
     [realm],
   )
-
-  const getFilteredEntries = (entries: Realm.Results<ChatThread>, archived: boolean) => {
-    return entries.length > 0
-      ? entries
-          // If thread has not any children, check its own archived status. Otherwise, consider not only its
-          // own status but also of its children (if any of them matches, accept it)
-          .filter(item =>
-            item.subthreads.length === 0
-              ? archived === item.archived
-              : archived === item.archived ||
-                item.subthreads.find(subthread => archived === subthread.archived),
-          )
-          .map((item: ChatThread) => {
-            const threadData = getChatThreadData(item)
-            // Expand archived/unarchived status filtering to subthreads
-            return {
-              ...threadData,
-              subthreads: threadData.subthreads.filter(subthread => archived === subthread.archived),
-            }
-          })
-      : []
-  }
-
-  const setInitialState = () => {
-    if (!agent || !realm) return
-    const { parentId, category, topic, archived } = chatState.filters
-
-    const categoryFilterMapping: Record<ChatCategory, string> = {
-      all: '',
-      people: '&& isService == false',
-      services: '&& isService == true',
-    }
-
-    const parentFilter = 'parentId == ' + (parentId ? `'${parentId}'` : 'null')
-
-    // TODO: implement pagination
-    const query = `topic CONTAINS[c] '${topic}' 
-    ${categoryFilterMapping[category]} 
-    && ${parentFilter} 
-    SORT(lastChildActivityAt DESC)`
-    const entries = realm.objects(ChatThread).filtered(query).sorted('lastChildActivityAt', true)
-
-    // TODO: implement pagination
-    const threads = getFilteredEntries(entries, archived)
-    setChatState(prevState => ({ ...prevState, threads, loading: false }))
-
-    const onChatThreadChange: Realm.CollectionChangeCallback<ChatThread> = newEntries => {
-      const newThreads = getFilteredEntries(newEntries as Realm.Results<ChatThread>, archived)
-      setChatState(prevState => ({ ...prevState, threads: newThreads }))
-    }
-
-    entries.addListener(onChatThreadChange)
-
-    return () => {
-      entries.removeListener(onChatThreadChange)
-    }
-  }
-
-  useEffect(() => {
-    return setInitialState()
-  }, [agent, realm, chatState.filters])
-
-  useAgentChatEvents(chatState.activeChatThread)
 
   return (
     <ChatContext.Provider
       value={{
         ...chatState,
         setFilters,
-        setActiveChatThread,
+        setActiveChatThreadId,
         findOrCreateThread,
         archiveThreads,
         unarchiveThreads,
         markThreadAsRead,
-        deleteThreads,
+        deleteThread,
         clearThread,
         addAgentActionToQueue,
       }}

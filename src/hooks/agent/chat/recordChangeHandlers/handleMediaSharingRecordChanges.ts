@@ -6,7 +6,7 @@ import {
 import Realm from 'realm'
 
 import { getLocalizedPreview, getThumbnail } from '../preview'
-import { createChatEntry, findAllByAssociatedRecordId, updateState } from '../services/ChatEntryService'
+import { createChatEntry, findAllByAssociatedRecordId, updateChatEntry } from '../services/ChatEntryService'
 import { addUnread, findOrCreateChatThread, updateThread } from '../services/ChatThreadService'
 
 import { getChatEntryByDidcommThreadId, getChatEntryTypeFromMimeType } from './utils'
@@ -79,7 +79,7 @@ export const handleMediaSharingRecordChanges = async (options: {
       relatedEntryProps,
     })
   } else {
-    updateState(realm, {
+    updateChatEntry(realm, {
       recordId: chatEntry.id,
       state:
         record.state === MediaSharingState.MediaShared
