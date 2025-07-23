@@ -8,7 +8,7 @@ import { Platform } from 'react-native'
 import Share, { ShareOptions } from 'react-native-share'
 import { SharedData } from 'react-native-share-menu'
 
-import { getLastChatEntryOfThread, getMediaChatEntriesExcludingThread } from './../utils/realmQueries'
+import { getLastEntryInChatThread, getMediaChatEntriesExcludingThread } from './../utils/realmQueries'
 import {
   useMobileAgent,
   useUserProfile,
@@ -100,8 +100,9 @@ export const useChatActions = () => {
         if (!realm) return
         try {
           const isSomeMessageTypeMedia = messages.some(message => isMediaType(message.type))
+          const { chatThreadId } = messages[0]
           const mediaChatEntriesExcludingThread = isSomeMessageTypeMedia
-            ? getMediaChatEntriesExcludingThread(realm, messages[0].chatThreadId)
+            ? getMediaChatEntriesExcludingThread(realm, chatThreadId)
             : []
           messages.forEach(message => {
             const { id } = message
@@ -117,9 +118,8 @@ export const useChatActions = () => {
               )
             }
           })
-          const { chatThreadId } = messages[0]
-          const lastChatEntryOfThread = getLastChatEntryOfThread(realm, chatThreadId)
-          updateThread(realm, chatThreadId, { lastChatEntry: lastChatEntryOfThread })
+          const lastEntryInChatThread = getLastEntryInChatThread(realm, chatThreadId)
+          updateThread(realm, chatThreadId, { lastChatEntry: lastEntryInChatThread })
           toast({
             type: 'success',
             message: t('personalChat.messageDeletedSuccessfully', { count: messages.length }),

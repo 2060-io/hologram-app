@@ -27,13 +27,13 @@ export const getMediaChatEntriesExcludingThread = (realm: Realm, threadId: strin
  * Retrieves the last chat entry of a specified thread from the Realm database.
  *
  * @param realm - The Realm database instance to query.
- * @param chatThreadId - The ID of the chat thread for which to retrieve the last entry.
- * @returns The last chat entry of the specified thread, or undefined if no entries exist.
+ * @param threadId - The ID of the chat thread for which to retrieve the last entry.
+ * @returns The last chat entry of the specified thread, or undefined if no entries exists.
  */
-export const getLastChatEntryOfThread = (realm: Realm, chatThreadId: string) => {
+export const getLastEntryInChatThread = (realm: Realm, threadId: string) => {
   const lastChatEntryOfThread = realm
     .objects(ChatEntry)
-    .filtered(`chatThreadId == '${chatThreadId}' SORT(createdAt DESC) LIMIT(1)`)
+    .filtered(`chatThreadId == '${threadId}' SORT(createdAt DESC) LIMIT(1)`)
     .at(0)
   return lastChatEntryOfThread
 }

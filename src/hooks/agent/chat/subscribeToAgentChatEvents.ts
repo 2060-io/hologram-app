@@ -53,9 +53,14 @@ import {
   findAllByAssociatedMessageId,
   findAllByAssociatedRecordId,
   updateChatEntry,
-  updateThreadIfIsLastChatEntry,
 } from './services/ChatEntryService'
-import { addUnread, findChatThread, findOrCreateChatThread, updateThread } from './services/ChatThreadService'
+import {
+  addUnread,
+  findChatThread,
+  findOrCreateChatThread,
+  updateThread,
+  updateThreadIfNeeded,
+} from './services/ChatThreadService'
 
 import { ChatEntryType, ChatEntryRole, ChatEntryState, InvitationMetadata, ChatEntry } from '@2060/model'
 import { InvitationState } from '@2060/model/InvitationState'
@@ -215,7 +220,7 @@ export function subscribeToAgentChatEvents(
       const entry = addReceiptToRelatedEntries(realm, receipt)
       if (entry && (!lastChatEntry || lastChatEntry?.createdAt < entry.createdAt)) lastChatEntry = entry
     }
-    if (lastChatEntry) updateThreadIfIsLastChatEntry(realm, lastChatEntry)
+    if (lastChatEntry) updateThreadIfNeeded(realm, lastChatEntry)
   }
 
   const messageReactionsReceivedListener = async (data: MessageReactionsReceivedEvent) => {

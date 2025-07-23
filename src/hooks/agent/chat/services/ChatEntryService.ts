@@ -2,7 +2,7 @@ import { MessageReceipt, MessageState } from '@2060.io/credo-ts-didcomm-receipts
 import { utils } from '@credo-ts/core'
 import Realm from 'realm'
 
-import { updateThread } from './ChatThreadService'
+import { updateThread, updateThreadIfNeeded } from './ChatThreadService'
 
 import {
   ChatEntry,
@@ -12,7 +12,6 @@ import {
   ChatEntryType,
   ChatEntryRole,
 } from '@2060/model'
-import { getLastChatEntryOfThread } from '@2060/utils/realmQueries'
 
 export interface ChatEntryBaseProps {
   chatThreadId: string
@@ -109,17 +108,7 @@ export function updateChatEntry(
       chatEntryRecord.updatedAt = new Date().getTime()
     }
   })
-  updateThreadIfIsLastChatEntry(realm, chatEntryRecord)
-}
-
-export function updateThreadIfIsLastChatEntry(realm: Realm, chatEntryModified: ChatEntry) {
-  const lastChatEntryOfThread = getLastChatEntryOfThread(realm, chatEntryModified.chatThreadId)
-  if (lastChatEntryOfThread) {
-    const isThisLastMessageOfChat = chatEntryModified.id === lastChatEntryOfThread.id
-    if (isThisLastMessageOfChat) {
-      updateThread(realm, chatEntryModified.chatThreadId, { lastChatEntry: lastChatEntryOfThread })
-    }
-  }
+  updateThreadIfNeeded(realm, chatEntryRecord)
 }
 
 export function addReceiptToRelatedEntries(realm: Realm, receipt: MessageReceipt) {
