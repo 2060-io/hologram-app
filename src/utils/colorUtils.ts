@@ -19,7 +19,7 @@ export const hexTransparency = (color: string, transparency: string): string => 
  * // returns '#001529'
  * @returns {string} Returns the Lighten or darken color in hexadecimal format, 6 characteres.
  */
-export const lightenDarken = (color: string, quantity: number = 0): string => {
+const lightenDarken = (color: string, quantity: number = 0): string => {
   /* eslint-disable */
   color = color.slice(1)
 
