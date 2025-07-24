@@ -69,7 +69,7 @@ const BaseConnectionDetails = ({
   const isConnectionTerminated = isTerminated(connection)
   const isConnectionService = isService(connection)
 
-  const { clearThread, findOrCreateThread } = useChats()
+  const { clearChat, findOrCreateThread } = useChats()
 
   const setHeaderOptions = () => {
     navigation.setOptions({
@@ -128,15 +128,15 @@ const BaseConnectionDetails = ({
     )
   }
 
-  const clearChat = () => {
+  const deleteChat = () => {
     let thread = findOrCreateThread({ connection })
-    clearThread(thread.id)
+    clearChat(thread.id)
   }
 
   const onPressConfirmation = () => {
     closeConfirmationModal()
     const actions = {
-      deleteChat: () => clearChat(),
+      deleteChat: () => deleteChat(),
       deleteConnection: async () => await handleDeleteConnection(),
       block: async () => await toggleBlock(blockConnection),
       unblock: async () => await toggleBlock(unblockConnection),
