@@ -1,4 +1,3 @@
-import Authentication from './Authentication'
 import ChatFilterOptions from './ChatFilterOptions'
 import ChatSwipeOptions from './ChatSwipeOptions'
 import ChatThread from './ChatThread'
@@ -17,7 +16,6 @@ import VideoCall from './VideoCall'
 import WalletBackupInfo from './WalletBackupInfo'
 
 export {
-  Authentication,
   ChatSwipeOptions,
   ChatThread,
   CodeScanner,

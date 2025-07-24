@@ -6,8 +6,9 @@ import getStyles from './styles'
 
 import { useUnreadChatThreads } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { Chats, SubChats } from '@2060/pages'
+import Chats from '@2060/pages/Chats'
 import { HomeMainTabParams } from '@2060/pages/HomeMain/HomeMainProps'
+import SubChats from '@2060/pages/SubChats'
 import { getGlobalStyles } from '@2060/styles'
 
 type ChatsStackParams = {

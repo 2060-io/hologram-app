@@ -3,6 +3,10 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Pressable } from 'react-native'
 
+import Scan from '../Scan'
+import { Settings } from '../Settings'
+import Wallet from '../Wallet'
+
 import HomeMainContainer from './HomeMainContainer'
 import { HomeMainTabParams, HomeTabProps } from './HomeMainProps'
 import getStyles from './styles'
@@ -12,7 +16,6 @@ import { HeaderTitle, SvgIcon } from '@2060/components/common'
 import { IconsNames } from '@2060/components/common/SvgIcon'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { ChatsStack } from '@2060/navigators/ChatsStack'
-import { Scan, Settings, Wallet } from '@2060/pages'
 import { AppTheme, getGlobalStyles } from '@2060/styles'
 import { hexTransparency } from '@2060/utils/colorUtils'
 
