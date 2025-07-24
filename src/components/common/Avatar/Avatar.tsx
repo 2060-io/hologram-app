@@ -8,8 +8,18 @@ import getStyles from './styles'
 
 import Text from '@2060/components/common/Text'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { getNameInitials } from '@2060/utils'
 import { widthPercentageToDP } from '@2060/utils/responsiveUtils'
+
+export const getNameInitials = (fullName: string) => {
+  const nameParts = fullName.trim().split(' ')
+  const firstName = nameParts[0]?.[0] || ''
+  const lastName = nameParts[1]?.[0] || ''
+  return (firstName + lastName).toUpperCase()
+}
+
+const isHttpUrl = (uri: string) => {
+  return uri.startsWith('https://') || uri.startsWith('http://')
+}
 
 type Props = {
   uri?: string
@@ -19,10 +29,6 @@ type Props = {
   bgAvatarInitials?: string
   onImagePressed?: (imageUri: string) => void
   enableImageRefresh?: boolean
-}
-
-const isHttpUrl = (uri: string) => {
-  return uri.startsWith('https://') || uri.startsWith('http://')
 }
 
 const Avatar: React.FC<Props> = ({
