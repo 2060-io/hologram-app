@@ -6,16 +6,9 @@ import {
   findAllByAssociatedRecordId,
   updateChatEntryMetadata,
 } from '../services/ChatEntryService'
-import { addUnread, findOrCreateChatThread, updateThread } from '../services/ChatThreadService'
+import { addUnread, findOrCreateChatThread } from '../services/ChatThreadService'
 
-import {
-  AnswerMetadata,
-  ChatEntry,
-  ChatEntryRole,
-  ChatEntryState,
-  ChatEntryType,
-  QuestionMetadata,
-} from '@2060/model'
+import { AnswerMetadata, ChatEntryRole, ChatEntryState, ChatEntryType, QuestionMetadata } from '@2060/model'
 import { MobileAgent } from '@2060/services/agent'
 
 export const handleQuestionAnswerRecordChanges = async (options: {
@@ -32,14 +25,13 @@ export const handleQuestionAnswerRecordChanges = async (options: {
 
   const recordState = questionAnswerRecord.state
 
-  let chatEntry: ChatEntry | undefined
   if (recordState === QuestionAnswerState.QuestionReceived) {
     const metadata: QuestionMetadata = {
       text: questionAnswerRecord.questionText,
       description: questionAnswerRecord.questionDetail,
       options: JSON.stringify(questionAnswerRecord.validResponses.map(({ text }) => ({ text, value: text }))),
     }
-    chatEntry = createChatEntry(realm, {
+    createChatEntry(realm, {
       associatedRecordId: questionAnswerRecord.id,
       associatedMessageId: questionAnswerRecord.threadId,
       chatThreadId: thread.id,
@@ -54,7 +46,7 @@ export const handleQuestionAnswerRecordChanges = async (options: {
     }
   } else if (recordState === QuestionAnswerState.AnswerSent) {
     const metadata: AnswerMetadata = { response: questionAnswerRecord.response ?? '' }
-    chatEntry = createChatEntry(realm, {
+    createChatEntry(realm, {
       associatedRecordId: questionAnswerRecord.id,
       chatThreadId: thread.id,
       type: ChatEntryType.Answer,
@@ -80,7 +72,7 @@ export const handleQuestionAnswerRecordChanges = async (options: {
     }
   } else if (recordState === QuestionAnswerState.AnswerReceived) {
     const metadata: AnswerMetadata = { response: questionAnswerRecord.response ?? '' }
-    chatEntry = createChatEntry(realm, {
+    createChatEntry(realm, {
       associatedRecordId: questionAnswerRecord.id,
       chatThreadId: thread.id,
       type: ChatEntryType.Answer,
@@ -98,7 +90,7 @@ export const handleQuestionAnswerRecordChanges = async (options: {
       description: questionAnswerRecord.questionDetail,
       options: JSON.stringify(questionAnswerRecord.validResponses.map(({ text }) => ({ text, value: text }))),
     }
-    chatEntry = createChatEntry(realm, {
+    createChatEntry(realm, {
       associatedRecordId: questionAnswerRecord.id,
       associatedMessageId: questionAnswerRecord.threadId,
       chatThreadId: thread.id,
@@ -109,6 +101,4 @@ export const handleQuestionAnswerRecordChanges = async (options: {
       metadata,
     })
   }
-
-  updateThread(realm, thread.id, { lastChatEntry: chatEntry })
 }

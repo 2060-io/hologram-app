@@ -8,6 +8,7 @@ import { Platform } from 'react-native'
 import Share, { ShareOptions } from 'react-native-share'
 import { SharedData } from 'react-native-share-menu'
 
+import { getLastEntryInChatThread, getMediaChatEntriesExcludingThread } from './../utils/realmQueries'
 import {
   useMobileAgent,
   useUserProfile,
@@ -20,7 +21,7 @@ import {
 } from './agent'
 import { getLocalizedPreview, getThumbnail } from './agent/chat/preview'
 import { createTextChatEntry } from './agent/chat/recordChangeHandlers/handleBasicMessageRecordChanges'
-import { createChatEntry, findOrCreateChatThread, updateThread } from './agent/chat/services'
+import { createChatEntry, findOrCreateChatThread, updateChatEntry, updateThread } from './agent/chat/services'
 import { useLocalRealm } from './providers/RealmProvider'
 
 import { MAX_VIDEO_DURATION } from '@2060/constants'
@@ -30,7 +31,6 @@ import {
   ChatEntryRole,
   ChatEntryState,
   ChatEntryType,
-  ChatThread,
   MediaSharingMetadata,
   TextMessageMetadata,
   isMediaType,
@@ -40,7 +40,6 @@ import { checkIfDeleteFilesFromMedia } from '@2060/pages/PersonalChat/utils'
 import { log, logError } from '@2060/utils'
 import { getLocalFileUri } from '@2060/utils/RNFS'
 import { compressVideo, getMediaFileSharingData } from '@2060/utils/mediaFileUtils'
-import { getMediaChatEntriesExcludingThread } from '@2060/utils/realmQueries'
 import { toast, ToastOptions } from '@2060/utils/toast'
 
 export const useChatActions = () => {
@@ -101,8 +100,9 @@ export const useChatActions = () => {
         if (!realm) return
         try {
           const isSomeMessageTypeMedia = messages.some(message => isMediaType(message.type))
+          const { chatThreadId } = messages[0]
           const mediaChatEntriesExcludingThread = isSomeMessageTypeMedia
-            ? getMediaChatEntriesExcludingThread(realm, messages[0].chatThreadId)
+            ? getMediaChatEntriesExcludingThread(realm, chatThreadId)
             : []
           messages.forEach(message => {
             const { id } = message
@@ -118,6 +118,8 @@ export const useChatActions = () => {
               )
             }
           })
+          const lastEntryInChatThread = getLastEntryInChatThread(realm, chatThreadId)
+          updateThread(realm, chatThreadId, { lastChatEntry: lastEntryInChatThread })
           toast({
             type: 'success',
             message: t('personalChat.messageDeletedSuccessfully', { count: messages.length }),
@@ -145,15 +147,9 @@ export const useChatActions = () => {
             : []
           messages.forEach(message => {
             const { id: entryId, associatedMessageId } = message
-            realm.write(() => {
-              const object = realm.objectForPrimaryKey(ChatEntry, entryId)
-              if (!object) throw new Error(`ChatEntry with id ${entryId} not found`)
-              object.state = ChatEntryState.Deleted
-              const thread = realm.objectForPrimaryKey(ChatThread, object.chatThreadId)
-              if (!thread) throw new Error(`Thread with id ${object.chatThreadId} not found`)
-              if (thread?.lastActivityAt?.getTime() === object.createdAt) {
-                thread.preview = getLocalizedPreview({ ...message, state: ChatEntryState.Deleted })
-              }
+            updateChatEntry(realm, {
+              recordId: entryId,
+              state: ChatEntryState.Deleted,
             })
             if (isMediaType(message.type)) {
               checkIfDeleteFilesFromMedia(
@@ -467,9 +463,6 @@ export const useChatActions = () => {
           associatedRecordId: actionMenuRecord?.id,
           metadata: { selectedItemName } as ActionMenuSelectionMetadata,
         })
-
-        updateThread(realm, chatThread.data.id, { lastChatEntry: chatEntry })
-
         // Now add to agent action queue
         addAgentActionToQueue({
           type: AgentActionType.ActionMenuSelection,

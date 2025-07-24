@@ -43,7 +43,6 @@ import {
   ChatThreadWithParticipants,
 } from '@2060/hooks/agent'
 import { createChatEntry, updateChatEntryMetadata } from '@2060/hooks/agent/chat/services/ChatEntryService'
-import { updateThread } from '@2060/hooks/agent/chat/services/ChatThreadService'
 import { blockConnection } from '@2060/hooks/agent/connections'
 import { useConfig } from '@2060/hooks/providers/ConfigProvider'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
@@ -76,7 +75,7 @@ const createReportedMessageChatEntry = (params: {
   messageToReport: ChatEntryMessage
 }) => {
   const { realm, chatThread, messageToReport } = params
-  const newChatEntry = createChatEntry(realm, {
+  createChatEntry(realm, {
     chatThreadId: chatThread.id,
     type: ChatEntryType.ReportMessage,
     role: ChatEntryRole.None,
@@ -94,8 +93,6 @@ const createReportedMessageChatEntry = (params: {
     ...messageToReport.metadata,
     isReported: true,
   })
-
-  updateThread(realm, chatThread.id, { lastChatEntry: newChatEntry })
 }
 
 const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }: PersonalChatProps) => {

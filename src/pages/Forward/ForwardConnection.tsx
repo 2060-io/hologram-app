@@ -7,7 +7,7 @@ import BaseForward from './BaseForward'
 
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
 import { AgentActionType, useChats, useMobileAgent } from '@2060/hooks/agent'
-import { createChatEntry, updateThread } from '@2060/hooks/agent/chat/services'
+import { createChatEntry } from '@2060/hooks/agent/chat/services'
 import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
 import { ChatEntryRole, ChatEntryState, ChatEntryType } from '@2060/model'
@@ -46,7 +46,6 @@ const ForwardConnection = ({ navigation, route }: Props) => {
         createdAt: new Date().getTime(),
         associatedRecordId: '',
       })
-      updateThread(realm, chatThreadId, { lastChatEntry: chatEntry })
       addAgentActionToQueue({
         type: AgentActionType.ForwardConnection,
         chatEntryId: chatEntry.id,

@@ -17,7 +17,6 @@ import { Realm } from 'realm'
 import { ReplaySubject, firstValueFrom, filter, first, timeout, catchError, map } from 'rxjs'
 
 import { updateChatEntry } from '../chat/services/ChatEntryService'
-import { updateThread } from '../chat/services/ChatThreadService'
 
 import {
   ActionExecutionStatus,
@@ -226,8 +225,6 @@ export class AgentActionExecuter {
           associatedMessageId: message.message.id,
           associatedRecordId: associatedRecord?.id,
         })
-
-        updateThread(realm, chatEntry.chatThreadId, { lastChatEntry: chatEntry })
       }
       return { status: ActionExecutionStatus.OK }
     } catch (error) {
@@ -242,10 +239,6 @@ export class AgentActionExecuter {
             state: chatEntry.state, // state will not change, since the message was not submitted
             associatedMessageId: message.id,
             associatedRecordId: associatedRecord?.id,
-          })
-
-          updateThread(realm, chatEntry.chatThreadId, {
-            lastChatEntry: chatEntry,
           })
         }
 

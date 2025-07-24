@@ -11,7 +11,7 @@ import {
 import Realm from 'realm'
 
 import { createChatEntry, findAllByAssociatedRecordId, updateChatEntry } from '../services/ChatEntryService'
-import { addUnread, findOrCreateChatThread, updateThread } from '../services/ChatThreadService'
+import { addUnread, findOrCreateChatThread } from '../services/ChatThreadService'
 
 import { ChatEntryRole, ChatEntryState, ChatEntryType } from '@2060/model'
 import { MobileAgent } from '@2060/services/agent'
@@ -98,7 +98,7 @@ export const handleCredentialExchangeRecordChanges = async (options: {
   const issuerLogoUrl = getConnectionDisplayPicture(connection)
   const schemaName = schemaId ? (await agent.modules.anoncreds.getSchema(schemaId)).schema?.name : undefined
 
-  const chatEntry = createChatEntry(realm, {
+  createChatEntry(realm, {
     associatedRecordId: credentialExchangeRecord.id,
     associatedMessageId: credentialExchangeRecord.threadId,
     chatThreadId: thread.id,
@@ -128,7 +128,6 @@ export const handleCredentialExchangeRecordChanges = async (options: {
   })
   await agent.credentials.update(credentialExchangeRecord)
 
-  updateThread(realm, thread.id, { lastChatEntry: chatEntry })
   if (thread.id !== activeChatThreadId) {
     addUnread(realm, thread.id, 1)
   }

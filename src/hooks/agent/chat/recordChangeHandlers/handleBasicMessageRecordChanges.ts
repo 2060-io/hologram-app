@@ -3,7 +3,7 @@ import Realm from 'realm'
 
 import { getLocalizedPreview, getThumbnail } from '../preview'
 import { createChatEntry, findAllDidcommThreadId } from '../services/ChatEntryService'
-import { addUnread, findOrCreateChatThread, updateThread } from '../services/ChatThreadService'
+import { addUnread, findOrCreateChatThread } from '../services/ChatThreadService'
 
 import { ChatEntryRole, ChatEntryState, ChatEntryType, RelatedEntryProps } from '@2060/model'
 import { MobileAgent } from '@2060/services/agent'
@@ -93,8 +93,6 @@ export const createTextChatEntry = (options: {
     metadata: { content },
     relatedEntryProps,
   })
-
-  updateThread(realm, chatThreadId, { lastChatEntry: chatEntry })
 
   return chatEntry
 }
