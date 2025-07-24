@@ -46,3 +46,5 @@ export const lightenDarken = (color: string, quantity: number = 0): string => {
 
   return `#${result}`
 }
+
+export const waterColor = (value: string) => hexTransparency(lightenDarken(value, 60), '20')

@@ -1,8 +1,5 @@
 import { Platform } from 'react-native'
 
-import { hexTransparency, lightenDarken } from '../utils/colorUtils'
-
-export const waterColor = (value: string) => hexTransparency(lightenDarken(value, 60), '20')
 export const IS_IOS = Platform.OS === 'ios'
 export const IS_ANDROID = Platform.OS === 'android'
 export const MAX_VIDEO_DURATION = 60_000
