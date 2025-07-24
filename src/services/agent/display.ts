@@ -51,12 +51,12 @@ type JffW3cCredentialJson = W3cCredentialJson & {
       })
 }
 
-export interface DisplayImage {
+interface DisplayImage {
   url?: string
   altText?: string
 }
 
-export interface CredentialDisplay {
+interface CredentialDisplay {
   name: string
   locale?: string
   description?: string
@@ -66,7 +66,7 @@ export interface CredentialDisplay {
   issuer: CredentialIssuerDisplay
 }
 
-export interface CredentialIssuerDisplay {
+interface CredentialIssuerDisplay {
   name: string
   locale?: string
   logo?: DisplayImage
@@ -358,12 +358,8 @@ export function getCredentialDetailsForDisplay(
   }
 }
 
-export type CredentialMatch = {
+type CredentialMatch = {
   credentialMainInfo: CredentialMainInfo
-}
-
-export type CredentialSelectionForDisplay = {
-  requestedCredentials: { id: string; schemaName: string; matches: CredentialMatch[] }
 }
 
 export type RequestedCredentialItem = {
@@ -372,10 +368,6 @@ export type RequestedCredentialItem = {
   issuerName?: string
   attributes: string[]
   matches?: CredentialMatch[]
-}
-
-export type PresentationRequestForDisplay = {
-  requestedItems: RequestedCredentialItem[]
 }
 
 const getRequestedCredentialTypeFromRestrictions = async (

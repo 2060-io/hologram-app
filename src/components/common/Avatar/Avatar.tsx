@@ -10,7 +10,7 @@ import Text from '@2060/components/common/Text'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { widthPercentageToDP } from '@2060/utils/responsiveUtils'
 
-export const getNameInitials = (fullName: string) => {
+const getNameInitials = (fullName: string) => {
   const nameParts = fullName.trim().split(' ')
   const firstName = nameParts[0]?.[0] || ''
   const lastName = nameParts[1]?.[0] || ''

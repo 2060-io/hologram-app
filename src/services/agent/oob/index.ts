@@ -318,27 +318,6 @@ export async function acceptInvitation(
   return { connectionRecord: newConnection }
 }
 
-export async function refuseInvitation(
-  agentContext: AgentContext,
-  options: { connectionId?: string; outOfBandId: string },
-) {
-  const connectionsApi = agentContext.dependencyManager.resolve(ConnectionsApi)
-  const connection = options.connectionId ? await connectionsApi.findById(options.connectionId) : null
-
-  const outOfBandApi = agentContext.dependencyManager.resolve(OutOfBandApi)
-  const outOfBandRecord = await outOfBandApi.getById(options.outOfBandId)
-
-  // Emit event: OOB Invitation accepted
-  agentContext.dependencyManager.resolve(EventEmitter).emit<OutOfBandInvitationEvent>(agentContext, {
-    type: OutOfBandInvitationEventTypes.OutOfBandInvitationEvent,
-    payload: {
-      action: 'Refused',
-      outOfBandRecord: outOfBandRecord.clone(),
-      connection,
-    },
-  })
-}
-
 const getMediationRouting = async (agentContext: AgentContext) => {
   const routing = await agentContext.dependencyManager.resolve(RoutingService).getRouting(agentContext)
   const mediationRecipient = agentContext.dependencyManager.resolve(MediationRecipientApi)

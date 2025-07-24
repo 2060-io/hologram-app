@@ -26,11 +26,7 @@ type Props = {
   }[]
 }
 
-export const ChatFilterOptions: React.FC<Props> = ({
-  options = defaultOptions,
-  selectedOption,
-  onChangeOption,
-}) => {
+const ChatFilterOptions: React.FC<Props> = ({ options = defaultOptions, selectedOption, onChangeOption }) => {
   const theme = useTheme()
   const styles = getStyles(theme)
   const { t } = useTranslation()

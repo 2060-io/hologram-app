@@ -3,7 +3,7 @@ import React, { createContext, useState, useEffect, useContext, useCallback } fr
 
 import { useMobileAgent } from './MobileAgentProvider'
 
-export interface UserProfileContextInterface {
+interface UserProfileContextInterface {
   loading: boolean
   userProfileData?: UserProfileData
   setUserProfileData?: (data: Partial<UserProfileData>) => unknown
@@ -58,5 +58,3 @@ export const UserProfileProvider: React.FC<Props> = ({ children }) => {
 
   return <UserProfileContext.Provider value={userProfileState}>{children}</UserProfileContext.Provider>
 }
-
-export default UserProfileProvider

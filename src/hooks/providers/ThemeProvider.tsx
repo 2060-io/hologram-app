@@ -33,5 +33,3 @@ export const ThemeProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
   return <ThemeContext.Provider value={theme}>{children}</ThemeContext.Provider>
 }
-
-export default ThemeProvider

@@ -112,7 +112,7 @@ export const useChatThreadsbyParentId = (parentId: string, category: string, top
   return childChatThreads
 }
 
-export const useChatThreadsHook = (query: string) => {
+const useChatThreadsHook = (query: string) => {
   const [data, setData] = useState<ChatThreadData[]>([])
   const { realm } = useLocalRealm()
 

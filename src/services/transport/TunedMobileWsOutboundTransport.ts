@@ -33,7 +33,7 @@ import { Buffer } from '@credo-ts/core/build/utils/buffer'
 
 import { MediatorConnectedEvent, MediatorDisconnectedEvent, MediatorEventTypes } from './MediatorEventTypes'
 
-export function getProtocolScheme(url: string) {
+function getProtocolScheme(url: string) {
   const [protocolScheme] = url.split(':')
   return protocolScheme
 }

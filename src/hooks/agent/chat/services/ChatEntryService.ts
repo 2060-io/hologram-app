@@ -13,7 +13,7 @@ import {
   ChatEntryRole,
 } from '@2060/model'
 
-export interface ChatEntryBaseProps {
+interface ChatEntryBaseProps {
   chatThreadId: string
   type: ChatEntryType
   role: ChatEntryRole
@@ -22,7 +22,7 @@ export interface ChatEntryBaseProps {
   associatedMessageId?: string
   didcommThreadId?: string
 }
-export interface ChatEntryStorageProps extends ChatEntryBaseProps {
+interface ChatEntryStorageProps extends ChatEntryBaseProps {
   id?: string
   createdAt?: number
   lastReadAt?: Date
@@ -213,10 +213,4 @@ export function findAllByAssociatedRecordId(
       item =>
         item.associatedRecordId === associatedRecordId && (type !== undefined ? item.type === type : true),
     )
-}
-
-export function deleteEntry(realm: Realm, entryId: string) {
-  realm.write(() => {
-    realm.delete(entryId)
-  })
 }

@@ -29,11 +29,11 @@ interface Props {
   children?: React.ReactNode
 }
 
-export interface RealmState {
+interface RealmState {
   realm?: Realm
 }
 
-export interface RealmContextInterface extends RealmState {
+interface RealmContextInterface extends RealmState {
   openRealm(): Promise<void>
   importAndOpenRealm: (backupFilePath: string, backupKeySeed: string) => Promise<void>
   closeRealm: (andDelete?: boolean) => void
@@ -312,5 +312,3 @@ export const RealmProvider: React.FC<React.PropsWithChildren<Props>> = ({ childr
     </LocalRealmContext.Provider>
   )
 }
-
-export default RealmProvider

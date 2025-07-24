@@ -2,7 +2,7 @@ export type W3cIssuerJson = {
   id: string
 }
 
-export type W3cCredentialSubjectJson = {
+type W3cCredentialSubjectJson = {
   id?: string
   [key: string]: unknown
 }

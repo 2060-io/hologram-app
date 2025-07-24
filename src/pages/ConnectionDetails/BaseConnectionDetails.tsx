@@ -40,7 +40,7 @@ export interface ConnectionDetailsProps extends WrapperProps {
   connection: ConnectionRecord
 }
 
-export interface BaseConnectionDetailsProps extends ConnectionDetailsProps {
+interface BaseConnectionDetailsProps extends ConnectionDetailsProps {
   mainInfo: ReactElement
   footerInfo?: ReactElement
 }

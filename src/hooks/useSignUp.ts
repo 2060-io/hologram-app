@@ -15,7 +15,7 @@ export enum SignUpState {
   DeviceRegistered = 'DeviceRegistered',
 }
 
-export interface SignUpOptions {
+interface SignUpOptions {
   cloudAgentPublicDid: string
   defaultServicePublicDid: string
   defaultServiceAlias: string

@@ -11,7 +11,6 @@ import IncomingCall from './IncomingCall'
 import LightboxModal from './LightboxModal'
 import ModalBottomHalf from './ModalBottomHalf'
 import ModalConfirmAction from './ModalConfirmAction'
-import ReactionMenu from './ReactionMenu'
 import SearchInput from './SearchInput'
 import UserProfileForm from './UserProfileForm'
 import VideoCall from './VideoCall'
@@ -24,7 +23,6 @@ export {
   CodeScanner,
   LightboxModal,
   ModalBottomHalf,
-  ReactionMenu,
   SearchInput,
   UserProfileForm,
   WalletBackupInfo,

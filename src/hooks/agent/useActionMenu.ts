@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useMobileAgent } from './MobileAgentProvider'
 import { recordsAddedByType, recordsRemovedByType, recordsUpdatedByType } from './recordUtils'
 
-export interface ActionMenuQueryOptions {
+interface ActionMenuQueryOptions {
   connectionId?: string
 }
 
@@ -66,5 +66,3 @@ export const useActionMenu = (options: ActionMenuQueryOptions) => {
     menu: state.menu,
   }
 }
-
-export default useActionMenu

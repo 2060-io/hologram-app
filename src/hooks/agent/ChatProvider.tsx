@@ -37,13 +37,13 @@ import {
 } from '@2060/utils/realmQueries'
 
 export type ChatCategory = 'all' | 'people' | 'services'
-export type ChatFilters = { topic: string; archived: boolean; category: ChatCategory; parentId?: string }
+type ChatFilters = { topic: string; archived: boolean; category: ChatCategory; parentId?: string }
 
-export interface CreateThreadOptions {
+interface CreateThreadOptions {
   connection: ConnectionRecord
 }
 
-export interface MarkThreadAsReadOptions {
+interface MarkThreadAsReadOptions {
   id: string
   lastReadAt: Date
 }
@@ -55,7 +55,7 @@ interface ChatState {
   threads: ChatThreadData[]
 }
 
-export interface ChatContextInterface extends ChatState {
+interface ChatContextInterface extends ChatState {
   findOrCreateThread(options: CreateThreadOptions): ChatThreadData
   archiveThreads(chatThreadIds: string[]): void
   unarchiveThreads(chatThreadIds: string[]): void
@@ -305,5 +305,3 @@ export const ChatProvider: React.FC<Props> = ({ children }) => {
     </ChatContext.Provider>
   )
 }
-
-export default ChatProvider

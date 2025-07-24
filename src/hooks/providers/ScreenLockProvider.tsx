@@ -14,7 +14,7 @@ import { useAppState } from '../useAppState'
 
 import { useVideoCallContext } from './useVideoCallContext'
 
-import Authentication from '@2060/components/Authentication'
+import { Authentication } from '@2060/components'
 import Modal from '@2060/components/common/Modal'
 import {
   setStorageData,
