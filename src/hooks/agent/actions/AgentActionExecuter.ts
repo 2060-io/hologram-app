@@ -165,7 +165,7 @@ export class AgentActionExecuter {
           associatedRecord: proofExchangeRecord,
         }
       }
-    } else if (action.type === AgentActionType.SentAnswer) {
+    } else if (action.type === AgentActionType.SendAnswer) {
       const parameters = action.parameters as {
         response: string
         associatedRecordId: string

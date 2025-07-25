@@ -477,7 +477,7 @@ export const useChatActions = () => {
     [agent, realm, repliedMessage, chatThread, connectionId],
   )
 
-  const sentAnswer = useCallback(
+  const sendAnswer = useCallback(
     (response: string, associatedRecordId: string) => {
       if (!realm || !chatThread) return
       const metadata: AnswerMetadata = { response }
@@ -500,7 +500,7 @@ export const useChatActions = () => {
         updateChatEntryMetadata(realm, questionEntry.id, questionMetadata)
       }
       addAgentActionToQueue({
-        type: AgentActionType.SentAnswer,
+        type: AgentActionType.SendAnswer,
         chatEntryId: chatEntry.id,
         parameters: { response, associatedRecordId },
       })
@@ -540,7 +540,7 @@ export const useChatActions = () => {
     deleteMessagesForEveryone,
     forwardSelectedMessages,
     shareMessages,
-    sentAnswer,
+    sendAnswer,
   }
 }
 

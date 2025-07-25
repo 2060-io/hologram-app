@@ -17,11 +17,11 @@ const QuestionChatView = ({ question, associatedRecordId }: QuestionChatViewProp
   const styles = getStyles(theme)
   const { t } = useTranslation()
   const options = JSON.parse(question.options) as QuestionAnswerOption[]
-  const { sentAnswer } = useChatActions()
+  const { sendAnswer } = useChatActions()
 
   const onSelectedOption = useCallback((response: string) => {
     setOptionSelected(response)
-    sentAnswer(response, associatedRecordId)
+    sendAnswer(response, associatedRecordId)
   }, [])
 
   return (
