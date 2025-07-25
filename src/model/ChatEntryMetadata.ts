@@ -134,8 +134,10 @@ export type MrzRequestMetadata = {
   mrzData?: string
 }
 
+export type EmrtdReadRequestState = MrzRequestState
+
 export type EMrtdReadRequestMetadata = {
-  state: MrzRequestState
+  state: EmrtdReadRequestState
   parentThreadId?: string
   mrzInfo?: string // It must be deserialized (JSON.parse) and casted to MrzInfo
 }
