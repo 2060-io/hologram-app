@@ -1,3 +1,5 @@
+import 'isomorphic-webcrypto'
+
 import { locale, extend } from 'dayjs'
 import localizedFormat from 'dayjs/plugin/localizedFormat'
 import 'dayjs/locale/es'
@@ -66,6 +68,11 @@ const App = () => {
   initializeI18n.then(() => setTranslationsLoaded(true))
 
   useEffect(() => {
+    /*globalThis.crypto
+      .ensureSecure()
+      .then(() => log('Crypto secured'))
+      .catch(reason => log(`esdsdsrror: ${reason}`))
+    log('sdsd')*/
     /**
      * FIXME: The SplashScreen.hide() was added inside a 0 timeout to
      * works well in android. So a probably reason could be the order
