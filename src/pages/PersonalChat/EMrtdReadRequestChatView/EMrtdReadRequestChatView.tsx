@@ -14,7 +14,7 @@ import { Modal, SvgIcon, Text } from '@2060/components/common'
 import { useChat, useMobileAgent } from '@2060/hooks/agent'
 import { useScreenLock } from '@2060/hooks/providers/ScreenLockProvider'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { MrzInfo, EmrtdReadRequestState } from '@2060/model'
+import { MrzInfo, MrzRequestState } from '@2060/model'
 import { log, logError } from '@2060/utils'
 import { widthPercentageToDP } from '@2060/utils/responsiveUtils'
 import { toast } from '@2060/utils/toast'
@@ -105,7 +105,7 @@ const EMrtdReadRequestChatView = (props: Props) => {
     })
   }
 
-  const footer: Record<EmrtdReadRequestState, React.ReactElement> = {
+  const footer: Record<MrzRequestState, React.ReactElement> = {
     refused: <State text={t('chat.eMRTDAborted')} type="error" />,
     received: (
       <View style={styles.buttonsContainer}>

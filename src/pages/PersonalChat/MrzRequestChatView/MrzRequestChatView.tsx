@@ -14,7 +14,7 @@ import { PersonalChatStackParams } from '@2060/components/Navigation/NavigationP
 import { SvgIcon, Text } from '@2060/components/common'
 import { useChat, useMobileAgent } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { EmrtdReadRequestState } from '@2060/model'
+import { MrzRequestState } from '@2060/model'
 import { handleCameraPermission } from '@2060/utils/permissions'
 import { widthPercentageToDP } from '@2060/utils/responsiveUtils'
 
@@ -41,7 +41,7 @@ const MrzRequestChatView = (props: Props) => {
     })
   }
 
-  const footer: Record<EmrtdReadRequestState, React.ReactElement> = {
+  const footer: Record<MrzRequestState, React.ReactElement> = {
     refused: <State text={t('chat.mrzRefused')} type="error" />,
     received: (
       <View style={styles.buttonsContainer}>

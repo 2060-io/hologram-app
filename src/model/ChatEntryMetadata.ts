@@ -127,15 +127,15 @@ export type CallOfferMetadata = {
   offerExpirationTime?: number
 }
 
-export type EmrtdReadRequestState = 'received' | 'scanned' | 'refused'
+export type MrzRequestState = 'received' | 'scanned' | 'refused'
 export type MrzRequestMetadata = {
-  state: EmrtdReadRequestState
+  state: MrzRequestState
   parentThreadId?: string
   mrzData?: string
 }
 
 export type EMrtdReadRequestMetadata = {
-  state: EmrtdReadRequestState
+  state: MrzRequestState
   parentThreadId?: string
   mrzInfo?: string // It must be deserialized (JSON.parse) and casted to MrzInfo
 }
