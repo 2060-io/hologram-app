@@ -85,7 +85,7 @@ export class TunedMobileWsOutboundTransport implements OutboundTransport {
   }
 
   private startIdleSocketTimer(interval?: number) {
-    const checkInterval = interval ?? 30000
+    const checkInterval = interval ?? 30_000
 
     setInterval(() => {
       const currentDate = new Date()

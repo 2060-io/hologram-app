@@ -258,7 +258,7 @@ export const useVideoCall = () => {
                   ? newRemotePeerLastConnection.current > peerClosedDate
                   : false
                 if (!wasThereNewPeerAfterClosed) finishCall()
-              }, 10000)
+              }, 10_000)
               break
             }
             case 'peerDisplayNameChanged': {

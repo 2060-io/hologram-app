@@ -1,9 +1,13 @@
 export * from './log'
 
+const ONE_BILLION = 1_000_000_000
+const ONE_MILLION = 1_000_000
+const ONE_THOUSAND = 1_000
+
 export const getFileSize = (byteCount: number) => {
-  if (byteCount >= 1000000000) return `${(byteCount / 1000000000).toFixed(2)} GB`
-  else if (byteCount > 1000000) return `${(byteCount / 1000000).toFixed(2)} MB`
-  else if (byteCount > 1000) return `${byteCount / 1000} KB`
+  if (byteCount >= ONE_BILLION) return `${(byteCount / ONE_BILLION).toFixed(2)} GB`
+  else if (byteCount > ONE_MILLION) return `${(byteCount / ONE_MILLION).toFixed(2)} MB`
+  else if (byteCount > ONE_THOUSAND) return `${byteCount / ONE_THOUSAND} KB`
   else return `${byteCount} bytes`
 }
 
