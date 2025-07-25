@@ -24,7 +24,7 @@ export interface DidCommMediaFileSharingData {
   description?: string
 }
 
-export interface FileUploadDownloadInterface {
+interface FileUploadDownloadInterface {
   startMediaUpload: (options: {
     didcommConnectionIds: string[]
     didcommThreadId?: string

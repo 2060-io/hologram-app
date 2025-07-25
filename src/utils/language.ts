@@ -7,7 +7,7 @@ import es from '../locales/es.json'
 
 import { logError } from './log'
 
-export const languageClient = getLocales() // get list of locales
+const languageClient = getLocales() // get list of locales
 export const language = languageClient[0].languageCode
 export const initializeI18n = new Promise(resolve => {
   use(initReactI18next).init(

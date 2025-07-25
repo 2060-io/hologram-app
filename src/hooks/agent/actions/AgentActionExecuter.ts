@@ -29,7 +29,7 @@ import { ChatEntry, ChatEntryState } from '@2060/model'
 import { createOobInvitation, MobileAgent } from '@2060/services/agent'
 import { log, logError } from '@2060/utils'
 
-export type ActionCallback = (options: { agent: MobileAgent }) => Promise<AgentCallbackReturnType<BaseRecord>>
+type ActionCallback = (options: { agent: MobileAgent }) => Promise<AgentCallbackReturnType<BaseRecord>>
 
 export type AnoncredsAttribute = {
   name: string
@@ -264,7 +264,7 @@ export class AgentActionExecuter {
   }
 }
 
-export type AgentCallbackReturnType<T extends BaseRecord = BaseRecord> = {
+type AgentCallbackReturnType<T extends BaseRecord = BaseRecord> = {
   associatedRecord?: T
   outgoingMessageType: string
 }

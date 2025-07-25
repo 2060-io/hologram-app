@@ -3304,11 +3304,6 @@
   resolved "https://registry.yarnpkg.com/@react-native-firebase/messaging/-/messaging-21.7.1.tgz#826344d9cd0bb19743b985ae1fc023632f0d33c2"
   integrity sha512-asLoTH/IZROTR/y82UpMqWGFly5TJf9Zvy+EqvgWMKhRWnAPxjC+UFHQeGwut95kg0zBj49H9F6yJ2gjdatOHg==
 
-"@react-native-masked-view/masked-view@0.2.0":
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/@react-native-masked-view/masked-view/-/masked-view-0.2.0.tgz#3309ada28dafd7ac1fead4eb99286acd43180b2a"
-  integrity sha512-OXYHN8lRvqLHPM2qB4wagcV1thCzR/PmFaJPOIsq+KU7PBmB0CY5DaC5WCPbyzGP8X9ehVmmK/yWlew3GJIgnQ==
-
 "@react-native/assets-registry@0.76.6":
   version "0.76.6"
   resolved "https://registry.yarnpkg.com/@react-native/assets-registry/-/assets-registry-0.76.6.tgz#649af8a19cbabcea321dbcfb1a1ae04bb298d958"
@@ -14578,11 +14573,6 @@ test-exclude@^6.0.0:
     "@istanbuljs/schema" "^0.1.2"
     glob "^7.1.4"
     minimatch "^3.0.4"
-
-text-encoding-polyfill@^0.6.7:
-  version "0.6.7"
-  resolved "https://registry.yarnpkg.com/text-encoding-polyfill/-/text-encoding-polyfill-0.6.7.tgz#4d27de0153e4c86eb2631ffd74c2f3f57969a9ec"
-  integrity sha512-/DZ1XJqhbqRkCop6s9ZFu8JrFRwmVuHg4quIRm+ziFkR3N3ec6ck6yBvJ1GYeEQZhLVwRW0rZE+C3SSJpy0RTg==
 
 text-encoding@^0.7.0:
   version "0.7.0"

@@ -11,19 +11,12 @@ import { OpenId4VcSiopVerifiedAuthorizationRequest } from '@credo-ts/openid4vc'
 
 import { MobileAgent } from './MobileAgent'
 
-export enum QrTypes {
+enum QrTypes {
   OPENID_INITIATE_ISSUANCE = 'openid-initiate-issuance://',
   OPENID_CREDENTIAL_OFFER = 'openid-credential-offer://',
   OPENID = 'openid://',
   OPENID_VC = 'openid-vc://',
   OPENIDVP = 'openid4vp://',
-}
-
-export enum OpenIdCredentialFormatProfile {
-  JwtVcJson = 'jwt_vc_json',
-  JwtVcJsonLd = 'jwt_vc_json-ld',
-  LdpVc = 'ldp_vc',
-  MsoMdoc = 'mso_mdoc',
 }
 
 export const isOpenIdCredentialOffer = (url: string) => {
@@ -58,7 +51,7 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
 
 const urlRegex = new RegExp('^(.*:)//([A-Za-z0-9-.]+)(:[0-9]+)?(.*)$')
 
-export function getHostNameFromUrl(url: string) {
+function getHostNameFromUrl(url: string) {
   const parts = urlRegex.exec(url)
   return parts ? parts[2] : undefined
 }

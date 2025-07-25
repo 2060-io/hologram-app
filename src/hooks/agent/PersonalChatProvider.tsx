@@ -11,7 +11,7 @@ import { MessageAction } from '@2060/pages/PersonalChat/PersonalChatProps'
 
 export type RepliedMessage = RelatedEntryProps
 
-export interface PersonalChatState {
+interface PersonalChatState {
   isRecordingVoiceNote: boolean
   repliedMessage?: RepliedMessage
   selectedMessage?: ChatEntryMessage
@@ -102,7 +102,7 @@ const getMessageActions = (currentMessage: ChatEntryMessage) => {
   return messageActions
 }
 
-export interface PersonalChatContextInterface extends PersonalChatState {
+interface PersonalChatContextInterface extends PersonalChatState {
   setIsRecordingVoiceNote(isRecording?: boolean): void
   setRepliedMessage(message?: RepliedMessage): void
   setChatThread(chatThread?: ChatThreadWithParticipants): void
@@ -254,5 +254,3 @@ export const PersonalChatProvider: React.FC<React.PropsWithChildren<Props>> = ({
     </PersonalChatStack.Provider>
   )
 }
-
-export default PersonalChatProvider

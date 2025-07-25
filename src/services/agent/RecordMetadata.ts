@@ -2,7 +2,7 @@ import { CredentialExchangeRecord, ProofExchangeRecord, W3cCredentialRecord } fr
 
 import { ServiceStatus } from '../api/trustRegistryService'
 
-export interface DidCommCredentialDisplayMetadata {
+interface DidCommCredentialDisplayMetadata {
   issuedAt: number
   issuerId: string
   issuerName: string

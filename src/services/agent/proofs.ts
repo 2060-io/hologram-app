@@ -8,11 +8,11 @@ import { ProofEventTypes, ProofFormatPayload, ProofState, ProofStateChangedEvent
 import { MobileAgent } from './MobileAgent'
 import { DidCommPresentationDisplayMetadata, setDidCommPresentationMetadata } from './RecordMetadata'
 
-export type SelectedCredentials = {
+type SelectedCredentials = {
   [referent: string]: string
 }
 
-export interface PresentProofOptions {
+interface PresentProofOptions {
   agent: MobileAgent
   proofRecordId: string
   selectedCredentials: SelectedCredentials

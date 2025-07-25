@@ -101,17 +101,6 @@ export const getConnectionParentId = (connectionRecord?: ConnectionRecord) =>
 export const filterConnectionsByParentId = (connections: ConnectionRecord[], parentConnectionId: string) =>
   connections.filter(connection => connection.getTag('parentConnectionId') === parentConnectionId)
 
-export const filterConnectionsByTypes = (options: {
-  connections: ConnectionRecord[]
-  types: string[]
-  onlyParentConnections: boolean
-}) =>
-  options.connections.filter(
-    connection =>
-      (!options.onlyParentConnections || getConnectionParentId(connection) === undefined) &&
-      options.types.includes(getConnectionType(connection)),
-  )
-
 export const notAllowedConnectionsIdsToSendMessages = (connections: ConnectionRecord[]) => {
   return connections
     .filter(connection => connection.state !== DidExchangeState.Completed || isBlocked(connection))

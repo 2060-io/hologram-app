@@ -30,13 +30,13 @@ interface MobileAgentState {
   isInitialized: boolean
   isConnectedToCloudAgent: boolean
 }
-export interface MobileAgentContextInterface extends MobileAgentState {
+interface MobileAgentContextInterface extends MobileAgentState {
   initMobileAgent(): Promise<void>
   shutdownAgent(): Promise<void>
   handleChangeAgentState(state: Partial<MobileAgentState>): void
 }
 
-export const AgentContext = createContext<MobileAgentContextInterface | undefined>(undefined)
+const AgentContext = createContext<MobileAgentContextInterface | undefined>(undefined)
 
 export const useMobileAgent = (): MobileAgentContextInterface => {
   const agentContext = useContext(AgentContext)
@@ -169,5 +169,3 @@ export const MobileAgentProvider: React.FC<Props> = ({ children }) => {
     </AgentContext.Provider>
   )
 }
-
-export default MobileAgentProvider

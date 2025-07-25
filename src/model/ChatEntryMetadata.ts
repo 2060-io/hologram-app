@@ -75,7 +75,7 @@ export type LinkMetadata = MediaSharingMetadata & {
 }
 
 // TODO: Should be string[] but Realm does not allow to use array. So the whole object is stringyfied
-export type RequestedAttributes = Record<string, string[]>
+// type RequestedAttributes = Record<string, string[]>
 
 export type VPRequestMetadata = {
   requestedAttributes: string // FIXME! RequestedAttributes;
@@ -137,7 +137,7 @@ export type MrzRequestMetadata = {
 export type EmrtdReadRequestState = MrzRequestState
 
 export type EMrtdReadRequestMetadata = {
-  state: MrzRequestState
+  state: EmrtdReadRequestState
   parentThreadId?: string
   mrzInfo?: string // It must be deserialized (JSON.parse) and casted to MrzInfo
 }

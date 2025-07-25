@@ -6,7 +6,7 @@ import Default from '@2060/assets/icons/Default'
 
 export type IconsNames = typeof Icons
 
-export interface IconProps extends SvgProps {
+interface IconProps extends SvgProps {
   name: keyof IconsNames
 }
 

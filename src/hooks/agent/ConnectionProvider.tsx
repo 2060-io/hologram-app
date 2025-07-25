@@ -1,4 +1,4 @@
-import { ConnectionRecord, DidExchangeState } from '@credo-ts/core'
+import { ConnectionRecord } from '@credo-ts/core'
 import React, { createContext, useState, useEffect, useContext, useMemo } from 'react'
 
 import { useMobileAgent } from './MobileAgentProvider'
@@ -16,7 +16,7 @@ import {
 import { ConnectionType } from '@2060/model'
 import { getConnectionType } from '@2060/utils/connectionUtils'
 
-export interface ConnectionContextInterface {
+interface ConnectionContextInterface {
   loading: boolean
   connections: ConnectionRecord[]
 }
@@ -35,15 +35,6 @@ export const useConnectionById = (id?: string): ConnectionRecord | undefined => 
 
   if (!id) return undefined
   return connections.find((c: ConnectionRecord) => c.id === id)
-}
-
-export const useConnectionByState = (state: DidExchangeState): ConnectionRecord[] => {
-  const { connections } = useConnections()
-  const filteredConnections = useMemo(
-    () => connections.filter((c: ConnectionRecord) => c.state === state),
-    [connections, state],
-  )
-  return filteredConnections
 }
 
 export const useParentConnections = (): ConnectionRecord[] => {
@@ -122,5 +113,3 @@ export const ConnectionProvider: React.FC<React.PropsWithChildren<Props>> = ({ c
     </ConnectionContext.Provider>
   )
 }
-
-export default ConnectionProvider

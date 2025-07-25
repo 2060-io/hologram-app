@@ -4,11 +4,11 @@ interface Props {
   children?: React.ReactNode
 }
 
-export interface NavigationState {
+interface NavigationState {
   localAuth: boolean
 }
 
-export interface NavigationContextInterface {
+interface NavigationContextInterface {
   setLocalAuth(localAuth: boolean): void
   getLocalAuth(): boolean
 }
@@ -46,5 +46,3 @@ export const NavigationProvider: React.FC<React.PropsWithChildren<Props>> = ({ c
     </NavigationContext.Provider>
   )
 }
-
-export default NavigationProvider

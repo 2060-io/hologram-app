@@ -4,7 +4,7 @@ interface Props {
   children?: React.ReactNode
 }
 
-export interface RefreshedAvatarsUrlsContextInterface {
+interface RefreshedAvatarsUrlsContextInterface {
   updateRefreshedAvatarsUrlsList(avatarUrl: string): void
   refreshedAvatarsUrlsList: string[]
 }

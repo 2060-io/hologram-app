@@ -7,10 +7,11 @@ import { AgentActionOptions, AgentActionType } from './actions/AgentAction'
 import { addReceiptToRelatedEntries } from './chat/services/ChatEntryService'
 import {
   findOrCreateChatThread,
-  archiveThreads as chatESArchiveThreads,
-  unarchiveThreads as chatESUnarchiveThreads,
-  markThreadAsRead as chatESMarkThreadAsRead,
-  deleteThread as chatESDeleteThread,
+  archiveThreads as chatTSArchiveThreads,
+  unarchiveThreads as chatTSUnarchiveThreads,
+  markThreadAsRead as chatTSMarkThreadAsRead,
+  deleteThread as chatTSDeleteThread,
+  updateThread,
 } from './chat/services/ChatThreadService'
 import { subscribeToAgentChatEvents } from './chat/subscribeToAgentChatEvents'
 import { useAgentActionQueue } from './useAgentActionQueue'
@@ -29,16 +30,20 @@ import {
 } from '@2060/model'
 import { checkIfDeleteFilesFromMedia } from '@2060/pages/PersonalChat/utils'
 import { supportsMessageReceipts } from '@2060/utils/connectionUtils'
-import { getMediaChatEntriesExcludingThread, queryOfTypeMedia } from '@2060/utils/realmQueries'
+import {
+  getLastEntryInChatThread,
+  getMediaChatEntriesExcludingThread,
+  queryOfTypeMedia,
+} from '@2060/utils/realmQueries'
 
 export type ChatCategory = 'all' | 'people' | 'services'
-export type ChatFilters = { topic: string; archived: boolean; category: ChatCategory; parentId?: string }
+type ChatFilters = { topic: string; archived: boolean; category: ChatCategory; parentId?: string }
 
-export interface CreateThreadOptions {
+interface CreateThreadOptions {
   connection: ConnectionRecord
 }
 
-export interface MarkThreadAsReadOptions {
+interface MarkThreadAsReadOptions {
   id: string
   lastReadAt: Date
 }
@@ -50,13 +55,13 @@ interface ChatState {
   threads: ChatThreadData[]
 }
 
-export interface ChatContextInterface extends ChatState {
+interface ChatContextInterface extends ChatState {
   findOrCreateThread(options: CreateThreadOptions): ChatThreadData
   archiveThreads(chatThreadIds: string[]): void
   unarchiveThreads(chatThreadIds: string[]): void
   markThreadAsRead(options: MarkThreadAsReadOptions): void
   deleteThread(chatThreadId: string): void
-  clearThread(threadId: string): void
+  clearChat(threadId: string): void
   setFilters(filters: Partial<ChatFilters>): void
   setActiveChatThreadId(id: string | undefined): void
   addAgentActionToQueue(action: AgentActionOptions): void
@@ -182,7 +187,7 @@ export const ChatProvider: React.FC<Props> = ({ children }) => {
   const archiveThreads = useCallback(
     (chatThreadIds: string[]) => {
       if (!realm) throw new Error('Realm Unavailable')
-      chatESArchiveThreads(realm, chatThreadIds)
+      chatTSArchiveThreads(realm, chatThreadIds)
     },
     [realm],
   )
@@ -190,7 +195,7 @@ export const ChatProvider: React.FC<Props> = ({ children }) => {
   const unarchiveThreads = useCallback(
     (chatThreadIds: string[]) => {
       if (!realm) throw new Error('Realm Unavailable')
-      chatESUnarchiveThreads(realm, chatThreadIds)
+      chatTSUnarchiveThreads(realm, chatThreadIds)
     },
     [realm],
   )
@@ -200,7 +205,7 @@ export const ChatProvider: React.FC<Props> = ({ children }) => {
       if (!realm) throw new Error('Realm Unavailable')
       const { id, lastReadAt } = options
 
-      const { messageIds, connectionId } = chatESMarkThreadAsRead(realm, id, lastReadAt)
+      const { messageIds, connectionId } = chatTSMarkThreadAsRead(realm, id, lastReadAt)
       const connection = await agent?.connections.findById(connectionId)
 
       // No receipts to send
@@ -234,13 +239,13 @@ export const ChatProvider: React.FC<Props> = ({ children }) => {
   const deleteThread = useCallback(
     (chatThreadId: string) => {
       if (!realm) return
-      clearThread(chatThreadId)
-      chatESDeleteThread(realm, chatThreadId)
+      clearChat(chatThreadId)
+      chatTSDeleteThread(realm, chatThreadId)
     },
     [realm],
   )
 
-  const clearThread = useCallback(
+  const clearChat = useCallback(
     (threadId: string) => {
       if (!realm) return
       const chatEntriesToDelete = realm.objects(ChatEntry).filtered(`chatThreadId == '${threadId}'`)
@@ -268,6 +273,8 @@ export const ChatProvider: React.FC<Props> = ({ children }) => {
           unread: false,
         })
       })
+      const lastEntryInChatThread = getLastEntryInChatThread(realm, threadId)
+      updateThread(realm, threadId, { lastChatEntry: lastEntryInChatThread })
       if (metadataOfEntriesTypeMedia.length) {
         const mediaChatEntriesExcludingThread = getMediaChatEntriesExcludingThread(realm, threadId)
         // iterates all chat entries of type media and check if can delete media files
@@ -290,7 +297,7 @@ export const ChatProvider: React.FC<Props> = ({ children }) => {
         unarchiveThreads,
         markThreadAsRead,
         deleteThread,
-        clearThread,
+        clearChat,
         addAgentActionToQueue,
       }}
     >
@@ -298,5 +305,3 @@ export const ChatProvider: React.FC<Props> = ({ children }) => {
     </ChatContext.Provider>
   )
 }
-
-export default ChatProvider

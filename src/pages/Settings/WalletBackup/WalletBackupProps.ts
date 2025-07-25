@@ -36,10 +36,3 @@ export type WalletBackupHandlerProps = {
   onNotExist: () => React.ReactNode
   onError: () => React.ReactNode
 }
-
-export type OptionProps = {
-  iconName: string
-  text: string
-  onPress?: () => void
-  rightContent: () => React.ReactNode
-}

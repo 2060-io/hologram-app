@@ -27,7 +27,7 @@ export const optionsNotificationAndroid = (options?: NotificationAndroid): Notif
   importance: AndroidImportance.HIGH,
   largeIcon: require('../assets/images/app-icon.png'),
   smallIconLevel: AndroidBadgeIconType.LARGE,
-  color: '7678EC',
+  color: '#7678EC',
   circularLargeIcon: true,
 })
 

@@ -63,7 +63,7 @@ import { cancelVideoCompression } from '@2060/utils/mediaFileUtils'
 import { markNotificationsOfChatAsViewed } from '@2060/utils/pushNotificationsUtils'
 import { toast } from '@2060/utils/toast'
 
-export interface PersonalChatProps extends WrapperPersonalChatProps {
+interface PersonalChatProps extends WrapperPersonalChatProps {
   chatEntries: ChatEntryData[]
   loadMoreMessages(): void
   chatThread: ChatThreadWithParticipants

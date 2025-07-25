@@ -81,7 +81,7 @@ const ChangeBackupPassword = ({ navigation }: Props) => {
     if (password === retypedPassword) {
       savePassword()
     } else {
-      toast({ type: 'error', message: t('settings.passwordsDontMatch') })
+      toast({ type: 'error', message: t('settings.passwordsDontMatch'), position: 'center' })
     }
   }
 
@@ -102,6 +102,7 @@ const ChangeBackupPassword = ({ navigation }: Props) => {
                 {t('settings.changePassword')}
               </Text>
               <TextInputPassword
+                autoFocus
                 value={password}
                 onChangeText={setPassword}
                 placeholder={t('settings.typePassword')}
@@ -115,6 +116,7 @@ const ChangeBackupPassword = ({ navigation }: Props) => {
               </Text>
               <Text style={styles.suggestion}>{t('settings.savePassMessage')}</Text>
               <TextInputPassword
+                autoFocus
                 value={retypedPassword}
                 onChangeText={setRetypedPassword}
                 placeholder={t('settings.reTypePassword')}

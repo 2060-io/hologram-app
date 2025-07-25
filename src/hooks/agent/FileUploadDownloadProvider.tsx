@@ -573,5 +573,3 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
     </FileUploadDownloadContext.Provider>
   )
 }
-
-export default FileUploadDownloadProvider
