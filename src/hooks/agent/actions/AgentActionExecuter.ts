@@ -13,6 +13,7 @@ import {
   OutOfBandInvitation,
   V2ProposePresentationMessage,
 } from '@credo-ts/core'
+import { AnswerMessage } from '@credo-ts/question-answer'
 import { Realm } from 'realm'
 import { ReplaySubject, firstValueFrom, filter, first, timeout, catchError, map } from 'rxjs'
 
@@ -162,6 +163,22 @@ export class AgentActionExecuter {
         return {
           outgoingMessageType: V2ProposePresentationMessage.type.messageTypeUri,
           associatedRecord: proofExchangeRecord,
+        }
+      }
+    } else if (action.type === AgentActionType.SentAnswer) {
+      const parameters = action.parameters as {
+        response: string
+        associatedRecordId: string
+      }
+      const { response, associatedRecordId } = parameters
+      return async (options: { agent: MobileAgent }) => {
+        const associatedRecord = await options.agent.modules.questionAnswer.sendAnswer(
+          associatedRecordId,
+          response,
+        )
+        return {
+          outgoingMessageType: AnswerMessage.type.messageTypeUri,
+          associatedRecord,
         }
       }
     }

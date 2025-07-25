@@ -18,6 +18,7 @@ export enum AgentActionType {
   ActionMenuSelection = 'ActionMenuSelection',
   ForwardConnection = 'ForwardConnection',
   PresentCredential = 'PresentCredential',
+  SentAnswer = 'SentAnswer',
 }
 
 export type AgentAction = {
