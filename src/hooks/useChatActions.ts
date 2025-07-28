@@ -21,12 +21,20 @@ import {
 } from './agent'
 import { getLocalizedPreview, getThumbnail } from './agent/chat/preview'
 import { createTextChatEntry } from './agent/chat/recordChangeHandlers/handleBasicMessageRecordChanges'
-import { createChatEntry, findOrCreateChatThread, updateChatEntry, updateThread } from './agent/chat/services'
+import {
+  createChatEntry,
+  findAllByAssociatedRecordId,
+  findOrCreateChatThread,
+  updateChatEntry,
+  updateChatEntryMetadata,
+  updateThread,
+} from './agent/chat/services'
 import { useLocalRealm } from './providers/RealmProvider'
 
 import { MAX_VIDEO_DURATION } from '@2060/constants'
 import {
   ActionMenuSelectionMetadata,
+  AnswerMetadata,
   ChatEntry,
   ChatEntryRole,
   ChatEntryState,
@@ -159,7 +167,6 @@ export const useChatActions = () => {
             }
             receipts.push({ messageId: associatedMessageId ?? '', state: MessageState.Deleted })
           })
-
           addAgentActionToQueue({
             type: AgentActionType.SendReceipts,
             parameters: {
@@ -270,7 +277,6 @@ export const useChatActions = () => {
       try {
         if (repliedMessage) onClearRepliedMessageState()
 
-        // Create chat entry
         const chatEntry = createTextChatEntry({
           agent,
           chatThreadId: chatThread.data.id,
@@ -279,8 +285,6 @@ export const useChatActions = () => {
           role: ChatEntryRole.Sender,
           parentThreadId: repliedMessage?.didcommThreadId,
         })
-
-        // Now add to agent action queue
         addAgentActionToQueue({
           type: AgentActionType.SendTextMessage,
           chatEntryId: chatEntry.id,
@@ -317,7 +321,6 @@ export const useChatActions = () => {
               realm,
               role: ChatEntryRole.Sender,
             })
-
             addAgentActionToQueue({
               type: AgentActionType.SendTextMessage,
               chatEntryId: chatEntry.id,
@@ -362,8 +365,6 @@ export const useChatActions = () => {
                 originalRecord.metadata.get('waveform') as string,
               )
             }
-
-            // Add share action
             addAgentActionToQueue({
               type: AgentActionType.ShareMedia,
               parameters: {
@@ -400,7 +401,6 @@ export const useChatActions = () => {
               realm,
               role: ChatEntryRole.Sender,
             })
-
             addAgentActionToQueue({
               type: AgentActionType.SendTextMessage,
               chatEntryId: chatEntry.id,
@@ -448,7 +448,6 @@ export const useChatActions = () => {
       if (!agent || !connectionId) throw new Error('Agent is undefined')
       if (!realm) throw new Error('Realm is undefined')
       try {
-        // Create chat entry
         const actionMenuRecord = await agent.modules.actionMenu.findActiveMenu({
           connectionId,
           role: ActionMenuRole.Requester,
@@ -463,7 +462,6 @@ export const useChatActions = () => {
           associatedRecordId: actionMenuRecord?.id,
           metadata: { selectedItemName } as ActionMenuSelectionMetadata,
         })
-        // Now add to agent action queue
         addAgentActionToQueue({
           type: AgentActionType.ActionMenuSelection,
           chatEntryId: chatEntry.id,
@@ -477,6 +475,37 @@ export const useChatActions = () => {
       }
     },
     [agent, realm, repliedMessage, chatThread, connectionId],
+  )
+
+  const sendAnswer = useCallback(
+    (response: string, associatedRecordId: string) => {
+      if (!realm || !chatThread) return
+      const metadata: AnswerMetadata = { response }
+      const chatEntry = createChatEntry(realm, {
+        associatedRecordId,
+        chatThreadId: chatThread.data.id,
+        type: ChatEntryType.Answer,
+        role: ChatEntryRole.Sender,
+        state: ChatEntryState.Created,
+        createdAt: new Date().getTime(),
+        metadata,
+      })
+      // Find any Question entry associated to this question-answer record and mark it as replied
+      const [questionEntry] = findAllByAssociatedRecordId(realm, associatedRecordId, ChatEntryType.Question)
+      if (questionEntry) {
+        const questionMetadata = {
+          ...questionEntry.metadata,
+          response,
+        }
+        updateChatEntryMetadata(realm, questionEntry.id, questionMetadata)
+      }
+      addAgentActionToQueue({
+        type: AgentActionType.SendAnswer,
+        chatEntryId: chatEntry.id,
+        parameters: { response, associatedRecordId },
+      })
+    },
+    [realm, chatThread],
   )
 
   const shareMediaToDidComm = useCallback(
@@ -511,6 +540,7 @@ export const useChatActions = () => {
     deleteMessagesForEveryone,
     forwardSelectedMessages,
     shareMessages,
+    sendAnswer,
   }
 }
 

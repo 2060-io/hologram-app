@@ -1,11 +1,7 @@
 import { QuestionAnswerRecord, QuestionAnswerState } from '@credo-ts/question-answer'
 import Realm from 'realm'
 
-import {
-  createChatEntry,
-  findAllByAssociatedRecordId,
-  updateChatEntryMetadata,
-} from '../services/ChatEntryService'
+import { createChatEntry } from '../services/ChatEntryService'
 import { addUnread, findOrCreateChatThread } from '../services/ChatThreadService'
 
 import { AnswerMetadata, ChatEntryRole, ChatEntryState, ChatEntryType, QuestionMetadata } from '@2060/model'
@@ -43,32 +39,6 @@ export const handleQuestionAnswerRecordChanges = async (options: {
     })
     if (thread.id !== activeChatThreadId) {
       addUnread(realm, thread.id, 1)
-    }
-  } else if (recordState === QuestionAnswerState.AnswerSent) {
-    const metadata: AnswerMetadata = { response: questionAnswerRecord.response ?? '' }
-    createChatEntry(realm, {
-      associatedRecordId: questionAnswerRecord.id,
-      chatThreadId: thread.id,
-      type: ChatEntryType.Answer,
-      role: ChatEntryRole.Sender,
-      state: ChatEntryState.Created,
-      createdAt: (options.receivedAt ?? new Date()).getTime(),
-      metadata,
-    })
-
-    // Find any Question entry associated to this question-answer record and mark it as replied
-    const [questionEntry] = findAllByAssociatedRecordId(
-      realm,
-      questionAnswerRecord.id,
-      ChatEntryType.Question,
-    )
-
-    if (questionEntry) {
-      const questionMetadata = {
-        ...questionEntry.metadata,
-        response: questionAnswerRecord.response ?? '',
-      }
-      updateChatEntryMetadata(realm, questionEntry.id, questionMetadata)
     }
   } else if (recordState === QuestionAnswerState.AnswerReceived) {
     const metadata: AnswerMetadata = { response: questionAnswerRecord.response ?? '' }
