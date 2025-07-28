@@ -14,12 +14,18 @@ import {
   ConnectionService,
   DiscoverFeaturesApi,
   EventEmitter,
+  DidExchangeState,
 } from '@credo-ts/core'
+
+import { AgentActionOptions, AgentActionType } from '../actions/AgentAction'
 
 import { supportsUserProfile } from '@2060/utils/connectionUtils'
 import { language } from '@2060/utils/language'
 
-export function manageAgentConnectionEvents(context: AgentContext) {
+export function manageAgentConnectionEvents(
+  context: AgentContext,
+  addAgentActionToQueue: (action: AgentActionOptions) => void,
+) {
   const eventEmitter = context.dependencyManager.resolve(EventEmitter)
 
   const disclosureListener = async (event: DiscoverFeaturesDisclosureReceivedEvent) => {
@@ -76,10 +82,17 @@ export function manageAgentConnectionEvents(context: AgentContext) {
 
   // Track connections and proof exchanges to update connection metadata accordingly
   const connectionListener = async (event: ConnectionStateChangedEvent) => {
-    const connectionRecord = event.payload.connectionRecord
-    const discoverFeaturesApi = context.dependencyManager.resolve(DiscoverFeaturesApi)
-
+    const { connectionRecord } = event.payload
+    if (connectionRecord.state === DidExchangeState.RequestReceived) {
+      addAgentActionToQueue({
+        type: AgentActionType.AcceptInvitation,
+        parameters: {
+          outOfBandId: connectionRecord.outOfBandId,
+        },
+      })
+    }
     if (connectionRecord.isReady) {
+      const discoverFeaturesApi = context.dependencyManager.resolve(DiscoverFeaturesApi)
       await discoverFeaturesApi.queryFeatures({
         protocolVersion: 'v2',
         queries: [

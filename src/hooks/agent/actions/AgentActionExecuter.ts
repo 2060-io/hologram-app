@@ -12,6 +12,7 @@ import {
   OutboundMessageContext,
   OutOfBandInvitation,
   V2ProposePresentationMessage,
+  DidExchangeRequestMessage,
 } from '@credo-ts/core'
 import { AnswerMessage } from '@credo-ts/question-answer'
 import { Realm } from 'realm'
@@ -27,7 +28,7 @@ import {
 } from './AgentAction'
 
 import { ChatEntry, ChatEntryState } from '@2060/model'
-import { createOobInvitation, MobileAgent } from '@2060/services/agent'
+import { acceptInvitation, createOobInvitation, MobileAgent } from '@2060/services/agent'
 import { log, logError } from '@2060/utils'
 
 type ActionCallback = (options: { agent: MobileAgent }) => Promise<AgentCallbackReturnType<BaseRecord>>
@@ -179,6 +180,17 @@ export class AgentActionExecuter {
         return {
           outgoingMessageType: AnswerMessage.type.messageTypeUri,
           associatedRecord,
+        }
+      }
+    } else if (action.type === AgentActionType.AcceptInvitation) {
+      const parameters = action.parameters as {
+        outOfBandId: string
+      }
+      const { outOfBandId } = parameters
+      return async (options: { agent: MobileAgent }) => {
+        await acceptInvitation(options.agent.context, { outOfBandId })
+        return {
+          outgoingMessageType: DidExchangeRequestMessage.type.messageTypeUri,
         }
       }
     }
