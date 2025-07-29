@@ -51,6 +51,8 @@ export async function backgroundPushNotificationHandler(remoteMessage: FirebaseM
     addConnectionChangeListener()
     if (!mobileAgentInstance.getMobileAgent()?.isInitialized) {
       await mobileAgentInstance.openAndInitMobileAgent()
+    } else {
+      logWarn('From backgroundPushNotificationHandler agent is already initialized')
     }
     if (!mobileAgentInstance.getIsAppSubscribedToEvents()) {
       subscribeToAgentChatEvents(agent, realm, false, () => undefined)

@@ -9,7 +9,7 @@ import { isRegistered, MobileAgent } from '@2060/services/agent/MobileAgent'
 import { migrateAnonCredsRecords } from '@2060/services/agent/migrateAnonCredsRecords'
 import { MediatorEventTypes } from '@2060/services/transport/MediatorEventTypes'
 import { TunedMobileWsOutboundTransport } from '@2060/services/transport/TunedMobileWsOutboundTransport'
-import { logError } from '@2060/utils'
+import { logError, logWarn } from '@2060/utils'
 
 interface MobileAgentState {
   agent?: MobileAgent
@@ -96,6 +96,8 @@ export const MobileAgentProvider: React.FC<Props> = ({ children }) => {
       if (!agent) return
       if (!mobileAgentInstance.current.getMobileAgent()?.isInitialized) {
         await mobileAgentInstance.current.openAndInitMobileAgent()
+      } else {
+        logWarn('Agent is already initialized')
       }
       // Set NFC support according to the response from EID module
       await agent.modules.mrtd.setMrtdCapabilities({ eMrtdReadSupported: await EIdReader.isNfcSupported() })
