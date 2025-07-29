@@ -1,18 +1,25 @@
+import { ConnectionRecord } from '@credo-ts/core'
 import notifee, {
   AndroidBadgeIconType,
   AndroidColor,
+  AndroidGroupAlertBehavior,
   AndroidImportance,
   NotificationAndroid,
   NotificationIOS,
 } from '@notifee/react-native'
 import messaging from '@react-native-firebase/messaging'
+import { t } from 'i18next'
 import { PERMISSIONS, request, RESULTS } from 'react-native-permissions'
 
-import { IS_IOS, isAndroid13OrHigher } from '@2060/constants'
+import { getConnectionDisplayName } from './connectionUtils'
+
+import { IS_ANDROID, IS_IOS, isAndroid13OrHigher } from '@2060/constants'
+import { getLocalizedPreview } from '@2060/hooks/agent/chat/preview'
+import { ChatEntry } from '@2060/model'
 
 const { AuthorizationStatus } = messaging
-export const LOCAL_NOTIFICATION_ID_PREFIX = 'local-notification'
-export const optionsNotificationAndroid = (options?: NotificationAndroid): NotificationAndroid => ({
+const LOCAL_NOTIFICATION_ID_PREFIX = 'local-notification'
+const optionsNotificationAndroid = (options?: NotificationAndroid): NotificationAndroid => ({
   ...options,
   vibrationPattern: [300, 500],
   pressAction: { id: 'default' },
@@ -26,13 +33,30 @@ export const optionsNotificationAndroid = (options?: NotificationAndroid): Notif
   circularLargeIcon: true,
 })
 
-export const optionsNotificationsIOS = (options?: NotificationIOS): NotificationIOS => ({
+const optionsNotificationsIOS = (options?: NotificationIOS): NotificationIOS => ({
   ...options,
   criticalVolume: 0.9,
   foregroundPresentationOptions: { alert: true, sound: true, badge: true },
   critical: true,
   sound: 'default',
 })
+
+/**
+ * Create a channel (required for Android)
+ * @returns channelId
+ */
+const createChannel = async () => {
+  const channelId = await notifee.createChannel({
+    id: 'default',
+    name: 'Default Channel',
+    vibrationPattern: [300, 500],
+    lightColor: AndroidColor.GREEN,
+    vibration: true,
+    importance: AndroidImportance.HIGH,
+    sound: 'default',
+  })
+  return channelId
+}
 
 const askUserPushNotificationPermissionAndroid13OrHigher = async () => {
   const status = await request(PERMISSIONS.ANDROID.POST_NOTIFICATIONS)
@@ -68,21 +92,61 @@ export const arePushNotificationsAllowed = async () => {
   return authorizationStatus === AUTHORIZED
 }
 
-/**
- * Create a channel (required for Android)
- * @returns channelId
- */
-export const createChannel = async () => {
-  const channelId = await notifee.createChannel({
-    id: 'default',
-    name: 'Default Channel',
-    vibrationPattern: [300, 500],
-    lightColor: AndroidColor.GREEN,
-    vibration: true,
-    importance: AndroidImportance.HIGH,
-    sound: 'default',
-  })
-  return channelId
+export const displayNewChatMessageNotification = async (
+  connection: ConnectionRecord,
+  chatEntry: ChatEntry,
+) => {
+  const data = {
+    screen: 'PersonalChat',
+    params: { chatThreadId: chatEntry.chatThreadId, connectionId: connection.id },
+  }
+  const channelId = await createChannel()
+  const groupId = connection.id
+
+  if (IS_ANDROID) {
+    await notifee.displayNotification({
+      id: `summary-${LOCAL_NOTIFICATION_ID_PREFIX}-chat-${groupId}`,
+      data,
+      android: {
+        channelId,
+        pressAction: { id: 'default' },
+        groupId,
+        groupSummary: true,
+        groupAlertBehavior: AndroidGroupAlertBehavior.SUMMARY,
+      },
+    })
+  }
+  const localNotification = {
+    id: `${LOCAL_NOTIFICATION_ID_PREFIX}-chat-${groupId}-${new Date().getTime()}`,
+    title: getConnectionDisplayName(connection!),
+    body: `${getLocalizedPreview(chatEntry)}`,
+    data,
+    android: optionsNotificationAndroid({
+      channelId,
+      groupId,
+      groupAlertBehavior: AndroidGroupAlertBehavior.SUMMARY,
+    }),
+    ios: optionsNotificationsIOS({ threadId: groupId }),
+  }
+  notifee.displayNotification(localNotification)
+  notifee.incrementBadgeCount()
+}
+
+export const displayNewConnectionNotification = async (connection: ConnectionRecord) => {
+  const channelId = await createChannel()
+  const newNotification = {
+    id: `${LOCAL_NOTIFICATION_ID_PREFIX}-connection-${connection.id}`,
+    title: t('connection.newConnection'),
+    body: `${t('connection.youAreNowConnectedTo')} ${getConnectionDisplayName(connection)}`,
+    data: {
+      screen: 'ConnectionDetails',
+      params: { connectionId: connection?.id },
+    },
+    android: optionsNotificationAndroid({ channelId }),
+    ios: optionsNotificationsIOS(),
+  }
+  notifee.displayNotification(newNotification)
+  notifee.incrementBadgeCount()
 }
 
 export const deleteRemoteNotifications = async () => {
