@@ -28,7 +28,7 @@ import {
 } from './AgentAction'
 
 import { ChatEntry, ChatEntryState } from '@2060/model'
-import { acceptInvitation, createOobInvitation, MobileAgent } from '@2060/services/agent'
+import { createOobInvitation, MobileAgent } from '@2060/services/agent'
 import { log, logError } from '@2060/utils'
 
 type ActionCallback = (options: { agent: MobileAgent }) => Promise<AgentCallbackReturnType<BaseRecord>>
@@ -182,13 +182,13 @@ export class AgentActionExecuter {
           associatedRecord,
         }
       }
-    } else if (action.type === AgentActionType.AcceptInvitation) {
+    } else if (action.type === AgentActionType.AcceptConnectionRequest) {
       const parameters = action.parameters as {
-        outOfBandId: string
+        connectionId: string
       }
-      const { outOfBandId } = parameters
+      const { connectionId } = parameters
       return async (options: { agent: MobileAgent }) => {
-        await acceptInvitation(options.agent.context, { outOfBandId })
+        await options.agent.connections.acceptRequest(connectionId)
         return {
           outgoingMessageType: DidExchangeRequestMessage.type.messageTypeUri,
         }

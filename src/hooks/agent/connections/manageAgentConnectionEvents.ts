@@ -85,9 +85,9 @@ export function manageAgentConnectionEvents(
     const { connectionRecord } = event.payload
     if (connectionRecord.state === DidExchangeState.RequestReceived) {
       addAgentActionToQueue({
-        type: AgentActionType.AcceptInvitation,
+        type: AgentActionType.AcceptConnectionRequest,
         parameters: {
-          outOfBandId: connectionRecord.outOfBandId,
+          connectionId: connectionRecord.id,
         },
       })
     }
