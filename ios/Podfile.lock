@@ -2028,8 +2028,6 @@ PODS:
     - React-Core
   - RNCClipboard (1.16.2):
     - React-Core
-  - RNCMaskedView (0.2.0):
-    - React-Core
   - RNCPicker (2.11.0):
     - React-Core
   - RNFBApp (21.7.1):
@@ -2435,6 +2433,7 @@ DEPENDENCIES:
   - RealmJS (from `../node_modules/realm`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-community/async-storage`)"
   - "RNCClipboard (from `../node_modules/@react-native-clipboard/clipboard`)"
+  - "RNCPicker (from `../node_modules/@react-native-picker/picker`)"
   - "RNFBApp (from `../node_modules/@react-native-firebase/app`)"
   - "RNFBAppCheck (from `../node_modules/@react-native-firebase/app-check`)"
   - "RNFBMessaging (from `../node_modules/@react-native-firebase/messaging`)"
@@ -2687,6 +2686,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-community/async-storage"
   RNCClipboard:
     :path: "../node_modules/@react-native-clipboard/clipboard"
+  RNCPicker:
+    :path: "../node_modules/@react-native-picker/picker"
   RNFBApp:
     :path: "../node_modules/@react-native-firebase/app"
   RNFBAppCheck:
@@ -2856,6 +2857,7 @@ SPEC CHECKSUMS:
   RealmJS: 5b0258b3c04b9f48536b2692965690afe024164c
   RNCAsyncStorage: 87d0d3d6193e79bd435e955f8998d2040aa60d67
   RNCClipboard: e1d17c9d093d8129ef50b39b63a17a0e8ccd0ade
+  RNCPicker: 124b4fb5859ba1a3fd53a91e16d1e7a0fc016e59
   RNFBApp: 32f7425af42aef99472dd46e14222cb0a8a17504
   RNFBAppCheck: 4888ffdedbcbe92eeee847a1eec4ef633e686985
   RNFBMessaging: 993c913f7a037104b5ae02cadf7fc191545ceb51
