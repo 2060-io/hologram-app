@@ -27,10 +27,7 @@ const optionsNotificationAndroid = (options?: NotificationAndroid): Notification
   smallIcon: 'ic_notification',
   sound: 'default',
   importance: AndroidImportance.HIGH,
-  largeIcon: require('../assets/images/app-icon.png'),
   smallIconLevel: AndroidBadgeIconType.LARGE,
-  color: '#7678EC',
-  circularLargeIcon: true,
 })
 
 const optionsNotificationsIOS = (options?: NotificationIOS): NotificationIOS => ({
