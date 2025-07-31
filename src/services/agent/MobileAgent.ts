@@ -85,7 +85,7 @@ export const getMobileAgentModules = (config: {
     }),
     calls: new DidCommCallsModule(),
     reactions: new DidCommReactionsModule(),
-    connections: new ConnectionsModule({ autoAcceptConnections: true }),
+    connections: new ConnectionsModule({ autoAcceptConnections: false }),
     credentials: new CredentialsModule({
       autoAcceptCredentials: AutoAcceptCredential.Never,
       credentialProtocols: [

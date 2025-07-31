@@ -12,12 +12,11 @@ import {
   OutboundMessageContext,
   OutOfBandInvitation,
   V2ProposePresentationMessage,
+  DidExchangeResponseMessage,
 } from '@credo-ts/core'
 import { AnswerMessage } from '@credo-ts/question-answer'
 import { Realm } from 'realm'
 import { ReplaySubject, firstValueFrom, filter, first, timeout, catchError, map } from 'rxjs'
-
-import { updateChatEntry } from '../chat/services/ChatEntryService'
 
 import {
   ActionExecutionStatus,
@@ -26,6 +25,7 @@ import {
   OutboundMessageContextData,
 } from './AgentAction'
 
+import { updateChatEntry } from '@2060/hooks/agent/chat/services/ChatEntryService'
 import { ChatEntry, ChatEntryState } from '@2060/model'
 import { createOobInvitation, MobileAgent } from '@2060/services/agent'
 import { log, logError } from '@2060/utils'
@@ -179,6 +179,17 @@ export class AgentActionExecuter {
         return {
           outgoingMessageType: AnswerMessage.type.messageTypeUri,
           associatedRecord,
+        }
+      }
+    } else if (action.type === AgentActionType.AcceptConnectionRequest) {
+      const parameters = action.parameters as {
+        connectionId: string
+      }
+      const { connectionId } = parameters
+      return async (options: { agent: MobileAgent }) => {
+        await options.agent.connections.acceptRequest(connectionId)
+        return {
+          outgoingMessageType: DidExchangeResponseMessage.type.messageTypeUri,
         }
       }
     }
