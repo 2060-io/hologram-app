@@ -12,7 +12,7 @@ import {
   OutboundMessageContext,
   OutOfBandInvitation,
   V2ProposePresentationMessage,
-  DidExchangeRequestMessage,
+  DidExchangeResponseMessage,
 } from '@credo-ts/core'
 import { AnswerMessage } from '@credo-ts/question-answer'
 import { Realm } from 'realm'
@@ -189,7 +189,7 @@ export class AgentActionExecuter {
       return async (options: { agent: MobileAgent }) => {
         await options.agent.connections.acceptRequest(connectionId)
         return {
-          outgoingMessageType: DidExchangeRequestMessage.type.messageTypeUri,
+          outgoingMessageType: DidExchangeResponseMessage.type.messageTypeUri,
         }
       }
     }
