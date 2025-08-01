@@ -38,7 +38,7 @@ export async function backgroundPushNotificationHandler(remoteMessage: FirebaseM
     const realm = realmInstance.getRealm()
     if (!realm) return
     const mobileAgentInstance = AgentSingleton.instance
-    await mobileAgentInstance.initializeMobileAgent()
+    await mobileAgentInstance.setupMobileAgent()
     const agent = mobileAgentInstance.getMobileAgent()
     if (!agent) return
     const { addChatEntryChangeListener, removeChatEntryChangeListener } = manageBackgroundChatEntryChanges(
@@ -49,7 +49,7 @@ export async function backgroundPushNotificationHandler(remoteMessage: FirebaseM
       manageConnectionStateChangedEvent(agent)
     addChatEntryChangeListener()
     addConnectionChangeListener()
-    if (!mobileAgentInstance.getMobileAgent()?.isInitialized) {
+    if (!mobileAgentInstance.getIsInitialized()) {
       await mobileAgentInstance.openAndInitMobileAgent()
     } else {
       logWarn('From backgroundPushNotificationHandler agent is already initialized')

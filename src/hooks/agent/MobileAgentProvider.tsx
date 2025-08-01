@@ -49,7 +49,7 @@ export const MobileAgentProvider: React.FC<Props> = ({ children }) => {
 
   useEffect(() => {
     const setAgentInitialState = async () => {
-      await mobileAgentInstance.current.initializeMobileAgent()
+      await mobileAgentInstance.current.setupMobileAgent()
       const newAgent = mobileAgentInstance.current.getMobileAgent()
       if (!newAgent) return
       handleChangeAgentState({ agent: newAgent })
@@ -94,7 +94,7 @@ export const MobileAgentProvider: React.FC<Props> = ({ children }) => {
   const openAndInitMobileAgent = useCallback(async () => {
     try {
       if (!agent) return
-      if (!mobileAgentInstance.current.getMobileAgent()?.isInitialized) {
+      if (!mobileAgentInstance.current.getIsInitialized()) {
         await mobileAgentInstance.current.openAndInitMobileAgent()
       } else {
         logWarn('Agent is already initialized')

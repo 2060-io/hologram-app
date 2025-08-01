@@ -7,6 +7,7 @@ import { walletDirectoryPath } from '@2060/utils/RNFS'
 
 export class AgentSingleton {
   private static agentInstance: AgentSingleton
+  private isSetup = false
   private isInitialized = false
   private mobileAgent: MobileAgent | null = null
   private isAppSubscribedToEvents = false
@@ -18,15 +19,17 @@ export class AgentSingleton {
     return this.agentInstance
   }
 
-  async initializeMobileAgent() {
-    if (this.isInitialized) return
+  async setupMobileAgent() {
+    if (this.isSetup) return
     const agent = await setupMobileAgent(baseAgentConfig)
     this.mobileAgent = agent
-    this.isInitialized = true
+    this.isSetup = true
   }
 
   async openAndInitMobileAgent() {
+    if (this.isInitialized) return
     try {
+      this.isInitialized = true
       const storage = { type: 'sqlite', config: { path: `${walletDirectoryPath}/afj.sqlite` } }
       const getWalletConfig = (storeKey: string) => ({ id: 'afj', key: storeKey, storage })
       const key = await retrieveEncryptedKey(KeyChainService.AfjWallet)
@@ -37,11 +40,12 @@ export class AgentSingleton {
       await this.mobileAgent?.initialize()
       logWarn('¡agent initialized!')
     } catch (error) {
+      this.isInitialized = false
       logError(`error initializing singleton agent: ${error}`)
     }
   }
 
-  getMobileAgent(): MobileAgent | null {
+  getMobileAgent() {
     return this.mobileAgent
   }
 
@@ -49,8 +53,12 @@ export class AgentSingleton {
     this.isAppSubscribedToEvents = true
   }
 
-  getIsAppSubscribedToEvents(): boolean {
+  getIsAppSubscribedToEvents() {
     return this.isAppSubscribedToEvents
+  }
+
+  getIsInitialized() {
+    return this.isInitialized
   }
 }
 
