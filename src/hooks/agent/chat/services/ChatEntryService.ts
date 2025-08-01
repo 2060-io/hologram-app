@@ -169,8 +169,7 @@ export function addReceiptToRelatedEntries(realm: Realm, receipt: MessageReceipt
       if (!lastChatEntry || lastChatEntry?.createdAt < entry.createdAt) lastChatEntry = entry
     }
   })
-
-  return lastChatEntry
+  if (lastChatEntry) updateThreadIfNeeded(realm, lastChatEntry)
 }
 
 export function updateChatEntryMetadata(realm: Realm, recordId: string, metadata: Record<string, unknown>) {

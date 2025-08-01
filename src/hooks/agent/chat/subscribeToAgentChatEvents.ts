@@ -54,15 +54,9 @@ import {
   findAllByAssociatedRecordId,
   updateChatEntry,
 } from './services/ChatEntryService'
-import {
-  addUnread,
-  findChatThread,
-  findOrCreateChatThread,
-  updateThread,
-  updateThreadIfNeeded,
-} from './services/ChatThreadService'
+import { addUnread, findChatThread, findOrCreateChatThread, updateThread } from './services/ChatThreadService'
 
-import { ChatEntryType, ChatEntryRole, ChatEntryState, InvitationMetadata, ChatEntry } from '@2060/model'
+import { ChatEntryType, ChatEntryRole, ChatEntryState, InvitationMetadata } from '@2060/model'
 import { InvitationState } from '@2060/model/InvitationState'
 import { MobileAgent } from '@2060/services/agent'
 import {
@@ -214,13 +208,9 @@ export function subscribeToAgentChatEvents(
   // in a single write operation
   const messageReceiptsReceivedListener = async (data: MessageReceiptsReceivedEvent) => {
     const receipts = data.payload.receipts
-    let lastChatEntry: ChatEntry | undefined
-
     for (const receipt of receipts) {
-      const entry = addReceiptToRelatedEntries(realm, receipt)
-      if (entry && (!lastChatEntry || lastChatEntry?.createdAt < entry.createdAt)) lastChatEntry = entry
+      addReceiptToRelatedEntries(realm, receipt)
     }
-    if (lastChatEntry) updateThreadIfNeeded(realm, lastChatEntry)
   }
 
   const messageReactionsReceivedListener = async (data: MessageReactionsReceivedEvent) => {
