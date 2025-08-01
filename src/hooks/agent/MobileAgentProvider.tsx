@@ -94,10 +94,10 @@ export const MobileAgentProvider: React.FC<Props> = ({ children }) => {
   const openAndInitMobileAgent = useCallback(async () => {
     try {
       if (!agent) return
-      if (!mobileAgentInstance.current.getIsInitialized()) {
+      if (!mobileAgentInstance.current.getMobileAgent()?.isInitialized) {
         await mobileAgentInstance.current.openAndInitMobileAgent()
       } else {
-        logWarn('Agent is already initialized')
+        logWarn(`From main flow Agent is already initialized`)
       }
       // Set NFC support according to the response from EID module
       await agent.modules.mrtd.setMrtdCapabilities({ eMrtdReadSupported: await EIdReader.isNfcSupported() })

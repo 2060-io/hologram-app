@@ -49,7 +49,7 @@ export async function backgroundPushNotificationHandler(remoteMessage: FirebaseM
       manageConnectionStateChangedEvent(agent)
     addChatEntryChangeListener()
     addConnectionChangeListener()
-    if (!mobileAgentInstance.getIsInitialized()) {
+    if (!mobileAgentInstance.getMobileAgent()?.isInitialized) {
       await mobileAgentInstance.openAndInitMobileAgent()
     } else {
       logWarn('From backgroundPushNotificationHandler agent is already initialized')
