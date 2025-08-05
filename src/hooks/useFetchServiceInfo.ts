@@ -71,37 +71,35 @@ export const useFetchServiceInfo = (did?: string, forceFetch?: boolean) => {
           didResolver,
         })
         log(`trustResolution: ${JSON.stringify(trustResolution)}`)
-        if (!trustResolution.verifiableService || !trustResolution.didDocument) {
+        if (!trustResolution.service || !trustResolution.didDocument) {
           return
         }
 
         const serviceInfoResponse: ServiceInfo = {
           did: trustResolution.didDocument.id,
           id: trustResolution.didDocument.id,
-          minimumAgeRequired: trustResolution.verifiableService.credentialSubject.minimumAgeRequired!,
-          name: trustResolution.verifiableService.credentialSubject.name,
+          minimumAgeRequired: trustResolution.service.minimumAgeRequired!,
+          name: trustResolution.service.name,
           status: 'trusted',
-          dataPrivacyUrl: trustResolution.verifiableService.credentialSubject.privacyPolicy,
-          description: trustResolution.verifiableService?.credentialSubject.description,
-          logoUrl: trustResolution.verifiableService?.credentialSubject.logo,
-          termsAndConditionsUrl: trustResolution.verifiableService?.credentialSubject.termsAndConditions,
+          dataPrivacyUrl: trustResolution.service.privacyPolicy,
+          description: trustResolution.service?.description,
+          logoUrl: trustResolution.service?.logo,
+          termsAndConditionsUrl: trustResolution.service?.termsAndConditions,
           serviceProvider: {
             certificationEntity: {
-              countryCode: (trustResolution.issuerCredential! as IOrg).credentialSubject.countryCode,
-              entityName: (trustResolution.issuerCredential! as IOrg).credentialSubject.name,
-              officialPublicRegistryNumber: (trustResolution.issuerCredential! as IOrg).credentialSubject
-                .registryId,
+              countryCode: (trustResolution.serviceProvider! as IOrg).countryCode,
+              entityName: (trustResolution.serviceProvider! as IOrg).name,
+              officialPublicRegistryNumber: (trustResolution.serviceProvider! as IOrg).registryId,
               status: 'trusted',
               trustRegistry: {
-                name: (trustResolution.issuerCredential! as IOrg).credentialSubject.name,
+                name: (trustResolution.serviceProvider! as IOrg).name,
                 status: 'trusted',
               },
             },
             status: 'trusted',
-            countryCode: (trustResolution.issuerCredential! as IOrg).credentialSubject.countryCode,
-            entityName: (trustResolution.issuerCredential! as IOrg).credentialSubject.name,
-            officialPublicRegistryNumber: (trustResolution.issuerCredential! as IOrg).credentialSubject
-              .registryId,
+            countryCode: (trustResolution.serviceProvider! as IOrg).countryCode,
+            entityName: (trustResolution.serviceProvider! as IOrg).name,
+            officialPublicRegistryNumber: (trustResolution.serviceProvider! as IOrg).registryId,
           },
         }
         if (serviceInfoResponse) {
