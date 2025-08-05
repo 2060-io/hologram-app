@@ -923,20 +923,7 @@
     "@babel/parser" "^7.26.9"
     "@babel/types" "^7.26.9"
 
-"@babel/traverse--for-generate-function-map@npm:@babel/traverse@^7.25.3":
-  version "7.26.10"
-  resolved "https://registry.yarnpkg.com/@babel/traverse/-/traverse-7.26.10.tgz#43cca33d76005dbaa93024fae536cc1946a4c380"
-  integrity sha512-k8NuDrxr0WrPH5Aupqb2LCVURP/S0vBEn5mK6iH+GIYob66U5EtoZvcdudR2jQ4cmTwhEwW1DLB+Yyas9zjF6A==
-  dependencies:
-    "@babel/code-frame" "^7.26.2"
-    "@babel/generator" "^7.26.10"
-    "@babel/parser" "^7.26.10"
-    "@babel/template" "^7.26.9"
-    "@babel/types" "^7.26.10"
-    debug "^4.3.1"
-    globals "^11.1.0"
-
-"@babel/traverse@^7.25.3", "@babel/traverse@^7.25.9", "@babel/traverse@^7.26.10", "@babel/traverse@^7.26.5", "@babel/traverse@^7.26.8", "@babel/traverse@^7.26.9":
+"@babel/traverse--for-generate-function-map@npm:@babel/traverse@^7.25.3", "@babel/traverse@^7.25.3", "@babel/traverse@^7.25.9", "@babel/traverse@^7.26.10", "@babel/traverse@^7.26.5", "@babel/traverse@^7.26.8", "@babel/traverse@^7.26.9":
   version "7.26.10"
   resolved "https://registry.yarnpkg.com/@babel/traverse/-/traverse-7.26.10.tgz#43cca33d76005dbaa93024fae536cc1946a4c380"
   integrity sha512-k8NuDrxr0WrPH5Aupqb2LCVURP/S0vBEn5mK6iH+GIYob66U5EtoZvcdudR2jQ4cmTwhEwW1DLB+Yyas9zjF6A==
@@ -4144,6 +4131,29 @@
     cross-fetch "^3.1.8"
     did-resolver "^4.1.0"
 
+<<<<<<< HEAD
+=======
+"@sphereon/isomorphic-webcrypto@^2.5.0-rn-crypto.2", isomorphic-webcrypto@^2.3.8, "isomorphic-webcrypto@npm:@sphereon/isomorphic-webcrypto@2.5.0-rn-crypto.2":
+  name isomorphic-webcrypto
+  version "2.5.0-rn-crypto.2"
+  resolved "https://registry.yarnpkg.com/@sphereon/isomorphic-webcrypto/-/isomorphic-webcrypto-2.5.0-rn-crypto.2.tgz#defa9be01074bddab32896c263d347d77bcf7cf6"
+  integrity sha512-Vr5KcPTQ6LbKyCOLEe6DTPxMXeESYBDw/gqbjyynUtqmNtBz6dcccP3HpM9TjlwqP8c/uPEtnrxA9V81/FH8HA==
+  dependencies:
+    "@peculiar/webcrypto" "^1.5.0"
+    asmcrypto.js "^2.3.2"
+    b64-lite "^1.4.0"
+    b64u-lite "^1.1.0"
+    cipher-base "^1.0.4"
+    create-hash "^1.2.0"
+    inherits "^2.0.4"
+    md5.js "^1.3.5"
+    randomfill "^1.0.4"
+    ripemd160 "^2.0.2"
+    sha.js "^2.4.11"
+    str2buf "^1.3.0"
+    webcrypto-shim "^0.1.7"
+
+>>>>>>> d34e639 (fixes)
 "@sphereon/jarm@0.16.1-fix.173+086f910":
   version "0.16.1-fix.173"
   resolved "https://registry.yarnpkg.com/@sphereon/jarm/-/jarm-0.16.1-fix.173.tgz#5c70456d3d3daf0262e2a647abddc464eb45ff94"
@@ -4989,10 +4999,17 @@
     multiformats "9.7.1"
     uint8arrays "^3.0.0"
 
+<<<<<<< HEAD
 "@verana-labs/verre@^0.0.10":
   version "0.0.10"
   resolved "https://registry.yarnpkg.com/@verana-labs/verre/-/verre-0.0.10.tgz#0273f3091d3dbff801aba7bb98c5e844b8dec396"
   integrity sha512-o4m/5f98X3017RDdGA/vDVdtKLMdXtrnu0kWN05+Mvg5jjpYWqxN5NUZWeXk6RhbYGqw2Lpm/f+evA6ugq/svw==
+=======
+"@verana-labs/verre@^0.0.11":
+  version "0.0.11"
+  resolved "https://registry.yarnpkg.com/@verana-labs/verre/-/verre-0.0.11.tgz#2b58a48a1407b4586368f9043f74aaaa2932d59c"
+  integrity sha512-zBXC53y3zXmolApT/d5SahLOL1YlyTjF5XfonGTy8I6xCFpSusYpm7/Y2zYO1dmlZ554PPXwXhGVOwY0ngU3Ig==
+>>>>>>> d34e639 (fixes)
   dependencies:
     "@credo-ts/core" "^0.5.13"
     "@digitalcredentials/jsonld-signatures" "^12.0.1"
@@ -7777,7 +7794,7 @@ event-target-shim@^5.0.0, event-target-shim@^5.0.1:
   resolved "https://registry.yarnpkg.com/event-target-shim/-/event-target-shim-5.0.1.tgz#5d4d3ebdf9583d63a5333ce2deb7480ab2b05789"
   integrity sha512-i/2XbnSz/uxRCU6+NdVJgKWDTM427+MqYbkQzD321DuCQJUqOuJKIA0IM2+W2xtYHdKOmZ4dR6fExsd4SXL+WQ==
 
-events@^3.2.0, events@^3.3.0:
+events@^3.2.0, events@^3.3.0, "npm-events-package@npm:events@^3.3.0":
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/events/-/events-3.3.0.tgz#31a95ad0a924e2d2c419a813aeb2c4e878ea7400"
   integrity sha512-mQw+2fkQbALzQ7V0MY0IqdnXNOeTtP4r0lN9z7AAawCXgqea7bDii20AYrIBrFd/Hx0M2Ocz6S111CaFkUcb0Q==
@@ -9527,25 +9544,6 @@ isobject@^3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/isobject/-/isobject-3.0.1.tgz#4e431e92b11a9731636aa1f9c8d1ccbcfdab78df"
   integrity sha512-WhB9zCku7EGTj/HQQRz5aUQEUeoQZH2bWcltRErOpymJ4boYE6wL9Tbr23krRPSZ+C5zqNSrSw+Cc7sZZ4b7vg==
-
-isomorphic-webcrypto@^2.3.8, "isomorphic-webcrypto@npm:@sphereon/isomorphic-webcrypto@2.5.0-rn-crypto.2":
-  version "2.5.0-rn-crypto.2"
-  resolved "https://registry.yarnpkg.com/@sphereon/isomorphic-webcrypto/-/isomorphic-webcrypto-2.5.0-rn-crypto.2.tgz#defa9be01074bddab32896c263d347d77bcf7cf6"
-  integrity sha512-Vr5KcPTQ6LbKyCOLEe6DTPxMXeESYBDw/gqbjyynUtqmNtBz6dcccP3HpM9TjlwqP8c/uPEtnrxA9V81/FH8HA==
-  dependencies:
-    "@peculiar/webcrypto" "^1.5.0"
-    asmcrypto.js "^2.3.2"
-    b64-lite "^1.4.0"
-    b64u-lite "^1.1.0"
-    cipher-base "^1.0.4"
-    create-hash "^1.2.0"
-    inherits "^2.0.4"
-    md5.js "^1.3.5"
-    randomfill "^1.0.4"
-    ripemd160 "^2.0.2"
-    sha.js "^2.4.11"
-    str2buf "^1.3.0"
-    webcrypto-shim "^0.1.7"
 
 issue-parser@^7.0.0:
   version "7.0.1"
@@ -11443,11 +11441,6 @@ npm-bundled@^4.0.0:
   integrity sha512-IxaQZDMsqfQ2Lz37VvyyEtKLe8FsRZuysmedy/N06TU1RyVppYKXrO4xIhR0F+7ubIBox6Q7nir6fQI3ej39iA==
   dependencies:
     npm-normalize-package-bin "^4.0.0"
-
-"npm-events-package@npm:events@^3.3.0":
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/events/-/events-3.3.0.tgz#31a95ad0a924e2d2c419a813aeb2c4e878ea7400"
-  integrity sha512-mQw+2fkQbALzQ7V0MY0IqdnXNOeTtP4r0lN9z7AAawCXgqea7bDii20AYrIBrFd/Hx0M2Ocz6S111CaFkUcb0Q==
 
 npm-install-checks@^7.1.0, npm-install-checks@^7.1.1:
   version "7.1.1"
@@ -14201,7 +14194,7 @@ string-natural-compare@^3.0.1:
   resolved "https://registry.yarnpkg.com/string-natural-compare/-/string-natural-compare-3.0.1.tgz#7a42d58474454963759e8e8b7ae63d71c1e7fdf4"
   integrity sha512-n3sPwynL1nwKi3WJ6AIsClwBMa0zTi54fn2oLU6ndfTSIO05xaznjSf15PcBZU6FNWbmN5Q6cxT4V5hGvB4taw==
 
-"string-width-cjs@npm:string-width@^4.2.0":
+"string-width-cjs@npm:string-width@^4.2.0", "string-width@^1.0.2 || 2 || 3 || 4", string-width@^4.1.0, string-width@^4.2.0, string-width@^4.2.3:
   version "4.2.3"
   resolved "https://registry.yarnpkg.com/string-width/-/string-width-4.2.3.tgz#269c7117d27b05ad2e536830a8ec895ef9c6d010"
   integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==
@@ -14218,15 +14211,6 @@ string-width@^1.0.1:
     code-point-at "^1.0.0"
     is-fullwidth-code-point "^1.0.0"
     strip-ansi "^3.0.0"
-
-"string-width@^1.0.2 || 2 || 3 || 4", string-width@^4.1.0, string-width@^4.2.0, string-width@^4.2.3:
-  version "4.2.3"
-  resolved "https://registry.yarnpkg.com/string-width/-/string-width-4.2.3.tgz#269c7117d27b05ad2e536830a8ec895ef9c6d010"
-  integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==
-  dependencies:
-    emoji-regex "^8.0.0"
-    is-fullwidth-code-point "^3.0.0"
-    strip-ansi "^6.0.1"
 
 string-width@^2.0.0, string-width@^2.1.1:
   version "2.1.1"
@@ -14318,7 +14302,7 @@ string_decoder@~1.1.1:
   dependencies:
     safe-buffer "~5.1.0"
 
-"strip-ansi-cjs@npm:strip-ansi@^6.0.1":
+"strip-ansi-cjs@npm:strip-ansi@^6.0.1", strip-ansi@^6.0.0, strip-ansi@^6.0.1:
   version "6.0.1"
   resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-6.0.1.tgz#9e26c63d30f53443e9489495b2105d37b67a85d9"
   integrity sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==
@@ -14345,13 +14329,6 @@ strip-ansi@^5.0.0, strip-ansi@^5.2.0:
   integrity sha512-DuRs1gKbBqsMKIZlrffwlug8MHkcnpjs5VPmL1PAh+mA30U0DTotfDZ0d2UUsXpPmPmMMJ6W773MaA3J+lbiWA==
   dependencies:
     ansi-regex "^4.1.0"
-
-strip-ansi@^6.0.0, strip-ansi@^6.0.1:
-  version "6.0.1"
-  resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-6.0.1.tgz#9e26c63d30f53443e9489495b2105d37b67a85d9"
-  integrity sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==
-  dependencies:
-    ansi-regex "^5.0.1"
 
 strip-ansi@^7.0.1:
   version "7.1.0"
@@ -15510,7 +15487,7 @@ wordwrap@^1.0.0:
   resolved "https://registry.yarnpkg.com/wordwrap/-/wordwrap-1.0.0.tgz#27584810891456a4171c8d0226441ade90cbcaeb"
   integrity sha512-gvVzJFlPycKc5dZN4yPkP8w7Dc37BtP1yczEneOb4uq34pXZcvrtRTmWV8W+Ume+XCxKgbjM+nevkyFPMybd4Q==
 
-"wrap-ansi-cjs@npm:wrap-ansi@^7.0.0":
+"wrap-ansi-cjs@npm:wrap-ansi@^7.0.0", wrap-ansi@^7.0.0:
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-7.0.0.tgz#67e145cff510a6a6984bdf1152911d69d2eb9e43"
   integrity sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==
@@ -15531,15 +15508,6 @@ wrap-ansi@^6.2.0:
   version "6.2.0"
   resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-6.2.0.tgz#e9393ba07102e6c91a3b221478f0257cd2856e53"
   integrity sha512-r6lPcBGxZXlIcymEu7InxDMhdW0KDxpLgoFLcguasxCaJ/SOIZwINatK9KY/tf+ZrlywOKU0UDj3ATXUBfxJXA==
-  dependencies:
-    ansi-styles "^4.0.0"
-    string-width "^4.1.0"
-    strip-ansi "^6.0.0"
-
-wrap-ansi@^7.0.0:
-  version "7.0.0"
-  resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-7.0.0.tgz#67e145cff510a6a6984bdf1152911d69d2eb9e43"
-  integrity sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==
   dependencies:
     ansi-styles "^4.0.0"
     string-width "^4.1.0"

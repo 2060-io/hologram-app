@@ -1,14 +1,13 @@
 diff --git a/node_modules/isomorphic-webcrypto/src/react-native.js b/node_modules/isomorphic-webcrypto/src/react-native.js
-index 8b2a105..c99d5ca 100644
+index 8b2a105..fbca0a6 100644
 --- a/node_modules/isomorphic-webcrypto/src/react-native.js
 +++ b/node_modules/isomorphic-webcrypto/src/react-native.js
-@@ -64,7 +64,8 @@ function installCrypto() {
+@@ -64,7 +64,7 @@ function installCrypto() {
      }
      return generateSecureRandom(48)
          .then(byteArray => {
 -          crypto.initPrng(Array.from(byteArray))
-+          //TODO: Uncomment this. It is currently blocking. 
-+          // crypto.initPrng(Array.from(byteArray))
++          //FIXME: crypto.initPrng(Array.from(byteArray))
            isSecured = true;
            resolve(true);
          })

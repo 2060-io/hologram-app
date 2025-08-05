@@ -17,6 +17,7 @@ const config = {
   },
   resolver: {
     sourceExts: ['jsx', 'js', 'ts', 'tsx', 'cjs', 'json'],
+    extraNodeModules: { stream: require.resolve('readable-stream') },
   },
 }
 

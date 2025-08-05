@@ -70,9 +70,7 @@ export const useFetchServiceInfo = (did?: string, forceFetch?: boolean) => {
           agentContext: agent.context,
           didResolver,
         })
-
-        log(`Trust resolution result ${JSON.stringify(trustResolution)}`)
-
+        log(`trustResolution: ${JSON.stringify(trustResolution)}`)
         if (!trustResolution.verifiableService || !trustResolution.didDocument) {
           return
         }
