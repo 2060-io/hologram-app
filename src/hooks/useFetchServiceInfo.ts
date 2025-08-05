@@ -9,7 +9,7 @@ import { useMobileAgent } from './agent/MobileAgentProvider'
 import { useNetwork } from '@2060/hooks/useNetwork'
 import { MobileAgent } from '@2060/services/agent'
 import { ServiceInfo, isServiceInfo } from '@2060/services/api/trustRegistryService'
-import { logError } from '@2060/utils'
+import { log, logError } from '@2060/utils'
 import { getConnectionDisplayName, getConnectionDisplayPicture } from '@2060/utils/connectionUtils'
 import { toast } from '@2060/utils/toast'
 
@@ -70,7 +70,7 @@ export const useFetchServiceInfo = (did?: string, forceFetch?: boolean) => {
           agentContext: agent.context,
           didResolver,
         })
-
+        log(`trustResolution: ${JSON.stringify(trustResolution)}`)
         if (!trustResolution.verifiableService || !trustResolution.didDocument) {
           return
         }
