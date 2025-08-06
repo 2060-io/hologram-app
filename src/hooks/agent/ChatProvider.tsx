@@ -97,7 +97,7 @@ export const ChatProvider: React.FC<Props> = ({ children }) => {
       const getActiveChatThreadId = () => {
         return activeChatThreadId.current
       }
-      subscribeToAgentChatEvents(agent, realm, getActiveChatThreadId)
+      subscribeToAgentChatEvents(agent, realm, true, getActiveChatThreadId)
     }
   }, [agent, realm])
 

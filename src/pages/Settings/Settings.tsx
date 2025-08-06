@@ -80,7 +80,7 @@ const Settings = ({ navigation }: Props) => {
 
       await shutdownAgent()
       await deleteAllKeys()
-      closeRealm(true)
+      closeRealm()
     } catch (error) {
       logError(`Error deleting wallet: ${error}`)
       toast({ type: 'error', message: t('settings.deleteWalletError') })

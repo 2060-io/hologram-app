@@ -1,67 +1,37 @@
 import { useCallback, useState } from 'react'
 
-import { KeyChainService, createAndStoreEncryptedKey, retrieveEncryptedKey } from '../services/keys'
-import { deleteDir, makeDirectory, mediaDirectoryPath, walletDirectoryPath } from '../utils/RNFS'
-
 import { useMobileAgent } from './agent'
 import { useLocalRealm } from './providers/RealmProvider'
 
-import { log } from '@2060/utils'
+import { KeyChainService, retrieveEncryptedKey } from '@2060/services/keys'
+import { logWarn } from '@2060/utils'
 
-export const useWallet = () => {
-  const [openingWallet, setOpeningWallet] = useState(true)
-  const [creatingNewWallet, setCreatingNewWallet] = useState(false)
-  const { agent, initMobileAgent } = useMobileAgent()
+export const useWallet = (isOpeningWalletDefaultValue = false) => {
+  const [openingWallet, setOpeningWallet] = useState(isOpeningWalletDefaultValue)
+  const { agent, openAndInitMobileAgent } = useMobileAgent()
   const { openRealm } = useLocalRealm()
 
-  const storage = { type: 'sqlite', config: { path: `${walletDirectoryPath}/afj.sqlite` } }
-  const getWalletConfig = (storeKey: string) => ({ id: 'afj', key: storeKey, storage })
+  const checkIfCanOpenWallet = async () => {
+    const walletKey = await retrieveEncryptedKey(KeyChainService.AfjWallet)
+    return walletKey
+  }
 
   const openWallet = useCallback(async () => {
-    if (!agent || agent.isInitialized) return
+    if (!agent) return
     try {
-      const key = await retrieveEncryptedKey(KeyChainService.AfjWallet)
-      if (!key) throw new Error('No wallet key stored')
-
-      await agent.wallet.open(getWalletConfig(key))
-      // If wallet could be opened, initialize agent to see if it is registered
-      await initMobileAgent()
+      const canOpenWallet = await checkIfCanOpenWallet()
+      if (!canOpenWallet) throw new Error('No wallet key stored, so wallet can not be opened')
+      await openAndInitMobileAgent()
       await openRealm()
     } catch (error) {
-      log(`wallet opening error: ${error}`)
+      logWarn(`wallet opening error: ${error}`)
     } finally {
       setOpeningWallet(false)
     }
   }, [agent])
 
-  const createNewWallet = useCallback(async () => {
-    if (!agent) throw new Error('Agent not defined')
-
-    if (!agent.isInitialized) {
-      setCreatingNewWallet(true)
-      try {
-        // Make sure wallet and media directories are clean
-        await deleteDir(walletDirectoryPath)
-        await deleteDir(mediaDirectoryPath)
-
-        const key = await createAndStoreEncryptedKey(KeyChainService.AfjWallet)
-        await makeDirectory(mediaDirectoryPath)
-        await makeDirectory(walletDirectoryPath)
-
-        await agent.wallet.createAndOpen(getWalletConfig(key))
-        await initMobileAgent()
-        await openRealm()
-      } finally {
-        setCreatingNewWallet(false)
-      }
-    }
-  }, [agent])
-
   return {
     openingWallet,
-    creatingNewWallet,
     openWallet,
-    createNewWallet,
-    isWalletOpen: agent?.isInitialized,
   }
 }

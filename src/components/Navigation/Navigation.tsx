@@ -15,13 +15,9 @@ import PersonalChatStackNavigator from './PersonalChatStackNavigator'
 import deepLinking from './deepLinking'
 import getStyles from './styles'
 
-import { useAppState, useNetwork } from '@2060/hooks'
-import { manageBackgroundChatEntryChanges } from '@2060/hooks/agent/chat'
-import { manageConnectionStateChangedEvent } from '@2060/hooks/agent/connections/manageConnectionStateChangedEvent'
+import { useNetwork } from '@2060/hooks'
 import { useMessagePickup } from '@2060/hooks/agent/useMessagePickup'
 import { useConfig } from '@2060/hooks/providers/ConfigProvider'
-import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
-import { useScreenLock } from '@2060/hooks/providers/ScreenLockProvider'
 import {
   HomeMain,
   SignUpMain,
@@ -51,7 +47,6 @@ import {
 } from '@2060/pages'
 import { MobileAgent } from '@2060/services/agent'
 import { AppTheme, getGlobalStyles } from '@2060/styles'
-import { log } from '@2060/utils'
 
 const Stack = createStackNavigator<NavigationStackParams>()
 type NavigationProps = {
@@ -62,12 +57,9 @@ type NavigationProps = {
 
 const Navigation = ({ isSignedUp, agent, theme }: NavigationProps) => {
   const { t } = useTranslation()
-  const { isAppActive } = useAppState()
-  const { realm } = useLocalRealm()
   const styles = getStyles(theme)
   const globalStyles = getGlobalStyles(theme)
   const { isDeveloperMode } = useConfig()
-  const { isScreenLockForceDisabled } = useScreenLock()
   const InitialComponent = isSignedUp ? HomeMain : isDeveloperMode ? SignUpMain : ProfileCreation
 
   const { assertConnectedNetwork } = useNetwork()
@@ -106,30 +98,7 @@ const Navigation = ({ isSignedUp, agent, theme }: NavigationProps) => {
       })
     })
     return () => unsubscribe()
-  })
-
-  useEffect(() => {
-    // FIXME: accessing realm is currently making the app crash in dev environment.
-    // We can probably disable the whole logic if running under __DEV__
-    if (agent && agent.isInitialized && realm) {
-      const { addChatEntryChangeListener, removeChatEntryChangeListener } = manageBackgroundChatEntryChanges(
-        realm,
-        agent,
-      )
-      const { addConnectionChangeListener, removeConnectionChangeListener } =
-        manageConnectionStateChangedEvent(agent)
-      if (!isAppActive && !isScreenLockForceDisabled) {
-        log('App in background ... registering to events')
-        addChatEntryChangeListener()
-        addConnectionChangeListener()
-        return () => {
-          log('Unregistering background event listeners')
-          removeChatEntryChangeListener()
-          removeConnectionChangeListener()
-        }
-      }
-    }
-  }, [agent, realm, isAppActive, isScreenLockForceDisabled])
+  }, [])
 
   return (
     <NavigationContainer linking={deepLinking} theme={theme.isDarkMode ? DarkTheme : DefaultTheme}>
