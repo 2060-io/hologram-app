@@ -3,7 +3,6 @@ import { getStorageData, setStorageData, LOGS_ENABLED_PERSIST_KEY } from '@2060/
 export interface DevEnvsKeys {
   DATA_STORE_URL: string
   CLOUD_AGENT_PUBLIC_DID: string
-  TRUSTED_SERVICE_RESOLVER_BASE_URL: string
   INDY_VDR_PROXY_BASE_URL: string
   WEBRTC_SERVER_BASE_URL: string
 }
@@ -19,7 +18,6 @@ export type DevEnv = {
 export const devEnvPlaceholder: DevEnvsObject = {
   CLOUD_AGENT_PUBLIC_DID: 'Cloud Agent Public DID',
   DATA_STORE_URL: 'DataStore base URL',
-  TRUSTED_SERVICE_RESOLVER_BASE_URL: 'Trusted Service Resolver base URL',
   WEBRTC_SERVER_BASE_URL: 'WebRTC server base URL',
   INDY_VDR_PROXY_BASE_URL: 'Indy VDR Proxy base URL',
 }
@@ -32,10 +30,6 @@ export const allDevEnvs: DevEnv[] = [
   {
     key: 'DATA_STORE_URL',
     values: ['https://ds.dev.2060.io', 'https://ds.2060.io'],
-  },
-  {
-    key: 'TRUSTED_SERVICE_RESOLVER_BASE_URL',
-    values: ['https://tsr.dev.2060.io', 'https://tsr.2060.io'],
   },
   {
     key: 'WEBRTC_SERVER_BASE_URL',

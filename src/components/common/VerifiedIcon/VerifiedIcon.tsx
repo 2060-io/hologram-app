@@ -6,7 +6,7 @@ import SvgIcon, { IconsNames } from '../SvgIcon'
 import styles from './styles'
 
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { ServiceStatus } from '@2060/services/api/trustRegistryService'
+import { ServiceStatus } from '@2060/model'
 
 type Props = {
   style?: StyleProp<ViewStyle>

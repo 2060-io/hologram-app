@@ -10,8 +10,8 @@ import getStyles from './styles'
 import { CredentialDetails, ModalConfirmAction } from '@2060/components'
 import { Text, ServiceInformation } from '@2060/components/common'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
+import { ServiceInfo } from '@2060/model'
 import { CredentialDetailsForDisplay } from '@2060/services/agent/display'
-import { ServiceInfo } from '@2060/services/api/trustRegistryService'
 
 type Props = {
   navigation: StackNavigationProp<ParamListBase>

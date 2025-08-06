@@ -1,9 +1,9 @@
 import { DifPexCredentialsForRequest, DifPexCredentialsForRequestSubmissionEntry } from '@credo-ts/core'
 
-import { VerifierInfo } from '../api/trustRegistryService'
-
 import { MobileAgent } from './MobileAgent'
 import { getCredentialMainInfo, getPresentationRequestForDisplay } from './display'
+
+import { VerifierInfo } from '@2060/model'
 
 export interface FormattedSubmission {
   name: string

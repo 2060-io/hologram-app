@@ -1,5 +1,3 @@
-import axios from 'axios'
-
 export type ServiceStatus = 'trusted' | 'notTrusted' | 'notFound'
 
 export type BaseEntity = {
@@ -47,37 +45,6 @@ export type VerifierInfo = {
   logoUrl?: string
   description?: string
   status: string
-}
-
-export async function reportMessage(options: {
-  did: string
-  type: string
-  metadata: Record<string, unknown>
-  trustedServiceResolverBaseUrl: string
-}) {
-  const { did, type, metadata, trustedServiceResolverBaseUrl } = options
-  const response = await axios({
-    method: 'POST', //
-    url: `${trustedServiceResolverBaseUrl}/v1/reported-messages`,
-    headers: { 'Content-Type': 'application/json' },
-    data: JSON.stringify({ did, contents: JSON.stringify({ type, metadata }) }),
-  })
-
-  return response.status === 200
-}
-
-export async function getServiceInfo(options: {
-  did: string
-  trustedServiceResolverBaseUrl: string
-}): Promise<ServiceInfo | null> {
-  const { did, trustedServiceResolverBaseUrl } = options
-  const response = await axios.get(`${trustedServiceResolverBaseUrl}/v1/services/did/${did}`, {
-    validateStatus: function (status) {
-      return status === 200 || status === 404 // Resolve only if the status code 200 or 404
-    },
-    headers: { 'Content-Type': 'application/json' },
-  })
-  return response.status === 200 && isServiceInfo(response.data) ? response.data : null
 }
 
 export function isServiceInfo(object: Record<string, unknown>): object is ServiceInfo {

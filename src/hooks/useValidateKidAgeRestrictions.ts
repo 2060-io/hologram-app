@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { KID_BIRTHDATE_DATE_FORMAT } from '@2060/constants'
-import { ServiceStatus } from '@2060/services/api/trustRegistryService'
+import { ServiceStatus } from '@2060/model'
 import { ParentalControlEnum, retrieveKeyInConfigFile } from '@2060/services/config'
 import { dateToString, timeFromNow } from '@2060/utils/dateUtils'
 
