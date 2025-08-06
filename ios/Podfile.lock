@@ -15,6 +15,8 @@ PODS:
   - DoubleConversion (1.1.6)
   - Expo (52.0.27):
     - ExpoModulesCore
+  - ExpoCrypto (14.0.2):
+    - ExpoModulesCore
   - ExpoKeepAwake (14.0.3):
     - ExpoModulesCore
   - ExpoLocalAuthentication (15.0.2):
@@ -2249,6 +2251,8 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
+  - RNSecureRandom (1.0.1):
+    - React
   - RNShare (12.0.10):
     - DoubleConversion
     - glog
@@ -2334,6 +2338,7 @@ DEPENDENCIES:
   - boost (from `../node_modules/react-native/third-party-podspecs/boost.podspec`)
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
   - Expo (from `../node_modules/expo`)
+  - ExpoCrypto (from `../node_modules/expo-crypto/ios`)
   - ExpoKeepAwake (from `../node_modules/expo-keep-awake/ios`)
   - ExpoLocalAuthentication (from `../node_modules/expo-local-authentication/ios`)
   - ExpoModulesCore (from `../node_modules/expo-modules-core`)
@@ -2443,6 +2448,7 @@ DEPENDENCIES:
   - RNPermissions (from `../node_modules/react-native-permissions`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
+  - RNSecureRandom (from `../node_modules/react-native-securerandom`)
   - RNShare (from `../node_modules/react-native-share`)
   - RNShareMenu (from `../node_modules/react-native-share-menu`)
   - RNSVG (from `../node_modules/react-native-svg`)
@@ -2500,6 +2506,8 @@ EXTERNAL SOURCES:
     :podspec: "../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec"
   Expo:
     :path: "../node_modules/expo"
+  ExpoCrypto:
+    :path: "../node_modules/expo-crypto/ios"
   ExpoKeepAwake:
     :path: "../node_modules/expo-keep-awake/ios"
   ExpoLocalAuthentication:
@@ -2707,6 +2715,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-reanimated"
   RNScreens:
     :path: "../node_modules/react-native-screens"
+  RNSecureRandom:
+    :path: "../node_modules/react-native-securerandom"
   RNShare:
     :path: "../node_modules/react-native-share"
   RNShareMenu:
@@ -2731,6 +2741,7 @@ SPEC CHECKSUMS:
   boost: 1dca942403ed9342f98334bf4c3621f011aa7946
   DoubleConversion: f16ae600a246532c4020132d54af21d0ddb2a385
   Expo: 296cbea8d4469eb60d61f09dbd4925f86d2b85da
+  ExpoCrypto: e97e864c8d7b9ce4a000bca45dddb93544a1b2b4
   ExpoKeepAwake: b0171a73665bfcefcfcc311742a72a956e6aa680
   ExpoLocalAuthentication: eb2be9c7bcdc68e9434d4be4bb5aa5cf7943e816
   ExpoModulesCore: c58544ab4a2e873f646a6308e1e08819380edb9f
@@ -2864,6 +2875,7 @@ SPEC CHECKSUMS:
   RNPermissions: bd0d9ca7969ff7b999aa605ee2e5919c12522bfe
   RNReanimated: 2f762cd9e6b74c1f6ec88c0545d773a68b8e1085
   RNScreens: 4a5ab20b324ed1e3fe3862796b8f8e0a6208c415
+  RNSecureRandom: b64d263529492a6897e236a22a2c4249aa1b53dc
   RNShare: d40a5a9c43a49d4d3887aebe84fc3f4173f06c4b
   RNShareMenu: 107956974f695db0947c7beb43f3a12c4ac9e51f
   RNSVG: 86fecdfc637614ba9def63f7f3f2e7795e018356
