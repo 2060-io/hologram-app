@@ -10,7 +10,7 @@ import {
 } from '@2060/services/localStorage'
 import { DevEnvsObject, DevEnvObject } from '@2060/utils/developer'
 
-export const defaultDevEnvs: DevEnvsObject = {
+const defaultDevEnvs: DevEnvsObject = {
   CLOUD_AGENT_PUBLIC_DID: Config.CLOUD_AGENT_PUBLIC_DID as string,
   DATA_STORE_URL: Config.DATA_STORE_URL as string,
   WEBRTC_SERVER_BASE_URL: Config.WEBRTC_SERVER_BASE_URL as string,

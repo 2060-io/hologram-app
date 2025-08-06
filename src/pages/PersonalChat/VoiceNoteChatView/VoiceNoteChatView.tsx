@@ -21,7 +21,7 @@ import { ChatEntryRole, MediaUploadState, VoiceNoteMetadata } from '@2060/model'
 import { getFileSize, logWarn } from '@2060/utils'
 import { getFullLocalFilePath } from '@2060/utils/RNFS'
 
-export type VoiceNoteChatViewProps = {
+type VoiceNoteChatViewProps = {
   mediaRecordId: string
   metadata: VoiceNoteMetadata
   renderTimeAndTicks: (containerStyle: ViewStyle) => false | React.JSX.Element

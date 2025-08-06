@@ -56,7 +56,7 @@ import {
 } from './services/ChatEntryService'
 import { addUnread, findChatThread, findOrCreateChatThread, updateThread } from './services/ChatThreadService'
 
-import { ChatEntryType, ChatEntryRole, ChatEntryState, ChatEntry, InvitationMetadata } from '@2060/model'
+import { ChatEntryType, ChatEntryRole, ChatEntryState, InvitationMetadata } from '@2060/model'
 import { InvitationState } from '@2060/model/InvitationState'
 import { MobileAgent } from '@2060/services/agent'
 import {
@@ -198,8 +198,6 @@ export function subscribeToAgentChatEvents(
               state: ChatEntryState.Created,
               associatedMessageId: outboundMessage.message.id,
             })
-
-            updateThread(realm, entry.chatThreadId, { lastChatEntry: entry })
           }
         }
       }
@@ -210,21 +208,8 @@ export function subscribeToAgentChatEvents(
   // in a single write operation
   const messageReceiptsReceivedListener = async (data: MessageReceiptsReceivedEvent) => {
     const receipts = data.payload.receipts
-    const connection = await agent.connections.getById(data.payload.connectionId)
-    const thread = findChatThread(realm, connection)
-
-    let lastChatEntry: ChatEntry | undefined
-
     for (const receipt of receipts) {
-      const entry = addReceiptToRelatedEntries(realm, receipt)
-      if (entry && (!lastChatEntry || lastChatEntry?.createdAt < entry.createdAt)) lastChatEntry = entry
-    }
-
-    if (
-      lastChatEntry &&
-      (!thread.lastActivityAt || thread.lastActivityAt.getTime() <= lastChatEntry.createdAt)
-    ) {
-      updateThread(realm, thread.id, { lastChatEntry })
+      addReceiptToRelatedEntries(realm, receipt)
     }
   }
 
@@ -354,7 +339,6 @@ export function subscribeToAgentChatEvents(
     if (!connection) return
 
     const thread = findOrCreateChatThread(realm, connection)
-    let chatEntry: ChatEntry | undefined
     if (action === 'Received') {
       const { label, imageUrl, invitationDids, id } = outOfBandRecord.outOfBandInvitation
       const did = tryParseDid(id) ? id : invitationDids[0]
@@ -377,7 +361,7 @@ export function subscribeToAgentChatEvents(
             }
 
       // New Invitation Received ChatEntry
-      chatEntry = createChatEntry(realm, {
+      createChatEntry(realm, {
         associatedRecordId: outOfBandRecord.id,
         chatThreadId: thread.id,
         type: ChatEntryType.Invitation,
@@ -387,7 +371,6 @@ export function subscribeToAgentChatEvents(
         createdAt: new Date().getTime(),
         associatedMessageId: event.payload.messageId,
       })
-      updateThread(realm, thread.id, { lastChatEntry: chatEntry })
       if (thread.id !== getActiveChatThreadId()) {
         addUnread(realm, thread.id, 1)
       }

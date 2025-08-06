@@ -7,7 +7,7 @@ import {
   findAllDidcommThreadId,
   updateChatEntryMetadata,
 } from '../services/ChatEntryService'
-import { addUnread, findOrCreateChatThread, updateThread } from '../services/ChatThreadService'
+import { addUnread, findOrCreateChatThread } from '../services/ChatThreadService'
 
 import { IncomingCallInfo } from '@2060/hooks/providers/useVideoCallContext'
 import { CallOfferMetadata, CallOfferState, ChatEntryRole, ChatEntryState, ChatEntryType } from '@2060/model'
@@ -33,7 +33,7 @@ export const handleCallMessages = (options: {
     }
     const thread = findOrCreateChatThread(realm, connection!)
     const { roomId, wsUrl, peerId } = incomingCallInfo
-    const chatEntry = createChatEntry(realm, {
+    createChatEntry(realm, {
       chatThreadId: thread.id,
       type: ChatEntryType.CallOffer,
       role: ChatEntryRole.Receiver,
@@ -51,7 +51,6 @@ export const handleCallMessages = (options: {
       createdAt: (receivedAt ?? new Date()).getTime(),
       didcommThreadId: message.threadId,
     })
-    updateThread(realm, thread.id, { lastChatEntry: chatEntry })
     if (thread.id !== activeChatThreadId) {
       addUnread(realm, thread.id, 1)
     }

@@ -2,8 +2,8 @@ import { StyleSheet } from 'react-native'
 
 import getCommonStyles from '../commonStyles'
 
-import { waterColor } from '@2060/constants'
 import { AppTheme } from '@2060/styles'
+import { waterColor } from '@2060/utils/colorUtils'
 
 export default (theme: AppTheme) => {
   const commonStyles = getCommonStyles(theme)

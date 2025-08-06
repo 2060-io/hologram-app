@@ -12,7 +12,7 @@ import {
   updateRecord,
 } from './recordUtils'
 
-export interface CredentialContextInterface {
+interface CredentialContextInterface {
   loading: boolean
   records: W3cCredentialRecord[]
 }
@@ -88,5 +88,3 @@ export const CredentialProvider: React.FC<React.PropsWithChildren<Props>> = ({ c
     </CredentialContext.Provider>
   )
 }
-
-export default CredentialProvider

@@ -32,18 +32,10 @@
 		37519992287F7CBD0066658E /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 37519991287F7CBD0066658E /* AppDelegate.mm */; };
 		375723092A86CEF500ECF0CE /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 37519991287F7CBD0066658E /* AppDelegate.mm */; };
 		3757230A2A86CEF500ECF0CE /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		375723112A86CEF500ECF0CE /* SFPro.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 966A172C27EC1283001E00A3 /* SFPro.ttf */; };
-		375723122A86CEF500ECF0CE /* SFPro-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = 966A172D27EC1283001E00A3 /* SFPro-Light.otf */; };
-		375723132A86CEF500ECF0CE /* SFPro-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 966A172E27EC1283001E00A3 /* SFPro-Bold.otf */; };
-		375723142A86CEF500ECF0CE /* SFPro-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 966A172F27EC1283001E00A3 /* SFPro-Medium.otf */; };
 		375723152A86CEF500ECF0CE /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		375723162A86CEF500ECF0CE /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EBDBDCAE269EB89000E74BEF /* SplashScreen.storyboard */; };
 		375723282A86CF0D00ECF0CE /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 37519991287F7CBD0066658E /* AppDelegate.mm */; };
 		375723292A86CF0D00ECF0CE /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		375723302A86CF0D00ECF0CE /* SFPro.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 966A172C27EC1283001E00A3 /* SFPro.ttf */; };
-		375723312A86CF0D00ECF0CE /* SFPro-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = 966A172D27EC1283001E00A3 /* SFPro-Light.otf */; };
-		375723322A86CF0D00ECF0CE /* SFPro-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 966A172E27EC1283001E00A3 /* SFPro-Bold.otf */; };
-		375723332A86CF0D00ECF0CE /* SFPro-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 966A172F27EC1283001E00A3 /* SFPro-Medium.otf */; };
 		375723342A86CF0D00ECF0CE /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		375723352A86CF0D00ECF0CE /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EBDBDCAE269EB89000E74BEF /* SplashScreen.storyboard */; };
 		375723422A87EB9700ECF0CE /* Firebase in Resources */ = {isa = PBXBuildFile; fileRef = 375723412A87EB9700ECF0CE /* Firebase */; };
@@ -61,10 +53,6 @@
 		854528CBBED6C08C10AECA17 /* libPods-2060CommonPods-2060Prod.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 14BE7DB4C82799D6B77A6C96 /* libPods-2060CommonPods-2060Prod.a */; };
 		85733EBC853A401384E01005 /* EuclidCircularA-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3014A43B734340F48859D0AE /* EuclidCircularA-BoldItalic.ttf */; };
 		8DBB3354E4B10B4056DE9303 /* libPods-CommonShareExtensionPods-ShareExtensionStaging.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 24BE14EDB6C2AAF2A917A14A /* libPods-CommonShareExtensionPods-ShareExtensionStaging.a */; };
-		966A173027EC1283001E00A3 /* SFPro.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 966A172C27EC1283001E00A3 /* SFPro.ttf */; };
-		966A173127EC1283001E00A3 /* SFPro-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = 966A172D27EC1283001E00A3 /* SFPro-Light.otf */; };
-		966A173227EC1283001E00A3 /* SFPro-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 966A172E27EC1283001E00A3 /* SFPro-Bold.otf */; };
-		966A173327EC1283001E00A3 /* SFPro-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 966A172F27EC1283001E00A3 /* SFPro-Medium.otf */; };
 		A41A5FEA2A8D4967B72DD55C /* EuclidCircularA-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 049DE2D9187F4C75BAE23BDD /* EuclidCircularA-MediumItalic.ttf */; };
 		A851E91D72D64E9CE3950549 /* libPods-2060CommonPods-2060Staging.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EBF03A6063B069CAE755D1AA /* libPods-2060CommonPods-2060Staging.a */; };
 		B3DCDAE3C72AA3B759AF74A9 /* libPods-CommonShareExtensionPods-ShareExtensionDev.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DCFEFE356C0AFD1423FFF398 /* libPods-CommonShareExtensionPods-ShareExtensionDev.a */; };
@@ -249,10 +237,6 @@
 		8EB93268E7D7D1D69866955D /* Pods-2060CommonPods-2060Prod.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-2060CommonPods-2060Prod.debug.xcconfig"; path = "Target Support Files/Pods-2060CommonPods-2060Prod/Pods-2060CommonPods-2060Prod.debug.xcconfig"; sourceTree = "<group>"; };
 		9192FEFF5B8887AD7DC2D85E /* Pods-CommonShareExtensionPods-ShareExtensionDev.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CommonShareExtensionPods-ShareExtensionDev.release.xcconfig"; path = "Target Support Files/Pods-CommonShareExtensionPods-ShareExtensionDev/Pods-CommonShareExtensionPods-ShareExtensionDev.release.xcconfig"; sourceTree = "<group>"; };
 		94C27F2FDFFC422488C814F0 /* FontAwesome5_Solid.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Solid.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf"; sourceTree = "<group>"; };
-		966A172C27EC1283001E00A3 /* SFPro.ttf */ = {isa = PBXFileReference; lastKnownFileType = text; name = SFPro.ttf; path = ../src/assets/fonts/SFPro.ttf; sourceTree = "<group>"; };
-		966A172D27EC1283001E00A3 /* SFPro-Light.otf */ = {isa = PBXFileReference; lastKnownFileType = text; name = "SFPro-Light.otf"; path = "../src/assets/fonts/SFPro-Light.otf"; sourceTree = "<group>"; };
-		966A172E27EC1283001E00A3 /* SFPro-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = text; name = "SFPro-Bold.otf"; path = "../src/assets/fonts/SFPro-Bold.otf"; sourceTree = "<group>"; };
-		966A172F27EC1283001E00A3 /* SFPro-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = text; name = "SFPro-Medium.otf"; path = "../src/assets/fonts/SFPro-Medium.otf"; sourceTree = "<group>"; };
 		978A84D5A1D3416F93AF01F3 /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialCommunityIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
 		9A952FC5CF4C7F1F4026515F /* Pods-CommonShareExtensionPods-ShareExtensionProd.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CommonShareExtensionPods-ShareExtensionProd.release.xcconfig"; path = "Target Support Files/Pods-CommonShareExtensionPods-ShareExtensionProd/Pods-CommonShareExtensionPods-ShareExtensionProd.release.xcconfig"; sourceTree = "<group>"; };
 		A032201FCBBE4B3EBE932677 /* EuclidCircularA-SemiBoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "EuclidCircularA-SemiBoldItalic.ttf"; path = "../src/assets/fonts/EuclidCircularA-SemiBoldItalic.ttf"; sourceTree = "<group>"; };
@@ -404,10 +388,6 @@
 		3117EE94C5A54362BCA3B9A8 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				966A172E27EC1283001E00A3 /* SFPro-Bold.otf */,
-				966A172D27EC1283001E00A3 /* SFPro-Light.otf */,
-				966A172F27EC1283001E00A3 /* SFPro-Medium.otf */,
-				966A172C27EC1283001E00A3 /* SFPro.ttf */,
 				854026CA966B4C67BDE12FF5 /* AntDesign.ttf */,
 				F82AE937A5E24B96B280DC6A /* Entypo.ttf */,
 				DB9D2BA318B04DECB9761496 /* EvilIcons.ttf */,
@@ -759,13 +739,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				966A173027EC1283001E00A3 /* SFPro.ttf in Resources */,
 				3757234A2A87F38B00ECF0CE /* InfoPlist in Resources */,
 				375723422A87EB9700ECF0CE /* Firebase in Resources */,
-				966A173127EC1283001E00A3 /* SFPro-Light.otf in Resources */,
-				966A173227EC1283001E00A3 /* SFPro-Bold.otf in Resources */,
 				37D01B7D2AA4048D00015826 /* ExportOptions.plist in Resources */,
-				966A173327EC1283001E00A3 /* SFPro-Medium.otf in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				EBDBDCAF269EB89000E74BEF /* SplashScreen.storyboard in Resources */,
 				7F09BC2CA9F74641B6FADDA8 /* EuclidCircularA-Bold.ttf in Resources */,
@@ -786,24 +762,20 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				375723112A86CEF500ECF0CE /* SFPro.ttf in Resources */,
 				3757234B2A87F38B00ECF0CE /* InfoPlist in Resources */,
 				E06800972ABCB473002EC287 /* EuclidCircularA-LightItalic.ttf in Resources */,
 				E068008F2ABCB463002EC287 /* EuclidCircularA-Bold.ttf in Resources */,
 				375723432A87EB9700ECF0CE /* Firebase in Resources */,
-				375723122A86CEF500ECF0CE /* SFPro-Light.otf in Resources */,
 				E06800932ABCB46B002EC287 /* EuclidCircularA-Italic.ttf in Resources */,
 				E06800912ABCB467002EC287 /* EuclidCircularA-BoldItalic.ttf in Resources */,
 				E068009D2ABCB47D002EC287 /* EuclidCircularA-Regular.ttf in Resources */,
 				E068009B2ABCB47A002EC287 /* EuclidCircularA-MediumItalic.ttf in Resources */,
 				E068009F2ABCB480002EC287 /* EuclidCircularA-SemiBold.ttf in Resources */,
-				375723132A86CEF500ECF0CE /* SFPro-Bold.otf in Resources */,
 				E06800992ABCB477002EC287 /* EuclidCircularA-Medium.ttf in Resources */,
 				0DC0A09A2C139F0300B45E18 /* SplashScreenDev.storyboard in Resources */,
 				E06800A12ABCB483002EC287 /* EuclidCircularA-SemiBoldItalic.ttf in Resources */,
 				E06800952ABCB470002EC287 /* EuclidCircularA-Light.ttf in Resources */,
 				37D01B7E2AA4048D00015826 /* ExportOptions.plist in Resources */,
-				375723142A86CEF500ECF0CE /* SFPro-Medium.otf in Resources */,
 				375723152A86CEF500ECF0CE /* Images.xcassets in Resources */,
 				0D133B6C2BFE7DC800B2AAFF /* PrivacyInfo.xcprivacy in Resources */,
 				375723162A86CEF500ECF0CE /* SplashScreen.storyboard in Resources */,
@@ -814,23 +786,19 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				375723302A86CF0D00ECF0CE /* SFPro.ttf in Resources */,
 				3757234C2A87F38B00ECF0CE /* InfoPlist in Resources */,
 				E06800982ABCB474002EC287 /* EuclidCircularA-LightItalic.ttf in Resources */,
 				E06800902ABCB464002EC287 /* EuclidCircularA-Bold.ttf in Resources */,
 				375723442A87EB9700ECF0CE /* Firebase in Resources */,
-				375723312A86CF0D00ECF0CE /* SFPro-Light.otf in Resources */,
 				E06800942ABCB46C002EC287 /* EuclidCircularA-Italic.ttf in Resources */,
 				E06800922ABCB468002EC287 /* EuclidCircularA-BoldItalic.ttf in Resources */,
 				E068009E2ABCB47E002EC287 /* EuclidCircularA-Regular.ttf in Resources */,
 				E068009C2ABCB47B002EC287 /* EuclidCircularA-MediumItalic.ttf in Resources */,
 				E06800A02ABCB481002EC287 /* EuclidCircularA-SemiBold.ttf in Resources */,
-				375723322A86CF0D00ECF0CE /* SFPro-Bold.otf in Resources */,
 				E068009A2ABCB477002EC287 /* EuclidCircularA-Medium.ttf in Resources */,
 				E06800A22ABCB484002EC287 /* EuclidCircularA-SemiBoldItalic.ttf in Resources */,
 				E06800962ABCB470002EC287 /* EuclidCircularA-Light.ttf in Resources */,
 				37D01B7F2AA4048D00015826 /* ExportOptions.plist in Resources */,
-				375723332A86CF0D00ECF0CE /* SFPro-Medium.otf in Resources */,
 				0DC0A09C2C139F2100B45E18 /* SplashScreenStaging.storyboard in Resources */,
 				375723342A86CF0D00ECF0CE /* Images.xcassets in Resources */,
 				0D133B6D2BFE7DC800B2AAFF /* PrivacyInfo.xcprivacy in Resources */,

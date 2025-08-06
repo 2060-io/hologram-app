@@ -2,7 +2,7 @@ import { CredentialExchangeRecord, ProofExchangeRecord, W3cCredentialRecord } fr
 
 import { ServiceStatus } from '@2060/model/ServiceInfo'
 
-export interface DidCommCredentialDisplayMetadata {
+interface DidCommCredentialDisplayMetadata {
   issuedAt: number
   issuerId: string
   issuerName: string

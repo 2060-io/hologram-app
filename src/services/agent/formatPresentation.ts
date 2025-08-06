@@ -13,7 +13,7 @@ export interface FormattedSubmission {
   verifier: VerifierInfo
 }
 
-export interface FormattedSubmissionEntry {
+interface FormattedSubmissionEntry {
   id: string
   name: string
   isSatisfied: boolean

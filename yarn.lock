@@ -3292,11 +3292,6 @@
   resolved "https://registry.yarnpkg.com/@react-native-community/netinfo/-/netinfo-11.4.1.tgz#a3c247aceab35f75dd0aa4bfa85d2be5a4508688"
   integrity sha512-B0BYAkghz3Q2V09BF88RA601XursIEA111tnc2JOaN7axJWmNefmfjZqw/KdSxKZp7CZUuPpjBmz/WCR9uaHYg==
 
-"@react-native-community/picker@^1.8.1":
-  version "1.8.1"
-  resolved "https://registry.yarnpkg.com/@react-native-community/picker/-/picker-1.8.1.tgz#94f14f0aad98fa7592967b941be97deec95c3805"
-  integrity sha512-Sj9DzX1CSnmYiuEQ5fQhExoo4XjSKoZkqLPAAybycq6RHtCuWppf+eJXRMCOJki25BlKSSt+qVqg0fIe//ujNQ==
-
 "@react-native-firebase/app-check@21.7.1":
   version "21.7.1"
   resolved "https://registry.yarnpkg.com/@react-native-firebase/app-check/-/app-check-21.7.1.tgz#c98477d8aa541c2e3f7d4270d85be60871dda588"
@@ -3313,11 +3308,6 @@
   version "21.7.1"
   resolved "https://registry.yarnpkg.com/@react-native-firebase/messaging/-/messaging-21.7.1.tgz#826344d9cd0bb19743b985ae1fc023632f0d33c2"
   integrity sha512-asLoTH/IZROTR/y82UpMqWGFly5TJf9Zvy+EqvgWMKhRWnAPxjC+UFHQeGwut95kg0zBj49H9F6yJ2gjdatOHg==
-
-"@react-native-masked-view/masked-view@0.2.0":
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/@react-native-masked-view/masked-view/-/masked-view-0.2.0.tgz#3309ada28dafd7ac1fead4eb99286acd43180b2a"
-  integrity sha512-OXYHN8lRvqLHPM2qB4wagcV1thCzR/PmFaJPOIsq+KU7PBmB0CY5DaC5WCPbyzGP8X9ehVmmK/yWlew3GJIgnQ==
 
 "@react-native/assets-registry@0.76.6":
   version "0.76.6"
@@ -14657,11 +14647,6 @@ test-exclude@^6.0.0:
     "@istanbuljs/schema" "^0.1.2"
     glob "^7.1.4"
     minimatch "^3.0.4"
-
-text-encoding-polyfill@^0.6.7:
-  version "0.6.7"
-  resolved "https://registry.yarnpkg.com/text-encoding-polyfill/-/text-encoding-polyfill-0.6.7.tgz#4d27de0153e4c86eb2631ffd74c2f3f57969a9ec"
-  integrity sha512-/DZ1XJqhbqRkCop6s9ZFu8JrFRwmVuHg4quIRm+ziFkR3N3ec6ck6yBvJ1GYeEQZhLVwRW0rZE+C3SSJpy0RTg==
 
 text-encoding@^0.7.0:
   version "0.7.0"

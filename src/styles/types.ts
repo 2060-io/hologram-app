@@ -13,7 +13,7 @@ export type FontSizeType = {
   xl: number
 }
 
-export type Palette = {
+type Palette = {
   green: string
   lightGrey: string
   darkGrey: string

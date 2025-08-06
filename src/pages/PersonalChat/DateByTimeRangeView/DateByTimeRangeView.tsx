@@ -10,7 +10,7 @@ import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { ChatEntryMessage } from '@2060/pages/PersonalChat/ChatMessage/Props'
 import { getFormattedDateRange } from '@2060/utils/dateUtils'
 
-export type Props = {
+type Props = {
   currentMessage?: ChatEntryMessage
   previousMessage?: ChatEntryMessage
 }

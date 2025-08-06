@@ -8,27 +8,21 @@ import { QuestionAnswerOption, QuestionChatViewProps } from './QuestionChatViewP
 import getStyles from './styles'
 
 import { Text } from '@2060/components/common'
-import { useMobileAgent } from '@2060/hooks/agent'
+import { useChatActions } from '@2060/hooks'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { toast } from '@2060/utils/toast'
 
 const QuestionChatView = ({ question, associatedRecordId }: QuestionChatViewProps) => {
   const [optionSelected, setOptionSelected] = useState<string | undefined>(question.response)
   const theme = useTheme()
   const styles = getStyles(theme)
   const { t } = useTranslation()
-  const { agent } = useMobileAgent()
   const options = JSON.parse(question.options) as QuestionAnswerOption[]
+  const { sendAnswer } = useChatActions()
 
-  const handleSelectedOption = useCallback(
-    (option: QuestionAnswerOption) => {
-      agent?.modules.questionAnswer
-        .sendAnswer(associatedRecordId, option.value)
-        .then(value => setOptionSelected(value.response))
-        .catch(error => toast({ type: 'error', message: error.message }))
-    },
-    [optionSelected],
-  )
+  const onSelectedOption = useCallback((response: string) => {
+    setOptionSelected(response)
+    sendAnswer(response, associatedRecordId)
+  }, [])
 
   return (
     <>
@@ -48,7 +42,7 @@ const QuestionChatView = ({ question, associatedRecordId }: QuestionChatViewProp
                 optionSelected === option.value && styles.containerOptionSelected,
                 { borderColor: optionSelected ? theme.colors.secondaryGrey : theme.colors.blue },
               ]}
-              onPress={() => handleSelectedOption(option)}
+              onPress={() => onSelectedOption(option.value)}
             >
               <Text
                 typography="EuclidCircularA-SemiBold"

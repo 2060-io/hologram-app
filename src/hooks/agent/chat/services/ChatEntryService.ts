@@ -2,6 +2,8 @@ import { MessageReceipt, MessageState } from '@2060.io/credo-ts-didcomm-receipts
 import { utils } from '@credo-ts/core'
 import Realm from 'realm'
 
+import { updateThread, updateThreadIfNeeded } from './ChatThreadService'
+
 import {
   ChatEntry,
   ChatEntryState,
@@ -11,7 +13,7 @@ import {
   ChatEntryRole,
 } from '@2060/model'
 
-export interface ChatEntryBaseProps {
+interface ChatEntryBaseProps {
   chatThreadId: string
   type: ChatEntryType
   role: ChatEntryRole
@@ -20,7 +22,7 @@ export interface ChatEntryBaseProps {
   associatedMessageId?: string
   didcommThreadId?: string
 }
-export interface ChatEntryStorageProps extends ChatEntryBaseProps {
+interface ChatEntryStorageProps extends ChatEntryBaseProps {
   id?: string
   createdAt?: number
   lastReadAt?: Date
@@ -71,21 +73,8 @@ export function createChatEntry(realm: Realm, props: ChatEntryStorageProps) {
       relatedEntryProps,
     })
   })
+  updateThread(realm, chatEntryRecord.chatThreadId, { lastChatEntry: chatEntryRecord })
   return chatEntryRecord
-}
-
-/**
- * Mark a record as read
- *
- * @returns updated record
- */
-export function markEntryAsRead(realm: Realm, recordId: string) {
-  const record = realm.objectForPrimaryKey(ChatEntry, recordId)
-  if (!record) throw new Error(`Cannot find chat element with id ${recordId}`)
-
-  realm.write(() => {
-    record.unread = false
-  })
 }
 
 export function updateChatEntry(
@@ -99,26 +88,27 @@ export function updateChatEntry(
   },
 ) {
   const { recordId, state, associatedMessageId, associatedRecordId, metadata } = options
-  const record = realm.objectForPrimaryKey(ChatEntry, recordId)
-  if (!record) throw new Error(`Cannot find chat element with id ${recordId}`)
+  const chatEntryRecord = realm.objectForPrimaryKey(ChatEntry, recordId)
+  if (!chatEntryRecord) throw new Error(`Cannot find chat element with id ${recordId}`)
 
   realm.write(() => {
-    record.state = state
+    chatEntryRecord.state = state
 
     if (associatedMessageId) {
-      record.associatedMessageId = associatedMessageId
-      record.didcommThreadId = associatedMessageId
+      chatEntryRecord.associatedMessageId = associatedMessageId
+      chatEntryRecord.didcommThreadId = associatedMessageId
     }
 
     if (associatedRecordId) {
-      record.associatedRecordId = associatedRecordId
+      chatEntryRecord.associatedRecordId = associatedRecordId
     }
 
     if (metadata) {
-      record.metadata = metadata
-      record.updatedAt = new Date().getTime()
+      chatEntryRecord.metadata = metadata
+      chatEntryRecord.updatedAt = new Date().getTime()
     }
   })
+  updateThreadIfNeeded(realm, chatEntryRecord)
 }
 
 export function addReceiptToRelatedEntries(realm: Realm, receipt: MessageReceipt) {
@@ -179,8 +169,7 @@ export function addReceiptToRelatedEntries(realm: Realm, receipt: MessageReceipt
       if (!lastChatEntry || lastChatEntry?.createdAt < entry.createdAt) lastChatEntry = entry
     }
   })
-
-  return lastChatEntry
+  if (lastChatEntry) updateThreadIfNeeded(realm, lastChatEntry)
 }
 
 export function updateChatEntryMetadata(realm: Realm, recordId: string, metadata: Record<string, unknown>) {
@@ -223,10 +212,4 @@ export function findAllByAssociatedRecordId(
       item =>
         item.associatedRecordId === associatedRecordId && (type !== undefined ? item.type === type : true),
     )
-}
-
-export function deleteEntry(realm: Realm, entryId: string) {
-  realm.write(() => {
-    realm.delete(entryId)
-  })
 }

@@ -95,7 +95,6 @@ export {
   REALM_BACKUP_FILE_PATH,
   AFJ_BACKUP_FILE_PATH,
   BACKUP_MANIFEST_FILE_PATH,
-  existsBackupDirectory,
   existsBackupFile,
   deleteBackupDirectory,
   createBackupDirectory,

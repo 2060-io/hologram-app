@@ -33,7 +33,7 @@ import { Buffer } from '@credo-ts/core/build/utils/buffer'
 
 import { MediatorConnectedEvent, MediatorDisconnectedEvent, MediatorEventTypes } from './MediatorEventTypes'
 
-export function getProtocolScheme(url: string) {
+function getProtocolScheme(url: string) {
   const [protocolScheme] = url.split(':')
   return protocolScheme
 }
@@ -85,7 +85,7 @@ export class TunedMobileWsOutboundTransport implements OutboundTransport {
   }
 
   private startIdleSocketTimer(interval?: number) {
-    const checkInterval = interval ?? 30000
+    const checkInterval = interval ?? 30_000
 
     setInterval(() => {
       const currentDate = new Date()

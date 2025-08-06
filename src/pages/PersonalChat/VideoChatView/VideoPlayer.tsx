@@ -110,7 +110,12 @@ const VideoPlayer = ({
         )}
         {showControl && isReadyVideo && (
           <View style={styles.controlOverlay}>
-            <PlayerControls onPlay={handlePlay} onPause={handlePlayPause} playing={play} />
+            <PlayerControls
+              onPlay={handlePlay}
+              onPause={handlePlayPause}
+              playing={play}
+              iconColor={theme.colors.white}
+            />
             {showProgressBar && (
               <ProgressBar
                 currentTime={currentTime}

@@ -1,7 +1,6 @@
 import { StyleSheet } from 'react-native'
 
 import { AppTheme } from '@2060/styles/types'
-import { widthPercentageToDP } from '@2060/utils/responsiveUtils'
 
 const styles = (theme: AppTheme) =>
   StyleSheet.create({
@@ -20,10 +19,10 @@ const styles = (theme: AppTheme) =>
       flex: 1,
       paddingLeft: 14.98,
     },
-    contentDate: {
+    rightContent: {
       height: '100%',
       alignItems: 'flex-end',
-      marginTop: 10,
+      marginTop: 5,
       marginLeft: 10,
     },
     textDate: {
@@ -39,12 +38,12 @@ const styles = (theme: AppTheme) =>
       fontSize: theme.fontSize.sm + 1.84,
     },
     unread: {
-      width: widthPercentageToDP('5%'),
-      height: widthPercentageToDP('5%'),
+      width: 18,
+      height: 18,
+      borderRadius: 9,
       justifyContent: 'center',
-      borderRadius: 50,
       backgroundColor: theme.colors.green,
-      marginTop: 8,
+      marginLeft: 5,
     },
     textNumber: {
       color: theme.colors.white,
@@ -53,6 +52,11 @@ const styles = (theme: AppTheme) =>
     },
     containerIconChevron: {
       justifyContent: 'center',
+    },
+    containerUnreadAndStateIcon: {
+      marginTop: 5,
+      flexDirection: 'row',
+      alignItems: 'center',
     },
   })
 

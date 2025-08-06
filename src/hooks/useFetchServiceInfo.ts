@@ -107,7 +107,7 @@ export async function getStoredServiceInfo(
   return undefined
 }
 
-export async function storeServiceInfo(did: string, agent: MobileAgent, serviceInfo: ServiceInfo) {
+async function storeServiceInfo(did: string, agent: MobileAgent, serviceInfo: ServiceInfo) {
   const cache = agent.dependencyManager.resolve(CacheModuleConfig).cache
 
   await cache.set<ServiceInfo>(agent.context, `serviceInfo:${did}`, serviceInfo)
