@@ -17,7 +17,7 @@ import { Text } from '@2060/components/common'
 import { updateChatEntryMetadata } from '@2060/hooks/agent/chat/services'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { VPRequestMetadata } from '@2060/model'
+import { VerifierInfo, VPRequestMetadata } from '@2060/model'
 import { MobileAgent } from '@2060/services/agent'
 import { RequestedCredentialItem } from '@2060/services/agent/display'
 import {
@@ -25,7 +25,6 @@ import {
   formatDidcommPresentationSubmission,
 } from '@2060/services/agent/formatPresentation'
 import { notifyNoCompatibleCredentials } from '@2060/services/agent/proofs'
-import { VerifierInfo } from '@2060/services/api/trustRegistryService'
 
 interface Props {
   sender?: ChatParticipant

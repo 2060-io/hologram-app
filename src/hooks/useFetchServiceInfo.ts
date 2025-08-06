@@ -1,15 +1,15 @@
-import { AgentContext, CacheModuleConfig, DidResolverService } from '@credo-ts/core'
-import { IOrg, resolve } from '@verana-labs/verre'
-import { Resolver } from 'did-resolver'
+import { CacheModuleConfig } from '@credo-ts/core'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+
+import { getServiceInfo as getServiceInfoApi } from '../services/trustResolution'
 
 import { useMobileAgent } from './agent/MobileAgentProvider'
 
 import { useNetwork } from '@2060/hooks/useNetwork'
+import { isServiceInfo, ServiceInfo } from '@2060/model'
 import { MobileAgent } from '@2060/services/agent'
-import { ServiceInfo, isServiceInfo } from '@2060/services/api/trustRegistryService'
-import { log, logError } from '@2060/utils'
+import { logError } from '@2060/utils'
 import { getConnectionDisplayName, getConnectionDisplayPicture } from '@2060/utils/connectionUtils'
 import { toast } from '@2060/utils/toast'
 
@@ -55,53 +55,11 @@ export const useFetchServiceInfo = (did?: string, forceFetch?: boolean) => {
 
       try {
         if (!agent) return
-        const didResolverService = agent.dependencyManager.resolve(DidResolverService)
-        const agentContext = agent.dependencyManager.resolve(AgentContext)
-
-        // Create a custom resolver using Credo-TS resolution strategies
-        const didResolver = new Resolver({
-          web: async (did: string) => didResolverService.resolve(agentContext, did),
-          key: async (did: string) => didResolverService.resolve(agentContext, did),
-          peer: async (did: string) => didResolverService.resolve(agentContext, did),
-          jwk: async (did: string) => didResolverService.resolve(agentContext, did),
+        const serviceInfoResponse = await getServiceInfoApi({
+          agent,
+          did,
         })
 
-        const trustResolution = await resolve(did, {
-          agentContext: agent.context,
-          didResolver,
-        })
-        log(`trustResolution: ${JSON.stringify(trustResolution)}`)
-        if (!trustResolution.service || !trustResolution.didDocument) {
-          return
-        }
-
-        const serviceInfoResponse: ServiceInfo = {
-          did: trustResolution.didDocument.id,
-          id: trustResolution.didDocument.id,
-          minimumAgeRequired: trustResolution.service.minimumAgeRequired!,
-          name: trustResolution.service.name,
-          status: 'trusted',
-          dataPrivacyUrl: trustResolution.service.privacyPolicy,
-          description: trustResolution.service?.description,
-          logoUrl: trustResolution.service?.logo,
-          termsAndConditionsUrl: trustResolution.service?.termsAndConditions,
-          serviceProvider: {
-            certificationEntity: {
-              countryCode: (trustResolution.serviceProvider! as IOrg).countryCode,
-              entityName: (trustResolution.serviceProvider! as IOrg).name,
-              officialPublicRegistryNumber: (trustResolution.serviceProvider! as IOrg).registryId,
-              status: 'trusted',
-              trustRegistry: {
-                name: (trustResolution.serviceProvider! as IOrg).name,
-                status: 'trusted',
-              },
-            },
-            status: 'trusted',
-            countryCode: (trustResolution.serviceProvider! as IOrg).countryCode,
-            entityName: (trustResolution.serviceProvider! as IOrg).name,
-            officialPublicRegistryNumber: (trustResolution.serviceProvider! as IOrg).registryId,
-          },
-        }
         if (serviceInfoResponse) {
           if (agent) await storeServiceInfo(did, agent, serviceInfoResponse)
           setServiceInfo(serviceInfoResponse)

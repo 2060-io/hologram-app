@@ -1,6 +1,6 @@
 import { CredentialExchangeRecord, ProofExchangeRecord, W3cCredentialRecord } from '@credo-ts/core'
 
-import { ServiceStatus } from '../api/trustRegistryService'
+import { ServiceStatus } from '@2060/model/ServiceInfo'
 
 export interface DidCommCredentialDisplayMetadata {
   issuedAt: number

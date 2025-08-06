@@ -5,7 +5,7 @@ import ServiceMainInfo from './ServiceMainInfo'
 
 import ProofOfTrust from '@2060/components/common/ProofOfTrust'
 import { useFetchServiceInfo } from '@2060/hooks/useFetchServiceInfo'
-import { ServiceInfo } from '@2060/services/api/trustRegistryService'
+import { ServiceInfo } from '@2060/model'
 
 type Props = {
   did: string

@@ -12,6 +12,7 @@ import {
   ChatEntryRole,
   ChatEntryState,
   ChatEntryType,
+  VerifierInfo,
   VPResponseMetadata,
   VPResponsePresentedCredential,
 } from '@2060/model'
@@ -23,11 +24,9 @@ import {
   getPresentationRequestForDisplay,
   sanitizeString,
 } from '@2060/services/agent/display'
-import { getServiceInfo, VerifierInfo } from '@2060/services/api/trustRegistryService'
-import { DEV_ENVS_PERSIST_KEY, getStorageData } from '@2060/services/localStorage'
+import { getServiceInfo } from '@2060/services/trustResolution'
 import { logError } from '@2060/utils'
 import { getConnectionDisplayName, getConnectionDisplayPicture } from '@2060/utils/connectionUtils'
-import { DevEnvsObject } from '@2060/utils/developer'
 
 export const handleProofExchangeRecordChanges = async (options: {
   agent: MobileAgent
@@ -175,10 +174,9 @@ export const handleProofExchangeRecordChanges = async (options: {
             const credentialDefinitionId = firstAttribute.restrictions[0].cred_def_id
 
             if (credentialDefinitionId) {
-              const persistedEnvVariables = (await getStorageData(DEV_ENVS_PERSIST_KEY)) as DevEnvsObject
               const serviceInfo = await getServiceInfo({
+                agent: agent,
                 did: credentialDefinitionId,
-                trustedServiceResolverBaseUrl: persistedEnvVariables.TRUSTED_SERVICE_RESOLVER_BASE_URL,
               })
               const credentialDefinition = (
                 await agent.modules.anoncreds.getCredentialDefinition(credentialDefinitionId)

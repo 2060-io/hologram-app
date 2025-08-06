@@ -45,7 +45,6 @@ import {
 import { createChatEntry, updateChatEntryMetadata } from '@2060/hooks/agent/chat/services/ChatEntryService'
 import { updateThread } from '@2060/hooks/agent/chat/services/ChatThreadService'
 import { blockConnection } from '@2060/hooks/agent/connections'
-import { useConfig } from '@2060/hooks/providers/ConfigProvider'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import {
@@ -57,7 +56,7 @@ import {
   SystemMessageMetadata,
 } from '@2060/model'
 import { ChatMessageList } from '@2060/pages/PersonalChat/ChatMessageList'
-import { reportMessage } from '@2060/services/api/trustRegistryService'
+import { logWarn } from '@2060/utils'
 import { isService } from '@2060/utils/connectionUtils'
 import { getFormattedDateRange } from '@2060/utils/dateUtils'
 import { cancelVideoCompression } from '@2060/utils/mediaFileUtils'
@@ -133,7 +132,6 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
   const { markThreadAsRead } = useChats()
   const using24HourFormat = uses24HourClock()
   const theme = useTheme()
-  const { devEnvs } = useConfig()
   const showScrollBottomRef = useRef(false)
   const isScrolling = useRef(false)
   const listViewRef = useRef<FlashList<ChatEntryMessage> | null>(null)
@@ -264,14 +262,10 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
     try {
       const connection = await agent.connections.getById(chatThreadData.connectionId)
       const did = isService(connection) ? connection.invitationDid : connection.theirDid
-      const { type, metadata } = selectedMessage
+      const { metadata } = selectedMessage
       if (did && metadata) {
-        await reportMessage({
-          did,
-          metadata,
-          type,
-          trustedServiceResolverBaseUrl: devEnvs.TRUSTED_SERVICE_RESOLVER_BASE_URL,
-        })
+        // FIXME: Decide what to do with message reporting, since now we don't have any service related to it
+        logWarn('Message reported and no service to handle it')
       }
       createReportedMessageChatEntry({ realm, chatThread: chatThread.data, messageToReport: selectedMessage })
       if (block) await blockConnection(agent, connection)

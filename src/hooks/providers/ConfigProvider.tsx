@@ -13,7 +13,6 @@ import { DevEnvsObject, DevEnvObject } from '@2060/utils/developer'
 export const defaultDevEnvs: DevEnvsObject = {
   CLOUD_AGENT_PUBLIC_DID: Config.CLOUD_AGENT_PUBLIC_DID as string,
   DATA_STORE_URL: Config.DATA_STORE_URL as string,
-  TRUSTED_SERVICE_RESOLVER_BASE_URL: Config.TRUSTED_SERVICE_RESOLVER_BASE_URL as string,
   WEBRTC_SERVER_BASE_URL: Config.WEBRTC_SERVER_BASE_URL as string,
   INDY_VDR_PROXY_BASE_URL: Config.INDY_VDR_PROXY_BASE_URL as string,
 }
