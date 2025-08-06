@@ -4144,14 +4144,7 @@
     cross-fetch "^3.1.8"
     did-resolver "^4.1.0"
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-"@sphereon/isomorphic-webcrypto@^2.5.0-rn-crypto.2", isomorphic-webcrypto@^2.3.8, "isomorphic-webcrypto@npm:@sphereon/isomorphic-webcrypto@2.5.0-rn-crypto.2":
-  name isomorphic-webcrypto
-=======
 "@sphereon/isomorphic-webcrypto@^2.5.0-rn-crypto.2":
->>>>>>> a2b9916 (feat: upgrade verre)
   version "2.5.0-rn-crypto.2"
   resolved "https://registry.yarnpkg.com/@sphereon/isomorphic-webcrypto/-/isomorphic-webcrypto-2.5.0-rn-crypto.2.tgz#defa9be01074bddab32896c263d347d77bcf7cf6"
   integrity sha512-Vr5KcPTQ6LbKyCOLEe6DTPxMXeESYBDw/gqbjyynUtqmNtBz6dcccP3HpM9TjlwqP8c/uPEtnrxA9V81/FH8HA==
@@ -4170,7 +4163,6 @@
     str2buf "^1.3.0"
     webcrypto-shim "^0.1.7"
 
->>>>>>> d34e639 (fixes)
 "@sphereon/jarm@0.16.1-fix.173+086f910":
   version "0.16.1-fix.173"
   resolved "https://registry.yarnpkg.com/@sphereon/jarm/-/jarm-0.16.1-fix.173.tgz#5c70456d3d3daf0262e2a647abddc464eb45ff94"
@@ -5016,24 +5008,10 @@
     multiformats "9.7.1"
     uint8arrays "^3.0.0"
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-"@verana-labs/verre@^0.0.10":
-  version "0.0.10"
-  resolved "https://registry.yarnpkg.com/@verana-labs/verre/-/verre-0.0.10.tgz#0273f3091d3dbff801aba7bb98c5e844b8dec396"
-  integrity sha512-o4m/5f98X3017RDdGA/vDVdtKLMdXtrnu0kWN05+Mvg5jjpYWqxN5NUZWeXk6RhbYGqw2Lpm/f+evA6ugq/svw==
-=======
-"@verana-labs/verre@^0.0.11":
-  version "0.0.11"
-  resolved "https://registry.yarnpkg.com/@verana-labs/verre/-/verre-0.0.11.tgz#2b58a48a1407b4586368f9043f74aaaa2932d59c"
-  integrity sha512-zBXC53y3zXmolApT/d5SahLOL1YlyTjF5XfonGTy8I6xCFpSusYpm7/Y2zYO1dmlZ554PPXwXhGVOwY0ngU3Ig==
->>>>>>> d34e639 (fixes)
-=======
 "@verana-labs/verre@^0.0.12":
   version "0.0.12"
   resolved "https://registry.yarnpkg.com/@verana-labs/verre/-/verre-0.0.12.tgz#48027276e00059e5c5edb1127869578c0c3c06a4"
   integrity sha512-y5DhKtq/Tf65YsRmPN8plxs4wQeTzeJ+kZZrNDrEDC4XBqnrpQHNJf5zLtCgqDKh4j8wYn4hvKfI+7pA683EhA==
->>>>>>> a2b9916 (feat: upgrade verre)
   dependencies:
     "@credo-ts/core" "^0.5.13"
     "@digitalcredentials/jsonld-signatures" "^12.0.1"
