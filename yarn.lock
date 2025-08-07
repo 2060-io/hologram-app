@@ -2617,10 +2617,10 @@
   resolved "https://registry.yarnpkg.com/@nolyfill/is-core-module/-/is-core-module-1.0.39.tgz#3dc35ba0f1e66b403c00b39344f870298ebb1c8e"
   integrity sha512-nn5ozdjYQpUCZlWGuxcJY/KpxkWQs4DcbMCmKojjyrYDEAGy4Ce19NN4v5MduafTwJlbKc99UA8YhSVqq9yPZA==
 
-"@notifee/react-native@9.0.0":
-  version "9.0.0"
-  resolved "https://registry.yarnpkg.com/@notifee/react-native/-/react-native-9.0.0.tgz#e282169fd3066055f4daccf8f7593ff990c8f80a"
-  integrity sha512-Edu926+jpHjPohAtNRVroyUfPFVRHI4kh6cjH0MTVjpzNha69eavshpMMS3imbcnpgHfMobcUi9huTcGgBa5aA==
+"@notifee/react-native@9.1.8":
+  version "9.1.8"
+  resolved "https://registry.yarnpkg.com/@notifee/react-native/-/react-native-9.1.8.tgz#3d55cb3fbcc21f9e35931e366afdf64b294da891"
+  integrity sha512-Az/dueoPerJsbbjRxu8a558wKY+gONUrfoy3Hs++5OqbeMsR0dYe6P+4oN6twrLFyzAhEA1tEoZRvQTFDRmvQg==
 
 "@npmcli/agent@^3.0.0":
   version "3.0.0"
@@ -12831,10 +12831,10 @@ react-native-is-edge-to-edge@^1.1.6:
   resolved "https://registry.yarnpkg.com/react-native-is-edge-to-edge/-/react-native-is-edge-to-edge-1.1.6.tgz#69ec13f70d76e9245e275eed4140d0873a78f902"
   integrity sha512-1pHnFTlBahins6UAajXUqeCOHew9l9C2C8tErnpGC3IyLJzvxD+TpYAixnCbrVS52f7+NvMttbiSI290XfwN0w==
 
-react-native-job-queue@^0.5.2:
-  version "0.5.2"
-  resolved "https://registry.yarnpkg.com/react-native-job-queue/-/react-native-job-queue-0.5.2.tgz#a7830cf6576f0cf9bd105e1069976fe1301479c8"
-  integrity sha512-oqavYlO1fiYxlLBpYR7U7X+LzPEeTENGgxxuBRbOGMHr+o21bxWL/8obTn8MNpD4wSkyMpC7E06/W/M4fbg6Xw==
+react-native-job-queue@0.5.3:
+  version "0.5.3"
+  resolved "https://registry.yarnpkg.com/react-native-job-queue/-/react-native-job-queue-0.5.3.tgz#5babdf5584db2264eb1d592f4c46b00f536b5caf"
+  integrity sha512-y9CjZhRozxzFer2ZZcu+JbbZ1VXD6qHwRZ22nXKNvpwo01OHDGPqFNIDNz+3qs3T/n7QjzsAPm1dvKypM4YS2g==
 
 react-native-keyboard-aware-scroll-view@^0.9.5:
   version "0.9.5"
@@ -12919,6 +12919,13 @@ react-native-section-list-get-item-layout@^2.2.3:
   version "2.2.3"
   resolved "https://registry.yarnpkg.com/react-native-section-list-get-item-layout/-/react-native-section-list-get-item-layout-2.2.3.tgz#152a8efdcb3847dbcbeb04cd2d0de4312d3d2fcb"
   integrity sha512-fzCW5SiYP6qCZyDHebaElHonIFr8NFrZK9JDkxFLnpxMJih4d+HQ4rHyOs0Z4Gb/FjyCVbRH7RtEnjeQ0XffMg==
+
+react-native-securerandom@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/react-native-securerandom/-/react-native-securerandom-1.0.1.tgz#dc983cce980c80d1af62406e2ef2917ed0ada55f"
+  integrity sha512-ibuDnd3xi17HyD5CkilOXGPFpS9Z1oifjyHFwUl8NMzcQcpruM0ZX8ytr3A4rCeAsaBHjz69r78Xgd6vUswv1Q==
+  dependencies:
+    base64-js "*"
 
 "react-native-share-menu@file:./modules/react-native-share-menu":
   version "0.0.0"

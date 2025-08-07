@@ -15,6 +15,8 @@ PODS:
   - DoubleConversion (1.1.6)
   - Expo (52.0.27):
     - ExpoModulesCore
+  - ExpoCrypto (14.0.2):
+    - ExpoModulesCore
   - ExpoKeepAwake (14.0.3):
     - ExpoModulesCore
   - ExpoLocalAuthentication (15.0.2):
@@ -1615,7 +1617,7 @@ PODS:
     - React-Core
   - react-native-image-resizer (3.0.11):
     - React-Core
-  - react-native-job-queue (0.5.2):
+  - react-native-job-queue (0.5.3):
     - React
   - react-native-keyboard-controller (1.16.8):
     - DoubleConversion
@@ -2133,10 +2135,10 @@ PODS:
     - Yoga
   - RNLocalize (2.2.6):
     - React-Core
-  - RNNotifee (9.0.0):
+  - RNNotifee (9.1.8):
     - React-Core
-    - RNNotifee/NotifeeCore (= 9.0.0)
-  - RNNotifee/NotifeeCore (9.0.0):
+    - RNNotifee/NotifeeCore (= 9.1.8)
+  - RNNotifee/NotifeeCore (9.1.8):
     - React-Core
   - RNPermissions (3.10.1):
     - React-Core
@@ -2249,6 +2251,8 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
+  - RNSecureRandom (1.0.1):
+    - React
   - RNShare (12.0.10):
     - DoubleConversion
     - glog
@@ -2334,6 +2338,7 @@ DEPENDENCIES:
   - boost (from `../node_modules/react-native/third-party-podspecs/boost.podspec`)
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
   - Expo (from `../node_modules/expo`)
+  - ExpoCrypto (from `../node_modules/expo-crypto/ios`)
   - ExpoKeepAwake (from `../node_modules/expo-keep-awake/ios`)
   - ExpoLocalAuthentication (from `../node_modules/expo-local-authentication/ios`)
   - ExpoModulesCore (from `../node_modules/expo-modules-core`)
@@ -2443,6 +2448,7 @@ DEPENDENCIES:
   - RNPermissions (from `../node_modules/react-native-permissions`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
+  - RNSecureRandom (from `../node_modules/react-native-securerandom`)
   - RNShare (from `../node_modules/react-native-share`)
   - RNShareMenu (from `../node_modules/react-native-share-menu`)
   - RNSVG (from `../node_modules/react-native-svg`)
@@ -2500,6 +2506,8 @@ EXTERNAL SOURCES:
     :podspec: "../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec"
   Expo:
     :path: "../node_modules/expo"
+  ExpoCrypto:
+    :path: "../node_modules/expo-crypto/ios"
   ExpoKeepAwake:
     :path: "../node_modules/expo-keep-awake/ios"
   ExpoLocalAuthentication:
@@ -2707,6 +2715,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-reanimated"
   RNScreens:
     :path: "../node_modules/react-native-screens"
+  RNSecureRandom:
+    :path: "../node_modules/react-native-securerandom"
   RNShare:
     :path: "../node_modules/react-native-share"
   RNShareMenu:
@@ -2731,6 +2741,7 @@ SPEC CHECKSUMS:
   boost: 1dca942403ed9342f98334bf4c3621f011aa7946
   DoubleConversion: f16ae600a246532c4020132d54af21d0ddb2a385
   Expo: 296cbea8d4469eb60d61f09dbd4925f86d2b85da
+  ExpoCrypto: e97e864c8d7b9ce4a000bca45dddb93544a1b2b4
   ExpoKeepAwake: b0171a73665bfcefcfcc311742a72a956e6aa680
   ExpoLocalAuthentication: eb2be9c7bcdc68e9434d4be4bb5aa5cf7943e816
   ExpoModulesCore: c58544ab4a2e873f646a6308e1e08819380edb9f
@@ -2811,7 +2822,7 @@ SPEC CHECKSUMS:
   react-native-eid-reader: e7422aceb576fab13ccc77e5d820247d34a67981
   react-native-get-random-values: d16467cf726c618e9c7a8c3c39c31faa2244bbba
   react-native-image-resizer: 24c5d06fae2176dc0caed4b6396e02befb44064a
-  react-native-job-queue: 0ad04875957147913e0ef48c645a0aa87fc1480d
+  react-native-job-queue: cfd8b0a4e23743b702efedf109f64692250c1dc3
   react-native-keyboard-controller: 83a2a5dc1215a6423ed093db2023fe4c93cf7e4b
   react-native-local-native-modules: 1a30e6cf19464edc47f60a91f97881b9261774f3
   react-native-netinfo: cec9c4e86083cb5b6aba0e0711f563e2fbbff187
@@ -2860,10 +2871,11 @@ SPEC CHECKSUMS:
   RNGestureHandler: fc491c834d09b0538618a3f328ab75fe8f90f5b4
   RNImageCropPicker: 02f22ce2f267d858ca14679944ce578c541121db
   RNLocalize: 8bf466de4c92d4721b254aabe1ff0a1456e7b9f4
-  RNNotifee: 3978eab0eb24f9c2ee6ee0440ee7c50748803559
+  RNNotifee: 5e3b271e8ea7456a36eec994085543c9adca9168
   RNPermissions: bd0d9ca7969ff7b999aa605ee2e5919c12522bfe
   RNReanimated: 2f762cd9e6b74c1f6ec88c0545d773a68b8e1085
   RNScreens: 4a5ab20b324ed1e3fe3862796b8f8e0a6208c415
+  RNSecureRandom: b64d263529492a6897e236a22a2c4249aa1b53dc
   RNShare: d40a5a9c43a49d4d3887aebe84fc3f4173f06c4b
   RNShareMenu: 107956974f695db0947c7beb43f3a12c4ac9e51f
   RNSVG: 86fecdfc637614ba9def63f7f3f2e7795e018356

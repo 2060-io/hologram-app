@@ -23,8 +23,6 @@ import {
   devEnvPlaceholder,
   DevEnvsKeys,
   DevEnvObject,
-  isBackgroundNotificationHandlerEnabled,
-  savePushNotificationHandlerEnabled,
   saveLogsEnabled,
   areLogsEnabled,
 } from '@2060/utils/developer'
@@ -39,7 +37,6 @@ const Developer = ({ navigation }: Props) => {
   const [displayDevEnvOptions, setDisplayDevEnvOptions] = useState(false)
   const [tempCustomDevEnvValue, setTempCustomDevEnvValue] = useState<string>()
   const [isEditionCustomDevEnvMode, setIsEditionCustomDevEnvMode] = useState(false)
-  const [areBackgroundNotificationsEnabled, setAreBackgroundNotificationsEnabled] = useState(false)
   const [logsEnabled, setAreLogsEnabled] = useState(false)
   const customDevInputRef = useRef<TextInputForwardRefProps>(null)
   const { agent, shutdownAgent } = useMobileAgent()
@@ -48,15 +45,10 @@ const Developer = ({ navigation }: Props) => {
   const { t } = useTranslation()
 
   useEffect(() => {
-    const setupBackgroundNotificationsEnabled = async () => {
-      const persistedIsBackgroundNotificationsEnabled = await isBackgroundNotificationHandlerEnabled()
-      setAreBackgroundNotificationsEnabled(persistedIsBackgroundNotificationsEnabled)
-    }
     const setupAreLogsEnabled = async () => {
       const persistedAreLogsEnabled = await areLogsEnabled()
       setAreLogsEnabled(persistedAreLogsEnabled)
     }
-    setupBackgroundNotificationsEnabled()
     setupAreLogsEnabled()
   }, [])
 
@@ -75,10 +67,18 @@ const Developer = ({ navigation }: Props) => {
     changeDevEnvOptionsVisibility()
   }
 
+  const displayAlertAfterChangeIndyProxyValue = () => {
+    Alert.alert(
+      IS_IOS ? t('settings.closeAppAfterChangeIndyValue') : '',
+      IS_ANDROID ? t('settings.closeAppAfterChangeIndyValue') : '',
+    )
+  }
+
   const onSelectDevEnvOption = async (key: keyof DevEnvsKeys, value: string) => {
     changeDevEnvOptionsVisibility()
     const newDevEnvsToPersist = { ...devEnvs, [key]: value }
     await updateDevEnvs(newDevEnvsToPersist)
+    if (key === 'INDY_VDR_PROXY_BASE_URL') displayAlertAfterChangeIndyProxyValue()
   }
 
   const currentCustomDevEnvValue = currentDevEnv?.key ? storedCustomDevEnvs?.[currentDevEnv.key] : ''
@@ -90,6 +90,7 @@ const Developer = ({ navigation }: Props) => {
     await saveCustomDevEnv(newCustomDevEnvValue)
     setTempCustomDevEnvValue('')
     setIsEditionCustomDevEnvMode(false)
+    if (currentDevEnv?.key === 'INDY_VDR_PROXY_BASE_URL') displayAlertAfterChangeIndyProxyValue()
   }
 
   const switchToEditionCustomDevEnv = () => {
@@ -115,7 +116,7 @@ const Developer = ({ navigation }: Props) => {
       cache._cache = undefined
       await shutdownAgent()
       await deleteAllKeys()
-      closeRealm(true)
+      closeRealm()
       navigation.navigate('Home')
     } catch (error) {
       Alert.alert('Error', `${error}`)
@@ -133,16 +134,6 @@ const Developer = ({ navigation }: Props) => {
     ])
   }
 
-  const toggleBackgroundPushNotificationHandler = async () => {
-    const newAreEnabled = !areBackgroundNotificationsEnabled
-    setAreBackgroundNotificationsEnabled(newAreEnabled)
-    await savePushNotificationHandlerEnabled(newAreEnabled)
-    Alert.alert(
-      IS_IOS ? t('settings.closeAppAfterBackNotiChanges') : '',
-      IS_ANDROID ? t('settings.closeAppAfterBackNotiChanges') : '',
-    )
-  }
-
   const toggleLogsEnabled = async () => {
     const newAreEnabled = !logsEnabled
     setAreLogsEnabled(newAreEnabled)
@@ -154,16 +145,6 @@ const Developer = ({ navigation }: Props) => {
       iconName: 'trash',
       text: t('settings.deleteWallet'),
       onPress: confirmWalletDeletion,
-    },
-    {
-      iconName: 'notifications',
-      text: t('settings.backgroundNotifications'),
-      rightContent: () => (
-        <Switch
-          isChecked={areBackgroundNotificationsEnabled}
-          onToggle={toggleBackgroundPushNotificationHandler}
-        />
-      ),
     },
     {
       iconName: 'edit',

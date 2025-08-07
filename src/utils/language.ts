@@ -17,7 +17,8 @@ export const initializeI18n = new Promise(resolve => {
       compatibilityJSON: 'v4',
       interpolation: { escapeValue: false },
       resources: { en, es },
-      debug: __DEV__,
+      debug: false,
+      //debug: __DEV__,
     },
     error => {
       resolve('')

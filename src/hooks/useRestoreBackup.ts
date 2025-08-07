@@ -1,7 +1,7 @@
 import { CommonActions, useNavigation } from '@react-navigation/native'
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Alert, Platform } from 'react-native'
+import { Platform } from 'react-native'
 
 import { RestoreProgress, restoreProgressInitialValues } from './backup'
 
@@ -66,7 +66,7 @@ export const useRestoreBackup = ({ restoreProgress, setRestoreProgress, download
   }
 
   const importWalletAndRealm = async () => {
-    if (!agent || !importAndOpenRealm) {
+    if (!agent) {
       throw new Error('Agent not defined in BaseRestoreWalletBackup')
     }
 
@@ -80,10 +80,9 @@ export const useRestoreBackup = ({ restoreProgress, setRestoreProgress, download
     if (agent.isInitialized) await agent.shutdown()
 
     const backupKey = await BackupUtils.setBackupKey(recoveryPassword)
-    const successfullyImported = await importWallet(backupKey)
-    if (successfullyImported) {
-      await importAndOpenRealm(BackupUtils.REALM_BACKUP_FILE_PATH, backupKey)
-      onSuccessFinish()
+    const successfullyWalletImported = await importWallet(backupKey)
+    if (successfullyWalletImported) {
+      onSuccessFinish(backupKey)
     } else {
       await BackupUtils.deleteBackupKey()
     }
@@ -120,8 +119,10 @@ export const useRestoreBackup = ({ restoreProgress, setRestoreProgress, download
 
   const restoreProgressToInitialValues = () => setRestoreProgress(restoreProgressInitialValues)
 
-  const onSuccessFinish = async () => {
+  const onSuccessFinish = async (backupKey: string) => {
+    await importAndOpenRealm(BackupUtils.REALM_BACKUP_FILE_PATH, backupKey)
     await openWallet()
+    await requestNotificationPermissions()
     setRestoreProgress(prev => ({ ...prev, isDownloadingBackUp: false, done: true, progress: 100 }))
     await BackupUtils.deleteBackupDirectory()
   }
@@ -139,23 +140,12 @@ export const useRestoreBackup = ({ restoreProgress, setRestoreProgress, download
     })
   }, [agent])
 
-  const requestNotificationPermissions = () => {
-    const message = t('signUp.requestPermissionsNotification')
-    Alert.alert('Hologram', message, [
-      { text: t('signUp.dontAllow'), style: 'destructive' },
-      {
-        text: t('signUp.allow'),
-        style: 'default',
-        onPress: async () => {
-          const allowed = await requestNotificationPermissionUser()
-          if (allowed) await updateNotificationInfo()
-        },
-      },
-    ])
+  const requestNotificationPermissions = async () => {
+    const allowed = await requestNotificationPermissionUser()
+    if (allowed) await updateNotificationInfo()
   }
 
   const goToHomeScreen = async () => {
-    requestNotificationPermissions()
     navigation.dispatch(CommonActions.reset({ index: 0, routes: [{ name: 'Home' }] }))
   }
 

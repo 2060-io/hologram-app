@@ -6,7 +6,7 @@ export const useAppState = () => {
 
   useEffect(() => {
     const onChange = (state: AppStateStatus): void => {
-      setIsAppActive(state === 'active')
+      setIsAppActive(state === 'active' || state === 'inactive')
     }
     const listener = AppState.addEventListener('change', onChange)
     return () => listener.remove()
