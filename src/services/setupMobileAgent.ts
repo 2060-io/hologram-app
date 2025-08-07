@@ -29,7 +29,7 @@ interface MobileAgentConfig {
 
 let logger: Logger | undefined
 if (__DEV__) {
-  logger = new ConsoleLogger(LogLevel.off)
+  logger = new ConsoleLogger(LogLevel.debug)
 }
 
 export const baseAgentConfig: MobileAgentConfig = {
