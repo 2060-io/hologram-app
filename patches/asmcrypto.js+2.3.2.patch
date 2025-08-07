@@ -1,0 +1,17 @@
+diff --git a/node_modules/asmcrypto.js/asmcrypto.all.js b/node_modules/asmcrypto.js/asmcrypto.all.js
+index 96bffea..56239d7 100755
+--- a/node_modules/asmcrypto.js/asmcrypto.all.js
++++ b/node_modules/asmcrypto.js/asmcrypto.all.js
+@@ -4245,12 +4245,6 @@ function BigNumber_extGCD(a, b) {
+ }
+ 
+ function getRandomValues(buf) {
+-    if (typeof process !== 'undefined') {
+-        var nodeCrypto = require('crypto');
+-        var bytes = nodeCrypto.randomBytes(buf.length);
+-        buf.set(bytes);
+-        return;
+-    }
+     if (window.crypto && window.crypto.getRandomValues) {
+         window.crypto.getRandomValues(buf);
+         return;

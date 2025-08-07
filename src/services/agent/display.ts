@@ -14,11 +14,11 @@ import {
 } from '@credo-ts/core'
 import { OpenId4VciResolvedCredentialOffer } from '@credo-ts/openid4vc'
 
-import { IssuerInfo, VerifierInfo } from '../api/trustRegistryService'
-
 import { MobileAgent } from './MobileAgent'
 import { getDidCommCredentialDisplayMetadata } from './RecordMetadata'
 import { getOpenId4VcCredentialMetadata } from './oidcMetadata'
+
+import { IssuerInfo, VerifierInfo } from '@2060/model/ServiceInfo'
 
 export type CredentialMainInfo = {
   id: string

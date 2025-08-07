@@ -6,6 +6,7 @@ import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Platform, View } from 'react-native'
 import Config from 'react-native-config'
+import 'isomorphic-webcrypto'
 
 import { SvgIcon, HeaderTitle } from '../common'
 

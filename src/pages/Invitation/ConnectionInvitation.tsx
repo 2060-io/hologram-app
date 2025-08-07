@@ -13,8 +13,8 @@ import { NavigationStackParams } from '@2060/components/Navigation/NavigationPro
 import { Avatar, HeaderTitle, ModalLoading, Text } from '@2060/components/common'
 import { useChats, useConnectionById, useMobileAgent, useUserProfile } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
+import { ServiceInfo } from '@2060/model'
 import { acceptInvitation } from '@2060/services/agent/oob'
-import { ServiceInfo } from '@2060/services/api/trustRegistryService'
 import { getConnectionDisplayName } from '@2060/utils/connectionUtils'
 import { toast } from '@2060/utils/toast'
 

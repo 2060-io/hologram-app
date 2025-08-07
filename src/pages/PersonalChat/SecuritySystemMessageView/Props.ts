@@ -1,6 +1,6 @@
 import { ConnectionRecord } from '@credo-ts/core'
 
-import { ServiceInfo } from '@2060/services/api'
+import { ServiceInfo } from '@2060/model'
 
 export type Props = {
   connection: ConnectionRecord

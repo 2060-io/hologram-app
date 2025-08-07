@@ -1,4 +1,4 @@
-import { ServiceStatus } from '@2060/services/api/trustRegistryService'
+import { ServiceStatus } from '@2060/model'
 
 export type ConnectionListSection = {
   title: string
