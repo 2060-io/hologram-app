@@ -8,6 +8,7 @@ import { baseAgentConfig } from './setupMobileAgent'
 import { manageBackgroundChatEntryChanges, subscribeToAgentChatEvents } from '@2060/hooks/agent/chat'
 import { manageConnectionStateChangedEvent } from '@2060/hooks/agent/connections/manageConnectionStateChangedEvent'
 import { logWarn } from '@2060/utils'
+import { isBackgroundNotificationHandlerEnabled } from '@2060/utils/developer'
 import { arePushNotificationsAllowed, deleteRemoteNotifications } from '@2060/utils/pushNotificationsUtils'
 
 const makeRequestToLocalServer = (payload: Record<string, string>) => {
@@ -24,6 +25,8 @@ let isProcessingBackgroundNotification = false
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function backgroundPushNotificationHandler(remoteMessage: FirebaseMessagingTypes.RemoteMessage) {
+  const persistedIsBackgroundNotificationsEnabled = await isBackgroundNotificationHandlerEnabled()
+  if (!persistedIsBackgroundNotificationsEnabled) return
   if (!(await arePushNotificationsAllowed())) return
   deleteRemoteNotifications()
   if (isProcessingBackgroundNotification) {
