@@ -93,7 +93,7 @@
     "react-native-config": "1.5.5",
     "react-native-create-thumbnail": "2.0.0",
     "react-native-date-picker": "5.0.12",
-    "react-native-eid-reader": "npm:@2060.io/react-native-eid-reader@0.0.1-alpha.11",
+    "react-native-eid-reader": "npm:@2060.io/react-native-eid-reader@0.1.0",
     "react-native-fs": "^2.20.0",
     "react-native-gesture-handler": "^2.12.1",
     "react-native-get-random-values": "^1.7.0",
