@@ -5,6 +5,9 @@ import { logError } from '@2060/utils'
 // This storage key saves the value that indicates if user has enable display logs as toast message
 export const LOGS_ENABLED_PERSIST_KEY = 'logsEnabled'
 
+// This storage key saves the value that indicates if user has enable background notifications handler
+export const BACKGROUND_PUSH_NOTIFICATION_HANDLER_ENABLED_PERSIST_KEY = 'backgroundPushNotificationsEnabled'
+
 // Android only. This storage key saves the value of current google account selected in backup process
 export const GOOGLE_ACCOUNT_BACKUP_PERSIST_KEY = 'googleAccountBackup'
 

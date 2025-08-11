@@ -40,22 +40,26 @@ const ProfileCreation = ({ navigation }: Props) => {
     defaultServiceAlias: Config.DEFAULT_SERVICE_ALIAS as string,
     cloudAgentPublicDid: devEnvs.CLOUD_AGENT_PUBLIC_DID as string,
   })
-
   const theme = useTheme()
   const styles = getStyles(theme)
   const disableGetStartedBtn = displayName.trim() === ''
 
-  const saveUserProfileData = () => {
-    setUserProfileData?.({ displayName: displayName.trim(), displayPicture })
-  }
+  useEffect(() => {
+    navigation.setOptions({ headerTitle: () => <></> })
+  }, [])
+
+  useEffect(() => {
+    const handleRegistrationStatusUpdate = async () => {
+      if (signUpState === SignUpState.AgentCreated) {
+        setUserProfileData?.({ displayName: displayName.trim(), displayPicture })
+        goHome()
+      }
+    }
+    handleRegistrationStatusUpdate()
+  }, [signUpState])
 
   const goHome = () => {
     navigation.dispatch(CommonActions.reset({ index: 0, routes: [{ name: 'Home' }] }))
-  }
-
-  const getStart = async () => {
-    saveUserProfileData()
-    goHome()
   }
 
   const handleLogStartError = (error: Error) => {
@@ -93,18 +97,6 @@ const ProfileCreation = ({ navigation }: Props) => {
       setIsRegistering(false)
     }
   }
-
-  const handleRegistrationStatusUpdate = () => {
-    if (signUpState === SignUpState.Init) return
-    if (signUpState === SignUpState.AgentCreated) {
-      getStart()
-    }
-  }
-
-  const handleChangeHeaderOptions = () => navigation.setOptions({ headerTitle: () => <></> })
-
-  useEffect(handleChangeHeaderOptions, [displayName])
-  useEffect(handleRegistrationStatusUpdate, [signUpState])
 
   return (
     <SafeAreaView style={styles.container}>

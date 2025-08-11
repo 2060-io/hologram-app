@@ -64,7 +64,6 @@ export const useSignUp = (options: SignUpOptions) => {
     const mediationRecord = await agent.mediationRecipient.requestAndAwaitGrant(cloudAgentConnection, 5000)
     await agent.mediationRecipient.setDefaultMediator(mediationRecord)
     await agent.mediationRecipient.initialize()
-    await requestNotificationPermissions()
     setSignUpState(SignUpState.AgentCreated)
     const isSignedUp = await isRegistered(agent)
     handleChangeAgentState({ isSignedUp })
@@ -82,6 +81,7 @@ export const useSignUp = (options: SignUpOptions) => {
       })
 
       log('connected with default service')
+      await requestNotificationPermissions()
     } catch (error) {
       logError(`cannot connect to default service: ${error}`)
     }
