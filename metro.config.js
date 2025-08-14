@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const { mergeConfig } = require('@react-native/metro-config')
 const { getDefaultConfig } = require('expo/metro-config')
 /**
@@ -17,7 +18,10 @@ const config = {
   },
   resolver: {
     sourceExts: ['jsx', 'js', 'ts', 'tsx', 'cjs', 'json'],
-    extraNodeModules: { stream: require.resolve('readable-stream') },
+    extraNodeModules: {
+      stream: require.resolve('readable-stream'),
+      crypto: require.resolve('isomorphic-webcrypto'),
+    },
   },
 }
 
