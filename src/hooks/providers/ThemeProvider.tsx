@@ -31,5 +31,5 @@ export const ThemeProvider: React.FC<PropsWithChildren> = ({ children }) => {
     }
   }, [isDarkMode])
 
-  return <ThemeContext.Provider value={theme}>{children}</ThemeContext.Provider>
+  return <ThemeContext value={theme}>{children}</ThemeContext>
 }

@@ -56,5 +56,5 @@ export const UserProfileProvider: React.FC<Props> = ({ children }) => {
     setInitialState()
   }, [agent, isInitialized])
 
-  return <UserProfileContext.Provider value={userProfileState}>{children}</UserProfileContext.Provider>
+  return <UserProfileContext value={userProfileState}>{children}</UserProfileContext>
 }

@@ -36,13 +36,13 @@ export const NavigationProvider: React.FC<React.PropsWithChildren<Props>> = ({ c
   const getLocalAuth = () => state.localAuth
 
   return (
-    <NavigationContext.Provider
+    <NavigationContext
       value={{
         setLocalAuth,
         getLocalAuth,
       }}
     >
       {children}
-    </NavigationContext.Provider>
+    </NavigationContext>
   )
 }

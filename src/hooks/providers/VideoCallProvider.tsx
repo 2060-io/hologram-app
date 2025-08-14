@@ -204,7 +204,7 @@ export const VideoCallProvider: React.FC<PropsWithChildren> = ({ children }) => 
   }, [agent, realm, activeChatThreadId])
 
   return (
-    <VideoCallContext.Provider
+    <VideoCallContext
       value={{
         ...state,
         startCall,
@@ -225,6 +225,6 @@ export const VideoCallProvider: React.FC<PropsWithChildren> = ({ children }) => 
         </Modal>
         {children}
       </View>
-    </VideoCallContext.Provider>
+    </VideoCallContext>
   )
 }

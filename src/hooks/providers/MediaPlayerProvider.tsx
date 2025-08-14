@@ -103,7 +103,7 @@ export const MediaPlayerProvider: React.FC<React.PropsWithChildren<Props>> = ({ 
   }, [])
 
   return (
-    <MediaPlayerContext.Provider
+    <MediaPlayerContext
       value={{
         audioPlaybackSpeed,
         changeAudioPlaybackSpeed,
@@ -134,6 +134,6 @@ export const MediaPlayerProvider: React.FC<React.PropsWithChildren<Props>> = ({ 
         />
       </LightboxModal>
       {children}
-    </MediaPlayerContext.Provider>
+    </MediaPlayerContext>
   )
 }

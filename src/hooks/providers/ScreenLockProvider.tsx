@@ -140,7 +140,7 @@ export const ScreenLockProvider: React.FC<PropsWithChildren> = ({ children }) =>
   }, [])
 
   return (
-    <ScreenLockContext.Provider
+    <ScreenLockContext
       value={{
         isScreenLockEnabled,
         onToggleLockScreen,
@@ -156,6 +156,6 @@ export const ScreenLockProvider: React.FC<PropsWithChildren> = ({ children }) =>
         </Modal>
         {children}
       </View>
-    </ScreenLockContext.Provider>
+    </ScreenLockContext>
   )
 }

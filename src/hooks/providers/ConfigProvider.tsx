@@ -91,7 +91,7 @@ export const ConfigProvider: React.FC<PropsWithChildren> = ({ children }) => {
   }
 
   return (
-    <ConfigContext.Provider
+    <ConfigContext
       value={{
         devEnvs,
         updateDevEnvs,
@@ -102,6 +102,6 @@ export const ConfigProvider: React.FC<PropsWithChildren> = ({ children }) => {
       }}
     >
       {children}
-    </ConfigContext.Provider>
+    </ConfigContext>
   )
 }

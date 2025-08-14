@@ -560,7 +560,7 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
   }, [agent, dataStoreUrl, realm])
 
   return (
-    <FileUploadDownloadContext.Provider
+    <FileUploadDownloadContext
       value={{
         startMediaUpload,
         retryMediaUpload,
@@ -570,6 +570,6 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
       }}
     >
       {children}
-    </FileUploadDownloadContext.Provider>
+    </FileUploadDownloadContext>
   )
 }

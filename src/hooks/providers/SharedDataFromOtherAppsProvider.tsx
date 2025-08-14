@@ -60,8 +60,8 @@ export const SharedDataFromOtherAppsProvider: React.FC<PropsWithChildren> = ({ c
   }, [])
 
   return (
-    <SharedDataFromOtherAppsContext.Provider value={{ displayShareMessagesScreen, cancelShare, sharedData }}>
+    <SharedDataFromOtherAppsContext value={{ displayShareMessagesScreen, cancelShare, sharedData }}>
       {children}
-    </SharedDataFromOtherAppsContext.Provider>
+    </SharedDataFromOtherAppsContext>
   )
 }
