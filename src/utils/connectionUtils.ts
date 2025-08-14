@@ -17,7 +17,7 @@ export const getConnectionDisplayName = (connection: ConnectionRecord) => {
   const nameAlias = connection.alias
   const namelabel = connection?.theirLabel
   const nameDid = connection.did
-  let displayName = nameAlias || nameDisplayName || namelabel || nameDid || ''
+  const displayName = nameAlias || nameDisplayName || namelabel || nameDid || ''
   return displayName
 }
 

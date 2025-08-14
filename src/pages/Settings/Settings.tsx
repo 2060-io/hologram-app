@@ -11,6 +11,7 @@ import { HomeMainTabParams } from '../HomeMain/HomeMainProps'
 
 import getStyles from './styles'
 
+import defaultAvatar from '@2060/assets/images/defaultUser.png'
 import { ModalConfirmAction } from '@2060/components'
 import { Avatar, Text, SvgIcon, OptionsList, FullScreenImage } from '@2060/components/common'
 import { OptionProps } from '@2060/components/common/OptionsList/OptionsListProps'
@@ -41,10 +42,8 @@ const Settings = ({ navigation }: Props) => {
   const theme = useTheme()
   const styles = getStyles(theme)
   const displayPicture = userProfileData?.displayPicture
-  const displayName = userProfileData?.displayName
   const imgUrl = dataUrl(displayPicture?.mimeType, displayPicture?.base64)
-  const defaultAvatar = Image.resolveAssetSource(require('@2060/assets/images/defaultUser.png')).uri
-  const avatarUri = imgUrl || (displayName && displayName.length > 0 ? '' : defaultAvatar)
+  const avatarUri = imgUrl || Image.resolveAssetSource(defaultAvatar).uri
 
   const onAvatarImagePressed = () => setShowFullScreenImage(true)
   const closeFullScreenImage = () => setShowFullScreenImage(false)
@@ -74,7 +73,7 @@ const Settings = ({ navigation }: Props) => {
       // FIXME: Workaround to make sure cache is unloaded from memory
       const cache = agent.dependencyManager.resolve(CacheModuleConfig).cache
 
-      // @ts-ignore
+      // @ts-expect-error we are sure property _cache exists
       // eslint-disable-next-line no-underscore-dangle
       cache._cache = undefined
 

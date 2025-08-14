@@ -594,7 +594,7 @@ function extractDataFromMessage(message: ChatEntryMessage) {
     const metadata = chatEntryRecord.metadata as MediaSharingMetadata
     extractedData.filename = metadata.filename!
     extractedData.mimeType = metadata.mimeType!
-    extractedData.fileType = metadata.mimeType?.split('/')[0]!
+    extractedData.fileType = metadata.mimeType?.split('/')[0]
     extractedData.localFilePath = metadata.localFilePath!
   }
 

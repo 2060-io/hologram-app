@@ -190,7 +190,7 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
       const filename = generateFileName(mimeType, fileExtension)
 
       const localFilePath = getLocalMediaFilePath(filename)
-      let downloadLocalFilePath = ciphering ? `${localFilePath}.encrypted` : localFilePath
+      const downloadLocalFilePath = ciphering ? `${localFilePath}.encrypted` : localFilePath
       try {
         await agent.modules.media.setMetadata(
           mediaRecord.id,
@@ -349,7 +349,7 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
 
       // Create upload task
       const chunks: UploadChunkTask[] = []
-      for (var i = 0; i < chunkFilePaths.length; i++) {
+      for (let i = 0; i < chunkFilePaths.length; i++) {
         chunks.push({
           id: `${fileId}/${i}`,
           filePath: chunkFilePaths[i],

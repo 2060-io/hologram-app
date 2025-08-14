@@ -9,7 +9,7 @@ const TD2_LINE_LONG = 36
 const TD3_LINE_LONG = 44
 
 export const findAndParseMrz = (initialLines: string[]) => {
-  let lines: string[] = []
+  const lines: string[] = []
   // if lines.length >= 2, extract and parse two-line MRZ
   if (initialLines.length >= 2) {
     // MLKIT sometimes add a new line character when it finds a new line instead of

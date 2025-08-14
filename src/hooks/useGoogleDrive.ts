@@ -1,3 +1,4 @@
+import { Buffer } from '@credo-ts/core/build/utils/buffer'
 import { GDrive, ListQueryBuilder } from '@robinbobin/react-native-google-drive-api-wrapper'
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
@@ -24,8 +25,6 @@ import {
 } from '@2060/services/localStorage'
 import { log, logError } from '@2060/utils'
 import { BACKUP_NAME, BACKUP_ZIP_FILE_PATH } from '@2060/utils/walletBackUpUtils'
-
-global.Buffer ??= require('buffer').Buffer
 
 type FilesProps = {
   id: string
