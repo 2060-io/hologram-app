@@ -54,8 +54,8 @@ const DEFAULT_AUDIO_PLAYBACK_SPEED = 1
 export const MediaPlayerProvider: React.FC<React.PropsWithChildren<Props>> = ({ children }) => {
   const { isInCall } = useVideoCallContext()
   const { forceDisableScreenLock } = useScreenLock()
-  const currentAudioCallback = useRef<Callback>()
-  const playingAudioInfo = useRef<PlayingAudioInfo>()
+  const currentAudioCallback = useRef<Callback>(undefined)
+  const playingAudioInfo = useRef<PlayingAudioInfo>(undefined)
   const [audioMessageIdFinished, setAudioMessageIdFinished] = useState<string>()
   const [audioPlaybackSpeed, setAudioPlaybackSpeed] = useState(DEFAULT_AUDIO_PLAYBACK_SPEED)
   const [renderVideoPlayer, setRenderVideoPlayer] = useState(false)

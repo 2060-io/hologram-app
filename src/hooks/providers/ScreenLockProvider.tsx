@@ -51,7 +51,7 @@ export const ScreenLockProvider: React.FC<PropsWithChildren> = ({ children }) =>
   const makeAutomaticAuth = useRef(true)
   const { getLocalAuth, setLocalAuth } = useNavigation()
   const isAuthenticated = getLocalAuth()
-  const timerRef = useRef<ReturnType<typeof setTimeout>>()
+  const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined)
   const { isAppActive } = useAppState()
   const makeLocalLogout = () => setLocalAuth(false)
 

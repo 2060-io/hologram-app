@@ -40,7 +40,7 @@ const Privacy = () => {
   const currentAutomaticOptionForModal = useRef<{
     key: keyof AutomaticDownloadTypes
     value: DownloadOptions
-  }>()
+  }>(undefined)
   const [showAutomaticDownloadOptions, setShowAutomaticDownloadOptions] = useState(false)
 
   const changeAutomaticDownloadOptionsVisibility = () => setShowAutomaticDownloadOptions(prev => !prev)

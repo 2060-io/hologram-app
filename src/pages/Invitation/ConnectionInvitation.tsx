@@ -61,7 +61,7 @@ const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => 
   const styles = getStyles(theme)
   const { findOrCreateThread } = useChats()
   const { userProfileData } = useUserProfile()
-  const chatThreadId = useRef<string>()
+  const chatThreadId = useRef<string>(undefined)
   const outOfBandId = outOfBandRecord.id
   const parentConnectionId = outOfBandRecord.getTag('parentConnectionId') as string | undefined
   const invitationType = getInvitationType(invitationDid, parentConnectionId)
