@@ -22,20 +22,17 @@
 		0D66D8FF2C236695004F9B35 /* ShareExtensionStaging.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 0D66D8F52C236695004F9B35 /* ShareExtensionStaging.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		0DC0A09A2C139F0300B45E18 /* SplashScreenDev.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0DC0A0992C139F0300B45E18 /* SplashScreenDev.storyboard */; };
 		0DC0A09C2C139F2100B45E18 /* SplashScreenStaging.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0DC0A09B2C139F2100B45E18 /* SplashScreenStaging.storyboard */; };
+		0DEC5D302E4D18B5006053B3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DEC5D2F2E4D18B5006053B3 /* AppDelegate.swift */; };
+		0DEC5D312E4D18B5006053B3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DEC5D2F2E4D18B5006053B3 /* AppDelegate.swift */; };
+		0DEC5D322E4D18B5006053B3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DEC5D2F2E4D18B5006053B3 /* AppDelegate.swift */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
-		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		1794C6CEF01B4B65A773735B /* EuclidCircularA-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B0DFBEEF5D084C2A8EE22FC3 /* EuclidCircularA-Medium.ttf */; };
 		24AD12DA31D34B49A0BF4C59 /* EuclidCircularA-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0B98F0DF202F4FA8A4D7314D /* EuclidCircularA-SemiBold.ttf */; };
 		2782B4076F0843349E94E4D1 /* EuclidCircularA-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CA1C222C327D4A9A94CEC3C0 /* EuclidCircularA-Light.ttf */; };
 		2AB9A2682120AAE8C0F28DD8 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A823EA4B905F4168276CBE6 /* ExpoModulesProvider.swift */; };
 		2BBE094411444140B1F06FC6 /* EuclidCircularA-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3297C2FBDFD14E0A804AE09D /* EuclidCircularA-Regular.ttf */; };
-		37519992287F7CBD0066658E /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 37519991287F7CBD0066658E /* AppDelegate.mm */; };
-		375723092A86CEF500ECF0CE /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 37519991287F7CBD0066658E /* AppDelegate.mm */; };
-		3757230A2A86CEF500ECF0CE /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		375723152A86CEF500ECF0CE /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		375723162A86CEF500ECF0CE /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EBDBDCAE269EB89000E74BEF /* SplashScreen.storyboard */; };
-		375723282A86CF0D00ECF0CE /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 37519991287F7CBD0066658E /* AppDelegate.mm */; };
-		375723292A86CF0D00ECF0CE /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		375723342A86CF0D00ECF0CE /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		375723352A86CF0D00ECF0CE /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EBDBDCAE269EB89000E74BEF /* SplashScreen.storyboard */; };
 		375723422A87EB9700ECF0CE /* Firebase in Resources */ = {isa = PBXBuildFile; fileRef = 375723412A87EB9700ECF0CE /* Firebase */; };
@@ -194,10 +191,9 @@
 		0D66D9072C23677F004F9B35 /* ShareExtensionStaging.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ShareExtensionStaging.entitlements; sourceTree = "<group>"; };
 		0DC0A0992C139F0300B45E18 /* SplashScreenDev.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SplashScreenDev.storyboard; sourceTree = "<group>"; };
 		0DC0A09B2C139F2100B45E18 /* SplashScreenStaging.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SplashScreenStaging.storyboard; sourceTree = "<group>"; };
+		0DEC5D2F2E4D18B5006053B3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* 2060Prod.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = 2060Prod.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = hologram/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = hologram/Images.xcassets; sourceTree = "<group>"; };
-		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = hologram/main.m; sourceTree = "<group>"; };
 		14BE7DB4C82799D6B77A6C96 /* libPods-2060CommonPods-2060Prod.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-2060CommonPods-2060Prod.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		18A1C893053FBC7C770BF718 /* Pods-ShareExtensionStaging.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ShareExtensionStaging.debug.xcconfig"; path = "Target Support Files/Pods-ShareExtensionStaging/Pods-ShareExtensionStaging.debug.xcconfig"; sourceTree = "<group>"; };
 		195C8E1101FC72DBE3F4A446 /* Pods-2060CommonPods-2060Prod.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-2060CommonPods-2060Prod.release.xcconfig"; path = "Target Support Files/Pods-2060CommonPods-2060Prod/Pods-2060CommonPods-2060Prod.release.xcconfig"; sourceTree = "<group>"; };
@@ -207,7 +203,6 @@
 		29F4BBABC7D5EDD99249F6F0 /* Pods-2060CommonPods-2060Dev.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-2060CommonPods-2060Dev.debug.xcconfig"; path = "Target Support Files/Pods-2060CommonPods-2060Dev/Pods-2060CommonPods-2060Dev.debug.xcconfig"; sourceTree = "<group>"; };
 		3014A43B734340F48859D0AE /* EuclidCircularA-BoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "EuclidCircularA-BoldItalic.ttf"; path = "../src/assets/fonts/EuclidCircularA-BoldItalic.ttf"; sourceTree = "<group>"; };
 		3297C2FBDFD14E0A804AE09D /* EuclidCircularA-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "EuclidCircularA-Regular.ttf"; path = "../src/assets/fonts/EuclidCircularA-Regular.ttf"; sourceTree = "<group>"; };
-		37519991287F7CBD0066658E /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = hologram/AppDelegate.mm; sourceTree = "<group>"; };
 		375723202A86CEF500ECF0CE /* 2060Dev.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = 2060Dev.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3757233F2A86CF0D00ECF0CE /* 2060Staging.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = 2060Staging.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		375723412A87EB9700ECF0CE /* Firebase */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Firebase; path = hologram/Firebase; sourceTree = "<group>"; };
@@ -357,14 +352,12 @@
 				375723492A87F38B00ECF0CE /* InfoPlist */,
 				375723412A87EB9700ECF0CE /* Firebase */,
 				50B834172A4DDA74000609F0 /* hologramRelease.entitlements */,
-				37519991287F7CBD0066658E /* AppDelegate.mm */,
 				75319D53285A846A0010C2AA /* hologram.entitlements */,
-				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
-				13B07FB71A68108700A75B9A /* main.m */,
 				EBDBDCAE269EB89000E74BEF /* SplashScreen.storyboard */,
 				0DC0A0992C139F0300B45E18 /* SplashScreenDev.storyboard */,
 				0DC0A09B2C139F2100B45E18 /* SplashScreenStaging.storyboard */,
+				0DEC5D2F2E4D18B5006053B3 /* AppDelegate.swift */,
 			);
 			name = hologram;
 			sourceTree = "<group>";
@@ -1318,8 +1311,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				37519992287F7CBD0066658E /* AppDelegate.mm in Sources */,
-				13B07FC11A68108700A75B9A /* main.m in Sources */,
+				0DEC5D302E4D18B5006053B3 /* AppDelegate.swift in Sources */,
 				2AB9A2682120AAE8C0F28DD8 /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1328,8 +1320,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				375723092A86CEF500ECF0CE /* AppDelegate.mm in Sources */,
-				3757230A2A86CEF500ECF0CE /* main.m in Sources */,
+				0DEC5D312E4D18B5006053B3 /* AppDelegate.swift in Sources */,
 				EA3C941F9C1088606B6EC679 /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1338,8 +1329,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				375723282A86CF0D00ECF0CE /* AppDelegate.mm in Sources */,
-				375723292A86CF0D00ECF0CE /* main.m in Sources */,
+				0DEC5D322E4D18B5006053B3 /* AppDelegate.swift in Sources */,
 				E79B0D483F490428FAF5B398 /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
