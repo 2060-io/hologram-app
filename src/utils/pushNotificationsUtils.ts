@@ -7,7 +7,7 @@ import notifee, {
   NotificationAndroid,
   NotificationIOS,
 } from '@notifee/react-native'
-import messaging from '@react-native-firebase/messaging'
+import { AuthorizationStatus, getMessaging } from '@react-native-firebase/messaging'
 import { t } from 'i18next'
 import { PERMISSIONS, request, RESULTS } from 'react-native-permissions'
 
@@ -17,7 +17,6 @@ import { IS_ANDROID, IS_IOS, isAndroid13OrHigher } from '@2060/constants'
 import { getLocalizedPreview } from '@2060/hooks/agent/chat/preview'
 import { ChatEntry } from '@2060/model'
 
-const { AuthorizationStatus } = messaging
 const LOCAL_NOTIFICATION_ID_PREFIX = 'local-notification'
 const optionsNotificationAndroid = (options?: NotificationAndroid): NotificationAndroid => ({
   ...options,
@@ -63,7 +62,8 @@ const askUserPushNotificationPermissionAndroid13OrHigher = async () => {
 
 const askUserPushNotificationPermission = async () => {
   const { AUTHORIZED } = AuthorizationStatus
-  const authStatus = await messaging().requestPermission({
+  const messaging = getMessaging()
+  const authStatus = await messaging.requestPermission({
     alert: true,
     badge: true,
     sound: true,
@@ -78,14 +78,16 @@ export const requestNotificationPermissionUser = isAndroid13OrHigher()
   : askUserPushNotificationPermission
 
 export const getFcmDeviceToken = async () => {
-  if (!messaging().isDeviceRegisteredForRemoteMessages) await messaging().registerDeviceForRemoteMessages()
-  const fcmToken = await messaging().getToken()
+  const messaging = getMessaging()
+  if (!messaging.isDeviceRegisteredForRemoteMessages) await messaging.registerDeviceForRemoteMessages()
+  const fcmToken = await messaging.getToken()
   return fcmToken
 }
 
 export const arePushNotificationsAllowed = async () => {
+  const messaging = getMessaging()
   const { AUTHORIZED } = AuthorizationStatus
-  const authorizationStatus = await messaging().hasPermission()
+  const authorizationStatus = await messaging.hasPermission()
   return authorizationStatus === AUTHORIZED
 }
 

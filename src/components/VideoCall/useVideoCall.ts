@@ -1,4 +1,3 @@
-import appCheck from '@react-native-firebase/app-check'
 import axios from 'axios'
 import {
   OrientationLock,
@@ -27,6 +26,7 @@ import {
 } from '@2060/hooks/providers/useVideoCallContext'
 import { CallOfferMetadata, CallOfferState, ChatEntryType } from '@2060/model'
 import { log, logError } from '@2060/utils'
+import { getAppCheckHeaders } from '@2060/utils/firebaseUtils'
 
 function generatePeerId(length = 8) {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
@@ -40,11 +40,9 @@ function generatePeerId(length = 8) {
 
 const createRoom = async (webRtcServerBaseUrl: string) => {
   try {
-    const { token } = await appCheck().getToken()
+    const headers = await getAppCheckHeaders()
     const response = await axios.post(`${webRtcServerBaseUrl}/rooms`, null, {
-      headers: {
-        'X-Firebase-AppCheck': token,
-      },
+      headers,
     })
     if (!isIncomingCallInfo(response.data)) {
       throw Error(`Invalid response from WebRTC server: ${JSON.stringify(response.data)}`)
