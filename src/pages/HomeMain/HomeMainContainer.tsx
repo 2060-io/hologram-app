@@ -1,4 +1,5 @@
 import { OutOfBandInvitation } from '@credo-ts/core'
+import { Buffer } from '@credo-ts/core/build/utils/buffer'
 import React, { ElementType, useEffect, useMemo, useState } from 'react'
 import Config from 'react-native-config'
 

@@ -1,5 +1,6 @@
 import { getConnectionProfile } from '@2060.io/credo-ts-didcomm-user-profile'
 import { ConnectionRecord, TypedArrayEncoder } from '@credo-ts/core'
+import { Buffer } from '@credo-ts/core/build/utils/buffer'
 import { StackScreenProps } from '@react-navigation/stack'
 import React, { ReactElement, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
