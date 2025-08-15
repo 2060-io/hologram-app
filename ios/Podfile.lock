@@ -44,7 +44,7 @@ PODS:
     - ExpoModulesCore
   - ExpoKeepAwake (14.1.4):
     - ExpoModulesCore
-  - ExpoLocalAuthentication (15.0.2):
+  - ExpoLocalAuthentication (16.0.5):
     - ExpoModulesCore
   - ExpoModulesCore (2.5.0):
     - DoubleConversion
@@ -260,7 +260,7 @@ PODS:
   - hermes-engine (0.79.5):
     - hermes-engine/Pre-built (= 0.79.5)
   - hermes-engine/Pre-built (0.79.5)
-  - JitsiWebRTC (118.0.0)
+  - JitsiWebRTC (124.0.2)
   - MLImage (1.0.0-beta8)
   - MLKitCommon (14.0.0):
     - GoogleDataTransport (~> 10.0)
@@ -1668,7 +1668,7 @@ PODS:
     - Yoga
   - react-native-background-upload (6.6.0):
     - React
-  - react-native-cameraroll (7.9.0):
+  - react-native-cameraroll (7.10.2):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1751,13 +1751,13 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - react-native-get-random-values (1.11.0):
+  - react-native-get-random-values (1.7.0):
     - React-Core
   - react-native-image-resizer (3.0.11):
     - React-Core
   - react-native-job-queue (0.5.3):
     - React
-  - react-native-keyboard-controller (1.16.8):
+  - react-native-keyboard-controller (1.18.5):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1860,10 +1860,10 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - react-native-webrtc (118.0.7):
-    - JitsiWebRTC (~> 118.0.0)
+  - react-native-webrtc (124.0.6):
+    - JitsiWebRTC (~> 124.0.0)
     - React-Core
-  - react-native-webview (13.13.4):
+  - react-native-webview (13.15.0):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1887,7 +1887,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - react-native-worklets-core (1.5.0):
+  - react-native-worklets-core (1.6.2):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -2233,13 +2233,13 @@ PODS:
     - React-logger (= 0.79.5)
     - React-perflogger (= 0.79.5)
     - React-utils (= 0.79.5)
-  - ReactNativeIncallManager (4.2.0):
+  - ReactNativeIncallManager (4.2.1):
     - React-Core
   - RealmJS (12.14.1):
     - React
   - RNCAsyncStorage (1.12.1):
     - React-Core
-  - RNCClipboard (1.16.2):
+  - RNCClipboard (1.16.3):
     - React-Core
   - RNFBApp (22.4.0):
     - Firebase/CoreOnly (= 11.15.0)
@@ -2279,7 +2279,7 @@ PODS:
     - Yoga
   - RNFS (2.20.0):
     - React-Core
-  - RNGestureHandler (2.24.0):
+  - RNGestureHandler (2.28.0):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -2356,7 +2356,7 @@ PODS:
     - ReactCommon/turbomodule/core
     - TOCropViewController (~> 2.7.4)
     - Yoga
-  - RNLocalize (2.2.6):
+  - RNLocalize (3.5.1):
     - React-Core
   - RNNotifee (9.1.8):
     - React-Core
@@ -2514,7 +2514,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - RNShare (12.0.10):
+  - RNShare (12.2.0):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -2542,7 +2542,7 @@ PODS:
     - React
   - RNSVG (15.12.0):
     - React-Core
-  - RNVectorIcons (10.2.0):
+  - RNVectorIcons (10.3.0):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -3029,7 +3029,7 @@ SPEC CHECKSUMS:
   Expo: b527631da3b11e085809e877b845f9e6cdd68f9c
   ExpoCrypto: e97e864c8d7b9ce4a000bca45dddb93544a1b2b4
   ExpoKeepAwake: bf0811570c8da182bfb879169437d4de298376e7
-  ExpoLocalAuthentication: eb2be9c7bcdc68e9434d4be4bb5aa5cf7943e816
+  ExpoLocalAuthentication: c35f18692dcb35775a1be0f37b2131096951a6bd
   ExpoModulesCore: f55e7872391bae03ee5547c83152c81750d89508
   ExpoScreenOrientation: a4c308260ce13eaabb786af7972046af64396b01
   fast_float: 06eeec4fe712a76acc9376682e4808b05ce978b6
@@ -3053,7 +3053,7 @@ SPEC CHECKSUMS:
   GoogleUtilities: 00c88b9a86066ef77f0da2fab05f65d7768ed8e1
   GTMSessionFetcher: 5aea5ba6bd522a239e236100971f10cb71b96ab6
   hermes-engine: f03b0e06d3882d71e67e45b073bb827da1a21aae
-  JitsiWebRTC: 3a41671ef65a51d7204323814b055a2690b921c7
+  JitsiWebRTC: b47805ab5668be38e7ee60e2258f49badfe8e1d0
   MLImage: 0de5c6c2bf9e93b80ef752e2797f0836f03b58c0
   MLKitCommon: 47d47b50a031d00db62f1b0efe5a1d8b09a3b2e6
   MLKitNaturalLanguage: 498154f2461f97abb00eb161eb773670ffc46250
@@ -3103,25 +3103,25 @@ SPEC CHECKSUMS:
   React-microtasksnativemodule: bda561d2648e1e52bd9e5a87f8889836bdbde2e2
   react-native-audio-waveform: 7bcb4171124375cc119f9acf1f939c9fa7f60603
   react-native-background-upload: 627de1e663b94336abed4a84e88fbfa2d1b6ed7f
-  react-native-cameraroll: eff6f678a6b913ffd822ec3c22ad63497c5b0f11
+  react-native-cameraroll: 048f4651b484d6446868a079098f238ddca50a1a
   react-native-cloud-store: cc96ca8d9a4400a1a7d8ceb33d2605bccc4986cf
   react-native-compressor: 1bdd3d3df874b980c415b622103e3a665b4c2638
   react-native-config: 644074ab88db883fcfaa584f03520ec29589d7df
   react-native-create-thumbnail: 733160dca9a548262e1030e7fcdae90a93d203ca
   react-native-date-picker: 2eb0ed05ab9dcb4f337deda77deaa779807c4c61
   react-native-eid-reader: c33b663fdf5564c77ea84e8279e5a1b169de73a6
-  react-native-get-random-values: d16467cf726c618e9c7a8c3c39c31faa2244bbba
+  react-native-get-random-values: f05b8a1db692cc18c9b74b0ff2f1ea5879ffb377
   react-native-image-resizer: 24c5d06fae2176dc0caed4b6396e02befb44064a
   react-native-job-queue: cfd8b0a4e23743b702efedf109f64692250c1dc3
-  react-native-keyboard-controller: 7d4e66f10793de6349efcc9ad7faee92701a361a
+  react-native-keyboard-controller: a3978266f8951bbda3ba7c29c7a0fedc0b09d4b2
   react-native-local-native-modules: e79d4d6753990a38a7109efd821e55b177caee70
   react-native-netinfo: cec9c4e86083cb5b6aba0e0711f563e2fbbff187
   react-native-safe-area-context: 0f7bf11598f9a61b7ceac8dc3f59ef98697e99e1
   react-native-splash-screen: a3f3c31e39f4466e880296008749138b276929ed
   react-native-video: 762f02a9a9068ebc305b5d0c94d145723f2059fb
-  react-native-webrtc: eb8582f60b91e8883c290425bf1676c4bcedd63d
-  react-native-webview: c0b40e6e1d44d4939a7dbba7eb7128e3022eaace
-  react-native-worklets-core: 53857b0fa15a521dc86be03bb66d2d00a0557e12
+  react-native-webrtc: 96fdff9e3a942ed88cafe01898da1c93fd628957
+  react-native-webview: 0dceb35a9d050f5fa55f7fe2d8c4d1903651eb7d
+  react-native-worklets-core: d87885e4cd1424b1b1eb187aa77d407ea01f9c4c
   React-NativeModulesApple: 1ecb83880dd11baf2228f8dd89d8419c387e03ad
   React-oscompat: 0592889a9fcf0eacb205532028e4a364e22907dd
   React-perflogger: c584fa50e422a46f37404d083fad12eb289d5de4
@@ -3153,26 +3153,26 @@ SPEC CHECKSUMS:
   ReactAppDependencyProvider: f3e842e6cb5a825b6918a74a38402ba1409411f8
   ReactCodegen: 6cb6e0d0b52471abc883541c76589d1c367c64c7
   ReactCommon: 1ab5451fc5da87c4cc4c3046e19a8054624ca763
-  ReactNativeIncallManager: ef7b845e166f04cf8ddf433d8a23227b01cef87a
+  ReactNativeIncallManager: dccd3e7499caa3bb73d3acfedf4fb0360f1a87d5
   RealmJS: 5b0258b3c04b9f48536b2692965690afe024164c
   RNCAsyncStorage: 87d0d3d6193e79bd435e955f8998d2040aa60d67
-  RNCClipboard: e1d17c9d093d8129ef50b39b63a17a0e8ccd0ade
+  RNCClipboard: f6679d470d0da2bce2a37b0af7b9e0bf369ecda5
   RNFBApp: 90cf0209fb8f0460ab069a7de857d7ec851c8476
   RNFBAppCheck: 8e66a3ee711f899750e6aaed919639ac21b67a74
   RNFBMessaging: 37dd861b8600ec2ae9a06ba42ae4285cb707a731
   RNFlashList: 6be361ee96834c102b441db09862bc75c68b8161
   RNFS: 89de7d7f4c0f6bafa05343c578f61118c8282ed8
-  RNGestureHandler: ce4a87dba81030b374d7f1993c4376f5c230da2e
+  RNGestureHandler: 05b56a7bf6f70487bfdeed234d1f670916928203
   RNImageCropPicker: 10acde29879d67e954eb944f635ed2da42691799
-  RNLocalize: 8bf466de4c92d4721b254aabe1ff0a1456e7b9f4
+  RNLocalize: 60ebbb668e46d3b9f276aaf2db8ae5353b84e514
   RNNotifee: 5e3b271e8ea7456a36eec994085543c9adca9168
   RNPermissions: bd0d9ca7969ff7b999aa605ee2e5919c12522bfe
   RNReanimated: 7fe194cef376e772f1efbad325cb5d26ea3930df
   RNScreens: c97829658ec13765ad0167b7e23e5eb7ea980b1d
-  RNShare: 4140dc62e471597238fb9dce26e2954eab1641a8
+  RNShare: 40ace3f87cd881869e8085aced9dc16b425c74aa
   RNShareMenu: 107956974f695db0947c7beb43f3a12c4ac9e51f
   RNSVG: 4d6e9f0087980e36e14e1739b9c1760e63de5b8c
-  RNVectorIcons: d53917643fddb261b22bd6d889776f336893622b
+  RNVectorIcons: e431ef1e6bef75d6ad0e33a83d376e6207962a9d
   RNZipArchive: f4a5af907d1581e995c879e34799be35c6bc3e21
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
   SSZipArchive: c69881e8ac5521f0e622291387add5f60f30f3c4
