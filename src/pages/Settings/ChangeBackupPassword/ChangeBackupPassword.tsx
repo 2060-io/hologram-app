@@ -1,4 +1,5 @@
 import { StackScreenProps } from '@react-navigation/stack'
+import { TrustResolutionOutcome } from '@verana-labs/verre'
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
@@ -126,7 +127,7 @@ const ChangeBackupPassword = ({ navigation }: Props) => {
           {currentStep === PasswordSteps.Updated && (
             <>
               <View style={styles.successUpdated}>
-                <VerifiedIcon style={styles.verifiedIconContainer} status="trusted" />
+                <VerifiedIcon style={styles.verifiedIconContainer} status={TrustResolutionOutcome.VERIFIED} />
                 <Text typography="EuclidCircularA-Medium" style={styles.title}>
                   {t('settings.passwordSaved')}
                 </Text>

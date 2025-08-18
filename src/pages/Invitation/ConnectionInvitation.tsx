@@ -1,5 +1,6 @@
 import { StackActions } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
+import { TrustResolutionOutcome } from '@verana-labs/verre'
 import React, { useLayoutEffect, useState, useRef, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TouchableOpacity, View, ScrollView } from 'react-native'
@@ -52,7 +53,7 @@ const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => 
     logoUrl: invitation.imageUrl,
     name: invitation.label ?? '',
     minimumAgeRequired: 0,
-    status: 'notFound',
+    status: TrustResolutionOutcome.INVALID,
   })
 
   const { t } = useTranslation()

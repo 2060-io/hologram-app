@@ -16,19 +16,21 @@ type Props = {
 const VerifiedIcon = ({ style, status }: Props) => {
   const theme = useTheme()
   const iconNames: Record<ServiceStatus, keyof IconsNames> = {
-    trusted: 'verifiedMark',
-    notTrusted: 'warning',
-    notFound: 'warning',
+    verified: 'verifiedMark',
+    'verified-test': 'warning',
+    'not-trusted': 'warning',
+    invalid: 'warning',
   }
 
   const backgroundColors: Record<ServiceStatus, string> = {
-    trusted: theme.colors.green,
-    notTrusted: theme.colors.red,
-    notFound: theme.colors.orange,
+    verified: theme.colors.green,
+    invalid: theme.colors.red,
+    'not-trusted': theme.colors.orange,
+    'verified-test': theme.colors.orange,
   }
   const backgroundColor = backgroundColors[status]
 
-  const dimensions = status === 'trusted' ? '80%' : '65%'
+  const dimensions = status === 'verified' ? '80%' : '65%'
   return (
     <View style={[styles.container, { backgroundColor }, style]}>
       <SvgIcon name={iconNames[status]} fill={theme.colors.white} width={dimensions} height={dimensions} />
