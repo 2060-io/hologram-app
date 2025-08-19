@@ -13371,10 +13371,10 @@ react-native-section-list-get-item-layout@^2.2.3:
 "react-native-share-menu@file:./modules/react-native-share-menu":
   version "0.0.0"
 
-react-native-share@12.2.0:
-  version "12.2.0"
-  resolved "https://registry.yarnpkg.com/react-native-share/-/react-native-share-12.2.0.tgz#d7011825bf79631858de459873ee2618235031d6"
-  integrity sha512-f6MB9BsKa9xVvu0DKbxq5jw4IyYHqQeqUlCNkD8eAFoJx6SD31ObPAn7SQ6NG9AOuhCy6aYuSJYJvx25DaoMZQ==
+react-native-share@12.1.0:
+  version "12.1.0"
+  resolved "https://registry.yarnpkg.com/react-native-share/-/react-native-share-12.1.0.tgz#19b404b6ce1ba170cc075134629bdb23045f64ea"
+  integrity sha512-9OZrrEx9pZfl8Pw8Uh/k5Tc1o6oBaBfctq3z2wxy6eJBY6O/aRhs7/WPrXAoQmh9dCxc5sIClcKN57ef34iORQ==
 
 "react-native-splash-screen@npm:@2060.io/react-native-splash-screen@3.3.2":
   version "3.3.2"

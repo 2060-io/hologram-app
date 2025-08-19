@@ -111,7 +111,7 @@
     "react-native-safe-area-context": "5.5.2",
     "react-native-screens": "4.12.0",
     "react-native-section-alphabet-list": "3.0.0",
-    "react-native-share": "12.2.0",
+    "react-native-share": "12.1.0",
     "react-native-share-menu": "file:./modules/react-native-share-menu",
     "react-native-splash-screen": "npm:@2060.io/react-native-splash-screen@3.3.2",
     "react-native-svg": "15.12.0",

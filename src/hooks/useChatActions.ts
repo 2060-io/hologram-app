@@ -64,10 +64,9 @@ export const useChatActions = () => {
 
   const shareMediaToApp = useCallback(async (message: ChatEntryMessage) => {
     const { fileType, mimeType, localFilePath } = extractDataFromMessage(message)
-    const path = getLocalFileUri(localFilePath)
+    const url = getLocalFileUri(localFilePath)
     const [, subType] = mimeType.split('/')
     const textType = fileType[0].toUpperCase() + fileType.slice(1)
-    const url = `file://${path}`
     const title = `Share ${textType}`
     const options = Platform.select<ShareOptions>({
       ios: {
@@ -80,15 +79,14 @@ export const useChatActions = () => {
         url,
         title,
         type: mimeType,
-        message: `${textType} from ${userProfileData?.displayName ?? '2060'}`,
+        message: `${textType} from ${userProfileData?.displayName ?? 'Hologram'}`,
         filename: `${textType}.${subType}`,
-        failOnCancel: true,
-        showAppsToView: true,
+        failOnCancel: false,
         subject: title,
       },
       default: {},
     })
-    return Share.open(options)
+    Share.open(options).catch(logError)
   }, [])
 
   const saveFileToGallery = useCallback(async (message: ChatEntryMessage) => {
