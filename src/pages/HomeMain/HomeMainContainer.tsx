@@ -25,13 +25,11 @@ const HomeMainContainer = (HomeMainComponent: ElementType) => {
     }, [route.params])
 
     const processInvitation = async (invitation: OutOfBandInvitation) => {
-      if (!agent) throw new Error('Agent not defined')
+      if (!agent) return
       try {
-        const { success, existingConnectionId, invitationType, recordId } = await agentProcessInvitation(
-          agent,
-          invitation,
-        )
-        if (!success || !recordId) return
+        const { success, existingConnectionId, invitationType, recordId, error } =
+          await agentProcessInvitation(agent, invitation)
+        if (!success || !recordId) throw new Error(error)
 
         if (invitationType === DidcommInvitationType.ConnectionRequest) {
           const outOfBandRecord = await agent.oob.getById(recordId)
