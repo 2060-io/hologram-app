@@ -7,7 +7,16 @@ import notifee, {
   NotificationAndroid,
   NotificationIOS,
 } from '@notifee/react-native'
-import { AuthorizationStatus, getMessaging } from '@react-native-firebase/messaging'
+import { getApp } from '@react-native-firebase/app'
+import { getToken } from '@react-native-firebase/app-check'
+import {
+  AuthorizationStatus,
+  getMessaging,
+  hasPermission,
+  isDeviceRegisteredForRemoteMessages,
+  registerDeviceForRemoteMessages,
+  requestPermission,
+} from '@react-native-firebase/messaging'
 import { t } from 'i18next'
 import { PERMISSIONS, request, RESULTS } from 'react-native-permissions'
 
@@ -63,7 +72,7 @@ const askUserPushNotificationPermissionAndroid13OrHigher = async () => {
 const askUserPushNotificationPermission = async () => {
   const { AUTHORIZED } = AuthorizationStatus
   const messaging = getMessaging()
-  const authStatus = await messaging.requestPermission({
+  const authStatus = await requestPermission(messaging, {
     alert: true,
     badge: true,
     sound: true,
@@ -79,15 +88,15 @@ export const requestNotificationPermissionUser = isAndroid13OrHigher()
 
 export const getFcmDeviceToken = async () => {
   const messaging = getMessaging()
-  if (!messaging.isDeviceRegisteredForRemoteMessages) await messaging.registerDeviceForRemoteMessages()
-  const fcmToken = await messaging.getToken()
-  return fcmToken
+  if (!isDeviceRegisteredForRemoteMessages(messaging)) await registerDeviceForRemoteMessages(messaging)
+  const { token } = await getToken(getApp().appCheck())
+  return token
 }
 
 export const arePushNotificationsAllowed = async () => {
   const messaging = getMessaging()
   const { AUTHORIZED } = AuthorizationStatus
-  const authorizationStatus = await messaging.hasPermission()
+  const authorizationStatus = await hasPermission(messaging)
   return authorizationStatus === AUTHORIZED
 }
 
