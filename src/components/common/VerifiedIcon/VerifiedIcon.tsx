@@ -1,3 +1,4 @@
+import { TrustResolutionOutcome } from '@verana-labs/verre'
 import React from 'react'
 import { View, StyleProp, ViewStyle } from 'react-native'
 
@@ -30,7 +31,7 @@ const VerifiedIcon = ({ style, status }: Props) => {
   }
   const backgroundColor = backgroundColors[status]
 
-  const dimensions = status === 'verified' ? '80%' : '65%'
+  const dimensions = status === TrustResolutionOutcome.VERIFIED ? '80%' : '65%'
   return (
     <View style={[styles.container, { backgroundColor }, style]}>
       <SvgIcon name={iconNames[status]} fill={theme.colors.white} width={dimensions} height={dimensions} />

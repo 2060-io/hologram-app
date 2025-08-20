@@ -15,7 +15,6 @@ export async function getServiceInfo(options: {
     agentContext: agent.context,
   })
 
-  log(`trustResolution: ${JSON.stringify(trustResolution.outcome)}`)
   if (!trustResolution.service || !trustResolution.didDocument) {
     return null
   }
