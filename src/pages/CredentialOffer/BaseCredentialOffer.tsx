@@ -1,6 +1,7 @@
 import { HeaderBackButton } from '@react-navigation/elements'
 import { ParamListBase } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
+import { TrustResolutionOutcome } from '@verana-labs/verre'
 import React, { useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, TouchableOpacity, ScrollView, SafeAreaView } from 'react-native'
@@ -37,7 +38,7 @@ const BaseCredentialOffer: React.FC<Props> = ({
     name: credentialDetails.mainInfo.issuer.name,
     logoUrl: credentialDetails.mainInfo.issuer.logoUrl,
     minimumAgeRequired: 0,
-    status: 'notFound',
+    status: TrustResolutionOutcome.INVALID,
   })
 
   const { t } = useTranslation()

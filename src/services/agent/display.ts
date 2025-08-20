@@ -13,6 +13,7 @@ import {
   MdocRecord,
 } from '@credo-ts/core'
 import { OpenId4VciResolvedCredentialOffer } from '@credo-ts/openid4vc'
+import { TrustResolutionOutcome } from '@verana-labs/verre'
 
 import { MobileAgent } from './MobileAgent'
 import { getDidCommCredentialDisplayMetadata } from './RecordMetadata'
@@ -259,7 +260,7 @@ export async function getCredentialDetailsFromExchange(
           id: displayMetadata?.issuerId ?? '',
           logoUrl: displayMetadata?.issuerLogoUrl,
           name: displayMetadata?.issuerName ?? '',
-          status: displayMetadata?.issuerStatus ?? 'trusted',
+          status: displayMetadata?.issuerStatus ?? TrustResolutionOutcome.INVALID,
         },
       },
       attributes,
@@ -309,7 +310,7 @@ export function getCredentialMainInfo(
         id: credential.issuer.id,
         name: issuerDisplay.name,
         logoUrl: issuerDisplay.logo?.url,
-        status: 'trusted',
+        status: TrustResolutionOutcome.INVALID,
       },
     }
   }
@@ -327,7 +328,7 @@ export function getOfferedCredentialDetailsForDisplay(
     mainInfo: {
       createdAt: new Date(),
       id: 'id',
-      issuer: { id: 'issuerId', name: 'issuerName', status: 'trusted' },
+      issuer: { id: 'issuerId', name: 'issuerName', status: TrustResolutionOutcome.INVALID },
       recordId: 'recordId',
       schemaName: 'Schema',
     },

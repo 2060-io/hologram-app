@@ -1,4 +1,6 @@
-export type ServiceStatus = 'trusted' | 'notTrusted' | 'notFound'
+import { TrustResolutionOutcome } from '@verana-labs/verre'
+
+export type ServiceStatus = TrustResolutionOutcome
 
 export type BaseEntity = {
   countryCode: string

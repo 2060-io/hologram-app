@@ -1,4 +1,5 @@
 import { StackActions, useNavigation } from '@react-navigation/native'
+import { TrustResolutionOutcome } from '@verana-labs/verre'
 import React, { useState, memo, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, ActivityIndicator, Image, TouchableOpacity } from 'react-native'
@@ -46,7 +47,7 @@ const InvitationChatView = ({ associatedRecordId: outOfBandId, metadata, role, a
   )
   const { serviceInfo } = useFetchServiceInfo(did)
   const minimumAgeRequired = serviceInfo?.minimumAgeRequired ?? 0
-  const serviceStatus = serviceInfo?.status ?? 'notFound'
+  const serviceStatus = serviceInfo?.status ?? TrustResolutionOutcome.INVALID
   const { kidAge, ageRestricted } = useValidateKidAgeRestrictions({ minimumAgeRequired, serviceStatus })
 
   const goToInvitation = async () => {

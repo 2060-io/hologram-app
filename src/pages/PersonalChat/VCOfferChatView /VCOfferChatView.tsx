@@ -1,6 +1,7 @@
 import { AutoAcceptCredential, CredentialState } from '@credo-ts/core'
 import { useNavigation, ParamListBase } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
+import { TrustResolutionOutcome } from '@verana-labs/verre'
 import React, { useState, memo, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
@@ -45,7 +46,7 @@ const VCOfferChatView = ({ sender, associatedRecordId, metadata, agent }: Props)
         id: metadata.issuerId ?? '',
         name: metadata.issuerName ?? sender?.name ?? '',
         logoUrl: metadata.issuerLogoUrl ?? sender?.avatar,
-        status: 'notFound',
+        status: TrustResolutionOutcome.INVALID,
       },
     }),
     [metadata],

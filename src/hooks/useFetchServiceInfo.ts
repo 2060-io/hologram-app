@@ -1,4 +1,5 @@
 import { CacheModuleConfig } from '@credo-ts/core'
+import { TrustResolutionOutcome } from '@verana-labs/verre'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -100,7 +101,7 @@ export async function getStoredServiceInfo(
       minimumAgeRequired: 0,
       name: getConnectionDisplayName(connection),
       logoUrl: getConnectionDisplayPicture(connection),
-      status: 'notFound',
+      status: TrustResolutionOutcome.INVALID,
     }
   }
 
