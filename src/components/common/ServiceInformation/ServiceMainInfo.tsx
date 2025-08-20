@@ -45,9 +45,10 @@ const ServiceMainInfo = ({ serviceInfo }: Props) => {
   }, [])
 
   const serviceIs: Record<ServiceStatus, string> = {
-    trusted: t('invitation.isATrustedService'),
-    notTrusted: t('invitation.notTrustedService'),
-    notFound: t('invitation.notFoundService'),
+    verified: t('invitation.isATrustedService'),
+    'verified-test': t('invitation.notTrustedService'),
+    'not-trusted': t('invitation.notTrustedService'),
+    invalid: t('invitation.notFoundService'),
   }
 
   return (

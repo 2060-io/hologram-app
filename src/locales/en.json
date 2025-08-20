@@ -195,7 +195,7 @@
       "subConnectionInvitationDescriptionAs": "as a connection managed by",
       "certificateisValid": "certificate is valid",
       "isATrustedService": "is a trusted service",
-      "notTrustedService": "is flagged as dangerous and has been disabled for your security.",
+      "notTrustedService": "is a non-trusted verifiable service. Connect at your own risk",
       "notFoundService": "is unresolvable and thus not trustable. Connect at your own risk.",
       "errorGettingServiceInfoAPI": "Error getting service info API: ",
       "unableToGetServiceInfo": "Unable to get service information because you are offline.",

@@ -1,4 +1,5 @@
 import { ProofExchangeRecord, ProofState, W3cCredentialRepository } from '@credo-ts/core'
+import { TrustResolutionOutcome } from '@verana-labs/verre'
 import Realm from 'realm'
 
 import {
@@ -192,7 +193,7 @@ export const handleProofExchangeRecordChanges = async (options: {
                   id: credentialDefinition?.issuerId ?? '',
                   name: serviceInfo?.name ?? credentialDefinitionId,
                   logoUrl: serviceInfo?.logoUrl,
-                  status: serviceInfo?.status ?? 'notFound',
+                  status: serviceInfo?.status ?? TrustResolutionOutcome.INVALID,
                 },
               }
               presentedCredentials.push({ mainInfo: credentialMainInfo, attributes })

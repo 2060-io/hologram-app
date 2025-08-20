@@ -1,3 +1,4 @@
+import { TrustResolutionOutcome } from '@verana-labs/verre'
 import React, { memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, Image, StyleProp, ViewStyle, TouchableOpacity } from 'react-native'
@@ -53,7 +54,7 @@ const CardCredentialMainInformation = ({
           <Text style={styles.bottomText} typography="EuclidCircularA-Medium" numberOfLines={1}>
             {serviceInfo?.name ?? credentialMainInfo.issuer.name}
           </Text>
-          <VerifiedIcon status={serviceInfo?.status ?? 'notFound'} />
+          <VerifiedIcon status={serviceInfo?.status ?? TrustResolutionOutcome.INVALID} />
         </View>
       </View>
     </TouchableOpacity>

@@ -1,4 +1,5 @@
 import { StackScreenProps } from '@react-navigation/stack'
+import { TrustResolutionOutcome } from '@verana-labs/verre'
 import React, { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ScrollView, TouchableOpacity, SafeAreaView, View } from 'react-native'
@@ -36,7 +37,7 @@ const CredentialDetails = ({ route, navigation }: Props) => {
     name: credentialDetails?.mainInfo.issuer.name ?? trimText(did),
     logoUrl: credentialDetails?.mainInfo.issuer.logoUrl,
     minimumAgeRequired: 0,
-    status: 'notFound',
+    status: TrustResolutionOutcome.INVALID,
   })
 
   const handleShowContextMenu = () => setShowContextualMenu(prevState => !prevState)
