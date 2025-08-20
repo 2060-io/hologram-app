@@ -3,7 +3,6 @@ import { IOrg, resolve } from '@verana-labs/verre'
 import { MobileAgent } from './agent'
 
 import { ServiceInfo } from '@2060/model'
-import { log } from '@2060/utils'
 
 export async function getServiceInfo(options: {
   agent: MobileAgent
