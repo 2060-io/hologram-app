@@ -4,7 +4,7 @@ This repository contains 2060 Mobile Agent (Hologram), a React Native applicatio
 
 ## Environment setup
 
-Currently we are using [node 21.1.0](https://nodejs.org/dist/v21.1.0/). [Yarn 1.22.22](https://classic.yarnpkg.com/lang/en/) is used to manage packages and scripts.
+Currently we are using [node 22.18.0](https://nodejs.org/dist/v22.18.0/). [Yarn 1.22.22](https://classic.yarnpkg.com/lang/en/) is used to manage packages and scripts.
 
 For Android, we are currently using the following toolchain:
 
@@ -17,7 +17,7 @@ For Android, we are currently using the following toolchain:
 
 For iOS:
 
-- XCode 16.2
+- XCode 16.3
 - CocoaPods 1.16.2
 
 Import all dependencies by running:
