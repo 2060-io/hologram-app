@@ -1,6 +1,5 @@
 /* eslint-disable no-underscore-dangle */
-import { OutOfBandInvitation } from '@credo-ts/core'
-import { Buffer } from '@credo-ts/core/build/utils/buffer'
+import { OutOfBandInvitation, Buffer } from '@credo-ts/core'
 import { BottomTabScreenProps } from '@react-navigation/bottom-tabs'
 import { useIsFocused, ParamListBase } from '@react-navigation/native'
 import { parseUrl } from 'query-string'

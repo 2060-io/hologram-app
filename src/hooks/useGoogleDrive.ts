@@ -1,4 +1,4 @@
-import { Buffer } from '@credo-ts/core/build/utils/buffer'
+import { Buffer } from '@credo-ts/core'
 import { GDrive, ListQueryBuilder } from '@robinbobin/react-native-google-drive-api-wrapper'
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
