@@ -115,7 +115,7 @@ jobs:
       - name: Checkout hologram-app
         uses: actions/checkout@v4
 
-      - name: Setup node v20
+      - name: Setup node v22
         uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -155,7 +155,7 @@ jobs:
       - name: Checkout hologram-app
         uses: actions/checkout@v4
 
-      - name: Setup node v20
+      - name: Setup node v22
         uses: actions/setup-node@v4
         with:
           node-version: 22
