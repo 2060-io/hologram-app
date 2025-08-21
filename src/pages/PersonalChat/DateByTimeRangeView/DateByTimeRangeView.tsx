@@ -1,32 +1,34 @@
 import React from 'react'
 import { View } from 'react-native'
 
-import { isSameDay } from '../utils'
-
 import getStyles from './styles'
 
 import { Text } from '@2060/components/common'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { ChatEntryMessage } from '@2060/pages/PersonalChat/ChatMessage/Props'
-import { getFormattedDateRange } from '@2060/utils/dateUtils'
+import { getFormattedDateRange, getIsSameDay } from '@2060/utils/dateUtils'
 
 type Props = {
-  currentMessage?: ChatEntryMessage
-  previousMessage?: ChatEntryMessage
+  currentMessageCreatedAt: number
+  previousMessageCreatedAt?: number
 }
 
-const DateByTimeRangeView = ({ currentMessage, previousMessage }: Props) => {
+const isSameDay = (date1: number, date2: number | undefined) => {
+  if (!date2) return false
+  return getIsSameDay(date1, date2)
+}
+
+const DateByTimeRangeView = ({ currentMessageCreatedAt, previousMessageCreatedAt }: Props) => {
   const theme = useTheme()
   const styles = getStyles(theme)
 
-  if (currentMessage == null || isSameDay(currentMessage, previousMessage)) {
+  if (isSameDay(currentMessageCreatedAt, previousMessageCreatedAt)) {
     return null
   }
 
   return (
     <View style={styles.containerDay}>
       <Text typography="EuclidCircularA-Regular" style={styles.textDay}>
-        {getFormattedDateRange(new Date(currentMessage.createdAt))}
+        {getFormattedDateRange(new Date(currentMessageCreatedAt))}
       </Text>
     </View>
   )

@@ -7,7 +7,7 @@ export interface BackupHandler {
 interface BackupInfo {
   name?: string
   size?: string
-  modifyDate?: string | number
+  modifyDate?: number
   downloadUrl?: string
 }
 
