@@ -1,4 +1,4 @@
-import messaging from '@react-native-firebase/messaging'
+import { setBackgroundMessageHandler, getMessaging } from '@react-native-firebase/messaging'
 import { AppRegistry } from 'react-native'
 
 import 'react-native-reanimated'
@@ -7,5 +7,6 @@ import { name as appName } from './app.json'
 import AppHeadless from './src/AppHeadless'
 import { backgroundPushNotificationHandler } from './src/services/backgroundPushNotificationHandler'
 // Register handler for FCM notifications when app is in quit state
-messaging().setBackgroundMessageHandler(backgroundPushNotificationHandler)
+const messaging = getMessaging()
+setBackgroundMessageHandler(messaging, backgroundPushNotificationHandler)
 AppRegistry.registerComponent(appName, () => AppHeadless)

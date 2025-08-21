@@ -287,7 +287,7 @@ export const ChatProvider: React.FC<Props> = ({ children }) => {
   )
 
   return (
-    <ChatContext.Provider
+    <ChatContext
       value={{
         ...chatState,
         setFilters,
@@ -302,6 +302,6 @@ export const ChatProvider: React.FC<Props> = ({ children }) => {
       }}
     >
       {children}
-    </ChatContext.Provider>
+    </ChatContext>
   )
 }

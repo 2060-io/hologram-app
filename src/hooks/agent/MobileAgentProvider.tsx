@@ -140,10 +140,8 @@ export const MobileAgentProvider: React.FC<Props> = ({ children }) => {
   }, [agentState])
 
   return (
-    <AgentContext.Provider
-      value={{ ...agentState, openAndInitMobileAgent, shutdownAgent, handleChangeAgentState }}
-    >
+    <AgentContext value={{ ...agentState, openAndInitMobileAgent, shutdownAgent, handleChangeAgentState }}>
       {children}
-    </AgentContext.Provider>
+    </AgentContext>
   )
 }

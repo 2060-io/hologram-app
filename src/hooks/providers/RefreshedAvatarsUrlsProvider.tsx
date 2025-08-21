@@ -28,13 +28,13 @@ export const RefreshedAvatarsUrlsProvider: React.FC<React.PropsWithChildren<Prop
   }
 
   return (
-    <RefreshedAvatarsUrlsContext.Provider
+    <RefreshedAvatarsUrlsContext
       value={{
         updateRefreshedAvatarsUrlsList,
         refreshedAvatarsUrlsList,
       }}
     >
       {children}
-    </RefreshedAvatarsUrlsContext.Provider>
+    </RefreshedAvatarsUrlsContext>
   )
 }

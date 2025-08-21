@@ -4,14 +4,13 @@ import { View, TouchableOpacity, Platform, SafeAreaView, ScrollView } from 'reac
 import QRCode from 'react-native-qrcode-svg'
 import Share, { ShareOptions } from 'react-native-share'
 
-import { getGlobalStyles } from '../../styles/globalStyles'
-
 import { UserInvitationProps } from './UserInvitationProps'
 import getStyles from './styles'
 import withUserInvitation from './withUserInvitation'
 
 import { Avatar, Text, SvgIcon } from '@2060/components/common'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
+import { getGlobalStyles } from '@2060/styles/globalStyles'
 import { log } from '@2060/utils'
 import { getPictureDataUrl } from '@2060/utils/connectionUtils'
 import { widthPercentageToDP } from '@2060/utils/responsiveUtils'

@@ -24,6 +24,7 @@ const CallOfferChatView = ({ metadata, sender, didcommThreadId }: Props) => {
   const { chatThread } = useChat()
   const { description, state, offerExpirationTime } = metadata
   const [callState, setCallState] = useState<CallOfferState>(state)
+  const connectionId = chatThread?.data?.connectionId
 
   useEffect(() => {
     if (!offerExpirationTime || state !== CallOfferState.RECEIVED) {
@@ -42,12 +43,14 @@ const CallOfferChatView = ({ metadata, sender, didcommThreadId }: Props) => {
       toast({ type: 'error', message: t('call.expiredCallMessage'), duration: 3000 })
     } else {
       const { callType, roomId, peerId, wsUrl } = metadata
-      joinCall(chatThread?.data.connectionId!, callType, { roomId, peerId, wsUrl }, didcommThreadId)
+      if (!connectionId) return
+      joinCall(connectionId, callType, { roomId, peerId, wsUrl }, didcommThreadId)
     }
   }
 
   const reject = () => {
-    agent?.modules.calls.reject({ connectionId: chatThread?.data.connectionId!, threadId: didcommThreadId })
+    if (!connectionId) return
+    agent?.modules.calls.reject({ connectionId, threadId: didcommThreadId })
   }
 
   const footer: Record<CallOfferState, React.ReactElement> = {

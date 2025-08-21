@@ -119,7 +119,7 @@ const Developer = ({ navigation }: Props) => {
       // FIXME: Workaround to make sure cache is unloaded from memory
       const cache = agent.dependencyManager.resolve(CacheModuleConfig).cache
 
-      // @ts-ignore
+      // @ts-expect-error we are sure property _cache exists
       // eslint-disable-next-line no-underscore-dangle
       cache._cache = undefined
       await shutdownAgent()

@@ -135,7 +135,7 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
   const listViewRef = useRef<FlashList<ChatEntryMessage> | null>(null)
   const insets = useSafeAreaInsets()
   const headerStatusBarHeight = insets.top
-  const timerStickyDate = useRef<ReturnType<typeof setTimeout>>()
+  const timerStickyDate = useRef<ReturnType<typeof setTimeout>>(undefined)
   const videoCompressionCancellationId = useRef<string>('')
   const isAlreadyMounted = useRef(false)
 
@@ -257,8 +257,10 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
       const messageIndex = dataList.findIndex(value => value.id === chatEntryId)
       setTappedRepliedMessageChatEntryId(chatEntryId)
       if (messageIndex === -1) return loadMoreMessages()
-      if (listViewRef.current && listViewRef.current?.props.data?.length! > messageIndex) {
-        listViewRef.current.scrollToIndex({ animated: true, index: messageIndex, viewPosition: 0.5 })
+      const mustScrollToIndex =
+        listViewRef?.current?.props?.data?.length && listViewRef.current.props.data.length > messageIndex
+      if (mustScrollToIndex) {
+        listViewRef.current?.scrollToIndex({ animated: true, index: messageIndex, viewPosition: 0.5 })
         setTimeout(() => {
           setTappedRepliedMessageChatEntryId(null)
         }, 1000)

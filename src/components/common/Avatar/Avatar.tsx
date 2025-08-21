@@ -1,5 +1,5 @@
 import { isUri } from '@credo-ts/core/build/utils'
-import React, { useMemo, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Image, TouchableOpacity, View } from 'react-native'
 import { SvgUri } from 'react-native-svg'
 
@@ -42,13 +42,16 @@ const Avatar: React.FC<Props> = ({
 }) => {
   const imageUri = useRef(uri)
   const [isValidImageUrl, setIsValidImageUrl] = useState<boolean>()
-  useMemo(() => setIsValidImageUrl(uri?.length ? isUri(uri) : undefined), [uri])
   const theme = useTheme()
   const styles = getStyles(theme)
   const avatarSize = widthPercentageToDP(size.includes('%') ? size : `${size}%`)
   const initialsFontSize = avatarSize * 0.4
   const avatarDimensions = { height: avatarSize, width: avatarSize, borderRadius: avatarSize / 2 }
   const borderStyle = withBorder && { borderWidth: 1, borderColor: theme.colors.lightGrey }
+
+  useEffect(() => {
+    setIsValidImageUrl(uri ? isUri(uri) : false)
+  }, [uri])
 
   const onSmartImageContent = (imageContent: string) => {
     imageUri.current = imageContent

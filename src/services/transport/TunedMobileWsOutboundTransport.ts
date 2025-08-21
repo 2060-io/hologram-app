@@ -16,6 +16,7 @@ import {
   TransportEventTypes,
   Key,
   KeyType,
+  Buffer,
 } from '@credo-ts/core'
 import { isDidCommTransportQueue, TransportPriorityOptions } from '@credo-ts/core/build/agent/MessageSender'
 import { ResolvedDidCommService } from '@credo-ts/core/build/modules/didcomm'
@@ -29,7 +30,6 @@ import {
 import { didKeyToInstanceOfKey, verkeyToInstanceOfKey } from '@credo-ts/core/build/modules/dids/helpers'
 import { OutOfBandRecord } from '@credo-ts/core/build/modules/oob/repository'
 import { isValidJweStructure, JsonEncoder } from '@credo-ts/core/build/utils'
-import { Buffer } from '@credo-ts/core/build/utils/buffer'
 
 import { MediatorConnectedEvent, MediatorDisconnectedEvent, MediatorEventTypes } from './MediatorEventTypes'
 

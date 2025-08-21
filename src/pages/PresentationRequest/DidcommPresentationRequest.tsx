@@ -63,7 +63,7 @@ const DidcommPresentationRequest: React.FC<Props> = ({ navigation, route }: Prop
   const refuse = async () => {
     agent?.proofs.declineRequest({ proofRecordId, sendProblemReport: true })
     if (realm && comesFromChat) {
-      let [vpRequestChatEntry] = findAllByAssociatedRecordId(realm, proofRecordId, ChatEntryType.VPRequest)
+      const [vpRequestChatEntry] = findAllByAssociatedRecordId(realm, proofRecordId, ChatEntryType.VPRequest)
       if (vpRequestChatEntry) {
         const newMetadata = { ...vpRequestChatEntry.metadata, proofState: ProofState.Declined }
         updateChatEntryMetadata(realm, vpRequestChatEntry.id, newMetadata)

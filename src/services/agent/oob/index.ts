@@ -166,8 +166,7 @@ export const processInvitation = async (
       throw new Error('Message request is not from supported protocol.')
     }
 
-    // The value is reassigned, but eslint doesn't know this.
-
+    // eslint-disable-next-line prefer-const
     let connectionId: string | undefined
 
     const credentialOffer = agent.events

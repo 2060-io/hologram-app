@@ -242,7 +242,7 @@ index 0000000..def6599
 +    }
 +}
 diff --git a/node_modules/react-native-vision-camera-text-recognition/android/src/main/java/com/visioncameratextrecognition/VisionCameraTextRecognitionPlugin.kt b/node_modules/react-native-vision-camera-text-recognition/android/src/main/java/com/visioncameratextrecognition/VisionCameraTextRecognitionPlugin.kt
-index f48c947..0b1c918 100644
+index f48c947..71747c9 100644
 --- a/node_modules/react-native-vision-camera-text-recognition/android/src/main/java/com/visioncameratextrecognition/VisionCameraTextRecognitionPlugin.kt
 +++ b/node_modules/react-native-vision-camera-text-recognition/android/src/main/java/com/visioncameratextrecognition/VisionCameraTextRecognitionPlugin.kt
 @@ -1,5 +1,6 @@
@@ -274,9 +274,12 @@ index f48c947..0b1c918 100644
          recognizer = when (language) {
              "latin" -> TextRecognition.getClient(latinOptions)
              "chinese" -> TextRecognition.getClient(chineseOptions)
-@@ -44,9 +46,28 @@ class VisionCameraTextRecognitionPlugin(proxy: VisionCameraProxy, options: Map<S
+@@ -42,11 +44,30 @@ class VisionCameraTextRecognitionPlugin(proxy: VisionCameraProxy, options: Map<S
+         }
+     }
  
-     override fun callback(frame: Frame, arguments: Map<String, Any>?): HashMap<String, Any>? {
+-    override fun callback(frame: Frame, arguments: Map<String, Any>?): HashMap<String, Any>? {
++    override fun callback(frame: Frame, arguments: Map<String, Any>?): HashMap<String, Any?>? {
          val data = WritableNativeMap()
 -        val mediaImage: Image = frame.image
 -        val image =

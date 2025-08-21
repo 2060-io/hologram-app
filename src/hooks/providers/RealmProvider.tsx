@@ -85,8 +85,8 @@ export const RealmProvider: React.FC<React.PropsWithChildren<Props>> = ({ childr
   }, [realm])
 
   return (
-    <LocalRealmContext.Provider value={{ realm, openRealm, importAndOpenRealm, closeRealm }}>
+    <LocalRealmContext value={{ realm, openRealm, importAndOpenRealm, closeRealm }}>
       {children}
-    </LocalRealmContext.Provider>
+    </LocalRealmContext>
   )
 }

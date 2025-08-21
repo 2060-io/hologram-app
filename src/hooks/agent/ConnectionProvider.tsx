@@ -108,8 +108,8 @@ export const ConnectionProvider: React.FC<React.PropsWithChildren<Props>> = ({ c
   useAgentConnectionEvents()
 
   return (
-    <ConnectionContext.Provider value={{ connections: state.records, loading: state.loading }}>
+    <ConnectionContext value={{ connections: state.records, loading: state.loading }}>
       {children}
-    </ConnectionContext.Provider>
+    </ConnectionContext>
   )
 }

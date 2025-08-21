@@ -76,7 +76,7 @@ const BaseCredentialOffer: React.FC<Props> = ({
   }, [enableAcceptRejectButtons])
 
   return (
-    <SafeAreaView style={styles.root}>
+    <SafeAreaView style={styles.container}>
       <ModalConfirmAction
         visible={showModalRefuseConfirmation}
         title={t('personalChat.confirmRefuseCredentialOffer')}

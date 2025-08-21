@@ -271,7 +271,7 @@ export async function getCredentialDetailsFromExchange(
 
 export function getCredentialMainInfo(
   credentialRecord: W3cCredentialRecord | SdJwtVcRecord | MdocRecord,
-  //@ts-ignore It incorrectly complains about no return, when both cases are fully covered
+  //@ts-expect-error It incorrectly complains about no return, when both cases are fully covered
 ): CredentialMainInfo {
   if (credentialRecord instanceof W3cCredentialRecord) {
     const credential = JsonTransformer.toJSON(

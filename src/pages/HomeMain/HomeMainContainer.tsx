@@ -1,4 +1,4 @@
-import { OutOfBandInvitation } from '@credo-ts/core'
+import { OutOfBandInvitation, Buffer } from '@credo-ts/core'
 import React, { ElementType, useEffect, useMemo, useState } from 'react'
 import Config from 'react-native-config'
 
@@ -24,13 +24,11 @@ const HomeMainContainer = (HomeMainComponent: ElementType) => {
     }, [route.params])
 
     const processInvitation = async (invitation: OutOfBandInvitation) => {
-      if (!agent) throw new Error('Agent not defined')
+      if (!agent) return
       try {
-        const { success, existingConnectionId, invitationType, recordId } = await agentProcessInvitation(
-          agent,
-          invitation,
-        )
-        if (!success || !recordId) return
+        const { success, existingConnectionId, invitationType, recordId, error } =
+          await agentProcessInvitation(agent, invitation)
+        if (!success || !recordId) throw new Error(error)
 
         if (invitationType === DidcommInvitationType.ConnectionRequest) {
           const outOfBandRecord = await agent.oob.getById(recordId)

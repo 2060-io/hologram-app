@@ -14,7 +14,7 @@ export const useChatEntries = (threadId: string) => {
   const { loading } = useChats()
   const limit = useRef<number>(LIMIT_STEP_SIZE)
   const [chatEntries, setChatEntries] = useState<ChatEntryData[]>([])
-  const entries = useRef<Results<ChatEntry>>()
+  const entries = useRef<Results<ChatEntry>>(undefined)
 
   const updateChatEntryListener = () => {
     const onChatEntryChange: Realm.CollectionChangeCallback<ChatEntry> = (newEntries, changes) => {
