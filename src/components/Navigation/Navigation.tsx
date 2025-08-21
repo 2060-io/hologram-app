@@ -9,7 +9,7 @@ import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/
 import { createStackNavigator } from '@react-navigation/stack'
 import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Platform, View } from 'react-native'
+import { Platform, StatusBar, View } from 'react-native'
 import Config from 'react-native-config'
 import 'isomorphic-webcrypto'
 
@@ -119,6 +119,11 @@ const Navigation = ({ isSignedUp, agent, theme }: NavigationProps) => {
     })
     return () => unsubscribe()
   }, [])
+
+  useEffect(() => {
+    StatusBar.setBarStyle(theme.isDarkMode ? 'light-content' : 'dark-content', true)
+    StatusBar.setBackgroundColor(globalStyles.headerStyle.backgroundColor, true)
+  }, [theme.isDarkMode])
 
   return (
     <NavigationContainer linking={deepLinking} theme={theme.isDarkMode ? DarkTheme : DefaultTheme}>
