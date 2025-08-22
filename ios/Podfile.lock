@@ -2231,7 +2231,7 @@ PODS:
     - React-utils (= 0.79.5)
   - ReactNativeIncallManager (4.2.1):
     - React-Core
-  - RealmJS (12.14.1):
+  - RealmJS (12.14.2):
     - React
   - RNCAsyncStorage (1.12.1):
     - React-Core
@@ -3142,7 +3142,7 @@ SPEC CHECKSUMS:
   ReactCodegen: 6cb6e0d0b52471abc883541c76589d1c367c64c7
   ReactCommon: 1ab5451fc5da87c4cc4c3046e19a8054624ca763
   ReactNativeIncallManager: dccd3e7499caa3bb73d3acfedf4fb0360f1a87d5
-  RealmJS: 5b0258b3c04b9f48536b2692965690afe024164c
+  RealmJS: ff8a7d6d6e339c1b3410a96ceb4151b151fe56f5
   RNCAsyncStorage: 87d0d3d6193e79bd435e955f8998d2040aa60d67
   RNCClipboard: f6679d470d0da2bce2a37b0af7b9e0bf369ecda5
   RNFBApp: 90cf0209fb8f0460ab069a7de857d7ec851c8476
