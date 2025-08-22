@@ -7,11 +7,10 @@ import notifee, {
   NotificationAndroid,
   NotificationIOS,
 } from '@notifee/react-native'
-import { getApp } from '@react-native-firebase/app'
-import { getToken } from '@react-native-firebase/app-check'
 import {
   AuthorizationStatus,
   getMessaging,
+  getToken,
   hasPermission,
   isDeviceRegisteredForRemoteMessages,
   registerDeviceForRemoteMessages,
@@ -83,7 +82,7 @@ export const requestNotificationsPermission = isAndroid13OrHigher()
 export const getFcmDeviceToken = async () => {
   const messaging = getMessaging()
   if (!isDeviceRegisteredForRemoteMessages(messaging)) await registerDeviceForRemoteMessages(messaging)
-  const { token } = await getToken(getApp().appCheck())
+  const token = await getToken(messaging)
   return token
 }
 
