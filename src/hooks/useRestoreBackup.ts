@@ -122,8 +122,7 @@ export const useRestoreBackup = ({ restoreProgress, setRestoreProgress, download
   const onSuccessFinish = async (backupKey: string) => {
     await importAndOpenRealm(BackupUtils.REALM_BACKUP_FILE_PATH, backupKey)
     await openWallet()
-    const areNotificationsAllowed = await requestNotificationsPermission()
-    if (areNotificationsAllowed) await updateNotificationInfo()
+    await handleNotificationsPermission()
     setRestoreProgress(prev => ({ ...prev, isDownloadingBackUp: false, done: true, progress: 100 }))
     await BackupUtils.deleteBackupDirectory()
   }
@@ -140,6 +139,11 @@ export const useRestoreBackup = ({ restoreProgress, setRestoreProgress, download
       devicePlatform: Platform.OS,
     })
   }, [agent])
+
+  const handleNotificationsPermission = async () => {
+    const areNotificationsAllowed = await requestNotificationsPermission()
+    if (areNotificationsAllowed) await updateNotificationInfo()
+  }
 
   const goToHomeScreen = async () => {
     navigation.dispatch(CommonActions.reset({ index: 0, routes: [{ name: 'Home' }] }))
