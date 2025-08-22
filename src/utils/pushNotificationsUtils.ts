@@ -18,7 +18,7 @@ import {
   requestPermission,
 } from '@react-native-firebase/messaging'
 import { t } from 'i18next'
-import { PERMISSIONS, request, RESULTS } from 'react-native-permissions'
+import { requestNotifications, RESULTS } from 'react-native-permissions'
 
 import { getConnectionDisplayName } from './connectionUtils'
 
@@ -64,7 +64,7 @@ const createChannel = async () => {
 }
 
 const askUserPushNotificationPermissionAndroid13OrHigher = async () => {
-  const status = await request(PERMISSIONS.ANDROID.POST_NOTIFICATIONS)
+  const { status } = await requestNotifications(['alert', 'badge', 'sound', 'providesAppSettings'])
   const isGranted = status === RESULTS.GRANTED
   return isGranted
 }
@@ -72,17 +72,11 @@ const askUserPushNotificationPermissionAndroid13OrHigher = async () => {
 const askUserPushNotificationPermission = async () => {
   const { AUTHORIZED } = AuthorizationStatus
   const messaging = getMessaging()
-  const authStatus = await requestPermission(messaging, {
-    alert: true,
-    badge: true,
-    sound: true,
-    provisional: false,
-    providesAppNotificationSettings: true,
-  })
+  const authStatus = await requestPermission(messaging, { providesAppNotificationSettings: true })
   return authStatus === AUTHORIZED
 }
 
-export const requestNotificationPermissionUser = isAndroid13OrHigher()
+export const requestNotificationsPermission = isAndroid13OrHigher()
   ? askUserPushNotificationPermissionAndroid13OrHigher
   : askUserPushNotificationPermission
 
