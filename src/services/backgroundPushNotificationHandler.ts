@@ -27,6 +27,8 @@ let isProcessingBackgroundNotification = false
 export async function backgroundPushNotificationHandler(remoteMessage: FirebaseMessagingTypes.RemoteMessage) {
   const persistedIsBackgroundNotificationsEnabled = await isBackgroundNotificationHandlerEnabled()
   if (!persistedIsBackgroundNotificationsEnabled) return
+  // Note: When user disables notifications and are not displayed (remote notifications) this code can be
+  //  executed. For that reason, we need to check if push notifications are allowed to continue processing
   if (!(await arePushNotificationsAllowed())) return
   deleteRemoteNotifications()
   if (isProcessingBackgroundNotification) {
