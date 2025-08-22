@@ -105,8 +105,8 @@ const ProfileCreation = ({ navigation }: Props) => {
       await createNewWallet()
       await openWallet()
       await startSignUp()
-      const allowed = await requestNotificationsPermission()
-      if (allowed) await updateNotificationInfo()
+      const areNotificationsAllowed = await requestNotificationsPermission()
+      if (areNotificationsAllowed) await updateNotificationInfo()
     } catch (error) {
       if (error instanceof Error) handleLogStartError(error)
     } finally {

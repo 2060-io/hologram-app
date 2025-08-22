@@ -122,8 +122,8 @@ export const useRestoreBackup = ({ restoreProgress, setRestoreProgress, download
   const onSuccessFinish = async (backupKey: string) => {
     await importAndOpenRealm(BackupUtils.REALM_BACKUP_FILE_PATH, backupKey)
     await openWallet()
-    const allowed = await requestNotificationsPermission()
-    if (allowed) await updateNotificationInfo()
+    const areNotificationsAllowed = await requestNotificationsPermission()
+    if (areNotificationsAllowed) await updateNotificationInfo()
     setRestoreProgress(prev => ({ ...prev, isDownloadingBackUp: false, done: true, progress: 100 }))
     await BackupUtils.deleteBackupDirectory()
   }
