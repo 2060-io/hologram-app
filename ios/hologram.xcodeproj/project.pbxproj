@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		02F90336D030D4CECB9C1EFF /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1540BDDA33318FB901249756 /* ExpoModulesProvider.swift */; };
 		0884748E72BA4CDF8D3A3DB5 /* EuclidCircularA-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 754389A0F33F48078970FF9B /* EuclidCircularA-LightItalic.ttf */; };
 		0D133B6B2BFE7DC800B2AAFF /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 0D133B6A2BFE7DC800B2AAFF /* PrivacyInfo.xcprivacy */; };
 		0D133B6C2BFE7DC800B2AAFF /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 0D133B6A2BFE7DC800B2AAFF /* PrivacyInfo.xcprivacy */; };
@@ -26,7 +25,7 @@
 		0DEC5D302E4D18B5006053B3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DEC5D2F2E4D18B5006053B3 /* AppDelegate.swift */; };
 		0DEC5D312E4D18B5006053B3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DEC5D2F2E4D18B5006053B3 /* AppDelegate.swift */; };
 		0DEC5D322E4D18B5006053B3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DEC5D2F2E4D18B5006053B3 /* AppDelegate.swift */; };
-		124191D69886C30C7C10FC60 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1152E82C83283D0DB8DD205 /* ExpoModulesProvider.swift */; };
+		0EF7359EBA25CAFDD9EDA43E /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B8ED68084757838E7E107F /* ExpoModulesProvider.swift */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		1794C6CEF01B4B65A773735B /* EuclidCircularA-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B0DFBEEF5D084C2A8EE22FC3 /* EuclidCircularA-Medium.ttf */; };
 		24AD12DA31D34B49A0BF4C59 /* EuclidCircularA-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0B98F0DF202F4FA8A4D7314D /* EuclidCircularA-SemiBold.ttf */; };
@@ -47,6 +46,8 @@
 		37D01B7E2AA4048D00015826 /* ExportOptions.plist in Resources */ = {isa = PBXBuildFile; fileRef = 37D01B7C2AA4048C00015826 /* ExportOptions.plist */; };
 		37D01B7F2AA4048D00015826 /* ExportOptions.plist in Resources */ = {isa = PBXBuildFile; fileRef = 37D01B7C2AA4048C00015826 /* ExportOptions.plist */; };
 		4671C524E6B9104C176ABF94 /* libPods-CommonShareExtensionPods-ShareExtensionProd.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E1DBC9E334BD3C3EC0E0DF72 /* libPods-CommonShareExtensionPods-ShareExtensionProd.a */; };
+		655FFEDCC7763D1E1F37FBC6 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F1F8C29A7E1C5E128F4A2E1 /* ExpoModulesProvider.swift */; };
+		75D2CC1FC88647A54430D6DA /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 943FF5DDCDAF4875F738B512 /* ExpoModulesProvider.swift */; };
 		7EB1B83872CD5476A7DBEE1E /* libPods-2060CommonPods-2060Dev.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 80463E538C7668E2D637930D /* libPods-2060CommonPods-2060Dev.a */; };
 		7F09BC2CA9F74641B6FADDA8 /* EuclidCircularA-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6CEEA9EEEDEF4E87B0DD5DF0 /* EuclidCircularA-Bold.ttf */; };
 		854528CBBED6C08C10AECA17 /* libPods-2060CommonPods-2060Prod.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 14BE7DB4C82799D6B77A6C96 /* libPods-2060CommonPods-2060Prod.a */; };
@@ -55,7 +56,6 @@
 		A41A5FEA2A8D4967B72DD55C /* EuclidCircularA-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 049DE2D9187F4C75BAE23BDD /* EuclidCircularA-MediumItalic.ttf */; };
 		A851E91D72D64E9CE3950549 /* libPods-2060CommonPods-2060Staging.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EBF03A6063B069CAE755D1AA /* libPods-2060CommonPods-2060Staging.a */; };
 		B3DCDAE3C72AA3B759AF74A9 /* libPods-CommonShareExtensionPods-ShareExtensionDev.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DCFEFE356C0AFD1423FFF398 /* libPods-CommonShareExtensionPods-ShareExtensionDev.a */; };
-		C276D02743327C502728571E /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 625DAB20C6C708C547FB7175 /* ExpoModulesProvider.swift */; };
 		C36A10283A124387AD849E0F /* EuclidCircularA-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6239256A6AB540339CECB738 /* EuclidCircularA-Italic.ttf */; };
 		E068008F2ABCB463002EC287 /* EuclidCircularA-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6CEEA9EEEDEF4E87B0DD5DF0 /* EuclidCircularA-Bold.ttf */; };
 		E06800902ABCB464002EC287 /* EuclidCircularA-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6CEEA9EEEDEF4E87B0DD5DF0 /* EuclidCircularA-Bold.ttf */; };
@@ -198,11 +198,11 @@
 		13B07F961A680F5B00A75B9A /* 2060Prod.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = 2060Prod.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = hologram/Images.xcassets; sourceTree = "<group>"; };
 		14BE7DB4C82799D6B77A6C96 /* libPods-2060CommonPods-2060Prod.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-2060CommonPods-2060Prod.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		1540BDDA33318FB901249756 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-CommonShareExtensionPods-ShareExtensionProd/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		18A1C893053FBC7C770BF718 /* Pods-ShareExtensionStaging.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ShareExtensionStaging.debug.xcconfig"; path = "Target Support Files/Pods-ShareExtensionStaging/Pods-ShareExtensionStaging.debug.xcconfig"; sourceTree = "<group>"; };
 		195C8E1101FC72DBE3F4A446 /* Pods-2060CommonPods-2060Prod.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-2060CommonPods-2060Prod.release.xcconfig"; path = "Target Support Files/Pods-2060CommonPods-2060Prod/Pods-2060CommonPods-2060Prod.release.xcconfig"; sourceTree = "<group>"; };
 		1CFF20AF3184C31ED7555CB9 /* Pods-CommonShareExtensionPods-ShareExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CommonShareExtensionPods-ShareExtension.debug.xcconfig"; path = "Target Support Files/Pods-CommonShareExtensionPods-ShareExtension/Pods-CommonShareExtensionPods-ShareExtension.debug.xcconfig"; sourceTree = "<group>"; };
 		1E745CF41231E8D8053E6E36 /* Pods-CommonShareExtensionPods-ShareExtensionStaging.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CommonShareExtensionPods-ShareExtensionStaging.release.xcconfig"; path = "Target Support Files/Pods-CommonShareExtensionPods-ShareExtensionStaging/Pods-CommonShareExtensionPods-ShareExtensionStaging.release.xcconfig"; sourceTree = "<group>"; };
+		1F1F8C29A7E1C5E128F4A2E1 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-CommonShareExtensionPods-ShareExtensionStaging/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		24BE14EDB6C2AAF2A917A14A /* libPods-CommonShareExtensionPods-ShareExtensionStaging.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CommonShareExtensionPods-ShareExtensionStaging.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		29F4BBABC7D5EDD99249F6F0 /* Pods-2060CommonPods-2060Dev.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-2060CommonPods-2060Dev.debug.xcconfig"; path = "Target Support Files/Pods-2060CommonPods-2060Dev/Pods-2060CommonPods-2060Dev.debug.xcconfig"; sourceTree = "<group>"; };
 		3014A43B734340F48859D0AE /* EuclidCircularA-BoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "EuclidCircularA-BoldItalic.ttf"; path = "../src/assets/fonts/EuclidCircularA-BoldItalic.ttf"; sourceTree = "<group>"; };
@@ -221,7 +221,6 @@
 		5BCAF8B5724833B11A92E1C5 /* libPods-CommonShareExtensionPods-ShareExtension.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CommonShareExtensionPods-ShareExtension.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5C958BE9AE814950963AD2D3 /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
 		6239256A6AB540339CECB738 /* EuclidCircularA-Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "EuclidCircularA-Italic.ttf"; path = "../src/assets/fonts/EuclidCircularA-Italic.ttf"; sourceTree = "<group>"; };
-		625DAB20C6C708C547FB7175 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-CommonShareExtensionPods-ShareExtensionStaging/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		659FE320947836E780B4BFFB /* Pods-2060CommonPods-2060Staging.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-2060CommonPods-2060Staging.debug.xcconfig"; path = "Target Support Files/Pods-2060CommonPods-2060Staging/Pods-2060CommonPods-2060Staging.debug.xcconfig"; sourceTree = "<group>"; };
 		6CEEA9EEEDEF4E87B0DD5DF0 /* EuclidCircularA-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "EuclidCircularA-Bold.ttf"; path = "../src/assets/fonts/EuclidCircularA-Bold.ttf"; sourceTree = "<group>"; };
 		75319D4E285A19E20010C2AA /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
@@ -236,6 +235,7 @@
 		8A85332E9513BE1D017FA01C /* Pods-ShareExtensionStaging.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ShareExtensionStaging.release.xcconfig"; path = "Target Support Files/Pods-ShareExtensionStaging/Pods-ShareExtensionStaging.release.xcconfig"; sourceTree = "<group>"; };
 		8EB93268E7D7D1D69866955D /* Pods-2060CommonPods-2060Prod.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-2060CommonPods-2060Prod.debug.xcconfig"; path = "Target Support Files/Pods-2060CommonPods-2060Prod/Pods-2060CommonPods-2060Prod.debug.xcconfig"; sourceTree = "<group>"; };
 		9192FEFF5B8887AD7DC2D85E /* Pods-CommonShareExtensionPods-ShareExtensionDev.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CommonShareExtensionPods-ShareExtensionDev.release.xcconfig"; path = "Target Support Files/Pods-CommonShareExtensionPods-ShareExtensionDev/Pods-CommonShareExtensionPods-ShareExtensionDev.release.xcconfig"; sourceTree = "<group>"; };
+		943FF5DDCDAF4875F738B512 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-CommonShareExtensionPods-ShareExtensionDev/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		94C27F2FDFFC422488C814F0 /* FontAwesome5_Solid.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Solid.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf"; sourceTree = "<group>"; };
 		978A84D5A1D3416F93AF01F3 /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialCommunityIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
 		9A952FC5CF4C7F1F4026515F /* Pods-CommonShareExtensionPods-ShareExtensionProd.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CommonShareExtensionPods-ShareExtensionProd.release.xcconfig"; path = "Target Support Files/Pods-CommonShareExtensionPods-ShareExtensionProd/Pods-CommonShareExtensionPods-ShareExtensionProd.release.xcconfig"; sourceTree = "<group>"; };
@@ -244,7 +244,7 @@
 		AE543BC9A119E4386D2400E9 /* Pods-CommonShareExtensionPods-ShareExtensionStaging.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CommonShareExtensionPods-ShareExtensionStaging.debug.xcconfig"; path = "Target Support Files/Pods-CommonShareExtensionPods-ShareExtensionStaging/Pods-CommonShareExtensionPods-ShareExtensionStaging.debug.xcconfig"; sourceTree = "<group>"; };
 		AF869844D7664810B76756A5 /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
 		B0DFBEEF5D084C2A8EE22FC3 /* EuclidCircularA-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "EuclidCircularA-Medium.ttf"; path = "../src/assets/fonts/EuclidCircularA-Medium.ttf"; sourceTree = "<group>"; };
-		B1152E82C83283D0DB8DD205 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-CommonShareExtensionPods-ShareExtensionDev/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
+		B6B8ED68084757838E7E107F /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-CommonShareExtensionPods-ShareExtensionProd/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		B9819FC4CA9E4B768A2929F0 /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
 		BE0136B2C0ABA88EB536D86A /* Pods-2060CommonPods-2060Dev.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-2060CommonPods-2060Dev.release.xcconfig"; path = "Target Support Files/Pods-2060CommonPods-2060Dev/Pods-2060CommonPods-2060Dev.release.xcconfig"; sourceTree = "<group>"; };
 		C753DF175C343D95204F6E65 /* Pods-hologram.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-hologram.release.xcconfig"; path = "Target Support Files/Pods-hologram/Pods-hologram.release.xcconfig"; sourceTree = "<group>"; };
@@ -368,22 +368,6 @@
 			name = hologram;
 			sourceTree = "<group>";
 		};
-		1D2F0FF94A3F38A4AC08CEB0 /* ShareExtensionDev */ = {
-			isa = PBXGroup;
-			children = (
-				B1152E82C83283D0DB8DD205 /* ExpoModulesProvider.swift */,
-			);
-			name = ShareExtensionDev;
-			sourceTree = "<group>";
-		};
-		286799C60BC402493524139F /* ShareExtensionProd */ = {
-			isa = PBXGroup;
-			children = (
-				1540BDDA33318FB901249756 /* ExpoModulesProvider.swift */,
-			);
-			name = ShareExtensionProd;
-			sourceTree = "<group>";
-		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -439,9 +423,9 @@
 				B8C007461407302707A3D23E /* 2060Dev */,
 				A24EED6740591B2086DBD3A7 /* 2060Prod */,
 				A7B55DB010B8467CA4C3DF63 /* 2060Staging */,
-				1D2F0FF94A3F38A4AC08CEB0 /* ShareExtensionDev */,
-				286799C60BC402493524139F /* ShareExtensionProd */,
-				8E2AA8682973481E95C241A2 /* ShareExtensionStaging */,
+				C09CE0C68E7B836366626463 /* ShareExtensionDev */,
+				F7861C27587D0030EE223EBF /* ShareExtensionProd */,
+				CCA4AE592A9D60DD392A6FEF /* ShareExtensionStaging */,
 			);
 			name = ExpoModulesProviders;
 			sourceTree = "<group>";
@@ -488,14 +472,6 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		8E2AA8682973481E95C241A2 /* ShareExtensionStaging */ = {
-			isa = PBXGroup;
-			children = (
-				625DAB20C6C708C547FB7175 /* ExpoModulesProvider.swift */,
-			);
-			name = ShareExtensionStaging;
-			sourceTree = "<group>";
-		};
 		A24EED6740591B2086DBD3A7 /* 2060Prod */ = {
 			isa = PBXGroup;
 			children = (
@@ -518,6 +494,22 @@
 				3EB81A67598FD6570C5D8A1C /* ExpoModulesProvider.swift */,
 			);
 			name = 2060Dev;
+			sourceTree = "<group>";
+		};
+		C09CE0C68E7B836366626463 /* ShareExtensionDev */ = {
+			isa = PBXGroup;
+			children = (
+				943FF5DDCDAF4875F738B512 /* ExpoModulesProvider.swift */,
+			);
+			name = ShareExtensionDev;
+			sourceTree = "<group>";
+		};
+		CCA4AE592A9D60DD392A6FEF /* ShareExtensionStaging */ = {
+			isa = PBXGroup;
+			children = (
+				1F1F8C29A7E1C5E128F4A2E1 /* ExpoModulesProvider.swift */,
+			);
+			name = ShareExtensionStaging;
 			sourceTree = "<group>";
 		};
 		E27DFBC2D3BCD40576E0D11D /* Pods */ = {
@@ -545,6 +537,14 @@
 				9192FEFF5B8887AD7DC2D85E /* Pods-CommonShareExtensionPods-ShareExtensionDev.release.xcconfig */,
 			);
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		F7861C27587D0030EE223EBF /* ShareExtensionProd */ = {
+			isa = PBXGroup;
+			children = (
+				B6B8ED68084757838E7E107F /* ExpoModulesProvider.swift */,
+			);
+			name = ShareExtensionProd;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1381,7 +1381,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0D665CA52C237B240038F106 /* ShareViewController.swift in Sources */,
-				02F90336D030D4CECB9C1EFF /* ExpoModulesProvider.swift in Sources */,
+				0EF7359EBA25CAFDD9EDA43E /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1390,7 +1390,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0D665CA62C237B240038F106 /* ShareViewController.swift in Sources */,
-				124191D69886C30C7C10FC60 /* ExpoModulesProvider.swift in Sources */,
+				75D2CC1FC88647A54430D6DA /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1399,7 +1399,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0D665CA42C237B240038F106 /* ShareViewController.swift in Sources */,
-				C276D02743327C502728571E /* ExpoModulesProvider.swift in Sources */,
+				655FFEDCC7763D1E1F37FBC6 /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

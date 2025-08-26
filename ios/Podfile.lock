@@ -2400,7 +2400,7 @@ PODS:
     - React-utils (= 0.79.5)
   - ReactNativeIncallManager (4.2.1):
     - React-Core
-  - RealmJS (12.14.1):
+  - RealmJS (20.2.0):
     - React
   - RNCAsyncStorage (1.12.1):
     - React-Core
@@ -3452,7 +3452,7 @@ SPEC CHECKSUMS:
   ReactCodegen: 6cb6e0d0b52471abc883541c76589d1c367c64c7
   ReactCommon: 1ab5451fc5da87c4cc4c3046e19a8054624ca763
   ReactNativeIncallManager: dccd3e7499caa3bb73d3acfedf4fb0360f1a87d5
-  RealmJS: 5b0258b3c04b9f48536b2692965690afe024164c
+  RealmJS: 1c37c6bdfe060f4caa0f9175aa0eedb962622ee1
   RNCAsyncStorage: 87d0d3d6193e79bd435e955f8998d2040aa60d67
   RNCClipboard: ea6045252d5c0753cf17f62290f647dc0096f6ac
   RNFBApp: 90cf0209fb8f0460ab069a7de857d7ec851c8476
@@ -3479,6 +3479,6 @@ SPEC CHECKSUMS:
   VisionCameraTextRecognition: d183547eed78b904622eac9e6860d0690a0c3f0c
   Yoga: adb397651e1c00672c12e9495babca70777e411e
 
-PODFILE CHECKSUM: 933afb9b0d10e1a9da805d9b114fbf091c78ca28
+PODFILE CHECKSUM: 491b4e994ea5f5c23741e0d728cc937b11f38bbd
 
 COCOAPODS: 1.16.2

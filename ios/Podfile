@@ -88,9 +88,7 @@ abstract_target '2060CommonPods' do
 end
 
 abstract_target 'CommonShareExtensionPods' do
-  config = use_native_modules!
-  configure_react_native(config)
-  add_common_dependencies()
+  use_expo_modules!
   use_react_native!
   pod 'RNShareMenu', :path => '../node_modules/react-native-share-menu'
 
