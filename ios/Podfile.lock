@@ -2400,7 +2400,7 @@ PODS:
     - React-utils (= 0.79.5)
   - ReactNativeIncallManager (4.2.1):
     - React-Core
-  - RealmJS (20.2.0):
+  - RealmJS (12.14.1):
     - React
   - RNCAsyncStorage (1.12.1):
     - React-Core
@@ -2573,6 +2573,12 @@ PODS:
   - RNNotifee/NotifeeCore (9.1.8):
     - React-Core
   - RNPermissions (5.4.2):
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.11.18.00)
+    - RCTRequired
+    - RCTTypeSafety
     - React-Core
     - React-debug
     - React-Fabric
@@ -3446,7 +3452,7 @@ SPEC CHECKSUMS:
   ReactCodegen: 6cb6e0d0b52471abc883541c76589d1c367c64c7
   ReactCommon: 1ab5451fc5da87c4cc4c3046e19a8054624ca763
   ReactNativeIncallManager: dccd3e7499caa3bb73d3acfedf4fb0360f1a87d5
-  RealmJS: 1c37c6bdfe060f4caa0f9175aa0eedb962622ee1
+  RealmJS: 5b0258b3c04b9f48536b2692965690afe024164c
   RNCAsyncStorage: 87d0d3d6193e79bd435e955f8998d2040aa60d67
   RNCClipboard: ea6045252d5c0753cf17f62290f647dc0096f6ac
   RNFBApp: 90cf0209fb8f0460ab069a7de857d7ec851c8476
@@ -3458,7 +3464,7 @@ SPEC CHECKSUMS:
   RNImageCropPicker: fba5c4b600fbee6e036d591b3b1f97f2f3efea54
   RNLocalize: 17e6b55b089a680e5e6fa2a3889bdd35c2521bf6
   RNNotifee: 5e3b271e8ea7456a36eec994085543c9adca9168
-  RNPermissions: 6076c9b122b45b035b56f7d86de7ddf60a26429f
+  RNPermissions: 9c9b55fe321ede26de6033d82526ab8c334713d5
   RNReanimated: 730ffe6cf7b931f78b795e6b6e0920dcab9c8beb
   RNScreens: d8f03344886bd566bba24b9e02dbd28979631d3e
   RNShare: 27d19f1913a5f341e1e91496e8848e42bd6e0329
@@ -3473,6 +3479,6 @@ SPEC CHECKSUMS:
   VisionCameraTextRecognition: d183547eed78b904622eac9e6860d0690a0c3f0c
   Yoga: adb397651e1c00672c12e9495babca70777e411e
 
-PODFILE CHECKSUM: 261a8fa946831107f07c86a7f39c24a5cec400fd
+PODFILE CHECKSUM: 933afb9b0d10e1a9da805d9b114fbf091c78ca28
 
 COCOAPODS: 1.16.2
