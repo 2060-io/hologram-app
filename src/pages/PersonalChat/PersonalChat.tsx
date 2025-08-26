@@ -3,15 +3,8 @@ import { FlashList } from '@shopify/flash-list'
 import { useAudioPlayer } from '@simform_solutions/react-native-audio-waveform'
 import React, { useState, useRef, useCallback, memo, useMemo, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import {
-  View,
-  NativeSyntheticEvent,
-  NativeScrollEvent,
-  ViewToken,
-  KeyboardAvoidingView,
-  SafeAreaView,
-  StatusBar,
-} from 'react-native'
+import { View, NativeSyntheticEvent, NativeScrollEvent, ViewToken, SafeAreaView } from 'react-native'
+import { KeyboardAvoidingView } from 'react-native-keyboard-controller'
 import { uses24HourClock } from 'react-native-localize'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import Realm from 'realm'
@@ -33,8 +26,8 @@ import { getSystemMessage, chatEntryEqual } from './utils'
 import { ModalBottomHalf, ModalConfirmAction } from '@2060/components'
 import MessageFloatingMenu from '@2060/components/MessageFloatingMenu'
 import { Text } from '@2060/components/common'
-import { IS_ANDROID, IS_IOS } from '@2060/constants'
-import { useAppState, useChatActions, useKeyboard } from '@2060/hooks'
+import { IS_IOS } from '@2060/constants'
+import { useAppState, useChatActions } from '@2060/hooks'
 import {
   useMobileAgent,
   useChat,
@@ -141,7 +134,6 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
 
   const { data: chatThreadData, flags } = chatThread
   const { menu } = useActionMenu({ connectionId: chatThreadData.connectionId })
-  const { isKeyboardVisible } = useKeyboard()
   const styles = getStyles(theme)
 
   useFocusEffect(
@@ -347,11 +339,7 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
   }
 
   return (
-    <KeyboardAvoidingView
-      behavior={IS_IOS ? 'padding' : 'height'}
-      style={styles.container}
-      keyboardVerticalOffset={IS_ANDROID && isKeyboardVisible ? StatusBar.currentHeight : 0}
-    >
+    <KeyboardAvoidingView behavior={IS_IOS ? 'padding' : 'height'} style={styles.container}>
       <SafeAreaView style={styles.subContainer}>
         {currentHeader}
         {showStickyDate && (
