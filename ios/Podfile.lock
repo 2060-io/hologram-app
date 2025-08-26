@@ -313,10 +313,6 @@ PODS:
   - nanopb/decode (3.30910.0)
   - nanopb/encode (3.30910.0)
   - OpenSSL-Universal (3.2.2000)
-  - Permission-Camera (3.10.1):
-    - RNPermissions
-  - Permission-Microphone (3.10.1):
-    - RNPermissions
   - PromisesObjC (2.4.0)
   - RCT-Folly (2024.11.18.00):
     - boost
@@ -2363,7 +2359,7 @@ PODS:
     - RNNotifee/NotifeeCore (= 9.1.8)
   - RNNotifee/NotifeeCore (9.1.8):
     - React-Core
-  - RNPermissions (3.10.1):
+  - RNPermissions (5.4.2):
     - React-Core
   - RNReanimated (3.19.1):
     - DoubleConversion
@@ -2619,8 +2615,6 @@ DEPENDENCIES:
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
   - GoogleUtilities
   - hermes-engine (from `../node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec`)
-  - Permission-Camera (from `../node_modules/react-native-permissions/ios/Camera`)
-  - Permission-Microphone (from `../node_modules/react-native-permissions/ios/Microphone`)
   - RCT-Folly (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCT-Folly/Fabric (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCTDeprecation (from `../node_modules/react-native/ReactApple/Libraries/RCTFoundation/RCTDeprecation`)
@@ -2801,10 +2795,6 @@ EXTERNAL SOURCES:
   hermes-engine:
     :podspec: "../node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec"
     :tag: hermes-2025-06-04-RNv0.79.3-7f9a871eefeb2c3852365ee80f0b6733ec12ac3b
-  Permission-Camera:
-    :path: "../node_modules/react-native-permissions/ios/Camera"
-  Permission-Microphone:
-    :path: "../node_modules/react-native-permissions/ios/Microphone"
   RCT-Folly:
     :podspec: "../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec"
   RCTDeprecation:
@@ -3067,8 +3057,6 @@ SPEC CHECKSUMS:
   MLKitVision: 39a5a812db83c4a0794445088e567f3631c11961
   nanopb: fad817b59e0457d11a5dfbde799381cd727c1275
   OpenSSL-Universal: f8a9c4fdab7e21cb70bda471c269e86e9212439c
-  Permission-Camera: cf14fb2d76432ee0f36546249ee608ef6037a23e
-  Permission-Microphone: 744eafab00992871bd06b3e3f1cbc1ba5b024b58
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
   RCT-Folly: e78785aa9ba2ed998ea4151e314036f6c49e6d82
   RCTDeprecation: 5f638f65935e273753b1f31a365db6a8d6dc53b5
@@ -3166,7 +3154,7 @@ SPEC CHECKSUMS:
   RNImageCropPicker: 10acde29879d67e954eb944f635ed2da42691799
   RNLocalize: 60ebbb668e46d3b9f276aaf2db8ae5353b84e514
   RNNotifee: 5e3b271e8ea7456a36eec994085543c9adca9168
-  RNPermissions: bd0d9ca7969ff7b999aa605ee2e5919c12522bfe
+  RNPermissions: 3ce7cc987d1e256311d18c3c27697060aa1e6f7d
   RNReanimated: 7fe194cef376e772f1efbad325cb5d26ea3930df
   RNScreens: c97829658ec13765ad0167b7e23e5eb7ea980b1d
   RNShare: 9528acd4e374d3cb76b994b9e167d4a75cd8f452
@@ -3181,6 +3169,6 @@ SPEC CHECKSUMS:
   VisionCameraTextRecognition: d183547eed78b904622eac9e6860d0690a0c3f0c
   Yoga: adb397651e1c00672c12e9495babca70777e411e
 
-PODFILE CHECKSUM: 60eafda509c109433d019d1b1d754133fb841021
+PODFILE CHECKSUM: 802be9341a552d4d34cfcd322f48e74bee07ea14
 
 COCOAPODS: 1.16.2

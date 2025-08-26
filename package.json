@@ -105,7 +105,7 @@
     "react-native-local-native-modules": "file:./modules/local-native-modules",
     "react-native-localize": "3.5.1",
     "react-native-open-notification": "0.1.4",
-    "react-native-permissions": "3.10.1",
+    "react-native-permissions": "5.4.2",
     "react-native-qrcode-svg": "6.3.14",
     "react-native-reanimated": "3.19.1",
     "react-native-safe-area-context": "5.5.2",

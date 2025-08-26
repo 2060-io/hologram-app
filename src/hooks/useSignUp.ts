@@ -1,11 +1,9 @@
 import { useCallback, useState } from 'react'
-import { Platform } from 'react-native'
 
 import { useMobileAgent } from '../hooks/agent'
 
 import { isRegistered } from '@2060/services/agent'
 import { log, logError } from '@2060/utils'
-import { getFcmDeviceToken, requestNotificationPermissionUser } from '@2060/utils/pushNotificationsUtils'
 
 export enum SignUpState {
   Init = 'Init',
@@ -24,24 +22,6 @@ export const useSignUp = (options: SignUpOptions) => {
   const { agent, handleChangeAgentState } = useMobileAgent()
 
   const [signUpState, setSignUpState] = useState<SignUpState>(SignUpState.Init)
-
-  const requestNotificationPermissions = async () => {
-    const allowed = await requestNotificationPermissionUser()
-    if (allowed) await updateNotificationInfo()
-  }
-
-  const updateNotificationInfo = useCallback(async () => {
-    if (!agent) return
-
-    const connection = await agent.mediationRecipient.findDefaultMediatorConnection()
-    if (!connection) return
-
-    const deviceToken = await getFcmDeviceToken()
-    await agent.modules.pushNotifications.setDeviceInfo(connection.id, {
-      deviceToken,
-      devicePlatform: Platform.OS,
-    })
-  }, [agent])
 
   const startSignUp = useCallback(async () => {
     if (!agent || !agent?.isInitialized) throw new Error('Agent not initialized')
@@ -81,7 +61,6 @@ export const useSignUp = (options: SignUpOptions) => {
       })
 
       log('connected with default service')
-      await requestNotificationPermissions()
     } catch (error) {
       logError(`cannot connect to default service: ${error}`)
     }

@@ -11,7 +11,7 @@ import { useWallet } from '@2060/hooks/useWallet'
 import { KeyChainService, createAndStoreEncryptedKey } from '@2060/services/keys'
 import { logError } from '@2060/utils'
 import { deleteDir, makeDirectory, walletDirectoryPath } from '@2060/utils/RNFS'
-import { getFcmDeviceToken, requestNotificationPermissionUser } from '@2060/utils/pushNotificationsUtils'
+import { getFcmDeviceToken, requestNotificationsPermission } from '@2060/utils/pushNotificationsUtils'
 import * as BackupUtils from '@2060/utils/walletBackUpUtils'
 
 type Props = {
@@ -122,7 +122,7 @@ export const useRestoreBackup = ({ restoreProgress, setRestoreProgress, download
   const onSuccessFinish = async (backupKey: string) => {
     await importAndOpenRealm(BackupUtils.REALM_BACKUP_FILE_PATH, backupKey)
     await openWallet()
-    await requestNotificationPermissions()
+    await handleNotificationsPermission()
     setRestoreProgress(prev => ({ ...prev, isDownloadingBackUp: false, done: true, progress: 100 }))
     await BackupUtils.deleteBackupDirectory()
   }
@@ -140,9 +140,9 @@ export const useRestoreBackup = ({ restoreProgress, setRestoreProgress, download
     })
   }, [agent])
 
-  const requestNotificationPermissions = async () => {
-    const allowed = await requestNotificationPermissionUser()
-    if (allowed) await updateNotificationInfo()
+  const handleNotificationsPermission = async () => {
+    const areNotificationsAllowed = await requestNotificationsPermission()
+    if (areNotificationsAllowed) await updateNotificationInfo()
   }
 
   const goToHomeScreen = async () => {

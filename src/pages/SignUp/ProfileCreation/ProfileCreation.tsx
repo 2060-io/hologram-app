@@ -3,7 +3,7 @@ import { CommonActions } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import React, { useState, useEffect, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, SafeAreaView } from 'react-native'
+import { View, SafeAreaView, Platform } from 'react-native'
 import Config from 'react-native-config'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
@@ -20,6 +20,7 @@ import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { createAndStoreEncryptedKey, KeyChainService } from '@2060/services/keys'
 import { logError } from '@2060/utils'
 import { deleteDir, makeDirectory, mediaDirectoryPath, walletDirectoryPath } from '@2060/utils/RNFS'
+import { getFcmDeviceToken, requestNotificationsPermission } from '@2060/utils/pushNotificationsUtils'
 import { toast } from '@2060/utils/toast'
 
 type Props = {
@@ -85,12 +86,31 @@ const ProfileCreation = ({ navigation }: Props) => {
     }
   }, [agent])
 
+  const updateNotificationInfo = useCallback(async () => {
+    if (!agent) return
+
+    const connection = await agent.mediationRecipient.findDefaultMediatorConnection()
+    if (!connection) return
+
+    const deviceToken = await getFcmDeviceToken()
+    await agent.modules.pushNotifications.setDeviceInfo(connection.id, {
+      deviceToken,
+      devicePlatform: Platform.OS,
+    })
+  }, [agent])
+
+  const handleNotificationsPermission = async () => {
+    const areNotificationsAllowed = await requestNotificationsPermission()
+    if (areNotificationsAllowed) await updateNotificationInfo()
+  }
+
   const signUp = async () => {
     setIsRegistering(true)
     try {
       await createNewWallet()
       await openWallet()
       await startSignUp()
+      await handleNotificationsPermission()
     } catch (error) {
       if (error instanceof Error) handleLogStartError(error)
     } finally {
