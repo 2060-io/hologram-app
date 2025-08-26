@@ -125,7 +125,7 @@
     "react-native-worklets-core": "1.6.2",
     "react-native-zip-archive": "7.0.1",
     "readable-stream": "^4.7.0",
-    "realm": "12.14.2",
+    "realm": "20.2.0",
     "rn-emoji-keyboard": "1.7.0"
   },
   "devDependencies": {
