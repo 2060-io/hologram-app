@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { View, NativeSyntheticEvent, NativeScrollEvent, ViewToken } from 'react-native'
 import { KeyboardAvoidingView } from 'react-native-keyboard-controller'
 import { uses24HourClock } from 'react-native-localize'
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
+import { SafeAreaView } from 'react-native-safe-area-context'
 import Realm from 'realm'
 
 import AttachmentOptions from './AttachmentOptions'
@@ -126,8 +126,6 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
   const showScrollBottomRef = useRef(false)
   const isScrolling = useRef(false)
   const listViewRef = useRef<FlashList<ChatEntryMessage> | null>(null)
-  const insets = useSafeAreaInsets()
-  const headerStatusBarHeight = insets.top
   const timerStickyDate = useRef<ReturnType<typeof setTimeout>>(undefined)
   const videoCompressionCancellationId = useRef<string>('')
   const isAlreadyMounted = useRef(false)
@@ -325,11 +323,6 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
 
   const goToForwardMessages = () => navigation.navigate('ForwardMessages')
 
-  const containerStickyDate = {
-    ...styles.containerStickyDate,
-    top: headerHeight + (IS_IOS ? headerStatusBarHeight : 0),
-  }
-
   const getVideoCompressionCancellationId = (cancellationId: string) => {
     videoCompressionCancellationId.current = cancellationId
   }
@@ -344,7 +337,7 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
         <KeyboardAvoidingView behavior={IS_IOS ? 'padding' : 'height'} style={styles.subContainer}>
           {header}
           {showStickyDate && (
-            <View style={containerStickyDate}>
+            <View style={{ ...styles.containerStickyDate, top: headerHeight }}>
               <Text typography="EuclidCircularA-Regular" style={styles.stickyDateText}>
                 {currentStickyDate && getFormattedDateRange(currentStickyDate)}
               </Text>
