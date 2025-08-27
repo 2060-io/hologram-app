@@ -1,7 +1,3 @@
-# TODO: remove this variable which disable new architecture in iOS. It was added due to KeyboardAvoidingView animations does works well
-# with the new architecture. So, when this animation issue be fixed in new architecture, we can remove this variable.
-ENV['RCT_NEW_ARCH_ENABLED'] = "0"
-
 require File.join(File.dirname(`node --print "require.resolve('expo/package.json')"`), "scripts/autolinking")
 
 def node_require(script)
@@ -92,10 +88,7 @@ abstract_target '2060CommonPods' do
 end
 
 abstract_target 'CommonShareExtensionPods' do
-  #TODO: When enable new architecture uncomment the next 3 lines and remove use_react_native!
-  #config = use_native_modules!
-  #configure_react_native(config)
-  #add_common_dependencies()
+  use_expo_modules!
   use_react_native!
   pod 'RNShareMenu', :path => '../node_modules/react-native-share-menu'
 

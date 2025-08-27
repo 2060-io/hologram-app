@@ -63,11 +63,9 @@ export const ChatMessageList = memo((props: ChatMessageListProps) => {
     <View style={styles.container} onLayout={onContainerLayout}>
       <View style={styles.containerAlignTop}>
         <FlashList
-          keyboardDismissMode="none"
           keyExtractor={keyExtractor}
-          automaticallyAdjustContentInsets={false}
           data={props.messages}
-          inverted={true}
+          inverted
           renderItem={itemProps => renderItem({ ...itemProps, props })}
           keyboardShouldPersistTaps="handled"
           scrollEventThrottle={16}
