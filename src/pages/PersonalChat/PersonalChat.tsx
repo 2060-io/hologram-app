@@ -298,7 +298,7 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
     const distanceToTopOfContentList = nativeEvent.contentOffset.y
     const listCurrentFullHeight = nativeEvent.contentSize.height
     const layoutHeight = nativeEvent.layoutMeasurement.height
-    const scrollToBottomOffset = 100
+    const scrollToBottomOffset = 200
     const hiddenContentHeight = listCurrentFullHeight - layoutHeight
     const displayScrollToBottomButton =
       hiddenContentHeight > distanceToTopOfContentList + scrollToBottomOffset
