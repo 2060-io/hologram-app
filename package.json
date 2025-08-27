@@ -68,7 +68,7 @@
     "@react-navigation/stack": "7.4.7",
     "@robinbobin/react-native-google-drive-api-wrapper": "^1.2.4",
     "@sharcoux/slider": "8.0.6",
-    "@shopify/flash-list": "v2.0.0-alpha.11",
+    "@shopify/flash-list": "2.0.3",
     "@simform_solutions/react-native-audio-waveform": "2.1.5",
     "@sphereon/isomorphic-webcrypto": "^2.5.0-rn-crypto.2",
     "@verana-labs/verre": "^0.0.13",

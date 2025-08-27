@@ -1,5 +1,5 @@
 import { useFocusEffect } from '@react-navigation/native'
-import { FlashList } from '@shopify/flash-list'
+import { FlashListRef } from '@shopify/flash-list'
 import { useAudioPlayer } from '@simform_solutions/react-native-audio-waveform'
 import React, { useState, useRef, useCallback, memo, useMemo, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -125,7 +125,7 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
   const theme = useTheme()
   const showScrollBottomRef = useRef(false)
   const isScrolling = useRef(false)
-  const listViewRef = useRef<FlashList<ChatEntryMessage> | null>(null)
+  const listViewRef = useRef<FlashListRef<ChatEntryMessage> | null>(null)
   const insets = useSafeAreaInsets()
   const headerStatusBarHeight = insets.top
   const timerStickyDate = useRef<ReturnType<typeof setTimeout>>(undefined)

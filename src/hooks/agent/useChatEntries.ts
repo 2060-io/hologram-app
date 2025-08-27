@@ -16,6 +16,13 @@ export const useChatEntries = (threadId: string) => {
   const [chatEntries, setChatEntries] = useState<ChatEntryData[]>([])
   const entries = useRef<Results<ChatEntry>>(undefined)
 
+  useEffect(() => {
+    loadChatEntries()
+    return () => {
+      entries.current?.removeAllListeners()
+    }
+  }, [realm])
+
   const updateChatEntryListener = () => {
     const onChatEntryChange: Realm.CollectionChangeCallback<ChatEntry> = (newEntries, changes) => {
       const { newModifications, deletions, insertions } = changes
@@ -37,12 +44,6 @@ export const useChatEntries = (threadId: string) => {
     setChatEntries(entries.current.map(getChatEntryData).reverse())
     updateChatEntryListener()
   }
-
-  useEffect(() => {
-    return () => {
-      entries.current?.removeAllListeners()
-    }
-  }, [realm])
 
   return { chatEntries, loadChatEntries }
 }
