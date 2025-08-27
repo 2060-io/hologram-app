@@ -1,4 +1,3 @@
-import { CommonMessageProps, ChatEntryMessage } from '@2060/pages/PersonalChat/ChatMessage/Props'
 import { FlashList, FlashListProps } from '@shopify/flash-list'
 import React, { useState, useRef, memo } from 'react'
 import { View, Keyboard, TouchableWithoutFeedback, LayoutChangeEvent } from 'react-native'
@@ -6,6 +5,8 @@ import { View, Keyboard, TouchableWithoutFeedback, LayoutChangeEvent } from 'rea
 import { ChatMessage } from '../ChatMessage'
 
 import styles from './styles'
+
+import { CommonMessageProps, ChatEntryMessage } from '@2060/pages/PersonalChat/ChatMessage/Props'
 
 interface ListViewProps<TMessage> extends FlashListProps<TMessage> {
   ref: React.MutableRefObject<FlashList<TMessage> | null>

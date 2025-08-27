@@ -1,10 +1,11 @@
-import { ChatEntry, ChatEntryData, getChatEntryData } from '@2060/model'
 import { useEffect, useRef, useState } from 'react'
 import { Results } from 'realm'
 
 import { useLocalRealm } from '../providers/RealmProvider'
 
 import { useChats } from './ChatProvider'
+
+import { ChatEntry, ChatEntryData, getChatEntryData } from '@2060/model'
 
 const LIMIT_STEP_SIZE = 25
 

@@ -367,8 +367,6 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
               ref: listViewRef,
               onStartReached: loadMoreMessages,
               onStartReachedThreshold: 0.5,
-              onStartReached: loadMoreMessages,
-              onStartReachedThreshold: 0.5,
               onScrollBeginDrag: onScrollBegin,
               onMomentumScrollBegin: onScrollBegin,
               onScroll,
@@ -390,7 +388,7 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
               />
             )}
           {showScrollBottomRef.current && (
-            <ScrollToBottom numberNewMessages={0} onScrollToBottom={scrollToBottom} />
+            <ScrollToBottom numberNewMessages={0} scrollToBottom={scrollToBottom} />
           )}
           {isSelectingMessagesMode && (
             <SelectingMessagesBottomMenu
