@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { View, NativeSyntheticEvent, NativeScrollEvent, ViewToken } from 'react-native'
 import { KeyboardAvoidingView } from 'react-native-keyboard-controller'
 import { uses24HourClock } from 'react-native-localize'
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
+import { SafeAreaView } from 'react-native-safe-area-context'
 import Realm from 'realm'
 
 import AttachmentOptions from './AttachmentOptions'
@@ -89,13 +89,11 @@ const createReportedMessageChatEntry = (params: {
 
 const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }: PersonalChatProps) => {
   const { t } = useTranslation()
+  const theme = useTheme()
+  const styles = getStyles(theme)
+  const { data: chatThreadData, flags } = chatThread
   const { isAppActive } = useAppState()
   const { stopPlayersAndExtractors } = useAudioPlayer()
-  const [currentStickyDate, setCurrentStickyDate] = useState<Date>()
-  const [showAttachmentOptions, setShowAttachmentOptions] = useState(false)
-  const [showStickyDate, setShowStickyDate] = useState(false)
-  const [showContextualMenu, setShowContextualMenu] = useState(false)
-  const [compressingVideoProgress, setCompressingVideoProgress] = useState(0)
   const { realm } = useLocalRealm()
   const {
     setChatThread,
@@ -121,20 +119,19 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
   const { deleteMessagesForMe, deleteMessagesForEveryone, onActionMenuSelection } = useChatActions()
   const { agent } = useMobileAgent()
   const { markThreadAsRead, setActiveChatThreadId } = useChats()
+  const { menu } = useActionMenu({ connectionId: chatThreadData.connectionId })
   const using24HourFormat = uses24HourClock()
-  const theme = useTheme()
+  const [currentStickyDate, setCurrentStickyDate] = useState<Date>()
+  const [showAttachmentOptions, setShowAttachmentOptions] = useState(false)
+  const [showStickyDate, setShowStickyDate] = useState(false)
+  const [showContextualMenu, setShowContextualMenu] = useState(false)
+  const [compressingVideoProgress, setCompressingVideoProgress] = useState(0)
   const showScrollBottomRef = useRef(false)
   const isScrolling = useRef(false)
   const listViewRef = useRef<FlashListRef<ChatEntryMessage> | null>(null)
-  const insets = useSafeAreaInsets()
-  const headerStatusBarHeight = insets.top
   const timerStickyDate = useRef<ReturnType<typeof setTimeout>>(undefined)
   const videoCompressionCancellationId = useRef<string>('')
   const isAlreadyMounted = useRef(false)
-
-  const { data: chatThreadData, flags } = chatThread
-  const { menu } = useActionMenu({ connectionId: chatThreadData.connectionId })
-  const styles = getStyles(theme)
 
   useFocusEffect(
     useCallback(() => {
@@ -272,16 +269,19 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
   const getItemType = (item: ChatEntryMessage) => item.type
 
   const updateStickyDate = useCallback(({ viewableItems }: { viewableItems: ViewToken[] }) => {
-    const lastVisibleItem = viewableItems[viewableItems.length - 1]
-
-    if (lastVisibleItem && lastVisibleItem.item && lastVisibleItem.item.createdAt) {
-      setCurrentStickyDate(lastVisibleItem.item.createdAt as Date)
+    const [firstVisibleItem] = viewableItems
+    if (firstVisibleItem && firstVisibleItem.item && firstVisibleItem.item.createdAt) {
+      setCurrentStickyDate(firstVisibleItem.item.createdAt as Date)
     }
   }, [])
 
-  const onScrollBegin = () => (isScrolling.current = true)
+  const onScrollBegin = () => {
+    isScrolling.current = true
+  }
+
   const onScrollEnd = () => {
     isScrolling.current = false
+    // Hide sticky date 1 second after user stops scrolling
     timerStickyDate.current = setTimeout(() => {
       if (!isScrolling.current) setShowStickyDate(false)
     }, 1000)
@@ -295,14 +295,16 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
 
   const onScroll = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const { nativeEvent } = event
-    const distanceToTop = nativeEvent.contentOffset.y
-    const contentSizeHeight = nativeEvent.contentSize.height
-    const layoutMeasurementHeight = nativeEvent.layoutMeasurement.height
-    const scrollToBottomOffset = 50
+    const distanceToTopOfContentList = nativeEvent.contentOffset.y
+    const listCurrentFullHeight = nativeEvent.contentSize.height
+    const layoutHeight = nativeEvent.layoutMeasurement.height
+    const scrollToBottomOffset = 100
+    const hiddenContentHeight = listCurrentFullHeight - layoutHeight
     const displayScrollToBottomButton =
-      distanceToTop + layoutMeasurementHeight <= contentSizeHeight - scrollToBottomOffset
+      hiddenContentHeight > distanceToTopOfContentList + scrollToBottomOffset
     showScrollBottomRef.current = displayScrollToBottomButton
-    setShowStickyDate(distanceToTop > 100 && contentSizeHeight - layoutMeasurementHeight > distanceToTop)
+    const isAtTheBottomOfList = distanceToTopOfContentList > hiddenContentHeight
+    setShowStickyDate(!isAtTheBottomOfList)
   }, [])
 
   const deleteForMe = () => {
@@ -326,11 +328,6 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
 
   const goToForwardMessages = () => navigation.navigate('ForwardMessages')
 
-  const containerStickyDate = {
-    ...styles.containerStickyDate,
-    top: headerHeight + (IS_IOS ? headerStatusBarHeight : 0),
-  }
-
   const getVideoCompressionCancellationId = (cancellationId: string) => {
     videoCompressionCancellationId.current = cancellationId
   }
@@ -345,7 +342,7 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
         <KeyboardAvoidingView behavior={IS_IOS ? 'padding' : 'height'} style={styles.subContainer}>
           {header}
           {showStickyDate && (
-            <View style={containerStickyDate}>
+            <View style={{ ...styles.containerStickyDate, top: headerHeight }}>
               <Text typography="EuclidCircularA-Regular" style={styles.stickyDateText}>
                 {currentStickyDate && getFormattedDateRange(currentStickyDate)}
               </Text>
@@ -365,8 +362,8 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
             messages={chatEntries}
             listViewProps={{
               ref: listViewRef,
-              onStartReached: loadMoreMessages,
               onStartReachedThreshold: 0.5,
+              onStartReached: loadMoreMessages,
               onScrollBeginDrag: onScrollBegin,
               onMomentumScrollBegin: onScrollBegin,
               onScroll,
