@@ -72,6 +72,7 @@ export const ChatMessageList = memo((props: ChatMessageListProps) => {
           }}
           renderItem={itemProps => renderItem({ ...itemProps, props })}
           keyboardShouldPersistTaps="handled"
+          scrollEventThrottle={500}
           showsVerticalScrollIndicator={false}
           scrollEnabled={scrollEnabled}
           onLayout={onListLayout}

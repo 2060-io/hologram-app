@@ -298,11 +298,10 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
     const distanceToTopOfContentList = nativeEvent.contentOffset.y
     const listCurrentFullHeight = nativeEvent.contentSize.height
     const layoutHeight = nativeEvent.layoutMeasurement.height
+    const distanceToBottomOfContentList = listCurrentFullHeight - (layoutHeight + distanceToTopOfContentList)
     const scrollToBottomOffset = 200
     const hiddenContentHeight = listCurrentFullHeight - layoutHeight
-    const displayScrollToBottomButton =
-      hiddenContentHeight > distanceToTopOfContentList + scrollToBottomOffset
-    showScrollBottomRef.current = displayScrollToBottomButton
+    showScrollBottomRef.current = distanceToBottomOfContentList > scrollToBottomOffset
     const isAtTheBottomOfList = distanceToTopOfContentList > hiddenContentHeight
     setShowStickyDate(!isAtTheBottomOfList)
   }, [])
