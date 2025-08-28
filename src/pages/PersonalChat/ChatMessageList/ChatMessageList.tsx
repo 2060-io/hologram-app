@@ -38,10 +38,12 @@ const renderItem = ({ item, index, props }: ItemProps) => {
 }
 
 export const ChatMessageList = memo((props: ChatMessageListProps) => {
+  const { messages, listViewProps } = props
   const keyExtractor = (item: ChatEntryMessage) => `${item.id}`
   const [scrollEnabled, setScrollEnabled] = useState(true)
   const containerHeight = useRef(0)
   const listHeight = useRef(0)
+  const renderListFromBottom = scrollEnabled && messages.length > 1
 
   const checkIfScrollIsEnabled = () => {
     const scrollIsEnabled = listHeight.current >= containerHeight.current
@@ -63,9 +65,9 @@ export const ChatMessageList = memo((props: ChatMessageListProps) => {
       <View style={styles.containerAlignTop}>
         <FlashList
           keyExtractor={keyExtractor}
-          data={props.messages}
+          data={messages}
           maintainVisibleContentPosition={{
-            startRenderingFromBottom: true,
+            startRenderingFromBottom: renderListFromBottom,
             autoscrollToBottomThreshold: 1,
           }}
           renderItem={itemProps => renderItem({ ...itemProps, props })}
@@ -73,7 +75,7 @@ export const ChatMessageList = memo((props: ChatMessageListProps) => {
           showsVerticalScrollIndicator={false}
           scrollEnabled={scrollEnabled}
           onLayout={onListLayout}
-          {...props.listViewProps}
+          {...listViewProps}
         />
       </View>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
