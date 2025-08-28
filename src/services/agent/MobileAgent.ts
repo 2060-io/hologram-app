@@ -39,6 +39,7 @@ import {
 import { OpenId4VcHolderModule } from '@credo-ts/openid4vc'
 import { PushNotificationsFcmModule } from '@credo-ts/push-notifications'
 import { QuestionAnswerModule } from '@credo-ts/question-answer'
+import { WebvhDidResolver } from '@credo-ts/webvh'
 import { anoncreds } from '@hyperledger/anoncreds-react-native'
 import { ariesAskar } from '@hyperledger/aries-askar-react-native'
 import { DidWebAnonCredsRegistry } from 'credo-ts-didweb-anoncreds'
@@ -80,6 +81,7 @@ export const getMobileAgentModules = (config: {
         new KeyDidResolver(),
         new PeerDidResolver(),
         new IndyVdrProxyDidResolver({ proxyBaseUrl, headers: getAppCheckHeaders }),
+        new WebvhDidResolver(),
       ],
     }),
     calls: new DidCommCallsModule(),

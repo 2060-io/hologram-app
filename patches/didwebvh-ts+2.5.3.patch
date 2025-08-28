@@ -1,0 +1,13 @@
+diff --git a/node_modules/didwebvh-ts/dist/cjs/index.cjs b/node_modules/didwebvh-ts/dist/cjs/index.cjs
+index 82106b5..df8b8c2 100644
+--- a/node_modules/didwebvh-ts/dist/cjs/index.cjs
++++ b/node_modules/didwebvh-ts/dist/cjs/index.cjs
+@@ -1308,7 +1308,7 @@ var resolveDIDFromLog2 = async (log, options = {}) => {
+   if (options.verificationMethod && (options.versionNumber || options.versionId)) {
+     throw new Error("Cannot specify both verificationMethod and version number/id");
+   }
+-  const resolutionLog = log.map((l) => deepClone(l));
++  const resolutionLog = log.map((l) => deepClone(l))[0];
+   let did = "";
+   let doc = null;
+   let resolvedDoc = null;
