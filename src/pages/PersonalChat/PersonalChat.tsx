@@ -361,7 +361,6 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
             messages={chatEntries}
             listViewProps={{
               ref: listViewRef,
-              onStartReachedThreshold: 0.5,
               onStartReached: loadMoreMessages,
               onScrollBeginDrag: onScrollBegin,
               onMomentumScrollBegin: onScrollBegin,
