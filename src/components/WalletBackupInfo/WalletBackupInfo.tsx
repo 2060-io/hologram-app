@@ -1,4 +1,3 @@
-import dayjs from 'dayjs'
 import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, ActivityIndicator, TouchableOpacity } from 'react-native'
@@ -6,13 +5,14 @@ import { View, ActivityIndicator, TouchableOpacity } from 'react-native'
 import getStyles from './styles'
 
 import { Text, SvgIcon, MainButton } from '@2060/components/common'
-import { IS_DEVICE_IOS } from '@2060/constants'
+import { IS_ANDROID, IS_IOS } from '@2060/constants'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import {
   WalletBackupInfoProps,
   WalletBackupHandlerProps,
 } from '@2060/pages/Settings/WalletBackup/WalletBackupProps'
 import { getFileSize } from '@2060/utils'
+import { dateToString } from '@2060/utils/dateUtils'
 
 const WalletBackupHandler = ({
   containerStyle,
@@ -41,7 +41,7 @@ const WalletBackupInfo = ({
   const styles = getStyles(theme)
 
   const renderGoogleSelectedAccount = useMemo(() => {
-    if (IS_DEVICE_IOS || !selectedGoogleAccount) return null
+    if (IS_IOS || !selectedGoogleAccount) return null
     return (
       <TouchableOpacity onPress={selectAccount}>
         <Text typography="EuclidCircularA-Medium" style={[styles.smallText, styles.suggestionText]}>
@@ -66,7 +66,8 @@ const WalletBackupInfo = ({
         onInfo={() => (
           <>
             <Text typography="EuclidCircularA-Medium" style={styles.mediumText}>
-              {`${t('settings.lastBackup')}: ${dayjs(backupHandler?.backup?.modifyDate).format(
+              {`${t('settings.lastBackup')}: ${dateToString(
+                backupHandler?.backup?.modifyDate,
                 'DD/MM/YYYY h:mm a',
               )}`}
             </Text>
@@ -76,7 +77,7 @@ const WalletBackupInfo = ({
             {renderGoogleSelectedAccount}
             {withSuggestionMessage && (
               <Text typography="EuclidCircularA-Regular" style={[styles.smallText, styles.suggestionText]}>
-                {t('settings.backupSuggestion', { cloud: IS_DEVICE_IOS ? 'iCloud Drive' : 'Google Drive' })}
+                {t('settings.backupSuggestion', { cloud: IS_IOS ? 'iCloud Drive' : 'Google Drive' })}
               </Text>
             )}
           </>
@@ -86,7 +87,7 @@ const WalletBackupInfo = ({
             <Text typography="EuclidCircularA-Medium" style={styles.mediumText}>
               {t('settings.noBackupFound')}
             </Text>
-            {IS_DEVICE_IOS && (
+            {IS_IOS && (
               <Text typography="EuclidCircularA-Medium" style={styles.smallText}>
                 {t('settings.cloudNotSync')}
               </Text>
@@ -99,7 +100,7 @@ const WalletBackupInfo = ({
             <Text typography="EuclidCircularA-Medium" style={styles.smallText}>
               {t('general.errorGettingBackupInfoFromCloud')}
             </Text>
-            {!IS_DEVICE_IOS && (
+            {IS_ANDROID && (
               <MainButton text={t('general.retry')} onPress={selectAccount} style={styles.reLoginButton} />
             )}
           </View>

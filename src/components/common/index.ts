@@ -1,7 +1,9 @@
 import Avatar from './Avatar'
 import CardCredentialMainInformation from './CardCredentialMainInformation'
 import ConnectionMainActions from './ConnectionMainActions'
+import ConnectionRefusedByAge from './ConnectionRefusedByAge'
 import Icon from './CustomIcon'
+import FullScreenImage from './FullScreenImage'
 import HeaderTitle from './HeaderTitle'
 import Loader from './Loader'
 import MessageStateIcon from './MessageStateIcon'
@@ -40,4 +42,6 @@ export {
   HeaderTitle,
   ProofOfTrust,
   RadioButton,
+  FullScreenImage,
+  ConnectionRefusedByAge,
 }

@@ -1,3 +1,4 @@
+import { Buffer } from '@credo-ts/core'
 import { GDrive, ListQueryBuilder } from '@robinbobin/react-native-google-drive-api-wrapper'
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
@@ -24,8 +25,6 @@ import {
 } from '@2060/services/localStorage'
 import { log, logError } from '@2060/utils'
 import { BACKUP_NAME, BACKUP_ZIP_FILE_PATH } from '@2060/utils/walletBackUpUtils'
-
-global.Buffer ??= require('buffer').Buffer
 
 type FilesProps = {
   id: string
@@ -199,13 +198,15 @@ export const useGoogleDrive = () => {
       try {
         const { promise } = downloadFile({
           fromUrl: backupHandler?.backup?.downloadUrl ?? '',
-          progressInterval: 10000,
+          progressInterval: 5000,
           headers: { Authorization: `Bearer ${googleDriveConnection?.accessToken}` },
           toFile: BACKUP_ZIP_FILE_PATH,
+          begin: () => log('Download of backup file begin'),
           progress: res => {
             const progress = Number(((res.bytesWritten / res.contentLength) * 100).toFixed())
             const progressLessOne = progress ? progress - 1 : progress
             setRestoreProgress(prev => ({ ...prev, progress: progressLessOne }))
+            log(`Downloading backup progress: ${progress}%`)
           },
         })
         await promise

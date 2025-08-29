@@ -1,4 +1,5 @@
 import { StackActions, useNavigation } from '@react-navigation/native'
+import { TrustResolutionOutcome } from '@verana-labs/verre'
 import React, { useState, memo, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, ActivityIndicator, Image, TouchableOpacity } from 'react-native'
@@ -7,11 +8,13 @@ import { BlueButton, Header } from '../components'
 
 import getStyles from './styles'
 
-import { SvgIcon, Text, VerifiedIcon } from '@2060/components/common'
+import defaultAvatar from '@2060/assets/images/defaultUser.png'
+import { ConnectionRefusedByAge, SvgIcon, Text, VerifiedIcon } from '@2060/components/common'
 import Avatar from '@2060/components/common/Avatar/Avatar'
 import { useFetchServiceInfo } from '@2060/hooks'
 import { useChatThreadById, useChats, useUserProfile } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
+import { useValidateKidAgeRestrictions } from '@2060/hooks/useValidateKidAgeRestrictions'
 import { ChatEntryRole, InvitationMetadata } from '@2060/model'
 import { InvitationState } from '@2060/model/InvitationState'
 import { MobileAgent } from '@2060/services/agent/MobileAgent'
@@ -29,20 +32,23 @@ const isService = (did?: string) => did !== undefined && !did.startsWith('did:pe
 
 const InvitationChatView = ({ associatedRecordId: outOfBandId, metadata, role, agent }: Props) => {
   const [isAcceptingInvitation, setIsAcceptingInvitation] = useState(false)
-  const { activeChatThread, findOrCreateThread } = useChats()
-  const chatThread = useChatThreadById(activeChatThread ?? '')
+  const { activeChatThreadId, findOrCreateThread } = useChats()
+  const chatThread = useChatThreadById(activeChatThreadId ?? '')
   const { userProfileData } = useUserProfile()
   const theme = useTheme()
   const styles = getStyles(theme)
   const { t } = useTranslation()
   const navigation = useNavigation()
   const isReceiver = role === ChatEntryRole.Receiver
-  const defaultUserImg = Image.resolveAssetSource(require('@2060/assets/images/defaultUser.png')).uri
+  const defaultUserImg = Image.resolveAssetSource(defaultAvatar).uri
   const { imageUrl, label, did, state } = metadata
   const invitationType = t(
     isService(did) ? 'personalChat.invitationRequestService' : 'personalChat.invitationRequestSubConnection',
   )
   const { serviceInfo } = useFetchServiceInfo(did)
+  const minimumAgeRequired = serviceInfo?.minimumAgeRequired ?? 0
+  const serviceStatus = serviceInfo?.status ?? TrustResolutionOutcome.INVALID
+  const { kidAge, ageRestricted } = useValidateKidAgeRestrictions({ minimumAgeRequired, serviceStatus })
 
   const goToInvitation = async () => {
     const outOfBandRecord = await agent?.oob.findById(outOfBandId)
@@ -79,7 +85,23 @@ const InvitationChatView = ({ associatedRecordId: outOfBandId, metadata, role, a
   }
 
   const footer: Partial<Record<InvitationState, React.ReactElement>> = {
-    [InvitationState.Received]: <BlueButton text={t('general.connect')} onPress={onAccept} />,
+    [InvitationState.Received]: (
+      <>
+        <BlueButton
+          disabled={ageRestricted}
+          text={t('general.connect')}
+          onPress={onAccept}
+          style={{ opacity: ageRestricted ? 0.3 : 1 }}
+        />
+        {ageRestricted && (
+          <ConnectionRefusedByAge
+            style={styles.connectionRefusedByAgeText}
+            kidAge={kidAge}
+            userName={userProfileData?.displayName}
+          />
+        )}
+      </>
+    ),
     [InvitationState.Accepted]: (
       <View style={styles.acceptedContainer}>
         <Text typography="EuclidCircularA-Bold" style={styles.acceptedText}>
@@ -99,7 +121,7 @@ const InvitationChatView = ({ associatedRecordId: outOfBandId, metadata, role, a
   const renderFooter = useMemo(() => {
     if (isAcceptingInvitation) return <ActivityIndicator color={theme.colors.green} />
     return footer[state]
-  }, [isAcceptingInvitation, state])
+  }, [isAcceptingInvitation, state, ageRestricted, theme.colors])
 
   return (
     <>
@@ -120,9 +142,7 @@ const InvitationChatView = ({ associatedRecordId: outOfBandId, metadata, role, a
       <View style={styles.containerMain}>
         <View style={styles.containerInfo}>
           <View style={styles.containerAvatar}>
-            {isService(did) && (
-              <VerifiedIcon style={styles.containerVerifiedMark} status={serviceInfo?.status ?? 'notFound'} />
-            )}
+            {isService(did) && <VerifiedIcon style={styles.containerVerifiedMark} status={serviceStatus} />}
             <Avatar uri={serviceInfo?.logoUrl ?? imageUrl ?? defaultUserImg} label={label} size="19.16%" />
           </View>
           <Text typography="EuclidCircularA-Medium" style={styles.label}>

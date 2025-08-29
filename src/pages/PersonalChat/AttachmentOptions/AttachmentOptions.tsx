@@ -6,12 +6,16 @@ import getStyles from './styles'
 
 import { SvgIcon, Text } from '@2060/components/common'
 import { IconsNames } from '@2060/components/common/SvgIcon'
+import { IS_ANDROID } from '@2060/constants'
 import { useImageCropPicker, ImageOrVideo, useChatActions } from '@2060/hooks'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { log, logError } from '@2060/utils'
+import { logError } from '@2060/utils'
+import { compressVideo } from '@2060/utils/mediaFileUtils'
 
 type Props = {
-  onCloseAttachmentOptions(): void
+  closeAttachmentOptions(): void
+  onCompressingVideoProgress: (progress: number) => void
+  getVideoCompressionCancellationId: (cancellationId: string) => void
 }
 
 const options = [
@@ -20,36 +24,47 @@ const options = [
   { id: 'file-gallery', icon: 'image', label: 'photoAndVideoLibrary' },
 ]
 
-const AttachmentOptions: React.FC<Props> = ({ onCloseAttachmentOptions }) => {
+const AttachmentOptions: React.FC<Props> = ({
+  closeAttachmentOptions,
+  onCompressingVideoProgress,
+  getVideoCompressionCancellationId,
+}) => {
   const { takePhotoOrVideo, takePhotoOrVideoFromGallery } = useImageCropPicker()
   const { shareMediaToDidComm } = useChatActions()
   const theme = useTheme()
   const styles = getStyles(theme)
   const { t } = useTranslation()
 
-  const onSendSharedFile = (mediaFileInfo: ImageOrVideo) => {
-    onCloseAttachmentOptions()
-    shareMediaToDidComm({
-      ...mediaFileInfo,
-      duration: mediaFileInfo.duration ?? undefined,
-      width: mediaFileInfo.width ?? undefined,
-      height: mediaFileInfo.height ?? undefined,
-    }).catch(logError)
+  const onMediaFile = async (fileInfo: ImageOrVideo) => {
+    closeAttachmentOptions()
+    let mediaFileInfo: ImageOrVideo | null = { ...fileInfo }
+    const isVideo = mediaFileInfo.mime.startsWith('video')
+    if (IS_ANDROID && isVideo) {
+      mediaFileInfo = (await compressVideo(
+        mediaFileInfo,
+        onCompressingVideoProgress,
+        getVideoCompressionCancellationId,
+      )) as ImageOrVideo | null
+    }
+    if (mediaFileInfo) {
+      shareMediaToDidComm({
+        ...mediaFileInfo,
+        duration: mediaFileInfo.duration ?? undefined,
+        width: mediaFileInfo.width ?? undefined,
+        height: mediaFileInfo.height ?? undefined,
+      }).catch(logError)
+    }
   }
 
   const onSelectedOption = async (optionId: string) => {
-    try {
-      if (optionId === 'file-camera') {
-        await takePhotoOrVideo(onSendSharedFile)
-      }
-      if (optionId === 'file-video') {
-        await takePhotoOrVideo(onSendSharedFile, { mediaType: 'video' })
-      }
-      if (optionId === 'file-gallery') {
-        await takePhotoOrVideoFromGallery(onSendSharedFile, { mediaType: 'any' })
-      }
-    } catch (error) {
-      log('Image capture error', error)
+    if (optionId === 'file-camera') {
+      await takePhotoOrVideo(onMediaFile)
+    }
+    if (optionId === 'file-video') {
+      await takePhotoOrVideo(onMediaFile, { mediaType: 'video' })
+    }
+    if (optionId === 'file-gallery') {
+      await takePhotoOrVideoFromGallery(onMediaFile, { mediaType: 'any' })
     }
   }
 

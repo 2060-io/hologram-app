@@ -1,6 +1,8 @@
-import React, { memo, useCallback } from 'react'
+import React, { memo, useCallback, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, Linking, TouchableOpacity } from 'react-native'
+
+import FullScreenImage from '../FullScreenImage'
 
 import getStyles from './styles'
 
@@ -9,7 +11,8 @@ import SvgIcon from '@2060/components/common/SvgIcon'
 import Text from '@2060/components/common/Text'
 import VerifiedIcon from '@2060/components/common/VerifiedIcon'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { ServiceInfo, ServiceStatus } from '@2060/services/api/trustRegistryService'
+import { useValidateKidAgeRestrictions } from '@2060/hooks/useValidateKidAgeRestrictions'
+import { ServiceInfo, ServiceStatus } from '@2060/model'
 import { getFlagEmoji, trimText } from '@2060/utils'
 import { toast } from '@2060/utils/toast'
 
@@ -21,7 +24,16 @@ const ServiceMainInfo = ({ serviceInfo }: Props) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
-  const { serviceProvider, dataPrivacyUrl, termsAndConditionsUrl, minimumAgeRequired } = serviceInfo
+  const { serviceProvider, dataPrivacyUrl, termsAndConditionsUrl, minimumAgeRequired, status } = serviceInfo
+  const [showFullScreenImage, setShowFullScreenImage] = useState<boolean>(false)
+  const imageFullScreenUri = useRef<string | undefined>(undefined)
+  const { ageRestricted } = useValidateKidAgeRestrictions({ minimumAgeRequired, serviceStatus: status })
+
+  const onAvatarImagePressed = (avatarImageUri: string) => {
+    setShowFullScreenImage(true)
+    imageFullScreenUri.current = avatarImageUri
+  }
+  const closeFullScreenImage = () => setShowFullScreenImage(false)
 
   const tryToOpenURL = useCallback(async (url: string) => {
     const supported = await Linking.canOpenURL(url)
@@ -33,14 +45,25 @@ const ServiceMainInfo = ({ serviceInfo }: Props) => {
   }, [])
 
   const serviceIs: Record<ServiceStatus, string> = {
-    trusted: t('invitation.isATrustedService'),
-    notTrusted: t('invitation.notTrustedService'),
-    notFound: t('invitation.notFoundService'),
+    verified: t('invitation.isATrustedService'),
+    'verified-test': t('invitation.notTrustedService'),
+    'not-trusted': t('invitation.notTrustedService'),
+    invalid: t('invitation.notFoundService'),
   }
 
   return (
     <View style={styles.containerCardIssuerInfo}>
-      <Avatar uri={serviceInfo.logoUrl} label={serviceInfo.name} size="25%" />
+      <FullScreenImage
+        showFullScreenImage={showFullScreenImage}
+        closeFullScreenImage={closeFullScreenImage}
+        imageUri={imageFullScreenUri.current!}
+      />
+      <Avatar
+        uri={serviceInfo.logoUrl}
+        label={serviceInfo.name}
+        size="25%"
+        onImagePressed={onAvatarImagePressed}
+      />
       <Text typography="EuclidCircularA-Medium" style={styles.issuerName}>
         {serviceInfo.name}
       </Text>
@@ -91,7 +114,10 @@ const ServiceMainInfo = ({ serviceInfo }: Props) => {
             </TouchableOpacity>
           )}
           {minimumAgeRequired && (
-            <Text typography="EuclidCircularA-Regular" style={styles.text}>
+            <Text
+              typography="EuclidCircularA-Regular"
+              style={{ ...styles.text, ...(ageRestricted && styles.notOldEnoughTextColor) }}
+            >
               {`${t('invitation.ageRestrictions')} ${minimumAgeRequired}+`}
             </Text>
           )}

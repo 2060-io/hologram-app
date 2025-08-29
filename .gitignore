@@ -33,6 +33,7 @@ local.properties
 ios/tmp.xcconfig
 *.keystore
 !debug.keystore
+.kotlin/
 
 # node.js
 #

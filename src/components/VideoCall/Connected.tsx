@@ -48,7 +48,7 @@ const Connected = ({
   const theme = useTheme()
   const styles = getStyles(theme)
   const { t } = useTranslation()
-  const buttonsTimerRef = useRef<ReturnType<typeof setTimeout>>()
+  const buttonsTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined)
   const panForLocalStream = useRef(new Animated.ValueXY()).current
   const [buttonsVisibility, setButtonsVisibility] = useState<FlexStyle['display']>('flex')
   const displayLocalStreaming =
@@ -168,7 +168,9 @@ const Connected = ({
           />
           {isVideoCall && (
             <>
-              <CallButton text={t('call.flip')} iconName="flipCamera" onPress={handleSwitchCamera} />
+              {isCameraOn && (
+                <CallButton text={t('call.flip')} iconName="flipCamera" onPress={handleSwitchCamera} />
+              )}
               <CallButton
                 text={t('call.video')}
                 iconName={isCameraOn ? 'video' : 'videoOff'}

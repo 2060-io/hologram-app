@@ -16,13 +16,14 @@ interface Props {
   chatThread: ChatThreadData
   isTyping: boolean
   showMenuIcon: boolean
+  isConnectionDeleted: boolean
   onGoToConnectionDetails(): void
   onShowContextMenu(): void
   onSomeActionDispatched?(): void
 }
 
 const CustomChatHeader: React.FC<Props> = props => {
-  const { chatThread, isTyping, onShowContextMenu, showMenuIcon } = props
+  const { chatThread, isTyping, onShowContextMenu, showMenuIcon, isConnectionDeleted } = props
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
@@ -59,7 +60,12 @@ const CustomChatHeader: React.FC<Props> = props => {
             />
           </View>
         </TouchableOpacity>
-        <TouchableOpacity activeOpacity={0.4} style={styles.displayName} onPress={goToConnectionDetails}>
+        <TouchableOpacity
+          disabled={isConnectionDeleted}
+          activeOpacity={0.4}
+          style={styles.displayName}
+          onPress={goToConnectionDetails}
+        >
           <Text typography="EuclidCircularA-Medium" style={styles.name} numberOfLines={1}>
             {props.chatThread.topic}
           </Text>

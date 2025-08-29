@@ -9,7 +9,7 @@ import getStyles from './styles'
 import { Text, MessageStateIcon, SvgIcon } from '@2060/components/common'
 import { useConnectionById } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { ChatThreadData } from '@2060/model'
+import { ChatEntryState, ChatThreadData } from '@2060/model'
 import { chatDateFormat } from '@2060/utils/dateUtils'
 
 interface Props extends ChatThreadData {
@@ -40,7 +40,13 @@ const ChatThread = ({
 
   return (
     <TouchableOpacity activeOpacity={0.5} onPress={onPressChatThread} style={styles.container}>
-      <Avatar uri={picture} label={topic} size="13%" bgAvatarInitials={theme.colors.secondary} />
+      <Avatar
+        uri={picture}
+        label={topic}
+        size="13%"
+        bgAvatarInitials={theme.colors.secondary}
+        enableImageRefresh={false}
+      />
       <View style={styles.contentText}>
         <Text typography="EuclidCircularA-Medium" style={styles.nameUser} numberOfLines={1}>
           {topic}
@@ -64,18 +70,22 @@ const ChatThread = ({
           <SvgIcon name="chevronForward" fill={theme.colors.primaryText} />
         </View>
       )}
-      <View style={styles.contentDate}>
+      <View style={styles.rightContent}>
         <Text typography="EuclidCircularA-Regular" style={styles.textDate}>
           {lastActivityDate ? chatDateFormat(lastActivityDate, using24HourFormat) : ''}
         </Text>
-        {unreadCount > 0 && (
-          <View style={styles.unread}>
-            <Text typography="EuclidCircularA-Medium" style={styles.textNumber}>
-              {unreadCount}
-            </Text>
-          </View>
-        )}
-        {!hasChildren && lastChatEntryState && <MessageStateIcon theme={theme} state={lastChatEntryState} />}
+        <View style={styles.containerUnreadAndStateIcon}>
+          {!hasChildren && lastChatEntryState && lastChatEntryState !== ChatEntryState.Deleted && (
+            <MessageStateIcon theme={theme} state={lastChatEntryState} />
+          )}
+          {unreadCount > 0 && (
+            <View style={styles.unread}>
+              <Text typography="EuclidCircularA-Medium" style={styles.textNumber}>
+                {unreadCount}
+              </Text>
+            </View>
+          )}
+        </View>
       </View>
     </TouchableOpacity>
   )

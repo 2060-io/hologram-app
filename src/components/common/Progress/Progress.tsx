@@ -33,6 +33,7 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: '#E5E9EA',
     marginBottom: 10,
+    overflow: 'hidden',
   },
 })
 export default Progress

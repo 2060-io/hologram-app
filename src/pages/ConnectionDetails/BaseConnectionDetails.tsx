@@ -1,4 +1,5 @@
-import { ConnectionRecord, TypedArrayEncoder } from '@credo-ts/core'
+import { getConnectionProfile } from '@2060.io/credo-ts-didcomm-user-profile'
+import { ConnectionRecord, TypedArrayEncoder, Buffer } from '@credo-ts/core'
 import { StackScreenProps } from '@react-navigation/stack'
 import React, { ReactElement, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -11,9 +12,8 @@ import getStyles from './styles'
 import { ModalConfirmAction } from '@2060/components'
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
 import { Text, ConnectionMainActions, SvgIcon, ModalLoading, OptionsList } from '@2060/components/common'
-import { IS_DEVICE_IOS } from '@2060/constants'
+import { IS_IOS } from '@2060/constants'
 import {
-  useConnectionProfile,
   useMobileAgent,
   useChats,
   useConnectionByParentConnectionId,
@@ -40,7 +40,7 @@ export interface ConnectionDetailsProps extends WrapperProps {
   connection: ConnectionRecord
 }
 
-export interface BaseConnectionDetailsProps extends ConnectionDetailsProps {
+interface BaseConnectionDetailsProps extends ConnectionDetailsProps {
   mainInfo: ReactElement
   footerInfo?: ReactElement
 }
@@ -57,7 +57,7 @@ const BaseConnectionDetails = ({
   const theme = useTheme()
   const styles = getStyles(theme)
 
-  const profile = useConnectionProfile(connection.id)
+  const profile = getConnectionProfile(connection)
   const { agent } = useMobileAgent()
   const { t } = useTranslation()
   const connectionName = getConnectionDisplayName(connection)
@@ -69,7 +69,7 @@ const BaseConnectionDetails = ({
   const isConnectionTerminated = isTerminated(connection)
   const isConnectionService = isService(connection)
 
-  const { clearThread, findOrCreateThread } = useChats()
+  const { clearChat, findOrCreateThread } = useChats()
 
   const setHeaderOptions = () => {
     navigation.setOptions({
@@ -124,19 +124,19 @@ const BaseConnectionDetails = ({
           setBlockingConnection(false)
         }
       },
-      IS_DEVICE_IOS ? 600 : 0,
+      IS_IOS ? 600 : 0,
     )
   }
 
-  const clearChat = () => {
-    let thread = findOrCreateThread({ connection })
-    clearThread(thread.id)
+  const deleteChat = () => {
+    const thread = findOrCreateThread({ connection })
+    clearChat(thread.id)
   }
 
   const onPressConfirmation = () => {
     closeConfirmationModal()
     const actions = {
-      deleteChat: () => clearChat(),
+      deleteChat: () => deleteChat(),
       deleteConnection: async () => await handleDeleteConnection(),
       block: async () => await toggleBlock(blockConnection),
       unblock: async () => await toggleBlock(unblockConnection),
@@ -210,8 +210,8 @@ const BaseConnectionDetails = ({
   const shareConnection = async () => {
     try {
       const outOfBandInvitation = createOobInvitation(connection)
-      let invitationStr = JSON.stringify(outOfBandInvitation)
-      let invitationBase64 = TypedArrayEncoder.toBase64URL(Buffer.from(invitationStr))
+      const invitationStr = JSON.stringify(outOfBandInvitation)
+      const invitationBase64 = TypedArrayEncoder.toBase64URL(Buffer.from(invitationStr))
       const invitationUrl = `${Config.BASE_INVITATION_URL}?oob=${invitationBase64}`
       const title = t('scanned.titleShare', { displayName: userProfileData?.displayName })
       await Share.open(

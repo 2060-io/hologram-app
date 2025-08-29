@@ -1,36 +1,19 @@
-import {
-  AgentMessageProcessedEvent,
-  V2StatusMessage,
-  AgentEventTypes,
-  MediatorPickupStrategy,
-  TypedArrayEncoder,
-} from '@credo-ts/core'
+import { AgentMessageProcessedEvent, V2StatusMessage, AgentEventTypes } from '@credo-ts/core'
 import { FirebaseMessagingTypes } from '@react-native-firebase/messaging'
-import Config from 'react-native-config'
-import Realm from 'realm'
 
-import { baseAgentConfig } from '../hooks/agent/MobileAgentProvider'
-import { manageAgentChatEvents } from '../hooks/agent/chat/manageAgentChatEvents'
-import { CURRENT_REALM_SCHEMA_VERSION } from '../hooks/providers/RealmProvider'
+import AgentSingleton from './AgentSingleton'
+import RealmSingleton from './RealmSingleton'
+import { baseAgentConfig } from './setupMobileAgent'
 
-import { manageBackgroundChatEntryChanges } from '@2060/hooks/agent/chat'
+import { manageBackgroundChatEntryChanges, subscribeToAgentChatEvents } from '@2060/hooks/agent/chat'
 import { manageConnectionStateChangedEvent } from '@2060/hooks/agent/connections/manageConnectionStateChangedEvent'
-import { ChatEntry, ChatThread } from '@2060/model'
-import { setupMobileAgent } from '@2060/services/initMobileAgent'
-import { KeyChainService, retrieveKey } from '@2060/services/keys'
-import { DEV_ENVS_PERSIST_KEY, getStorageData } from '@2060/services/localStorage'
-import { walletDirectoryPath } from '@2060/utils/RNFS'
-import { DevEnvsObject } from '@2060/utils/developer'
-import {
-  deleteRemoteNotifications,
-  checkApplicationPermission,
-  getIsProcessingBackgroundNotification,
-  updateIsProcessingBackgroundNotification,
-} from '@2060/utils/pushNotificationsUtils'
+import { logWarn } from '@2060/utils'
+import { isBackgroundNotificationHandlerEnabled } from '@2060/utils/developer'
+import { arePushNotificationsAllowed, deleteRemoteNotifications } from '@2060/utils/pushNotificationsUtils'
 
 const makeRequestToLocalServer = (payload: Record<string, string>) => {
   if (__DEV__) {
-    fetch('http://192.168.1.3:3000/api/echo', {
+    fetch('http://192.168.1.9:3000/api/echo', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
@@ -38,47 +21,31 @@ const makeRequestToLocalServer = (payload: Record<string, string>) => {
   }
 }
 
-const getIndyVDRProxyBaseUrl = async () => {
-  const persistedDevEnvs = await getStorageData(DEV_ENVS_PERSIST_KEY)
-  if (persistedDevEnvs) {
-    return (persistedDevEnvs as DevEnvsObject).INDY_VDR_PROXY_BASE_URL
-  }
-  return Config.INDY_VDR_PROXY_BASE_URL
-}
+let isProcessingBackgroundNotification = false
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function backgroundPushNotificationHandler(remoteMessage: FirebaseMessagingTypes.RemoteMessage) {
-  const isProcessingBackgroundNotification = await getIsProcessingBackgroundNotification()
-  if (isProcessingBackgroundNotification) {
-    makeRequestToLocalServer({ data: 'is executing at the moment, does not continue' })
-    return
-  }
-  if (!(await checkApplicationPermission())) {
-    return
-  }
+  const persistedIsBackgroundNotificationsEnabled = await isBackgroundNotificationHandlerEnabled()
+  if (!persistedIsBackgroundNotificationsEnabled) return
+  // Note: When user disables notifications and are not displayed (remote notifications) this code can be
+  //  executed. For that reason, we need to check if push notifications are allowed to continue processing
+  if (!(await arePushNotificationsAllowed())) return
   deleteRemoteNotifications()
-  updateIsProcessingBackgroundNotification(true)
-  makeRequestToLocalServer({ data: 'executing' })
+  if (isProcessingBackgroundNotification) {
+    makeRequestToLocalServer({ data: 'BACKGROUND PUSH NOTIFICATIONS HANDLER is executing at the moment!!' })
+    return
+  }
+  isProcessingBackgroundNotification = true
+  makeRequestToLocalServer({ data: 'START EXECUTING BACKGROUND PUSH NOTIFICATIONS HANDLER' })
   try {
-    const indyVDRProxyBaseUrl = await getIndyVDRProxyBaseUrl()
-    const agent = setupMobileAgent(
-      {
-        ...baseAgentConfig,
-        mediatorPickupStrategy: MediatorPickupStrategy.None,
-      },
-      indyVDRProxyBaseUrl,
-    )
-
-    const realmKey = await retrieveKey(KeyChainService.RealmMain)
-
-    const realmConfig: Realm.Configuration = {
-      encryptionKey: TypedArrayEncoder.fromHex(realmKey as string),
-      schema: [ChatEntry, ChatThread],
-      path: `${walletDirectoryPath}/main.realm`,
-      schemaVersion: CURRENT_REALM_SCHEMA_VERSION,
-    }
-
-    const realm = await Realm.open(realmConfig)
+    const realmInstance = RealmSingleton.instance
+    await realmInstance.openRealmIfIsClosed()
+    const realm = realmInstance.getRealm()
+    if (!realm) return
+    const mobileAgentInstance = AgentSingleton.instance
+    await mobileAgentInstance.setupMobileAgent()
+    const agent = mobileAgentInstance.getMobileAgent()
+    if (!agent) return
     const { addChatEntryChangeListener, removeChatEntryChangeListener } = manageBackgroundChatEntryChanges(
       realm,
       agent,
@@ -87,42 +54,48 @@ export async function backgroundPushNotificationHandler(remoteMessage: FirebaseM
       manageConnectionStateChangedEvent(agent)
     addChatEntryChangeListener()
     addConnectionChangeListener()
-    const storage = { type: 'sqlite', config: { path: `${walletDirectoryPath}/afj.sqlite` } }
-    const getWalletConfig = (storeKey: string) => ({ id: 'afj', key: storeKey, storage })
-    const key = await retrieveKey(KeyChainService.AfjWallet)
-    await agent.wallet.open(getWalletConfig(key as string))
-
-    agent.events.on<AgentMessageProcessedEvent>(AgentEventTypes.AgentMessageProcessed, async data => {
-      const message = data.payload.message
-      baseAgentConfig.logger?.info(
-        `Message processed for connection id ${data.payload.connection?.id} Type: ${message.type}`,
-      )
-      if (message.type === V2StatusMessage.type.messageTypeUri) {
-        const messageCount = (message as V2StatusMessage).messageCount
-        baseAgentConfig.logger?.info(`Status message received. Remaining messages: ${messageCount}`)
-
-        if (messageCount === 0) {
-          deleteRemoteNotifications()
-          removeChatEntryChangeListener()
-          removeConnectionChangeListener()
-          unsubscribeFromEvents()
-          await agent.shutdown()
-          realm.close()
-          makeRequestToLocalServer({ data: 'finish execution' })
-          updateIsProcessingBackgroundNotification()
-        }
-      }
-    })
-    const unsubscribeFromEvents = manageAgentChatEvents(agent, realm)
-
-    await agent.initialize()
+    if (!mobileAgentInstance.getMobileAgent()?.isInitialized) {
+      await mobileAgentInstance.openAndInitMobileAgent()
+    } else {
+      logWarn('From backgroundPushNotificationHandler agent is already initialized')
+    }
+    if (!mobileAgentInstance.getIsAppSubscribedToEvents()) {
+      subscribeToAgentChatEvents(agent, realm, false, () => undefined)
+    } else {
+      logWarn('From backgroundPushNotificationHandler App is already subscribed to agent events')
+    }
     const mediatorConnection = await agent.mediationRecipient.findDefaultMediatorConnection()
     await agent.messagePickup.pickupMessages({
       connectionId: mediatorConnection!.id,
       protocolVersion: 'v2',
     })
+
+    // this events is yet calling when app awakes and receives more because agent is still alive and the same
+    agent.events.on<AgentMessageProcessedEvent>(AgentEventTypes.AgentMessageProcessed, async data => {
+      const message = data.payload.message
+      baseAgentConfig.logger?.info(
+        `Message processed for connection id ${data.payload.connection?.id} Type: ${message.type}`,
+      )
+      makeRequestToLocalServer({
+        data: `Message processed for connection id ${data.payload.connection?.id}`,
+      })
+      if (message.type === V2StatusMessage.type.messageTypeUri) {
+        const messageCount = (message as V2StatusMessage).messageCount
+        baseAgentConfig.logger?.info(`Status message received. Remaining messages: ${messageCount}`)
+        makeRequestToLocalServer({
+          data: `Status message received. Remaining messages: ${messageCount}`,
+        })
+        if (messageCount === 0) {
+          makeRequestToLocalServer({ data: 'BACKGROUND PUSH NOTIFICATIONS HANDLER EXECUTION FINISHED' })
+          isProcessingBackgroundNotification = false
+          deleteRemoteNotifications()
+          removeChatEntryChangeListener()
+          removeConnectionChangeListener()
+        }
+      }
+    })
   } catch (error) {
-    updateIsProcessingBackgroundNotification()
-    makeRequestToLocalServer({ error: JSON.stringify(error) })
+    isProcessingBackgroundNotification = false
+    makeRequestToLocalServer({ error: `${error}` })
   }
 }

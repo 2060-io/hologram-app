@@ -2,7 +2,7 @@ import { DeviceEventEmitter } from 'react-native'
 
 import { SHOW_TOAST_MESSAGE } from '../constants/toast'
 
-export type PositionToast = 'center' | 'bottom' | 'top'
+type PositionToast = 'center' | 'bottom' | 'top'
 
 export type ToastOptions = {
   message: string

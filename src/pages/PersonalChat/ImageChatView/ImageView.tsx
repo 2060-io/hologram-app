@@ -15,14 +15,15 @@ type ImageView = {
   imagePreviewUri: string
   imageUri: string
   fileMediaInfo: MediaInfo
-  currentMessage: ChatEntryMessage
+  chatEntry: ChatEntryMessage
   style: StyleProp<ImageStyle>
 }
 
 const ImageView = memo((props: ImageView) => {
   const { displayMessageFloatingMenu } = useChat()
   const [lightboxVisible, setLightboxVisible] = useState(false)
-  const { imagePreviewUri, imageUri, fileMediaInfo, currentMessage } = props
+  const [showControl, setShowControl] = useState(true)
+  const { imagePreviewUri, imageUri, fileMediaInfo, chatEntry } = props
   const theme = useTheme()
   const styles = getStyles(theme)
 
@@ -30,22 +31,27 @@ const ImageView = memo((props: ImageView) => {
     const newIsLightboxVisible = !lightboxVisible
     setLightboxVisible(newIsLightboxVisible)
   }
-  const onLongPress = () => displayMessageFloatingMenu(currentMessage)
+  const onLongPress = () => displayMessageFloatingMenu(chatEntry)
 
-  return lightboxVisible ? (
-    <LightboxModal
-      visible={lightboxVisible}
-      onCloseModal={onToggleModalLightbox}
-      renderHeader={(close: () => void) => (
-        <LightboxHeader fileMediaInfo={fileMediaInfo} onBack={close} currentMessage={currentMessage} />
-      )}
-    >
-      <Image source={{ uri: imageUri }} style={styles.imageLightbox} />
-    </LightboxModal>
-  ) : (
-    <TouchableOpacity onPress={onToggleModalLightbox} onLongPress={onLongPress}>
-      <Image style={props.style} source={{ uri: imagePreviewUri }} />
-    </TouchableOpacity>
+  const handleControls = () => setShowControl(!showControl)
+
+  return (
+    <>
+      <LightboxModal
+        visible={lightboxVisible}
+        onCloseModal={onToggleModalLightbox}
+        renderHeader={close =>
+          showControl && <LightboxHeader fileMediaInfo={fileMediaInfo} onBack={close} chatEntry={chatEntry} />
+        }
+      >
+        <TouchableOpacity onPress={handleControls} activeOpacity={1}>
+          <Image source={{ uri: imageUri }} style={styles.imageLightbox} />
+        </TouchableOpacity>
+      </LightboxModal>
+      <TouchableOpacity onPress={onToggleModalLightbox} onLongPress={onLongPress}>
+        <Image style={props.style} source={{ uri: imagePreviewUri }} />
+      </TouchableOpacity>
+    </>
   )
 })
 

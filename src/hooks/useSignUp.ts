@@ -1,21 +1,18 @@
 import { useCallback, useState } from 'react'
-import { Platform } from 'react-native'
 
 import { useMobileAgent } from '../hooks/agent'
 
 import { isRegistered } from '@2060/services/agent'
 import { log, logError } from '@2060/utils'
-import { getFcmDeviceToken } from '@2060/utils/pushNotificationsUtils'
 
 export enum SignUpState {
   Init = 'Init',
   Started = 'Started',
   Connected = 'Connected',
   AgentCreated = 'AgentCreated',
-  DeviceRegistered = 'DeviceRegistered',
 }
 
-export interface SignUpOptions {
+interface SignUpOptions {
   cloudAgentPublicDid: string
   defaultServicePublicDid: string
   defaultServiceAlias: string
@@ -25,21 +22,6 @@ export const useSignUp = (options: SignUpOptions) => {
   const { agent, handleChangeAgentState } = useMobileAgent()
 
   const [signUpState, setSignUpState] = useState<SignUpState>(SignUpState.Init)
-
-  const updateNotificationInfo = useCallback(async () => {
-    if (!agent) return
-
-    const connection = await agent.mediationRecipient.findDefaultMediatorConnection()
-    if (!connection) return
-
-    const deviceToken = await getFcmDeviceToken()
-    await agent.modules.pushNotifications.setDeviceInfo(connection.id, {
-      deviceToken,
-      devicePlatform: Platform.OS,
-    })
-
-    setSignUpState(SignUpState.DeviceRegistered)
-  }, [agent])
 
   const startSignUp = useCallback(async () => {
     if (!agent || !agent?.isInitialized) throw new Error('Agent not initialized')
@@ -84,5 +66,5 @@ export const useSignUp = (options: SignUpOptions) => {
     }
   }, [agent])
 
-  return { signUpState, startSignUp, updateNotificationInfo }
+  return { signUpState, startSignUp }
 }

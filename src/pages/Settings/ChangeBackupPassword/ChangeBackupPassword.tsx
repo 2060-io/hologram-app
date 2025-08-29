@@ -1,4 +1,5 @@
 import { StackScreenProps } from '@react-navigation/stack'
+import { TrustResolutionOutcome } from '@verana-labs/verre'
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
@@ -13,7 +14,7 @@ import getStyles from './styles'
 
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
 import { SvgIcon, Text, TextInputPassword, MainButton, VerifiedIcon } from '@2060/components/common'
-import { IS_DEVICE_IOS } from '@2060/constants'
+import { IS_IOS } from '@2060/constants'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { toast } from '@2060/utils/toast'
 import { setBackupKey } from '@2060/utils/walletBackUpUtils'
@@ -81,7 +82,7 @@ const ChangeBackupPassword = ({ navigation }: Props) => {
     if (password === retypedPassword) {
       savePassword()
     } else {
-      toast({ type: 'error', message: t('settings.passwordsDontMatch') })
+      toast({ type: 'error', message: t('settings.passwordsDontMatch'), position: 'center' })
     }
   }
 
@@ -93,7 +94,7 @@ const ChangeBackupPassword = ({ navigation }: Props) => {
   }
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior={IS_DEVICE_IOS ? 'padding' : 'height'}>
+    <KeyboardAvoidingView style={styles.container} behavior={IS_IOS ? 'padding' : 'height'}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.subContainer}>
           {currentStep === PasswordSteps.TypePass && (
@@ -102,6 +103,7 @@ const ChangeBackupPassword = ({ navigation }: Props) => {
                 {t('settings.changePassword')}
               </Text>
               <TextInputPassword
+                autoFocus
                 value={password}
                 onChangeText={setPassword}
                 placeholder={t('settings.typePassword')}
@@ -115,6 +117,7 @@ const ChangeBackupPassword = ({ navigation }: Props) => {
               </Text>
               <Text style={styles.suggestion}>{t('settings.savePassMessage')}</Text>
               <TextInputPassword
+                autoFocus
                 value={retypedPassword}
                 onChangeText={setRetypedPassword}
                 placeholder={t('settings.reTypePassword')}
@@ -124,7 +127,7 @@ const ChangeBackupPassword = ({ navigation }: Props) => {
           {currentStep === PasswordSteps.Updated && (
             <>
               <View style={styles.successUpdated}>
-                <VerifiedIcon style={styles.verifiedIconContainer} status="trusted" />
+                <VerifiedIcon style={styles.verifiedIconContainer} status={TrustResolutionOutcome.VERIFIED} />
                 <Text typography="EuclidCircularA-Medium" style={styles.title}>
                   {t('settings.passwordSaved')}
                 </Text>

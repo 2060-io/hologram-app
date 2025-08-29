@@ -57,7 +57,6 @@
       "send": "Enviar",
       "name": "Nombre",
       "description": "Descripción",
-      "loading": "Cargando...",
       "retry": "Reintentar",
       "abort": "Cancelar",
       "open": "Abrir",
@@ -104,7 +103,8 @@
       "ForwardTo": "Reenviar a",
       "shareWith": "Compartir con",
       "PresentCredential": "Presentar a",
-      "Presentation": "Presentación"
+      "Presentation": "Presentación",
+      "ParentalControl": "Control parental"
     },
     "authentication": {
       "walletLocked": "Hologram bloqueada",
@@ -179,9 +179,6 @@
       "wrongRestoreWalletPassword": "Contraseña incorrecta. Por favor, asegúrate de ingresar la contraseña correcta e intentalo nuevamente",
       "enterRecoveryPassword": "Ingresa la contraseña para hacer la restauración",
       "anErrorHasOccurred": "Se ha producido un error",
-      "requestPermissionsNotification": "Nos gustaría enviar notificaciones para que puedas ver instantáneamente los mensajes que te envíen",
-      "dontAllow": "No permitir",
-      "allow": "Permitir",
       "chooseNickname": "Elige tu nombre",
       "photo": "Foto",
       "camera": "Cámara",
@@ -211,7 +208,8 @@
       "privacyPolicy": "Política de privacidad.",
       "ageRestrictions": "Restricciones de edad:",
       "noAgeRestrictions": "Sin restricciones",
-      "serviceNotVerifiable": "Este servicio no es verificable."
+      "serviceNotVerifiable": "Este servicio no es verificable.",
+      "connectionRefusedByAge": "Holaa {{ name }}! Solamente tienes <bold>{{ age }}</bold> años. Tendrás que esperar unos años más para poder conectarte a este servicio."
     },
     "credential": {
       "noCredentials": "Aún no tienes credenciales",
@@ -407,7 +405,12 @@
       "messageForwarded": "Mensaje reenviado",
       "messageForwarded_other": "Mensajes reenviados",
       "messageShared": "Mensaje compartido",
-      "messageShared_other": "Mensajes compartidos"
+      "messageShared_other": "Mensajes compartidos",
+      "messagesSharedExcept": "Mensajes compartidos excepto aquellos videos que tenian una duracion mayor a 1 minuto",
+      "messagesNotShared": "El mensaje no ha sido compartido porque el video tenía una duración mayor a 1 minuto",
+      "messageNotShared_other": "Los mensajes no ha sido compartidos porque los videos tenían una duración mayor a 1 minuto",
+      "videoExceedsDuration": "El video excede la duración máxima de 1 minuto, por favor selecciona uno más corto",
+      "processingVideo": "Procesando video..."
     },
     "preview": {
       "answer": "🟰 Respuesta",
@@ -470,9 +473,9 @@
       "passwordSaved": "Contraseña actualizada exitosamente",
       "autoBackup": "Copia de seguridad automática",
       "includeVideos": "Incluir videos",
-      "backgroundNotifications": "Notificaciones en segundo plano",
+      "backgroundNotifications": "Background Notifications",
       "displayLogs": "Mostrar logs",
-      "closeAppAfterBackNotiChanges": "Para ver sus cambios reflejados, cierre la app completamente y vuelvala a abrir",
+      "closeAppAfterChange": "Para ver sus cambios reflejados, cierre la app completamente y vuelvala a abrir",
       "changePassword": "Cambiar contraseña",
       "preparingFiles": "Preparando archivos",
       "compressingFiles": "Comprimiendo archivos",
@@ -502,6 +505,17 @@
       "never": "Nunca",
       "wifi": "Wi-Fi",
       "wifiAndMobileData": "Wi-Fi y datos móviles"
+    },
+    "parentalControl": {
+      "message": "Establezca la fecha de nacimiento su hijo/a y un PIN para bloquear el aceso a servicios no adecuados para su edad. Tenga en cuenta que su hijo/a aún puede reinstalar Hologram para eliminar los controles parentales. Sin embargo, esto eliminará toda las conexiones existentes. Si la conexión con su hijo/a desaparece, podría ser una señal de que reinstaló Hologram.",
+      "kidBirthday": "Fecha de nacimiento de su hijo/a",
+      "setPIN": "Asignar PIN de Control Parental",
+      "disable": "Deshabilitar el Control Parental",
+      "confirmPIN": "Confirmar PIN de Control Parental",
+      "pinDoesNotMatch": "PIN no coincide",
+      "disablePINFooter": "Por favor ingresa el PIN que asignaste cuando habilitaste el Control Parental",
+      "pinDoesNotMatchFooter": "Asegúrate de ingresar el mismo PIN, ó presiona Cancelar para volver a realizar el proceso",
+      "setPINFooter": "Asegúrate cuidadosamente de ingresar tu PIN. No hay forma de recuperarlo si lo pierdes"
     }
   }
 }

@@ -40,22 +40,6 @@
     {
       "path": "src/assets/fonts/EuclidCircularA-SemiBoldItalic.ttf",
       "sha1": "af44774e595180b183ff8abb34bb8812011ae0ce"
-    },
-    {
-      "path": "src/assets/fonts/SFPro-Bold.otf",
-      "sha1": "f2f8964dac04471d13fc2843f08e2cb06a6c00d3"
-    },
-    {
-      "path": "src/assets/fonts/SFPro-Light.otf",
-      "sha1": "e4418fce1790f20883505ddab72b4fa0ee5591bb"
-    },
-    {
-      "path": "src/assets/fonts/SFPro-Medium.otf",
-      "sha1": "d7db1c34350a2753bb5f49bd1e5eaa964349b29e"
-    },
-    {
-      "path": "src/assets/fonts/SFPro.ttf",
-      "sha1": "3cfae99c250b267a7c0e3d1b1b8e65028e1e749b"
     }
   ]
 }

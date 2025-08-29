@@ -10,13 +10,18 @@ import React, {
 import { View, PanResponder } from 'react-native'
 
 import { useNavigation } from '../agent/NavigationProvider'
-import { useIsForeground } from '../useIsForeground'
+import { useAppState } from '../useAppState'
 
 import { useVideoCallContext } from './useVideoCallContext'
 
 import Authentication from '@2060/components/Authentication'
 import Modal from '@2060/components/common/Modal'
-import { setStorageData, getStorageData, SCREEN_LOCK_ENABLED_PERSIST_KEY } from '@2060/services/localStorage'
+import {
+  setStorageData,
+  getStorageData,
+  SCREEN_LOCK_ENABLED_PERSIST_KEY,
+  SCREEN_LOCK_TIMEOUT_PERSIST_KEY,
+} from '@2060/services/localStorage'
 
 interface ScreenLockInterface {
   isScreenLockEnabled: boolean
@@ -43,11 +48,16 @@ export const ScreenLockProvider: React.FC<PropsWithChildren> = ({ children }) =>
   const { isInCall, isIncomingCall, isFinishedCall } = useVideoCallContext()
   const [isScreenLockEnabled, setIsScreenLockEnabled] = useState(false)
   const [screenLockTimeout, setLockTimeout] = useState<number | null>(null)
+  const makeAutomaticAuth = useRef(true)
   const { getLocalAuth, setLocalAuth } = useNavigation()
   const isAuthenticated = getLocalAuth()
-  const timerRef = useRef<ReturnType<typeof setTimeout>>()
-  const isAppActive = useIsForeground()
+  const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined)
+  const { isAppActive } = useAppState()
   const makeLocalLogout = () => setLocalAuth(false)
+
+  useEffect(() => {
+    makeAutomaticAuth.current = !isAppActive
+  }, [isAppActive])
 
   useEffect(() => {
     if (isInCall || isIncomingCall) clearInactivityTimeout()
@@ -62,11 +72,7 @@ export const ScreenLockProvider: React.FC<PropsWithChildren> = ({ children }) =>
    */
   useEffect(() => {
     if (screenLockTimeout === INSTANT_TIMEOUT) return
-    if (isScreenLockForceDisabled) {
-      clearInactivityTimeout()
-    } else {
-      clearAndRestartInactivityTimeout()
-    }
+    isScreenLockForceDisabled ? clearInactivityTimeout() : clearAndRestartInactivityTimeout()
   }, [isScreenLockForceDisabled])
 
   /**
@@ -80,7 +86,8 @@ export const ScreenLockProvider: React.FC<PropsWithChildren> = ({ children }) =>
 
   useEffect(() => {
     const getStoredScreenLockedTimeout = async () => {
-      const storedScreenLockTimeout = (await getStorageData('screenLockTimeout')) ?? FIVE_MINUTES_TIMEOUT
+      const storedScreenLockTimeout =
+        (await getStorageData(SCREEN_LOCK_TIMEOUT_PERSIST_KEY)) ?? FIVE_MINUTES_TIMEOUT
       setLockTimeout(Number(storedScreenLockTimeout))
     }
     getStoredScreenLockedTimeout()
@@ -129,11 +136,11 @@ export const ScreenLockProvider: React.FC<PropsWithChildren> = ({ children }) =>
 
   const changeScreenLockTimeout = useCallback((newLockTimeoutValue: number | null) => {
     setLockTimeout(newLockTimeoutValue)
-    setStorageData('screenLockTimeout', newLockTimeoutValue)
+    setStorageData(SCREEN_LOCK_TIMEOUT_PERSIST_KEY, newLockTimeoutValue)
   }, [])
 
   return (
-    <ScreenLockContext.Provider
+    <ScreenLockContext
       value={{
         isScreenLockEnabled,
         onToggleLockScreen,
@@ -145,10 +152,10 @@ export const ScreenLockProvider: React.FC<PropsWithChildren> = ({ children }) =>
     >
       <View style={{ flex: 1 }} {...panResponder.panHandlers}>
         <Modal visible={!isAuthenticated}>
-          <Authentication isAppActive={isAppActive} />
+          <Authentication isAppActive={isAppActive} makeAutomaticAuth={makeAutomaticAuth.current} />
         </Modal>
         {children}
       </View>
-    </ScreenLockContext.Provider>
+    </ScreenLockContext>
   )
 }

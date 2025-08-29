@@ -4,10 +4,10 @@ export interface BackupHandler {
   backup?: BackupInfo
 }
 
-export interface BackupInfo {
+interface BackupInfo {
   name?: string
   size?: string
-  modifyDate?: string | number
+  modifyDate?: number
   downloadUrl?: string
 }
 

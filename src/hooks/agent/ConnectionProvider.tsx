@@ -1,5 +1,4 @@
-import { getConnectionProfile, UserProfileData } from '@2060.io/credo-ts-didcomm-user-profile'
-import { ConnectionRecord, DidExchangeState } from '@credo-ts/core'
+import { ConnectionRecord } from '@credo-ts/core'
 import React, { createContext, useState, useEffect, useContext, useMemo } from 'react'
 
 import { useMobileAgent } from './MobileAgentProvider'
@@ -17,7 +16,7 @@ import {
 import { ConnectionType } from '@2060/model'
 import { getConnectionType } from '@2060/utils/connectionUtils'
 
-export interface ConnectionContextInterface {
+interface ConnectionContextInterface {
   loading: boolean
   connections: ConnectionRecord[]
 }
@@ -36,23 +35,6 @@ export const useConnectionById = (id?: string): ConnectionRecord | undefined => 
 
   if (!id) return undefined
   return connections.find((c: ConnectionRecord) => c.id === id)
-}
-
-export const useConnectionProfile = (connectionId: string): UserProfileData | null | undefined => {
-  const connection = useConnectionById(connectionId)
-  if (!connection) return
-
-  const profile = getConnectionProfile(connection)
-  return profile
-}
-
-export const useConnectionByState = (state: DidExchangeState): ConnectionRecord[] => {
-  const { connections } = useConnections()
-  const filteredConnections = useMemo(
-    () => connections.filter((c: ConnectionRecord) => c.state === state),
-    [connections, state],
-  )
-  return filteredConnections
 }
 
 export const useParentConnections = (): ConnectionRecord[] => {
@@ -126,10 +108,8 @@ export const ConnectionProvider: React.FC<React.PropsWithChildren<Props>> = ({ c
   useAgentConnectionEvents()
 
   return (
-    <ConnectionContext.Provider value={{ connections: state.records, loading: state.loading }}>
+    <ConnectionContext value={{ connections: state.records, loading: state.loading }}>
       {children}
-    </ConnectionContext.Provider>
+    </ConnectionContext>
   )
 }
-
-export default ConnectionProvider

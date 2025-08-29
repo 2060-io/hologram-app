@@ -15,13 +15,13 @@ import getStyles from './styles'
 import { Text, Icon } from '@2060/components/common'
 import { useMedia } from '@2060/hooks'
 import { useChat } from '@2060/hooks/agent'
-import { useMediaPlayer } from '@2060/hooks/agent/MediaPlayerProvider'
+import { useMediaPlayer } from '@2060/hooks/providers/MediaPlayerProvider'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { ChatEntryRole, MediaUploadState, VoiceNoteMetadata } from '@2060/model'
 import { getFileSize, logWarn } from '@2060/utils'
 import { getFullLocalFilePath } from '@2060/utils/RNFS'
 
-export type VoiceNoteChatViewProps = {
+type VoiceNoteChatViewProps = {
   mediaRecordId: string
   metadata: VoiceNoteMetadata
   renderTimeAndTicks: (containerStyle: ViewStyle) => false | React.JSX.Element
@@ -53,7 +53,7 @@ const VoiceNoteChatView = memo(
       mediaUploadState === MediaUploadState.ErrorUploading
     const [playedTime, setPlayedTime] = useState('00:00')
     const ref = useRef<IWaveformRef>(null)
-    const prevPlaterState = useRef<PlayerState>()
+    const prevPlaterState = useRef<PlayerState>(undefined)
     const [playerState, setPlayerState] = useState(PlayerState.stopped)
     const playerStateAux = useRef(PlayerState.stopped)
     const voiceNoteFilePath = localFilePath ? getFullLocalFilePath(localFilePath) : undefined
@@ -113,7 +113,7 @@ const VoiceNoteChatView = memo(
     }
 
     const startNewPlayer = async () => {
-      currentPlayingRef = ref
+      currentPlayingRef = ref as React.RefObject<IWaveformRef>
       if (ref.current?.currentState === PlayerState.paused) {
         await ref.current?.resumePlayer()
       } else {

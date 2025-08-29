@@ -41,9 +41,10 @@ import { PushNotificationsFcmModule } from '@credo-ts/push-notifications'
 import { QuestionAnswerModule } from '@credo-ts/question-answer'
 import { anoncreds } from '@hyperledger/anoncreds-react-native'
 import { ariesAskar } from '@hyperledger/aries-askar-react-native'
-import appCheck from '@react-native-firebase/app-check'
 import { DidWebAnonCredsRegistry } from 'credo-ts-didweb-anoncreds'
 import { IndyVdrProxyDidResolver, IndyVdrProxyAnonCredsRegistry } from 'credo-ts-indy-vdr-proxy-client'
+
+import { getAppCheckHeaders } from '@2060/utils/firebaseUtils'
 
 const SECONDS_PER_DAY = 60 * 60 * 24
 
@@ -52,8 +53,6 @@ export const getMobileAgentModules = (config: {
   indyVDRProxyBaseUrl: string
 }) => {
   const proxyBaseUrl = config.indyVDRProxyBaseUrl
-
-  const getAppCheckHeaders = async () => ({ 'X-Firebase-AppCheck': (await appCheck().getToken()).token })
   return {
     askar: new AskarModule({ ariesAskar }),
     anoncreds: new AnonCredsModule({
@@ -85,7 +84,7 @@ export const getMobileAgentModules = (config: {
     }),
     calls: new DidCommCallsModule(),
     reactions: new DidCommReactionsModule(),
-    connections: new ConnectionsModule({ autoAcceptConnections: true }),
+    connections: new ConnectionsModule({ autoAcceptConnections: false }),
     credentials: new CredentialsModule({
       autoAcceptCredentials: AutoAcceptCredential.Never,
       credentialProtocols: [

@@ -1,6 +1,7 @@
 import { HeaderBackButton } from '@react-navigation/elements'
 import { ParamListBase } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
+import { TrustResolutionOutcome } from '@verana-labs/verre'
 import React, { useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, TouchableOpacity, ScrollView, SafeAreaView } from 'react-native'
@@ -10,8 +11,8 @@ import getStyles from './styles'
 import { CredentialDetails, ModalConfirmAction } from '@2060/components'
 import { Text, ServiceInformation } from '@2060/components/common'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
+import { ServiceInfo } from '@2060/model'
 import { CredentialDetailsForDisplay } from '@2060/services/agent/display'
-import { ServiceInfo } from '@2060/services/api/trustRegistryService'
 
 type Props = {
   navigation: StackNavigationProp<ParamListBase>
@@ -37,7 +38,7 @@ const BaseCredentialOffer: React.FC<Props> = ({
     name: credentialDetails.mainInfo.issuer.name,
     logoUrl: credentialDetails.mainInfo.issuer.logoUrl,
     minimumAgeRequired: 0,
-    status: 'notFound',
+    status: TrustResolutionOutcome.INVALID,
   })
 
   const { t } = useTranslation()
@@ -75,7 +76,7 @@ const BaseCredentialOffer: React.FC<Props> = ({
   }, [enableAcceptRejectButtons])
 
   return (
-    <SafeAreaView style={styles.root}>
+    <SafeAreaView style={styles.container}>
       <ModalConfirmAction
         visible={showModalRefuseConfirmation}
         title={t('personalChat.confirmRefuseCredentialOffer')}
@@ -100,9 +101,10 @@ const BaseCredentialOffer: React.FC<Props> = ({
               <Text typography="EuclidCircularA-Medium" style={styles.titleIssuerInfo}>
                 {t('credentialOffer.issuerInformation')}
               </Text>
-              {serviceInfo && (
-                <ServiceInformation did={credentialDetails.mainInfo.issuer.id} serviceInfoRef={serviceInfo} />
-              )}
+              <ServiceInformation
+                did={credentialDetails.mainInfo.issuer.id}
+                initialServiceInfo={serviceInfo.current}
+              />
             </View>
           </View>
         </ScrollView>

@@ -8,6 +8,7 @@ import { Platform } from 'react-native'
 import Share, { ShareOptions } from 'react-native-share'
 import { SharedData } from 'react-native-share-menu'
 
+import { getLastEntryInChatThread, getMediaChatEntriesExcludingThread } from './../utils/realmQueries'
 import {
   useMobileAgent,
   useUserProfile,
@@ -20,25 +21,34 @@ import {
 } from './agent'
 import { getLocalizedPreview, getThumbnail } from './agent/chat/preview'
 import { createTextChatEntry } from './agent/chat/recordChangeHandlers/handleBasicMessageRecordChanges'
-import { createChatEntry, findOrCreateChatThread, updateThread } from './agent/chat/services'
+import {
+  createChatEntry,
+  findAllByAssociatedRecordId,
+  findOrCreateChatThread,
+  updateChatEntry,
+  updateChatEntryMetadata,
+  updateThread,
+} from './agent/chat/services'
 import { useLocalRealm } from './providers/RealmProvider'
 
+import { MAX_VIDEO_DURATION } from '@2060/constants'
 import {
   ActionMenuSelectionMetadata,
+  AnswerMetadata,
   ChatEntry,
   ChatEntryRole,
   ChatEntryState,
   ChatEntryType,
-  ChatThread,
   MediaSharingMetadata,
   TextMessageMetadata,
   isMediaType,
 } from '@2060/model'
 import { ChatEntryMessage } from '@2060/pages/PersonalChat/ChatMessage/Props'
+import { checkIfDeleteFilesFromMedia } from '@2060/pages/PersonalChat/utils'
 import { log, logError } from '@2060/utils'
 import { getLocalFileUri } from '@2060/utils/RNFS'
-import { getMediaFileSharingData } from '@2060/utils/mediaFileUtils'
-import { toast } from '@2060/utils/toast'
+import { compressVideo, getMediaFileSharingData } from '@2060/utils/mediaFileUtils'
+import { toast, ToastOptions } from '@2060/utils/toast'
 
 export const useChatActions = () => {
   const { t } = useTranslation()
@@ -54,10 +64,9 @@ export const useChatActions = () => {
 
   const shareMediaToApp = useCallback(async (message: ChatEntryMessage) => {
     const { fileType, mimeType, localFilePath } = extractDataFromMessage(message)
-    const path = getLocalFileUri(localFilePath)
+    const url = getLocalFileUri(localFilePath)
     const [, subType] = mimeType.split('/')
     const textType = fileType[0].toUpperCase() + fileType.slice(1)
-    const url = `file://${path}`
     const title = `Share ${textType}`
     const options = Platform.select<ShareOptions>({
       ios: {
@@ -70,15 +79,14 @@ export const useChatActions = () => {
         url,
         title,
         type: mimeType,
-        message: `${textType} from ${userProfileData?.displayName ?? '2060'}`,
+        message: `${textType} from ${userProfileData?.displayName ?? 'Hologram'}`,
         filename: `${textType}.${subType}`,
-        failOnCancel: true,
-        showAppsToView: true,
+        failOnCancel: false,
         subject: title,
       },
       default: {},
     })
-    return Share.open(options)
+    Share.open(options).catch(logError)
   }, [])
 
   const saveFileToGallery = useCallback(async (message: ChatEntryMessage) => {
@@ -95,8 +103,13 @@ export const useChatActions = () => {
   const deleteMessagesForMe = useCallback(
     (messages: ChatEntryMessage[]) => {
       return new Promise<void>((resolve, reject) => {
-        if (!realm) throw new Error('No active Realm')
+        if (!realm) return
         try {
+          const isSomeMessageTypeMedia = messages.some(message => isMediaType(message.type))
+          const { chatThreadId } = messages[0]
+          const mediaChatEntriesExcludingThread = isSomeMessageTypeMedia
+            ? getMediaChatEntriesExcludingThread(realm, chatThreadId)
+            : []
           messages.forEach(message => {
             const { id } = message
             realm.write(() => {
@@ -104,7 +117,15 @@ export const useChatActions = () => {
               if (!object) throw new Error(`ChatEntry with id ${id} not found`)
               realm.delete(object)
             })
+            if (isMediaType(message.type)) {
+              checkIfDeleteFilesFromMedia(
+                message.metadata as MediaSharingMetadata,
+                mediaChatEntriesExcludingThread,
+              )
+            }
           })
+          const lastEntryInChatThread = getLastEntryInChatThread(realm, chatThreadId)
+          updateThread(realm, chatThreadId, { lastChatEntry: lastEntryInChatThread })
           toast({
             type: 'success',
             message: t('personalChat.messageDeletedSuccessfully', { count: messages.length }),
@@ -124,24 +145,26 @@ export const useChatActions = () => {
     async (messages: ChatEntryMessage[]) => {
       return new Promise<void>((resolve, reject) => {
         try {
-          if (!agent || !connectionId) throw new Error('Agent is undefined')
+          if (!agent || !connectionId || !realm) return
           const receipts: MessageReceiptOptions[] = []
+          const isSomeMessageTypeMedia = messages.some(message => isMediaType(message.type))
+          const mediaChatEntriesExcludingThread = isSomeMessageTypeMedia
+            ? getMediaChatEntriesExcludingThread(realm, messages[0].chatThreadId)
+            : []
           messages.forEach(message => {
             const { id: entryId, associatedMessageId } = message
-            if (!realm) throw new Error('No active Realm')
-            realm.write(() => {
-              const object = realm.objectForPrimaryKey(ChatEntry, entryId)
-              if (!object) throw new Error(`ChatEntry with id ${entryId} not found`)
-              object.state = ChatEntryState.Deleted
-              const thread = realm.objectForPrimaryKey(ChatThread, object.chatThreadId)
-              if (!thread) throw new Error(`Thread with id ${object.chatThreadId} not found`)
-              if (thread?.lastActivityAt?.getTime() === object.createdAt) {
-                thread.preview = getLocalizedPreview({ ...message, state: ChatEntryState.Deleted })
-              }
+            updateChatEntry(realm, {
+              recordId: entryId,
+              state: ChatEntryState.Deleted,
             })
+            if (isMediaType(message.type)) {
+              checkIfDeleteFilesFromMedia(
+                message.metadata as MediaSharingMetadata,
+                mediaChatEntriesExcludingThread,
+              )
+            }
             receipts.push({ messageId: associatedMessageId ?? '', state: MessageState.Deleted })
           })
-
           addAgentActionToQueue({
             type: AgentActionType.SendReceipts,
             parameters: {
@@ -252,7 +275,6 @@ export const useChatActions = () => {
       try {
         if (repliedMessage) onClearRepliedMessageState()
 
-        // Create chat entry
         const chatEntry = createTextChatEntry({
           agent,
           chatThreadId: chatThread.data.id,
@@ -261,8 +283,6 @@ export const useChatActions = () => {
           role: ChatEntryRole.Sender,
           parentThreadId: repliedMessage?.didcommThreadId,
         })
-
-        // Now add to agent action queue
         addAgentActionToQueue({
           type: AgentActionType.SendTextMessage,
           chatEntryId: chatEntry.id,
@@ -299,7 +319,6 @@ export const useChatActions = () => {
               realm,
               role: ChatEntryRole.Sender,
             })
-
             addAgentActionToQueue({
               type: AgentActionType.SendTextMessage,
               chatEntryId: chatEntry.id,
@@ -337,7 +356,13 @@ export const useChatActions = () => {
               'localPreviewFilePath',
               originalRecord.metadata.get('localPreviewFilePath') as string,
             )
-            // Add share action
+            if (message.type === ChatEntryType.VoiceNote) {
+              await agent.modules.media.setMetadata(
+                newRecord.id,
+                'waveform',
+                originalRecord.metadata.get('waveform') as string,
+              )
+            }
             addAgentActionToQueue({
               type: AgentActionType.ShareMedia,
               parameters: {
@@ -358,6 +383,7 @@ export const useChatActions = () => {
   const shareMessages = useCallback(
     async (connectionIds: string[], sharedData: SharedData) => {
       if (!agent || !realm) return
+      let excludedLongVideosCount = 0
       for (const message of sharedData.data) {
         const { mimeType } = message
         if (mimeType === 'text/plain') {
@@ -373,7 +399,6 @@ export const useChatActions = () => {
               realm,
               role: ChatEntryRole.Sender,
             })
-
             addAgentActionToQueue({
               type: AgentActionType.SendTextMessage,
               chatEntryId: chatEntry.id,
@@ -385,18 +410,33 @@ export const useChatActions = () => {
             })
           }
         } else if (mimeType.startsWith('image') || mimeType.startsWith('video')) {
-          const didcommMediaFileSharingData = await getMediaFileSharingData(message.data, mimeType)
-          startMediaUpload({
-            didcommConnectionIds: connectionIds,
-            didcommMediaFileSharingData,
-            deleteOriginalFile: true,
-          })
+          let didcommMediaFileSharingData: DidCommMediaFileSharingData | null = await getMediaFileSharingData(
+            message.data,
+            mimeType,
+          )
+          const { duration, mime } = didcommMediaFileSharingData
+          const isVideo = mime.startsWith('video')
+          const isVideoAndExceedsDuration = isVideo && duration && duration > MAX_VIDEO_DURATION
+          if (isVideoAndExceedsDuration) {
+            excludedLongVideosCount++
+          } else {
+            if (isVideo) {
+              didcommMediaFileSharingData = (await compressVideo(didcommMediaFileSharingData, progress => {
+                log('compressing progress', progress)
+              })) as DidCommMediaFileSharingData | null
+            }
+            if (didcommMediaFileSharingData) {
+              startMediaUpload({
+                didcommConnectionIds: connectionIds,
+                didcommMediaFileSharingData,
+                deleteOriginalFile: true,
+              })
+            }
+          }
         }
       }
-      toast({
-        type: 'success',
-        message: t('personalChat.messageShared', { count: sharedData.data.length }),
-      })
+      const toastOptions = getSharedMessagesToastOptions(excludedLongVideosCount, sharedData.data.length, t)
+      toast(toastOptions)
     },
     [agent, realm],
   )
@@ -406,7 +446,6 @@ export const useChatActions = () => {
       if (!agent || !connectionId) throw new Error('Agent is undefined')
       if (!realm) throw new Error('Realm is undefined')
       try {
-        // Create chat entry
         const actionMenuRecord = await agent.modules.actionMenu.findActiveMenu({
           connectionId,
           role: ActionMenuRole.Requester,
@@ -421,10 +460,6 @@ export const useChatActions = () => {
           associatedRecordId: actionMenuRecord?.id,
           metadata: { selectedItemName } as ActionMenuSelectionMetadata,
         })
-
-        updateThread(realm, chatThread.data.id, { lastChatEntry: chatEntry })
-
-        // Now add to agent action queue
         addAgentActionToQueue({
           type: AgentActionType.ActionMenuSelection,
           chatEntryId: chatEntry.id,
@@ -438,6 +473,37 @@ export const useChatActions = () => {
       }
     },
     [agent, realm, repliedMessage, chatThread, connectionId],
+  )
+
+  const sendAnswer = useCallback(
+    (response: string, associatedRecordId: string) => {
+      if (!realm || !chatThread) return
+      const metadata: AnswerMetadata = { response }
+      const chatEntry = createChatEntry(realm, {
+        associatedRecordId,
+        chatThreadId: chatThread.data.id,
+        type: ChatEntryType.Answer,
+        role: ChatEntryRole.Sender,
+        state: ChatEntryState.Created,
+        createdAt: new Date().getTime(),
+        metadata,
+      })
+      // Find any Question entry associated to this question-answer record and mark it as replied
+      const [questionEntry] = findAllByAssociatedRecordId(realm, associatedRecordId, ChatEntryType.Question)
+      if (questionEntry) {
+        const questionMetadata = {
+          ...questionEntry.metadata,
+          response,
+        }
+        updateChatEntryMetadata(realm, questionEntry.id, questionMetadata)
+      }
+      addAgentActionToQueue({
+        type: AgentActionType.SendAnswer,
+        chatEntryId: chatEntry.id,
+        parameters: { response, associatedRecordId },
+      })
+    },
+    [realm, chatThread],
   )
 
   const shareMediaToDidComm = useCallback(
@@ -472,6 +538,32 @@ export const useChatActions = () => {
     deleteMessagesForEveryone,
     forwardSelectedMessages,
     shareMessages,
+    sendAnswer,
+  }
+}
+
+const getSharedMessagesToastOptions = (
+  excludedLongVideosCount: number,
+  messagesSharedCount: number,
+  t: (key: string, options?: Record<string, unknown>) => string,
+): ToastOptions => {
+  if (excludedLongVideosCount === messagesSharedCount) {
+    return {
+      type: 'error',
+      message: t('personalChat.messagesNotShared', { count: messagesSharedCount }),
+      duration: 5000,
+    }
+  }
+  if (excludedLongVideosCount) {
+    return {
+      type: 'warning',
+      message: t('personalChat.messagesSharedExcept'),
+      duration: 5000,
+    }
+  }
+  return {
+    type: 'success',
+    message: t('personalChat.messageShared', { count: messagesSharedCount }),
   }
 }
 
@@ -500,7 +592,7 @@ function extractDataFromMessage(message: ChatEntryMessage) {
     const metadata = chatEntryRecord.metadata as MediaSharingMetadata
     extractedData.filename = metadata.filename!
     extractedData.mimeType = metadata.mimeType!
-    extractedData.fileType = metadata.mimeType?.split('/')[0]!
+    extractedData.fileType = metadata.mimeType?.split('/')[0]
     extractedData.localFilePath = metadata.localFilePath!
   }
 

@@ -83,7 +83,7 @@ const MessageFloatingMenu = ({
         updateSelectedMessages(selectedMessage)
       },
       'action-save': async () => await saveFileToGallery(selectedMessage),
-      'action-share': async () => await shareMediaToApp(selectedMessage),
+      'action-share': () => shareMediaToApp(selectedMessage),
       'action-reply': () => {
         const message = onRepliedMessage(selectedMessage)
         setRepliedMessage(message)
@@ -112,6 +112,7 @@ const MessageFloatingMenu = ({
       )}
       {selectedMessage && (
         <FloatingChatMessage
+          style={styles.messageContainer}
           currentMessage={selectedMessage}
           agent={agent}
           supportsMessageReceipts={supportsMessageReceipts}

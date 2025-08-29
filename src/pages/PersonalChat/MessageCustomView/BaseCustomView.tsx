@@ -1,4 +1,3 @@
-import dayjs from 'dayjs'
 import React, { memo, useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, TouchableOpacity, ViewStyle } from 'react-native'
@@ -34,7 +33,6 @@ import {
   EMrtdReadRequestMetadata,
   InvitationMetadata,
   LinkMetadata,
-  MediaSharingMetadata,
   MrzRequestMetadata,
   QuestionMetadata,
   TextMessageMetadata,
@@ -44,6 +42,7 @@ import {
   VPResponseMetadata,
 } from '@2060/model'
 import { BaseCustomMessageViewProps } from '@2060/pages/PersonalChat/ChatMessage/Props'
+import { dateToString } from '@2060/utils/dateUtils'
 
 const BaseCustomView: React.FC<BaseCustomMessageViewProps> = memo(props => {
   const {
@@ -66,7 +65,7 @@ const BaseCustomView: React.FC<BaseCustomMessageViewProps> = memo(props => {
   const relatedEntryProps = chatEntry.relatedEntryProps
   const { chatThread } = useChat()
   const user = chatThread?.participants.find(p => p.id === chatEntry.role)
-  const messageTime = dayjs(new Date(currentMessage?.createdAt)).format(timeFormat)
+  const messageTime = dateToString(new Date(currentMessage?.createdAt), timeFormat)
   const displayTimeAndTicks = mustDisplayAckAndTime({
     messageTime,
     chatEntry,
@@ -107,12 +106,11 @@ const BaseCustomView: React.FC<BaseCustomMessageViewProps> = memo(props => {
             <ImageChatView
               {...{
                 mediaRecordId: chatEntry.associatedRecordId,
-                mediaItem: chatEntry.metadata as MediaSharingMetadata,
                 fileMediaInfo: {
                   user,
                   createdAt: new Date(chatEntry.createdAt),
                 },
-                currentMessage,
+                chatEntry,
                 displayTimeAndTicks,
               }}
             />
@@ -122,12 +120,11 @@ const BaseCustomView: React.FC<BaseCustomMessageViewProps> = memo(props => {
             <VideoChatView
               {...{
                 mediaRecordId: chatEntry.associatedRecordId,
-                mediaItem: chatEntry.metadata as MediaSharingMetadata,
                 fileMediaInfo: {
                   user,
                   createdAt: new Date(chatEntry.createdAt),
                 },
-                currentMessage,
+                chatEntry,
                 displayTimeAndTicks,
               }}
             />

@@ -35,7 +35,7 @@ jobs:
             TAG="${GITHUB_REF#refs/tags/}"
             VERSION_NUMBER="${TAG#v}"
           fi        
-          yarn version $VERSION_NUMBER
+          yarn version --new-version $VERSION_NUMBER --no-git-tag-version
           yarn postversion
 
       - name: Upload Version files
@@ -61,10 +61,10 @@ jobs:
       - name: Checkout hologram-app
         uses: actions/checkout@v4
 
-      - name: Setup node v20
+      - name: Setup node v22
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           registry-url: 'https://registry.npmjs.org/'
           cache: yarn
 
@@ -101,10 +101,10 @@ jobs:
       - name: Checkout hologram-app
         uses: actions/checkout@v4
 
-      - name: Setup node v20
+      - name: Setup node v22
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           registry-url: 'https://registry.npmjs.org/'
           cache: yarn
 

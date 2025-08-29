@@ -2,7 +2,8 @@ import ImageResizer from '@bam.tech/react-native-image-resizer'
 import { createThumbnail } from 'react-native-create-thumbnail'
 import { moveFile } from 'react-native-fs'
 
-import { logError } from '@2060/utils'
+import { IS_ANDROID } from '@2060/constants'
+import { dataUrl, logError } from '@2060/utils'
 import {
   deleteFile,
   existsFile,
@@ -12,9 +13,9 @@ import {
   readFile,
 } from '@2060/utils/RNFS'
 
-const LOCAL_PREVIEW_IMAGE_WIDTH = 512
+export const LOCAL_PREVIEW_IMAGE_WIDTH = 512
 const LOCAL_PREVIEW_IMAGE_HEIGHT = 512
-const LOCAL_PREVIEW_IMAGE_QUALITY = 70
+export const LOCAL_PREVIEW_IMAGE_QUALITY = 70
 
 const DIDCOMM_PREVIEW_IMAGE_WIDTH = 128
 const DIDCOMM_PREVIEW_IMAGE_HEIGHT = 128
@@ -25,39 +26,37 @@ export async function createLocalPreview(options: { mimeType: string; localFileP
   let localPreviewFilePath: string | undefined
   if (mimeType.startsWith('video')) {
     const thumbnailResponse = await createVideoThumbnail({
-      videoPath: `file://${localFilePath}`,
+      videoPath: localFilePath,
       maxWidth: LOCAL_PREVIEW_IMAGE_WIDTH,
       maxHeight: LOCAL_PREVIEW_IMAGE_HEIGHT,
       quality: LOCAL_PREVIEW_IMAGE_QUALITY,
     })
     localPreviewFilePath = thumbnailResponse?.path
   } else if (mimeType.startsWith('image')) {
-    const previewResponse = await createImagePreview({
+    const previewResponse = await createResizedImage({
       imageUrl: localFilePath,
       maxWidth: LOCAL_PREVIEW_IMAGE_WIDTH,
       maxHeight: LOCAL_PREVIEW_IMAGE_HEIGHT,
       quality: LOCAL_PREVIEW_IMAGE_QUALITY,
     })
-    localPreviewFilePath = previewResponse.path
+    if (previewResponse) localPreviewFilePath = previewResponse.path
   }
 
   // save preview under previews directory
-  // TODO: this should be actually done directly by createVideoThumbnail/createImagePreview
+  // TODO: this should be actually done directly by createVideoThumbnail/createResizedImage
   if (localPreviewFilePath) {
-    const [previewFileName] = localFilePath.split('/').slice(-1)
-    const previewMediaDestinationPath = `${getLocalMediaPreviewFilePath(previewFileName)}.jpeg`
-
+    const previewFileNameWithoutExtension = localFilePath.split('/').at(-1)?.split('.').at(0)
+    const previewFileName = `${previewFileNameWithoutExtension}.jpeg`
+    const previewMediaDestinationPath = `${getLocalMediaPreviewFilePath(previewFileName)}`
     const existPreviewFile = await existsFile(previewMediaDestinationPath)
     if (!existPreviewFile) {
-      // Create media previews directory if not existant
+      // Create media previews directory if not exists
       await makeDirectory(mediaPreviewsDirectoryPath)
-
       await moveFile(localPreviewFilePath, previewMediaDestinationPath)
-      localPreviewFilePath = previewMediaDestinationPath
     }
+    return `media/previews/${previewFileName}`
   }
-
-  return localPreviewFilePath
+  return undefined
 }
 
 export async function createDidCommPreview(options: { mimeType: string; localFilePath: string }) {
@@ -65,7 +64,7 @@ export async function createDidCommPreview(options: { mimeType: string; localFil
   let didcommPreview: string | undefined
   if (mimeType.startsWith('video')) {
     const thumbnailResponse = await createVideoThumbnail({
-      videoPath: `file://${localFilePath}`,
+      videoPath: localFilePath,
       maxWidth: DIDCOMM_PREVIEW_IMAGE_WIDTH,
       maxHeight: DIDCOMM_PREVIEW_IMAGE_HEIGHT,
       quality: DIDCOMM_PREVIEW_IMAGE_QUALITY,
@@ -76,16 +75,16 @@ export async function createDidCommPreview(options: { mimeType: string; localFil
       await deleteFile(thumbnailResponse.path)
     }
   } else if (mimeType.startsWith('image')) {
-    const previewResponse = await createImagePreview({
+    const previewResponse = await createResizedImage({
       imageUrl: localFilePath,
       maxWidth: DIDCOMM_PREVIEW_IMAGE_WIDTH,
       maxHeight: DIDCOMM_PREVIEW_IMAGE_HEIGHT,
       quality: DIDCOMM_PREVIEW_IMAGE_QUALITY,
     })
-    didcommPreview = previewResponse.base64
-
-    // Clean up file
-    await deleteFile(previewResponse.path)
+    if (previewResponse) {
+      didcommPreview = previewResponse.base64
+      await deleteFile(previewResponse.path)
+    }
   }
 
   return didcommPreview
@@ -100,34 +99,38 @@ async function createVideoThumbnail(options: {
   const { videoPath, maxWidth, maxHeight, quality } = options
   try {
     const { path } = await createThumbnail({
-      url: videoPath,
+      url: IS_ANDROID ? `file://${videoPath}` : videoPath,
       maxHeight: maxHeight ?? DIDCOMM_PREVIEW_IMAGE_WIDTH,
       maxWidth: maxWidth ?? DIDCOMM_PREVIEW_IMAGE_HEIGHT,
       quality: quality ?? DIDCOMM_PREVIEW_IMAGE_QUALITY,
     })
     const data = await readFile(path, 'base64')
-    return { path, base64: `data:image/jpeg;base64,${data}` }
+    return { path, base64: dataUrl('image/jpeg', data) }
   } catch (error) {
     logError('error in createVideoThumbnail', error)
     return undefined
   }
 }
 
-async function createImagePreview(options: {
+export async function createResizedImage(options: {
   imageUrl: string
   maxWidth?: number
   maxHeight?: number
   quality?: number
 }) {
-  const { imageUrl, maxWidth, maxHeight, quality } = options
-  const preview = await ImageResizer.createResizedImage(
-    imageUrl,
-    maxWidth ?? DIDCOMM_PREVIEW_IMAGE_WIDTH,
-    maxHeight ?? DIDCOMM_PREVIEW_IMAGE_HEIGHT,
-    'JPEG',
-    quality ?? DIDCOMM_PREVIEW_IMAGE_QUALITY,
-  )
-
-  const data = await readFile(preview.path, 'base64')
-  return { path: preview.path, base64: `data:image/jpeg;base64,${data}` }
+  try {
+    const { imageUrl, maxWidth, maxHeight, quality } = options
+    const resizedImage = await ImageResizer.createResizedImage(
+      imageUrl,
+      maxWidth ?? DIDCOMM_PREVIEW_IMAGE_WIDTH,
+      maxHeight ?? DIDCOMM_PREVIEW_IMAGE_HEIGHT,
+      'JPEG',
+      quality ?? DIDCOMM_PREVIEW_IMAGE_QUALITY,
+    )
+    const data = await readFile(resizedImage.path, 'base64')
+    return { path: resizedImage.path, base64: dataUrl('image/jpeg', data) }
+  } catch (error) {
+    logError(`Error creating resized image: ${error}`)
+    return null
+  }
 }

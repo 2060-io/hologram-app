@@ -1,5 +1,5 @@
 import React from 'react'
-import { View } from 'react-native'
+import { View, ModalProps } from 'react-native'
 
 import Loader from '../Loader'
 import Modal from '../Modal'
@@ -8,17 +8,16 @@ import getStyles from './styles'
 
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 
-type Props = {
-  visible: boolean
+interface Props extends ModalProps {
   message?: string
 }
 
-const ModalLoading = ({ visible, message }: Props) => {
+const ModalLoading = ({ message, ...props }: Props) => {
   const theme = useTheme()
   const styles = getStyles(theme)
 
   return (
-    <Modal visible={visible} animationType="slide">
+    <Modal animationType="slide" {...props}>
       <View style={styles.container}>
         <Loader message={message} />
       </View>

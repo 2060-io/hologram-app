@@ -1,4 +1,3 @@
-import appCheck from '@react-native-firebase/app-check'
 import axios from 'axios'
 import {
   OrientationLock,
@@ -13,7 +12,10 @@ import InCallManager from 'react-native-incall-manager'
 import { MediaStream, mediaDevices, registerGlobals } from 'react-native-webrtc'
 
 import { useMobileAgent } from '@2060/hooks/agent'
-import { findAllDidcommThreadId, updateMetadata } from '@2060/hooks/agent/chat/services/ChatEntryService'
+import {
+  findAllDidcommThreadId,
+  updateChatEntryMetadata,
+} from '@2060/hooks/agent/chat/services/ChatEntryService'
 import { useConfig } from '@2060/hooks/providers/ConfigProvider'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
 import {
@@ -24,6 +26,7 @@ import {
 } from '@2060/hooks/providers/useVideoCallContext'
 import { CallOfferMetadata, CallOfferState, ChatEntryType } from '@2060/model'
 import { log, logError } from '@2060/utils'
+import { getAppCheckHeaders } from '@2060/utils/firebaseUtils'
 
 function generatePeerId(length = 8) {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
@@ -37,11 +40,9 @@ function generatePeerId(length = 8) {
 
 const createRoom = async (webRtcServerBaseUrl: string) => {
   try {
-    const { token } = await appCheck().getToken()
+    const headers = await getAppCheckHeaders()
     const response = await axios.post(`${webRtcServerBaseUrl}/rooms`, null, {
-      headers: {
-        'X-Firebase-AppCheck': token,
-      },
+      headers,
     })
     if (!isIncomingCallInfo(response.data)) {
       throw Error(`Invalid response from WebRTC server: ${JSON.stringify(response.data)}`)
@@ -112,30 +113,30 @@ export const useVideoCall = () => {
   const { realm } = useLocalRealm()
   const connectionStatusRef = useRef<ConnectionStatus>(connectionStatus)
   const [localVideoStream, setLocalVideoStream] = useState<MediaStream>()
-  const localAudioStreamRef = useRef<MediaStream>()
+  const localAudioStreamRef = useRef<MediaStream>(undefined)
   const [remoteStream, setRemoteStream] = useState<MediaStream>()
-  const remoteStreamRef = useRef<MediaStream>()
-  const roomId = useRef<string>()
-  const peerId = useRef<string>()
-  const peer = useRef<Peer>()
+  const remoteStreamRef = useRef<MediaStream>(undefined)
+  const roomId = useRef<string>(undefined)
+  const peerId = useRef<string>(undefined)
+  const peer = useRef<Peer>(undefined)
   const facingMode = useRef<'environment' | 'user'>('user')
   const [isMicrophoneOn, setIsMicrophoneOn] = useState(true)
   const [isRemoteVideoOn, setIsRemoteVideoOn] = useState(false)
-  const videoConsumer = useRef<types.Consumer>()
-  const audioConsumer = useRef<types.Consumer>()
+  const videoConsumer = useRef<types.Consumer>(undefined)
+  const audioConsumer = useRef<types.Consumer>(undefined)
   const [isUsingSpeakers, setIsUsingSpeakers] = useState(isVideoCall)
-  const sendTransport = useRef<types.Transport<types.AppData>>()
-  const recvTransport = useRef<types.Transport<types.AppData>>()
-  const micProducer = useRef<types.Producer<types.AppData>>()
-  const videoProducer = useRef<types.Producer<types.AppData>>()
-  const device = useRef<Device>()
-  const routerRtpCapabilities = useRef<types.RtpCapabilities>()
+  const sendTransport = useRef<types.Transport<types.AppData>>(undefined)
+  const recvTransport = useRef<types.Transport<types.AppData>>(undefined)
+  const micProducer = useRef<types.Producer<types.AppData>>(undefined)
+  const videoProducer = useRef<types.Producer<types.AppData>>(undefined)
+  const device = useRef<Device>(undefined)
+  const routerRtpCapabilities = useRef<types.RtpCapabilities>(undefined)
   const isMicrophoneOnRef = useRef(true)
   const lostConnection = useRef(false)
-  const newRemotePeerLastConnection = useRef<Date>()
+  const newRemotePeerLastConnection = useRef<Date>(undefined)
   const { devEnvs } = useConfig()
 
-  const updateChatEntryMetadata = useCallback(() => {
+  const changeChatEntryMetadata = useCallback(() => {
     if (!realm || !didcommThreadId) return
     const [chatEntry] = findAllDidcommThreadId(realm, didcommThreadId, ChatEntryType.CallOffer)
     if (chatEntry) {
@@ -143,7 +144,7 @@ export const useVideoCall = () => {
         ...chatEntry.metadata,
         state: CallOfferState.FINISHED,
       } as CallOfferMetadata
-      updateMetadata(realm, chatEntry.id, newMetadata)
+      updateChatEntryMetadata(realm, chatEntry.id, newMetadata)
     }
   }, [realm, didcommThreadId])
 
@@ -225,7 +226,7 @@ export const useVideoCall = () => {
             case 'peerLeft': {
               log('other peer left call', notification.data)
               finishCall()
-              updateChatEntryMetadata()
+              changeChatEntryMetadata()
               break
             }
             case 'producerScore': {
@@ -255,7 +256,7 @@ export const useVideoCall = () => {
                   ? newRemotePeerLastConnection.current > peerClosedDate
                   : false
                 if (!wasThereNewPeerAfterClosed) finishCall()
-              }, 10000)
+              }, 10_000)
               break
             }
             case 'peerDisplayNameChanged': {

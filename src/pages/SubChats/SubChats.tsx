@@ -34,7 +34,7 @@ const SubChats: React.FC<Props> = ({ route, navigation }) => {
   const [showSearchInput, setShowSearchInput] = useState(false)
   const [selectedChatIds, setSelectedChatIds] = useState<string[]>([])
   const [chatIdToDelete, setChatIdToDelete] = useState<string>('')
-  const { deleteThreads, archiveThreads, unarchiveThreads, filters, setFilters } = useChats()
+  const { deleteThread, archiveThreads, unarchiveThreads, filters, setFilters } = useChats()
   const isCategoryArchived = filters.category === 'all' && filters.archived
   const [category, setCategory] = useState<SubChatCategory>(isCategoryArchived ? 'archived' : 'all')
   const parentChatThread = useChatThreadById(route.params.chatThreadId)
@@ -144,6 +144,7 @@ const SubChats: React.FC<Props> = ({ route, navigation }) => {
       <View style={styles.root}>
         <FlashList
           estimatedItemSize={97}
+          showsVerticalScrollIndicator={false}
           data={subChatsList}
           extraData={[selectedChatIds, theme.isDarkMode]}
           keyExtractor={item => item.id}
@@ -196,7 +197,7 @@ const SubChats: React.FC<Props> = ({ route, navigation }) => {
             }}
             onDeleteChat={() => {
               swipeRowReferences.current[Number(chatIdToDelete)].closeRow()
-              deleteThreads([chatIdToDelete])
+              deleteThread(chatIdToDelete)
               handleClosingContextMenu()
             }}
           />

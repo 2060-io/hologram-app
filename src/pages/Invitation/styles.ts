@@ -7,9 +7,13 @@ import { heightPercentageToDP, widthPercentageToDP } from '@2060/utils/responsiv
 
 const styles = (theme: AppTheme) =>
   StyleSheet.create({
-    root: {
-      paddingHorizontal: 12,
-      marginTop: 17,
+    container: {
+      flex: 1,
+    },
+    subContainer: {
+      marginTop: 15,
+      paddingHorizontal: 15,
+      paddingBottom: 10,
     },
     btnRefuse: {
       paddingLeft: widthPercentageToDP('4%'),

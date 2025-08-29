@@ -5,12 +5,6 @@ import 'dayjs/locale/fr'
 import React, { PropsWithChildren, ReactNode, useEffect, useState } from 'react'
 import SplashScreen from 'react-native-splash-screen'
 
-import { PushNotificationsProvider } from './hooks/providers'
-import { ConfigProvider } from './hooks/providers/ConfigProvider'
-import { SharedDataFromOtherAppsProvider } from './hooks/providers/SharedDataFromOtherAppsProvider'
-import { VideoCallProvider } from './hooks/providers/VideoCallProvider'
-import { updateIsProcessingBackgroundNotification } from './utils/pushNotificationsUtils'
-
 import Navigation from '@2060/components/Navigation'
 import {
   MobileAgentProvider,
@@ -21,9 +15,16 @@ import {
   CredentialProvider,
   FileUploadDownloadProvider,
 } from '@2060/hooks/agent'
-import RealmProvider from '@2060/hooks/providers/RealmProvider'
-import { ScreenLockProvider } from '@2060/hooks/providers/ScreenLockProvider'
-import { ThemeProvider } from '@2060/hooks/providers/ThemeProvider'
+import {
+  ConfigProvider,
+  PushNotificationsProvider,
+  RealmProvider,
+  ScreenLockProvider,
+  SharedDataFromOtherAppsProvider,
+  ThemeProvider,
+  VideoCallProvider,
+  RefreshedAvatarsUrlsProvider,
+} from '@2060/hooks/providers'
 import { initializeI18n, language } from '@2060/utils/language'
 
 locale(language)
@@ -54,6 +55,7 @@ const ProvidersTree = buildProvidersTree([
   [NavigationProvider],
   [PushNotificationsProvider],
   [FileUploadDownloadProvider],
+  [RefreshedAvatarsUrlsProvider],
   [VideoCallProvider],
   [ScreenLockProvider],
   [SharedDataFromOtherAppsProvider],
@@ -64,7 +66,6 @@ const App = () => {
   initializeI18n.then(() => setTranslationsLoaded(true))
 
   useEffect(() => {
-    updateIsProcessingBackgroundNotification()
     /**
      * FIXME: The SplashScreen.hide() was added inside a 0 timeout to
      * works well in android. So a probably reason could be the order

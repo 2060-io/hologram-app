@@ -14,7 +14,7 @@ import { Modal, SvgIcon, Text } from '@2060/components/common'
 import { useChat, useMobileAgent } from '@2060/hooks/agent'
 import { useScreenLock } from '@2060/hooks/providers/ScreenLockProvider'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { MrzInfo, MrzRequestState } from '@2060/model'
+import { MrzInfo, EmrtdReadRequestState } from '@2060/model'
 import { log, logError } from '@2060/utils'
 import { widthPercentageToDP } from '@2060/utils/responsiveUtils'
 import { toast } from '@2060/utils/toast'
@@ -28,6 +28,7 @@ const EMrtdReadRequestChatView = (props: Props) => {
   const { didcommThreadId } = props
   const [displayInstructionsPopup, setDisplayInstructionsPopup] = useState(false)
   const { forceDisableScreenLock } = useScreenLock()
+  const connectionId = chatThread?.data.connectionId
 
   const dismissPopup = () => setDisplayInstructionsPopup(false)
   const displayPopup = () => setDisplayInstructionsPopup(true)
@@ -50,7 +51,7 @@ const EMrtdReadRequestChatView = (props: Props) => {
   }
 
   const scan = async () => {
-    let mrzInfo = props.metadata?.mrzInfo ? (JSON.parse(props.metadata.mrzInfo) as MrzInfo) : undefined
+    const mrzInfo = props.metadata?.mrzInfo ? (JSON.parse(props.metadata.mrzInfo) as MrzInfo) : undefined
     log(`Scan pressed. MRZ info: ${JSON.stringify(mrzInfo)}`)
     if (!mrzInfo) {
       dismissPopup()
@@ -83,8 +84,9 @@ const EMrtdReadRequestChatView = (props: Props) => {
       })
       if (result.status === 'OK') {
         dismissPopup()
+        if (!connectionId) return
         await agent?.modules.mrtd.sendEMrtdData({
-          connectionId: chatThread?.data.connectionId!,
+          connectionId,
           dataGroups: result.dataGroupsBase64,
           threadId: didcommThreadId,
         })
@@ -97,15 +99,15 @@ const EMrtdReadRequestChatView = (props: Props) => {
   }
 
   const refuse = () => {
-    if (!chatThread?.data.connectionId) return
+    if (!connectionId) return
     agent?.modules.mrtd.sendProblemReport({
-      connectionId: chatThread.data.connectionId,
+      connectionId,
       reason: MrtdProblemReportReason.EmrtdRefused,
       threadId: didcommThreadId,
     })
   }
 
-  const footer: Record<MrzRequestState, React.ReactElement> = {
+  const footer: Record<EmrtdReadRequestState, React.ReactElement> = {
     refused: <State text={t('chat.eMRTDAborted')} type="error" />,
     received: (
       <View style={styles.buttonsContainer}>

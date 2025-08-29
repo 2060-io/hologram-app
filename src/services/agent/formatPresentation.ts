@@ -1,9 +1,9 @@
 import { DifPexCredentialsForRequest, DifPexCredentialsForRequestSubmissionEntry } from '@credo-ts/core'
 
-import { VerifierInfo } from '../api/trustRegistryService'
-
 import { MobileAgent } from './MobileAgent'
 import { getCredentialMainInfo, getPresentationRequestForDisplay } from './display'
+
+import { VerifierInfo } from '@2060/model'
 
 export interface FormattedSubmission {
   name: string
@@ -13,7 +13,7 @@ export interface FormattedSubmission {
   verifier: VerifierInfo
 }
 
-export interface FormattedSubmissionEntry {
+interface FormattedSubmissionEntry {
   id: string
   name: string
   isSatisfied: boolean

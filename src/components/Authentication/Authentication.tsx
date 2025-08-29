@@ -12,9 +12,10 @@ import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 
 type Props = {
   isAppActive: boolean
+  makeAutomaticAuth: boolean
 }
 
-const Authentication = ({ isAppActive }: Props) => {
+const Authentication = ({ isAppActive, makeAutomaticAuth }: Props) => {
   const { t } = useTranslation()
   const [userHasBiometricAuthEnable, setUserHasBiometricAuthEnable] = useState(true)
   const { setLocalAuth } = useNavigation()
@@ -24,7 +25,7 @@ const Authentication = ({ isAppActive }: Props) => {
   const styles = getStyles(theme)
 
   useEffect(() => {
-    isAppActive && makeBiometricAuth()
+    if (isAppActive && makeAutomaticAuth) makeBiometricAuth()
   }, [isAppActive])
 
   const makeBiometricAuth = async () => {

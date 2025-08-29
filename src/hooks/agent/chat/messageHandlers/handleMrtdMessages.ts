@@ -11,8 +11,12 @@ import { parse } from 'mrz'
 import Realm from 'realm'
 
 import { DidCommMessageDirection } from '../DidCommMessageDirection'
-import { createChatEntry, findAllDidcommThreadId, updateMetadata } from '../services/ChatEntryService'
-import { addUnread, updateThread, findOrCreateChatThread } from '../services/ChatThreadService'
+import {
+  createChatEntry,
+  findAllDidcommThreadId,
+  updateChatEntryMetadata,
+} from '../services/ChatEntryService'
+import { addUnread, findOrCreateChatThread } from '../services/ChatThreadService'
 
 import {
   ChatEntryRole,
@@ -38,7 +42,7 @@ export const handleMrtdMessages = (options: {
 
   // MRZ Request
   if (messageType.messageTypeUri === MrzDataRequestMessage.type.messageTypeUri) {
-    const chatEntry = createChatEntry(realm, {
+    createChatEntry(realm, {
       chatThreadId: thread.id,
       type: ChatEntryType.MrzRequest,
       role: direction === 'inbound' ? ChatEntryRole.Receiver : ChatEntryRole.Sender,
@@ -52,7 +56,6 @@ export const handleMrtdMessages = (options: {
         parentThreadId: message.thread?.parentThreadId,
       } as MrzRequestMetadata,
     })
-    updateThread(realm, thread.id, { lastChatEntry: chatEntry })
     if (thread.id !== activeChatThreadId) {
       addUnread(realm, thread.id, 1)
     }
@@ -67,7 +70,7 @@ export const handleMrtdMessages = (options: {
         state: 'scanned',
         mrzData: (message as MrzDataMessage).mrzData,
       } as MrzRequestMetadata
-      updateMetadata(realm, chatEntry.id, newMetadata)
+      updateChatEntryMetadata(realm, chatEntry.id, newMetadata)
     }
   }
 
@@ -91,7 +94,7 @@ export const handleMrtdMessages = (options: {
       }
     }
 
-    const chatEntry = createChatEntry(realm, {
+    createChatEntry(realm, {
       chatThreadId: thread.id,
       type: ChatEntryType.EMrtdReadRequest,
       role: direction === 'inbound' ? ChatEntryRole.Receiver : ChatEntryRole.Sender,
@@ -105,7 +108,6 @@ export const handleMrtdMessages = (options: {
         mrzInfo: JSON.stringify(mrzInfo),
       } as EMrtdReadRequestMetadata,
     })
-    updateThread(realm, thread.id, { lastChatEntry: chatEntry })
     if (thread.id !== activeChatThreadId) {
       addUnread(realm, thread.id, 1)
     }
@@ -119,7 +121,7 @@ export const handleMrtdMessages = (options: {
         ...chatEntry.metadata,
         state: 'scanned',
       } as EMrtdReadRequestMetadata
-      updateMetadata(realm, chatEntry.id, newMetadata)
+      updateChatEntryMetadata(realm, chatEntry.id, newMetadata)
     }
   }
 
@@ -144,7 +146,7 @@ export const handleMrtdMessages = (options: {
             ...chatEntry.metadata,
             state: 'refused',
           } as EMrtdReadRequestMetadata)
-      updateMetadata(realm, chatEntry.id, newMetadata)
+      updateChatEntryMetadata(realm, chatEntry.id, newMetadata)
     }
   }
 }

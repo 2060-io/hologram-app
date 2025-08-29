@@ -11,7 +11,7 @@ import { MRZCameraProps } from './MRZScannerProps'
 import getStyles from './styles'
 
 import { HeaderTitle, SvgIcon, Text } from '@2060/components/common'
-import { IS_DEVICE_IOS } from '@2060/constants'
+import { IS_IOS } from '@2060/constants'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { widthPercentageToDP } from '@2060/utils/responsiveUtils'
 
@@ -27,7 +27,7 @@ const scanRegion: ScanRegion = {
   width: 90,
   height: 24,
 }
-const RUN_TARGET_FPS = IS_DEVICE_IOS ? 5 : 1
+const RUN_TARGET_FPS = IS_IOS ? 5 : 1
 
 const MRZCamera = ({ skipScan, cameraProps, onData, scanSuccess, refuse }: MRZCameraProps) => {
   const { t } = useTranslation()
@@ -55,7 +55,7 @@ const MRZCamera = ({ skipScan, cameraProps, onData, scanSuccess, refuse }: MRZCa
     (data: ResolvedText) => {
       /* Scanning the text from the image and then setting the state of the component. */
       if (data && data.blocks.length > 0) {
-        let lines: string[] = []
+        const lines: string[] = []
         data.blocks.forEach(block => {
           lines.push(block.blockText)
         })

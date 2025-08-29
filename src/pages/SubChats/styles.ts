@@ -1,6 +1,5 @@
 import { Dimensions, StyleSheet } from 'react-native'
 
-import { grayColor } from '@2060/constants'
 import { AppTheme } from '@2060/styles'
 import { widthPercentageToDP } from '@2060/utils/responsiveUtils'
 
@@ -36,7 +35,7 @@ export default (theme: AppTheme) =>
     },
     textListEmpty: {
       fontSize: 20,
-      color: grayColor,
+      color: theme.colors.primaryText,
       textAlign: 'center',
     },
     btnIconContextMenu: {

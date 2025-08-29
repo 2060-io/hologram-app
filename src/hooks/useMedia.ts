@@ -26,7 +26,7 @@ export const useMedia = ({
 }) => {
   const { netInfo } = useNetwork()
   const { retryMediaUpload, downloadMediaFile, automaticDownloadValues } = useFileUploadDownload()
-  const initialMediaDownloadState = useRef<MediaDownloadState>()
+  const initialMediaDownloadState = useRef<MediaDownloadState>(undefined)
   const [isDownloaded, setIsDownloaded] = useState(localFilePath !== null)
   const [isDownloading, setIsDownloading] = useState(mediaDownloadState === Downloading)
   const [isRetryingUpload, setIsRetryingUpload] = useState(false)

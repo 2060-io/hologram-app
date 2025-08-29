@@ -1,4 +1,3 @@
-import dayjs from 'dayjs'
 import React, { memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
@@ -11,6 +10,7 @@ import { chatEntryEqual } from '../utils'
 
 import { ChatEntryType, SystemMessageMetadata } from '@2060/model'
 import { MessageProps } from '@2060/pages/PersonalChat/ChatMessage/Props'
+import { dateToString } from '@2060/utils/dateUtils'
 
 const ChatMessage = (props: MessageProps) => {
   const { t } = useTranslation()
@@ -24,7 +24,10 @@ const ChatMessage = (props: MessageProps) => {
 
   return (
     <View>
-      <DateByTimeRangeView currentMessage={props.currentMessage} previousMessage={props.previousMessage} />
+      <DateByTimeRangeView
+        currentMessageCreatedAt={props.currentMessage.createdAt}
+        previousMessageCreatedAt={props.previousMessage?.createdAt}
+      />
       {chatEntry.type === ChatEntryType.System ? (
         renderSystemMessage()
       ) : chatEntry.type === ChatEntryType.ReportMessage ? (
@@ -42,8 +45,8 @@ const ChatMessage = (props: MessageProps) => {
 export default memo(ChatMessage, (prevProps, nextProps) => {
   const currentChatEntry = prevProps.currentMessage
   const nextChatEntry = nextProps.currentMessage
-  const currentMessageTime = dayjs(currentChatEntry?.createdAt).format('HH:mm')
-  const nextMessageTime = dayjs(nextChatEntry?.createdAt).format('HH:mm')
+  const currentMessageTime = dateToString(currentChatEntry?.createdAt, 'HH:mm')
+  const nextMessageTime = dateToString(nextChatEntry?.createdAt, 'HH:mm')
   const nextMessageHasDifferentTime = currentMessageTime !== nextMessageTime
   const arePropsEqual =
     chatEntryEqual(currentChatEntry, nextChatEntry) &&

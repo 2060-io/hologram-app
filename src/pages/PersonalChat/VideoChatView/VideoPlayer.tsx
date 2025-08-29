@@ -1,13 +1,13 @@
 import React, { useState, createRef, Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, StyleSheet, TouchableHighlight, ActivityIndicator } from 'react-native'
+import { View, StyleSheet, Pressable } from 'react-native'
 import Video, { OnLoadData, OnProgressData, VideoRef } from 'react-native-video'
 
 import PlayerControls from './PlayerControls'
 import ProgressBar from './ProgressBar'
 
 import { Text } from '@2060/components/common'
-import { whiteColor } from '@2060/constants'
+import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 
 type Props = {
   uri: string
@@ -24,7 +24,7 @@ const VideoPlayer = ({
   initialPlay = true,
   showProgressBar = true,
 }: Props) => {
-  const [isLoadingVideo, setIsLoadingVideo] = useState(false)
+  const theme = useTheme()
   const [isReadyVideo, setIsReadyVideo] = useState(false)
   const [errorLoadingVideo, setErrorLoadingVideo] = useState(false)
   const [currentTime, setCurrentTime] = useState(0)
@@ -58,12 +58,10 @@ const VideoPlayer = ({
     setDuration(Math.floor(data.duration))
     setCurrentTime(Math.floor(data.currentTime))
     setIsReadyVideo(true)
-    setIsLoadingVideo(false)
   }
 
   const onErrorLoadingVideo = () => {
     setIsReadyVideo(false)
-    setIsLoadingVideo(false)
     setErrorLoadingVideo(true)
   }
 
@@ -84,37 +82,42 @@ const VideoPlayer = ({
   }
 
   return (
-    <TouchableHighlight onPress={handleControls} style={styles.container}>
+    <Pressable onPress={handleControls} style={styles.container}>
       <Fragment>
-        <Video
-          ref={videoRef}
-          source={{ uri }}
-          style={styles.video}
-          repeat={false}
-          controls={false}
-          resizeMode="cover"
-          paused={!play && isReadyVideo}
-          volume={10}
-          onLoad={onLoadEnd}
-          onProgress={onProgress}
-          onError={onErrorLoadingVideo}
-          onEnd={onEnd}
-          onLoadStart={() => setIsLoadingVideo(true)}
-        />
+        <View style={styles.videoWrapper} pointerEvents="none">
+          <Video
+            ref={videoRef}
+            source={{ uri }}
+            style={styles.video}
+            repeat={false}
+            controls={false}
+            resizeMode="contain"
+            paused={!play && isReadyVideo}
+            volume={10}
+            onLoad={onLoadEnd}
+            onProgress={onProgress}
+            onError={onErrorLoadingVideo}
+            onEnd={onEnd}
+          />
+        </View>
         {errorLoadingVideo && (
           <View style={styles.contentCenter}>
-            <Text style={styles.styleText}>{t('personalChat.errorLoadingVideo')}</Text>
-          </View>
-        )}
-        {isLoadingVideo && (
-          <View style={styles.contentCenter}>
-            <ActivityIndicator size="large" color={whiteColor} accessibilityLabel="loading video..." />
-            <Text style={styles.styleText}>{t('general.loading')}</Text>
+            <Text
+              typography="EuclidCircularA-Regular"
+              style={{ color: theme.colors.primaryText, fontSize: theme.fontSize.lg, marginTop: 10 }}
+            >
+              {t('personalChat.errorLoadingVideo')}
+            </Text>
           </View>
         )}
         {showControl && isReadyVideo && (
           <View style={styles.controlOverlay}>
-            <PlayerControls onPlay={handlePlay} onPause={handlePlayPause} playing={play} />
+            <PlayerControls
+              onPlay={handlePlay}
+              onPause={handlePlayPause}
+              playing={play}
+              iconColor={theme.colors.white}
+            />
             {showProgressBar && (
               <ProgressBar
                 currentTime={currentTime}
@@ -127,19 +130,21 @@ const VideoPlayer = ({
           </View>
         )}
       </Fragment>
-    </TouchableHighlight>
+    </Pressable>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#ebebeb',
     height: '100%',
+    justifyContent: 'center',
+  },
+  videoWrapper: {
+    ...StyleSheet.absoluteFillObject,
   },
   video: {
     height: '100%',
     width: '100%',
-    backgroundColor: 'black',
   },
   controlOverlay: {
     position: 'absolute',
@@ -155,15 +160,8 @@ const styles = StyleSheet.create({
     left: 0,
     bottom: 0,
     right: 0,
-    zIndex: 999,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  styleText: {
-    textAlign: 'center',
-    fontWeight: 'bold',
-    fontSize: 18,
-    color: whiteColor,
   },
 })
 

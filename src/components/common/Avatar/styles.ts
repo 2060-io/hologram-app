@@ -8,15 +8,11 @@ export default (theme: AppTheme) =>
       alignItems: 'center',
       justifyContent: 'center',
       overflow: 'hidden',
-    },
-    containerBgAvatar: {
       backgroundColor: theme.colors.primary,
     },
     avatar: {
       height: '100%',
       width: '100%',
-      resizeMode: 'contain',
-      borderRadius: 50,
     },
     initials: {
       color: '#A1B0B5',

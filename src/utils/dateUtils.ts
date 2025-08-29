@@ -1,8 +1,10 @@
 import dayjs, { extend } from 'dayjs'
+import customParseFormat from 'dayjs/plugin/customParseFormat'
 import isYesterday from 'dayjs/plugin/isYesterday'
 import { t } from 'i18next'
 
 extend(isYesterday)
+extend(customParseFormat)
 import { language } from './language'
 
 import { capitalizeFirstLetter } from './index'
@@ -61,6 +63,55 @@ export const isNowAfterThanDate = (timestamp: number): boolean => {
  * @param {string} stringDate
  * @returns string containing the formatted date
  */
-export const stringToDate = (stringDate: string) => {
+export const stringToStringDate = (stringDate: string) => {
   return dayjs(stringDate, 'YYYYMMDD').format('DD-MM-YYYY')
+}
+
+/**
+ * Receives a string date in format 'DD-MM-YYYY' and returns a number
+ * indicating how many years have passed until today
+ * @param {string} stringDate
+ * @returns number
+ */
+export const timeFromNow = (stringDate: string) => {
+  const years = dayjs().diff(dayjs(stringDate, 'DD-MM-YYYY'), 'year')
+  return years
+}
+
+/**
+ * Receives a string date in format of stringDateFormat and convert it to Date object
+ * @param stringDate
+ * @param stringDateFormat
+ * @returns Date
+ */
+export const stringToDate = (stringDate: string, stringDateFormat: string) => {
+  return dayjs(stringDate, stringDateFormat).toDate()
+}
+
+/**
+ * Converts a given date to a formatted string using dayjs.
+ *
+ * @param date - The date to format. Can be a Date object, a timestamp (number), or undefined.
+ * @param format - An optional format string compatible with dayjs.
+ * If not provided, dayjs's default format is used.
+ * @returns The formatted date string.
+ */
+export const dateToString = (date: Date | number | undefined, format?: string) => {
+  return dayjs(date).format(format)
+}
+
+/**
+ * Checks if two dates are the same day.
+ *
+ * @param date1 - The first date to compare. Can be a Date object, a timestamp (number)
+ * @param date2 - The second date to compare. Can be a Date object, a timestamp (number)
+ * @returns true if both dates are the same day, false otherwise.
+ */
+export function getIsSameDay(date1: Date | number, date2: Date | number) {
+  const firstDate = dayjs(date1)
+  const secondDate = dayjs(date2)
+  if (!firstDate.isValid() || !secondDate.isValid()) {
+    return false
+  }
+  return firstDate.isSame(secondDate, 'day')
 }

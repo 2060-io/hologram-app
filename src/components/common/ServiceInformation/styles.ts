@@ -27,6 +27,9 @@ const styles = (theme: AppTheme) =>
       color: theme.colors.primaryText,
       textAlign: 'center',
     },
+    notOldEnoughTextColor: {
+      color: theme.colors.red,
+    },
     underLineText: {
       textDecorationLine: 'underline',
       marginRight: 6,

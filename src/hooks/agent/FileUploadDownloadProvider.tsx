@@ -1,7 +1,6 @@
 /* eslint-disable import/no-named-as-default-member */
 import { SharedMediaItem } from '@2060.io/credo-ts-didcomm-media-sharing'
 import { utils } from '@credo-ts/core'
-import appCheck from '@react-native-firebase/app-check'
 import { useAudioPlayer } from '@simform_solutions/react-native-audio-waveform'
 import axios from 'axios'
 import { t } from 'i18next'
@@ -25,7 +24,7 @@ import {
   FileUploadDownloadContext,
 } from './useFileUploadDownload'
 
-import { IS_DEVICE_IOS } from '@2060/constants'
+import { IS_IOS } from '@2060/constants'
 import { MediaDownloadState, MediaUploadState, UploadChunkTask, UploadTask } from '@2060/model'
 import {
   AUTOMATIC_MEDIA_DOWNLOAD_VALUES_PERSIST_KEY,
@@ -41,6 +40,7 @@ import {
   moveFile,
 } from '@2060/utils/RNFS'
 import { decryptFile, encryptFile } from '@2060/utils/ciphering'
+import { getAppCheckHeaders } from '@2060/utils/firebaseUtils'
 
 const AUDIO_WAVEFORM_NUMBER_OF_CANDLES = 30
 const { Pending, Uploading, Done, Canceled, ErrorCreating, ErrorUploading } = MediaUploadState
@@ -68,27 +68,22 @@ interface Props {
  * @param numberChunks Number of chunks in which the file is divided
  */
 const fileCreate = async (dataStoreUrl: string, uuid: string, numberChunks: number) => {
-  const { token } = await appCheck().getToken()
-
+  const headers = await getAppCheckHeaders()
   return await axios.create({ baseURL: dataStoreUrl }).post(`/c/${uuid}/${numberChunks}`, undefined, {
-    headers: {
-      'X-Firebase-AppCheck': token,
-    },
+    headers,
   })
 }
 
 const uploadChunk = async (dataStoreUrl: string, filePath: string, fileId: string, chunkNumber: number) => {
+  const headers = { ...(await getAppCheckHeaders()), 'content-type': 'multipart/form-data' }
   const options: UploadOptions = {
     customUploadId: `${fileId}/${chunkNumber}`,
     url: `${dataStoreUrl}/u/${fileId}/${chunkNumber}`,
-    path: IS_DEVICE_IOS ? `file://${filePath}` : filePath,
+    path: IS_IOS ? `file://${filePath}` : filePath,
     method: 'PUT',
     field: 'chunk',
     type: 'multipart',
-    headers: {
-      'X-Firebase-AppCheck': (await appCheck().getToken()).token,
-      'content-type': 'multipart/form-data',
-    },
+    headers,
     notification: {
       autoClear: true,
       onProgressMessage: t('personalChat.uploadingMedia'),
@@ -190,7 +185,7 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
       const filename = generateFileName(mimeType, fileExtension)
 
       const localFilePath = getLocalMediaFilePath(filename)
-      let downloadLocalFilePath = ciphering ? `${localFilePath}.encrypted` : localFilePath
+      const downloadLocalFilePath = ciphering ? `${localFilePath}.encrypted` : localFilePath
       try {
         await agent.modules.media.setMetadata(
           mediaRecord.id,
@@ -201,17 +196,18 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
           fromUrl: uri,
           toFile: downloadLocalFilePath,
           progressInterval: 2000,
-          progress(progress) {
+          begin: () => log('Download of file begin'),
+          progress: progress => {
             if (item.byteCount) {
               const currentProgress = Math.ceil((progress.bytesWritten / item.byteCount) * 100)
               agent.modules.media.setMetadata(mediaRecord.id, 'mediaDownloadProgress', currentProgress)
+              log(`Download media from ${uri} progress: ${currentProgress}%`)
             }
           },
         })
         const result = await promise
         if (result.statusCode !== 200) {
-          logError(`download status code ${result.statusCode}`)
-          throw new Error(`download status code ${result.statusCode}`)
+          throw new Error(`code ${result.statusCode} / url ${uri}`)
         }
 
         if (ciphering) {
@@ -237,7 +233,7 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
             await agent.modules.media.setMetadata(
               mediaRecord.id,
               'localPreviewFilePath',
-              `media/previews/${filename}.jpeg`,
+              localPreviewFilePath,
             )
           }
         }
@@ -246,7 +242,7 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
         await agent.modules.media.setMetadata(mediaRecord.id, 'mediaDownloadState', MediaDownloadState.Done)
       } catch (error) {
         await agent.modules.media.setMetadata(mediaRecord.id, 'mediaDownloadState', MediaDownloadState.Failed)
-        logError(`downloading file: ${error}`)
+        logError(`Error downloading file: ${error}`)
         throw error
       } finally {
         await agent.modules.media.setMetadata(mediaRecord.id, 'mediaDownloadProgress', undefined)
@@ -339,7 +335,7 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
           // Store relative path for files and previews to avoid issues with new builds in iOS
           metadata: {
             localFilePath: `media/${fileName}`,
-            localPreviewFilePath: localPreviewFilePath ? `media/previews/${fileName}.jpeg` : undefined,
+            localPreviewFilePath: localPreviewFilePath ?? undefined,
             ...(isAudioFile && { waveform }),
           },
         })
@@ -348,7 +344,7 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
 
       // Create upload task
       const chunks: UploadChunkTask[] = []
-      for (var i = 0; i < chunkFilePaths.length; i++) {
+      for (let i = 0; i < chunkFilePaths.length; i++) {
         chunks.push({
           id: `${fileId}/${i}`,
           filePath: chunkFilePaths[i],
@@ -499,7 +495,9 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
 
       if (isTaskFinished) {
         // Delete all chunk files
-        for (const chunk of task.chunks) await deleteFile(chunk.filePath)
+        for (const chunk of task.chunks) {
+          deleteFile(chunk.filePath)
+        }
 
         realm?.write(() => {
           realm.delete(task)
@@ -557,7 +555,7 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
   }, [agent, dataStoreUrl, realm])
 
   return (
-    <FileUploadDownloadContext.Provider
+    <FileUploadDownloadContext
       value={{
         startMediaUpload,
         retryMediaUpload,
@@ -567,8 +565,6 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
       }}
     >
       {children}
-    </FileUploadDownloadContext.Provider>
+    </FileUploadDownloadContext>
   )
 }
-
-export default FileUploadDownloadProvider

@@ -2,13 +2,11 @@ import React from 'react'
 import { Text } from 'react-native'
 
 import { TextProps } from './TextProps'
-import styles from './styles'
 
-const CustomText = ({ style, children, error = false, typography, ...props }: TextProps) => {
-  const fontFamily = typography ? typography : 'SFPro-Medium'
-
+const CustomText = ({ style, children, typography, ...props }: TextProps) => {
+  const fontFamily = typography ? typography : 'EuclidCircularA-Regular'
   return (
-    <Text style={[styles.container, style, error && styles.error, { fontFamily: fontFamily }]} {...props}>
+    <Text style={[style, { fontFamily }]} {...props}>
       {children}
     </Text>
   )

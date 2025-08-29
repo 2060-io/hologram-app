@@ -37,8 +37,7 @@ const Chats = ({ navigation }: Props) => {
   const [chatIdToDelete, setChatIdToDelete] = useState<string>('')
   const using24HourFormat = uses24HourClock()
   /* eslint-disable object-curly-newline */
-  const { loading, deleteThreads, archiveThreads, unarchiveThreads, filters, setFilters, threads } =
-    useChats()
+  const { loading, deleteThread, archiveThreads, unarchiveThreads, filters, setFilters, threads } = useChats()
   const { t } = useTranslation()
   const isCategoryAll = filters.category === 'all'
   const isCategoryArchived = isCategoryAll && filters.archived
@@ -152,6 +151,7 @@ const Chats = ({ navigation }: Props) => {
       <View style={styles.root}>
         <FlashList
           estimatedItemSize={97}
+          showsVerticalScrollIndicator={false}
           data={threads}
           extraData={[selectedChatIds, theme.isDarkMode]}
           renderItem={({ item: chat }) => {
@@ -221,7 +221,7 @@ const Chats = ({ navigation }: Props) => {
             }}
             onDeleteChat={() => {
               swipeRowReferences.current[Number(chatIdToDelete)].closeRow()
-              deleteThreads([chatIdToDelete])
+              deleteThread(chatIdToDelete)
               handleClosingContextMenu()
             }}
           />

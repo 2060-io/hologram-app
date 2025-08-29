@@ -13,7 +13,7 @@ import { ModalConfirmAction } from '@2060/components'
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
 import { CardCredentialMainInformation, Text } from '@2060/components/common'
 import { useChat } from '@2060/hooks/agent'
-import { updateMetadata } from '@2060/hooks/agent/chat/services'
+import { updateChatEntryMetadata } from '@2060/hooks/agent/chat/services'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { ChatEntryRole, VPResponseMetadata, VPResponsePresentedCredential } from '@2060/model'
@@ -80,7 +80,7 @@ const VPChatView = ({ metadata, role, agent, proofRecordId, chatEntryId }: Props
   const acceptCredentialPresentation = async () => {
     if (!agent || !realm) return
     const newMetadata = { ...metadata, proofState: ProofState.PresentationReceived }
-    updateMetadata(realm, chatEntryId, newMetadata)
+    updateChatEntryMetadata(realm, chatEntryId, newMetadata)
     acceptProposal({ agent, proofRecordId })
   }
 
@@ -88,7 +88,7 @@ const VPChatView = ({ metadata, role, agent, proofRecordId, chatEntryId }: Props
     hideModalRefuseConfirmation()
     if (!agent || !realm) return
     const newMetadata = { ...metadata, proofState: ProofState.Abandoned }
-    updateMetadata(realm, chatEntryId, newMetadata)
+    updateChatEntryMetadata(realm, chatEntryId, newMetadata)
     sendProblemReport({ agent, proofRecordId, description: 'refused' })
   }
 

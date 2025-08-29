@@ -7,12 +7,12 @@ interface Props {
   children?: React.ReactNode
 }
 
-export type PushNotification = {
+type PushNotification = {
   screen: string
   params?: Record<string, unknown>
 }
 
-export interface PushNotificationsContextInterface {
+interface PushNotificationsContextInterface {
   pushNotification: PushNotification | undefined
   setPushNotification: React.Dispatch<React.SetStateAction<PushNotification | undefined>>
 }
@@ -83,13 +83,13 @@ export const PushNotificationsProvider: React.FC<React.PropsWithChildren<Props>>
   }, [])
 
   return (
-    <PushNotificationsContext.Provider
+    <PushNotificationsContext
       value={{
         pushNotification,
         setPushNotification,
       }}
     >
       {children}
-    </PushNotificationsContext.Provider>
+    </PushNotificationsContext>
   )
 }

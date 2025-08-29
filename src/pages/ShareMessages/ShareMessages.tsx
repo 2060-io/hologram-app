@@ -44,7 +44,7 @@ const ShareMessages = ({ navigation }: Props) => {
     }
   }, [])
 
-  const onPressConnection = useCallback((connectionItem: ConnectionItem) => {
+  const updateSelectedConnections = useCallback((connectionItem: ConnectionItem) => {
     setSelectedConnections(prevState => {
       const newSelectedConnections = [...prevState]
       const connectionAlreadySelectedSelectedIndex = newSelectedConnections.findIndex(
@@ -63,11 +63,11 @@ const ShareMessages = ({ navigation }: Props) => {
 
   const onShareMessages = () => {
     if (!sharedData) return
+    navigation.goBack()
     shareMessages(
       selectedConnections.map(connection => connection.id),
       sharedData,
     )
-    navigation.goBack()
   }
 
   return (
@@ -75,7 +75,7 @@ const ShareMessages = ({ navigation }: Props) => {
       <View style={styles.connectionsContainer}>
         <BaseConnections
           navigation={navigation}
-          onPressConnection={onPressConnection}
+          onPressConnection={updateSelectedConnections}
           headerProps={{
             height: headerHeight,
             title: t('navigation.shareWith'),

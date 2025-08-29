@@ -1,11 +1,13 @@
 import { Image } from 'react-native'
+import { Video as VideoCompressor } from 'react-native-compressor'
 import { stat, TemporaryDirectoryPath } from 'react-native-fs'
+import { ImageOrVideo } from 'react-native-image-crop-picker'
 import { getVideoProperties } from 'react-native-video-properties'
 
-import { copyFile } from './RNFS'
+import { copyFile, deleteFile } from './RNFS'
 import { logError } from './log'
 
-import { IS_DEVICE_IOS } from '@2060/constants'
+import { IS_IOS } from '@2060/constants'
 import { DidCommMediaFileSharingData } from '@2060/hooks/agent'
 import { createDidCommPreview } from '@2060/hooks/media/preview'
 
@@ -33,7 +35,7 @@ const fromContentUriToFileUri = async (contentUri: string) => {
   const fileNameAndExtension = urlComponents[urlComponents.length - 1]
   const destPath = `${TemporaryDirectoryPath}/${fileNameAndExtension}`
   await copyFile(contentUri, destPath)
-  return IS_DEVICE_IOS ? destPath : `file://${decodeURIComponent(destPath)}`
+  return IS_IOS ? destPath : `file://${decodeURIComponent(destPath)}`
 }
 
 const getDataForVideo = async (currentFileValues: DidCommMediaFileSharingData) => {
@@ -86,4 +88,40 @@ const getImageDimensions = (filePath: string) => {
       },
     )
   })
+}
+
+// This is 2 millions of bits per second (0.25 MB)
+const COMPRESSION_BITRATE = 2_000_000
+export const compressVideo = async (
+  fileInfo: ImageOrVideo | DidCommMediaFileSharingData,
+  onProgress: (progress: number) => void,
+  getCancellationId?: (cancellationId: string) => void,
+): Promise<ImageOrVideo | DidCommMediaFileSharingData | null> => {
+  try {
+    const compressedVideoPath = await VideoCompressor.compress(
+      fileInfo.path,
+      {
+        compressionMethod: 'manual',
+        bitrate: COMPRESSION_BITRATE,
+        progressDivider: 5,
+        getCancellationId,
+      },
+      progress => onProgress(Math.ceil(progress * 100)),
+    )
+    await deleteFile(fileInfo.path)
+    fileInfo.path = compressedVideoPath
+    fileInfo.mime = 'video/mp4'
+    const { size } = await stat(compressedVideoPath)
+    fileInfo.size = size
+    return fileInfo
+  } catch (error) {
+    logError(`Error compressing video: ${error}`)
+    return null
+  } finally {
+    onProgress(0)
+  }
+}
+
+export const cancelVideoCompression = (cancellationId: string) => {
+  VideoCompressor.cancelCompression(cancellationId)
 }

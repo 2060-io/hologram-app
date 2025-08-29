@@ -18,6 +18,7 @@ import {
   getConnectionParentId,
   isService,
 } from '@2060/utils/connectionUtils'
+import { getLastEntryInChatThread } from '@2060/utils/realmQueries'
 
 export function findChatThread(realm: Realm, connection: ConnectionRecord) {
   const [thread] = realm.objects(ChatThread).filtered(`connectionId == '${connection.id}'`)
@@ -168,34 +169,49 @@ export function updateThread(
   })
 }
 
-export function deleteThreads(realm: Realm, threadIds: string[]) {
+export function deleteThread(realm: Realm, threadId: string) {
   realm.write(() => {
-    for (const threadId of threadIds) {
-      const thread = realm.objectForPrimaryKey(ChatThread, threadId)
-      if (!thread) throw new Error(`Cannot find chat thread with id ${threadId}`)
+    const thread = realm.objectForPrimaryKey(ChatThread, threadId)
+    if (!thread) throw new Error(`Cannot find chat thread with id ${threadId}`)
 
-      // If it is a parent thread, don't delete but mark it as inactive
-      if (thread.subthreads.length > 0) {
-        thread.active = false
-        return
-      }
+    // If it is a parent thread, don't delete but mark it as inactive
+    if (thread.subthreads.length > 0) {
+      thread.active = false
+      return
+    }
 
-      // Find parent chat thread
-      const parentThreadId = thread.parentId
-      if (parentThreadId) {
-        const parentThread = realm.objectForPrimaryKey(ChatThread, parentThreadId)
-        // Update parent thread subthreads
-        if (parentThread) {
-          const index = parentThread.subthreads.findIndex(item => item.id === thread.id)
-          if (index > 0) parentThread.subthreads.splice(index, 1)
+    // Find parent chat thread
+    const parentThreadId = thread.parentId
+    if (parentThreadId) {
+      const parentThread = realm.objectForPrimaryKey(ChatThread, parentThreadId)
+      // Update parent thread subthreads
+      if (parentThread) {
+        const index = parentThread.subthreads.findIndex(item => item.id === thread.id)
+        if (index > 0) parentThread.subthreads.splice(index, 1)
 
-          // In case this was the only child and the parent was marked for deletion, delete it as well
-          if (parentThread.subthreads.length === 0 && !parentThread.active) {
-            realm.delete(parentThread)
-          }
+        // In case this was the only child and the parent was marked for deletion, delete it as well
+        if (parentThread.subthreads.length === 0 && !parentThread.active) {
+          realm.delete(parentThread)
         }
       }
-      realm.delete(thread)
     }
+    realm.delete(thread)
   })
+}
+
+/**
+ * Update the chat thread if the modified chat entry is the last one in the chat
+ * This ensures that the thread's last chat entry is always up-to-date.
+ *
+ * @param realm - The Realm database instance to query.
+ * @param updatedChatEntry - The modified chat entry to check against the last entry in the chat.
+ */
+export function updateThreadIfNeeded(realm: Realm, updatedChatEntry: ChatEntry) {
+  const lastEntryInChatThread = getLastEntryInChatThread(realm, updatedChatEntry.chatThreadId)
+  if (lastEntryInChatThread) {
+    const isThisLastMessageOfChat = updatedChatEntry.id === lastEntryInChatThread.id
+    if (isThisLastMessageOfChat) {
+      updateThread(realm, updatedChatEntry.chatThreadId, { lastChatEntry: lastEntryInChatThread })
+    }
+  }
 }

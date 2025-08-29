@@ -33,6 +33,7 @@ export interface BaseCustomMessageViewProps extends BaseMessageProps {
 
 export interface FloatingChatMessageProps extends BaseMessageProps {
   currentMessage: ChatEntryMessage
+  style?: ViewStyle
 }
 
 export interface CommonMessageProps extends BaseMessageProps {

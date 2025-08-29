@@ -7,10 +7,11 @@ import Avatar from '../common/Avatar'
 
 import getStyles from './styles'
 
+import defaultAvatar from '@2060/assets/images/defaultUser.png'
 import { Text, TextInput, SvgIcon } from '@2060/components/common'
 import { useImageCropPicker, ImageOrVideo } from '@2060/hooks'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { dataUrl } from '@2060/utils/connectionUtils'
+import { dataUrl } from '@2060/utils'
 
 type Props = {
   displayPicture: PictureData | undefined
@@ -26,8 +27,7 @@ const UserProfileForm: React.FC<Props> = props => {
   const { displayPicture, displayName, onHandleChangePicture, onHandleChangeName } = props
 
   const imgUrl = dataUrl(displayPicture?.mimeType, displayPicture?.base64)
-  const defaultAvatar = Image.resolveAssetSource(require('@2060/assets/images/defaultUser.png')).uri
-  const avatarUri = imgUrl || (displayName.trim().length > 0 ? '' : defaultAvatar)
+  const avatarUri = imgUrl || Image.resolveAssetSource(defaultAvatar).uri
   const styles = getStyles(theme)
 
   const onChangeAvatarInfo = (info: ImageOrVideo) => {

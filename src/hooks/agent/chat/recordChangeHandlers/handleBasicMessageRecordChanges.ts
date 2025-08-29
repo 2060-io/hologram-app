@@ -3,7 +3,7 @@ import Realm from 'realm'
 
 import { getLocalizedPreview, getThumbnail } from '../preview'
 import { createChatEntry, findAllDidcommThreadId } from '../services/ChatEntryService'
-import { addUnread, findOrCreateChatThread, updateThread } from '../services/ChatThreadService'
+import { addUnread, findOrCreateChatThread } from '../services/ChatThreadService'
 
 import { ChatEntryRole, ChatEntryState, ChatEntryType, RelatedEntryProps } from '@2060/model'
 import { MobileAgent } from '@2060/services/agent'
@@ -21,7 +21,7 @@ export const handleBasicMessageRecordChanges = async (options: {
   const thread = findOrCreateChatThread(realm, connection)
 
   if (basicMessageRecord.role === BasicMessageRole.Receiver) {
-    const chatEntry = createTextChatEntry({
+    createTextChatEntry({
       agent,
       realm,
       associatedRecordId: basicMessageRecord.id,
@@ -34,8 +34,6 @@ export const handleBasicMessageRecordChanges = async (options: {
       content: basicMessageRecord.content,
       parentThreadId: basicMessageRecord.parentThreadId,
     })
-
-    updateThread(realm, thread.id, { lastChatEntry: chatEntry })
 
     if (thread.id !== activeChatThreadId) {
       addUnread(realm, thread.id, 1)
@@ -95,8 +93,6 @@ export const createTextChatEntry = (options: {
     metadata: { content },
     relatedEntryProps,
   })
-
-  updateThread(realm, chatThreadId, { lastChatEntry: chatEntry })
 
   return chatEntry
 }

@@ -21,9 +21,10 @@ class VideoPropertiesModule(reactContext: ReactApplicationContext?) :
         try {
             val mp = MediaPlayer.create(this.reactApplicationContext, Uri.parse(videoPath))
             val result = Arguments.createMap()
+            val roundedDuration = (mp.duration / 1000) * 1000
             result.putInt("width", mp.videoWidth)
             result.putInt("height", mp.videoHeight)
-            result.putInt("duration", mp.duration)
+            result.putInt("duration", roundedDuration)
             promise.resolve(result)
         } catch (e: Exception) {
             promise.reject("VIDEO_PROPERTIES_ERROR", e.message)

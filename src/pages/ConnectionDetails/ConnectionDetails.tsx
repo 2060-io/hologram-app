@@ -1,5 +1,4 @@
-import dayjs from 'dayjs'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, Image } from 'react-native'
 import { uses24HourClock } from 'react-native-localize'
@@ -8,7 +7,7 @@ import BaseConnectionDetails, { ConnectionDetailsProps, WrapperProps } from './B
 import ConnectionDetailsForService from './ConnectionDetailsForService'
 import getStyles from './styles'
 
-import { Avatar, Text } from '@2060/components/common'
+import { Avatar, FullScreenImage, Text } from '@2060/components/common'
 import { useConnectionById } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import {
@@ -17,6 +16,7 @@ import {
   getConnectionParentId,
   isService,
 } from '@2060/utils/connectionUtils'
+import { dateToString } from '@2060/utils/dateUtils'
 
 const validateConnectionExists = () => {
   const Wrapper = (props: WrapperProps) => {
@@ -44,44 +44,63 @@ const ConnectionDetails = (props: ConnectionDetailsProps) => {
   const parentConnectionName = connectionParent ? getConnectionDisplayName(connectionParent) : ''
 
   const [using24HourFormat, setUsing24HourFormat] = useState<boolean>(false)
-  const createdAt = dayjs(connection.createdAt)
+  const [showFullScreenImage, setShowFullScreenImage] = useState<boolean>(false)
+  const imageFullScreenUri = useRef<string | undefined>(undefined)
 
   useEffect(() => {
     setUsing24HourFormat(uses24HourClock())
   }, [])
 
+  const onAvatarImagePressed = (avatarImageUri: string) => {
+    setShowFullScreenImage(true)
+    imageFullScreenUri.current = avatarImageUri
+  }
+  const closeFullScreenImage = () => setShowFullScreenImage(false)
+
   return (
-    <BaseConnectionDetails
-      {...props}
-      mainInfo={
-        <View style={styles.mainInfoContainer}>
-          <View style={styles.containerSectionInfo}>
-            <View style={styles.containerAvatar}>
-              <Avatar uri={hasDisplayPicture} label={connectionName} size="25%" />
-            </View>
-            {parentConnectionId && (
-              <View style={styles.relatedConnectionContainer}>
-                <Text typography={'EuclidCircularA-Regular'} style={styles.connectionRelatedToText}>
-                  {t('connection.connectionManagedBy')}
-                </Text>
-                {parentConnectionPicture.length > 0 && (
-                  <Image source={{ uri: parentConnectionPicture }} style={styles.connectionRelatedToImg} />
-                )}
-                <Text typography={'EuclidCircularA-Regular'} style={styles.connectionRelatedToText}>
-                  {parentConnectionName}
-                </Text>
+    <>
+      <FullScreenImage
+        showFullScreenImage={showFullScreenImage}
+        closeFullScreenImage={closeFullScreenImage}
+        imageUri={imageFullScreenUri.current!}
+      />
+      <BaseConnectionDetails
+        {...props}
+        mainInfo={
+          <View style={styles.mainInfoContainer}>
+            <View style={styles.containerSectionInfo}>
+              <View style={styles.containerAvatar}>
+                <Avatar
+                  uri={hasDisplayPicture}
+                  label={connectionName}
+                  size="25%"
+                  onImagePressed={onAvatarImagePressed}
+                />
               </View>
-            )}
-            <Text typography="EuclidCircularA-Regular" style={styles.createdAtText}>
-              {t('connection.connectionCreated', {
-                date: createdAt.format('M/D/YYYY'),
-                hours: createdAt.format(using24HourFormat ? 'HH:mm' : 'h:mm a'),
-              })}
-            </Text>
+              {parentConnectionId && (
+                <View style={styles.relatedConnectionContainer}>
+                  <Text typography={'EuclidCircularA-Regular'} style={styles.connectionRelatedToText}>
+                    {t('connection.connectionManagedBy')}
+                  </Text>
+                  {parentConnectionPicture.length > 0 && (
+                    <Image source={{ uri: parentConnectionPicture }} style={styles.connectionRelatedToImg} />
+                  )}
+                  <Text typography={'EuclidCircularA-Regular'} style={styles.connectionRelatedToText}>
+                    {parentConnectionName}
+                  </Text>
+                </View>
+              )}
+              <Text typography="EuclidCircularA-Regular" style={styles.createdAtText}>
+                {t('connection.connectionCreated', {
+                  date: dateToString(connection.createdAt, 'DD/MM/YYYY'),
+                  hours: dateToString(connection.createdAt, using24HourFormat ? 'HH:mm' : 'h:mm a'),
+                })}
+              </Text>
+            </View>
           </View>
-        </View>
-      }
-    />
+        }
+      />
+    </>
   )
 }
 

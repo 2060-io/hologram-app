@@ -18,7 +18,7 @@ interface SubConnectionData extends IData {
   avatar: string
 }
 
-export interface Props extends StackScreenProps<NavigationStackParams, 'RelatedConnections'> {}
+interface Props extends StackScreenProps<NavigationStackParams, 'RelatedConnections'> {}
 const RelatedConnections: React.FC<Props> = ({ navigation, route }) => {
   const [showSearchInput, setShowSearchInput] = useState(false)
   const [search, setSearch] = useState('')
@@ -108,7 +108,7 @@ const RelatedConnections: React.FC<Props> = ({ navigation, route }) => {
             onPress={() => handleSelectedSubConnection(item.key)}
           >
             <Avatar uri={(item as SubConnectionData).avatar} label={item.value} size="8.41%" />
-            <Text typography="SFPro-Medium" style={styles.listItemText}>
+            <Text typography="EuclidCircularA-SemiBold" style={styles.listItemText}>
               {item.value}
             </Text>
           </TouchableOpacity>
@@ -117,17 +117,12 @@ const RelatedConnections: React.FC<Props> = ({ navigation, route }) => {
           <View style={styles.sectionHeaderContainer}>
             <Text style={styles.sectionHeaderLabel}>{section.title}</Text>
           </View>
-          // <View style={styles.sectionHeaderContainer}>
-          //   <Text typography="SFPro-Medium" style={styles.sectionHeaderLabel}>
-          //     {section.title}
-          //   </Text>
-          // </View>
         )}
         showsVerticalScrollIndicator={false}
         style={{ flex: 1, marginBottom: 10 }}
         ListEmptyComponent={() => (
           <View style={styles.containerEmptyList}>
-            <Text typography="SFPro-Medium" style={styles.textEmpty}>
+            <Text typography="EuclidCircularA-SemiBold" style={styles.textEmpty}>
               {t('connection.noConnectionsFound')}
             </Text>
           </View>
