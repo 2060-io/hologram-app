@@ -1,10 +1,7 @@
 import { FlashList, FlashListProps, FlashListRef } from '@shopify/flash-list'
-import React, { useState, useRef, memo, Ref } from 'react'
-import { View, Keyboard, TouchableWithoutFeedback, LayoutChangeEvent } from 'react-native'
+import React, { memo, Ref } from 'react'
 
 import { ChatMessage } from '../ChatMessage'
-
-import styles from './styles'
 
 import { CommonMessageProps, ChatEntryMessage } from '@2060/pages/PersonalChat/ChatMessage/Props'
 
@@ -40,49 +37,22 @@ const renderItem = ({ item, index, props }: ItemProps) => {
 export const ChatMessageList = memo((props: ChatMessageListProps) => {
   const { messages, listViewProps } = props
   const keyExtractor = (item: ChatEntryMessage) => `${item.id}`
-  const [scrollEnabled, setScrollEnabled] = useState(true)
-  const containerHeight = useRef(0)
-  const listHeight = useRef(0)
-  const renderListFromBottom = scrollEnabled && messages.length > 1
-
-  const checkIfScrollIsEnabled = () => {
-    const scrollIsEnabled = listHeight.current >= containerHeight.current
-    setScrollEnabled(scrollIsEnabled)
-  }
-
-  const onContainerLayout = (event: LayoutChangeEvent) => {
-    containerHeight.current = event.nativeEvent.layout.height
-    checkIfScrollIsEnabled()
-  }
-
-  const onListLayout = (event: LayoutChangeEvent) => {
-    listHeight.current = event.nativeEvent.layout.height
-    checkIfScrollIsEnabled()
-  }
+  const renderListFromBottom = messages.length > 1
 
   return (
-    <View style={styles.container} onLayout={onContainerLayout}>
-      <View style={styles.containerAlignTop}>
-        <FlashList
-          keyExtractor={keyExtractor}
-          data={messages}
-          maintainVisibleContentPosition={{
-            startRenderingFromBottom: renderListFromBottom,
-            autoscrollToBottomThreshold: 1,
-          }}
-          renderItem={itemProps => renderItem({ ...itemProps, props })}
-          keyboardShouldPersistTaps="handled"
-          scrollEventThrottle={16}
-          onStartReachedThreshold={1}
-          showsVerticalScrollIndicator={false}
-          scrollEnabled={scrollEnabled}
-          onLayout={onListLayout}
-          {...listViewProps}
-        />
-      </View>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={styles.contentContainerStyle} />
-      </TouchableWithoutFeedback>
-    </View>
+    <FlashList
+      keyExtractor={keyExtractor}
+      data={messages}
+      maintainVisibleContentPosition={{
+        startRenderingFromBottom: renderListFromBottom,
+        autoscrollToBottomThreshold: 1,
+      }}
+      renderItem={itemProps => renderItem({ ...itemProps, props })}
+      keyboardShouldPersistTaps="handled"
+      scrollEventThrottle={16}
+      onStartReachedThreshold={1}
+      showsVerticalScrollIndicator={false}
+      {...listViewProps}
+    />
   )
 })
