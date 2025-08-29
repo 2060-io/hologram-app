@@ -5296,10 +5296,10 @@
     multiformats "9.7.1"
     uint8arrays "^3.0.0"
 
-"@verana-labs/verre@^0.0.13":
-  version "0.0.13"
-  resolved "https://registry.yarnpkg.com/@verana-labs/verre/-/verre-0.0.13.tgz#5ddfcfcfababe669553d5ba1a1c90e6772c01f0e"
-  integrity sha512-UNiqqMRl5OY989ln4pQzq665E6tpTTxGvqOeQqa7S4nrrsgVBjlfAGOjg7paNydIOWiGzSxq5//Og83CoxJ64Q==
+"@verana-labs/verre@^0.0.14":
+  version "0.0.14"
+  resolved "https://registry.yarnpkg.com/@verana-labs/verre/-/verre-0.0.14.tgz#d96f6f22f7ac2b85b33e952e7609ee6c4b643b43"
+  integrity sha512-BKhEJRjaNuLRIOUnPQJVVTMrQJ4EsON60Mpla2pi4WVHoM2ixzhA8kCCw5yL+NFrZMdenCJ2UkIX+bP0uX/Ljw==
   dependencies:
     "@credo-ts/core" "^0.5.13"
     "@digitalcredentials/jsonld-signatures" "^12.0.1"
