@@ -127,7 +127,6 @@
     "readable-stream": "^4.7.0",
     "realm": "20.2.0",
     "rn-emoji-keyboard": "1.7.0",
-    "text-encoding-polyfill": "^0.6.7",
     "react-native-video-properties": "file:./modules/react-native-video-properties"
   },
   "devDependencies": {
