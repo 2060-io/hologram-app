@@ -37,9 +37,9 @@ const renderItem = ({ item, index, props }: ItemProps) => {
   }
   return <ChatMessage key={item.id} {...messageProps} />
 }
+const keyExtractor = (item: ChatEntryMessage) => `${item.id}`
 
 export const ChatMessageList = memo((props: ChatMessageListProps) => {
-  const keyExtractor = (item: ChatEntryMessage) => `${item.id}`
   const [scrollEnabled, setScrollEnabled] = useState(true)
   const containerHeight = useRef(0)
   const listHeight = useRef(0)
