@@ -21,6 +21,7 @@ import PersonalChatStackNavigator from './PersonalChatStackNavigator'
 import deepLinking from './deepLinking'
 import getStyles from './styles'
 
+import { IS_ANDROID } from '@2060/constants'
 import { useNetwork } from '@2060/hooks'
 import { useMessagePickup } from '@2060/hooks/agent/useMessagePickup'
 import { useConfig } from '@2060/hooks/providers/ConfigProvider'
@@ -121,8 +122,10 @@ const Navigation = ({ isSignedUp, agent, theme }: NavigationProps) => {
   }, [])
 
   useEffect(() => {
-    StatusBar.setBarStyle(theme.isDarkMode ? 'light-content' : 'dark-content', true)
-    StatusBar.setBackgroundColor(globalStyles.headerStyle.backgroundColor, true)
+    if (IS_ANDROID) {
+      StatusBar.setBarStyle(theme.isDarkMode ? 'light-content' : 'dark-content', true)
+      StatusBar.setBackgroundColor(globalStyles.headerStyle.backgroundColor, true)
+    }
   }, [theme.isDarkMode])
 
   return (

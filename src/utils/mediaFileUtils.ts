@@ -110,6 +110,7 @@ export const compressVideo = async (
     )
     await deleteFile(fileInfo.path)
     fileInfo.path = compressedVideoPath
+    fileInfo.mime = 'video/mp4'
     const { size } = await stat(compressedVideoPath)
     fileInfo.size = size
     return fileInfo

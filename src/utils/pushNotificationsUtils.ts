@@ -7,18 +7,17 @@ import notifee, {
   NotificationAndroid,
   NotificationIOS,
 } from '@notifee/react-native'
-import { getApp } from '@react-native-firebase/app'
-import { getToken } from '@react-native-firebase/app-check'
 import {
   AuthorizationStatus,
   getMessaging,
+  getToken,
   hasPermission,
   isDeviceRegisteredForRemoteMessages,
   registerDeviceForRemoteMessages,
   requestPermission,
 } from '@react-native-firebase/messaging'
 import { t } from 'i18next'
-import { PERMISSIONS, request, RESULTS } from 'react-native-permissions'
+import { requestNotifications, RESULTS } from 'react-native-permissions'
 
 import { getConnectionDisplayName } from './connectionUtils'
 
@@ -64,7 +63,7 @@ const createChannel = async () => {
 }
 
 const askUserPushNotificationPermissionAndroid13OrHigher = async () => {
-  const status = await request(PERMISSIONS.ANDROID.POST_NOTIFICATIONS)
+  const { status } = await requestNotifications(['alert', 'badge', 'sound', 'providesAppSettings'])
   const isGranted = status === RESULTS.GRANTED
   return isGranted
 }
@@ -72,24 +71,18 @@ const askUserPushNotificationPermissionAndroid13OrHigher = async () => {
 const askUserPushNotificationPermission = async () => {
   const { AUTHORIZED } = AuthorizationStatus
   const messaging = getMessaging()
-  const authStatus = await requestPermission(messaging, {
-    alert: true,
-    badge: true,
-    sound: true,
-    provisional: false,
-    providesAppNotificationSettings: true,
-  })
+  const authStatus = await requestPermission(messaging, { providesAppNotificationSettings: true })
   return authStatus === AUTHORIZED
 }
 
-export const requestNotificationPermissionUser = isAndroid13OrHigher()
+export const requestNotificationsPermission = isAndroid13OrHigher()
   ? askUserPushNotificationPermissionAndroid13OrHigher
   : askUserPushNotificationPermission
 
 export const getFcmDeviceToken = async () => {
   const messaging = getMessaging()
   if (!isDeviceRegisteredForRemoteMessages(messaging)) await registerDeviceForRemoteMessages(messaging)
-  const { token } = await getToken(getApp().appCheck())
+  const token = await getToken(messaging)
   return token
 }
 
