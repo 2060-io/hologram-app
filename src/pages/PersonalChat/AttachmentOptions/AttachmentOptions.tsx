@@ -1,6 +1,6 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, TouchableOpacity } from 'react-native'
+import { View, TouchableOpacity, Keyboard } from 'react-native'
 
 import getStyles from './styles'
 
@@ -40,6 +40,7 @@ const AttachmentOptions: React.FC<Props> = ({
     let mediaFileInfo: ImageOrVideo | null = { ...fileInfo }
     const isVideo = mediaFileInfo.mime.startsWith('video')
     if (IS_ANDROID && isVideo) {
+      Keyboard.dismiss()
       mediaFileInfo = (await compressVideo(
         mediaFileInfo,
         onCompressingVideoProgress,

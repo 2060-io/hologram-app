@@ -3,15 +3,12 @@ import { Results } from 'realm'
 
 import { useLocalRealm } from '../providers/RealmProvider'
 
-import { useChats } from './ChatProvider'
-
 import { ChatEntry, ChatEntryData, getChatEntryData } from '@2060/model'
 
 const LIMIT_STEP_SIZE = 25
 
 export const useChatEntries = (threadId: string) => {
   const { realm } = useLocalRealm()
-  const { loading } = useChats()
   const limit = useRef<number>(LIMIT_STEP_SIZE)
   const [chatEntries, setChatEntries] = useState<ChatEntryData[]>([])
   const entries = useRef<Results<ChatEntry>>(undefined)
@@ -34,14 +31,13 @@ export const useChatEntries = (threadId: string) => {
   }
 
   const loadChatEntries = () => {
-    if (!realm || loading) return
+    if (!realm) return
     entries.current?.removeAllListeners()
-    entries.current = realm
-      .objects(ChatEntry)
-      .filtered(`chatThreadId == '${threadId}' SORT(createdAt DESC) LIMIT(${limit.current})`)
-      .sorted('createdAt', true)
+    const query = `chatThreadId == '${threadId}' SORT(createdAt DESC) LIMIT(${limit.current})`
+    entries.current = realm.objects(ChatEntry).filtered(query)
+    const newLoadedChatEntries = entries.current.slice(limit.current - LIMIT_STEP_SIZE, limit.current)
     limit.current += LIMIT_STEP_SIZE
-    setChatEntries(entries.current.map(getChatEntryData).reverse())
+    setChatEntries([...chatEntries, ...newLoadedChatEntries.map(getChatEntryData).reverse()])
     updateChatEntryListener()
   }
 

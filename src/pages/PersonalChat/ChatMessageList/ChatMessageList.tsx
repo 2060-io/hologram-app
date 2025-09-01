@@ -33,10 +33,10 @@ const renderItem = ({ item, index, props }: ItemProps) => {
   }
   return <ChatMessage key={item.id} {...messageProps} />
 }
+const keyExtractor = (item: ChatEntryMessage) => `${item.id}`
 
 export const ChatMessageList = memo((props: ChatMessageListProps) => {
   const { messages, listViewProps } = props
-  const keyExtractor = (item: ChatEntryMessage) => `${item.id}`
   const renderListFromBottom = messages.length > 1
 
   return (
