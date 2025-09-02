@@ -1,31 +1,27 @@
-package com.localnativemodules
+package com.videoproperties
 
 import android.util.Log
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
-import com.facebook.react.bridge.ReactContextBaseJavaModule
-import com.facebook.react.bridge.ReactMethod
+import com.facebook.react.module.annotations.ReactModule
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 
-class FileChunkGeneratorModule internal constructor(context: ReactApplicationContext?) :
-    ReactContextBaseJavaModule(context) {
-    override fun getName(): String {
-        return "FileChunkGeneratorModule"
-    }
+@ReactModule(name = FileChunkGeneratorModule.NAME)
+class FileChunkGeneratorModule(reactContext: ReactApplicationContext) :
+  NativeFileChunkGeneratorSpec(reactContext) {
 
-    @ReactMethod
-    fun createChunks(
+    override fun createChunks(
         filePath: String,
         outputFilePathPrefix: String,
-        chunkSize: Int,
+        chunkSize: Double,
         promise: Promise
     ) {
         Log.d(
             "FileChunkGeneratorModule",
-            ("createChunks of size " + chunkSize + " for file: " + filePath
+            ("createChunks of size " + chunkSize.toInt() + " for file: " + filePath
                     + " and output directory: " + outputFilePathPrefix)
         )
 
@@ -38,7 +34,7 @@ class FileChunkGeneratorModule internal constructor(context: ReactApplicationCon
 
             while (fis.available() > 0) {
                 val container =
-                    ByteArray(if (fis.available() < chunkSize) fis.available() else chunkSize)
+                    ByteArray(if (fis.available() < chunkSize.toInt()) fis.available() else chunkSize.toInt())
                 val currentChunkSize = fis.read(container)
                 Log.d(
                     "FileChunkGeneratorModule",
@@ -65,8 +61,7 @@ class FileChunkGeneratorModule internal constructor(context: ReactApplicationCon
         promise.resolve(promiseArray)
     }
 
-    @ReactMethod
-    fun readChunk(filePath: String, offset: Double, length: Double, promise: Promise) {
+    override fun readChunk(filePath: String, offset: Double, length: Double, promise: Promise) {
         Log.d(
             "FileChunkGeneratorModule", ("read chunk for file: " + filePath
                     + " at offset " + offset + "with length " + length)
@@ -90,4 +85,8 @@ class FileChunkGeneratorModule internal constructor(context: ReactApplicationCon
             promise.reject("-1", e.message)
         }
     }
+
+    companion object {
+    const val NAME = "FileChunkGenerator"
+  }
 }

@@ -1,7 +1,11 @@
 import { CipheringInfo } from '@2060.io/credo-ts-didcomm-media-sharing'
-import { nativeRandomKey, nativeEncryptFile, nativeDecryptFile } from 'react-native-local-native-modules'
+import {
+  randomKey,
+  encryptFile as nativeEncryptFile,
+  decryptFile as nativeDecryptFile,
+} from 'react-native-video-properties'
 
-import { logError } from './log'
+import { log, logError } from './log'
 
 export async function encryptFile(encryptOptions: {
   originFilePath: string
@@ -9,8 +13,8 @@ export async function encryptFile(encryptOptions: {
 }): Promise<CipheringInfo> {
   const { originFilePath, destinationFilePath } = encryptOptions
   // Create ciphering parameters
-  const key = await nativeRandomKey(32)
-  const iv = await nativeRandomKey(16)
+  const key = await randomKey(32)
+  const iv = await randomKey(16)
   const ciphering = {
     algorithm: 'aes-256-cbc',
     parameters: {
@@ -19,8 +23,8 @@ export async function encryptFile(encryptOptions: {
     },
   }
 
-  await nativeEncryptFile(originFilePath, destinationFilePath, key, iv, 'aes-256-cbc')
-
+  const response = await nativeEncryptFile(originFilePath, destinationFilePath, key, iv, 'aes-256-cbc')
+  log('response', { response, ciphering })
   return ciphering
 }
 
@@ -39,5 +43,6 @@ export async function decryptFile(decryptOptions: {
     throw Error('There are some missing ciphering parameters')
   }
 
-  await nativeDecryptFile(originFilePath, destinationFilePath, key, iv, algorithm)
+  const response = await nativeDecryptFile(originFilePath, destinationFilePath, key, iv, algorithm)
+  log('response', { response })
 }

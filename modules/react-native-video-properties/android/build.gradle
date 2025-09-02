@@ -9,8 +9,7 @@ buildscript {
   }
 
   dependencies {
-    classpath "com.android.tools.build:gradle:8.7.2"
-    // noinspection DifferentKotlinGradleVersion
+    classpath "com.android.tools.build:gradle:8.8.1"
     classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${getExtOrDefault('kotlinVersion')}"
   }
 }
@@ -72,6 +71,10 @@ repositories {
 def kotlin_version = getExtOrDefault("kotlinVersion")
 
 dependencies {
+  implementation 'com.google.android.gms:play-services-auth:21.4.0'
+  implementation 'com.madgag.spongycastle:core:1.58.0.0'
+  implementation 'com.madgag.spongycastle:prov:1.58.0.0'
+  implementation 'com.madgag.spongycastle:pg:1.54.0.0'
   implementation "com.facebook.react:react-android"
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 }

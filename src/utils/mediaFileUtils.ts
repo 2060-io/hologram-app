@@ -5,7 +5,7 @@ import { ImageOrVideo } from 'react-native-image-crop-picker'
 import { getVideoProperties } from 'react-native-video-properties'
 
 import { copyFile, deleteFile } from './RNFS'
-import { logError } from './log'
+import { log, logError } from './log'
 
 import { IS_IOS } from '@2060/constants'
 import { DidCommMediaFileSharingData } from '@2060/hooks/agent'
@@ -44,6 +44,7 @@ const getDataForVideo = async (currentFileValues: DidCommMediaFileSharingData) =
   let height = 0
   try {
     const properties = await getVideoProperties(currentFileValues.path)
+    log('estos son los properties', properties)
     if (properties) {
       duration = properties.duration
       width = properties.width

@@ -12,8 +12,8 @@
   "license": "UNLICENSED",
   "homepage": "#readme",
   "create-react-native-library": {
-    "languages": "kotlin-objc",
     "type": "turbo-module",
+    "languages": "kotlin-objc",
     "version": "0.50.2"
   }
 }

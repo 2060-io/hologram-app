@@ -102,7 +102,6 @@
     "react-native-job-queue": "0.5.3",
     "react-native-keyboard-aware-scroll-view": "0.9.5",
     "react-native-keyboard-controller": "1.18.5",
-    "react-native-local-native-modules": "file:./modules/local-native-modules",
     "react-native-localize": "3.5.1",
     "react-native-open-notification": "0.1.4",
     "react-native-permissions": "5.4.2",
@@ -118,6 +117,7 @@
     "react-native-swipe-list-view": "3.2.9",
     "react-native-vector-icons": "10.3.0",
     "react-native-video": "6.16.1",
+    "react-native-video-properties": "file:./modules/react-native-video-properties",
     "react-native-vision-camera": "4.7.1",
     "react-native-vision-camera-text-recognition": "3.1.1",
     "react-native-webrtc": "124.0.6",
@@ -126,8 +126,7 @@
     "react-native-zip-archive": "7.0.1",
     "readable-stream": "^4.7.0",
     "realm": "20.2.0",
-    "rn-emoji-keyboard": "1.7.0",
-    "react-native-video-properties": "file:./modules/react-native-video-properties"
+    "rn-emoji-keyboard": "1.7.0"
   },
   "devDependencies": {
     "@babel/helper-get-function-arity": "7.16.7",

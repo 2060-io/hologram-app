@@ -1,27 +1,18 @@
 package com.videoproperties
 
-import com.facebook.react.bridge.ReactApplicationContext
-import com.facebook.react.module.annotations.ReactModule
-import com.facebook.react.bridge.Promise
 import android.media.MediaPlayer
 import android.net.Uri
 import com.facebook.react.bridge.Arguments
-import com.facebook.react.bridge.WritableMap
+import com.facebook.react.bridge.Promise
+import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContext
+import com.facebook.react.module.annotations.ReactModule
 
 @ReactModule(name = VideoPropertiesModule.NAME)
 class VideoPropertiesModule(reactContext: ReactApplicationContext) :
   NativeVideoPropertiesSpec(reactContext) {
 
-  private val mReactContext: ReactContext?
-
-  init {
-    mReactContext = reactContext
-  }
-
-  override fun getName(): String {
-    return NAME
-  }
+  private val mReactContext: ReactContext? = reactContext
 
   override fun getVideoProperties(videoPath: String, promise: Promise) {
          try {
