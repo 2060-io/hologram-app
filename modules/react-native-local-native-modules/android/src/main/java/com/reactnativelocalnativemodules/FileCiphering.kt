@@ -14,8 +14,8 @@ import javax.crypto.spec.SecretKeySpec
 import org.spongycastle.util.encoders.Hex
 import javax.crypto.spec.IvParameterSpec
 
-@ReactModule(name = FileCipheringModule.NAME)
-class FileCipheringModule(reactContext: ReactApplicationContext) :NativeFileCipheringModuleSpec(reactContext){
+@ReactModule(name = FileCiphering.NAME)
+class FileCiphering(reactContext: ReactApplicationContext) :NativeFileCipheringSpec(reactContext){
     override fun randomKey(length: Double, promise: Promise) {
         try {
             val key = ByteArray(length.toInt())
@@ -37,7 +37,7 @@ class FileCipheringModule(reactContext: ReactApplicationContext) :NativeFileCiph
         promise: Promise
     ) {
         Log.d(
-            "FileCipheringModule", ("encryptFile inputPath: " + filePath
+            "FileCiphering", ("encryptFile inputPath: " + filePath
                     + " outputPath: " + outputPath)
         )
         try {
@@ -46,14 +46,14 @@ class FileCipheringModule(reactContext: ReactApplicationContext) :NativeFileCiph
 
             val data = ByteArray(fis.available())
             val bytesRead = fis.read(data)
-            Log.d("FileCipheringModule", "read $bytesRead bytes")
+            Log.d("FileCiphering", "read $bytesRead bytes")
             val encrypted = encrypt(data, key, iv)
-            Log.d("FileCipheringModule", "encrypted")
+            Log.d("FileCiphering", "encrypted")
 
             val fos = FileOutputStream(outputPath)
             fos.write(encrypted)
             fos.close()
-            Log.d("FileCipheringModule", "file written")
+            Log.d("FileCiphering", "file written")
 
             promise.resolve(true)
         } catch (e: Exception) {
@@ -71,7 +71,7 @@ class FileCipheringModule(reactContext: ReactApplicationContext) :NativeFileCiph
     ) {
         try {
             Log.d(
-                "FileCipheringModule", ("decryptFile inputPath: " + filePath
+                "FileCiphering", ("decryptFile inputPath: " + filePath
                         + " outputPath: " + outputPath)
             )
 
@@ -80,15 +80,15 @@ class FileCipheringModule(reactContext: ReactApplicationContext) :NativeFileCiph
 
             val data = ByteArray(fis.available())
             val bytesRead = fis.read(data)
-            Log.d("FileCipheringModule", "read $bytesRead bytes")
+            Log.d("FileCiphering", "read $bytesRead bytes")
             val decrypted = decrypt(data, key, iv)
 
-            Log.d("FileCipheringModule", "decrypted")
+            Log.d("FileCiphering", "decrypted")
 
             val fos = FileOutputStream(outputPath)
             fos.write(decrypted)
             fos.close()
-            Log.d("FileCipheringModule", "file written")
+            Log.d("FileCiphering", "file written")
 
             promise.resolve(true)
         } catch (e: Exception) {

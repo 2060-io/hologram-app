@@ -19,8 +19,8 @@ import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.Scope
 
-@ReactModule(name= GoogleDriveModule.NAME)
-class GoogleDriveModule(reactContext: ReactApplicationContext): NativeGoogleDriveSpec(reactContext), ActivityEventListener {
+@ReactModule(name= GoogleDrive.NAME)
+class GoogleDrive(reactContext: ReactApplicationContext): NativeGoogleDriveSpec(reactContext), ActivityEventListener {
 
     companion object {
         const val NAME: String = "GoogleDrive"

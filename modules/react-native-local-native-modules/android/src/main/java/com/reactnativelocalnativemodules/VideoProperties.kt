@@ -8,8 +8,8 @@ import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContext
 import com.facebook.react.module.annotations.ReactModule
 
-@ReactModule(name = VideoPropertiesModule.NAME)
-class VideoPropertiesModule(reactContext: ReactApplicationContext) :
+@ReactModule(name = VideoProperties.NAME)
+class VideoProperties(reactContext: ReactApplicationContext) :
   NativeVideoPropertiesSpec(reactContext) {
 
   private val mReactContext: ReactContext? = reactContext

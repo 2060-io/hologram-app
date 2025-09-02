@@ -9,8 +9,8 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 
-@ReactModule(name = FileChunkGeneratorModule.NAME)
-class FileChunkGeneratorModule(reactContext: ReactApplicationContext) :
+@ReactModule(name = FileChunkGenerator.NAME)
+class FileChunkGenerator(reactContext: ReactApplicationContext) :
   NativeFileChunkGeneratorSpec(reactContext) {
 
     override fun createChunks(
@@ -20,7 +20,7 @@ class FileChunkGeneratorModule(reactContext: ReactApplicationContext) :
         promise: Promise
     ) {
         Log.d(
-            "FileChunkGeneratorModule",
+            "FileChunkGenerator",
             ("createChunks of size " + chunkSize.toInt() + " for file: " + filePath
                     + " and output directory: " + outputFilePathPrefix)
         )
@@ -37,7 +37,7 @@ class FileChunkGeneratorModule(reactContext: ReactApplicationContext) :
                     ByteArray(if (fis.available() < chunkSize.toInt()) fis.available() else chunkSize.toInt())
                 val currentChunkSize = fis.read(container)
                 Log.d(
-                    "FileChunkGeneratorModule",
+                    "FileChunkGenerator",
                     ("creating chunk $chunkCount with size: $currentChunkSize")
                 )
                 val chunkFilePath = outputFilePathPrefix + '.' + chunkCount++.toString()
@@ -45,10 +45,10 @@ class FileChunkGeneratorModule(reactContext: ReactApplicationContext) :
                 fos.write(container)
                 fos.close()
                 outputPaths.add(chunkFilePath)
-                Log.d("FileChunkGeneratorModule", "created chunk $chunkCount")
+                Log.d("FileChunkGenerator", "created chunk $chunkCount")
             }
         } catch (e: Exception) {
-            Log.d("FileChunkGeneratorModule", "Error: " + e.message)
+            Log.d("FileChunkGenerator", "Error: " + e.message)
         }
 
         val returnArray = outputPaths.toTypedArray<String>()
@@ -63,7 +63,7 @@ class FileChunkGeneratorModule(reactContext: ReactApplicationContext) :
 
     override fun readChunk(filePath: String, offset: Double, length: Double, promise: Promise) {
         Log.d(
-            "FileChunkGeneratorModule", ("read chunk for file: " + filePath
+            "FileChunkGenerator", ("read chunk for file: " + filePath
                     + " at offset " + offset + "with length " + length)
         )
         try {
@@ -72,16 +72,16 @@ class FileChunkGeneratorModule(reactContext: ReactApplicationContext) :
 
             val data = ByteArray(length.toInt())
             fis.skip(offset.toLong())
-            Log.d("FileChunkGeneratorModule", "reading chunk")
+            Log.d("FileChunkGenerator", "reading chunk")
             fis.read(data)
-            Log.d("FileChunkGeneratorModule", "chunk succesfully read")
+            Log.d("FileChunkGenerator", "chunk succesfully read")
             val result = Arguments.createArray()
             for (b in data) {
                 result.pushInt(b.toInt())
             }
             promise.resolve(result)
         } catch (e: Exception) {
-            Log.d("FileChunkGeneratorModule", "Error: " + e.message)
+            Log.d("FileChunkGenerator", "Error: " + e.message)
             promise.reject("-1", e.message)
         }
     }
