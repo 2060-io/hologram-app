@@ -1,4 +1,4 @@
-package com.videoproperties
+package com.reactnativelocalnativemodules
 
 import android.util.Log
 import com.facebook.react.bridge.Arguments

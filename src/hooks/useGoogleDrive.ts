@@ -8,7 +8,7 @@ import {
   googleDriveGetAccessToken,
   googleDriveSelectAccount,
   readChunk,
-} from 'react-native-video-properties'
+} from 'react-native-local-native-modules'
 
 import {
   restoreProgressInitialValues,

@@ -1,4 +1,4 @@
-package com.videoproperties
+package com.reactnativelocalnativemodules
 
 import android.accounts.Account
 import android.accounts.AccountManager

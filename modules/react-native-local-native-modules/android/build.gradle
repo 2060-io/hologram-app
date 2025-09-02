@@ -1,6 +1,6 @@
 buildscript {
   ext.getExtOrDefault = {name ->
-    return rootProject.ext.has(name) ? rootProject.ext.get(name) : project.properties['VideoProperties_' + name]
+    return rootProject.ext.has(name) ? rootProject.ext.get(name) : project.properties['ReactNativeLocalNativeModules_' + name]
   }
 
   repositories {
@@ -21,11 +21,11 @@ apply plugin: "kotlin-android"
 apply plugin: "com.facebook.react"
 
 def getExtOrIntegerDefault(name) {
-  return rootProject.ext.has(name) ? rootProject.ext.get(name) : (project.properties["VideoProperties_" + name]).toInteger()
+  return rootProject.ext.has(name) ? rootProject.ext.get(name) : (project.properties["ReactNativeLocalNativeModules_" + name]).toInteger()
 }
 
 android {
-  namespace "com.videoproperties"
+  namespace "com.reactnativelocalnativemodules"
 
   compileSdkVersion getExtOrIntegerDefault("compileSdkVersion")
 
@@ -81,6 +81,6 @@ dependencies {
 
 react {
   jsRootDir = file("../src/")
-  libraryName = "VideoProperties"
-  codegenJavaPackageName = "com.videoproperties"
+  libraryName = "ReactNativeLocalNativeModules"
+  codegenJavaPackageName = "com.reactnativelocalnativemodules"
 }

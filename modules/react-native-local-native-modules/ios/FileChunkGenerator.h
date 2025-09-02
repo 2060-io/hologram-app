@@ -1,4 +1,4 @@
-#import <VideoPropertiesSpec/VideoPropertiesSpec.h>
+#import <RNLocalNativeModulesSpec/RNLocalNativeModulesSpec.h>
 
 @interface FileChunkGenerator : NSObject <NativeFileChunkGeneratorSpec>
 

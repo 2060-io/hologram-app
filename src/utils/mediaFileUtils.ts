@@ -2,7 +2,7 @@ import { Image } from 'react-native'
 import { Video as VideoCompressor } from 'react-native-compressor'
 import { stat, TemporaryDirectoryPath } from 'react-native-fs'
 import { ImageOrVideo } from 'react-native-image-crop-picker'
-import { getVideoProperties } from 'react-native-video-properties'
+import { getVideoProperties } from 'react-native-local-native-modules'
 
 import { copyFile, deleteFile } from './RNFS'
 import { log, logError } from './log'

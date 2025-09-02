@@ -1,11 +1,11 @@
-package com.videoproperties
+package com.reactnativelocalnativemodules
 
 import com.facebook.react.ReactPackage
 import com.facebook.react.bridge.NativeModule
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.uimanager.ViewManager
 
-class VideoPropertiesPackage : ReactPackage {
+class LocalNativeModulesPackage : ReactPackage {
    override fun createNativeModules(reactContext: ReactApplicationContext): List<NativeModule> {
     return listOf(VideoPropertiesModule(reactContext), FileChunkGeneratorModule(reactContext),
         FileCipheringModule(reactContext), GoogleDriveModule(reactContext))

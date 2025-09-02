@@ -7,7 +7,7 @@ import { t } from 'i18next'
 import React, { useEffect, useCallback, useRef, useState } from 'react'
 import Upload, { CompletedData, UploadOptions } from 'react-native-background-upload'
 import { copyFile, downloadFile } from 'react-native-fs'
-import { createChunks } from 'react-native-video-properties'
+import { createChunks } from 'react-native-local-native-modules'
 
 import { generateFileName } from '../media/files'
 import { createLocalPreview } from '../media/preview'

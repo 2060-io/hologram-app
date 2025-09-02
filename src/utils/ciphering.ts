@@ -3,7 +3,7 @@ import {
   randomKey,
   encryptFile as nativeEncryptFile,
   decryptFile as nativeDecryptFile,
-} from 'react-native-video-properties'
+} from 'react-native-local-native-modules'
 
 import { log, logError } from './log'
 

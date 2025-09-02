@@ -13297,6 +13297,9 @@ react-native-keyboard-controller@1.18.5:
   dependencies:
     react-native-is-edge-to-edge "^1.2.1"
 
+"react-native-local-native-modules@file:./modules/react-native-local-native-modules":
+  version "0.0.0"
+
 react-native-localize@3.5.1:
   version "3.5.1"
   resolved "https://registry.yarnpkg.com/react-native-localize/-/react-native-localize-3.5.1.tgz#d74dba8d3e7763031a731b2c96cc225c9ea81ff2"
@@ -13418,9 +13421,6 @@ react-native-version@4.0.0:
     plist "^3.0.1"
     resolve-from "^5.0.0"
     semver "^7.0.0"
-
-"react-native-video-properties@file:./modules/react-native-video-properties":
-  version "0.0.0"
 
 react-native-video@6.16.1:
   version "6.16.1"

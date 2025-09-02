@@ -1,10 +1,10 @@
 {
-  "name": "react-native-video-properties",
+  "name": "react-native-local-native-modules",
   "version": "0.0.0",
   "description": "library to get video metadata",
   "main": "src/index",
   "codegenConfig": {
-    "name": "VideoPropertiesSpec",
+    "name": "RNLocalNativeModulesSpec",
     "type": "modules",
     "jsSrcsDir": "src"
   },
