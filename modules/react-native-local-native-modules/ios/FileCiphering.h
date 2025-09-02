@@ -1,5 +1,5 @@
 #import <RNLocalNativeModulesSpec/RNLocalNativeModulesSpec.h>
 
-@interface FileCiphering : NSObject <NativeFileCipheringModuleSpec>
+@interface FileCiphering : NSObject <NativeFileCipheringSpec>
 
 @end

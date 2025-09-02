@@ -1,5 +1,5 @@
 import FileChunkGenerator from './NativeFileChunkGenerator'
-import NativeFileCipheringModule from './NativeFileCiphering'
+import NativeFileCiphering from './NativeFileCiphering'
 import NativeGoogleDrive from './NativeGoogleDrive'
 import VideoProperties, { MediaInfo } from './NativeVideoProperties'
 
@@ -20,7 +20,7 @@ export function readChunk(filePath: string, offset: number, length: number): Pro
 }
 
 export function randomKey(length: number): Promise<string> {
-  return NativeFileCipheringModule.randomKey(length)
+  return NativeFileCiphering.randomKey(length)
 }
 
 export function encryptFile(
@@ -30,7 +30,7 @@ export function encryptFile(
   iv: string,
   algorithm: string,
 ): Promise<boolean> {
-  return NativeFileCipheringModule.encryptFile(filePath, outputPath, key, iv, algorithm)
+  return NativeFileCiphering.encryptFile(filePath, outputPath, key, iv, algorithm)
 }
 export function decryptFile(
   filePath: string,
@@ -39,7 +39,7 @@ export function decryptFile(
   iv: string,
   algorithm: string,
 ): Promise<boolean> {
-  return NativeFileCipheringModule.decryptFile(filePath, outputPath, key, iv, algorithm)
+  return NativeFileCiphering.decryptFile(filePath, outputPath, key, iv, algorithm)
 }
 
 export function googleDriveAuthorize(accountName: string): Promise<boolean> {

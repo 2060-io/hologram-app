@@ -1,4 +1,3 @@
-// FileChunkGenerator.m
 #import "FileChunkGenerator.h"
 #import <React/RCTLog.h>
 

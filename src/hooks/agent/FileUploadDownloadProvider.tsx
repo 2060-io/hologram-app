@@ -295,7 +295,6 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
       })
 
       const chunkFilePaths = await createChunks(uploadFilePath, `${mediaDirectoryPath}/${fileId}`, CHUNK_SIZE)
-      log('cipheringInfo', cipheringInfo)
 
       // Now we are safe to delete encrypted file
       await deleteFile(uploadFilePath)

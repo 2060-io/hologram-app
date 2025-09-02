@@ -5,7 +5,7 @@ import {
   decryptFile as nativeDecryptFile,
 } from 'react-native-local-native-modules'
 
-import { log, logError } from './log'
+import { logError } from './log'
 
 export async function encryptFile(encryptOptions: {
   originFilePath: string
@@ -22,9 +22,7 @@ export async function encryptFile(encryptOptions: {
       iv,
     },
   }
-
-  const response = await nativeEncryptFile(originFilePath, destinationFilePath, key, iv, 'aes-256-cbc')
-  log('response', { response, ciphering })
+  await nativeEncryptFile(originFilePath, destinationFilePath, key, iv, 'aes-256-cbc')
   return ciphering
 }
 
@@ -34,7 +32,6 @@ export async function decryptFile(decryptOptions: {
   cipheringInfo: CipheringInfo
 }) {
   const { originFilePath, destinationFilePath, cipheringInfo } = decryptOptions
-
   const algorithm = cipheringInfo.algorithm
   const iv = cipheringInfo.parameters.iv as string
   const key = cipheringInfo.parameters.key as string
@@ -42,7 +39,5 @@ export async function decryptFile(decryptOptions: {
     logError('There are some missing ciphering parameters')
     throw Error('There are some missing ciphering parameters')
   }
-
-  const response = await nativeDecryptFile(originFilePath, destinationFilePath, key, iv, algorithm)
-  log('response', { response })
+  await nativeDecryptFile(originFilePath, destinationFilePath, key, iv, algorithm)
 }
