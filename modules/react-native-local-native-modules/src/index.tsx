@@ -1,5 +1,5 @@
 import FileChunkGenerator from './NativeFileChunkGenerator'
-import NativeFileCipheringModule from './NativeFileCipheringModule'
+import NativeFileCipheringModule from './NativeFileCiphering'
 import NativeGoogleDrive from './NativeGoogleDrive'
 import VideoProperties, { MediaInfo } from './NativeVideoProperties'
 
