@@ -8,7 +8,7 @@ import ComposerInput from '../ComposerInput'
 import RepliedMessageView from '../RepliedMessageView/RepliedMessageView'
 import { getMinutesAndSeconds } from '../utils'
 
-import { SendButton, AudioButton } from './components'
+import { SendButton, AudioButton, CameraButton } from './components'
 import getStyles from './styles'
 
 import { Icon, SvgIcon, Text } from '@2060/components/common'
@@ -23,6 +23,7 @@ import {
   handleMicrophonePermission,
   checkMicrophonePermission,
   askMicrophonePermission,
+  // handleCameraPermission,
 } from '@2060/utils/permissions'
 import { toast } from '@2060/utils/toast'
 
@@ -139,7 +140,12 @@ const InputToolbarView = (props: Props) => {
   }
 
   const setAutomaticRecording = useCallback(() => setIsAutomaticRecording(true), [])
-
+  /*
+  const handleTakePhotoButton = async () => {
+    const cameraPermission = await handleCameraPermission()
+    if (!cameraPermission) return
+  }
+  */
   return (
     <View style={styles.container}>
       {isRepliedMessage && (
@@ -184,21 +190,20 @@ const InputToolbarView = (props: Props) => {
             )}
           </View>
         </View>
-        <View style={styles.rightContainer}>
-          {!showMediaOptions || hasContentTextInput ? (
-            <SendButton hasContentTextInput={hasContentTextInput} sendMessage={sendMessage} />
-          ) : (
-            <AudioButton
-              onPress={isRecordingVoiceNote ? sendVoiceMessage : handleMicrophonePermission}
-              onLongPress={startRecordVoice}
-              onTouchEnd={isRecordingVoiceNote && !isAutomaticRecording ? sendVoiceMessage : undefined}
-              isRecording={isRecordingVoiceNote}
-              isAutomaticRecording={isAutomaticRecording}
-              setAutomaticRecording={setAutomaticRecording}
-              cancelAudioRecording={cancelAudioRecording}
-            />
-          )}
-        </View>
+        {showMediaOptions && !hasContentTextInput && <CameraButton />}
+        {!showMediaOptions || hasContentTextInput ? (
+          <SendButton hasContentTextInput={hasContentTextInput} sendMessage={sendMessage} />
+        ) : (
+          <AudioButton
+            onPress={isRecordingVoiceNote ? sendVoiceMessage : handleMicrophonePermission}
+            onLongPress={startRecordVoice}
+            onTouchEnd={isRecordingVoiceNote && !isAutomaticRecording ? sendVoiceMessage : undefined}
+            isRecording={isRecordingVoiceNote}
+            isAutomaticRecording={isAutomaticRecording}
+            setAutomaticRecording={setAutomaticRecording}
+            cancelAudioRecording={cancelAudioRecording}
+          />
+        )}
         {isRecordingVoiceNote && !isAutomaticRecording && (
           <View style={styles.containerRecordingSwipeUp}>
             <SvgIcon name="lock" fill={theme.colors.tertiaryText} />
