@@ -13297,7 +13297,7 @@ react-native-keyboard-controller@1.18.5:
   dependencies:
     react-native-is-edge-to-edge "^1.2.1"
 
-"react-native-local-native-modules@file:./modules/local-native-modules":
+"react-native-local-native-modules@file:./modules/react-native-local-native-modules":
   version "0.0.0"
 
 react-native-localize@3.5.1:

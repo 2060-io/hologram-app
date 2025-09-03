@@ -102,7 +102,7 @@
     "react-native-job-queue": "0.5.3",
     "react-native-keyboard-aware-scroll-view": "0.9.5",
     "react-native-keyboard-controller": "1.18.5",
-    "react-native-local-native-modules": "file:./modules/local-native-modules",
+    "react-native-local-native-modules": "file:./modules/react-native-local-native-modules",
     "react-native-localize": "3.5.1",
     "react-native-open-notification": "0.1.4",
     "react-native-permissions": "5.4.2",

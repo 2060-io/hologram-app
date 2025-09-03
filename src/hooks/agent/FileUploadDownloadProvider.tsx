@@ -4,10 +4,10 @@ import { utils } from '@credo-ts/core'
 import { useAudioPlayer } from '@simform_solutions/react-native-audio-waveform'
 import axios from 'axios'
 import { t } from 'i18next'
-import { default as React, useEffect, useCallback, useRef, useState } from 'react'
+import React, { useEffect, useCallback, useRef, useState } from 'react'
 import Upload, { CompletedData, UploadOptions } from 'react-native-background-upload'
 import { copyFile, downloadFile } from 'react-native-fs'
-import { nativeCreateChunks } from 'react-native-local-native-modules'
+import { createChunks } from 'react-native-local-native-modules'
 
 import { generateFileName } from '../media/files'
 import { createLocalPreview } from '../media/preview'
@@ -294,11 +294,7 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
         destinationFilePath: uploadFilePath,
       })
 
-      const chunkFilePaths = await nativeCreateChunks(
-        uploadFilePath,
-        `${mediaDirectoryPath}/${fileId}`,
-        CHUNK_SIZE,
-      )
+      const chunkFilePaths = await createChunks(uploadFilePath, `${mediaDirectoryPath}/${fileId}`, CHUNK_SIZE)
 
       // Now we are safe to delete encrypted file
       await deleteFile(uploadFilePath)
