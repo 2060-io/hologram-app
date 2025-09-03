@@ -1092,33 +1092,23 @@
   resolved "https://registry.yarnpkg.com/@colors/colors/-/colors-1.5.0.tgz#bb504579c1cae923e6576a4f5da43d25f97bdbd9"
   integrity sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ==
 
-"@credo-ts/action-menu@0.5.17-alpha-20250822132955":
-  version "0.5.17-alpha-20250822132955"
-  resolved "https://registry.yarnpkg.com/@credo-ts/action-menu/-/action-menu-0.5.17-alpha-20250822132955.tgz#0fa260e89738f77b1ca330204789fb073e2685b8"
-  integrity sha512-4iDm3G8UHqWc7HOVft7KAH1mwnk/p+AK46A0qdZgJFSAz+jzhLX1I2SeGVPBbXre8rE3mB8JnTt0QgcauLevhA==
+"@credo-ts/action-menu@0.5.17":
+  version "0.5.17"
+  resolved "https://registry.yarnpkg.com/@credo-ts/action-menu/-/action-menu-0.5.17.tgz#97c819fc8de627e249e4b924add17ace8df536f0"
+  integrity sha512-EZDXbqNUDvLS8AwmgeAHyQMQqPsDxKImgyIT+OdJoniiUXigOxuSE85UDMI0jX1U/oNNyuHQbSrh3UekqBq7nw==
   dependencies:
-    "@credo-ts/core" "0.5.17-alpha-20250822132955"
+    "@credo-ts/core" "0.5.17"
     class-transformer "0.5.1"
     class-validator "0.14.1"
     rxjs "^7.8.0"
 
-"@credo-ts/action-menu@0.5.17-alpha-20250828184632":
-  version "0.5.17-alpha-20250828184632"
-  resolved "https://registry.yarnpkg.com/@credo-ts/action-menu/-/action-menu-0.5.17-alpha-20250828184632.tgz#6e137b9f42c1baad578cde5dc89d5bef0423f2b4"
-  integrity sha512-TFNCzbIx8R9CHc0ER7kS4rtnFvMdCjRO5nEsUAHC4V9XtvLcI1IF28agnTd0hqqz5So4F6mcQw4bIsIoWQ9BkQ==
-  dependencies:
-    "@credo-ts/core" "0.5.17-alpha-20250828184632"
-    class-transformer "0.5.1"
-    class-validator "0.14.1"
-    rxjs "^7.8.0"
-
-"@credo-ts/anoncreds@0.5.17-alpha-20250822132955", "@credo-ts/anoncreds@0.5.17-alpha-20250828184632", "@credo-ts/anoncreds@^0.5.11":
-  version "0.5.17-alpha-20250822132955"
-  resolved "https://registry.yarnpkg.com/@credo-ts/anoncreds/-/anoncreds-0.5.17-alpha-20250822132955.tgz#e5f1f21b8274d5a3d7515e0e361047ddc7b8d75a"
-  integrity sha512-NmmqafETI9mSTpFqnkfpNAkjJRrwUhZNwNpCueFAUOgsWmzQ5TyfhX2i2onyG3rF0GmnuArEe7z1G9LVB+1A4w==
+"@credo-ts/anoncreds@0.5.17", "@credo-ts/anoncreds@^0.5.11":
+  version "0.5.17"
+  resolved "https://registry.yarnpkg.com/@credo-ts/anoncreds/-/anoncreds-0.5.17.tgz#94428d18ded0dc751d53cb536ca413b7c28945c7"
+  integrity sha512-qkfmSvZFDTE2jB0lh2rn5oMpeYu85jSIkpbq988Vrexhh7ZbTyOOozfZ9dN/aMAxwMMKu3K1BUNYWtBbd9C+4g==
   dependencies:
     "@astronautlabs/jsonpath" "^1.1.2"
-    "@credo-ts/core" "0.5.17-alpha-20250822132955"
+    "@credo-ts/core" "0.5.17"
     "@sphereon/pex-models" "^2.3.1"
     big-integer "^1.6.51"
     bn.js "^5.2.1"
@@ -1126,34 +1116,22 @@
     class-validator "0.14.1"
     reflect-metadata "^0.1.13"
 
-"@credo-ts/askar@0.5.17-alpha-20250822132955":
-  version "0.5.17-alpha-20250822132955"
-  resolved "https://registry.yarnpkg.com/@credo-ts/askar/-/askar-0.5.17-alpha-20250822132955.tgz#fcdf319bebe84e260dcb7ba1f17e982ff3f8b508"
-  integrity sha512-qZSP479lARHMvJzA/QWxIc9K2CHHGDaTt1A7DFixdrRhz3ForEEimEEDvv49b6sikT89A92OgbWm+HY89wEdvQ==
+"@credo-ts/askar@0.5.17":
+  version "0.5.17"
+  resolved "https://registry.yarnpkg.com/@credo-ts/askar/-/askar-0.5.17.tgz#e27d0a9027955c15c78a6b670e59f999607a8980"
+  integrity sha512-F+pL41ol+JPsj8D8vTkcIqDgZYe90gvTCFSTnyv8maDCsfaSGQTkBZF0aYGWGBvTq/V1Tu07i1KueEmO3C5vhw==
   dependencies:
-    "@credo-ts/core" "0.5.17-alpha-20250822132955"
+    "@credo-ts/core" "0.5.17"
     bn.js "^5.2.1"
     class-transformer "0.5.1"
     class-validator "0.14.1"
     rxjs "^7.8.0"
     tsyringe "^4.8.0"
 
-"@credo-ts/askar@0.5.17-alpha-20250828184632":
-  version "0.5.17-alpha-20250828184632"
-  resolved "https://registry.yarnpkg.com/@credo-ts/askar/-/askar-0.5.17-alpha-20250828184632.tgz#3cfe4e34691a2f60750d8725d3ca96dcef5f1d88"
-  integrity sha512-1IoJNKIGqQanfVoZ4HS0tcLwY7yYfg4F/By7DK261Uhc+rG/dCHsCSLbF9I184cEaLtnB5XUKAmi8gGuWyI3hA==
-  dependencies:
-    "@credo-ts/core" "0.5.17-alpha-20250828184632"
-    bn.js "^5.2.1"
-    class-transformer "0.5.1"
-    class-validator "0.14.1"
-    rxjs "^7.8.0"
-    tsyringe "^4.8.0"
-
-"@credo-ts/core@0.5.13", "@credo-ts/core@0.5.17-alpha-20250822132955", "@credo-ts/core@0.5.17-alpha-20250828184632", "@credo-ts/core@^0.5.11", "@credo-ts/core@^0.5.13":
-  version "0.5.17-alpha-20250822132955"
-  resolved "https://registry.yarnpkg.com/@credo-ts/core/-/core-0.5.17-alpha-20250822132955.tgz#2ce07fb2d8a5547d47ca4e85b28d983bf2a0c18c"
-  integrity sha512-TfmBksILdZh7c5qRoDUfZda5EC2mfnPKm1G+gD6MwWEAduN5iS4uXfOMi7lJIN+LIVG/qm7CC61/pFH/TiHt3w==
+"@credo-ts/core@0.5.13", "@credo-ts/core@0.5.17", "@credo-ts/core@^0.5.11", "@credo-ts/core@^0.5.13":
+  version "0.5.17"
+  resolved "https://registry.yarnpkg.com/@credo-ts/core/-/core-0.5.17.tgz#934919727964a27fbc83a505ab70c97168c4d8a9"
+  integrity sha512-oZRj6b34PQDlKOzaw0u0WI7ayjbZAVFW07wJNcRIO2vfs1RRl4Obcr7mg365F1l+W5E1UbLizJf5uCeQr/dW4Q==
   dependencies:
     "@animo-id/mdoc" "0.2.38"
     "@animo-id/pex" "4.1.1-alpha.0"
@@ -1198,27 +1176,12 @@
     web-did-resolver "^2.0.21"
     webcrypto-core "^1.8.0"
 
-"@credo-ts/openid4vc@0.5.17-alpha-20250822132955":
-  version "0.5.17-alpha-20250822132955"
-  resolved "https://registry.yarnpkg.com/@credo-ts/openid4vc/-/openid4vc-0.5.17-alpha-20250822132955.tgz#7b7dff1d40789634aec702de00b2975ead76abd4"
-  integrity sha512-tCckqu23c6Qcmrk/xWo5z/5RHjmHxXTiW0RNhwNezC8k6328QMUdJARnOM+zWlylrKrmVrkgW9u7OLgd/ITP3w==
+"@credo-ts/openid4vc@0.5.17":
+  version "0.5.17"
+  resolved "https://registry.yarnpkg.com/@credo-ts/openid4vc/-/openid4vc-0.5.17.tgz#1dea83527a41e15deddd541cbb79c59c3de630a7"
+  integrity sha512-hnFqueW54AscO2C307gARiIieSxcUae6Di0vol4px7WIo9I+hhsZPgS/TEXXE/hLEIbrEpCeGSYy0/li+VoC+A==
   dependencies:
-    "@credo-ts/core" "0.5.17-alpha-20250822132955"
-    "@sphereon/did-auth-siop" "0.16.1-fix.173"
-    "@sphereon/oid4vc-common" "0.16.1-fix.173"
-    "@sphereon/oid4vci-client" "0.16.1-fix.173"
-    "@sphereon/oid4vci-common" "0.16.1-fix.173"
-    "@sphereon/oid4vci-issuer" "0.16.1-fix.173"
-    "@sphereon/ssi-types" "0.30.2-next.135"
-    class-transformer "^0.5.1"
-    rxjs "^7.8.0"
-
-"@credo-ts/openid4vc@0.5.17-alpha-20250828184632":
-  version "0.5.17-alpha-20250828184632"
-  resolved "https://registry.yarnpkg.com/@credo-ts/openid4vc/-/openid4vc-0.5.17-alpha-20250828184632.tgz#52ffa2348232dd1a8a6a9037c5b13aadb8052386"
-  integrity sha512-Qbaj9L6aXfeDQTaitw4+1xSUYlnFq1yCkR9kfMYJYa27Vn5ga6irv/lG0AJz9xMtTK8LRAV6RAzx1CGXYFisMA==
-  dependencies:
-    "@credo-ts/core" "0.5.17-alpha-20250828184632"
+    "@credo-ts/core" "0.5.17"
     "@sphereon/did-auth-siop" "0.16.1-fix.173"
     "@sphereon/oid4vc-common" "0.16.1-fix.173"
     "@sphereon/oid4vci-client" "0.16.1-fix.173"
@@ -1237,51 +1200,32 @@
     class-validator "0.14.1"
     tsyringe "^4.6.0"
 
-"@credo-ts/question-answer@0.5.17-alpha-20250822132955":
-  version "0.5.17-alpha-20250822132955"
-  resolved "https://registry.yarnpkg.com/@credo-ts/question-answer/-/question-answer-0.5.17-alpha-20250822132955.tgz#8681ff9e750353baaa3a3482ae0efae4661aaa6f"
-  integrity sha512-ZIvwmE6oUMLctva5GegI9n8L1PMAjoiL2lkbwX4adL2PQCqrt+RQcD8LdOuzzPM9dyrZoCpCydOABUSWNZjXfw==
+"@credo-ts/question-answer@0.5.17":
+  version "0.5.17"
+  resolved "https://registry.yarnpkg.com/@credo-ts/question-answer/-/question-answer-0.5.17.tgz#f58325152e974450b90e4db0077265e3f7d27013"
+  integrity sha512-AUjGb0q+jE3DfVAgzm8N5BF5DP8MplazkRxCsEf5a6UMimio0lZ3Om/t0pBVZaxZEzUbKRAMuIxfNsg28oWBzQ==
   dependencies:
-    "@credo-ts/core" "0.5.17-alpha-20250822132955"
+    "@credo-ts/core" "0.5.17"
     class-transformer "0.5.1"
     class-validator "0.14.1"
     rxjs "^7.8.0"
 
-"@credo-ts/question-answer@0.5.17-alpha-20250828184632":
-  version "0.5.17-alpha-20250828184632"
-  resolved "https://registry.yarnpkg.com/@credo-ts/question-answer/-/question-answer-0.5.17-alpha-20250828184632.tgz#d516a6aef1f715e2901c3f01da07fc4fcffcb488"
-  integrity sha512-z73/pu5aoFASMpiWho9zkrdz5DM3k7ASb/bafER3zEtyzmWTZcX3979SR8U3/S1L7fUQws3n/Hz0Vtm1bu8D9g==
-  dependencies:
-    "@credo-ts/core" "0.5.17-alpha-20250828184632"
-    class-transformer "0.5.1"
-    class-validator "0.14.1"
-    rxjs "^7.8.0"
-
-"@credo-ts/react-native@0.5.17-alpha-20250822132955":
-  version "0.5.17-alpha-20250822132955"
-  resolved "https://registry.yarnpkg.com/@credo-ts/react-native/-/react-native-0.5.17-alpha-20250822132955.tgz#afd958af9665175f127ada3acfbffa29e08c807d"
-  integrity sha512-Zr9sJ4+yRKnanHxYwZtdbMTePa4yfef2gyqEeo2rk6CQ4wlKEFjMoEp3qzzHGmYv58ZbnyDDdKO9FgeLV0Pe3A==
+"@credo-ts/react-native@0.5.17":
+  version "0.5.17"
+  resolved "https://registry.yarnpkg.com/@credo-ts/react-native/-/react-native-0.5.17.tgz#f454a83f9a76dd1afd732c4d864093263c240c09"
+  integrity sha512-CALp52j69YeiamR5120z1qzPbHCpQoc0oS8rVRrM9ZTjzTW+6W1hMRAsE20pqNsE5GF1TLBNVIFaTYAc+ReDGw==
   dependencies:
     "@azure/core-asynciterator-polyfill" "^1.0.2"
-    "@credo-ts/core" "0.5.17-alpha-20250822132955"
+    "@credo-ts/core" "0.5.17"
     events "^3.3.0"
 
-"@credo-ts/react-native@0.5.17-alpha-20250828184632":
-  version "0.5.17-alpha-20250828184632"
-  resolved "https://registry.yarnpkg.com/@credo-ts/react-native/-/react-native-0.5.17-alpha-20250828184632.tgz#31180555e363eb424d33d387b01c5cdcf3920150"
-  integrity sha512-LKpY3t4/xyGW3F8dE1QlAnU/ckTnN4U1j21/dPtkJIv6H63DXmmSvyoUVqOihJaX60cmXlFYY0aui335YwpaeQ==
+"@credo-ts/webvh@0.5.17":
+  version "0.5.17"
+  resolved "https://registry.yarnpkg.com/@credo-ts/webvh/-/webvh-0.5.17.tgz#e85253348ac7ac7d589e7c07fd3601e21ab3f8d5"
+  integrity sha512-vY2Fu064TzvN8LEatfgn0rl6k2zWdPDClJDbAUayLpu9i70Fmr8b+PFYpPOUtj4e1ZZZ6KOhCmn0D3L+CecAwQ==
   dependencies:
-    "@azure/core-asynciterator-polyfill" "^1.0.2"
-    "@credo-ts/core" "0.5.17-alpha-20250828184632"
-    events "^3.3.0"
-
-"@credo-ts/webvh@0.5.17-alpha-20250828184632":
-  version "0.5.17-alpha-20250828184632"
-  resolved "https://registry.yarnpkg.com/@credo-ts/webvh/-/webvh-0.5.17-alpha-20250828184632.tgz#c1bf39432c46779f35e64e7153f8f4e32f6f9414"
-  integrity sha512-T8qCZAOCTUOPo4mhcQI1SXt4FB5HMZsNJz8fotO6THal2N5hzwKom7Oz8PgfCr77svgcqGc8b5/DzhRIBxTlqQ==
-  dependencies:
-    "@credo-ts/anoncreds" "0.5.17-alpha-20250828184632"
-    "@credo-ts/core" "0.5.17-alpha-20250828184632"
+    "@credo-ts/anoncreds" "0.5.17"
+    "@credo-ts/core" "0.5.17"
     class-transformer "^0.5.1"
     class-validator "0.14.1"
     didwebvh-ts "^2.5.3"
