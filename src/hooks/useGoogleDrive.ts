@@ -4,10 +4,10 @@ import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { downloadFile, stat } from 'react-native-fs'
 import {
-  nativeReadChunk,
-  nativeGDGetAccessToken,
-  nativeGDSelectAccount,
-  nativeGDAuthorize,
+  googleDriveAuthorize,
+  googleDriveGetAccessToken,
+  googleDriveSelectAccount,
+  readChunk,
 } from 'react-native-local-native-modules'
 
 import {
@@ -55,7 +55,7 @@ export const useGoogleDrive = () => {
 
   const initializeGoogleDrive = async () => {
     const googleDrive = new GDrive()
-    const accessToken = await nativeGDGetAccessToken()
+    const accessToken = await googleDriveGetAccessToken()
     googleDrive.accessToken = accessToken
     googleDrive.fetchCoercesTypes = true
     googleDrive.fetchRejectsOnHttpErrors = true
@@ -65,7 +65,7 @@ export const useGoogleDrive = () => {
 
   const selectAccount = async () => {
     try {
-      const newSelectedAccount = await nativeGDSelectAccount(selectedGoogleAccount)
+      const newSelectedAccount = await googleDriveSelectAccount(selectedGoogleAccount)
       if (newSelectedAccount) {
         setSelectedGoogleAccount(newSelectedAccount)
         setStorageData(GOOGLE_ACCOUNT_BACKUP_PERSIST_KEY, newSelectedAccount)
@@ -79,7 +79,7 @@ export const useGoogleDrive = () => {
   const authorize = async (currentAccount: string) => {
     try {
       setIsCloudAvailable(false)
-      await nativeGDAuthorize(currentAccount)
+      await googleDriveAuthorize(currentAccount)
       await initializeGoogleDrive()
       setIsCloudAvailable(true)
     } catch (error) {
@@ -164,7 +164,7 @@ export const useGoogleDrive = () => {
         for (let i = 0; i < numberOfChunks; i++) {
           const chunkSize =
             i + 1 < numberOfChunks ? UPLOAD_SIZE_PER_CHUNK : fileToUploadInfo.size % UPLOAD_SIZE_PER_CHUNK
-          const fileChunkBase64 = await nativeReadChunk(fileToUploadLocation, start, chunkSize)
+          const fileChunkBase64 = await readChunk(fileToUploadLocation, start, chunkSize)
           const base64ToBuffer = Buffer.from(fileChunkBase64)
           const end = start + base64ToBuffer.length - 1
           const contentRange = `bytes ${start}-${end}/${fileToUploadInfo.size}`
