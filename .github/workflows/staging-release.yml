@@ -140,7 +140,7 @@ jobs:
         run: |
           wget https://dl.min.io/client/mc/release/linux-amd64/mc
           chmod +x mc
-          sudo mv mc /usr/local/bin/
+          echo "$PWD" >> $GITHUB_PATH
           mc alias set myminio $MINIO_HOST $MINIO_USERNAME $MINIO_PASSWORD
           mc mb --ignore-existing myminio/repository/staging/hologram-app/$NEW_RELEASE_VERSION
           mc cp ./android/app/build/outputs/apk/staging/release/app-staging-release.apk myminio/repository/staging/hologram-app/$NEW_RELEASE_VERSION/app.apk
@@ -249,7 +249,7 @@ jobs:
         run: |
           wget https://dl.min.io/client/mc/release/linux-amd64/mc
           chmod +x mc
-          sudo mv mc /usr/local/bin/
+          echo "$PWD" >> $GITHUB_PATH
           mc alias set myminio $MINIO_HOST $MINIO_USERNAME $MINIO_PASSWORD
 
       - name: Upload manifest.plist to MinIO
