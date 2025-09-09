@@ -4,6 +4,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { SafeAreaView, Alert, View, TouchableOpacity } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import Share from 'react-native-share'
 
 import getStyles from './styles'
 
@@ -17,6 +18,8 @@ import { useConfig } from '@2060/hooks/providers/ConfigProvider'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { deleteAllKeys } from '@2060/services/keys'
+import { logError } from '@2060/utils'
+import { existsFile, LOG_FILE_PATH } from '@2060/utils/RNFS'
 import {
   allDevEnvs,
   DevEnv,
@@ -128,6 +131,7 @@ const Developer = ({ navigation }: Props) => {
       navigation.navigate('Home')
     } catch (error) {
       Alert.alert('Error', `${error}`)
+      logError(`Error deleting wallet from developer screen: ${error}`)
     } finally {
       setIsDeletingWallet(false)
     }
@@ -155,6 +159,24 @@ const Developer = ({ navigation }: Props) => {
     await saveLogsEnabled(newAreEnabled)
   }
 
+  const exportLogs = async () => {
+    try {
+      const isFileExist = await existsFile(LOG_FILE_PATH)
+      if (!isFileExist) {
+        Alert.alert(t('settings.noLogsFileFound'))
+        return
+      }
+      Share.open({
+        url: `file://${LOG_FILE_PATH}`,
+        type: 'text/plain',
+        failOnCancel: false,
+      })
+    } catch (error) {
+      Alert.alert(t('settings.couldNotExportLogs'))
+      logError('Could not export app logs', error)
+    }
+  }
+
   const options = [
     {
       iconName: 'trash',
@@ -175,6 +197,11 @@ const Developer = ({ navigation }: Props) => {
       iconName: 'edit',
       text: t('settings.displayLogs'),
       rightContent: () => <Switch isChecked={logsEnabled} onToggle={toggleLogsEnabled} />,
+    },
+    {
+      iconName: 'download',
+      text: t('settings.exportLogs'),
+      onPress: exportLogs,
     },
   ]
 

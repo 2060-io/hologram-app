@@ -7,7 +7,7 @@ import { baseAgentConfig } from './setupMobileAgent'
 
 import { manageBackgroundChatEntryChanges, subscribeToAgentChatEvents } from '@2060/hooks/agent/chat'
 import { manageConnectionStateChangedEvent } from '@2060/hooks/agent/connections/manageConnectionStateChangedEvent'
-import { logWarn } from '@2060/utils'
+import { log } from '@2060/utils'
 import { isBackgroundNotificationHandlerEnabled } from '@2060/utils/developer'
 import { arePushNotificationsAllowed, deleteRemoteNotifications } from '@2060/utils/pushNotificationsUtils'
 
@@ -57,12 +57,12 @@ export async function backgroundPushNotificationHandler(remoteMessage: FirebaseM
     if (!mobileAgentInstance.getMobileAgent()?.isInitialized) {
       await mobileAgentInstance.openAndInitMobileAgent()
     } else {
-      logWarn('From backgroundPushNotificationHandler agent is already initialized')
+      log('From backgroundPushNotificationHandler agent is already initialized')
     }
     if (!mobileAgentInstance.getIsAppSubscribedToEvents()) {
       subscribeToAgentChatEvents(agent, realm, false, () => undefined)
     } else {
-      logWarn('From backgroundPushNotificationHandler App is already subscribed to agent events')
+      log('From backgroundPushNotificationHandler App is already subscribed to agent events')
     }
     const mediatorConnection = await agent.mediationRecipient.findDefaultMediatorConnection()
     await agent.messagePickup.pickupMessages({
