@@ -291,10 +291,10 @@ jobs:
             <p>Hello! We are glad to inform you that a new version of Hologram App is available.</p>
   
             <b>For Android</b>
-            <a href=https://$MINIO_HOST/repository/staging/hologram-app/${{env.NEW_RELEASE_VERSION}}/app.apk>Download the APK</a> and tap into the downloaded file to install the new version.
+            <a href=https://${{env.MINIO_HOST}}/repository/staging/hologram-app/${{env.NEW_RELEASE_VERSION}}/app.apk>Download the APK</a> and tap into the downloaded file to install the new version.
   
             <b>For iOS</b>
-            <a href=https://$MINIO_HOST/repository/staging/hologram-app/${{env.NEW_RELEASE_VERSION}}/install.html>Tap here to download and install</a> 
+            <a href=https://${{env.MINIO_HOST}}/repository/staging/hologram-app/${{env.NEW_RELEASE_VERSION}}/install.html>Tap here to download and install</a> 
             <br />
             <p>Kind regards,</p>
             <p>2060.io Dev Team</p>
