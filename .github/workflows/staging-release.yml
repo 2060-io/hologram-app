@@ -8,10 +8,9 @@ on:
   workflow_dispatch:
 
 env:
-  NEXUS_HOST: ${{ secrets.NEXUS_HOST }}
-  NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-  NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
-  NEXUS_DOWNLOAD_TOKEN: ${{ secrets.NEXUS_DOWNLOAD_TOKEN }}
+  MINIO_HOST: ${{ secrets.MINIO_HOST }}
+  MINIO_USERNAME: ${{ secrets.MINIO_USERNAME }}
+  MINIO_PASSWORD: ${{ secrets.MINIO_PASSWORD }}
 jobs:
   semantic-release:
     runs-on: ubuntu-latest
@@ -137,13 +136,16 @@ jobs:
           cd android
           ./gradlew clean assembleStagingRelease
 
-      - name: Upload app.apk to Nexus
+      - name: Install MinIO Client and Upload app.apk to MinIO
         run: |
-          curl --fail-with-body -u $NEXUS_USERNAME:$NEXUS_PASSWORD \
-            -X PUT "https://$NEXUS_HOST/repository/staging/hologram-app/$NEW_RELEASE_VERSION/app.apk" \
-            --upload-file ./android/app/build/outputs/apk/staging/release/app-staging-release.apk
-          
-          echo "app.apk uploaded to Nexus successfully."
+          wget https://dl.min.io/client/mc/release/linux-amd64/mc
+          chmod +x mc
+          echo "$PWD" >> $GITHUB_PATH
+          mc alias set myminio $MINIO_HOST $MINIO_USERNAME $MINIO_PASSWORD
+          mc mb --ignore-existing myminio/repository/staging/hologram-app/$NEW_RELEASE_VERSION
+          mc cp ./android/app/build/outputs/apk/staging/release/app-staging-release.apk myminio/repository/staging/hologram-app/$NEW_RELEASE_VERSION/app.apk
+
+          echo "app.apk uploaded to MinIO successfully."
 
   build-ios:
     if: ${{needs.semantic-release.outputs.new-release-published == 'true'}}
@@ -202,7 +204,7 @@ jobs:
                                   <key>kind</key>
                                   <string>software-package</string>
                                   <key>url</key>
-                                  <string>https://downloader:$NEXUS_DOWNLOAD_TOKEN@$NEXUS_HOST/repository/staging/hologram-app/$NEW_RELEASE_VERSION/app.ipa</string>
+                                  <string>https://$MINIO_HOST/repository/staging/hologram-app/$NEW_RELEASE_VERSION/app.ipa</string>
                               </dict>
                           </array>
                           <key>metadata</key>
@@ -234,7 +236,7 @@ jobs:
               <title>Install Hologram App</title>
           </head>
           <body>
-              <button onclick="window.location.href='itms-services://?action=download-manifest&url=https%3A%2F%2Fdownloader%3A$NEXUS_DOWNLOAD_TOKEN%40$NEXUS_HOST%2Frepository%2Fstaging%2Fhologram-app%2F$NEW_RELEASE_VERSION%2Fmanifest.plist'">
+              <button onclick="window.location.href='itms-services://?action=download-manifest&url=https%3A%2F%2F$MINIO_HOST%2Frepository%2Fstaging%2Fhologram-app%2F$NEW_RELEASE_VERSION%2Fmanifest.plist'">
                   Tap to Install
               </button>
           </body>
@@ -243,28 +245,27 @@ jobs:
 
           echo "install.html created successfully."
 
-      - name: Upload manifest.plist to Nexus
+      - name: Install MinIO Client
         run: |
-          # Upload the manifest.plist to the Nexus repository
-          curl --fail-with-body -u $NEXUS_USERNAME:$NEXUS_PASSWORD \
-            -X PUT "https://$NEXUS_HOST/repository/staging/hologram-app/$NEW_RELEASE_VERSION/manifest.plist" \
-            --upload-file manifest.plist
-            
-          echo "manifest.plist uploaded to Nexus successfully."
-  
-          curl --fail-with-body -u $NEXUS_USERNAME:$NEXUS_PASSWORD \
-            -X PUT "https://$NEXUS_HOST/repository/staging/hologram-app/$NEW_RELEASE_VERSION/install.html" \
-            --upload-file install.html
-            
-          echo "install.html uploaded to Nexus successfully."
-  
-      - name: Upload app.ipa to Nexus
+          wget https://dl.min.io/client/mc/release/linux-amd64/mc
+          chmod +x mc
+          echo "$PWD" >> $GITHUB_PATH
+          mc alias set myminio $MINIO_HOST $MINIO_USERNAME $MINIO_PASSWORD
+
+      - name: Upload manifest.plist to MinIO
         run: |
-          curl --fail-with-body -u $NEXUS_USERNAME:$NEXUS_PASSWORD \
-            -X PUT "https://$NEXUS_HOST/repository/staging/hologram-app/$NEW_RELEASE_VERSION/app.ipa" \
-            --upload-file ./ios/builds/2060Staging.ipa
-            
-          echo "app.ipa uploaded to Nexus successfully."
+          # Upload the manifest.plist to the MinIO repository
+          mc mb --ignore-existing myminio/repository/staging/hologram-app/$NEW_RELEASE_VERSION
+          mc cp manifest.plist myminio/repository/staging/hologram-app/$NEW_RELEASE_VERSION/manifest.plist          
+          echo "manifest.plist uploaded to MinIO successfully."
+
+          mc cp install.html myminio/repository/staging/hologram-app/$NEW_RELEASE_VERSION/install.html          
+          echo "install.html uploaded to MinIO successfully."
+
+      - name: Upload app.ipa to MinIO
+        run: |
+          mc cp ./ios/builds/2060Staging.ipa myminio/repository/staging/hologram-app/$NEW_RELEASE_VERSION/app.ipa
+          echo "app.ipa uploaded to MinIO successfully."
 
   notify-subscribers:
     if: ${{needs.semantic-release.outputs.new-release-published == 'true'}}
@@ -292,10 +293,10 @@ jobs:
             <p>Hello! We are glad to inform you that a new version of Hologram App is available.</p>
   
             <b>For Android</b>
-            <a href=https://downloader:${{env.NEXUS_DOWNLOAD_TOKEN}}@${{env.NEXUS_HOST}}/repository/staging/hologram-app/${{env.NEW_RELEASE_VERSION}}/app.apk>Download the APK</a> and tap into the downloaded file to install the new version.
+            <a href=https://$MINIO_HOST/repository/staging/hologram-app/${{env.NEW_RELEASE_VERSION}}/app.apk>Download the APK</a> and tap into the downloaded file to install the new version.
   
             <b>For iOS</b>
-            <a href=https://downloader:${{env.NEXUS_DOWNLOAD_TOKEN}}@${{env.NEXUS_HOST}}/repository/staging/hologram-app/${{env.NEW_RELEASE_VERSION}}/install.html>Tap here to download and install</a> 
+            <a href=https://$MINIO_HOST/repository/staging/hologram-app/${{env.NEW_RELEASE_VERSION}}/install.html>Tap here to download and install</a> 
             <br />
             <p>Kind regards,</p>
             <p>2060.io Dev Team</p>
