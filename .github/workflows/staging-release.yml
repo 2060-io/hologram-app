@@ -245,10 +245,8 @@ jobs:
 
           echo "install.html created successfully."
 
-      - name: Install MinIO Client
+      - name: Setup MinIO Client
         run: |
-          wget https://dl.min.io/client/mc/release/linux-amd64/mc
-          chmod +x mc
           echo "$PWD" >> $GITHUB_PATH
           mc alias set myminio $MINIO_HOST $MINIO_USERNAME $MINIO_PASSWORD
 
