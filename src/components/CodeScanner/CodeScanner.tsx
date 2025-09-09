@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react'
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Dimensions, Platform, StyleSheet, View } from 'react-native'
 import {
@@ -29,25 +29,27 @@ interface Props {
 }
 
 const CodeScanner: React.FC<Props> = ({ isActive, onBarcodeScanned }) => {
+  const { t } = useTranslation()
+  const theme = useTheme()
+  const styles = getStyles(theme)
   const [cameraPermissionStatus, setCameraPermissionStatus] = useState<CameraPermissionStatus>()
+  const scannedCodes = useRef<string[]>([])
   const devices = useCameraDevices()
   const device = devices.find(dev => dev.position === 'back')
-  const theme = useTheme()
   const hasPermission = cameraPermissionStatus === 'granted'
-  const { t } = useTranslation()
-  const styles = getStyles(theme)
-  const [scannedCodes, setScannedCodes] = useState<string[]>([])
 
   useEffect(() => {
-    setScannedCodes([])
+    scannedCodes.current = []
   }, [isActive])
 
   const codeScanner = useCodeScanner({
     codeTypes: ['qr'],
     onCodeScanned: (codes: Code[]) => {
-      if (codes.length && codes[0].value && !scannedCodes.includes(codes[0].value)) {
-        setScannedCodes(prevScannedCodes => [...prevScannedCodes, codes[0].value ?? ''])
-        onBarcodeScanned(codes[0].value)
+      const scannedCode = codes[0].value
+      if (scannedCode) {
+        const hasNotBeenScanned = !scannedCodes.current.includes(scannedCode)
+        if (hasNotBeenScanned) onBarcodeScanned(scannedCode)
+        scannedCodes.current = [...scannedCodes.current, scannedCode]
       }
     },
   })
