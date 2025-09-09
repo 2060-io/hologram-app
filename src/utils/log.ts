@@ -1,7 +1,8 @@
-import RNFS from 'react-native-fs'
+import { appendFile, DocumentDirectoryPath } from 'react-native-fs'
 
-import { LOG_FILE_PATH } from './RNFS'
 import { toast } from './toast'
+
+export const LOG_FILE_PATH = `${DocumentDirectoryPath}/hologram.log`
 
 export function log(message: string, ...optionalParams: unknown[]) {
   if (__DEV__) {
@@ -35,7 +36,7 @@ export function logWarn(message: string, displayToast = false) {
 const writeLog = (level: string, message: string) => {
   const timestamp = new Date().toISOString()
   const logEntry = `${level}: ${timestamp}: ${message} \n`
-  RNFS.appendFile(LOG_FILE_PATH, logEntry, 'utf8').catch(error => {
+  appendFile(LOG_FILE_PATH, logEntry, 'utf8').catch(error => {
     log(error)
   })
 }

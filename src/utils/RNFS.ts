@@ -14,7 +14,6 @@ import { logError } from './log'
 import { IS_IOS } from '@2060/constants'
 
 type Encoding = 'utf8' | 'base64' | 'ascii'
-const LOG_FILE_PATH = `${DocumentDirectoryPath}/hologram.log`
 const CONFIG_FILE_PATH = `${DocumentDirectoryPath}/config.json`
 const mediaDirectoryPath = `${DocumentDirectoryPath}/media`
 const mediaPreviewsDirectoryPath = `${DocumentDirectoryPath}/media/previews`
@@ -107,5 +106,4 @@ export {
   getLocalFileUri,
   existsFile,
   CONFIG_FILE_PATH,
-  LOG_FILE_PATH,
 }

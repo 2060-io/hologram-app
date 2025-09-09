@@ -18,8 +18,8 @@ import { useConfig } from '@2060/hooks/providers/ConfigProvider'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { deleteAllKeys } from '@2060/services/keys'
-import { logError } from '@2060/utils'
-import { existsFile, LOG_FILE_PATH } from '@2060/utils/RNFS'
+import { LOG_FILE_PATH, logError } from '@2060/utils'
+import { existsFile } from '@2060/utils/RNFS'
 import {
   allDevEnvs,
   DevEnv,
