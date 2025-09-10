@@ -90,6 +90,13 @@ export function manageAgentConnectionEvents(
           connectionId: connectionRecord.id,
         },
       })
+    } else if (connectionRecord.state === DidExchangeState.ResponseReceived) {
+      addAgentActionToQueue({
+        type: AgentActionType.AcceptConnectionResponse,
+        parameters: {
+          connectionId: connectionRecord.id,
+        },
+      })
     }
     if (connectionRecord.isReady) {
       const discoverFeaturesApi = context.dependencyManager.resolve(DiscoverFeaturesApi)
