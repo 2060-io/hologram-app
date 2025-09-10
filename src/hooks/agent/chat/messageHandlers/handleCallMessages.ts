@@ -53,7 +53,7 @@ export const handleCallMessages = (options: {
       createdAt: (receivedAt ?? new Date()).getTime(),
       didcommThreadId: message.threadId,
     })
-    if (thread.id !== activeChatThreadId) {
+    if (direction === 'inbound' && thread.id !== activeChatThreadId) {
       addUnread(realm, thread.id, 1)
     }
   }
