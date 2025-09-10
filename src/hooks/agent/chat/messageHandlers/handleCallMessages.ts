@@ -2,6 +2,7 @@ import { CallOfferMessage, CallRejectMessage, DidCommCallType } from '@2060.io/c
 import { AgentMessage, ConnectionRecord, parseMessageType } from '@credo-ts/core'
 import Realm from 'realm'
 
+import { DidCommMessageDirection } from '../DidCommMessageDirection'
 import {
   createChatEntry,
   findAllDidcommThreadId,
@@ -19,8 +20,9 @@ export const handleCallMessages = (options: {
   activeChatThreadId?: string
   receivedAt?: Date
   message: AgentMessage
+  direction: DidCommMessageDirection
 }) => {
-  const { realm, connection, activeChatThreadId, receivedAt, message } = options
+  const { realm, connection, activeChatThreadId, receivedAt, message, direction } = options
   const messageType = parseMessageType(message.type)
   if (messageType.messageTypeUri === CallOfferMessage.type.messageTypeUri) {
     const callOfferMessage = message as CallOfferMessage
@@ -36,8 +38,8 @@ export const handleCallMessages = (options: {
     createChatEntry(realm, {
       chatThreadId: thread.id,
       type: ChatEntryType.CallOffer,
-      role: ChatEntryRole.Receiver,
-      state: ChatEntryState.Received,
+      role: direction === 'inbound' ? ChatEntryRole.Receiver : ChatEntryRole.Sender,
+      state: direction === 'inbound' ? ChatEntryState.Received : ChatEntryState.Submitted,
       metadata: {
         callType,
         roomId,
