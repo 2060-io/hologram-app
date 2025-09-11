@@ -13,6 +13,7 @@ import {
   OutOfBandInvitation,
   V2ProposePresentationMessage,
   DidExchangeResponseMessage,
+  DidExchangeCompleteMessage,
 } from '@credo-ts/core'
 import { AnswerMessage } from '@credo-ts/question-answer'
 import { Realm } from 'realm'
@@ -190,6 +191,17 @@ export class AgentActionExecuter {
         await options.agent.connections.acceptRequest(connectionId)
         return {
           outgoingMessageType: DidExchangeResponseMessage.type.messageTypeUri,
+        }
+      }
+    } else if (action.type === AgentActionType.AcceptConnectionResponse) {
+      const parameters = action.parameters as {
+        connectionId: string
+      }
+      return async (options: { agent: MobileAgent }) => {
+        const { connectionId } = parameters
+        await options.agent.connections.acceptResponse(connectionId)
+        return {
+          outgoingMessageType: DidExchangeCompleteMessage.type.messageTypeUri,
         }
       }
     }
