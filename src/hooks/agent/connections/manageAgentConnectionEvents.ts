@@ -90,7 +90,10 @@ export function manageAgentConnectionEvents(
           connectionId: connectionRecord.id,
         },
       })
-    } else if (connectionRecord.state === DidExchangeState.ResponseReceived) {
+    } else if (
+      connectionRecord.state === DidExchangeState.ResponseReceived &&
+      !connectionRecord.autoAcceptConnection
+    ) {
       addAgentActionToQueue({
         type: AgentActionType.AcceptConnectionResponse,
         parameters: {
