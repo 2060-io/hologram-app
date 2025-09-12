@@ -136,12 +136,10 @@ jobs:
           cd android
           ./gradlew clean assembleStagingRelease
 
-      - name: Install MinIO Client and Upload app.apk to MinIO
+      - name: Setup MinIO Client and Upload app.apk to MinIO
         run: |
-          wget https://dl.min.io/client/mc/release/linux-amd64/mc
-          chmod +x mc
           echo "$PWD" >> $GITHUB_PATH
-          mc alias set myminio $MINIO_HOST $MINIO_USERNAME $MINIO_PASSWORD
+          mc alias set myminio https://$MINIO_HOST $MINIO_USERNAME $MINIO_PASSWORD
           mc mb --ignore-existing myminio/repository/staging/hologram-app/$NEW_RELEASE_VERSION
           mc cp ./android/app/build/outputs/apk/staging/release/app-staging-release.apk myminio/repository/staging/hologram-app/$NEW_RELEASE_VERSION/app.apk
 
@@ -248,7 +246,7 @@ jobs:
       - name: Setup MinIO Client
         run: |
           echo "$PWD" >> $GITHUB_PATH
-          mc alias set myminio $MINIO_HOST $MINIO_USERNAME $MINIO_PASSWORD
+          mc alias set myminio https://$MINIO_HOST $MINIO_USERNAME $MINIO_PASSWORD
 
       - name: Upload manifest.plist to MinIO
         run: |
