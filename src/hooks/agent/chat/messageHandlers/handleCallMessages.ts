@@ -1,4 +1,9 @@
-import { CallOfferMessage, CallRejectMessage, DidCommCallType } from '@2060.io/credo-ts-didcomm-calls'
+import {
+  CallEndMessage,
+  CallOfferMessage,
+  CallRejectMessage,
+  DidCommCallType,
+} from '@2060.io/credo-ts-didcomm-calls'
 import { AgentMessage, ConnectionRecord, parseMessageType } from '@credo-ts/core'
 import Realm from 'realm'
 
@@ -63,6 +68,16 @@ export const handleCallMessages = (options: {
       const newMetadata = {
         ...chatEntry.metadata,
         state: CallOfferState.REJECTED,
+      } as CallOfferMetadata
+      updateChatEntryMetadata(realm, chatEntry.id, newMetadata)
+    }
+  }
+  if (messageType.messageTypeUri === CallEndMessage.type.messageTypeUri) {
+    const [chatEntry] = findAllDidcommThreadId(realm, message.threadId, ChatEntryType.CallOffer)
+    if (chatEntry) {
+      const newMetadata = {
+        ...chatEntry.metadata,
+        state: CallOfferState.FINISHED,
       } as CallOfferMetadata
       updateChatEntryMetadata(realm, chatEntry.id, newMetadata)
     }
