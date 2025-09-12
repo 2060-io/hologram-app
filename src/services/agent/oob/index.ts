@@ -285,7 +285,6 @@ export async function acceptInvitation(
   const routing = await getMediationRouting(agentContext)
 
   const { connectionRecord: newConnection } = await outOfBandApi.acceptInvitation(options.outOfBandId, {
-    autoAcceptConnection: true,
     label: options.label,
     routing,
     reuseConnection: true,

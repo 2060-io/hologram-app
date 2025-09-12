@@ -14,6 +14,8 @@ import {
   V2ProposePresentationMessage,
   DidExchangeResponseMessage,
   DidExchangeCompleteMessage,
+  DiscoverFeaturesApi,
+  V2QueriesMessage,
 } from '@credo-ts/core'
 import { AnswerMessage } from '@credo-ts/question-answer'
 import { Realm } from 'realm'
@@ -202,6 +204,28 @@ export class AgentActionExecuter {
         await options.agent.connections.acceptResponse(connectionId)
         return {
           outgoingMessageType: DidExchangeCompleteMessage.type.messageTypeUri,
+        }
+      }
+    } else if (action.type === AgentActionType.QueryServiceFeatures) {
+      const parameters = action.parameters as {
+        connectionId: string
+      }
+      return async (options: { agent: MobileAgent }) => {
+        const { connectionId } = parameters
+        const discoverFeaturesApi = options.agent?.context.dependencyManager.resolve(DiscoverFeaturesApi)
+        await discoverFeaturesApi.queryFeatures({
+          protocolVersion: 'v2',
+          queries: [
+            { featureType: 'protocol', match: 'https://didcomm.org/media-sharing/1.0' },
+            { featureType: 'protocol', match: 'https://didcomm.org/reactions/1.0' },
+            { featureType: 'protocol', match: 'https://didcomm.org/receipts/1.0' },
+            { featureType: 'protocol', match: 'https://didcomm.org/user-profile/1.0' },
+            { featureType: 'protocol', match: 'https://didcomm.org/calls/1.0' },
+          ],
+          connectionId,
+        })
+        return {
+          outgoingMessageType: V2QueriesMessage.type.messageTypeUri,
         }
       }
     }
