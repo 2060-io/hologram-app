@@ -156,13 +156,6 @@ export const useVideoCall = () => {
               type: AgentActionType.CreateCallOffer,
               parameters: { callType: didcommCallType, connectionId: didcommConnection.id, callInfo },
             })
-            /*
-            await agent.modules.calls.offer({
-              callType: didcommCallType,
-              connectionId: didcommConnection.id,
-              parameters: { ...callInfo },
-            })
-            */
           }
           updateCallStatus({ status: CallStatus.Connected, statusMessage: 'Connected' })
         })
@@ -514,7 +507,6 @@ export const useVideoCall = () => {
   const hangup = async () => {
     if (!agent || !didcommConnection) return
     try {
-      log('holaaa cuelgo con', didcommConnection.threadId)
       agent.modules.calls.hangup({ connectionId: didcommConnection.id, threadId: didcommThreadId })
       peer.current?.request('leaveRoom')
       finishCall()
