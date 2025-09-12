@@ -1,3 +1,4 @@
+import { CallOfferMessage, DidCommCallType } from '@2060.io/credo-ts-didcomm-calls'
 import { ShareMediaMessage } from '@2060.io/credo-ts-didcomm-media-sharing'
 import { MessageReactionsMessage, MessageReactionAction } from '@2060.io/credo-ts-didcomm-reactions'
 import { MessageReceiptsMessage, MessageState } from '@2060.io/credo-ts-didcomm-receipts'
@@ -226,6 +227,23 @@ export class AgentActionExecuter {
         })
         return {
           outgoingMessageType: V2QueriesMessage.type.messageTypeUri,
+        }
+      }
+    } else if (action.type === AgentActionType.CreateCallOffer) {
+      const parameters = action.parameters as {
+        callType: DidCommCallType
+        connectionId: string
+        callInfo: Record<string, unknown>
+      }
+      return async (options: { agent: MobileAgent }) => {
+        const { callType, connectionId, callInfo } = parameters
+        await options.agent.modules.calls.offer({
+          callType,
+          connectionId,
+          parameters: { ...callInfo },
+        })
+        return {
+          outgoingMessageType: CallOfferMessage.type.messageTypeUri,
         }
       }
     }
