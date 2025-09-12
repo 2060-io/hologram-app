@@ -12,7 +12,6 @@ import {
   DiscoverFeaturesEventTypes,
   AgentContext,
   ConnectionService,
-  DiscoverFeaturesApi,
   EventEmitter,
   DidExchangeState,
 } from '@credo-ts/core'
@@ -102,17 +101,11 @@ export function manageAgentConnectionEvents(
       })
     }
     if (connectionRecord.isReady) {
-      const discoverFeaturesApi = context.dependencyManager.resolve(DiscoverFeaturesApi)
-      await discoverFeaturesApi.queryFeatures({
-        protocolVersion: 'v2',
-        queries: [
-          { featureType: 'protocol', match: 'https://didcomm.org/media-sharing/1.0' },
-          { featureType: 'protocol', match: 'https://didcomm.org/reactions/1.0' },
-          { featureType: 'protocol', match: 'https://didcomm.org/receipts/1.0' },
-          { featureType: 'protocol', match: 'https://didcomm.org/user-profile/1.0' },
-          { featureType: 'protocol', match: 'https://didcomm.org/calls/1.0' },
-        ],
-        connectionId: connectionRecord.id,
+      addAgentActionToQueue({
+        type: AgentActionType.QueryServiceFeatures,
+        parameters: {
+          connectionId: connectionRecord.id,
+        },
       })
     }
   }
