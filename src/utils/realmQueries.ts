@@ -1,6 +1,6 @@
 import Realm from 'realm'
 
-import { ChatEntry, ChatEntryState, ChatEntryType } from '@2060/model'
+import { ChatEntry, ChatEntryRole, ChatEntryState, ChatEntryType } from '@2060/model'
 
 export const queryOfTypeMedia = `type == '${ChatEntryType.Image}' 
 OR type == '${ChatEntryType.Video}' 
@@ -36,4 +36,20 @@ export const getLastEntryInChatThread = (realm: Realm, threadId: string) => {
     .filtered(`chatThreadId == '${threadId}' SORT(createdAt DESC) LIMIT(1)`)
     .at(0)
   return lastChatEntryOfThread
+}
+
+/**
+ * Retrieves the last chat entry of type CallOffer where user is the sender(creator) of this chat entry
+ * @param realm - The Realm database instance to query.
+ * @param threadId - The ID of the chat thread for which to retrieve the last entry.
+ * @returns The last chat entry of the specified thread, or undefined if no entries exists.
+ */
+export const getMyLastChatEntryTypeCallOffer = (realm: Realm, threadId: string) => {
+  const lastChatEntry = realm
+    .objects(ChatEntry)
+    .filtered(`chatThreadId == '${threadId}'`)
+    .filtered(`type == '${ChatEntryType.CallOffer}'`)
+    .filtered(`role == '${ChatEntryRole.Sender}' SORT(createdAt DESC) LIMIT(1)`)
+    .at(0)
+  return lastChatEntry
 }

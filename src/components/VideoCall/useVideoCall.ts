@@ -11,9 +11,10 @@ import { useTranslation } from 'react-i18next'
 import InCallManager from 'react-native-incall-manager'
 import { MediaStream, mediaDevices, registerGlobals } from 'react-native-webrtc'
 
-import { AgentActionType, useMobileAgent } from '@2060/hooks/agent'
+import { AgentActionType, useChats, useMobileAgent } from '@2060/hooks/agent'
 import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
 import { useConfig } from '@2060/hooks/providers/ConfigProvider'
+import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
 import {
   ConnectionStatus,
   CallStatus,
@@ -22,6 +23,7 @@ import {
 } from '@2060/hooks/providers/useVideoCallContext'
 import { log, logError } from '@2060/utils'
 import { getAppCheckHeaders } from '@2060/utils/firebaseUtils'
+import { getMyLastChatEntryTypeCallOffer } from '@2060/utils/realmQueries'
 
 function generatePeerId(length = 8) {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
@@ -104,6 +106,8 @@ export const useVideoCall = () => {
     isRejected,
     remotePeerClosedTimeoutRef,
   } = useVideoCallContext()
+  const { findOrCreateThread } = useChats()
+  const { realm } = useLocalRealm()
   const { agent } = useMobileAgent()
   const { addAgentActionToQueue } = useAgentActionQueue()
   const connectionStatusRef = useRef<ConnectionStatus>(connectionStatus)
@@ -505,9 +509,19 @@ export const useVideoCall = () => {
   const handleSwitchSpeakers = () => setIsUsingSpeakers(!isUsingSpeakers)
 
   const hangup = async () => {
-    if (!agent || !didcommConnection) return
+    if (!agent || !didcommConnection || !realm) return
     try {
-      agent.modules.calls.hangup({ connectionId: didcommConnection.id, threadId: didcommThreadId })
+      let threadId = didcommThreadId
+      // it means that who hangs up is the creator of the call and for this case
+      // didcommThreadId will be undefined. So, we need to find manually the value of threadId
+      if (!didcommThreadId) {
+        const chatThreadId = findOrCreateThread({ connection: didcommConnection }).id
+        const myLastChatEntryTypeCallOffer = getMyLastChatEntryTypeCallOffer(realm, chatThreadId)
+        if (myLastChatEntryTypeCallOffer) {
+          threadId = myLastChatEntryTypeCallOffer.didcommThreadId
+        }
+      }
+      agent.modules.calls.hangup({ connectionId: didcommConnection.id, threadId })
       peer.current?.request('leaveRoom')
       finishCall()
     } catch (error) {
