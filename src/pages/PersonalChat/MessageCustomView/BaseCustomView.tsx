@@ -106,10 +106,7 @@ const BaseCustomView: React.FC<BaseCustomMessageViewProps> = memo(props => {
             <ImageChatView
               {...{
                 mediaRecordId: chatEntry.associatedRecordId,
-                fileMediaInfo: {
-                  user: sender,
-                  createdAt: new Date(chatEntry.createdAt),
-                },
+                fileMediaInfo: { sender, createdAt: new Date(chatEntry.createdAt) },
                 chatEntry,
                 displayTimeAndTicks,
               }}
@@ -120,10 +117,7 @@ const BaseCustomView: React.FC<BaseCustomMessageViewProps> = memo(props => {
             <VideoChatView
               {...{
                 mediaRecordId: chatEntry.associatedRecordId,
-                fileMediaInfo: {
-                  user: sender,
-                  createdAt: new Date(chatEntry.createdAt),
-                },
+                fileMediaInfo: { sender, createdAt: new Date(chatEntry.createdAt) },
                 chatEntry,
                 displayTimeAndTicks,
               }}
