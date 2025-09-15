@@ -56,15 +56,14 @@ const CallOfferChatView = ({ metadata, didcommThreadId, role }: Props) => {
   }
 
   const footer: Record<CallOfferState, React.ReactElement> = {
-    [CallOfferState.RECEIVED]:
-      role === ChatEntryRole.Receiver ? (
-        <View style={styles.buttonsContainer}>
+    [CallOfferState.RECEIVED]: (
+      <View style={styles.buttonsContainer}>
+        {role === ChatEntryRole.Receiver && (
           <OutlinedBlueButton text={t('general.refuse')} onPress={reject} style={styles.refuseButton} />
-          <BlueButton text={t('call.joinCall')} onPress={join} style={styles.joinButton} />
-        </View>
-      ) : (
-        <></>
-      ),
+        )}
+        <BlueButton text={t('call.joinCall')} onPress={join} style={styles.joinButton} />
+      </View>
+    ),
     [CallOfferState.FINISHED]: <State text={t('call.callEnded')} />,
     [CallOfferState.REJECTED]: <State text={t('call.callRejected')} type="error" />,
     [CallOfferState.EXPIRED]: (
