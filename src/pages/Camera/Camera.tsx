@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { TouchableOpacity, View } from 'react-native'
 import { GestureDetector } from 'react-native-gesture-handler'
 import Reanimated from 'react-native-reanimated'
-import { VideoFile, Camera as VisionCamera } from 'react-native-vision-camera'
+import { Camera as VisionCamera } from 'react-native-vision-camera'
 
 import { CompressingVideo } from '../PersonalChat/components'
 
@@ -60,6 +60,7 @@ const Camera = (props: Props) => {
     minZoom,
     maxZoom,
     supportsFlash,
+    getFileFromMedia,
     isPressingButton,
   } = useCamera({ navigation })
   const { cameraAnimatedProps, recordingStyle, buttonStyle } = useAnimatedStyles({
@@ -81,8 +82,7 @@ const Camera = (props: Props) => {
   const sendMedia = useCallback(async () => {
     try {
       if (!mediaCaptured) return
-      const data = mediaCaptured.data as VideoFile
-      const { path, height, width } = data
+      const { path, height, width, duration } = mediaCaptured
       const imageRequestResponse = await fetch(path)
       const { size, type } = await imageRequestResponse.blob()
       const preview = await createDidCommPreview({
@@ -97,7 +97,7 @@ const Camera = (props: Props) => {
         size,
         width,
         height,
-        ...(isVideo && { duration: data.duration }),
+        ...(isVideo && { duration }),
       }
       if (IS_ANDROID && isVideo) {
         didCommMediaFileSharingData = await compressVideo(
@@ -146,14 +146,17 @@ const Camera = (props: Props) => {
             enableZoomGesture
             animatedProps={cameraAnimatedProps}
           />
+          <TouchableOpacity onPress={handleFlash} disabled={!supportsFlash} style={styles.flashButton}>
+            <Icon
+              as="MaterialCommunityIcons"
+              name={flash === 'on' ? 'flash' : 'flash-off'}
+              size={40}
+              color={supportsFlash ? theme.colors.white : 'transparent'}
+            />
+          </TouchableOpacity>
           <View style={styles.buttonsContainer}>
-            <TouchableOpacity onPress={handleFlash} disabled={!supportsFlash}>
-              <Icon
-                as="MaterialCommunityIcons"
-                name={flash === 'on' ? 'flash' : 'flash-off'}
-                size={40}
-                color={supportsFlash ? theme.colors.white : 'transparent'}
-              />
+            <TouchableOpacity onPress={getFileFromMedia}>
+              <SvgIcon name="image" fill={theme.colors.white} width={40} height={40} />
             </TouchableOpacity>
             <GestureDetector gesture={tapGesture}>
               <Reanimated.View style={buttonStyle}>

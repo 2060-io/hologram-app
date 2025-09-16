@@ -14,13 +14,13 @@ import {
   Camera as VisionCamera,
   useCameraDevice,
   CameraPosition,
-  PhotoFile,
   VideoFile,
   CameraCaptureError,
 } from 'react-native-vision-camera'
 
 import { IS_ANDROID, IS_IOS } from '@2060/constants'
-import { log, logError } from '@2060/utils'
+import { ImageOrVideo, useImageCropPicker } from '@2060/hooks'
+import { logError } from '@2060/utils'
 import { deleteFile } from '@2060/utils/RNFS'
 import { screenHeight, screenWidth } from '@2060/utils/responsiveUtils'
 
@@ -29,10 +29,14 @@ const MAX_ZOOM_FACTOR = 10
 
 export type MediaCaptured = {
   type: 'image' | 'video'
-  data: PhotoFile | VideoFile
+  width: number
+  height: number
+  path: string
+  duration?: number | null
 }
 
 export const useCamera = ({ navigation }: { navigation: StackNavigationProp<ParamListBase> }) => {
+  const { takePhotoOrVideoFromGallery } = useImageCropPicker()
   const [cameraPosition, setCameraPosition] = useState<CameraPosition>('front')
   const [flash, setFlash] = useState<'off' | 'on'>('off')
   const [isInitialized, setIsInitialized] = useState(false)
@@ -56,9 +60,20 @@ export const useCamera = ({ navigation }: { navigation: StackNavigationProp<Para
     setIsInitialized(true)
   }, [])
 
-  const updateMediaCapturedInfo = (newMediaCaptured: MediaCaptured) => {
+  const updateMediaCapturedInfo = useCallback((newMediaCaptured: MediaCaptured) => {
     setMediaCaptured(newMediaCaptured)
-  }
+  }, [])
+
+  const getFileFromMedia = useCallback(() => {
+    takePhotoOrVideoFromGallery(
+      (values: ImageOrVideo) => {
+        const { path, height, width, duration } = values
+        const type = values.mime.startsWith('image') ? 'image' : 'video'
+        updateMediaCapturedInfo({ type, path, height, width, duration })
+      },
+      { mediaType: 'any' },
+    )
+  }, [])
 
   const takePhoto = useCallback(async () => {
     if (!camera.current) return
@@ -77,9 +92,8 @@ export const useCamera = ({ navigation }: { navigation: StackNavigationProp<Para
         photo.height = width
         photo.width = height
       }
-      log('photo data', photo)
       const path = IS_IOS ? photo.path : `file://${photo.path}`
-      updateMediaCapturedInfo({ type: 'image', data: { ...photo, path } })
+      updateMediaCapturedInfo({ type: 'image', width: photo.width, height: photo.height, path })
     } catch (error) {
       logError('Error taking photo', error)
     }
@@ -93,8 +107,14 @@ export const useCamera = ({ navigation }: { navigation: StackNavigationProp<Para
   const onRecordingFinished = useCallback(
     (video: VideoFile) => {
       const path = IS_IOS ? video.path : `file://${video.path}`
-      log('Recording successfully finished!', { ...video, path, duration: video.duration * 1000 })
-      updateMediaCapturedInfo({ type: 'video', data: { ...video, path, duration: video.duration * 1000 } })
+      const { width, height, duration } = video
+      updateMediaCapturedInfo({
+        type: 'video',
+        width,
+        height,
+        path,
+        duration: duration * 1000,
+      })
       onStoppedRecording()
     },
     [recordingProgress],
@@ -129,7 +149,7 @@ export const useCamera = ({ navigation }: { navigation: StackNavigationProp<Para
   const close = useCallback(() => {
     if (mediaCaptured) {
       setMediaCaptured(null)
-      deleteFile(mediaCaptured.data.path)
+      deleteFile(mediaCaptured.path)
     } else {
       navigation.goBack()
     }
@@ -235,6 +255,7 @@ export const useCamera = ({ navigation }: { navigation: StackNavigationProp<Para
     minZoom,
     maxZoom,
     supportsFlash,
+    getFileFromMedia,
     isPressingButton,
   }
 }
