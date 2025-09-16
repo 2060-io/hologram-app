@@ -30,6 +30,7 @@ import {
 } from './AgentAction'
 
 import { updateChatEntry } from '@2060/hooks/agent/chat/services/ChatEntryService'
+import { CallInfo } from '@2060/hooks/providers/useVideoCallContext'
 import { ChatEntry, ChatEntryState } from '@2060/model'
 import { createOobInvitation, MobileAgent } from '@2060/services/agent'
 import { log, logError } from '@2060/utils'
@@ -233,7 +234,7 @@ export class AgentActionExecuter {
       const parameters = action.parameters as {
         callType: DidCommCallType
         connectionId: string
-        callInfo: Record<string, unknown>
+        callInfo: CallInfo
       }
       return async (options: { agent: MobileAgent }) => {
         const { callType, connectionId, callInfo } = parameters

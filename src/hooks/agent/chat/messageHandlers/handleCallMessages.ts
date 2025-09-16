@@ -15,7 +15,7 @@ import {
 } from '../services/ChatEntryService'
 import { addUnread, findOrCreateChatThread } from '../services/ChatThreadService'
 
-import { IncomingCallInfo } from '@2060/hooks/providers/useVideoCallContext'
+import { CallInfo } from '@2060/hooks/providers/useVideoCallContext'
 import { CallOfferMetadata, CallOfferState, ChatEntryRole, ChatEntryState, ChatEntryType } from '@2060/model'
 import { log } from '@2060/utils'
 
@@ -33,7 +33,7 @@ export const handleCallMessages = (options: {
     const callOfferMessage = message as CallOfferMessage
     const callType = callOfferMessage.callType as DidCommCallType
     const { parameters, description, offerExpirationTime } = callOfferMessage
-    const incomingCallInfo = parameters as IncomingCallInfo
+    const incomingCallInfo = parameters as CallInfo
     if (!incomingCallInfo) {
       log(`no incomingCallInfo Parameters: ${JSON.stringify(parameters)}`)
       return

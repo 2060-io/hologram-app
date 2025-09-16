@@ -20,7 +20,7 @@ import {
   StartCallPros,
   ConnectionStatus,
   CallStatus,
-  IncomingCallInfo,
+  CallInfo,
 } from './useVideoCallContext'
 
 import { VideoCall, IncomingCall } from '@2060/components'
@@ -80,7 +80,7 @@ export const VideoCallProvider: React.FC<PropsWithChildren> = ({ children }) => 
   const startIncomingCall = (
     connection: ConnectionRecord,
     callType: DidCommCallType,
-    incomingCallInfo: IncomingCallInfo,
+    incomingCallInfo: CallInfo,
   ) => {
     InCallManager.startRingtone('_DEFAULT_', 0, 'default', 0)
     updateState({
@@ -142,7 +142,7 @@ export const VideoCallProvider: React.FC<PropsWithChildren> = ({ children }) => 
     async (
       connectionId: string,
       callType: DidCommCallType,
-      incomingCallInfo: IncomingCallInfo,
+      incomingCallInfo: CallInfo,
       didcommThreadId: string,
     ) => {
       if (!agent || !connectionId || !callType || !incomingCallInfo) return
