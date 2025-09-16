@@ -27,7 +27,11 @@ const MediaResult = ({ visible, renderCloseButton, renderSendButton, mediaCaptur
           {renderCloseButton()}
           {mediaCaptured ? (
             mediaCaptured.type === 'image' ? (
-              <Image source={{ uri: mediaCaptured.data.path }} style={styles.takenPhotoContainer} />
+              <Image
+                source={{ uri: mediaCaptured.data.path }}
+                style={styles.takenPhotoContainer}
+                resizeMode="contain"
+              />
             ) : (
               <VideoRecorded path={mediaCaptured.data.path} />
             )

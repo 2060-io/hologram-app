@@ -19,7 +19,7 @@ import {
   CameraCaptureError,
 } from 'react-native-vision-camera'
 
-import { IS_IOS } from '@2060/constants'
+import { IS_ANDROID, IS_IOS } from '@2060/constants'
 import { log, logError } from '@2060/utils'
 import { deleteFile } from '@2060/utils/RNFS'
 import { screenHeight, screenWidth } from '@2060/utils/responsiveUtils'
@@ -50,6 +50,7 @@ export const useCamera = ({ navigation }: { navigation: StackNavigationProp<Para
   const device = useCameraDevice(cameraPosition)
   const minZoom = device?.minZoom ?? 1
   const maxZoom = Math.min(device?.maxZoom ?? 1, MAX_ZOOM_FACTOR)
+  const supportsFlash = device?.hasFlash ?? false
 
   const onInitialized = useCallback(() => {
     setIsInitialized(true)
@@ -62,18 +63,27 @@ export const useCamera = ({ navigation }: { navigation: StackNavigationProp<Para
   const takePhoto = useCallback(async () => {
     if (!camera.current) return
     try {
-      const now = new Date().getTime()
-      const photo = await camera.current.takePhoto({
-        flash,
-      })
-      const after = new Date().getTime()
-      log('photo data', photo, after - now)
+      const photo = await camera.current.takePhoto({ flash: supportsFlash ? flash : 'off' })
+      const { width, height } = photo
+      // its necessary to invert dimensions due to in iOS orientation is inverted by default.
+      // So, when it returns a landscape orientation the real image is in portrait mode and vice versa
+      if (IS_IOS && photo.orientation.toString().includes('landscape')) {
+        photo.height = width
+        photo.width = height
+      }
+      // its necessary to invert dimensions due to in some Android devices portrait photos orientation
+      // have inverted dimensions as if they had landscape orientation
+      if (IS_ANDROID && photo.orientation.toString().includes('portrait') && width > height) {
+        photo.height = width
+        photo.width = height
+      }
+      log('photo data', photo)
       const path = IS_IOS ? photo.path : `file://${photo.path}`
       updateMediaCapturedInfo({ type: 'image', data: { ...photo, path } })
     } catch (error) {
       logError('Error taking photo', error)
     }
-  }, [flash])
+  }, [flash, supportsFlash])
 
   const onStoppedRecording = useCallback(() => {
     isRecording.current = false
@@ -148,7 +158,7 @@ export const useCamera = ({ navigation }: { navigation: StackNavigationProp<Para
 
   const onEndTapGesture = async () => {
     try {
-      if (pressDownDate.current == null) throw new Error('PressDownDate ref .current was null!')
+      if (!pressDownDate.current) return
       const now = new Date()
       const diff = now.getTime() - pressDownDate.current.getTime()
       pressDownDate.current = undefined
@@ -224,6 +234,7 @@ export const useCamera = ({ navigation }: { navigation: StackNavigationProp<Para
     cameraZoom,
     minZoom,
     maxZoom,
+    supportsFlash,
     isPressingButton,
   }
 }

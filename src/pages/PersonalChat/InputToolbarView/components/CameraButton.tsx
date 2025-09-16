@@ -8,7 +8,7 @@ import getStyles from '../styles'
 import { PersonalChatStackParams } from '@2060/components/Navigation/NavigationProps'
 import { SvgIcon } from '@2060/components/common'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { handleCameraPermission } from '@2060/utils/permissions'
+import { handleCameraPermission, handleMicrophonePermission } from '@2060/utils/permissions'
 
 const CameraButton = memo(() => {
   const theme = useTheme()
@@ -22,6 +22,8 @@ const CameraButton = memo(() => {
   const goToCamera = async () => {
     const cameraPermission = await handleCameraPermission()
     if (!cameraPermission) return
+    const microphonePermission = await handleMicrophonePermission()
+    if (!microphonePermission) return
     navigation.navigate('Camera')
   }
 

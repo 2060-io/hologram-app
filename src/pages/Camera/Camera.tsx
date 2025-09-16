@@ -59,6 +59,7 @@ const Camera = (props: Props) => {
     cameraZoom,
     minZoom,
     maxZoom,
+    supportsFlash,
     isPressingButton,
   } = useCamera({ navigation })
   const { cameraAnimatedProps, recordingStyle, buttonStyle } = useAnimatedStyles({
@@ -146,12 +147,12 @@ const Camera = (props: Props) => {
             animatedProps={cameraAnimatedProps}
           />
           <View style={styles.buttonsContainer}>
-            <TouchableOpacity onPress={handleFlash}>
+            <TouchableOpacity onPress={handleFlash} disabled={!supportsFlash}>
               <Icon
                 as="MaterialCommunityIcons"
                 name={flash === 'on' ? 'flash' : 'flash-off'}
                 size={40}
-                color={theme.colors.white}
+                color={supportsFlash ? theme.colors.white : 'transparent'}
               />
             </TouchableOpacity>
             <GestureDetector gesture={tapGesture}>
