@@ -1,0 +1,20 @@
+import { StyleSheet } from 'react-native'
+
+import { AppTheme } from '@2060/styles'
+
+export default (theme: AppTheme) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: theme.isDarkMode ? theme.colors.secondary : theme.colors.primary,
+    },
+    contentContainer: {
+      flex: 1,
+    },
+    takenPhotoContainer: {
+      ...StyleSheet.absoluteFillObject,
+      width: '100%',
+      height: '100%',
+      zIndex: 2,
+    },
+  })

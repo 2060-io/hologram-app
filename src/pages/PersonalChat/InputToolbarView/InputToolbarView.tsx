@@ -15,7 +15,6 @@ import { Icon, SvgIcon, Text } from '@2060/components/common'
 import { TextInputForwardRefProps } from '@2060/components/common/TextInput'
 import { useChatActions } from '@2060/hooks'
 import { useChat } from '@2060/hooks/agent'
-import { generateFileName } from '@2060/hooks/media/files'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { logWarn } from '@2060/utils'
 import { deleteFile } from '@2060/utils/RNFS'
@@ -84,14 +83,11 @@ const InputToolbarView = (props: Props) => {
       return
     }
     const { size } = await stat(recordedAudioFilePath.current)
-    const subType = 'm4a'
-    const mime = `audio/${subType}`
-    const filename = generateFileName(mime, subType)
+    const mime = 'audio/m4a'
     await shareMediaToDidComm({
       mime,
       size,
       path: recordedAudioFilePath.current,
-      fileName: filename,
       duration: millisecondsRecorded.current,
     })
   }
@@ -140,12 +136,7 @@ const InputToolbarView = (props: Props) => {
   }
 
   const setAutomaticRecording = useCallback(() => setIsAutomaticRecording(true), [])
-  /*
-  const handleTakePhotoButton = async () => {
-    const cameraPermission = await handleCameraPermission()
-    if (!cameraPermission) return
-  }
-  */
+
   return (
     <View style={styles.container}>
       {isRepliedMessage && (
@@ -159,7 +150,7 @@ const InputToolbarView = (props: Props) => {
       <View style={styles.subContainer}>
         <View style={styles.leftAndCenterContainer}>
           {showMediaOptions && (
-            <TouchableOpacity style={styles.iconContainer} onPress={onShowMediaOptions} activeOpacity={0.7}>
+            <TouchableOpacity style={styles.button} onPress={onShowMediaOptions} activeOpacity={0.7}>
               <SvgIcon name="add" fill={theme.colors.primaryText} />
             </TouchableOpacity>
           )}
@@ -190,7 +181,7 @@ const InputToolbarView = (props: Props) => {
             )}
           </View>
         </View>
-        {showMediaOptions && !hasContentTextInput && <CameraButton />}
+        {showMediaOptions && !hasContentTextInput && !isRecordingVoiceNote && <CameraButton />}
         {!showMediaOptions || hasContentTextInput ? (
           <SendButton hasContentTextInput={hasContentTextInput} sendMessage={sendMessage} />
         ) : (

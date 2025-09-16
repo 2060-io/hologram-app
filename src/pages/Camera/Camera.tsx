@@ -1,0 +1,186 @@
+import { useIsFocused } from '@react-navigation/native'
+import { StackScreenProps } from '@react-navigation/stack'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { TouchableOpacity, View } from 'react-native'
+import { GestureDetector } from 'react-native-gesture-handler'
+import Reanimated from 'react-native-reanimated'
+import { VideoFile, Camera as VisionCamera } from 'react-native-vision-camera'
+
+import { CompressingVideo } from '../PersonalChat/components'
+
+import MediaResult from './MediaResult'
+import getStyles from './styles'
+import { useAnimatedStyles } from './useAnimatedStyles'
+import { useCamera } from './useCamera'
+
+import { PersonalChatStackParams } from '@2060/components/Navigation/NavigationProps'
+import { Icon, SvgIcon } from '@2060/components/common'
+import { IS_ANDROID } from '@2060/constants'
+import { useAppState, useChatActions } from '@2060/hooks'
+import { DidCommMediaFileSharingData } from '@2060/hooks/agent'
+import { createDidCommPreview } from '@2060/hooks/media/preview'
+import { useTheme } from '@2060/hooks/providers/ThemeProvider'
+import { logError } from '@2060/utils'
+import { cancelVideoCompression, compressVideo } from '@2060/utils/mediaFileUtils'
+
+const ReanimatedCamera = Reanimated.createAnimatedComponent(VisionCamera)
+Reanimated.addWhitelistedNativeProps({
+  zoom: true,
+})
+export interface Props extends StackScreenProps<PersonalChatStackParams, 'Camera'> {}
+
+const Camera = (props: Props) => {
+  const { navigation } = props
+  const theme = useTheme()
+  const styles = getStyles(theme)
+  const [isActive, setIsActive] = useState(false)
+  const isFocused = useIsFocused()
+  const { isAppActive } = useAppState()
+  const { shareMediaToDidComm } = useChatActions()
+  const [compressingVideoProgress, setCompressingVideoProgress] = useState(0)
+  const videoCompressionCancellationId = useRef<string>('')
+
+  useEffect(() => {
+    setIsActive(isFocused && isAppActive)
+  }, [isFocused, isAppActive])
+
+  const {
+    camera,
+    device,
+    onInitialized,
+    close,
+    flash,
+    handleFlash,
+    flipCamera,
+    mediaCaptured,
+    tapGesture,
+    panGesture,
+    isInitialized,
+    cameraZoom,
+    minZoom,
+    maxZoom,
+    isPressingButton,
+  } = useCamera({ navigation })
+  const { cameraAnimatedProps, recordingStyle, buttonStyle } = useAnimatedStyles({
+    isInitialized,
+    cameraZoom,
+    minZoom,
+    maxZoom,
+    isPressingButton,
+  })
+
+  const cancelCompression = () => {
+    cancelVideoCompression(videoCompressionCancellationId.current)
+  }
+
+  const getVideoCompressionCancellationId = (cancellationId: string) => {
+    videoCompressionCancellationId.current = cancellationId
+  }
+
+  const sendMedia = useCallback(async () => {
+    try {
+      if (!mediaCaptured) return
+      const data = mediaCaptured.data as VideoFile
+      const { path, height, width } = data
+      const imageRequestResponse = await fetch(path)
+      const { size, type } = await imageRequestResponse.blob()
+      const preview = await createDidCommPreview({
+        localFilePath: path,
+        mimeType: type,
+      })
+      const isVideo = type.startsWith('video')
+      let didCommMediaFileSharingData: DidCommMediaFileSharingData = {
+        path,
+        mime: type,
+        preview,
+        size,
+        width,
+        height,
+        ...(isVideo && { duration: data.duration }),
+      }
+      if (IS_ANDROID && isVideo) {
+        didCommMediaFileSharingData = await compressVideo(
+          didCommMediaFileSharingData,
+          setCompressingVideoProgress,
+          getVideoCompressionCancellationId,
+        )
+      }
+      shareMediaToDidComm({ ...didCommMediaFileSharingData }).catch(logError)
+      navigation.goBack()
+    } catch (error) {
+      logError(`Error sending photo: ${error}`)
+    }
+  }, [mediaCaptured])
+
+  const closeButton = useCallback(() => {
+    return (
+      <TouchableOpacity onPress={close} style={styles.closeButton}>
+        <SvgIcon name="close" fill={theme.colors.white} width={30} height={30} />
+      </TouchableOpacity>
+    )
+  }, [close])
+
+  const sendButton = useCallback(() => {
+    return (
+      <TouchableOpacity onPress={sendMedia} style={styles.sendButton}>
+        <SvgIcon name="send" fill={theme.colors.white} height={30} width={30} />
+      </TouchableOpacity>
+    )
+  }, [sendMedia])
+
+  return (
+    <>
+      {device ? (
+        <View style={styles.container}>
+          {closeButton()}
+          <ReanimatedCamera
+            style={styles.container}
+            device={device}
+            isActive={isActive}
+            ref={camera}
+            photo
+            video
+            audio
+            onInitialized={onInitialized}
+            enableZoomGesture
+            animatedProps={cameraAnimatedProps}
+          />
+          <View style={styles.buttonsContainer}>
+            <TouchableOpacity onPress={handleFlash}>
+              <Icon
+                as="MaterialCommunityIcons"
+                name={flash === 'on' ? 'flash' : 'flash-off'}
+                size={40}
+                color={theme.colors.white}
+              />
+            </TouchableOpacity>
+            <GestureDetector gesture={tapGesture}>
+              <Reanimated.View style={buttonStyle}>
+                <GestureDetector gesture={panGesture}>
+                  <Reanimated.View>
+                    <Reanimated.View style={[styles.recordingVideo, recordingStyle]} />
+                    <View style={styles.mainButton} />
+                  </Reanimated.View>
+                </GestureDetector>
+              </Reanimated.View>
+            </GestureDetector>
+            <TouchableOpacity onPress={flipCamera}>
+              <SvgIcon name="flipCamera" fill={theme.colors.white} width={40} height={40} />
+            </TouchableOpacity>
+          </View>
+        </View>
+      ) : null}
+      <MediaResult
+        visible={Boolean(mediaCaptured)}
+        renderCloseButton={closeButton}
+        renderSendButton={sendButton}
+        mediaCaptured={mediaCaptured}
+      />
+      {compressingVideoProgress > 0 && (
+        <CompressingVideo progress={compressingVideoProgress} cancelCompression={cancelCompression} />
+      )}
+    </>
+  )
+}
+
+export default Camera

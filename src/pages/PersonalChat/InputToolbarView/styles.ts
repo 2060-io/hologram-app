@@ -76,7 +76,7 @@ export default (theme: AppTheme, isRecording?: boolean) =>
       fontSize: theme.fontSize.md2,
       marginLeft: 8,
     },
-    iconContainer: {
+    button: {
       backgroundColor: theme.isDarkMode ? theme.colors.primary : theme.colors.secondary,
       width: MESSAGE_INPUT_INITIAL_HEIGHT,
       height: MESSAGE_INPUT_INITIAL_HEIGHT,

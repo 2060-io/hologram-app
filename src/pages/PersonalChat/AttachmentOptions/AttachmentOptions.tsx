@@ -8,6 +8,7 @@ import { SvgIcon, Text } from '@2060/components/common'
 import { IconsNames } from '@2060/components/common/SvgIcon'
 import { IS_ANDROID } from '@2060/constants'
 import { useImageCropPicker, ImageOrVideo, useChatActions } from '@2060/hooks'
+import { DidCommMediaFileSharingData } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { logError } from '@2060/utils'
 import { compressVideo } from '@2060/utils/mediaFileUtils'
@@ -37,24 +38,17 @@ const AttachmentOptions: React.FC<Props> = ({
 
   const onMediaFile = async (fileInfo: ImageOrVideo) => {
     closeAttachmentOptions()
-    let mediaFileInfo: ImageOrVideo | null = { ...fileInfo }
+    let mediaFileInfo: DidCommMediaFileSharingData = { ...fileInfo }
     const isVideo = mediaFileInfo.mime.startsWith('video')
     if (IS_ANDROID && isVideo) {
       Keyboard.dismiss()
-      mediaFileInfo = (await compressVideo(
+      mediaFileInfo = await compressVideo(
         mediaFileInfo,
         onCompressingVideoProgress,
         getVideoCompressionCancellationId,
-      )) as ImageOrVideo | null
+      )
     }
-    if (mediaFileInfo) {
-      shareMediaToDidComm({
-        ...mediaFileInfo,
-        duration: mediaFileInfo.duration ?? undefined,
-        width: mediaFileInfo.width ?? undefined,
-        height: mediaFileInfo.height ?? undefined,
-      }).catch(logError)
-    }
+    shareMediaToDidComm({ ...mediaFileInfo }).catch(logError)
   }
 
   const onSelectedOption = async (optionId: string) => {

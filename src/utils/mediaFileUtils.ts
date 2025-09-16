@@ -1,7 +1,6 @@
 import { Image } from 'react-native'
 import { Video as VideoCompressor } from 'react-native-compressor'
 import { stat, TemporaryDirectoryPath } from 'react-native-fs'
-import { ImageOrVideo } from 'react-native-image-crop-picker'
 import { getVideoProperties } from 'react-native-local-native-modules'
 
 import { copyFile, deleteFile } from './RNFS'
@@ -15,14 +14,11 @@ export const getMediaFileSharingData = async (fileOriginalPath: string, mimeType
   const filePath = await fromContentUriToFileUri(fileOriginalPath)
   const preview = await createDidCommPreview({ mimeType: mimeType, localFilePath: filePath })
   const { size } = await stat(filePath)
-  const [fileName] = filePath.split('/').slice(-1)
-  const finalFileName = fileName.includes('.') ? fileName : undefined
   const commonFileValues: DidCommMediaFileSharingData = {
     path: filePath,
     mime: mimeType,
     preview,
     size,
-    fileName: finalFileName,
   }
   const mediaFileSharingData = mimeType.startsWith('video')
     ? getDataForVideo(commonFileValues)
@@ -93,10 +89,10 @@ const getImageDimensions = (filePath: string) => {
 // This is 2 millions of bits per second (0.25 MB)
 const COMPRESSION_BITRATE = 2_000_000
 export const compressVideo = async (
-  fileInfo: ImageOrVideo | DidCommMediaFileSharingData,
+  fileInfo: DidCommMediaFileSharingData,
   onProgress: (progress: number) => void,
   getCancellationId?: (cancellationId: string) => void,
-): Promise<ImageOrVideo | DidCommMediaFileSharingData | null> => {
+): Promise<DidCommMediaFileSharingData> => {
   try {
     const compressedVideoPath = await VideoCompressor.compress(
       fileInfo.path,
@@ -116,7 +112,7 @@ export const compressVideo = async (
     return fileInfo
   } catch (error) {
     logError(`Error compressing video: ${error}`)
-    return null
+    return fileInfo
   } finally {
     onProgress(0)
   }

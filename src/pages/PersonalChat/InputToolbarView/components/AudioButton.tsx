@@ -61,10 +61,10 @@ const AudioButton = ({
       onPress={onPress}
       onTouchEnd={onTouchEnd}
       style={[
-        styles.iconContainer,
+        styles.button,
         isRecording && !isAutomaticRecording
           ? { ...styles.microphoneIconContainerWhileRecording }
-          : { ...styles.iconContainer },
+          : { ...styles.button },
         {
           backgroundColor: isRecording
             ? theme.colors.green

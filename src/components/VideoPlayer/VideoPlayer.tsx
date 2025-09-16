@@ -13,24 +13,15 @@ type Props = {
   uri: string
   showControl: boolean
   setShowControl: React.Dispatch<React.SetStateAction<boolean>>
-  initialPlay?: boolean
-  showProgressBar?: boolean
 }
 
-const VideoPlayer = ({
-  uri,
-  showControl,
-  setShowControl,
-  initialPlay = true,
-  showProgressBar = true,
-}: Props) => {
+const VideoPlayer = ({ uri, showControl, setShowControl }: Props) => {
   const theme = useTheme()
   const [isReadyVideo, setIsReadyVideo] = useState(false)
   const [errorLoadingVideo, setErrorLoadingVideo] = useState(false)
   const [currentTime, setCurrentTime] = useState(0)
   const [duration, setDuration] = useState(0)
-  const [play, setPlay] = useState(initialPlay)
-
+  const [play, setPlay] = useState(true)
   const videoRef = createRef<VideoRef>()
   const { t } = useTranslation()
 
@@ -84,11 +75,11 @@ const VideoPlayer = ({
   return (
     <Pressable onPress={handleControls} style={styles.container}>
       <Fragment>
-        <View style={styles.videoWrapper} pointerEvents="none">
+        <View pointerEvents="none">
           <Video
             ref={videoRef}
             source={{ uri }}
-            style={styles.video}
+            style={styles.container}
             repeat={false}
             controls={false}
             resizeMode="contain"
@@ -118,15 +109,13 @@ const VideoPlayer = ({
               playing={play}
               iconColor={theme.colors.white}
             />
-            {showProgressBar && (
-              <ProgressBar
-                currentTime={currentTime}
-                duration={duration > 0 ? duration : 0}
-                onSlideStart={handlePlayPause}
-                onSlideComplete={handlePlayPause}
-                onSlideCapture={onSeek}
-              />
-            )}
+            <ProgressBar
+              currentTime={currentTime}
+              duration={duration > 0 ? duration : 0}
+              onSlideStart={handlePlayPause}
+              onSlideComplete={handlePlayPause}
+              onSlideCapture={onSeek}
+            />
           </View>
         )}
       </Fragment>
@@ -136,13 +125,6 @@ const VideoPlayer = ({
 
 const styles = StyleSheet.create({
   container: {
-    height: '100%',
-    justifyContent: 'center',
-  },
-  videoWrapper: {
-    ...StyleSheet.absoluteFillObject,
-  },
-  video: {
     height: '100%',
     width: '100%',
   },

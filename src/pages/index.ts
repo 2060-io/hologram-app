@@ -1,3 +1,4 @@
+import Camera from './Camera'
 import ConnectionDetails from './ConnectionDetails'
 import { Connections, ConnectionsForNewChat } from './Connections'
 import CredentialDetails from './CredentialDetails'
@@ -54,4 +55,5 @@ export {
   PresentCredential,
   Presentation,
   ParentalControl,
+  Camera,
 }
