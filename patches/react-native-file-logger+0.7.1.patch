@@ -1,0 +1,64 @@
+diff --git a/node_modules/react-native-file-logger/android/build.gradle b/node_modules/react-native-file-logger/android/build.gradle
+index 55f0b45..6c083ca 100644
+--- a/node_modules/react-native-file-logger/android/build.gradle
++++ b/node_modules/react-native-file-logger/android/build.gradle
+@@ -97,8 +97,8 @@ repositories {
+ dependencies {
+     //noinspection GradleDynamicVersion
+     implementation "com.facebook.react:react-native:+"
+-    implementation 'org.slf4j:slf4j-api:1.7.33'
+-    implementation 'com.github.tony19:logback-android:2.0.0'
++    implementation 'org.slf4j:slf4j-api:2.0.7'
++    implementation 'com.github.tony19:logback-android:3.0.0'
+ }
+ 
+ if (isNewArchitectureEnabled()) {
+diff --git a/node_modules/react-native-file-logger/android/src/main/java/com/betomorrow/rnfilelogger/FileLoggerModule.java b/node_modules/react-native-file-logger/android/src/main/java/com/betomorrow/rnfilelogger/FileLoggerModule.java
+index 51596f9..15aa281 100644
+--- a/node_modules/react-native-file-logger/android/src/main/java/com/betomorrow/rnfilelogger/FileLoggerModule.java
++++ b/node_modules/react-native-file-logger/android/src/main/java/com/betomorrow/rnfilelogger/FileLoggerModule.java
+@@ -20,6 +20,8 @@ import java.io.File;
+ import java.io.FilenameFilter;
+ import java.io.FileOutputStream;
+ import java.nio.charset.Charset;
++import java.time.LocalDate;
++import java.time.format.DateTimeFormatter;
+ import java.util.ArrayList;
+ import java.util.zip.ZipEntry;
+ import java.util.zip.ZipOutputStream;
+@@ -85,7 +87,10 @@ public class FileLoggerModule extends FileLoggerSpec {
+         RollingFileAppender<ILoggingEvent> rollingFileAppender = new RollingFileAppender<>();
+         rollingFileAppender.setContext(loggerContext);
+         rollingFileAppender.setName(APPENDER_NAME);
+-        rollingFileAppender.setFile(logsDirectory + "/" + logPrefix + "-latest.log");
++        LocalDate currentDate = LocalDate.now();
++        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
++        String formattedDate = currentDate.format(formatter);
++        rollingFileAppender.setFile(logsDirectory + "/" + logPrefix + "-" + formattedDate + ".log");
+ 
+         if (dailyRolling) {
+             SizeAndTimeBasedRollingPolicy<ILoggingEvent> rollingPolicy = new SizeAndTimeBasedRollingPolicy<>();
+diff --git a/node_modules/react-native-file-logger/ios/CustomLogFileManager.mm b/node_modules/react-native-file-logger/ios/CustomLogFileManager.mm
+index 4af0eb4..9c57872 100644
+--- a/node_modules/react-native-file-logger/ios/CustomLogFileManager.mm
++++ b/node_modules/react-native-file-logger/ios/CustomLogFileManager.mm
+@@ -22,10 +22,6 @@ - (NSString *)newLogFileName
+     [formatter setDateFormat:@"yyyy-MM-dd"];
+     NSString *dateString = [formatter stringFromDate:[NSDate date]];
+ 
+-    NSDateFormatter *timeFormatter = [[NSDateFormatter alloc] init];
+-    [timeFormatter setDateFormat:@"HHmmss"];
+-    NSString *timeString = [timeFormatter stringFromDate:[NSDate date]];
+-
+     NSString *logPrefix = self.fileName;
+     if (!logPrefix || logPrefix.length == 0) {
+         logPrefix = [[NSBundle mainBundle] bundleIdentifier];
+@@ -37,7 +33,7 @@ - (NSString *)newLogFileName
+         }
+     }
+     
+-    return [NSString stringWithFormat:@"%@-%@-%@.log", logPrefix, dateString, timeString];
++    return [NSString stringWithFormat:@"%@-%@.log", logPrefix, dateString];
+ }
+ 
+ - (BOOL)isLogFile:(NSString *)fileName

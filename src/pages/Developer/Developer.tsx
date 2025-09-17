@@ -3,6 +3,7 @@ import { StackScreenProps } from '@react-navigation/stack'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { SafeAreaView, Alert, View, TouchableOpacity } from 'react-native'
+import { FileLogger } from 'react-native-file-logger'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import Share from 'react-native-share'
 
@@ -18,8 +19,6 @@ import { useConfig } from '@2060/hooks/providers/ConfigProvider'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { deleteAllKeys } from '@2060/services/keys'
-import { LOG_FILE_PATH, logError } from '@2060/utils'
-import { existsFile } from '@2060/utils/RNFS'
 import {
   allDevEnvs,
   DevEnv,
@@ -31,6 +30,7 @@ import {
   saveLogsEnabled,
   areLogsEnabled,
 } from '@2060/utils/developer'
+import { logError, LOGS_DIRECTORY } from '@2060/utils/log'
 
 interface Props extends StackScreenProps<NavigationStackParams, 'Developer'> {}
 
@@ -161,14 +161,13 @@ const Developer = ({ navigation }: Props) => {
 
   const exportLogs = async () => {
     try {
-      const fileExists = await existsFile(LOG_FILE_PATH)
-      if (!fileExists) {
+      const logFilesPaths = await FileLogger.getLogFilePaths()
+      if (!logFilesPaths.length) {
         Alert.alert(t('settings.noLogsFileFound'))
         return
       }
       Share.open({
-        url: `file://${LOG_FILE_PATH}`,
-        type: 'text/plain',
+        ...(IS_IOS ? { url: LOGS_DIRECTORY } : { urls: logFilesPaths.map(file => `file://${file}`) }),
         failOnCancel: false,
       })
     } catch (error) {
