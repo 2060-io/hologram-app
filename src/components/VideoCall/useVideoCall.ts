@@ -521,7 +521,10 @@ export const useVideoCall = () => {
           threadId = myLastChatEntryTypeCallOffer.didcommThreadId
         }
       }
-      agent.modules.calls.hangup({ connectionId: didcommConnection.id, threadId })
+      addAgentActionToQueue({
+        type: AgentActionType.HangupCall,
+        parameters: { connectionId: didcommConnection.id, threadId },
+      })
       peer.current?.request('leaveRoom')
       finishCall()
     } catch (error) {

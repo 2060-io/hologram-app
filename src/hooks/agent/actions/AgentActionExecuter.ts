@@ -1,4 +1,4 @@
-import { CallOfferMessage, DidCommCallType } from '@2060.io/credo-ts-didcomm-calls'
+import { CallEndMessage, CallOfferMessage, DidCommCallType } from '@2060.io/credo-ts-didcomm-calls'
 import { ShareMediaMessage } from '@2060.io/credo-ts-didcomm-media-sharing'
 import { MessageReactionsMessage, MessageReactionAction } from '@2060.io/credo-ts-didcomm-reactions'
 import { MessageReceiptsMessage, MessageState } from '@2060.io/credo-ts-didcomm-receipts'
@@ -245,6 +245,18 @@ export class AgentActionExecuter {
         })
         return {
           outgoingMessageType: CallOfferMessage.type.messageTypeUri,
+        }
+      }
+    } else if (action.type === AgentActionType.HangupCall) {
+      const parameters = action.parameters as {
+        connectionId: string
+        threadId: string | undefined
+      }
+      return async (options: { agent: MobileAgent }) => {
+        const { connectionId, threadId } = parameters
+        await options.agent.modules.calls.hangup({ connectionId, threadId })
+        return {
+          outgoingMessageType: CallEndMessage.type.messageTypeUri,
         }
       }
     }
