@@ -6,7 +6,7 @@ import { SvgIcon, Text, OptionsList } from '@2060/components/common'
 import { OptionProps } from '@2060/components/common/OptionsList/OptionsListProps'
 
 interface StyleObject {
-  [key: string]: Object
+  [key: string]: object
 }
 
 type Props = {

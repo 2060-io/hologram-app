@@ -15,7 +15,7 @@ import { getCredentialsForProofRequest, shareProof } from '@2060/services/agent/
 import { logError } from '@2060/utils'
 import { toast } from '@2060/utils/toast'
 
-export interface Props extends StackScreenProps<NavigationStackParams, 'OpenIdPresentationRequest'> {}
+interface Props extends StackScreenProps<NavigationStackParams, 'OpenIdPresentationRequest'> {}
 
 const OpenIdPresentationRequest: React.FC<Props> = ({ route, navigation }) => {
   const { agent } = useMobileAgent()

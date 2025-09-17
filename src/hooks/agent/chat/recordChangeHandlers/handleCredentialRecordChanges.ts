@@ -8,10 +8,11 @@ import {
   V2CredentialProblemReportMessage,
   W3cCredentialRepository,
 } from '@credo-ts/core'
+import { TrustResolutionOutcome } from '@verana-labs/verre'
 import Realm from 'realm'
 
-import { createChatEntry, findAllByAssociatedRecordId, updateState } from '../services/ChatEntryService'
-import { addUnread, findOrCreateChatThread, updateThread } from '../services/ChatThreadService'
+import { createChatEntry, findAllByAssociatedRecordId, updateChatEntry } from '../services/ChatEntryService'
+import { addUnread, findOrCreateChatThread } from '../services/ChatThreadService'
 
 import { ChatEntryRole, ChatEntryState, ChatEntryType } from '@2060/model'
 import { MobileAgent } from '@2060/services/agent'
@@ -60,7 +61,7 @@ export const handleCredentialExchangeRecordChanges = async (options: {
       isRefused = description === 'e.msg.refused'
     }
     const credentialState = isRefused ? CredentialState.Declined : credentialExchangeRecord.state
-    updateState(realm, {
+    updateChatEntry(realm, {
       recordId: vcOfferEntry.id,
       state: vcOfferEntry.state, // TODO: update state
       associatedMessageId,
@@ -94,11 +95,11 @@ export const handleCredentialExchangeRecordChanges = async (options: {
           ?.issuerId
       : undefined)
   const issuerName = getConnectionDisplayName(connection)
-  const issuerStatus = 'notFound'
+  const issuerStatus = TrustResolutionOutcome.INVALID
   const issuerLogoUrl = getConnectionDisplayPicture(connection)
   const schemaName = schemaId ? (await agent.modules.anoncreds.getSchema(schemaId)).schema?.name : undefined
 
-  const chatEntry = createChatEntry(realm, {
+  createChatEntry(realm, {
     associatedRecordId: credentialExchangeRecord.id,
     associatedMessageId: credentialExchangeRecord.threadId,
     chatThreadId: thread.id,
@@ -128,7 +129,6 @@ export const handleCredentialExchangeRecordChanges = async (options: {
   })
   await agent.credentials.update(credentialExchangeRecord)
 
-  updateThread(realm, thread.id, { lastChatEntry: chatEntry })
   if (thread.id !== activeChatThreadId) {
     addUnread(realm, thread.id, 1)
   }

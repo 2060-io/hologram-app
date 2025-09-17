@@ -12,7 +12,13 @@ import getStyles from './styles'
 
 import { Modal, SvgIcon, Text } from '@2060/components/common'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { extractDomainFromUrl, log, logError } from '@2060/utils'
+import { log, logError } from '@2060/utils'
+
+const extractDomainFromUrl = (url: string) => {
+  const domainRegex = /^(?:https?:\/\/)?(?:www\.)?([^/]+)/
+  const matches = url.match(domainRegex)
+  return matches ? matches[1] : null
+}
 
 const HtmlChatView = (props: HtmlChatViewProps) => {
   const { metadata, renderCustomHeader } = props

@@ -43,7 +43,7 @@ interface VideoCallProps extends StateProps {
   onCallFinished: () => void
   answerIncomingCall: () => void
   rejectIncomingCall: () => void
-  handleCamera: (callBack?: (newIsCameraOn: boolean) => {}) => void
+  handleCamera: (callBack?: (newIsCameraOn: boolean) => void) => void
   remotePeerClosedTimeoutRef: MutableRefObject<NodeJS.Timeout | undefined>
   connectionStatus: ConnectionStatus
   updateCallStatus: React.Dispatch<React.SetStateAction<ConnectionStatus>>

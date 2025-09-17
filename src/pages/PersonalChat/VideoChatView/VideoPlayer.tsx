@@ -1,6 +1,6 @@
 import React, { useState, createRef, Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, StyleSheet, Pressable } from 'react-native'
 import Video, { OnLoadData, OnProgressData, VideoRef } from 'react-native-video'
 
 import PlayerControls from './PlayerControls'
@@ -82,22 +82,24 @@ const VideoPlayer = ({
   }
 
   return (
-    <TouchableOpacity onPress={handleControls} style={styles.container} activeOpacity={1}>
+    <Pressable onPress={handleControls} style={styles.container}>
       <Fragment>
-        <Video
-          ref={videoRef}
-          source={{ uri }}
-          style={styles.video}
-          repeat={false}
-          controls={false}
-          resizeMode="contain"
-          paused={!play && isReadyVideo}
-          volume={10}
-          onLoad={onLoadEnd}
-          onProgress={onProgress}
-          onError={onErrorLoadingVideo}
-          onEnd={onEnd}
-        />
+        <View style={styles.videoWrapper} pointerEvents="none">
+          <Video
+            ref={videoRef}
+            source={{ uri }}
+            style={styles.video}
+            repeat={false}
+            controls={false}
+            resizeMode="contain"
+            paused={!play && isReadyVideo}
+            volume={10}
+            onLoad={onLoadEnd}
+            onProgress={onProgress}
+            onError={onErrorLoadingVideo}
+            onEnd={onEnd}
+          />
+        </View>
         {errorLoadingVideo && (
           <View style={styles.contentCenter}>
             <Text
@@ -110,7 +112,12 @@ const VideoPlayer = ({
         )}
         {showControl && isReadyVideo && (
           <View style={styles.controlOverlay}>
-            <PlayerControls onPlay={handlePlay} onPause={handlePlayPause} playing={play} />
+            <PlayerControls
+              onPlay={handlePlay}
+              onPause={handlePlayPause}
+              playing={play}
+              iconColor={theme.colors.white}
+            />
             {showProgressBar && (
               <ProgressBar
                 currentTime={currentTime}
@@ -123,7 +130,7 @@ const VideoPlayer = ({
           </View>
         )}
       </Fragment>
-    </TouchableOpacity>
+    </Pressable>
   )
 }
 
@@ -131,6 +138,9 @@ const styles = StyleSheet.create({
   container: {
     height: '100%',
     justifyContent: 'center',
+  },
+  videoWrapper: {
+    ...StyleSheet.absoluteFillObject,
   },
   video: {
     height: '100%',

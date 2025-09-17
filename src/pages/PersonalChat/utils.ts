@@ -1,5 +1,4 @@
 import { uuid } from '@credo-ts/core/build/utils/uuid'
-import dayjs from 'dayjs'
 import { t } from 'i18next'
 import { Results } from 'realm'
 
@@ -76,21 +75,6 @@ export const getSystemMessage = (options: {
   }
 
   return null
-}
-
-export function isSameDay(
-  currentMessage: ChatEntryMessage,
-  diffMessage: ChatEntryMessage | null | undefined,
-) {
-  if (!diffMessage) {
-    return false
-  }
-  const currentCreatedAt = dayjs(currentMessage.createdAt)
-  const diffCreatedAt = dayjs(diffMessage.createdAt)
-  if (!currentCreatedAt.isValid() || !diffCreatedAt.isValid()) {
-    return false
-  }
-  return currentCreatedAt.isSame(diffCreatedAt, 'day')
 }
 
 export function isSameUser(currentMessage: ChatEntryMessage, diffMessage: ChatEntryMessage | undefined) {

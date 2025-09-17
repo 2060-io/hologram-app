@@ -4,7 +4,7 @@ interface Props {
   children?: React.ReactNode
 }
 
-export interface RefreshedAvatarsUrlsContextInterface {
+interface RefreshedAvatarsUrlsContextInterface {
   updateRefreshedAvatarsUrlsList(avatarUrl: string): void
   refreshedAvatarsUrlsList: string[]
 }
@@ -28,13 +28,13 @@ export const RefreshedAvatarsUrlsProvider: React.FC<React.PropsWithChildren<Prop
   }
 
   return (
-    <RefreshedAvatarsUrlsContext.Provider
+    <RefreshedAvatarsUrlsContext
       value={{
         updateRefreshedAvatarsUrlsList,
         refreshedAvatarsUrlsList,
       }}
     >
       {children}
-    </RefreshedAvatarsUrlsContext.Provider>
+    </RefreshedAvatarsUrlsContext>
   )
 }

@@ -10,7 +10,7 @@ import { ToastOptions } from '@2060/utils/toast'
 const CustomToast = () => {
   const [message, setMessage] = useState<ToastOptions | null>(null)
   const [timeOutDuration, setTimeOutDuration] = useState(2000)
-  const timeOutRef = useRef<ReturnType<typeof setInterval>>()
+  const timeOutRef = useRef<ReturnType<typeof setInterval>>(undefined)
   const animatedOpacity = useRef(new Animated.Value(0)).current
   const typeMessage = message?.type ?? 'info'
   const positionMessage = message?.position ?? 'bottom'
@@ -31,7 +31,7 @@ const CustomToast = () => {
   const closeToast = useCallback(() => {
     setMessage(null)
     setTimeOutDuration(2000)
-    clearInterval(timeOutRef.current!)
+    clearInterval(timeOutRef.current)
     Animated.timing(animatedOpacity, { toValue: 0, useNativeDriver: false }).start()
   }, [message, timeOutDuration])
 
@@ -47,7 +47,7 @@ const CustomToast = () => {
   useEffect(() => {
     onMessageCountdown()
     return () => {
-      clearInterval(timeOutRef.current!)
+      clearInterval(timeOutRef.current)
     }
   }, [message, timeOutDuration])
 
@@ -78,7 +78,7 @@ const CustomToast = () => {
     <Animated.View
       style={{
         ...styles.containerMessage,
-        ...(stylePosition[positionMessage] as {}),
+        ...(stylePosition[positionMessage] as object),
         backgroundColor,
         borderColor,
         opacity: animatedOpacity,

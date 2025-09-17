@@ -1,13 +1,19 @@
 import { ProofExchangeRecord, ProofState, W3cCredentialRepository } from '@credo-ts/core'
+import { TrustResolutionOutcome } from '@verana-labs/verre'
 import Realm from 'realm'
 
-import { createChatEntry, findAllByAssociatedRecordId, updateMetadata } from '../services/ChatEntryService'
-import { addUnread, findOrCreateChatThread, updateThread } from '../services/ChatThreadService'
+import {
+  createChatEntry,
+  findAllByAssociatedRecordId,
+  updateChatEntryMetadata,
+} from '../services/ChatEntryService'
+import { addUnread, findOrCreateChatThread } from '../services/ChatThreadService'
 
 import {
   ChatEntryRole,
   ChatEntryState,
   ChatEntryType,
+  VerifierInfo,
   VPResponseMetadata,
   VPResponsePresentedCredential,
 } from '@2060/model'
@@ -19,11 +25,9 @@ import {
   getPresentationRequestForDisplay,
   sanitizeString,
 } from '@2060/services/agent/display'
-import { getServiceInfo, VerifierInfo } from '@2060/services/api/trustRegistryService'
-import { DEV_ENVS_PERSIST_KEY, getStorageData } from '@2060/services/localStorage'
+import { getServiceInfo } from '@2060/services/trustResolution'
 import { logError } from '@2060/utils'
 import { getConnectionDisplayName, getConnectionDisplayPicture } from '@2060/utils/connectionUtils'
-import { DevEnvsObject } from '@2060/utils/developer'
 
 export const handleProofExchangeRecordChanges = async (options: {
   agent: MobileAgent
@@ -48,7 +52,7 @@ export const handleProofExchangeRecordChanges = async (options: {
           ...vpResponseChatEntry.metadata,
           proofState: proofRecord.state,
         } as VPResponseMetadata
-        updateMetadata(realm, vpResponseChatEntry.id, newChatEntryMetadata)
+        updateChatEntryMetadata(realm, vpResponseChatEntry.id, newChatEntryMetadata)
         try {
           const requestedCredentials = await agent.proofs.selectCredentialsForRequest({
             proofRecordId: proofRecord.id,
@@ -92,7 +96,6 @@ export const handleProofExchangeRecordChanges = async (options: {
               replied: false,
             },
           })
-          updateThread(realm, thread.id, { lastChatEntry: vpRequestChatEntry })
         }
         if (thread.id !== activeChatThreadId) {
           addUnread(realm, thread.id, 1)
@@ -137,7 +140,6 @@ export const handleProofExchangeRecordChanges = async (options: {
             createdAt: new Date().getTime(),
             metadata,
           })
-          updateThread(realm, thread.id, { lastChatEntry: vpResponseChatEntry })
         }
       }
       // Update the metadata of the chat entry if exists with the new proof state
@@ -146,13 +148,13 @@ export const handleProofExchangeRecordChanges = async (options: {
           ...vpResponseChatEntry.metadata,
           proofState: proofRecord.state,
         } as VPResponseMetadata
-        updateMetadata(realm, vpResponseChatEntry.id, newChatEntryMetadata)
+        updateChatEntryMetadata(realm, vpResponseChatEntry.id, newChatEntryMetadata)
       }
       // Find any VP Request entry associated to this proof record and mark it as replied
       const [vpRequestEntry] = findAllByAssociatedRecordId(realm, proofRecord.id, ChatEntryType.VPRequest)
       if (vpRequestEntry) {
         const metadata = { ...vpRequestEntry.metadata, proofState: proofRecord.state, replied: true }
-        updateMetadata(realm, vpRequestEntry.id, metadata)
+        updateChatEntryMetadata(realm, vpRequestEntry.id, metadata)
       }
     } else if (proofRecord.state === ProofState.ProposalReceived) {
       const presentedCredentials: VPResponsePresentedCredential[] = []
@@ -171,10 +173,9 @@ export const handleProofExchangeRecordChanges = async (options: {
             const credentialDefinitionId = firstAttribute.restrictions[0].cred_def_id
 
             if (credentialDefinitionId) {
-              const persistedEnvVariables = (await getStorageData(DEV_ENVS_PERSIST_KEY)) as DevEnvsObject
               const serviceInfo = await getServiceInfo({
+                agent: agent,
                 did: credentialDefinitionId,
-                trustedServiceResolverBaseUrl: persistedEnvVariables.TRUSTED_SERVICE_RESOLVER_BASE_URL,
               })
               const credentialDefinition = (
                 await agent.modules.anoncreds.getCredentialDefinition(credentialDefinitionId)
@@ -192,7 +193,7 @@ export const handleProofExchangeRecordChanges = async (options: {
                   id: credentialDefinition?.issuerId ?? '',
                   name: serviceInfo?.name ?? credentialDefinitionId,
                   logoUrl: serviceInfo?.logoUrl,
-                  status: serviceInfo?.status ?? 'notFound',
+                  status: serviceInfo?.status ?? TrustResolutionOutcome.INVALID,
                 },
               }
               presentedCredentials.push({ mainInfo: credentialMainInfo, attributes })
@@ -207,7 +208,7 @@ export const handleProofExchangeRecordChanges = async (options: {
         proofState: proofRecord.state,
         presentedCredentials: JSON.stringify(presentedCredentials),
       }
-      const chatEntry = createChatEntry(realm, {
+      createChatEntry(realm, {
         associatedRecordId: proofRecord.id,
         chatThreadId: thread.id,
         type: ChatEntryType.VPResponse,
@@ -217,7 +218,6 @@ export const handleProofExchangeRecordChanges = async (options: {
         metadata,
         associatedMessageId: proofRecord.threadId,
       })
-      updateThread(realm, thread.id, { lastChatEntry: chatEntry })
       if (thread.id !== activeChatThreadId) {
         addUnread(realm, thread.id, 1)
       }
@@ -250,7 +250,7 @@ export const handleProofExchangeRecordChanges = async (options: {
           ...vpResponseChatEntry.metadata,
           presentedCredentials: JSON.stringify([presentedCredentialInfoUpdated]),
         } as VPResponseMetadata
-        updateMetadata(realm, vpResponseChatEntry.id, newChatEntryMetadata)
+        updateChatEntryMetadata(realm, vpResponseChatEntry.id, newChatEntryMetadata)
       }
     }
   }

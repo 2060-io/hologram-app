@@ -3,17 +3,10 @@ import { FlashList } from '@shopify/flash-list'
 import { useAudioPlayer } from '@simform_solutions/react-native-audio-waveform'
 import React, { useState, useRef, useCallback, memo, useMemo, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import {
-  View,
-  NativeSyntheticEvent,
-  NativeScrollEvent,
-  ViewToken,
-  KeyboardAvoidingView,
-  SafeAreaView,
-  StatusBar,
-} from 'react-native'
+import { View, NativeSyntheticEvent, NativeScrollEvent, ViewToken } from 'react-native'
+import { KeyboardAvoidingView } from 'react-native-keyboard-controller'
 import { uses24HourClock } from 'react-native-localize'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { SafeAreaView } from 'react-native-safe-area-context'
 import Realm from 'realm'
 
 import AttachmentOptions from './AttachmentOptions'
@@ -33,8 +26,8 @@ import { getSystemMessage, chatEntryEqual } from './utils'
 import { ModalBottomHalf, ModalConfirmAction } from '@2060/components'
 import MessageFloatingMenu from '@2060/components/MessageFloatingMenu'
 import { Text } from '@2060/components/common'
-import { IS_ANDROID, IS_IOS } from '@2060/constants'
-import { useChatActions, useKeyboard } from '@2060/hooks'
+import { IS_IOS } from '@2060/constants'
+import { useAppState, useChatActions } from '@2060/hooks'
 import {
   useMobileAgent,
   useChat,
@@ -42,10 +35,8 @@ import {
   useChats,
   ChatThreadWithParticipants,
 } from '@2060/hooks/agent'
-import { createChatEntry, updateMetadata } from '@2060/hooks/agent/chat/services/ChatEntryService'
-import { updateThread } from '@2060/hooks/agent/chat/services/ChatThreadService'
+import { createChatEntry, updateChatEntryMetadata } from '@2060/hooks/agent/chat/services/ChatEntryService'
 import { blockConnection } from '@2060/hooks/agent/connections'
-import { useConfig } from '@2060/hooks/providers/ConfigProvider'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import {
@@ -57,14 +48,14 @@ import {
   SystemMessageMetadata,
 } from '@2060/model'
 import { ChatMessageList } from '@2060/pages/PersonalChat/ChatMessageList'
-import { reportMessage } from '@2060/services/api/trustRegistryService'
+import { logWarn } from '@2060/utils'
 import { isService } from '@2060/utils/connectionUtils'
 import { getFormattedDateRange } from '@2060/utils/dateUtils'
 import { cancelVideoCompression } from '@2060/utils/mediaFileUtils'
 import { markNotificationsOfChatAsViewed } from '@2060/utils/pushNotificationsUtils'
 import { toast } from '@2060/utils/toast'
 
-export interface PersonalChatProps extends WrapperPersonalChatProps {
+interface PersonalChatProps extends WrapperPersonalChatProps {
   chatEntries: ChatEntryData[]
   loadMoreMessages(): void
   chatThread: ChatThreadWithParticipants
@@ -76,7 +67,7 @@ const createReportedMessageChatEntry = (params: {
   messageToReport: ChatEntryMessage
 }) => {
   const { realm, chatThread, messageToReport } = params
-  const newChatEntry = createChatEntry(realm, {
+  createChatEntry(realm, {
     chatThreadId: chatThread.id,
     type: ChatEntryType.ReportMessage,
     role: ChatEntryRole.None,
@@ -90,16 +81,15 @@ const createReportedMessageChatEntry = (params: {
       role: messageToReport.role,
     },
   })
-  updateMetadata(realm, messageToReport.id, {
+  updateChatEntryMetadata(realm, messageToReport.id, {
     ...messageToReport.metadata,
     isReported: true,
   })
-
-  updateThread(realm, chatThread.id, { lastChatEntry: newChatEntry })
 }
 
 const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }: PersonalChatProps) => {
   const { t } = useTranslation()
+  const { isAppActive } = useAppState()
   const { stopPlayersAndExtractors } = useAudioPlayer()
   const [currentStickyDate, setCurrentStickyDate] = useState<Date>()
   const [showAttachmentOptions, setShowAttachmentOptions] = useState(false)
@@ -130,22 +120,32 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
   } = useChat()
   const { deleteMessagesForMe, deleteMessagesForEveryone, onActionMenuSelection } = useChatActions()
   const { agent } = useMobileAgent()
-  const { markThreadAsRead } = useChats()
+  const { markThreadAsRead, setActiveChatThreadId } = useChats()
   const using24HourFormat = uses24HourClock()
   const theme = useTheme()
-  const { devEnvs } = useConfig()
   const showScrollBottomRef = useRef(false)
   const isScrolling = useRef(false)
   const listViewRef = useRef<FlashList<ChatEntryMessage> | null>(null)
-  const insets = useSafeAreaInsets()
-  const headerStatusBarHeight = insets.top
-  const timerStickyDate = useRef<ReturnType<typeof setTimeout>>()
+  const timerStickyDate = useRef<ReturnType<typeof setTimeout>>(undefined)
   const videoCompressionCancellationId = useRef<string>('')
+  const isAlreadyMounted = useRef(false)
 
   const { data: chatThreadData, flags } = chatThread
   const { menu } = useActionMenu({ connectionId: chatThreadData.connectionId })
-  const { isKeyboardVisible } = useKeyboard()
   const styles = getStyles(theme)
+
+  useFocusEffect(
+    useCallback(() => {
+      setChatThread(chatThread)
+      setActiveChatThreadId(chatThread.data.id)
+      markThreadAsRead({ id: chatThreadData.id, lastReadAt: new Date() })
+      markNotificationsOfChatAsViewed(chatThreadData.connectionId)
+      return () => {
+        clearTimeout(timerStickyDate.current)
+        setActiveChatThreadId(undefined)
+      }
+    }, []),
+  )
 
   // listener to stop all players and extractors of audios
   // when component unmounts (leaves screen) to free up the maximum possible resources
@@ -155,6 +155,22 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
     })
     return unsubscribe
   }, [navigation])
+
+  useEffect(() => {
+    if (isAppActive) {
+      if (isAlreadyMounted.current) {
+        setActiveChatThreadId(chatThreadData.id)
+        markThreadAsRead({ id: chatThreadData.id, lastReadAt: new Date() })
+        markNotificationsOfChatAsViewed(chatThreadData.connectionId)
+      }
+    } else {
+      setActiveChatThreadId(undefined)
+    }
+  }, [isAppActive])
+
+  useEffect(() => {
+    isAlreadyMounted.current = true
+  }, [])
 
   const renderSystemMessage = useMemo(() => {
     const systemMessage = getSystemMessage({
@@ -176,7 +192,7 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
     }
   }
 
-  const onScrollToBottom = useCallback(() => {
+  const scrollToBottom = useCallback(() => {
     if (listViewRef && listViewRef.current) {
       listViewRef.current.scrollToOffset({ animated: true, offset: 0 })
     }
@@ -221,24 +237,9 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
     <SelectingMessagesHeader navigation={navigation} stopSelectingMessagesMode={stopSelectingMessagesMode} />
   )
 
-  const currentHeader = useMemo(() => {
+  const header = useMemo(() => {
     return isSelectingMessagesMode ? renderSelectingMessagesHeader() : renderCustomHeader({})
   }, [chatThread, menu, isSelectingMessagesMode, flags])
-
-  useEffect(() => {
-    markThreadAsRead({ id: chatThreadData.id, lastReadAt: new Date() })
-    markNotificationsOfChatAsViewed(chatThreadData.connectionId)
-  }, [])
-
-  useFocusEffect(
-    useCallback(() => {
-      setChatThread(chatThread)
-
-      return () => {
-        clearTimeout(timerStickyDate.current)
-      }
-    }, [chatThread]),
-  )
 
   const scrollToMessage = useCallback(
     (chatEntryId: string) => {
@@ -246,8 +247,10 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
       const messageIndex = dataList.findIndex(value => value.id === chatEntryId)
       setTappedRepliedMessageChatEntryId(chatEntryId)
       if (messageIndex === -1) return loadMoreMessages()
-      if (listViewRef.current && listViewRef.current?.props.data?.length! > messageIndex) {
-        listViewRef.current.scrollToIndex({ animated: true, index: messageIndex, viewPosition: 0.5 })
+      const mustScrollToIndex =
+        listViewRef?.current?.props?.data?.length && listViewRef.current.props.data.length > messageIndex
+      if (mustScrollToIndex) {
+        listViewRef.current?.scrollToIndex({ animated: true, index: messageIndex, viewPosition: 0.5 })
         setTimeout(() => {
           setTappedRepliedMessageChatEntryId(null)
         }, 1000)
@@ -264,14 +267,10 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
     try {
       const connection = await agent.connections.getById(chatThreadData.connectionId)
       const did = isService(connection) ? connection.invitationDid : connection.theirDid
-      const { type, metadata } = selectedMessage
+      const { metadata } = selectedMessage
       if (did && metadata) {
-        await reportMessage({
-          did,
-          metadata,
-          type,
-          trustedServiceResolverBaseUrl: devEnvs.TRUSTED_SERVICE_RESOLVER_BASE_URL,
-        })
+        // FIXME: Decide what to do with message reporting, since now we don't have any service related to it
+        logWarn('Message reported and no service to handle it')
       }
       createReportedMessageChatEntry({ realm, chatThread: chatThread.data, messageToReport: selectedMessage })
       if (block) await blockConnection(agent, connection)
@@ -324,11 +323,6 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
 
   const goToForwardMessages = () => navigation.navigate('ForwardMessages')
 
-  const containerStickyDate = {
-    ...styles.containerStickyDate,
-    top: headerHeight + (IS_IOS ? headerStatusBarHeight : 0),
-  }
-
   const getVideoCompressionCancellationId = (cancellationId: string) => {
     videoCompressionCancellationId.current = cancellationId
   }
@@ -338,128 +332,126 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
   }
 
   return (
-    <KeyboardAvoidingView
-      behavior={IS_IOS ? 'padding' : 'height'}
-      style={styles.container}
-      keyboardVerticalOffset={IS_ANDROID && isKeyboardVisible ? StatusBar.currentHeight : 0}
-    >
-      <SafeAreaView style={styles.subContainer}>
-        {currentHeader}
-        {showStickyDate && (
-          <View style={containerStickyDate}>
-            <Text typography="EuclidCircularA-Regular" style={styles.stickyDateText}>
-              {currentStickyDate && getFormattedDateRange(currentStickyDate)}
-            </Text>
-          </View>
-        )}
-        <ChatMessageList
-          commonMessageProps={{
-            agent,
-            supportsMessageReceipts: flags.supportsMessageReceipts,
-            using24HourFormat,
-            onTouchRepliedMessage: scrollToMessage,
-            renderCustomHeader,
-            isSelectingMessagesMode,
-            selectedMessages,
-            updateSelectedMessages,
-          }}
-          messages={chatEntries}
-          listViewProps={{
-            ref: listViewRef,
-            onScroll: handleOnScroll,
-            getItemType,
-            onContentSizeChange,
-            onViewableItemsChanged: updateStickyDate,
-            onEndReached: loadMoreMessages,
-            onScrollBeginDrag: onScrollBegin,
-            onScrollEndDrag: onScrollEnd,
-            onMomentumScrollBegin: onScrollBegin,
-            onMomentumScrollEnd: onScrollEnd,
-            ListHeaderComponent: renderSystemMessage,
-          }}
-        />
-        {showScrollBottomRef.current && (
-          <ScrollToBottom numberNewMessages={0} onScrollToBottom={onScrollToBottom} />
-        )}
-        {isSelectingMessagesMode && (
-          <SelectingMessagesBottomMenu
-            selectedMessages={selectedMessages}
-            deleteMessagesForMe={deleteMessagesForMe}
-            stopSelectingMessagesMode={stopSelectingMessagesMode}
-            deleteMessagesForEveryone={deleteMessagesForEveryone}
-            goToForwardMessages={goToForwardMessages}
+    <>
+      <SafeAreaView style={styles.container}>
+        <KeyboardAvoidingView behavior={IS_IOS ? 'padding' : 'height'} style={styles.subContainer}>
+          {header}
+          {showStickyDate && (
+            <View style={{ ...styles.containerStickyDate, top: headerHeight }}>
+              <Text typography="EuclidCircularA-Regular" style={styles.stickyDateText}>
+                {currentStickyDate && getFormattedDateRange(currentStickyDate)}
+              </Text>
+            </View>
+          )}
+          <ChatMessageList
+            commonMessageProps={{
+              agent,
+              supportsMessageReceipts: flags.supportsMessageReceipts,
+              using24HourFormat,
+              onTouchRepliedMessage: scrollToMessage,
+              renderCustomHeader,
+              isSelectingMessagesMode,
+              selectedMessages,
+              updateSelectedMessages,
+            }}
+            messages={chatEntries}
+            listViewProps={{
+              ref: listViewRef,
+              onScroll: handleOnScroll,
+              getItemType,
+              onContentSizeChange,
+              onViewableItemsChanged: updateStickyDate,
+              onEndReached: loadMoreMessages,
+              onScrollBeginDrag: onScrollBegin,
+              onScrollEndDrag: onScrollEnd,
+              onMomentumScrollBegin: onScrollBegin,
+              onMomentumScrollEnd: onScrollEnd,
+              ListHeaderComponent: renderSystemMessage,
+            }}
           />
-        )}
-        {flags.isConnectionCompleted &&
-          !flags.isConnectionBlocked &&
-          !flags.isConnectionTerminated &&
-          !isSelectingMessagesMode && (
-            <InputToolbarView
-              onShowMediaOptions={() => setShowAttachmentOptions(true)}
-              showMediaOptions={flags.supportsMediaSharing}
+          {flags.isConnectionCompleted &&
+            !flags.isConnectionBlocked &&
+            !flags.isConnectionTerminated &&
+            !isSelectingMessagesMode && (
+              <InputToolbarView
+                onShowMediaOptions={() => setShowAttachmentOptions(true)}
+                showMediaOptions={flags.supportsMediaSharing}
+              />
+            )}
+          {showScrollBottomRef.current && (
+            <ScrollToBottom numberNewMessages={0} onScrollToBottom={scrollToBottom} />
+          )}
+          {isSelectingMessagesMode && (
+            <SelectingMessagesBottomMenu
+              selectedMessages={selectedMessages}
+              deleteMessagesForMe={deleteMessagesForMe}
+              stopSelectingMessagesMode={stopSelectingMessagesMode}
+              deleteMessagesForEveryone={deleteMessagesForEveryone}
+              goToForwardMessages={goToForwardMessages}
             />
           )}
-        {compressingVideoProgress > 0 && (
-          <CompressingVideo progress={compressingVideoProgress} cancelCompression={cancelCompression} />
-        )}
-        <ModalBottomHalf visible={showContextualMenu} onClose={() => setShowContextualMenu(false)}>
-          {menu ? (
-            <ContextualMenu
-              menu={menu}
-              connectionIconUrl={flags.connectionIconUrl}
-              onSelectOption={handleOptionSelectedContextualMenu}
-            />
-          ) : null}
-        </ModalBottomHalf>
-        <ModalBottomHalf visible={showAttachmentOptions} onClose={() => setShowAttachmentOptions(false)}>
-          <AttachmentOptions
-            closeAttachmentOptions={() => setShowAttachmentOptions(false)}
-            onCompressingVideoProgress={setCompressingVideoProgress}
-            getVideoCompressionCancellationId={getVideoCompressionCancellationId}
-          />
-        </ModalBottomHalf>
-        <MessageFloatingMenu
-          navigation={navigation}
-          agent={agent}
-          showMessageFloatingMenu={showMessageFloatingMenu}
-          supportsMessageReceipts={flags.supportsMessageReceipts}
-          supportsMessageReactions={flags.supportsMessageReactions}
-          using24HourFormat={using24HourFormat}
-          messageActions={messageActions.current}
-          selectedMessage={selectedMessage}
-          closeMessageFloatingMenu={closeMessageFloatingMenu}
-          setRepliedMessage={setRepliedMessage}
-          showReportMessageConfirmation={showReportMessageConfirmation}
-          showDeleteMessageConfirmation={showDeleteMessageConfirmation}
-          startSelectingMessagesMode={startSelectingMessagesMode}
-          updateSelectedMessages={updateSelectedMessages}
-          goToForwardMessages={goToForwardMessages}
-        />
-        <ModalConfirmAction
-          visible={displayReportMessageConfirmation}
-          title={t('personalChat.report')}
-          subTitle={t('personalChat.reportDetails')}
-          confirmText={t('personalChat.report')}
-          confirmTextSecondary={t('personalChat.reportAndBlock')}
-          cancelText={t('general.cancel')}
-          onClose={hideReportConfirmation}
-          onConfirm={() => report()}
-          onConfirmSecondary={reportAndBlock}
-          onCancel={hideReportConfirmation}
-        />
-        <ModalConfirmAction
-          visible={modalConfirmMessageDeletion}
-          title={t('personalChat.deleteMessageConfirmation', { count: 1 })}
-          confirmText={t('personalChat.deleteForMe')}
-          confirmTextSecondary={confirmDeleteForEveryone()}
-          cancelText={t('general.cancel')}
-          onClose={closeModalConfirmMessageDeletion}
-          onConfirm={deleteForMe}
-          onConfirmSecondary={deleteForEveryone}
-          onCancel={closeModalConfirmMessageDeletion}
-        />
+        </KeyboardAvoidingView>
       </SafeAreaView>
-    </KeyboardAvoidingView>
+      {compressingVideoProgress > 0 && (
+        <CompressingVideo progress={compressingVideoProgress} cancelCompression={cancelCompression} />
+      )}
+      <ModalBottomHalf visible={showContextualMenu} onClose={() => setShowContextualMenu(false)}>
+        {menu ? (
+          <ContextualMenu
+            menu={menu}
+            connectionIconUrl={flags.connectionIconUrl}
+            onSelectOption={handleOptionSelectedContextualMenu}
+          />
+        ) : null}
+      </ModalBottomHalf>
+      <ModalBottomHalf visible={showAttachmentOptions} onClose={() => setShowAttachmentOptions(false)}>
+        <AttachmentOptions
+          closeAttachmentOptions={() => setShowAttachmentOptions(false)}
+          onCompressingVideoProgress={setCompressingVideoProgress}
+          getVideoCompressionCancellationId={getVideoCompressionCancellationId}
+        />
+      </ModalBottomHalf>
+      <MessageFloatingMenu
+        navigation={navigation}
+        agent={agent}
+        showMessageFloatingMenu={showMessageFloatingMenu}
+        supportsMessageReceipts={flags.supportsMessageReceipts}
+        supportsMessageReactions={flags.supportsMessageReactions}
+        using24HourFormat={using24HourFormat}
+        messageActions={messageActions.current}
+        selectedMessage={selectedMessage}
+        closeMessageFloatingMenu={closeMessageFloatingMenu}
+        setRepliedMessage={setRepliedMessage}
+        showReportMessageConfirmation={showReportMessageConfirmation}
+        showDeleteMessageConfirmation={showDeleteMessageConfirmation}
+        startSelectingMessagesMode={startSelectingMessagesMode}
+        updateSelectedMessages={updateSelectedMessages}
+        goToForwardMessages={goToForwardMessages}
+      />
+      <ModalConfirmAction
+        visible={displayReportMessageConfirmation}
+        title={t('personalChat.report')}
+        subTitle={t('personalChat.reportDetails')}
+        confirmText={t('personalChat.report')}
+        confirmTextSecondary={t('personalChat.reportAndBlock')}
+        cancelText={t('general.cancel')}
+        onClose={hideReportConfirmation}
+        onConfirm={() => report()}
+        onConfirmSecondary={reportAndBlock}
+        onCancel={hideReportConfirmation}
+      />
+      <ModalConfirmAction
+        visible={modalConfirmMessageDeletion}
+        title={t('personalChat.deleteMessageConfirmation', { count: 1 })}
+        confirmText={t('personalChat.deleteForMe')}
+        confirmTextSecondary={confirmDeleteForEveryone()}
+        cancelText={t('general.cancel')}
+        onClose={closeModalConfirmMessageDeletion}
+        onConfirm={deleteForMe}
+        onConfirmSecondary={deleteForEveryone}
+        onCancel={closeModalConfirmMessageDeletion}
+      />
+    </>
   )
 }
 

@@ -14,10 +14,10 @@ import getStyles from './styles'
 
 import { ModalConfirmAction } from '@2060/components'
 import { Text } from '@2060/components/common'
-import { updateMetadata } from '@2060/hooks/agent/chat/services'
+import { updateChatEntryMetadata } from '@2060/hooks/agent/chat/services'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { VPRequestMetadata } from '@2060/model'
+import { VerifierInfo, VPRequestMetadata } from '@2060/model'
 import { MobileAgent } from '@2060/services/agent'
 import { RequestedCredentialItem } from '@2060/services/agent/display'
 import {
@@ -25,7 +25,6 @@ import {
   formatDidcommPresentationSubmission,
 } from '@2060/services/agent/formatPresentation'
 import { notifyNoCompatibleCredentials } from '@2060/services/agent/proofs'
-import { VerifierInfo } from '@2060/services/api/trustRegistryService'
 
 interface Props {
   sender?: ChatParticipant
@@ -86,7 +85,7 @@ const VPRequestChatView = ({
   const notify = async () => {
     if (!agent || !realm) return
     const newMetadata = { ...metadata, proofState: ProofState.Abandoned }
-    updateMetadata(realm, chatEntryId, newMetadata)
+    updateChatEntryMetadata(realm, chatEntryId, newMetadata)
     notifyNoCompatibleCredentials({ agent, proofRecordId })
   }
 
@@ -101,7 +100,7 @@ const VPRequestChatView = ({
   const refuse = async () => {
     if (!agent || !realm) return
     const newMetadata = { ...metadata, proofState: ProofState.Declined }
-    updateMetadata(realm, chatEntryId, newMetadata)
+    updateChatEntryMetadata(realm, chatEntryId, newMetadata)
     await agent.proofs.declineRequest({ proofRecordId, sendProblemReport: true })
   }
 

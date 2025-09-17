@@ -1,4 +1,5 @@
 import { StackActions, useNavigation } from '@react-navigation/native'
+import { TrustResolutionOutcome } from '@verana-labs/verre'
 import React, { useState, memo, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, ActivityIndicator, Image, TouchableOpacity } from 'react-native'
@@ -7,6 +8,7 @@ import { BlueButton, Header } from '../components'
 
 import getStyles from './styles'
 
+import defaultAvatar from '@2060/assets/images/defaultUser.png'
 import { ConnectionRefusedByAge, SvgIcon, Text, VerifiedIcon } from '@2060/components/common'
 import Avatar from '@2060/components/common/Avatar/Avatar'
 import { useFetchServiceInfo } from '@2060/hooks'
@@ -38,14 +40,14 @@ const InvitationChatView = ({ associatedRecordId: outOfBandId, metadata, role, a
   const { t } = useTranslation()
   const navigation = useNavigation()
   const isReceiver = role === ChatEntryRole.Receiver
-  const defaultUserImg = Image.resolveAssetSource(require('@2060/assets/images/defaultUser.png')).uri
+  const defaultUserImg = Image.resolveAssetSource(defaultAvatar).uri
   const { imageUrl, label, did, state } = metadata
   const invitationType = t(
     isService(did) ? 'personalChat.invitationRequestService' : 'personalChat.invitationRequestSubConnection',
   )
   const { serviceInfo } = useFetchServiceInfo(did)
   const minimumAgeRequired = serviceInfo?.minimumAgeRequired ?? 0
-  const serviceStatus = serviceInfo?.status ?? 'notFound'
+  const serviceStatus = serviceInfo?.status ?? TrustResolutionOutcome.INVALID
   const { kidAge, ageRestricted } = useValidateKidAgeRestrictions({ minimumAgeRequired, serviceStatus })
 
   const goToInvitation = async () => {

@@ -1,5 +1,5 @@
 import { getConnectionProfile } from '@2060.io/credo-ts-didcomm-user-profile'
-import { ConnectionRecord, TypedArrayEncoder } from '@credo-ts/core'
+import { ConnectionRecord, TypedArrayEncoder, Buffer } from '@credo-ts/core'
 import { StackScreenProps } from '@react-navigation/stack'
 import React, { ReactElement, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -40,7 +40,7 @@ export interface ConnectionDetailsProps extends WrapperProps {
   connection: ConnectionRecord
 }
 
-export interface BaseConnectionDetailsProps extends ConnectionDetailsProps {
+interface BaseConnectionDetailsProps extends ConnectionDetailsProps {
   mainInfo: ReactElement
   footerInfo?: ReactElement
 }
@@ -69,7 +69,7 @@ const BaseConnectionDetails = ({
   const isConnectionTerminated = isTerminated(connection)
   const isConnectionService = isService(connection)
 
-  const { clearThread, findOrCreateThread } = useChats()
+  const { clearChat, findOrCreateThread } = useChats()
 
   const setHeaderOptions = () => {
     navigation.setOptions({
@@ -128,15 +128,15 @@ const BaseConnectionDetails = ({
     )
   }
 
-  const clearChat = () => {
-    let thread = findOrCreateThread({ connection })
-    clearThread(thread.id)
+  const deleteChat = () => {
+    const thread = findOrCreateThread({ connection })
+    clearChat(thread.id)
   }
 
   const onPressConfirmation = () => {
     closeConfirmationModal()
     const actions = {
-      deleteChat: () => clearChat(),
+      deleteChat: () => deleteChat(),
       deleteConnection: async () => await handleDeleteConnection(),
       block: async () => await toggleBlock(blockConnection),
       unblock: async () => await toggleBlock(unblockConnection),
@@ -210,8 +210,8 @@ const BaseConnectionDetails = ({
   const shareConnection = async () => {
     try {
       const outOfBandInvitation = createOobInvitation(connection)
-      let invitationStr = JSON.stringify(outOfBandInvitation)
-      let invitationBase64 = TypedArrayEncoder.toBase64URL(Buffer.from(invitationStr))
+      const invitationStr = JSON.stringify(outOfBandInvitation)
+      const invitationBase64 = TypedArrayEncoder.toBase64URL(Buffer.from(invitationStr))
       const invitationUrl = `${Config.BASE_INVITATION_URL}?oob=${invitationBase64}`
       const title = t('scanned.titleShare', { displayName: userProfileData?.displayName })
       await Share.open(

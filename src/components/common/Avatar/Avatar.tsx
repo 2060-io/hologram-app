@@ -1,5 +1,5 @@
 import { isUri } from '@credo-ts/core/build/utils'
-import React, { useMemo, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Image, TouchableOpacity, View } from 'react-native'
 import { SvgUri } from 'react-native-svg'
 
@@ -8,8 +8,18 @@ import getStyles from './styles'
 
 import Text from '@2060/components/common/Text'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { getNameInitials } from '@2060/utils'
 import { widthPercentageToDP } from '@2060/utils/responsiveUtils'
+
+const getNameInitials = (fullName: string) => {
+  const nameParts = fullName.trim().split(' ')
+  const firstName = nameParts[0]?.[0] || ''
+  const lastName = nameParts[1]?.[0] || ''
+  return (firstName + lastName).toUpperCase()
+}
+
+const isHttpUrl = (uri: string) => {
+  return uri.startsWith('https://') || uri.startsWith('http://')
+}
 
 type Props = {
   uri?: string
@@ -19,10 +29,6 @@ type Props = {
   bgAvatarInitials?: string
   onImagePressed?: (imageUri: string) => void
   enableImageRefresh?: boolean
-}
-
-const isHttpUrl = (uri: string) => {
-  return uri.startsWith('https://') || uri.startsWith('http://')
 }
 
 const Avatar: React.FC<Props> = ({
@@ -36,13 +42,16 @@ const Avatar: React.FC<Props> = ({
 }) => {
   const imageUri = useRef(uri)
   const [isValidImageUrl, setIsValidImageUrl] = useState<boolean>()
-  useMemo(() => setIsValidImageUrl(uri?.length ? isUri(uri) : undefined), [uri])
   const theme = useTheme()
   const styles = getStyles(theme)
   const avatarSize = widthPercentageToDP(size.includes('%') ? size : `${size}%`)
   const initialsFontSize = avatarSize * 0.4
   const avatarDimensions = { height: avatarSize, width: avatarSize, borderRadius: avatarSize / 2 }
   const borderStyle = withBorder && { borderWidth: 1, borderColor: theme.colors.lightGrey }
+
+  useEffect(() => {
+    setIsValidImageUrl(uri ? isUri(uri) : false)
+  }, [uri])
 
   const onSmartImageContent = (imageContent: string) => {
     imageUri.current = imageContent

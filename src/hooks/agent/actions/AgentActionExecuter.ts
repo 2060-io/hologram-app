@@ -12,12 +12,14 @@ import {
   OutboundMessageContext,
   OutOfBandInvitation,
   V2ProposePresentationMessage,
+  DidExchangeResponseMessage,
+  DidExchangeCompleteMessage,
+  DiscoverFeaturesApi,
+  V2QueriesMessage,
 } from '@credo-ts/core'
+import { AnswerMessage } from '@credo-ts/question-answer'
 import { Realm } from 'realm'
 import { ReplaySubject, firstValueFrom, filter, first, timeout, catchError, map } from 'rxjs'
-
-import { updateState } from '../chat/services/ChatEntryService'
-import { updateThread } from '../chat/services/ChatThreadService'
 
 import {
   ActionExecutionStatus,
@@ -26,11 +28,12 @@ import {
   OutboundMessageContextData,
 } from './AgentAction'
 
+import { updateChatEntry } from '@2060/hooks/agent/chat/services/ChatEntryService'
 import { ChatEntry, ChatEntryState } from '@2060/model'
 import { createOobInvitation, MobileAgent } from '@2060/services/agent'
 import { log, logError } from '@2060/utils'
 
-export type ActionCallback = (options: { agent: MobileAgent }) => Promise<AgentCallbackReturnType<BaseRecord>>
+type ActionCallback = (options: { agent: MobileAgent }) => Promise<AgentCallbackReturnType<BaseRecord>>
 
 export type AnoncredsAttribute = {
   name: string
@@ -165,6 +168,66 @@ export class AgentActionExecuter {
           associatedRecord: proofExchangeRecord,
         }
       }
+    } else if (action.type === AgentActionType.SendAnswer) {
+      const parameters = action.parameters as {
+        response: string
+        associatedRecordId: string
+      }
+      const { response, associatedRecordId } = parameters
+      return async (options: { agent: MobileAgent }) => {
+        const associatedRecord = await options.agent.modules.questionAnswer.sendAnswer(
+          associatedRecordId,
+          response,
+        )
+        return {
+          outgoingMessageType: AnswerMessage.type.messageTypeUri,
+          associatedRecord,
+        }
+      }
+    } else if (action.type === AgentActionType.AcceptConnectionRequest) {
+      const parameters = action.parameters as {
+        connectionId: string
+      }
+      const { connectionId } = parameters
+      return async (options: { agent: MobileAgent }) => {
+        await options.agent.connections.acceptRequest(connectionId)
+        return {
+          outgoingMessageType: DidExchangeResponseMessage.type.messageTypeUri,
+        }
+      }
+    } else if (action.type === AgentActionType.AcceptConnectionResponse) {
+      const parameters = action.parameters as {
+        connectionId: string
+      }
+      return async (options: { agent: MobileAgent }) => {
+        const { connectionId } = parameters
+        await options.agent.connections.acceptResponse(connectionId)
+        return {
+          outgoingMessageType: DidExchangeCompleteMessage.type.messageTypeUri,
+        }
+      }
+    } else if (action.type === AgentActionType.QueryServiceFeatures) {
+      const parameters = action.parameters as {
+        connectionId: string
+      }
+      return async (options: { agent: MobileAgent }) => {
+        const { connectionId } = parameters
+        const discoverFeaturesApi = options.agent?.context.dependencyManager.resolve(DiscoverFeaturesApi)
+        await discoverFeaturesApi.queryFeatures({
+          protocolVersion: 'v2',
+          queries: [
+            { featureType: 'protocol', match: 'https://didcomm.org/media-sharing/1.0' },
+            { featureType: 'protocol', match: 'https://didcomm.org/reactions/1.0' },
+            { featureType: 'protocol', match: 'https://didcomm.org/receipts/1.0' },
+            { featureType: 'protocol', match: 'https://didcomm.org/user-profile/1.0' },
+            { featureType: 'protocol', match: 'https://didcomm.org/calls/1.0' },
+          ],
+          connectionId,
+        })
+        return {
+          outgoingMessageType: V2QueriesMessage.type.messageTypeUri,
+        }
+      }
     }
     logError(`No callback for type ${action.type}`)
     throw new Error(`Execution callback not defined for action of type ${action.type}`)
@@ -220,14 +283,12 @@ export class AgentActionExecuter {
 
       // Message is submitted: update the associated chat entry to the corresponding state
       if (chatEntry && chatEntry.state === ChatEntryState.Created) {
-        updateState(realm, {
+        updateChatEntry(realm, {
           recordId: chatEntry.id,
           state: ChatEntryState.Submitted,
           associatedMessageId: message.message.id,
           associatedRecordId: associatedRecord?.id,
         })
-
-        updateThread(realm, chatEntry.chatThreadId, { lastChatEntry: chatEntry })
       }
       return { status: ActionExecutionStatus.OK }
     } catch (error) {
@@ -237,15 +298,11 @@ export class AgentActionExecuter {
 
         // Message failed to be sent. However we can already associate it to the chat entry
         if (chatEntry && chatEntry.state === ChatEntryState.Created) {
-          updateState(realm, {
+          updateChatEntry(realm, {
             recordId: chatEntry.id,
             state: chatEntry.state, // state will not change, since the message was not submitted
             associatedMessageId: message.id,
             associatedRecordId: associatedRecord?.id,
-          })
-
-          updateThread(realm, chatEntry.chatThreadId, {
-            lastChatEntry: chatEntry,
           })
         }
 
@@ -271,7 +328,7 @@ export class AgentActionExecuter {
   }
 }
 
-export type AgentCallbackReturnType<T extends BaseRecord = BaseRecord> = {
+type AgentCallbackReturnType<T extends BaseRecord = BaseRecord> = {
   associatedRecord?: T
   outgoingMessageType: string
 }

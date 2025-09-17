@@ -1,6 +1,5 @@
-import dayjs from 'dayjs'
-
 import { ChatEntryData, ChatEntryRole } from '@2060/model'
+import { dateToString } from '@2060/utils/dateUtils'
 
 type MustDisplayProps = {
   messageTime: string
@@ -17,7 +16,7 @@ const mustDisplayAckAndTime = ({
 }: MustDisplayProps) => {
   const nextMessageHasDifferentRole = chatEntry.role !== nextMessageChatEntry?.role
   if (nextMessageHasDifferentRole) return true
-  const nextMessageTime = dayjs(nextMessageChatEntry?.createdAt).format(timeFormat)
+  const nextMessageTime = dateToString(nextMessageChatEntry?.createdAt, timeFormat)
   if (chatEntry.role === ChatEntryRole.Sender) {
     const nextSentMessageHasDifferentTime = nextMessageTime !== messageTime
     const nextSentMessageHasDifferentState = nextMessageChatEntry?.state !== chatEntry.state

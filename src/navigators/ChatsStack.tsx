@@ -11,7 +11,7 @@ import { HomeMainTabParams } from '@2060/pages/HomeMain/HomeMainProps'
 import SubChats from '@2060/pages/SubChats'
 import { getGlobalStyles } from '@2060/styles'
 
-export type ChatsStackParams = {
+type ChatsStackParams = {
   ChatsMain: undefined
   SubChats: { chatThreadId: string }
 }

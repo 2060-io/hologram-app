@@ -1,11 +1,17 @@
-import appCheck from '@react-native-firebase/app-check'
-import messaging from '@react-native-firebase/messaging'
+import { getApp } from '@react-native-firebase/app'
+import {
+  ReactNativeFirebaseAppCheckProvider,
+  getToken,
+  initializeAppCheck,
+} from '@react-native-firebase/app-check'
+import { getMessaging, onTokenRefresh } from '@react-native-firebase/messaging'
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Platform, View } from 'react-native'
+import { Platform, StatusBar, View } from 'react-native'
 import Config from 'react-native-config'
+import 'isomorphic-webcrypto'
 
 import { SvgIcon, HeaderTitle } from '../common'
 
@@ -15,13 +21,10 @@ import PersonalChatStackNavigator from './PersonalChatStackNavigator'
 import deepLinking from './deepLinking'
 import getStyles from './styles'
 
-import { useAppState, useNetwork } from '@2060/hooks'
-import { manageBackgroundChatEntryChanges } from '@2060/hooks/agent/chat'
-import { manageConnectionStateChangedEvent } from '@2060/hooks/agent/connections/manageConnectionStateChangedEvent'
+import { IS_ANDROID } from '@2060/constants'
+import { useNetwork } from '@2060/hooks'
 import { useMessagePickup } from '@2060/hooks/agent/useMessagePickup'
 import { useConfig } from '@2060/hooks/providers/ConfigProvider'
-import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
-import { useScreenLock } from '@2060/hooks/providers/ScreenLockProvider'
 import {
   HomeMain,
   SignUpMain,
@@ -51,7 +54,7 @@ import {
 } from '@2060/pages'
 import { MobileAgent } from '@2060/services/agent'
 import { AppTheme, getGlobalStyles } from '@2060/styles'
-import { log } from '@2060/utils'
+import { log, logError } from '@2060/utils'
 
 const Stack = createStackNavigator<NavigationStackParams>()
 type NavigationProps = {
@@ -62,12 +65,9 @@ type NavigationProps = {
 
 const Navigation = ({ isSignedUp, agent, theme }: NavigationProps) => {
   const { t } = useTranslation()
-  const { isAppActive } = useAppState()
-  const { realm } = useLocalRealm()
   const styles = getStyles(theme)
   const globalStyles = getGlobalStyles(theme)
   const { isDeveloperMode } = useConfig()
-  const { isScreenLockForceDisabled } = useScreenLock()
   const InitialComponent = isSignedUp ? HomeMain : isDeveloperMode ? SignUpMain : ProfileCreation
 
   const { assertConnectedNetwork } = useNetwork()
@@ -79,23 +79,36 @@ const Navigation = ({ isSignedUp, agent, theme }: NavigationProps) => {
   })
 
   useEffect(() => {
-    const provider = appCheck().newReactNativeFirebaseAppCheckProvider()
-    provider.configure({
-      android: {
-        provider: Config.APP_CHECK_DEBUG_MODE ? 'debug' : 'playIntegrity',
-        debugToken: '8305FD57-71EF-476A-AC15-32482CAECC44',
-      },
-      apple: {
-        provider: Config.APP_CHECK_DEBUG_MODE ? 'debug' : 'appAttestWithDeviceCheckFallback',
-        debugToken: 'CED23F53-F6B4-4D58-AEB3-EDBADC2BDAE3',
-      },
-    })
-
-    appCheck().initializeAppCheck({ provider })
+    const configureFirebaseProviderAndInitializeAppCheck = async () => {
+      const provider = new ReactNativeFirebaseAppCheckProvider()
+      provider.configure({
+        android: {
+          provider: Config.APP_CHECK_DEBUG_MODE ? 'debug' : 'playIntegrity',
+          debugToken: '8305FD57-71EF-476A-AC15-32482CAECC44',
+        },
+        apple: {
+          provider: Config.APP_CHECK_DEBUG_MODE ? 'debug' : 'appAttestWithDeviceCheckFallback',
+          debugToken: 'CED23F53-F6B4-4D58-AEB3-EDBADC2BDAE3',
+        },
+      })
+      const appCheck = await initializeAppCheck(getApp(), {
+        provider,
+        isTokenAutoRefreshEnabled: true,
+      })
+      // Now verify AppCheck was initialized correctly
+      try {
+        const { token } = await getToken(appCheck)
+        if (token.length) log('AppCheck verification passed')
+      } catch (error) {
+        logError(`AppCheck verification failed: ${error}`)
+      }
+    }
+    configureFirebaseProviderAndInitializeAppCheck()
   }, [])
 
   useEffect(() => {
-    const unsubscribe = messaging().onTokenRefresh((deviceToken: string) => {
+    const messaging = getMessaging()
+    const unsubscribe = onTokenRefresh(messaging, (deviceToken: string) => {
       agent?.mediationRecipient.findDefaultMediatorConnection().then(mediatorConnection => {
         if (mediatorConnection) {
           agent?.modules.pushNotifications.setDeviceInfo(mediatorConnection.id, {
@@ -106,30 +119,14 @@ const Navigation = ({ isSignedUp, agent, theme }: NavigationProps) => {
       })
     })
     return () => unsubscribe()
-  })
+  }, [])
 
   useEffect(() => {
-    // FIXME: accessing realm is currently making the app crash in dev environment.
-    // We can probably disable the whole logic if running under __DEV__
-    if (agent && agent.isInitialized && realm) {
-      const { addChatEntryChangeListener, removeChatEntryChangeListener } = manageBackgroundChatEntryChanges(
-        realm,
-        agent,
-      )
-      const { addConnectionChangeListener, removeConnectionChangeListener } =
-        manageConnectionStateChangedEvent(agent)
-      if (!isAppActive && !isScreenLockForceDisabled) {
-        log('App in background ... registering to events')
-        addChatEntryChangeListener()
-        addConnectionChangeListener()
-        return () => {
-          log('Unregistering background event listeners')
-          removeChatEntryChangeListener()
-          removeConnectionChangeListener()
-        }
-      }
+    if (IS_ANDROID) {
+      StatusBar.setBarStyle(theme.isDarkMode ? 'light-content' : 'dark-content', true)
+      StatusBar.setBackgroundColor(globalStyles.headerStyle.backgroundColor, true)
     }
-  }, [agent, realm, isAppActive, isScreenLockForceDisabled])
+  }, [theme.isDarkMode])
 
   return (
     <NavigationContainer linking={deepLinking} theme={theme.isDarkMode ? DarkTheme : DefaultTheme}>

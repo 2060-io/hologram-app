@@ -1,8 +1,9 @@
 import { StackActions } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
+import { TrustResolutionOutcome } from '@verana-labs/verre'
 import React, { useLayoutEffect, useState, useRef, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { TouchableOpacity, View, ScrollView } from 'react-native'
+import { TouchableOpacity, View, ScrollView, SafeAreaView } from 'react-native'
 
 import AlreadyConnected from './AlreadyConnected'
 import PublicService from './PublicService'
@@ -13,8 +14,8 @@ import { NavigationStackParams } from '@2060/components/Navigation/NavigationPro
 import { Avatar, HeaderTitle, ModalLoading, Text } from '@2060/components/common'
 import { useChats, useConnectionById, useMobileAgent, useUserProfile } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
+import { ServiceInfo } from '@2060/model'
 import { acceptInvitation } from '@2060/services/agent/oob'
-import { ServiceInfo } from '@2060/services/api/trustRegistryService'
 import { getConnectionDisplayName } from '@2060/utils/connectionUtils'
 import { toast } from '@2060/utils/toast'
 
@@ -52,7 +53,7 @@ const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => 
     logoUrl: invitation.imageUrl,
     name: invitation.label ?? '',
     minimumAgeRequired: 0,
-    status: 'notFound',
+    status: TrustResolutionOutcome.INVALID,
   })
 
   const { t } = useTranslation()
@@ -61,7 +62,7 @@ const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => 
   const styles = getStyles(theme)
   const { findOrCreateThread } = useChats()
   const { userProfileData } = useUserProfile()
-  const chatThreadId = useRef<string>()
+  const chatThreadId = useRef<string>(undefined)
   const outOfBandId = outOfBandRecord.id
   const parentConnectionId = outOfBandRecord.getTag('parentConnectionId') as string | undefined
   const invitationType = getInvitationType(invitationDid, parentConnectionId)
@@ -140,64 +141,66 @@ const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => 
   useLayoutEffect(handleChangeHeaderOptions, [canConnect, theme.colors])
 
   return (
-    <ScrollView showsVerticalScrollIndicator={false}>
-      <ModalLoading visible={isAcceptingInvitation} />
-      <View style={styles.root}>
-        {isAlreadyConnected && (
-          <AlreadyConnected
-            navigation={navigation}
-            connectionId={existingConnectionId}
-            includeDefaultActions={true}
-          />
-        )}
-        {invitationType === 'public' ? (
-          <PublicService
-            did={invitationDid}
-            initialServiceInfo={serviceInfo.current}
-            setAgeRestricted={setAgeRestricted}
-            userName={userProfileData?.displayName}
-          />
-        ) : (
-          <View>
-            <View style={styles.card}>
-              <Avatar uri={invitation?.imageUrl} label={invitation?.label} size="25%" withBorder={true} />
-              <Text typography="EuclidCircularA-Medium" style={styles.invitationLabel}>
-                {invitation?.label}
-              </Text>
+    <SafeAreaView style={styles.container}>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <ModalLoading visible={isAcceptingInvitation} />
+        <View style={styles.subContainer}>
+          {isAlreadyConnected && (
+            <AlreadyConnected
+              navigation={navigation}
+              connectionId={existingConnectionId}
+              includeDefaultActions={true}
+            />
+          )}
+          {invitationType === 'public' ? (
+            <PublicService
+              did={invitationDid}
+              initialServiceInfo={serviceInfo.current}
+              setAgeRestricted={setAgeRestricted}
+              userName={userProfileData?.displayName}
+            />
+          ) : (
+            <View>
+              <View style={styles.card}>
+                <Avatar uri={invitation?.imageUrl} label={invitation?.label} size="25%" withBorder={true} />
+                <Text typography="EuclidCircularA-Medium" style={styles.invitationLabel}>
+                  {invitation?.label}
+                </Text>
+                {invitationType === 'peer' && (
+                  <Text style={styles.content}>
+                    {t('invitation.peerInvitationDescription', { label: invitation?.label })}
+                  </Text>
+                )}
+                {invitationType === 'subInvitation' && (
+                  <Text typography="EuclidCircularA-Regular" style={styles.content}>
+                    {t('invitation.subConnectionInvitationDescription')}{' '}
+                    <Text typography="EuclidCircularA-Bold" style={styles.fontFamilyBold}>
+                      {`${invitation?.label} `}{' '}
+                    </Text>
+                    {t('invitation.subConnectionInvitationDescriptionAs')}{' '}
+                    <Text typography="EuclidCircularA-Bold" style={styles.fontFamilyBold}>
+                      {parentConnectionName}
+                    </Text>
+                  </Text>
+                )}
+              </View>
               {invitationType === 'peer' && (
-                <Text style={styles.content}>
-                  {t('invitation.peerInvitationDescription', { label: invitation?.label })}
-                </Text>
-              )}
-              {invitationType === 'subInvitation' && (
-                <Text typography="EuclidCircularA-Regular" style={styles.content}>
-                  {t('invitation.subConnectionInvitationDescription')}{' '}
-                  <Text typography="EuclidCircularA-Bold" style={styles.fontFamilyBold}>
-                    {`${invitation?.label} `}{' '}
+                <View style={styles.card}>
+                  <Text typography="EuclidCircularA-Regular" style={styles.enabledChannelsText}>
+                    {`${invitation?.label} ${t('invitation.enabledCommunicationChannelsDescription')}`}
                   </Text>
-                  {t('invitation.subConnectionInvitationDescriptionAs')}{' '}
-                  <Text typography="EuclidCircularA-Bold" style={styles.fontFamilyBold}>
-                    {parentConnectionName}
-                  </Text>
-                </Text>
+                  <View style={styles.separator} />
+                  <CommunicationChannels
+                    channels={communicationChannels}
+                    setChannels={setCommunicationChannels}
+                  />
+                </View>
               )}
             </View>
-            {invitationType === 'peer' && (
-              <View style={styles.card}>
-                <Text typography="EuclidCircularA-Regular" style={styles.enabledChannelsText}>
-                  {`${invitation?.label} ${t('invitation.enabledCommunicationChannelsDescription')}`}
-                </Text>
-                <View style={styles.separator} />
-                <CommunicationChannels
-                  channels={communicationChannels}
-                  setChannels={setCommunicationChannels}
-                />
-              </View>
-            )}
-          </View>
-        )}
-      </View>
-    </ScrollView>
+          )}
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   )
 }
 

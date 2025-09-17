@@ -28,7 +28,7 @@ import { useAppState } from './useAppState'
 import { logError } from '@2060/utils'
 import { copyFile } from '@2060/utils/RNFS'
 
-export interface ICloudBackupInfo {
+interface ICloudBackupInfo {
   exists: boolean
   path?: string
   size?: number

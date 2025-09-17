@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
+import { Results } from 'realm'
 
 import { useLocalRealm } from '../providers/RealmProvider'
-
-import { useChats } from './ChatProvider'
 
 import { ChatEntry, ChatEntryData, getChatEntryData } from '@2060/model'
 
@@ -10,36 +9,36 @@ const LIMIT_STEP_SIZE = 25
 
 export const useChatEntries = (threadId: string) => {
   const { realm } = useLocalRealm()
-  const { loading, setActiveChatThreadId } = useChats()
   const limit = useRef<number>(LIMIT_STEP_SIZE)
   const [chatEntries, setChatEntries] = useState<ChatEntryData[]>([])
-
-  const loadChatEntries = () => {
-    if (!realm || loading) return
-
-    setActiveChatThreadId(threadId)
-    const entries = realm
-      .objects(ChatEntry)
-      .filtered(`chatThreadId == '${threadId}' SORT(createdAt DESC) LIMIT(${limit.current})`)
-      .sorted('createdAt', true)
-    limit.current += LIMIT_STEP_SIZE
-    setChatEntries(entries.map(getChatEntryData))
-
-    const onChatEntryChange: Realm.CollectionChangeCallback<ChatEntry> = newEntries => {
-      setChatEntries(newEntries.map(getChatEntryData))
-    }
-
-    entries.addListener(onChatEntryChange)
-
-    return () => {
-      entries.removeListener(onChatEntryChange)
-      setActiveChatThreadId(undefined)
-    }
-  }
+  const entries = useRef<Results<ChatEntry>>(undefined)
 
   useEffect(() => {
-    return loadChatEntries()
+    return () => {
+      entries.current?.removeAllListeners()
+    }
   }, [realm])
+
+  const updateChatEntryListener = () => {
+    const onChatEntryChange: Realm.CollectionChangeCallback<ChatEntry> = (newEntries, changes) => {
+      const { newModifications, deletions, insertions } = changes
+      if (insertions.length || newModifications.length || deletions.length) {
+        setChatEntries(newEntries.map(getChatEntryData))
+      }
+    }
+    entries.current?.addListener(onChatEntryChange)
+  }
+
+  const loadChatEntries = () => {
+    if (!realm) return
+    entries.current?.removeAllListeners()
+    const query = `chatThreadId == '${threadId}' SORT(createdAt DESC) LIMIT(${limit.current})`
+    entries.current = realm.objects(ChatEntry).filtered(query)
+    const newLoadedChatEntries = entries.current.slice(limit.current - LIMIT_STEP_SIZE, limit.current)
+    limit.current += LIMIT_STEP_SIZE
+    setChatEntries([...chatEntries, ...newLoadedChatEntries.map(getChatEntryData)])
+    updateChatEntryListener()
+  }
 
   return { chatEntries, loadChatEntries }
 }

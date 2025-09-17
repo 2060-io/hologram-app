@@ -1,9 +1,9 @@
 /* eslint-disable no-underscore-dangle */
-import { OutOfBandInvitation } from '@credo-ts/core'
+import { OutOfBandInvitation, Buffer } from '@credo-ts/core'
 import { BottomTabScreenProps } from '@react-navigation/bottom-tabs'
 import { useIsFocused, ParamListBase } from '@react-navigation/native'
 import { parseUrl } from 'query-string'
-import React, { useRef, useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   View,
@@ -15,7 +15,6 @@ import {
   ScrollView,
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { Camera } from 'react-native-vision-camera'
 
 import { isOpenIdCredentialOffer, isOpenIdPresentationRequest } from '../../services/agent/parsers'
 
@@ -35,7 +34,6 @@ interface Props extends BottomTabScreenProps<ParamListBase, 'Scan', 'tab_navigat
 const Scan = ({ navigation }: Props) => {
   const [scannedCode, setScannedCode] = useState('')
   const [tabType, setTabType] = useState<'link' | 'scanner'>('scanner')
-  const camera = useRef<Camera | null>()
   const theme = useTheme()
   const styles = getStyles(theme)
   const [processing, setProcessing] = useState<boolean>(false)
@@ -45,11 +43,10 @@ const Scan = ({ navigation }: Props) => {
   const { isAppActive } = useAppState()
   const { agent } = useMobileAgent()
   const { t } = useTranslation()
-
-  const [isActive, setIsActive] = useState(false)
+  const [isActiveCamera, setIsActiveCamera] = useState(false)
 
   useEffect(() => {
-    setIsActive(isFocused && isAppActive)
+    setIsActiveCamera(isFocused && isAppActive)
   }, [isFocused, isAppActive])
 
   const behavior = Platform.OS === 'ios' ? 'padding' : 'height'
@@ -94,7 +91,7 @@ const Scan = ({ navigation }: Props) => {
   const processCode = async (codeUrl: string) => {
     if (!agent) throw new Error('Agent not defined')
     try {
-      setIsActive(false)
+      setIsActiveCamera(false)
       if (isOpenIdCredentialOffer(codeUrl)) {
         navigation.navigate('OpenIdCredentialOffer', { url: codeUrl })
       } else if (isOpenIdPresentationRequest(codeUrl)) {
@@ -116,7 +113,7 @@ const Scan = ({ navigation }: Props) => {
       }
       setScannedCode('')
     } catch (error) {
-      setIsActive(true)
+      setIsActiveCamera(true)
       toast({
         type: 'error',
         message: t('scan.errorProcessingCodeOrLink', { message: (error as Error).message }),
@@ -156,7 +153,7 @@ const Scan = ({ navigation }: Props) => {
           {t('scan.textDescriptionScanner')}
         </Text>
       </View>
-      <CodeScanner camera={camera} isActive={isActive} onBarcodeScanned={processCode} />
+      <CodeScanner isActive={isActiveCamera} onBarcodeScanned={processCode} />
     </View>
   )
 

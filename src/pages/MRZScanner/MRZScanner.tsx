@@ -41,9 +41,10 @@ const MRZScanner = ({ navigation, route }: Props) => {
   const leaveScreen = () => navigation.goBack()
 
   const onResult = async (mrzFinalResults: string[]) => {
+    if (!chatThread?.data.connectionId) return
     agent?.modules.mrtd.sendMrzString({
       mrzData: mrzFinalResults.join('\n'),
-      connectionId: chatThread?.data.connectionId!,
+      connectionId: chatThread.data.connectionId,
       threadId: didcommThreadId,
     })
     leaveScreen()

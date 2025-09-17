@@ -75,10 +75,18 @@ const Developer = ({ navigation }: Props) => {
     changeDevEnvOptionsVisibility()
   }
 
+  const displayAlertAfterChange = () => {
+    Alert.alert(
+      IS_IOS ? t('settings.closeAppAfterChange') : '',
+      IS_ANDROID ? t('settings.closeAppAfterChange') : '',
+    )
+  }
+
   const onSelectDevEnvOption = async (key: keyof DevEnvsKeys, value: string) => {
     changeDevEnvOptionsVisibility()
     const newDevEnvsToPersist = { ...devEnvs, [key]: value }
     await updateDevEnvs(newDevEnvsToPersist)
+    if (key === 'INDY_VDR_PROXY_BASE_URL') displayAlertAfterChange()
   }
 
   const currentCustomDevEnvValue = currentDevEnv?.key ? storedCustomDevEnvs?.[currentDevEnv.key] : ''
@@ -90,6 +98,7 @@ const Developer = ({ navigation }: Props) => {
     await saveCustomDevEnv(newCustomDevEnvValue)
     setTempCustomDevEnvValue('')
     setIsEditionCustomDevEnvMode(false)
+    if (currentDevEnv?.key === 'INDY_VDR_PROXY_BASE_URL') displayAlertAfterChange()
   }
 
   const switchToEditionCustomDevEnv = () => {
@@ -110,12 +119,12 @@ const Developer = ({ navigation }: Props) => {
       // FIXME: Workaround to make sure cache is unloaded from memory
       const cache = agent.dependencyManager.resolve(CacheModuleConfig).cache
 
-      // @ts-ignore
+      // @ts-expect-error we are sure property _cache exists
       // eslint-disable-next-line no-underscore-dangle
       cache._cache = undefined
       await shutdownAgent()
       await deleteAllKeys()
-      closeRealm(true)
+      closeRealm()
       navigation.navigate('Home')
     } catch (error) {
       Alert.alert('Error', `${error}`)
@@ -137,10 +146,7 @@ const Developer = ({ navigation }: Props) => {
     const newAreEnabled = !areBackgroundNotificationsEnabled
     setAreBackgroundNotificationsEnabled(newAreEnabled)
     await savePushNotificationHandlerEnabled(newAreEnabled)
-    Alert.alert(
-      IS_IOS ? t('settings.closeAppAfterBackNotiChanges') : '',
-      IS_ANDROID ? t('settings.closeAppAfterBackNotiChanges') : '',
-    )
+    displayAlertAfterChange()
   }
 
   const toggleLogsEnabled = async () => {

@@ -48,14 +48,14 @@ export const VideoCallProvider: React.FC<PropsWithChildren> = ({ children }) => 
   const [connectionStatus, updateCallStatus] = useState<ConnectionStatus>(connectionStatusInitialValues)
   const [state, setState] = useState<StateProps>(stateInitialValues)
   const stateRef = useRef<StateProps>(stateInitialValues)
-  const remotePeerClosedTimeoutRef = useRef<ReturnType<typeof setTimeout>>()
+  const remotePeerClosedTimeoutRef = useRef<ReturnType<typeof setTimeout>>(undefined)
   const { isCameraOn, isInCall, isIncomingCall, didcommConnection, didcommCallType } = state
   const { agent } = useMobileAgent()
   const { realm } = useLocalRealm()
   const { activeChatThreadId } = useChats()
   const { assertConnectedNetwork } = useNetwork()
   const isNetworkConnected = assertConnectedNetwork()
-  const isNetworkConnectedRef = useRef<boolean>()
+  const isNetworkConnectedRef = useRef<boolean>(isNetworkConnected)
 
   useEffect(() => {
     isNetworkConnectedRef.current = isNetworkConnected
@@ -66,7 +66,7 @@ export const VideoCallProvider: React.FC<PropsWithChildren> = ({ children }) => 
     stateRef.current = { ...stateRef.current, ...newStateValues }
   }
 
-  const handleCamera = async (callBack?: (isCameraOn: boolean) => {}) => {
+  const handleCamera = async (callBack?: (isCameraOn: boolean) => void) => {
     const cameraPermission = await handleCameraPermission()
     if (!cameraPermission) return
     const newIsCameraOn = !isCameraOn
@@ -204,7 +204,7 @@ export const VideoCallProvider: React.FC<PropsWithChildren> = ({ children }) => 
   }, [agent, realm, activeChatThreadId])
 
   return (
-    <VideoCallContext.Provider
+    <VideoCallContext
       value={{
         ...state,
         startCall,
@@ -225,6 +225,6 @@ export const VideoCallProvider: React.FC<PropsWithChildren> = ({ children }) => 
         </Modal>
         {children}
       </View>
-    </VideoCallContext.Provider>
+    </VideoCallContext>
   )
 }

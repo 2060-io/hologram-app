@@ -57,10 +57,9 @@ export const getOutOfBandRecord = async (
   agentContext: AgentContext,
   options: {
     invitation: OutOfBandInvitation
-    parentConnectionId?: string
   },
 ): Promise<{ outOfBandRecord: OutOfBandRecord; existingConnection?: ConnectionRecord }> => {
-  const { invitation, parentConnectionId } = options
+  const { invitation } = options
 
   const outOfBandApi = agentContext.dependencyManager.resolve(OutOfBandApi)
 
@@ -96,18 +95,13 @@ export const getOutOfBandRecord = async (
           label: invitation.label,
           imageUrl: invitation.imageUrl,
           autoAcceptInvitation: false,
-          autoAcceptConnection: true,
+          autoAcceptConnection: false,
         })
       : await outOfBandApi.receiveInvitation(invitation, {
           autoAcceptInvitation: false,
-          autoAcceptConnection: true,
+          autoAcceptConnection: false,
           reuseConnection: true,
         })
-
-  if (parentConnectionId) {
-    outOfBandRecord.setTag('parentConnectionId', parentConnectionId)
-    await agentContext.dependencyManager.resolve(OutOfBandRepository).update(agentContext, outOfBandRecord)
-  }
 
   return { outOfBandRecord, existingConnection }
 }
@@ -166,8 +160,7 @@ export const processInvitation = async (
       throw new Error('Message request is not from supported protocol.')
     }
 
-    // The value is reassigned, but eslint doesn't know this.
-
+    // eslint-disable-next-line prefer-const
     let connectionId: string | undefined
 
     const credentialOffer = agent.events
@@ -292,7 +285,6 @@ export async function acceptInvitation(
   const routing = await getMediationRouting(agentContext)
 
   const { connectionRecord: newConnection } = await outOfBandApi.acceptInvitation(options.outOfBandId, {
-    autoAcceptConnection: true,
     label: options.label,
     routing,
     reuseConnection: true,
@@ -316,27 +308,6 @@ export async function acceptInvitation(
   })
 
   return { connectionRecord: newConnection }
-}
-
-export async function refuseInvitation(
-  agentContext: AgentContext,
-  options: { connectionId?: string; outOfBandId: string },
-) {
-  const connectionsApi = agentContext.dependencyManager.resolve(ConnectionsApi)
-  const connection = options.connectionId ? await connectionsApi.findById(options.connectionId) : null
-
-  const outOfBandApi = agentContext.dependencyManager.resolve(OutOfBandApi)
-  const outOfBandRecord = await outOfBandApi.getById(options.outOfBandId)
-
-  // Emit event: OOB Invitation accepted
-  agentContext.dependencyManager.resolve(EventEmitter).emit<OutOfBandInvitationEvent>(agentContext, {
-    type: OutOfBandInvitationEventTypes.OutOfBandInvitationEvent,
-    payload: {
-      action: 'Refused',
-      outOfBandRecord: outOfBandRecord.clone(),
-      connection,
-    },
-  })
 }
 
 const getMediationRouting = async (agentContext: AgentContext) => {

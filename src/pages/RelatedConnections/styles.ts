@@ -1,6 +1,5 @@
 import { StyleSheet } from 'react-native'
 
-import { primaryColor, secondaryColor } from '@2060/constants'
 import { AppTheme } from '@2060/styles'
 import { widthPercentageToDP } from '@2060/utils/responsiveUtils'
 
@@ -37,19 +36,14 @@ export default (theme: AppTheme) =>
     btnDone: {
       paddingRight: 15,
     },
-    btnDoneText: {
-      fontSize: 16,
-      color: secondaryColor,
-      fontWeight: '700',
-    },
     connectionRelatedToText: {
       fontSize: theme.fontSize.md2,
       paddingVertical: 15,
       textAlign: 'center',
     },
     letterStyle: {
-      color: primaryColor,
-      fontSize: 15,
+      color: theme.colors.primaryText,
+      fontSize: theme.fontSize.md,
     },
     containerEmptyList: {
       flex: 1,
@@ -57,10 +51,9 @@ export default (theme: AppTheme) =>
       alignSelf: 'center',
     },
     textEmpty: {
-      fontSize: 20,
-      color: primaryColor,
+      color: theme.colors.primaryText,
+      fontSize: theme.fontSize.xl,
     },
-
     containerConnectionItem: {
       flex: 1,
       flexDirection: 'row',
@@ -69,8 +62,8 @@ export default (theme: AppTheme) =>
     },
     listItemText: {
       margin: 12,
-      fontSize: 18,
-      color: primaryColor,
+      fontSize: theme.fontSize.lg,
+      color: theme.colors.primaryText,
     },
     sectionHeaderContainer: {
       paddingVertical: 12,

@@ -3,7 +3,6 @@ declare module 'react-native-config' {
     BASE_INVITATION_URL: string
     DATA_STORE_URL: string
     CLOUD_AGENT_PUBLIC_DID: string
-    TRUSTED_SERVICE_RESOLVER_BASE_URL: string
     DEFAULT_SERVICE_PUBLIC_DID: string
     DEFAULT_SERVICE_ALIAS: string
     INDY_VDR_PROXY_BASE_URL: string

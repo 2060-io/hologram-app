@@ -1,23 +1,32 @@
+import { ConnectionRecord } from '@credo-ts/core'
 import notifee, {
   AndroidBadgeIconType,
   AndroidColor,
+  AndroidGroupAlertBehavior,
   AndroidImportance,
   NotificationAndroid,
   NotificationIOS,
 } from '@notifee/react-native'
-import messaging from '@react-native-firebase/messaging'
-import { PERMISSIONS, request, RESULTS } from 'react-native-permissions'
-
-import { IS_IOS, primaryColor, isAndroid13OrHigher } from '@2060/constants'
 import {
-  getStorageData,
-  IS_PROCESSING_BACKGROUND_NOTIFICATIONS_PERSIST_KEY,
-  setStorageData,
-} from '@2060/services/localStorage'
+  AuthorizationStatus,
+  getMessaging,
+  getToken,
+  hasPermission,
+  isDeviceRegisteredForRemoteMessages,
+  registerDeviceForRemoteMessages,
+  requestPermission,
+} from '@react-native-firebase/messaging'
+import { t } from 'i18next'
+import { requestNotifications, RESULTS } from 'react-native-permissions'
 
-const { AuthorizationStatus } = messaging
-export const LOCAL_NOTIFICATION_ID_PREFIX = 'local-notification'
-export const optionsNotificationAndroid = (options?: NotificationAndroid): NotificationAndroid => ({
+import { getConnectionDisplayName } from './connectionUtils'
+
+import { IS_ANDROID, IS_IOS, isAndroid13OrHigher } from '@2060/constants'
+import { getLocalizedPreview } from '@2060/hooks/agent/chat/preview'
+import { ChatEntry } from '@2060/model'
+
+const LOCAL_NOTIFICATION_ID_PREFIX = 'local-notification'
+const optionsNotificationAndroid = (options?: NotificationAndroid): NotificationAndroid => ({
   ...options,
   vibrationPattern: [300, 500],
   pressAction: { id: 'default' },
@@ -25,13 +34,10 @@ export const optionsNotificationAndroid = (options?: NotificationAndroid): Notif
   smallIcon: 'ic_notification',
   sound: 'default',
   importance: AndroidImportance.HIGH,
-  largeIcon: require('../assets/images/app-icon.png'),
   smallIconLevel: AndroidBadgeIconType.LARGE,
-  color: primaryColor,
-  circularLargeIcon: true,
 })
 
-export const optionsNotificationsIOS = (options?: NotificationIOS): NotificationIOS => ({
+const optionsNotificationsIOS = (options?: NotificationIOS): NotificationIOS => ({
   ...options,
   criticalVolume: 0.9,
   foregroundPresentationOptions: { alert: true, sound: true, badge: true },
@@ -39,50 +45,11 @@ export const optionsNotificationsIOS = (options?: NotificationIOS): Notification
   sound: 'default',
 })
 
-const askUserPushNotificationPermissionAndroid13OrHigher = async () => {
-  const status = await request(PERMISSIONS.ANDROID.POST_NOTIFICATIONS)
-  const isGranted = status === RESULTS.GRANTED
-  return isGranted
-}
-
-const askUserPushNotificationPermission = async () => {
-  const { AUTHORIZED } = AuthorizationStatus
-  const authStatus = await messaging().requestPermission({
-    alert: true,
-    badge: true,
-    sound: true,
-    provisional: false,
-    providesAppNotificationSettings: true,
-  })
-  return authStatus === AUTHORIZED
-}
-
-export const requestNotificationPermissionUser = isAndroid13OrHigher()
-  ? askUserPushNotificationPermissionAndroid13OrHigher
-  : askUserPushNotificationPermission
-
-export const getFcmDeviceToken = async () => {
-  if (!messaging().isDeviceRegisteredForRemoteMessages) await messaging().registerDeviceForRemoteMessages()
-  const fcmToken = await messaging().getToken()
-  return fcmToken
-}
-
-export const checkApplicationPermission = async () => {
-  const settings = await notifee.requestPermission({
-    sound: true,
-    alert: true,
-    criticalAlert: true,
-    badge: true,
-    provisional: true,
-  })
-  return settings.authorizationStatus !== AuthorizationStatus.DENIED
-}
-
 /**
  * Create a channel (required for Android)
  * @returns channelId
  */
-export const createChannel = async () => {
+const createChannel = async () => {
   const channelId = await notifee.createChannel({
     id: 'default',
     name: 'Default Channel',
@@ -93,6 +60,94 @@ export const createChannel = async () => {
     sound: 'default',
   })
   return channelId
+}
+
+const askUserPushNotificationPermissionAndroid13OrHigher = async () => {
+  const { status } = await requestNotifications(['alert', 'badge', 'sound', 'providesAppSettings'])
+  const isGranted = status === RESULTS.GRANTED
+  return isGranted
+}
+
+const askUserPushNotificationPermission = async () => {
+  const { AUTHORIZED } = AuthorizationStatus
+  const messaging = getMessaging()
+  const authStatus = await requestPermission(messaging, { providesAppNotificationSettings: true })
+  return authStatus === AUTHORIZED
+}
+
+export const requestNotificationsPermission = isAndroid13OrHigher()
+  ? askUserPushNotificationPermissionAndroid13OrHigher
+  : askUserPushNotificationPermission
+
+export const getFcmDeviceToken = async () => {
+  const messaging = getMessaging()
+  if (!isDeviceRegisteredForRemoteMessages(messaging)) await registerDeviceForRemoteMessages(messaging)
+  const token = await getToken(messaging)
+  return token
+}
+
+export const arePushNotificationsAllowed = async () => {
+  const messaging = getMessaging()
+  const { AUTHORIZED } = AuthorizationStatus
+  const authorizationStatus = await hasPermission(messaging)
+  return authorizationStatus === AUTHORIZED
+}
+
+export const displayNewChatMessageNotification = async (
+  connection: ConnectionRecord,
+  chatEntry: ChatEntry,
+) => {
+  const data = {
+    screen: 'PersonalChat',
+    params: { chatThreadId: chatEntry.chatThreadId, connectionId: connection.id },
+  }
+  const channelId = await createChannel()
+  const groupId = connection.id
+
+  if (IS_ANDROID) {
+    await notifee.displayNotification({
+      id: `summary-${LOCAL_NOTIFICATION_ID_PREFIX}-chat-${groupId}`,
+      data,
+      android: {
+        channelId,
+        pressAction: { id: 'default' },
+        groupId,
+        groupSummary: true,
+        groupAlertBehavior: AndroidGroupAlertBehavior.SUMMARY,
+      },
+    })
+  }
+  const localNotification = {
+    id: `${LOCAL_NOTIFICATION_ID_PREFIX}-chat-${groupId}-${new Date().getTime()}`,
+    title: getConnectionDisplayName(connection!),
+    body: `${getLocalizedPreview(chatEntry)}`,
+    data,
+    android: optionsNotificationAndroid({
+      channelId,
+      groupId,
+      groupAlertBehavior: AndroidGroupAlertBehavior.SUMMARY,
+    }),
+    ios: optionsNotificationsIOS({ threadId: groupId }),
+  }
+  notifee.displayNotification(localNotification)
+  notifee.incrementBadgeCount()
+}
+
+export const displayNewConnectionNotification = async (connection: ConnectionRecord) => {
+  const channelId = await createChannel()
+  const newNotification = {
+    id: `${LOCAL_NOTIFICATION_ID_PREFIX}-connection-${connection.id}`,
+    title: t('connection.newConnection'),
+    body: `${t('connection.youAreNowConnectedTo')} ${getConnectionDisplayName(connection)}`,
+    data: {
+      screen: 'ConnectionDetails',
+      params: { connectionId: connection?.id },
+    },
+    android: optionsNotificationAndroid({ channelId }),
+    ios: optionsNotificationsIOS(),
+  }
+  notifee.displayNotification(newNotification)
+  notifee.incrementBadgeCount()
 }
 
 export const deleteRemoteNotifications = async () => {
@@ -125,19 +180,4 @@ export const markNotificationsOfChatAsViewed = async (connectionId: string) => {
   notifee.cancelAllNotifications(localChatNotificationsOfConnection)
   const newBadgeCount = localNotifications.length - localChatNotificationsOfConnection.length
   notifee.setBadgeCount(newBadgeCount)
-}
-
-export const getIsProcessingBackgroundNotification = async () => {
-  return ((await getStorageData(IS_PROCESSING_BACKGROUND_NOTIFICATIONS_PERSIST_KEY)) as boolean) ?? false
-}
-
-/**
-Function that updates the value of a boolean flag `isProcessingBackgroundNotification` in the storage.
-It takes a boolean parameter `isProcessing` which defaults to `false`if not provided. The function stores
-this boolean value in the storage under the key `IS_PROCESSING_BACKGROUND_NOTIFICATIONS_PERSIST_KEY`.
-This function is useful for keeping track of whether the application is currently
-processing a background notification.
-*/
-export const updateIsProcessingBackgroundNotification = async (isProcessing = false) => {
-  await setStorageData(IS_PROCESSING_BACKGROUND_NOTIFICATIONS_PERSIST_KEY, isProcessing)
 }

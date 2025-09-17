@@ -18,6 +18,7 @@ import {
   getConnectionParentId,
   isService,
 } from '@2060/utils/connectionUtils'
+import { getLastEntryInChatThread } from '@2060/utils/realmQueries'
 
 export function findChatThread(realm: Realm, connection: ConnectionRecord) {
   const [thread] = realm.objects(ChatThread).filtered(`connectionId == '${connection.id}'`)
@@ -196,4 +197,21 @@ export function deleteThread(realm: Realm, threadId: string) {
     }
     realm.delete(thread)
   })
+}
+
+/**
+ * Update the chat thread if the modified chat entry is the last one in the chat
+ * This ensures that the thread's last chat entry is always up-to-date.
+ *
+ * @param realm - The Realm database instance to query.
+ * @param updatedChatEntry - The modified chat entry to check against the last entry in the chat.
+ */
+export function updateThreadIfNeeded(realm: Realm, updatedChatEntry: ChatEntry) {
+  const lastEntryInChatThread = getLastEntryInChatThread(realm, updatedChatEntry.chatThreadId)
+  if (lastEntryInChatThread) {
+    const isThisLastMessageOfChat = updatedChatEntry.id === lastEntryInChatThread.id
+    if (isThisLastMessageOfChat) {
+      updateThread(realm, updatedChatEntry.chatThreadId, { lastChatEntry: lastEntryInChatThread })
+    }
+  }
 }

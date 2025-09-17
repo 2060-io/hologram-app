@@ -52,28 +52,55 @@ import {
   createChatEntry,
   findAllByAssociatedMessageId,
   findAllByAssociatedRecordId,
-  updateState,
+  updateChatEntry,
 } from './services/ChatEntryService'
 import { addUnread, findChatThread, findOrCreateChatThread, updateThread } from './services/ChatThreadService'
 
-import { ChatEntryType, ChatEntryRole, ChatEntryState, ChatEntry, InvitationMetadata } from '@2060/model'
+import { ChatEntryType, ChatEntryRole, ChatEntryState, InvitationMetadata } from '@2060/model'
 import { InvitationState } from '@2060/model/InvitationState'
+import AgentSingleton from '@2060/services/AgentSingleton'
 import { MobileAgent } from '@2060/services/agent'
 import {
   OutOfBandInvitationEvent,
   OutOfBandInvitationEventTypes,
 } from '@2060/services/agent/oob/OutOfBandEvents'
+import { logWarn } from '@2060/utils'
 import {
   getConnectionDisplayName,
   getConnectionDisplayPicture,
   supportsMessageReceipts,
 } from '@2060/utils/connectionUtils'
 
+let getActiveChatThreadId: () => string | undefined
+
+/**
+ * Subscribes to agent chat-related events and sets up corresponding event listeners
+ * to handle chat entries and thread updates, message processing, media sharing, receipts,
+ * reactions, and invitations.
+ * This function ensures that only one subscription is active at a time and provides a cleanup function
+ * to remove all event listeners when no longer needed.
+ * @param agent - The mobile agent instance used for event subscriptions and data fetching.
+ * @param realm - The Realm database instance for chat data persistence and updates.
+ * @param forceRefreshFunctionReference - If true, sets the active chat thread ID getter to the provided
+ *  function
+ * @param receivedGetActiveChatThreadId - A function that returns the currently active chat thread ID,
+ * or undefined if none is active.
+ * @returns A cleanup function that, when called, unsubscribes all event
+ * listeners registered by this function.
+ */
 export function subscribeToAgentChatEvents(
   agent: MobileAgent,
   realm: Realm,
-  getActiveChatThreadId: () => string | undefined,
+  forceRefreshFunctionReference: boolean,
+  receivedGetActiveChatThreadId: () => string | undefined,
 ) {
+  getActiveChatThreadId = forceRefreshFunctionReference ? receivedGetActiveChatThreadId : () => undefined
+  const mobileAgentInstance = AgentSingleton.instance
+  if (mobileAgentInstance.getIsAppSubscribedToEvents()) {
+    logWarn('From main flow App is already subscribed to agent events')
+    return
+  }
+  mobileAgentInstance.setAppIsSubscribedToEvents()
   const connectionProfileListener = async (event: ConnectionProfileUpdatedEvent) => {
     const { connection } = event.payload
     const thread = findChatThread(realm, connection)
@@ -193,13 +220,11 @@ export function subscribeToAgentChatEvents(
         for (const entry of entries) {
           if (entry && entry.state === ChatEntryState.Created) {
             // Associate chat entry with the outbound message
-            updateState(realm, {
+            updateChatEntry(realm, {
               recordId: entry.id,
               state: ChatEntryState.Created,
               associatedMessageId: outboundMessage.message.id,
             })
-
-            updateThread(realm, entry.chatThreadId, { lastChatEntry: entry })
           }
         }
       }
@@ -210,21 +235,8 @@ export function subscribeToAgentChatEvents(
   // in a single write operation
   const messageReceiptsReceivedListener = async (data: MessageReceiptsReceivedEvent) => {
     const receipts = data.payload.receipts
-    const connection = await agent.connections.getById(data.payload.connectionId)
-    const thread = findChatThread(realm, connection)
-
-    let lastChatEntry: ChatEntry | undefined
-
     for (const receipt of receipts) {
-      const entry = addReceiptToRelatedEntries(realm, receipt)
-      if (entry && (!lastChatEntry || lastChatEntry?.createdAt < entry.createdAt)) lastChatEntry = entry
-    }
-
-    if (
-      lastChatEntry &&
-      (!thread.lastActivityAt || thread.lastActivityAt.getTime() <= lastChatEntry.createdAt)
-    ) {
-      updateThread(realm, thread.id, { lastChatEntry })
+      addReceiptToRelatedEntries(realm, receipt)
     }
   }
 
@@ -334,7 +346,7 @@ export function subscribeToAgentChatEvents(
       for (const invitationEntry of invitationEntries) {
         // only update those entries that are not already marked as "replied"
         if (invitationEntry.metadata?.state === InvitationState.Received) {
-          updateState(realm, {
+          updateChatEntry(realm, {
             recordId: invitationEntry.id,
             state: ChatEntryState.Viewed,
             metadata: {
@@ -354,7 +366,6 @@ export function subscribeToAgentChatEvents(
     if (!connection) return
 
     const thread = findOrCreateChatThread(realm, connection)
-    let chatEntry: ChatEntry | undefined
     if (action === 'Received') {
       const { label, imageUrl, invitationDids, id } = outOfBandRecord.outOfBandInvitation
       const did = tryParseDid(id) ? id : invitationDids[0]
@@ -377,7 +388,7 @@ export function subscribeToAgentChatEvents(
             }
 
       // New Invitation Received ChatEntry
-      chatEntry = createChatEntry(realm, {
+      createChatEntry(realm, {
         associatedRecordId: outOfBandRecord.id,
         chatThreadId: thread.id,
         type: ChatEntryType.Invitation,
@@ -387,7 +398,6 @@ export function subscribeToAgentChatEvents(
         createdAt: new Date().getTime(),
         associatedMessageId: event.payload.messageId,
       })
-      updateThread(realm, thread.id, { lastChatEntry: chatEntry })
       if (thread.id !== getActiveChatThreadId()) {
         addUnread(realm, thread.id, 1)
       }

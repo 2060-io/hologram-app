@@ -3,19 +3,19 @@ import { sanitizeString } from './display'
 import { stringToStringDate } from '@2060/utils/dateUtils'
 
 /* eslint-disable max-len */
-export type CredentialAttributeRowString = {
+type CredentialAttributeRowString = {
   key: string
   value: string
   type: 'string'
 }
 
-export type CredentialAttributeRowImage = {
+type CredentialAttributeRowImage = {
   type: 'image'
   key: string
   image: string
 }
 
-export type CredentialAttributeRowImageAndString = {
+type CredentialAttributeRowImageAndString = {
   type: 'imageAndString'
   key: string
   image: string
@@ -27,7 +27,7 @@ export type CredentialAttributeRow =
   | CredentialAttributeRowImage
   | CredentialAttributeRowImageAndString
 
-export type CredentialAttributeTable = {
+type CredentialAttributeTable = {
   title?: string
   rows: CredentialAttributeRow[]
   depth: number // depth level

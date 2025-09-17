@@ -9,7 +9,7 @@ import RenderProof, { ServiceInfoForRenderProof } from './RenderProof'
 import getStyles from './styles'
 
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { ServiceInfo } from '@2060/services/api/trustRegistryService'
+import { ServiceInfo } from '@2060/model'
 
 type Props = {
   serviceInfo: ServiceInfo

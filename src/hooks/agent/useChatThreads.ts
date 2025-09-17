@@ -91,18 +91,18 @@ export const useChatThreadsbyParentId = (parentId: string, category: string, top
     && parentId == '${parentId}' 
     SORT(lastActivityAt DESC)`
 
-  const entries = realm?.objects(ChatThread).filtered(filterQuery).sorted('lastActivityAt', true)
+  const chatThreads = realm?.objects(ChatThread).filtered(filterQuery).sorted('lastActivityAt', true)
 
   const getChatThreadsbyParentId = () => {
-    if (!entries) return
-    setChildChatThreads(entries.length ? entries.map(getChatThreadData) : [])
+    if (!chatThreads) return
+    setChildChatThreads(chatThreads.length ? chatThreads.map(getChatThreadData) : [])
 
-    const handleChange: Realm.CollectionChangeCallback<ChatThread> = newCollection => {
-      setChildChatThreads(newCollection.length ? newCollection.map(getChatThreadData) : [])
+    const handleChange: Realm.CollectionChangeCallback<ChatThread> = newChatThreads => {
+      setChildChatThreads(newChatThreads.length ? newChatThreads.map(getChatThreadData) : [])
     }
 
-    entries.addListener(handleChange)
-    return () => entries.removeListener(handleChange)
+    chatThreads.addListener(handleChange)
+    return () => chatThreads.removeListener(handleChange)
   }
 
   useEffect(() => {
@@ -112,7 +112,7 @@ export const useChatThreadsbyParentId = (parentId: string, category: string, top
   return childChatThreads
 }
 
-export const useChatThreadsHook = (query: string) => {
+const useChatThreadsHook = (query: string) => {
   const [data, setData] = useState<ChatThreadData[]>([])
   const { realm } = useLocalRealm()
 
@@ -122,8 +122,8 @@ export const useChatThreadsHook = (query: string) => {
 
       setData(collection.length > 0 ? collection.map(getChatThreadData) : [])
 
-      const handleChange: Realm.CollectionChangeCallback<ChatThread> = newCollection => {
-        setData(newCollection.length ? newCollection.map(getChatThreadData) : [])
+      const handleChange: Realm.CollectionChangeCallback<ChatThread> = newChatThreads => {
+        setData(newChatThreads.length ? newChatThreads.map(getChatThreadData) : [])
       }
 
       collection.addListener(handleChange)

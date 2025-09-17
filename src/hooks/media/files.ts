@@ -1,5 +1,6 @@
 import { utils } from '@credo-ts/core'
-import dayjs from 'dayjs'
+
+import { dateToString } from '@2060/utils/dateUtils'
 
 /**
  * Generates an unique file name, based on the media type (used for name prefix)
@@ -10,7 +11,7 @@ import dayjs from 'dayjs'
  * @returns generated file name
  */
 export function generateFileName(mimeType: string, extension?: string) {
-  const [year, month, day] = dayjs(new Date()).format('YYYY/MM/DD').split('/')
+  const [year, month, day] = dateToString(new Date(), 'YYYY/MM/DD').split('/')
   const uid = utils.uuid().slice(0, 6).toUpperCase()
 
   const [mainType, subType] = mimeType.split('/')

@@ -9,7 +9,7 @@ export type Reaction = {
   role: ChatEntryRole
 }
 
-export type Receipt = {
+type Receipt = {
   timestamp: number
   state: ChatEntryState
 }
@@ -27,7 +27,7 @@ export type RelatedEntryProps = {
   role: ChatEntryRole // TODO: This should not be fixed
 }
 
-export type ChatEntryMetadata = Record<string, unknown>
+type ChatEntryMetadata = Record<string, unknown>
 
 export interface ChatEntryData {
   id: string

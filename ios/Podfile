@@ -1,16 +1,17 @@
-# TODO: remove this variable which disable new architecture in iOS. It was added due to KeyboardAvoidingView animations does works well
-# with the new architecture. So, when this animation issue be fixed in new architecture, we can remove this variable.
-ENV['RCT_NEW_ARCH_ENABLED'] = "0"
+require File.join(File.dirname(`node --print "require.resolve('expo/package.json')"`), "scripts/autolinking")
 
-require_relative '../node_modules/expo/scripts/autolinking'
+def node_require(script)
+  # Resolve script with node to allow for hoisting
+  require Pod::Executable.execute_command('node', ['-p',
+    "require.resolve(
+      '#{script}',
+      {paths: [process.argv[1]]},
+    )", __dir__]).strip
+end
 
-# Resolve react_native_pods.rb with node to allow for hoisting
-require Pod::Executable.execute_command('node', ['-p',
-  'require.resolve(
-    "react-native/scripts/react_native_pods.rb",
-    "react-native-permissions/scripts/setup.rb",
-    {paths: [process.argv[1]]},
-  )', __dir__]).strip
+# Use it to require both react-native's and this package's scripts:
+node_require('react-native/scripts/react_native_pods.rb')
+node_require('react-native-permissions/scripts/setup.rb')
 
 platform :ios, '15.6'
 install! 'cocoapods', :deterministic_uuids => false
@@ -39,10 +40,12 @@ def add_common_dependencies()
   pod 'FirebaseCoreInternal', :modular_headers => true
   pod 'GoogleUtilities', :modular_headers => true
   pod 'FirebaseCore', :modular_headers => true
-  permissions_path = '../node_modules/react-native-permissions/ios'
-  pod 'Permission-Microphone', :path => "#{permissions_path}/Microphone"
-  pod 'Permission-Camera', :path => "#{permissions_path}/Camera"
 end
+
+setup_permissions([
+   'Camera',
+   'Microphone',
+])
 
 abstract_target '2060CommonPods' do
   target '2060Dev' do
@@ -85,10 +88,7 @@ abstract_target '2060CommonPods' do
 end
 
 abstract_target 'CommonShareExtensionPods' do
-  #TODO: When enable new architecture uncomment the next 3 lines and remove use_react_native!
-  #config = use_native_modules!
-  #configure_react_native(config)
-  #add_common_dependencies()
+  use_expo_modules!
   use_react_native!
   pod 'RNShareMenu', :path => '../node_modules/react-native-share-menu'
 

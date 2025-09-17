@@ -17,7 +17,7 @@ export const getConnectionDisplayName = (connection: ConnectionRecord) => {
   const nameAlias = connection.alias
   const namelabel = connection?.theirLabel
   const nameDid = connection.did
-  let displayName = nameAlias || nameDisplayName || namelabel || nameDid || ''
+  const displayName = nameAlias || nameDisplayName || namelabel || nameDid || ''
   return displayName
 }
 
@@ -100,17 +100,6 @@ export const getConnectionParentId = (connectionRecord?: ConnectionRecord) =>
   connectionRecord?.getTag('parentConnectionId') as string | undefined
 export const filterConnectionsByParentId = (connections: ConnectionRecord[], parentConnectionId: string) =>
   connections.filter(connection => connection.getTag('parentConnectionId') === parentConnectionId)
-
-export const filterConnectionsByTypes = (options: {
-  connections: ConnectionRecord[]
-  types: string[]
-  onlyParentConnections: boolean
-}) =>
-  options.connections.filter(
-    connection =>
-      (!options.onlyParentConnections || getConnectionParentId(connection) === undefined) &&
-      options.types.includes(getConnectionType(connection)),
-  )
 
 export const notAllowedConnectionsIdsToSendMessages = (connections: ConnectionRecord[]) => {
   return connections
