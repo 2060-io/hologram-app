@@ -161,8 +161,8 @@ const Developer = ({ navigation }: Props) => {
 
   const exportLogs = async () => {
     try {
-      const isFileExist = await existsFile(LOG_FILE_PATH)
-      if (!isFileExist) {
+      const fileExists = await existsFile(LOG_FILE_PATH)
+      if (!fileExists) {
         Alert.alert(t('settings.noLogsFileFound'))
         return
       }
