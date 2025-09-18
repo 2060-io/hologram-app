@@ -20,18 +20,12 @@ import {
 
 import { IS_ANDROID, IS_IOS } from '@2060/constants'
 import { ImageOrVideo, useImageCropPicker } from '@2060/hooks'
-import { createResizedImage } from '@2060/hooks/media/preview'
 import { logError } from '@2060/utils'
 import { deleteFile } from '@2060/utils/RNFS'
 import { screenHeight, screenWidth } from '@2060/utils/responsiveUtils'
 
 const START_RECORDING_DELAY = 200
 const MAX_ZOOM_FACTOR = 10
-const resizeImageOptions = {
-  maxWidth: 1280,
-  maxHeight: 720,
-  quality: 100,
-}
 
 export type MediaCaptured = {
   origin: 'vision-camera' | 'image-crop-picker'
@@ -99,12 +93,7 @@ export const useCamera = ({ navigation }: { navigation: StackNavigationProp<Para
         photo.height = width
         photo.width = height
       }
-      let path = IS_IOS ? photo.path : `file://${photo.path}`
-      const resizedImage = await createResizedImage({ imageUrl: path, ...resizeImageOptions })
-      if (resizedImage) {
-        await deleteFile(path)
-        path = IS_IOS ? resizedImage.path : `file://${resizedImage.path}`
-      }
+      const path = IS_IOS ? photo.path : `file://${photo.path}`
       updateMediaCapturedInfo({
         origin: 'vision-camera',
         type: 'image',

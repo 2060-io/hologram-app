@@ -15,22 +15,28 @@ import { useCamera } from './useCamera'
 
 import { PersonalChatStackParams } from '@2060/components/Navigation/NavigationProps'
 import { Icon, SvgIcon } from '@2060/components/common'
-import { IS_ANDROID } from '@2060/constants'
+import { IS_ANDROID, IS_IOS } from '@2060/constants'
 import { useAppState, useChatActions } from '@2060/hooks'
 import { DidCommMediaFileSharingData } from '@2060/hooks/agent'
-import { createDidCommPreview } from '@2060/hooks/media/preview'
+import { createDidCommPreview, createResizedImage } from '@2060/hooks/media/preview'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { logError } from '@2060/utils'
+import { deleteFile } from '@2060/utils/RNFS'
 import { cancelVideoCompression, compressVideo } from '@2060/utils/mediaFileUtils'
+
+const resizeImageOptions = {
+  maxWidth: 1280,
+  maxHeight: 720,
+  quality: 100,
+}
 
 const ReanimatedCamera = Reanimated.createAnimatedComponent(VisionCamera)
 Reanimated.addWhitelistedNativeProps({
   zoom: true,
 })
-export interface Props extends StackScreenProps<PersonalChatStackParams, 'Camera'> {}
 
-const Camera = (props: Props) => {
-  const { navigation } = props
+export interface Props extends StackScreenProps<PersonalChatStackParams, 'Camera'> {}
+const Camera = ({ navigation }: Props) => {
   const theme = useTheme()
   const styles = getStyles(theme)
   const [isActive, setIsActive] = useState(false)
@@ -82,17 +88,25 @@ const Camera = (props: Props) => {
   const sendMedia = useCallback(async () => {
     try {
       if (!mediaCaptured) return
-      const { path, height, width, duration, origin } = mediaCaptured
-      const imageRequestResponse = await fetch(path)
-      const { size, type } = await imageRequestResponse.blob()
+      const { type, height, width, duration, origin } = mediaCaptured
+      const isImage = type === 'image'
+      if (isImage) {
+        const resizedImage = await createResizedImage({ imageUrl: mediaCaptured.path, ...resizeImageOptions })
+        if (resizedImage) {
+          await deleteFile(mediaCaptured.path)
+          mediaCaptured.path = IS_IOS ? resizedImage.path : `file://${resizedImage.path}`
+        }
+      }
+      const mediaRequest = await fetch(mediaCaptured.path)
+      const { size, type: mimeType } = await mediaRequest.blob()
       const preview = await createDidCommPreview({
-        localFilePath: path,
-        mimeType: type,
+        localFilePath: mediaCaptured.path,
+        mimeType,
       })
-      const isVideo = type.startsWith('video')
+      const isVideo = type === 'video'
       let didCommMediaFileSharingData: DidCommMediaFileSharingData = {
-        path,
-        mime: type,
+        path: mediaCaptured.path,
+        mime: mimeType,
         preview,
         size,
         width,
