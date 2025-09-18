@@ -40,7 +40,7 @@ export const findAndParseMrz = (initialLines: string[]) => {
         line.padEnd(TD3_LINE_LONG, '<')
       }
 
-      if (line.length >= TD1_LINE_LONG && line.indexOf('<') !== -1) {
+      if (line.length >= TD1_LINE_LONG) {
         lines.push(line)
       }
     })
