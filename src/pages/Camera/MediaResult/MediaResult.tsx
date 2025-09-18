@@ -6,7 +6,6 @@ import { MediaCaptured } from '../useCamera'
 import VideoRecorded from './VideoRecorded'
 import getStyles from './styles'
 
-import { Modal } from '@2060/components/common'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 
 type Props = {
@@ -21,27 +20,25 @@ const MediaResult = ({ visible, renderCloseButton, renderSendButton, mediaCaptur
   const styles = getStyles(theme)
 
   return (
-    <Modal animationType="fade" transparent statusBarTranslucent={false} visible={visible}>
-      <View style={styles.container}>
-        <View style={styles.contentContainer}>
-          {renderCloseButton()}
-          {mediaCaptured ? (
-            mediaCaptured.type === 'image' ? (
-              <Image
-                source={{ uri: mediaCaptured.path }}
-                style={styles.takenPhotoContainer}
-                resizeMode="contain"
-              />
-            ) : (
-              <VideoRecorded path={mediaCaptured.path} />
-            )
+    <View style={{ ...styles.container, display: visible ? 'flex' : 'none' }}>
+      <View style={styles.contentContainer}>
+        {renderCloseButton()}
+        {mediaCaptured ? (
+          mediaCaptured.type === 'image' ? (
+            <Image
+              source={{ uri: mediaCaptured.path }}
+              style={styles.takenPhotoContainer}
+              resizeMode="contain"
+            />
           ) : (
-            <></>
-          )}
-          {renderSendButton()}
-        </View>
+            <VideoRecorded path={mediaCaptured.path} />
+          )
+        ) : (
+          <></>
+        )}
+        {renderSendButton()}
       </View>
-    </Modal>
+    </View>
   )
 }
 

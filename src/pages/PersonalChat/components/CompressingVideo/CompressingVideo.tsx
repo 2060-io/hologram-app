@@ -35,6 +35,7 @@ const getStyles = (theme: AppTheme) =>
       justifyContent: 'center',
       alignItems: 'center',
       paddingHorizontal: 12,
+      zIndex: 4,
     },
     text: {
       color: theme.colors.white,

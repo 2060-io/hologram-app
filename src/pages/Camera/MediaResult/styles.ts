@@ -6,6 +6,8 @@ export default (theme: AppTheme) =>
   StyleSheet.create({
     container: {
       flex: 1,
+      zIndex: 2,
+      ...StyleSheet.absoluteFillObject,
       backgroundColor: theme.isDarkMode ? theme.colors.secondary : theme.colors.primary,
     },
     contentContainer: {

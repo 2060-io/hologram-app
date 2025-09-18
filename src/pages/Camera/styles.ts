@@ -32,7 +32,7 @@ export default (theme: AppTheme) =>
       position: 'absolute',
       right: 20,
       top: 40,
-      zIndex: 3,
+      zIndex: 2,
     },
     buttonsContainer: {
       flexDirection: 'row',
