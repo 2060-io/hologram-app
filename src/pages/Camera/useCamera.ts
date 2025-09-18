@@ -20,14 +20,21 @@ import {
 
 import { IS_ANDROID, IS_IOS } from '@2060/constants'
 import { ImageOrVideo, useImageCropPicker } from '@2060/hooks'
+import { createResizedImage } from '@2060/hooks/media/preview'
 import { logError } from '@2060/utils'
 import { deleteFile } from '@2060/utils/RNFS'
 import { screenHeight, screenWidth } from '@2060/utils/responsiveUtils'
 
 const START_RECORDING_DELAY = 200
 const MAX_ZOOM_FACTOR = 10
+const resizeImageOptions = {
+  maxWidth: 1280,
+  maxHeight: 720,
+  quality: 100,
+}
 
 export type MediaCaptured = {
+  origin: 'vision-camera' | 'image-crop-picker'
   type: 'image' | 'video'
   width: number
   height: number
@@ -69,7 +76,7 @@ export const useCamera = ({ navigation }: { navigation: StackNavigationProp<Para
       (values: ImageOrVideo) => {
         const { path, height, width, duration } = values
         const type = values.mime.startsWith('image') ? 'image' : 'video'
-        updateMediaCapturedInfo({ type, path, height, width, duration })
+        updateMediaCapturedInfo({ type, path, height, width, duration, origin: 'image-crop-picker' })
       },
       { mediaType: 'any' },
     )
@@ -92,8 +99,19 @@ export const useCamera = ({ navigation }: { navigation: StackNavigationProp<Para
         photo.height = width
         photo.width = height
       }
-      const path = IS_IOS ? photo.path : `file://${photo.path}`
-      updateMediaCapturedInfo({ type: 'image', width: photo.width, height: photo.height, path })
+      let path = IS_IOS ? photo.path : `file://${photo.path}`
+      const resizedImage = await createResizedImage({ imageUrl: path, ...resizeImageOptions })
+      if (resizedImage) {
+        await deleteFile(path)
+        path = IS_IOS ? resizedImage.path : `file://${resizedImage.path}`
+      }
+      updateMediaCapturedInfo({
+        origin: 'vision-camera',
+        type: 'image',
+        width: photo.width,
+        height: photo.height,
+        path,
+      })
     } catch (error) {
       logError('Error taking photo', error)
     }
@@ -109,6 +127,7 @@ export const useCamera = ({ navigation }: { navigation: StackNavigationProp<Para
       const path = IS_IOS ? video.path : `file://${video.path}`
       const { width, height, duration } = video
       updateMediaCapturedInfo({
+        origin: 'vision-camera',
         type: 'video',
         width,
         height,

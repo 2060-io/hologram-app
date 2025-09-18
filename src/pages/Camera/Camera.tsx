@@ -82,7 +82,7 @@ const Camera = (props: Props) => {
   const sendMedia = useCallback(async () => {
     try {
       if (!mediaCaptured) return
-      const { path, height, width, duration } = mediaCaptured
+      const { path, height, width, duration, origin } = mediaCaptured
       const imageRequestResponse = await fetch(path)
       const { size, type } = await imageRequestResponse.blob()
       const preview = await createDidCommPreview({
@@ -99,7 +99,9 @@ const Camera = (props: Props) => {
         height,
         ...(isVideo && { duration }),
       }
-      if (IS_ANDROID && isVideo) {
+      const mustCompressVideo =
+        isVideo && (origin === 'vision-camera' || (IS_ANDROID && origin === 'image-crop-picker'))
+      if (mustCompressVideo) {
         didCommMediaFileSharingData = await compressVideo(
           didCommMediaFileSharingData,
           setCompressingVideoProgress,
