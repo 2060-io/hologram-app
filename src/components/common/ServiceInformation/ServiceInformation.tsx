@@ -1,9 +1,10 @@
 import React, { useEffect, memo } from 'react'
-import { View } from 'react-native'
+import { ActivityIndicator, View } from 'react-native'
 
 import ServiceMainInfo from './ServiceMainInfo'
 
 import ProofOfTrust from '@2060/components/common/ProofOfTrust'
+import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { useFetchServiceInfo } from '@2060/hooks/useFetchServiceInfo'
 import { ServiceInfo } from '@2060/model'
 
@@ -28,6 +29,7 @@ const getServiceInfoToDisplay = ({
 }
 
 const ServiceInformation = ({ did, initialServiceInfo, onServiceInfoUpdated }: Props) => {
+  const theme = useTheme()
   const { isFetching, serviceInfo } = useFetchServiceInfo(did, true)
   const serviceInfoToDisplay = getServiceInfoToDisplay({ serviceInfo, initialServiceInfo, isFetching })
 
@@ -35,6 +37,9 @@ const ServiceInformation = ({ did, initialServiceInfo, onServiceInfoUpdated }: P
     if (serviceInfo) onServiceInfoUpdated?.(serviceInfo)
   }, [serviceInfo])
 
+  if (isFetching) {
+    return <ActivityIndicator size="large" color={theme.colors.green} />
+  }
   return serviceInfoToDisplay ? (
     <View>
       <ServiceMainInfo serviceInfo={serviceInfoToDisplay} />
