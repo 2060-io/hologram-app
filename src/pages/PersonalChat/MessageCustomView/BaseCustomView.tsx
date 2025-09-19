@@ -64,7 +64,7 @@ const BaseCustomView: React.FC<BaseCustomMessageViewProps> = memo(props => {
   const nextMessageChatEntry = nextMessage
   const relatedEntryProps = chatEntry.relatedEntryProps
   const { chatThread } = useChat()
-  const user = chatThread?.participants.find(p => p.id === chatEntry.role)
+  const sender = chatThread?.participants.find(p => p.id === chatEntry.role)
   const messageTime = dateToString(new Date(currentMessage?.createdAt), timeFormat)
   const displayTimeAndTicks = mustDisplayAckAndTime({
     messageTime,
@@ -106,10 +106,7 @@ const BaseCustomView: React.FC<BaseCustomMessageViewProps> = memo(props => {
             <ImageChatView
               {...{
                 mediaRecordId: chatEntry.associatedRecordId,
-                fileMediaInfo: {
-                  user,
-                  createdAt: new Date(chatEntry.createdAt),
-                },
+                fileMediaInfo: { sender, createdAt: new Date(chatEntry.createdAt) },
                 chatEntry,
                 displayTimeAndTicks,
               }}
@@ -120,10 +117,7 @@ const BaseCustomView: React.FC<BaseCustomMessageViewProps> = memo(props => {
             <VideoChatView
               {...{
                 mediaRecordId: chatEntry.associatedRecordId,
-                fileMediaInfo: {
-                  user,
-                  createdAt: new Date(chatEntry.createdAt),
-                },
+                fileMediaInfo: { sender, createdAt: new Date(chatEntry.createdAt) },
                 chatEntry,
                 displayTimeAndTicks,
               }}
@@ -145,7 +139,7 @@ const BaseCustomView: React.FC<BaseCustomMessageViewProps> = memo(props => {
               proofRecordId={chatEntry.associatedRecordId}
               metadata={chatEntry.metadata as VPRequestMetadata}
               agent={agent}
-              sender={user}
+              sender={sender}
               chatEntryId={chatEntry.id}
             />
           )
@@ -165,7 +159,7 @@ const BaseCustomView: React.FC<BaseCustomMessageViewProps> = memo(props => {
               associatedRecordId={chatEntry.associatedRecordId}
               metadata={chatEntry.metadata as VCOfferMetadata}
               agent={agent}
-              sender={user}
+              sender={sender}
             />
           )
         case ChatEntryType.Invitation:
@@ -181,8 +175,8 @@ const BaseCustomView: React.FC<BaseCustomMessageViewProps> = memo(props => {
           return (
             <CallOfferChatView
               metadata={chatEntry.metadata as CallOfferMetadata}
-              sender={user}
               didcommThreadId={chatEntry.didcommThreadId as string}
+              role={currentMessage.role}
             />
           )
         case ChatEntryType.MrzRequest:

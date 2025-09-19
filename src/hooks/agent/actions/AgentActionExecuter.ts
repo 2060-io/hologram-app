@@ -1,3 +1,4 @@
+import { CallEndMessage, CallOfferMessage, DidCommCallType } from '@2060.io/credo-ts-didcomm-calls'
 import { ShareMediaMessage } from '@2060.io/credo-ts-didcomm-media-sharing'
 import { MessageReactionsMessage, MessageReactionAction } from '@2060.io/credo-ts-didcomm-reactions'
 import { MessageReceiptsMessage, MessageState } from '@2060.io/credo-ts-didcomm-receipts'
@@ -29,6 +30,7 @@ import {
 } from './AgentAction'
 
 import { updateChatEntry } from '@2060/hooks/agent/chat/services/ChatEntryService'
+import { CallInfo } from '@2060/hooks/providers/useVideoCallContext'
 import { ChatEntry, ChatEntryState } from '@2060/model'
 import { createOobInvitation, MobileAgent } from '@2060/services/agent'
 import { log, logError } from '@2060/utils'
@@ -226,6 +228,35 @@ export class AgentActionExecuter {
         })
         return {
           outgoingMessageType: V2QueriesMessage.type.messageTypeUri,
+        }
+      }
+    } else if (action.type === AgentActionType.CreateCallOffer) {
+      const parameters = action.parameters as {
+        callType: DidCommCallType
+        connectionId: string
+        callInfo: CallInfo
+      }
+      return async (options: { agent: MobileAgent }) => {
+        const { callType, connectionId, callInfo } = parameters
+        await options.agent.modules.calls.offer({
+          callType,
+          connectionId,
+          parameters: { ...callInfo },
+        })
+        return {
+          outgoingMessageType: CallOfferMessage.type.messageTypeUri,
+        }
+      }
+    } else if (action.type === AgentActionType.HangupCall) {
+      const parameters = action.parameters as {
+        connectionId: string
+        threadId: string | undefined
+      }
+      return async (options: { agent: MobileAgent }) => {
+        const { connectionId, threadId } = parameters
+        await options.agent.modules.calls.hangup({ connectionId, threadId })
+        return {
+          outgoingMessageType: CallEndMessage.type.messageTypeUri,
         }
       }
     }
