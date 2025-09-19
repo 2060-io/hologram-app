@@ -1,10 +1,11 @@
 import {
   CallAcceptMessage,
   CallEndMessage,
+  CallOfferMessage,
   CallRejectMessage,
   DidCommCallType,
 } from '@2060.io/credo-ts-didcomm-calls'
-import { AgentEventTypes, AgentMessageProcessedEvent } from '@credo-ts/core'
+import { AgentEventTypes, AgentMessageProcessedEvent, AgentMessageSentEvent } from '@credo-ts/core'
 import React, { PropsWithChildren, useState, useEffect, useRef, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
@@ -171,6 +172,12 @@ export const VideoCallProvider: React.FC<PropsWithChildren> = ({ children }) => 
 
   useEffect(() => {
     if (agent) {
+      const agentMessageSentListener = async (data: AgentMessageSentEvent) => {
+        const { message } = data.payload.message
+        if (message.type === CallOfferMessage.type.messageTypeUri) {
+          updateState({ didcommThreadId: message.threadId })
+        }
+      }
       const agentMessageProcessedListener = async (data: AgentMessageProcessedEvent) => {
         const { message } = data.payload
 
@@ -192,12 +199,14 @@ export const VideoCallProvider: React.FC<PropsWithChildren> = ({ children }) => 
         }
       }
 
+      agent.events.on(AgentEventTypes.AgentMessageSent, agentMessageSentListener)
       agent.events.on<AgentMessageProcessedEvent>(
         AgentEventTypes.AgentMessageProcessed,
         agentMessageProcessedListener,
       )
 
       return () => {
+        agent.events.off(AgentEventTypes.AgentMessageSent, agentMessageSentListener)
         agent.events.off(AgentEventTypes.AgentMessageProcessed, agentMessageProcessedListener)
       }
     }
