@@ -96,9 +96,9 @@ export const handleProofExchangeRecordChanges = async (options: {
               replied: false,
             },
           })
-        }
-        if (thread.id !== activeChatThreadId) {
-          addUnread(realm, thread.id, 1)
+          if (thread.id !== activeChatThreadId) {
+            addUnread(realm, thread.id, 1)
+          }
         }
       }
     } else if (
