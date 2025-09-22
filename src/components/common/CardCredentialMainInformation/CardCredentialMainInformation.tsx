@@ -33,8 +33,11 @@ const CardCredentialMainInformation = ({
   const theme = useTheme()
   const styles = getStyles(theme, size)
   const { serviceInfo } = useFetchServiceInfo(credentialMainInfo.issuer.id)
-  const uri = serviceInfo?.logoUrl ?? credentialMainInfo.issuer.logoUrl
   const using24HourFormat = uses24HourClock()
+  const uri = serviceInfo?.logoUrl ?? credentialMainInfo.issuer.logoUrl
+  const issuedOnLabel =
+    credentialMainInfo.dateLabel ??
+    `${t('credential.issuedOn')}: ${dateToString(credentialMainInfo.createdAt, `DD-MM-YYYY ${using24HourFormat ? 'HH:mm' : 'h:mm A'}`)}`
 
   return (
     <TouchableOpacity style={[styles.container, containerStyle]} activeOpacity={1} onPress={onPress}>
@@ -52,7 +55,7 @@ const CardCredentialMainInformation = ({
       </View>
       <View>
         <Text style={styles.issuedOn} typography="EuclidCircularA-Regular">
-          {`${credentialMainInfo.dateLabel ?? t('credential.issuedOn')}: ${dateToString(credentialMainInfo.createdAt, `DD-MM-YYYY ${using24HourFormat ? 'HH:mm' : 'h:mm A'}`)}`}
+          {issuedOnLabel}
         </Text>
         <View style={styles.bottomContainer}>
           <Text style={styles.bottomText} typography="EuclidCircularA-Medium" numberOfLines={1}>
