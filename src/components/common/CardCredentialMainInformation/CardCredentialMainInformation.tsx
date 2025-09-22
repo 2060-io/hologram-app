@@ -2,6 +2,7 @@ import { TrustResolutionOutcome } from '@verana-labs/verre'
 import React, { memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, Image, StyleProp, ViewStyle, TouchableOpacity } from 'react-native'
+import { uses24HourClock } from 'react-native-localize'
 import { SvgUri } from 'react-native-svg'
 
 import Text from '../Text'
@@ -13,6 +14,7 @@ import imagePlaceholder from '@2060/assets/images/placeholderImg.png'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { useFetchServiceInfo } from '@2060/hooks/useFetchServiceInfo'
 import { CredentialMainInfo } from '@2060/services/agent/display'
+import { dateToString } from '@2060/utils/dateUtils'
 
 type Props = {
   credentialMainInfo: CredentialMainInfo
@@ -32,6 +34,7 @@ const CardCredentialMainInformation = ({
   const styles = getStyles(theme, size)
   const { serviceInfo } = useFetchServiceInfo(credentialMainInfo.issuer.id)
   const uri = serviceInfo?.logoUrl ?? credentialMainInfo.issuer.logoUrl
+  const using24HourFormat = uses24HourClock()
 
   return (
     <TouchableOpacity style={[styles.container, containerStyle]} activeOpacity={1} onPress={onPress}>
@@ -49,7 +52,7 @@ const CardCredentialMainInformation = ({
       </View>
       <View>
         <Text style={styles.issuedOn} typography="EuclidCircularA-Regular">
-          {`${credentialMainInfo.dateLabel ?? t('credential.issuedOn')}: ${credentialMainInfo.createdAt}`}
+          {`${credentialMainInfo.dateLabel ?? t('credential.issuedOn')}: ${dateToString(credentialMainInfo.createdAt, `DD-MM-YYYY ${using24HourFormat ? 'HH:mm' : 'h:mm A'}`)}`}
         </Text>
         <View style={styles.bottomContainer}>
           <Text style={styles.bottomText} typography="EuclidCircularA-Medium" numberOfLines={1}>
