@@ -9,6 +9,7 @@ import VerifiedIcon from '../VerifiedIcon'
 
 import getStyles from './styles'
 
+import imagePlaceholder from '@2060/assets/images/placeholderImg.png'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { useFetchServiceInfo } from '@2060/hooks/useFetchServiceInfo'
 import { CredentialMainInfo } from '@2060/services/agent/display'
@@ -39,7 +40,7 @@ const CardCredentialMainInformation = ({
           {uri?.endsWith('.svg') ? (
             <SvgUri uri={uri} width={styles.image.width} height={styles.image.height} />
           ) : (
-            <Image style={styles.image} resizeMode="contain" source={{ uri }} />
+            <Image style={styles.image} resizeMode="contain" source={uri ? { uri } : imagePlaceholder} />
           )}
         </View>
         <Text style={styles.name} typography="EuclidCircularA-Medium">
