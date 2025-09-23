@@ -16,6 +16,7 @@ import {
   CameraPosition,
   VideoFile,
   CameraCaptureError,
+  useCameraFormat,
 } from 'react-native-vision-camera'
 
 import { IS_ANDROID, IS_IOS } from '@2060/constants'
@@ -35,6 +36,7 @@ export type MediaCaptured = {
   path: string
   duration?: number | null
 }
+const targetFps = 60
 
 export const useCamera = ({ navigation }: { navigation: StackNavigationProp<ParamListBase> }) => {
   const { takePhotoOrVideoFromGallery } = useImageCropPicker()
@@ -56,6 +58,15 @@ export const useCamera = ({ navigation }: { navigation: StackNavigationProp<Para
   const minZoom = device?.minZoom ?? 1
   const maxZoom = Math.min(device?.maxZoom ?? 1, MAX_ZOOM_FACTOR)
   const supportsFlash = device?.hasFlash ?? false
+  const screenAspectRatio = screenHeight / screenWidth
+  const format = useCameraFormat(device, [
+    { fps: targetFps },
+    { videoAspectRatio: screenAspectRatio },
+    { videoResolution: 'max' },
+    { photoAspectRatio: screenAspectRatio },
+    { photoResolution: 'max' },
+  ])
+  const fps = Math.min(format?.maxFps ?? 1, targetFps)
 
   const onInitialized = useCallback(() => {
     setIsInitialized(true)
@@ -136,7 +147,7 @@ export const useCamera = ({ navigation }: { navigation: StackNavigationProp<Para
   const startRecording = useCallback(() => {
     try {
       camera.current?.startRecording({
-        flash,
+        flash: supportsFlash ? flash : 'off',
         onRecordingFinished,
         onRecordingError,
       })
@@ -144,7 +155,7 @@ export const useCamera = ({ navigation }: { navigation: StackNavigationProp<Para
     } catch (e) {
       logError('Failed to start recording!', e, 'camera')
     }
-  }, [camera, flash, onStoppedRecording])
+  }, [camera, supportsFlash, flash, onStoppedRecording])
 
   const stopRecording = useCallback(async () => {
     try {
@@ -250,6 +261,8 @@ export const useCamera = ({ navigation }: { navigation: StackNavigationProp<Para
   return {
     camera,
     device,
+    format,
+    fps,
     onInitialized,
     close,
     flash,

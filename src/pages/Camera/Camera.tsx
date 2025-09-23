@@ -20,7 +20,7 @@ import { useAppState, useChatActions } from '@2060/hooks'
 import { DidCommMediaFileSharingData } from '@2060/hooks/agent'
 import { createDidCommPreview, createResizedImage } from '@2060/hooks/media/preview'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { logError } from '@2060/utils'
+import { log, logError } from '@2060/utils'
 import { deleteFile } from '@2060/utils/RNFS'
 import { cancelVideoCompression, compressVideo } from '@2060/utils/mediaFileUtils'
 
@@ -53,6 +53,8 @@ const Camera = ({ navigation }: Props) => {
   const {
     camera,
     device,
+    format,
+    fps,
     onInitialized,
     close,
     flash,
@@ -155,12 +157,24 @@ const Camera = ({ navigation }: Props) => {
             device={device}
             isActive={isActive}
             ref={camera}
+            onInitialized={onInitialized}
+            onError={error => logError('Vision Camera error:', error)}
+            onStarted={() => log('Vision Camera started!')}
+            onStopped={() => log('Vision Camera stopped!')}
+            onPreviewStarted={() => log('Preview started!')}
+            onPreviewStopped={() => log('Preview stopped!')}
+            onOutputOrientationChanged={o => log(`Output orientation changed to ${o}!`)}
+            onPreviewOrientationChanged={o => log(`Preview orientation changed to ${o}!`)}
+            onUIRotationChanged={degrees => log(`UI Rotation changed: ${degrees}°`)}
+            format={format}
+            fps={fps}
             photo
             video
             audio
-            onInitialized={onInitialized}
             enableZoomGesture
             animatedProps={cameraAnimatedProps}
+            lowLightBoost={device.supportsLowLightBoost}
+            enableFpsGraph
           />
           <TouchableOpacity onPress={handleFlash} disabled={!supportsFlash} style={styles.flashButton}>
             <Icon
