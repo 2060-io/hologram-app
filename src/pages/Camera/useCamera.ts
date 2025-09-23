@@ -42,6 +42,7 @@ export const useCamera = ({ navigation }: { navigation: StackNavigationProp<Para
   const { takePhotoOrVideoFromGallery } = useImageCropPicker()
   const [cameraPosition, setCameraPosition] = useState<CameraPosition>('front')
   const [flash, setFlash] = useState<'off' | 'on'>('off')
+  const [isRecordingVideo, setIsRecordingVideo] = useState(false)
   const [isInitialized, setIsInitialized] = useState(false)
   const [mediaCaptured, setMediaCaptured] = useState<MediaCaptured | null>(null)
   const tapHandler = useRef<GestureType>(undefined)
@@ -151,6 +152,7 @@ export const useCamera = ({ navigation }: { navigation: StackNavigationProp<Para
         onRecordingFinished,
         onRecordingError,
       })
+      setIsRecordingVideo(true)
       isRecording.current = true
     } catch (e) {
       logError('Failed to start recording!', e, 'camera')
@@ -162,6 +164,8 @@ export const useCamera = ({ navigation }: { navigation: StackNavigationProp<Para
       await camera.current?.stopRecording()
     } catch (e) {
       logError('Failed to stop recording!', e)
+    } finally {
+      setIsRecordingVideo(false)
     }
   }, [camera])
 
@@ -278,5 +282,6 @@ export const useCamera = ({ navigation }: { navigation: StackNavigationProp<Para
     supportsFlash,
     getFileFromMedia,
     isPressingButton,
+    isRecordingVideo,
   }
 }

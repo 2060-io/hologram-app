@@ -70,6 +70,7 @@ const Camera = ({ navigation }: Props) => {
     supportsFlash,
     getFileFromMedia,
     isPressingButton,
+    isRecordingVideo,
   } = useCamera({ navigation })
   const { cameraAnimatedProps, recordingStyle, buttonStyle } = useAnimatedStyles({
     isInitialized,
@@ -151,7 +152,7 @@ const Camera = ({ navigation }: Props) => {
     <>
       {device ? (
         <View style={styles.container}>
-          {closeButton()}
+          {!isRecordingVideo && closeButton()}
           <ReanimatedCamera
             style={styles.container}
             device={device}
@@ -174,19 +175,25 @@ const Camera = ({ navigation }: Props) => {
             enableZoomGesture
             animatedProps={cameraAnimatedProps}
             lowLightBoost={device.supportsLowLightBoost}
-            enableFpsGraph
           />
-          <TouchableOpacity onPress={handleFlash} disabled={!supportsFlash} style={styles.flashButton}>
-            <Icon
-              as="MaterialCommunityIcons"
-              name={flash === 'on' ? 'flash' : 'flash-off'}
-              size={40}
-              color={supportsFlash ? theme.colors.white : 'transparent'}
-            />
-          </TouchableOpacity>
+          {supportsFlash && !isRecordingVideo && (
+            <TouchableOpacity onPress={handleFlash} style={styles.flashButton}>
+              <Icon
+                as="MaterialCommunityIcons"
+                name={flash === 'on' ? 'flash' : 'flash-off'}
+                size={40}
+                color={theme.colors.white}
+              />
+            </TouchableOpacity>
+          )}
           <View style={styles.buttonsContainer}>
-            <TouchableOpacity onPress={getFileFromMedia}>
-              <SvgIcon name="image" fill={theme.colors.white} width={40} height={40} />
+            <TouchableOpacity onPress={getFileFromMedia} disabled={isRecordingVideo}>
+              <SvgIcon
+                name="image"
+                fill={isRecordingVideo ? 'transparent' : theme.colors.white}
+                width={40}
+                height={40}
+              />
             </TouchableOpacity>
             <GestureDetector gesture={tapGesture}>
               <Reanimated.View style={buttonStyle}>
@@ -198,8 +205,13 @@ const Camera = ({ navigation }: Props) => {
                 </GestureDetector>
               </Reanimated.View>
             </GestureDetector>
-            <TouchableOpacity onPress={flipCamera}>
-              <SvgIcon name="flipCamera" fill={theme.colors.white} width={40} height={40} />
+            <TouchableOpacity onPress={flipCamera} disabled={isRecordingVideo}>
+              <SvgIcon
+                name="flipCamera"
+                fill={isRecordingVideo ? 'transparent' : theme.colors.white}
+                width={40}
+                height={40}
+              />
             </TouchableOpacity>
           </View>
         </View>
