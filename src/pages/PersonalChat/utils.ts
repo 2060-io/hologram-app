@@ -111,21 +111,6 @@ export const chatEntryEqual = (obj1: ChatEntryData, obj2: ChatEntryData): boolea
   return true
 }
 
-const pad = (num: number) => ('0' + num).slice(-2)
-
-/**
- * Function that receives a duration of media in milliseconds and returns its values
- * in the next format example: 01:10 where 01 is related to minutes and 10 is related to seconds
- * @param milliseconds number
- * @returns string
- */
-export const getMinutesAndSeconds = (milliseconds: number) => {
-  const secs = Math.floor(milliseconds / 1000)
-  const minutes = Math.floor(secs / 60)
-  const seconds = secs % 60
-  return `${pad(minutes)}:${pad(seconds)}`
-}
-
 /**
  * Checks if the media file associated with a chat message should be deleted from local storage.
  * This function examines the provided message metadata to determine if its local file path is still

@@ -31,3 +31,18 @@ export const trimText = (text: string, limit?: number) => {
 }
 
 export const dataUrl = (mime?: string, data?: string) => (data && mime ? `data:${mime};base64,${data}` : '')
+
+const pad = (num: number) => ('0' + num).slice(-2)
+
+/**
+ * Function that receives a duration of media in milliseconds and returns its values
+ * in the next format example: 01:10 where 01 is related to minutes and 10 is related to seconds
+ * @param milliseconds number
+ * @returns string
+ */
+export const getMinutesAndSeconds = (milliseconds: number) => {
+  const secs = Math.floor(milliseconds / 1000)
+  const minutes = Math.floor(secs / 60)
+  const seconds = secs % 60
+  return `${pad(minutes)}:${pad(seconds)}`
+}

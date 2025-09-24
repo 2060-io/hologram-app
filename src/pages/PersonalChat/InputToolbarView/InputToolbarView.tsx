@@ -6,7 +6,6 @@ import { stat } from 'react-native-fs'
 
 import ComposerInput from '../ComposerInput'
 import RepliedMessageView from '../RepliedMessageView/RepliedMessageView'
-import { getMinutesAndSeconds } from '../utils'
 
 import { SendButton, AudioButton, CameraButton } from './components'
 import getStyles from './styles'
@@ -16,7 +15,7 @@ import { TextInputForwardRefProps } from '@2060/components/common/TextInput'
 import { useChatActions } from '@2060/hooks'
 import { useChat } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { logWarn } from '@2060/utils'
+import { getMinutesAndSeconds, logWarn } from '@2060/utils'
 import { deleteFile } from '@2060/utils/RNFS'
 import {
   handleMicrophonePermission,
