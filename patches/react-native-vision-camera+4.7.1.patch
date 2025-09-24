@@ -1,0 +1,365 @@
+diff --git a/node_modules/react-native-vision-camera/android/src/main/java/com/mrousavy/camera/core/CameraSession+Video.kt b/node_modules/react-native-vision-camera/android/src/main/java/com/mrousavy/camera/core/CameraSession+Video.kt
+index fcc54b8..6ccd877 100644
+--- a/node_modules/react-native-vision-camera/android/src/main/java/com/mrousavy/camera/core/CameraSession+Video.kt
++++ b/node_modules/react-native-vision-camera/android/src/main/java/com/mrousavy/camera/core/CameraSession+Video.kt
+@@ -7,6 +7,7 @@ import androidx.annotation.OptIn
+ import androidx.camera.video.ExperimentalPersistentRecording
+ import androidx.camera.video.FileOutputOptions
+ import androidx.camera.video.VideoRecordEvent
++import com.facebook.react.modules.core.DeviceEventManagerModule
+ import com.mrousavy.camera.core.extensions.getCameraError
+ import com.mrousavy.camera.core.types.RecordVideoOptions
+ import com.mrousavy.camera.core.types.Video
+@@ -16,6 +17,7 @@ import com.mrousavy.camera.core.types.Video
+ fun CameraSession.startRecording(
+   enableAudio: Boolean,
+   options: RecordVideoOptions,
++  onRecordingProgress: (progress: Long) -> Unit,
+   callback: (video: Video) -> Unit,
+   onError: (error: CameraError) -> Unit
+ ) {
+@@ -49,7 +51,11 @@ fun CameraSession.startRecording(
+ 
+       is VideoRecordEvent.Pause -> Log.i(CameraSession.TAG, "Recording paused!")
+ 
+-      is VideoRecordEvent.Status -> Log.i(CameraSession.TAG, "Status update! Recorded ${event.recordingStats.numBytesRecorded} bytes.")
++      is VideoRecordEvent.Status -> {
++        val durationNanos = event.recordingStats.recordedDurationNanos
++        val durationMillis = durationNanos / 1_000_000
++        onRecordingProgress(durationMillis)
++      }
+ 
+       is VideoRecordEvent.Finalize -> {
+         if (isRecordingCanceled) {
+diff --git a/node_modules/react-native-vision-camera/android/src/main/java/com/mrousavy/camera/react/CameraView+RecordVideo.kt b/node_modules/react-native-vision-camera/android/src/main/java/com/mrousavy/camera/react/CameraView+RecordVideo.kt
+index e2e16e4..de0fc2c 100644
+--- a/node_modules/react-native-vision-camera/android/src/main/java/com/mrousavy/camera/react/CameraView+RecordVideo.kt
++++ b/node_modules/react-native-vision-camera/android/src/main/java/com/mrousavy/camera/react/CameraView+RecordVideo.kt
+@@ -16,7 +16,7 @@ import com.mrousavy.camera.core.types.RecordVideoOptions
+ import com.mrousavy.camera.core.types.Video
+ import com.mrousavy.camera.react.utils.makeErrorMap
+ 
+-fun CameraView.startRecording(options: RecordVideoOptions, onRecordCallback: Callback) {
++fun CameraView.startRecording(options: RecordVideoOptions, onRecordingProgress: (progress: Long) -> Unit, onRecordCallback: Callback) {
+   // check audio permission
+   if (audio) {
+     if (ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+@@ -36,7 +36,7 @@ fun CameraView.startRecording(options: RecordVideoOptions, onRecordCallback: Cal
+     val errorMap = makeErrorMap(error.code, error.message)
+     onRecordCallback(null, errorMap)
+   }
+-  cameraSession.startRecording(audio, options, callback, onError)
++  cameraSession.startRecording(audio, options, onRecordingProgress, callback, onError)
+ }
+ 
+ fun CameraView.pauseRecording() {
+diff --git a/node_modules/react-native-vision-camera/android/src/main/java/com/mrousavy/camera/react/CameraViewModule.kt b/node_modules/react-native-vision-camera/android/src/main/java/com/mrousavy/camera/react/CameraViewModule.kt
+index 7ae4209..e72e1b2 100644
+--- a/node_modules/react-native-vision-camera/android/src/main/java/com/mrousavy/camera/react/CameraViewModule.kt
++++ b/node_modules/react-native-vision-camera/android/src/main/java/com/mrousavy/camera/react/CameraViewModule.kt
+@@ -11,6 +11,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule
+ import com.facebook.react.bridge.ReactMethod
+ import com.facebook.react.bridge.ReadableMap
+ import com.facebook.react.module.annotations.ReactModule
++import com.facebook.react.modules.core.DeviceEventManagerModule
+ import com.facebook.react.modules.core.PermissionAwareActivity
+ import com.facebook.react.modules.core.PermissionListener
+ import com.facebook.react.uimanager.UIManagerHelper
+@@ -34,6 +35,8 @@ import kotlinx.coroutines.cancel
+ import kotlinx.coroutines.isActive
+ import kotlinx.coroutines.launch
+ 
++private const val ON_RECORDING_PROGRESS_EVENT = "onRecordingProgress"
++
+ @ReactModule(name = CameraViewModule.TAG)
+ @Suppress("unused")
+ class CameraViewModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
+@@ -121,7 +124,10 @@ class CameraViewModule(reactContext: ReactApplicationContext) : ReactContextBase
+       val view = findCameraView(viewTag)
+       try {
+         val options = RecordVideoOptions.fromJSValue(reactApplicationContext, jsOptions)
+-        view.startRecording(options, onRecordCallback)
++        val onRecordingProgress: (Long) -> Unit = { progress: Long ->
++          reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)?.emit(ON_RECORDING_PROGRESS_EVENT, progress.toInt())
++        }
++        view.startRecording(options, onRecordingProgress, onRecordCallback)
+       } catch (error: CameraError) {
+         val map = makeErrorMap("${error.domain}/${error.id}", error.message, error)
+         onRecordCallback(null, map)
+@@ -189,7 +195,7 @@ class CameraViewModule(reactContext: ReactApplicationContext) : ReactContextBase
+   }
+ 
+   private fun canRequestPermission(permission: String): Boolean {
+-    val activity = currentActivity as? PermissionAwareActivity
++    val activity = reactApplicationContext.currentActivity as? PermissionAwareActivity
+     return activity?.shouldShowRequestPermissionRationale(permission) ?: false
+   }
+ 
+diff --git a/node_modules/react-native-vision-camera/ios/Core/CameraSession+Video.swift b/node_modules/react-native-vision-camera/ios/Core/CameraSession+Video.swift
+index 8e57710..c5c5f9b 100644
+--- a/node_modules/react-native-vision-camera/ios/Core/CameraSession+Video.swift
++++ b/node_modules/react-native-vision-camera/ios/Core/CameraSession+Video.swift
+@@ -17,6 +17,7 @@ extension CameraSession {
+    Starts a video + audio recording with a custom Asset Writer.
+    */
+   func startRecording(options: RecordVideoOptions,
++                      onRecordingProgress: @escaping (_ progress: Double) -> Void,
+                       onVideoRecorded: @escaping (_ video: Video) -> Void,
+                       onError: @escaping (_ error: CameraError) -> Void) {
+     // Run on Camera Queue
+@@ -48,7 +49,8 @@ extension CameraSession {
+         }
+ 
+         self.recordingSession = nil
+-
++        self.recordingProgressTimer?.cancel()
++        self.recordingProgressTimer = nil
+         if self.didCancelRecording {
+           VisionLogger.log(level: .info, message: "RecordingSession finished because the recording was canceled.")
+           onError(.capture(.recordingCanceled))
+@@ -127,7 +129,21 @@ extension CameraSession {
+         try recordingSession.start()
+         self.didCancelRecording = false
+         self.recordingSession = recordingSession
+-
++        let timer = DispatchSource.makeTimerSource(queue: CameraQueues.cameraQueue)
++        timer.schedule(deadline: .now(), repeating: 0.1)
++        timer.setEventHandler {
++           guard self.recordingSession != nil else {
++              timer.cancel()
++              return
++          }
++          let duration = recordingSession.duration
++          let durationInMilliseconds = duration * 1000
++          DispatchQueue.main.async {
++              onRecordingProgress(durationInMilliseconds)
++          }
++        }
++        self.recordingProgressTimer = timer
++        self.recordingProgressTimer?.resume()
+         let end = DispatchTime.now()
+         VisionLogger.log(level: .info, message: "RecordingSesssion started in \(Double(end.uptimeNanoseconds - start.uptimeNanoseconds) / 1_000_000)ms!")
+       } catch let error as CameraError {
+diff --git a/node_modules/react-native-vision-camera/ios/Core/CameraSession.swift b/node_modules/react-native-vision-camera/ios/Core/CameraSession.swift
+index 10b0f33..ba3cd01 100644
+--- a/node_modules/react-native-vision-camera/ios/Core/CameraSession.swift
++++ b/node_modules/react-native-vision-camera/ios/Core/CameraSession.swift
+@@ -31,6 +31,7 @@ final class CameraSession: NSObject, AVCaptureVideoDataOutputSampleBufferDelegat
+   // State
+   var metadataProvider = MetadataProvider()
+   var recordingSession: RecordingSession?
++  var recordingProgressTimer: DispatchSourceTimer?
+   var didCancelRecording = false
+   var orientationManager = OrientationManager()
+ 
+diff --git a/node_modules/react-native-vision-camera/ios/React/CameraView+RecordVideo.swift b/node_modules/react-native-vision-camera/ios/React/CameraView+RecordVideo.swift
+index 913d420..a002bc2 100644
+--- a/node_modules/react-native-vision-camera/ios/React/CameraView+RecordVideo.swift
++++ b/node_modules/react-native-vision-camera/ios/React/CameraView+RecordVideo.swift
+@@ -11,9 +11,10 @@ import AVFoundation
+ // MARK: - CameraView + AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAudioDataOutputSampleBufferDelegate
+ 
+ extension CameraView: AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAudioDataOutputSampleBufferDelegate {
+-  func startRecording(options: NSDictionary, callback jsCallback: @escaping RCTResponseSenderBlock) {
++  func startRecording(options: NSDictionary, onRecordingProgress: @escaping (_ progress: Double) -> Void, callback jsCallback: @escaping RCTResponseSenderBlock) {
+     // Type-safety
+     let callback = Callback(jsCallback)
++    let progressCallback = onRecordingProgress // <-- Use the block directly
+ 
+     do {
+       let options = try RecordVideoOptions(fromJSValue: options,
+@@ -23,6 +24,9 @@ extension CameraView: AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAud
+       // Start Recording with success and error callbacks
+       cameraSession.startRecording(
+         options: options,
++        onRecordingProgress: { progress in
++          progressCallback(progress)
++        },
+         onVideoRecorded: { video in
+           callback.resolve(video.toJSValue())
+         },
+diff --git a/node_modules/react-native-vision-camera/ios/React/CameraViewManager.swift b/node_modules/react-native-vision-camera/ios/React/CameraViewManager.swift
+index f7bd9e8..d20ab21 100644
+--- a/node_modules/react-native-vision-camera/ios/React/CameraViewManager.swift
++++ b/node_modules/react-native-vision-camera/ios/React/CameraViewManager.swift
+@@ -14,6 +14,10 @@ import Foundation
+ final class CameraViewManager: RCTViewManager {
+   // pragma MARK: Properties
+ 
++  struct AppConstants {
++    static let onRecordingProgressEvent = "onRecordingProgress"
++  }
++    
+   override var methodQueue: DispatchQueue! {
+     return DispatchQueue.main
+   }
+@@ -46,7 +50,11 @@ final class CameraViewManager: RCTViewManager {
+   @objc
+   final func startRecording(_ node: NSNumber, options: NSDictionary, onRecordCallback: @escaping RCTResponseSenderBlock) {
+     let component = getCameraView(withTag: node)
+-    component.startRecording(options: options, callback: onRecordCallback)
++      let onRecordingProgress = { (progress: Double) in
++          self.bridge.eventDispatcher()?.sendAppEvent(withName: AppConstants.onRecordingProgressEvent, body: progress)
++          return
++      }
++      component.startRecording(options: options,onRecordingProgress:onRecordingProgress, callback: onRecordCallback)
+   }
+ 
+   @objc
+diff --git a/node_modules/react-native-vision-camera/src/Camera.tsx b/node_modules/react-native-vision-camera/src/Camera.tsx
+index afe056a..d1bfb26 100644
+--- a/node_modules/react-native-vision-camera/src/Camera.tsx
++++ b/node_modules/react-native-vision-camera/src/Camera.tsx
+@@ -1,9 +1,14 @@
+ import React from 'react'
+-import { findNodeHandle, StyleSheet } from 'react-native'
++import { findNodeHandle, NativeEventEmitter, StyleSheet } from 'react-native'
+ import type { CameraDevice } from './types/CameraDevice'
+ import type { CameraCaptureError } from './CameraError'
+ import { CameraRuntimeError, tryParseNativeCameraError, isErrorWithCause } from './CameraError'
+-import type { CameraProps, DrawableFrameProcessor, OnShutterEvent, ReadonlyFrameProcessor } from './types/CameraProps'
++import type {
++  CameraProps,
++  DrawableFrameProcessor,
++  OnShutterEvent,
++  ReadonlyFrameProcessor,
++} from './types/CameraProps'
+ import { CameraModule } from './NativeCameraModule'
+ import type { PhotoFile, TakePhotoOptions } from './types/PhotoFile'
+ import type { Point } from './types/Point'
+@@ -30,7 +35,10 @@ import { RotationHelper } from './RotationHelper'
+ export type CameraPermissionStatus = 'granted' | 'not-determined' | 'denied' | 'restricted'
+ export type CameraPermissionRequestResult = 'granted' | 'denied'
+ 
+-type NativeRecordVideoOptions = Omit<RecordVideoOptions, 'onRecordingError' | 'onRecordingFinished'>
++type NativeRecordVideoOptions = Omit<
++  RecordVideoOptions,
++  'onRecordingError' | 'onRecordingFinished' | 'onRecordingProgress'
++>
+ type RefType = React.Component<NativeCameraViewProps> & Readonly<NativeMethods>
+ interface CameraState {
+   isRecordingWithFlash: boolean
+@@ -38,10 +46,13 @@ interface CameraState {
+ }
+ //#endregion
+ 
+-function isSkiaFrameProcessor(frameProcessor?: ReadonlyFrameProcessor | DrawableFrameProcessor): frameProcessor is DrawableFrameProcessor {
++function isSkiaFrameProcessor(
++  frameProcessor?: ReadonlyFrameProcessor | DrawableFrameProcessor,
++): frameProcessor is DrawableFrameProcessor {
+   return frameProcessor?.type === 'drawable-skia'
+ }
+-
++const EventEmitter = new NativeEventEmitter(CameraModule)
++const ON_RECORDING_PROGRESS_EVENT = 'onRecordingProgress'
+ //#region Camera Component
+ /**
+  * ### A powerful `<Camera>` component.
+@@ -201,9 +212,14 @@ export class Camera extends React.PureComponent<CameraProps, CameraState> {
+    * ```
+    */
+   public startRecording(options: RecordVideoOptions): void {
+-    const { onRecordingError, onRecordingFinished, ...passThruOptions } = options
++    const { onRecordingError, onRecordingFinished, onRecordingProgress, ...passThruOptions } = options
+     if (typeof onRecordingError !== 'function' || typeof onRecordingFinished !== 'function')
+-      throw new CameraRuntimeError('parameter/invalid-parameter', 'The onRecordingError or onRecordingFinished functions were not set!')
++      throw new CameraRuntimeError(
++        'parameter/invalid-parameter',
++        'The onRecordingError or onRecordingFinished functions were not set!',
++      )
++    if (typeof onRecordingProgress === 'function')
++      EventEmitter.addListener(ON_RECORDING_PROGRESS_EVENT, onRecordingProgress)
+ 
+     if (options.flash === 'on') {
+       // Enable torch for video recording
+@@ -219,7 +235,7 @@ export class Camera extends React.PureComponent<CameraProps, CameraState> {
+           isRecordingWithFlash: false,
+         })
+       }
+-
++      EventEmitter.removeAllListeners(ON_RECORDING_PROGRESS_EVENT)
+       if (error != null) return onRecordingError(error)
+       if (video != null) return onRecordingFinished(video)
+     }
+@@ -409,7 +425,9 @@ export class Camera extends React.PureComponent<CameraProps, CameraState> {
+    *
+    * If you use Hooks, use the `useCameraDevices()` hook instead.
+    */
+-  public static addCameraDevicesChangedListener(listener: (newDevices: CameraDevice[]) => void): EmitterSubscription {
++  public static addCameraDevicesChangedListener(
++    listener: (newDevices: CameraDevice[]) => void,
++  ): EmitterSubscription {
+     return CameraDevices.addCameraDevicesChangedListener(listener)
+   }
+   /**
+@@ -533,13 +551,17 @@ export class Camera extends React.PureComponent<CameraProps, CameraState> {
+     this.props.onShutter?.(event.nativeEvent)
+   }
+ 
+-  private onOutputOrientationChanged({ nativeEvent: { outputOrientation } }: NativeSyntheticEvent<OutputOrientationChangedEvent>): void {
++  private onOutputOrientationChanged({
++    nativeEvent: { outputOrientation },
++  }: NativeSyntheticEvent<OutputOrientationChangedEvent>): void {
+     this.rotationHelper.outputOrientation = outputOrientation
+     this.props.onOutputOrientationChanged?.(outputOrientation)
+     this.maybeUpdateUIRotation()
+   }
+ 
+-  private onPreviewOrientationChanged({ nativeEvent: { previewOrientation } }: NativeSyntheticEvent<PreviewOrientationChangedEvent>): void {
++  private onPreviewOrientationChanged({
++    nativeEvent: { previewOrientation },
++  }: NativeSyntheticEvent<PreviewOrientationChangedEvent>): void {
+     this.rotationHelper.previewOrientation = previewOrientation
+     this.props.onPreviewOrientationChanged?.(previewOrientation)
+     this.maybeUpdateUIRotation()
+@@ -584,8 +606,10 @@ export class Camera extends React.PureComponent<CameraProps, CameraState> {
+     }
+   }
+ 
+-  private onAverageFpsChanged({ nativeEvent: { averageFps } }: NativeSyntheticEvent<AverageFpsChangedEvent>): void {
+-    this.setState((state) => {
++  private onAverageFpsChanged({
++    nativeEvent: { averageFps },
++  }: NativeSyntheticEvent<AverageFpsChangedEvent>): void {
++    this.setState(state => {
+       const averageFpsSamples = [...state.averageFpsSamples, averageFps]
+       while (averageFpsSamples.length >= MAX_BARS + 1) {
+         // we keep a maximum of 30 FPS samples in our history
+@@ -672,7 +696,8 @@ export class Camera extends React.PureComponent<CameraProps, CameraState> {
+         codeScannerOptions={codeScanner}
+         enableFrameProcessor={frameProcessor != null}
+         enableBufferCompression={props.enableBufferCompression ?? shouldEnableBufferCompression}
+-        preview={isRenderingWithSkia ? false : (props.preview ?? true)}>
++        preview={isRenderingWithSkia ? false : (props.preview ?? true)}
++      >
+         {isRenderingWithSkia && (
+           <SkiaCameraCanvas
+             style={styles.customPreviewView}
+@@ -681,7 +706,11 @@ export class Camera extends React.PureComponent<CameraProps, CameraState> {
+           />
+         )}
+         {enableFpsGraph && (
+-          <FpsGraph style={styles.fpsGraph} averageFpsSamples={this.state.averageFpsSamples} targetMaxFps={props.format?.maxFps ?? 60} />
++          <FpsGraph
++            style={styles.fpsGraph}
++            averageFpsSamples={this.state.averageFpsSamples}
++            targetMaxFps={props.format?.maxFps ?? 60}
++          />
+         )}
+       </NativeCameraView>
+     )
+diff --git a/node_modules/react-native-vision-camera/src/types/VideoFile.ts b/node_modules/react-native-vision-camera/src/types/VideoFile.ts
+index 6391df7..1aece1f 100644
+--- a/node_modules/react-native-vision-camera/src/types/VideoFile.ts
++++ b/node_modules/react-native-vision-camera/src/types/VideoFile.ts
+@@ -19,6 +19,10 @@ export interface RecordVideoOptions {
+    * By default, VisionCamera will use the device's temporary directory.
+    */
+   path?: string
++  /**
++   * Callback that returns the current progress of the video recording
++   */
++  onRecordingProgress?: (progress: number) => void
+   /**
+    * Called when there was an unexpected runtime error while recording the video.
+    */
