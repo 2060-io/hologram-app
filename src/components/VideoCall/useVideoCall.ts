@@ -11,11 +11,9 @@ import { useTranslation } from 'react-i18next'
 import InCallManager from 'react-native-incall-manager'
 import { MediaStream, mediaDevices, registerGlobals } from 'react-native-webrtc'
 
-import { useMobileAgent } from '@2060/hooks/agent'
-import {
-  findAllDidcommThreadId,
-  updateChatEntryMetadata,
-} from '@2060/hooks/agent/chat/services/ChatEntryService'
+import { AgentActionType, useMobileAgent } from '@2060/hooks/agent'
+import { findAllDidcommThreadId, updateChatEntryMetadata } from '@2060/hooks/agent/chat/services'
+import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
 import { useConfig } from '@2060/hooks/providers/ConfigProvider'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
 import {
@@ -109,8 +107,9 @@ export const useVideoCall = () => {
     isRejected,
     remotePeerClosedTimeoutRef,
   } = useVideoCallContext()
-  const { agent } = useMobileAgent()
   const { realm } = useLocalRealm()
+  const { agent } = useMobileAgent()
+  const { addAgentActionToQueue } = useAgentActionQueue()
   const connectionStatusRef = useRef<ConnectionStatus>(connectionStatus)
   const [localVideoStream, setLocalVideoStream] = useState<MediaStream>()
   const localAudioStreamRef = useRef<MediaStream>(undefined)
@@ -136,7 +135,7 @@ export const useVideoCall = () => {
   const newRemotePeerLastConnection = useRef<Date>(undefined)
   const { devEnvs } = useConfig()
 
-  const changeChatEntryMetadata = useCallback(() => {
+  const updateChatEntryCallOfferMetadata = useCallback(() => {
     if (!realm || !didcommThreadId) return
     const [chatEntry] = findAllDidcommThreadId(realm, didcommThreadId, ChatEntryType.CallOffer)
     if (chatEntry) {
@@ -169,10 +168,9 @@ export const useVideoCall = () => {
           await joinRoom()
           await startToProduceStream()
           if (!incomingCallInfo && !lostConnection.current) {
-            await agent.modules.calls.offer({
-              callType: didcommCallType,
-              connectionId: didcommConnection.id,
-              parameters: { ...callInfo },
+            addAgentActionToQueue({
+              type: AgentActionType.CreateCallOffer,
+              parameters: { callType: didcommCallType, connectionId: didcommConnection.id, callInfo },
             })
           }
           updateCallStatus({ status: CallStatus.Connected, statusMessage: 'Connected' })
@@ -226,7 +224,7 @@ export const useVideoCall = () => {
             case 'peerLeft': {
               log('other peer left call', notification.data)
               finishCall()
-              changeChatEntryMetadata()
+              updateChatEntryCallOfferMetadata()
               break
             }
             case 'producerScore': {
@@ -524,9 +522,12 @@ export const useVideoCall = () => {
   const handleSwitchSpeakers = () => setIsUsingSpeakers(!isUsingSpeakers)
 
   const hangup = async () => {
-    if (!agent || !didcommConnection) return
+    if (!agent || !didcommConnection || !realm) return
     try {
-      agent.modules.calls.hangup({ connectionId: didcommConnection.id })
+      addAgentActionToQueue({
+        type: AgentActionType.HangupCall,
+        parameters: { connectionId: didcommConnection.id, threadId: didcommThreadId },
+      })
       peer.current?.request('leaveRoom')
       finishCall()
     } catch (error) {

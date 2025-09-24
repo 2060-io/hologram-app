@@ -22,6 +22,8 @@ export enum AgentActionType {
   AcceptConnectionRequest = 'AcceptConnectionRequest',
   AcceptConnectionResponse = 'AcceptConnectionResponse',
   QueryServiceFeatures = 'QueryServiceFeatures',
+  CreateCallOffer = 'CreateCallOffer',
+  HangupCall = 'HangupCall',
 }
 
 export type AgentAction = {
