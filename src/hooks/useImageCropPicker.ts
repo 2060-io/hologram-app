@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { openPicker, openCamera, Options, Image, Video, CommonOptions } from 'react-native-image-crop-picker'
+import { openPicker, Options, Image, Video, CommonOptions } from 'react-native-image-crop-picker'
 
 import { createDidCommPreview } from './media/preview'
 
@@ -64,17 +64,6 @@ export const useImageCropPicker = () => {
     return fileInfo
   }
 
-  const takePhotoOrVideo = async (onSuccess: (values: ImageOrVideo) => void, options?: Options) => {
-    const mediaType = options?.mediaType || 'photo'
-    try {
-      const fileInfo = (await openCamera({ ...optionsDefault[mediaType], ...options })) as ImageOrVideo
-      const infoMedia = await createPreview(fileInfo, mediaType)
-      onSuccess(infoMedia)
-    } catch (error) {
-      logError(`${error}`)
-    }
-  }
-
   const takePhotoOrVideoFromGallery = async (
     onSuccess: (values: ImageOrVideo) => void,
     options?: Options,
@@ -96,7 +85,6 @@ export const useImageCropPicker = () => {
   }
 
   return {
-    takePhotoOrVideo,
     takePhotoOrVideoFromGallery,
   }
 }

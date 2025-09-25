@@ -1,14 +1,12 @@
 import { StyleSheet } from 'react-native'
 
-import { cardShadowStyles } from '../../styles/globalStyles'
-
 import { AppTheme } from '@2060/styles'
 import { hexTransparency } from '@2060/utils/colorUtils'
 import { widthPercentageToDP } from '@2060/utils/responsiveUtils'
 
 const styles = (theme: AppTheme) =>
   StyleSheet.create({
-    containerMain: {
+    container: {
       flex: 1,
     },
     containerRootAvatar: {
@@ -18,7 +16,6 @@ const styles = (theme: AppTheme) =>
       marginBottom: 20,
     },
     btnClose: {
-      ...cardShadowStyles(theme.colors),
       alignItems: 'center',
       backgroundColor: hexTransparency(theme.colors.white, 'F2'),
       borderRadius: 16,
@@ -30,16 +27,10 @@ const styles = (theme: AppTheme) =>
       width: 31,
       zIndex: 1,
     },
-    containerOptions: {
-      alignSelf: 'center',
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      width: widthPercentageToDP('46%'),
-      paddingBottom: 20,
-    },
     containerOption: {
       flexDirection: 'column',
       alignItems: 'center',
+      marginBottom: 20,
     },
     containerOptionIcon: {
       backgroundColor: theme.isDarkMode ? theme.colors.primary : theme.colors.secondary,
@@ -50,7 +41,7 @@ const styles = (theme: AppTheme) =>
       borderRadius: 27,
     },
     optionText: {
-      fontSize: theme.fontSize.md - 1,
+      fontSize: theme.fontSize.md,
       color: theme.colors.primaryText,
       paddingTop: 8,
     },
@@ -67,7 +58,7 @@ const styles = (theme: AppTheme) =>
     },
     textInputDescription: {
       color: theme.colors.secondaryText,
-      fontSize: theme.fontSize.md + 1,
+      fontSize: theme.fontSize.md,
       paddingBottom: 12,
       paddingTop: 18,
       textAlign: 'center',

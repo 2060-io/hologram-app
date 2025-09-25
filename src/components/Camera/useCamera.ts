@@ -17,6 +17,8 @@ import {
   useCameraFormat,
 } from 'react-native-vision-camera'
 
+import { MediaCaptured } from './Props'
+
 import { IS_ANDROID, IS_IOS, MAX_VIDEO_DURATION } from '@2060/constants'
 import { ImageOrVideo, useImageCropPicker } from '@2060/hooks'
 import { getMinutesAndSeconds, logError } from '@2060/utils'
@@ -25,19 +27,14 @@ import { screenHeight, screenWidth } from '@2060/utils/responsiveUtils'
 
 const START_RECORDING_DELAY = 200
 const MAX_ZOOM_FACTOR = 10
-
-export type MediaCaptured = {
-  origin: 'vision-camera' | 'image-crop-picker'
-  type: 'image' | 'video'
-  width: number
-  height: number
-  path: string
-  duration?: number | null
-}
 const targetFps = 60
 const INITIAL_TIME_RECORDED = '00:00'
 
-export const useCamera = ({ closeCamera }: { closeCamera: () => void }) => {
+type Props = {
+  isVideoMode: boolean
+  closeCamera: () => void
+}
+export const useCamera = ({ isVideoMode, closeCamera }: Props) => {
   const { takePhotoOrVideoFromGallery } = useImageCropPicker()
   const [cameraPosition, setCameraPosition] = useState<CameraPosition>('front')
   const [flash, setFlash] = useState<'off' | 'on'>('off')
@@ -84,7 +81,7 @@ export const useCamera = ({ closeCamera }: { closeCamera: () => void }) => {
         const type = values.mime.startsWith('image') ? 'image' : 'video'
         updateMediaCapturedInfo({ type, path, height, width, duration, origin: 'image-crop-picker' })
       },
-      { mediaType: 'any' },
+      { mediaType: isVideoMode ? 'any' : 'photo' },
     )
   }, [])
 
@@ -200,7 +197,7 @@ export const useCamera = ({ closeCamera }: { closeCamera: () => void }) => {
     const now = new Date()
     pressDownDate.current = now
     setTimeout(() => {
-      if (pressDownDate.current === now) {
+      if (pressDownDate.current === now && isVideoMode) {
         // user is still pressing down after 200ms, so his intention is to create a video
         startRecording()
       }
@@ -213,12 +210,12 @@ export const useCamera = ({ closeCamera }: { closeCamera: () => void }) => {
       const now = new Date()
       const diff = now.getTime() - pressDownDate.current.getTime()
       pressDownDate.current = undefined
-      if (diff < START_RECORDING_DELAY) {
+      if (diff > START_RECORDING_DELAY && isVideoMode) {
+        // user has held the button for more than 200ms and isVideoMode, so he has been recording this time.
+        await stopRecording()
+      } else {
         // user has released the button within 200ms, so his intention is to take a single picture.
         await takePhoto()
-      } else {
-        // user has held the button for more than 200ms, so he has been recording this entire time.
-        await stopRecording()
       }
     } finally {
       setTimeout(() => {

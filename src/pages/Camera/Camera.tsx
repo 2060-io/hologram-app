@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 import CompressingVideo from './CompressingVideo'
 
 import { Camera as BaseCamera } from '@2060/components'
-import { MediaCaptured } from '@2060/components/Camera/useCamera'
+import { MediaCaptured } from '@2060/components/Camera/Props'
 import { PersonalChatStackParams } from '@2060/components/Navigation/NavigationProps'
 import { IS_ANDROID, IS_IOS } from '@2060/constants'
 import { useAppState, useChatActions } from '@2060/hooks'

@@ -6,9 +6,10 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Camera as VisionCamera } from 'react-native-vision-camera'
 
 import MediaResult from './MediaResult'
+import { MediaCaptured } from './Props'
 import getStyles from './styles'
 import { useAnimatedStyles } from './useAnimatedStyles'
-import { MediaCaptured, useCamera } from './useCamera'
+import { useCamera } from './useCamera'
 
 import { Icon, SvgIcon, Text } from '@2060/components/common'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
@@ -21,7 +22,7 @@ Reanimated.addWhitelistedNativeProps({
 
 type Props = {
   isActive: boolean
-  onMedia(media: MediaCaptured | null): void
+  onMedia(media: MediaCaptured): void
   closeCamera(): void
   isVideoMode?: boolean
 }
@@ -53,7 +54,7 @@ const Camera = ({ isActive, onMedia, closeCamera, isVideoMode = true }: Props) =
     isPressingButton,
     isRecordingVideo,
     recordingProgress,
-  } = useCamera({ closeCamera })
+  } = useCamera({ isVideoMode, closeCamera })
   const { cameraAnimatedProps, recordingStyle, buttonStyle } = useAnimatedStyles({
     isInitialized,
     cameraZoom,
