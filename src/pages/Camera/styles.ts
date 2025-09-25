@@ -60,7 +60,7 @@ export default (theme: AppTheme, insets: EdgeInsets) =>
     },
     recordingTime: {
       ...centerItems,
-      width: 80,
+      width: 120,
       height: '100%',
       backgroundColor: theme.colors.red,
       borderRadius: 10,

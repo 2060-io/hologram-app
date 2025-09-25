@@ -19,7 +19,7 @@ import {
   useCameraFormat,
 } from 'react-native-vision-camera'
 
-import { IS_ANDROID, IS_IOS } from '@2060/constants'
+import { IS_ANDROID, IS_IOS, MAX_VIDEO_DURATION } from '@2060/constants'
 import { ImageOrVideo, useImageCropPicker } from '@2060/hooks'
 import { getMinutesAndSeconds, logError } from '@2060/utils'
 import { deleteFile } from '@2060/utils/RNFS'
@@ -162,6 +162,9 @@ export const useCamera = ({ navigation }: { navigation: StackNavigationProp<Para
       })
       setIsRecordingVideo(true)
       isRecording.current = true
+      setTimeout(() => {
+        stopRecording()
+      }, MAX_VIDEO_DURATION)
     } catch (e) {
       logError('Failed to start recording!', e, 'camera')
     }

@@ -131,7 +131,7 @@ const Camera = ({ navigation }: Props) => {
       shareMediaToDidComm({ ...didCommMediaFileSharingData }).catch(logError)
       navigation.goBack()
     } catch (error) {
-      logError(`Error sending photo: ${error}`)
+      logError(`Error sending media: ${error}`)
     }
   }, [mediaCaptured])
 
@@ -174,7 +174,7 @@ const Camera = ({ navigation }: Props) => {
       <View style={styles.recordingTimeContainer}>
         <View style={styles.recordingTime}>
           <Text typography="EuclidCircularA-SemiBold" style={styles.recordingTimeText}>
-            {recordingProgress}
+            {`${recordingProgress} / 01:00`}
           </Text>
         </View>
       </View>
