@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { TouchableOpacity, View } from 'react-native'
 import { GestureDetector } from 'react-native-gesture-handler'
 import Reanimated from 'react-native-reanimated'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Camera as VisionCamera } from 'react-native-vision-camera'
 
 import { CompressingVideo } from '../PersonalChat/components'
@@ -37,8 +38,9 @@ Reanimated.addWhitelistedNativeProps({
 
 export interface Props extends StackScreenProps<PersonalChatStackParams, 'Camera'> {}
 const Camera = ({ navigation }: Props) => {
+  const insets = useSafeAreaInsets()
   const theme = useTheme()
-  const styles = getStyles(theme)
+  const styles = getStyles(theme, insets)
   const [isActive, setIsActive] = useState(false)
   const isFocused = useIsFocused()
   const { isAppActive } = useAppState()
@@ -158,7 +160,7 @@ const Camera = ({ navigation }: Props) => {
             <Icon
               as="MaterialCommunityIcons"
               name={flash === 'on' ? 'flash' : 'flash-off'}
-              size={40}
+              size={30}
               color={theme.colors.white}
             />
           </TouchableOpacity>
@@ -208,14 +210,11 @@ const Camera = ({ navigation }: Props) => {
           />
           {isRecordingVideo ? renderRecordingProgress() : renderUpperButtons()}
           <View style={styles.bottomButtonsContainer}>
-            <TouchableOpacity onPress={getFileFromMedia} disabled={isRecordingVideo}>
-              <SvgIcon
-                name="image"
-                fill={isRecordingVideo ? 'transparent' : theme.colors.white}
-                width={40}
-                height={40}
-              />
-            </TouchableOpacity>
+            {!isRecordingVideo && (
+              <TouchableOpacity style={styles.baseControlButton} onPress={getFileFromMedia}>
+                <SvgIcon name="image" fill={theme.colors.white} width={30} height={30} />
+              </TouchableOpacity>
+            )}
             <GestureDetector gesture={tapGesture}>
               <Reanimated.View style={buttonStyle}>
                 <GestureDetector gesture={panGesture}>
@@ -226,14 +225,11 @@ const Camera = ({ navigation }: Props) => {
                 </GestureDetector>
               </Reanimated.View>
             </GestureDetector>
-            <TouchableOpacity onPress={flipCamera} disabled={isRecordingVideo}>
-              <SvgIcon
-                name="flipCamera"
-                fill={isRecordingVideo ? 'transparent' : theme.colors.white}
-                width={40}
-                height={40}
-              />
-            </TouchableOpacity>
+            {!isRecordingVideo && (
+              <TouchableOpacity style={styles.baseControlButton} onPress={flipCamera}>
+                <SvgIcon name="flipCamera" fill={theme.colors.white} width={30} height={30} />
+              </TouchableOpacity>
+            )}
           </View>
         </View>
       ) : null}

@@ -1,11 +1,21 @@
 import { StyleSheet, ViewStyle } from 'react-native'
+import { EdgeInsets } from 'react-native-safe-area-context'
 
+import { IS_ANDROID } from '@2060/constants'
 import { AppTheme } from '@2060/styles'
 
+const BASE_MARGIN_TOP = 10
+const BASE_MARGIN_BOTTOM = 10
+const CONTROL_BUTTON_SIZE = 50
 const CAPTURE_BUTTON_SIZE = 78
 const BORDER_WIDTH = CAPTURE_BUTTON_SIZE * 0.1
-const hexTransparency = (color: string, transparency: string): string => `#${transparency}${color.slice(1)}`
 
+const baseControlButton: ViewStyle = {
+  width: CONTROL_BUTTON_SIZE,
+  height: CONTROL_BUTTON_SIZE,
+  borderRadius: CONTROL_BUTTON_SIZE / 2,
+  backgroundColor: 'rgba(140, 140, 140, 0.3)',
+}
 const centerItems: ViewStyle = {
   justifyContent: 'center',
   alignItems: 'center',
@@ -16,33 +26,35 @@ const alignItemsSpaceAround: ViewStyle = {
   alignItems: 'center',
 }
 
-export default (theme: AppTheme) =>
+export default (theme: AppTheme, insets: EdgeInsets) =>
   StyleSheet.create({
     container: {
       flex: 1,
     },
     closeButton: {
       ...centerItems,
+      ...baseControlButton,
       position: 'absolute',
       left: 20,
-      top: 40,
+      top: insets.top + BASE_MARGIN_TOP,
       zIndex: 3,
-      height: 40,
-      width: 40,
-      backgroundColor: hexTransparency(theme.colors.darkGrey, '4D'),
-      borderRadius: 20,
     },
     flashButton: {
       ...centerItems,
+      ...baseControlButton,
       position: 'absolute',
       right: 20,
-      top: 40,
+      top: insets.top + BASE_MARGIN_TOP,
       zIndex: 2,
+    },
+    baseControlButton: {
+      ...centerItems,
+      ...baseControlButton,
     },
     recordingTimeContainer: {
       ...alignItemsSpaceAround,
       ...StyleSheet.absoluteFillObject,
-      top: 40,
+      top: insets.top + BASE_MARGIN_TOP,
       width: '100%',
       height: 40,
     },
@@ -60,7 +72,7 @@ export default (theme: AppTheme) =>
     bottomButtonsContainer: {
       ...alignItemsSpaceAround,
       position: 'absolute',
-      bottom: 20,
+      bottom: insets.bottom,
       left: 0,
       right: 0,
     },
@@ -84,13 +96,10 @@ export default (theme: AppTheme) =>
     },
     sendButton: {
       ...centerItems,
+      ...baseControlButton,
       position: 'absolute',
-      bottom: 20,
+      bottom: IS_ANDROID ? BASE_MARGIN_BOTTOM : insets.bottom,
       right: 20,
-      width: 50,
-      height: 50,
       zIndex: 2,
-      backgroundColor: theme.colors.green,
-      borderRadius: 25,
     },
   })
