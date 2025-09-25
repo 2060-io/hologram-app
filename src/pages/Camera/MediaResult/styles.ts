@@ -6,8 +6,8 @@ export default (theme: AppTheme) =>
   StyleSheet.create({
     container: {
       flex: 1,
-      zIndex: 2,
       ...StyleSheet.absoluteFillObject,
+      zIndex: 2,
       backgroundColor: theme.isDarkMode ? theme.colors.secondary : theme.colors.primary,
     },
     contentContainer: {
@@ -15,8 +15,8 @@ export default (theme: AppTheme) =>
     },
     takenPhotoContainer: {
       ...StyleSheet.absoluteFillObject,
+      zIndex: 2,
       width: '100%',
       height: '100%',
-      zIndex: 2,
     },
   })

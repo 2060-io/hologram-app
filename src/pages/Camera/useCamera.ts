@@ -21,7 +21,7 @@ import {
 
 import { IS_ANDROID, IS_IOS } from '@2060/constants'
 import { ImageOrVideo, useImageCropPicker } from '@2060/hooks'
-import { logError } from '@2060/utils'
+import { getMinutesAndSeconds, logError } from '@2060/utils'
 import { deleteFile } from '@2060/utils/RNFS'
 import { screenHeight, screenWidth } from '@2060/utils/responsiveUtils'
 
@@ -37,12 +37,14 @@ export type MediaCaptured = {
   duration?: number | null
 }
 const targetFps = 60
+const INITIAL_TIME_RECORDED = '00:00'
 
 export const useCamera = ({ navigation }: { navigation: StackNavigationProp<ParamListBase> }) => {
   const { takePhotoOrVideoFromGallery } = useImageCropPicker()
   const [cameraPosition, setCameraPosition] = useState<CameraPosition>('front')
   const [flash, setFlash] = useState<'off' | 'on'>('off')
   const [isRecordingVideo, setIsRecordingVideo] = useState(false)
+  const [recordingProgress, setRecordingProgress] = useState(INITIAL_TIME_RECORDED)
   const [isInitialized, setIsInitialized] = useState(false)
   const [mediaCaptured, setMediaCaptured] = useState<MediaCaptured | null>(null)
   const tapHandler = useRef<GestureType>(undefined)
@@ -52,7 +54,7 @@ export const useCamera = ({ navigation }: { navigation: StackNavigationProp<Para
   const isRecording = useRef(false)
   const startY = useSharedValue(0)
   const offsetY = useSharedValue(0)
-  const recordingProgress = useSharedValue(0)
+  const isRecordingProgress = useSharedValue(0)
   const isPressingButton = useSharedValue(false)
   const cameraZoom = useSharedValue(1)
   const device = useCameraDevice(cameraPosition)
@@ -120,8 +122,12 @@ export const useCamera = ({ navigation }: { navigation: StackNavigationProp<Para
 
   const onStoppedRecording = useCallback(() => {
     isRecording.current = false
-    cancelAnimation(recordingProgress)
-  }, [recordingProgress])
+    cancelAnimation(isRecordingProgress)
+  }, [isRecordingProgress])
+
+  const onRecordingProgress = useCallback((progress: number) => {
+    setRecordingProgress(getMinutesAndSeconds(progress))
+  }, [])
 
   const onRecordingFinished = useCallback(
     (video: VideoFile) => {
@@ -137,7 +143,7 @@ export const useCamera = ({ navigation }: { navigation: StackNavigationProp<Para
       })
       onStoppedRecording()
     },
-    [recordingProgress],
+    [isRecordingProgress],
   )
 
   const onRecordingError = (error: CameraCaptureError) => {
@@ -147,8 +153,10 @@ export const useCamera = ({ navigation }: { navigation: StackNavigationProp<Para
 
   const startRecording = useCallback(() => {
     try {
+      setRecordingProgress(INITIAL_TIME_RECORDED)
       camera.current?.startRecording({
         flash: supportsFlash ? flash : 'off',
+        onRecordingProgress,
         onRecordingFinished,
         onRecordingError,
       })
@@ -166,6 +174,7 @@ export const useCamera = ({ navigation }: { navigation: StackNavigationProp<Para
       logError('Failed to stop recording!', e)
     } finally {
       setIsRecordingVideo(false)
+      setRecordingProgress(INITIAL_TIME_RECORDED)
     }
   }, [camera])
 
@@ -187,7 +196,7 @@ export const useCamera = ({ navigation }: { navigation: StackNavigationProp<Para
   }
 
   const onBeginTapGesture = () => {
-    recordingProgress.value = 0
+    isRecordingProgress.value = 0
     isPressingButton.value = true
     const now = new Date()
     pressDownDate.current = now
@@ -283,5 +292,6 @@ export const useCamera = ({ navigation }: { navigation: StackNavigationProp<Para
     getFileFromMedia,
     isPressingButton,
     isRecordingVideo,
+    recordingProgress,
   }
 }

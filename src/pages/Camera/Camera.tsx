@@ -14,7 +14,7 @@ import { useAnimatedStyles } from './useAnimatedStyles'
 import { useCamera } from './useCamera'
 
 import { PersonalChatStackParams } from '@2060/components/Navigation/NavigationProps'
-import { Icon, SvgIcon } from '@2060/components/common'
+import { Icon, SvgIcon, Text } from '@2060/components/common'
 import { IS_ANDROID, IS_IOS } from '@2060/constants'
 import { useAppState, useChatActions } from '@2060/hooks'
 import { DidCommMediaFileSharingData } from '@2060/hooks/agent'
@@ -71,6 +71,7 @@ const Camera = ({ navigation }: Props) => {
     getFileFromMedia,
     isPressingButton,
     isRecordingVideo,
+    recordingProgress,
   } = useCamera({ navigation })
   const { cameraAnimatedProps, recordingStyle, buttonStyle } = useAnimatedStyles({
     isInitialized,
@@ -148,11 +149,40 @@ const Camera = ({ navigation }: Props) => {
     )
   }, [sendMedia])
 
+  const renderUpperButtons = () => {
+    return (
+      <>
+        {closeButton()}
+        {supportsFlash && (
+          <TouchableOpacity onPress={handleFlash} style={styles.flashButton}>
+            <Icon
+              as="MaterialCommunityIcons"
+              name={flash === 'on' ? 'flash' : 'flash-off'}
+              size={40}
+              color={theme.colors.white}
+            />
+          </TouchableOpacity>
+        )}
+      </>
+    )
+  }
+
+  const renderRecordingProgress = useCallback(() => {
+    return (
+      <View style={styles.recordingTimeContainer}>
+        <View style={styles.recordingTime}>
+          <Text typography="EuclidCircularA-SemiBold" style={styles.recordingTimeText}>
+            {recordingProgress}
+          </Text>
+        </View>
+      </View>
+    )
+  }, [recordingProgress])
+
   return (
     <>
       {device ? (
         <View style={styles.container}>
-          {!isRecordingVideo && closeButton()}
           <ReanimatedCamera
             style={styles.container}
             device={device}
@@ -176,17 +206,8 @@ const Camera = ({ navigation }: Props) => {
             animatedProps={cameraAnimatedProps}
             lowLightBoost={device.supportsLowLightBoost}
           />
-          {supportsFlash && !isRecordingVideo && (
-            <TouchableOpacity onPress={handleFlash} style={styles.flashButton}>
-              <Icon
-                as="MaterialCommunityIcons"
-                name={flash === 'on' ? 'flash' : 'flash-off'}
-                size={40}
-                color={theme.colors.white}
-              />
-            </TouchableOpacity>
-          )}
-          <View style={styles.buttonsContainer}>
+          {isRecordingVideo ? renderRecordingProgress() : renderUpperButtons()}
+          <View style={styles.bottomButtonsContainer}>
             <TouchableOpacity onPress={getFileFromMedia} disabled={isRecordingVideo}>
               <SvgIcon
                 name="image"
