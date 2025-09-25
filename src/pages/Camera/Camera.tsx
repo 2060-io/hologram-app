@@ -1,6 +1,7 @@
 import { useIsFocused } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { TouchableOpacity, View } from 'react-native'
 import { GestureDetector } from 'react-native-gesture-handler'
 import Reanimated from 'react-native-reanimated'
@@ -23,7 +24,8 @@ import { createDidCommPreview, createResizedImage } from '@2060/hooks/media/prev
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { log, logError } from '@2060/utils'
 import { deleteFile } from '@2060/utils/RNFS'
-import { cancelVideoCompression, compressVideo } from '@2060/utils/mediaFileUtils'
+import { cancelVideoCompression, compressVideo, getMediaInfo } from '@2060/utils/mediaFileUtils'
+import { toast } from '@2060/utils/toast'
 
 const resizeImageOptions = {
   maxWidth: 1280,
@@ -38,6 +40,7 @@ Reanimated.addWhitelistedNativeProps({
 
 export interface Props extends StackScreenProps<PersonalChatStackParams, 'Camera'> {}
 const Camera = ({ navigation }: Props) => {
+  const { t } = useTranslation()
   const insets = useSafeAreaInsets()
   const theme = useTheme()
   const styles = getStyles(theme, insets)
@@ -103,8 +106,7 @@ const Camera = ({ navigation }: Props) => {
           mediaCaptured.path = IS_IOS ? resizedImage.path : `file://${resizedImage.path}`
         }
       }
-      const mediaRequest = await fetch(mediaCaptured.path)
-      const { size, type: mimeType } = await mediaRequest.blob()
+      const { size, mimeType } = await getMediaInfo(mediaCaptured.path)
       const preview = await createDidCommPreview({
         localFilePath: mediaCaptured.path,
         mimeType,
@@ -131,6 +133,7 @@ const Camera = ({ navigation }: Props) => {
       shareMediaToDidComm({ ...didCommMediaFileSharingData }).catch(logError)
       navigation.goBack()
     } catch (error) {
+      toast({ type: 'error', message: t('signUp.anErrorHasOccurred') })
       logError(`Error sending media: ${error}`)
     }
   }, [mediaCaptured])

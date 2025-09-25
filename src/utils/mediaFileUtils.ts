@@ -1,6 +1,6 @@
 import { Image } from 'react-native'
 import { Video as VideoCompressor } from 'react-native-compressor'
-import { stat, TemporaryDirectoryPath } from 'react-native-fs'
+import { exists, stat, TemporaryDirectoryPath } from 'react-native-fs'
 import { getVideoProperties } from 'react-native-local-native-modules'
 
 import { copyFile, deleteFile } from './RNFS'
@@ -32,6 +32,45 @@ const fromContentUriToFileUri = async (contentUri: string) => {
   const destPath = `${TemporaryDirectoryPath}/${fileNameAndExtension}`
   await copyFile(contentUri, destPath)
   return IS_IOS ? destPath : `file://${decodeURIComponent(destPath)}`
+}
+
+/**
+ * Retrieves information about a media file, including its size and MIME type.
+ *
+ * @param filePath - The path to the media file.
+ * @returns An object containing the file's size (in bytes) and its MIME type.
+ * @throws If the file does not exist or an error occurs during retrieval.
+ *
+ * @example
+ * ```typescript
+ * const info = await getMediaInfo('/path/to/file.jpg');
+ * // info: { size: 1024, mimeType: 'image/jpeg' }
+ * ```
+ */
+export const getMediaInfo = async (filePath: string) => {
+  try {
+    const fileExists = await exists(filePath)
+    if (!fileExists) {
+      throw new Error('File does not exist')
+    }
+
+    const fileInfo = await stat(filePath)
+    const { size } = fileInfo
+    let mimeType = 'application/octet-stream' // Default MIME type
+    const fileExtension = filePath.split('.').pop()?.toLowerCase()
+    if (fileExtension === 'jpg' || fileExtension === 'jpeg') {
+      mimeType = 'image/jpeg'
+    } else if (fileExtension === 'png') {
+      mimeType = 'image/png'
+    } else if (fileExtension === 'mp4') {
+      mimeType = 'video/mp4'
+    } else if (fileExtension === 'mov') {
+      mimeType = 'video/quicktime'
+    }
+    return { size, mimeType }
+  } catch (error) {
+    throw error
+  }
 }
 
 const getDataForVideo = async (currentFileValues: DidCommMediaFileSharingData) => {
