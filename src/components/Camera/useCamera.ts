@@ -5,8 +5,6 @@ import type {
   PanGestureHandlerEventPayload,
 } from 'react-native-gesture-handler'
 
-import { ParamListBase } from '@react-navigation/native'
-import { StackNavigationProp } from '@react-navigation/stack'
 import { useCallback, useRef, useState } from 'react'
 import { Gesture } from 'react-native-gesture-handler'
 import { cancelAnimation, Extrapolation, interpolate, useSharedValue } from 'react-native-reanimated'
@@ -39,7 +37,7 @@ export type MediaCaptured = {
 const targetFps = 60
 const INITIAL_TIME_RECORDED = '00:00'
 
-export const useCamera = ({ navigation }: { navigation: StackNavigationProp<ParamListBase> }) => {
+export const useCamera = ({ closeCamera }: { closeCamera: () => void }) => {
   const { takePhotoOrVideoFromGallery } = useImageCropPicker()
   const [cameraPosition, setCameraPosition] = useState<CameraPosition>('front')
   const [flash, setFlash] = useState<'off' | 'on'>('off')
@@ -184,7 +182,7 @@ export const useCamera = ({ navigation }: { navigation: StackNavigationProp<Para
       setMediaCaptured(null)
       deleteFile(mediaCaptured.path)
     } else {
-      navigation.goBack()
+      closeCamera()
     }
   }, [mediaCaptured])
 
