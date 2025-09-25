@@ -21,12 +21,10 @@ import {
   handleMicrophonePermission,
   checkMicrophonePermission,
   askMicrophonePermission,
-  // handleCameraPermission,
 } from '@2060/utils/permissions'
 import { toast } from '@2060/utils/toast'
 
 interface Props {
-  onShowMediaOptions(): void
   showMediaOptions: boolean
 }
 
@@ -46,7 +44,7 @@ const InputToolbarView = (props: Props) => {
   const { setRepliedMessage, isRecordingVoiceNote, setIsRecordingVoiceNote, repliedMessage } = useChat()
   const isRecordingVoiceNoteAux = useRef(isRecordingVoiceNote)
   const { sendTextMessage, shareMediaToDidComm } = useChatActions()
-  const { showMediaOptions, onShowMediaOptions } = props
+  const { showMediaOptions } = props
   const isRepliedMessage = repliedMessage !== undefined
   const hasContentTextInput = valueTextInput.trim().length !== 0
   const theme = useTheme()
@@ -148,11 +146,6 @@ const InputToolbarView = (props: Props) => {
       )}
       <View style={styles.subContainer}>
         <View style={styles.leftAndCenterContainer}>
-          {showMediaOptions && (
-            <TouchableOpacity style={styles.button} onPress={onShowMediaOptions} activeOpacity={0.7}>
-              <SvgIcon name="add" fill={theme.colors.primaryText} />
-            </TouchableOpacity>
-          )}
           <ComposerInput
             textInputRef={textInputRef}
             isRepliedMessage={isRepliedMessage}

@@ -9,7 +9,6 @@ import { uses24HourClock } from 'react-native-localize'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Realm from 'realm'
 
-import AttachmentOptions from './AttachmentOptions'
 import { CustomHeaderProps, ChatEntryMessage } from './ChatMessage/Props'
 import ContextualMenu from './ContextualMenu'
 import { CustomChatHeader, SelectingMessagesHeader } from './Header'
@@ -19,7 +18,6 @@ import PersonalChatContainer, { WrapperPersonalChatProps } from './PersonalChatC
 import ScrollToBottom from './ScrollToBottomView'
 import SelectingMessagesBottomMenu from './SelectingMessagesBottomMenu'
 import SystemMessage from './SystemMessage'
-import { CompressingVideo } from './components'
 import getStyles from './styles'
 import { getSystemMessage, chatEntryEqual } from './utils'
 
@@ -51,7 +49,6 @@ import { ChatMessageList } from '@2060/pages/PersonalChat/ChatMessageList'
 import { logWarn } from '@2060/utils'
 import { isService } from '@2060/utils/connectionUtils'
 import { getFormattedDateRange } from '@2060/utils/dateUtils'
-import { cancelVideoCompression } from '@2060/utils/mediaFileUtils'
 import { markNotificationsOfChatAsViewed } from '@2060/utils/pushNotificationsUtils'
 import { toast } from '@2060/utils/toast'
 
@@ -92,10 +89,8 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
   const { isAppActive } = useAppState()
   const { stopPlayersAndExtractors } = useAudioPlayer()
   const [currentStickyDate, setCurrentStickyDate] = useState<Date>()
-  const [showAttachmentOptions, setShowAttachmentOptions] = useState(false)
   const [showStickyDate, setShowStickyDate] = useState(false)
   const [showContextualMenu, setShowContextualMenu] = useState(false)
-  const [compressingVideoProgress, setCompressingVideoProgress] = useState(0)
   const { realm } = useLocalRealm()
   const {
     setChatThread,
@@ -127,7 +122,6 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
   const isScrolling = useRef(false)
   const listViewRef = useRef<FlashList<ChatEntryMessage> | null>(null)
   const timerStickyDate = useRef<ReturnType<typeof setTimeout>>(undefined)
-  const videoCompressionCancellationId = useRef<string>('')
   const isAlreadyMounted = useRef(false)
 
   const { data: chatThreadData, flags } = chatThread
@@ -323,14 +317,6 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
 
   const goToForwardMessages = () => navigation.navigate('ForwardMessages')
 
-  const getVideoCompressionCancellationId = (cancellationId: string) => {
-    videoCompressionCancellationId.current = cancellationId
-  }
-
-  const cancelCompression = () => {
-    cancelVideoCompression(videoCompressionCancellationId.current)
-  }
-
   return (
     <>
       <SafeAreaView style={styles.container}>
@@ -372,12 +358,7 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
           {flags.isConnectionCompleted &&
             !flags.isConnectionBlocked &&
             !flags.isConnectionTerminated &&
-            !isSelectingMessagesMode && (
-              <InputToolbarView
-                onShowMediaOptions={() => setShowAttachmentOptions(true)}
-                showMediaOptions={flags.supportsMediaSharing}
-              />
-            )}
+            !isSelectingMessagesMode && <InputToolbarView showMediaOptions={flags.supportsMediaSharing} />}
           {showScrollBottomRef.current && (
             <ScrollToBottom numberNewMessages={0} onScrollToBottom={scrollToBottom} />
           )}
@@ -392,9 +373,6 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
           )}
         </KeyboardAvoidingView>
       </SafeAreaView>
-      {compressingVideoProgress > 0 && (
-        <CompressingVideo progress={compressingVideoProgress} cancelCompression={cancelCompression} />
-      )}
       <ModalBottomHalf visible={showContextualMenu} onClose={() => setShowContextualMenu(false)}>
         {menu ? (
           <ContextualMenu
@@ -403,13 +381,6 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
             onSelectOption={handleOptionSelectedContextualMenu}
           />
         ) : null}
-      </ModalBottomHalf>
-      <ModalBottomHalf visible={showAttachmentOptions} onClose={() => setShowAttachmentOptions(false)}>
-        <AttachmentOptions
-          closeAttachmentOptions={() => setShowAttachmentOptions(false)}
-          onCompressingVideoProgress={setCompressingVideoProgress}
-          getVideoCompressionCancellationId={getVideoCompressionCancellationId}
-        />
       </ModalBottomHalf>
       <MessageFloatingMenu
         navigation={navigation}

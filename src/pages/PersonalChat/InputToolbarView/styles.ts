@@ -11,7 +11,7 @@ export default (theme: AppTheme, isRecording?: boolean) =>
   StyleSheet.create({
     container: {
       width: '100%',
-      paddingHorizontal: 17.12,
+      paddingHorizontal: theme.edges.messageMargin,
       paddingVertical: 5,
     },
     subContainer: {

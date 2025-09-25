@@ -16,7 +16,6 @@ export default (theme: AppTheme) =>
       paddingLeft: 12,
       flexDirection: 'row',
       alignItems: 'center',
-      marginLeft: 4,
     },
     textInput: {
       flex: 1,
