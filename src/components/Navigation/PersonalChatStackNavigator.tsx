@@ -53,7 +53,14 @@ const PersonalChatStackNavigator = () => {
               component={MRZScanner}
               options={{ presentation: 'modal', headerShown: false }}
             />
-            <PersonalChatStack.Screen name="Camera" component={Camera} options={{ headerShown: false }} />
+            <PersonalChatStack.Screen
+              name="Camera"
+              component={Camera}
+              options={{
+                headerShown: false,
+                animation: 'reveal_from_bottom',
+              }}
+            />
           </PersonalChatStack.Group>
         </PersonalChatStack.Navigator>
       </MediaPlayerProvider>
