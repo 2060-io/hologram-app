@@ -51,7 +51,7 @@ export const useCamera = ({ navigation }: { navigation: StackNavigationProp<Para
   const panHandler = useRef<GestureType>(undefined)
   const camera = useRef<VisionCamera>(null)
   const pressDownDate = useRef<Date | undefined>(undefined)
-  const isRecording = useRef(false)
+  const stopRecordingTimeout = useRef<ReturnType<typeof setTimeout>>(undefined)
   const startY = useSharedValue(0)
   const offsetY = useSharedValue(0)
   const isRecordingProgress = useSharedValue(0)
@@ -121,7 +121,8 @@ export const useCamera = ({ navigation }: { navigation: StackNavigationProp<Para
   }, [flash, supportsFlash])
 
   const onStoppedRecording = useCallback(() => {
-    isRecording.current = false
+    setIsRecordingVideo(false)
+    setRecordingProgress(INITIAL_TIME_RECORDED)
     cancelAnimation(isRecordingProgress)
   }, [isRecordingProgress])
 
@@ -161,8 +162,7 @@ export const useCamera = ({ navigation }: { navigation: StackNavigationProp<Para
         onRecordingError,
       })
       setIsRecordingVideo(true)
-      isRecording.current = true
-      setTimeout(() => {
+      stopRecordingTimeout.current = setTimeout(() => {
         stopRecording()
       }, MAX_VIDEO_DURATION)
     } catch (e) {
@@ -172,12 +172,10 @@ export const useCamera = ({ navigation }: { navigation: StackNavigationProp<Para
 
   const stopRecording = useCallback(async () => {
     try {
+      clearTimeout(stopRecordingTimeout.current)
       await camera.current?.stopRecording()
     } catch (e) {
       logError('Failed to stop recording!', e)
-    } finally {
-      setIsRecordingVideo(false)
-      setRecordingProgress(INITIAL_TIME_RECORDED)
     }
   }, [camera])
 
