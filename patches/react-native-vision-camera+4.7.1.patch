@@ -96,7 +96,7 @@ index 7ae4209..e72e1b2 100644
    }
  
 diff --git a/node_modules/react-native-vision-camera/ios/Core/CameraSession+Video.swift b/node_modules/react-native-vision-camera/ios/Core/CameraSession+Video.swift
-index 8e57710..c5c5f9b 100644
+index 8e57710..6eeb764 100644
 --- a/node_modules/react-native-vision-camera/ios/Core/CameraSession+Video.swift
 +++ b/node_modules/react-native-vision-camera/ios/Core/CameraSession+Video.swift
 @@ -17,6 +17,7 @@ extension CameraSession {
@@ -206,6 +206,21 @@ index f7bd9e8..d20ab21 100644
    }
  
    @objc
+diff --git a/node_modules/react-native-vision-camera/lib/typescript/types/VideoFile.d.ts b/node_modules/react-native-vision-camera/lib/typescript/types/VideoFile.d.ts
+index 32382dc..250115f 100644
+--- a/node_modules/react-native-vision-camera/lib/typescript/types/VideoFile.d.ts
++++ b/node_modules/react-native-vision-camera/lib/typescript/types/VideoFile.d.ts
+@@ -18,6 +18,10 @@ export interface RecordVideoOptions {
+      * By default, VisionCamera will use the device's temporary directory.
+      */
+     path?: string;
++    /**
++     * Callback that returns the current progress of the video recording
++     */
++    onRecordingProgress?: (progress: number) => void
+     /**
+      * Called when there was an unexpected runtime error while recording the video.
+      */
 diff --git a/node_modules/react-native-vision-camera/src/Camera.tsx b/node_modules/react-native-vision-camera/src/Camera.tsx
 index afe056a..d1bfb26 100644
 --- a/node_modules/react-native-vision-camera/src/Camera.tsx
