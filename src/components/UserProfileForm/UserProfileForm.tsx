@@ -3,6 +3,8 @@ import React, { memo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, TouchableOpacity, Image } from 'react-native'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
+import Modal from 'react-native-modal'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 import Camera from '../Camera'
 import { MediaCaptured } from '../Camera/Props'
@@ -10,8 +12,9 @@ import { MediaCaptured } from '../Camera/Props'
 import getStyles from './styles'
 
 import defaultAvatar from '@2060/assets/images/defaultUser.png'
-import { Text, TextInput, SvgIcon, Modal, Avatar } from '@2060/components/common'
+import { Text, TextInput, SvgIcon, Avatar } from '@2060/components/common'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
+import { getGlobalStyles } from '@2060/styles'
 import { dataUrl, log } from '@2060/utils'
 import { deleteFile, readFile } from '@2060/utils/RNFS'
 import { getMediaInfo } from '@2060/utils/mediaFileUtils'
@@ -27,6 +30,7 @@ type Props = {
 const UserProfileForm: React.FC<Props> = props => {
   const { t } = useTranslation()
   const theme = useTheme()
+  const globalStyles = getGlobalStyles(theme)
   const styles = getStyles(theme)
   const { displayPicture, displayName, onHandleChangePicture, onHandleChangeName } = props
   const [isCameraOpen, setIsCameraOpen] = useState(false)
@@ -58,10 +62,12 @@ const UserProfileForm: React.FC<Props> = props => {
 
   return (
     <View>
-      <Modal visible={isCameraOpen} statusBarTranslucent={false} animationType="fade">
-        <GestureHandlerRootView style={styles.container}>
-          <Camera isActive onMedia={onPhoto} closeCamera={closeCamera} isVideoMode={false} />
-        </GestureHandlerRootView>
+      <Modal isVisible={isCameraOpen} statusBarTranslucent style={{ margin: 0 }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: globalStyles.headerStyle.backgroundColor }}>
+          <GestureHandlerRootView style={styles.container}>
+            <Camera isActive onMedia={onPhoto} closeCamera={closeCamera} isVideoMode={false} />
+          </GestureHandlerRootView>
+        </SafeAreaView>
       </Modal>
       <Text typography="EuclidCircularA-Regular" style={styles.textInputDescription}>
         {t('signUp.textInputNicknameDescription')}

@@ -105,6 +105,7 @@
     "react-native-keyboard-controller": "1.18.5",
     "react-native-local-native-modules": "file:./modules/react-native-local-native-modules",
     "react-native-localize": "3.5.1",
+    "react-native-modal": "14.0.0-rc.1",
     "react-native-open-notification": "0.1.4",
     "react-native-permissions": "5.4.2",
     "react-native-qrcode-svg": "6.3.14",
