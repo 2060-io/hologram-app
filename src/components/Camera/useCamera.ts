@@ -209,7 +209,7 @@ export const useCamera = ({ isVideoMode, closeCamera }: Props) => {
       pressDownDate.current = undefined
       if (diff > START_RECORDING_DELAY && isVideoMode) {
         // user has held the button for more than 200ms and isVideoMode, so he has been recording this time.
-        await stopRecording()
+        if (isRecordingVideo) await stopRecording()
       } else {
         // user has released the button within 200ms, so his intention is to take a single picture.
         await takePhoto()
