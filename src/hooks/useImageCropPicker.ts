@@ -1,8 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { openPicker, Options, Image, Video, CommonOptions } from 'react-native-image-crop-picker'
 
-import { createDidCommPreview } from './media/preview'
-
 import { MAX_VIDEO_DURATION } from '@2060/constants'
 import { logError } from '@2060/utils'
 import { toast } from '@2060/utils/toast'
@@ -40,51 +38,30 @@ const optionsDefault = {
   any: { ...defaultCamera, ...defaultVideo },
 }
 
-export interface ImageOrVideo extends Image, Video {
-  preview?: string
-}
+export type ImageOrVideo = Image & Video
 
 export const useImageCropPicker = () => {
   const { t } = useTranslation()
-  const createPreview = async (fileInfo: ImageOrVideo, mediaType: string) => {
-    if (['photo', 'any'].includes(mediaType) && fileInfo.data) {
-      const previewResult = await createDidCommPreview({
-        localFilePath: fileInfo.path,
-        mimeType: fileInfo.mime,
-      })
-      fileInfo.preview = previewResult
-    }
-    if (['video'].includes(mediaType) || fileInfo.mime === 'video/mp4') {
-      const previewResult = await createDidCommPreview({
-        localFilePath: fileInfo.path,
-        mimeType: fileInfo.mime,
-      })
-      fileInfo.preview = previewResult
-    }
-    return fileInfo
-  }
 
-  const takePhotoOrVideoFromGallery = async (
+  const getPhotoOrVideoFromGallery = async (
+    mediaType: keyof typeof optionsDefault,
     onSuccess: (values: ImageOrVideo) => void,
-    options?: Options,
   ) => {
-    const mediaType = options?.mediaType || 'photo'
     try {
-      const fileInfo = (await openPicker({ ...optionsDefault[mediaType], ...options })) as ImageOrVideo
+      const fileInfo = (await openPicker({ ...optionsDefault[mediaType] })) as ImageOrVideo
       const { mime, duration } = fileInfo
       const isVideoAndExceedsDuration = mime.startsWith('video') && duration && duration > MAX_VIDEO_DURATION
       if (isVideoAndExceedsDuration) {
         toast({ message: t('personalChat.videoExceedsDuration'), type: 'error' })
         return
       }
-      const infoMedia = await createPreview(fileInfo, mediaType)
-      onSuccess(infoMedia)
+      onSuccess(fileInfo)
     } catch (error) {
       logError(`${error}`)
     }
   }
 
   return {
-    takePhotoOrVideoFromGallery,
+    getPhotoOrVideoFromGallery,
   }
 }

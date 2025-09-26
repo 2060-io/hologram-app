@@ -1,7 +1,7 @@
 import React from 'react'
 import { Image, View } from 'react-native'
 
-import { MediaCaptured } from '../useCamera'
+import { MediaCaptured } from '../Props'
 
 import VideoRecorded from './VideoRecorded'
 import getStyles from './styles'

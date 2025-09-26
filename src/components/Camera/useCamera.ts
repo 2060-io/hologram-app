@@ -35,7 +35,7 @@ type Props = {
   closeCamera: () => void
 }
 export const useCamera = ({ isVideoMode, closeCamera }: Props) => {
-  const { takePhotoOrVideoFromGallery } = useImageCropPicker()
+  const { getPhotoOrVideoFromGallery } = useImageCropPicker()
   const [cameraPosition, setCameraPosition] = useState<CameraPosition>('front')
   const [flash, setFlash] = useState<'off' | 'on'>('off')
   const [isRecordingVideo, setIsRecordingVideo] = useState(false)
@@ -75,14 +75,11 @@ export const useCamera = ({ isVideoMode, closeCamera }: Props) => {
   }, [])
 
   const getFileFromMedia = useCallback(() => {
-    takePhotoOrVideoFromGallery(
-      (values: ImageOrVideo) => {
-        const { path, height, width, duration } = values
-        const type = values.mime.startsWith('image') ? 'image' : 'video'
-        updateMediaCapturedInfo({ type, path, height, width, duration, origin: 'image-crop-picker' })
-      },
-      { mediaType: isVideoMode ? 'any' : 'photo' },
-    )
+    getPhotoOrVideoFromGallery(isVideoMode ? 'any' : 'photo', (values: ImageOrVideo) => {
+      const { path, height, width, mime, duration } = values
+      const type = mime.startsWith('image') ? 'image' : 'video'
+      updateMediaCapturedInfo({ type, path, height, width, duration, origin: 'image-crop-picker' })
+    })
   }, [])
 
   const takePhoto = useCallback(async () => {
