@@ -56,6 +56,7 @@ export const useCamera = ({ isVideoMode, closeCamera }: Props) => {
   const minZoom = device?.minZoom ?? 1
   const maxZoom = Math.min(device?.maxZoom ?? 1, MAX_ZOOM_FACTOR)
   const supportsFlash = device?.hasFlash ?? false
+  const supportsTorch = device?.hasTorch ?? false
   const screenAspectRatio = screenHeight / screenWidth
   const format = useCameraFormat(device, [
     { fps: targetFps },
@@ -148,7 +149,7 @@ export const useCamera = ({ isVideoMode, closeCamera }: Props) => {
     try {
       setRecordingProgress(INITIAL_TIME_RECORDED)
       camera.current?.startRecording({
-        flash: supportsFlash ? flash : 'off',
+        flash: supportsTorch ? flash : 'off',
         onRecordingProgress,
         onRecordingFinished,
         onRecordingError,
@@ -160,7 +161,7 @@ export const useCamera = ({ isVideoMode, closeCamera }: Props) => {
     } catch (e) {
       logError('Failed to start recording!', e, 'camera')
     }
-  }, [camera, supportsFlash, flash, onStoppedRecording])
+  }, [camera, supportsTorch, flash, onStoppedRecording])
 
   const stopRecording = useCallback(async () => {
     try {
