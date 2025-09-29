@@ -97,6 +97,7 @@ export default (theme: AppTheme, insets: EdgeInsets) =>
     sendButton: {
       ...centerItems,
       ...baseControlButton,
+      backgroundColor: theme.colors.green,
       position: 'absolute',
       bottom: IS_ANDROID ? BASE_MARGIN_BOTTOM : insets.bottom,
       right: 20,

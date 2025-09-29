@@ -78,7 +78,7 @@ const Camera = ({ isActive, onMedia, closeCamera, isVideoMode = true }: Props) =
   const sendButton = useCallback(() => {
     return (
       <TouchableOpacity onPress={onPressSendButton} style={styles.sendButton}>
-        <SvgIcon name="send" fill={theme.colors.white} height={30} width={30} />
+        <Icon as="MaterialIcons" name="done" size={30} color={theme.colors.white} />
       </TouchableOpacity>
     )
   }, [onPressSendButton])
