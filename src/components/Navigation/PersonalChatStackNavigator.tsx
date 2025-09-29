@@ -39,29 +39,27 @@ const PersonalChatStackNavigator = () => {
             ),
           })}
         >
-          <PersonalChatStack.Group>
-            <PersonalChatStack.Screen
-              name="PersonalChat"
-              component={PersonalChat}
-              options={{ headerShown: false }}
-            />
-            <PersonalChatStack.Screen name="MessageDetails" component={MessageDetails} />
-            <PersonalChatStack.Screen name="ForwardMessages" component={ForwardMessages} />
-            <PersonalChatStack.Screen name="ShareMessages" component={ShareMessages} />
-            <PersonalChatStack.Screen
-              name="MRZScanner"
-              component={MRZScanner}
-              options={{ presentation: 'modal', headerShown: false }}
-            />
-            <PersonalChatStack.Screen
-              name="Camera"
-              component={Camera}
-              options={{
-                headerShown: false,
-                animation: 'reveal_from_bottom',
-              }}
-            />
-          </PersonalChatStack.Group>
+          <PersonalChatStack.Screen
+            name="PersonalChat"
+            component={PersonalChat}
+            options={{ headerShown: false }}
+          />
+          <PersonalChatStack.Screen name="MessageDetails" component={MessageDetails} />
+          <PersonalChatStack.Screen name="ForwardMessages" component={ForwardMessages} />
+          <PersonalChatStack.Screen name="ShareMessages" component={ShareMessages} />
+          <PersonalChatStack.Screen
+            name="MRZScanner"
+            component={MRZScanner}
+            options={{ presentation: 'modal', headerShown: false }}
+          />
+          <PersonalChatStack.Screen
+            name="Camera"
+            component={Camera}
+            options={{
+              headerShown: false,
+              animation: 'reveal_from_bottom',
+            }}
+          />
         </PersonalChatStack.Navigator>
       </MediaPlayerProvider>
     </PersonalChatProvider>

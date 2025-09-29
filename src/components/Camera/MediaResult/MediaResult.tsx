@@ -21,23 +21,21 @@ const MediaResult = ({ visible, renderCloseButton, renderSendButton, mediaCaptur
 
   return (
     <View style={{ ...styles.container, display: visible ? 'flex' : 'none' }}>
-      <View style={styles.contentContainer}>
-        {renderCloseButton()}
-        {mediaCaptured ? (
-          mediaCaptured.type === 'image' ? (
-            <Image
-              source={{ uri: mediaCaptured.path }}
-              style={styles.takenPhotoContainer}
-              resizeMode="contain"
-            />
-          ) : (
-            <VideoRecorded path={mediaCaptured.path} />
-          )
+      {renderCloseButton()}
+      {mediaCaptured ? (
+        mediaCaptured.type === 'image' ? (
+          <Image
+            source={{ uri: mediaCaptured.path }}
+            style={styles.takenPhotoContainer}
+            resizeMode="contain"
+          />
         ) : (
-          <></>
-        )}
-        {renderSendButton()}
-      </View>
+          <VideoRecorded path={mediaCaptured.path} />
+        )
+      ) : (
+        <></>
+      )}
+      {renderSendButton()}
     </View>
   )
 }

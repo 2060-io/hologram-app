@@ -48,7 +48,7 @@ export const useImageCropPicker = () => {
     onSuccess: (values: ImageOrVideo) => void,
   ) => {
     try {
-      const fileInfo = (await openPicker({ ...optionsDefault[mediaType] })) as ImageOrVideo
+      const fileInfo = (await openPicker({ ...optionsDefault[mediaType], mediaType })) as ImageOrVideo
       const { mime, duration } = fileInfo
       const isVideoAndExceedsDuration = mime.startsWith('video') && duration && duration > MAX_VIDEO_DURATION
       if (isVideoAndExceedsDuration) {
