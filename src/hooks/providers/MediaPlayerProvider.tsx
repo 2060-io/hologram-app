@@ -102,6 +102,8 @@ export const MediaPlayerProvider: React.FC<React.PropsWithChildren<Props>> = ({ 
     setAudioMessageIdFinished(newAudioMessageId)
   }, [])
 
+  const closeVideoPlayer = () => setRenderVideoPlayer(false)
+
   return (
     <MediaPlayerContext
       value={{
@@ -115,17 +117,17 @@ export const MediaPlayerProvider: React.FC<React.PropsWithChildren<Props>> = ({ 
     >
       <LightboxModal
         visible={renderVideoPlayer}
-        renderHeader={close =>
+        renderHeader={() =>
           showControl &&
           videoState && (
             <LightboxHeader
               chatEntry={videoState.chatEntry}
               fileMediaInfo={videoState.fileMediaInfo}
-              onBack={close}
+              onBack={closeVideoPlayer}
             />
           )
         }
-        onCloseModal={() => setRenderVideoPlayer(false)}
+        closeModal={closeVideoPlayer}
       >
         <VideoPlayer
           uri={videoState?.videoFileUri ?? ''}
