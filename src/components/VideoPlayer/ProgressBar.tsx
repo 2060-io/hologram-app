@@ -55,7 +55,7 @@ const ProgressBar = ({ currentTime, duration, onSlideCapture, onSlideComplete, o
 const styles = StyleSheet.create({
   wrraper: {
     position: 'absolute',
-    bottom: 50,
+    bottom: 60,
     paddingHorizontal: 15,
   },
   timeWrapper: {

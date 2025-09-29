@@ -5,7 +5,8 @@ import { IS_ANDROID } from '@2060/constants'
 import { AppTheme } from '@2060/styles'
 
 const BASE_MARGIN_TOP = 10
-const BASE_MARGIN_BOTTOM = 10
+const ANDROID_BASE_MARGIN_BOTTOM = 10
+const IOS_BASE_MARGIN_BOTTOM = 15
 const CONTROL_BUTTON_SIZE = 50
 const CAPTURE_BUTTON_SIZE = 78
 const BORDER_WIDTH = CAPTURE_BUTTON_SIZE * 0.1
@@ -99,7 +100,7 @@ export default (theme: AppTheme, insets: EdgeInsets) =>
       ...baseControlButton,
       backgroundColor: theme.colors.green,
       position: 'absolute',
-      bottom: IS_ANDROID ? BASE_MARGIN_BOTTOM : insets.bottom,
+      bottom: IS_ANDROID ? ANDROID_BASE_MARGIN_BOTTOM : IOS_BASE_MARGIN_BOTTOM,
       right: 20,
       zIndex: 2,
     },
