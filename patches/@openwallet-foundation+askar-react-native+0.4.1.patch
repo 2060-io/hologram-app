@@ -1,3 +1,17 @@
+diff --git a/node_modules/@openwallet-foundation/askar-react-native/android/build.gradle b/node_modules/@openwallet-foundation/askar-react-native/android/build.gradle
+index 006c740..fe6d69f 100644
+--- a/node_modules/@openwallet-foundation/askar-react-native/android/build.gradle
++++ b/node_modules/@openwallet-foundation/askar-react-native/android/build.gradle
+@@ -91,7 +91,8 @@ android {
+             abiFilters 'x86', 'x86_64', 'armeabi-v7a', 'arm64-v8a'
+             arguments "-DANDROID_STL=c++_shared",
+                       "-DREACT_NATIVE_VERSION=${REACT_NATIVE_VERSION}",
+-                      "-DNODE_MODULES_DIR=${nodeModules}"
++                      "-DNODE_MODULES_DIR=${nodeModules}",
++                      "-DANDROID_SUPPORT_FLEXIBLE_PAGE_SIZES=ON"
+         }
+     }
+     
 diff --git a/node_modules/@openwallet-foundation/askar-react-native/cpp/askar.cpp b/node_modules/@openwallet-foundation/askar-react-native/cpp/askar.cpp
 index f823c33..583c937 100644
 --- a/node_modules/@openwallet-foundation/askar-react-native/cpp/askar.cpp
