@@ -10,6 +10,7 @@ import { MediaCaptured } from './Props'
 import getStyles from './styles'
 import { useAnimatedStyles } from './useAnimatedStyles'
 import { useCamera } from './useCamera'
+import { useCameraPanGesture } from './useCameraPanGesture'
 
 import { Icon, SvgIcon, Text } from '@2060/components/common'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
@@ -55,6 +56,7 @@ const Camera = ({ isActive, onMedia, closeCamera, isVideoMode = true }: Props) =
     isRecordingVideo,
     recordingProgress,
   } = useCamera({ isVideoMode, closeCamera })
+  const { cameraPanGesture, exposure } = useCameraPanGesture({ device, isInitialized })
   const { cameraAnimatedProps, recordingStyle, buttonStyle } = useAnimatedStyles({
     isInitialized,
     cameraZoom,
@@ -117,29 +119,32 @@ const Camera = ({ isActive, onMedia, closeCamera, isVideoMode = true }: Props) =
     <>
       {device ? (
         <View style={styles.container}>
-          <ReanimatedCamera
-            style={styles.container}
-            device={device}
-            isActive={isActive}
-            ref={camera}
-            onInitialized={onInitialized}
-            onError={error => logError('Vision Camera error:', error)}
-            onStarted={() => log('Vision Camera started!')}
-            onStopped={() => log('Vision Camera stopped!')}
-            onPreviewStarted={() => log('Preview started!')}
-            onPreviewStopped={() => log('Preview stopped!')}
-            onOutputOrientationChanged={o => log(`Output orientation changed to ${o}!`)}
-            onPreviewOrientationChanged={o => log(`Preview orientation changed to ${o}!`)}
-            onUIRotationChanged={degrees => log(`UI Rotation changed: ${degrees}°`)}
-            format={format}
-            fps={fps}
-            photo
-            video={isVideoMode}
-            audio={isVideoMode}
-            enableZoomGesture
-            animatedProps={cameraAnimatedProps}
-            lowLightBoost={device.supportsLowLightBoost}
-          />
+          <GestureDetector gesture={cameraPanGesture}>
+            <ReanimatedCamera
+              style={styles.container}
+              device={device}
+              isActive={isActive}
+              ref={camera}
+              onInitialized={onInitialized}
+              onError={error => logError('Vision Camera error:', error)}
+              onStarted={() => log('Vision Camera started!')}
+              onStopped={() => log('Vision Camera stopped!')}
+              onPreviewStarted={() => log('Preview started!')}
+              onPreviewStopped={() => log('Preview stopped!')}
+              onOutputOrientationChanged={o => log(`Output orientation changed to ${o}!`)}
+              onPreviewOrientationChanged={o => log(`Preview orientation changed to ${o}!`)}
+              onUIRotationChanged={degrees => log(`UI Rotation changed: ${degrees}°`)}
+              format={format}
+              fps={fps}
+              photo
+              video={isVideoMode}
+              audio={isVideoMode}
+              enableZoomGesture
+              animatedProps={cameraAnimatedProps}
+              lowLightBoost={device.supportsLowLightBoost}
+              exposure={exposure}
+            />
+          </GestureDetector>
           {isRecordingVideo ? renderRecordingProgress() : renderUpperButtons()}
           <View style={styles.bottomButtonsContainer}>
             {!isRecordingVideo && (
