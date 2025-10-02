@@ -3,7 +3,6 @@ import { FirebaseMessagingTypes } from '@react-native-firebase/messaging'
 
 import AgentSingleton from './AgentSingleton'
 import RealmSingleton from './RealmSingleton'
-import { baseAgentConfig } from './setupMobileAgent'
 
 import { manageBackgroundChatEntryChanges, subscribeToAgentChatEvents } from '@2060/hooks/agent/chat'
 import { manageConnectionStateChangedEvent } from '@2060/hooks/agent/connections/manageConnectionStateChangedEvent'
@@ -73,15 +72,13 @@ export async function backgroundPushNotificationHandler(remoteMessage: FirebaseM
     // this events is yet calling when app awakes and receives more because agent is still alive and the same
     agent.events.on<AgentMessageProcessedEvent>(AgentEventTypes.AgentMessageProcessed, async data => {
       const message = data.payload.message
-      baseAgentConfig.logger?.info(
-        `Message processed for connection id ${data.payload.connection?.id} Type: ${message.type}`,
-      )
+      log(`Message processed for connection id ${data.payload.connection?.id} Type: ${message.type}`)
       makeRequestToLocalServer({
         data: `Message processed for connection id ${data.payload.connection?.id}`,
       })
       if (message.type === V2StatusMessage.type.messageTypeUri) {
         const messageCount = (message as V2StatusMessage).messageCount
-        baseAgentConfig.logger?.info(`Status message received. Remaining messages: ${messageCount}`)
+        log(`Status message received. Remaining messages: ${messageCount}`)
         makeRequestToLocalServer({
           data: `Status message received. Remaining messages: ${messageCount}`,
         })

@@ -7,34 +7,27 @@ import {
   Logger,
   MediatorPickupStrategy,
   AgentMessageReceivedEvent,
-  ConsoleLogger,
   LogLevel,
 } from '@credo-ts/core'
 import { agentDependencies } from '@credo-ts/react-native'
 import Config from 'react-native-config'
 
+import { HologramCustomLogger } from './HologramCustomLogger'
 import { MobileAgent } from './agent/MobileAgent'
 import { createMobileAgent } from './agent/createMobileAgent'
 import { duplicatedMessagesMiddleware } from './agent/duplicatedMessagesMiddleware'
-import { DEV_ENVS_PERSIST_KEY, getStorageData } from './localStorage'
+import { DEV_ENVS_PERSIST_KEY, DEVELOPER_MODE_ENABLED_PERSIST_KEY, getStorageData } from './localStorage'
 import { TunedMobileWsOutboundTransport } from './transport/TunedMobileWsOutboundTransport'
 
 import { DevEnvsObject } from '@2060/utils/developer'
 
 interface MobileAgentConfig {
   agentDependencies: AgentDependencies
-  mediatorPickupStrategy?: MediatorPickupStrategy
-  logger?: Logger
+  mediatorPickupStrategy: MediatorPickupStrategy
 }
 
-let logger: Logger | undefined
-if (__DEV__) {
-  logger = new ConsoleLogger(LogLevel.debug)
-}
-
-export const baseAgentConfig: MobileAgentConfig = {
+const baseAgentConfig: MobileAgentConfig = {
   agentDependencies,
-  logger,
   mediatorPickupStrategy: MediatorPickupStrategy.None,
 }
 
@@ -46,31 +39,41 @@ const getIndyVDRProxyBaseUrl = async () => {
   return Config.INDY_VDR_PROXY_BASE_URL
 }
 
-export const setupMobileAgent = async (config: MobileAgentConfig): Promise<MobileAgent> => {
+const getIsDeveloperMode = async () => {
+  const persistedDeveloperMode = await getStorageData(DEVELOPER_MODE_ENABLED_PERSIST_KEY)
+  return (persistedDeveloperMode as boolean) ?? false
+}
+
+let logger: Logger | undefined
+export const setupMobileAgent = async (): Promise<MobileAgent> => {
   const indyVDRProxyBaseUrl = await getIndyVDRProxyBaseUrl()
+  const isDeveloperMode = await getIsDeveloperMode()
+  if (__DEV__ || isDeveloperMode) {
+    logger = new HologramCustomLogger(LogLevel.debug)
+  }
   const agent = createMobileAgent({
     config: {
       label: 'Hologram',
-      logger: config.logger,
+      logger,
       autoUpdateStorageOnStartup: true,
     },
     indyVDRProxyBaseUrl,
     modulesConfig: {
-      mediatorPickupStrategy: config.mediatorPickupStrategy,
+      mediatorPickupStrategy: baseAgentConfig.mediatorPickupStrategy,
     },
-    dependencies: config.agentDependencies,
+    dependencies: baseAgentConfig.agentDependencies,
   })
 
   agent.events.on<AgentMessageReceivedEvent>(AgentEventTypes.AgentMessageReceived, async data => {
-    config.logger?.info(`Message received ${JSON.stringify(data.payload.message)}`)
+    logger?.info(`Message received ${JSON.stringify(data.payload.message)}`)
   })
 
   agent.events.on<AgentMessageProcessedEvent>(AgentEventTypes.AgentMessageProcessed, async data => {
-    config.logger?.info(`Message received with type: ${data.payload.message.type}`)
+    logger?.info(`Message received with type: ${data.payload.message.type}`)
   })
 
   agent.events.on<AgentMessageSentEvent>(AgentEventTypes.AgentMessageSent, async data => {
-    config.logger?.info(
+    logger?.info(
       `Message sent (${data.payload.status}): ${JSON.stringify(data.payload.message.message.toJSON())}`,
     )
   })

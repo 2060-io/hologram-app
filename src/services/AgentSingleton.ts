@@ -1,6 +1,6 @@
 import { MobileAgent } from './agent/MobileAgent'
 import { KeyChainService, retrieveEncryptedKey } from './keys'
-import { baseAgentConfig, setupMobileAgent } from './setupMobileAgent'
+import { setupMobileAgent } from './setupMobileAgent'
 
 import { logError, log } from '@2060/utils'
 import { walletDirectoryPath } from '@2060/utils/RNFS'
@@ -21,7 +21,7 @@ export class AgentSingleton {
 
   async setupMobileAgent() {
     if (this.isSetup) return
-    const agent = await setupMobileAgent(baseAgentConfig)
+    const agent = await setupMobileAgent()
     this.mobileAgent = agent
     this.isSetup = true
   }
