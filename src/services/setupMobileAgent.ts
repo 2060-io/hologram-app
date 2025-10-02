@@ -49,7 +49,7 @@ export const setupMobileAgent = async (): Promise<MobileAgent> => {
   const indyVDRProxyBaseUrl = await getIndyVDRProxyBaseUrl()
   const isDeveloperMode = await getIsDeveloperMode()
   if (__DEV__ || isDeveloperMode) {
-    logger = new HologramCustomLogger(LogLevel.debug)
+    logger = new HologramCustomLogger(LogLevel.debug, __DEV__)
   }
   const agent = createMobileAgent({
     config: {
@@ -65,7 +65,7 @@ export const setupMobileAgent = async (): Promise<MobileAgent> => {
   })
 
   agent.events.on<AgentMessageReceivedEvent>(AgentEventTypes.AgentMessageReceived, async data => {
-    logger?.info(`Message received ${JSON.stringify(data.payload.message)}`)
+    logger?.info('Message received', data.payload.message ?? undefined)
   })
 
   agent.events.on<AgentMessageProcessedEvent>(AgentEventTypes.AgentMessageProcessed, async data => {
@@ -73,9 +73,7 @@ export const setupMobileAgent = async (): Promise<MobileAgent> => {
   })
 
   agent.events.on<AgentMessageSentEvent>(AgentEventTypes.AgentMessageSent, async data => {
-    logger?.info(
-      `Message sent (${data.payload.status}): ${JSON.stringify(data.payload.message.message.toJSON())}`,
-    )
+    logger?.info(`Message sent (${data.payload.status})`, data.payload.message.message)
   })
 
   const httpOutboundTransporter = new HttpOutboundTransport()
