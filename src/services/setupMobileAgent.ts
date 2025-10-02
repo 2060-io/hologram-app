@@ -49,7 +49,7 @@ export const setupMobileAgent = async (): Promise<MobileAgent> => {
   const indyVDRProxyBaseUrl = await getIndyVDRProxyBaseUrl()
   const isDeveloperMode = await getIsDeveloperMode()
   if (__DEV__ || isDeveloperMode) {
-    logger = new HologramCustomLogger(LogLevel.debug, __DEV__)
+    logger = new HologramCustomLogger(LogLevel.debug)
   }
   const agent = createMobileAgent({
     config: {

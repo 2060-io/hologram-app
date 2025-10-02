@@ -13,9 +13,9 @@ export class HologramCustomLogger implements Logger {
   logLevel: LogLevel
   isDevelopment: boolean
 
-  constructor(logLevel: LogLevel, isDevelopment: boolean) {
+  constructor(logLevel: LogLevel) {
     this.logLevel = logLevel
-    this.isDevelopment = isDevelopment
+    this.isDevelopment = __DEV__
   }
 
   test(message: string, data?: Record<string, unknown>): void {
