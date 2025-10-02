@@ -17,7 +17,7 @@ import { addUnread, findOrCreateChatThread } from '../services/ChatThreadService
 
 import { CallInfo } from '@2060/hooks/providers/useVideoCallContext'
 import { CallOfferMetadata, CallOfferState, ChatEntryRole, ChatEntryState, ChatEntryType } from '@2060/model'
-import { log } from '@2060/utils'
+import { logError } from '@2060/utils'
 
 export const handleCallMessages = (options: {
   realm: Realm
@@ -35,7 +35,7 @@ export const handleCallMessages = (options: {
     const { parameters, description, offerExpirationTime } = callOfferMessage
     const incomingCallInfo = parameters as CallInfo
     if (!incomingCallInfo) {
-      log(`no incomingCallInfo Parameters: ${JSON.stringify(parameters)}`)
+      logError(`no incomingCallInfo Parameters: ${JSON.stringify(parameters)}`)
       return
     }
     const thread = findOrCreateChatThread(realm, connection!)

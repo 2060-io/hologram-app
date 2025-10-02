@@ -5,7 +5,7 @@ import { MessageReceiptsMessage } from '@2060.io/credo-ts-didcomm-receipts'
 import { ProfileMessage, PictureData, getConnectionProfile } from '@2060.io/credo-ts-didcomm-user-profile'
 import { ConnectionRecord, DidExchangeState, JsonTransformer, Protocol } from '@credo-ts/core'
 
-import { log } from './log'
+import { logError } from './log'
 
 import { dataUrl } from './index'
 
@@ -29,7 +29,7 @@ export const getConnectionDisplayPicture = (connection: ConnectionRecord) => {
     displayPicture = getPictureDataUrl(profile?.displayPicture)
     if (displayPicture === '') displayPicture = connection.imageUrl || ''
   } catch (error) {
-    log(`Cannot get display picture: ${error}`)
+    logError(`Cannot get display picture: ${error}`)
   }
   return displayPicture
 }
@@ -41,7 +41,7 @@ export const getConnectionDisplayIcon = (connection: ConnectionRecord) => {
     const profile = getConnectionProfile(connection)
     displayIcon = getPictureDataUrl(profile?.displayIcon)
   } catch (error) {
-    log(`Cannot get display icon: ${error}`)
+    logError(`Cannot get display icon: ${error}`)
   }
   return displayIcon
 }

@@ -22,7 +22,7 @@ import {
 import { deleteConnection, blockConnection, unblockConnection } from '@2060/hooks/agent/connections'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { createOobInvitation, MobileAgent } from '@2060/services/agent'
-import { capitalizeFirstLetter, log, logError } from '@2060/utils'
+import { capitalizeFirstLetter, logError } from '@2060/utils'
 import {
   getConnectionDisplayName,
   isBlocked,
@@ -150,7 +150,7 @@ const BaseConnectionDetails = ({
         try {
           await agent?.modules.profile.requestUserProfile({ connectionId: connection.id })
         } catch (error) {
-          log(`Cannot get user profile: ${error}`)
+          logError(`Cannot get user profile: ${error}`)
         }
       }
     }
