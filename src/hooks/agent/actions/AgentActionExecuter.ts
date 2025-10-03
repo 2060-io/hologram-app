@@ -17,6 +17,7 @@ import {
   DidExchangeCompleteMessage,
   DiscoverFeaturesApi,
   V2QueriesMessage,
+  KeylistUpdateMessage,
 } from '@credo-ts/core'
 import { AnswerMessage } from '@credo-ts/question-answer'
 import { Realm } from 'realm'
@@ -257,6 +258,17 @@ export class AgentActionExecuter {
         await options.agent.modules.calls.hangup({ connectionId, threadId })
         return {
           outgoingMessageType: CallEndMessage.type.messageTypeUri,
+        }
+      }
+    } else if (action.type === AgentActionType.RemoveOutOfBandRecord) {
+      const parameters = action.parameters as {
+        outOfBandId: string
+      }
+      return async (options: { agent: MobileAgent }) => {
+        const { outOfBandId } = parameters
+        await options.agent.oob.deleteById(outOfBandId)
+        return {
+          outgoingMessageType: KeylistUpdateMessage.type.messageTypeUri,
         }
       }
     }
