@@ -1,7 +1,7 @@
 import React, { ElementType, useState, useEffect, useRef } from 'react'
 import Config from 'react-native-config'
 
-import { ConnectionInfo, UserInvitationProps, WrapperUserInvitationProps } from './UserInvitationProps'
+import { Invitation, UserInvitationProps, WrapperUserInvitationProps } from './UserInvitationProps'
 
 import { ModalLoading } from '@2060/components/common'
 import { AgentActionType, useMobileAgent, useUserProfile } from '@2060/hooks/agent'
@@ -21,7 +21,7 @@ const withUserInvitation = (UserInvitationComponent: ElementType<UserInvitationP
     const { userProfileData } = useUserProfile()
     const { agent } = useMobileAgent()
     const [creatingInvitation, setCreatingInvitation] = useState(false)
-    const [connectionInfo, setConnectionInfo] = useState<ConnectionInfo>()
+    const [invitation, setInvitation] = useState<Invitation>()
     const currentInvitationOutOfBandRecordId = useRef<string>(null)
 
     useEffect(() => {
@@ -43,9 +43,9 @@ const withUserInvitation = (UserInvitationComponent: ElementType<UserInvitationP
       try {
         currentInvitationOutOfBandRecordId.current = outOfBandRecordId
         const { outOfBandInvitation } = await getOutOfBandRecordById(agent, outOfBandRecordId)
-        setConnectionInfo({
+        setInvitation({
           displayName: outOfBandInvitation.label ?? 'Unlabeled',
-          invitationCode: outOfBandInvitation.toUrl({ domain: Config.BASE_INVITATION_URL as string }),
+          code: outOfBandInvitation.toUrl({ domain: Config.BASE_INVITATION_URL as string }),
         })
       } catch (error) {
         props.navigation.goBack()
@@ -61,9 +61,9 @@ const withUserInvitation = (UserInvitationComponent: ElementType<UserInvitationP
         const newOutOfBandRecord = await createInvitation(agent, {
           label: userProfileData?.displayName,
         })
-        setConnectionInfo({
+        setInvitation({
           displayName: newOutOfBandRecord.outOfBandInvitation.label ?? 'Unlabeled',
-          invitationCode: newOutOfBandRecord.outOfBandInvitation.toUrl({
+          code: newOutOfBandRecord.outOfBandInvitation.toUrl({
             domain: Config.BASE_INVITATION_URL as string,
           }),
         })
@@ -84,15 +84,15 @@ const withUserInvitation = (UserInvitationComponent: ElementType<UserInvitationP
       }
     }
 
-    if (creatingInvitation || !connectionInfo) {
-      return <ModalLoading visible={creatingInvitation || !connectionInfo} />
+    if (creatingInvitation || !invitation) {
+      return <ModalLoading visible={creatingInvitation || !invitation} />
     }
 
     return (
       <UserInvitationComponent
         {...props}
         userProfileData={userProfileData}
-        connectionInfo={connectionInfo}
+        invitation={invitation}
         createNewInvitation={createNewInvitation}
       />
     )

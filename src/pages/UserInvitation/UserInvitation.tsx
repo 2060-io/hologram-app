@@ -17,7 +17,7 @@ import { widthPercentageToDP } from '@2060/utils/responsiveUtils'
 
 const UserInvitation = ({
   navigation,
-  connectionInfo,
+  invitation,
   userProfileData,
   createNewInvitation,
 }: UserInvitationProps) => {
@@ -27,8 +27,8 @@ const UserInvitation = ({
   const globalStyles = getGlobalStyles(theme)
 
   const shareInvitation = async () => {
-    const invitationUrl = connectionInfo.invitationCode
-    const title = t('scanned.titleShare', { displayName: connectionInfo.displayName })
+    const invitationUrl = invitation.code
+    const title = t('scanned.titleShare', { displayName: invitation.displayName })
     try {
       await Share.open(
         Platform.select<ShareOptions>({
@@ -89,7 +89,7 @@ const UserInvitation = ({
               size={widthPercentageToDP('70%')}
               color={theme.colors.black}
               backgroundColor={theme.colors.white}
-              value={connectionInfo.invitationCode}
+              value={invitation.code}
             />
           </View>
           <TouchableOpacity style={styles.containerBtnShare} activeOpacity={0.6} onPress={shareInvitation}>
