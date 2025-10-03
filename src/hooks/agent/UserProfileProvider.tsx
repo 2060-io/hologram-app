@@ -5,7 +5,7 @@ import { useMobileAgent } from './MobileAgentProvider'
 
 interface UserProfileContextInterface {
   userProfileData?: UserProfileData
-  setUserProfileData: (data: UserProfileData) => void
+  updateUserProfileData: (data: UserProfileData) => void
 }
 
 const UserProfileContext = createContext<UserProfileContextInterface | undefined>(undefined)
@@ -35,7 +35,7 @@ export const UserProfileProvider: React.FC<Props> = ({ children }) => {
     setInitialState()
   }, [agent, isInitialized])
 
-  const setUserProfileData = useCallback(
+  const updateUserProfileData = useCallback(
     async (data: Partial<UserProfileData>) => {
       if (agent?.isInitialized) {
         const userProfileData = await agent?.modules.profile.updateUserProfileData(data)
@@ -46,6 +46,6 @@ export const UserProfileProvider: React.FC<Props> = ({ children }) => {
   )
 
   return (
-    <UserProfileContext value={{ ...userProfileState, setUserProfileData }}>{children}</UserProfileContext>
+    <UserProfileContext value={{ ...userProfileState, updateUserProfileData }}>{children}</UserProfileContext>
   )
 }

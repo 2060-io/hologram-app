@@ -30,7 +30,7 @@ const ProfileCreation = ({ navigation }: Props) => {
   const { agent } = useMobileAgent()
   const { openWallet } = useWallet()
   const [isRegistering, startRegisterTransition] = useTransition()
-  const { setUserProfileData } = useUserProfile()
+  const { updateUserProfileData } = useUserProfile()
   const [displayName, setDisplayName] = useState('')
   const [displayPicture, setDisplayPicture] = useState<PictureData | undefined>()
   const { signUpState, startSignUp } = useSignUp()
@@ -45,7 +45,7 @@ const ProfileCreation = ({ navigation }: Props) => {
   useEffect(() => {
     const handleRegistrationStatusUpdate = async () => {
       if (signUpState === SignUpState.AgentCreated) {
-        setUserProfileData({ displayName: displayName.trim(), displayPicture })
+        updateUserProfileData({ displayName: displayName.trim(), displayPicture })
         goHome()
       }
     }
