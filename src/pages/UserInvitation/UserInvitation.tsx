@@ -15,7 +15,12 @@ import { log } from '@2060/utils'
 import { getPictureDataUrl } from '@2060/utils/connectionUtils'
 import { widthPercentageToDP } from '@2060/utils/responsiveUtils'
 
-const UserInvitation = ({ navigation, connectionInfo, userProfileData }: UserInvitationProps) => {
+const UserInvitation = ({
+  navigation,
+  connectionInfo,
+  userProfileData,
+  createNewInvitation,
+}: UserInvitationProps) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
@@ -47,12 +52,18 @@ const UserInvitation = ({ navigation, connectionInfo, userProfileData }: UserInv
 
   const handleChangeOptionsHeader = () => {
     navigation.setOptions({
-      headerBackImage: () => null,
-      headerStyle: globalStyles.headerStyle,
-      headerRight: () => (
-        <TouchableOpacity style={styles.btnDone} onPress={() => navigation.goBack()}>
+      headerBackImage: () => (
+        <TouchableOpacity onPress={() => navigation.goBack()}>
           <Text typography="EuclidCircularA-Medium" style={styles.btnDoneText}>
             {t('chat.done')}
+          </Text>
+        </TouchableOpacity>
+      ),
+      headerStyle: globalStyles.headerStyle,
+      headerRight: () => (
+        <TouchableOpacity style={styles.btnDone} onPress={createNewInvitation}>
+          <Text typography="EuclidCircularA-Medium" style={styles.btnDoneText}>
+            {t('invitation.refresh')}
           </Text>
         </TouchableOpacity>
       ),

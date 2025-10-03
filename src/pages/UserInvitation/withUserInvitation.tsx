@@ -1,4 +1,4 @@
-import React, { ElementType, useState, useEffect } from 'react'
+import React, { ElementType, useState, useEffect, useRef } from 'react'
 import Config from 'react-native-config'
 
 import { ConnectionInfo, UserInvitationProps, WrapperUserInvitationProps } from './UserInvitationProps'
@@ -16,17 +16,23 @@ import { toast } from '@2060/utils/toast'
 
 const withUserInvitation = (UserInvitationComponent: ElementType<UserInvitationProps>) => {
   const WrapperUserInvitation = (props: WrapperUserInvitationProps) => {
-    const [creatingInvitation, setCreatingInvitation] = useState(false)
-    const [connectionInfo, setConnectionInfo] = useState<ConnectionInfo>()
     const { userProfileData } = useUserProfile()
     const { agent } = useMobileAgent()
+    const [creatingInvitation, setCreatingInvitation] = useState(false)
+    const [connectionInfo, setConnectionInfo] = useState<ConnectionInfo>()
+    const storedOutOfBandRecordIdRef = useRef<string>(null)
 
     useEffect(() => {
       const setupInvitation = async () => {
         const storedOutOfBandRecordId = (await getStorageData(
           USER_INVITATION_OUT_OF_BAND_RECORD_ID,
         )) as string
-        storedOutOfBandRecordId ? getCurrentInvitation(storedOutOfBandRecordId) : createNewInvitation()
+        if (storedOutOfBandRecordId) {
+          storedOutOfBandRecordIdRef.current = storedOutOfBandRecordId
+          getCurrentInvitation(storedOutOfBandRecordId)
+        } else {
+          createNewInvitation()
+        }
       }
       setupInvitation()
     }, [])
@@ -48,8 +54,8 @@ const withUserInvitation = (UserInvitationComponent: ElementType<UserInvitationP
 
     const createNewInvitation = async () => {
       if (!agent) return
-      setCreatingInvitation(true)
       try {
+        setCreatingInvitation(true)
         const outOfBandRecord = await createInvitation(agent, {
           label: userProfileData?.displayName,
         })
@@ -74,7 +80,12 @@ const withUserInvitation = (UserInvitationComponent: ElementType<UserInvitationP
     }
 
     return (
-      <UserInvitationComponent {...props} userProfileData={userProfileData} connectionInfo={connectionInfo} />
+      <UserInvitationComponent
+        {...props}
+        userProfileData={userProfileData}
+        connectionInfo={connectionInfo}
+        createNewInvitation={createNewInvitation}
+      />
     )
   }
   return WrapperUserInvitation

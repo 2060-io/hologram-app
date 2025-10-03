@@ -210,7 +210,8 @@
       "ageRestrictions": "Restricciones de edad:",
       "noAgeRestrictions": "Sin restricciones",
       "serviceNotVerifiable": "Este servicio no es verificable.",
-      "connectionRefusedByAge": "Holaa {{ name }}! Solamente tienes <bold>{{ age }}</bold> años. Tendrás que esperar unos años más para poder conectarte a este servicio."
+      "connectionRefusedByAge": "Holaa {{ name }}! Solamente tienes <bold>{{ age }}</bold> años. Tendrás que esperar unos años más para poder conectarte a este servicio.",
+      "refresh": "Refrescar"
     },
     "credential": {
       "noCredentials": "Aún no tienes credenciales",

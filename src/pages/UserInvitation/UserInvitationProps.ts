@@ -15,4 +15,5 @@ export interface WrapperUserInvitationProps
 export interface UserInvitationProps extends StackScreenProps<NavigationStackParams> {
   connectionInfo: ConnectionInfo
   userProfileData?: UserProfileData
+  createNewInvitation: () => Promise<void>
 }
