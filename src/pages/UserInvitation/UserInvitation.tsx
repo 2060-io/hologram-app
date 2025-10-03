@@ -52,17 +52,17 @@ const UserInvitation = ({
 
   const handleChangeOptionsHeader = () => {
     navigation.setOptions({
-      headerBackImage: () => (
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Text typography="EuclidCircularA-Medium" style={styles.btnDoneText}>
+      headerLeft: () => (
+        <TouchableOpacity style={styles.btnDone} onPress={() => navigation.goBack()}>
+          <Text typography="EuclidCircularA-Medium" style={styles.headerText}>
             {t('chat.done')}
           </Text>
         </TouchableOpacity>
       ),
       headerStyle: globalStyles.headerStyle,
       headerRight: () => (
-        <TouchableOpacity style={styles.btnDone} onPress={createNewInvitation}>
-          <Text typography="EuclidCircularA-Medium" style={styles.btnDoneText}>
+        <TouchableOpacity style={styles.btnRefresh} onPress={createNewInvitation}>
+          <Text typography="EuclidCircularA-Medium" style={styles.headerText}>
             {t('invitation.refresh')}
           </Text>
         </TouchableOpacity>

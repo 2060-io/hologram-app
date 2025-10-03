@@ -17,11 +17,14 @@ export default (theme: AppTheme) =>
       paddingBottom: heightPercentageToDP('2%'),
     },
     btnDone: {
-      paddingRight: 12,
+      paddingLeft: 15,
     },
-    btnDoneText: {
+    btnRefresh: {
+      paddingRight: 15,
+    },
+    headerText: {
       color: theme.colors.green,
-      fontSize: theme.fontSize.md2 + 1,
+      fontSize: theme.fontSize.md2,
     },
     displayName: {
       fontSize: theme.fontSize.xl,
