@@ -6,7 +6,11 @@ import { HomeTabProps } from './HomeMainProps'
 
 import { Loader } from '@2060/components/common'
 import { useMobileAgent } from '@2060/hooks/agent'
-import { DidcommInvitationType, processInvitation as agentProcessInvitation } from '@2060/services/agent'
+import {
+  DidcommInvitationType,
+  processInvitation as agentProcessInvitation,
+  getOutOfBandRecordById,
+} from '@2060/services/agent'
 import { logError } from '@2060/utils'
 import { toast } from '@2060/utils/toast'
 
@@ -57,7 +61,7 @@ const HomeMainContainer = (HomeMainComponent: ElementType) => {
         if (!success || !recordId) throw new Error(error)
 
         if (invitationType === DidcommInvitationType.ConnectionRequest) {
-          const outOfBandRecord = await agent.oob.getById(recordId)
+          const outOfBandRecord = await getOutOfBandRecordById(agent, recordId)
           navigation.navigate('ConnectionInvitation', {
             outOfBandRecord,
             existingConnectionId,
@@ -73,8 +77,8 @@ const HomeMainContainer = (HomeMainComponent: ElementType) => {
           })
         }
       } catch (error) {
-        toast({ type: 'error', message: `${error}` })
-        logError('Error processing invitation', error)
+        toast({ type: 'error', message: 'Error processing invitation' })
+        logError(`Error processing invitation: ${error}`)
       }
     }
 

@@ -41,9 +41,8 @@ const withUserInvitation = (UserInvitationComponent: ElementType<UserInvitationP
         })
       } catch (error) {
         props.navigation.goBack()
-        const message = `Error getting current invitation ${error}`
-        toast({ type: 'error', message })
-        logError(message)
+        toast({ type: 'error', message: 'Error getting current invitation' })
+        logError(`Error getting current invitation ${error}`)
       }
     }
 
@@ -63,9 +62,8 @@ const withUserInvitation = (UserInvitationComponent: ElementType<UserInvitationP
         await setStorageData(USER_INVITATION_OUT_OF_BAND_RECORD_ID, outOfBandRecord.id)
       } catch (error) {
         props.navigation.goBack()
-        const message = `Error creating invitation ${error}`
-        toast({ type: 'error', message })
-        logError(message)
+        toast({ type: 'error', message: 'Error creating invitation' })
+        logError(`Error creating invitation ${error}`)
       } finally {
         setCreatingInvitation(false)
       }
