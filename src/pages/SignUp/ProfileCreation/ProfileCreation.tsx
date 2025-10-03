@@ -4,7 +4,6 @@ import { StackNavigationProp } from '@react-navigation/stack'
 import React, { useState, useEffect, useCallback, useTransition } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, SafeAreaView, Platform } from 'react-native'
-import Config from 'react-native-config'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 import getStyles from './styles'
@@ -15,7 +14,6 @@ import { NavigationStackParams } from '@2060/components/Navigation/NavigationPro
 import { ModalLoading, MainButton, Text } from '@2060/components/common'
 import { useSignUp, SignUpState, useWallet } from '@2060/hooks'
 import { useMobileAgent, useUserProfile } from '@2060/hooks/agent'
-import { useConfig } from '@2060/hooks/providers/ConfigProvider'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { createAndStoreEncryptedKey, KeyChainService } from '@2060/services/keys'
 import { logError } from '@2060/utils'
@@ -33,14 +31,9 @@ const ProfileCreation = ({ navigation }: Props) => {
   const { openWallet } = useWallet()
   const [isRegistering, startRegisterTransition] = useTransition()
   const { setUserProfileData } = useUserProfile()
-  const { devEnvs } = useConfig()
   const [displayName, setDisplayName] = useState('')
   const [displayPicture, setDisplayPicture] = useState<PictureData | undefined>()
-  const { signUpState, startSignUp } = useSignUp({
-    defaultServicePublicDid: Config.DEFAULT_SERVICE_PUBLIC_DID as string,
-    defaultServiceAlias: Config.DEFAULT_SERVICE_ALIAS as string,
-    cloudAgentPublicDid: devEnvs.CLOUD_AGENT_PUBLIC_DID as string,
-  })
+  const { signUpState, startSignUp } = useSignUp()
   const theme = useTheme()
   const styles = getStyles(theme)
   const disableGetStartedBtn = displayName.trim() === ''
@@ -52,7 +45,7 @@ const ProfileCreation = ({ navigation }: Props) => {
   useEffect(() => {
     const handleRegistrationStatusUpdate = async () => {
       if (signUpState === SignUpState.AgentCreated) {
-        setUserProfileData?.({ displayName: displayName.trim(), displayPicture })
+        setUserProfileData({ displayName: displayName.trim(), displayPicture })
         goHome()
       }
     }
