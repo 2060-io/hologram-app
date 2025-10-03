@@ -181,7 +181,7 @@ const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => 
                   </Text>
                 )}
               </View>
-              {invitationType === 'peer' && (
+              {!isAlreadyConnected && invitationType === 'peer' && (
                 <View style={styles.card}>
                   <Text typography="EuclidCircularA-Regular" style={styles.enabledChannelsText}>
                     {`${invitation?.label} ${t('invitation.enabledCommunicationChannelsDescription')}`}
