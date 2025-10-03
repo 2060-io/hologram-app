@@ -45,7 +45,7 @@ const withUserInvitation = (UserInvitationComponent: ElementType<UserInvitationP
         const { outOfBandInvitation } = await getOutOfBandRecordById(agent, outOfBandRecordId)
         setInvitation({
           displayName: outOfBandInvitation.label ?? 'Unlabeled',
-          code: outOfBandInvitation.toUrl({ domain: Config.BASE_INVITATION_URL as string }),
+          url: outOfBandInvitation.toUrl({ domain: Config.BASE_INVITATION_URL as string }),
         })
       } catch (error) {
         props.navigation.goBack()
@@ -63,7 +63,7 @@ const withUserInvitation = (UserInvitationComponent: ElementType<UserInvitationP
         })
         setInvitation({
           displayName: newOutOfBandRecord.outOfBandInvitation.label ?? 'Unlabeled',
-          code: newOutOfBandRecord.outOfBandInvitation.toUrl({
+          url: newOutOfBandRecord.outOfBandInvitation.toUrl({
             domain: Config.BASE_INVITATION_URL as string,
           }),
         })

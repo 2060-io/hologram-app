@@ -25,10 +25,10 @@ const UserInvitation = ({
   const theme = useTheme()
   const styles = getStyles(theme)
   const globalStyles = getGlobalStyles(theme)
+  const { url, displayName } = invitation
 
   const shareInvitation = async () => {
-    const invitationUrl = invitation.code
-    const title = t('scanned.titleShare', { displayName: invitation.displayName })
+    const title = t('scanned.titleShare', { displayName })
     try {
       await Share.open(
         Platform.select<ShareOptions>({
@@ -36,13 +36,13 @@ const UserInvitation = ({
             failOnCancel: false,
             activityItemSources: [
               {
-                placeholderItem: { type: 'url', content: invitationUrl },
-                item: { default: { type: 'url', content: invitationUrl } },
-                linkMetadata: { originalUrl: invitationUrl, url: invitationUrl, title },
+                placeholderItem: { type: 'url', content: url },
+                item: { default: { type: 'url', content: url } },
+                linkMetadata: { originalUrl: url, url, title },
               },
             ],
           },
-          default: { title, url: invitationUrl, message: title, failOnCancel: false },
+          default: { title, url, message: title, failOnCancel: false },
         }),
       )
     } catch (error) {
@@ -89,7 +89,7 @@ const UserInvitation = ({
               size={widthPercentageToDP('70%')}
               color={theme.colors.black}
               backgroundColor={theme.colors.white}
-              value={invitation.code}
+              value={url}
             />
           </View>
           <TouchableOpacity style={styles.containerBtnShare} activeOpacity={0.6} onPress={shareInvitation}>
