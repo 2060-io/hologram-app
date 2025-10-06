@@ -1,4 +1,5 @@
 import React, { ElementType, useState, useEffect, useRef, useTransition } from 'react'
+import { useTranslation } from 'react-i18next'
 import Config from 'react-native-config'
 
 import { Invitation, UserInvitationProps, WrapperUserInvitationProps } from './UserInvitationProps'
@@ -17,6 +18,7 @@ import { toast } from '@2060/utils/toast'
 
 const withUserInvitation = (UserInvitationComponent: ElementType<UserInvitationProps>) => {
   const WrapperUserInvitation = (props: WrapperUserInvitationProps) => {
+    const { t } = useTranslation()
     const { addAgentActionToQueue } = useAgentActionQueue()
     const { userProfileData } = useUserProfile()
     const { agent } = useMobileAgent()
@@ -49,7 +51,7 @@ const withUserInvitation = (UserInvitationComponent: ElementType<UserInvitationP
         })
       } catch (error) {
         props.navigation.goBack()
-        toast({ type: 'error', message: 'Error getting current invitation' })
+        toast({ type: 'error', message: t('invitation.errorGettingInvitation') })
         logError(`Error getting current invitation ${error}`)
       }
     }
@@ -77,7 +79,7 @@ const withUserInvitation = (UserInvitationComponent: ElementType<UserInvitationP
           currentInvitationOutOfBandRecordId.current = newOutOfBandRecord.id
         } catch (error) {
           if (!currentInvitationOutOfBandRecordId.current) props.navigation.goBack()
-          toast({ type: 'error', message: 'Error creating invitation' })
+          toast({ type: 'error', message: t('invitation.errorCreatingInvitation') })
           logError(`Error creating invitation ${error}`)
         }
       })
