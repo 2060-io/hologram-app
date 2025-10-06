@@ -1,4 +1,4 @@
-import React, { ElementType, useState, useEffect, useRef } from 'react'
+import React, { ElementType, useState, useEffect, useRef, useTransition } from 'react'
 import Config from 'react-native-config'
 
 import { Invitation, UserInvitationProps, WrapperUserInvitationProps } from './UserInvitationProps'
@@ -20,7 +20,7 @@ const withUserInvitation = (UserInvitationComponent: ElementType<UserInvitationP
     const { addAgentActionToQueue } = useAgentActionQueue()
     const { userProfileData } = useUserProfile()
     const { agent } = useMobileAgent()
-    const [creatingInvitation, setCreatingInvitation] = useState(false)
+    const [creatingInvitation, startCreateInvitationTransition] = useTransition()
     const [invitation, setInvitation] = useState<Invitation>()
     const currentInvitationOutOfBandRecordId = useRef<string>(null)
 
@@ -56,32 +56,31 @@ const withUserInvitation = (UserInvitationComponent: ElementType<UserInvitationP
 
     const createNewInvitation = async () => {
       if (!agent) return
-      try {
-        setCreatingInvitation(true)
-        const newOutOfBandRecord = await createInvitation(agent, {
-          label: userProfileData?.displayName,
-        })
-        setInvitation({
-          displayName: newOutOfBandRecord.outOfBandInvitation.label ?? 'Unlabeled',
-          url: newOutOfBandRecord.outOfBandInvitation.toUrl({
-            domain: Config.BASE_INVITATION_URL as string,
-          }),
-        })
-        if (currentInvitationOutOfBandRecordId.current) {
-          addAgentActionToQueue({
-            type: AgentActionType.RemoveOutOfBandRecord,
-            parameters: { outOfBandId: currentInvitationOutOfBandRecordId.current },
+      startCreateInvitationTransition(async () => {
+        try {
+          const newOutOfBandRecord = await createInvitation(agent, {
+            label: userProfileData?.displayName,
           })
+          setInvitation({
+            displayName: newOutOfBandRecord.outOfBandInvitation.label ?? 'Unlabeled',
+            url: newOutOfBandRecord.outOfBandInvitation.toUrl({
+              domain: Config.BASE_INVITATION_URL as string,
+            }),
+          })
+          if (currentInvitationOutOfBandRecordId.current) {
+            addAgentActionToQueue({
+              type: AgentActionType.RemoveOutOfBandRecord,
+              parameters: { outOfBandId: currentInvitationOutOfBandRecordId.current },
+            })
+          }
+          await setStorageData(USER_INVITATION_OUT_OF_BAND_RECORD_ID, newOutOfBandRecord.id)
+          currentInvitationOutOfBandRecordId.current = newOutOfBandRecord.id
+        } catch (error) {
+          if (!currentInvitationOutOfBandRecordId.current) props.navigation.goBack()
+          toast({ type: 'error', message: 'Error creating invitation' })
+          logError(`Error creating invitation ${error}`)
         }
-        await setStorageData(USER_INVITATION_OUT_OF_BAND_RECORD_ID, newOutOfBandRecord.id)
-        currentInvitationOutOfBandRecordId.current = newOutOfBandRecord.id
-      } catch (error) {
-        props.navigation.goBack()
-        toast({ type: 'error', message: 'Error creating invitation' })
-        logError(`Error creating invitation ${error}`)
-      } finally {
-        setCreatingInvitation(false)
-      }
+      })
     }
 
     if (creatingInvitation || !invitation) {
