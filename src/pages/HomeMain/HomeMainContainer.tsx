@@ -1,5 +1,5 @@
 import { OutOfBandInvitation, Buffer } from '@credo-ts/core'
-import React, { ElementType, useEffect, useMemo, useState } from 'react'
+import React, { ElementType, useEffect, useMemo, useTransition } from 'react'
 import Config from 'react-native-config'
 
 import { HomeTabProps } from './HomeMainProps'
@@ -12,7 +12,7 @@ import { toast } from '@2060/utils/toast'
 
 const HomeMainContainer = (HomeMainComponent: ElementType) => {
   const WrapperHomeMain = (props: HomeTabProps) => {
-    const [isProcessingLink, setIsProcessingLink] = useState(false)
+    const [isProcessingLink, startProcessDeepLink] = useTransition()
     const { agent } = useMobileAgent()
     const { navigation, route } = props
 
@@ -27,26 +27,26 @@ const HomeMainContainer = (HomeMainComponent: ElementType) => {
     }, [route.params])
 
     const processDeepLink = async () => {
-      try {
-        if (!agent) return
-        setIsProcessingLink(true)
-        const [[parameterType, value]] = Object.entries(route.params!)
+      if (!agent) return
+      startProcessDeepLink(async () => {
+        try {
+          const [[parameterType, value]] = Object.entries(route.params!)
 
-        let invitationUrl: string | undefined
-        if (parameterType === 'oobUrl') invitationUrl = value
-        else if (parameterType === '_url') {
-          invitationUrl = value ? Buffer.from(value, 'base64').toString('ascii') : undefined
-        } else invitationUrl = `${Config.BASE_INVITATION_URL}?${parameterType}=${value}`
+          let invitationUrl: string | undefined
+          if (parameterType === 'oobUrl') invitationUrl = value
+          else if (parameterType === '_url') {
+            invitationUrl = value ? Buffer.from(value, 'base64').toString('ascii') : undefined
+          } else invitationUrl = `${Config.BASE_INVITATION_URL}?${parameterType}=${value}`
 
-        if (!invitationUrl) throw new Error('Invalid invitation URL')
+          if (!invitationUrl) throw new Error('Invalid invitation URL')
 
-        const invitation = await agent?.oob.parseInvitation(invitationUrl)
-        if (invitation) processInvitation(invitation)
-      } catch (error) {
-        setIsProcessingLink(false)
-        toast({ type: 'error', message: `${error}` })
-        logError('Error processing deep link', error)
-      }
+          const invitation = await agent?.oob.parseInvitation(invitationUrl)
+          if (invitation) processInvitation(invitation)
+        } catch (error) {
+          toast({ type: 'error', message: `${error}` })
+          logError('Error processing deep link', error)
+        }
+      })
     }
 
     const processInvitation = async (invitation: OutOfBandInvitation) => {
@@ -75,8 +75,6 @@ const HomeMainContainer = (HomeMainComponent: ElementType) => {
       } catch (error) {
         toast({ type: 'error', message: `${error}` })
         logError('Error processing invitation', error)
-      } finally {
-        setIsProcessingLink(false)
       }
     }
 
