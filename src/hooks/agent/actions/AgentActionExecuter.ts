@@ -349,7 +349,7 @@ export class AgentActionExecuter {
           },
         }
       } else {
-        logError(`unexpected error: ${error}`)
+        logError(`Unexpected Action Error: ${error}`)
 
         throw error
       }
