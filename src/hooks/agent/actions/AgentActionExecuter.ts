@@ -17,6 +17,8 @@ import {
   DidExchangeCompleteMessage,
   DiscoverFeaturesApi,
   V2QueriesMessage,
+  AutoAcceptCredential,
+  V2RequestCredentialMessage,
 } from '@credo-ts/core'
 import { AnswerMessage } from '@credo-ts/question-answer'
 import { Realm } from 'realm'
@@ -257,6 +259,20 @@ export class AgentActionExecuter {
         await options.agent.modules.calls.hangup({ connectionId, threadId })
         return {
           outgoingMessageType: CallEndMessage.type.messageTypeUri,
+        }
+      }
+    } else if (action.type === AgentActionType.AcceptCredentialOffer) {
+      const parameters = action.parameters as {
+        credentialRecordId: string
+      }
+      return async (options: { agent: MobileAgent }) => {
+        const { credentialRecordId } = parameters
+        await options.agent?.credentials.acceptOffer({
+          credentialRecordId,
+          autoAcceptCredential: AutoAcceptCredential.ContentApproved,
+        })
+        return {
+          outgoingMessageType: V2RequestCredentialMessage.type.messageTypeUri,
         }
       }
     }

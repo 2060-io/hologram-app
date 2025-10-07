@@ -1,4 +1,4 @@
-import { AutoAcceptCredential, CredentialState } from '@credo-ts/core'
+import { CredentialState } from '@credo-ts/core'
 import { useNavigation, ParamListBase } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { TrustResolutionOutcome } from '@verana-labs/verre'
@@ -13,6 +13,8 @@ import getStyles from './styles'
 
 import { ModalConfirmAction } from '@2060/components'
 import { CardCredentialMainInformation, Text } from '@2060/components/common'
+import { AgentActionType } from '@2060/hooks/agent'
+import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { VCOfferMetadata } from '@2060/model'
 import { MobileAgent } from '@2060/services/agent'
@@ -30,11 +32,12 @@ interface Props {
 const VCOfferChatView = ({ sender, associatedRecordId, metadata, agent }: Props): React.ReactElement => {
   const [showModalRefuseConfirmation, setShowModalRefuseConfirmation] = useState(false)
   const navigation: StackNavigationProp<ParamListBase> = useNavigation()
+  const { addAgentActionToQueue } = useAgentActionQueue()
+  const theme = useTheme()
+  const styles = getStyles(theme)
   const { t } = useTranslation()
   const { credentialState } = metadata
   const opacity = credentialState !== CredentialState.OfferReceived ? 0.3 : 1
-  const theme = useTheme()
-  const styles = getStyles(theme)
 
   const credentialMainInfo: CredentialMainInfo = useMemo(
     () => ({
@@ -53,13 +56,10 @@ const VCOfferChatView = ({ sender, associatedRecordId, metadata, agent }: Props)
   )
 
   const accept = () => {
-    // TODO: Move this logic to an AgentAction
-    agent?.credentials
-      .acceptOffer({
-        credentialRecordId: associatedRecordId,
-        autoAcceptCredential: AutoAcceptCredential.ContentApproved,
-      })
-      .catch(error => logError(`Error accepting credential ${error}`))
+    addAgentActionToQueue({
+      type: AgentActionType.AcceptCredentialOffer,
+      parameters: { credentialRecordId: associatedRecordId },
+    })
   }
 
   const refuse = () => {
@@ -104,12 +104,7 @@ const VCOfferChatView = ({ sender, associatedRecordId, metadata, agent }: Props)
   }
 
   const goToCredentialOffer = async () => {
-    if (!agent) return
-    navigation.navigate('DidcommCredentialOffer', {
-      credentialRecordId: associatedRecordId,
-      accept,
-      refuse,
-    })
+    navigation.navigate('DidcommCredentialOffer', { credentialRecordId: associatedRecordId })
   }
 
   if (!metadata) return <View />

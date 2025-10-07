@@ -1,36 +1,29 @@
-import { AutoAcceptCredential, CredentialState } from '@credo-ts/core'
+import { CredentialState } from '@credo-ts/core'
 import { StackScreenProps } from '@react-navigation/stack'
 import React from 'react'
-import { LogBox } from 'react-native'
 
 import BaseCredentialOffer from './BaseCredentialOffer'
 
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
-import { useMobileAgent } from '@2060/hooks/agent'
+import { AgentActionType, useMobileAgent } from '@2060/hooks/agent'
+import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
 import { useCredentialExchangeForDisplay } from '@2060/hooks/useCredentialExchangeForDisplay'
 import { logError } from '@2060/utils'
 
 interface Props extends StackScreenProps<NavigationStackParams, 'DidcommCredentialOffer'> {}
 
 const DidcommCredentialOffer: React.FC<Props> = ({ route, navigation }) => {
-  LogBox.ignoreLogs(['Non-serializable values were found in the navigation state'])
   const { credentialRecordId } = route.params
   const { credentialDetails, credentialState } = useCredentialExchangeForDisplay({ credentialRecordId })
   const { agent } = useMobileAgent()
+  const { addAgentActionToQueue } = useAgentActionQueue()
   const enableAcceptRejectButtons = credentialState === CredentialState.OfferReceived
 
   const accept = () => {
-    try {
-      // TODO: Move this logic to an AgentAction
-      agent?.credentials
-        .acceptOffer({
-          credentialRecordId,
-          autoAcceptCredential: AutoAcceptCredential.ContentApproved,
-        })
-        .catch(error => logError(`error: ${error}`))
-    } catch (error) {
-      logError(`Error in accept action: ${error}`)
-    }
+    addAgentActionToQueue({
+      type: AgentActionType.AcceptCredentialOffer,
+      parameters: { credentialRecordId },
+    })
   }
 
   const refuse = () => {

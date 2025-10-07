@@ -2,7 +2,6 @@ import { ProofState } from '@credo-ts/core'
 import { useFocusEffect } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
 import React, { useRef, useCallback, useState, useTransition } from 'react'
-import { LogBox } from 'react-native'
 
 import BasePresentationRequest from './BasePresentationRequest'
 
@@ -24,7 +23,6 @@ import { toast } from '@2060/utils/toast'
 interface Props extends StackScreenProps<NavigationStackParams, 'DidcommPresentationRequest'> {}
 
 const DidcommPresentationRequest: React.FC<Props> = ({ navigation, route }: Props) => {
-  LogBox.ignoreLogs(['Non-serializable values were found in the navigation state'])
   const routes = navigation.getState()?.routes
   const prevRoute = routes[routes.length - 2]
   const comesFromChat = prevRoute.name === 'PersonalChatStack'
