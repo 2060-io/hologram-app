@@ -14,7 +14,9 @@ import getStyles from './styles'
 
 import { ModalConfirmAction } from '@2060/components'
 import { Text } from '@2060/components/common'
+import { AgentActionType } from '@2060/hooks/agent'
 import { updateChatEntryMetadata } from '@2060/hooks/agent/chat/services'
+import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { VerifierInfo, VPRequestMetadata } from '@2060/model'
@@ -50,12 +52,12 @@ const VPRequestChatView = ({
   agent,
   chatEntryId,
 }: Props): React.ReactElement => {
-  const { t } = useTranslation()
-  const { realm } = useLocalRealm()
   const navigation: StackNavigationProp<ParamListBase> = useNavigation()
+  const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
-
+  const { realm } = useLocalRealm()
+  const { addAgentActionToQueue } = useAgentActionQueue()
   const [showModalRefuseConfirmation, setShowModalRefuseConfirmation] = useState(false)
   const [formattedPresentationRequest, setFormattedPresentationRequest] = useState<FormattedSubmission>()
 
@@ -96,12 +98,15 @@ const VPRequestChatView = ({
     })
   }
 
-  // TODO: Move to an AgentAction
   const refuse = async () => {
-    if (!agent || !realm) return
-    const newMetadata = { ...metadata, proofState: ProofState.Declined }
-    updateChatEntryMetadata(realm, chatEntryId, newMetadata)
-    await agent.proofs.declineRequest({ proofRecordId, sendProblemReport: true })
+    if (realm) {
+      const newMetadata = { ...metadata, proofState: ProofState.Declined }
+      updateChatEntryMetadata(realm, chatEntryId, newMetadata)
+    }
+    addAgentActionToQueue({
+      type: AgentActionType.DeclineProofRequest,
+      parameters: { proofRecordId },
+    })
   }
 
   const refuseFromChat = async () => {

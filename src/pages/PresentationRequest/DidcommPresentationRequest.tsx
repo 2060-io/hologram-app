@@ -7,8 +7,9 @@ import BasePresentationRequest from './BasePresentationRequest'
 
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
 import { useFetchServiceInfo } from '@2060/hooks'
-import { useMobileAgent } from '@2060/hooks/agent'
+import { AgentActionType, useMobileAgent } from '@2060/hooks/agent'
 import { findAllByAssociatedRecordId, updateChatEntryMetadata } from '@2060/hooks/agent/chat/services'
+import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
 import { ChatEntryType } from '@2060/model'
 import { CredentialMainInfo } from '@2060/services/agent/display'
@@ -28,6 +29,7 @@ const DidcommPresentationRequest: React.FC<Props> = ({ navigation, route }: Prop
   const comesFromChat = prevRoute.name === 'PersonalChatStack'
   const { realm } = useLocalRealm()
   const { agent } = useMobileAgent()
+  const { addAgentActionToQueue } = useAgentActionQueue()
   const selectedCredentials = useRef({})
   const { proofRecordId, did } = route.params
   const { serviceInfo } = useFetchServiceInfo(did, true)
@@ -56,9 +58,7 @@ const DidcommPresentationRequest: React.FC<Props> = ({ navigation, route }: Prop
     }
   }
 
-  // TODO: Move to an AgentAction
   const refuse = async () => {
-    agent?.proofs.declineRequest({ proofRecordId, sendProblemReport: true })
     if (realm && comesFromChat) {
       const [vpRequestChatEntry] = findAllByAssociatedRecordId(realm, proofRecordId, ChatEntryType.VPRequest)
       if (vpRequestChatEntry) {
@@ -66,6 +66,10 @@ const DidcommPresentationRequest: React.FC<Props> = ({ navigation, route }: Prop
         updateChatEntryMetadata(realm, vpRequestChatEntry.id, newMetadata)
       }
     }
+    addAgentActionToQueue({
+      type: AgentActionType.DeclineProofRequest,
+      parameters: { proofRecordId },
+    })
   }
 
   const onRefuse = () => {
