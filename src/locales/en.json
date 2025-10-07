@@ -104,7 +104,8 @@
       "shareWith": "Share with",
       "PresentCredential": "Present to",
       "Presentation": "Presentation",
-      "ParentalControl": "Parental Control"
+      "ParentalControl": "Parental Control",
+      "PresentCredentialsFromChat": "Present Credential"
     },
     "authentication": {
       "walletLocked": "Hologram Locked",

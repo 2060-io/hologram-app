@@ -1,9 +1,11 @@
+import { StackNavigationProp } from '@react-navigation/stack'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, TouchableOpacity, Keyboard } from 'react-native'
 
 import getStyles from './styles'
 
+import { PersonalChatStackParams } from '@2060/components/Navigation/NavigationProps'
 import { SvgIcon, Text } from '@2060/components/common'
 import { IconsNames } from '@2060/components/common/SvgIcon'
 import { IS_ANDROID } from '@2060/constants'
@@ -16,18 +18,23 @@ type Props = {
   closeAttachmentOptions(): void
   onCompressingVideoProgress: (progress: number) => void
   getVideoCompressionCancellationId: (cancellationId: string) => void
+  navigation: StackNavigationProp<PersonalChatStackParams>
 }
+type OptionId = 'file-camera' | 'file-video' | 'file-gallery' | 'present-credentials'
+type Option = { id: OptionId; icon: keyof IconsNames }
 
-const options = [
-  { id: 'file-camera', icon: 'camera', label: 'camera' },
-  { id: 'file-video', icon: 'video', label: 'takeVideo' },
-  { id: 'file-gallery', icon: 'image', label: 'photoAndVideoLibrary' },
+const options: Option[] = [
+  { id: 'file-camera', icon: 'camera' },
+  { id: 'file-video', icon: 'video' },
+  { id: 'file-gallery', icon: 'image' },
+  { id: 'present-credentials', icon: 'id' },
 ]
 
 const AttachmentOptions: React.FC<Props> = ({
   closeAttachmentOptions,
   onCompressingVideoProgress,
   getVideoCompressionCancellationId,
+  navigation,
 }) => {
   const { takePhotoOrVideo, takePhotoOrVideoFromGallery } = useImageCropPicker()
   const { shareMediaToDidComm } = useChatActions()
@@ -57,30 +64,31 @@ const AttachmentOptions: React.FC<Props> = ({
     }
   }
 
-  const onSelectedOption = async (optionId: string) => {
-    if (optionId === 'file-camera') {
-      await takePhotoOrVideo(onMediaFile)
-    }
-    if (optionId === 'file-video') {
-      await takePhotoOrVideo(onMediaFile, { mediaType: 'video' })
-    }
-    if (optionId === 'file-gallery') {
-      await takePhotoOrVideoFromGallery(onMediaFile, { mediaType: 'any' })
-    }
+  const onSelectedOption: Record<OptionId, () => Promise<void> | void> = {
+    'file-camera': async () => await takePhotoOrVideo(onMediaFile),
+    'file-video': async () => await takePhotoOrVideo(onMediaFile, { mediaType: 'video' }),
+    'file-gallery': async () => await takePhotoOrVideoFromGallery(onMediaFile, { mediaType: 'any' }),
+    'present-credentials': () => {
+      closeAttachmentOptions()
+      navigation.navigate('PresentCredentialsFromChat')
+    },
+  }
+
+  const label: Record<OptionId, string> = {
+    'file-camera': t('personalChat.camera'),
+    'file-video': t('personalChat.takeVideo'),
+    'file-gallery': t('personalChat.photoAndVideoLibrary'),
+    'present-credentials': t('personalChat.presentCredential_other'),
   }
 
   return (
     <View style={styles.subContainer}>
       {options.map(option => (
         <View style={styles.containerOptionCard} key={option.id}>
-          <TouchableOpacity
-            style={styles.containerOption}
-            activeOpacity={0.9}
-            onPress={() => onSelectedOption(option.id)}
-          >
-            <SvgIcon name={option.icon as keyof IconsNames} fill={theme.colors.primaryText} />
+          <TouchableOpacity style={styles.containerOption} onPress={onSelectedOption[option.id]}>
+            <SvgIcon name={option.icon} fill={theme.colors.primaryText} />
             <Text typography="EuclidCircularA-Regular" style={styles.optionText}>
-              {t(`personalChat.${option.label}`)}
+              {label[option.id]}
             </Text>
           </TouchableOpacity>
         </View>

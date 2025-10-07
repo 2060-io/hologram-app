@@ -409,6 +409,7 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
           closeAttachmentOptions={() => setShowAttachmentOptions(false)}
           onCompressingVideoProgress={setCompressingVideoProgress}
           getVideoCompressionCancellationId={getVideoCompressionCancellationId}
+          navigation={navigation}
         />
       </ModalBottomHalf>
       <MessageFloatingMenu
