@@ -1,5 +1,5 @@
 PODS:
-  - anoncreds (0.2.4):
+  - anoncreds (0.3.3-alpha-20251002113617):
     - React
     - React-callinvoker
     - React-Core
@@ -7,7 +7,7 @@ PODS:
     - GoogleUtilities/Environment (~> 8.0)
     - GoogleUtilities/UserDefaults (~> 8.0)
     - PromisesObjC (~> 2.4)
-  - aries-askar (0.2.3):
+  - askar (0.4.2-alpha-20251001231628):
     - React
     - React-callinvoker
     - React-Core
@@ -2905,7 +2905,7 @@ PODS:
 
 DEPENDENCIES:
   - "anoncreds (from `../node_modules/@hyperledger/anoncreds-react-native`)"
-  - "aries-askar (from `../node_modules/@hyperledger/aries-askar-react-native`)"
+  - "askar (from `../node_modules/@openwallet-foundation/askar-react-native`)"
   - boost (from `../node_modules/react-native/third-party-podspecs/boost.podspec`)
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
   - Expo (from `../node_modules/expo`)
@@ -3075,8 +3075,8 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   anoncreds:
     :path: "../node_modules/@hyperledger/anoncreds-react-native"
-  aries-askar:
-    :path: "../node_modules/@hyperledger/aries-askar-react-native"
+  askar:
+    :path: "../node_modules/@openwallet-foundation/askar-react-native"
   boost:
     :podspec: "../node_modules/react-native/third-party-podspecs/boost.podspec"
   DoubleConversion:
@@ -3320,9 +3320,9 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
-  anoncreds: 4b29b0ef841fc1a96910aab8f047c090ee6acb89
+  anoncreds: b58555401f1217305f1bba7f24da6e1b8e61fb64
   AppCheckCore: cc8fd0a3a230ddd401f326489c99990b013f0c4f
-  aries-askar: 0aef1f26610859c7b5287a157e9b229e82c646ba
+  askar: 92872c37f9438ff2ffd235c2663d84b72428f3d2
   boost: 7e761d76ca2ce687f7cc98e698152abd03a18f90
   DoubleConversion: cb417026b2400c8f53ae97020b2be961b59470cb
   Expo: a40d525c930dd1c8a158e082756ee071955baccb

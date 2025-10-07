@@ -57,10 +57,9 @@ export const getOutOfBandRecord = async (
   agentContext: AgentContext,
   options: {
     invitation: OutOfBandInvitation
-    parentConnectionId?: string
   },
 ): Promise<{ outOfBandRecord: OutOfBandRecord; existingConnection?: ConnectionRecord }> => {
-  const { invitation, parentConnectionId } = options
+  const { invitation } = options
 
   const outOfBandApi = agentContext.dependencyManager.resolve(OutOfBandApi)
 
@@ -96,18 +95,13 @@ export const getOutOfBandRecord = async (
           label: invitation.label,
           imageUrl: invitation.imageUrl,
           autoAcceptInvitation: false,
-          autoAcceptConnection: true,
+          autoAcceptConnection: false,
         })
       : await outOfBandApi.receiveInvitation(invitation, {
           autoAcceptInvitation: false,
-          autoAcceptConnection: true,
+          autoAcceptConnection: false,
           reuseConnection: true,
         })
-
-  if (parentConnectionId) {
-    outOfBandRecord.setTag('parentConnectionId', parentConnectionId)
-    await agentContext.dependencyManager.resolve(OutOfBandRepository).update(agentContext, outOfBandRecord)
-  }
 
   return { outOfBandRecord, existingConnection }
 }
@@ -291,7 +285,6 @@ export async function acceptInvitation(
   const routing = await getMediationRouting(agentContext)
 
   const { connectionRecord: newConnection } = await outOfBandApi.acceptInvitation(options.outOfBandId, {
-    autoAcceptConnection: true,
     label: options.label,
     routing,
     reuseConnection: true,

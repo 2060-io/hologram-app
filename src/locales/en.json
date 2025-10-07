@@ -140,6 +140,7 @@
       "unsecureLink": "Unsecure Link",
       "eMRTDRequest": "Document NFC Scan",
       "callOfferDescription": "{{sender}} invites you to a call",
+      "sentCallOfferDescription": "You are inviting {{ receiver }} to a call",
       "mrzRequest": "Document Camera Scan",
       "mrzScanTitle": "Locate your MRZ on your ID Document",
       "mrzScanInst": "Place your document in front of the camera, aligning it within the rectangle below. Ensure the Machine Readable Zone (MRZ) with symbols is fully visible and well-lit.",

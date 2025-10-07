@@ -11,11 +11,11 @@ import { Text } from '@2060/components/common'
 import { useChat, useMobileAgent } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { useVideoCallContext } from '@2060/hooks/providers/useVideoCallContext'
-import { CallOfferState } from '@2060/model'
+import { CallOfferState, ChatEntryRole } from '@2060/model'
 import { isNowAfterThanDate } from '@2060/utils/dateUtils'
 import { toast } from '@2060/utils/toast'
 
-const CallOfferChatView = ({ metadata, sender, didcommThreadId }: Props) => {
+const CallOfferChatView = ({ metadata, didcommThreadId, role }: Props) => {
   const theme = useTheme()
   const styles = getStyles(theme)
   const { t } = useTranslation()
@@ -25,6 +25,8 @@ const CallOfferChatView = ({ metadata, sender, didcommThreadId }: Props) => {
   const { description, state, offerExpirationTime } = metadata
   const [callState, setCallState] = useState<CallOfferState>(state)
   const connectionId = chatThread?.data?.connectionId
+  const sender = chatThread?.participants.find(p => p.id === role)
+  const receiver = chatThread?.participants.find(p => p.id !== role)
 
   useEffect(() => {
     if (!offerExpirationTime || state !== CallOfferState.RECEIVED) {
@@ -56,7 +58,9 @@ const CallOfferChatView = ({ metadata, sender, didcommThreadId }: Props) => {
   const footer: Record<CallOfferState, React.ReactElement> = {
     [CallOfferState.RECEIVED]: (
       <View style={styles.buttonsContainer}>
-        <OutlinedBlueButton text={t('general.refuse')} onPress={reject} style={styles.refuseButton} />
+        {role === ChatEntryRole.Receiver && (
+          <OutlinedBlueButton text={t('general.refuse')} onPress={reject} style={styles.refuseButton} />
+        )}
         <BlueButton text={t('call.joinCall')} onPress={join} style={styles.joinButton} />
       </View>
     ),
@@ -70,13 +74,18 @@ const CallOfferChatView = ({ metadata, sender, didcommThreadId }: Props) => {
       </View>
     ),
   }
+  const getMainText = () => {
+    if (description) return description
+    if (role === ChatEntryRole.Receiver) return t('chat.callOfferDescription', { sender: sender?.name })
+    return t('chat.sentCallOfferDescription', { receiver: receiver?.name })
+  }
 
   return (
     <View style={styles.container}>
       <Header theme={theme} title={t('preview.callOffer')} leftIconName="incomingCall" />
       <View style={styles.subContainer}>
         <Text style={styles.title} typography="EuclidCircularA-Regular">
-          {description ?? t('chat.callOfferDescription', { sender: sender?.name })}
+          {getMainText()}
         </Text>
         {footer[callState]}
       </View>

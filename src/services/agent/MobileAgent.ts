@@ -39,9 +39,9 @@ import {
 import { OpenId4VcHolderModule } from '@credo-ts/openid4vc'
 import { PushNotificationsFcmModule } from '@credo-ts/push-notifications'
 import { QuestionAnswerModule } from '@credo-ts/question-answer'
-import { WebvhDidResolver } from '@credo-ts/webvh'
+import { WebVhAnonCredsRegistry, WebvhDidResolver } from '@credo-ts/webvh'
 import { anoncreds } from '@hyperledger/anoncreds-react-native'
-import { ariesAskar } from '@hyperledger/aries-askar-react-native'
+import { askar } from '@openwallet-foundation/askar-react-native'
 import { DidWebAnonCredsRegistry } from 'credo-ts-didweb-anoncreds'
 import { IndyVdrProxyDidResolver, IndyVdrProxyAnonCredsRegistry } from 'credo-ts-indy-vdr-proxy-client'
 
@@ -55,12 +55,13 @@ export const getMobileAgentModules = (config: {
 }) => {
   const proxyBaseUrl = config.indyVDRProxyBaseUrl
   return {
-    askar: new AskarModule({ ariesAskar }),
+    askar: new AskarModule({ ariesAskar: askar }),
     anoncreds: new AnonCredsModule({
       registries: [
         new DidWebAnonCredsRegistry({
           cacheOptions: { allowCaching: true, cacheDurationInSeconds: SECONDS_PER_DAY },
         }),
+        new WebVhAnonCredsRegistry(),
         new IndyVdrProxyAnonCredsRegistry({
           proxyBaseUrl,
           headers: getAppCheckHeaders,

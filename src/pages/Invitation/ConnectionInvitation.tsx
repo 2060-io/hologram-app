@@ -1,7 +1,7 @@
 import { StackActions } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
 import { TrustResolutionOutcome } from '@verana-labs/verre'
-import React, { useLayoutEffect, useState, useRef, useEffect } from 'react'
+import React, { useLayoutEffect, useState, useRef, useEffect, useTransition } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TouchableOpacity, View, ScrollView, SafeAreaView } from 'react-native'
 
@@ -38,7 +38,7 @@ interface Props extends StackScreenProps<NavigationStackParams, 'ConnectionInvit
 const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => {
   const { outOfBandRecord, existingConnectionId } = route.params
   const isAlreadyConnected = !!existingConnectionId
-  const [isAcceptingInvitation, setIsAcceptingInvitation] = useState(false)
+  const [isAcceptingInvitation, startAcceptInvitationTransition] = useTransition()
   const [communicationChannels, setCommunicationChannels] = useState({
     allowChats: true,
     allowAudioCalls: false,
@@ -87,28 +87,25 @@ const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => 
     else navigation.dispatch(StackActions.replace('Home'))
   }
 
-  const onFinishAddingConnection = () => setIsAcceptingInvitation(false)
-
   const onPressRightButton = () => {
     canConnect ? accept() : navigation.goBack()
   }
 
   const accept = async () => {
-    const invitationOptions = {
-      outOfBandId,
-      label: userProfileData?.displayName,
-      connectionId: parentConnectionId,
-    }
-    setIsAcceptingInvitation(true)
-    try {
-      if (!agent) throw new Error('Agent not initialized')
-      const { connectionRecord } = await acceptInvitation(agent.context, invitationOptions)
-      chatThreadId.current = findOrCreateThread({ connection: connectionRecord! }).id
-    } catch (error) {
-      toast({ type: 'error', message: `Failed to add connection ${error}` })
-    } finally {
-      onFinishAddingConnection()
-    }
+    if (!agent) return
+    startAcceptInvitationTransition(async () => {
+      try {
+        const invitationOptions = {
+          outOfBandId,
+          label: userProfileData?.displayName,
+          connectionId: parentConnectionId,
+        }
+        const { connectionRecord } = await acceptInvitation(agent.context, invitationOptions)
+        chatThreadId.current = findOrCreateThread({ connection: connectionRecord! }).id
+      } catch (error) {
+        toast({ type: 'error', message: `Failed to add connection ${error}` })
+      }
+    })
   }
 
   const handleChangeHeaderOptions = () => {
