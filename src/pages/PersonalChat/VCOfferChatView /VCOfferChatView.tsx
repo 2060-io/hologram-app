@@ -19,7 +19,6 @@ import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { VCOfferMetadata } from '@2060/model'
 import { MobileAgent } from '@2060/services/agent'
 import { CredentialMainInfo, sanitizeString } from '@2060/services/agent/display'
-import { logError } from '@2060/utils'
 import { toast } from '@2060/utils/toast'
 
 interface Props {
@@ -63,12 +62,10 @@ const VCOfferChatView = ({ sender, associatedRecordId, metadata, agent }: Props)
   }
 
   const refuse = () => {
-    agent?.credentials
-      .declineOffer(associatedRecordId, {
-        sendProblemReport: true,
-        problemReportDescription: 'e.msg.refused',
-      })
-      .catch(error => logError(`Error refusing credential ${error}`))
+    addAgentActionToQueue({
+      type: AgentActionType.DeclineCredentialOffer,
+      parameters: { credentialRecordId: associatedRecordId },
+    })
   }
 
   const refuseFromChat = () => {
