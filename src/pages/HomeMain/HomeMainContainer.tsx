@@ -12,7 +12,7 @@ import { toast } from '@2060/utils/toast'
 
 const HomeMainContainer = (HomeMainComponent: ElementType) => {
   const WrapperHomeMain = (props: HomeTabProps) => {
-    const [isProcessingLink, startProcessDeepLink] = useTransition()
+    const [isProcessingLink, startProcessDeepLinkTransition] = useTransition()
     const { agent } = useMobileAgent()
     const { navigation, route } = props
 
@@ -28,7 +28,7 @@ const HomeMainContainer = (HomeMainComponent: ElementType) => {
 
     const processDeepLink = async () => {
       if (!agent) return
-      startProcessDeepLink(async () => {
+      startProcessDeepLinkTransition(async () => {
         try {
           const [[parameterType, value]] = Object.entries(route.params!)
 
