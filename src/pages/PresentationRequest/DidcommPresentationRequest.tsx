@@ -51,34 +51,7 @@ const DidcommPresentationRequest: React.FC<Props> = ({ navigation, route }: Prop
     }, [serviceInfo]),
   )
 
-  const onSelectCredential = (entryId: string, credentialId: string) => {
-    selectedCredentials.current = {
-      ...selectedCredentials.current,
-      [entryId]: credentialId,
-    }
-  }
-
-  const refuse = async () => {
-    if (realm && comesFromChat) {
-      const [vpRequestChatEntry] = findAllByAssociatedRecordId(realm, proofRecordId, ChatEntryType.VPRequest)
-      if (vpRequestChatEntry) {
-        const newMetadata = { ...vpRequestChatEntry.metadata, proofState: ProofState.Declined }
-        updateChatEntryMetadata(realm, vpRequestChatEntry.id, newMetadata)
-      }
-    }
-    addAgentActionToQueue({
-      type: AgentActionType.DeclineProofRequest,
-      parameters: { proofRecordId },
-    })
-  }
-
-  const onRefuse = () => {
-    if (navigation.canGoBack()) navigation.goBack()
-    else navigation.replace('Home')
-    refuse()
-  }
-
-  const onAccept = async () => {
+  const accept = async () => {
     if (!agent) return
     startAcceptTransition(async () => {
       try {
@@ -95,13 +68,33 @@ const DidcommPresentationRequest: React.FC<Props> = ({ navigation, route }: Prop
     })
   }
 
+  const afterPresented = () => {
+    comesFromChat ? navigation.goBack() : goToCredentialPresented()
+  }
+
+  const updateChatEntryMetadataIfNecessary = () => {
+    if (realm && comesFromChat) {
+      const [vpRequestChatEntry] = findAllByAssociatedRecordId(realm, proofRecordId, ChatEntryType.VPRequest)
+      if (vpRequestChatEntry) {
+        const newMetadata = { ...vpRequestChatEntry.metadata, proofState: ProofState.Declined }
+        updateChatEntryMetadata(realm, vpRequestChatEntry.id, newMetadata)
+      }
+    }
+  }
+
+  const refuse = async () => {
+    updateChatEntryMetadataIfNecessary()
+    addAgentActionToQueue({
+      type: AgentActionType.DeclineProofRequest,
+      parameters: { proofRecordId },
+    })
+    if (navigation.canGoBack()) navigation.goBack()
+    else navigation.replace('Home')
+  }
+
   const notify = () => {
     if (!agent) return
     notifyNoCompatibleCredentials({ agent, proofRecordId })
-  }
-
-  const afterPresented = () => {
-    comesFromChat ? navigation.goBack() : goToCredentialPresented()
   }
 
   const goToCredentialPresented = async () => {
@@ -120,13 +113,20 @@ const DidcommPresentationRequest: React.FC<Props> = ({ navigation, route }: Prop
     })
   }
 
+  const onSelectCredential = (entryId: string, credentialId: string) => {
+    selectedCredentials.current = {
+      ...selectedCredentials.current,
+      [entryId]: credentialId,
+    }
+  }
+
   return submission ? (
     <BasePresentationRequest
       navigation={navigation}
       submission={submission}
       onSelectDidcommCredential={onSelectCredential}
-      accept={onAccept}
-      refuse={onRefuse}
+      accept={accept}
+      refuse={refuse}
       serviceInfo={serviceInfo}
       isAccepting={isAccepting}
       notifyNoCompatibleCredentials={notify}

@@ -15,6 +15,9 @@ import { ChatEntryType } from '@2060/model'
 interface Props extends StackScreenProps<NavigationStackParams, 'DidcommCredentialOffer'> {}
 
 const DidcommCredentialOffer: React.FC<Props> = ({ route, navigation }) => {
+  const routes = navigation.getState()?.routes
+  const prevRoute = routes[routes.length - 2]
+  const comesFromChat = prevRoute.name === 'PersonalChatStack'
   const { credentialRecordId } = route.params
   const { credentialDetails, credentialState } = useCredentialExchangeForDisplay({ credentialRecordId })
   const { addAgentActionToQueue } = useAgentActionQueue()
@@ -22,11 +25,12 @@ const DidcommCredentialOffer: React.FC<Props> = ({ route, navigation }) => {
   const enableAcceptRejectButtons = credentialState === CredentialState.OfferReceived
 
   const updateChatEntryMetadataIfNecessary = (newCredentialState: CredentialState) => {
-    if (!realm) return
-    const [chatEntry] = findAllByAssociatedRecordId(realm, credentialRecordId, ChatEntryType.VCOffer)
-    if (chatEntry) {
-      const newMetadata = { ...chatEntry.metadata, credentialState: newCredentialState }
-      updateChatEntryMetadata(realm, chatEntry.id, newMetadata)
+    if (realm && comesFromChat) {
+      const [chatEntry] = findAllByAssociatedRecordId(realm, credentialRecordId, ChatEntryType.VCOffer)
+      if (chatEntry) {
+        const newMetadata = { ...chatEntry.metadata, credentialState: newCredentialState }
+        updateChatEntryMetadata(realm, chatEntry.id, newMetadata)
+      }
     }
   }
 
