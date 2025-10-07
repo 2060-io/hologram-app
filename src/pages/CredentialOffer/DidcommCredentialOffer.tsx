@@ -22,6 +22,8 @@ const DidcommCredentialOffer: React.FC<Props> = ({ route, navigation }) => {
       type: AgentActionType.AcceptCredentialOffer,
       parameters: { credentialRecordId },
     })
+    if (navigation.canGoBack()) navigation.goBack()
+    else navigation.replace('Home')
   }
 
   const refuse = () => {
@@ -29,27 +31,18 @@ const DidcommCredentialOffer: React.FC<Props> = ({ route, navigation }) => {
       type: AgentActionType.DeclineCredentialOffer,
       parameters: { credentialRecordId },
     })
-  }
-
-  const onAccept = () => {
     if (navigation.canGoBack()) navigation.goBack()
     else navigation.replace('Home')
-    accept()
   }
 
-  const onRefuse = () => {
-    if (navigation.canGoBack()) navigation.goBack()
-    else navigation.replace('Home')
-    refuse()
-  }
   return (
     <>
       {credentialDetails ? (
         <BaseCredentialOffer
           navigation={navigation}
           credentialDetails={credentialDetails}
-          accept={onAccept}
-          refuse={onRefuse}
+          accept={accept}
+          refuse={refuse}
           enableAcceptRejectButtons={enableAcceptRejectButtons}
         />
       ) : null}
