@@ -213,7 +213,8 @@
       "connectionRefusedByAge": "Holaa {{ name }}! Solamente tienes <bold>{{ age }}</bold> años. Tendrás que esperar unos años más para poder conectarte a este servicio.",
       "refresh": "Refrescar",
       "errorGettingInvitation": "Ha ocurrido un error obteniendo la invitación actual",
-      "errorCreatingInvitation": "Ha ocurrido un error creando la invitación"
+      "errorCreatingInvitation": "Ha ocurrido un error creando la invitación",
+      "errorProcessingInvitation": "Ha ocurrido un error procesando la invitación"
     },
     "credential": {
       "noCredentials": "Aún no tienes credenciales",

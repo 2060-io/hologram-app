@@ -1,5 +1,6 @@
 import { OutOfBandInvitation, Buffer } from '@credo-ts/core'
 import React, { ElementType, useEffect, useMemo, useTransition } from 'react'
+import { useTranslation } from 'react-i18next'
 import Config from 'react-native-config'
 
 import { HomeTabProps } from './HomeMainProps'
@@ -16,6 +17,7 @@ import { toast } from '@2060/utils/toast'
 
 const HomeMainContainer = (HomeMainComponent: ElementType) => {
   const WrapperHomeMain = (props: HomeTabProps) => {
+    const { t } = useTranslation()
     const [isProcessingLink, startProcessDeepLinkTransition] = useTransition()
     const { agent } = useMobileAgent()
     const { navigation, route } = props
@@ -77,7 +79,7 @@ const HomeMainContainer = (HomeMainComponent: ElementType) => {
           })
         }
       } catch (error) {
-        toast({ type: 'error', message: 'Error processing invitation' })
+        toast({ type: 'error', message: t('invitation.errorProcessingInvitation') })
         logError(`Error processing invitation: ${error}`)
       }
     }

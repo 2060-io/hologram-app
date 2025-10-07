@@ -213,7 +213,8 @@
       "connectionRefusedByAge": "Hey there {{ name }}! You're just <bold>{{ age }}</bold> years old! You'll need to wait a few more years before you can connect to this service.",
       "refresh": "Refresh",
       "errorGettingInvitation": "There was an error getting current invitation",
-      "errorCreatingInvitation": "There was an error creating invitation"
+      "errorCreatingInvitation": "There was an error creating invitation",
+      "errorProcessingInvitation": "There was an error processing invitation"
     },
     "credential": {
       "noCredentials": "You do not have any credential yet",

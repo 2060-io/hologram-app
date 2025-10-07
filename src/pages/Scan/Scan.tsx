@@ -83,7 +83,7 @@ const Scan = ({ navigation }: Props) => {
           })
         }
       } catch (error) {
-        toast({ type: 'error', message: 'Error processing invitation' })
+        toast({ type: 'error', message: t('invitation.errorProcessingInvitation') })
         logError(`Error processing invitation: ${error}`)
       } finally {
         if (!processInvitationResult?.success) throw new Error(processInvitationResult?.error)
