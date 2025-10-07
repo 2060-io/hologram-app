@@ -214,7 +214,8 @@
       "refresh": "Refrescar",
       "errorGettingInvitation": "Ha ocurrido un error obteniendo la invitación actual",
       "errorCreatingInvitation": "Ha ocurrido un error creando la invitación",
-      "errorProcessingInvitation": "Ha ocurrido un error procesando la invitación"
+      "errorProcessingInvitation": "Ha ocurrido un error procesando la invitación",
+      "pressRefresh": "Presiona Refrescar para invalidar la invitación actual y crear una nueva"
     },
     "credential": {
       "noCredentials": "Aún no tienes credenciales",

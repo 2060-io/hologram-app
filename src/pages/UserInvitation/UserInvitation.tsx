@@ -27,6 +27,26 @@ const UserInvitation = ({
   const globalStyles = getGlobalStyles(theme)
   const { url, displayName } = invitation
 
+  useEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => (
+        <TouchableOpacity style={styles.btnDone} onPress={() => navigation.goBack()}>
+          <Text typography="EuclidCircularA-Medium" style={styles.headerText}>
+            {t('chat.done')}
+          </Text>
+        </TouchableOpacity>
+      ),
+      headerStyle: globalStyles.headerStyle,
+      headerRight: () => (
+        <TouchableOpacity style={styles.btnRefresh} onPress={createNewInvitation}>
+          <Text typography="EuclidCircularA-Medium" style={styles.headerText}>
+            {t('invitation.refresh')}
+          </Text>
+        </TouchableOpacity>
+      ),
+    })
+  }, [theme])
+
   const shareInvitation = async () => {
     const title = t('scanned.titleShare', { displayName })
     try {
@@ -50,28 +70,6 @@ const UserInvitation = ({
     }
   }
 
-  const handleChangeOptionsHeader = () => {
-    navigation.setOptions({
-      headerLeft: () => (
-        <TouchableOpacity style={styles.btnDone} onPress={() => navigation.goBack()}>
-          <Text typography="EuclidCircularA-Medium" style={styles.headerText}>
-            {t('chat.done')}
-          </Text>
-        </TouchableOpacity>
-      ),
-      headerStyle: globalStyles.headerStyle,
-      headerRight: () => (
-        <TouchableOpacity style={styles.btnRefresh} onPress={createNewInvitation}>
-          <Text typography="EuclidCircularA-Medium" style={styles.headerText}>
-            {t('invitation.refresh')}
-          </Text>
-        </TouchableOpacity>
-      ),
-    })
-  }
-
-  useEffect(handleChangeOptionsHeader, [theme])
-
   return (
     <SafeAreaView style={styles.containerRoot}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ flexGrow: 1 }}>
@@ -84,13 +82,18 @@ const UserInvitation = ({
           <Text typography="EuclidCircularA-Medium" style={styles.displayName}>
             {userProfileData?.displayName}
           </Text>
-          <View style={styles.containerCardQR}>
-            <QRCode
-              size={widthPercentageToDP('70%')}
-              color={theme.colors.black}
-              backgroundColor={theme.colors.white}
-              value={url}
-            />
+          <View>
+            <View style={styles.containerCardQR}>
+              <QRCode
+                size={widthPercentageToDP('70%')}
+                color={theme.colors.black}
+                backgroundColor={theme.colors.white}
+                value={url}
+              />
+            </View>
+            <Text typography="EuclidCircularA-Regular" style={styles.pressRefreshText}>
+              {t('invitation.pressRefresh')}
+            </Text>
           </View>
           <TouchableOpacity style={styles.containerBtnShare} activeOpacity={0.6} onPress={shareInvitation}>
             <SvgIcon name="shareSocial" fill={theme.colors.white} />

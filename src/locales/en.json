@@ -214,7 +214,8 @@
       "refresh": "Refresh",
       "errorGettingInvitation": "There was an error getting current invitation",
       "errorCreatingInvitation": "There was an error creating invitation",
-      "errorProcessingInvitation": "There was an error processing invitation"
+      "errorProcessingInvitation": "There was an error processing invitation",
+      "pressRefresh": "Press Refresh to invalidate current invitation code and create a new one."
     },
     "credential": {
       "noCredentials": "You do not have any credential yet",
