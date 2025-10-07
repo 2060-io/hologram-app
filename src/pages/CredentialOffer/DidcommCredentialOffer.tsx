@@ -15,7 +15,6 @@ interface Props extends StackScreenProps<NavigationStackParams, 'DidcommCredenti
 const DidcommCredentialOffer: React.FC<Props> = ({ route, navigation }) => {
   LogBox.ignoreLogs(['Non-serializable values were found in the navigation state'])
   const { credentialRecordId } = route.params
-
   const { credentialDetails, credentialState } = useCredentialExchangeForDisplay({ credentialRecordId })
   const { agent } = useMobileAgent()
   const enableAcceptRejectButtons = credentialState === CredentialState.OfferReceived

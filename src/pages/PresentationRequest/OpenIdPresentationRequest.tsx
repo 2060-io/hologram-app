@@ -1,6 +1,6 @@
 import { StackActions } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
-import React, { useCallback, useLayoutEffect, useMemo, useState, useRef } from 'react'
+import React, { useCallback, useLayoutEffect, useMemo, useState, useRef, useTransition } from 'react'
 import { SafeAreaView } from 'react-native'
 
 import BasePresentationRequest from './BasePresentationRequest'
@@ -22,7 +22,7 @@ const OpenIdPresentationRequest: React.FC<Props> = ({ route, navigation }) => {
   const theme = useTheme()
   const styles = getStyles(theme)
   const url = route.params.url
-  const [isAcceptingRequest, setIsAcceptingRequest] = useState(false)
+  const [isAcceptingRequest, startAcceptRequestTransition] = useTransition()
   const [isProcessingCode, setIsProcessingCode] = useState(false)
   const submissionEntryIndexes = useRef<number[]>([])
 
@@ -52,23 +52,22 @@ const OpenIdPresentationRequest: React.FC<Props> = ({ route, navigation }) => {
   }
 
   const onAccept = useCallback(async () => {
-    setIsAcceptingRequest(true)
-    try {
-      if (!agent) throw new Error('Agent not initialized')
-      if (!credentialsForRequest?.selectResults) throw Error('No credentialsForRequest')
-      await shareProof({
-        selectResults: credentialsForRequest.selectResults,
-        verifiedAuthorizationRequest: credentialsForRequest.verifiedAuthorizationRequest,
-        agent,
-        submissionEntryIndexes: submissionEntryIndexes.current,
-      })
-      if (navigation.canGoBack()) navigation.goBack()
-      else navigation.dispatch(StackActions.replace('Home'))
-    } catch (error) {
-      toast({ type: 'error', message: `Failed to accept offer: ${error}` })
-    } finally {
-      setIsAcceptingRequest(false)
-    }
+    startAcceptRequestTransition(async () => {
+      try {
+        if (!agent) throw new Error('Agent not initialized')
+        if (!credentialsForRequest?.selectResults) throw Error('No credentialsForRequest')
+        await shareProof({
+          selectResults: credentialsForRequest.selectResults,
+          verifiedAuthorizationRequest: credentialsForRequest.verifiedAuthorizationRequest,
+          agent,
+          submissionEntryIndexes: submissionEntryIndexes.current,
+        })
+        if (navigation.canGoBack()) navigation.goBack()
+        else navigation.dispatch(StackActions.replace('Home'))
+      } catch (error) {
+        toast({ type: 'error', message: `Failed to accept offer: ${error}` })
+      }
+    })
   }, [credentialsForRequest, submissionEntryIndexes.current])
 
   const processCode = async () => {

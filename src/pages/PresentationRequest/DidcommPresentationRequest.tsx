@@ -1,7 +1,7 @@
 import { ProofState } from '@credo-ts/core'
 import { useFocusEffect } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
-import React, { useRef, useCallback, useState } from 'react'
+import React, { useRef, useCallback, useState, useTransition } from 'react'
 import { LogBox } from 'react-native'
 
 import BasePresentationRequest from './BasePresentationRequest'
@@ -33,9 +33,8 @@ const DidcommPresentationRequest: React.FC<Props> = ({ navigation, route }: Prop
   const selectedCredentials = useRef({})
   const { proofRecordId, did } = route.params
   const { serviceInfo } = useFetchServiceInfo(did, true)
-
   const [submission, setSubmission] = useState<FormattedSubmission | undefined>(undefined)
-  const [isAccepting, setIsAccepting] = useState(false)
+  const [isAccepting, startAcceptTransition] = useTransition()
 
   useFocusEffect(
     useCallback(() => {
@@ -79,19 +78,19 @@ const DidcommPresentationRequest: React.FC<Props> = ({ navigation, route }: Prop
 
   const onAccept = async () => {
     if (!agent) return
-    setIsAccepting(true)
-    try {
-      await presentProof({
-        agent,
-        proofRecordId,
-        selectedCredentials: selectedCredentials.current,
-      })
-      afterPresented()
-    } catch (error) {
-      setIsAccepting(false)
-      toast({ message: `Error ${error}`, type: 'error' })
-      logError(`Error presenting credential ${error}`)
-    }
+    startAcceptTransition(async () => {
+      try {
+        await presentProof({
+          agent,
+          proofRecordId,
+          selectedCredentials: selectedCredentials.current,
+        })
+        afterPresented()
+      } catch (error) {
+        toast({ message: `Error ${error}`, type: 'error' })
+        logError(`Error presenting credential ${error}`)
+      }
+    })
   }
 
   const notify = () => {

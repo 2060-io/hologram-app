@@ -1,7 +1,7 @@
 import { PictureData } from '@2060.io/credo-ts-didcomm-user-profile'
 import { CommonActions } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useTransition } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, SafeAreaView, Platform } from 'react-native'
 import Config from 'react-native-config'
@@ -31,7 +31,7 @@ const ProfileCreation = ({ navigation }: Props) => {
   const { t } = useTranslation()
   const { agent } = useMobileAgent()
   const { openWallet } = useWallet()
-  const [isRegistering, setIsRegistering] = useState(false)
+  const [isRegistering, startRegisterTransition] = useTransition()
   const { setUserProfileData } = useUserProfile()
   const { devEnvs } = useConfig()
   const [displayName, setDisplayName] = useState('')
@@ -61,11 +61,6 @@ const ProfileCreation = ({ navigation }: Props) => {
 
   const goHome = () => {
     navigation.dispatch(CommonActions.reset({ index: 0, routes: [{ name: 'Home' }] }))
-  }
-
-  const handleLogStartError = (error: Error) => {
-    logError('Error startSignUp', error?.message)
-    toast({ type: 'error', message: t('signUp.anErrorHasOccurred'), duration: 5000 })
   }
 
   const createNewWallet = useCallback(async () => {
@@ -105,17 +100,17 @@ const ProfileCreation = ({ navigation }: Props) => {
   }
 
   const signUp = async () => {
-    setIsRegistering(true)
-    try {
-      await createNewWallet()
-      await openWallet()
-      await startSignUp()
-      await handleNotificationsPermission()
-    } catch (error) {
-      if (error instanceof Error) handleLogStartError(error)
-    } finally {
-      setIsRegistering(false)
-    }
+    startRegisterTransition(async () => {
+      try {
+        await createNewWallet()
+        await openWallet()
+        await startSignUp()
+        await handleNotificationsPermission()
+      } catch (error) {
+        toast({ type: 'error', message: t('signUp.anErrorHasOccurred'), duration: 5000 })
+        logError('Error startSignUp', error)
+      }
+    })
   }
 
   return (
