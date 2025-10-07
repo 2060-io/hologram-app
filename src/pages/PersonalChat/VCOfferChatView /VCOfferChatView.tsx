@@ -14,7 +14,9 @@ import getStyles from './styles'
 import { ModalConfirmAction } from '@2060/components'
 import { CardCredentialMainInformation, Text } from '@2060/components/common'
 import { AgentActionType } from '@2060/hooks/agent'
+import { updateChatEntryMetadata } from '@2060/hooks/agent/chat/services'
 import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
+import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { VCOfferMetadata } from '@2060/model'
 import { MobileAgent } from '@2060/services/agent'
@@ -26,15 +28,23 @@ interface Props {
   associatedRecordId: string
   metadata: VCOfferMetadata
   agent?: MobileAgent
+  chatEntryId: string
 }
 
-const VCOfferChatView = ({ sender, associatedRecordId, metadata, agent }: Props): React.ReactElement => {
+const VCOfferChatView = ({
+  sender,
+  associatedRecordId,
+  metadata,
+  agent,
+  chatEntryId,
+}: Props): React.ReactElement => {
   const [showModalRefuseConfirmation, setShowModalRefuseConfirmation] = useState(false)
   const navigation: StackNavigationProp<ParamListBase> = useNavigation()
-  const { addAgentActionToQueue } = useAgentActionQueue()
+  const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
-  const { t } = useTranslation()
+  const { addAgentActionToQueue } = useAgentActionQueue()
+  const { realm } = useLocalRealm()
   const { credentialState } = metadata
   const opacity = credentialState !== CredentialState.OfferReceived ? 0.3 : 1
 
@@ -54,7 +64,14 @@ const VCOfferChatView = ({ sender, associatedRecordId, metadata, agent }: Props)
     [metadata],
   )
 
+  const updateMetadata = (newCredentialState: CredentialState) => {
+    if (!realm) return
+    const newMetadata = { ...metadata, credentialState: newCredentialState }
+    updateChatEntryMetadata(realm, chatEntryId, newMetadata)
+  }
+
   const accept = () => {
+    updateMetadata(CredentialState.RequestSent)
     addAgentActionToQueue({
       type: AgentActionType.AcceptCredentialOffer,
       parameters: { credentialRecordId: associatedRecordId },
@@ -62,6 +79,7 @@ const VCOfferChatView = ({ sender, associatedRecordId, metadata, agent }: Props)
   }
 
   const refuse = () => {
+    updateMetadata(CredentialState.Declined)
     addAgentActionToQueue({
       type: AgentActionType.DeclineCredentialOffer,
       parameters: { credentialRecordId: associatedRecordId },
