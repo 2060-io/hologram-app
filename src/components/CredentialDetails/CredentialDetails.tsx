@@ -7,7 +7,7 @@ import getStyles from './styles'
 
 import { CardCredentialMainInformation, FullScreenImage, Text } from '@2060/components/common'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { CredentialDetailsForDisplay } from '@2060/services/agent/display'
+import { CredentialDetailsForDisplay, sanitizeString } from '@2060/services/agent/display'
 import { formatCredentialSubject, CredentialAttributeRow } from '@2060/services/agent/formatCredentialSubject'
 
 interface StyleObject {
@@ -41,7 +41,7 @@ const DetailSection = ({ isFirst, styles, rowDetail, onPressDetailImage }: Detai
   <View style={styles.sectionContainer}>
     <View style={styles.container}>
       <Text style={[styles.sectionKey, isFirst && { marginTop: 0 }]} typography="EuclidCircularA-Medium">
-        {rowDetail.key}
+        {sanitizeString(rowDetail.key)}
       </Text>
       <Text style={styles.sectionValue} typography="EuclidCircularA-Regular">
         {'value' in rowDetail && rowDetail.value}
