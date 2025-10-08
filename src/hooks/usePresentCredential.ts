@@ -37,9 +37,10 @@ export const usePresentCredential = () => {
       if (!credentialDefinitionId) return
       const credentialDetails = getCredentialDetailsForDisplay(credentialRecord)
       const anoncredsAttributes: AnoncredsAttribute[] = []
-      const detailsSections = credentialDetails
-        ? formatCredentialSubject({ subject: credentialDetails.attributes, sanitizeKey: false })
-        : []
+      const detailsSections = formatCredentialSubject({
+        subject: credentialDetails.attributes,
+        sanitizeKey: false,
+      })
       detailsSections.forEach(section => {
         section.rows.forEach(row => {
           anoncredsAttributes.push({ name: row.key, credentialDefinitionId })

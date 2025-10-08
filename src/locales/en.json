@@ -223,7 +223,8 @@
       "present": "Present credential",
       "present_other": "Present Credentials",
       "presented": "Credential presented",
-      "presentedOn": "Presented on"
+      "presentedOn": "Presented on",
+      "selectCredential": "Select the credential you want to present"
     },
     "credentialOffer": {
       "title": "Credential Offer",

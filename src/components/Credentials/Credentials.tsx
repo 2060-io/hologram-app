@@ -3,7 +3,6 @@ import { StackNavigationProp } from '@react-navigation/stack'
 import React, { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, FlatList, TouchableOpacity } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
 
 import SearchInput from '../SearchInput'
 
@@ -72,7 +71,7 @@ const Credentials = ({ navigation, headerTitle, onPressCredential }: Props) => {
   }, [records, search])
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <FlatList
         showsVerticalScrollIndicator={false}
         data={credentials}
@@ -100,7 +99,7 @@ const Credentials = ({ navigation, headerTitle, onPressCredential }: Props) => {
           )
         }}
       />
-    </SafeAreaView>
+    </View>
   )
 }
 

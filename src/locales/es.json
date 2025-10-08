@@ -223,7 +223,8 @@
       "present": "Presentar credencial",
       "present_other": "Presentar credenciales",
       "presented": "Credencial presentada",
-      "presentedOn": "Presentado el"
+      "presentedOn": "Presentado el",
+      "selectCredential": "Selecciona la credencial que quieres presentar"
     },
     "credentialOffer": {
       "title": "Credencial ofrecida",
