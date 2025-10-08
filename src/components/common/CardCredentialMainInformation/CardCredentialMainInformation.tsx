@@ -35,9 +35,7 @@ const CardCredentialMainInformation = ({
   const { serviceInfo } = useFetchServiceInfo(credentialMainInfo.issuer.id)
   const using24HourFormat = uses24HourClock()
   const uri = serviceInfo?.logoUrl ?? credentialMainInfo.issuer.logoUrl
-  const issuedOnLabel =
-    credentialMainInfo.dateLabel ??
-    `${t('credential.issuedOn')}: ${dateToString(credentialMainInfo.createdAt, `DD-MM-YYYY ${using24HourFormat ? 'HH:mm' : 'h:mm A'}`)}`
+  const issuedOnLabel = `${credentialMainInfo.dateLabel ?? t('credential.issuedOn')}: ${dateToString(credentialMainInfo.createdAt, `DD-MM-YYYY ${using24HourFormat ? 'HH:mm' : 'h:mm A'}`)}`
 
   return (
     <TouchableOpacity style={[styles.container, containerStyle]} activeOpacity={1} onPress={onPress}>
