@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react'
+import Config from 'react-native-config'
 
 import { useMobileAgent } from '../hooks/agent'
 
@@ -12,13 +13,11 @@ export enum SignUpState {
   AgentCreated = 'AgentCreated',
 }
 
-interface SignUpOptions {
-  cloudAgentPublicDid: string
-  defaultServicePublicDid: string
-  defaultServiceAlias: string
-}
+const defaultServicePublicDid = Config.DEFAULT_SERVICE_PUBLIC_DID as string
+const defaultServiceAlias = Config.DEFAULT_SERVICE_ALIAS as string
+const cloudAgentPublicDid = Config.CLOUD_AGENT_PUBLIC_DID as string
 
-export const useSignUp = (options: SignUpOptions) => {
+export const useSignUp = () => {
   const { agent, handleChangeAgentState } = useMobileAgent()
 
   const [signUpState, setSignUpState] = useState<SignUpState>(SignUpState.Init)
@@ -29,7 +28,7 @@ export const useSignUp = (options: SignUpOptions) => {
     setSignUpState(SignUpState.Started)
 
     let { connectionRecord: cloudAgentConnection } = await agent.oob.receiveImplicitInvitation({
-      did: options.cloudAgentPublicDid,
+      did: cloudAgentPublicDid,
       alias: 'Cloud Agent',
       autoAcceptConnection: true,
     })
@@ -50,8 +49,8 @@ export const useSignUp = (options: SignUpOptions) => {
 
     try {
       let { connectionRecord: defaultServiceConnection } = await agent.oob.receiveImplicitInvitation({
-        did: options.defaultServicePublicDid,
-        alias: options.defaultServiceAlias,
+        did: defaultServicePublicDid,
+        alias: defaultServiceAlias,
         autoAcceptConnection: true,
       })
       if (!defaultServiceConnection) throw new Error('Default service connection not created')

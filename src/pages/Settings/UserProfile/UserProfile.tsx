@@ -16,7 +16,7 @@ import { getGlobalStyles } from '@2060/styles'
 interface Props extends StackScreenProps<NavigationStackParams, 'UserProfile'> {}
 
 const UserProfile = ({ navigation }: Props) => {
-  const { userProfileData, setUserProfileData } = useUserProfile()
+  const { userProfileData, updateUserProfileData } = useUserProfile()
   const [displayName, setDisplayName] = useState(userProfileData?.displayName ?? '')
   const [displayPicture, setDisplayPicture] = useState<PictureData | undefined>(
     userProfileData?.displayPicture,
@@ -32,12 +32,12 @@ const UserProfile = ({ navigation }: Props) => {
   const goToBack = () => navigation.canGoBack() && navigation.goBack()
 
   const onSaveInfoUser = () => {
-    setUserProfileData?.({ displayName: displayName.trim(), displayPicture })
+    updateUserProfileData({ displayName: displayName.trim(), displayPicture })
     goToBack()
   }
 
   const onHandleCancelingValueChanges = () => {
-    setUserProfileData?.({
+    updateUserProfileData({
       displayName: userProfileData?.displayName,
       displayPicture: userProfileData?.displayPicture,
     })
