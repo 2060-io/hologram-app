@@ -1,7 +1,6 @@
 import { StackScreenProps } from '@react-navigation/stack'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { SafeAreaView } from 'react-native-safe-area-context'
 
 import { Credentials } from '@2060/components'
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
@@ -15,13 +14,11 @@ const Wallet = ({ navigation }: Props) => {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <Credentials
-        navigation={navigation}
-        headerTitle={t('general.credentials')}
-        onPressCredential={goToDetails}
-      />
-    </SafeAreaView>
+    <Credentials
+      navigation={navigation}
+      headerTitle={t('general.credentials')}
+      onPressCredential={goToDetails}
+    />
   )
 }
 

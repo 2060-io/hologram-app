@@ -1,7 +1,6 @@
 import { StackScreenProps } from '@react-navigation/stack'
 import React, { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import { SafeAreaView } from 'react-native-safe-area-context'
 
 import { Credentials } from '@2060/components'
 import { PersonalChatStackParams } from '@2060/components/Navigation/NavigationProps'
@@ -19,13 +18,11 @@ const PresentCredentialsFromChat = ({ navigation, route }: Props) => {
   }, [])
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <Credentials
-        navigation={navigation}
-        headerTitle={t('credential.present')}
-        onPressCredential={presentCredential}
-      />
-    </SafeAreaView>
+    <Credentials
+      navigation={navigation}
+      headerTitle={t('credential.present')}
+      onPressCredential={presentCredential}
+    />
   )
 }
 

@@ -3,6 +3,7 @@ import { StackNavigationProp } from '@react-navigation/stack'
 import React, { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, FlatList, TouchableOpacity } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 import SearchInput from '../SearchInput'
 
@@ -71,33 +72,35 @@ const Credentials = ({ navigation, headerTitle, onPressCredential }: Props) => {
   }, [records, search])
 
   return (
-    <FlatList
-      showsVerticalScrollIndicator={false}
-      data={credentials}
-      renderItem={({ item: credential }) => (
-        <CardCredentialMainInformation
-          credentialMainInfo={credential}
-          onPress={() => onPressCredential(credential.recordId)}
-        />
-      )}
-      ListEmptyComponent={() => {
-        const iconName = theme.isDarkMode ? 'darkCredentialCardSkeleton' : 'lightCredentialCardSkeleton'
-        return (
-          <View style={styles.noCredentialsContainer}>
-            <Text style={[styles.noCredentialsMessage, styles.noCredentialsMessageP1]}>
-              {t('credential.noCredentials')}
-            </Text>
-            <SvgIcon name={iconName} {...styles.noCredentialCardSkeleton} fill={undefined} />
-            <View style={styles.nestedCardSkeletonContainer}>
+    <SafeAreaView style={styles.container}>
+      <FlatList
+        showsVerticalScrollIndicator={false}
+        data={credentials}
+        renderItem={({ item: credential }) => (
+          <CardCredentialMainInformation
+            credentialMainInfo={credential}
+            onPress={() => onPressCredential(credential.recordId)}
+          />
+        )}
+        ListEmptyComponent={() => {
+          const iconName = theme.isDarkMode ? 'darkCredentialCardSkeleton' : 'lightCredentialCardSkeleton'
+          return (
+            <View style={styles.noCredentialsContainer}>
+              <Text style={[styles.noCredentialsMessage, styles.noCredentialsMessageP1]}>
+                {t('credential.noCredentials')}
+              </Text>
               <SvgIcon name={iconName} {...styles.noCredentialCardSkeleton} fill={undefined} />
+              <View style={styles.nestedCardSkeletonContainer}>
+                <SvgIcon name={iconName} {...styles.noCredentialCardSkeleton} fill={undefined} />
+              </View>
+              <View style={styles.nestedCardSkeletonContainer}>
+                <SvgIcon name={iconName} {...styles.noCredentialCardSkeleton} fill={undefined} />
+              </View>
             </View>
-            <View style={styles.nestedCardSkeletonContainer}>
-              <SvgIcon name={iconName} {...styles.noCredentialCardSkeleton} fill={undefined} />
-            </View>
-          </View>
-        )
-      }}
-    />
+          )
+        }}
+      />
+    </SafeAreaView>
   )
 }
 
