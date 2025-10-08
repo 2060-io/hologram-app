@@ -40,6 +40,7 @@ export default (theme: AppTheme) =>
     },
     pressRefreshText: {
       textAlign: 'center',
+      color: theme.colors.tertiaryText,
     },
     containerBtnShare: {
       alignItems: 'center',
