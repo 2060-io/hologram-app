@@ -104,8 +104,7 @@
       "shareWith": "Share with",
       "PresentCredential": "Present to",
       "Presentation": "Presentation",
-      "ParentalControl": "Parental Control",
-      "PresentCredentialsFromChat": "Present Credential"
+      "ParentalControl": "Parental Control"
     },
     "authentication": {
       "walletLocked": "Hologram Locked",
@@ -222,6 +221,7 @@
       "deleteConfirmationDescription": "Delete an unexpired credential is not recommended.",
       "yesDelete": "Yes, delete permanently",
       "present": "Present credential",
+      "present_other": "Present Credentials",
       "presented": "Credential presented",
       "presentedOn": "Presented on"
     },
@@ -328,8 +328,6 @@
       "camera": "Take photo",
       "takeVideo": "Take video",
       "photoAndVideoLibrary": "Photo & video library",
-      "presentCredential": "Present Credential",
-      "presentCredential_other": "Present Credentials",
       "errorSendingMessage": "Error sending message",
       "errorSendingMedia": "Error sending media",
       "errorSendingAnswer": "Error sending answer",

@@ -15,7 +15,7 @@ export type PersonalChatStackParams = {
   ForwardMessages: undefined
   ShareMessages: undefined
   MRZScanner: { didcommThreadId: string }
-  PresentCredentialsFromChat: undefined
+  PresentCredentialsFromChat: { connectionId: string }
 }
 
 export type NavigationStackParams = {

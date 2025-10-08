@@ -6,6 +6,7 @@ import CommunicationChannels from './CommunicationChannels'
 import ConfirmChatDeletion from './ConfirmChatDeletion'
 import ConnectionList from './ConnectionsList'
 import CredentialDetails from './CredentialDetails'
+import Credentials from './Credentials'
 import IncomingCall from './IncomingCall'
 import LightboxModal from './LightboxModal'
 import ModalBottomHalf from './ModalBottomHalf'
@@ -32,4 +33,5 @@ export {
   CommunicationChannels,
   VideoCall,
   IncomingCall,
+  Credentials,
 }

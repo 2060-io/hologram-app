@@ -52,7 +52,6 @@ const PresentCredential = ({ navigation, route }: Props) => {
           proofState: ProofState.ProposalSent,
           presentedCredentials: JSON.stringify([{ mainInfo }]),
         }
-        // Create chat entry
         const chatEntry = createChatEntry(realm, {
           associatedRecordId: '',
           chatThreadId,

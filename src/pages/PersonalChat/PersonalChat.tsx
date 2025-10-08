@@ -410,6 +410,7 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
           onCompressingVideoProgress={setCompressingVideoProgress}
           getVideoCompressionCancellationId={getVideoCompressionCancellationId}
           navigation={navigation}
+          connectionId={chatThreadData.connectionId}
         />
       </ModalBottomHalf>
       <MessageFloatingMenu

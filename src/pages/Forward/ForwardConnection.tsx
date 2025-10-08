@@ -36,7 +36,6 @@ const ForwardConnection = ({ navigation, route }: Props) => {
         imageUrl: connection.imageUrl,
         did: connection.invitationDid,
       }
-      // Create chat entry
       const chatEntry = createChatEntry(realm, {
         chatThreadId,
         type: ChatEntryType.Invitation,

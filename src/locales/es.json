@@ -104,8 +104,7 @@
       "shareWith": "Compartir con",
       "PresentCredential": "Presentar a",
       "Presentation": "Presentación",
-      "ParentalControl": "Control parental",
-      "PresentCredentialsFromChat": "Presentar Credencial"
+      "ParentalControl": "Control parental"
     },
     "authentication": {
       "walletLocked": "Hologram bloqueada",
@@ -222,6 +221,7 @@
       "deleteConfirmationDescription": "Eliminar una credencial vigente no es recomendable.",
       "yesDelete": "Sí, eliminar permanentemente",
       "present": "Presentar credencial",
+      "present_other": "Presentar credenciales",
       "presented": "Credencial presentada",
       "presentedOn": "Presentado el"
     },
@@ -328,8 +328,6 @@
       "camera": "Tomar foto",
       "takeVideo": "Tomar video",
       "photoAndVideoLibrary": "Galería de fotos y vídeos",
-      "presentCredential": "Presentar credencial",
-      "presentCredential_other": "Presentar credenciales",
       "errorSendingMessage": "Error al enviar mensaje",
       "errorSendingMedia": "Error al enviar medios",
       "errorSendingAnswer": "Error al enviar respuesta",

@@ -176,7 +176,7 @@ const BasePresentationRequest: React.FC<Props> = ({
               })}
               <MainButton
                 disabled={!enabledPresentButton}
-                text={t('personalChat.presentCredential', { count: submission?.entries?.length })}
+                text={t('credential.present', { count: submission?.entries?.length })}
                 onPress={accept}
                 style={{ opacity: enabledPresentButton ? 1 : 0.5 }}
               />

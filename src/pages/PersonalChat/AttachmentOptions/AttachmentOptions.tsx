@@ -19,6 +19,7 @@ type Props = {
   onCompressingVideoProgress: (progress: number) => void
   getVideoCompressionCancellationId: (cancellationId: string) => void
   navigation: StackNavigationProp<PersonalChatStackParams>
+  connectionId: string
 }
 type OptionId = 'file-camera' | 'file-video' | 'file-gallery' | 'present-credentials'
 type Option = { id: OptionId; icon: keyof IconsNames }
@@ -35,6 +36,7 @@ const AttachmentOptions: React.FC<Props> = ({
   onCompressingVideoProgress,
   getVideoCompressionCancellationId,
   navigation,
+  connectionId,
 }) => {
   const { takePhotoOrVideo, takePhotoOrVideoFromGallery } = useImageCropPicker()
   const { shareMediaToDidComm } = useChatActions()
@@ -70,7 +72,7 @@ const AttachmentOptions: React.FC<Props> = ({
     'file-gallery': async () => await takePhotoOrVideoFromGallery(onMediaFile, { mediaType: 'any' }),
     'present-credentials': () => {
       closeAttachmentOptions()
-      navigation.navigate('PresentCredentialsFromChat')
+      navigation.navigate('PresentCredentialsFromChat', { connectionId })
     },
   }
 
@@ -78,7 +80,7 @@ const AttachmentOptions: React.FC<Props> = ({
     'file-camera': t('personalChat.camera'),
     'file-video': t('personalChat.takeVideo'),
     'file-gallery': t('personalChat.photoAndVideoLibrary'),
-    'present-credentials': t('personalChat.presentCredential_other'),
+    'present-credentials': t('credential.present'),
   }
 
   return (
