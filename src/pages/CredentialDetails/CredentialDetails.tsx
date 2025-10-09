@@ -14,7 +14,7 @@ import {
 } from '@2060/components'
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
 import { SvgIcon, Text, ServiceInformation } from '@2060/components/common'
-import { useCredentialById, useMobileAgent } from '@2060/hooks/agent'
+import { useCredentials, useMobileAgent } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { ServiceInfo } from '@2060/model'
 import { getCredentialDetailsForDisplay } from '@2060/services/agent/display'
@@ -27,11 +27,12 @@ const CredentialDetails = ({ route, navigation }: Props) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
+  const { agent } = useMobileAgent()
+  const { getCredentialById } = useCredentials()
   const [showConfirmationDeleteModal, setShowConfirmationDeleteModal] = useState(false)
   const [showContextualMenu, setShowContextualMenu] = useState(false)
   const [showModalSelectAttributesForPresent, setDisplayModalSelectAttributesForPresent] = useState(false)
-  const { agent } = useMobileAgent()
-  const credentialRecord = useCredentialById(credentialRecordId)
+  const credentialRecord = getCredentialById(credentialRecordId)
   const credentialDetails = credentialRecord ? getCredentialDetailsForDisplay(credentialRecord) : undefined
   const attributesSections = credentialDetails
     ? formatCredentialSubject({ subject: credentialDetails.attributes })
