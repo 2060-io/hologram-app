@@ -336,7 +336,7 @@ export class AgentActionExecuter {
       return { status: ActionExecutionStatus.OK }
     } catch (error) {
       if (error instanceof MessageSendingError) {
-        log(`**** Message sending error: ${JSON.stringify(error)}`)
+        logError(`Agent Action Error Sending Message Type ${action.type}: ${JSON.stringify(error)}`)
         const { message, associatedRecord, connection } = error.outboundMessageContext
 
         // Message failed to be sent. However we can already associate it to the chat entry
