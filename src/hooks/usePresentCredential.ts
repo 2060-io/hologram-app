@@ -10,8 +10,7 @@ import { createChatEntry } from '@2060/hooks/agent/chat/services'
 import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
 import { ChatEntryRole, ChatEntryState, ChatEntryType, VPResponseMetadata } from '@2060/model'
-import { getCredentialDetailsForDisplay, getCredentialMainInfo } from '@2060/services/agent/display'
-import { formatCredentialSubject } from '@2060/services/agent/formatCredentialSubject'
+import { getCredentialMainInfo } from '@2060/services/agent/display'
 import { toast } from '@2060/utils/toast'
 
 export const usePresentCredential = () => {
@@ -36,15 +35,9 @@ export const usePresentCredential = () => {
       const mainInfo = getCredentialMainInfo(credentialRecord)
       const credentialDefinitionId = credentialRecord.getTag('anonCredsCredentialDefinitionId') as string
       if (!credentialDefinitionId) return
-      const credentialDetails = getCredentialDetailsForDisplay(credentialRecord)
       const anoncredsAttributes: AnoncredsAttribute[] = []
-      const attributesSections = formatCredentialSubject({ subject: credentialDetails.attributes })
-      attributesSections.forEach(section => {
-        section.rows.forEach(row => {
-          if (attributesToPresent.includes(row.key)) {
-            anoncredsAttributes.push({ name: row.key, credentialDefinitionId })
-          }
-        })
+      attributesToPresent.forEach(attribute => {
+        anoncredsAttributes.push({ name: attribute, credentialDefinitionId })
       })
       connectionsId.forEach(async connectionId => {
         const didcommConnection = await agent.connections.getById(connectionId)
