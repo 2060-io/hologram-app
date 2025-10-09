@@ -160,6 +160,7 @@ const BaseCustomView: React.FC<BaseCustomMessageViewProps> = memo(props => {
               metadata={chatEntry.metadata as VCOfferMetadata}
               agent={agent}
               sender={sender}
+              chatEntryId={chatEntry.id}
             />
           )
         case ChatEntryType.Invitation:

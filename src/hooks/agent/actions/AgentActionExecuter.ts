@@ -17,6 +17,11 @@ import {
   DidExchangeCompleteMessage,
   DiscoverFeaturesApi,
   V2QueriesMessage,
+  KeylistUpdateMessage,
+  AutoAcceptCredential,
+  V2RequestCredentialMessage,
+  V2CredentialProblemReportMessage,
+  V2PresentationProblemReportMessage,
 } from '@credo-ts/core'
 import { AnswerMessage } from '@credo-ts/question-answer'
 import { Realm } from 'realm'
@@ -257,6 +262,56 @@ export class AgentActionExecuter {
         await options.agent.modules.calls.hangup({ connectionId, threadId })
         return {
           outgoingMessageType: CallEndMessage.type.messageTypeUri,
+        }
+      }
+    } else if (action.type === AgentActionType.RemoveOutOfBandRecord) {
+      const parameters = action.parameters as {
+        outOfBandId: string
+      }
+      return async (options: { agent: MobileAgent }) => {
+        const { outOfBandId } = parameters
+        await options.agent.oob.deleteById(outOfBandId)
+        return {
+          outgoingMessageType: KeylistUpdateMessage.type.messageTypeUri,
+        }
+      }
+    } else if (action.type === AgentActionType.AcceptCredentialOffer) {
+      const parameters = action.parameters as {
+        credentialRecordId: string
+      }
+      return async (options: { agent: MobileAgent }) => {
+        const { credentialRecordId } = parameters
+        await options.agent.credentials.acceptOffer({
+          credentialRecordId,
+          autoAcceptCredential: AutoAcceptCredential.ContentApproved,
+        })
+        return {
+          outgoingMessageType: V2RequestCredentialMessage.type.messageTypeUri,
+        }
+      }
+    } else if (action.type === AgentActionType.DeclineCredentialOffer) {
+      const parameters = action.parameters as {
+        credentialRecordId: string
+      }
+      return async (options: { agent: MobileAgent }) => {
+        const { credentialRecordId } = parameters
+        await options.agent.credentials.declineOffer(credentialRecordId, {
+          sendProblemReport: true,
+          problemReportDescription: 'e.msg.refused',
+        })
+        return {
+          outgoingMessageType: V2CredentialProblemReportMessage.type.messageTypeUri,
+        }
+      }
+    } else if (action.type === AgentActionType.DeclineProofRequest) {
+      const parameters = action.parameters as {
+        proofRecordId: string
+      }
+      return async (options: { agent: MobileAgent }) => {
+        const { proofRecordId } = parameters
+        await options.agent.proofs.declineRequest({ proofRecordId, sendProblemReport: true })
+        return {
+          outgoingMessageType: V2PresentationProblemReportMessage.type.messageTypeUri,
         }
       }
     }
