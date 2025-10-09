@@ -206,7 +206,7 @@
       "errorConnectToSelf": "You cannot connect to yourself",
       "serviceProvider": "Service provider:",
       "termsAndConditions": "Terms and conditions",
-      "privacyPolicy": "Privacy policy.",
+      "privacyPolicy": "Privacy policy",
       "ageRestrictions": "Age restrictions:",
       "noAgeRestrictions": "No restrictions",
       "serviceNotVerifiable": "This service is not verifiable.",
@@ -225,7 +225,9 @@
       "presented": "Credential presented",
       "presentedOn": "Presented on",
       "selectCredential": "Select the credential you want to present",
-      "selectAttributes": "Select attributes you want to share in presentation"
+      "selectAttributes": "Select attributes you want to share in presentation",
+      "selectAll": "Select all",
+      "unselectAll": "Unselect all"
     },
     "credentialOffer": {
       "title": "Credential Offer",

@@ -27,6 +27,13 @@ const styles = (theme: AppTheme) =>
     title: {
       color: theme.colors.primaryText,
     },
+    selectAllText: {
+      paddingTop: 12,
+      width: '50%',
+      textDecorationLine: 'underline',
+      color: theme.colors.tertiaryText,
+      fontSize: theme.fontSize.md2,
+    },
     attributesSectionTitle: {
       fontSize: theme.fontSize.lg,
       color: theme.colors.primaryText,

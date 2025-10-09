@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ScrollView, View, FlatList, TouchableOpacity } from 'react-native'
+import { ScrollView, View, FlatList, TouchableOpacity, SafeAreaView } from 'react-native'
 
 import CredentialAttribute from '../CredentialAttribute'
 
@@ -22,6 +22,10 @@ const SelectCredentialAttributes = ({ visible, attributesSections, onRequestClos
   const theme = useTheme()
   const styles = getStyles(theme)
   const [attributesToPresent, setAttributesToPresent] = useState<string[]>([])
+  const [areSelectedAll, setAreAllSelected] = useState(false)
+  const allAttributes = useMemo(() => {
+    return attributesSections.map(section => section.rows.map(({ key }) => key)).flat()
+  }, [attributesSections])
 
   const beforeClose = () => {
     setAttributesToPresent([])
@@ -38,9 +42,15 @@ const SelectCredentialAttributes = ({ visible, attributesSections, onRequestClos
     })
   }
 
+  const handleSelectAll = () => {
+    const newAreAllSelected = !areSelectedAll
+    newAreAllSelected ? setAttributesToPresent(allAttributes) : setAttributesToPresent([])
+    setAreAllSelected(newAreAllSelected)
+  }
+
   return (
     <Modal visible={visible} statusBarTranslucent={false} onRequestClose={beforeClose}>
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <TouchableOpacity activeOpacity={1} style={styles.cancelContainer} onPress={beforeClose}>
           <Text style={styles.cancelText} typography="EuclidCircularA-Medium">
             {t('general.cancel')}
@@ -49,8 +59,9 @@ const SelectCredentialAttributes = ({ visible, attributesSections, onRequestClos
         </TouchableOpacity>
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.subContainer}>
-            <Text style={styles.title} typography="EuclidCircularA-Regular">
-              {t('credential.selectAttributes')}
+            <Text style={styles.title}>{t('credential.selectAttributes')}</Text>
+            <Text style={styles.selectAllText} onPress={handleSelectAll}>
+              {areSelectedAll ? t('credential.unselectAll') : t('credential.selectAll')}
             </Text>
             <FlatList
               data={attributesSections}
@@ -88,7 +99,7 @@ const SelectCredentialAttributes = ({ visible, attributesSections, onRequestClos
             />
           </View>
         </ScrollView>
-      </View>
+      </SafeAreaView>
     </Modal>
   )
 }
