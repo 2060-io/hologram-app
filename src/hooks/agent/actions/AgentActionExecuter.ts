@@ -21,6 +21,7 @@ import {
   V2RequestCredentialMessage,
   V2CredentialProblemReportMessage,
   V2PresentationProblemReportMessage,
+  KeylistUpdateMessage,
 } from '@credo-ts/core'
 import { AnswerMessage } from '@credo-ts/question-answer'
 import { Realm } from 'realm'
@@ -300,6 +301,15 @@ export class AgentActionExecuter {
         await options.agent.proofs.declineRequest({ proofRecordId, sendProblemReport: true })
         return {
           outgoingMessageType: V2PresentationProblemReportMessage.type.messageTypeUri,
+    } else if (action.type === AgentActionType.RemoveOutOfBandRecord) {
+      const parameters = action.parameters as {
+        outOfBandId: string
+      }
+      return async (options: { agent: MobileAgent }) => {
+        const { outOfBandId } = parameters
+        await options.agent.oob.deleteById(outOfBandId)
+        return {
+          outgoingMessageType: KeylistUpdateMessage.type.messageTypeUri,
         }
       }
     }

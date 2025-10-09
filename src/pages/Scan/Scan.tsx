@@ -25,7 +25,7 @@ import { TextInput, Text, MainButton, ModalLoading } from '@2060/components/comm
 import { useAppState } from '@2060/hooks'
 import { useMobileAgent } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { DidcommInvitationType, processInvitation } from '@2060/services/agent/oob'
+import { DidcommInvitationType, getOutOfBandRecordById, processInvitation } from '@2060/services/agent/oob'
 import { log, logError } from '@2060/utils'
 import { toast } from '@2060/utils/toast'
 
@@ -67,7 +67,7 @@ const Scan = ({ navigation }: Props) => {
         if (!success || !recordId) return
 
         if (invitationType === DidcommInvitationType.ConnectionRequest) {
-          const outOfBandRecord = await agent.oob.getById(recordId)
+          const outOfBandRecord = await getOutOfBandRecordById(agent, recordId)
           navigation.navigate('ConnectionInvitation', {
             outOfBandRecord,
             existingConnectionId,
@@ -82,6 +82,9 @@ const Scan = ({ navigation }: Props) => {
             did: invitation.invitationDids[0],
           })
         }
+      } catch (error) {
+        toast({ type: 'error', message: t('invitation.errorProcessingInvitation') })
+        logError(`Error processing invitation: ${error}`)
       } finally {
         if (!processInvitationResult?.success) throw new Error(processInvitationResult?.error)
       }

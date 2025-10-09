@@ -241,18 +241,18 @@ export const processInvitation = async (
     success: false,
   }
 }
-export const createInvitation = async (
-  agent: MobileAgent,
-  options: { label?: string },
-): Promise<OutOfBandInvitation> => {
-  // TODO: make it multi-use (it requires a fix in the way keylist-update-response is handled)
+export const createInvitation = async (agent: MobileAgent, options: { label?: string }) => {
   const oobRecord = await agent.oob.createInvitation({
     routing: await getMediationRouting(agent.context),
     label: options.label,
-    multiUseInvitation: false,
+    multiUseInvitation: true,
   })
+  return oobRecord
+}
 
-  return oobRecord.outOfBandInvitation
+export const getOutOfBandRecordById = async (agent: MobileAgent, outOfBandId: string) => {
+  const oobRecord = await agent.oob.getById(outOfBandId)
+  return oobRecord
 }
 
 export const createOobInvitation = (connection: ConnectionRecord) => {
