@@ -336,10 +336,8 @@ export function getOfferedCredentialDetailsForDisplay(
   }
 }
 
-export function getCredentialDetailsForDisplay(
-  credentialRecord: W3cCredentialRecord,
-): CredentialDetailsForDisplay {
-  let attributes: { [key: string]: unknown } = {}
+export function getCredentialAttributes(credentialRecord: W3cCredentialRecord) {
+  let attributes: Record<string, unknown> = {}
   if (credentialRecord.type === W3cCredentialRecord.type) {
     const credential = JsonTransformer.toJSON(
       credentialRecord.credential.claimFormat === ClaimFormat.JwtVc
@@ -352,10 +350,15 @@ export function getCredentialDetailsForDisplay(
       ? (credential.credentialSubject[0] ?? {})
       : credential.credentialSubject
   }
+  return attributes
+}
 
+export function getCredentialDetailsForDisplay(
+  credentialRecord: W3cCredentialRecord,
+): CredentialDetailsForDisplay {
   return {
     mainInfo: getCredentialMainInfo(credentialRecord),
-    attributes,
+    attributes: getCredentialAttributes(credentialRecord),
   }
 }
 

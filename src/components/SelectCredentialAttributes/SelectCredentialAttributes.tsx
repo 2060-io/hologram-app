@@ -28,10 +28,14 @@ const SelectCredentialAttributes = ({ visible, attributesSections, onRequestClos
   }, [attributesSections])
 
   const beforeClose = () => {
-    setAttributesToPresent([])
+    cleanStateVars()
     onRequestClose()
   }
 
+  const cleanStateVars = () => {
+    setAttributesToPresent([])
+    setAreAllSelected(false)
+  }
   const updateSelectedAttributesToPresent = (attributeKey: string) => {
     setAttributesToPresent(prevState => {
       if (prevState.includes(attributeKey)) {
@@ -73,12 +77,12 @@ const SelectCredentialAttributes = ({ visible, attributesSections, onRequestClos
                     </Text>
                     <FlatList
                       data={section.rows}
-                      renderItem={({ item: rowDetail }) => {
-                        const isSelected = attributesToPresent.includes(rowDetail.key)
+                      renderItem={({ item: attribute }) => {
+                        const isSelected = attributesToPresent.includes(attribute.key)
                         return (
                           <CredentialAttribute
-                            key={rowDetail.key}
-                            attribute={rowDetail}
+                            key={attribute.key}
+                            attribute={attribute}
                             style={[
                               styles.credentialAttributeContainer,
                               isSelected && styles.selectedCredentialAttribute,

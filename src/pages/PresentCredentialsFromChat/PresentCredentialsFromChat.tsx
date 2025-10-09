@@ -12,7 +12,7 @@ import { Text } from '@2060/components/common'
 import { usePresentCredential } from '@2060/hooks'
 import { useMobileAgent } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { getCredentialDetailsForDisplay } from '@2060/services/agent/display'
+import { getCredentialAttributes } from '@2060/services/agent/display'
 import {
   CredentialAttributeTable,
   formatCredentialSubject,
@@ -41,8 +41,8 @@ const PresentCredentialsFromChat = ({ navigation, route }: Props) => {
       .resolve(W3cCredentialRepository)
       .findById(agent.context, credentialRecordId)
     if (!credentialRecord) return
-    const credentialDetails = getCredentialDetailsForDisplay(credentialRecord)
-    const attributesSections = formatCredentialSubject({ subject: credentialDetails.attributes })
+    const credentialAttributes = getCredentialAttributes(credentialRecord)
+    const attributesSections = formatCredentialSubject({ subject: credentialAttributes })
     currentAttributesSections.current = attributesSections
     currentCredentialRecordId.current = credentialRecordId
     displayModalSelectAttributesForPresent()
