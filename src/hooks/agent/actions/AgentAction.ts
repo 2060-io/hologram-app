@@ -24,6 +24,7 @@ export enum AgentActionType {
   QueryServiceFeatures = 'QueryServiceFeatures',
   CreateCallOffer = 'CreateCallOffer',
   HangupCall = 'HangupCall',
+  RemoveOutOfBandRecord = 'RemoveOutOfBandRecord',
 }
 
 export type AgentAction = {

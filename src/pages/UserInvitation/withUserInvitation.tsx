@@ -1,51 +1,101 @@
-import React, { ElementType, useState, useEffect } from 'react'
+import React, { ElementType, useState, useEffect, useRef, useTransition } from 'react'
+import { useTranslation } from 'react-i18next'
 import Config from 'react-native-config'
 
-import { ConnectionInfo, UserInvitationProps, WrapperUserInvitationProps } from './UserInvitationProps'
+import { Invitation, UserInvitationProps, WrapperUserInvitationProps } from './UserInvitationProps'
 
 import { ModalLoading } from '@2060/components/common'
-import { useMobileAgent, useUserProfile } from '@2060/hooks/agent'
-import { createInvitation } from '@2060/services/agent/oob'
+import { AgentActionType, useMobileAgent, useUserProfile } from '@2060/hooks/agent'
+import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
+import { createInvitation, getOutOfBandRecordById } from '@2060/services/agent/oob'
+import {
+  getStorageData,
+  setStorageData,
+  USER_INVITATION_OUT_OF_BAND_RECORD_ID,
+} from '@2060/services/localStorage'
+import { logError } from '@2060/utils'
 import { toast } from '@2060/utils/toast'
 
 const withUserInvitation = (UserInvitationComponent: ElementType<UserInvitationProps>) => {
   const WrapperUserInvitation = (props: WrapperUserInvitationProps) => {
-    const [creatingInvitation, setCreatingInvitation] = useState(false)
-    const [connectionInfo, setConnectionInfo] = useState<ConnectionInfo>()
-
+    const { t } = useTranslation()
+    const { addAgentActionToQueue } = useAgentActionQueue()
     const { userProfileData } = useUserProfile()
     const { agent } = useMobileAgent()
+    const [creatingInvitation, startCreateInvitationTransition] = useTransition()
+    const [invitation, setInvitation] = useState<Invitation>()
+    const currentInvitationOutOfBandRecordId = useRef<string>(null)
 
-    const handleCreateConnection = async () => {
+    useEffect(() => {
+      const setupInvitation = async () => {
+        const persistedOutOfBandRecordId = (await getStorageData(
+          USER_INVITATION_OUT_OF_BAND_RECORD_ID,
+        )) as string
+        if (persistedOutOfBandRecordId) {
+          getCurrentInvitation(persistedOutOfBandRecordId)
+        } else {
+          createNewInvitation()
+        }
+      }
+      setupInvitation()
+    }, [])
+
+    const getCurrentInvitation = async (outOfBandRecordId: string) => {
       if (!agent) return
-      setCreatingInvitation(true)
       try {
-        const invitation = await createInvitation(agent, {
-          label: userProfileData?.displayName,
-        })
-        setConnectionInfo({
-          // TODO: Handle properly the case where no label is set
-          displayName: invitation.label ?? 'Unlabeled',
-          invitationCode: invitation.toUrl({ domain: Config.BASE_INVITATION_URL as string }),
+        currentInvitationOutOfBandRecordId.current = outOfBandRecordId
+        const { outOfBandInvitation } = await getOutOfBandRecordById(agent, outOfBandRecordId)
+        setInvitation({
+          displayName: outOfBandInvitation.label ?? 'Unlabeled',
+          url: outOfBandInvitation.toUrl({ domain: Config.BASE_INVITATION_URL as string }),
         })
       } catch (error) {
         props.navigation.goBack()
-        toast({ type: 'error', message: `Error creating invitation ${error}` })
-      } finally {
-        setCreatingInvitation(false)
+        toast({ type: 'error', message: t('invitation.errorGettingInvitation') })
+        logError(`Error getting current invitation ${error}`)
       }
     }
 
-    useEffect(() => {
-      handleCreateConnection()
-    }, [])
+    const createNewInvitation = async () => {
+      if (!agent) return
+      startCreateInvitationTransition(async () => {
+        try {
+          const newOutOfBandRecord = await createInvitation(agent, {
+            label: userProfileData?.displayName,
+          })
+          setInvitation({
+            displayName: newOutOfBandRecord.outOfBandInvitation.label ?? 'Unlabeled',
+            url: newOutOfBandRecord.outOfBandInvitation.toUrl({
+              domain: Config.BASE_INVITATION_URL as string,
+            }),
+          })
+          if (currentInvitationOutOfBandRecordId.current) {
+            addAgentActionToQueue({
+              type: AgentActionType.RemoveOutOfBandRecord,
+              parameters: { outOfBandId: currentInvitationOutOfBandRecordId.current },
+            })
+          }
+          await setStorageData(USER_INVITATION_OUT_OF_BAND_RECORD_ID, newOutOfBandRecord.id)
+          currentInvitationOutOfBandRecordId.current = newOutOfBandRecord.id
+        } catch (error) {
+          if (!currentInvitationOutOfBandRecordId.current) props.navigation.goBack()
+          toast({ type: 'error', message: t('invitation.errorCreatingInvitation') })
+          logError(`Error creating invitation ${error}`)
+        }
+      })
+    }
 
-    if (creatingInvitation || !connectionInfo) {
-      return <ModalLoading visible={creatingInvitation || !connectionInfo} />
+    if (creatingInvitation || !invitation) {
+      return <ModalLoading visible={creatingInvitation || !invitation} />
     }
 
     return (
-      <UserInvitationComponent {...props} userProfileData={userProfileData} connectionInfo={connectionInfo} />
+      <UserInvitationComponent
+        {...props}
+        userProfileData={userProfileData}
+        invitation={invitation}
+        createNewInvitation={createNewInvitation}
+      />
     )
   }
   return WrapperUserInvitation

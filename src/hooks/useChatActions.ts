@@ -15,7 +15,6 @@ import {
   useChat,
   useFileUploadDownload,
   RepliedMessage,
-  useChats,
   AgentActionType,
   DidCommMediaFileSharingData,
 } from './agent'
@@ -29,6 +28,7 @@ import {
   updateChatEntryMetadata,
   updateThread,
 } from './agent/chat/services'
+import { useAgentActionQueue } from './agent/useAgentActionQueue'
 import { useLocalRealm } from './providers/RealmProvider'
 
 import { MAX_VIDEO_DURATION } from '@2060/constants'
@@ -58,7 +58,7 @@ export const useChatActions = () => {
   const connectionId = chatThread?.data.connectionId
   const { startMediaUpload } = useFileUploadDownload()
   const { realm } = useLocalRealm()
-  const { addAgentActionToQueue } = useChats()
+  const { addAgentActionToQueue } = useAgentActionQueue()
 
   const onClearRepliedMessageState = () => setRepliedMessage()
 
