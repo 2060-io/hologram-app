@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native'
 
-import { AppTheme, cardShadowStyles, cardStyles, headerHeight } from '@2060/styles'
+import { AppTheme, cardShadowStyles, cardStyles } from '@2060/styles'
 
 const styles = (theme: AppTheme) =>
   StyleSheet.create({
@@ -9,8 +9,7 @@ const styles = (theme: AppTheme) =>
       backgroundColor: theme.colors.secondary,
     },
     cancelContainer: {
-      height: headerHeight,
-      backgroundColor: theme.isDarkMode ? theme.colors.secondary : theme.colors.primary,
+      marginVertical: 14,
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'flex-end',
@@ -22,7 +21,8 @@ const styles = (theme: AppTheme) =>
       marginRight: 14,
     },
     subContainer: {
-      padding: 12,
+      paddingHorizontal: 12,
+      paddingBottom: 12,
     },
     title: {
       color: theme.colors.primaryText,

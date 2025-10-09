@@ -53,7 +53,7 @@ const SelectCredentialAttributes = ({ visible, attributesSections, onRequestClos
   }
 
   return (
-    <Modal visible={visible} statusBarTranslucent={false} onRequestClose={beforeClose}>
+    <Modal visible={visible} statusBarTranslucent={false} onRequestClose={beforeClose} animationType="slide">
       <SafeAreaView style={styles.container}>
         <TouchableOpacity activeOpacity={1} style={styles.cancelContainer} onPress={beforeClose}>
           <Text style={styles.cancelText} typography="EuclidCircularA-Medium">
