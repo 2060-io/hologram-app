@@ -1,66 +1,67 @@
-import { AutoAcceptCredential, CredentialState } from '@credo-ts/core'
+import { CredentialState } from '@credo-ts/core'
 import { StackScreenProps } from '@react-navigation/stack'
 import React from 'react'
-import { LogBox } from 'react-native'
 
 import BaseCredentialOffer from './BaseCredentialOffer'
 
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
-import { useMobileAgent } from '@2060/hooks/agent'
+import { AgentActionType } from '@2060/hooks/agent'
+import { findAllByAssociatedRecordId, updateChatEntryMetadata } from '@2060/hooks/agent/chat/services'
+import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
+import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
 import { useCredentialExchangeForDisplay } from '@2060/hooks/useCredentialExchangeForDisplay'
-import { logError } from '@2060/utils'
+import { ChatEntryType } from '@2060/model'
 
 interface Props extends StackScreenProps<NavigationStackParams, 'DidcommCredentialOffer'> {}
 
 const DidcommCredentialOffer: React.FC<Props> = ({ route, navigation }) => {
-  LogBox.ignoreLogs(['Non-serializable values were found in the navigation state'])
+  const routes = navigation.getState()?.routes
+  const prevRoute = routes[routes.length - 2]
+  const comesFromChat = prevRoute.name === 'PersonalChatStack'
   const { credentialRecordId } = route.params
   const { credentialDetails, credentialState } = useCredentialExchangeForDisplay({ credentialRecordId })
-  const { agent } = useMobileAgent()
+  const { addAgentActionToQueue } = useAgentActionQueue()
+  const { realm } = useLocalRealm()
   const enableAcceptRejectButtons = credentialState === CredentialState.OfferReceived
 
-  const accept = () => {
-    try {
-      // TODO: Move this logic to an AgentAction
-      agent?.credentials
-        .acceptOffer({
-          credentialRecordId,
-          autoAcceptCredential: AutoAcceptCredential.ContentApproved,
-        })
-        .catch(error => logError(`error: ${error}`))
-    } catch (error) {
-      logError(`Error in accept action: ${error}`)
+  const updateChatEntryMetadataIfNecessary = (newCredentialState: CredentialState) => {
+    if (realm && comesFromChat) {
+      const [chatEntry] = findAllByAssociatedRecordId(realm, credentialRecordId, ChatEntryType.VCOffer)
+      if (chatEntry) {
+        const newMetadata = { ...chatEntry.metadata, credentialState: newCredentialState }
+        updateChatEntryMetadata(realm, chatEntry.id, newMetadata)
+      }
     }
   }
 
+  const accept = () => {
+    updateChatEntryMetadataIfNecessary(CredentialState.RequestSent)
+    addAgentActionToQueue({
+      type: AgentActionType.AcceptCredentialOffer,
+      parameters: { credentialRecordId },
+    })
+    if (navigation.canGoBack()) navigation.goBack()
+    else navigation.replace('Home')
+  }
+
   const refuse = () => {
-    agent?.credentials
-      .declineOffer(credentialRecordId, {
-        sendProblemReport: true,
-        problemReportDescription: 'e.msg.refused',
-      })
-      .catch(error => logError(`error: ${error}`))
-  }
-
-  const onAccept = () => {
+    updateChatEntryMetadataIfNecessary(CredentialState.Declined)
+    addAgentActionToQueue({
+      type: AgentActionType.DeclineCredentialOffer,
+      parameters: { credentialRecordId },
+    })
     if (navigation.canGoBack()) navigation.goBack()
     else navigation.replace('Home')
-    accept()
   }
 
-  const onRefuse = () => {
-    if (navigation.canGoBack()) navigation.goBack()
-    else navigation.replace('Home')
-    refuse()
-  }
   return (
     <>
       {credentialDetails ? (
         <BaseCredentialOffer
           navigation={navigation}
           credentialDetails={credentialDetails}
-          accept={onAccept}
-          refuse={onRefuse}
+          accept={accept}
+          refuse={refuse}
           enableAcceptRejectButtons={enableAcceptRejectButtons}
         />
       ) : null}

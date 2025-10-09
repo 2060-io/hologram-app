@@ -25,6 +25,9 @@ export enum AgentActionType {
   CreateCallOffer = 'CreateCallOffer',
   HangupCall = 'HangupCall',
   RemoveOutOfBandRecord = 'RemoveOutOfBandRecord',
+  AcceptCredentialOffer = 'AcceptCredentialOffer',
+  DeclineCredentialOffer = 'DeclineCredentialOffer',
+  DeclineProofRequest = 'DeclineProofRequest',
 }
 
 export type AgentAction = {
