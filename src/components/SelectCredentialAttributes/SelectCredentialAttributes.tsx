@@ -93,9 +93,10 @@ const SelectCredentialAttributes = ({ visible, attributesSections, onRequestClos
               }}
             />
             <MainButton
+              disabled={!attributesToPresent.length}
               text={t('credential.present')}
               onPress={() => onPresent(attributesToPresent)}
-              style={styles.presentButton}
+              style={{ ...styles.presentButton, opacity: attributesToPresent.length ? 1 : 0.5 }}
             />
           </View>
         </ScrollView>
