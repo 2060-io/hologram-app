@@ -31,10 +31,6 @@ const styles = (theme: AppTheme) =>
     noCredentialsMessageP1: {
       color: theme.colors.primaryText,
     },
-    noCredentialsMessageP2: {
-      color: theme.colors.green,
-      textDecorationLine: 'underline',
-    },
     nestedCardSkeletonContainer: {
       marginTop: -screenWidth * 0.35,
     },

@@ -98,9 +98,7 @@ const ServiceMainInfo = ({ serviceInfo }: Props) => {
               style={styles.termsAndConditionsContainer}
               onPress={() => tryToOpenURL(termsAndConditionsUrl)}
             >
-              <Text typography="EuclidCircularA-Regular" style={[styles.text, styles.underLineText]}>
-                {t('invitation.termsAndConditions')}
-              </Text>
+              <Text style={[styles.text, styles.underLineText]}>{t('invitation.termsAndConditions')}</Text>
               <SvgIcon name="arrowUpRightFromSquare" fill={theme.colors.primaryText} width={15} height={15} />
             </TouchableOpacity>
           )}
