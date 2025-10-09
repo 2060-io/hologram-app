@@ -25,7 +25,7 @@ export type CredentialAttributeRow =
   | CredentialAttributeRowImage
   | CredentialAttributeRowImageAndString
 
-type CredentialAttributeTable = {
+export type CredentialAttributeTable = {
   title?: string
   rows: CredentialAttributeRow[]
   depth: number // depth level

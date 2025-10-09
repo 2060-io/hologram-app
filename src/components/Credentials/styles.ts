@@ -6,6 +6,7 @@ import { screenWidth, widthPercentageToDP } from '@2060/utils/responsiveUtils'
 const styles = (theme: AppTheme) =>
   StyleSheet.create({
     container: {
+      flex: 1,
       marginTop: 12,
     },
     searchInputContainer: {

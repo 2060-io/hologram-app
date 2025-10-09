@@ -25,6 +25,7 @@ export const usePresentCredential = () => {
     async (
       credentialRecordId: string,
       connectionsId: string[],
+      attributesToPresent: string[],
       navigation: StackNavigationProp<ParamListBase>,
     ) => {
       if (!agent || !realm) return
@@ -37,10 +38,12 @@ export const usePresentCredential = () => {
       if (!credentialDefinitionId) return
       const credentialDetails = getCredentialDetailsForDisplay(credentialRecord)
       const anoncredsAttributes: AnoncredsAttribute[] = []
-      const detailsSections = formatCredentialSubject({ subject: credentialDetails.attributes })
-      detailsSections.forEach(section => {
+      const attributesSections = formatCredentialSubject({ subject: credentialDetails.attributes })
+      attributesSections.forEach(section => {
         section.rows.forEach(row => {
-          anoncredsAttributes.push({ name: row.key, credentialDefinitionId })
+          if (attributesToPresent.includes(row.key)) {
+            anoncredsAttributes.push({ name: row.key, credentialDefinitionId })
+          }
         })
       })
       connectionsId.forEach(async connectionId => {

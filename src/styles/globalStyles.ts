@@ -6,6 +6,8 @@ import { IS_IOS } from '@2060/constants'
 import { hexTransparency } from '@2060/utils/colorUtils'
 import { heightPercentageToDP } from '@2060/utils/responsiveUtils'
 
+export const headerHeight = heightPercentageToDP('7%')
+
 export const getGlobalStyles = (theme: AppTheme) =>
   StyleSheet.create({
     headerTitleStyle: {

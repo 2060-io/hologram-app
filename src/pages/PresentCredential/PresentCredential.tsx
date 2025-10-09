@@ -10,12 +10,12 @@ import { usePresentCredential } from '@2060/hooks'
 interface Props extends StackScreenProps<NavigationStackParams, 'PresentCredential'> {}
 
 const PresentCredential = ({ navigation, route }: Props) => {
-  const { credentialRecordId } = route.params
+  const { credentialRecordId, attributesToPresent } = route.params
   const { t } = useTranslation()
   const { present } = usePresentCredential()
 
   const presentCredential = useCallback((connectionsId: string[]) => {
-    present(credentialRecordId, connectionsId, navigation)
+    present(credentialRecordId, connectionsId, attributesToPresent, navigation)
   }, [])
 
   return (

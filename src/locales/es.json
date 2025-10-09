@@ -224,7 +224,8 @@
       "present_other": "Presentar credenciales",
       "presented": "Credencial presentada",
       "presentedOn": "Presentado el",
-      "selectCredential": "Selecciona la credencial que quieres presentar"
+      "selectCredential": "Selecciona la credencial que quieres presentar",
+      "selectAttributes": "Selecciona los Atributos que quieres compartir en la presentación"
     },
     "credentialOffer": {
       "title": "Credencial ofrecida",
