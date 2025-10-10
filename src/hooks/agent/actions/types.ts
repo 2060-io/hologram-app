@@ -84,6 +84,10 @@ type DeclineCredentialOfferParameters = {
   credentialRecordId: string
 }
 
+type DeclineProofRequestParameters = {
+  proofRecordId: string
+}
+
 export type {
   SendTextMessageParameters,
   SendReactionParameters,
@@ -101,4 +105,5 @@ export type {
   RemoveOutOfBandRecordParameters,
   AcceptCredentialOfferParameters,
   DeclineCredentialOfferParameters,
+  DeclineProofRequestParameters,
 }

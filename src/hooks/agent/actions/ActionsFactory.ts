@@ -29,6 +29,7 @@ import {
   AcceptCredentialOfferParameters,
   CreateCallOfferParameters,
   DeclineCredentialOfferParameters,
+  DeclineProofRequestParameters,
   ForwardConnectionParameters,
   HangupCallParameters,
   MenuSelectionParameters,
@@ -229,8 +230,7 @@ export const ACTION_FACTORIES: Record<AgentActionType, ActionFactory> = {
   [AgentActionType.DeclineCredentialOffer]: action => {
     return async (options: { agent: MobileAgent }) => {
       const parameters = action.parameters as DeclineCredentialOfferParameters
-      const { credentialRecordId } = parameters
-      await options.agent.credentials.declineOffer(credentialRecordId, {
+      await options.agent.credentials.declineOffer(parameters.credentialRecordId, {
         sendProblemReport: true,
         problemReportDescription: 'e.msg.refused',
       })
@@ -238,9 +238,9 @@ export const ACTION_FACTORIES: Record<AgentActionType, ActionFactory> = {
     }
   },
   [AgentActionType.DeclineProofRequest]: action => {
-    const parameters = action.parameters as { proofRecordId: string }
-    const { proofRecordId } = parameters
     return async (options: { agent: MobileAgent }) => {
+      const parameters = action.parameters as DeclineProofRequestParameters
+      const { proofRecordId } = parameters
       await options.agent.proofs.declineRequest({ proofRecordId, sendProblemReport: true })
       return { outgoingMessageType: V2PresentationProblemReportMessage.type.messageTypeUri }
     }
