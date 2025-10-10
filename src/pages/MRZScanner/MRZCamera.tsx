@@ -55,7 +55,7 @@ const MRZCamera = ({ skipScan, cameraProps, onData, scanSuccess, refuse }: MRZCa
     (data: ResolvedText) => {
       /* Scanning the text from the image and then setting the state of the component. */
       if (data && data.blocks.length > 0) {
-        let lines: string[] = []
+        const lines: string[] = []
         data.blocks.forEach(block => {
           lines.push(block.blockText)
         })

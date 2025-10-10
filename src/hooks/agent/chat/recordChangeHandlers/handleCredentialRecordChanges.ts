@@ -8,6 +8,7 @@ import {
   V2CredentialProblemReportMessage,
   W3cCredentialRepository,
 } from '@credo-ts/core'
+import { TrustResolutionOutcome } from '@verana-labs/verre'
 import Realm from 'realm'
 
 import { createChatEntry, findAllByAssociatedRecordId, updateChatEntry } from '../services/ChatEntryService'
@@ -94,7 +95,7 @@ export const handleCredentialExchangeRecordChanges = async (options: {
           ?.issuerId
       : undefined)
   const issuerName = getConnectionDisplayName(connection)
-  const issuerStatus = 'notFound'
+  const issuerStatus = TrustResolutionOutcome.INVALID
   const issuerLogoUrl = getConnectionDisplayPicture(connection)
   const schemaName = schemaId ? (await agent.modules.anoncreds.getSchema(schemaId)).schema?.name : undefined
 

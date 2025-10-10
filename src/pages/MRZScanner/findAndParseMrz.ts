@@ -1,5 +1,4 @@
 /* eslint-disable no-param-reassign */
-// logging import and setup
 import { parse } from 'mrz'
 
 import { logWarn } from '@2060/utils'
@@ -9,7 +8,7 @@ const TD2_LINE_LONG = 36
 const TD3_LINE_LONG = 44
 
 export const findAndParseMrz = (initialLines: string[]) => {
-  let lines: string[] = []
+  const lines: string[] = []
   // if lines.length >= 2, extract and parse two-line MRZ
   if (initialLines.length >= 2) {
     // MLKIT sometimes add a new line character when it finds a new line instead of
@@ -40,7 +39,7 @@ export const findAndParseMrz = (initialLines: string[]) => {
         line.padEnd(TD3_LINE_LONG, '<')
       }
 
-      if (line.length >= TD1_LINE_LONG && line.indexOf('<') !== -1) {
+      if ([TD1_LINE_LONG, TD2_LINE_LONG, TD3_LINE_LONG].includes(line.length)) {
         lines.push(line)
       }
     })

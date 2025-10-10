@@ -1,0 +1,26 @@
+diff --git a/node_modules/isomorphic-webcrypto/src/react-native.js b/node_modules/isomorphic-webcrypto/src/react-native.js
+index 8b2a105..b46512e 100644
+--- a/node_modules/isomorphic-webcrypto/src/react-native.js
++++ b/node_modules/isomorphic-webcrypto/src/react-native.js
+@@ -12,11 +12,7 @@ function installCrypto() {
+   try {
+     const rn = require('react-native');
+     if (rn) {
+-      try {
+-        generateSecureRandom = require('expo-crypto').getRandomBytesAsync;
+-      } catch (e) {
+-        generateSecureRandom = require('react-native-securerandom').generateSecureRandom;
+-      }
++      generateSecureRandom = require('expo-crypto').getRandomBytesAsync;
+     }
+   } catch (e) {
+     console.log('Error importing react-native-securerandom or expo-crypto', e);
+@@ -64,7 +60,7 @@ function installCrypto() {
+     }
+     return generateSecureRandom(48)
+         .then(byteArray => {
+-          crypto.initPrng(Array.from(byteArray))
++          //FIXME: crypto.initPrng(Array.from(byteArray))
+           isSecured = true;
+           resolve(true);
+         })

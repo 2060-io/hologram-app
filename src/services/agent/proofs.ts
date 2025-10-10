@@ -36,8 +36,7 @@ export async function presentProof(options: PresentProofOptions) {
     for (const attributeName in proofFormats.anoncreds?.attributes) {
       if (attributeName === referent) {
         if (!anoncreds) anoncreds = { attributes: {}, predicates: {}, selfAttestedAttributes: {} }
-        // Ignoring TS errors as we have just defined the object
-        // @ts-ignore
+        // @ts-expect-error Ignoring TS errors as we have just defined the object
         anoncreds.attributes[attributeName] = proofFormats.anoncreds.attributes[attributeName].find(
           item => item.credentialId === credentialId,
         )
@@ -49,7 +48,7 @@ export async function presentProof(options: PresentProofOptions) {
     for (const predicateName in proofFormats.anoncreds?.predicates) {
       if (predicateName === referent) {
         if (!anoncreds) anoncreds = { attributes: {}, predicates: {}, selfAttestedAttributes: {} }
-        // @ts-ignore
+        // @ts-expect-error Ignoring TS errors as we have just defined the object
         anoncreds.predicates[predicateName] = proofFormats.anoncreds.predicates[predicateName].find(
           item => item.credentialId === credentialId,
         )
@@ -61,7 +60,7 @@ export async function presentProof(options: PresentProofOptions) {
     for (const attributeName in proofFormats.indy?.attributes) {
       if (attributeName === referent) {
         if (!indy) indy = { attributes: {}, predicates: {}, selfAttestedAttributes: {} }
-        // @ts-ignore
+        // @ts-expect-error Ignoring TS errors as we have just defined the object
         indy.attributes[attributeName] = proofFormats.indy.attributes[attributeName].find(
           item => item.credentialId === credentialId,
         )
@@ -73,7 +72,7 @@ export async function presentProof(options: PresentProofOptions) {
     for (const predicateName in proofFormats.indy?.predicates) {
       if (predicateName === referent) {
         if (!indy) indy = { attributes: {}, predicates: {}, selfAttestedAttributes: {} }
-        // @ts-ignore
+        // @ts-expect-error Ignoring TS errors as we have just defined the object
         indy.predicates[predicateName] = proofFormats.indy.predicates[predicateName].find(
           item => item.credentialId === credentialId,
         )

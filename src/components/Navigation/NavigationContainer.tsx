@@ -19,16 +19,14 @@ const NavigationContainer = (Navigation: ElementType) => {
     const { getLocalAuth } = useNavigation()
     const isAuthenticated = getLocalAuth()
     const { isSignedUp, agent } = useMobileAgent()
-    const { openingWallet, openWallet, isWalletOpen } = useWallet()
-
-    const handleChangeLanguage = () => {
-      i18n.changeLanguage(language)
-    }
-
-    useEffect(handleChangeLanguage, [])
+    const { openingWallet, openWallet } = useWallet(true)
 
     useEffect(() => {
-      if (isAuthenticated && !isWalletOpen) openWallet()
+      i18n.changeLanguage(language)
+    }, [])
+
+    useEffect(() => {
+      if (isAuthenticated) openWallet()
     }, [isAuthenticated])
 
     return (

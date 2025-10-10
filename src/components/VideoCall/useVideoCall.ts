@@ -1,4 +1,3 @@
-import appCheck from '@react-native-firebase/app-check'
 import axios from 'axios'
 import {
   OrientationLock,
@@ -12,11 +11,9 @@ import { useTranslation } from 'react-i18next'
 import InCallManager from 'react-native-incall-manager'
 import { MediaStream, mediaDevices, registerGlobals } from 'react-native-webrtc'
 
-import { useMobileAgent } from '@2060/hooks/agent'
-import {
-  findAllDidcommThreadId,
-  updateChatEntryMetadata,
-} from '@2060/hooks/agent/chat/services/ChatEntryService'
+import { AgentActionType, useMobileAgent } from '@2060/hooks/agent'
+import { findAllDidcommThreadId, updateChatEntryMetadata } from '@2060/hooks/agent/chat/services'
+import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
 import { useConfig } from '@2060/hooks/providers/ConfigProvider'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
 import {
@@ -27,6 +24,7 @@ import {
 } from '@2060/hooks/providers/useVideoCallContext'
 import { CallOfferMetadata, CallOfferState, ChatEntryType } from '@2060/model'
 import { log, logError } from '@2060/utils'
+import { getAppCheckHeaders } from '@2060/utils/firebaseUtils'
 
 function generatePeerId(length = 8) {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
@@ -40,11 +38,9 @@ function generatePeerId(length = 8) {
 
 const createRoom = async (webRtcServerBaseUrl: string) => {
   try {
-    const { token } = await appCheck().getToken()
+    const headers = await getAppCheckHeaders()
     const response = await axios.post(`${webRtcServerBaseUrl}/rooms`, null, {
-      headers: {
-        'X-Firebase-AppCheck': token,
-      },
+      headers,
     })
     if (!isIncomingCallInfo(response.data)) {
       throw Error(`Invalid response from WebRTC server: ${JSON.stringify(response.data)}`)
@@ -111,34 +107,35 @@ export const useVideoCall = () => {
     isRejected,
     remotePeerClosedTimeoutRef,
   } = useVideoCallContext()
-  const { agent } = useMobileAgent()
   const { realm } = useLocalRealm()
+  const { agent } = useMobileAgent()
+  const { addAgentActionToQueue } = useAgentActionQueue()
   const connectionStatusRef = useRef<ConnectionStatus>(connectionStatus)
   const [localVideoStream, setLocalVideoStream] = useState<MediaStream>()
-  const localAudioStreamRef = useRef<MediaStream>()
+  const localAudioStreamRef = useRef<MediaStream>(undefined)
   const [remoteStream, setRemoteStream] = useState<MediaStream>()
-  const remoteStreamRef = useRef<MediaStream>()
-  const roomId = useRef<string>()
-  const peerId = useRef<string>()
-  const peer = useRef<Peer>()
+  const remoteStreamRef = useRef<MediaStream>(undefined)
+  const roomId = useRef<string>(undefined)
+  const peerId = useRef<string>(undefined)
+  const peer = useRef<Peer>(undefined)
   const facingMode = useRef<'environment' | 'user'>('user')
   const [isMicrophoneOn, setIsMicrophoneOn] = useState(true)
   const [isRemoteVideoOn, setIsRemoteVideoOn] = useState(false)
-  const videoConsumer = useRef<types.Consumer>()
-  const audioConsumer = useRef<types.Consumer>()
+  const videoConsumer = useRef<types.Consumer>(undefined)
+  const audioConsumer = useRef<types.Consumer>(undefined)
   const [isUsingSpeakers, setIsUsingSpeakers] = useState(isVideoCall)
-  const sendTransport = useRef<types.Transport<types.AppData>>()
-  const recvTransport = useRef<types.Transport<types.AppData>>()
-  const micProducer = useRef<types.Producer<types.AppData>>()
-  const videoProducer = useRef<types.Producer<types.AppData>>()
-  const device = useRef<Device>()
-  const routerRtpCapabilities = useRef<types.RtpCapabilities>()
+  const sendTransport = useRef<types.Transport<types.AppData>>(undefined)
+  const recvTransport = useRef<types.Transport<types.AppData>>(undefined)
+  const micProducer = useRef<types.Producer<types.AppData>>(undefined)
+  const videoProducer = useRef<types.Producer<types.AppData>>(undefined)
+  const device = useRef<Device>(undefined)
+  const routerRtpCapabilities = useRef<types.RtpCapabilities>(undefined)
   const isMicrophoneOnRef = useRef(true)
   const lostConnection = useRef(false)
-  const newRemotePeerLastConnection = useRef<Date>()
+  const newRemotePeerLastConnection = useRef<Date>(undefined)
   const { devEnvs } = useConfig()
 
-  const changeChatEntryMetadata = useCallback(() => {
+  const updateChatEntryCallOfferMetadata = useCallback(() => {
     if (!realm || !didcommThreadId) return
     const [chatEntry] = findAllDidcommThreadId(realm, didcommThreadId, ChatEntryType.CallOffer)
     if (chatEntry) {
@@ -171,10 +168,9 @@ export const useVideoCall = () => {
           await joinRoom()
           await startToProduceStream()
           if (!incomingCallInfo && !lostConnection.current) {
-            await agent.modules.calls.offer({
-              callType: didcommCallType,
-              connectionId: didcommConnection.id,
-              parameters: { ...callInfo },
+            addAgentActionToQueue({
+              type: AgentActionType.CreateCallOffer,
+              parameters: { callType: didcommCallType, connectionId: didcommConnection.id, callInfo },
             })
           }
           updateCallStatus({ status: CallStatus.Connected, statusMessage: 'Connected' })
@@ -228,7 +224,7 @@ export const useVideoCall = () => {
             case 'peerLeft': {
               log('other peer left call', notification.data)
               finishCall()
-              changeChatEntryMetadata()
+              updateChatEntryCallOfferMetadata()
               break
             }
             case 'producerScore': {
@@ -349,8 +345,8 @@ export const useVideoCall = () => {
       const request = isMicrophoneOnRef.current ? 'resumeProducer' : 'pauseProducer'
       peer.current?.request(request, { producerId: micProducer.current?.id })
     }
-    localAudioStreamRef.current?.getAudioTracks().forEach(track => {
-      track.enabled = isMicrophoneOnRef.current
+    localAudioStreamRef.current?.getAudioTracks().forEach(audioTrack => {
+      audioTrack.enabled = isMicrophoneOnRef.current
     })
   }
 
@@ -446,10 +442,10 @@ export const useVideoCall = () => {
   }
 
   const startToProduceAudio = async () => {
-    const stream = await mediaDevices.getUserMedia({
+    const audioStream = await mediaDevices.getUserMedia({
       audio: true,
     })
-    localAudioStreamRef.current = stream
+    localAudioStreamRef.current = audioStream
     const audioTrack = localAudioStreamRef.current.getAudioTracks()[0]
     micProducer.current = await sendTransport.current?.produce({
       track: audioTrack,
@@ -458,13 +454,13 @@ export const useVideoCall = () => {
   }
 
   const startToProduceVideo = async () => {
-    const stream = await mediaDevices.getUserMedia({
+    const videoStream = await mediaDevices.getUserMedia({
       video: {
         facingMode: facingMode.current,
       },
     })
-    setLocalVideoStream(stream)
-    const videoTrack = stream.getVideoTracks()[0]
+    setLocalVideoStream(videoStream)
+    const videoTrack = videoStream.getVideoTracks()[0]
     videoProducer.current = await sendTransport.current?.produce({
       track: videoTrack,
     })
@@ -517,18 +513,21 @@ export const useVideoCall = () => {
 
   const handleSwitchCamera = () => {
     facingMode.current = facingMode.current === 'environment' ? 'user' : 'environment'
-    localVideoStream?.getVideoTracks().forEach(track => {
-      // eslint-disable-next-line no-underscore-dangle
-      track._switchCamera()
+    const constraints = { facingMode: facingMode.current }
+    localVideoStream?.getVideoTracks().forEach(videoTrack => {
+      videoTrack.applyConstraints(constraints)
     })
   }
 
   const handleSwitchSpeakers = () => setIsUsingSpeakers(!isUsingSpeakers)
 
   const hangup = async () => {
-    if (!agent || !didcommConnection) return
+    if (!agent || !didcommConnection || !realm) return
     try {
-      agent.modules.calls.hangup({ connectionId: didcommConnection.id })
+      addAgentActionToQueue({
+        type: AgentActionType.HangupCall,
+        parameters: { connectionId: didcommConnection.id, threadId: didcommThreadId },
+      })
       peer.current?.request('leaveRoom')
       finishCall()
     } catch (error) {

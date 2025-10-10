@@ -1,28 +1,15 @@
-import { CacheModuleConfig, ConsoleLogger, Logger, LogLevel, MediatorPickupStrategy } from '@credo-ts/core'
-import { agentDependencies } from '@credo-ts/react-native'
-import React, { useState, createContext, useEffect, useContext, useCallback } from 'react'
+import { CacheModuleConfig } from '@credo-ts/core'
+import React, { useState, createContext, useEffect, useContext, useCallback, useRef } from 'react'
 import EIdReader from 'react-native-eid-reader'
 
-import { useConfig } from '../providers/ConfigProvider'
 import { useNetwork } from '../useNetwork'
 
+import AgentSingleton from '@2060/services/AgentSingleton'
 import { isRegistered, MobileAgent } from '@2060/services/agent/MobileAgent'
 import { migrateAnonCredsRecords } from '@2060/services/agent/migrateAnonCredsRecords'
-import { setupMobileAgent as createMobileAgent, MobileAgentConfig } from '@2060/services/initMobileAgent'
 import { MediatorEventTypes } from '@2060/services/transport/MediatorEventTypes'
 import { TunedMobileWsOutboundTransport } from '@2060/services/transport/TunedMobileWsOutboundTransport'
-import { logError, log } from '@2060/utils'
-
-let logger: Logger | undefined
-if (__DEV__) {
-  logger = new ConsoleLogger(LogLevel.debug)
-}
-
-export const baseAgentConfig: MobileAgentConfig = {
-  agentDependencies,
-  logger,
-  mediatorPickupStrategy: MediatorPickupStrategy.None,
-}
+import { logError, logWarn } from '@2060/utils'
 
 interface MobileAgentState {
   agent?: MobileAgent
@@ -31,7 +18,7 @@ interface MobileAgentState {
   isConnectedToCloudAgent: boolean
 }
 interface MobileAgentContextInterface extends MobileAgentState {
-  initMobileAgent(): Promise<void>
+  openAndInitMobileAgent(): Promise<void>
   shutdownAgent(): Promise<void>
   handleChangeAgentState(state: Partial<MobileAgentState>): void
 }
@@ -55,26 +42,68 @@ export const MobileAgentProvider: React.FC<Props> = ({ children }) => {
     isInitialized: false,
     isSignedUp: false,
   })
-
-  const agent = agentState.agent
-  const { devEnvs } = useConfig()
+  const { agent } = agentState
   const { assertConnectedNetwork } = useNetwork()
   const isNetworkConnected = assertConnectedNetwork()
+  const mobileAgentInstance = useRef(AgentSingleton.instance)
+
+  useEffect(() => {
+    const setAgentInitialState = async () => {
+      await mobileAgentInstance.current.setupMobileAgent()
+      const newAgent = mobileAgentInstance.current.getMobileAgent()
+      if (!newAgent) return
+      handleChangeAgentState({ agent: newAgent })
+      return () => {
+        newAgent.shutdown()
+        handleChangeAgentState({ agent: undefined })
+      }
+    }
+    setAgentInitialState()
+  }, [])
+
+  useEffect(() => {
+    if (agent) {
+      const connectedListener = () => handleCloudAgentConnectionUpdate(true)
+      const disconnectedListener = () => handleCloudAgentConnectionUpdate(false)
+
+      agent.events.on(MediatorEventTypes.MediatorConnected, connectedListener)
+      agent.events.on(MediatorEventTypes.MediatorDisconnected, disconnectedListener)
+
+      return () => {
+        agent.events.off(MediatorEventTypes.MediatorConnected, connectedListener)
+        agent.events.off(MediatorEventTypes.MediatorDisconnected, disconnectedListener)
+      }
+    }
+  }, [agent])
+
+  useEffect(() => {
+    if (!isNetworkConnected) handleCloudAgentConnectionUpdate(false)
+  }, [isNetworkConnected])
+
+  const handleCloudAgentConnectionUpdate = useCallback(
+    (isConnectedToCloudAgent: boolean) => {
+      handleChangeAgentState({ isConnectedToCloudAgent: isConnectedToCloudAgent && isNetworkConnected })
+    },
+    [isNetworkConnected],
+  )
 
   const handleChangeAgentState = (state: Partial<MobileAgentState>) => {
     setAgentState(prevState => ({ ...prevState, ...state }))
   }
 
-  const initMobileAgent = useCallback(async () => {
+  const openAndInitMobileAgent = useCallback(async () => {
     try {
-      if (!agent) throw new Error('Agent not defined')
-      await agent.initialize()
-
+      if (!agent) return
+      if (!mobileAgentInstance.current.getMobileAgent()?.isInitialized) {
+        await mobileAgentInstance.current.openAndInitMobileAgent()
+      } else {
+        logWarn(`From main flow Agent is already initialized`)
+      }
       // Set NFC support according to the response from EID module
       await agent.modules.mrtd.setMrtdCapabilities({ eMrtdReadSupported: await EIdReader.isNfcSupported() })
 
       // force loading agent LRU cache into memory (this is to prevent
-      // some errors found while accesing it concurrently)
+      // some errors found while accessing it concurrently)
       const cache = agent.dependencyManager.resolve(CacheModuleConfig).cache
       await cache.get(agent.context, 'dummy')
 
@@ -98,7 +127,7 @@ export const MobileAgentProvider: React.FC<Props> = ({ children }) => {
     } catch (error) {
       logError(`error initializing agent: ${error}`)
     }
-  }, [agentState])
+  }, [agent])
 
   const shutdownAgent = useCallback(async () => {
     try {
@@ -106,66 +135,13 @@ export const MobileAgentProvider: React.FC<Props> = ({ children }) => {
       await agent.shutdown()
       handleChangeAgentState({ isConnectedToCloudAgent: false, isInitialized: false, isSignedUp: false })
     } catch (error) {
-      logError(`error initializing agent: ${error}`)
+      logError(`error shutting down agent: ${error}`)
     }
   }, [agentState])
 
-  const handleMessagePickupStatus = async () => {
-    if (!agent?.isInitialized) return
-    try {
-      await agent.mediationRecipient.stopMessagePickup()
-      if (isNetworkConnected) await agent.mediationRecipient.initiateMessagePickup()
-    } catch (error) {
-      log(JSON.stringify(error))
-    }
-  }
-
-  const handleCloudAgentConnectionUpdate = useCallback(
-    (isConnectedToCloudAgent: boolean) => {
-      handleChangeAgentState({ isConnectedToCloudAgent: isConnectedToCloudAgent && isNetworkConnected })
-    },
-    [isNetworkConnected],
-  )
-
-  useEffect(() => {
-    const setInitialState = () => {
-      const newAgent = createMobileAgent(baseAgentConfig, devEnvs.INDY_VDR_PROXY_BASE_URL)
-      handleChangeAgentState({ agent: newAgent })
-      setAgentState(prevState => ({ ...prevState, agent: newAgent }))
-      return () => {
-        newAgent.shutdown()
-        handleChangeAgentState({ agent: undefined })
-      }
-    }
-    setInitialState()
-  }, [devEnvs.INDY_VDR_PROXY_BASE_URL])
-
-  useEffect(() => {
-    if (!isNetworkConnected) handleCloudAgentConnectionUpdate(false)
-  }, [isNetworkConnected])
-
-  useEffect(() => {
-    handleMessagePickupStatus()
-  }, [agent, isNetworkConnected])
-
-  useEffect(() => {
-    if (agent) {
-      const connectedListener = () => handleCloudAgentConnectionUpdate(true)
-      const disconnectedListener = () => handleCloudAgentConnectionUpdate(false)
-
-      agent.events.on(MediatorEventTypes.MediatorConnected, connectedListener)
-      agent.events.on(MediatorEventTypes.MediatorDisconnected, disconnectedListener)
-
-      return () => {
-        agent.events.off(MediatorEventTypes.MediatorConnected, connectedListener)
-        agent.events.off(MediatorEventTypes.MediatorDisconnected, disconnectedListener)
-      }
-    }
-  }, [agent])
-
   return (
-    <AgentContext.Provider value={{ ...agentState, initMobileAgent, shutdownAgent, handleChangeAgentState }}>
+    <AgentContext value={{ ...agentState, openAndInitMobileAgent, shutdownAgent, handleChangeAgentState }}>
       {children}
-    </AgentContext.Provider>
+    </AgentContext>
   )
 }

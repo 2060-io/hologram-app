@@ -1,4 +1,5 @@
 import { ProofExchangeRecord, ProofState, W3cCredentialRepository } from '@credo-ts/core'
+import { TrustResolutionOutcome } from '@verana-labs/verre'
 import Realm from 'realm'
 
 import {
@@ -12,6 +13,7 @@ import {
   ChatEntryRole,
   ChatEntryState,
   ChatEntryType,
+  VerifierInfo,
   VPResponseMetadata,
   VPResponsePresentedCredential,
 } from '@2060/model'
@@ -23,11 +25,9 @@ import {
   getPresentationRequestForDisplay,
   sanitizeString,
 } from '@2060/services/agent/display'
-import { getServiceInfo, VerifierInfo } from '@2060/services/api/trustRegistryService'
-import { DEV_ENVS_PERSIST_KEY, getStorageData } from '@2060/services/localStorage'
+import { getServiceInfo } from '@2060/services/trustResolution'
 import { logError } from '@2060/utils'
 import { getConnectionDisplayName, getConnectionDisplayPicture } from '@2060/utils/connectionUtils'
-import { DevEnvsObject } from '@2060/utils/developer'
 
 export const handleProofExchangeRecordChanges = async (options: {
   agent: MobileAgent
@@ -96,9 +96,9 @@ export const handleProofExchangeRecordChanges = async (options: {
               replied: false,
             },
           })
-        }
-        if (thread.id !== activeChatThreadId) {
-          addUnread(realm, thread.id, 1)
+          if (thread.id !== activeChatThreadId) {
+            addUnread(realm, thread.id, 1)
+          }
         }
       }
     } else if (
@@ -173,10 +173,9 @@ export const handleProofExchangeRecordChanges = async (options: {
             const credentialDefinitionId = firstAttribute.restrictions[0].cred_def_id
 
             if (credentialDefinitionId) {
-              const persistedEnvVariables = (await getStorageData(DEV_ENVS_PERSIST_KEY)) as DevEnvsObject
               const serviceInfo = await getServiceInfo({
+                agent: agent,
                 did: credentialDefinitionId,
-                trustedServiceResolverBaseUrl: persistedEnvVariables.TRUSTED_SERVICE_RESOLVER_BASE_URL,
               })
               const credentialDefinition = (
                 await agent.modules.anoncreds.getCredentialDefinition(credentialDefinitionId)
@@ -194,7 +193,7 @@ export const handleProofExchangeRecordChanges = async (options: {
                   id: credentialDefinition?.issuerId ?? '',
                   name: serviceInfo?.name ?? credentialDefinitionId,
                   logoUrl: serviceInfo?.logoUrl,
-                  status: serviceInfo?.status ?? 'notFound',
+                  status: serviceInfo?.status ?? TrustResolutionOutcome.INVALID,
                 },
               }
               presentedCredentials.push({ mainInfo: credentialMainInfo, attributes })

@@ -7,10 +7,10 @@ export default (theme: AppTheme) =>
   StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: theme.colors.secondary,
     },
     subContainer: {
       paddingHorizontal: 15,
+      paddingBottom: 10,
     },
     containerSectionInfo: {
       alignSelf: 'center',

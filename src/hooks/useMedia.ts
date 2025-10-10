@@ -1,11 +1,11 @@
 import { NetInfoStateType } from '@react-native-community/netinfo'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState, useTransition } from 'react'
 
 import { AutomaticDownloadTypes, DownloadOptions, useFileUploadDownload } from './agent'
 import { useNetwork } from './useNetwork'
 
 import { ChatEntryRole, MediaDownloadState } from '@2060/model'
-import { logWarn } from '@2060/utils'
+import { logError } from '@2060/utils'
 import { existsFile, getFullLocalFilePath } from '@2060/utils/RNFS'
 
 const { Pending, Downloading, Failed } = MediaDownloadState
@@ -26,10 +26,10 @@ export const useMedia = ({
 }) => {
   const { netInfo } = useNetwork()
   const { retryMediaUpload, downloadMediaFile, automaticDownloadValues } = useFileUploadDownload()
-  const initialMediaDownloadState = useRef<MediaDownloadState>()
+  const initialMediaDownloadState = useRef<MediaDownloadState>(undefined)
   const [isDownloaded, setIsDownloaded] = useState(localFilePath !== null)
   const [isDownloading, setIsDownloading] = useState(mediaDownloadState === Downloading)
-  const [isRetryingUpload, setIsRetryingUpload] = useState(false)
+  const [isRetryingUpload, startRetryUploadTransition] = useTransition()
   const mediaDownloadOption = automaticDownloadValues[type]
 
   useEffect(() => {
@@ -60,35 +60,34 @@ export const useMedia = ({
       (isWifiConnected || isCellularConnected) && mediaDownloadOption === WifiAndMobileData
     const canDownloadByWifi = isWifiConnected && mediaDownloadOption === Wifi
     const makeAutomaticDownload = canDownloadByWifiAndMobileData || canDownloadByWifi
-    if (makeAutomaticDownload) handleDownloadMedia()
+    if (makeAutomaticDownload) downloadMedia()
   }, [mediaDownloadOption, mediaDownloadState, netInfo, isDownloaded])
 
-  const handleDownloadMedia = useCallback(async () => {
+  const downloadMedia = useCallback(async () => {
     setIsDownloading(true)
     try {
       await downloadMediaFile(mediaRecordId)
     } catch (error) {
-      logWarn(`onDownloadMedia: ${error}`)
+      logError(`Error downloading media: ${error}`)
     } finally {
       setIsDownloading(false)
     }
   }, [mediaRecordId])
 
   const handleRetryMediaUpload = useCallback(async () => {
-    setIsRetryingUpload(true)
-    try {
-      await retryMediaUpload(mediaRecordId)
-    } catch (error) {
-      logWarn(`onRetryMediaUpload:${error}`)
-    } finally {
-      setIsRetryingUpload(false)
-    }
+    startRetryUploadTransition(async () => {
+      try {
+        await retryMediaUpload(mediaRecordId)
+      } catch (error) {
+        logError(`Error retrying media upload:${error}`)
+      }
+    })
   }, [mediaRecordId])
 
   return {
     isDownloaded,
     isDownloading,
-    downloadMedia: handleDownloadMedia,
+    downloadMedia,
     retryMediaUpload: handleRetryMediaUpload,
     isRetryingUpload,
   }

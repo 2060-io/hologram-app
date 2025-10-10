@@ -89,11 +89,29 @@ export const stringToDate = (stringDate: string, stringDateFormat: string) => {
 }
 
 /**
- * Receives a date object and converted to string date in desired format
- * @param date
- * @param format
- * @returns string date
+ * Converts a given date to a formatted string using dayjs.
+ *
+ * @param date - The date to format. Can be a Date object, a timestamp (number), or undefined.
+ * @param format - An optional format string compatible with dayjs.
+ * If not provided, dayjs's default format is used.
+ * @returns The formatted date string.
  */
-export const dateToString = (date: Date, format: string) => {
+export const dateToString = (date: Date | number | undefined, format?: string) => {
   return dayjs(date).format(format)
+}
+
+/**
+ * Checks if two dates are the same day.
+ *
+ * @param date1 - The first date to compare. Can be a Date object, a timestamp (number)
+ * @param date2 - The second date to compare. Can be a Date object, a timestamp (number)
+ * @returns true if both dates are the same day, false otherwise.
+ */
+export function getIsSameDay(date1: Date | number, date2: Date | number) {
+  const firstDate = dayjs(date1)
+  const secondDate = dayjs(date2)
+  if (!firstDate.isValid() || !secondDate.isValid()) {
+    return false
+  }
+  return firstDate.isSame(secondDate, 'day')
 }

@@ -78,13 +78,13 @@ export const CredentialProvider: React.FC<React.PropsWithChildren<Props>> = ({ c
     }
   }, [w3cState, agent])
   return (
-    <CredentialContext.Provider
+    <CredentialContext
       value={{
         loading: w3cState.loading,
         records: w3cState.records,
       }}
     >
       {children}
-    </CredentialContext.Provider>
+    </CredentialContext>
   )
 }

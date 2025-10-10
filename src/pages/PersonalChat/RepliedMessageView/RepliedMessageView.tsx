@@ -4,6 +4,7 @@ import { View, TouchableOpacity, ImageBackground, ViewStyle } from 'react-native
 
 import getStyles from './styles'
 
+import imagePlaceholder from '@2060/assets/images/placeholderImg.png'
 import { SvgIcon, Text } from '@2060/components/common'
 import { RepliedMessage, useChat } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
@@ -24,9 +25,7 @@ const RepliedMessageView: React.FC<Props> = memo(props => {
 
   const participantName = chatThread?.participants.find(p => p.id === repliedMessage.role)?.name
   const repliedTo = repliedMessage.role === ChatEntryRole.Sender ? t('personalChat.you') : participantName
-  const thumbnailSource = repliedMessage.thumbnail
-    ? { uri: repliedMessage.thumbnail }
-    : require('@2060/assets/images/placeholderImg.png')
+  const thumbnailSource = repliedMessage.thumbnail ? { uri: repliedMessage.thumbnail } : imagePlaceholder
   const isAudioOrVideo = [ChatEntryType.Video, ChatEntryType.Image].includes(repliedMessage.type)
 
   return (

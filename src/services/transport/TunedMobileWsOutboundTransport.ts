@@ -1,8 +1,5 @@
-import type WebSocket from 'ws'
-
 import {
   Agent,
-  AgentConfig,
   AgentEventTypes,
   AgentMessageReceivedEvent,
   CredoError,
@@ -14,29 +11,12 @@ import {
   OutboundWebSocketOpenedEvent,
   OutboundWebSocketClosedEvent,
   TransportEventTypes,
-  Key,
-  KeyType,
+  Buffer,
 } from '@credo-ts/core'
-import { isDidCommTransportQueue, TransportPriorityOptions } from '@credo-ts/core/build/agent/MessageSender'
-import { ResolvedDidCommService } from '@credo-ts/core/build/modules/didcomm'
-import { findMatchingEd25519Key } from '@credo-ts/core/build/modules/didcomm/util/matchingEd25519Key'
-import {
-  DidCommV1Service,
-  DidResolverService,
-  IndyAgentService,
-  getKeyFromVerificationMethod,
-} from '@credo-ts/core/build/modules/dids'
-import { didKeyToInstanceOfKey, verkeyToInstanceOfKey } from '@credo-ts/core/build/modules/dids/helpers'
-import { OutOfBandRecord } from '@credo-ts/core/build/modules/oob/repository'
 import { isValidJweStructure, JsonEncoder } from '@credo-ts/core/build/utils'
-import { Buffer } from '@credo-ts/core/build/utils/buffer'
+import WebSocket from 'ws'
 
 import { MediatorConnectedEvent, MediatorDisconnectedEvent, MediatorEventTypes } from './MediatorEventTypes'
-
-function getProtocolScheme(url: string) {
-  const [protocolScheme] = url.split(':')
-  return protocolScheme
-}
 
 interface MobileOutboundWs {
   ws: WebSocket
@@ -53,7 +33,6 @@ export class TunedMobileWsOutboundTransport implements OutboundTransport {
   private eventEmitter!: EventEmitter
   private WebSocketClass!: typeof WebSocket
   public supportedSchemes = ['ws', 'wss']
-  private didResolverService!: DidResolverService
   private mediatorEndpoints: string[]
 
   private defaultMediatorConnection?: ConnectionRecord | null
@@ -68,17 +47,16 @@ export class TunedMobileWsOutboundTransport implements OutboundTransport {
 
   public async start(agent: Agent): Promise<void> {
     this.agent = agent
-    const agentConfig = agent.dependencyManager.resolve(AgentConfig)
-    this.didResolverService = agent.dependencyManager.resolve(DidResolverService)
+    const agentConfig = agent.config
     this.logger = agentConfig.logger
-    this.eventEmitter = agent.dependencyManager.resolve(EventEmitter)
+    this.eventEmitter = agent.events
     this.logger.debug('Starting WS outbound transport')
     this.WebSocketClass = agentConfig.agentDependencies.WebSocketClass
 
     this.defaultMediatorConnection = await this.agent.mediationRecipient.findDefaultMediatorConnection()
-    if (this.defaultMediatorConnection) {
-      const { services } = await this.retrieveServicesByConnection(this.defaultMediatorConnection)
-      this.mediatorEndpoints = services.map(value => value.serviceEndpoint)
+    if (this.defaultMediatorConnection?.theirDid) {
+      const didDoc = await agent.dids.resolveDidDocument(this.defaultMediatorConnection.theirDid)
+      this.mediatorEndpoints = didDoc.didCommServices.map(service => service.serviceEndpoint)
     }
 
     this.startIdleSocketTimer()
@@ -130,10 +108,6 @@ export class TunedMobileWsOutboundTransport implements OutboundTransport {
 
     socket.lastActivity = new Date()
     socket.shallKeepOpened = isMediatorEndpoint
-  }
-
-  private hasOpenSocket(socketId: string) {
-    return this.transportTable.get(socketId) !== undefined
   }
 
   private async resolveSocket({
@@ -318,123 +292,5 @@ export class TunedMobileWsOutboundTransport implements OutboundTransport {
         this.transportTable.delete(socketId)
       }
     })
-  }
-
-  // FIXME: Code taken from MessageSender class. Find a simpler way to get endpoint information
-  private async retrieveServicesFromDid(did: string) {
-    //this.logger.debug(`Resolving services for did ${did}.`)
-    const didDocument = await this.didResolverService.resolveDidDocument(this.agent.context, did)
-
-    const didCommServices: ResolvedDidCommService[] = []
-
-    // FIXME: we currently retrieve did documents for all didcomm services in the did document,
-    // and we don't have caching yet so this will re-trigger ledger resolves for each one.
-    // Should we only resolve the first service, then the second service, etc...?
-    for (const didCommService of didDocument.didCommServices) {
-      if (didCommService instanceof IndyAgentService) {
-        // IndyAgentService (DidComm v0) has keys encoded as raw publicKeyBase58 (verkeys)
-        didCommServices.push({
-          id: didCommService.id,
-          recipientKeys: didCommService.recipientKeys.map(verkeyToInstanceOfKey),
-          routingKeys: didCommService.routingKeys?.map(verkeyToInstanceOfKey) || [],
-          serviceEndpoint: didCommService.serviceEndpoint,
-        })
-      } else if (didCommService instanceof DidCommV1Service) {
-        // Resolve dids to DIDDocs to retrieve routingKeys
-        const routingKeys: Key[] = []
-        for (const routingKey of didCommService.routingKeys ?? []) {
-          const routingDidDocument = await this.didResolverService.resolveDidDocument(
-            this.agent.context,
-            routingKey,
-          )
-          routingKeys.push(
-            getKeyFromVerificationMethod(
-              routingDidDocument.dereferenceKey(routingKey, ['authentication', 'keyAgreement']),
-            ),
-          )
-        }
-
-        // Dereference recipientKeys
-        const recipientKeys = didCommService.recipientKeys.map(recipientKeyReference => {
-          const key = getKeyFromVerificationMethod(
-            didDocument.dereferenceKey(recipientKeyReference, ['authentication', 'keyAgreement']),
-          )
-
-          if (key.keyType === KeyType.X25519) {
-            const matchingEd25519Key = findMatchingEd25519Key(key, didDocument)
-            if (matchingEd25519Key) return matchingEd25519Key
-          }
-          return key
-        })
-
-        // DidCommV1Service has keys encoded as key references
-        didCommServices.push({
-          id: didCommService.id,
-          recipientKeys,
-          routingKeys,
-          serviceEndpoint: didCommService.serviceEndpoint,
-        })
-      }
-    }
-
-    return didCommServices
-  }
-
-  private async retrieveServicesByConnection(
-    connection: ConnectionRecord,
-    transportPriority?: TransportPriorityOptions,
-    outOfBand?: OutOfBandRecord,
-  ) {
-    //this.logger.debug(`Retrieving services for connection '${connection.id}' (${connection.theirLabel})`, {
-    //  transportPriority,
-    //  connection,
-    //})
-
-    let didCommServices: ResolvedDidCommService[] = []
-
-    if (connection.theirDid) {
-      //this.logger.debug(`Resolving services for connection theirDid ${connection.theirDid}.`)
-      didCommServices = await this.retrieveServicesFromDid(connection.theirDid)
-    } else if (outOfBand) {
-      if (connection.isRequester) {
-        //this.logger.debug(`Resolving services from out-of-band record ${outOfBand?.id}.`)
-        // Resolve dids to DIDDocs to retrieve services
-        for (const service of outOfBand.outOfBandInvitation.getServices()) {
-          if (typeof service === 'string') didCommServices = await this.retrieveServicesFromDid(service)
-          // Out of band inline service contains keys encoded as did:key references
-          else {
-            didCommServices.push({
-              id: service.id,
-              recipientKeys: service.recipientKeys.map(didKeyToInstanceOfKey),
-              routingKeys: service.routingKeys?.map(didKeyToInstanceOfKey) || [],
-              serviceEndpoint: service.serviceEndpoint,
-            })
-          }
-        }
-      }
-    }
-
-    // Separate queue service out
-    let services = didCommServices.filter(s => !isDidCommTransportQueue(s.serviceEndpoint))
-    const queueService = didCommServices.find(s => isDidCommTransportQueue(s.serviceEndpoint))
-
-    // If restrictive will remove services not listed in schemes list
-    if (transportPriority?.restrictive) {
-      services = services.filter(service => {
-        const serviceSchema = getProtocolScheme(service.serviceEndpoint)
-        return transportPriority.schemes.includes(serviceSchema)
-      })
-    }
-
-    // If transport priority is set we will sort services by our priority
-    if (transportPriority?.schemes) {
-      services = services.sort(function (a, b) {
-        const aScheme = getProtocolScheme(a.serviceEndpoint)
-        const bScheme = getProtocolScheme(b.serviceEndpoint)
-        return transportPriority?.schemes.indexOf(aScheme) - transportPriority?.schemes.indexOf(bScheme)
-      })
-    }
-
-    return { services, queueService }
   }
 }

@@ -55,7 +55,7 @@ const LightboxHeader = memo(({ fileMediaInfo, onBack, chatEntry }: LightboxHeade
         <Button iconName="arrow-back-circle-outline" onPress={onBack} color={iconColor} />
         <View style={styles.containerUserInfo}>
           <Text typography="EuclidCircularA-Medium" style={styles.text}>
-            {fileMediaInfo.user?.name}
+            {fileMediaInfo.sender?.name}
           </Text>
           <Text typography="EuclidCircularA-Regular" style={styles.text}>
             {getFormattedDateRangeWithTime(new Date(fileMediaInfo.createdAt), using24HourFormat)}

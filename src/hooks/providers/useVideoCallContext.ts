@@ -14,7 +14,7 @@ export type ConnectionStatus = {
   statusMessage: string
 }
 
-export type IncomingCallInfo = {
+export type CallInfo = {
   roomId: string
   peerId?: string
   wsUrl: string
@@ -26,7 +26,7 @@ export type StateProps = {
   isIncomingCall: boolean
   isVideoCall: boolean
   isRejected: boolean | undefined
-  incomingCallInfo: IncomingCallInfo | undefined
+  incomingCallInfo: CallInfo | undefined
   didcommThreadId: string | undefined
   didcommConnection: ConnectionRecord | undefined
   didcommCallType: DidCommCallType | undefined
@@ -43,14 +43,14 @@ interface VideoCallProps extends StateProps {
   onCallFinished: () => void
   answerIncomingCall: () => void
   rejectIncomingCall: () => void
-  handleCamera: (callBack?: (newIsCameraOn: boolean) => {}) => void
+  handleCamera: (callBack?: (newIsCameraOn: boolean) => void) => void
   remotePeerClosedTimeoutRef: MutableRefObject<NodeJS.Timeout | undefined>
   connectionStatus: ConnectionStatus
   updateCallStatus: React.Dispatch<React.SetStateAction<ConnectionStatus>>
   joinCall: (
     connectionId: string,
     callType: DidCommCallType,
-    incomingCallInfo: IncomingCallInfo,
+    incomingCallInfo: CallInfo,
     didcommThreadId: string,
   ) => void
 }
@@ -63,7 +63,7 @@ export const useVideoCallContext = () => {
   return videoCallContext
 }
 
-export function isIncomingCallInfo(data: Record<string, unknown>): data is IncomingCallInfo {
+export function isIncomingCallInfo(data: Record<string, unknown>): data is CallInfo {
   return (
     typeof data === 'object' &&
     typeof data.roomId === 'string' &&

@@ -1,45 +1,26 @@
 import { useCallback, useState } from 'react'
-import { Platform } from 'react-native'
+import Config from 'react-native-config'
 
 import { useMobileAgent } from '../hooks/agent'
 
 import { isRegistered } from '@2060/services/agent'
 import { log, logError } from '@2060/utils'
-import { getFcmDeviceToken } from '@2060/utils/pushNotificationsUtils'
 
 export enum SignUpState {
   Init = 'Init',
   Started = 'Started',
   Connected = 'Connected',
   AgentCreated = 'AgentCreated',
-  DeviceRegistered = 'DeviceRegistered',
 }
 
-interface SignUpOptions {
-  cloudAgentPublicDid: string
-  defaultServicePublicDid: string
-  defaultServiceAlias: string
-}
+const defaultServicePublicDid = Config.DEFAULT_SERVICE_PUBLIC_DID as string
+const defaultServiceAlias = Config.DEFAULT_SERVICE_ALIAS as string
+const cloudAgentPublicDid = Config.CLOUD_AGENT_PUBLIC_DID as string
 
-export const useSignUp = (options: SignUpOptions) => {
+export const useSignUp = () => {
   const { agent, handleChangeAgentState } = useMobileAgent()
 
   const [signUpState, setSignUpState] = useState<SignUpState>(SignUpState.Init)
-
-  const updateNotificationInfo = useCallback(async () => {
-    if (!agent) return
-
-    const connection = await agent.mediationRecipient.findDefaultMediatorConnection()
-    if (!connection) return
-
-    const deviceToken = await getFcmDeviceToken()
-    await agent.modules.pushNotifications.setDeviceInfo(connection.id, {
-      deviceToken,
-      devicePlatform: Platform.OS,
-    })
-
-    setSignUpState(SignUpState.DeviceRegistered)
-  }, [agent])
 
   const startSignUp = useCallback(async () => {
     if (!agent || !agent?.isInitialized) throw new Error('Agent not initialized')
@@ -47,8 +28,8 @@ export const useSignUp = (options: SignUpOptions) => {
     setSignUpState(SignUpState.Started)
 
     let { connectionRecord: cloudAgentConnection } = await agent.oob.receiveImplicitInvitation({
-      did: options.cloudAgentPublicDid,
-      label: options.defaultServiceAlias,
+      did: cloudAgentPublicDid,
+      label: defaultServiceAlias,
       imageUrl: 'https://i.welcome.hologram.2060.io/avatar.png',
       autoAcceptConnection: true,
     })
@@ -69,8 +50,8 @@ export const useSignUp = (options: SignUpOptions) => {
 
     try {
       let { connectionRecord: defaultServiceConnection } = await agent.oob.receiveImplicitInvitation({
-        did: options.defaultServicePublicDid,
-        alias: options.defaultServiceAlias,
+        did: defaultServicePublicDid,
+        alias: defaultServiceAlias,
         autoAcceptConnection: true,
       })
       if (!defaultServiceConnection) throw new Error('Default service connection not created')
@@ -85,5 +66,5 @@ export const useSignUp = (options: SignUpOptions) => {
     }
   }, [agent])
 
-  return { signUpState, startSignUp, updateNotificationInfo }
+  return { signUpState, startSignUp }
 }

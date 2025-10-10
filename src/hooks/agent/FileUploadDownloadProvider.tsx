@@ -1,23 +1,22 @@
 /* eslint-disable import/no-named-as-default-member */
 import { SharedMediaItem } from '@2060.io/credo-ts-didcomm-media-sharing'
 import { utils } from '@credo-ts/core'
-import appCheck from '@react-native-firebase/app-check'
 import { useAudioPlayer } from '@simform_solutions/react-native-audio-waveform'
 import axios from 'axios'
 import { t } from 'i18next'
-import { default as React, useEffect, useCallback, useRef, useState } from 'react'
+import React, { useEffect, useCallback, useRef, useState } from 'react'
 import Upload, { CompletedData, UploadOptions } from 'react-native-background-upload'
 import { copyFile, downloadFile } from 'react-native-fs'
-import { nativeCreateChunks } from 'react-native-local-native-modules'
+import { createChunks } from 'react-native-local-native-modules'
 
 import { generateFileName } from '../media/files'
 import { createLocalPreview } from '../media/preview'
 import { useConfig } from '../providers/ConfigProvider'
 import { useLocalRealm } from '../providers/RealmProvider'
 
-import { useChats } from './ChatProvider'
 import { useMobileAgent } from './MobileAgentProvider'
 import { AgentActionType } from './actions/AgentAction'
+import { useAgentActionQueue } from './useAgentActionQueue'
 import {
   AutomaticDownloadTypes,
   DownloadOptions,
@@ -41,6 +40,7 @@ import {
   moveFile,
 } from '@2060/utils/RNFS'
 import { decryptFile, encryptFile } from '@2060/utils/ciphering'
+import { getAppCheckHeaders } from '@2060/utils/firebaseUtils'
 
 const AUDIO_WAVEFORM_NUMBER_OF_CANDLES = 30
 const { Pending, Uploading, Done, Canceled, ErrorCreating, ErrorUploading } = MediaUploadState
@@ -68,16 +68,14 @@ interface Props {
  * @param numberChunks Number of chunks in which the file is divided
  */
 const fileCreate = async (dataStoreUrl: string, uuid: string, numberChunks: number) => {
-  const { token } = await appCheck().getToken()
-
+  const headers = await getAppCheckHeaders()
   return await axios.create({ baseURL: dataStoreUrl }).post(`/c/${uuid}/${numberChunks}`, undefined, {
-    headers: {
-      'X-Firebase-AppCheck': token,
-    },
+    headers,
   })
 }
 
 const uploadChunk = async (dataStoreUrl: string, filePath: string, fileId: string, chunkNumber: number) => {
+  const headers = { ...(await getAppCheckHeaders()), 'content-type': 'multipart/form-data' }
   const options: UploadOptions = {
     customUploadId: `${fileId}/${chunkNumber}`,
     url: `${dataStoreUrl}/u/${fileId}/${chunkNumber}`,
@@ -85,10 +83,7 @@ const uploadChunk = async (dataStoreUrl: string, filePath: string, fileId: strin
     method: 'PUT',
     field: 'chunk',
     type: 'multipart',
-    headers: {
-      'X-Firebase-AppCheck': (await appCheck().getToken()).token,
-      'content-type': 'multipart/form-data',
-    },
+    headers,
     notification: {
       autoClear: true,
       onProgressMessage: t('personalChat.uploadingMedia'),
@@ -112,7 +107,7 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
 
   // TODO: Make persistent using realm
   const uploadTasks = useRef<UploadTask[]>([])
-  const { addAgentActionToQueue } = useChats()
+  const { addAgentActionToQueue } = useAgentActionQueue()
 
   useEffect(() => {
     const setupAutomaticDownloadValues = async () => {
@@ -190,7 +185,7 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
       const filename = generateFileName(mimeType, fileExtension)
 
       const localFilePath = getLocalMediaFilePath(filename)
-      let downloadLocalFilePath = ciphering ? `${localFilePath}.encrypted` : localFilePath
+      const downloadLocalFilePath = ciphering ? `${localFilePath}.encrypted` : localFilePath
       try {
         await agent.modules.media.setMetadata(
           mediaRecord.id,
@@ -299,11 +294,7 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
         destinationFilePath: uploadFilePath,
       })
 
-      const chunkFilePaths = await nativeCreateChunks(
-        uploadFilePath,
-        `${mediaDirectoryPath}/${fileId}`,
-        CHUNK_SIZE,
-      )
+      const chunkFilePaths = await createChunks(uploadFilePath, `${mediaDirectoryPath}/${fileId}`, CHUNK_SIZE)
 
       // Now we are safe to delete encrypted file
       await deleteFile(uploadFilePath)
@@ -349,7 +340,7 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
 
       // Create upload task
       const chunks: UploadChunkTask[] = []
-      for (var i = 0; i < chunkFilePaths.length; i++) {
+      for (let i = 0; i < chunkFilePaths.length; i++) {
         chunks.push({
           id: `${fileId}/${i}`,
           filePath: chunkFilePaths[i],
@@ -560,7 +551,7 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
   }, [agent, dataStoreUrl, realm])
 
   return (
-    <FileUploadDownloadContext.Provider
+    <FileUploadDownloadContext
       value={{
         startMediaUpload,
         retryMediaUpload,
@@ -570,6 +561,6 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
       }}
     >
       {children}
-    </FileUploadDownloadContext.Provider>
+    </FileUploadDownloadContext>
   )
 }

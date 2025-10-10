@@ -22,8 +22,8 @@ import {
   RadioButton,
 } from '@2060/components/common'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
+import { ServiceInfo } from '@2060/model'
 import { FormattedSubmission } from '@2060/services/agent/formatPresentation'
-import { ServiceInfo } from '@2060/services/api/trustRegistryService'
 
 type Props = {
   navigation: StackNavigationProp<ParamListBase>

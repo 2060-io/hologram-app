@@ -1,8 +1,7 @@
 import { ConnectionRecord, OutOfBandRecord, ProofState } from '@credo-ts/core'
 
-import { ChatEntryData } from '@2060/model'
+import { ChatEntryData, ServiceInfo } from '@2060/model'
 import { CredentialMainInfo } from '@2060/services/agent/display'
-import { ServiceInfo } from '@2060/services/api/trustRegistryService'
 
 type TypeParameters = 'oob' | 'd_m' | 'c_i'
 type HomeParams = {

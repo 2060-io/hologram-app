@@ -12,7 +12,7 @@ import Text from '@2060/components/common/Text'
 import VerifiedIcon from '@2060/components/common/VerifiedIcon'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { useValidateKidAgeRestrictions } from '@2060/hooks/useValidateKidAgeRestrictions'
-import { ServiceInfo, ServiceStatus } from '@2060/services/api/trustRegistryService'
+import { ServiceInfo, ServiceStatus } from '@2060/model'
 import { getFlagEmoji, trimText } from '@2060/utils'
 import { toast } from '@2060/utils/toast'
 
@@ -45,9 +45,10 @@ const ServiceMainInfo = ({ serviceInfo }: Props) => {
   }, [])
 
   const serviceIs: Record<ServiceStatus, string> = {
-    trusted: t('invitation.isATrustedService'),
-    notTrusted: t('invitation.notTrustedService'),
-    notFound: t('invitation.notFoundService'),
+    verified: t('invitation.isATrustedService'),
+    'verified-test': t('invitation.notTrustedService'),
+    'not-trusted': t('invitation.notTrustedService'),
+    invalid: t('invitation.notFoundService'),
   }
 
   return (
