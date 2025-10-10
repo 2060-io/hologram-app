@@ -1,6 +1,6 @@
 import { CallEndMessage, CallOfferMessage, DidCommCallType } from '@2060.io/credo-ts-didcomm-calls'
 import { ShareMediaMessage } from '@2060.io/credo-ts-didcomm-media-sharing'
-import { MessageReactionsMessage, MessageReactionAction } from '@2060.io/credo-ts-didcomm-reactions'
+import { MessageReactionsMessage } from '@2060.io/credo-ts-didcomm-reactions'
 import { MessageReceiptsMessage, MessageState } from '@2060.io/credo-ts-didcomm-receipts'
 import { PerformMessage } from '@credo-ts/action-menu'
 import {
@@ -23,7 +23,7 @@ import {
 import { AnswerMessage } from '@credo-ts/question-answer'
 
 import { AgentAction, AgentActionType } from './AgentAction'
-import { SendTextMessageParameters } from './types'
+import { SendReactionParameters, SendTextMessageParameters } from './types'
 
 import { CallInfo } from '@2060/hooks/providers/useVideoCallContext'
 import { createOobInvitation, MobileAgent } from '@2060/services/agent'
@@ -56,21 +56,9 @@ export const ACTION_FACTORIES: Record<AgentActionType, ActionFactory> = {
     }
   },
   [AgentActionType.SendReaction]: action => {
-    const parameters = action.parameters as {
-      didcommConnectionId: string
-      didcommReactions: {
-        messageId: string
-        action: MessageReactionAction
-        emoji: string
-      }[]
-    }
-    const { didcommConnectionId, didcommReactions } = parameters
-
     return async (options: { agent: MobileAgent }) => {
-      await options.agent.modules.reactions.send({
-        connectionId: didcommConnectionId,
-        reactions: didcommReactions,
-      })
+      const parameters = action.parameters as SendReactionParameters
+      await options.agent.modules.reactions.send(parameters)
       return { outgoingMessageType: MessageReactionsMessage.type.messageTypeUri }
     }
   },

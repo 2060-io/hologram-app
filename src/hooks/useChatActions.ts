@@ -1,4 +1,5 @@
 import { MessageReactionAction } from '@2060.io/credo-ts-didcomm-reactions'
+import { MessageReactionOptions } from '@2060.io/credo-ts-didcomm-reactions/build/messages/MessageReactionsMessage'
 import { MessageReceiptOptions, MessageState } from '@2060.io/credo-ts-didcomm-receipts'
 import { ActionMenuRole, ActionMenuState } from '@credo-ts/action-menu'
 import { CameraRoll } from '@react-native-camera-roll/camera-roll'
@@ -18,7 +19,7 @@ import {
   AgentActionType,
   DidCommMediaFileSharingData,
 } from './agent'
-import { SendTextMessageParameters } from './agent/actions/types'
+import { SendReactionParameters, SendTextMessageParameters } from './agent/actions/types'
 import { getLocalizedPreview, getThumbnail } from './agent/chat/preview'
 import { createTextChatEntry } from './agent/chat/recordChangeHandlers/handleBasicMessageRecordChanges'
 import {
@@ -200,7 +201,7 @@ export const useChatActions = () => {
         const { id: entryId, associatedMessageId } = message
 
         // Reactions to send to the other party through didcommm
-        const didcommReactions = [
+        const reactions: MessageReactionOptions[] = [
           { messageId: associatedMessageId ?? '', action: action as MessageReactionAction, emoji },
         ]
 
@@ -220,7 +221,7 @@ export const useChatActions = () => {
           } else if (action === 'react' && reactionIndex !== -1) {
             const myPreviousReaction = objectReactions[reactionIndex]
 
-            didcommReactions.push({
+            reactions.push({
               messageId: associatedMessageId ?? '',
               action: MessageReactionAction.Unreact,
               emoji: myPreviousReaction.emoji,
@@ -231,20 +232,21 @@ export const useChatActions = () => {
             objectReactions.splice(reactionIndex, 1)
             // Case 3: remove reaction but no previous reaction => Do nothing
           } else if (action === 'unreact' && reactionIndex === -1) {
-            didcommReactions.splice(0)
+            reactions.splice(0)
           }
 
           object.reactions = objectReactions
           object.updatedAt = new Date().getTime()
         })
 
-        if (didcommReactions.length) {
+        if (reactions.length) {
+          const parameters: SendReactionParameters = {
+            connectionId,
+            reactions,
+          }
           addAgentActionToQueue({
             type: AgentActionType.SendReaction,
-            parameters: {
-              didcommConnectionId: connectionId,
-              didcommReactions,
-            },
+            parameters,
           })
         }
       } catch (error) {
