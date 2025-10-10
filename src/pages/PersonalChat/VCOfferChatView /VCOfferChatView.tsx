@@ -14,6 +14,7 @@ import getStyles from './styles'
 import { ModalConfirmAction } from '@2060/components'
 import { CardCredentialMainInformation, Text } from '@2060/components/common'
 import { AgentActionType } from '@2060/hooks/agent'
+import { AcceptCredentialOfferParameters } from '@2060/hooks/agent/actions/types'
 import { updateChatEntryMetadata } from '@2060/hooks/agent/chat/services'
 import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
@@ -72,9 +73,10 @@ const VCOfferChatView = ({
 
   const accept = () => {
     updateMetadata(CredentialState.RequestSent)
+    const parameters: AcceptCredentialOfferParameters = { credentialRecordId: associatedRecordId }
     addAgentActionToQueue({
       type: AgentActionType.AcceptCredentialOffer,
-      parameters: { credentialRecordId: associatedRecordId },
+      parameters,
     })
   }
 

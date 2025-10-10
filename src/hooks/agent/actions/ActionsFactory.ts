@@ -26,6 +26,7 @@ import { AgentAction, AgentActionType } from './AgentAction'
 import {
   AcceptConnectionRequestParameters,
   AcceptConnectionResponseParameters,
+  AcceptCredentialOfferParameters,
   CreateCallOfferParameters,
   ForwardConnectionParameters,
   HangupCallParameters,
@@ -209,15 +210,14 @@ export const ACTION_FACTORIES: Record<AgentActionType, ActionFactory> = {
   [AgentActionType.RemoveOutOfBandRecord]: action => {
     return async (options: { agent: MobileAgent }) => {
       const parameters = action.parameters as RemoveOutOfBandRecordParameters
-      const { outOfBandId } = parameters
-      await options.agent.oob.deleteById(outOfBandId)
+      await options.agent.oob.deleteById(parameters.outOfBandId)
       return { outgoingMessageType: KeylistUpdateMessage.type.messageTypeUri }
     }
   },
   [AgentActionType.AcceptCredentialOffer]: action => {
-    const parameters = action.parameters as { credentialRecordId: string }
-    const { credentialRecordId } = parameters
     return async (options: { agent: MobileAgent }) => {
+      const parameters = action.parameters as AcceptCredentialOfferParameters
+      const { credentialRecordId } = parameters
       await options.agent.credentials.acceptOffer({
         credentialRecordId,
         autoAcceptCredential: AutoAcceptCredential.ContentApproved,

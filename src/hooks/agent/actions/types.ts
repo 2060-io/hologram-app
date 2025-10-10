@@ -76,6 +76,10 @@ type RemoveOutOfBandRecordParameters = {
   outOfBandId: string
 }
 
+type AcceptCredentialOfferParameters = {
+  credentialRecordId: string
+}
+
 export type {
   SendTextMessageParameters,
   SendReactionParameters,
@@ -91,4 +95,5 @@ export type {
   CreateCallOfferParameters,
   HangupCallParameters,
   RemoveOutOfBandRecordParameters,
+  AcceptCredentialOfferParameters,
 }
