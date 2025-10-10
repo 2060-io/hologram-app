@@ -14,9 +14,9 @@ import { createLocalPreview } from '../media/preview'
 import { useConfig } from '../providers/ConfigProvider'
 import { useLocalRealm } from '../providers/RealmProvider'
 
-import { useChats } from './ChatProvider'
 import { useMobileAgent } from './MobileAgentProvider'
 import { AgentActionType } from './actions/AgentAction'
+import { useAgentActionQueue } from './useAgentActionQueue'
 import {
   AutomaticDownloadTypes,
   DownloadOptions,
@@ -107,7 +107,7 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
 
   // TODO: Make persistent using realm
   const uploadTasks = useRef<UploadTask[]>([])
-  const { addAgentActionToQueue } = useChats()
+  const { addAgentActionToQueue } = useAgentActionQueue()
 
   useEffect(() => {
     const setupAutomaticDownloadValues = async () => {

@@ -345,8 +345,8 @@ export const useVideoCall = () => {
       const request = isMicrophoneOnRef.current ? 'resumeProducer' : 'pauseProducer'
       peer.current?.request(request, { producerId: micProducer.current?.id })
     }
-    localAudioStreamRef.current?.getAudioTracks().forEach(track => {
-      track.enabled = isMicrophoneOnRef.current
+    localAudioStreamRef.current?.getAudioTracks().forEach(audioTrack => {
+      audioTrack.enabled = isMicrophoneOnRef.current
     })
   }
 
@@ -442,10 +442,10 @@ export const useVideoCall = () => {
   }
 
   const startToProduceAudio = async () => {
-    const stream = await mediaDevices.getUserMedia({
+    const audioStream = await mediaDevices.getUserMedia({
       audio: true,
     })
-    localAudioStreamRef.current = stream
+    localAudioStreamRef.current = audioStream
     const audioTrack = localAudioStreamRef.current.getAudioTracks()[0]
     micProducer.current = await sendTransport.current?.produce({
       track: audioTrack,
@@ -454,13 +454,13 @@ export const useVideoCall = () => {
   }
 
   const startToProduceVideo = async () => {
-    const stream = await mediaDevices.getUserMedia({
+    const videoStream = await mediaDevices.getUserMedia({
       video: {
         facingMode: facingMode.current,
       },
     })
-    setLocalVideoStream(stream)
-    const videoTrack = stream.getVideoTracks()[0]
+    setLocalVideoStream(videoStream)
+    const videoTrack = videoStream.getVideoTracks()[0]
     videoProducer.current = await sendTransport.current?.produce({
       track: videoTrack,
     })
@@ -513,9 +513,9 @@ export const useVideoCall = () => {
 
   const handleSwitchCamera = () => {
     facingMode.current = facingMode.current === 'environment' ? 'user' : 'environment'
-    localVideoStream?.getVideoTracks().forEach(track => {
-      // eslint-disable-next-line no-underscore-dangle
-      track._switchCamera()
+    const constraints = { facingMode: facingMode.current }
+    localVideoStream?.getVideoTracks().forEach(videoTrack => {
+      videoTrack.applyConstraints(constraints)
     })
   }
 

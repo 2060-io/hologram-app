@@ -1,15 +1,15 @@
 import { ProofState } from '@credo-ts/core'
 import { useFocusEffect } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
-import React, { useRef, useCallback, useState } from 'react'
-import { LogBox } from 'react-native'
+import React, { useRef, useCallback, useState, useTransition } from 'react'
 
 import BasePresentationRequest from './BasePresentationRequest'
 
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
 import { useFetchServiceInfo } from '@2060/hooks'
-import { useMobileAgent } from '@2060/hooks/agent'
+import { AgentActionType, useMobileAgent } from '@2060/hooks/agent'
 import { findAllByAssociatedRecordId, updateChatEntryMetadata } from '@2060/hooks/agent/chat/services'
+import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
 import { ChatEntryType } from '@2060/model'
 import { CredentialMainInfo } from '@2060/services/agent/display'
@@ -24,18 +24,17 @@ import { toast } from '@2060/utils/toast'
 interface Props extends StackScreenProps<NavigationStackParams, 'DidcommPresentationRequest'> {}
 
 const DidcommPresentationRequest: React.FC<Props> = ({ navigation, route }: Props) => {
-  LogBox.ignoreLogs(['Non-serializable values were found in the navigation state'])
   const routes = navigation.getState()?.routes
   const prevRoute = routes[routes.length - 2]
   const comesFromChat = prevRoute.name === 'PersonalChatStack'
   const { realm } = useLocalRealm()
   const { agent } = useMobileAgent()
+  const { addAgentActionToQueue } = useAgentActionQueue()
   const selectedCredentials = useRef({})
   const { proofRecordId, did } = route.params
   const { serviceInfo } = useFetchServiceInfo(did, true)
-
   const [submission, setSubmission] = useState<FormattedSubmission | undefined>(undefined)
-  const [isAccepting, setIsAccepting] = useState(false)
+  const [isAccepting, startAcceptTransition] = useTransition()
 
   useFocusEffect(
     useCallback(() => {
@@ -52,16 +51,28 @@ const DidcommPresentationRequest: React.FC<Props> = ({ navigation, route }: Prop
     }, [serviceInfo]),
   )
 
-  const onSelectCredential = (entryId: string, credentialId: string) => {
-    selectedCredentials.current = {
-      ...selectedCredentials.current,
-      [entryId]: credentialId,
-    }
+  const accept = async () => {
+    if (!agent) return
+    startAcceptTransition(async () => {
+      try {
+        await presentProof({
+          agent,
+          proofRecordId,
+          selectedCredentials: selectedCredentials.current,
+        })
+        afterPresented()
+      } catch (error) {
+        toast({ message: `Error ${error}`, type: 'error' })
+        logError(`Error presenting credential ${error}`)
+      }
+    })
   }
 
-  // TODO: Move to an AgentAction
-  const refuse = async () => {
-    agent?.proofs.declineRequest({ proofRecordId, sendProblemReport: true })
+  const afterPresented = () => {
+    comesFromChat ? navigation.goBack() : goToCredentialPresented()
+  }
+
+  const updateChatEntryMetadataIfNecessary = () => {
     if (realm && comesFromChat) {
       const [vpRequestChatEntry] = findAllByAssociatedRecordId(realm, proofRecordId, ChatEntryType.VPRequest)
       if (vpRequestChatEntry) {
@@ -71,36 +82,19 @@ const DidcommPresentationRequest: React.FC<Props> = ({ navigation, route }: Prop
     }
   }
 
-  const onRefuse = () => {
+  const refuse = async () => {
+    updateChatEntryMetadataIfNecessary()
+    addAgentActionToQueue({
+      type: AgentActionType.DeclineProofRequest,
+      parameters: { proofRecordId },
+    })
     if (navigation.canGoBack()) navigation.goBack()
     else navigation.replace('Home')
-    refuse()
-  }
-
-  const onAccept = async () => {
-    if (!agent) return
-    setIsAccepting(true)
-    try {
-      await presentProof({
-        agent,
-        proofRecordId,
-        selectedCredentials: selectedCredentials.current,
-      })
-      afterPresented()
-    } catch (error) {
-      setIsAccepting(false)
-      toast({ message: `Error ${error}`, type: 'error' })
-      logError(`Error presenting credential ${error}`)
-    }
   }
 
   const notify = () => {
     if (!agent) return
     notifyNoCompatibleCredentials({ agent, proofRecordId })
-  }
-
-  const afterPresented = () => {
-    comesFromChat ? navigation.goBack() : goToCredentialPresented()
   }
 
   const goToCredentialPresented = async () => {
@@ -119,13 +113,20 @@ const DidcommPresentationRequest: React.FC<Props> = ({ navigation, route }: Prop
     })
   }
 
+  const onSelectCredential = (entryId: string, credentialId: string) => {
+    selectedCredentials.current = {
+      ...selectedCredentials.current,
+      [entryId]: credentialId,
+    }
+  }
+
   return submission ? (
     <BasePresentationRequest
       navigation={navigation}
       submission={submission}
       onSelectDidcommCredential={onSelectCredential}
-      accept={onAccept}
-      refuse={onRefuse}
+      accept={accept}
+      refuse={refuse}
       serviceInfo={serviceInfo}
       isAccepting={isAccepting}
       notifyNoCompatibleCredentials={notify}
