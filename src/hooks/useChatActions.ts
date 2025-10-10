@@ -23,6 +23,7 @@ import {
   SendReactionParameters,
   SendReceiptsParameters,
   SendTextMessageParameters,
+  ShareMediaParameters,
 } from './agent/actions/types'
 import { getLocalizedPreview, getThumbnail } from './agent/chat/preview'
 import { createTextChatEntry } from './agent/chat/recordChangeHandlers/handleBasicMessageRecordChanges'
@@ -361,11 +362,10 @@ export const useChatActions = () => {
                 originalRecord.metadata.get('waveform') as string,
               )
             }
+            const parameters: ShareMediaParameters = { recordId: newRecord.id }
             addAgentActionToQueue({
               type: AgentActionType.ShareMedia,
-              parameters: {
-                recordId: newRecord.id,
-              },
+              parameters,
             })
           }
         }

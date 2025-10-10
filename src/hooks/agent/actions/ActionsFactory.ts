@@ -23,7 +23,12 @@ import {
 import { AnswerMessage } from '@credo-ts/question-answer'
 
 import { AgentAction, AgentActionType } from './AgentAction'
-import { SendReactionParameters, SendReceiptsParameters, SendTextMessageParameters } from './types'
+import {
+  SendReactionParameters,
+  SendReceiptsParameters,
+  SendTextMessageParameters,
+  ShareMediaParameters,
+} from './types'
 
 import { CallInfo } from '@2060/hooks/providers/useVideoCallContext'
 import { createOobInvitation, MobileAgent } from '@2060/services/agent'
@@ -78,9 +83,9 @@ export const ACTION_FACTORIES: Record<AgentActionType, ActionFactory> = {
     }
   },
   [AgentActionType.ShareMedia]: action => {
-    const parameters = action.parameters as { recordId: string }
-    const { recordId } = parameters
     return async (options: { agent: MobileAgent }) => {
+      const parameters = action.parameters as ShareMediaParameters
+      const { recordId } = parameters
       await options.agent.modules.media.share({ recordId })
       return { outgoingMessageType: ShareMediaMessage.type.messageTypeUri }
     }

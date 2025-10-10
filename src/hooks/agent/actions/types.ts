@@ -17,4 +17,13 @@ type SendReceiptsParameters = {
   receipts: MessageReceiptOptions[]
 }
 
-export type { SendTextMessageParameters, SendReactionParameters, SendReceiptsParameters }
+type ShareMediaParameters = {
+  recordId: string
+}
+
+export type {
+  SendTextMessageParameters,
+  SendReactionParameters,
+  SendReceiptsParameters,
+  ShareMediaParameters,
+}
