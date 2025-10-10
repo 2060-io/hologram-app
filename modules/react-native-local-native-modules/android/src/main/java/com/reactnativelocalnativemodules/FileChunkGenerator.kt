@@ -75,20 +75,10 @@ class FileChunkGenerator(reactContext: ReactApplicationContext) :
             fis.skip(offset.toLong())
             Log.d("FileChunkGenerator", "reading chunk")
             fis.read(data)
-<<<<<<< HEAD:modules/local-native-modules/android/src/main/java/com/localnativemodules/FileChunkGeneratorModule.kt
-            Log.d("FileChunkGeneratorModule", "chunk succesfully read")
+            Log.d("FileChunkGenerator", "chunk successfully read")
             // Encode to base64 string
             val base64String = Base64.encodeToString(data, Base64.NO_WRAP)
             promise.resolve(base64String)
-
-=======
-            Log.d("FileChunkGenerator", "chunk succesfully read")
-            val result = Arguments.createArray()
-            for (b in data) {
-                result.pushInt(b.toInt())
-            }
-            promise.resolve(result)
->>>>>>> main:modules/react-native-local-native-modules/android/src/main/java/com/reactnativelocalnativemodules/FileChunkGenerator.kt
         } catch (e: Exception) {
             Log.d("FileChunkGenerator", "Error: " + e.message)
             promise.reject("-1", e.message)

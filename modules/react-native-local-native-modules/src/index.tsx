@@ -15,7 +15,7 @@ export function createChunks(
   return FileChunkGenerator.createChunks(filePath, outputFilePathPrefix, chunkSize)
 }
 
-export function readChunk(filePath: string, offset: number, length: number): Promise<number[]> {
+export function readChunk(filePath: string, offset: number, length: number): Promise<string> {
   return FileChunkGenerator.readChunk(filePath, offset, length)
 }
 

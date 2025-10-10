@@ -5,7 +5,7 @@ import React, { createContext, PropsWithChildren, useCallback, useContext, useEf
 import { useTranslation } from 'react-i18next'
 import { upload } from 'react-native-cloud-store'
 import { stat } from 'react-native-fs'
-import { nativeReadChunk } from 'react-native-local-native-modules'
+import { readChunk } from 'react-native-local-native-modules'
 
 import { version } from '../../../package.json'
 import { useMobileAgent } from '../agent'
@@ -202,7 +202,7 @@ export const BuildBackupProvider: React.FC<PropsWithChildren> = ({ children }) =
       for (let i = 0; i < numberOfChunks; i++) {
         const chunkSize =
           i + 1 < numberOfChunks ? UPLOAD_SIZE_PER_CHUNK : fileToUploadSize % UPLOAD_SIZE_PER_CHUNK
-        const fileChunkBase64 = await nativeReadChunk(backupFilePath, start, chunkSize)
+        const fileChunkBase64 = await readChunk(backupFilePath, start, chunkSize)
         const base64ToBuffer = base64ToArrayBuffer(fileChunkBase64)
         const end = start + base64ToBuffer.length - 1
         const contentRange = `bytes ${start}-${end}/${fileToUploadSize}`
