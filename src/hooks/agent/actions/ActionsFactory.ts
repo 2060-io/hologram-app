@@ -26,6 +26,7 @@ import { AgentAction, AgentActionType } from './AgentAction'
 import {
   ForwardConnectionParameters,
   MenuSelectionParameters,
+  PresentCredentialParameters,
   SendReactionParameters,
   SendReceiptsParameters,
   SendTextMessageParameters,
@@ -35,10 +36,6 @@ import {
 import { CallInfo } from '@2060/hooks/providers/useVideoCallContext'
 import { createOobInvitation, MobileAgent } from '@2060/services/agent'
 
-export type AnoncredsAttribute = {
-  name: string
-  credentialDefinitionId: string
-}
 type AgentCallbackReturnType<T extends BaseRecord = BaseRecord> = {
   associatedRecord?: T
   outgoingMessageType: string
@@ -121,15 +118,12 @@ export const ACTION_FACTORIES: Record<AgentActionType, ActionFactory> = {
     }
   },
   [AgentActionType.PresentCredential]: action => {
-    const parameters = action.parameters as {
-      didcommConnectionId: string
-      anoncredsAttributes: AnoncredsAttribute[]
-    }
-    const { didcommConnectionId, anoncredsAttributes } = parameters
     return async (options: { agent: MobileAgent }) => {
+      const parameters = action.parameters as PresentCredentialParameters
+      const { connectionId, anoncredsAttributes } = parameters
       const proofExchangeRecord = await options.agent.proofs.proposeProof({
         proofFormats: { anoncreds: { attributes: anoncredsAttributes } },
-        connectionId: didcommConnectionId,
+        connectionId,
         protocolVersion: 'v2',
       })
       return {

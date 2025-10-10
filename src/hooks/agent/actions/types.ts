@@ -1,6 +1,11 @@
 import { MessageReactionOptions } from '@2060.io/credo-ts-didcomm-reactions/build/messages/MessageReactionsMessage'
 import { MessageReceiptOptions } from '@2060.io/credo-ts-didcomm-receipts'
 
+export type AnoncredsAttribute = {
+  name: string
+  credentialDefinitionId: string
+}
+
 type SendTextMessageParameters = {
   didcommConnectionId: string
   message: string
@@ -31,6 +36,11 @@ type ForwardConnectionParameters = {
   connectionId: string
 }
 
+type PresentCredentialParameters = {
+  connectionId: string
+  anoncredsAttributes: AnoncredsAttribute[]
+}
+
 export type {
   SendTextMessageParameters,
   SendReactionParameters,
@@ -38,4 +48,5 @@ export type {
   ShareMediaParameters,
   MenuSelectionParameters,
   ForwardConnectionParameters,
+  PresentCredentialParameters,
 }
