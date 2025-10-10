@@ -1,7 +1,7 @@
 import { CallEndMessage, CallOfferMessage, DidCommCallType } from '@2060.io/credo-ts-didcomm-calls'
 import { ShareMediaMessage } from '@2060.io/credo-ts-didcomm-media-sharing'
 import { MessageReactionsMessage } from '@2060.io/credo-ts-didcomm-reactions'
-import { MessageReceiptsMessage, MessageState } from '@2060.io/credo-ts-didcomm-receipts'
+import { MessageReceiptsMessage } from '@2060.io/credo-ts-didcomm-receipts'
 import { PerformMessage } from '@credo-ts/action-menu'
 import {
   BasicMessage,
@@ -23,7 +23,7 @@ import {
 import { AnswerMessage } from '@credo-ts/question-answer'
 
 import { AgentAction, AgentActionType } from './AgentAction'
-import { SendReactionParameters, SendTextMessageParameters } from './types'
+import { SendReactionParameters, SendReceiptsParameters, SendTextMessageParameters } from './types'
 
 import { CallInfo } from '@2060/hooks/providers/useVideoCallContext'
 import { createOobInvitation, MobileAgent } from '@2060/services/agent'
@@ -63,18 +63,11 @@ export const ACTION_FACTORIES: Record<AgentActionType, ActionFactory> = {
     }
   },
   [AgentActionType.SendReceipts]: action => {
-    const parameters = action.parameters as {
-      didcommConnectionId: string
-      receipts: {
-        messageId: string
-        state: MessageState
-        timestamp?: number
-      }[]
-    }
-    const { didcommConnectionId, receipts } = parameters
     return async (options: { agent: MobileAgent }) => {
+      const parameters = action.parameters as SendReceiptsParameters
+      const { connectionId, receipts } = parameters
       await options.agent.modules.receipts.send({
-        connectionId: didcommConnectionId,
+        connectionId,
         receipts: receipts.map(item => ({
           messageId: item.messageId,
           state: item.state,

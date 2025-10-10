@@ -96,7 +96,7 @@ export class AgentActionExecuter {
           },
         }
       } else {
-        log(`unexpected error: ${error}`)
+        logError(`Agent Action Executer Error: ${error}`)
 
         throw error
       }

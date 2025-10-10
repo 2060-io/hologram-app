@@ -19,7 +19,11 @@ import {
   AgentActionType,
   DidCommMediaFileSharingData,
 } from './agent'
-import { SendReactionParameters, SendTextMessageParameters } from './agent/actions/types'
+import {
+  SendReactionParameters,
+  SendReceiptsParameters,
+  SendTextMessageParameters,
+} from './agent/actions/types'
 import { getLocalizedPreview, getThumbnail } from './agent/chat/preview'
 import { createTextChatEntry } from './agent/chat/recordChangeHandlers/handleBasicMessageRecordChanges'
 import {
@@ -167,16 +171,10 @@ export const useChatActions = () => {
             }
             receipts.push({ messageId: associatedMessageId ?? '', state: MessageState.Deleted })
           })
+          const parameters: SendReceiptsParameters = { connectionId, receipts }
           addAgentActionToQueue({
             type: AgentActionType.SendReceipts,
-            parameters: {
-              didcommConnectionId: connectionId,
-              receipts: receipts.map(item => ({
-                messageId: item.messageId,
-                state: item.state,
-                timestamp: item.timestamp?.getTime(),
-              })),
-            },
+            parameters,
           })
           toast({
             type: 'success',
@@ -240,10 +238,7 @@ export const useChatActions = () => {
         })
 
         if (reactions.length) {
-          const parameters: SendReactionParameters = {
-            connectionId,
-            reactions,
-          }
+          const parameters: SendReactionParameters = { connectionId, reactions }
           addAgentActionToQueue({
             type: AgentActionType.SendReaction,
             parameters,
