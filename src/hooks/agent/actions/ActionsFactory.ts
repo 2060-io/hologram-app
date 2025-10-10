@@ -24,6 +24,7 @@ import { AnswerMessage } from '@credo-ts/question-answer'
 
 import { AgentAction, AgentActionType } from './AgentAction'
 import {
+  ForwardConnectionParameters,
   MenuSelectionParameters,
   SendReactionParameters,
   SendReceiptsParameters,
@@ -103,20 +104,17 @@ export const ACTION_FACTORIES: Record<AgentActionType, ActionFactory> = {
     }
   },
   [AgentActionType.ForwardConnection]: action => {
-    const parameters = action.parameters as {
-      forwardedConnectionId: string
-      didcommConnectionId: string
-    }
-    const { forwardedConnectionId, didcommConnectionId } = parameters
     return async (options: { agent: MobileAgent }) => {
-      const originDidcommConnection = await options.agent?.connections.getById(forwardedConnectionId)
+      const parameters = action.parameters as ForwardConnectionParameters
+      const { forwarderConnectionId, connectionId } = parameters
+      const originDidcommConnection = await options.agent?.connections.getById(forwarderConnectionId)
       const outOfBandInvitation = createOobInvitation(originDidcommConnection)
-      const didcommConnection = await options.agent?.connections.getById(didcommConnectionId)
+      const connection = await options.agent?.connections.getById(connectionId)
       const messageSender = options.agent?.context.dependencyManager.resolve(MessageSender)
       await messageSender.sendMessage(
         new OutboundMessageContext(outOfBandInvitation, {
           agentContext: options.agent?.context,
-          connection: didcommConnection,
+          connection,
         }),
       )
       return { outgoingMessageType: OutOfBandInvitation.type.messageTypeUri }

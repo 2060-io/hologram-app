@@ -26,10 +26,16 @@ type MenuSelectionParameters = {
   selectedItemName: string
 }
 
+type ForwardConnectionParameters = {
+  forwarderConnectionId: string
+  connectionId: string
+}
+
 export type {
   SendTextMessageParameters,
   SendReactionParameters,
   SendReceiptsParameters,
   ShareMediaParameters,
   MenuSelectionParameters,
+  ForwardConnectionParameters,
 }
