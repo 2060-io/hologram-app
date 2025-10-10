@@ -1,6 +1,7 @@
-import { AutoAcceptCredential, CredentialState } from '@credo-ts/core'
+import { CredentialState } from '@credo-ts/core'
 import { useNavigation, ParamListBase } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
+import { TrustResolutionOutcome } from '@verana-labs/verre'
 import React, { useState, memo, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
@@ -12,11 +13,14 @@ import getStyles from './styles'
 
 import { ModalConfirmAction } from '@2060/components'
 import { CardCredentialMainInformation, Text } from '@2060/components/common'
+import { AgentActionType } from '@2060/hooks/agent'
+import { updateChatEntryMetadata } from '@2060/hooks/agent/chat/services'
+import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
+import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { VCOfferMetadata } from '@2060/model'
 import { MobileAgent } from '@2060/services/agent'
 import { CredentialMainInfo, sanitizeString } from '@2060/services/agent/display'
-import { logError } from '@2060/utils'
 import { toast } from '@2060/utils/toast'
 
 interface Props {
@@ -24,16 +28,25 @@ interface Props {
   associatedRecordId: string
   metadata: VCOfferMetadata
   agent?: MobileAgent
+  chatEntryId: string
 }
 
-const VCOfferChatView = ({ sender, associatedRecordId, metadata, agent }: Props): React.ReactElement => {
+const VCOfferChatView = ({
+  sender,
+  associatedRecordId,
+  metadata,
+  agent,
+  chatEntryId,
+}: Props): React.ReactElement => {
   const [showModalRefuseConfirmation, setShowModalRefuseConfirmation] = useState(false)
   const navigation: StackNavigationProp<ParamListBase> = useNavigation()
   const { t } = useTranslation()
-  const { credentialState } = metadata
-  const opacity = credentialState !== CredentialState.OfferReceived ? 0.3 : 1
   const theme = useTheme()
   const styles = getStyles(theme)
+  const { addAgentActionToQueue } = useAgentActionQueue()
+  const { realm } = useLocalRealm()
+  const { credentialState } = metadata
+  const opacity = credentialState !== CredentialState.OfferReceived ? 0.3 : 1
 
   const credentialMainInfo: CredentialMainInfo = useMemo(
     () => ({
@@ -45,29 +58,32 @@ const VCOfferChatView = ({ sender, associatedRecordId, metadata, agent }: Props)
         id: metadata.issuerId ?? '',
         name: metadata.issuerName ?? sender?.name ?? '',
         logoUrl: metadata.issuerLogoUrl ?? sender?.avatar,
-        status: 'notFound',
+        status: TrustResolutionOutcome.INVALID,
       },
     }),
     [metadata],
   )
 
+  const updateMetadata = (newCredentialState: CredentialState) => {
+    if (!realm) return
+    const newMetadata = { ...metadata, credentialState: newCredentialState }
+    updateChatEntryMetadata(realm, chatEntryId, newMetadata)
+  }
+
   const accept = () => {
-    // TODO: Move this logic to an AgentAction
-    agent?.credentials
-      .acceptOffer({
-        credentialRecordId: associatedRecordId,
-        autoAcceptCredential: AutoAcceptCredential.ContentApproved,
-      })
-      .catch(error => logError(`Error accepting credential ${error}`))
+    updateMetadata(CredentialState.RequestSent)
+    addAgentActionToQueue({
+      type: AgentActionType.AcceptCredentialOffer,
+      parameters: { credentialRecordId: associatedRecordId },
+    })
   }
 
   const refuse = () => {
-    agent?.credentials
-      .declineOffer(associatedRecordId, {
-        sendProblemReport: true,
-        problemReportDescription: 'e.msg.refused',
-      })
-      .catch(error => logError(`Error refusing credential ${error}`))
+    updateMetadata(CredentialState.Declined)
+    addAgentActionToQueue({
+      type: AgentActionType.DeclineCredentialOffer,
+      parameters: { credentialRecordId: associatedRecordId },
+    })
   }
 
   const refuseFromChat = () => {
@@ -103,12 +119,7 @@ const VCOfferChatView = ({ sender, associatedRecordId, metadata, agent }: Props)
   }
 
   const goToCredentialOffer = async () => {
-    if (!agent) return
-    navigation.navigate('DidcommCredentialOffer', {
-      credentialRecordId: associatedRecordId,
-      accept,
-      refuse,
-    })
+    navigation.navigate('DidcommCredentialOffer', { credentialRecordId: associatedRecordId })
   }
 
   if (!metadata) return <View />

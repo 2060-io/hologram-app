@@ -1,25 +1,23 @@
 import { CacheModuleConfig } from '@credo-ts/core'
+import { TrustResolutionOutcome } from '@verana-labs/verre'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { getServiceInfo as getServiceInfoApi } from '../services/trustResolution'
+
 import { useMobileAgent } from './agent/MobileAgentProvider'
 
-import { useConfig } from '@2060/hooks/providers/ConfigProvider'
 import { useNetwork } from '@2060/hooks/useNetwork'
+import { isServiceInfo, ServiceInfo } from '@2060/model'
 import { MobileAgent } from '@2060/services/agent'
-import {
-  ServiceInfo,
-  getServiceInfo as getServiceInfoApi,
-  isServiceInfo,
-} from '@2060/services/api/trustRegistryService'
 import { logError } from '@2060/utils'
 import { getConnectionDisplayName, getConnectionDisplayPicture } from '@2060/utils/connectionUtils'
 import { toast } from '@2060/utils/toast'
 
 /**
- * This hook will attempt to retrieve a given Decentralised Trusted Service (DTS) information from
- * its Trust Registry. This information will be stored in a cache for some time, and for performance
- * reasons by default it will try only to take info from there. But it is possible to force to refresh,
+ * This hook will attempt to retrieve a given Verifiable Service information from Trust Registry. This
+ * information will be stored in a cache for some time, and for performance reasons by default it will
+ * try only to take info from there. But it is possible to force to refresh,
  * useful in cases where it is important to be up to date.
  *
  * @param did decentralised identifier of the service
@@ -34,7 +32,6 @@ export const useFetchServiceInfo = (did?: string, forceFetch?: boolean) => {
   const isNetworkConnected = assertConnectedNetwork()
   const { t } = useTranslation()
   const { agent } = useMobileAgent()
-  const { devEnvs } = useConfig()
 
   useEffect(() => {
     const getServiceInfo = async () => {
@@ -58,10 +55,12 @@ export const useFetchServiceInfo = (did?: string, forceFetch?: boolean) => {
       }
 
       try {
+        if (!agent) return
         const serviceInfoResponse = await getServiceInfoApi({
+          agent,
           did,
-          trustedServiceResolverBaseUrl: devEnvs.TRUSTED_SERVICE_RESOLVER_BASE_URL,
         })
+
         if (serviceInfoResponse) {
           if (agent) await storeServiceInfo(did, agent, serviceInfoResponse)
           setServiceInfo(serviceInfoResponse)
@@ -102,7 +101,7 @@ export async function getStoredServiceInfo(
       minimumAgeRequired: 0,
       name: getConnectionDisplayName(connection),
       logoUrl: getConnectionDisplayPicture(connection),
-      status: 'notFound',
+      status: TrustResolutionOutcome.INVALID,
     }
   }
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useTransition } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import BaseSystemMessageView from '../BaseSystemMessageView'
@@ -11,29 +11,23 @@ import { toast } from '@2060/utils/toast'
 
 const BlockedConnectionMessageView: React.FC<BlockedConnectionMessageProps> = props => {
   const { connectionId, text } = props
-  const [unlocking, setUnlocking] = useState(false)
+  const [unlocking, startUnlockTransition] = useTransition()
   const { t } = useTranslation()
   const { agent } = useMobileAgent()
 
-  const handleUnblockConnection = async () => {
+  const unblock = async () => {
     if (!connectionId || !agent) return
-    setUnlocking(true)
-    try {
-      const connection = await agent.connections.getById(connectionId)
-      await unblockConnection(agent, connection)
-    } catch (error) {
-      toast({ type: 'error', message: `${error}` })
-    } finally {
-      setUnlocking(false)
-    }
+    startUnlockTransition(async () => {
+      try {
+        const connection = await agent.connections.getById(connectionId)
+        await unblockConnection(agent, connection)
+      } catch (error) {
+        toast({ type: 'error', message: `${error}` })
+      }
+    })
   }
 
-  return (
-    <BaseSystemMessageView
-      text={unlocking ? t('connection.unblocking') : text}
-      onPress={handleUnblockConnection}
-    />
-  )
+  return <BaseSystemMessageView text={unlocking ? t('connection.unblocking') : text} onPress={unblock} />
 }
 
 export default BlockedConnectionMessageView

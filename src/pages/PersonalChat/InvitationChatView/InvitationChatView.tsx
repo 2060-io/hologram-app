@@ -1,5 +1,6 @@
 import { StackActions, useNavigation } from '@react-navigation/native'
-import React, { useState, memo, useMemo } from 'react'
+import { TrustResolutionOutcome } from '@verana-labs/verre'
+import React, { memo, useMemo, useTransition } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, ActivityIndicator, Image, TouchableOpacity } from 'react-native'
 
@@ -7,6 +8,7 @@ import { BlueButton, Header } from '../components'
 
 import getStyles from './styles'
 
+import defaultAvatar from '@2060/assets/images/defaultUser.png'
 import { ConnectionRefusedByAge, SvgIcon, Text, VerifiedIcon } from '@2060/components/common'
 import Avatar from '@2060/components/common/Avatar/Avatar'
 import { useFetchServiceInfo } from '@2060/hooks'
@@ -29,7 +31,7 @@ interface Props {
 const isService = (did?: string) => did !== undefined && !did.startsWith('did:peer')
 
 const InvitationChatView = ({ associatedRecordId: outOfBandId, metadata, role, agent }: Props) => {
-  const [isAcceptingInvitation, setIsAcceptingInvitation] = useState(false)
+  const [isAcceptingInvitation, startAcceptInvitationTransition] = useTransition()
   const { activeChatThreadId, findOrCreateThread } = useChats()
   const chatThread = useChatThreadById(activeChatThreadId ?? '')
   const { userProfileData } = useUserProfile()
@@ -38,14 +40,14 @@ const InvitationChatView = ({ associatedRecordId: outOfBandId, metadata, role, a
   const { t } = useTranslation()
   const navigation = useNavigation()
   const isReceiver = role === ChatEntryRole.Receiver
-  const defaultUserImg = Image.resolveAssetSource(require('@2060/assets/images/defaultUser.png')).uri
+  const defaultUserImg = Image.resolveAssetSource(defaultAvatar).uri
   const { imageUrl, label, did, state } = metadata
   const invitationType = t(
     isService(did) ? 'personalChat.invitationRequestService' : 'personalChat.invitationRequestSubConnection',
   )
   const { serviceInfo } = useFetchServiceInfo(did)
   const minimumAgeRequired = serviceInfo?.minimumAgeRequired ?? 0
-  const serviceStatus = serviceInfo?.status ?? 'notFound'
+  const serviceStatus = serviceInfo?.status ?? TrustResolutionOutcome.INVALID
   const { kidAge, ageRestricted } = useValidateKidAgeRestrictions({ minimumAgeRequired, serviceStatus })
 
   const goToInvitation = async () => {
@@ -54,22 +56,21 @@ const InvitationChatView = ({ associatedRecordId: outOfBandId, metadata, role, a
   }
   const onAccept = async () => {
     if (!agent) return
-    setIsAcceptingInvitation(true)
-    try {
-      const { connectionRecord } = await acceptInvitation(agent.context, {
-        outOfBandId,
-        label: userProfileData?.displayName,
-      })
-      const chatThreadId = findOrCreateThread({ connection: connectionRecord! }).id
-      navigation.dispatch(
-        StackActions.replace('PersonalChatStack', { screen: 'PersonalChat', params: { chatThreadId } }),
-      )
-    } catch (error) {
-      logError('Error accepting invitation', error)
-      toast({ type: 'error', message: `${error}` })
-    } finally {
-      setIsAcceptingInvitation(false)
-    }
+    startAcceptInvitationTransition(async () => {
+      try {
+        const { connectionRecord } = await acceptInvitation(agent.context, {
+          outOfBandId,
+          label: userProfileData?.displayName,
+        })
+        const chatThreadId = findOrCreateThread({ connection: connectionRecord! }).id
+        navigation.dispatch(
+          StackActions.replace('PersonalChatStack', { screen: 'PersonalChat', params: { chatThreadId } }),
+        )
+      } catch (error) {
+        logError('Error accepting invitation', error)
+        toast({ type: 'error', message: `${error}` })
+      }
+    })
   }
 
   const goToExistingConnection = async () => {

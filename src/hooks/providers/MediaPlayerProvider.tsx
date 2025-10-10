@@ -54,8 +54,8 @@ const DEFAULT_AUDIO_PLAYBACK_SPEED = 1
 export const MediaPlayerProvider: React.FC<React.PropsWithChildren<Props>> = ({ children }) => {
   const { isInCall } = useVideoCallContext()
   const { forceDisableScreenLock } = useScreenLock()
-  const currentAudioCallback = useRef<Callback>()
-  const playingAudioInfo = useRef<PlayingAudioInfo>()
+  const currentAudioCallback = useRef<Callback>(undefined)
+  const playingAudioInfo = useRef<PlayingAudioInfo>(undefined)
   const [audioMessageIdFinished, setAudioMessageIdFinished] = useState<string>()
   const [audioPlaybackSpeed, setAudioPlaybackSpeed] = useState(DEFAULT_AUDIO_PLAYBACK_SPEED)
   const [renderVideoPlayer, setRenderVideoPlayer] = useState(false)
@@ -102,8 +102,10 @@ export const MediaPlayerProvider: React.FC<React.PropsWithChildren<Props>> = ({ 
     setAudioMessageIdFinished(newAudioMessageId)
   }, [])
 
+  const closeVideoPlayer = () => setRenderVideoPlayer(false)
+
   return (
-    <MediaPlayerContext.Provider
+    <MediaPlayerContext
       value={{
         audioPlaybackSpeed,
         changeAudioPlaybackSpeed,
@@ -115,17 +117,17 @@ export const MediaPlayerProvider: React.FC<React.PropsWithChildren<Props>> = ({ 
     >
       <LightboxModal
         visible={renderVideoPlayer}
-        renderHeader={close =>
+        renderHeader={() =>
           showControl &&
           videoState && (
             <LightboxHeader
               chatEntry={videoState.chatEntry}
               fileMediaInfo={videoState.fileMediaInfo}
-              onBack={close}
+              onBack={closeVideoPlayer}
             />
           )
         }
-        onCloseModal={() => setRenderVideoPlayer(false)}
+        closeModal={closeVideoPlayer}
       >
         <VideoPlayer
           uri={videoState?.videoFileUri ?? ''}
@@ -134,6 +136,6 @@ export const MediaPlayerProvider: React.FC<React.PropsWithChildren<Props>> = ({ 
         />
       </LightboxModal>
       {children}
-    </MediaPlayerContext.Provider>
+    </MediaPlayerContext>
   )
 }

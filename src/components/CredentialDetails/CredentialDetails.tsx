@@ -11,7 +11,7 @@ import { CredentialDetailsForDisplay } from '@2060/services/agent/display'
 import { formatCredentialSubject, CredentialAttributeRow } from '@2060/services/agent/formatCredentialSubject'
 
 interface StyleObject {
-  [key: string]: Object
+  [key: string]: object
 }
 
 type DetailSectionProps = {

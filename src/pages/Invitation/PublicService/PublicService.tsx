@@ -5,7 +5,7 @@ import CanNotConnect from './CanNotConnect'
 
 import { ServiceInformation } from '@2060/components/common'
 import { useValidateKidAgeRestrictions } from '@2060/hooks/useValidateKidAgeRestrictions'
-import { ServiceInfo, ServiceStatus } from '@2060/services/api/trustRegistryService'
+import { ServiceInfo, ServiceStatus } from '@2060/model'
 
 type Props = {
   did: string

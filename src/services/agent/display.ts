@@ -13,12 +13,13 @@ import {
   MdocRecord,
 } from '@credo-ts/core'
 import { OpenId4VciResolvedCredentialOffer } from '@credo-ts/openid4vc'
-
-import { IssuerInfo, VerifierInfo } from '../api/trustRegistryService'
+import { TrustResolutionOutcome } from '@verana-labs/verre'
 
 import { MobileAgent } from './MobileAgent'
 import { getDidCommCredentialDisplayMetadata } from './RecordMetadata'
 import { getOpenId4VcCredentialMetadata } from './oidcMetadata'
+
+import { IssuerInfo, VerifierInfo } from '@2060/model/ServiceInfo'
 
 export type CredentialMainInfo = {
   id: string
@@ -259,7 +260,7 @@ export async function getCredentialDetailsFromExchange(
           id: displayMetadata?.issuerId ?? '',
           logoUrl: displayMetadata?.issuerLogoUrl,
           name: displayMetadata?.issuerName ?? '',
-          status: displayMetadata?.issuerStatus ?? 'trusted',
+          status: displayMetadata?.issuerStatus ?? TrustResolutionOutcome.INVALID,
         },
       },
       attributes,
@@ -270,7 +271,7 @@ export async function getCredentialDetailsFromExchange(
 
 export function getCredentialMainInfo(
   credentialRecord: W3cCredentialRecord | SdJwtVcRecord | MdocRecord,
-  //@ts-ignore It incorrectly complains about no return, when both cases are fully covered
+  //@ts-expect-error It incorrectly complains about no return, when both cases are fully covered
 ): CredentialMainInfo {
   if (credentialRecord instanceof W3cCredentialRecord) {
     const credential = JsonTransformer.toJSON(
@@ -309,7 +310,7 @@ export function getCredentialMainInfo(
         id: credential.issuer.id,
         name: issuerDisplay.name,
         logoUrl: issuerDisplay.logo?.url,
-        status: 'trusted',
+        status: TrustResolutionOutcome.INVALID,
       },
     }
   }
@@ -327,7 +328,7 @@ export function getOfferedCredentialDetailsForDisplay(
     mainInfo: {
       createdAt: new Date(),
       id: 'id',
-      issuer: { id: 'issuerId', name: 'issuerName', status: 'trusted' },
+      issuer: { id: 'issuerId', name: 'issuerName', status: TrustResolutionOutcome.INVALID },
       recordId: 'recordId',
       schemaName: 'Schema',
     },

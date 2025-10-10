@@ -5,7 +5,7 @@ import { View } from 'react-native'
 import { Text, MainButton } from '@2060/components/common'
 
 interface StyleObject {
-  [key: string]: Object
+  [key: string]: object
 }
 
 type Props = {

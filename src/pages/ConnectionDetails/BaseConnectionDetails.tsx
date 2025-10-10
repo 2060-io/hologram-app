@@ -1,5 +1,5 @@
 import { getConnectionProfile } from '@2060.io/credo-ts-didcomm-user-profile'
-import { ConnectionRecord, TypedArrayEncoder } from '@credo-ts/core'
+import { ConnectionRecord, TypedArrayEncoder, Buffer } from '@credo-ts/core'
 import { StackScreenProps } from '@react-navigation/stack'
 import React, { ReactElement, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -129,7 +129,7 @@ const BaseConnectionDetails = ({
   }
 
   const deleteChat = () => {
-    let thread = findOrCreateThread({ connection })
+    const thread = findOrCreateThread({ connection })
     clearChat(thread.id)
   }
 
@@ -210,8 +210,8 @@ const BaseConnectionDetails = ({
   const shareConnection = async () => {
     try {
       const outOfBandInvitation = createOobInvitation(connection)
-      let invitationStr = JSON.stringify(outOfBandInvitation)
-      let invitationBase64 = TypedArrayEncoder.toBase64URL(Buffer.from(invitationStr))
+      const invitationStr = JSON.stringify(outOfBandInvitation)
+      const invitationBase64 = TypedArrayEncoder.toBase64URL(Buffer.from(invitationStr))
       const invitationUrl = `${Config.BASE_INVITATION_URL}?oob=${invitationBase64}`
       const title = t('scanned.titleShare', { displayName: userProfileData?.displayName })
       await Share.open(

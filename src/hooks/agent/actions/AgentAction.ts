@@ -19,6 +19,15 @@ export enum AgentActionType {
   ForwardConnection = 'ForwardConnection',
   PresentCredential = 'PresentCredential',
   SendAnswer = 'SendAnswer',
+  AcceptConnectionRequest = 'AcceptConnectionRequest',
+  AcceptConnectionResponse = 'AcceptConnectionResponse',
+  QueryServiceFeatures = 'QueryServiceFeatures',
+  CreateCallOffer = 'CreateCallOffer',
+  HangupCall = 'HangupCall',
+  RemoveOutOfBandRecord = 'RemoveOutOfBandRecord',
+  AcceptCredentialOffer = 'AcceptCredentialOffer',
+  DeclineCredentialOffer = 'DeclineCredentialOffer',
+  DeclineProofRequest = 'DeclineProofRequest',
 }
 
 export type AgentAction = {

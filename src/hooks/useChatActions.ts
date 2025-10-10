@@ -15,7 +15,6 @@ import {
   useChat,
   useFileUploadDownload,
   RepliedMessage,
-  useChats,
   AgentActionType,
   DidCommMediaFileSharingData,
 } from './agent'
@@ -29,6 +28,7 @@ import {
   updateChatEntryMetadata,
   updateThread,
 } from './agent/chat/services'
+import { useAgentActionQueue } from './agent/useAgentActionQueue'
 import { useLocalRealm } from './providers/RealmProvider'
 
 import { MAX_VIDEO_DURATION } from '@2060/constants'
@@ -58,16 +58,15 @@ export const useChatActions = () => {
   const connectionId = chatThread?.data.connectionId
   const { startMediaUpload } = useFileUploadDownload()
   const { realm } = useLocalRealm()
-  const { addAgentActionToQueue } = useChats()
+  const { addAgentActionToQueue } = useAgentActionQueue()
 
   const onClearRepliedMessageState = () => setRepliedMessage()
 
   const shareMediaToApp = useCallback(async (message: ChatEntryMessage) => {
     const { fileType, mimeType, localFilePath } = extractDataFromMessage(message)
-    const path = getLocalFileUri(localFilePath)
+    const url = getLocalFileUri(localFilePath)
     const [, subType] = mimeType.split('/')
     const textType = fileType[0].toUpperCase() + fileType.slice(1)
-    const url = `file://${path}`
     const title = `Share ${textType}`
     const options = Platform.select<ShareOptions>({
       ios: {
@@ -80,15 +79,14 @@ export const useChatActions = () => {
         url,
         title,
         type: mimeType,
-        message: `${textType} from ${userProfileData?.displayName ?? '2060'}`,
+        message: `${textType} from ${userProfileData?.displayName ?? 'Hologram'}`,
         filename: `${textType}.${subType}`,
-        failOnCancel: true,
-        showAppsToView: true,
+        failOnCancel: false,
         subject: title,
       },
       default: {},
     })
-    return Share.open(options)
+    Share.open(options).catch(logError)
   }, [])
 
   const saveFileToGallery = useCallback(async (message: ChatEntryMessage) => {
@@ -594,7 +592,7 @@ function extractDataFromMessage(message: ChatEntryMessage) {
     const metadata = chatEntryRecord.metadata as MediaSharingMetadata
     extractedData.filename = metadata.filename!
     extractedData.mimeType = metadata.mimeType!
-    extractedData.fileType = metadata.mimeType?.split('/')[0]!
+    extractedData.fileType = metadata.mimeType?.split('/')[0]
     extractedData.localFilePath = metadata.localFilePath!
   }
 

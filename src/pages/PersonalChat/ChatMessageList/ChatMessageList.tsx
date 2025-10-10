@@ -37,9 +37,9 @@ const renderItem = ({ item, index, props }: ItemProps) => {
   }
   return <ChatMessage key={item.id} {...messageProps} />
 }
+const keyExtractor = (item: ChatEntryMessage) => `${item.id}`
 
 export const ChatMessageList = memo((props: ChatMessageListProps) => {
-  const keyExtractor = (item: ChatEntryMessage) => `${item.id}`
   const [scrollEnabled, setScrollEnabled] = useState(true)
   const containerHeight = useRef(0)
   const listHeight = useRef(0)
@@ -63,15 +63,13 @@ export const ChatMessageList = memo((props: ChatMessageListProps) => {
     <View style={styles.container} onLayout={onContainerLayout}>
       <View style={styles.containerAlignTop}>
         <FlashList
-          keyboardDismissMode="none"
           keyExtractor={keyExtractor}
-          automaticallyAdjustContentInsets={false}
           data={props.messages}
-          inverted={true}
+          inverted
           renderItem={itemProps => renderItem({ ...itemProps, props })}
           keyboardShouldPersistTaps="handled"
           scrollEventThrottle={16}
-          onEndReachedThreshold={0.8}
+          onEndReachedThreshold={1}
           estimatedItemSize={150}
           estimatedListSize={{ height: screenHeight, width: screenWidth }}
           showsVerticalScrollIndicator={false}

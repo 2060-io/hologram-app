@@ -2,7 +2,7 @@ import { Image } from 'react-native'
 import { Video as VideoCompressor } from 'react-native-compressor'
 import { stat, TemporaryDirectoryPath } from 'react-native-fs'
 import { ImageOrVideo } from 'react-native-image-crop-picker'
-import { nativeGetVideoProperties } from 'react-native-local-native-modules'
+import { getVideoProperties } from 'react-native-local-native-modules'
 
 import { copyFile, deleteFile } from './RNFS'
 import { logError } from './log'
@@ -43,7 +43,7 @@ const getDataForVideo = async (currentFileValues: DidCommMediaFileSharingData) =
   let width = 0
   let height = 0
   try {
-    const properties = await nativeGetVideoProperties(currentFileValues.path)
+    const properties = await getVideoProperties(currentFileValues.path)
     if (properties) {
       duration = properties.duration
       width = properties.width
@@ -110,6 +110,7 @@ export const compressVideo = async (
     )
     await deleteFile(fileInfo.path)
     fileInfo.path = compressedVideoPath
+    fileInfo.mime = 'video/mp4'
     const { size } = await stat(compressedVideoPath)
     fileInfo.size = size
     return fileInfo

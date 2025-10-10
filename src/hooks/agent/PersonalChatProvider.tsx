@@ -231,7 +231,7 @@ export const PersonalChatProvider: React.FC<React.PropsWithChildren<Props>> = ({
   const closeModalConfirmMessageDeletion = () => setModalConfirmMessageDeletion(false)
 
   return (
-    <PersonalChatStack.Provider
+    <PersonalChatStack
       value={{
         ...state,
         setIsRecordingVoiceNote,
@@ -251,6 +251,6 @@ export const PersonalChatProvider: React.FC<React.PropsWithChildren<Props>> = ({
       }}
     >
       {children}
-    </PersonalChatStack.Provider>
+    </PersonalChatStack>
   )
 }

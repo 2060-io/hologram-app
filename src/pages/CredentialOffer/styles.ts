@@ -5,13 +5,13 @@ import { widthPercentageToDP } from '@2060/utils/responsiveUtils'
 
 const styles = (theme: AppTheme) =>
   StyleSheet.create({
-    root: {
+    container: {
       flex: 1,
     },
     subContainer: {
       marginTop: 15,
       paddingHorizontal: 15,
-      paddingBottom: 40,
+      paddingBottom: 10,
     },
     headerBtnText: {
       fontSize: theme.fontSize.md2,

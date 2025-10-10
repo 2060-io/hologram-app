@@ -83,13 +83,13 @@ export const PushNotificationsProvider: React.FC<React.PropsWithChildren<Props>>
   }, [])
 
   return (
-    <PushNotificationsContext.Provider
+    <PushNotificationsContext
       value={{
         pushNotification,
         setPushNotification,
       }}
     >
       {children}
-    </PushNotificationsContext.Provider>
+    </PushNotificationsContext>
   )
 }

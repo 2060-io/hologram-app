@@ -1,7 +1,7 @@
 import { ChatEntryMessage, ChatParticipant } from './ChatMessage/Props'
 
 export type MediaInfo = {
-  user?: ChatParticipant
+  sender?: ChatParticipant
   createdAt: Date | number
 }
 

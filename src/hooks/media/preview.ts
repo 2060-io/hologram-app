@@ -2,6 +2,7 @@ import ImageResizer from '@bam.tech/react-native-image-resizer'
 import { createThumbnail } from 'react-native-create-thumbnail'
 import { moveFile } from 'react-native-fs'
 
+import { IS_ANDROID } from '@2060/constants'
 import { dataUrl, logError } from '@2060/utils'
 import {
   deleteFile,
@@ -25,7 +26,7 @@ export async function createLocalPreview(options: { mimeType: string; localFileP
   let localPreviewFilePath: string | undefined
   if (mimeType.startsWith('video')) {
     const thumbnailResponse = await createVideoThumbnail({
-      videoPath: `file://${localFilePath}`,
+      videoPath: localFilePath,
       maxWidth: LOCAL_PREVIEW_IMAGE_WIDTH,
       maxHeight: LOCAL_PREVIEW_IMAGE_HEIGHT,
       quality: LOCAL_PREVIEW_IMAGE_QUALITY,
@@ -63,7 +64,7 @@ export async function createDidCommPreview(options: { mimeType: string; localFil
   let didcommPreview: string | undefined
   if (mimeType.startsWith('video')) {
     const thumbnailResponse = await createVideoThumbnail({
-      videoPath: `file://${localFilePath}`,
+      videoPath: localFilePath,
       maxWidth: DIDCOMM_PREVIEW_IMAGE_WIDTH,
       maxHeight: DIDCOMM_PREVIEW_IMAGE_HEIGHT,
       quality: DIDCOMM_PREVIEW_IMAGE_QUALITY,
@@ -98,7 +99,7 @@ async function createVideoThumbnail(options: {
   const { videoPath, maxWidth, maxHeight, quality } = options
   try {
     const { path } = await createThumbnail({
-      url: videoPath,
+      url: IS_ANDROID ? `file://${videoPath}` : videoPath,
       maxHeight: maxHeight ?? DIDCOMM_PREVIEW_IMAGE_WIDTH,
       maxWidth: maxWidth ?? DIDCOMM_PREVIEW_IMAGE_HEIGHT,
       quality: quality ?? DIDCOMM_PREVIEW_IMAGE_QUALITY,

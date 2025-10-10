@@ -1,4 +1,3 @@
-import dayjs from 'dayjs'
 import React, { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, Image } from 'react-native'
@@ -17,6 +16,7 @@ import {
   getConnectionParentId,
   isService,
 } from '@2060/utils/connectionUtils'
+import { dateToString } from '@2060/utils/dateUtils'
 
 const validateConnectionExists = () => {
   const Wrapper = (props: WrapperProps) => {
@@ -44,7 +44,6 @@ const ConnectionDetails = (props: ConnectionDetailsProps) => {
   const parentConnectionName = connectionParent ? getConnectionDisplayName(connectionParent) : ''
 
   const [using24HourFormat, setUsing24HourFormat] = useState<boolean>(false)
-  const createdAt = dayjs(connection.createdAt)
   const [showFullScreenImage, setShowFullScreenImage] = useState<boolean>(false)
   const imageFullScreenUri = useRef<string | undefined>(undefined)
 
@@ -93,8 +92,8 @@ const ConnectionDetails = (props: ConnectionDetailsProps) => {
               )}
               <Text typography="EuclidCircularA-Regular" style={styles.createdAtText}>
                 {t('connection.connectionCreated', {
-                  date: createdAt.format('M/D/YYYY'),
-                  hours: createdAt.format(using24HourFormat ? 'HH:mm' : 'h:mm a'),
+                  date: dateToString(connection.createdAt, 'DD/MM/YYYY'),
+                  hours: dateToString(connection.createdAt, using24HourFormat ? 'HH:mm' : 'h:mm a'),
                 })}
               </Text>
             </View>

@@ -39,9 +39,15 @@ const ImageView = memo((props: ImageView) => {
     <>
       <LightboxModal
         visible={lightboxVisible}
-        onCloseModal={onToggleModalLightbox}
-        renderHeader={close =>
-          showControl && <LightboxHeader fileMediaInfo={fileMediaInfo} onBack={close} chatEntry={chatEntry} />
+        closeModal={onToggleModalLightbox}
+        renderHeader={() =>
+          showControl && (
+            <LightboxHeader
+              fileMediaInfo={fileMediaInfo}
+              onBack={onToggleModalLightbox}
+              chatEntry={chatEntry}
+            />
+          )
         }
       >
         <TouchableOpacity onPress={handleControls} activeOpacity={1}>

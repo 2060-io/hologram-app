@@ -2,9 +2,9 @@ import { GDrive, ListQueryBuilder } from '@robinbobin/react-native-google-drive-
 import React, { useEffect, useState } from 'react'
 import { downloadFile } from 'react-native-fs'
 import {
-  nativeGDGetAccessToken,
-  nativeGDSelectAccount,
-  nativeGDAuthorize,
+  googleDriveAuthorize,
+  googleDriveGetAccessToken,
+  googleDriveSelectAccount,
 } from 'react-native-local-native-modules'
 
 import { restoreProgressInitialValues, BackupInfoHandler, RestoreProgress } from './backup'
@@ -48,7 +48,7 @@ export const useGoogleDrive = () => {
 
   const initializeGoogleDrive = async () => {
     const googleDrive = new GDrive()
-    const accessToken = await nativeGDGetAccessToken()
+    const accessToken = await googleDriveGetAccessToken()
     googleDrive.accessToken = accessToken
     googleDrive.fetchCoercesTypes = true
     googleDrive.fetchRejectsOnHttpErrors = true
@@ -58,7 +58,7 @@ export const useGoogleDrive = () => {
 
   const selectAccount = async () => {
     try {
-      const newSelectedAccount = await nativeGDSelectAccount(selectedGoogleAccount)
+      const newSelectedAccount = await googleDriveSelectAccount(selectedGoogleAccount)
       if (newSelectedAccount) {
         setSelectedGoogleAccount(newSelectedAccount)
         setStorageData(GOOGLE_ACCOUNT_BACKUP_PERSIST_KEY, newSelectedAccount)
@@ -72,7 +72,7 @@ export const useGoogleDrive = () => {
   const authorize = async (currentAccount: string) => {
     try {
       setIsCloudAvailable(false)
-      await nativeGDAuthorize(currentAccount)
+      await googleDriveAuthorize(currentAccount)
       await initializeGoogleDrive()
       setIsCloudAvailable(true)
     } catch (error) {

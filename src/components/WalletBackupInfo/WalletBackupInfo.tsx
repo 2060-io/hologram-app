@@ -1,4 +1,3 @@
-import dayjs from 'dayjs'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, ActivityIndicator, TouchableOpacity } from 'react-native'
@@ -13,6 +12,7 @@ import {
   WalletBackupHandlerProps,
 } from '@2060/pages/Settings/WalletBackup/WalletBackupProps'
 import { getFileSize } from '@2060/utils'
+import { dateToString } from '@2060/utils/dateUtils'
 
 const WalletBackupInfoHandler = ({
   containerStyle,
@@ -70,7 +70,8 @@ const WalletBackupInfo = ({
         onInfo={() => (
           <>
             <Text typography="EuclidCircularA-Medium" style={styles.mediumText}>
-              {`${t('settings.lastBackup')}: ${dayjs(backupInfoHandler?.backup?.modifyDate).format(
+              {`${t('settings.lastBackup')}: ${dateToString(
+                backupInfoHandler?.backup?.modifyDate,
                 'DD/MM/YYYY h:mm a',
               )}`}
             </Text>
