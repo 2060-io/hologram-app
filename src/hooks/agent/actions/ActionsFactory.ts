@@ -28,6 +28,7 @@ import {
   AcceptConnectionResponseParameters,
   AcceptCredentialOfferParameters,
   CreateCallOfferParameters,
+  DeclineCredentialOfferParameters,
   ForwardConnectionParameters,
   HangupCallParameters,
   MenuSelectionParameters,
@@ -226,9 +227,9 @@ export const ACTION_FACTORIES: Record<AgentActionType, ActionFactory> = {
     }
   },
   [AgentActionType.DeclineCredentialOffer]: action => {
-    const parameters = action.parameters as { credentialRecordId: string }
-    const { credentialRecordId } = parameters
     return async (options: { agent: MobileAgent }) => {
+      const parameters = action.parameters as DeclineCredentialOfferParameters
+      const { credentialRecordId } = parameters
       await options.agent.credentials.declineOffer(credentialRecordId, {
         sendProblemReport: true,
         problemReportDescription: 'e.msg.refused',

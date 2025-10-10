@@ -80,6 +80,10 @@ type AcceptCredentialOfferParameters = {
   credentialRecordId: string
 }
 
+type DeclineCredentialOfferParameters = {
+  credentialRecordId: string
+}
+
 export type {
   SendTextMessageParameters,
   SendReactionParameters,
@@ -96,4 +100,5 @@ export type {
   HangupCallParameters,
   RemoveOutOfBandRecordParameters,
   AcceptCredentialOfferParameters,
+  DeclineCredentialOfferParameters,
 }
