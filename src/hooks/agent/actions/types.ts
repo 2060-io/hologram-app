@@ -1,5 +1,8 @@
+import { DidCommCallType } from '@2060.io/credo-ts-didcomm-calls'
 import { MessageReactionOptions } from '@2060.io/credo-ts-didcomm-reactions/build/messages/MessageReactionsMessage'
 import { MessageReceiptOptions } from '@2060.io/credo-ts-didcomm-receipts'
+
+import { CallInfo } from '@2060/hooks/providers/useVideoCallContext'
 
 export type AnoncredsAttribute = {
   name: string
@@ -58,6 +61,12 @@ type QueryServiceFeaturesParameters = {
   connectionId: string
 }
 
+type CreateCallOfferParameters = {
+  connectionId: string
+  callType: DidCommCallType
+  callInfo: CallInfo
+}
+
 export type {
   SendTextMessageParameters,
   SendReactionParameters,
@@ -70,4 +79,5 @@ export type {
   AcceptConnectionRequestParameters,
   AcceptConnectionResponseParameters,
   QueryServiceFeaturesParameters,
+  CreateCallOfferParameters,
 }

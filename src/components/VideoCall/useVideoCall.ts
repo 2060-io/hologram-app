@@ -12,6 +12,7 @@ import InCallManager from 'react-native-incall-manager'
 import { MediaStream, mediaDevices, registerGlobals } from 'react-native-webrtc'
 
 import { AgentActionType, useMobileAgent } from '@2060/hooks/agent'
+import { CreateCallOfferParameters } from '@2060/hooks/agent/actions/types'
 import { findAllDidcommThreadId, updateChatEntryMetadata } from '@2060/hooks/agent/chat/services'
 import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
 import { useConfig } from '@2060/hooks/providers/ConfigProvider'
@@ -168,9 +169,14 @@ export const useVideoCall = () => {
           await joinRoom()
           await startToProduceStream()
           if (!incomingCallInfo && !lostConnection.current) {
+            const parameters: CreateCallOfferParameters = {
+              callType: didcommCallType,
+              connectionId: didcommConnection.id,
+              callInfo,
+            }
             addAgentActionToQueue({
               type: AgentActionType.CreateCallOffer,
-              parameters: { callType: didcommCallType, connectionId: didcommConnection.id, callInfo },
+              parameters,
             })
           }
           updateCallStatus({ status: CallStatus.Connected, statusMessage: 'Connected' })

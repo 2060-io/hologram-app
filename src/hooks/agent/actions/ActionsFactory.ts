@@ -1,4 +1,4 @@
-import { CallEndMessage, CallOfferMessage, DidCommCallType } from '@2060.io/credo-ts-didcomm-calls'
+import { CallEndMessage, CallOfferMessage } from '@2060.io/credo-ts-didcomm-calls'
 import { ShareMediaMessage } from '@2060.io/credo-ts-didcomm-media-sharing'
 import { MessageReactionsMessage } from '@2060.io/credo-ts-didcomm-reactions'
 import { MessageReceiptsMessage } from '@2060.io/credo-ts-didcomm-receipts'
@@ -26,6 +26,7 @@ import { AgentAction, AgentActionType } from './AgentAction'
 import {
   AcceptConnectionRequestParameters,
   AcceptConnectionResponseParameters,
+  CreateCallOfferParameters,
   ForwardConnectionParameters,
   MenuSelectionParameters,
   PresentCredentialParameters,
@@ -37,7 +38,6 @@ import {
   ShareMediaParameters,
 } from './types'
 
-import { CallInfo } from '@2060/hooks/providers/useVideoCallContext'
 import { createOobInvitation, MobileAgent } from '@2060/services/agent'
 
 type AgentCallbackReturnType<T extends BaseRecord = BaseRecord> = {
@@ -186,16 +186,12 @@ export const ACTION_FACTORIES: Record<AgentActionType, ActionFactory> = {
     }
   },
   [AgentActionType.CreateCallOffer]: action => {
-    const parameters = action.parameters as {
-      callType: DidCommCallType
-      connectionId: string
-      callInfo: CallInfo
-    }
-    const { callType, connectionId, callInfo } = parameters
     return async (options: { agent: MobileAgent }) => {
+      const parameters = action.parameters as CreateCallOfferParameters
+      const { callType, connectionId, callInfo } = parameters
       await options.agent.modules.calls.offer({
-        callType,
         connectionId,
+        callType,
         parameters: { ...callInfo },
       })
       return { outgoingMessageType: CallOfferMessage.type.messageTypeUri }
