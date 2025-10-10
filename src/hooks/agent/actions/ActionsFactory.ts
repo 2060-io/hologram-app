@@ -32,6 +32,7 @@ import {
   MenuSelectionParameters,
   PresentCredentialParameters,
   QueryServiceFeaturesParameters,
+  RemoveOutOfBandRecordParameters,
   SendAnswerParameters,
   SendReactionParameters,
   SendReceiptsParameters,
@@ -206,9 +207,9 @@ export const ACTION_FACTORIES: Record<AgentActionType, ActionFactory> = {
     }
   },
   [AgentActionType.RemoveOutOfBandRecord]: action => {
-    const parameters = action.parameters as { outOfBandId: string }
-    const { outOfBandId } = parameters
     return async (options: { agent: MobileAgent }) => {
+      const parameters = action.parameters as RemoveOutOfBandRecordParameters
+      const { outOfBandId } = parameters
       await options.agent.oob.deleteById(outOfBandId)
       return { outgoingMessageType: KeylistUpdateMessage.type.messageTypeUri }
     }

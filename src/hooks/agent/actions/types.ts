@@ -72,6 +72,10 @@ type HangupCallParameters = {
   threadId?: string | undefined
 }
 
+type RemoveOutOfBandRecordParameters = {
+  outOfBandId: string
+}
+
 export type {
   SendTextMessageParameters,
   SendReactionParameters,
@@ -86,4 +90,5 @@ export type {
   QueryServiceFeaturesParameters,
   CreateCallOfferParameters,
   HangupCallParameters,
+  RemoveOutOfBandRecordParameters,
 }
