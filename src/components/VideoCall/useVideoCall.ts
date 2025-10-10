@@ -12,7 +12,7 @@ import InCallManager from 'react-native-incall-manager'
 import { MediaStream, mediaDevices, registerGlobals } from 'react-native-webrtc'
 
 import { AgentActionType, useMobileAgent } from '@2060/hooks/agent'
-import { CreateCallOfferParameters } from '@2060/hooks/agent/actions/types'
+import { CreateCallOfferParameters, HangupCallParameters } from '@2060/hooks/agent/actions/types'
 import { findAllDidcommThreadId, updateChatEntryMetadata } from '@2060/hooks/agent/chat/services'
 import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
 import { useConfig } from '@2060/hooks/providers/ConfigProvider'
@@ -530,9 +530,13 @@ export const useVideoCall = () => {
   const hangup = async () => {
     if (!agent || !didcommConnection || !realm) return
     try {
+      const parameters: HangupCallParameters = {
+        connectionId: didcommConnection.id,
+        threadId: didcommThreadId,
+      }
       addAgentActionToQueue({
         type: AgentActionType.HangupCall,
-        parameters: { connectionId: didcommConnection.id, threadId: didcommThreadId },
+        parameters,
       })
       peer.current?.request('leaveRoom')
       finishCall()

@@ -28,6 +28,7 @@ import {
   AcceptConnectionResponseParameters,
   CreateCallOfferParameters,
   ForwardConnectionParameters,
+  HangupCallParameters,
   MenuSelectionParameters,
   PresentCredentialParameters,
   QueryServiceFeaturesParameters,
@@ -198,13 +199,9 @@ export const ACTION_FACTORIES: Record<AgentActionType, ActionFactory> = {
     }
   },
   [AgentActionType.HangupCall]: action => {
-    const parameters = action.parameters as {
-      connectionId: string
-      threadId: string | undefined
-    }
-    const { connectionId, threadId } = parameters
     return async (options: { agent: MobileAgent }) => {
-      await options.agent.modules.calls.hangup({ connectionId, threadId })
+      const parameters = action.parameters as HangupCallParameters
+      await options.agent.modules.calls.hangup(parameters)
       return { outgoingMessageType: CallEndMessage.type.messageTypeUri }
     }
   },

@@ -67,6 +67,11 @@ type CreateCallOfferParameters = {
   callInfo: CallInfo
 }
 
+type HangupCallParameters = {
+  connectionId: string
+  threadId?: string | undefined
+}
+
 export type {
   SendTextMessageParameters,
   SendReactionParameters,
@@ -80,4 +85,5 @@ export type {
   AcceptConnectionResponseParameters,
   QueryServiceFeaturesParameters,
   CreateCallOfferParameters,
+  HangupCallParameters,
 }
