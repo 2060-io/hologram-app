@@ -16,8 +16,6 @@ import {
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
-import { isOpenIdCredentialOffer, isOpenIdPresentationRequest } from '../../services/agent/parsers'
-
 import getStyles from './styles'
 
 import { CodeScanner } from '@2060/components'
@@ -26,6 +24,7 @@ import { useAppState } from '@2060/hooks'
 import { useMobileAgent } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { DidcommInvitationType, getOutOfBandRecordById, processInvitation } from '@2060/services/agent/oob'
+import { isOpenIdCredentialOffer, isOpenIdPresentationRequest } from '@2060/services/agent/parsers'
 import { log, logError } from '@2060/utils'
 import { toast } from '@2060/utils/toast'
 
