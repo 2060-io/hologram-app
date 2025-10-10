@@ -18,6 +18,7 @@ import {
   AgentActionType,
   DidCommMediaFileSharingData,
 } from './agent'
+import { SendTextMessageParameters } from './agent/actions/types'
 import { getLocalizedPreview, getThumbnail } from './agent/chat/preview'
 import { createTextChatEntry } from './agent/chat/recordChangeHandlers/handleBasicMessageRecordChanges'
 import {
@@ -269,7 +270,7 @@ export const useChatActions = () => {
   }, [])
 
   const sendTextMessage = useCallback(
-    async (text: string) => {
+    async (message: string) => {
       if (!agent || !connectionId) throw new Error('Agent is undefined')
       if (!realm) throw new Error('Realm is undefined')
       try {
@@ -278,20 +279,20 @@ export const useChatActions = () => {
         const chatEntry = createTextChatEntry({
           agent,
           chatThreadId: chatThread.data.id,
-          content: text,
+          content: message,
           realm,
           role: ChatEntryRole.Sender,
           parentThreadId: repliedMessage?.didcommThreadId,
         })
+        const parameters: SendTextMessageParameters = {
+          didcommConnectionId: connectionId,
+          message,
+          didcommThreadId: repliedMessage?.didcommThreadId,
+        }
         addAgentActionToQueue({
           type: AgentActionType.SendTextMessage,
           chatEntryId: chatEntry.id,
-          parameters: {
-            text,
-            didcommThreadId: repliedMessage?.didcommThreadId,
-            chatThreadId: chatThread.data.id,
-            didcommConnectionId: connectionId,
-          },
+          parameters,
         })
       } catch (error) {
         log('Error sendTextMessage', error)
@@ -319,14 +320,14 @@ export const useChatActions = () => {
               realm,
               role: ChatEntryRole.Sender,
             })
+            const parameters: SendTextMessageParameters = {
+              didcommConnectionId: connection.id,
+              message: text,
+            }
             addAgentActionToQueue({
               type: AgentActionType.SendTextMessage,
               chatEntryId: chatEntry.id,
-              parameters: {
-                text,
-                chatThreadId: thread.id,
-                didcommConnectionId: connection.id,
-              },
+              parameters,
             })
           } else if (isMediaType(message.type)) {
             // NOTE: Here we assume that the file is persisted in the remote data store
@@ -399,14 +400,14 @@ export const useChatActions = () => {
               realm,
               role: ChatEntryRole.Sender,
             })
+            const parameters: SendTextMessageParameters = {
+              didcommConnectionId: connection.id,
+              message: text,
+            }
             addAgentActionToQueue({
               type: AgentActionType.SendTextMessage,
               chatEntryId: chatEntry.id,
-              parameters: {
-                text,
-                chatThreadId: thread.id,
-                didcommConnectionId: connection.id,
-              },
+              parameters,
             })
           }
         } else if (mimeType.startsWith('image') || mimeType.startsWith('video')) {

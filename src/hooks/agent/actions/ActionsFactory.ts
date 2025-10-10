@@ -23,6 +23,7 @@ import {
 import { AnswerMessage } from '@credo-ts/question-answer'
 
 import { AgentAction, AgentActionType } from './AgentAction'
+import { SendTextMessageParameters } from './types'
 
 import { CallInfo } from '@2060/hooks/providers/useVideoCallContext'
 import { createOobInvitation, MobileAgent } from '@2060/services/agent'
@@ -40,17 +41,14 @@ type ActionFactory = (action: AgentAction) => ActionCallback
 
 export const ACTION_FACTORIES: Record<AgentActionType, ActionFactory> = {
   [AgentActionType.SendTextMessage]: action => {
-    const parameters = action.parameters as {
-      text: string
-      chatThreadId: string
-      didcommThreadId: string
-      didcommConnectionId: string
-    }
-    const { text, didcommThreadId, didcommConnectionId } = parameters
-
     return async (options: { agent: MobileAgent }) => {
-      const record = await options.agent.basicMessages.sendMessage(didcommConnectionId, text, didcommThreadId)
-
+      const parameters = action.parameters as SendTextMessageParameters
+      const { didcommConnectionId, message, didcommThreadId } = parameters
+      const record = await options.agent.basicMessages.sendMessage(
+        didcommConnectionId,
+        message,
+        didcommThreadId,
+      )
       return {
         associatedRecord: record,
         outgoingMessageType: BasicMessage.type.messageTypeUri,
