@@ -25,6 +25,7 @@ import { AnswerMessage } from '@credo-ts/question-answer'
 import { AgentAction, AgentActionType } from './AgentAction'
 import {
   AcceptConnectionRequestParameters,
+  AcceptConnectionResponseParameters,
   ForwardConnectionParameters,
   MenuSelectionParameters,
   PresentCredentialParameters,
@@ -157,9 +158,9 @@ export const ACTION_FACTORIES: Record<AgentActionType, ActionFactory> = {
     }
   },
   [AgentActionType.AcceptConnectionResponse]: action => {
-    const parameters = action.parameters as { connectionId: string }
-    const { connectionId } = parameters
     return async (options: { agent: MobileAgent }) => {
+      const parameters = action.parameters as AcceptConnectionResponseParameters
+      const { connectionId } = parameters
       await options.agent.connections.acceptResponse(connectionId)
       return { outgoingMessageType: DidExchangeCompleteMessage.type.messageTypeUri }
     }
