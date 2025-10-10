@@ -20,6 +20,7 @@ import {
   DidCommMediaFileSharingData,
 } from './agent'
 import {
+  MenuSelectionParameters,
   SendAnswerParameters,
   SendReactionParameters,
   SendReceiptsParameters,
@@ -459,13 +460,11 @@ export const useChatActions = () => {
           associatedRecordId: actionMenuRecord?.id,
           metadata: { selectedItemName } as ActionMenuSelectionMetadata,
         })
+        const parameters: MenuSelectionParameters = { connectionId, selectedItemName }
         addAgentActionToQueue({
           type: AgentActionType.MenuSelection,
           chatEntryId: chatEntry.id,
-          parameters: {
-            didcommConnectionId: connectionId,
-            selectedItemName,
-          },
+          parameters,
         })
       } catch (error) {
         log('Error onActionMenuSelection', error)
