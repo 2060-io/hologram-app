@@ -24,6 +24,7 @@ import { AnswerMessage } from '@credo-ts/question-answer'
 
 import { AgentAction, AgentActionType } from './AgentAction'
 import {
+  MenuSelectionParameters,
   SendReactionParameters,
   SendReceiptsParameters,
   SendTextMessageParameters,
@@ -90,15 +91,12 @@ export const ACTION_FACTORIES: Record<AgentActionType, ActionFactory> = {
       return { outgoingMessageType: ShareMediaMessage.type.messageTypeUri }
     }
   },
-  [AgentActionType.ActionMenuSelection]: action => {
-    const parameters = action.parameters as {
-      didcommConnectionId: string
-      selectedItemName: string
-    }
-    const { selectedItemName, didcommConnectionId } = parameters
+  [AgentActionType.MenuSelection]: action => {
     return async (options: { agent: MobileAgent }) => {
+      const parameters = action.parameters as MenuSelectionParameters
+      const { connectionId, selectedItemName } = parameters
       await options.agent.modules.actionMenu.performAction({
-        connectionId: didcommConnectionId,
+        connectionId,
         performedAction: { name: selectedItemName },
       })
       return { outgoingMessageType: PerformMessage.type.messageTypeUri }

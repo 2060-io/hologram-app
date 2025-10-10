@@ -21,9 +21,15 @@ type ShareMediaParameters = {
   recordId: string
 }
 
+type MenuSelectionParameters = {
+  connectionId: string
+  selectedItemName: string
+}
+
 export type {
   SendTextMessageParameters,
   SendReactionParameters,
   SendReceiptsParameters,
   ShareMediaParameters,
+  MenuSelectionParameters,
 }

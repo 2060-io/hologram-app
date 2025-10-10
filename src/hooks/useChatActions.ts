@@ -459,7 +459,7 @@ export const useChatActions = () => {
           metadata: { selectedItemName } as ActionMenuSelectionMetadata,
         })
         addAgentActionToQueue({
-          type: AgentActionType.ActionMenuSelection,
+          type: AgentActionType.MenuSelection,
           chatEntryId: chatEntry.id,
           parameters: {
             didcommConnectionId: connectionId,
