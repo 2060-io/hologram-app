@@ -29,6 +29,7 @@ import {
   ForwardConnectionParameters,
   MenuSelectionParameters,
   PresentCredentialParameters,
+  QueryServiceFeaturesParameters,
   SendAnswerParameters,
   SendReactionParameters,
   SendReceiptsParameters,
@@ -166,9 +167,9 @@ export const ACTION_FACTORIES: Record<AgentActionType, ActionFactory> = {
     }
   },
   [AgentActionType.QueryServiceFeatures]: action => {
-    const parameters = action.parameters as { connectionId: string }
-    const { connectionId } = parameters
     return async (options: { agent: MobileAgent }) => {
+      const parameters = action.parameters as QueryServiceFeaturesParameters
+      const { connectionId } = parameters
       const discoverFeaturesApi = options.agent.context.dependencyManager.resolve(DiscoverFeaturesApi)
       await discoverFeaturesApi.queryFeatures({
         protocolVersion: 'v2',

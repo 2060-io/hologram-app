@@ -50,6 +50,14 @@ type AcceptConnectionRequestParameters = {
   connectionId: string
 }
 
+type AcceptConnectionResponseParameters = {
+  connectionId: string
+}
+
+type QueryServiceFeaturesParameters = {
+  connectionId: string
+}
+
 export type {
   SendTextMessageParameters,
   SendReactionParameters,
@@ -60,4 +68,6 @@ export type {
   PresentCredentialParameters,
   SendAnswerParameters,
   AcceptConnectionRequestParameters,
+  AcceptConnectionResponseParameters,
+  QueryServiceFeaturesParameters,
 }
