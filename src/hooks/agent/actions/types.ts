@@ -46,6 +46,10 @@ type SendAnswerParameters = {
   response: string
 }
 
+type AcceptConnectionRequestParameters = {
+  connectionId: string
+}
+
 export type {
   SendTextMessageParameters,
   SendReactionParameters,
@@ -55,4 +59,5 @@ export type {
   ForwardConnectionParameters,
   PresentCredentialParameters,
   SendAnswerParameters,
+  AcceptConnectionRequestParameters,
 }
