@@ -7,8 +7,8 @@ import getStyles from './styles'
 
 import { Avatar, Icon, MainButton, SvgIcon, Text, VerifiedIcon } from '@2060/components/common'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
+import { ServiceInfo, ServiceStatus } from '@2060/model'
 import { MobileAgent } from '@2060/services/agent'
-import { ServiceInfo, ServiceStatus } from '@2060/services/api'
 import { getFlagEmoji, trimText } from '@2060/utils'
 
 type Props = {
@@ -37,7 +37,7 @@ const CredentialIssuer = ({ service, connect, tryToOpenURL, goToConnectionDetail
     connectionExists: false,
     isJustConnected: false,
   })
-  const connectionRef = useRef<ConnectionRecord>()
+  const connectionRef = useRef<ConnectionRecord>(undefined)
 
   useEffect(() => {
     const verifyConnectionExists = async () => {

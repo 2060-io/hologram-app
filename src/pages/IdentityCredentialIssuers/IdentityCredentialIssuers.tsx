@@ -16,7 +16,7 @@ import { NavigationStackParams } from '@2060/components/Navigation/NavigationPro
 import { HeaderTitle, Icon, Text } from '@2060/components/common'
 import { useChats, useMobileAgent } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { ServiceInfo } from '@2060/services/api'
+import { ServiceInfo } from '@2060/model'
 import { getGlobalStyles } from '@2060/styles'
 import { getFlagEmoji, logError } from '@2060/utils'
 import { toast } from '@2060/utils/toast'
