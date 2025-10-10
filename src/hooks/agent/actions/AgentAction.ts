@@ -24,6 +24,10 @@ export enum AgentActionType {
   QueryServiceFeatures = 'QueryServiceFeatures',
   CreateCallOffer = 'CreateCallOffer',
   HangupCall = 'HangupCall',
+  RemoveOutOfBandRecord = 'RemoveOutOfBandRecord',
+  AcceptCredentialOffer = 'AcceptCredentialOffer',
+  DeclineCredentialOffer = 'DeclineCredentialOffer',
+  DeclineProofRequest = 'DeclineProofRequest',
 }
 
 export type AgentAction = {

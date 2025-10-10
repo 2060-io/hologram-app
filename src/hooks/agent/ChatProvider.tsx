@@ -3,7 +3,7 @@ import { ConnectionRecord, utils } from '@credo-ts/core'
 import React, { createContext, useCallback, useState, useEffect, useContext, useRef } from 'react'
 
 import { useMobileAgent } from './MobileAgentProvider'
-import { AgentActionOptions, AgentActionType } from './actions/AgentAction'
+import { AgentActionType } from './actions/AgentAction'
 import { addReceiptToRelatedEntries } from './chat/services/ChatEntryService'
 import {
   findOrCreateChatThread,
@@ -64,7 +64,6 @@ interface ChatContextInterface extends ChatState {
   clearChat(threadId: string): void
   setFilters(filters: Partial<ChatFilters>): void
   setActiveChatThreadId(id: string | undefined): void
-  addAgentActionToQueue(action: AgentActionOptions): void
 }
 
 const ChatContext = createContext<ChatContextInterface | undefined>(undefined)
@@ -298,7 +297,6 @@ export const ChatProvider: React.FC<Props> = ({ children }) => {
         markThreadAsRead,
         deleteThread,
         clearChat,
-        addAgentActionToQueue,
       }}
     >
       {children}

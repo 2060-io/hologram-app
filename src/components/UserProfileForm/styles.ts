@@ -1,8 +1,6 @@
 import { StyleSheet } from 'react-native'
 
-import { cardShadowStyles } from '../../styles/globalStyles'
-
-import { AppTheme } from '@2060/styles'
+import { AppTheme, cardShadowStyles } from '@2060/styles'
 import { hexTransparency } from '@2060/utils/colorUtils'
 import { widthPercentageToDP } from '@2060/utils/responsiveUtils'
 

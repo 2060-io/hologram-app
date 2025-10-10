@@ -1,8 +1,6 @@
 import { StyleSheet } from 'react-native'
 
-import { cardStyles, cardShadowStyles } from '../../../styles/globalStyles'
-
-import { AppTheme } from '@2060/styles'
+import { AppTheme, cardShadowStyles, cardStyles } from '@2060/styles'
 import { widthPercentageToDP } from '@2060/utils/responsiveUtils'
 
 export default (theme: AppTheme) =>
