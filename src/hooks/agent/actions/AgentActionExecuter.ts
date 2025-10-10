@@ -1,3 +1,4 @@
+import { CallEndMessage, CallOfferMessage, DidCommCallType } from '@2060.io/credo-ts-didcomm-calls'
 import { ShareMediaMessage } from '@2060.io/credo-ts-didcomm-media-sharing'
 import { MessageReactionsMessage, MessageReactionAction } from '@2060.io/credo-ts-didcomm-reactions'
 import { MessageReceiptsMessage, MessageState } from '@2060.io/credo-ts-didcomm-receipts'
@@ -13,6 +14,14 @@ import {
   OutOfBandInvitation,
   V2ProposePresentationMessage,
   DidExchangeResponseMessage,
+  DidExchangeCompleteMessage,
+  DiscoverFeaturesApi,
+  V2QueriesMessage,
+  KeylistUpdateMessage,
+  AutoAcceptCredential,
+  V2RequestCredentialMessage,
+  V2CredentialProblemReportMessage,
+  V2PresentationProblemReportMessage,
 } from '@credo-ts/core'
 import { AnswerMessage } from '@credo-ts/question-answer'
 import { Realm } from 'realm'
@@ -26,6 +35,7 @@ import {
 } from './AgentAction'
 
 import { updateChatEntry } from '@2060/hooks/agent/chat/services/ChatEntryService'
+import { CallInfo } from '@2060/hooks/providers/useVideoCallContext'
 import { ChatEntry, ChatEntryState } from '@2060/model'
 import { createOobInvitation, MobileAgent } from '@2060/services/agent'
 import { log, logError } from '@2060/utils'
@@ -192,6 +202,118 @@ export class AgentActionExecuter {
           outgoingMessageType: DidExchangeResponseMessage.type.messageTypeUri,
         }
       }
+    } else if (action.type === AgentActionType.AcceptConnectionResponse) {
+      const parameters = action.parameters as {
+        connectionId: string
+      }
+      return async (options: { agent: MobileAgent }) => {
+        const { connectionId } = parameters
+        await options.agent.connections.acceptResponse(connectionId)
+        return {
+          outgoingMessageType: DidExchangeCompleteMessage.type.messageTypeUri,
+        }
+      }
+    } else if (action.type === AgentActionType.QueryServiceFeatures) {
+      const parameters = action.parameters as {
+        connectionId: string
+      }
+      return async (options: { agent: MobileAgent }) => {
+        const { connectionId } = parameters
+        const discoverFeaturesApi = options.agent?.context.dependencyManager.resolve(DiscoverFeaturesApi)
+        await discoverFeaturesApi.queryFeatures({
+          protocolVersion: 'v2',
+          queries: [
+            { featureType: 'protocol', match: 'https://didcomm.org/media-sharing/1.0' },
+            { featureType: 'protocol', match: 'https://didcomm.org/reactions/1.0' },
+            { featureType: 'protocol', match: 'https://didcomm.org/receipts/1.0' },
+            { featureType: 'protocol', match: 'https://didcomm.org/user-profile/1.0' },
+            { featureType: 'protocol', match: 'https://didcomm.org/calls/1.0' },
+          ],
+          connectionId,
+        })
+        return {
+          outgoingMessageType: V2QueriesMessage.type.messageTypeUri,
+        }
+      }
+    } else if (action.type === AgentActionType.CreateCallOffer) {
+      const parameters = action.parameters as {
+        callType: DidCommCallType
+        connectionId: string
+        callInfo: CallInfo
+      }
+      return async (options: { agent: MobileAgent }) => {
+        const { callType, connectionId, callInfo } = parameters
+        await options.agent.modules.calls.offer({
+          callType,
+          connectionId,
+          parameters: { ...callInfo },
+        })
+        return {
+          outgoingMessageType: CallOfferMessage.type.messageTypeUri,
+        }
+      }
+    } else if (action.type === AgentActionType.HangupCall) {
+      const parameters = action.parameters as {
+        connectionId: string
+        threadId: string | undefined
+      }
+      return async (options: { agent: MobileAgent }) => {
+        const { connectionId, threadId } = parameters
+        await options.agent.modules.calls.hangup({ connectionId, threadId })
+        return {
+          outgoingMessageType: CallEndMessage.type.messageTypeUri,
+        }
+      }
+    } else if (action.type === AgentActionType.RemoveOutOfBandRecord) {
+      const parameters = action.parameters as {
+        outOfBandId: string
+      }
+      return async (options: { agent: MobileAgent }) => {
+        const { outOfBandId } = parameters
+        await options.agent.oob.deleteById(outOfBandId)
+        return {
+          outgoingMessageType: KeylistUpdateMessage.type.messageTypeUri,
+        }
+      }
+    } else if (action.type === AgentActionType.AcceptCredentialOffer) {
+      const parameters = action.parameters as {
+        credentialRecordId: string
+      }
+      return async (options: { agent: MobileAgent }) => {
+        const { credentialRecordId } = parameters
+        await options.agent.credentials.acceptOffer({
+          credentialRecordId,
+          autoAcceptCredential: AutoAcceptCredential.ContentApproved,
+        })
+        return {
+          outgoingMessageType: V2RequestCredentialMessage.type.messageTypeUri,
+        }
+      }
+    } else if (action.type === AgentActionType.DeclineCredentialOffer) {
+      const parameters = action.parameters as {
+        credentialRecordId: string
+      }
+      return async (options: { agent: MobileAgent }) => {
+        const { credentialRecordId } = parameters
+        await options.agent.credentials.declineOffer(credentialRecordId, {
+          sendProblemReport: true,
+          problemReportDescription: 'e.msg.refused',
+        })
+        return {
+          outgoingMessageType: V2CredentialProblemReportMessage.type.messageTypeUri,
+        }
+      }
+    } else if (action.type === AgentActionType.DeclineProofRequest) {
+      const parameters = action.parameters as {
+        proofRecordId: string
+      }
+      return async (options: { agent: MobileAgent }) => {
+        const { proofRecordId } = parameters
+        await options.agent.proofs.declineRequest({ proofRecordId, sendProblemReport: true })
+        return {
+          outgoingMessageType: V2PresentationProblemReportMessage.type.messageTypeUri,
+        }
+      }
     }
     logError(`No callback for type ${action.type}`)
     throw new Error(`Execution callback not defined for action of type ${action.type}`)
@@ -257,7 +379,7 @@ export class AgentActionExecuter {
       return { status: ActionExecutionStatus.OK }
     } catch (error) {
       if (error instanceof MessageSendingError) {
-        log(`**** Message sending error: ${JSON.stringify(error)}`)
+        logError(`Agent Action Error Sending Message Type ${action.type}: ${JSON.stringify(error)}`)
         const { message, associatedRecord, connection } = error.outboundMessageContext
 
         // Message failed to be sent. However we can already associate it to the chat entry

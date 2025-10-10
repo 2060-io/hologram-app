@@ -10,20 +10,45 @@ import withUserInvitation from './withUserInvitation'
 
 import { Avatar, Text, SvgIcon } from '@2060/components/common'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { getGlobalStyles } from '@2060/styles/globalStyles'
+import { getGlobalStyles } from '@2060/styles'
 import { log } from '@2060/utils'
 import { getPictureDataUrl } from '@2060/utils/connectionUtils'
 import { widthPercentageToDP } from '@2060/utils/responsiveUtils'
 
-const UserInvitation = ({ navigation, connectionInfo, userProfileData }: UserInvitationProps) => {
+const UserInvitation = ({
+  navigation,
+  invitation,
+  userProfileData,
+  createNewInvitation,
+}: UserInvitationProps) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
   const globalStyles = getGlobalStyles(theme)
+  const { url, displayName } = invitation
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => (
+        <TouchableOpacity style={styles.btnDone} onPress={() => navigation.goBack()}>
+          <Text typography="EuclidCircularA-Medium" style={styles.headerText}>
+            {t('chat.done')}
+          </Text>
+        </TouchableOpacity>
+      ),
+      headerStyle: globalStyles.headerStyle,
+      headerRight: () => (
+        <TouchableOpacity style={styles.btnRefresh} onPress={createNewInvitation}>
+          <Text typography="EuclidCircularA-Medium" style={styles.headerText}>
+            {t('invitation.refresh')}
+          </Text>
+        </TouchableOpacity>
+      ),
+    })
+  }, [theme])
 
   const shareInvitation = async () => {
-    const invitationUrl = connectionInfo.invitationCode
-    const title = t('scanned.titleShare', { displayName: connectionInfo.displayName })
+    const title = t('scanned.titleShare', { displayName })
     try {
       await Share.open(
         Platform.select<ShareOptions>({
@@ -31,35 +56,19 @@ const UserInvitation = ({ navigation, connectionInfo, userProfileData }: UserInv
             failOnCancel: false,
             activityItemSources: [
               {
-                placeholderItem: { type: 'url', content: invitationUrl },
-                item: { default: { type: 'url', content: invitationUrl } },
-                linkMetadata: { originalUrl: invitationUrl, url: invitationUrl, title },
+                placeholderItem: { type: 'url', content: url },
+                item: { default: { type: 'url', content: url } },
+                linkMetadata: { originalUrl: url, url, title },
               },
             ],
           },
-          default: { title, url: invitationUrl, message: title, failOnCancel: false },
+          default: { title, url, message: title, failOnCancel: false },
         }),
       )
     } catch (error) {
       log('Error sharing', error)
     }
   }
-
-  const handleChangeOptionsHeader = () => {
-    navigation.setOptions({
-      headerBackImage: () => null,
-      headerStyle: globalStyles.headerStyle,
-      headerRight: () => (
-        <TouchableOpacity style={styles.btnDone} onPress={() => navigation.goBack()}>
-          <Text typography="EuclidCircularA-Medium" style={styles.btnDoneText}>
-            {t('chat.done')}
-          </Text>
-        </TouchableOpacity>
-      ),
-    })
-  }
-
-  useEffect(handleChangeOptionsHeader, [theme])
 
   return (
     <SafeAreaView style={styles.containerRoot}>
@@ -73,13 +82,18 @@ const UserInvitation = ({ navigation, connectionInfo, userProfileData }: UserInv
           <Text typography="EuclidCircularA-Medium" style={styles.displayName}>
             {userProfileData?.displayName}
           </Text>
-          <View style={styles.containerCardQR}>
-            <QRCode
-              size={widthPercentageToDP('70%')}
-              color={theme.colors.black}
-              backgroundColor={theme.colors.white}
-              value={connectionInfo.invitationCode}
-            />
+          <View>
+            <View style={styles.containerCardQR}>
+              <QRCode
+                size={widthPercentageToDP('70%')}
+                color={theme.colors.black}
+                backgroundColor={theme.colors.white}
+                value={url}
+              />
+            </View>
+            <Text typography="EuclidCircularA-Regular" style={styles.pressRefreshText}>
+              {t('invitation.pressRefresh')}
+            </Text>
           </View>
           <TouchableOpacity style={styles.containerBtnShare} activeOpacity={0.6} onPress={shareInvitation}>
             <SvgIcon name="shareSocial" fill={theme.colors.white} />

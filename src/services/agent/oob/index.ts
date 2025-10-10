@@ -57,10 +57,9 @@ export const getOutOfBandRecord = async (
   agentContext: AgentContext,
   options: {
     invitation: OutOfBandInvitation
-    parentConnectionId?: string
   },
 ): Promise<{ outOfBandRecord: OutOfBandRecord; existingConnection?: ConnectionRecord }> => {
-  const { invitation, parentConnectionId } = options
+  const { invitation } = options
 
   const outOfBandApi = agentContext.dependencyManager.resolve(OutOfBandApi)
 
@@ -96,18 +95,13 @@ export const getOutOfBandRecord = async (
           label: invitation.label,
           imageUrl: invitation.imageUrl,
           autoAcceptInvitation: false,
-          autoAcceptConnection: true,
+          autoAcceptConnection: false,
         })
       : await outOfBandApi.receiveInvitation(invitation, {
           autoAcceptInvitation: false,
-          autoAcceptConnection: true,
+          autoAcceptConnection: false,
           reuseConnection: true,
         })
-
-  if (parentConnectionId) {
-    outOfBandRecord.setTag('parentConnectionId', parentConnectionId)
-    await agentContext.dependencyManager.resolve(OutOfBandRepository).update(agentContext, outOfBandRecord)
-  }
 
   return { outOfBandRecord, existingConnection }
 }
@@ -247,18 +241,18 @@ export const processInvitation = async (
     success: false,
   }
 }
-export const createInvitation = async (
-  agent: MobileAgent,
-  options: { label?: string },
-): Promise<OutOfBandInvitation> => {
-  // TODO: make it multi-use (it requires a fix in the way keylist-update-response is handled)
+export const createInvitation = async (agent: MobileAgent, options: { label?: string }) => {
   const oobRecord = await agent.oob.createInvitation({
     routing: await getMediationRouting(agent.context),
     label: options.label,
-    multiUseInvitation: false,
+    multiUseInvitation: true,
   })
+  return oobRecord
+}
 
-  return oobRecord.outOfBandInvitation
+export const getOutOfBandRecordById = async (agent: MobileAgent, outOfBandId: string) => {
+  const oobRecord = await agent.oob.getById(outOfBandId)
+  return oobRecord
 }
 
 export const createOobInvitation = (connection: ConnectionRecord) => {
@@ -291,7 +285,6 @@ export async function acceptInvitation(
   const routing = await getMediationRouting(agentContext)
 
   const { connectionRecord: newConnection } = await outOfBandApi.acceptInvitation(options.outOfBandId, {
-    autoAcceptConnection: true,
     label: options.label,
     routing,
     reuseConnection: true,

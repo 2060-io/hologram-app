@@ -187,6 +187,7 @@ export function subscribeToAgentChatEvents(
         activeChatThreadId: getActiveChatThreadId(),
         receivedAt,
         message,
+        direction,
       })
     }
     if (messageType.protocolName === MrzDataRequestMessage.type.protocolName && connection) {

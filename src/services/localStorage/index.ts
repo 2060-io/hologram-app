@@ -45,6 +45,9 @@ export const SCREEN_LOCK_TIMEOUT_PERSIST_KEY = 'screenLockTimeout'
 // This storage key saves the value that indicates if user has screen lock enabled
 export const SCREEN_LOCK_ENABLED_PERSIST_KEY = 'screenLockEnabled'
 
+// This storage key saves the id of the OutOfBandRecord when user creates his invitation to share it
+export const USER_INVITATION_OUT_OF_BAND_RECORD_ID = 'userInvitationOutOfBandRecordId'
+
 export const setStorageData = async (key: string, value: unknown) => {
   try {
     const jsonValue = JSON.stringify(value)

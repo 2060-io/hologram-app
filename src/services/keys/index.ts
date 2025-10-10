@@ -1,5 +1,5 @@
 import { TypedArrayEncoder } from '@credo-ts/core'
-import { Key, KeyAlgs } from '@hyperledger/aries-askar-react-native'
+import { Key, KeyAlgorithm } from '@openwallet-foundation/askar-react-native'
 import { readFile } from 'react-native-fs'
 
 import { ConfigJsonSignature, PARENTAL_CONTROL } from '../config'
@@ -26,7 +26,7 @@ export async function retrieveEncryptedKey(service: KeyChainService) {
 }
 
 export async function createAndStoreEncryptedKey(service: KeyChainService, seed?: string) {
-  const key = seed ? aes256KeyFromSeed(seed) : Key.generate(KeyAlgs.AesA256CbcHs512).secretBytes
+  const key = seed ? aes256KeyFromSeed(seed) : Key.generate(KeyAlgorithm.AesA256CbcHs512).secretBytes
 
   let configJson: ConfigJsonSignature
   try {
@@ -69,7 +69,7 @@ export async function deleteAllKeys() {
 
 export function aes256KeyFromSeed(seed: string) {
   return Key.fromSeed({
-    algorithm: KeyAlgs.AesA256CbcHs512,
+    algorithm: KeyAlgorithm.AesA256CbcHs512,
     seed: TypedArrayEncoder.fromString(seed),
   }).secretBytes
 }

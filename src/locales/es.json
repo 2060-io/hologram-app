@@ -140,6 +140,7 @@
       "unsecureLink": "Enlace inseguro",
       "eMRTDRequest": "Escaneo de documento NFC",
       "callOfferDescription": "{{sender}} te invita a una llamada",
+      "sentCallOfferDescription": "Estás invitando a {{ receiver }} a una llamada",
       "mrzRequest": "Escaneo de documento",
       "mrzScanTitle": "Ubica el MRZ en tu documento",
       "mrzScanInst": "Ubica tu documento delante de la cámara, alineándolo dentro del rectángulo que aparece a continuación. Asegúrate que la zona legible por máquina (MRZ) con símbolos es totalmente visible y bien iluminada.",
@@ -209,7 +210,12 @@
       "ageRestrictions": "Restricciones de edad:",
       "noAgeRestrictions": "Sin restricciones",
       "serviceNotVerifiable": "Este servicio no es verificable.",
-      "connectionRefusedByAge": "Holaa {{ name }}! Solamente tienes <bold>{{ age }}</bold> años. Tendrás que esperar unos años más para poder conectarte a este servicio."
+      "connectionRefusedByAge": "Holaa {{ name }}! Solamente tienes <bold>{{ age }}</bold> años. Tendrás que esperar unos años más para poder conectarte a este servicio.",
+      "refresh": "Refrescar",
+      "errorGettingInvitation": "Ha ocurrido un error obteniendo la invitación actual",
+      "errorCreatingInvitation": "Ha ocurrido un error creando la invitación",
+      "errorProcessingInvitation": "Ha ocurrido un error procesando la invitación",
+      "pressRefresh": "Presiona Refrescar para invalidar la invitación actual y crear una nueva"
     },
     "credential": {
       "noCredentials": "Aún no tienes credenciales",

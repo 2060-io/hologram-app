@@ -1,10 +1,9 @@
 import { PictureData } from '@2060.io/credo-ts-didcomm-user-profile'
 import { CommonActions } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useTransition } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, SafeAreaView, Platform } from 'react-native'
-import Config from 'react-native-config'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 import getStyles from './styles'
@@ -15,7 +14,6 @@ import { NavigationStackParams } from '@2060/components/Navigation/NavigationPro
 import { ModalLoading, MainButton, Text } from '@2060/components/common'
 import { useSignUp, SignUpState, useWallet } from '@2060/hooks'
 import { useMobileAgent, useUserProfile } from '@2060/hooks/agent'
-import { useConfig } from '@2060/hooks/providers/ConfigProvider'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { createAndStoreEncryptedKey, KeyChainService } from '@2060/services/keys'
 import { logError } from '@2060/utils'
@@ -31,16 +29,11 @@ const ProfileCreation = ({ navigation }: Props) => {
   const { t } = useTranslation()
   const { agent } = useMobileAgent()
   const { openWallet } = useWallet()
-  const [isRegistering, setIsRegistering] = useState(false)
-  const { setUserProfileData } = useUserProfile()
-  const { devEnvs } = useConfig()
+  const [isRegistering, startRegisterTransition] = useTransition()
+  const { updateUserProfileData } = useUserProfile()
   const [displayName, setDisplayName] = useState('')
   const [displayPicture, setDisplayPicture] = useState<PictureData | undefined>()
-  const { signUpState, startSignUp } = useSignUp({
-    defaultServicePublicDid: Config.DEFAULT_SERVICE_PUBLIC_DID as string,
-    defaultServiceAlias: Config.DEFAULT_SERVICE_ALIAS as string,
-    cloudAgentPublicDid: devEnvs.CLOUD_AGENT_PUBLIC_DID as string,
-  })
+  const { signUpState, startSignUp } = useSignUp()
   const theme = useTheme()
   const styles = getStyles(theme)
   const disableGetStartedBtn = displayName.trim() === ''
@@ -52,7 +45,7 @@ const ProfileCreation = ({ navigation }: Props) => {
   useEffect(() => {
     const handleRegistrationStatusUpdate = async () => {
       if (signUpState === SignUpState.AgentCreated) {
-        setUserProfileData?.({ displayName: displayName.trim(), displayPicture })
+        updateUserProfileData({ displayName: displayName.trim(), displayPicture })
         goHome()
       }
     }
@@ -61,11 +54,6 @@ const ProfileCreation = ({ navigation }: Props) => {
 
   const goHome = () => {
     navigation.dispatch(CommonActions.reset({ index: 0, routes: [{ name: 'Home' }] }))
-  }
-
-  const handleLogStartError = (error: Error) => {
-    logError('Error startSignUp', error?.message)
-    toast({ type: 'error', message: t('signUp.anErrorHasOccurred'), duration: 5000 })
   }
 
   const createNewWallet = useCallback(async () => {
@@ -105,17 +93,17 @@ const ProfileCreation = ({ navigation }: Props) => {
   }
 
   const signUp = async () => {
-    setIsRegistering(true)
-    try {
-      await createNewWallet()
-      await openWallet()
-      await startSignUp()
-      await handleNotificationsPermission()
-    } catch (error) {
-      if (error instanceof Error) handleLogStartError(error)
-    } finally {
-      setIsRegistering(false)
-    }
+    startRegisterTransition(async () => {
+      try {
+        await createNewWallet()
+        await openWallet()
+        await startSignUp()
+        await handleNotificationsPermission()
+      } catch (error) {
+        toast({ type: 'error', message: t('signUp.anErrorHasOccurred'), duration: 5000 })
+        logError('Error startSignUp', error)
+      }
+    })
   }
 
   return (

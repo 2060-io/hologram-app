@@ -78,6 +78,9 @@ export const handleMediaSharingRecordChanges = async (options: {
       metadata,
       relatedEntryProps,
     })
+    if (record.role === MediaSharingRole.Receiver && thread.id !== activeChatThreadId) {
+      addUnread(realm, thread.id, 1)
+    }
   } else {
     updateChatEntry(realm, {
       recordId: chatEntry.id,
@@ -90,9 +93,6 @@ export const handleMediaSharingRecordChanges = async (options: {
       associatedMessageId: record.threadId,
       metadata,
     })
-  }
-  if (record.role === MediaSharingRole.Receiver && thread.id !== activeChatThreadId) {
-    addUnread(realm, thread.id, 1)
   }
 }
 

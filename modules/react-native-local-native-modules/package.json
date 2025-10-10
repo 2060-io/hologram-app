@@ -1,14 +1,19 @@
 {
   "name": "react-native-local-native-modules",
   "version": "0.0.0",
-  "description": "native modules for hologram mobile app",
+  "description": "library to get video metadata",
   "main": "src/index",
+  "codegenConfig": {
+    "name": "RNLocalNativeModulesSpec",
+    "type": "modules",
+    "jsSrcsDir": "src"
+  },
   "author": " <> ()",
   "license": "UNLICENSED",
   "homepage": "#readme",
   "create-react-native-library": {
-    "type": "legacy-module",
+    "type": "turbo-module",
     "languages": "kotlin-objc",
-    "version": "0.49.1"
+    "version": "0.50.2"
   }
 }

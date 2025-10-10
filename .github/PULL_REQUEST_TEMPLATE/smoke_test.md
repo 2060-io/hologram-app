@@ -10,7 +10,6 @@ Next are some of the app basic features must be tested before a release to dev o
 
 ### Scan Section
 
-- [ ] Scan a p2p connection and a service connection (could be this https://gaiaid.io/) using the camera
 - [ ] Scan connection using link could be this (Gov ID Issuer) https://hologram.zone/?oob=eyJAdHlwZSI6Imh0dHBzOi8vZGlkY29tbS5vcmcvb3V0LW9mLWJhbmQvMS4xL2ludml0YXRpb24iLCJAaWQiOiI5NDI4NWMxZC1mYWRiLTQ4Y2MtOWFjNy1kOTU0NjZlYzNlMTciLCJsYWJlbCI6IkdvdiBJRCBJc3N1ZXIiLCJhY2NlcHQiOlsiZGlkY29tbS9haXAxIiwiZGlkY29tbS9haXAyO2Vudj1yZmMxOSJdLCJoYW5kc2hha2VfcHJvdG9jb2xzIjpbImh0dHBzOi8vZGlkY29tbS5vcmcvZGlkZXhjaGFuZ2UvMS4xIiwiaHR0cHM6Ly9kaWRjb21tLm9yZy9jb25uZWN0aW9ucy8xLjAiXSwic2VydmljZXMiOlsiZGlkOndlYjpkbS5nb3YtaWQtaXNzdWVyLmRlbW9zLjIwNjAuaW8iXSwiaW1hZ2VVcmwiOiJodHRwczovL3Jlc291cmNlcy5kZW1vcy4yMDYwLmlvL2dvdi1pZC1pc3N1ZXIucG5nIn0
 
 ### Services Validation
@@ -84,7 +83,7 @@ Note: Validate next items and commands using: Demo Chat Bot Agent
 
 - [ ] Press switch to enable Parental Control and set PIN
 - [ ] Press Kid birtday value box and set an age that does not be older to 18 years for kid
-- [ ] Go to Scan screen, scan next service https://unic-id-issuer.demos.dev.2060.io/qr and verify that due to age restriccions user can not connect to this service
+- [ ] Go to Scan screen, scan next service https://dm.gov-id-issuer.demos.dev.2060.io/qr and verify that due to age restriccions user can not connect to this service
 
 ##### Other settings screen options
 

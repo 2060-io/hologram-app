@@ -3,6 +3,7 @@ import { IOrg, resolve } from '@verana-labs/verre'
 import { MobileAgent } from './agent'
 
 import { ServiceInfo } from '@2060/model'
+import { logError } from '@2060/utils'
 
 export async function getServiceInfo(options: {
   agent: MobileAgent
@@ -15,6 +16,7 @@ export async function getServiceInfo(options: {
   })
 
   if (!trustResolution.service || !trustResolution.didDocument) {
+    logError(`trustResolution: ${JSON.stringify(trustResolution)}`)
     return null
   }
 
