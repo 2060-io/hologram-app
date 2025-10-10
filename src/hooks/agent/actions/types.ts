@@ -41,6 +41,11 @@ type PresentCredentialParameters = {
   anoncredsAttributes: AnoncredsAttribute[]
 }
 
+type SendAnswerParameters = {
+  questionRecordId: string
+  response: string
+}
+
 export type {
   SendTextMessageParameters,
   SendReactionParameters,
@@ -49,4 +54,5 @@ export type {
   MenuSelectionParameters,
   ForwardConnectionParameters,
   PresentCredentialParameters,
+  SendAnswerParameters,
 }

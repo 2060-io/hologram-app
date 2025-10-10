@@ -20,6 +20,7 @@ import {
   DidCommMediaFileSharingData,
 } from './agent'
 import {
+  SendAnswerParameters,
   SendReactionParameters,
   SendReceiptsParameters,
   SendTextMessageParameters,
@@ -495,10 +496,11 @@ export const useChatActions = () => {
         }
         updateChatEntryMetadata(realm, questionEntry.id, questionMetadata)
       }
+      const parameters: SendAnswerParameters = { response, questionRecordId: associatedRecordId }
       addAgentActionToQueue({
         type: AgentActionType.SendAnswer,
         chatEntryId: chatEntry.id,
-        parameters: { response, associatedRecordId },
+        parameters,
       })
     },
     [realm, chatThread],

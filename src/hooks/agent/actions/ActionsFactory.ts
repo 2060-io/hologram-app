@@ -27,6 +27,7 @@ import {
   ForwardConnectionParameters,
   MenuSelectionParameters,
   PresentCredentialParameters,
+  SendAnswerParameters,
   SendReactionParameters,
   SendReceiptsParameters,
   SendTextMessageParameters,
@@ -133,14 +134,11 @@ export const ACTION_FACTORIES: Record<AgentActionType, ActionFactory> = {
     }
   },
   [AgentActionType.SendAnswer]: action => {
-    const parameters = action.parameters as {
-      response: string
-      associatedRecordId: string
-    }
-    const { response, associatedRecordId } = parameters
     return async (options: { agent: MobileAgent }) => {
+      const parameters = action.parameters as SendAnswerParameters
+      const { response, questionRecordId } = parameters
       const associatedRecord = await options.agent.modules.questionAnswer.sendAnswer(
-        associatedRecordId,
+        questionRecordId,
         response,
       )
       return {
