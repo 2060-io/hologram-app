@@ -1,4 +1,3 @@
-import { Buffer } from '@credo-ts/core'
 import { GDrive, ListQueryBuilder } from '@robinbobin/react-native-google-drive-api-wrapper'
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
@@ -28,6 +27,16 @@ import { BACKUP_NAME, BACKUP_ZIP_FILE_PATH } from '@2060/utils/walletBackUpUtils
 
 type FilesProps = {
   id: string
+}
+
+const base64ToArrayBuffer = (base64: string) => {
+  const binaryString = atob(base64)
+  const len = binaryString.length
+  const bytes = new Uint8Array(len)
+  for (let i = 0; i < len; i++) {
+    bytes[i] = binaryString.charCodeAt(i)
+  }
+  return bytes
 }
 
 export const useGoogleDrive = () => {
@@ -165,7 +174,7 @@ export const useGoogleDrive = () => {
           const chunkSize =
             i + 1 < numberOfChunks ? UPLOAD_SIZE_PER_CHUNK : fileToUploadInfo.size % UPLOAD_SIZE_PER_CHUNK
           const fileChunkBase64 = await readChunk(fileToUploadLocation, start, chunkSize)
-          const base64ToBuffer = Buffer.from(fileChunkBase64)
+          const base64ToBuffer = base64ToArrayBuffer(fileChunkBase64)
           const end = start + base64ToBuffer.length - 1
           const contentRange = `bytes ${start}-${end}/${fileToUploadInfo.size}`
           const chunkResponse = await axios({
