@@ -56,12 +56,8 @@ export const ACTION_FACTORIES: Record<AgentActionType, ActionFactory> = {
   [AgentActionType.SendTextMessage]: action => {
     return async (options: { agent: MobileAgent }) => {
       const parameters = action.parameters as SendTextMessageParameters
-      const { didcommConnectionId, message, didcommThreadId } = parameters
-      const record = await options.agent.basicMessages.sendMessage(
-        didcommConnectionId,
-        message,
-        didcommThreadId,
-      )
+      const { connectionId, message, parentThreadId } = parameters
+      const record = await options.agent.basicMessages.sendMessage(connectionId, message, parentThreadId)
       return {
         associatedRecord: record,
         outgoingMessageType: BasicMessage.type.messageTypeUri,

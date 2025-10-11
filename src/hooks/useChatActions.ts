@@ -285,9 +285,9 @@ export const useChatActions = () => {
           parentThreadId: repliedMessage?.didcommThreadId,
         })
         const parameters: SendTextMessageParameters = {
-          didcommConnectionId: connectionId,
+          connectionId,
           message,
-          didcommThreadId: repliedMessage?.didcommThreadId,
+          parentThreadId: repliedMessage?.didcommThreadId,
         }
         addAgentActionToQueue({
           type: AgentActionType.SendTextMessage,
@@ -321,7 +321,7 @@ export const useChatActions = () => {
               role: ChatEntryRole.Sender,
             })
             const parameters: SendTextMessageParameters = {
-              didcommConnectionId: connection.id,
+              connectionId: connection.id,
               message: text,
             }
             addAgentActionToQueue({
@@ -400,7 +400,7 @@ export const useChatActions = () => {
               role: ChatEntryRole.Sender,
             })
             const parameters: SendTextMessageParameters = {
-              didcommConnectionId: connection.id,
+              connectionId: connection.id,
               message: text,
             }
             addAgentActionToQueue({

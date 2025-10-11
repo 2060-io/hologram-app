@@ -10,9 +10,9 @@ export type AnoncredsAttribute = {
 }
 
 type SendTextMessageParameters = {
-  didcommConnectionId: string
+  connectionId: string
   message: string
-  didcommThreadId?: string
+  parentThreadId?: string
 }
 
 type SendReactionParameters = {
