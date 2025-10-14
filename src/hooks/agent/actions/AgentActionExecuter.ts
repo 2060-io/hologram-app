@@ -2,7 +2,7 @@ import { AgentMessageSentEvent, AgentEventTypes, MessageSendingError } from '@cr
 import { Realm } from 'realm'
 import { ReplaySubject, firstValueFrom, filter, first, timeout, catchError, map } from 'rxjs'
 
-import { ACTION_FACTORIES } from './ActionsFactory'
+import { ActionFactoryMap } from './ActionFactoryMap'
 import { ActionExecutionStatus, AgentAction, OutboundMessageContextData } from './AgentAction'
 
 import { updateChatEntry } from '@2060/hooks/agent/chat/services/ChatEntryService'
@@ -35,7 +35,7 @@ export class AgentActionExecuter {
       .subscribe(replaySubject)
 
     try {
-      const callback = ACTION_FACTORIES[action.type](action)
+      const callback = ActionFactoryMap[action.type](action)
       const { associatedRecord, outgoingMessageType } = await callback({ agent })
 
       // Wait until the outgoing message has been submitted and update the chat entry accordingly

@@ -52,7 +52,7 @@ type AgentCallbackReturnType<T extends BaseRecord = BaseRecord> = {
 type ActionCallback = (options: { agent: MobileAgent }) => Promise<AgentCallbackReturnType<BaseRecord>>
 type ActionFactory = (action: AgentAction) => ActionCallback
 
-export const ACTION_FACTORIES: Record<AgentActionType, ActionFactory> = {
+export const ActionFactoryMap: Record<AgentActionType, ActionFactory> = {
   [AgentActionType.SendTextMessage]: action => {
     return async (options: { agent: MobileAgent }) => {
       const parameters = action.parameters as SendTextMessageParameters
