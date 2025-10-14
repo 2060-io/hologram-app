@@ -1,6 +1,5 @@
 package com.reactnativelocalnativemodules
 
-import android.util.Base64
 import android.util.Log
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.Promise
