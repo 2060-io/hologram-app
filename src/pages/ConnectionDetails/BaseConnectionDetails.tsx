@@ -1,4 +1,3 @@
-import { getConnectionProfile } from '@2060.io/credo-ts-didcomm-user-profile'
 import { ConnectionRecord, TypedArrayEncoder, Buffer } from '@credo-ts/core'
 import { StackScreenProps } from '@react-navigation/stack'
 import React, { ReactElement, useEffect, useRef, useState } from 'react'
@@ -22,7 +21,7 @@ import {
 import { deleteConnection, blockConnection, unblockConnection } from '@2060/hooks/agent/connections'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { createOobInvitation, MobileAgent } from '@2060/services/agent'
-import { capitalizeFirstLetter, log, logError } from '@2060/utils'
+import { capitalizeFirstLetter, logError } from '@2060/utils'
 import {
   getConnectionDisplayName,
   isBlocked,
@@ -57,7 +56,6 @@ const BaseConnectionDetails = ({
   const theme = useTheme()
   const styles = getStyles(theme)
 
-  const profile = getConnectionProfile(connection)
   const { agent } = useMobileAgent()
   const { t } = useTranslation()
   const connectionName = getConnectionDisplayName(connection)
@@ -70,6 +68,17 @@ const BaseConnectionDetails = ({
   const isConnectionService = isService(connection)
 
   const { clearChat, findOrCreateThread } = useChats()
+
+  useEffect(() => {
+    const requestUserProfile = async () => {
+      try {
+        await agent?.modules.profile.requestUserProfile({ connectionId: connection.id })
+      } catch (error) {
+        logError(`Cannot get user profile: ${error}`)
+      }
+    }
+    if (supportsUserProfile(connection)) requestUserProfile()
+  }, [])
 
   const setHeaderOptions = () => {
     navigation.setOptions({
@@ -143,22 +152,6 @@ const BaseConnectionDetails = ({
     }
     actions[modalConfirmationTypeRef.current]()
   }
-
-  const getUserProfile = async () => {
-    if (!profile || (profile && Object.keys(profile).length === 0)) {
-      if (supportsUserProfile(connection)) {
-        try {
-          await agent?.modules.profile.requestUserProfile({ connectionId: connection.id })
-        } catch (error) {
-          log(`Cannot get user profile: ${error}`)
-        }
-      }
-    }
-  }
-
-  useEffect(() => {
-    getUserProfile()
-  }, [profile])
 
   const relatedConnectionsOption = {
     iconName: 'users',
