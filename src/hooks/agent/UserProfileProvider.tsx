@@ -37,10 +37,11 @@ export const UserProfileProvider: React.FC<Props> = ({ children }) => {
 
   const updateUserProfileData = useCallback(
     async (data: Partial<UserProfileData>) => {
-      if (agent?.isInitialized) {
-        const userProfileData = await agent?.modules.profile.updateUserProfileData(data)
-        setUserProfileState({ userProfileData })
-      }
+      const userProfileData = await agent?.modules.profile.updateUserProfileData({
+        ...data,
+        updatedAt: new Date(),
+      })
+      setUserProfileState({ userProfileData })
     },
     [agent],
   )
