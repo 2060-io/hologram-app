@@ -8,7 +8,6 @@ import { Platform } from 'react-native'
 import Share, { ShareOptions } from 'react-native-share'
 import { SharedData } from 'react-native-share-menu'
 
-import { getLastEntryInChatThread, getMediaChatEntriesExcludingThread } from './../utils/realmQueries'
 import {
   useMobileAgent,
   useUserProfile,
@@ -48,6 +47,7 @@ import { checkIfDeleteFilesFromMedia } from '@2060/pages/PersonalChat/utils'
 import { log, logError } from '@2060/utils'
 import { getLocalFileUri } from '@2060/utils/RNFS'
 import { compressVideo, getMediaFileSharingData } from '@2060/utils/mediaFileUtils'
+import { getLastEntryInChatThread, getMediaChatEntriesExcludingThread } from '@2060/utils/realmQueries'
 import { toast, ToastOptions } from '@2060/utils/toast'
 
 export const useChatActions = () => {
