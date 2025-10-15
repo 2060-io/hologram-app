@@ -3,7 +3,14 @@ import { ShareMediaMessage } from '@2060.io/credo-ts-didcomm-media-sharing'
 import { MessageReactionsMessage } from '@2060.io/credo-ts-didcomm-reactions'
 import { MessageReceiptsMessage } from '@2060.io/credo-ts-didcomm-receipts'
 import { ProfileMessage, PictureData, getConnectionProfile } from '@2060.io/credo-ts-didcomm-user-profile'
-import { ConnectionRecord, DidExchangeState, JsonTransformer, Protocol } from '@credo-ts/core'
+import {
+  AgentContext,
+  ConnectionRecord,
+  ConnectionRepository,
+  DidExchangeState,
+  JsonTransformer,
+  Protocol,
+} from '@credo-ts/core'
 
 import { log } from './log'
 
@@ -26,6 +33,7 @@ export const getConnectionDisplayPicture = (connection: ConnectionRecord) => {
 
   try {
     const profile = getConnectionProfile(connection)
+    log('profile?.displayPicture', profile?.displayPicture)
     displayPicture = getPictureDataUrl(profile?.displayPicture)
     if (displayPicture === '') displayPicture = connection.imageUrl || ''
   } catch (error) {
@@ -59,8 +67,10 @@ export const isBlocked = (connection: ConnectionRecord) => connection.getTag('bl
 export const lastTimeProfileSent = (connection: ConnectionRecord) =>
   connection.getTag('lastTimeProfileSent')?.toString() ?? connection.createdAt.toString()
 
-export const setLastTimeProfileSent = (connection: ConnectionRecord) =>
+export const setLastTimeProfileSent = async (connection: ConnectionRecord, agentContext: AgentContext) => {
   connection.setTag('lastTimeProfileSent', `${new Date()}`)
+  await agentContext.dependencyManager.resolve(ConnectionRepository).update(agentContext, connection)
+}
 
 export const isTerminated = (connection: ConnectionRecord) =>
   connection.isReady && (connection.theirDid === undefined || connection.did === undefined)

@@ -181,7 +181,7 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
           new Date(flags.lastTimeProfileSent),
         )
         if (mustSendProfile) {
-          setLastTimeProfileSent(connection)
+          setLastTimeProfileSent(connection, agent.context)
           agent.modules.profile.sendUserProfile({ connectionId: connection.id })
         }
       }
