@@ -17,6 +17,7 @@ import {
   isBlocked,
   isService,
   isTerminated,
+  lastTimeProfileSent,
   supportsMediaSharing,
   supportsMessageReactions,
   supportsMessageReceipts,
@@ -62,8 +63,10 @@ export const useChatThreadWithParticipants = (chatThreadId: string) => {
       supportsMediaSharing: Boolean(connection && supportsMediaSharing(connection)),
       supportsMessageReceipts: Boolean(connection && supportsMessageReceipts(connection)),
       supportsMessageReactions: Boolean(connection && supportsMessageReactions(connection)),
+      lastTimeProfileSent: connection ? lastTimeProfileSent(connection) : undefined,
+      myProfileUpdatedAt: userProfileData?.updatedAt,
     }),
-    [connection, serviceInfo],
+    [connection, serviceInfo, userProfileData],
   )
 
   return {

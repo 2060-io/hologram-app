@@ -34,6 +34,7 @@ import {
   useActionMenu,
   useChats,
   ChatThreadWithParticipants,
+  useConnectionById,
 } from '@2060/hooks/agent'
 import { createChatEntry, updateChatEntryMetadata } from '@2060/hooks/agent/chat/services/ChatEntryService'
 import { blockConnection } from '@2060/hooks/agent/connections'
@@ -49,8 +50,8 @@ import {
 } from '@2060/model'
 import { ChatMessageList } from '@2060/pages/PersonalChat/ChatMessageList'
 import { logWarn } from '@2060/utils'
-import { isService } from '@2060/utils/connectionUtils'
-import { getFormattedDateRange } from '@2060/utils/dateUtils'
+import { isService, setLastTimeProfileSent } from '@2060/utils/connectionUtils'
+import { getFormattedDateRange, isDateGreaterThan } from '@2060/utils/dateUtils'
 import { cancelVideoCompression } from '@2060/utils/mediaFileUtils'
 import { markNotificationsOfChatAsViewed } from '@2060/utils/pushNotificationsUtils'
 import { toast } from '@2060/utils/toast'
@@ -129,8 +130,8 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
   const timerStickyDate = useRef<ReturnType<typeof setTimeout>>(undefined)
   const videoCompressionCancellationId = useRef<string>('')
   const isAlreadyMounted = useRef(false)
-
   const { data: chatThreadData, flags } = chatThread
+  const connection = useConnectionById(chatThreadData.connectionId)
   const { menu } = useActionMenu({ connectionId: chatThreadData.connectionId })
   const styles = getStyles(theme)
 
@@ -171,6 +172,22 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
   useEffect(() => {
     isAlreadyMounted.current = true
   }, [])
+
+  useEffect(() => {
+    const checkIfMustSendProfile = () => {
+      if (flags.myProfileUpdatedAt && flags.lastTimeProfileSent && agent && connection) {
+        const mustSendProfile = isDateGreaterThan(
+          flags.myProfileUpdatedAt,
+          new Date(flags.lastTimeProfileSent),
+        )
+        if (mustSendProfile) {
+          setLastTimeProfileSent(connection)
+          agent.modules.profile.sendUserProfile({ connectionId: connection.id })
+        }
+      }
+    }
+    checkIfMustSendProfile()
+  }, [flags.lastTimeProfileReceived, flags.myProfileUpdatedAt, agent, connection])
 
   const renderSystemMessage = useMemo(() => {
     const systemMessage = getSystemMessage({
@@ -263,9 +280,8 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
 
   const report = async (block?: boolean) => {
     hideReportConfirmation()
-    if (!chatThread || !agent || !realm || !selectedMessage) return
+    if (!chatThread || !agent || !realm || !selectedMessage || !connection) return
     try {
-      const connection = await agent.connections.getById(chatThreadData.connectionId)
       const did = isService(connection) ? connection.invitationDid : connection.theirDid
       const { metadata } = selectedMessage
       if (did && metadata) {

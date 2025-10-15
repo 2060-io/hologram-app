@@ -56,6 +56,12 @@ export const isService = (connection: ConnectionRecord) =>
 
 export const isBlocked = (connection: ConnectionRecord) => connection.getTag('blocked') === true
 
+export const lastTimeProfileSent = (connection: ConnectionRecord) =>
+  connection.getTag('lastTimeProfileSent')?.toString() ?? connection.createdAt.toString()
+
+export const setLastTimeProfileSent = (connection: ConnectionRecord) =>
+  connection.setTag('lastTimeProfileSent', `${new Date()}`)
+
 export const isTerminated = (connection: ConnectionRecord) =>
   connection.isReady && (connection.theirDid === undefined || connection.did === undefined)
 

@@ -105,7 +105,7 @@ export const dateToString = (date: Date | number | undefined, format?: string) =
  *
  * @param date1 - The first date to compare. Can be a Date object, a timestamp (number)
  * @param date2 - The second date to compare. Can be a Date object, a timestamp (number)
- * @returns true if both dates are the same day, false otherwise.
+ * @returns `true` if both dates are the same day, false otherwise.
  */
 export function getIsSameDay(date1: Date | number, date2: Date | number) {
   const firstDate = dayjs(date1)
@@ -114,4 +114,17 @@ export function getIsSameDay(date1: Date | number, date2: Date | number) {
     return false
   }
   return firstDate.isSame(secondDate, 'day')
+}
+
+/**
+ * Determines whether the first date is greater than the second date.
+ *
+ * @param date1 - The first date to compare. Can be a Date object, a timestamp (number)
+ * @param date2 - The second date to compare. Can be a Date object, a timestamp (number)
+ * @returns `true` if `date1` is after `date2`, otherwise `false`.
+ */
+export function isDateGreaterThan(date1: Date | number, date2: Date | number) {
+  const firstDate = dayjs(date1)
+  const secondDate = dayjs(date2)
+  return firstDate.isAfter(secondDate)
 }
