@@ -4,8 +4,7 @@ import axios from 'axios'
 import React, { createContext, PropsWithChildren, useCallback, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { upload } from 'react-native-cloud-store'
-import { stat } from 'react-native-fs'
-import { readChunk } from 'react-native-local-native-modules'
+import { read, stat } from 'react-native-fs'
 
 import { version } from '../../../package.json'
 import { useMobileAgent } from '../agent'
@@ -76,6 +75,8 @@ const base64ToArrayBuffer = (base64: string) => {
   }
   return bytes
 }
+
+const TWO_MB = 1024 * 1024 * 2
 
 export const BuildBackupProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const { t } = useTranslation()
@@ -195,22 +196,21 @@ export const BuildBackupProvider: React.FC<PropsWithChildren> = ({ children }) =
         .execute()
       uploaderRequest.setContentLength(fileToUploadInfo.size)
       const chunkUploadUrl = uploaderRequest.location
-      const TWO_MB = 256 * 1024 * 4 * 2
       const UPLOAD_SIZE_PER_CHUNK = TWO_MB
       const numberOfChunks = Math.ceil(fileToUploadSize / UPLOAD_SIZE_PER_CHUNK)
       let start = 0
       for (let i = 0; i < numberOfChunks; i++) {
         const chunkSize =
           i + 1 < numberOfChunks ? UPLOAD_SIZE_PER_CHUNK : fileToUploadSize % UPLOAD_SIZE_PER_CHUNK
-        const fileChunkBase64 = await readChunk(backupFilePath, start, chunkSize)
-        const base64ToBuffer = base64ToArrayBuffer(fileChunkBase64)
-        const end = start + base64ToBuffer.length - 1
+        const chunk = await read(backupFilePath, chunkSize, start, 'base64')
+        const buffer = base64ToArrayBuffer(chunk)
+        const end = start + buffer.length - 1
         const contentRange = `bytes ${start}-${end}/${fileToUploadSize}`
         const chunkUploadResponse = await axios({
           method: 'PUT',
           url: chunkUploadUrl,
           headers: { 'Content-Range': contentRange },
-          data: base64ToBuffer,
+          data: buffer,
         }).catch(() => log(`Uploaded backup file chunk ${i + 1} of ${numberOfChunks}`))
         const response = typeof chunkUploadResponse === 'object' ? chunkUploadResponse.data : null
         const progress = Number(((end / fileToUploadSize) * 100).toFixed())

@@ -1,6 +1,5 @@
 package com.reactnativelocalnativemodules
 
-import android.util.Base64
 import android.util.Log
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.Promise
@@ -60,29 +59,6 @@ class FileChunkGenerator(reactContext: ReactApplicationContext) :
         }
 
         promise.resolve(promiseArray)
-    }
-
-    override fun readChunk(filePath: String, offset: Double, length: Double, promise: Promise) {
-        Log.d(
-            "FileChunkGenerator", ("read chunk for file: " + filePath
-                    + " at offset " + offset + "with length " + length)
-        )
-        try {
-            val inputFile = File(filePath)
-            val fis = FileInputStream(inputFile)
-
-            val data = ByteArray(length.toInt())
-            fis.skip(offset.toLong())
-            Log.d("FileChunkGenerator", "reading chunk")
-            fis.read(data)
-            Log.d("FileChunkGenerator", "chunk successfully read")
-            // Encode to base64 string
-            val base64String = Base64.encodeToString(data, Base64.NO_WRAP)
-            promise.resolve(base64String)
-        } catch (e: Exception) {
-            Log.d("FileChunkGenerator", "Error: " + e.message)
-            promise.reject("-1", e.message)
-        }
     }
 
     companion object {
