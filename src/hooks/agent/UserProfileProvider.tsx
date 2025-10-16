@@ -3,6 +3,8 @@ import React, { createContext, useState, useEffect, useContext, useCallback } fr
 
 import { useMobileAgent } from './MobileAgentProvider'
 
+import { log } from '@2060/utils'
+
 interface UserProfileContextInterface {
   userProfileData?: UserProfileData
   updateUserProfileData: (data: UserProfileData) => void
@@ -29,6 +31,7 @@ export const UserProfileProvider: React.FC<Props> = ({ children }) => {
     const setInitialState = async () => {
       if (agent && isInitialized) {
         const userProfileData = await agent.modules.profile.getUserProfileData()
+        log('userProfileData', userProfileData)
         setUserProfileState({ userProfileData })
       }
     }
@@ -37,6 +40,7 @@ export const UserProfileProvider: React.FC<Props> = ({ children }) => {
 
   const updateUserProfileData = useCallback(
     async (data: Partial<UserProfileData>) => {
+      log('daniel guardo', data)
       const userProfileData = await agent?.modules.profile.updateUserProfileData({
         ...data,
         updatedAt: new Date(),

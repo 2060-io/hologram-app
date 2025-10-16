@@ -33,7 +33,7 @@ export const getConnectionDisplayPicture = (connection: ConnectionRecord) => {
 
   try {
     const profile = getConnectionProfile(connection)
-
+    log('daniel esto hay', profile?.displayPicture)
     displayPicture = getPictureDataUrl(profile?.displayPicture)
     if (displayPicture === '') displayPicture = connection.imageUrl || ''
   } catch (error) {

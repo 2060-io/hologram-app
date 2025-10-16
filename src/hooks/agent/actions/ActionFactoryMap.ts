@@ -47,6 +47,7 @@ import {
 } from './types'
 
 import { createOobInvitation, MobileAgent } from '@2060/services/agent'
+import { log } from '@2060/utils'
 
 type AgentCallbackReturnType<T extends BaseRecord = BaseRecord> = {
   associatedRecord?: T
@@ -248,7 +249,9 @@ export const ActionFactoryMap: Record<AgentActionType, ActionFactory> = {
     return async (options: { agent: MobileAgent }) => {
       const parameters = action.parameters as SendUserProfileParameters
       const { connectionId } = parameters
-      await options.agent.modules.profile.sendUserProfile({ connectionId })
+      const profileData = await options.agent.modules.profile.getUserProfileData()
+      log('daniel guardo con esto', profileData)
+      await options.agent.modules.profile.sendUserProfile({ connectionId, profileData })
       return { outgoingMessageType: ProfileMessage.type.messageTypeUri }
     }
   },
