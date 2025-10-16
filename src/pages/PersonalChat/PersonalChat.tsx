@@ -49,9 +49,9 @@ import {
   SystemMessageMetadata,
 } from '@2060/model'
 import { ChatMessageList } from '@2060/pages/PersonalChat/ChatMessageList'
-import { logWarn } from '@2060/utils'
-import { isService, setLastTimeProfileSent } from '@2060/utils/connectionUtils'
-import { getFormattedDateRange, isDateGreaterThan } from '@2060/utils/dateUtils'
+import { logError, logWarn } from '@2060/utils'
+import { isService, setLastTimeProfileSent, supportsUserProfile } from '@2060/utils/connectionUtils'
+import { getFormattedDateRange, isDateGreaterThan, timeFromNow } from '@2060/utils/dateUtils'
 import { cancelVideoCompression } from '@2060/utils/mediaFileUtils'
 import { markNotificationsOfChatAsViewed } from '@2060/utils/pushNotificationsUtils'
 import { toast } from '@2060/utils/toast'
@@ -187,7 +187,23 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
       }
     }
     checkIfMustSendProfile()
-  }, [flags.lastTimeProfileReceived, flags.myProfileUpdatedAt, agent, connection])
+  }, [flags.lastTimeProfileSent, flags.myProfileUpdatedAt, agent, connection])
+
+  useEffect(() => {
+    const checkIfMustRequestProfile = async () => {
+      if (connection && flags.lastTimeProfileReceived) {
+        try {
+          const mustRequestProfile = timeFromNow(flags.lastTimeProfileReceived, 'days') >= 7
+          if (mustRequestProfile) {
+            await agent?.modules.profile.requestUserProfile({ connectionId: connection.id })
+          }
+        } catch (error) {
+          logError(`Cannot get user profile: ${error}`)
+        }
+      }
+    }
+    if (connection && supportsUserProfile(connection)) checkIfMustRequestProfile()
+  }, [flags.lastTimeProfileReceived, connection])
 
   const renderSystemMessage = useMemo(() => {
     const systemMessage = getSystemMessage({

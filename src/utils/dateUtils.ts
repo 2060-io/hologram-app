@@ -1,4 +1,4 @@
-import dayjs, { extend } from 'dayjs'
+import dayjs, { extend, OpUnitType, QUnitType } from 'dayjs'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 import isYesterday from 'dayjs/plugin/isYesterday'
 import { t } from 'i18next'
@@ -68,14 +68,18 @@ export const stringToStringDate = (stringDate: string) => {
 }
 
 /**
- * Receives a string date in format 'DD-MM-YYYY' and returns a number
- * indicating how many years have passed until today
- * @param {string} stringDate
- * @returns number
+ * Calculates the difference between the current time and a given date in the specified unit.
+ *
+ * @param date - The date to compare with the current time
+ * @param unit - The unit of time to use for the difference calculation (e.g., 'day', 'hour', 'minute').
+ * @returns The difference between now and the provided date in the specified unit.
  */
-export const timeFromNow = (stringDate: string) => {
-  const years = dayjs().diff(dayjs(stringDate, 'DD-MM-YYYY'), 'year')
-  return years
+export const timeFromNow = (
+  date?: string | number | Date | dayjs.Dayjs | null | undefined,
+  unit?: QUnitType | OpUnitType,
+) => {
+  const diff = dayjs().diff(dayjs(date), unit)
+  return diff
 }
 
 /**
@@ -84,8 +88,8 @@ export const timeFromNow = (stringDate: string) => {
  * @param stringDateFormat
  * @returns Date
  */
-export const stringToDate = (stringDate: string, stringDateFormat: string) => {
-  return dayjs(stringDate, stringDateFormat).toDate()
+export const stringToDate = (stringDate: string, format?: dayjs.OptionType) => {
+  return dayjs(stringDate, format).toDate()
 }
 
 /**

@@ -33,7 +33,7 @@ export const getConnectionDisplayPicture = (connection: ConnectionRecord) => {
 
   try {
     const profile = getConnectionProfile(connection)
-    log('profile?.displayPicture', profile?.displayPicture)
+
     displayPicture = getPictureDataUrl(profile?.displayPicture)
     if (displayPicture === '') displayPicture = connection.imageUrl || ''
   } catch (error) {
@@ -69,6 +69,17 @@ export const lastTimeProfileSent = (connection: ConnectionRecord) =>
 
 export const setLastTimeProfileSent = async (connection: ConnectionRecord, agentContext: AgentContext) => {
   connection.setTag('lastTimeProfileSent', `${new Date()}`)
+  await agentContext.dependencyManager.resolve(ConnectionRepository).update(agentContext, connection)
+}
+
+export const lastTimeProfileReceived = (connection: ConnectionRecord) =>
+  connection.getTag('lastTimeProfileReceived')?.toString()
+
+export const setLastTimeProfileReceived = async (
+  connection: ConnectionRecord,
+  agentContext: AgentContext,
+) => {
+  connection.setTag('lastTimeProfileReceived', `${new Date()}`)
   await agentContext.dependencyManager.resolve(ConnectionRepository).update(agentContext, connection)
 }
 

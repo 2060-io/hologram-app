@@ -22,13 +22,7 @@ import { deleteConnection, blockConnection, unblockConnection } from '@2060/hook
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { createOobInvitation, MobileAgent } from '@2060/services/agent'
 import { capitalizeFirstLetter, logError } from '@2060/utils'
-import {
-  getConnectionDisplayName,
-  isBlocked,
-  isService,
-  isTerminated,
-  supportsUserProfile,
-} from '@2060/utils/connectionUtils'
+import { getConnectionDisplayName, isBlocked, isService, isTerminated } from '@2060/utils/connectionUtils'
 import { markNewConnectionNotificationAsViewed } from '@2060/utils/pushNotificationsUtils'
 import { toast } from '@2060/utils/toast'
 
@@ -68,17 +62,6 @@ const BaseConnectionDetails = ({
   const isConnectionService = isService(connection)
 
   const { clearChat, findOrCreateThread } = useChats()
-
-  useEffect(() => {
-    const requestUserProfile = async () => {
-      try {
-        await agent?.modules.profile.requestUserProfile({ connectionId: connection.id })
-      } catch (error) {
-        logError(`Cannot get user profile: ${error}`)
-      }
-    }
-    if (supportsUserProfile(connection)) requestUserProfile()
-  }, [])
 
   const setHeaderOptions = () => {
     navigation.setOptions({
