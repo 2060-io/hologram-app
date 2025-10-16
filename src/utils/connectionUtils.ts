@@ -73,7 +73,7 @@ export const setLastTimeProfileSent = async (connection: ConnectionRecord, agent
 }
 
 export const lastTimeProfileReceived = (connection: ConnectionRecord) =>
-  connection.getTag('lastTimeProfileReceived')?.toString()
+  connection.getTag('lastTimeProfileReceived')?.toString() ?? connection.createdAt.toString()
 
 export const setLastTimeProfileReceived = async (
   connection: ConnectionRecord,
