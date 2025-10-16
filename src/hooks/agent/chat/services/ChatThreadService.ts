@@ -165,7 +165,7 @@ export function updateThread(
       }
     }
     if (options.topic) thread.topic = options.topic
-    if (options.picture) thread.picture = options.picture
+    if (options.picture !== undefined) thread.picture = options.picture
   })
 }
 
