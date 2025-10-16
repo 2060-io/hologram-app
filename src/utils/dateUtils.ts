@@ -9,13 +9,15 @@ import { language } from './language'
 
 import { capitalizeFirstLetter } from './index'
 
+type DateType = string | number | Date | dayjs.Dayjs
+
 /**
  * Format date for general usage (mostly Chat list)
  *
- * @param {Date} date
- * @returns string containing the formatted day
+ * @param date - Can be a string, number, Date object, or a dayjs.Dayjs instance.
+ * @returns `string` containing the formatted day
  */
-export const chatDateFormat = (date: Date, is24HourFormat: boolean): string => {
+export const chatDateFormat = (date: DateType, is24HourFormat: boolean): string => {
   const givenDate = dayjs(date)
   const currentDate = dayjs()
   const messageWasSentToday = givenDate.isSame(currentDate, 'day')
@@ -29,7 +31,7 @@ export const chatDateFormat = (date: Date, is24HourFormat: boolean): string => {
   return givenDate.format('L')
 }
 
-export const getFormattedDateRange = (date: Date) => {
+export const getFormattedDateRange = (date: DateType) => {
   const givenDate = dayjs(date)
   const currentDate = dayjs()
   const isSameDay = givenDate.isSame(currentDate, 'day')
@@ -41,27 +43,27 @@ export const getFormattedDateRange = (date: Date) => {
   return givenDate.format('L')
 }
 
-export const getFormattedDateRangeWithTime = (date: Date, is24HourFormat: boolean): string => {
+export const getFormattedDateRangeWithTime = (date: DateType, is24HourFormat: boolean): string => {
   const time = dayjs(date).format(language === 'fr' ? 'LT' : is24HourFormat ? 'HH:mm' : 'h:mm A')
   return `${getFormattedDateRange(date)} ${time}`
 }
+
 /**
  * Function that returns if now is after than given date
  *
- * @param {Date} date
- * @returns boolean
+ * @param date - Can be a string, number, Date object, or a dayjs.Dayjs instance.
+ * @returns `boolean`
  */
-export const isNowAfterThanDate = (timestamp: number): boolean => {
-  const givenDate = dayjs(new Date(timestamp))
+export const isNowAfterThanDate = (date: DateType): boolean => {
   const currentDate = dayjs()
-  return currentDate.isAfter(givenDate)
+  return isDateGreaterThan(currentDate, date)
 }
 
 /**
  * Format string date in format 'YYYYMMDD' to string date in format 'DD-MM-YYYY'
  *
- * @param {string} stringDate
- * @returns string containing the formatted date
+ * @param stringDate
+ * @returns `string` containing the formatted date
  */
 export const stringToStringDate = (stringDate: string) => {
   return dayjs(stringDate, 'YYYYMMDD').format('DD-MM-YYYY')
@@ -70,23 +72,21 @@ export const stringToStringDate = (stringDate: string) => {
 /**
  * Calculates the difference between the current time and a given date in the specified unit.
  *
- * @param date - The date to compare with the current time
+ * @param date - Can be a string, number, Date object, or a dayjs.Dayjs instance.
  * @param unit - The unit of time to use for the difference calculation (e.g., 'day', 'hour', 'minute').
  * @returns The difference between now and the provided date in the specified unit.
  */
-export const timeFromNow = (
-  date?: string | number | Date | dayjs.Dayjs | null | undefined,
-  unit?: QUnitType | OpUnitType,
-) => {
+export const timeFromNow = (date: DateType, unit: QUnitType | OpUnitType) => {
   const diff = dayjs().diff(dayjs(date), unit)
   return diff
 }
 
 /**
- * Receives a string date in format of stringDateFormat and convert it to Date object
- * @param stringDate
- * @param stringDateFormat
- * @returns Date
+ * Converts a date string to a JavaScript `Date` object using the specified format.
+ *
+ * @param stringDate - The date string to convert.
+ * @param format - (Optional) The format to parse the date string. Uses dayjs formatting options.
+ * @returns A JavaScript `Date` object representing the parsed date.
  */
 export const stringToDate = (stringDate: string, format?: dayjs.OptionType) => {
   return dayjs(stringDate, format).toDate()
@@ -95,23 +95,24 @@ export const stringToDate = (stringDate: string, format?: dayjs.OptionType) => {
 /**
  * Converts a given date to a formatted string using dayjs.
  *
- * @param date - The date to format. Can be a Date object, a timestamp (number), or undefined.
+ * @param date - Can be a string, number, Date object, or a dayjs.Dayjs instance
  * @param format - An optional format string compatible with dayjs.
  * If not provided, dayjs's default format is used.
  * @returns The formatted date string.
  */
-export const dateToString = (date: Date | number | undefined, format?: string) => {
+export const dateToString = (date: DateType, format?: string) => {
   return dayjs(date).format(format)
 }
 
 /**
- * Checks if two dates are the same day.
+ * Determines whether two dates fall on the same calendar day.
  *
- * @param date1 - The first date to compare. Can be a Date object, a timestamp (number)
- * @param date2 - The second date to compare. Can be a Date object, a timestamp (number)
- * @returns `true` if both dates are the same day, false otherwise.
+ * @param date1 - The first date to compare. Can be a string, number, Date object, or a dayjs.Dayjs instance.
+ * @param date2 - The second date to compare. Can be a string, number, Date object, or a dayjs.Dayjs instance.
+ * @returns `true` if both dates are valid and represent the same day, otherwise `false`.
  */
-export function getIsSameDay(date1: Date | number, date2: Date | number) {
+
+export const getIsSameDay = (date1: DateType, date2: DateType) => {
   const firstDate = dayjs(date1)
   const secondDate = dayjs(date2)
   if (!firstDate.isValid() || !secondDate.isValid()) {
@@ -121,13 +122,13 @@ export function getIsSameDay(date1: Date | number, date2: Date | number) {
 }
 
 /**
- * Determines whether the first date is greater than the second date.
+ * Determines whether the first date is greater than (after) the second date.
  *
- * @param date1 - The first date to compare. Can be a Date object, a timestamp (number)
- * @param date2 - The second date to compare. Can be a Date object, a timestamp (number)
+ * @param date1 - The first date to compare. Can be a string, number, Date object, or a dayjs.Dayjs instance.
+ * @param date2 - The second date to compare. Can be a string, number, Date object, or a dayjs.Dayjs instance.
  * @returns `true` if `date1` is after `date2`, otherwise `false`.
  */
-export function isDateGreaterThan(date1: Date | number, date2: Date | number) {
+export const isDateGreaterThan = (date1: DateType, date2: DateType) => {
   const firstDate = dayjs(date1)
   const secondDate = dayjs(date2)
   return firstDate.isAfter(secondDate)
