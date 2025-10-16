@@ -7,7 +7,7 @@ import BaseForward from '../Forward/BaseForward'
 
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
 import { AgentActionType, useChats, useCredentialById, useMobileAgent } from '@2060/hooks/agent'
-import { AnoncredsAttribute } from '@2060/hooks/agent/actions/AgentActionExecuter'
+import { AnoncredsAttribute, PresentCredentialParameters } from '@2060/hooks/agent/actions/types'
 import { createChatEntry } from '@2060/hooks/agent/chat/services'
 import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
@@ -62,13 +62,11 @@ const PresentCredential = ({ navigation, route }: Props) => {
           createdAt: new Date().getTime(),
           metadata,
         })
+        const parameters: PresentCredentialParameters = { connectionId, anoncredsAttributes }
         addAgentActionToQueue({
           type: AgentActionType.PresentCredential,
           chatEntryId: chatEntry.id,
-          parameters: {
-            anoncredsAttributes,
-            didcommConnectionId: connectionId,
-          },
+          parameters,
         })
       })
       toast({

@@ -6,6 +6,10 @@ import BaseCredentialOffer from './BaseCredentialOffer'
 
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
 import { AgentActionType } from '@2060/hooks/agent'
+import {
+  AcceptCredentialOfferParameters,
+  DeclineCredentialOfferParameters,
+} from '@2060/hooks/agent/actions/types'
 import { findAllByAssociatedRecordId, updateChatEntryMetadata } from '@2060/hooks/agent/chat/services'
 import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
@@ -36,9 +40,10 @@ const DidcommCredentialOffer: React.FC<Props> = ({ route, navigation }) => {
 
   const accept = () => {
     updateChatEntryMetadataIfNecessary(CredentialState.RequestSent)
+    const parameters: AcceptCredentialOfferParameters = { credentialRecordId }
     addAgentActionToQueue({
       type: AgentActionType.AcceptCredentialOffer,
-      parameters: { credentialRecordId },
+      parameters,
     })
     if (navigation.canGoBack()) navigation.goBack()
     else navigation.replace('Home')
@@ -46,9 +51,10 @@ const DidcommCredentialOffer: React.FC<Props> = ({ route, navigation }) => {
 
   const refuse = () => {
     updateChatEntryMetadataIfNecessary(CredentialState.Declined)
+    const parameters: DeclineCredentialOfferParameters = { credentialRecordId }
     addAgentActionToQueue({
       type: AgentActionType.DeclineCredentialOffer,
-      parameters: { credentialRecordId },
+      parameters,
     })
     if (navigation.canGoBack()) navigation.goBack()
     else navigation.replace('Home')

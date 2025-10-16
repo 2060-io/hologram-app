@@ -15,6 +15,7 @@ import getStyles from './styles'
 import { ModalConfirmAction } from '@2060/components'
 import { Text } from '@2060/components/common'
 import { AgentActionType } from '@2060/hooks/agent'
+import { DeclineProofRequestParameters } from '@2060/hooks/agent/actions/types'
 import { updateChatEntryMetadata } from '@2060/hooks/agent/chat/services'
 import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
@@ -103,9 +104,10 @@ const VPRequestChatView = ({
       const newMetadata = { ...metadata, proofState: ProofState.Declined }
       updateChatEntryMetadata(realm, chatEntryId, newMetadata)
     }
+    const parameters: DeclineProofRequestParameters = { proofRecordId }
     addAgentActionToQueue({
       type: AgentActionType.DeclineProofRequest,
-      parameters: { proofRecordId },
+      parameters,
     })
   }
 
