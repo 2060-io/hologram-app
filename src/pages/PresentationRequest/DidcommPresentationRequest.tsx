@@ -8,6 +8,7 @@ import BasePresentationRequest from './BasePresentationRequest'
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
 import { useFetchServiceInfo } from '@2060/hooks'
 import { AgentActionType, useMobileAgent } from '@2060/hooks/agent'
+import { DeclineProofRequestParameters } from '@2060/hooks/agent/actions/types'
 import { findAllByAssociatedRecordId, updateChatEntryMetadata } from '@2060/hooks/agent/chat/services'
 import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
@@ -84,9 +85,10 @@ const DidcommPresentationRequest: React.FC<Props> = ({ navigation, route }: Prop
 
   const refuse = async () => {
     updateChatEntryMetadataIfNecessary()
+    const parameters: DeclineProofRequestParameters = { proofRecordId }
     addAgentActionToQueue({
       type: AgentActionType.DeclineProofRequest,
-      parameters: { proofRecordId },
+      parameters,
     })
     if (navigation.canGoBack()) navigation.goBack()
     else navigation.replace('Home')

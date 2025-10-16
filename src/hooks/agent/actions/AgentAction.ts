@@ -15,7 +15,7 @@ export enum AgentActionType {
   ShareMedia = 'ShareMedia',
   SendReaction = 'SendReaction',
   SendReceipts = 'SendReceipts',
-  ActionMenuSelection = 'ActionMenuSelection',
+  MenuSelection = 'MenuSelection',
   ForwardConnection = 'ForwardConnection',
   PresentCredential = 'PresentCredential',
   SendAnswer = 'SendAnswer',
