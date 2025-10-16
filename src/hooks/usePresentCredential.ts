@@ -5,7 +5,7 @@ import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { AgentActionType, useChats, useMobileAgent } from '@2060/hooks/agent'
-import { AnoncredsAttribute } from '@2060/hooks/agent/actions/AgentActionExecuter'
+import { AnoncredsAttribute, PresentCredentialParameters } from '@2060/hooks/agent/actions/types'
 import { createChatEntry } from '@2060/hooks/agent/chat/services'
 import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
@@ -55,13 +55,11 @@ export const usePresentCredential = () => {
           createdAt: new Date().getTime(),
           metadata,
         })
+        const parameters: PresentCredentialParameters = { anoncredsAttributes, connectionId }
         addAgentActionToQueue({
           type: AgentActionType.PresentCredential,
           chatEntryId: chatEntry.id,
-          parameters: {
-            anoncredsAttributes,
-            didcommConnectionId: connectionId,
-          },
+          parameters,
         })
       })
       toast({
