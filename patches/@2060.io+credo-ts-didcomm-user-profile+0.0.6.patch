@@ -1,3 +1,16 @@
+diff --git a/node_modules/@2060.io/credo-ts-didcomm-user-profile/build/UserProfileApi.d.ts b/node_modules/@2060.io/credo-ts-didcomm-user-profile/build/UserProfileApi.d.ts
+index 2647649..9103c0b 100644
+--- a/node_modules/@2060.io/credo-ts-didcomm-user-profile/build/UserProfileApi.d.ts
++++ b/node_modules/@2060.io/credo-ts-didcomm-user-profile/build/UserProfileApi.d.ts
+@@ -37,7 +37,7 @@ export declare class UserProfileApi {
+      *
+      * @returns updated User Profile data
+      */
+-    updateUserProfileData(props: Partial<UserProfileData>): Promise<UserProfileData>;
++    updateUserProfileData(props: Partial<Omit<UserProfileData,'updatedAt'>>): Promise<UserProfileData>;
+     /**
+      * Retrieve our User Profile Data from storage.
+      *
 diff --git a/node_modules/@2060.io/credo-ts-didcomm-user-profile/build/UserProfileApi.js b/node_modules/@2060.io/credo-ts-didcomm-user-profile/build/UserProfileApi.js
 index bad2e56..e59d672 100644
 --- a/node_modules/@2060.io/credo-ts-didcomm-user-profile/build/UserProfileApi.js
@@ -20,15 +33,3 @@ index 5777d06..2ef1046 100644
      preferredLanguage?: string;
 +    updatedAt?: Date;
  }
-diff --git a/node_modules/@2060.io/credo-ts-didcomm-user-profile/build/services/UserProfileService.js b/node_modules/@2060.io/credo-ts-didcomm-user-profile/build/services/UserProfileService.js
-index 2f6ce7d..b5e9192 100644
---- a/node_modules/@2060.io/credo-ts-didcomm-user-profile/build/services/UserProfileService.js
-+++ b/node_modules/@2060.io/credo-ts-didcomm-user-profile/build/services/UserProfileService.js
-@@ -36,6 +36,7 @@ let UserProfileService = class UserProfileService {
-             displayName: userProfile.displayName,
-             displayPicture: userProfile.displayPicture,
-             preferredLanguage: userProfile.preferredLanguage,
-+            updatedAt: userProfile.updatedAt
-         };
-         Object.assign(userProfile, props);
-         await this.userProfileRepository.update(agentContext, userProfile);
