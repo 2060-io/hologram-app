@@ -17,6 +17,11 @@ import {
 } from '@credo-ts/core'
 
 import { AgentActionOptions, AgentActionType } from '../actions/AgentAction'
+import {
+  AcceptConnectionRequestParameters,
+  AcceptConnectionResponseParameters,
+  QueryServiceFeaturesParameters,
+} from '../actions/types'
 
 import { supportsUserProfile } from '@2060/utils/connectionUtils'
 import { language } from '@2060/utils/language'
@@ -83,29 +88,26 @@ export function manageAgentConnectionEvents(
   const connectionListener = async (event: ConnectionStateChangedEvent) => {
     const { connectionRecord } = event.payload
     if (connectionRecord.state === DidExchangeState.RequestReceived) {
+      const parameters: AcceptConnectionRequestParameters = { connectionId: connectionRecord.id }
       addAgentActionToQueue({
         type: AgentActionType.AcceptConnectionRequest,
-        parameters: {
-          connectionId: connectionRecord.id,
-        },
+        parameters,
       })
     } else if (
       connectionRecord.state === DidExchangeState.ResponseReceived &&
       !connectionRecord.autoAcceptConnection
     ) {
+      const parameters: AcceptConnectionResponseParameters = { connectionId: connectionRecord.id }
       addAgentActionToQueue({
         type: AgentActionType.AcceptConnectionResponse,
-        parameters: {
-          connectionId: connectionRecord.id,
-        },
+        parameters,
       })
     }
     if (connectionRecord.isReady) {
+      const parameters: QueryServiceFeaturesParameters = { connectionId: connectionRecord.id }
       addAgentActionToQueue({
         type: AgentActionType.QueryServiceFeatures,
-        parameters: {
-          connectionId: connectionRecord.id,
-        },
+        parameters,
       })
     }
   }
