@@ -6,6 +6,7 @@ import { Invitation, UserInvitationProps, WrapperUserInvitationProps } from './U
 
 import { ModalLoading } from '@2060/components/common'
 import { AgentActionType, useMobileAgent, useUserProfile } from '@2060/hooks/agent'
+import { RemoveOutOfBandRecordParameters } from '@2060/hooks/agent/actions/types'
 import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
 import { createInvitation, getOutOfBandRecordById } from '@2060/services/agent/oob'
 import {
@@ -70,9 +71,12 @@ const withUserInvitation = (UserInvitationComponent: ElementType<UserInvitationP
             }),
           })
           if (currentInvitationOutOfBandRecordId.current) {
+            const parameters: RemoveOutOfBandRecordParameters = {
+              outOfBandId: currentInvitationOutOfBandRecordId.current,
+            }
             addAgentActionToQueue({
               type: AgentActionType.RemoveOutOfBandRecord,
-              parameters: { outOfBandId: currentInvitationOutOfBandRecordId.current },
+              parameters,
             })
           }
           await setStorageData(USER_INVITATION_OUT_OF_BAND_RECORD_ID, newOutOfBandRecord.id)

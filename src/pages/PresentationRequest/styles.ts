@@ -10,7 +10,7 @@ const styles = (theme: AppTheme) =>
     subContainer: {
       marginTop: 15,
       paddingHorizontal: 15,
-      paddingBottom: 40,
+      paddingBottom: 10,
     },
     card: {
       ...cardStyles(theme),
