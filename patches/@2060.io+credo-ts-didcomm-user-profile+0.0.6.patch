@@ -33,3 +33,16 @@ index 5777d06..2ef1046 100644
      preferredLanguage?: string;
 +    updatedAt?: Date;
  }
+diff --git a/node_modules/@2060.io/credo-ts-didcomm-user-profile/build/services/UserProfileService.js b/node_modules/@2060.io/credo-ts-didcomm-user-profile/build/services/UserProfileService.js
+index 2f6ce7d..e98b908 100644
+--- a/node_modules/@2060.io/credo-ts-didcomm-user-profile/build/services/UserProfileService.js
++++ b/node_modules/@2060.io/credo-ts-didcomm-user-profile/build/services/UserProfileService.js
+@@ -84,7 +84,7 @@ let UserProfileService = class UserProfileService {
+                     base64: displayPictureData === null || displayPictureData === void 0 ? void 0 : displayPictureData.data.base64,
+                     links: displayPictureData === null || displayPictureData === void 0 ? void 0 : displayPictureData.data.links,
+                 }
+-                : currentProfile === null || currentProfile === void 0 ? void 0 : currentProfile.displayPicture, displayIcon: displayIconData
++                : undefined, displayIcon: displayIconData
+                 ? {
+                     mimeType: displayIconData === null || displayIconData === void 0 ? void 0 : displayIconData.mimeType,
+                     base64: displayIconData === null || displayIconData === void 0 ? void 0 : displayIconData.data.base64,
