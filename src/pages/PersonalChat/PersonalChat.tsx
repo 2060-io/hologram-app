@@ -35,9 +35,12 @@ import {
   useChats,
   ChatThreadWithParticipants,
   useConnectionById,
+  AgentActionType,
 } from '@2060/hooks/agent'
+import { RequestUserProfileParameters, SendUserProfileParameters } from '@2060/hooks/agent/actions/types'
 import { createChatEntry, updateChatEntryMetadata } from '@2060/hooks/agent/chat/services/ChatEntryService'
 import { blockConnection } from '@2060/hooks/agent/connections'
+import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import {
@@ -49,7 +52,7 @@ import {
   SystemMessageMetadata,
 } from '@2060/model'
 import { ChatMessageList } from '@2060/pages/PersonalChat/ChatMessageList'
-import { logError, logWarn } from '@2060/utils'
+import { logWarn } from '@2060/utils'
 import { isService, setLastTimeProfileSent, supportsUserProfile } from '@2060/utils/connectionUtils'
 import { getFormattedDateRange, isDateGreaterThan, timeFromNow } from '@2060/utils/dateUtils'
 import { cancelVideoCompression } from '@2060/utils/mediaFileUtils'
@@ -122,6 +125,7 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
   const { deleteMessagesForMe, deleteMessagesForEveryone, onActionMenuSelection } = useChatActions()
   const { agent } = useMobileAgent()
   const { markThreadAsRead, setActiveChatThreadId } = useChats()
+  const { addAgentActionToQueue } = useAgentActionQueue()
   const using24HourFormat = uses24HourClock()
   const theme = useTheme()
   const showScrollBottomRef = useRef(false)
@@ -182,7 +186,11 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
         )
         if (mustSendProfile) {
           setLastTimeProfileSent(connection, agent.context)
-          agent.modules.profile.sendUserProfile({ connectionId: connection.id })
+          const parameters: SendUserProfileParameters = { connectionId: connection.id }
+          addAgentActionToQueue({
+            type: AgentActionType.SendUserProfile,
+            parameters,
+          })
         }
       }
     }
@@ -190,15 +198,15 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
   }, [flags.lastTimeProfileSent, flags.myProfileUpdatedAt, agent, connection])
 
   useEffect(() => {
-    const checkIfMustRequestProfile = async () => {
+    const checkIfMustRequestProfile = () => {
       if (connection && flags.lastTimeProfileReceived) {
-        try {
-          const mustRequestProfile = timeFromNow(flags.lastTimeProfileReceived, 'days') >= 7
-          if (mustRequestProfile) {
-            await agent?.modules.profile.requestUserProfile({ connectionId: connection.id })
-          }
-        } catch (error) {
-          logError(`Cannot get user profile: ${error}`)
+        const mustRequestProfile = timeFromNow(flags.lastTimeProfileReceived, 'days') >= 7
+        if (mustRequestProfile) {
+          const parameters: RequestUserProfileParameters = { connectionId: connection.id }
+          addAgentActionToQueue({
+            type: AgentActionType.RequestUserProfile,
+            parameters,
+          })
         }
       }
     }
