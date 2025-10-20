@@ -125,9 +125,7 @@ const MRZCamera = ({ skipScan, cameraProps, onData, scanSuccess, refuse }: MRZCa
         <Text typography="EuclidCircularA-Bold" style={styles.title}>
           {t('chat.mrzScanTitle')}
         </Text>
-        <Text typography="EuclidCircularA-Regular" style={styles.instructions}>
-          {t('chat.mrzScanInst')}
-        </Text>
+        <Text style={styles.instructions}>{t('chat.mrzScanInst')}</Text>
       </View>
       <View style={{ ...styles.bottomOverlayContainer, height: containerHeight * 0.48 }}>
         <SvgIcon name="MRZ" height={widthPercentageToDP('43')} width={widthPercentageToDP('72')} />

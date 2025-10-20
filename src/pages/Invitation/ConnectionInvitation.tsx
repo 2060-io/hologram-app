@@ -169,7 +169,7 @@ const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => 
                   </Text>
                 )}
                 {invitationType === 'subInvitation' && (
-                  <Text typography="EuclidCircularA-Regular" style={styles.content}>
+                  <Text style={styles.content}>
                     {t('invitation.subConnectionInvitationDescription')}{' '}
                     <Text typography="EuclidCircularA-Bold" style={styles.fontFamilyBold}>
                       {`${invitation?.label} `}{' '}
@@ -183,7 +183,7 @@ const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => 
               </View>
               {!isAlreadyConnected && invitationType === 'peer' && (
                 <View style={styles.card}>
-                  <Text typography="EuclidCircularA-Regular" style={styles.enabledChannelsText}>
+                  <Text style={styles.enabledChannelsText}>
                     {`${invitation?.label} ${t('invitation.enabledCommunicationChannelsDescription')}`}
                   </Text>
                   <View style={styles.separator} />

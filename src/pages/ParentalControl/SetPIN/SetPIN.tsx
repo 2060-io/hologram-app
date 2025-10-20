@@ -160,9 +160,7 @@ const SetPIN = ({ visible, onRequestClose, mode, oniOSDismiss }: Props) => {
             scrollEnabled={false}
             renderItem={({ item }) => <Dial dial={item} onDialPressed={onDialPressed} />}
           />
-          <Text typography="EuclidCircularA-Regular" style={styles.footerText}>
-            {getFooter(currentFlowState)}
-          </Text>
+          <Text style={styles.footerText}>{getFooter(currentFlowState)}</Text>
           <TouchableOpacity onPress={cancel} style={styles.cancelButton}>
             <Text typography="EuclidCircularA-Medium" style={styles.cancelText}>
               {t('general.cancel')}

@@ -54,9 +54,7 @@ const CardCredentialMainInformation = ({
         </Text>
       </View>
       <View>
-        <Text style={styles.issuedOn} typography="EuclidCircularA-Regular">
-          {issuedOnLabel}
-        </Text>
+        <Text style={styles.issuedOn}>{issuedOnLabel}</Text>
         <View style={styles.bottomContainer}>
           <Text style={styles.bottomText} typography="EuclidCircularA-Medium" numberOfLines={1}>
             {serviceInfo?.name ?? credentialMainInfo.issuer.name}

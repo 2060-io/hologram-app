@@ -24,9 +24,7 @@ const DeletedMessageView = memo(({ displayTimeAndTicks, messageTime }: Props) =>
       </Text>
       {displayTimeAndTicks && (
         <View style={styles.subContainerAckAndTime}>
-          <Text typography="EuclidCircularA-Regular" style={styles.timeText}>
-            {messageTime}
-          </Text>
+          <Text style={styles.timeText}>{messageTime}</Text>
         </View>
       )}
     </View>

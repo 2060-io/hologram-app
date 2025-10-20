@@ -31,9 +31,7 @@ const ProofOfTrust = ({ serviceInfo }: Props) => {
       ) : (
         <>
           <VerifiedIcon style={styles.notVerifiableIcon} status={serviceInfo.status} />
-          <Text typography="EuclidCircularA-Regular" style={styles.notVerifiable}>
-            {t('invitation.serviceNotVerifiable')}
-          </Text>
+          <Text style={styles.notVerifiable}>{t('invitation.serviceNotVerifiable')}</Text>
         </>
       )}
     </View>

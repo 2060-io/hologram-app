@@ -43,9 +43,7 @@ const DetailSection = ({ isFirst, styles, rowDetail, onPressDetailImage }: Detai
       <Text style={[styles.sectionKey, isFirst && styles.firstSection]} typography="EuclidCircularA-Medium">
         {rowDetail.key}
       </Text>
-      <Text style={styles.sectionValue} typography="EuclidCircularA-Regular">
-        {'value' in rowDetail && rowDetail.value}
-      </Text>
+      <Text style={styles.sectionValue}>{'value' in rowDetail && rowDetail.value}</Text>
     </View>
     {'image' in rowDetail && (
       <ImageSection styles={styles} onPressDetailImage={onPressDetailImage} image={rowDetail.image} />

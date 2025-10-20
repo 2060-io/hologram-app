@@ -149,9 +149,7 @@ const Scan = ({ navigation }: Props) => {
   const renderScanner = () => (
     <View style={styles.containerCodeScanner}>
       <View style={styles.containerDescriptionScanner}>
-        <Text typography="EuclidCircularA-Regular" style={styles.textDescriptionScanner}>
-          {t('scan.textDescriptionScanner')}
-        </Text>
+        <Text style={styles.textDescriptionScanner}>{t('scan.textDescriptionScanner')}</Text>
       </View>
       <CodeScanner isActive={isActiveCamera} onBarcodeScanned={processCode} />
     </View>
@@ -161,9 +159,7 @@ const Scan = ({ navigation }: Props) => {
     <KeyboardAvoidingView behavior={behavior} style={styles.container}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.containerContent}>
-          <Text typography="EuclidCircularA-Regular" style={styles.textDescriptionLink}>
-            {t('scan.textDescriptionLink')}
-          </Text>
+          <Text style={styles.textDescriptionLink}>{t('scan.textDescriptionLink')}</Text>
           <View style={styles.containerInput}>
             <TextInput
               value={scannedCode}

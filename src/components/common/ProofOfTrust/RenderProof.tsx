@@ -40,9 +40,7 @@ const RenderProof = ({ serviceInfo }: RenderProofProps) => {
   const Outer = ({ name, status }: OuterProofProps) => (
     <View style={styles.proofItemContainer}>
       <View style={styles.proofItemSubContainer}>
-        <Text typography="EuclidCircularA-Regular" style={styles.entityName}>
-          {name}
-        </Text>
+        <Text style={styles.entityName}>{name}</Text>
         <VerifiedIcon status={status} />
       </View>
     </View>
@@ -53,14 +51,10 @@ const RenderProof = ({ serviceInfo }: RenderProofProps) => {
       <View style={styles.proofItemContainer}>
         <View style={styles.proofItemSubContainer}>
           <Text style={styles.flagEmoji}>{getFlagEmoji(countryCode)}</Text>
-          <Text typography="EuclidCircularA-Regular" style={styles.entityName}>
-            {entityName}
-          </Text>
+          <Text style={styles.entityName}>{entityName}</Text>
           <VerifiedIcon status={status} />
         </View>
-        <Text typography="EuclidCircularA-Regular" style={styles.entityName}>
-          {officialPublicRegistryNumber}
-        </Text>
+        <Text style={styles.entityName}>{officialPublicRegistryNumber}</Text>
       </View>
     )
   }

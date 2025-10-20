@@ -52,11 +52,9 @@ const ChatThread = ({
           {topic}
         </Text>
         {hasChildren ? (
-          <Text typography="EuclidCircularA-Regular" style={styles.numberConversationText}>
-            {`${childCount}  ${t('chat.conversations')}`}
-          </Text>
+          <Text style={styles.numberConversationText}>{`${childCount}  ${t('chat.conversations')}`}</Text>
         ) : connectionExists ? (
-          <Text typography="EuclidCircularA-Regular" numberOfLines={2} style={styles.textPreview}>
+          <Text numberOfLines={2} style={styles.textPreview}>
             {preview}
           </Text>
         ) : (
@@ -71,7 +69,7 @@ const ChatThread = ({
         </View>
       )}
       <View style={styles.rightContent}>
-        <Text typography="EuclidCircularA-Regular" style={styles.textDate}>
+        <Text style={styles.textDate}>
           {lastActivityDate ? chatDateFormat(lastActivityDate, using24HourFormat) : ''}
         </Text>
         <View style={styles.containerUnreadAndStateIcon}>

@@ -130,7 +130,7 @@ const BasePresentationRequest: React.FC<Props> = ({
           {serviceInfo && <ServiceMainInfo serviceInfo={serviceInfo} />}
           {hasCompatibleCredentials ? (
             <>
-              <Text style={[styles.title, styles.mainTitle]} typography="EuclidCircularA-Regular">
+              <Text style={[styles.title, styles.mainTitle]}>
                 {t('presentationRequest.selectCredentialYouWouldLikeToPresentTo')}
                 <Text style={styles.title} typography="EuclidCircularA-SemiBold">
                   {submission.verifier.name}
@@ -143,7 +143,7 @@ const BasePresentationRequest: React.FC<Props> = ({
                     <Text style={styles.submissionSectionTitle} typography="EuclidCircularA-SemiBold">
                       {entry.name}
                     </Text>
-                    <Text style={styles.title} typography="EuclidCircularA-Regular">
+                    <Text style={styles.title}>
                       {title}
                       <Text style={styles.title} typography="EuclidCircularA-SemiBold">
                         {entry?.requestedAttributes?.join(', ')}
@@ -183,9 +183,7 @@ const BasePresentationRequest: React.FC<Props> = ({
             </>
           ) : (
             <View style={styles.noCompatibleCredentialContainer}>
-              <Text style={styles.title} typography="EuclidCircularA-Regular">
-                {t('presentationRequest.noCredentials')}
-              </Text>
+              <Text style={styles.title}>{t('presentationRequest.noCredentials')}</Text>
             </View>
           )}
         </View>

@@ -41,11 +41,10 @@ const EMrtdInstructions = ({ scan, dismissPopup, refuse }: Props) => {
           </Text>
           <Trans
             i18nKey="chat.eMRTDScanInst"
-            typography="EuclidCircularA-Regular"
             style={styles.instructions}
             parent={Text}
             components={{
-              green: <Text typography="EuclidCircularA-Regular" style={styles.instructionsGreen} />,
+              green: <Text style={styles.instructionsGreen} />,
             }}
           />
           <View style={styles.imageContainer}>

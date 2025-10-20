@@ -199,24 +199,18 @@ const VoiceNoteChatView = memo(
             />
           ) : (
             <View style={styles.noWaveFormContainer}>
-              <Text typography="EuclidCircularA-Regular" style={styles.noWaveFormText}>
-                {t('preview.voiceNote')}
-              </Text>
+              <Text style={styles.noWaveFormText}>{t('preview.voiceNote')}</Text>
             </View>
           )}
         </View>
         <View style={styles.footerContainer}>
           <View style={styles.footerSubContainer}>
             {isDownloaded ? (
-              <Text typography="EuclidCircularA-Regular" style={[styles.txtCounter, styles.downloadedText]}>
+              <Text style={[styles.txtCounter, styles.downloadedText]}>
                 {playerState === PlayerState.stopped ? durationTime : playedTime}
               </Text>
             ) : (
-              byteCount && (
-                <Text typography="EuclidCircularA-Regular" style={styles.txtCounter}>
-                  {getFileSize(byteCount)}
-                </Text>
-              )
+              byteCount && <Text style={styles.txtCounter}>{getFileSize(byteCount)}</Text>
             )}
             <TouchableOpacity
               style={[

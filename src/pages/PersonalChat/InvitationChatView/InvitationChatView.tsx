@@ -148,7 +148,7 @@ const InvitationChatView = ({ associatedRecordId: outOfBandId, metadata, role, a
             {serviceInfo?.name ?? label}
           </Text>
         </View>
-        <Text typography="EuclidCircularA-Regular" style={styles.subTitle}>
+        <Text style={styles.subTitle}>
           {isReceiver ? t('personalChat.invitationDescription') : t('personalChat.sentInvitationDescription')}
           <Text typography="EuclidCircularA-SemiBold" style={styles.textSemiBold}>
             {' '}

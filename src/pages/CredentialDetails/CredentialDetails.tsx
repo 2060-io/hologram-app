@@ -96,18 +96,14 @@ const CredentialDetails = ({ route, navigation }: Props) => {
               onPress={() => setShowConfirmationDeleteModal(true)}
             >
               <SvgIcon name="trash" width={20} height={20} fill={theme.colors.primaryText} />
-              <Text style={styles.optionText} typography="EuclidCircularA-Regular">
-                {t('credential.delete')}
-              </Text>
+              <Text style={styles.optionText}>{t('credential.delete')}</Text>
             </TouchableOpacity>
           </View>
         </View>
       </ScrollView>
       <ModalBottomHalf visible={showContextualMenu} onClose={handleShowContextMenu}>
         <TouchableOpacity style={styles.containerOptionCard} onPress={goToPresentCredential}>
-          <Text typography="EuclidCircularA-Regular" style={styles.actionText}>
-            {t('credential.present')}
-          </Text>
+          <Text style={styles.actionText}>{t('credential.present')}</Text>
         </TouchableOpacity>
       </ModalBottomHalf>
     </SafeAreaView>

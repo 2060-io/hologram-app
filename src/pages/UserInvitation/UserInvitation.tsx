@@ -94,9 +94,7 @@ const UserInvitation = ({
                 value={url}
               />
             </View>
-            <Text typography="EuclidCircularA-Regular" style={styles.pressRefreshText}>
-              {t('invitation.pressRefresh')}
-            </Text>
+            <Text style={styles.pressRefreshText}>{t('invitation.pressRefresh')}</Text>
           </View>
           <TouchableOpacity style={styles.containerBtnShare} activeOpacity={0.6} onPress={shareInvitation}>
             <SvgIcon name="shareSocial" fill={theme.colors.white} />

@@ -128,7 +128,6 @@ const EMrtdReadRequestChatView = (props: Props) => {
         <View style={styles.subContainer}>
           <Trans
             i18nKey="chat.eMRTDScanChatInst"
-            typography="EuclidCircularA-Regular"
             style={styles.instructions}
             parent={Text}
             components={{

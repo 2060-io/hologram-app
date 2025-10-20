@@ -90,7 +90,7 @@ const BaseCredentialOffer: React.FC<Props> = ({
       {credentialDetails && (
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.subContainer}>
-            <Text typography="EuclidCircularA-Regular" style={styles.credentialTitle}>
+            <Text style={styles.credentialTitle}>
               {credentialDetails.mainInfo.issuer.name} {t('credentialOffer.offeringYou')}
             </Text>
             <Text

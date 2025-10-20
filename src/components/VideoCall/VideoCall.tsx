@@ -38,9 +38,7 @@ const VideoCall = () => {
       {connectionStatus.status === CallStatus.Connecting && (
         <View style={styles.subContainer}>
           {renderAvatar}
-          <Text typography="EuclidCircularA-Regular" style={styles.text}>
-            {t('call.connecting')}
-          </Text>
+          <Text style={styles.text}>{t('call.connecting')}</Text>
         </View>
       )}
       {connectionStatus.status === CallStatus.Connected && (
@@ -50,12 +48,8 @@ const VideoCall = () => {
         <>
           <View style={styles.subContainer}>
             {renderAvatar}
-            <Text typography="EuclidCircularA-Regular" style={styles.textConnectionLost}>
-              {t('call.connectionLost')}
-            </Text>
-            <Text typography="EuclidCircularA-Regular" style={styles.text}>
-              {t('call.reconnecting')}
-            </Text>
+            <Text style={styles.textConnectionLost}>{t('call.connectionLost')}</Text>
+            <Text style={styles.text}>{t('call.reconnecting')}</Text>
           </View>
           <View style={styles.buttonsContainer}>
             <CallButton
@@ -69,9 +63,7 @@ const VideoCall = () => {
       {connectionStatus.status === CallStatus.Finished && (
         <View style={styles.subContainer}>
           {renderAvatar}
-          <Text typography="EuclidCircularA-Regular" style={styles.text}>
-            {connectionStatus.statusMessage}
-          </Text>
+          <Text style={styles.text}>{connectionStatus.statusMessage}</Text>
         </View>
       )}
     </SafeAreaView>

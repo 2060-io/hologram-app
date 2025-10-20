@@ -166,7 +166,7 @@ const VCOfferChatView = ({
       />
       <Header theme={theme} title={t('credentialOffer.title')} leftIconName="id" />
       <View style={styles.subContainer}>
-        <Text style={styles.title} typography="EuclidCircularA-Regular">
+        <Text style={styles.title}>
           {t('personalChat.offeringCredential', { sender: metadata.issuerName ?? sender?.name })}
         </Text>
         <CardCredentialMainInformation

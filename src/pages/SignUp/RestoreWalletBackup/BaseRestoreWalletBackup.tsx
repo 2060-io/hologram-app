@@ -121,14 +121,12 @@ const BaseRestoreWalletBackup = ({
                       {t('signUp.restoringWalletFromBackup')}
                     </Text>
                     <View style={styles.card}>
-                      <Text typography="EuclidCircularA-Regular" style={styles.downloadProgress}>
+                      <Text style={styles.downloadProgress}>
                         {`${t('signUp.restoringWallet')}... ${restoreProgress.progress}% ${t('done')}`}
                       </Text>
                       <Progress progress={restoreProgress.progress} progressColor={theme.colors.green} />
                     </View>
-                    <Text style={styles.pleaseWaitText} typography="EuclidCircularA-Regular">
-                      {t('signUp.pleaseWaitRestoringBackup')}
-                    </Text>
+                    <Text style={styles.pleaseWaitText}>{t('signUp.pleaseWaitRestoringBackup')}</Text>
                   </>
                 )}
                 onError={() => (
@@ -137,21 +135,17 @@ const BaseRestoreWalletBackup = ({
                       {t('signUp.restoringWalletFromBackup')}
                     </Text>
                     <View style={styles.card}>
-                      <Text typography="EuclidCircularA-Regular" style={styles.downloadProgress}>
+                      <Text style={styles.downloadProgress}>
                         {`${t('signUp.restoringWallet')}... 0% ${t('done')}`}
                       </Text>
                       <View style={styles.errorSubContainer}>
                         <View style={styles.errorIconContainer}>
                           <SvgIcon name="warning" fill={theme.colors.white} width={20} height={20} />
                         </View>
-                        <Text typography="EuclidCircularA-Regular" style={styles.errorTitle}>
-                          {t('signUp.cannotRestoreWallet')}
-                        </Text>
+                        <Text style={styles.errorTitle}>{t('signUp.cannotRestoreWallet')}</Text>
                       </View>
                     </View>
-                    <Text typography="EuclidCircularA-Regular" style={styles.text}>
-                      {restoreProgress.error}
-                    </Text>
+                    <Text style={styles.text}>{restoreProgress.error}</Text>
                     <MainButton
                       onPress={restoreProgressToInitialValues}
                       text={t('tryAgain')}

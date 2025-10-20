@@ -23,7 +23,6 @@ const PeerSecuritySystemMessage = ({ connection }: PeerSecuritySystemMessageProp
     <View style={[styles.containerSecurityMessage]}>
       <Trans
         i18nKey={translationKey}
-        typography="EuclidCircularA-Regular"
         style={styles.textMessage}
         parent={Text}
         components={{

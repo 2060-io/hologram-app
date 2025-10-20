@@ -46,16 +46,16 @@ const MessageDetails = ({ route }: Props) => {
             renderCustomHeader={() => <></>}
           />
         </View>
-        <Text typography="EuclidCircularA-Regular" style={styles.infoText}>
+        <Text style={styles.infoText}>
           {`${t('personalChat.sent')} ${getTransformedDate(selectedMessage.createdAt)}`}
         </Text>
         {receivedReceipt && (
-          <Text typography="EuclidCircularA-Regular" style={styles.infoText}>
+          <Text style={styles.infoText}>
             {`${t('personalChat.received')} ${getTransformedDate(receivedReceipt.timestamp)}`}
           </Text>
         )}
         {viewedReceipt && (
-          <Text typography="EuclidCircularA-Regular" style={styles.infoText}>
+          <Text style={styles.infoText}>
             {`${t('personalChat.read')} ${getTransformedDate(viewedReceipt.timestamp)}`}
           </Text>
         )}

@@ -93,7 +93,7 @@ const RelatedConnections: React.FC<Props> = ({ navigation, route }) => {
           textInputProps={{ autoFocus: true }}
         />
       )}
-      <Text typography="EuclidCircularA-Regular" style={styles.connectionRelatedToText}>
+      <Text style={styles.connectionRelatedToText}>
         {`${t('connection.connectionsManagedBy')} ${parentConnectionName}`}
       </Text>
       {/* <ConnectionList onPressConnection={goToConnectionDetails} connectionList={subConnectionList} /> */}

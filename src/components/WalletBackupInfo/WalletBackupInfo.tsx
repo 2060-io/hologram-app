@@ -47,9 +47,7 @@ const WalletBackupInfo = ({
         <Text typography="EuclidCircularA-Medium" style={[styles.smallText, styles.suggestionText]}>
           {t('settings.googleAccount')}
         </Text>
-        <Text typography="EuclidCircularA-Regular" style={[styles.smallText]}>
-          {selectedGoogleAccount}
-        </Text>
+        <Text style={[styles.smallText]}>{selectedGoogleAccount}</Text>
       </TouchableOpacity>
     )
   }, [selectedGoogleAccount])
@@ -76,7 +74,7 @@ const WalletBackupInfo = ({
             </Text>
             {renderGoogleSelectedAccount}
             {withSuggestionMessage && (
-              <Text typography="EuclidCircularA-Regular" style={[styles.smallText, styles.suggestionText]}>
+              <Text style={[styles.smallText, styles.suggestionText]}>
                 {t('settings.backupSuggestion', { cloud: IS_IOS ? 'iCloud Drive' : 'Google Drive' })}
               </Text>
             )}

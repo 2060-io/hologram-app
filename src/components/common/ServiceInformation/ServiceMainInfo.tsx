@@ -68,13 +68,9 @@ const ServiceMainInfo = ({ serviceInfo, containerStyle }: Props) => {
       <Text typography="EuclidCircularA-Medium" style={styles.issuerName}>
         {serviceInfo.name}
       </Text>
-      {serviceInfo.description && (
-        <Text typography="EuclidCircularA-Regular" style={[styles.text]}>
-          {serviceInfo.description}
-        </Text>
-      )}
+      {serviceInfo.description && <Text style={[styles.text]}>{serviceInfo.description}</Text>}
       <VerifiedIcon style={styles.containerIconValidity} status={serviceInfo.status} />
-      <Text typography="EuclidCircularA-Regular" style={styles.text}>
+      <Text style={styles.text}>
         <Text typography="EuclidCircularA-Bold" style={styles.text}>
           {trimText(serviceInfo.did ?? '')}
         </Text>{' '}
@@ -82,26 +78,18 @@ const ServiceMainInfo = ({ serviceInfo, containerStyle }: Props) => {
       </Text>
       {serviceProvider && (
         <View style={styles.serviceProviderInfoContainer}>
-          <Text typography="EuclidCircularA-Regular" style={styles.text}>
-            {t('invitation.serviceProvider')}
-          </Text>
+          <Text style={styles.text}>{t('invitation.serviceProvider')}</Text>
           <View style={styles.serviceProviderName}>
             <Text style={styles.flagEmoji}>{getFlagEmoji(serviceProvider.countryCode)}</Text>
-            <Text typography="EuclidCircularA-Regular" style={styles.text}>
-              {serviceProvider.entityName}
-            </Text>
+            <Text style={styles.text}>{serviceProvider.entityName}</Text>
           </View>
-          <Text typography="EuclidCircularA-Regular" style={styles.text}>
-            {serviceProvider.officialPublicRegistryNumber}
-          </Text>
+          <Text style={styles.text}>{serviceProvider.officialPublicRegistryNumber}</Text>
           {termsAndConditionsUrl && (
             <TouchableOpacity
               style={styles.termsAndConditionsContainer}
               onPress={() => tryToOpenURL(termsAndConditionsUrl)}
             >
-              <Text typography="EuclidCircularA-Regular" style={[styles.text, styles.underLineText]}>
-                {t('invitation.termsAndConditions')}
-              </Text>
+              <Text style={[styles.text, styles.underLineText]}>{t('invitation.termsAndConditions')}</Text>
               <SvgIcon name="arrowUpRightFromSquare" fill={theme.colors.primaryText} width={15} height={15} />
             </TouchableOpacity>
           )}
@@ -115,10 +103,7 @@ const ServiceMainInfo = ({ serviceInfo, containerStyle }: Props) => {
             </TouchableOpacity>
           )}
           {minimumAgeRequired && (
-            <Text
-              typography="EuclidCircularA-Regular"
-              style={{ ...styles.text, ...(ageRestricted && styles.notOldEnoughTextColor) }}
-            >
+            <Text style={{ ...styles.text, ...(ageRestricted && styles.notOldEnoughTextColor) }}>
               {`${t('invitation.ageRestrictions')} ${minimumAgeRequired}+`}
             </Text>
           )}

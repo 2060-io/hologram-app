@@ -103,9 +103,7 @@ const VideoPlayer = ({
         </View>
         {errorLoadingVideo && (
           <View style={styles.contentCenter}>
-            <Text typography="EuclidCircularA-Regular" style={styles.errorLoadingVideoText}>
-              {t('personalChat.errorLoadingVideo')}
-            </Text>
+            <Text style={styles.errorLoadingVideoText}>{t('personalChat.errorLoadingVideo')}</Text>
           </View>
         )}
         {showControl && isReadyVideo && (

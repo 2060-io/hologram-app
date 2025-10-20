@@ -195,9 +195,7 @@ const Developer = ({ navigation }: Props) => {
               }}
               onPress={() => onSelectDevEnvOption(currentDevEnv.key, currentCustomDevEnvValue)}
             >
-              <Text typography="EuclidCircularA-Regular" style={styles.devEnvText}>
-                {currentCustomDevEnvValue}
-              </Text>
+              <Text style={styles.devEnvText}>{currentCustomDevEnvValue}</Text>
             </TouchableOpacity>
             <Text
               onPress={switchToEditionCustomDevEnv}
@@ -269,9 +267,7 @@ const Developer = ({ navigation }: Props) => {
                       style={{ ...styles.optionContainer, ...(isSelected && styles.optionSelected) }}
                       onPress={() => onSelectDevEnvOption(currentDevEnv.key, option)}
                     >
-                      <Text typography="EuclidCircularA-Regular" style={styles.devEnvText}>
-                        {option}
-                      </Text>
+                      <Text style={styles.devEnvText}>{option}</Text>
                     </TouchableOpacity>
                   )
                 })}

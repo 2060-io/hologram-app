@@ -90,7 +90,7 @@ const ConnectionDetails = (props: ConnectionDetailsProps) => {
                   </Text>
                 </View>
               )}
-              <Text typography="EuclidCircularA-Regular" style={styles.createdAtText}>
+              <Text style={styles.createdAtText}>
                 {t('connection.connectionCreated', {
                   date: dateToString(connection.createdAt, 'DD/MM/YYYY'),
                   hours: dateToString(connection.createdAt, using24HourFormat ? 'HH:mm' : 'h:mm a'),

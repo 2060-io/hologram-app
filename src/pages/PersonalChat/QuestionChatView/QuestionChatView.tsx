@@ -28,9 +28,7 @@ const QuestionChatView = ({ question, associatedRecordId }: QuestionChatViewProp
     <>
       <Header title={t('personalChat.question')} theme={theme} leftIconName="question" />
       <View style={styles.containerMain}>
-        <Text typography="EuclidCircularA-Regular" style={styles.description}>
-          {question?.text}
-        </Text>
+        <Text style={styles.description}>{question?.text}</Text>
         <View style={styles.containerOptions}>
           {options.map(option => (
             <TouchableOpacity

@@ -122,7 +122,7 @@ const BaseConnections = ({
         />
       </View>
       <View style={currentConnectionToFilter ? styles.displayConnectionsList : styles.hideConnectionsList}>
-        <Text style={styles.connectionsRelatedText} typography="EuclidCircularA-Regular">
+        <Text style={styles.connectionsRelatedText}>
           {`${t('connection.connectionsManagedBy')} ${currentConnectionToFilter?.name}`}
         </Text>
         <ConnectionList

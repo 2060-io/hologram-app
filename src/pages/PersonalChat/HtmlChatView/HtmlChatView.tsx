@@ -72,14 +72,9 @@ const HtmlChatView = (props: HtmlChatViewProps) => {
             <Image style={styles.image} source={{ uri: metadata.icon }} onError={handleImageError} />
           ))}
         <View style={styles.detailsContainer}>
-          <Text typography="EuclidCircularA-Regular" style={styles.title}>
-            {metadata.title}
-          </Text>
-          <Text typography="EuclidCircularA-Regular" style={styles.description}>
-            {metadata.description}
-          </Text>
+          <Text style={styles.title}>{metadata.title}</Text>
+          <Text style={styles.description}>{metadata.description}</Text>
           <Text
-            typography="EuclidCircularA-Regular"
             style={{
               fontSize: theme.fontSize.sm,
               color: isUrlSecure ? theme.colors.green : theme.colors.orange,

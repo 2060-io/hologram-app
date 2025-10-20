@@ -51,7 +51,7 @@ const CredentialPresented = ({ navigation, route }: Props) => {
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.subContainer}>
           <SvgIcon fill={theme.colors.green} name="done" width={64} height={64} />
-          <Text style={[styles.title, styles.mainTitle]} typography="EuclidCircularA-Regular">
+          <Text style={[styles.title, styles.mainTitle]}>
             {t('presentationRequest.successfullyReceived')}
             <Text style={styles.title} typography="EuclidCircularA-SemiBold">
               {verifier?.name}
@@ -67,9 +67,7 @@ const CredentialPresented = ({ navigation, route }: Props) => {
                 <Text typography="EuclidCircularA-Bold" style={styles.presentedText}>
                   {t('presentationRequest.presented')}
                 </Text>
-                <Text typography="EuclidCircularA-Regular" style={styles.presentedText}>
-                  {presentedAt}
-                </Text>
+                <Text style={styles.presentedText}>{presentedAt}</Text>
               </View>
             </View>
             <View style={styles.issuerContainer}>
@@ -79,9 +77,7 @@ const CredentialPresented = ({ navigation, route }: Props) => {
               </Text>
             </View>
             <TouchableOpacity style={styles.viewInChatButton} onPress={goToChatScreen}>
-              <Text style={styles.viewInChatText} typography="EuclidCircularA-Regular">
-                {t('presentationRequest.viewInChat')}
-              </Text>
+              <Text style={styles.viewInChatText}>{t('presentationRequest.viewInChat')}</Text>
             </TouchableOpacity>
           </View>
         </View>

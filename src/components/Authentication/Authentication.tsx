@@ -58,9 +58,7 @@ const Authentication = ({ isAppActive, makeAutomaticAuth }: Props) => {
             </Text>
             {userHasBiometricAuthEnable ? (
               <>
-                <Text typography="EuclidCircularA-Regular" style={styles.enableText}>
-                  {t(`authentication.${promptMessage.current}`)}
-                </Text>
+                <Text style={styles.enableText}>{t(`authentication.${promptMessage.current}`)}</Text>
                 <TouchableOpacity
                   onPress={makeBiometricAuth}
                   activeOpacity={0.5}
@@ -78,9 +76,7 @@ const Authentication = ({ isAppActive, makeAutomaticAuth }: Props) => {
                   <View style={styles.containerIconWarning}>
                     <SvgIcon name="warning" width={19.6} height={17.1} fill={theme.colors.primary} />
                   </View>
-                  <Text typography="EuclidCircularA-Regular" style={styles.enableErrorText}>
-                    {t(`authentication.${promptMessage.current}`)}
-                  </Text>
+                  <Text style={styles.enableErrorText}>{t(`authentication.${promptMessage.current}`)}</Text>
                 </View>
                 <TouchableOpacity
                   onPress={makeBiometricAuth}

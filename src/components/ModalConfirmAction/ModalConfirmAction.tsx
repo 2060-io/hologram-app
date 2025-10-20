@@ -41,11 +41,7 @@ const ModalConfirmAction = ({
           <Text typography="EuclidCircularA-Medium" style={styles.titleDelete}>
             {title}
           </Text>
-          {subTitle && (
-            <Text typography="EuclidCircularA-Regular" style={styles.descriptionDelete}>
-              {subTitle}
-            </Text>
-          )}
+          {subTitle && <Text style={styles.descriptionDelete}>{subTitle}</Text>}
           <MainButton text={confirmText} style={styles.button} onPress={onConfirm} />
           {confirmTextSecondary && onConfirmSecondary && (
             <OutlinedGreenButton
