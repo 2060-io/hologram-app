@@ -78,7 +78,10 @@ const ImageChatView = (props: ImageProps) => {
 
   return (
     <View
-      style={{ width: imageStyle.width, marginBottom: displayTimeAndTicks ? theme.edges.messageMargin : 0 }}
+      style={[
+        displayTimeAndTicks ? styles.withTimeAndTicksContainer : styles.withoutTimeAndTicksContainer,
+        { width: imageStyle.width },
+      ]}
     >
       {isDownloaded && imagePreviewUri ? (
         <>

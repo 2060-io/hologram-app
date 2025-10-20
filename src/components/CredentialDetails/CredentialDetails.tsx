@@ -40,7 +40,7 @@ const ImageSection = ({ image, onPressDetailImage, styles }: ImageSectionProps) 
 const DetailSection = ({ isFirst, styles, rowDetail, onPressDetailImage }: DetailSectionProps) => (
   <View style={styles.sectionContainer}>
     <View style={styles.container}>
-      <Text style={[styles.sectionKey, isFirst && { marginTop: 0 }]} typography="EuclidCircularA-Medium">
+      <Text style={[styles.sectionKey, isFirst && styles.firstSection]} typography="EuclidCircularA-Medium">
         {rowDetail.key}
       </Text>
       <Text style={styles.sectionValue} typography="EuclidCircularA-Regular">
@@ -78,12 +78,10 @@ const CredentialDetails = ({ credentialDetails }: Props) => {
         closeFullScreenImage={closeFullScreenImage}
         imageUri={biggerImageRef.current!}
       />
-      <View style={styles.credentialCardContainer}>
-        <CardCredentialMainInformation
-          credentialMainInfo={credentialDetails.mainInfo}
-          containerStyle={{ marginBottom: 0 }}
-        />
-      </View>
+      <CardCredentialMainInformation
+        credentialMainInfo={credentialDetails.mainInfo}
+        containerStyle={styles.credentialMainInfoContainer}
+      />
       {detailsSections.map((section, index) => (
         <View key={index}>
           <Text style={styles.title} typography="EuclidCircularA-SemiBold">

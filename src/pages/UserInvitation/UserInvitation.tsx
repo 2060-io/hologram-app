@@ -72,7 +72,10 @@ const UserInvitation = ({
 
   return (
     <SafeAreaView style={styles.containerRoot}>
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ flexGrow: 1 }}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollViewContentContainerStyle}
+      >
         <View style={styles.containerContent}>
           <Avatar
             uri={getPictureDataUrl(userProfileData?.displayPicture)}

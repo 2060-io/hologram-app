@@ -77,7 +77,10 @@ const BaseForward = ({ navigation, onPressSend, connectionId, title }: Props) =>
           {selectedConnectionNames}
         </Text>
         <TouchableOpacity
-          style={[styles.forwardButton, { opacity: isForwardButtonDisabled ? 0.5 : 1 }]}
+          style={[
+            styles.forwardButton,
+            isForwardButtonDisabled ? styles.disabledForward : styles.enabledForward,
+          ]}
           disabled={isForwardButtonDisabled}
           onPress={send}
         >

@@ -189,8 +189,7 @@ const Developer = ({ navigation }: Props) => {
             <TouchableOpacity
               key={currentCustomDevEnvValue}
               style={{
-                flex: 1,
-                marginRight: 4,
+                ...styles.customDevEnvValue,
                 ...styles.optionContainer,
                 ...(isSelected && styles.optionSelected),
               }}

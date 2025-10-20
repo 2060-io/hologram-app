@@ -131,7 +131,7 @@ const Privacy = () => {
         {t('settings.useOSAuthToProtectApp')}
       </Text>
       <OptionsList options={options} />
-      <Text typography="EuclidCircularA-SemiBold" style={{ ...styles.title, marginVertical: 12 }}>
+      <Text typography="EuclidCircularA-SemiBold" style={[styles.title, styles.automaticMediaDownloadTitle]}>
         {t('settings.automaticMediaDownload')}
       </Text>
       <OptionsList options={automaticDownloadOptions} />

@@ -46,4 +46,7 @@ export default (theme: AppTheme) =>
       color: theme.colors.primaryText,
       textAlign: 'center',
     },
+    separator: {
+      color: theme.colors.green,
+    },
   })

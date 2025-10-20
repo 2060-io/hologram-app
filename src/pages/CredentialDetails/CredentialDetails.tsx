@@ -45,7 +45,7 @@ const CredentialDetails = ({ route, navigation }: Props) => {
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <TouchableOpacity onPress={handleShowContextMenu} style={{ marginRight: 15 }}>
+        <TouchableOpacity onPress={handleShowContextMenu} style={styles.headerRight}>
           <SvgIcon name="menuOutline" fill={theme.colors.primaryText} />
         </TouchableOpacity>
       ),

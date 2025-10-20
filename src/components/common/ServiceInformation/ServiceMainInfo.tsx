@@ -1,6 +1,6 @@
 import React, { memo, useCallback, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, Linking, TouchableOpacity } from 'react-native'
+import { View, Linking, TouchableOpacity, ViewStyle } from 'react-native'
 
 import FullScreenImage from '../FullScreenImage'
 
@@ -18,9 +18,10 @@ import { toast } from '@2060/utils/toast'
 
 type Props = {
   serviceInfo: ServiceInfo
+  containerStyle?: ViewStyle
 }
 
-const ServiceMainInfo = ({ serviceInfo }: Props) => {
+const ServiceMainInfo = ({ serviceInfo, containerStyle }: Props) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
@@ -52,7 +53,7 @@ const ServiceMainInfo = ({ serviceInfo }: Props) => {
   }
 
   return (
-    <View style={styles.containerCardIssuerInfo}>
+    <View style={[styles.containerCardIssuerInfo, containerStyle]}>
       <FullScreenImage
         showFullScreenImage={showFullScreenImage}
         closeFullScreenImage={closeFullScreenImage}

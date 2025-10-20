@@ -20,8 +20,9 @@ const Restore = ({
   onDownloading,
   onError,
   onSuccessFinish,
+  style,
 }: RestoreProps) => (
-  <View style={{ marginTop: 35, width: '100%' }}>
+  <View style={style}>
     {!restoreProgress.isDownloadingBackUp &&
       !restoreProgress.done &&
       !restoreProgress.error &&
@@ -71,7 +72,7 @@ const BaseRestoreWalletBackup = ({
       ),
       headerTitle: '',
     })
-  })
+  }, [])
 
   return (
     <SafeAreaView style={styles.container}>
@@ -85,6 +86,7 @@ const BaseRestoreWalletBackup = ({
             <View style={styles.subContainer}>
               <AppLogo />
               <Restore
+                style={styles.restoreContainer}
                 restoreProgress={restoreProgress}
                 onInitialState={() => (
                   <View>

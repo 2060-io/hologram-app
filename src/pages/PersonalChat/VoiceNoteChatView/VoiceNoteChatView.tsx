@@ -208,7 +208,7 @@ const VoiceNoteChatView = memo(
         <View style={styles.footerContainer}>
           <View style={styles.footerSubContainer}>
             {isDownloaded ? (
-              <Text typography="EuclidCircularA-Regular" style={{ ...styles.txtCounter, width: 30 }}>
+              <Text typography="EuclidCircularA-Regular" style={[styles.txtCounter, styles.downloadedText]}>
                 {playerState === PlayerState.stopped ? durationTime : playedTime}
               </Text>
             ) : (
@@ -219,10 +219,10 @@ const VoiceNoteChatView = memo(
               )
             )}
             <TouchableOpacity
-              style={{
-                display: playerState === PlayerState.playing ? 'flex' : 'none',
-                ...styles.playbackSpeedContainer,
-              }}
+              style={[
+                playerState === PlayerState.playing ? styles.displayPlaybackSpeed : styles.hidePlaybackSpeed,
+                styles.playbackSpeedContainer,
+              ]}
               onPress={changeAudioPlaybackSpeed}
             >
               <Text

@@ -128,7 +128,9 @@ const VideoChatView = memo((props: MediaProps) => {
   )
 
   return (
-    <View style={{ marginBottom: displayTimeAndTicks ? theme.edges.messageMargin : 0 }}>
+    <View
+      style={displayTimeAndTicks ? styles.withTimeAndTicksContainer : styles.withoutTimeAndTicksContainer}
+    >
       <View style={styles.containerRootVideo}>
         {isDownloaded ? (
           <Fragment>

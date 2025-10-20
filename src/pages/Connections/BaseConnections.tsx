@@ -111,7 +111,7 @@ const BaseConnections = ({
           textInputProps={{ autoFocus: true }}
         />
       )}
-      <View style={{ display: currentConnectionToFilter ? 'none' : 'flex' }}>
+      <View style={currentConnectionToFilter ? styles.hideConnectionsList : styles.displayConnectionsList}>
         <ConnectionList
           onPressRightSide={displaySubConnectionsOfConnection}
           onPress={onPressConnection}
@@ -121,7 +121,7 @@ const BaseConnections = ({
           selectedConnections={selectedConnections}
         />
       </View>
-      <View style={{ display: currentConnectionToFilter ? 'flex' : 'none' }}>
+      <View style={currentConnectionToFilter ? styles.displayConnectionsList : styles.hideConnectionsList}>
         <Text style={styles.connectionsRelatedText} typography="EuclidCircularA-Regular">
           {`${t('connection.connectionsManagedBy')} ${currentConnectionToFilter?.name}`}
         </Text>

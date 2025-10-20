@@ -5,7 +5,7 @@ import { widthPercentageToDP } from '@2060/utils/responsiveUtils'
 
 export default (theme: AppTheme) =>
   StyleSheet.create({
-    containierMain: {
+    container: {
       flex: 1,
       marginHorizontal: 15,
       backgroundColor: theme.colors.secondary,
@@ -15,6 +15,10 @@ export default (theme: AppTheme) =>
       width: '100%',
       flexDirection: 'row',
       alignItems: 'center',
+    },
+    listContainer: {
+      flex: 1,
+      marginBottom: 10,
     },
     containerImage: {
       height: widthPercentageToDP('9.50%'),

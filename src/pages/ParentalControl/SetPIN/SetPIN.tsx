@@ -154,8 +154,8 @@ const SetPIN = ({ visible, onRequestClose, mode, oniOSDismiss }: Props) => {
             style={styles.dialPadContainer}
             numColumns={3}
             data={DIAL_PAD}
-            columnWrapperStyle={{ gap: 20 }}
-            contentContainerStyle={{ gap: 20 }}
+            columnWrapperStyle={styles.columnWrapperStyle}
+            contentContainerStyle={styles.columnWrapperStyle}
             keyExtractor={(_, index) => `${index}`}
             scrollEnabled={false}
             renderItem={({ item }) => <Dial dial={item} onDialPressed={onDialPressed} />}

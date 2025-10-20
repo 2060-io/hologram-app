@@ -97,7 +97,7 @@ const ShareMessages = ({ navigation }: Props) => {
           {selectedConnectionNames}
         </Text>
         <TouchableOpacity
-          style={[styles.shareButton, { opacity: isShareButtonDisabled ? 0.5 : 1 }]}
+          style={[styles.shareButton, isShareButtonDisabled ? styles.disabledForward : styles.enabledForward]}
           disabled={isShareButtonDisabled}
           onPress={onShareMessages}
         >

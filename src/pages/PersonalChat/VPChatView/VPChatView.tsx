@@ -146,7 +146,7 @@ const VPChatView = ({ metadata, role, agent, proofRecordId, chatEntryId }: Props
             <CardCredentialMainInformation
               key={credential.mainInfo.id}
               credentialMainInfo={credentialMainInfo}
-              containerStyle={{ marginBottom: isLast ? 0 : theme.edges.messageMargin }}
+              containerStyle={isLast ? styles.lastCredential : styles.credential}
               onPress={() => {
                 chooseWhereToGo({ mainInfo: credentialMainInfo, attributes: credential.attributes })
               }}

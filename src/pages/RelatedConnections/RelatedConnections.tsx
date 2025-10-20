@@ -83,7 +83,7 @@ const RelatedConnections: React.FC<Props> = ({ navigation, route }) => {
   if (!parentConnectionId) onGoToBack()
 
   return (
-    <SafeAreaView style={styles.containierMain}>
+    <SafeAreaView style={styles.container}>
       {showSearchInput && (
         <SearchInput
           containerStyle={styles.searchInputContainer}
@@ -93,13 +93,12 @@ const RelatedConnections: React.FC<Props> = ({ navigation, route }) => {
           textInputProps={{ autoFocus: true }}
         />
       )}
-
       <Text typography="EuclidCircularA-Regular" style={styles.connectionRelatedToText}>
         {`${t('connection.connectionsManagedBy')} ${parentConnectionName}`}
       </Text>
-
       {/* <ConnectionList onPressConnection={goToConnectionDetails} connectionList={subConnectionList} /> */}
       <AlphabetList
+        style={styles.listContainer}
         data={subConnectionList}
         indexLetterStyle={styles.letterStyle}
         renderCustomItem={item => (
@@ -119,7 +118,6 @@ const RelatedConnections: React.FC<Props> = ({ navigation, route }) => {
           </View>
         )}
         showsVerticalScrollIndicator={false}
-        style={{ flex: 1, marginBottom: 10 }}
         ListEmptyComponent={() => (
           <View style={styles.containerEmptyList}>
             <Text typography="EuclidCircularA-SemiBold" style={styles.textEmpty}>

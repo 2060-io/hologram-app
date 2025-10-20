@@ -90,7 +90,7 @@ const InvitationChatView = ({ associatedRecordId: outOfBandId, metadata, role, a
           disabled={ageRestricted}
           text={t('general.connect')}
           onPress={onAccept}
-          style={{ opacity: ageRestricted ? 0.3 : 1 }}
+          style={ageRestricted ? styles.acceptWithAgeRestricted : styles.acceptWithoutAgeRestricted}
         />
         {ageRestricted && (
           <ConnectionRefusedByAge
@@ -111,7 +111,7 @@ const InvitationChatView = ({ associatedRecordId: outOfBandId, metadata, role, a
     [InvitationState.AlreadyConnected]: (
       <BlueButton
         text={t('personalChat.alreadyConnected')}
-        style={{ opacity: 0.3 }}
+        style={styles.acceptWithAgeRestricted}
         onPress={goToExistingConnection}
       />
     ),

@@ -41,8 +41,8 @@ export interface ConnectionDetailsProps extends WrapperProps {
 }
 
 interface BaseConnectionDetailsProps extends ConnectionDetailsProps {
-  mainInfo: ReactElement
-  footerInfo?: ReactElement
+  mainInfo: ReactElement | null
+  footerInfo?: ReactElement | null
 }
 
 const BaseConnectionDetails = ({

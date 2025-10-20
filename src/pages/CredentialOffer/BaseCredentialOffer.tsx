@@ -93,7 +93,10 @@ const BaseCredentialOffer: React.FC<Props> = ({
             <Text typography="EuclidCircularA-Regular" style={styles.credentialTitle}>
               {credentialDetails.mainInfo.issuer.name} {t('credentialOffer.offeringYou')}
             </Text>
-            <Text typography="EuclidCircularA-Bold" style={[styles.credentialTitle, { marginBottom: 15 }]}>
+            <Text
+              typography="EuclidCircularA-Bold"
+              style={[styles.credentialTitle, styles.verifiableCredentialText]}
+            >
               {t('credentialOffer.verifiableCredential')}
             </Text>
             <CredentialDetails credentialDetails={credentialDetails} />

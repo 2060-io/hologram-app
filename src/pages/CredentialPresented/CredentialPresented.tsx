@@ -63,7 +63,7 @@ const CredentialPresented = ({ navigation, route }: Props) => {
           <View style={styles.card}>
             <View style={styles.presentedDateContainer}>
               <SvgIcon fill={theme.isDarkMode ? theme.colors.secondaryGrey : '#6A8994'} name="personSquare" />
-              <View style={{ marginLeft: 15 }}>
+              <View style={styles.presentedDateText}>
                 <Text typography="EuclidCircularA-Bold" style={styles.presentedText}>
                   {t('presentationRequest.presented')}
                 </Text>

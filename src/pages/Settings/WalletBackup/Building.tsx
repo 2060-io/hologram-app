@@ -25,7 +25,7 @@ const Building = ({ uploadProgress, startBackupProcess, abortRetryBackup }: Prop
       <View style={[styles.card, styles.buildingContainer]}>
         <View style={[styles.rowContainer, styles.makingBackupButton]}>
           <SvgIcon name="cloudOff" fill={color} width={26} height={26} />
-          <Text typography="EuclidCircularA-Regular" style={[styles.mediumText, { flex: 1, color }]}>
+          <Text typography="EuclidCircularA-Regular" style={[styles.mediumText, styles.buildBackupText]}>
             {t('settings.buildBackup')}
           </Text>
           <Text style={[styles.mediumText, { color }]}>{`${uploadProgress.progress}%`}</Text>
