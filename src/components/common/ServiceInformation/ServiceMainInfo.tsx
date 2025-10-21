@@ -1,6 +1,6 @@
 import React, { memo, useCallback, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, Linking, TouchableOpacity } from 'react-native'
+import { View, Linking, TouchableOpacity, ViewStyle } from 'react-native'
 
 import FullScreenImage from '../FullScreenImage'
 
@@ -18,9 +18,10 @@ import { toast } from '@2060/utils/toast'
 
 type Props = {
   serviceInfo: ServiceInfo
+  containerStyle?: ViewStyle
 }
 
-const ServiceMainInfo = ({ serviceInfo }: Props) => {
+const ServiceMainInfo = ({ serviceInfo, containerStyle }: Props) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
@@ -52,7 +53,7 @@ const ServiceMainInfo = ({ serviceInfo }: Props) => {
   }
 
   return (
-    <View style={styles.containerCardIssuerInfo}>
+    <View style={[styles.containerCardIssuerInfo, containerStyle]}>
       <FullScreenImage
         showFullScreenImage={showFullScreenImage}
         closeFullScreenImage={closeFullScreenImage}
@@ -64,43 +65,31 @@ const ServiceMainInfo = ({ serviceInfo }: Props) => {
         size="25%"
         onImagePressed={onAvatarImagePressed}
       />
-      <Text typography="EuclidCircularA-Medium" style={styles.issuerName}>
+      <Text fontFamily="EuclidCircularA-Medium" style={styles.issuerName}>
         {serviceInfo.name}
       </Text>
-      {serviceInfo.description && (
-        <Text typography="EuclidCircularA-Regular" style={[styles.text]}>
-          {serviceInfo.description}
-        </Text>
-      )}
+      {serviceInfo.description && <Text style={[styles.text]}>{serviceInfo.description}</Text>}
       <VerifiedIcon style={styles.containerIconValidity} status={serviceInfo.status} />
-      <Text typography="EuclidCircularA-Regular" style={styles.text}>
-        <Text typography="EuclidCircularA-Bold" style={styles.text}>
+      <Text style={styles.text}>
+        <Text fontFamily="EuclidCircularA-Bold" style={styles.text}>
           {trimText(serviceInfo.did ?? '')}
         </Text>{' '}
         {serviceIs[serviceInfo.status]}
       </Text>
       {serviceProvider && (
         <View style={styles.serviceProviderInfoContainer}>
-          <Text typography="EuclidCircularA-Regular" style={styles.text}>
-            {t('invitation.serviceProvider')}
-          </Text>
+          <Text style={styles.text}>{t('invitation.serviceProvider')}</Text>
           <View style={styles.serviceProviderName}>
             <Text style={styles.flagEmoji}>{getFlagEmoji(serviceProvider.countryCode)}</Text>
-            <Text typography="EuclidCircularA-Regular" style={styles.text}>
-              {serviceProvider.entityName}
-            </Text>
+            <Text style={styles.text}>{serviceProvider.entityName}</Text>
           </View>
-          <Text typography="EuclidCircularA-Regular" style={styles.text}>
-            {serviceProvider.officialPublicRegistryNumber}
-          </Text>
+          <Text style={styles.text}>{serviceProvider.officialPublicRegistryNumber}</Text>
           {termsAndConditionsUrl && (
             <TouchableOpacity
               style={styles.termsAndConditionsContainer}
               onPress={() => tryToOpenURL(termsAndConditionsUrl)}
             >
-              <Text typography="EuclidCircularA-Regular" style={[styles.text, styles.underLineText]}>
-                {t('invitation.termsAndConditions')}
-              </Text>
+              <Text style={[styles.text, styles.underLineText]}>{t('invitation.termsAndConditions')}</Text>
               <SvgIcon name="arrowUpRightFromSquare" fill={theme.colors.primaryText} width={15} height={15} />
             </TouchableOpacity>
           )}
@@ -114,10 +103,7 @@ const ServiceMainInfo = ({ serviceInfo }: Props) => {
             </TouchableOpacity>
           )}
           {minimumAgeRequired && (
-            <Text
-              typography="EuclidCircularA-Regular"
-              style={{ ...styles.text, ...(ageRestricted && styles.notOldEnoughTextColor) }}
-            >
+            <Text style={{ ...styles.text, ...(ageRestricted && styles.notOldEnoughTextColor) }}>
               {`${t('invitation.ageRestrictions')} ${minimumAgeRequired}+`}
             </Text>
           )}

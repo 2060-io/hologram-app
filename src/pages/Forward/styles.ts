@@ -35,4 +35,10 @@ export default (theme: AppTheme) =>
       justifyContent: 'center',
       alignItems: 'center',
     },
+    enabledForward: {
+      opacity: 1,
+    },
+    disabledForward: {
+      opacity: 0.5,
+    },
   })

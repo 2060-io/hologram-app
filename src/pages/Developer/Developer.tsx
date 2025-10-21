@@ -189,20 +189,17 @@ const Developer = ({ navigation }: Props) => {
             <TouchableOpacity
               key={currentCustomDevEnvValue}
               style={{
-                flex: 1,
-                marginRight: 4,
+                ...styles.customDevEnvValue,
                 ...styles.optionContainer,
                 ...(isSelected && styles.optionSelected),
               }}
               onPress={() => onSelectDevEnvOption(currentDevEnv.key, currentCustomDevEnvValue)}
             >
-              <Text typography="EuclidCircularA-Regular" style={styles.devEnvText}>
-                {currentCustomDevEnvValue}
-              </Text>
+              <Text style={styles.devEnvText}>{currentCustomDevEnvValue}</Text>
             </TouchableOpacity>
             <Text
               onPress={switchToEditionCustomDevEnv}
-              typography="EuclidCircularA-SemiBold"
+              fontFamily="EuclidCircularA-SemiBold"
               style={styles.textButton}
             >
               {t('general.modify')}
@@ -211,7 +208,7 @@ const Developer = ({ navigation }: Props) => {
         ) : (
           <Text
             onPress={switchToEditionCustomDevEnv}
-            typography="EuclidCircularA-SemiBold"
+            fontFamily="EuclidCircularA-SemiBold"
             style={{ ...styles.textButton, ...styles.createCustomDenEnvText }}
           >
             {t('settings.createCustomDevEnvValue')}
@@ -227,12 +224,12 @@ const Developer = ({ navigation }: Props) => {
         <View style={styles.subContainer}>
           <ModalLoading visible={isDeletingWallet} />
           <OptionsList options={options} />
-          <Text typography="EuclidCircularA-Medium" style={styles.title}>
+          <Text fontFamily="EuclidCircularA-Medium" style={styles.title}>
             {t('settings.developmentEnvironments')}
           </Text>
           {isEditionCustomDevEnvMode && (
             <View style={styles.editionCustomDevEnvContainer}>
-              <Text typography="EuclidCircularA-SemiBold" style={styles.title}>
+              <Text fontFamily="EuclidCircularA-SemiBold" style={styles.title}>
                 {currentDevEnv?.key && devEnvPlaceholder[currentDevEnv.key]}
               </Text>
               <View style={styles.rowContainer}>
@@ -246,7 +243,7 @@ const Developer = ({ navigation }: Props) => {
                 <Text
                   disabled={!tempCustomDevEnvValue?.length}
                   onPress={onSaveCustomDevEnv}
-                  typography="EuclidCircularA-SemiBold"
+                  fontFamily="EuclidCircularA-SemiBold"
                   style={styles.textButton}
                 >
                   {t('general.save')}
@@ -258,7 +255,7 @@ const Developer = ({ navigation }: Props) => {
           <ModalBottomHalf visible={displayDevEnvOptions} onClose={changeDevEnvOptionsVisibility}>
             {currentDevEnv && (
               <View style={styles.devEnvsModalContainer}>
-                <Text typography="EuclidCircularA-SemiBold" style={styles.title}>
+                <Text fontFamily="EuclidCircularA-SemiBold" style={styles.title}>
                   {devEnvPlaceholder[currentDevEnv.key]}
                 </Text>
                 {currentDevEnv.values.map(option => {
@@ -270,9 +267,7 @@ const Developer = ({ navigation }: Props) => {
                       style={{ ...styles.optionContainer, ...(isSelected && styles.optionSelected) }}
                       onPress={() => onSelectDevEnvOption(currentDevEnv.key, option)}
                     >
-                      <Text typography="EuclidCircularA-Regular" style={styles.devEnvText}>
-                        {option}
-                      </Text>
+                      <Text style={styles.devEnvText}>{option}</Text>
                     </TouchableOpacity>
                   )
                 })}

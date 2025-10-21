@@ -1,10 +1,11 @@
 import React, { useState, createRef, Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, StyleSheet, Pressable } from 'react-native'
+import { View, Pressable } from 'react-native'
 import Video, { OnLoadData, OnProgressData, VideoRef } from 'react-native-video'
 
 import PlayerControls from './PlayerControls'
 import ProgressBar from './ProgressBar'
+import getStyles from './styles'
 
 import { Text } from '@2060/components/common'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
@@ -24,15 +25,15 @@ const VideoPlayer = ({
   initialPlay = true,
   showProgressBar = true,
 }: Props) => {
+  const { t } = useTranslation()
   const theme = useTheme()
+  const styles = getStyles(theme)
   const [isReadyVideo, setIsReadyVideo] = useState(false)
   const [errorLoadingVideo, setErrorLoadingVideo] = useState(false)
   const [currentTime, setCurrentTime] = useState(0)
   const [duration, setDuration] = useState(0)
   const [play, setPlay] = useState(initialPlay)
-
   const videoRef = createRef<VideoRef>()
-  const { t } = useTranslation()
 
   const handlePlayPause = () => {
     if (play) {
@@ -102,12 +103,7 @@ const VideoPlayer = ({
         </View>
         {errorLoadingVideo && (
           <View style={styles.contentCenter}>
-            <Text
-              typography="EuclidCircularA-Regular"
-              style={{ color: theme.colors.primaryText, fontSize: theme.fontSize.lg, marginTop: 10 }}
-            >
-              {t('personalChat.errorLoadingVideo')}
-            </Text>
+            <Text style={styles.errorLoadingVideoText}>{t('personalChat.errorLoadingVideo')}</Text>
           </View>
         )}
         {showControl && isReadyVideo && (
@@ -133,36 +129,5 @@ const VideoPlayer = ({
     </Pressable>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    height: '100%',
-    justifyContent: 'center',
-  },
-  videoWrapper: {
-    ...StyleSheet.absoluteFillObject,
-  },
-  video: {
-    height: '100%',
-    width: '100%',
-  },
-  controlOverlay: {
-    position: 'absolute',
-    top: 0,
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: 'rgba(0,0,0, 0.3)',
-  },
-  contentCenter: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    bottom: 0,
-    right: 0,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-})
 
 export default VideoPlayer

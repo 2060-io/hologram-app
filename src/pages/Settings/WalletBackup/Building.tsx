@@ -25,9 +25,7 @@ const Building = ({ backupState, startBackupProcess, abortRetryBackup }: Props) 
       <View style={[styles.card, styles.buildingContainer]}>
         <View style={[styles.rowContainer, styles.makingBackupButton]}>
           <SvgIcon name="cloudOff" fill={color} width={26} height={26} />
-          <Text typography="EuclidCircularA-Regular" style={[styles.mediumText, { flex: 1, color }]}>
-            {t('settings.buildBackup')}
-          </Text>
+          <Text style={[styles.mediumText, styles.buildBackupText]}>{t('settings.buildBackup')}</Text>
           <Text style={[styles.mediumText, { color }]}>{`${backupState.progress}%`}</Text>
         </View>
         <Progress progress={backupState.progress} progressColor={progressColor} />
@@ -37,11 +35,9 @@ const Building = ({ backupState, startBackupProcess, abortRetryBackup }: Props) 
               <View style={styles.errorIconContainer}>
                 <SvgIcon name="warning" fill={theme.colors.white} width={15} height={15} />
               </View>
-              <Text typography="EuclidCircularA-Regular" style={styles.errorTitle}>
-                {t('settings.buildBackupError')}
-              </Text>
+              <Text style={styles.errorTitle}>{t('settings.buildBackupError')}</Text>
             </View>
-            <Text typography="EuclidCircularA-Medium" style={styles.mediumText}>
+            <Text fontFamily="EuclidCircularA-Medium" style={styles.mediumText}>
               {backupState.error}
             </Text>
           </View>
