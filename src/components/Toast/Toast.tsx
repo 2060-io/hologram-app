@@ -8,7 +8,7 @@ import { SHOW_TOAST_MESSAGE, COLORS } from '@2060/constants/toast'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { ToastOptions } from '@2060/utils/toast'
 
-const CustomToast = () => {
+const Toast = () => {
   const theme = useTheme()
   const styles = getStyles(theme)
   const [message, setMessage] = useState<ToastOptions | null>(null)
@@ -88,4 +88,4 @@ const CustomToast = () => {
   )
 }
 
-export default memo(CustomToast)
+export default memo(Toast)
