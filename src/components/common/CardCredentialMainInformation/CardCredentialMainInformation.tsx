@@ -49,14 +49,14 @@ const CardCredentialMainInformation = ({
             <Image style={styles.image} resizeMode="contain" source={uri ? { uri } : imagePlaceholder} />
           )}
         </View>
-        <Text style={styles.name} typography="EuclidCircularA-Medium">
+        <Text style={styles.name} fontFamily="EuclidCircularA-Medium">
           {credentialMainInfo.schemaName}
         </Text>
       </View>
       <View>
         <Text style={styles.issuedOn}>{issuedOnLabel}</Text>
         <View style={styles.bottomContainer}>
-          <Text style={styles.bottomText} typography="EuclidCircularA-Medium" numberOfLines={1}>
+          <Text style={styles.bottomText} fontFamily="EuclidCircularA-Medium" numberOfLines={1}>
             {serviceInfo?.name ?? credentialMainInfo.issuer.name}
           </Text>
           <VerifiedIcon status={serviceInfo?.status ?? TrustResolutionOutcome.INVALID} />

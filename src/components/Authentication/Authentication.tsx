@@ -53,7 +53,7 @@ const Authentication = ({ isAppActive, makeAutomaticAuth }: Props) => {
         <View style={styles.containerBgView}>
           <View style={styles.containerAuthCard}>
             <AppIcon />
-            <Text typography="EuclidCircularA-Bold" style={styles.title}>
+            <Text fontFamily="EuclidCircularA-Bold" style={styles.title}>
               {t('authentication.walletLocked')}
             </Text>
             {userHasBiometricAuthEnable ? (
@@ -65,7 +65,7 @@ const Authentication = ({ isAppActive, makeAutomaticAuth }: Props) => {
                   style={styles.containerBtnAuth}
                 >
                   <SvgIcon name="authBlocked" fill={theme.colors.white} />
-                  <Text typography="EuclidCircularA-Medium" style={styles.btnAuthText}>
+                  <Text fontFamily="EuclidCircularA-Medium" style={styles.btnAuthText}>
                     {t('authentication.auth')}
                   </Text>
                 </TouchableOpacity>
@@ -83,7 +83,7 @@ const Authentication = ({ isAppActive, makeAutomaticAuth }: Props) => {
                   activeOpacity={0.5}
                   style={styles.containerBtnRetry}
                 >
-                  <Text typography="EuclidCircularA-Medium" style={styles.btnRetryText}>
+                  <Text fontFamily="EuclidCircularA-Medium" style={styles.btnRetryText}>
                     {t('authentication.retry')}
                   </Text>
                 </TouchableOpacity>

@@ -131,7 +131,7 @@ const EMrtdReadRequestChatView = (props: Props) => {
             style={styles.instructions}
             parent={Text}
             components={{
-              bold: <Text typography="EuclidCircularA-Bold" style={styles.instructions} />,
+              bold: <Text fontFamily="EuclidCircularA-Bold" style={styles.instructions} />,
             }}
           />
           <SvgIcon name="NFC" width={'100%'} height={widthPercentageToDP('43')} style={styles.icon} />

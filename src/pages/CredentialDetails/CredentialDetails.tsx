@@ -84,7 +84,7 @@ const CredentialDetails = ({ route, navigation }: Props) => {
           {credentialDetails && (
             <>
               <CredentialDetailsComponent credentialDetails={credentialDetails} />
-              <Text typography="EuclidCircularA-SemiBold" style={styles.titleIssuerInfo}>
+              <Text fontFamily="EuclidCircularA-SemiBold" style={styles.titleIssuerInfo}>
                 {t('credentialOffer.issuerInformation')}
               </Text>
               <ServiceInformation did={did} initialServiceInfo={serviceInfo.current} />

@@ -27,7 +27,7 @@ const PeerSecuritySystemMessage = ({ connection }: PeerSecuritySystemMessageProp
         parent={Text}
         components={{
           lock: <SvgIcon name="lock" fill={styles.textMessage.color} width={12} height={12} />,
-          bold: <Text typography="EuclidCircularA-Bold" style={styles.textMessage} />,
+          bold: <Text fontFamily="EuclidCircularA-Bold" style={styles.textMessage} />,
         }}
         values={{ ...(parentConnectionDisplayName && { parentConnectionDisplayName }) }}
       />

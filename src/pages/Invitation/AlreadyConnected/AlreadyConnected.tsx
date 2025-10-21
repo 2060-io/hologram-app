@@ -31,7 +31,7 @@ const AlreadyConnected = ({ navigation, connection, includeDefaultActions }: Con
 
   return (
     <View style={styles.alreadyConnectedContainer}>
-      <Text typography="EuclidCircularA-Medium" style={styles.alreadyConnectedText}>
+      <Text fontFamily="EuclidCircularA-Medium" style={styles.alreadyConnectedText}>
         {t('connection.youAreAlreadyConnected', { connectionName })}
       </Text>
       <View style={styles.actionsContainer}>

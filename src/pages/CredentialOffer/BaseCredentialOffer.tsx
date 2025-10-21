@@ -57,7 +57,7 @@ const BaseCredentialOffer: React.FC<Props> = ({
       headerLeft: props =>
         enableAcceptRejectButtons ? (
           <TouchableOpacity style={styles.headerLeft} onPress={displayModalRefuseConfirmation}>
-            <Text typography="EuclidCircularA-Medium" style={styles.headerBtnText}>
+            <Text fontFamily="EuclidCircularA-Medium" style={styles.headerBtnText}>
               {t('general.refuse')}
             </Text>
           </TouchableOpacity>
@@ -67,7 +67,7 @@ const BaseCredentialOffer: React.FC<Props> = ({
       headerRight: () =>
         enableAcceptRejectButtons ? (
           <TouchableOpacity style={styles.headerRight} onPress={accept}>
-            <Text typography="EuclidCircularA-Medium" style={styles.headerBtnText}>
+            <Text fontFamily="EuclidCircularA-Medium" style={styles.headerBtnText}>
               {t('general.accept')}
             </Text>
           </TouchableOpacity>
@@ -94,14 +94,14 @@ const BaseCredentialOffer: React.FC<Props> = ({
               {credentialDetails.mainInfo.issuer.name} {t('credentialOffer.offeringYou')}
             </Text>
             <Text
-              typography="EuclidCircularA-Bold"
+              fontFamily="EuclidCircularA-Bold"
               style={[styles.credentialTitle, styles.verifiableCredentialText]}
             >
               {t('credentialOffer.verifiableCredential')}
             </Text>
             <CredentialDetails credentialDetails={credentialDetails} />
             <View style={styles.containerSectionIssuerInfo}>
-              <Text typography="EuclidCircularA-Medium" style={styles.titleIssuerInfo}>
+              <Text fontFamily="EuclidCircularA-Medium" style={styles.titleIssuerInfo}>
                 {t('credentialOffer.issuerInformation')}
               </Text>
               <ServiceInformation

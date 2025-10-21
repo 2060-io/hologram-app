@@ -199,7 +199,7 @@ const Developer = ({ navigation }: Props) => {
             </TouchableOpacity>
             <Text
               onPress={switchToEditionCustomDevEnv}
-              typography="EuclidCircularA-SemiBold"
+              fontFamily="EuclidCircularA-SemiBold"
               style={styles.textButton}
             >
               {t('general.modify')}
@@ -208,7 +208,7 @@ const Developer = ({ navigation }: Props) => {
         ) : (
           <Text
             onPress={switchToEditionCustomDevEnv}
-            typography="EuclidCircularA-SemiBold"
+            fontFamily="EuclidCircularA-SemiBold"
             style={{ ...styles.textButton, ...styles.createCustomDenEnvText }}
           >
             {t('settings.createCustomDevEnvValue')}
@@ -224,12 +224,12 @@ const Developer = ({ navigation }: Props) => {
         <View style={styles.subContainer}>
           <ModalLoading visible={isDeletingWallet} />
           <OptionsList options={options} />
-          <Text typography="EuclidCircularA-Medium" style={styles.title}>
+          <Text fontFamily="EuclidCircularA-Medium" style={styles.title}>
             {t('settings.developmentEnvironments')}
           </Text>
           {isEditionCustomDevEnvMode && (
             <View style={styles.editionCustomDevEnvContainer}>
-              <Text typography="EuclidCircularA-SemiBold" style={styles.title}>
+              <Text fontFamily="EuclidCircularA-SemiBold" style={styles.title}>
                 {currentDevEnv?.key && devEnvPlaceholder[currentDevEnv.key]}
               </Text>
               <View style={styles.rowContainer}>
@@ -243,7 +243,7 @@ const Developer = ({ navigation }: Props) => {
                 <Text
                   disabled={!tempCustomDevEnvValue?.length}
                   onPress={onSaveCustomDevEnv}
-                  typography="EuclidCircularA-SemiBold"
+                  fontFamily="EuclidCircularA-SemiBold"
                   style={styles.textButton}
                 >
                   {t('general.save')}
@@ -255,7 +255,7 @@ const Developer = ({ navigation }: Props) => {
           <ModalBottomHalf visible={displayDevEnvOptions} onClose={changeDevEnvOptionsVisibility}>
             {currentDevEnv && (
               <View style={styles.devEnvsModalContainer}>
-                <Text typography="EuclidCircularA-SemiBold" style={styles.title}>
+                <Text fontFamily="EuclidCircularA-SemiBold" style={styles.title}>
                   {devEnvPlaceholder[currentDevEnv.key]}
                 </Text>
                 {currentDevEnv.values.map(option => {

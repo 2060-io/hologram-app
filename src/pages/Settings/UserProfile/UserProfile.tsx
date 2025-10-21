@@ -49,7 +49,7 @@ const UserProfile = ({ navigation }: Props) => {
       headerStyle: globalStyles.headerStyle,
       headerLeft: () => (
         <TouchableOpacity style={styles.headerLeft} onPress={onHandleCancelingValueChanges}>
-          <Text typography="EuclidCircularA-Medium" style={styles.headerBtnText}>
+          <Text fontFamily="EuclidCircularA-Medium" style={styles.headerBtnText}>
             {t('general.cancel')}
           </Text>
         </TouchableOpacity>
@@ -57,7 +57,7 @@ const UserProfile = ({ navigation }: Props) => {
       headerRight: () =>
         (isChangeBase64 || isChangeDisplayName) && (
           <TouchableOpacity style={styles.headerRight} onPress={onSaveInfoUser}>
-            <Text typography="EuclidCircularA-Medium" style={styles.headerBtnText}>
+            <Text fontFamily="EuclidCircularA-Medium" style={styles.headerBtnText}>
               {t('general.done')}
             </Text>
           </TouchableOpacity>

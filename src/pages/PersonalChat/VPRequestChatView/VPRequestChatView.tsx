@@ -169,7 +169,7 @@ const VPRequestChatView = ({
     ),
     [ProofState.Declined]: (
       <View style={[styles.baseFooterContainer, styles.refusedContainer]}>
-        <Text typography="EuclidCircularA-Bold" style={styles.refusedText}>
+        <Text fontFamily="EuclidCircularA-Bold" style={styles.refusedText}>
           {t('personalChat.youRefusedRequest')}
         </Text>
       </View>
@@ -210,7 +210,7 @@ const VPRequestChatView = ({
             <View style={styles.credentialAttributesContainer}>
               {requestedCredential?.attributes?.map((attribute: string) => (
                 <View key={attribute} style={styles.credentialAttributeContainer}>
-                  <Text typography="EuclidCircularA-Bold" style={styles.credentialAttribute}>
+                  <Text fontFamily="EuclidCircularA-Bold" style={styles.credentialAttribute}>
                     {attribute}
                   </Text>
                 </View>

@@ -220,7 +220,7 @@ const VoiceNoteChatView = memo(
               onPress={changeAudioPlaybackSpeed}
             >
               <Text
-                typography="EuclidCircularA-Medium"
+                fontFamily="EuclidCircularA-Medium"
                 style={[styles.txtCounter, { color: theme.colors.white }]}
               >{`${audioPlaybackSpeed}x`}</Text>
             </TouchableOpacity>

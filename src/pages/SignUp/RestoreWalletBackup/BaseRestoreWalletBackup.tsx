@@ -65,7 +65,7 @@ const BaseRestoreWalletBackup = ({
     navigation.setOptions({
       headerLeft: () => (
         <TouchableOpacity style={styles.headerLeft} onPress={() => navigation.goBack()}>
-          <Text style={styles.headerLeftText} typography="EuclidCircularA-Medium">
+          <Text style={styles.headerLeftText} fontFamily="EuclidCircularA-Medium">
             {t('general.cancel')}
           </Text>
         </TouchableOpacity>
@@ -100,7 +100,7 @@ const BaseRestoreWalletBackup = ({
                       <>
                         <Text
                           style={[styles.title, styles.recoveryPassText]}
-                          typography="EuclidCircularA-Medium"
+                          fontFamily="EuclidCircularA-Medium"
                         >
                           {t('signUp.enterRecoveryPassword')}
                         </Text>
@@ -117,7 +117,7 @@ const BaseRestoreWalletBackup = ({
                 )}
                 onDownloading={() => (
                   <>
-                    <Text style={styles.title} typography="EuclidCircularA-Medium">
+                    <Text style={styles.title} fontFamily="EuclidCircularA-Medium">
                       {t('signUp.restoringWalletFromBackup')}
                     </Text>
                     <View style={styles.card}>
@@ -131,7 +131,7 @@ const BaseRestoreWalletBackup = ({
                 )}
                 onError={() => (
                   <>
-                    <Text style={styles.title} typography="EuclidCircularA-Medium">
+                    <Text style={styles.title} fontFamily="EuclidCircularA-Medium">
                       {t('signUp.restoringWalletFromBackup')}
                     </Text>
                     <View style={styles.card}>
@@ -158,7 +158,7 @@ const BaseRestoreWalletBackup = ({
             </View>
           ) : (
             <View style={styles.subContainer}>
-              <Text typography="EuclidCircularA-Medium" style={styles.noCloudAvailable}>
+              <Text fontFamily="EuclidCircularA-Medium" style={styles.noCloudAvailable}>
                 {t('settings.noCloudAvailable', { cloud: IS_IOS ? 'iCloud Drive' : 'Google Drive' })}
               </Text>
               {IS_ANDROID && <MainButton text={t('general.retry')} onPress={selectAccount} />}

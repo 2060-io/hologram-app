@@ -31,7 +31,7 @@ const UserInvitation = ({
     navigation.setOptions({
       headerLeft: () => (
         <TouchableOpacity style={styles.btnDone} onPress={() => navigation.goBack()}>
-          <Text typography="EuclidCircularA-Medium" style={styles.headerText}>
+          <Text fontFamily="EuclidCircularA-Medium" style={styles.headerText}>
             {t('chat.done')}
           </Text>
         </TouchableOpacity>
@@ -39,7 +39,7 @@ const UserInvitation = ({
       headerStyle: globalStyles.headerStyle,
       headerRight: () => (
         <TouchableOpacity style={styles.btnRefresh} onPress={createNewInvitation}>
-          <Text typography="EuclidCircularA-Medium" style={styles.headerText}>
+          <Text fontFamily="EuclidCircularA-Medium" style={styles.headerText}>
             {t('invitation.refresh')}
           </Text>
         </TouchableOpacity>
@@ -82,7 +82,7 @@ const UserInvitation = ({
             label={userProfileData?.displayName}
             size="46%"
           />
-          <Text typography="EuclidCircularA-Medium" style={styles.displayName}>
+          <Text fontFamily="EuclidCircularA-Medium" style={styles.displayName}>
             {userProfileData?.displayName}
           </Text>
           <View>
@@ -98,7 +98,7 @@ const UserInvitation = ({
           </View>
           <TouchableOpacity style={styles.containerBtnShare} activeOpacity={0.6} onPress={shareInvitation}>
             <SvgIcon name="shareSocial" fill={theme.colors.white} />
-            <Text typography="EuclidCircularA-Medium" style={styles.btnShareText}>
+            <Text fontFamily="EuclidCircularA-Medium" style={styles.btnShareText}>
               {t('connection.share')}
             </Text>
           </TouchableOpacity>

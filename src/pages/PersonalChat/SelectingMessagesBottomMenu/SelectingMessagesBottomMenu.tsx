@@ -87,7 +87,7 @@ const SelectingMessagesBottomMenu = ({
       >
         <SvgIcon name="trash" fill={theme.colors.blue} width={20} height={20} />
       </TouchableOpacity>
-      <Text typography="EuclidCircularA-Medium" style={styles.selectedText}>
+      <Text fontFamily="EuclidCircularA-Medium" style={styles.selectedText}>
         {t('general.selected', { count: selectedMessages.length })}
       </Text>
       <TouchableOpacity

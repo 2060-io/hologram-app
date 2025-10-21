@@ -118,7 +118,7 @@ const ImageChatView = (props: ImageProps) => {
             {isDownloading ? (
               <React.Fragment>
                 <ActivityIndicator color={theme.colors.green} size="large" />
-                <Text typography="EuclidCircularA-Medium" style={styles.spinnerText}>
+                <Text fontFamily="EuclidCircularA-Medium" style={styles.spinnerText}>
                   {t('personalChat.downloadingImage')}
                 </Text>
               </React.Fragment>
@@ -126,7 +126,7 @@ const ImageChatView = (props: ImageProps) => {
               <TouchableOpacity style={styles.btnDownload} onPress={downloadMedia}>
                 <Icon as="Ionicons" name="arrow-down-circle" size={30} color={theme.colors.primaryText} />
                 {byteCount && (
-                  <Text typography="EuclidCircularA-Medium" style={styles.textsize}>
+                  <Text fontFamily="EuclidCircularA-Medium" style={styles.textsize}>
                     {getFileSize(byteCount)}
                   </Text>
                 )}

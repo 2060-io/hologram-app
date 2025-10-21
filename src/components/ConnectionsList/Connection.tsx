@@ -44,7 +44,7 @@ const Connection = ({
         bgAvatarInitials={theme.colors.secondary}
         enableImageRefresh={false}
       />
-      <Text typography="EuclidCircularA-Medium" style={styles.listItemText}>
+      <Text fontFamily="EuclidCircularA-Medium" style={styles.listItemText}>
         {connection.name}{' '}
         {!!connection.subConnections.length && !isSearchingMode && (
           <Text style={styles.numberSubConnect}>{`(+${connection.subConnections.length})`}</Text>
@@ -54,7 +54,7 @@ const Connection = ({
         <TouchableOpacity onPress={onPressRightSide} style={styles.rightSideContainer}>
           {!!connection.subConnectionsThatMatchWithSearch && (
             <View style={styles.connectionsMatchedContainer}>
-              <Text typography="EuclidCircularA-Medium" style={styles.connectionsMatchedText}>
+              <Text fontFamily="EuclidCircularA-Medium" style={styles.connectionsMatchedText}>
                 {connection.subConnectionsThatMatchWithSearch}
               </Text>
             </View>

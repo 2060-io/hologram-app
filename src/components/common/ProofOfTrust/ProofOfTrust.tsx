@@ -23,7 +23,7 @@ const ProofOfTrust = ({ serviceInfo }: Props) => {
 
   return (
     <View style={styles.container}>
-      <Text typography="EuclidCircularA-Bold" style={styles.title}>
+      <Text fontFamily="EuclidCircularA-Bold" style={styles.title}>
         {t('connection.proofOfTrust')}
       </Text>
       {serviceProvider ? (

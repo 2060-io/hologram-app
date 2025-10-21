@@ -60,7 +60,7 @@ const RelatedConnections: React.FC<Props> = ({ navigation, route }) => {
           <Image source={{ uri: haveParentDisplayImage }} style={styles.avatarHeader} />
         </View>
       )}
-      <Text style={styles.titleHeader} typography="EuclidCircularA-Medium" numberOfLines={1}>
+      <Text style={styles.titleHeader} fontFamily="EuclidCircularA-Medium" numberOfLines={1}>
         {parentConnectionName}
       </Text>
     </View>
@@ -107,7 +107,7 @@ const RelatedConnections: React.FC<Props> = ({ navigation, route }) => {
             onPress={() => handleSelectedSubConnection(item.key)}
           >
             <Avatar uri={(item as SubConnectionData).avatar} label={item.value} size="8.41%" />
-            <Text typography="EuclidCircularA-SemiBold" style={styles.listItemText}>
+            <Text fontFamily="EuclidCircularA-SemiBold" style={styles.listItemText}>
               {item.value}
             </Text>
           </TouchableOpacity>
@@ -120,7 +120,7 @@ const RelatedConnections: React.FC<Props> = ({ navigation, route }) => {
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={() => (
           <View style={styles.containerEmptyList}>
-            <Text typography="EuclidCircularA-SemiBold" style={styles.textEmpty}>
+            <Text fontFamily="EuclidCircularA-SemiBold" style={styles.textEmpty}>
               {t('connection.noConnectionsFound')}
             </Text>
           </View>

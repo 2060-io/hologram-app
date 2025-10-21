@@ -76,7 +76,7 @@ const BaseConnectionDetails = ({
       headerLeft: () => null,
       headerRight: () => (
         <TouchableOpacity style={styles.headerRight} onPress={() => navigation.goBack()}>
-          <Text style={styles.headerBtnText} typography="EuclidCircularA-Medium">
+          <Text style={styles.headerBtnText} fontFamily="EuclidCircularA-Medium">
             {t('general.done')}
           </Text>
         </TouchableOpacity>

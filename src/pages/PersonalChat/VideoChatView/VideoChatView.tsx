@@ -89,7 +89,7 @@ const VideoChatView = memo((props: MediaProps) => {
   const renderVideoDuration = () => (
     <View style={styles.containerDuration}>
       <SvgIcon name="video" fill={theme.colors.primary} />
-      <Text typography="EuclidCircularA-Medium" style={styles.textDuraction}>
+      <Text fontFamily="EuclidCircularA-Medium" style={styles.textDuraction}>
         {textDuration}
       </Text>
     </View>
@@ -108,7 +108,7 @@ const VideoChatView = memo((props: MediaProps) => {
           {isDownloading ? (
             <>
               <ActivityIndicator color={theme.colors.green} size="large" />
-              <Text typography="EuclidCircularA-Medium" style={styles.spinnerText}>
+              <Text fontFamily="EuclidCircularA-Medium" style={styles.spinnerText}>
                 {t('personalChat.downloadingVideo')}
               </Text>
             </>
@@ -116,7 +116,7 @@ const VideoChatView = memo((props: MediaProps) => {
             <TouchableOpacity style={styles.btnDownload} onPress={downloadMedia}>
               <SvgIcon name="download" fill={theme.colors.primary} />
               {byteCount && (
-                <Text typography="EuclidCircularA-Medium" style={styles.textsize}>
+                <Text fontFamily="EuclidCircularA-Medium" style={styles.textsize}>
                   {getFileSize(byteCount)}
                 </Text>
               )}

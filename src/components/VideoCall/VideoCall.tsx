@@ -26,7 +26,7 @@ const VideoCall = () => {
     return (
       <>
         <Avatar uri={displayPicture} label={connectionName} size="46%" />
-        <Text typography="EuclidCircularA-Medium" style={styles.textConnectionName}>
+        <Text fontFamily="EuclidCircularA-Medium" style={styles.textConnectionName}>
           {connectionName}
         </Text>
       </>

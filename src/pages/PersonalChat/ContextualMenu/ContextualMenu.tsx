@@ -19,7 +19,7 @@ const ContextualMenu = ({ onSelectOption, connectionIconUrl, menu }: ContextualM
         )}
         <View style={styles.containerActionHeader}>
           {menu.title && (
-            <Text typography="EuclidCircularA-Medium" style={styles.actionTitle}>
+            <Text fontFamily="EuclidCircularA-Medium" style={styles.actionTitle}>
               {menu.title}
             </Text>
           )}

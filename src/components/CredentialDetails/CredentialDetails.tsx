@@ -40,7 +40,7 @@ const ImageSection = ({ image, onPressDetailImage, styles }: ImageSectionProps) 
 const DetailSection = ({ isFirst, styles, rowDetail, onPressDetailImage }: DetailSectionProps) => (
   <View style={styles.sectionContainer}>
     <View style={styles.container}>
-      <Text style={[styles.sectionKey, isFirst && styles.firstSection]} typography="EuclidCircularA-Medium">
+      <Text style={[styles.sectionKey, isFirst && styles.firstSection]} fontFamily="EuclidCircularA-Medium">
         {rowDetail.key}
       </Text>
       <Text style={styles.sectionValue}>{'value' in rowDetail && rowDetail.value}</Text>
@@ -82,7 +82,7 @@ const CredentialDetails = ({ credentialDetails }: Props) => {
       />
       {detailsSections.map((section, index) => (
         <View key={index}>
-          <Text style={styles.title} typography="EuclidCircularA-SemiBold">
+          <Text style={styles.title} fontFamily="EuclidCircularA-SemiBold">
             {section.title ?? t('credentialOffer.claims')}
           </Text>
           <View style={styles.sectionRowsContainer}>

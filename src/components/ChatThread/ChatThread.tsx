@@ -48,7 +48,7 @@ const ChatThread = ({
         enableImageRefresh={false}
       />
       <View style={styles.contentText}>
-        <Text typography="EuclidCircularA-Medium" style={styles.nameUser} numberOfLines={1}>
+        <Text fontFamily="EuclidCircularA-Medium" style={styles.nameUser} numberOfLines={1}>
           {topic}
         </Text>
         {hasChildren ? (
@@ -58,7 +58,7 @@ const ChatThread = ({
             {preview}
           </Text>
         ) : (
-          <Text typography="EuclidCircularA-Medium" style={styles.textPreview}>
+          <Text fontFamily="EuclidCircularA-Medium" style={styles.textPreview}>
             {t('personalChat.connectionDeleted')}
           </Text>
         )}
@@ -78,7 +78,7 @@ const ChatThread = ({
           )}
           {unreadCount > 0 && (
             <View style={styles.unread}>
-              <Text typography="EuclidCircularA-Medium" style={styles.textNumber}>
+              <Text fontFamily="EuclidCircularA-Medium" style={styles.textNumber}>
                 {unreadCount}
               </Text>
             </View>

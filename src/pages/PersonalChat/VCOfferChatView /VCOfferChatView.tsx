@@ -143,7 +143,7 @@ const VCOfferChatView = ({
     ),
     [CredentialState.RequestSent]: (
       <View style={[styles.baseFooterContainer, styles.acceptingContainer]}>
-        <Text typography="EuclidCircularA-Bold" style={styles.acceptingText}>
+        <Text fontFamily="EuclidCircularA-Bold" style={styles.acceptingText}>
           {t('personalChat.accepting')}
         </Text>
       </View>

@@ -28,7 +28,7 @@ const SignUpMain = ({ navigation }: Props) => {
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.contentContainerStyle}>
         <View style={styles.innerRoot}>
           <AppLogo style={styles.containerAppLogo} />
-          <Text typography="EuclidCircularA-Bold" style={styles.title}>
+          <Text fontFamily="EuclidCircularA-Bold" style={styles.title}>
             {t('signUp.welcomeTitle')}
           </Text>
           <Text style={styles.subTitle}>{t('signUp.welcomeSubTitle')}</Text>

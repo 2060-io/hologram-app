@@ -37,7 +37,7 @@ const Building = ({ uploadProgress, startBackupProcess, abortRetryBackup }: Prop
               </View>
               <Text style={styles.errorTitle}>{t('settings.buildBackupError')}</Text>
             </View>
-            <Text typography="EuclidCircularA-Medium" style={styles.mediumText}>
+            <Text fontFamily="EuclidCircularA-Medium" style={styles.mediumText}>
               {uploadProgress.error}
             </Text>
           </View>

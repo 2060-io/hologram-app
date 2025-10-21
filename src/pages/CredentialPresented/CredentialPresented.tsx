@@ -38,7 +38,7 @@ const CredentialPresented = ({ navigation, route }: Props) => {
     navigation.setOptions({
       headerRight: () => (
         <TouchableOpacity style={styles.headerRight} onPress={goToChatScreen}>
-          <Text typography="EuclidCircularA-Medium" style={styles.headerRightText}>
+          <Text fontFamily="EuclidCircularA-Medium" style={styles.headerRightText}>
             {t('general.done')}
           </Text>
         </TouchableOpacity>
@@ -53,7 +53,7 @@ const CredentialPresented = ({ navigation, route }: Props) => {
           <SvgIcon fill={theme.colors.green} name="done" width={64} height={64} />
           <Text style={[styles.title, styles.mainTitle]}>
             {t('presentationRequest.successfullyReceived')}
-            <Text style={styles.title} typography="EuclidCircularA-SemiBold">
+            <Text style={styles.title} fontFamily="EuclidCircularA-SemiBold">
               {verifier?.name}
             </Text>
           </Text>
@@ -64,7 +64,7 @@ const CredentialPresented = ({ navigation, route }: Props) => {
             <View style={styles.presentedDateContainer}>
               <SvgIcon fill={theme.isDarkMode ? theme.colors.secondaryGrey : '#6A8994'} name="personSquare" />
               <View style={styles.presentedDateText}>
-                <Text typography="EuclidCircularA-Bold" style={styles.presentedText}>
+                <Text fontFamily="EuclidCircularA-Bold" style={styles.presentedText}>
                   {t('presentationRequest.presented')}
                 </Text>
                 <Text style={styles.presentedText}>{presentedAt}</Text>
@@ -72,7 +72,7 @@ const CredentialPresented = ({ navigation, route }: Props) => {
             </View>
             <View style={styles.issuerContainer}>
               <Avatar uri={verifier?.logoUrl} label={verifier?.name} size="13%" />
-              <Text typography="EuclidCircularA-Medium" style={styles.verifierName}>
+              <Text fontFamily="EuclidCircularA-Medium" style={styles.verifierName}>
                 {verifier?.name}
               </Text>
             </View>

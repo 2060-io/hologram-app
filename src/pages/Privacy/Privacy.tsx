@@ -120,18 +120,18 @@ const Privacy = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text typography="EuclidCircularA-SemiBold" style={styles.title}>
+      <Text fontFamily="EuclidCircularA-SemiBold" style={styles.title}>
         {t('settings.appSecurity')}
       </Text>
       <Text style={styles.subTitle}>{t('settings.useOSAuthToProtectApp')}</Text>
       <OptionsList options={options} />
-      <Text typography="EuclidCircularA-SemiBold" style={[styles.title, styles.automaticMediaDownloadTitle]}>
+      <Text fontFamily="EuclidCircularA-SemiBold" style={[styles.title, styles.automaticMediaDownloadTitle]}>
         {t('settings.automaticMediaDownload')}
       </Text>
       <OptionsList options={automaticDownloadOptions} />
       <ModalBottomHalf visible={showLockTimeoutOptions} onClose={changeLockTimeoutOptionsVisibility}>
         <View style={styles.optionsContainer}>
-          <Text typography="EuclidCircularA-SemiBold" style={[styles.title, styles.timeoutOptionsTitle]}>
+          <Text fontFamily="EuclidCircularA-SemiBold" style={[styles.title, styles.timeoutOptionsTitle]}>
             {t('settings.screenLockTimeout')}
           </Text>
           {timeoutOptions.map(option => {
@@ -153,7 +153,7 @@ const Privacy = () => {
         onClose={changeAutomaticDownloadOptionsVisibility}
       >
         <View style={styles.optionsContainer}>
-          <Text typography="EuclidCircularA-SemiBold" style={[styles.title, styles.timeoutOptionsTitle]}>
+          <Text fontFamily="EuclidCircularA-SemiBold" style={[styles.title, styles.timeoutOptionsTitle]}>
             {currentAutomaticOptionForModal.current?.key &&
               automaticDownloadTypeTexts[currentAutomaticOptionForModal.current.key]}
           </Text>

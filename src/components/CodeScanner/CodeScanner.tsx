@@ -96,7 +96,7 @@ const CodeScanner: React.FC<Props> = ({ isActive, onBarcodeScanned }) => {
         />
       ) : (
         <View style={styles.containerLoadingCamera}>
-          <Text typography="EuclidCircularA-Medium" style={styles.loadingCameraText}>
+          <Text fontFamily="EuclidCircularA-Medium" style={styles.loadingCameraText}>
             {t('scan.loadingCamera')}
           </Text>
         </View>

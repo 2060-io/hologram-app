@@ -116,13 +116,13 @@ const MRZCamera = ({ skipScan, cameraProps, onData, scanSuccess, refuse }: MRZCa
       <View style={{ ...styles.topOverlayContainer, height: containerHeight * 0.28 }}>
         <View style={styles.headerContainer}>
           <TouchableOpacity style={styles.headerLeft} onPress={skipScan}>
-            <Text typography="EuclidCircularA-Medium" style={styles.headerBtnText}>
+            <Text fontFamily="EuclidCircularA-Medium" style={styles.headerBtnText}>
               {t('general.cancel')}
             </Text>
           </TouchableOpacity>
           <HeaderTitle title={t('chat.mrzRequest')} theme={theme} />
         </View>
-        <Text typography="EuclidCircularA-Bold" style={styles.title}>
+        <Text fontFamily="EuclidCircularA-Bold" style={styles.title}>
           {t('chat.mrzScanTitle')}
         </Text>
         <Text style={styles.instructions}>{t('chat.mrzScanInst')}</Text>
@@ -130,7 +130,7 @@ const MRZCamera = ({ skipScan, cameraProps, onData, scanSuccess, refuse }: MRZCa
       <View style={{ ...styles.bottomOverlayContainer, height: containerHeight * 0.48 }}>
         <SvgIcon name="MRZ" height={widthPercentageToDP('43')} width={widthPercentageToDP('72')} />
         <TouchableOpacity onPress={refuse}>
-          <Text typography="EuclidCircularA-Medium" style={styles.refuse}>
+          <Text fontFamily="EuclidCircularA-Medium" style={styles.refuse}>
             {t('general.refuse')}
           </Text>
         </TouchableOpacity>

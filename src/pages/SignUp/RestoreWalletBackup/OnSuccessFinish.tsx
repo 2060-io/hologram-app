@@ -20,7 +20,7 @@ const OnSuccessFinish = ({ goToHomeScreen }: Props) => {
 
   return (
     <>
-      <Text style={styles.title} typography="EuclidCircularA-Medium">
+      <Text style={styles.title} fontFamily="EuclidCircularA-Medium">
         {t('signUp.restoringWalletFromBackup')}
       </Text>
       <View style={styles.card}>

@@ -119,7 +119,7 @@ const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => 
       headerLeft: canConnect
         ? () => (
             <TouchableOpacity style={styles.btnRefuse} onPress={onRefuse}>
-              <Text typography="EuclidCircularA-Medium" style={styles.headerBtnText}>
+              <Text fontFamily="EuclidCircularA-Medium" style={styles.headerBtnText}>
                 {t('general.refuse')}
               </Text>
             </TouchableOpacity>
@@ -127,7 +127,7 @@ const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => 
         : () => <></>,
       headerRight: () => (
         <TouchableOpacity style={styles.btnAccept} onPress={onPressRightButton}>
-          <Text typography="EuclidCircularA-Medium" style={styles.headerBtnText}>
+          <Text fontFamily="EuclidCircularA-Medium" style={styles.headerBtnText}>
             {canConnect ? t('general.accept') : t('general.done')}
           </Text>
         </TouchableOpacity>
@@ -160,7 +160,7 @@ const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => 
             <View>
               <View style={styles.card}>
                 <Avatar uri={invitation?.imageUrl} label={invitation?.label} size="25%" withBorder={true} />
-                <Text typography="EuclidCircularA-Medium" style={styles.invitationLabel}>
+                <Text fontFamily="EuclidCircularA-Medium" style={styles.invitationLabel}>
                   {invitation?.label}
                 </Text>
                 {invitationType === 'peer' && (
@@ -171,11 +171,11 @@ const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => 
                 {invitationType === 'subInvitation' && (
                   <Text style={styles.content}>
                     {t('invitation.subConnectionInvitationDescription')}{' '}
-                    <Text typography="EuclidCircularA-Bold" style={styles.fontFamilyBold}>
+                    <Text fontFamily="EuclidCircularA-Bold" style={styles.fontFamilyBold}>
                       {`${invitation?.label} `}{' '}
                     </Text>
                     {t('invitation.subConnectionInvitationDescriptionAs')}{' '}
-                    <Text typography="EuclidCircularA-Bold" style={styles.fontFamilyBold}>
+                    <Text fontFamily="EuclidCircularA-Bold" style={styles.fontFamilyBold}>
                       {parentConnectionName}
                     </Text>
                   </Text>

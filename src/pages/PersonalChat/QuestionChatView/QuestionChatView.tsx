@@ -43,7 +43,7 @@ const QuestionChatView = ({ question, associatedRecordId }: QuestionChatViewProp
               onPress={() => onSelectedOption(option.value)}
             >
               <Text
-                typography="EuclidCircularA-SemiBold"
+                fontFamily="EuclidCircularA-SemiBold"
                 style={[
                   styles.optionText,
                   {

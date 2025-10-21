@@ -32,11 +32,11 @@ const EMrtdInstructions = ({ scan, dismissPopup, refuse }: Props) => {
             <TouchableOpacity onPress={dismissPopup}>
               <SvgIcon name="close" width={24} height={24} fill={theme.colors.secondaryGrey} />
             </TouchableOpacity>
-            <Text typography="EuclidCircularA-Bold" style={styles.title}>
+            <Text fontFamily="EuclidCircularA-Bold" style={styles.title}>
               {t('chat.eMRTDRequest')}
             </Text>
           </View>
-          <Text typography="EuclidCircularA-Bold" style={styles.note}>
+          <Text fontFamily="EuclidCircularA-Bold" style={styles.note}>
             {t('importantNote')}
           </Text>
           <Trans
@@ -53,7 +53,7 @@ const EMrtdInstructions = ({ scan, dismissPopup, refuse }: Props) => {
         </View>
         <MainButton text={t('getStarted')} onPress={scan} />
         <TouchableOpacity onPress={refuseAndDismissPopup}>
-          <Text typography="EuclidCircularA-Medium" style={styles.refuseText}>
+          <Text fontFamily="EuclidCircularA-Medium" style={styles.refuseText}>
             {t('general.refuse')}
           </Text>
         </TouchableOpacity>

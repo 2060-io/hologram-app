@@ -140,7 +140,7 @@ const SetPIN = ({ visible, onRequestClose, mode, oniOSDismiss }: Props) => {
     <Modal visible={visible} transparent onDismiss={oniOSDismiss}>
       <SafeAreaView style={styles.modalContainer}>
         <View style={styles.contentContainer}>
-          <Text typography="EuclidCircularA-SemiBold" style={styles.title}>
+          <Text fontFamily="EuclidCircularA-SemiBold" style={styles.title}>
             {getTitle(currentFlowState)}
           </Text>
           <View style={styles.pinContainer}>
@@ -162,7 +162,7 @@ const SetPIN = ({ visible, onRequestClose, mode, oniOSDismiss }: Props) => {
           />
           <Text style={styles.footerText}>{getFooter(currentFlowState)}</Text>
           <TouchableOpacity onPress={cancel} style={styles.cancelButton}>
-            <Text typography="EuclidCircularA-Medium" style={styles.cancelText}>
+            <Text fontFamily="EuclidCircularA-Medium" style={styles.cancelText}>
               {t('general.cancel')}
             </Text>
           </TouchableOpacity>

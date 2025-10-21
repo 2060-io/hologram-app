@@ -17,7 +17,7 @@ const ConnectionRefusedByAge = ({ style, kidAge, userName }: Props) => {
       style={style}
       parent={Text}
       components={{
-        bold: <Text typography="EuclidCircularA-Bold" style={style} />,
+        bold: <Text fontFamily="EuclidCircularA-Bold" style={style} />,
       }}
       values={{ age: kidAge, name: userName }}
     />

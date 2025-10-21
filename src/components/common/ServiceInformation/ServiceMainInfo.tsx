@@ -65,13 +65,13 @@ const ServiceMainInfo = ({ serviceInfo, containerStyle }: Props) => {
         size="25%"
         onImagePressed={onAvatarImagePressed}
       />
-      <Text typography="EuclidCircularA-Medium" style={styles.issuerName}>
+      <Text fontFamily="EuclidCircularA-Medium" style={styles.issuerName}>
         {serviceInfo.name}
       </Text>
       {serviceInfo.description && <Text style={[styles.text]}>{serviceInfo.description}</Text>}
       <VerifiedIcon style={styles.containerIconValidity} status={serviceInfo.status} />
       <Text style={styles.text}>
-        <Text typography="EuclidCircularA-Bold" style={styles.text}>
+        <Text fontFamily="EuclidCircularA-Bold" style={styles.text}>
           {trimText(serviceInfo.did ?? '')}
         </Text>{' '}
         {serviceIs[serviceInfo.status]}

@@ -32,7 +32,7 @@ const RenderProof = ({ serviceInfo }: RenderProofProps) => {
   const trustRegistry = certificationEntity?.trustRegistry
 
   const Separator = () => (
-    <Text typography="EuclidCircularA-Bold" style={styles.separator}>
+    <Text fontFamily="EuclidCircularA-Bold" style={styles.separator}>
       |
     </Text>
   )

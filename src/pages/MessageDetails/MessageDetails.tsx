@@ -60,7 +60,7 @@ const MessageDetails = ({ route }: Props) => {
           </Text>
         )}
       </View>
-      <Text typography="EuclidCircularA-Medium" style={styles.sentByText}>
+      <Text fontFamily="EuclidCircularA-Medium" style={styles.sentByText}>
         {t('personalChat.sentBy')}
       </Text>
       <View style={styles.senderContainer}>
@@ -70,7 +70,7 @@ const MessageDetails = ({ route }: Props) => {
           size="8.41%"
           bgAvatarInitials={theme.colors.secondary}
         />
-        <Text typography="EuclidCircularA-Medium" style={styles.senderText}>
+        <Text fontFamily="EuclidCircularA-Medium" style={styles.senderText}>
           {userSender?.name}
         </Text>
       </View>
