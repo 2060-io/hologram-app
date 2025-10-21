@@ -56,7 +56,7 @@ const SelectCredentialAttributes = ({ visible, attributesSections, onRequestClos
     <Modal visible={visible} statusBarTranslucent={false} onRequestClose={beforeClose} animationType="slide">
       <SafeAreaView style={styles.container}>
         <TouchableOpacity activeOpacity={1} style={styles.cancelContainer} onPress={beforeClose}>
-          <Text style={styles.cancelText} typography="EuclidCircularA-Medium">
+          <Text style={styles.cancelText} fontFamily="EuclidCircularA-Medium">
             {t('general.cancel')}
           </Text>
           <SvgIcon name="close" width={28} height={28} fill={theme.colors.primaryText} />
@@ -72,7 +72,7 @@ const SelectCredentialAttributes = ({ visible, attributesSections, onRequestClos
               renderItem={({ item: section, index }) => {
                 return (
                   <View key={`${section.title}-${index}`}>
-                    <Text style={styles.attributesSectionTitle} typography="EuclidCircularA-SemiBold">
+                    <Text style={styles.attributesSectionTitle} fontFamily="EuclidCircularA-SemiBold">
                       {section.title ?? t('credentialOffer.claims')}
                     </Text>
                     <FlatList
@@ -100,7 +100,10 @@ const SelectCredentialAttributes = ({ visible, attributesSections, onRequestClos
               disabled={!attributesToPresent.length}
               text={t('credential.present')}
               onPress={() => onPresent(attributesToPresent)}
-              style={{ ...styles.presentButton, opacity: attributesToPresent.length ? 1 : 0.5 }}
+              style={[
+                styles.presentButton,
+                attributesToPresent.length ? styles.presentEnabled : styles.presentDisabled,
+              ]}
             />
           </View>
         </ScrollView>

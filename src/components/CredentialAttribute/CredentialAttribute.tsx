@@ -40,12 +40,10 @@ const CredentialAttribute = ({ attribute, onPressDetailImage, onPress, style }: 
   return (
     <Wrapper style={[styles.sectionContainer, style]} onPress={() => onPress?.(attribute.key)}>
       <View style={styles.container}>
-        <Text style={styles.sectionKey} typography="EuclidCircularA-Medium">
+        <Text style={styles.sectionKey} fontFamily="EuclidCircularA-Medium">
           {sanitizeString(attribute.key)}
         </Text>
-        <Text style={styles.sectionValue} typography="EuclidCircularA-Regular">
-          {'value' in attribute && attribute.value}
-        </Text>
+        <Text style={styles.sectionValue}>{'value' in attribute && attribute.value}</Text>
       </View>
       {'image' in attribute && (
         <ImageAttribute
