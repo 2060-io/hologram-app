@@ -20,7 +20,7 @@ const MediaResult = ({ visible, renderCloseButton, renderSendButton, mediaCaptur
   const styles = getStyles(theme)
 
   return (
-    <View style={{ ...styles.container, display: visible ? 'flex' : 'none' }}>
+    <View style={[styles.container, visible ? styles.display : styles.hide]}>
       {renderCloseButton()}
       {mediaCaptured ? (
         mediaCaptured.type === 'image' ? (

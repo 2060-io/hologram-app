@@ -28,7 +28,7 @@ const CameraButton = memo(() => {
   }
 
   return (
-    <TouchableOpacity style={{ ...styles.button, marginRight: 4 }} onPress={goToCamera}>
+    <TouchableOpacity style={[styles.button, styles.cameraButton]} onPress={goToCamera}>
       <SvgIcon name="camera" fill={theme.colors.primaryText} />
     </TouchableOpacity>
   )

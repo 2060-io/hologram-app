@@ -10,8 +10,11 @@ export default (theme: AppTheme) =>
       zIndex: 2,
       backgroundColor: theme.isDarkMode ? theme.colors.secondary : theme.colors.primary,
     },
-    contentContainer: {
-      flex: 1,
+    display: {
+      display: 'flex',
+    },
+    hide: {
+      display: 'none',
     },
     takenPhotoContainer: {
       ...StyleSheet.absoluteFillObject,

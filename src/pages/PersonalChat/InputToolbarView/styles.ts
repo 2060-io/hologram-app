@@ -84,6 +84,9 @@ export default (theme: AppTheme, isRecording?: boolean) =>
       justifyContent: 'center',
       alignItems: 'center',
     },
+    cameraButton: {
+      marginRight: 4,
+    },
     microphoneIconContainerWhileRecording: {
       backgroundColor: theme.colors.green,
       width: MICROPHONE_ICON_CONTAINER_WHILE_RECORDING,

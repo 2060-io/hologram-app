@@ -107,7 +107,7 @@ const Camera = ({ isActive, onMedia, closeCamera, isVideoMode = true }: Props) =
     return (
       <View style={styles.recordingTimeContainer}>
         <View style={styles.recordingTime}>
-          <Text typography="EuclidCircularA-SemiBold" style={styles.recordingTimeText}>
+          <Text fontFamily="EuclidCircularA-SemiBold" style={styles.recordingTimeText}>
             {`${recordingProgress} / 01:00`}
           </Text>
         </View>

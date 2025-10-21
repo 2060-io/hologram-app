@@ -62,8 +62,10 @@ const UserProfileForm: React.FC<Props> = props => {
 
   return (
     <View>
-      <Modal isVisible={isCameraOpen} statusBarTranslucent style={{ margin: 0 }}>
-        <SafeAreaView style={{ flex: 1, backgroundColor: globalStyles.headerStyle.backgroundColor }}>
+      <Modal isVisible={isCameraOpen} statusBarTranslucent style={styles.modalCamera}>
+        <SafeAreaView
+          style={[styles.container, { backgroundColor: globalStyles.headerStyle.backgroundColor }]}
+        >
           <GestureHandlerRootView style={styles.container}>
             <Camera isActive onMedia={onPhoto} closeCamera={closeCamera} isVideoMode={false} />
           </GestureHandlerRootView>
@@ -86,7 +88,7 @@ const UserProfileForm: React.FC<Props> = props => {
         <TouchableOpacity onPress={handleOpenCamera} style={styles.containerOptionIcon} activeOpacity={0.7}>
           <SvgIcon name="camera" width={30} height={30} fill={theme.colors.primaryText} />
         </TouchableOpacity>
-        <Text typography="EuclidCircularA-Medium" style={styles.optionText}>
+        <Text fontFamily="EuclidCircularA-Medium" style={styles.optionText}>
           {t('signUp.camera')}
         </Text>
       </View>

@@ -9,6 +9,9 @@ const styles = (theme: AppTheme) =>
     container: {
       flex: 1,
     },
+    modalCamera: {
+      margin: 0,
+    },
     containerRootAvatar: {
       alignItems: 'center',
       justifyContent: 'center',
