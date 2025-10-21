@@ -1,6 +1,10 @@
 import { TextProps as NativeTextProps } from 'react-native'
 
 export interface TextProps extends NativeTextProps {
+  /**
+   * The font family to use.
+   * @default 'EuclidCircularA-Regular'
+   */
   fontFamily?:
     | 'EuclidCircularA-Bold'
     | 'EuclidCircularA-BoldItalic'

@@ -3,9 +3,9 @@ import { Text as NativeText } from 'react-native'
 
 import { TextProps } from './TextProps'
 
-const Text = ({ style, fontFamily, children, ...props }: TextProps) => {
+const Text = ({ style, fontFamily = 'EuclidCircularA-Regular', children, ...props }: TextProps) => {
   return (
-    <NativeText style={[style, { fontFamily: fontFamily ?? 'EuclidCircularA-Regular' }]} {...props}>
+    <NativeText style={[style, { fontFamily }]} {...props}>
       {children}
     </NativeText>
   )
