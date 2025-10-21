@@ -16,9 +16,7 @@ const BaseSystemMessageView = ({ text = '', onPress = () => {} }: Props) => {
   const styles = getStyles(theme)
   return (
     <TouchableOpacity style={styles.containerMessage} activeOpacity={0.7} onPress={onPress}>
-      <Text typography="EuclidCircularA-Regular" style={styles.textMessage}>
-        {text}
-      </Text>
+      <Text style={styles.textMessage}>{text}</Text>
     </TouchableOpacity>
   )
 }

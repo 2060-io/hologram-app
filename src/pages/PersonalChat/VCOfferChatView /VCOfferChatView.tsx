@@ -143,7 +143,7 @@ const VCOfferChatView = ({
     ),
     [CredentialState.RequestSent]: (
       <View style={[styles.baseFooterContainer, styles.acceptingContainer]}>
-        <Text typography="EuclidCircularA-Bold" style={styles.acceptingText}>
+        <Text fontFamily="EuclidCircularA-Bold" style={styles.acceptingText}>
           {t('personalChat.accepting')}
         </Text>
       </View>
@@ -166,7 +166,7 @@ const VCOfferChatView = ({
       />
       <Header theme={theme} title={t('credentialOffer.title')} leftIconName="id" />
       <View style={styles.subContainer}>
-        <Text style={styles.title} typography="EuclidCircularA-Regular">
+        <Text style={styles.title}>
           {t('personalChat.offeringCredential', { sender: metadata.issuerName ?? sender?.name })}
         </Text>
         <CardCredentialMainInformation

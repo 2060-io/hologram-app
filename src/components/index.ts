@@ -13,6 +13,7 @@ import ModalConfirmAction from './ModalConfirmAction'
 import SearchInput from './SearchInput'
 import UserProfileForm from './UserProfileForm'
 import VideoCall from './VideoCall'
+import VideoPlayer from './VideoPlayer'
 import WalletBackupInfo from './WalletBackupInfo'
 
 export {
@@ -32,4 +33,5 @@ export {
   CommunicationChannels,
   VideoCall,
   IncomingCall,
+  VideoPlayer,
 }
