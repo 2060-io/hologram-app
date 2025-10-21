@@ -46,7 +46,7 @@ const ConnectionsForNewChat = ({ navigation }: Props) => {
         titleForSubConnections: t('chat.newMessage'),
         defaultBackButton: (
           <TouchableOpacity style={styles.headerLeft} onPress={() => navigation.goBack()}>
-            <Text typography="EuclidCircularA-Medium" style={styles.headerBtnText}>
+            <Text fontFamily="EuclidCircularA-Medium" style={styles.headerBtnText}>
               {t('general.cancel')}
             </Text>
           </TouchableOpacity>

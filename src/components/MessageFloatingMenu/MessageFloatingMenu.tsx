@@ -100,7 +100,7 @@ const MessageFloatingMenu = ({
   return (
     <TouchableOpacity
       onPress={closeMessageFloatingMenu}
-      style={[styles.container, { display: showMessageFloatingMenu ? 'flex' : 'none' }]}
+      style={[styles.container, showMessageFloatingMenu ? styles.display : styles.hide]}
       activeOpacity={1}
     >
       {showMessageFloatingMenu && selectedMessage && supportsMessageReactions && !messageIsDeleted && (

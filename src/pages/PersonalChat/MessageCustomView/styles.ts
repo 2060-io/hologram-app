@@ -87,7 +87,7 @@ export default (theme: AppTheme) =>
     },
     reactionEmoji: {
       fontSize: theme.fontSize.md,
-      color: 'black',
+      color: theme.colors.black,
     },
     reactionEmojiQuantity: {
       fontSize: theme.fontSize.md - 1,

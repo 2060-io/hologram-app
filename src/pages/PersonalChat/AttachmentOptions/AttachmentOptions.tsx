@@ -79,9 +79,7 @@ const AttachmentOptions: React.FC<Props> = ({
             onPress={() => onSelectedOption(option.id)}
           >
             <SvgIcon name={option.icon as keyof IconsNames} fill={theme.colors.primaryText} />
-            <Text typography="EuclidCircularA-Regular" style={styles.optionText}>
-              {t(`personalChat.${option.label}`)}
-            </Text>
+            <Text style={styles.optionText}>{t(`personalChat.${option.label}`)}</Text>
           </TouchableOpacity>
         </View>
       ))}
