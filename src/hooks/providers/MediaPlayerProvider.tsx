@@ -4,11 +4,10 @@ import React, { createContext, useContext, useState, useCallback, useRef, useEff
 import { useScreenLock } from './ScreenLockProvider'
 import { useVideoCallContext } from './useVideoCallContext'
 
-import { LightboxModal } from '@2060/components'
+import { LightboxModal, VideoPlayer } from '@2060/components'
 import { ChatEntryMessage } from '@2060/pages/PersonalChat/ChatMessage/Props'
 import LightboxHeader from '@2060/pages/PersonalChat/ImageChatView/LightboxHeader'
 import { MediaInfo } from '@2060/pages/PersonalChat/PersonalChatProps'
-import VideoPlayer from '@2060/pages/PersonalChat/VideoChatView/VideoPlayer'
 
 type Callback = () => Promise<void>
 

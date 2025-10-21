@@ -36,15 +36,13 @@ const CredentialDetails = ({ credentialDetails }: Props) => {
         closeFullScreenImage={closeFullScreenImage}
         imageUri={biggerImageRef.current!}
       />
-      <View style={styles.credentialCardContainer}>
-        <CardCredentialMainInformation
-          credentialMainInfo={credentialDetails.mainInfo}
-          containerStyle={{ marginBottom: 0 }}
-        />
-      </View>
+      <CardCredentialMainInformation
+        credentialMainInfo={credentialDetails.mainInfo}
+        containerStyle={styles.credentialMainInfoContainer}
+      />
       {attributesSections.map((section, index) => (
         <View key={index}>
-          <Text style={styles.title} typography="EuclidCircularA-SemiBold">
+          <Text style={styles.title} fontFamily="EuclidCircularA-SemiBold">
             {section.title ?? t('credentialOffer.claims')}
           </Text>
           <View style={styles.sectionRowsContainer}>

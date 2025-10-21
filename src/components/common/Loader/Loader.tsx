@@ -16,9 +16,7 @@ const Loader = ({ message }: LoaderProps) => {
   const styles = getStyles(theme)
   return (
     <View style={styles.container}>
-      <Text typography="EuclidCircularA-Regular" style={styles.textMessageLoader}>
-        {message}
-      </Text>
+      <Text style={styles.textMessageLoader}>{message}</Text>
       <ActivityIndicator size="large" color={theme.colors.green} />
     </View>
   )

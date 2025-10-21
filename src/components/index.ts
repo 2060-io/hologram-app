@@ -16,6 +16,7 @@ import SearchInput from './SearchInput'
 import SelectCredentialAttributes from './SelectCredentialAttributes'
 import UserProfileForm from './UserProfileForm'
 import VideoCall from './VideoCall'
+import VideoPlayer from './VideoPlayer'
 import WalletBackupInfo from './WalletBackupInfo'
 
 export {
@@ -35,6 +36,7 @@ export {
   CommunicationChannels,
   VideoCall,
   IncomingCall,
+  VideoPlayer,
   Credentials,
   CredentialAttribute,
   SelectCredentialAttributes,

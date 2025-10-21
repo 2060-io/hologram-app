@@ -6,6 +6,12 @@ import { heightPercentageToDP, widthPercentageToDP } from '@2060/utils/responsiv
 
 export default (theme: AppTheme) =>
   StyleSheet.create({
+    withTimeAndTicksContainer: {
+      marginBottom: theme.edges.messageMargin,
+    },
+    withoutTimeAndTicksContainer: {
+      marginBottom: 0,
+    },
     containerRootVideo: {
       minWidth: widthPercentageToDP('56%'),
       maxHeight: heightPercentageToDP('34.67%'),

@@ -40,7 +40,7 @@ const ChangeBackupPassword = ({ navigation }: Props) => {
       headerLeft: () =>
         currentStep === PasswordSteps.TypePass && (
           <TouchableOpacity style={styles.headerLeft} onPress={() => navigation.goBack()}>
-            <Text typography="EuclidCircularA-Medium" style={[styles.headerText]}>
+            <Text fontFamily="EuclidCircularA-Medium" style={[styles.headerText]}>
               {t('general.cancel')}
             </Text>
           </TouchableOpacity>
@@ -48,7 +48,7 @@ const ChangeBackupPassword = ({ navigation }: Props) => {
       headerRight: () =>
         password && (
           <TouchableOpacity style={styles.headerRight} onPress={continueToRetypePassword}>
-            <Text typography="EuclidCircularA-Medium" style={[styles.headerText]}>
+            <Text fontFamily="EuclidCircularA-Medium" style={[styles.headerText]}>
               {t('general.next')}
             </Text>
           </TouchableOpacity>
@@ -64,7 +64,7 @@ const ChangeBackupPassword = ({ navigation }: Props) => {
         headerRight: () =>
           retypedPassword && (
             <TouchableOpacity style={styles.headerRight} onPress={onRequestSavePassword}>
-              <Text typography="EuclidCircularA-Medium" style={[styles.headerText]}>
+              <Text fontFamily="EuclidCircularA-Medium" style={[styles.headerText]}>
                 {t('general.next')}
               </Text>
             </TouchableOpacity>
@@ -99,7 +99,7 @@ const ChangeBackupPassword = ({ navigation }: Props) => {
         <View style={styles.subContainer}>
           {currentStep === PasswordSteps.TypePass && (
             <View style={styles.passwordsContainer}>
-              <Text typography="EuclidCircularA-Medium" style={styles.title}>
+              <Text fontFamily="EuclidCircularA-Medium" style={styles.title}>
                 {t('settings.changePassword')}
               </Text>
               <TextInputPassword
@@ -112,7 +112,7 @@ const ChangeBackupPassword = ({ navigation }: Props) => {
           )}
           {currentStep === PasswordSteps.RetypePass && (
             <View style={styles.passwordsContainer}>
-              <Text typography="EuclidCircularA-Medium" style={[styles.title, styles.titleRetypePass]}>
+              <Text fontFamily="EuclidCircularA-Medium" style={[styles.title, styles.titleRetypePass]}>
                 {t('settings.reTypePassword')}
               </Text>
               <Text style={styles.suggestion}>{t('settings.savePassMessage')}</Text>
@@ -128,7 +128,7 @@ const ChangeBackupPassword = ({ navigation }: Props) => {
             <>
               <View style={styles.successUpdated}>
                 <VerifiedIcon style={styles.verifiedIconContainer} status={TrustResolutionOutcome.VERIFIED} />
-                <Text typography="EuclidCircularA-Medium" style={styles.title}>
+                <Text fontFamily="EuclidCircularA-Medium" style={styles.title}>
                   {t('settings.passwordSaved')}
                 </Text>
               </View>

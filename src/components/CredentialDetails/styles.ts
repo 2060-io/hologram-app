@@ -7,8 +7,8 @@ const styles = (theme: AppTheme) =>
     container: {
       flex: 1,
     },
-    credentialCardContainer: {
-      paddingHorizontal: 15,
+    credentialMainInfoContainer: {
+      marginBottom: 0,
     },
     title: {
       fontSize: theme.fontSize.lg,

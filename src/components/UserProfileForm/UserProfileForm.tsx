@@ -43,9 +43,7 @@ const UserProfileForm: React.FC<Props> = props => {
 
   return (
     <View>
-      <Text typography="EuclidCircularA-Regular" style={styles.textInputDescription}>
-        {t('signUp.textInputNicknameDescription')}
-      </Text>
+      <Text style={styles.textInputDescription}>{t('signUp.textInputNicknameDescription')}</Text>
       <View style={styles.containerRootAvatar}>
         {imgUrl.length > 0 && (
           <TouchableOpacity
@@ -67,7 +65,7 @@ const UserProfileForm: React.FC<Props> = props => {
           >
             <SvgIcon name="camera" width={30} height={30} fill={theme.colors.primaryText} />
           </TouchableOpacity>
-          <Text typography="EuclidCircularA-Medium" style={styles.optionText}>
+          <Text fontFamily="EuclidCircularA-Medium" style={styles.optionText}>
             {t('signUp.camera')}
           </Text>
         </View>
@@ -79,7 +77,7 @@ const UserProfileForm: React.FC<Props> = props => {
           >
             <SvgIcon name="image" width={30} height={30} fill={theme.colors.primaryText} />
           </TouchableOpacity>
-          <Text typography="EuclidCircularA-Medium" style={styles.optionText}>
+          <Text fontFamily="EuclidCircularA-Medium" style={styles.optionText}>
             {t('signUp.photo')}
           </Text>
         </View>
