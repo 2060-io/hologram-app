@@ -7,8 +7,8 @@ const styles = (theme: AppTheme) =>
     container: {
       flex: 1,
     },
-    credentialCardContainer: {
-      paddingHorizontal: 15,
+    credentialMainInfoContainer: {
+      marginBottom: 0,
     },
     title: {
       fontSize: theme.fontSize.lg,
@@ -22,6 +22,9 @@ const styles = (theme: AppTheme) =>
     sectionRowsContainer: {
       ...cardStyles(theme),
       ...cardShadowStyles(theme.colors),
+    },
+    firstSection: {
+      marginTop: 0,
     },
     sectionKey: {
       color: theme.colors.primaryText,

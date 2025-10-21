@@ -20,8 +20,9 @@ const Restore = ({
   onDownloading,
   onError,
   onSuccessFinish,
+  style,
 }: RestoreProps) => (
-  <View style={{ marginTop: 35, width: '100%' }}>
+  <View style={style}>
     {!restoreProgress.isDownloadingBackUp &&
       !restoreProgress.done &&
       !restoreProgress.error &&
@@ -64,14 +65,14 @@ const BaseRestoreWalletBackup = ({
     navigation.setOptions({
       headerLeft: () => (
         <TouchableOpacity style={styles.headerLeft} onPress={() => navigation.goBack()}>
-          <Text style={styles.headerLeftText} typography="EuclidCircularA-Medium">
+          <Text style={styles.headerLeftText} fontFamily="EuclidCircularA-Medium">
             {t('general.cancel')}
           </Text>
         </TouchableOpacity>
       ),
       headerTitle: '',
     })
-  })
+  }, [])
 
   return (
     <SafeAreaView style={styles.container}>
@@ -85,6 +86,7 @@ const BaseRestoreWalletBackup = ({
             <View style={styles.subContainer}>
               <AppLogo />
               <Restore
+                style={styles.restoreContainer}
                 restoreProgress={restoreProgress}
                 onInitialState={() => (
                   <View>
@@ -98,7 +100,7 @@ const BaseRestoreWalletBackup = ({
                       <>
                         <Text
                           style={[styles.title, styles.recoveryPassText]}
-                          typography="EuclidCircularA-Medium"
+                          fontFamily="EuclidCircularA-Medium"
                         >
                           {t('signUp.enterRecoveryPassword')}
                         </Text>
@@ -115,41 +117,35 @@ const BaseRestoreWalletBackup = ({
                 )}
                 onDownloading={() => (
                   <>
-                    <Text style={styles.title} typography="EuclidCircularA-Medium">
+                    <Text style={styles.title} fontFamily="EuclidCircularA-Medium">
                       {t('signUp.restoringWalletFromBackup')}
                     </Text>
                     <View style={styles.card}>
-                      <Text typography="EuclidCircularA-Regular" style={styles.downloadProgress}>
+                      <Text style={styles.downloadProgress}>
                         {`${t('signUp.restoringWallet')}... ${restoreProgress.progress}% ${t('done')}`}
                       </Text>
                       <Progress progress={restoreProgress.progress} progressColor={theme.colors.green} />
                     </View>
-                    <Text style={styles.pleaseWaitText} typography="EuclidCircularA-Regular">
-                      {t('signUp.pleaseWaitRestoringBackup')}
-                    </Text>
+                    <Text style={styles.pleaseWaitText}>{t('signUp.pleaseWaitRestoringBackup')}</Text>
                   </>
                 )}
                 onError={() => (
                   <>
-                    <Text style={styles.title} typography="EuclidCircularA-Medium">
+                    <Text style={styles.title} fontFamily="EuclidCircularA-Medium">
                       {t('signUp.restoringWalletFromBackup')}
                     </Text>
                     <View style={styles.card}>
-                      <Text typography="EuclidCircularA-Regular" style={styles.downloadProgress}>
+                      <Text style={styles.downloadProgress}>
                         {`${t('signUp.restoringWallet')}... 0% ${t('done')}`}
                       </Text>
                       <View style={styles.errorSubContainer}>
                         <View style={styles.errorIconContainer}>
                           <SvgIcon name="warning" fill={theme.colors.white} width={20} height={20} />
                         </View>
-                        <Text typography="EuclidCircularA-Regular" style={styles.errorTitle}>
-                          {t('signUp.cannotRestoreWallet')}
-                        </Text>
+                        <Text style={styles.errorTitle}>{t('signUp.cannotRestoreWallet')}</Text>
                       </View>
                     </View>
-                    <Text typography="EuclidCircularA-Regular" style={styles.text}>
-                      {restoreProgress.error}
-                    </Text>
+                    <Text style={styles.text}>{restoreProgress.error}</Text>
                     <MainButton
                       onPress={restoreProgressToInitialValues}
                       text={t('tryAgain')}
@@ -162,7 +158,7 @@ const BaseRestoreWalletBackup = ({
             </View>
           ) : (
             <View style={styles.subContainer}>
-              <Text typography="EuclidCircularA-Medium" style={styles.noCloudAvailable}>
+              <Text fontFamily="EuclidCircularA-Medium" style={styles.noCloudAvailable}>
                 {t('settings.noCloudAvailable', { cloud: IS_IOS ? 'iCloud Drive' : 'Google Drive' })}
               </Text>
               {IS_ANDROID && <MainButton text={t('general.retry')} onPress={selectAccount} />}

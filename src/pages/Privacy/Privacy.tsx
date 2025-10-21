@@ -64,11 +64,7 @@ const Privacy = () => {
       return {
         text: automaticDownloadTypeTexts[typedKey],
         onPress: () => onPressAutomaticDownloadOption(typedKey, value),
-        rightContent: () => (
-          <Text typography="EuclidCircularA-Regular" style={styles.title}>
-            {automaticDownloadOptionTexts[value]}
-          </Text>
-        ),
+        rightContent: () => <Text style={styles.title}>{automaticDownloadOptionTexts[value]}</Text>,
         iconName: mediaIconName[typedKey],
       }
     })
@@ -97,7 +93,7 @@ const Privacy = () => {
             onPress: changeLockTimeoutOptionsVisibility,
             rightContent: () => (
               <View style={styles.screenLockOptionRow}>
-                <Text typography="EuclidCircularA-Regular" style={styles.title}>
+                <Text style={styles.title}>
                   {screenLockTimeout !== null ? SHORTHAND_TIMEOUT_TEXT[screenLockTimeout] : null}
                 </Text>
                 <SvgIcon name="chevronForward" width={18} height={18} fill={theme.colors.tertiaryText} />
@@ -124,20 +120,18 @@ const Privacy = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text typography="EuclidCircularA-SemiBold" style={styles.title}>
+      <Text fontFamily="EuclidCircularA-SemiBold" style={styles.title}>
         {t('settings.appSecurity')}
       </Text>
-      <Text typography="EuclidCircularA-Regular" style={styles.subTitle}>
-        {t('settings.useOSAuthToProtectApp')}
-      </Text>
+      <Text style={styles.subTitle}>{t('settings.useOSAuthToProtectApp')}</Text>
       <OptionsList options={options} />
-      <Text typography="EuclidCircularA-SemiBold" style={{ ...styles.title, marginVertical: 12 }}>
+      <Text fontFamily="EuclidCircularA-SemiBold" style={[styles.title, styles.automaticMediaDownloadTitle]}>
         {t('settings.automaticMediaDownload')}
       </Text>
       <OptionsList options={automaticDownloadOptions} />
       <ModalBottomHalf visible={showLockTimeoutOptions} onClose={changeLockTimeoutOptionsVisibility}>
         <View style={styles.optionsContainer}>
-          <Text typography="EuclidCircularA-SemiBold" style={[styles.title, styles.timeoutOptionsTitle]}>
+          <Text fontFamily="EuclidCircularA-SemiBold" style={[styles.title, styles.timeoutOptionsTitle]}>
             {t('settings.screenLockTimeout')}
           </Text>
           {timeoutOptions.map(option => {
@@ -148,9 +142,7 @@ const Privacy = () => {
                 onPress={() => onPressTimeoutOption(option.value)}
                 style={{ ...styles.optionContainer, ...(isSelected && styles.optionSelected) }}
               >
-                <Text typography="EuclidCircularA-Regular" style={styles.option}>
-                  {option.label}
-                </Text>
+                <Text style={styles.option}>{option.label}</Text>
               </TouchableOpacity>
             )
           })}
@@ -161,7 +153,7 @@ const Privacy = () => {
         onClose={changeAutomaticDownloadOptionsVisibility}
       >
         <View style={styles.optionsContainer}>
-          <Text typography="EuclidCircularA-SemiBold" style={[styles.title, styles.timeoutOptionsTitle]}>
+          <Text fontFamily="EuclidCircularA-SemiBold" style={[styles.title, styles.timeoutOptionsTitle]}>
             {currentAutomaticOptionForModal.current?.key &&
               automaticDownloadTypeTexts[currentAutomaticOptionForModal.current.key]}
           </Text>
@@ -177,9 +169,7 @@ const Privacy = () => {
                   }
                 }}
               >
-                <Text typography="EuclidCircularA-Regular" style={styles.option}>
-                  {automaticDownloadOptionTexts[option]}
-                </Text>
+                <Text style={styles.option}>{automaticDownloadOptionTexts[option]}</Text>
               </TouchableOpacity>
             )
           })}

@@ -28,9 +28,7 @@ const OptionsList = ({ options }: Props) => {
                 style={styles.icon}
               />
             )}
-            <Text typography="EuclidCircularA-Regular" style={styles.text}>
-              {option.text}
-            </Text>
+            <Text style={styles.text}>{option.text}</Text>
             {option?.rightContent?.()}
           </TouchableOpacity>
         )

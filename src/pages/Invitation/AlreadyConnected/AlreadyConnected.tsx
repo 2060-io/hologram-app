@@ -31,16 +31,14 @@ const AlreadyConnected = ({ navigation, connection, includeDefaultActions }: Con
 
   return (
     <View style={styles.alreadyConnectedContainer}>
-      <Text typography="EuclidCircularA-Medium" style={styles.alreadyConnectedText}>
+      <Text fontFamily="EuclidCircularA-Medium" style={styles.alreadyConnectedText}>
         {t('connection.youAreAlreadyConnected', { connectionName })}
       </Text>
       <View style={styles.actionsContainer}>
         {actions.map(action => (
           <TouchableOpacity key={action.value} onPress={action.onPress} style={styles.actionContainer}>
             <SvgIcon name={ActionIconsNames[action.value] as keyof IconsNames} fill={iconColor} />
-            <Text typography="EuclidCircularA-Regular" style={styles.actionText}>
-              {actionLabel[action.value]}
-            </Text>
+            <Text style={styles.actionText}>{actionLabel[action.value]}</Text>
           </TouchableOpacity>
         ))}
       </View>

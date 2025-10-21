@@ -69,9 +69,7 @@ const UserProfileForm: React.FC<Props> = props => {
           </GestureHandlerRootView>
         </SafeAreaView>
       </Modal>
-      <Text typography="EuclidCircularA-Regular" style={styles.textInputDescription}>
-        {t('signUp.textInputNicknameDescription')}
-      </Text>
+      <Text style={styles.textInputDescription}>{t('signUp.textInputNicknameDescription')}</Text>
       <View style={styles.containerRootAvatar}>
         {imgUrl.length > 0 && (
           <TouchableOpacity
