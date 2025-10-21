@@ -62,7 +62,7 @@ export default (theme: AppTheme) =>
       flex: 1,
       flexDirection: 'row',
       paddingVertical: 10,
-      backgroundColor: 'white',
+      backgroundColor: theme.colors.white,
     },
     listItemText: {
       margin: 12,
