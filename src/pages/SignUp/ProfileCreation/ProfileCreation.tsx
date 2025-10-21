@@ -119,7 +119,7 @@ const ProfileCreation = ({ navigation }: Props) => {
       >
         <View style={styles.container}>
           <AppLogo style={styles.appLogoContainer} />
-          <Text typography="EuclidCircularA-Bold" style={styles.title}>
+          <Text fontFamily="EuclidCircularA-Bold" style={styles.title}>
             {t('signUp.welcomeTitle')}
           </Text>
           <UserProfileForm

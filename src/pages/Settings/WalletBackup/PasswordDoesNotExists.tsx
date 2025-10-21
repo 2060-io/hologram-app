@@ -18,7 +18,7 @@ const PasswordDoesNotExists = ({ styles, onPress }: Props) => {
   return (
     <>
       <View style={styles.container}>
-        <Text typography="EuclidCircularA-Medium" style={styles.setPassText}>
+        <Text fontFamily="EuclidCircularA-Medium" style={styles.setPassText}>
           {t('settings.firsCreatePassBeforeBackup')}
         </Text>
       </View>

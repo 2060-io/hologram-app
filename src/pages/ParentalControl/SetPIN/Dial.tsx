@@ -21,7 +21,7 @@ const Dial = ({ dial, onDialPressed }: Props) => {
       {dial === 'del' ? (
         <Icon as="Ionicons" name="backspace-outline" color={theme.colors.tertiaryText} size={DIAL_SIZE} />
       ) : (
-        <Text typography="EuclidCircularA-SemiBold" style={styles.dialText}>
+        <Text fontFamily="EuclidCircularA-SemiBold" style={styles.dialText}>
           {dial}
         </Text>
       )}

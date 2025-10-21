@@ -7,7 +7,7 @@ import React, {
   useRef,
   PropsWithChildren,
 } from 'react'
-import { View, PanResponder } from 'react-native'
+import { View, PanResponder, StyleSheet } from 'react-native'
 
 import { useNavigation } from '../agent/NavigationProvider'
 import { useAppState } from '../useAppState'
@@ -150,7 +150,7 @@ export const ScreenLockProvider: React.FC<PropsWithChildren> = ({ children }) =>
         forceDisableScreenLock,
       }}
     >
-      <View style={{ flex: 1 }} {...panResponder.panHandlers}>
+      <View style={styles.container} {...panResponder.panHandlers}>
         <Modal visible={!isAuthenticated}>
           <Authentication isAppActive={isAppActive} makeAutomaticAuth={makeAutomaticAuth.current} />
         </Modal>
@@ -159,3 +159,9 @@ export const ScreenLockProvider: React.FC<PropsWithChildren> = ({ children }) =>
     </ScreenLockContext>
   )
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+})

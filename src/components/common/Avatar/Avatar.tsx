@@ -94,7 +94,7 @@ const Avatar: React.FC<Props> = ({
         borderStyle,
       ]}
     >
-      <Text typography="EuclidCircularA-Medium" style={[styles.initials, { fontSize: initialsFontSize }]}>
+      <Text fontFamily="EuclidCircularA-Medium" style={[styles.initials, { fontSize: initialsFontSize }]}>
         {getNameInitials(label ?? 'N A')}
       </Text>
     </View>

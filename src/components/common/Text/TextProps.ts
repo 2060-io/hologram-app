@@ -1,9 +1,11 @@
-import React from 'react'
 import { TextProps as NativeTextProps } from 'react-native'
 
 export interface TextProps extends NativeTextProps {
-  children?: React.ReactNode
-  typography?:
+  /**
+   * The font family to use.
+   * @default 'EuclidCircularA-Regular'
+   */
+  fontFamily?:
     | 'EuclidCircularA-Bold'
     | 'EuclidCircularA-BoldItalic'
     | 'EuclidCircularA-Italic'

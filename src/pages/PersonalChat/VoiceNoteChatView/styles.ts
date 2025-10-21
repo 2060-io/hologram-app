@@ -40,6 +40,12 @@ export default (theme: AppTheme) =>
       alignItems: 'center',
       height: '100%',
     },
+    displayPlaybackSpeed: {
+      display: 'flex',
+    },
+    hidePlaybackSpeed: {
+      display: 'none',
+    },
     playbackSpeedContainer: {
       justifyContent: 'center',
       alignItems: 'center',
@@ -52,6 +58,9 @@ export default (theme: AppTheme) =>
     txtCounter: {
       color: theme.colors.tertiaryText,
       fontSize: theme.fontSize.sm - 1,
+    },
+    downloadedText: {
+      width: 30,
     },
     noWaveFormContainer: {
       flex: 1,

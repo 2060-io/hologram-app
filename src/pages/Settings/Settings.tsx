@@ -237,7 +237,7 @@ const Settings = ({ navigation }: Props) => {
                 onImagePressed={onAvatarImagePressed}
               />
               {userProfileData?.displayName && (
-                <Text typography="EuclidCircularA-Medium" style={styles.displayName}>
+                <Text fontFamily="EuclidCircularA-Medium" style={styles.displayName}>
                   {userProfileData?.displayName}
                 </Text>
               )}

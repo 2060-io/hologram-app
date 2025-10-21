@@ -31,19 +31,18 @@ const ServiceSecuritySystemMessage = ({ serviceInfo }: ServiceSecuritySystemMess
     <View style={styles.containerSecurityMessage}>
       <Trans
         i18nKey="personalChat.securityMessageService"
-        typography="EuclidCircularA-Regular"
         style={styles.textMessageForService}
         parent={Text}
         components={{
           lock: <SvgIcon name="lock" fill={styles.textMessage.color} width={12} height={12} />,
-          bold: <Text typography="EuclidCircularA-Bold" style={styles.textMessageForService} />,
+          bold: <Text fontFamily="EuclidCircularA-Bold" style={styles.textMessageForService} />,
         }}
       />
       {serviceProvider ? (
         <>
-          <Text typography="EuclidCircularA-Medium" style={styles.textMessageForService}>
+          <Text fontFamily="EuclidCircularA-Medium" style={styles.textMessageForService}>
             {t('invitation.serviceProvider')}
-            <Text typography="EuclidCircularA-Regular" style={styles.textMessageForService}>
+            <Text style={styles.textMessageForService}>
               {` ${getFlagEmoji(serviceProvider.countryCode)} ${serviceProvider.entityName} ${
                 serviceProvider.officialPublicRegistryNumber
               }`}
@@ -51,7 +50,6 @@ const ServiceSecuritySystemMessage = ({ serviceInfo }: ServiceSecuritySystemMess
           </Text>
           <Trans
             i18nKey="connection.usingThisServiceYouAgree"
-            typography="EuclidCircularA-Regular"
             style={styles.textMessageForService}
             values={{
               minimumAgeRequired:
@@ -64,14 +62,12 @@ const ServiceSecuritySystemMessage = ({ serviceInfo }: ServiceSecuritySystemMess
               terms: (
                 <Text
                   onPress={() => tryToOpenURL(serviceInfo.termsAndConditionsUrl)}
-                  typography="EuclidCircularA-Regular"
                   style={[styles.textMessageForService, styles.underLineText]}
                 />
               ),
               privacy: (
                 <Text
                   onPress={() => tryToOpenURL(serviceInfo.dataPrivacyUrl)}
-                  typography="EuclidCircularA-Regular"
                   style={[styles.textMessageForService, styles.underLineText]}
                 />
               ),
@@ -82,13 +78,12 @@ const ServiceSecuritySystemMessage = ({ serviceInfo }: ServiceSecuritySystemMess
         <>
           <Trans
             i18nKey="connection.noLiabilityDisclaimerDesc"
-            typography="EuclidCircularA-Regular"
             style={styles.textMessageForService}
             values={{ serviceName: serviceInfo?.name }}
             parent={Text}
             components={{
-              bold: <Text typography="EuclidCircularA-Bold" style={styles.textMessageForService} />,
-              red: <Text typography="EuclidCircularA-Medium" style={styles.disclaimer} />,
+              bold: <Text fontFamily="EuclidCircularA-Bold" style={styles.textMessageForService} />,
+              red: <Text fontFamily="EuclidCircularA-Medium" style={styles.disclaimer} />,
             }}
           />
         </>

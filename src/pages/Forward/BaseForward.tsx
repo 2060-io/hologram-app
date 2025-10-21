@@ -73,11 +73,14 @@ const BaseForward = ({ navigation, onPressSend, connectionId, title }: Props) =>
         />
       </View>
       <View style={styles.forwardContainer}>
-        <Text typography="EuclidCircularA-Medium" style={styles.connectionsToForwardText} numberOfLines={1}>
+        <Text fontFamily="EuclidCircularA-Medium" style={styles.connectionsToForwardText} numberOfLines={1}>
           {selectedConnectionNames}
         </Text>
         <TouchableOpacity
-          style={[styles.forwardButton, { opacity: isForwardButtonDisabled ? 0.5 : 1 }]}
+          style={[
+            styles.forwardButton,
+            isForwardButtonDisabled ? styles.disabledForward : styles.enabledForward,
+          ]}
           disabled={isForwardButtonDisabled}
           onPress={send}
         >

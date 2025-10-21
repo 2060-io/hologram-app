@@ -86,7 +86,7 @@ const CustomToast = () => {
     >
       <TouchableOpacity onPress={closeToast} style={styles.containerContentMessage}>
         <View style={[styles.containerIconMessage, { backgroundColor }]}>{iconsByMsgType[typeMessage]}</View>
-        <Text typography="EuclidCircularA-Regular" style={[styles.textMessage, { color }]} numberOfLines={2}>
+        <Text style={[styles.textMessage, { color }]} numberOfLines={2}>
           {message.message}
         </Text>
       </TouchableOpacity>
