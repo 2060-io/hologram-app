@@ -34,6 +34,9 @@ const styles = (theme: AppTheme) =>
       fontSize: theme.fontSize.md,
       color: theme.colors.tertiaryText,
     },
+    descriptionText: {
+      marginVertical: 10,
+    },
     alreadyConnectedText: {
       textAlign: 'center',
       marginVertical: 6,

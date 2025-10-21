@@ -64,7 +64,7 @@ const CredentialIssuer = ({ service, connect, tryToOpenURL, goToConnectionDetail
       <View style={styles.headerContainer}>
         <Avatar uri={logoUrl} label={name} size="20%" />
         <View style={styles.headerCenterContainer}>
-          <Text typography="EuclidCircularA-Medium" style={styles.issuerName}>
+          <Text fontFamily="EuclidCircularA-Medium" style={styles.issuerName}>
             {name}
           </Text>
           <Text style={styles.didText}>{trimText(did)}</Text>
@@ -72,15 +72,13 @@ const CredentialIssuer = ({ service, connect, tryToOpenURL, goToConnectionDetail
         <VerifiedIcon style={styles.containerIconValidity} status={status as ServiceStatus} />
       </View>
       <View style={styles.rowContainer}>
-        <Text typography="EuclidCircularA-SemiBold" style={styles.text}>
+        <Text fontFamily="EuclidCircularA-SemiBold" style={styles.text}>
           {t('credential.serviceProvider')}
         </Text>
-        <Text typography="EuclidCircularA-Regular" style={styles.text}>
-          {`${getFlagEmoji('EE')} 2060 OÜ`}
-        </Text>
+        <Text style={styles.text}>{`${getFlagEmoji('EE')} 2060 OÜ`}</Text>
       </View>
       <View style={styles.rowContainer}>
-        <Text typography="EuclidCircularA-SemiBold" style={styles.text}>
+        <Text fontFamily="EuclidCircularA-SemiBold" style={styles.text}>
           {t('credential.reputation')}
         </Text>
         <View style={styles.starsContainer}>
@@ -90,32 +88,24 @@ const CredentialIssuer = ({ service, connect, tryToOpenURL, goToConnectionDetail
         </View>
       </View>
       <View style={styles.rowContainer}>
-        <Text typography="EuclidCircularA-SemiBold" style={styles.text}>
+        <Text fontFamily="EuclidCircularA-SemiBold" style={styles.text}>
           {t('credential.issuedCredentials')}
         </Text>
-        <Text typography="EuclidCircularA-Regular" style={styles.text}>
-          {t('credential.unknown')}
-        </Text>
+        <Text style={styles.text}>{t('credential.unknown')}</Text>
       </View>
       <View style={styles.rowContainer}>
-        <Text typography="EuclidCircularA-SemiBold" style={styles.text}>
+        <Text fontFamily="EuclidCircularA-SemiBold" style={styles.text}>
           {t('credential.verifiedCredentials')}
         </Text>
-        <Text typography="EuclidCircularA-Regular" style={styles.text}>
-          {t('credential.unknown')}
-        </Text>
+        <Text style={styles.text}>{t('credential.unknown')}</Text>
       </View>
       <View style={styles.rowContainer}>
-        <Text typography="EuclidCircularA-SemiBold" style={styles.text}>
+        <Text fontFamily="EuclidCircularA-SemiBold" style={styles.text}>
           {t('invitation.ageRestrictions')}
         </Text>
-        <Text typography="EuclidCircularA-Regular" style={styles.text}>
-          {`${minimumAgeRequired}+`}
-        </Text>
+        <Text style={styles.text}>{`${minimumAgeRequired}+`}</Text>
       </View>
-      <Text typography="EuclidCircularA-Regular" style={[styles.text, { marginVertical: 10 }]}>
-        {description}
-      </Text>
+      <Text style={[styles.text, styles.descriptionText]}>{description}</Text>
       {termsAndConditionsUrl && (
         <TouchableOpacity style={styles.urlContainer} onPress={() => tryToOpenURL(termsAndConditionsUrl)}>
           <Text style={[styles.text, styles.underLineText]}>{t('invitation.termsAndConditions')}</Text>
@@ -130,7 +120,7 @@ const CredentialIssuer = ({ service, connect, tryToOpenURL, goToConnectionDetail
       )}
       {state.connectionExists ? (
         <>
-          <Text typography="EuclidCircularA-Medium" style={[styles.text, styles.alreadyConnectedText]}>
+          <Text fontFamily="EuclidCircularA-Medium" style={[styles.text, styles.alreadyConnectedText]}>
             {state.isJustConnected
               ? t('connection.youAreNowConnectedTo', { name: service.name })
               : t('connection.youAreAlreadyConnectedTo', { name: service.name })}

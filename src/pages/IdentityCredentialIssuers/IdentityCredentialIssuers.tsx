@@ -50,7 +50,7 @@ const IdentityCredentialIssuers = ({ navigation }: Props) => {
       headerRight: () =>
         comesFromOnboarding ? (
           <TouchableOpacity style={styles.headerRight} onPress={goToChats}>
-            <Text typography="EuclidCircularA-Medium" style={styles.headerText}>
+            <Text fontFamily="EuclidCircularA-Medium" style={styles.headerText}>
               {userMadeSomeAction ? t('personalChat.close') : t('general.skip')}
             </Text>
           </TouchableOpacity>
@@ -102,7 +102,7 @@ const IdentityCredentialIssuers = ({ navigation }: Props) => {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.subContainer}>
-        <Text typography="EuclidCircularA-SemiBold" style={styles.text}>
+        <Text fontFamily="EuclidCircularA-SemiBold" style={styles.text}>
           {t('credential.citizenship')}
         </Text>
         <RNPickerSelect
@@ -136,7 +136,7 @@ const IdentityCredentialIssuers = ({ navigation }: Props) => {
             )
           }}
         />
-        <Text typography="EuclidCircularA-SemiBold" style={[styles.text, styles.mb12]}>
+        <Text fontFamily="EuclidCircularA-SemiBold" style={[styles.text, styles.mb12]}>
           {t('credential.availableIssuers')}
         </Text>
         <CredentialIssuer
