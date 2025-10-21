@@ -1,9 +1,10 @@
-import { MessageState } from '@2060.io/credo-ts-didcomm-receipts'
+import { MessageReceipt, MessageReceiptOptions, MessageState } from '@2060.io/credo-ts-didcomm-receipts'
 import { ConnectionRecord, utils } from '@credo-ts/core'
 import React, { createContext, useCallback, useState, useEffect, useContext, useRef } from 'react'
 
 import { useMobileAgent } from './MobileAgentProvider'
 import { AgentActionType } from './actions/AgentAction'
+import { SendReceiptsParameters } from './actions/types'
 import { addReceiptToRelatedEntries } from './chat/services/ChatEntryService'
 import {
   findOrCreateChatThread,
@@ -210,26 +211,19 @@ export const ChatProvider: React.FC<Props> = ({ children }) => {
       // No receipts to send
       if (!connection || !supportsMessageReceipts(connection) || messageIds.length === 0) return
 
-      const receipts = messageIds.map(messageId => ({
+      const receipts: MessageReceiptOptions[] = messageIds.map(messageId => ({
         messageId,
         state: MessageState.Viewed,
         timestamp: lastReadAt,
       }))
 
       for (const receipt of receipts) {
-        addReceiptToRelatedEntries(realm, receipt)
+        addReceiptToRelatedEntries(realm, receipt as MessageReceipt)
       }
-
+      const parameters: SendReceiptsParameters = { connectionId, receipts }
       addAgentActionToQueue({
         type: AgentActionType.SendReceipts,
-        parameters: {
-          didcommConnectionId: connectionId,
-          receipts: receipts.map(item => ({
-            messageId: item.messageId,
-            state: item.state,
-            timestamp: item.timestamp?.getTime(),
-          })),
-        },
+        parameters,
       })
     },
     [realm],

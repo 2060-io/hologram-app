@@ -32,10 +32,10 @@ const NavigationContainer = (Navigation: ElementType) => {
     return (
       <KeyboardProvider>
         <View style={styles.container}>
-          <View style={[styles.containerOpeningWallet, { display: openingWallet ? 'flex' : 'none' }]}>
+          <View style={[styles.containerOpeningWallet, openingWallet ? styles.display : styles.hide]}>
             <Loader />
           </View>
-          <View style={[styles.container, { display: !openingWallet ? 'flex' : 'none' }]}>
+          <View style={[styles.container, !openingWallet ? styles.display : styles.hide]}>
             <Navigation isSignedUp={isSignedUp} agent={agent} theme={theme} />
           </View>
         </View>

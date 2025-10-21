@@ -40,12 +40,10 @@ const ImageSection = ({ image, onPressDetailImage, styles }: ImageSectionProps) 
 const DetailSection = ({ isFirst, styles, rowDetail, onPressDetailImage }: DetailSectionProps) => (
   <View style={styles.sectionContainer}>
     <View style={styles.container}>
-      <Text style={[styles.sectionKey, isFirst && { marginTop: 0 }]} typography="EuclidCircularA-Medium">
+      <Text style={[styles.sectionKey, isFirst && styles.firstSection]} fontFamily="EuclidCircularA-Medium">
         {rowDetail.key}
       </Text>
-      <Text style={styles.sectionValue} typography="EuclidCircularA-Regular">
-        {'value' in rowDetail && rowDetail.value}
-      </Text>
+      <Text style={styles.sectionValue}>{'value' in rowDetail && rowDetail.value}</Text>
     </View>
     {'image' in rowDetail && (
       <ImageSection styles={styles} onPressDetailImage={onPressDetailImage} image={rowDetail.image} />
@@ -78,15 +76,13 @@ const CredentialDetails = ({ credentialDetails }: Props) => {
         closeFullScreenImage={closeFullScreenImage}
         imageUri={biggerImageRef.current!}
       />
-      <View style={styles.credentialCardContainer}>
-        <CardCredentialMainInformation
-          credentialMainInfo={credentialDetails.mainInfo}
-          containerStyle={{ marginBottom: 0 }}
-        />
-      </View>
+      <CardCredentialMainInformation
+        credentialMainInfo={credentialDetails.mainInfo}
+        containerStyle={styles.credentialMainInfoContainer}
+      />
       {detailsSections.map((section, index) => (
         <View key={index}>
-          <Text style={styles.title} typography="EuclidCircularA-SemiBold">
+          <Text style={styles.title} fontFamily="EuclidCircularA-SemiBold">
             {section.title ?? t('credentialOffer.claims')}
           </Text>
           <View style={styles.sectionRowsContainer}>

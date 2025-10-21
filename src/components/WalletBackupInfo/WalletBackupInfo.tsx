@@ -44,12 +44,10 @@ const WalletBackupInfo = ({
     if (IS_IOS || !selectedGoogleAccount) return null
     return (
       <TouchableOpacity onPress={selectAccount}>
-        <Text typography="EuclidCircularA-Medium" style={[styles.smallText, styles.suggestionText]}>
+        <Text fontFamily="EuclidCircularA-Medium" style={[styles.smallText, styles.suggestionText]}>
           {t('settings.googleAccount')}
         </Text>
-        <Text typography="EuclidCircularA-Regular" style={[styles.smallText]}>
-          {selectedGoogleAccount}
-        </Text>
+        <Text style={[styles.smallText]}>{selectedGoogleAccount}</Text>
       </TouchableOpacity>
     )
   }, [selectedGoogleAccount])
@@ -65,18 +63,18 @@ const WalletBackupInfo = ({
         onLoading={() => <ActivityIndicator size="large" color={theme.colors.green} />}
         onInfo={() => (
           <>
-            <Text typography="EuclidCircularA-Medium" style={styles.mediumText}>
+            <Text fontFamily="EuclidCircularA-Medium" style={styles.mediumText}>
               {`${t('settings.lastBackup')}: ${dateToString(
                 backupHandler?.backup?.modifyDate,
                 'DD/MM/YYYY h:mm a',
               )}`}
             </Text>
-            <Text typography="EuclidCircularA-Medium" style={styles.mediumText}>
+            <Text fontFamily="EuclidCircularA-Medium" style={styles.mediumText}>
               {`${t('settings.backupSize')}: ${getFileSize(Number(backupHandler?.backup?.size))}`}
             </Text>
             {renderGoogleSelectedAccount}
             {withSuggestionMessage && (
-              <Text typography="EuclidCircularA-Regular" style={[styles.smallText, styles.suggestionText]}>
+              <Text style={[styles.smallText, styles.suggestionText]}>
                 {t('settings.backupSuggestion', { cloud: IS_IOS ? 'iCloud Drive' : 'Google Drive' })}
               </Text>
             )}
@@ -84,11 +82,11 @@ const WalletBackupInfo = ({
         )}
         onNotExist={() => (
           <>
-            <Text typography="EuclidCircularA-Medium" style={styles.mediumText}>
+            <Text fontFamily="EuclidCircularA-Medium" style={styles.mediumText}>
               {t('settings.noBackupFound')}
             </Text>
             {IS_IOS && (
-              <Text typography="EuclidCircularA-Medium" style={styles.smallText}>
+              <Text fontFamily="EuclidCircularA-Medium" style={styles.smallText}>
                 {t('settings.cloudNotSync')}
               </Text>
             )}
@@ -97,7 +95,7 @@ const WalletBackupInfo = ({
         )}
         onError={() => (
           <View>
-            <Text typography="EuclidCircularA-Medium" style={styles.smallText}>
+            <Text fontFamily="EuclidCircularA-Medium" style={styles.smallText}>
               {t('general.errorGettingBackupInfoFromCloud')}
             </Text>
             {IS_ANDROID && (

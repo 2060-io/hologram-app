@@ -97,9 +97,7 @@ const ParentalControl = () => {
           onPress={() => setOpenPINConfirmation(true)}
           style={styles.birthdayContainer}
         >
-          <Text typography="EuclidCircularA-Regular" style={styles.birthdayText}>
-            {dateToString(kidBirthday, 'DD/MM/YYYY')}
-          </Text>
+          <Text style={styles.birthdayText}>{dateToString(kidBirthday, 'DD/MM/YYYY')}</Text>
         </TouchableOpacity>
       ),
     },
@@ -142,9 +140,7 @@ const ParentalControl = () => {
           canChangeBirthday.current = false
         }}
       />
-      <Text typography="EuclidCircularA-Regular" style={styles.parentalControlMessage}>
-        {t('parentalControl.message')}
-      </Text>
+      <Text style={styles.parentalControlMessage}>{t('parentalControl.message')}</Text>
       <OptionsList options={options} />
     </SafeAreaView>
   )

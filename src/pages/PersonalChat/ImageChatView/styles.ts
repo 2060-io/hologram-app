@@ -5,13 +5,16 @@ import { hexTransparency } from '@2060/utils/colorUtils'
 
 export default (theme: AppTheme) =>
   StyleSheet.create({
+    withTimeAndTicksContainer: {
+      marginBottom: theme.edges.messageMargin,
+    },
+    withoutTimeAndTicksContainer: {
+      marginBottom: 0,
+    },
     imageLightbox: {
       width: '100%',
       height: '100%',
       resizeMode: 'contain',
-    },
-    containerViewDownlod: {
-      height: '100%',
     },
     containerSpinner: {
       display: 'flex',

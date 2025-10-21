@@ -15,6 +15,7 @@ import getStyles from './styles'
 import { ModalConfirmAction } from '@2060/components'
 import { Text } from '@2060/components/common'
 import { AgentActionType } from '@2060/hooks/agent'
+import { DeclineProofRequestParameters } from '@2060/hooks/agent/actions/types'
 import { updateChatEntryMetadata } from '@2060/hooks/agent/chat/services'
 import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
@@ -103,9 +104,10 @@ const VPRequestChatView = ({
       const newMetadata = { ...metadata, proofState: ProofState.Declined }
       updateChatEntryMetadata(realm, chatEntryId, newMetadata)
     }
+    const parameters: DeclineProofRequestParameters = { proofRecordId }
     addAgentActionToQueue({
       type: AgentActionType.DeclineProofRequest,
-      parameters: { proofRecordId },
+      parameters,
     })
   }
 
@@ -118,7 +120,7 @@ const VPRequestChatView = ({
 
   const NoCompatibleCredentials = () => (
     <View>
-      <Text style={styles.title} typography="EuclidCircularA-Regular">
+      <Text style={styles.title}>
         {t('presentationRequest.noCompatibleCredentials', { sender: senderName })}
       </Text>
       <BlueButton
@@ -154,7 +156,7 @@ const VPRequestChatView = ({
   const status: Partial<Record<ProofState, React.ReactElement>> = {
     [ProofState.Abandoned]: (
       <>
-        <Text style={styles.title} typography="EuclidCircularA-Regular">
+        <Text style={styles.title}>
           {t('presentationRequest.noCompatibleCredentials', { sender: senderName })}
         </Text>
         <BlueButton
@@ -167,7 +169,7 @@ const VPRequestChatView = ({
     ),
     [ProofState.Declined]: (
       <View style={[styles.baseFooterContainer, styles.refusedContainer]}>
-        <Text typography="EuclidCircularA-Bold" style={styles.refusedText}>
+        <Text fontFamily="EuclidCircularA-Bold" style={styles.refusedText}>
           {t('personalChat.youRefusedRequest')}
         </Text>
       </View>
@@ -199,7 +201,7 @@ const VPRequestChatView = ({
       <View style={styles.subContainer}>
         {requestedCredentialsForDisplay?.requestedCredentials?.map(requestedCredential => (
           <View key={requestedCredential?.schemaName}>
-            <Text style={styles.title} typography="EuclidCircularA-Regular">
+            <Text style={styles.title}>
               {t('personalChat.isRequestingYou', {
                 sender: senderName,
                 schemaName: requestedCredential?.schemaName,
@@ -208,7 +210,7 @@ const VPRequestChatView = ({
             <View style={styles.credentialAttributesContainer}>
               {requestedCredential?.attributes?.map((attribute: string) => (
                 <View key={attribute} style={styles.credentialAttributeContainer}>
-                  <Text typography="EuclidCircularA-Bold" style={styles.credentialAttribute}>
+                  <Text fontFamily="EuclidCircularA-Bold" style={styles.credentialAttribute}>
                     {attribute}
                   </Text>
                 </View>

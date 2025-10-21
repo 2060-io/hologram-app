@@ -14,11 +14,10 @@ const ConnectionRefusedByAge = ({ style, kidAge, userName }: Props) => {
   return (
     <Trans
       i18nKey="invitation.connectionRefusedByAge"
-      typography="EuclidCircularA-Regular"
       style={style}
       parent={Text}
       components={{
-        bold: <Text typography="EuclidCircularA-Bold" style={style} />,
+        bold: <Text fontFamily="EuclidCircularA-Bold" style={style} />,
       }}
       values={{ age: kidAge, name: userName }}
     />

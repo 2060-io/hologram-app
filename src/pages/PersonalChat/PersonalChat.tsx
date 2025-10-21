@@ -342,7 +342,7 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
           {header}
           {showStickyDate && (
             <View style={{ ...styles.containerStickyDate, top: headerHeight }}>
-              <Text typography="EuclidCircularA-Regular" style={styles.stickyDateText}>
+              <Text style={styles.stickyDateText}>
                 {currentStickyDate && getFormattedDateRange(currentStickyDate)}
               </Text>
             </View>

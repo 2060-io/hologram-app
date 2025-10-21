@@ -12,6 +12,8 @@ import {
   ReceiptsEventTypes,
   MessageReceiptsReceivedEvent,
   MessageState,
+  MessageReceiptOptions,
+  MessageReceipt,
 } from '@2060.io/credo-ts-didcomm-receipts'
 import { ConnectionProfileUpdatedEvent, ProfileEventTypes } from '@2060.io/credo-ts-didcomm-user-profile'
 import { V1ProposeCredentialMessage } from '@credo-ts/anoncreds'
@@ -37,6 +39,7 @@ import agentActionQueue from 'react-native-job-queue'
 import Realm from 'realm'
 
 import { AgentAction, AgentActionType } from '../actions/AgentAction'
+import { SendReceiptsParameters } from '../actions/types'
 
 import { DidCommMessageDirection } from './DidCommMessageDirection'
 import { handleCallMessages, handleMrtdMessages } from './messageHandlers'
@@ -303,25 +306,22 @@ export function subscribeToAgentChatEvents(
         const state = thread.id === getActiveChatThreadId() ? MessageState.Viewed : MessageState.Received
 
         // TODO: Add to a queue and send receipts in a batch
-        const receipt = { messageId: data.payload.message.id, state, timestamp: new Date() }
-
-        addReceiptToRelatedEntries(realm, receipt)
-
+        const receipt: MessageReceiptOptions = {
+          messageId: data.payload.message.id,
+          state,
+          timestamp: new Date(),
+        }
+        addReceiptToRelatedEntries(realm, receipt as MessageReceipt)
+        const parameters: SendReceiptsParameters = {
+          connectionId: connection.id,
+          receipts: [receipt],
+        }
         agentActionQueue.addJob(
           'AgentAction',
           {
             attempts: 4,
             type: AgentActionType.SendReceipts,
-            parameters: {
-              didcommConnectionId: connection.id,
-              receipts: [
-                {
-                  messageId: receipt.messageId,
-                  state: receipt.state,
-                  timestamp: receipt.timestamp?.getTime(),
-                },
-              ],
-            },
+            parameters,
           } as AgentAction,
           undefined,
           true,

@@ -53,21 +53,19 @@ const Authentication = ({ isAppActive, makeAutomaticAuth }: Props) => {
         <View style={styles.containerBgView}>
           <View style={styles.containerAuthCard}>
             <AppIcon />
-            <Text typography="EuclidCircularA-Bold" style={styles.title}>
+            <Text fontFamily="EuclidCircularA-Bold" style={styles.title}>
               {t('authentication.walletLocked')}
             </Text>
             {userHasBiometricAuthEnable ? (
               <>
-                <Text typography="EuclidCircularA-Regular" style={styles.enableText}>
-                  {t(`authentication.${promptMessage.current}`)}
-                </Text>
+                <Text style={styles.enableText}>{t(`authentication.${promptMessage.current}`)}</Text>
                 <TouchableOpacity
                   onPress={makeBiometricAuth}
                   activeOpacity={0.5}
                   style={styles.containerBtnAuth}
                 >
                   <SvgIcon name="authBlocked" fill={theme.colors.white} />
-                  <Text typography="EuclidCircularA-Medium" style={styles.btnAuthText}>
+                  <Text fontFamily="EuclidCircularA-Medium" style={styles.btnAuthText}>
                     {t('authentication.auth')}
                   </Text>
                 </TouchableOpacity>
@@ -78,16 +76,14 @@ const Authentication = ({ isAppActive, makeAutomaticAuth }: Props) => {
                   <View style={styles.containerIconWarning}>
                     <SvgIcon name="warning" width={19.6} height={17.1} fill={theme.colors.primary} />
                   </View>
-                  <Text typography="EuclidCircularA-Regular" style={styles.enableErrorText}>
-                    {t(`authentication.${promptMessage.current}`)}
-                  </Text>
+                  <Text style={styles.enableErrorText}>{t(`authentication.${promptMessage.current}`)}</Text>
                 </View>
                 <TouchableOpacity
                   onPress={makeBiometricAuth}
                   activeOpacity={0.5}
                   style={styles.containerBtnRetry}
                 >
-                  <Text typography="EuclidCircularA-Medium" style={styles.btnRetryText}>
+                  <Text fontFamily="EuclidCircularA-Medium" style={styles.btnRetryText}>
                     {t('authentication.retry')}
                   </Text>
                 </TouchableOpacity>
