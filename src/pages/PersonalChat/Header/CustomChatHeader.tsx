@@ -66,11 +66,11 @@ const CustomChatHeader: React.FC<Props> = props => {
           style={styles.displayName}
           onPress={goToConnectionDetails}
         >
-          <Text fontFamily="EuclidCircularA-Medium" style={styles.name} numberOfLines={1}>
+          <Text typography="EuclidCircularA-Medium" style={styles.name} numberOfLines={1}>
             {props.chatThread.topic}
           </Text>
           {isTyping && (
-            <Text fontFamily="EuclidCircularA-Medium" style={styles.typing}>
+            <Text typography="EuclidCircularA-Medium" style={styles.typing}>
               {t('personalChat.typing')}
             </Text>
           )}

@@ -38,10 +38,4 @@ export default (theme: AppTheme) =>
       textAlign: 'center',
       marginTop: 16,
     },
-    displayConnectionsList: {
-      display: 'flex',
-    },
-    hideConnectionsList: {
-      display: 'none',
-    },
   })

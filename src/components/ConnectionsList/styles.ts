@@ -21,9 +21,6 @@ export default (theme: AppTheme) =>
       alignItems: 'center',
       paddingVertical: 8,
     },
-    lastConnectionInSection: {
-      paddingBottom: 0,
-    },
     rightSideContainer: {
       height: '100%',
       flexDirection: 'row',

@@ -8,7 +8,7 @@ import {
 import { AgentEventTypes, AgentMessageProcessedEvent, AgentMessageSentEvent } from '@credo-ts/core'
 import React, { PropsWithChildren, useState, useEffect, useRef, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import { StyleSheet, View } from 'react-native'
+import { View } from 'react-native'
 import InCallManager from 'react-native-incall-manager'
 
 import { useChats, useMobileAgent } from '../agent'
@@ -227,7 +227,7 @@ export const VideoCallProvider: React.FC<PropsWithChildren> = ({ children }) => 
         joinCall,
       }}
     >
-      <View style={styles.container}>
+      <View style={{ flex: 1 }}>
         <Modal visible={isIncomingCall || isInCall}>
           {isIncomingCall && <IncomingCall />}
           {isInCall && <VideoCall />}
@@ -237,9 +237,3 @@ export const VideoCallProvider: React.FC<PropsWithChildren> = ({ children }) => 
     </VideoCallContext>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-})

@@ -79,18 +79,18 @@ const ConnectionDetails = (props: ConnectionDetailsProps) => {
               </View>
               {parentConnectionId && (
                 <View style={styles.relatedConnectionContainer}>
-                  <Text fontFamily={'EuclidCircularA-Regular'} style={styles.connectionRelatedToText}>
+                  <Text typography={'EuclidCircularA-Regular'} style={styles.connectionRelatedToText}>
                     {t('connection.connectionManagedBy')}
                   </Text>
                   {parentConnectionPicture.length > 0 && (
                     <Image source={{ uri: parentConnectionPicture }} style={styles.connectionRelatedToImg} />
                   )}
-                  <Text fontFamily={'EuclidCircularA-Regular'} style={styles.connectionRelatedToText}>
+                  <Text typography={'EuclidCircularA-Regular'} style={styles.connectionRelatedToText}>
                     {parentConnectionName}
                   </Text>
                 </View>
               )}
-              <Text style={styles.createdAtText}>
+              <Text typography="EuclidCircularA-Regular" style={styles.createdAtText}>
                 {t('connection.connectionCreated', {
                   date: dateToString(connection.createdAt, 'DD/MM/YYYY'),
                   hours: dateToString(connection.createdAt, using24HourFormat ? 'HH:mm' : 'h:mm a'),

@@ -60,7 +60,7 @@ const RelatedConnections: React.FC<Props> = ({ navigation, route }) => {
           <Image source={{ uri: haveParentDisplayImage }} style={styles.avatarHeader} />
         </View>
       )}
-      <Text style={styles.titleHeader} fontFamily="EuclidCircularA-Medium" numberOfLines={1}>
+      <Text style={styles.titleHeader} typography="EuclidCircularA-Medium" numberOfLines={1}>
         {parentConnectionName}
       </Text>
     </View>
@@ -83,7 +83,7 @@ const RelatedConnections: React.FC<Props> = ({ navigation, route }) => {
   if (!parentConnectionId) onGoToBack()
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.containierMain}>
       {showSearchInput && (
         <SearchInput
           containerStyle={styles.searchInputContainer}
@@ -93,12 +93,13 @@ const RelatedConnections: React.FC<Props> = ({ navigation, route }) => {
           textInputProps={{ autoFocus: true }}
         />
       )}
-      <Text style={styles.connectionRelatedToText}>
+
+      <Text typography="EuclidCircularA-Regular" style={styles.connectionRelatedToText}>
         {`${t('connection.connectionsManagedBy')} ${parentConnectionName}`}
       </Text>
+
       {/* <ConnectionList onPressConnection={goToConnectionDetails} connectionList={subConnectionList} /> */}
       <AlphabetList
-        style={styles.listContainer}
         data={subConnectionList}
         indexLetterStyle={styles.letterStyle}
         renderCustomItem={item => (
@@ -107,7 +108,7 @@ const RelatedConnections: React.FC<Props> = ({ navigation, route }) => {
             onPress={() => handleSelectedSubConnection(item.key)}
           >
             <Avatar uri={(item as SubConnectionData).avatar} label={item.value} size="8.41%" />
-            <Text fontFamily="EuclidCircularA-SemiBold" style={styles.listItemText}>
+            <Text typography="EuclidCircularA-SemiBold" style={styles.listItemText}>
               {item.value}
             </Text>
           </TouchableOpacity>
@@ -118,9 +119,10 @@ const RelatedConnections: React.FC<Props> = ({ navigation, route }) => {
           </View>
         )}
         showsVerticalScrollIndicator={false}
+        style={{ flex: 1, marginBottom: 10 }}
         ListEmptyComponent={() => (
           <View style={styles.containerEmptyList}>
-            <Text fontFamily="EuclidCircularA-SemiBold" style={styles.textEmpty}>
+            <Text typography="EuclidCircularA-SemiBold" style={styles.textEmpty}>
               {t('connection.noConnectionsFound')}
             </Text>
           </View>

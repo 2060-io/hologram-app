@@ -50,7 +50,9 @@ const ChatFilterOptions: React.FC<Props> = ({ options = defaultOptions, selected
                 name={(option.name === 'allChats' ? 'messages' : option.name) as keyof IconsNames}
                 fill={theme.colors.blue}
               />
-              <Text style={styles.btnOptionText}>{`${t(`chat.${option.name}`)}`}</Text>
+              <Text typography="EuclidCircularA-Regular" style={styles.btnOptionText}>
+                {`${t(`chat.${option.name}`)}`}
+              </Text>
             </TouchableOpacity>
           </View>
         ))}

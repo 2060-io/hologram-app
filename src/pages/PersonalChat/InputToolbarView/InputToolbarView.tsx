@@ -165,15 +165,21 @@ const InputToolbarView = (props: Props) => {
           />
           <View style={[styles.containerRecording, isRepliedMessage && styles.recordingStylesWhenResponding]}>
             <Icon as="FontAwesome" name="microphone" size={20} color={theme.colors.red} />
-            <Text style={styles.recordTime}>{recordTime}</Text>
+            <Text typography="EuclidCircularA-Regular" style={styles.recordTime}>
+              {recordTime}
+            </Text>
             {isAutomaticRecording ? (
               <TouchableOpacity onPress={cancelAudioRecording}>
-                <Text style={styles.cancelVoiceRecord}>{t('general.cancel')}</Text>
+                <Text typography="EuclidCircularA-Regular" style={styles.cancelVoiceRecord}>
+                  {t('general.cancel')}
+                </Text>
               </TouchableOpacity>
             ) : (
               <>
                 <SvgIcon name="leftArrow" width={12} height={12} fill={theme.colors.secondaryText} />
-                <Text style={styles.cancelVoiceRecord2}>{t('general.swipeToUndo')}</Text>
+                <Text typography="EuclidCircularA-Regular" style={styles.cancelVoiceRecord2}>
+                  {t('general.swipeToUndo')}
+                </Text>
               </>
             )}
           </View>

@@ -53,7 +53,7 @@ const CredentialDetails = ({ route, navigation }: Props) => {
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <TouchableOpacity onPress={handleShowContextMenu} style={styles.headerRight}>
+        <TouchableOpacity onPress={handleShowContextMenu} style={{ marginRight: 15 }}>
           <SvgIcon name="menuOutline" fill={theme.colors.primaryText} />
         </TouchableOpacity>
       ),
@@ -92,7 +92,7 @@ const CredentialDetails = ({ route, navigation }: Props) => {
             {credentialDetails && (
               <>
                 <CredentialDetailsComponent credentialDetails={credentialDetails} />
-                <Text fontFamily="EuclidCircularA-SemiBold" style={styles.titleIssuerInfo}>
+                <Text typography="EuclidCircularA-SemiBold" style={styles.titleIssuerInfo}>
                   {t('credentialOffer.issuerInformation')}
                 </Text>
                 <ServiceInformation did={did} initialServiceInfo={serviceInfo.current} />
@@ -104,14 +104,18 @@ const CredentialDetails = ({ route, navigation }: Props) => {
                 onPress={() => setShowConfirmationDeleteModal(true)}
               >
                 <SvgIcon name="trash" width={20} height={20} fill={theme.colors.primaryText} />
-                <Text style={styles.optionText}>{t('credential.delete')}</Text>
+                <Text style={styles.optionText} typography="EuclidCircularA-Regular">
+                  {t('credential.delete')}
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
         </ScrollView>
         <ModalBottomHalf visible={showContextualMenu} onClose={handleShowContextMenu}>
           <TouchableOpacity style={styles.containerOptionCard} onPress={onPressPresentCredential}>
-            <Text style={styles.actionText}>{t('credential.present')}</Text>
+            <Text typography="EuclidCircularA-Regular" style={styles.actionText}>
+              {t('credential.present')}
+            </Text>
           </TouchableOpacity>
         </ModalBottomHalf>
       </SafeAreaView>

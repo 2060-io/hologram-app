@@ -19,17 +19,23 @@ const ContextualMenu = ({ onSelectOption, connectionIconUrl, menu }: ContextualM
         )}
         <View style={styles.containerActionHeader}>
           {menu.title && (
-            <Text fontFamily="EuclidCircularA-Medium" style={styles.actionTitle}>
+            <Text typography="EuclidCircularA-Medium" style={styles.actionTitle}>
               {menu.title}
             </Text>
           )}
-          {menu.description && <Text style={styles.actionDescription}>{menu.description}</Text>}
+          {menu.description && (
+            <Text typography="EuclidCircularA-Regular" style={styles.actionDescription}>
+              {menu.description}
+            </Text>
+          )}
         </View>
       </View>
       {menu.options.map(({ name, title }) => (
         <View key={name} style={styles.containerOptionCard}>
           <TouchableOpacity key={name} style={styles.containerAction} onPress={() => onSelectOption(name)}>
-            <Text style={styles.actionText}>{title}</Text>
+            <Text typography="EuclidCircularA-Regular" style={styles.actionText}>
+              {title}
+            </Text>
           </TouchableOpacity>
         </View>
       ))}

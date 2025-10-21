@@ -81,7 +81,7 @@ const ShareMessages = ({ navigation }: Props) => {
             title: t('navigation.shareWith'),
             defaultBackButton: (
               <TouchableOpacity style={styles.headerLeft} onPress={() => navigation.goBack()}>
-                <Text fontFamily="EuclidCircularA-Medium" style={styles.headerBtnText}>
+                <Text typography="EuclidCircularA-Medium" style={styles.headerBtnText}>
                   {t('general.cancel')}
                 </Text>
               </TouchableOpacity>
@@ -93,11 +93,11 @@ const ShareMessages = ({ navigation }: Props) => {
         />
       </View>
       <View style={styles.shareContainer}>
-        <Text fontFamily="EuclidCircularA-Medium" style={styles.connectionsToShareText} numberOfLines={1}>
+        <Text typography="EuclidCircularA-Medium" style={styles.connectionsToShareText} numberOfLines={1}>
           {selectedConnectionNames}
         </Text>
         <TouchableOpacity
-          style={[styles.shareButton, isShareButtonDisabled ? styles.disabledForward : styles.enabledForward]}
+          style={[styles.shareButton, { opacity: isShareButtonDisabled ? 0.5 : 1 }]}
           disabled={isShareButtonDisabled}
           onPress={onShareMessages}
         >

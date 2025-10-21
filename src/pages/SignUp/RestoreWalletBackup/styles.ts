@@ -13,10 +13,6 @@ export default (theme: AppTheme) =>
       paddingTop: 35,
       alignItems: 'center',
     },
-    restoreContainer: {
-      marginTop: 35,
-      width: '100%',
-    },
     headerLeft: {
       paddingLeft: 15,
     },

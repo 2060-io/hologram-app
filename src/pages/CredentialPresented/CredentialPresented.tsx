@@ -38,7 +38,7 @@ const CredentialPresented = ({ navigation, route }: Props) => {
     navigation.setOptions({
       headerRight: () => (
         <TouchableOpacity style={styles.headerRight} onPress={goToChatScreen}>
-          <Text fontFamily="EuclidCircularA-Medium" style={styles.headerRightText}>
+          <Text typography="EuclidCircularA-Medium" style={styles.headerRightText}>
             {t('general.done')}
           </Text>
         </TouchableOpacity>
@@ -51,9 +51,9 @@ const CredentialPresented = ({ navigation, route }: Props) => {
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.subContainer}>
           <SvgIcon fill={theme.colors.green} name="done" width={64} height={64} />
-          <Text style={[styles.title, styles.mainTitle]}>
+          <Text style={[styles.title, styles.mainTitle]} typography="EuclidCircularA-Regular">
             {t('presentationRequest.successfullyReceived')}
-            <Text style={styles.title} fontFamily="EuclidCircularA-SemiBold">
+            <Text style={styles.title} typography="EuclidCircularA-SemiBold">
               {verifier?.name}
             </Text>
           </Text>
@@ -63,21 +63,25 @@ const CredentialPresented = ({ navigation, route }: Props) => {
           <View style={styles.card}>
             <View style={styles.presentedDateContainer}>
               <SvgIcon fill={theme.isDarkMode ? theme.colors.secondaryGrey : '#6A8994'} name="personSquare" />
-              <View style={styles.presentedDateText}>
-                <Text fontFamily="EuclidCircularA-Bold" style={styles.presentedText}>
+              <View style={{ marginLeft: 15 }}>
+                <Text typography="EuclidCircularA-Bold" style={styles.presentedText}>
                   {t('presentationRequest.presented')}
                 </Text>
-                <Text style={styles.presentedText}>{presentedAt}</Text>
+                <Text typography="EuclidCircularA-Regular" style={styles.presentedText}>
+                  {presentedAt}
+                </Text>
               </View>
             </View>
             <View style={styles.issuerContainer}>
               <Avatar uri={verifier?.logoUrl} label={verifier?.name} size="13%" />
-              <Text fontFamily="EuclidCircularA-Medium" style={styles.verifierName}>
+              <Text typography="EuclidCircularA-Medium" style={styles.verifierName}>
                 {verifier?.name}
               </Text>
             </View>
             <TouchableOpacity style={styles.viewInChatButton} onPress={goToChatScreen}>
-              <Text style={styles.viewInChatText}>{t('presentationRequest.viewInChat')}</Text>
+              <Text style={styles.viewInChatText} typography="EuclidCircularA-Regular">
+                {t('presentationRequest.viewInChat')}
+              </Text>
             </TouchableOpacity>
           </View>
         </View>

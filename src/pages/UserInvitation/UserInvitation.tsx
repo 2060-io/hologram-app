@@ -31,7 +31,7 @@ const UserInvitation = ({
     navigation.setOptions({
       headerLeft: () => (
         <TouchableOpacity style={styles.btnDone} onPress={() => navigation.goBack()}>
-          <Text fontFamily="EuclidCircularA-Medium" style={styles.headerText}>
+          <Text typography="EuclidCircularA-Medium" style={styles.headerText}>
             {t('chat.done')}
           </Text>
         </TouchableOpacity>
@@ -39,7 +39,7 @@ const UserInvitation = ({
       headerStyle: globalStyles.headerStyle,
       headerRight: () => (
         <TouchableOpacity style={styles.btnRefresh} onPress={createNewInvitation}>
-          <Text fontFamily="EuclidCircularA-Medium" style={styles.headerText}>
+          <Text typography="EuclidCircularA-Medium" style={styles.headerText}>
             {t('invitation.refresh')}
           </Text>
         </TouchableOpacity>
@@ -72,17 +72,14 @@ const UserInvitation = ({
 
   return (
     <SafeAreaView style={styles.containerRoot}>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollViewContentContainerStyle}
-      >
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ flexGrow: 1 }}>
         <View style={styles.containerContent}>
           <Avatar
             uri={getPictureDataUrl(userProfileData?.displayPicture)}
             label={userProfileData?.displayName}
             size="46%"
           />
-          <Text fontFamily="EuclidCircularA-Medium" style={styles.displayName}>
+          <Text typography="EuclidCircularA-Medium" style={styles.displayName}>
             {userProfileData?.displayName}
           </Text>
           <View>
@@ -94,11 +91,13 @@ const UserInvitation = ({
                 value={url}
               />
             </View>
-            <Text style={styles.pressRefreshText}>{t('invitation.pressRefresh')}</Text>
+            <Text typography="EuclidCircularA-Regular" style={styles.pressRefreshText}>
+              {t('invitation.pressRefresh')}
+            </Text>
           </View>
           <TouchableOpacity style={styles.containerBtnShare} activeOpacity={0.6} onPress={shareInvitation}>
             <SvgIcon name="shareSocial" fill={theme.colors.white} />
-            <Text fontFamily="EuclidCircularA-Medium" style={styles.btnShareText}>
+            <Text typography="EuclidCircularA-Medium" style={styles.btnShareText}>
               {t('connection.share')}
             </Text>
           </TouchableOpacity>

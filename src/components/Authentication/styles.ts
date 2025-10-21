@@ -8,7 +8,7 @@ export default (theme: AppTheme) =>
   StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: theme.colors.white,
+      backgroundColor: 'white',
       alignItems: 'center',
       justifyContent: 'center',
     },

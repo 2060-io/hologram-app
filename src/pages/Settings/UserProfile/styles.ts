@@ -12,10 +12,4 @@ export default (theme: AppTheme) =>
       color: theme.colors.green,
       fontSize: theme.fontSize.md2 + 1,
     },
-    headerLeft: {
-      paddingLeft: 14,
-    },
-    headerRight: {
-      paddingRight: 14,
-    },
   })

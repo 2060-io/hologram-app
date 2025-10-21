@@ -27,7 +27,9 @@ const DateByTimeRangeView = ({ currentMessageCreatedAt, previousMessageCreatedAt
 
   return (
     <View style={styles.containerDay}>
-      <Text style={styles.textDay}>{getFormattedDateRange(new Date(currentMessageCreatedAt))}</Text>
+      <Text typography="EuclidCircularA-Regular" style={styles.textDay}>
+        {getFormattedDateRange(new Date(currentMessageCreatedAt))}
+      </Text>
     </View>
   )
 }

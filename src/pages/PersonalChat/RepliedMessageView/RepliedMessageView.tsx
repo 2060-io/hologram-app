@@ -33,12 +33,12 @@ const RepliedMessageView: React.FC<Props> = memo(props => {
       <View style={styles.containerInfoUser}>
         <View style={styles.containerPreview}>
           <SvgIcon name="reply" width={17.12} height={17.12} fill={theme.colors.lightGrey} />
-          <Text style={styles.replyTo} numberOfLines={1}>
+          <Text typography="EuclidCircularA-Regular" style={styles.replyTo} numberOfLines={1}>
             {repliedTo}
           </Text>
         </View>
         <View style={styles.containerPreview}>
-          <Text style={styles.replyMsg} numberOfLines={1}>
+          <Text typography="EuclidCircularA-Regular" style={styles.replyMsg} numberOfLines={1}>
             {repliedMessage.preview}
           </Text>
         </View>

@@ -59,12 +59,6 @@ const styles = (theme: AppTheme) =>
       fontSize: theme.fontSize.md2,
       color: theme.colors.green,
     },
-    enabledAcceptButton: {
-      opacity: 1,
-    },
-    disabledAcceptButton: {
-      opacity: 0.5,
-    },
   })
 
 export default styles

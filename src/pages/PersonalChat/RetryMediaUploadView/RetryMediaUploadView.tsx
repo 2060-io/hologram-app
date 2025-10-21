@@ -37,7 +37,7 @@ const RetryMediaUploadView: React.FC<Props> = ({
         ) : (
           <TouchableOpacity style={styles.btn} onPress={onRetryMediaUpload}>
             <SvgIcon name="upload" fill={theme.colors.primary} />
-            <Text fontFamily="EuclidCircularA-Medium" style={styles.btnText}>
+            <Text typography="EuclidCircularA-Medium" style={styles.btnText}>
               {t('general.retry').toUpperCase()}
             </Text>
           </TouchableOpacity>

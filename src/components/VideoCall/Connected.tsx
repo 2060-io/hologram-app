@@ -159,10 +159,7 @@ const Connected = ({
       )}
       <View style={[styles.buttonsContainer, { display: buttonsVisibility }]}>
         <View
-          style={[
-            styles.buttonsSubContainer,
-            didcommCallType === 'service' ? styles.hideButtons : styles.displayButtons,
-          ]}
+          style={{ ...styles.buttonsSubContainer, display: didcommCallType === 'service' ? 'none' : 'flex' }}
         >
           <CallButton
             text={t('call.speaker')}

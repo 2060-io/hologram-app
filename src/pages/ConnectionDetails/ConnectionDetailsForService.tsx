@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet } from 'react-native'
+import { View } from 'react-native'
 
 import BaseConnectionDetails, { ConnectionDetailsProps } from './BaseConnectionDetails'
 
@@ -14,19 +14,13 @@ const ConnectionDetailsForService = (props: ConnectionDetailsProps) => {
     <BaseConnectionDetails
       {...props}
       mainInfo={
-        serviceInfo ? (
-          <ServiceMainInfo serviceInfo={serviceInfo} containerStyle={styles.mainInfoContainer} />
-        ) : null
+        <View style={{ marginVertical: 20 }}>
+          {serviceInfo && <ServiceMainInfo serviceInfo={serviceInfo} />}
+        </View>
       }
-      footerInfo={serviceInfo ? <ProofOfTrust serviceInfo={serviceInfo} /> : null}
+      footerInfo={<View>{serviceInfo && <ProofOfTrust serviceInfo={serviceInfo} />}</View>}
     />
   )
 }
-
-const styles = StyleSheet.create({
-  mainInfoContainer: {
-    marginVertical: 20,
-  },
-})
 
 export default ConnectionDetailsForService

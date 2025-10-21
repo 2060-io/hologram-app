@@ -46,21 +46,21 @@ const MessageDetails = ({ route }: Props) => {
             renderCustomHeader={() => <></>}
           />
         </View>
-        <Text style={styles.infoText}>
+        <Text typography="EuclidCircularA-Regular" style={styles.infoText}>
           {`${t('personalChat.sent')} ${getTransformedDate(selectedMessage.createdAt)}`}
         </Text>
         {receivedReceipt && (
-          <Text style={styles.infoText}>
+          <Text typography="EuclidCircularA-Regular" style={styles.infoText}>
             {`${t('personalChat.received')} ${getTransformedDate(receivedReceipt.timestamp)}`}
           </Text>
         )}
         {viewedReceipt && (
-          <Text style={styles.infoText}>
+          <Text typography="EuclidCircularA-Regular" style={styles.infoText}>
             {`${t('personalChat.read')} ${getTransformedDate(viewedReceipt.timestamp)}`}
           </Text>
         )}
       </View>
-      <Text fontFamily="EuclidCircularA-Medium" style={styles.sentByText}>
+      <Text typography="EuclidCircularA-Medium" style={styles.sentByText}>
         {t('personalChat.sentBy')}
       </Text>
       <View style={styles.senderContainer}>
@@ -70,7 +70,7 @@ const MessageDetails = ({ route }: Props) => {
           size="8.41%"
           bgAvatarInitials={theme.colors.secondary}
         />
-        <Text fontFamily="EuclidCircularA-Medium" style={styles.senderText}>
+        <Text typography="EuclidCircularA-Medium" style={styles.senderText}>
           {userSender?.name}
         </Text>
       </View>

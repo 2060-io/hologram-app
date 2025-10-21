@@ -61,6 +61,31 @@ class FileChunkGenerator(reactContext: ReactApplicationContext) :
         promise.resolve(promiseArray)
     }
 
+    override fun readChunk(filePath: String, offset: Double, length: Double, promise: Promise) {
+        Log.d(
+            "FileChunkGenerator", ("read chunk for file: " + filePath
+                    + " at offset " + offset + "with length " + length)
+        )
+        try {
+            val inputFile = File(filePath)
+            val fis = FileInputStream(inputFile)
+
+            val data = ByteArray(length.toInt())
+            fis.skip(offset.toLong())
+            Log.d("FileChunkGenerator", "reading chunk")
+            fis.read(data)
+            Log.d("FileChunkGenerator", "chunk succesfully read")
+            val result = Arguments.createArray()
+            for (b in data) {
+                result.pushInt(b.toInt())
+            }
+            promise.resolve(result)
+        } catch (e: Exception) {
+            Log.d("FileChunkGenerator", "Error: " + e.message)
+            promise.reject("-1", e.message)
+        }
+    }
+
     companion object {
     const val NAME = "FileChunkGenerator"
   }

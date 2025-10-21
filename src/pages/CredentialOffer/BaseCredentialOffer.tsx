@@ -57,7 +57,7 @@ const BaseCredentialOffer: React.FC<Props> = ({
       headerLeft: props =>
         enableAcceptRejectButtons ? (
           <TouchableOpacity style={styles.headerLeft} onPress={displayModalRefuseConfirmation}>
-            <Text fontFamily="EuclidCircularA-Medium" style={styles.headerBtnText}>
+            <Text typography="EuclidCircularA-Medium" style={styles.headerBtnText}>
               {t('general.refuse')}
             </Text>
           </TouchableOpacity>
@@ -67,7 +67,7 @@ const BaseCredentialOffer: React.FC<Props> = ({
       headerRight: () =>
         enableAcceptRejectButtons ? (
           <TouchableOpacity style={styles.headerRight} onPress={accept}>
-            <Text fontFamily="EuclidCircularA-Medium" style={styles.headerBtnText}>
+            <Text typography="EuclidCircularA-Medium" style={styles.headerBtnText}>
               {t('general.accept')}
             </Text>
           </TouchableOpacity>
@@ -90,18 +90,15 @@ const BaseCredentialOffer: React.FC<Props> = ({
       {credentialDetails && (
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.subContainer}>
-            <Text style={styles.credentialTitle}>
+            <Text typography="EuclidCircularA-Regular" style={styles.credentialTitle}>
               {credentialDetails.mainInfo.issuer.name} {t('credentialOffer.offeringYou')}
             </Text>
-            <Text
-              fontFamily="EuclidCircularA-Bold"
-              style={[styles.credentialTitle, styles.verifiableCredentialText]}
-            >
+            <Text typography="EuclidCircularA-Bold" style={[styles.credentialTitle, { marginBottom: 15 }]}>
               {t('credentialOffer.verifiableCredential')}
             </Text>
             <CredentialDetails credentialDetails={credentialDetails} />
             <View style={styles.containerSectionIssuerInfo}>
-              <Text fontFamily="EuclidCircularA-Medium" style={styles.titleIssuerInfo}>
+              <Text typography="EuclidCircularA-Medium" style={styles.titleIssuerInfo}>
                 {t('credentialOffer.issuerInformation')}
               </Text>
               <ServiceInformation

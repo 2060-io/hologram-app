@@ -68,7 +68,7 @@ const CallOfferChatView = ({ metadata, didcommThreadId, role }: Props) => {
     [CallOfferState.REJECTED]: <State text={t('call.callRejected')} type="error" />,
     [CallOfferState.EXPIRED]: (
       <View style={styles.expiredContainer}>
-        <Text fontFamily="EuclidCircularA-Bold" style={styles.expiredText}>
+        <Text typography="EuclidCircularA-Bold" style={styles.expiredText}>
           {t('call.expiredCall')}
         </Text>
       </View>
@@ -84,7 +84,9 @@ const CallOfferChatView = ({ metadata, didcommThreadId, role }: Props) => {
     <View style={styles.container}>
       <Header theme={theme} title={t('preview.callOffer')} leftIconName="incomingCall" />
       <View style={styles.subContainer}>
-        <Text style={styles.title}>{getMainText()}</Text>
+        <Text style={styles.title} typography="EuclidCircularA-Regular">
+          {getMainText()}
+        </Text>
         {footer[callState]}
       </View>
     </View>

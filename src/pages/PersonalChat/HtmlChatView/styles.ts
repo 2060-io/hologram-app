@@ -52,22 +52,4 @@ export default (theme: AppTheme) =>
       backgroundColor: theme.isDarkMode ? theme.colors.secondary : theme.colors.primary,
       paddingRight: 5,
     },
-    openWebViewButton: {
-      marginHorizontal: 6,
-    },
-    secureUrlButton: {
-      opacity: 1,
-    },
-    unsecureUrlButton: {
-      opacity: 0.5,
-    },
-    fullScreenOpenedContainer: {
-      flex: 1,
-    },
-    displayWebView: {
-      display: 'flex',
-    },
-    hideWebView: {
-      display: 'flex',
-    },
   })

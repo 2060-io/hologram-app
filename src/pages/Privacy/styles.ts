@@ -49,7 +49,4 @@ export default (theme: AppTheme) =>
       fontSize: theme.fontSize.md2,
       color: theme.colors.primaryText,
     },
-    automaticMediaDownloadTitle: {
-      marginVertical: 12,
-    },
   })

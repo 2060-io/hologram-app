@@ -52,7 +52,11 @@ const Reactions = ({ role: role, reactions }: Props) => {
           <NativeText key={reaction.emoji} style={styles.reactionEmoji}>
             {reaction.emoji}
           </NativeText>
-          {reaction.quantity > 1 && <Text style={styles.reactionEmojiQuantity}>{reaction.quantity}</Text>}
+          {reaction.quantity > 1 && (
+            <Text typography="EuclidCircularA-Regular" style={styles.reactionEmojiQuantity}>
+              {reaction.quantity}
+            </Text>
+          )}
         </View>
       ))}
     </View>

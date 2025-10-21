@@ -22,7 +22,7 @@ const State = ({ text, type = 'success' }: Props) => {
   const styles = getStyles(theme, mainColor)
   return (
     <View style={styles.container}>
-      <Text fontFamily="EuclidCircularA-Bold" style={styles.text}>
+      <Text typography="EuclidCircularA-Bold" style={styles.text}>
         {text}
       </Text>
     </View>

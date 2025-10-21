@@ -38,12 +38,6 @@ export default (theme: AppTheme) =>
       width: '100%',
       height: '100%',
     },
-    displayButtons: {
-      display: 'flex',
-    },
-    hideButtons: {
-      display: 'none',
-    },
     buttonsContainer: {
       position: 'absolute',
       bottom: 70,

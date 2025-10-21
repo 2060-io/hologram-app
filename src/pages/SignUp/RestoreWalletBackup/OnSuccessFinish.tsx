@@ -20,14 +20,16 @@ const OnSuccessFinish = ({ goToHomeScreen }: Props) => {
 
   return (
     <>
-      <Text style={styles.title} fontFamily="EuclidCircularA-Medium">
+      <Text style={styles.title} typography="EuclidCircularA-Medium">
         {t('signUp.restoringWalletFromBackup')}
       </Text>
       <View style={styles.card}>
-        <Text style={styles.downloadProgress}>{`${t('signUp.restoringWallet')}... 100% ${t('done')}`}</Text>
+        <Text typography="EuclidCircularA-Regular" style={styles.downloadProgress}>
+          {`${t('signUp.restoringWallet')}... 100% ${t('done')}`}
+        </Text>
         <Progress progress={100} progressColor={theme.colors.green} />
       </View>
-      <Text style={styles.text}>
+      <Text typography="EuclidCircularA-Regular" style={styles.text}>
         {t('signUp.successfullyRestored', { name: userProfileData?.displayName })}
       </Text>
       <MainButton onPress={goToHomeScreen} text={t('getStarted')} style={styles.continueButton} />

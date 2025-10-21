@@ -12,9 +12,6 @@ const styles = (theme: AppTheme) =>
       paddingTop: 15,
       paddingHorizontal: 15,
     },
-    headerRight: {
-      marginRight: 14,
-    },
     containerCardBtnDelete: {
       ...cardStyles(theme),
       ...cardShadowStyles(theme.colors),

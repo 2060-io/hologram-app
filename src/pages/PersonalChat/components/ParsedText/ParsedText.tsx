@@ -24,7 +24,7 @@ const ParsedText: React.FC<ParsedTextProps> = ({ theme, text, textProps }) => {
   const textIncludesHttp = text?.includes('http')
 
   return (
-    <Text style={styles.textStyle} {...textProps}>
+    <Text style={styles.textStyle} typography="EuclidCircularA-Regular" {...textProps}>
       {textIncludesHttp
         ? text?.split?.(' ')?.map(value => {
             if (value.startsWith('http')) {
@@ -36,6 +36,7 @@ const ParsedText: React.FC<ParsedTextProps> = ({ theme, text, textProps }) => {
                     styles.link,
                     { color: isSecureUrl ? theme.colors.green : theme.colors.orange },
                   ]}
+                  typography="EuclidCircularA-Regular"
                   onPress={() => onUrlPress(value)}
                   key={value}
                 >

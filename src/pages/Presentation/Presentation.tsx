@@ -23,7 +23,7 @@ const Presentation = ({ route }: Props) => {
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.subContainer}>
           {proofState !== ProofState.PresentationReceived && (
-            <Text fontFamily="EuclidCircularA-Medium" style={styles.valuesNoRevealedYet}>
+            <Text typography="EuclidCircularA-Medium" style={styles.valuesNoRevealedYet}>
               {t('presentationRequest.valuesNoRevealedYet')}
             </Text>
           )}

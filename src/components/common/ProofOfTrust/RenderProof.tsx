@@ -32,7 +32,7 @@ const RenderProof = ({ serviceInfo }: RenderProofProps) => {
   const trustRegistry = certificationEntity?.trustRegistry
 
   const Separator = () => (
-    <Text fontFamily="EuclidCircularA-Bold" style={styles.separator}>
+    <Text typography="EuclidCircularA-Bold" style={{ color: theme.colors.green }}>
       |
     </Text>
   )
@@ -40,7 +40,9 @@ const RenderProof = ({ serviceInfo }: RenderProofProps) => {
   const Outer = ({ name, status }: OuterProofProps) => (
     <View style={styles.proofItemContainer}>
       <View style={styles.proofItemSubContainer}>
-        <Text style={styles.entityName}>{name}</Text>
+        <Text typography="EuclidCircularA-Regular" style={styles.entityName}>
+          {name}
+        </Text>
         <VerifiedIcon status={status} />
       </View>
     </View>
@@ -51,10 +53,14 @@ const RenderProof = ({ serviceInfo }: RenderProofProps) => {
       <View style={styles.proofItemContainer}>
         <View style={styles.proofItemSubContainer}>
           <Text style={styles.flagEmoji}>{getFlagEmoji(countryCode)}</Text>
-          <Text style={styles.entityName}>{entityName}</Text>
+          <Text typography="EuclidCircularA-Regular" style={styles.entityName}>
+            {entityName}
+          </Text>
           <VerifiedIcon status={status} />
         </View>
-        <Text style={styles.entityName}>{officialPublicRegistryNumber}</Text>
+        <Text typography="EuclidCircularA-Regular" style={styles.entityName}>
+          {officialPublicRegistryNumber}
+        </Text>
       </View>
     )
   }

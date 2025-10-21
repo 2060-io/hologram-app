@@ -19,12 +19,14 @@ const DeletedMessageView = memo(({ displayTimeAndTicks, messageTime }: Props) =>
 
   return (
     <View style={styles.container}>
-      <Text style={styles.deletedText} fontFamily="EuclidCircularA-Italic">
+      <Text style={styles.deletedText} typography="EuclidCircularA-Italic">
         {t('personalChat.messageDeleted')}
       </Text>
       {displayTimeAndTicks && (
         <View style={styles.subContainerAckAndTime}>
-          <Text style={styles.timeText}>{messageTime}</Text>
+          <Text typography="EuclidCircularA-Regular" style={styles.timeText}>
+            {messageTime}
+          </Text>
         </View>
       )}
     </View>

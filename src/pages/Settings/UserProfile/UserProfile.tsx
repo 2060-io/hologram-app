@@ -48,16 +48,16 @@ const UserProfile = ({ navigation }: Props) => {
     navigation.setOptions({
       headerStyle: globalStyles.headerStyle,
       headerLeft: () => (
-        <TouchableOpacity style={styles.headerLeft} onPress={onHandleCancelingValueChanges}>
-          <Text fontFamily="EuclidCircularA-Medium" style={styles.headerBtnText}>
+        <TouchableOpacity style={{ paddingLeft: 20 }} onPress={onHandleCancelingValueChanges}>
+          <Text typography="EuclidCircularA-Medium" style={styles.headerBtnText}>
             {t('general.cancel')}
           </Text>
         </TouchableOpacity>
       ),
       headerRight: () =>
         (isChangeBase64 || isChangeDisplayName) && (
-          <TouchableOpacity style={styles.headerRight} onPress={onSaveInfoUser}>
-            <Text fontFamily="EuclidCircularA-Medium" style={styles.headerBtnText}>
+          <TouchableOpacity style={{ paddingRight: 20 }} onPress={onSaveInfoUser}>
+            <Text typography="EuclidCircularA-Medium" style={styles.headerBtnText}>
               {t('general.done')}
             </Text>
           </TouchableOpacity>

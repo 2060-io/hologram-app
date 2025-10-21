@@ -80,22 +80,16 @@ const SelectingMessagesBottomMenu = ({
       <TouchableOpacity
         disabled={!isDeleteButtonEnabled}
         onPress={showModalConfirmMessagesDeletion}
-        style={[
-          styles.deleteButtonContainer,
-          isDeleteButtonEnabled ? styles.enabledButton : styles.disabledButton,
-        ]}
+        style={[styles.deleteButtonContainer, { opacity: isDeleteButtonEnabled ? 1 : 0.5 }]}
       >
         <SvgIcon name="trash" fill={theme.colors.blue} width={20} height={20} />
       </TouchableOpacity>
-      <Text fontFamily="EuclidCircularA-Medium" style={styles.selectedText}>
+      <Text typography="EuclidCircularA-Medium" style={styles.selectedText}>
         {t('general.selected', { count: selectedMessages.length })}
       </Text>
       <TouchableOpacity
         disabled={!isForwardButtonEnabled}
-        style={[
-          styles.forwardButtonContainer,
-          isForwardButtonEnabled ? styles.enabledButton : styles.disabledButton,
-        ]}
+        style={[styles.forwardButtonContainer, { opacity: isForwardButtonEnabled ? 1 : 0.5 }]}
         onPress={goToForwardMessages}
       >
         <SvgIcon name="forward" fill={theme.colors.blue} width={20} height={20} />

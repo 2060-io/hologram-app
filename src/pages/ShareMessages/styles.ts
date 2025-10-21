@@ -42,10 +42,4 @@ export default (theme: AppTheme) =>
       fontSize: theme.fontSize.md2,
       color: theme.colors.green,
     },
-    enabledForward: {
-      opacity: 1,
-    },
-    disabledForward: {
-      opacity: 0.5,
-    },
   })

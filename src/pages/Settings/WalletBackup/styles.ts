@@ -66,10 +66,6 @@ export default (theme: AppTheme) =>
       color: theme.colors.tertiaryText,
       paddingLeft: 12,
     },
-    buildBackupText: {
-      flex: 1,
-      color: theme.colors.secondaryGrey,
-    },
     errorTitle: {
       maxWidth: '80%',
       fontSize: theme.fontSize.lg,

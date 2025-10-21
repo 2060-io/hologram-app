@@ -24,7 +24,7 @@ const IncomingCall = () => {
     <SafeAreaView style={styles.container}>
       <View style={styles.subContainer}>
         <Avatar uri={displayPicture} label={connectionName} size="46%" />
-        <Text fontFamily="EuclidCircularA-Medium" style={styles.textConnectionName}>
+        <Text typography="EuclidCircularA-Medium" style={styles.textConnectionName}>
           {connectionName}
         </Text>
       </View>

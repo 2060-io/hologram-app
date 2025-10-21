@@ -33,10 +33,4 @@ export default (theme: AppTheme) =>
     footerContainer: {
       marginTop: theme.edges.messageMargin,
     },
-    credential: {
-      marginBottom: theme.edges.messageMargin,
-    },
-    lastCredential: {
-      marginBottom: 0,
-    },
   })

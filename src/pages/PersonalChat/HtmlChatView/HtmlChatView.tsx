@@ -56,6 +56,15 @@ const HtmlChatView = (props: HtmlChatViewProps) => {
 
   const handleImageError = (error: unknown) => logError('Error loading embedded web view image', error)
 
+  const renderOpenWebViewButton = () => (
+    <BlueButton
+      style={{ opacity: isUrlSecure ? 1 : 0.5, marginHorizontal: 6 }}
+      text={isUrlSecure ? t('general.open') : t('chat.unsecureLink')}
+      onPress={showWebView}
+      disabled={!isValidUrl}
+    />
+  )
+
   const renderMainInfo = () => (
     <React.Fragment>
       <Header theme={theme} title={t('personalChat.webLink')} leftIconName="link" />
@@ -72,9 +81,14 @@ const HtmlChatView = (props: HtmlChatViewProps) => {
             <Image style={styles.image} source={{ uri: metadata.icon }} onError={handleImageError} />
           ))}
         <View style={styles.detailsContainer}>
-          <Text style={styles.title}>{metadata.title}</Text>
-          <Text style={styles.description}>{metadata.description}</Text>
+          <Text typography="EuclidCircularA-Regular" style={styles.title}>
+            {metadata.title}
+          </Text>
+          <Text typography="EuclidCircularA-Regular" style={styles.description}>
+            {metadata.description}
+          </Text>
           <Text
+            typography="EuclidCircularA-Regular"
             style={{
               fontSize: theme.fontSize.sm,
               color: isUrlSecure ? theme.colors.green : theme.colors.orange,
@@ -120,16 +134,9 @@ const HtmlChatView = (props: HtmlChatViewProps) => {
   return (
     <View style={styles.container}>
       {renderMainInfo()}
-      <BlueButton
-        style={[styles.openWebViewButton, isUrlSecure ? styles.secureUrlButton : styles.unsecureUrlButton]}
-        text={isUrlSecure ? t('general.open') : t('chat.unsecureLink')}
-        onPress={showWebView}
-        disabled={!isValidUrl}
-      />
+      {!isShowingWebView && renderOpenWebViewButton()}
       {openingMode === 'embedded' ? (
-        <View style={[isShowingWebView ? { ...styles.displayWebView, ...dimensions } : styles.hideWebView]}>
-          {renderWebView()}
-        </View>
+        <View style={[{ display: isShowingWebView ? 'flex' : 'none' }, dimensions]}>{renderWebView()}</View>
       ) : (
         <Modal
           visible={isShowingWebView}
@@ -137,7 +144,7 @@ const HtmlChatView = (props: HtmlChatViewProps) => {
           supportedOrientations={['portrait', 'landscape']}
           statusBarTranslucent={false}
         >
-          <SafeAreaView style={styles.fullScreenOpenedContainer}>
+          <SafeAreaView style={{ flex: 1 }}>
             {!isFullScreen && renderCustomHeader({ onSomeActionDispatched: closeWebView })}
             {renderWebView()}
           </SafeAreaView>

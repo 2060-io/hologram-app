@@ -31,16 +31,18 @@ import { toast } from '@2060/utils/toast'
 interface Props extends BottomTabScreenProps<ParamListBase, 'Scan', 'tab_navigator_home'> {}
 
 const Scan = ({ navigation }: Props) => {
-  const { t } = useTranslation()
+  const [scannedCode, setScannedCode] = useState('')
+  const [tabType, setTabType] = useState<'link' | 'scanner'>('scanner')
   const theme = useTheme()
   const styles = getStyles(theme)
+  const [processing, startProcessTransition] = useTransition()
+
+  // check if camera page is active
   const isFocused = useIsFocused()
   const { isAppActive } = useAppState()
   const { agent } = useMobileAgent()
-  const [scannedCode, setScannedCode] = useState('')
-  const [tabType, setTabType] = useState<'link' | 'scanner'>('scanner')
+  const { t } = useTranslation()
   const [isActiveCamera, setIsActiveCamera] = useState(false)
-  const [processing, startProcessTransition] = useTransition()
 
   useEffect(() => {
     setIsActiveCamera(isFocused && isAppActive)
@@ -149,17 +151,21 @@ const Scan = ({ navigation }: Props) => {
   const renderScanner = () => (
     <View style={styles.containerCodeScanner}>
       <View style={styles.containerDescriptionScanner}>
-        <Text style={styles.textDescriptionScanner}>{t('scan.textDescriptionScanner')}</Text>
+        <Text typography="EuclidCircularA-Regular" style={styles.textDescriptionScanner}>
+          {t('scan.textDescriptionScanner')}
+        </Text>
       </View>
       <CodeScanner isActive={isActiveCamera} onBarcodeScanned={processCode} />
     </View>
   )
 
   const renderLinkInput = () => (
-    <KeyboardAvoidingView behavior={behavior} style={styles.container}>
+    <KeyboardAvoidingView behavior={behavior} style={{ flex: 1 }}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.containerContent}>
-          <Text style={styles.textDescriptionLink}>{t('scan.textDescriptionLink')}</Text>
+          <Text typography="EuclidCircularA-Regular" style={styles.textDescriptionLink}>
+            {t('scan.textDescriptionLink')}
+          </Text>
           <View style={styles.containerInput}>
             <TextInput
               value={scannedCode}
@@ -188,13 +194,10 @@ const Scan = ({ navigation }: Props) => {
   }, [isFocused])
 
   return (
-    <SafeAreaView style={styles.container} edges={['left', 'right']}>
-      <ScrollView
-        contentContainerStyle={styles.scrollViewContentContainerStyle}
-        showsVerticalScrollIndicator={false}
-      >
+    <SafeAreaView style={{ flex: 1 }} edges={['left', 'right']}>
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false}>
         <ModalLoading visible={processing} />
-        <View style={styles.container}>
+        <View style={{ flex: 1 }}>
           {renderTabs()}
           {tabType === 'link' && renderLinkInput()}
           {tabType === 'scanner' && renderScanner()}

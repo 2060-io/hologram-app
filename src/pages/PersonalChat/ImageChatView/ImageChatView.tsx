@@ -78,10 +78,7 @@ const ImageChatView = (props: ImageProps) => {
 
   return (
     <View
-      style={[
-        displayTimeAndTicks ? styles.withTimeAndTicksContainer : styles.withoutTimeAndTicksContainer,
-        { width: imageStyle.width },
-      ]}
+      style={{ width: imageStyle.width, marginBottom: displayTimeAndTicks ? theme.edges.messageMargin : 0 }}
     >
       {isDownloaded && imagePreviewUri ? (
         <>
@@ -118,7 +115,7 @@ const ImageChatView = (props: ImageProps) => {
             {isDownloading ? (
               <React.Fragment>
                 <ActivityIndicator color={theme.colors.green} size="large" />
-                <Text fontFamily="EuclidCircularA-Medium" style={styles.spinnerText}>
+                <Text typography="EuclidCircularA-Medium" style={styles.spinnerText}>
                   {t('personalChat.downloadingImage')}
                 </Text>
               </React.Fragment>
@@ -126,7 +123,7 @@ const ImageChatView = (props: ImageProps) => {
               <TouchableOpacity style={styles.btnDownload} onPress={downloadMedia}>
                 <Icon as="Ionicons" name="arrow-down-circle" size={30} color={theme.colors.primaryText} />
                 {byteCount && (
-                  <Text fontFamily="EuclidCircularA-Medium" style={styles.textsize}>
+                  <Text typography="EuclidCircularA-Medium" style={styles.textsize}>
                     {getFileSize(byteCount)}
                   </Text>
                 )}

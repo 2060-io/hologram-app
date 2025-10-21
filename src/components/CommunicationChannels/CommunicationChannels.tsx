@@ -35,7 +35,9 @@ const CommunicationChannels = ({
     return (
       <View style={styles.containerChannel} key={channel}>
         <SvgIcon name={channelIcons[channel] as keyof IconsNames} fill={iconAndTextColor} />
-        <Text style={[styles.channelText, { color: iconAndTextColor }]}>{t(`settings.${channel}`)}</Text>
+        <Text typography="EuclidCircularA-Regular" style={[styles.channelText, { color: iconAndTextColor }]}>
+          {t(`settings.${channel}`)}
+        </Text>
         <Switch isChecked={isChecked} onToggle={() => onToggleCommunicationChannels(isChecked, channel)} />
       </View>
     )

@@ -119,7 +119,7 @@ const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => 
       headerLeft: canConnect
         ? () => (
             <TouchableOpacity style={styles.btnRefuse} onPress={onRefuse}>
-              <Text fontFamily="EuclidCircularA-Medium" style={styles.headerBtnText}>
+              <Text typography="EuclidCircularA-Medium" style={styles.headerBtnText}>
                 {t('general.refuse')}
               </Text>
             </TouchableOpacity>
@@ -127,7 +127,7 @@ const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => 
         : () => <></>,
       headerRight: () => (
         <TouchableOpacity style={styles.btnAccept} onPress={onPressRightButton}>
-          <Text fontFamily="EuclidCircularA-Medium" style={styles.headerBtnText}>
+          <Text typography="EuclidCircularA-Medium" style={styles.headerBtnText}>
             {canConnect ? t('general.accept') : t('general.done')}
           </Text>
         </TouchableOpacity>
@@ -160,7 +160,7 @@ const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => 
             <View>
               <View style={styles.card}>
                 <Avatar uri={invitation?.imageUrl} label={invitation?.label} size="25%" withBorder={true} />
-                <Text fontFamily="EuclidCircularA-Medium" style={styles.invitationLabel}>
+                <Text typography="EuclidCircularA-Medium" style={styles.invitationLabel}>
                   {invitation?.label}
                 </Text>
                 {invitationType === 'peer' && (
@@ -169,13 +169,13 @@ const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => 
                   </Text>
                 )}
                 {invitationType === 'subInvitation' && (
-                  <Text style={styles.content}>
+                  <Text typography="EuclidCircularA-Regular" style={styles.content}>
                     {t('invitation.subConnectionInvitationDescription')}{' '}
-                    <Text fontFamily="EuclidCircularA-Bold" style={styles.fontFamilyBold}>
+                    <Text typography="EuclidCircularA-Bold" style={styles.fontFamilyBold}>
                       {`${invitation?.label} `}{' '}
                     </Text>
                     {t('invitation.subConnectionInvitationDescriptionAs')}{' '}
-                    <Text fontFamily="EuclidCircularA-Bold" style={styles.fontFamilyBold}>
+                    <Text typography="EuclidCircularA-Bold" style={styles.fontFamilyBold}>
                       {parentConnectionName}
                     </Text>
                   </Text>
@@ -183,7 +183,7 @@ const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => 
               </View>
               {!isAlreadyConnected && invitationType === 'peer' && (
                 <View style={styles.card}>
-                  <Text style={styles.enabledChannelsText}>
+                  <Text typography="EuclidCircularA-Regular" style={styles.enabledChannelsText}>
                     {`${invitation?.label} ${t('invitation.enabledCommunicationChannelsDescription')}`}
                   </Text>
                   <View style={styles.separator} />

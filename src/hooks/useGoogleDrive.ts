@@ -1,11 +1,13 @@
+import { Buffer } from '@credo-ts/core'
 import { GDrive, ListQueryBuilder } from '@robinbobin/react-native-google-drive-api-wrapper'
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
-import { downloadFile, read, stat } from 'react-native-fs'
+import { downloadFile, stat } from 'react-native-fs'
 import {
   googleDriveAuthorize,
   googleDriveGetAccessToken,
   googleDriveSelectAccount,
+  readChunk,
 } from 'react-native-local-native-modules'
 
 import {
@@ -28,17 +30,6 @@ type FilesProps = {
   id: string
 }
 
-const base64ToArrayBuffer = (base64: string) => {
-  const binaryString = atob(base64)
-  const len = binaryString.length
-  const bytes = new Uint8Array(len)
-  for (let i = 0; i < len; i++) {
-    bytes[i] = binaryString.charCodeAt(i)
-  }
-  return bytes
-}
-
-const TWO_MB = 1024 * 1024 * 2
 export const useGoogleDrive = () => {
   const [googleDriveConnection, setGoogleDriveConnection] = useState<null | GDrive>(null)
   const [isCloudAvailable, setIsCloudAvailable] = useState(false)
@@ -158,6 +149,7 @@ export const useGoogleDrive = () => {
       onBackupUploadFailure: (error: string) => void,
     ) => {
       try {
+        const TWO_MB = 256 * 1024 * 4 * 2
         const UPLOAD_SIZE_PER_CHUNK = TWO_MB
         const fileToUploadInfo = await stat(fileToUploadLocation)
         const numberOfChunks = Math.ceil(fileToUploadInfo.size / UPLOAD_SIZE_PER_CHUNK)
@@ -172,15 +164,15 @@ export const useGoogleDrive = () => {
         for (let i = 0; i < numberOfChunks; i++) {
           const chunkSize =
             i + 1 < numberOfChunks ? UPLOAD_SIZE_PER_CHUNK : fileToUploadInfo.size % UPLOAD_SIZE_PER_CHUNK
-          const chunk = await read(fileToUploadLocation, chunkSize, start, 'base64')
-          const buffer = base64ToArrayBuffer(chunk)
-          const end = start + buffer.length - 1
+          const fileChunkBase64 = await readChunk(fileToUploadLocation, start, chunkSize)
+          const base64ToBuffer = Buffer.from(fileChunkBase64)
+          const end = start + base64ToBuffer.length - 1
           const contentRange = `bytes ${start}-${end}/${fileToUploadInfo.size}`
           const chunkResponse = await axios({
             method: 'PUT',
             url: uploaderRequest.location,
             headers: { 'Content-Range': contentRange },
-            data: buffer,
+            data: base64ToBuffer,
           }).catch(() => log('Uploading backup file chunk'))
           const response = typeof chunkResponse === 'object' ? chunkResponse.data : null
           const progress = Number(((end / fileToUploadInfo.size) * 100).toFixed())

@@ -140,7 +140,7 @@ const SetPIN = ({ visible, onRequestClose, mode, oniOSDismiss }: Props) => {
     <Modal visible={visible} transparent onDismiss={oniOSDismiss}>
       <SafeAreaView style={styles.modalContainer}>
         <View style={styles.contentContainer}>
-          <Text fontFamily="EuclidCircularA-SemiBold" style={styles.title}>
+          <Text typography="EuclidCircularA-SemiBold" style={styles.title}>
             {getTitle(currentFlowState)}
           </Text>
           <View style={styles.pinContainer}>
@@ -154,15 +154,17 @@ const SetPIN = ({ visible, onRequestClose, mode, oniOSDismiss }: Props) => {
             style={styles.dialPadContainer}
             numColumns={3}
             data={DIAL_PAD}
-            columnWrapperStyle={styles.columnWrapperStyle}
-            contentContainerStyle={styles.columnWrapperStyle}
+            columnWrapperStyle={{ gap: 20 }}
+            contentContainerStyle={{ gap: 20 }}
             keyExtractor={(_, index) => `${index}`}
             scrollEnabled={false}
             renderItem={({ item }) => <Dial dial={item} onDialPressed={onDialPressed} />}
           />
-          <Text style={styles.footerText}>{getFooter(currentFlowState)}</Text>
+          <Text typography="EuclidCircularA-Regular" style={styles.footerText}>
+            {getFooter(currentFlowState)}
+          </Text>
           <TouchableOpacity onPress={cancel} style={styles.cancelButton}>
-            <Text fontFamily="EuclidCircularA-Medium" style={styles.cancelText}>
+            <Text typography="EuclidCircularA-Medium" style={styles.cancelText}>
               {t('general.cancel')}
             </Text>
           </TouchableOpacity>

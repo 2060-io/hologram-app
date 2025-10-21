@@ -25,7 +25,12 @@ const MenuItem = ({ id, icon, asIcon = 'Ionicons', label, isNotLast, onActionSel
   return (
     <>
       <TouchableOpacity onPress={onPress} style={styles.optionContainer} activeOpacity={0.7}>
-        <Text style={[styles.optionText, { color: iconColor[id] ?? theme.colors.blue }]}>{label}</Text>
+        <Text
+          typography="EuclidCircularA-Regular"
+          style={[styles.optionText, { color: iconColor[id] ?? theme.colors.blue }]}
+        >
+          {label}
+        </Text>
         <Icon name={icon} as={asIcon} size={15} color={iconColor[id] ?? theme.colors.green} />
       </TouchableOpacity>
       {isNotLast && <View style={styles.separator} />}

@@ -17,7 +17,10 @@ const CompressingVideo = ({ progress, cancelCompression }: Props) => {
   const styles = getStyles(theme)
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>{`${t('personalChat.processingVideo')} ${progress}%`}</Text>
+      <Text
+        typography="EuclidCircularA-Regular"
+        style={styles.text}
+      >{`${t('personalChat.processingVideo')} ${progress}%`}</Text>
       <Progress progress={progress} progressColor={theme.colors.green} />
       <MainButton text={t('general.cancel')} onPress={cancelCompression} />
     </View>

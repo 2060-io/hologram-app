@@ -13,7 +13,7 @@ const BlueButton = ({ text, ...buttonProps }: Props) => {
   const style = [styles.container, buttonProps?.style]
   return (
     <TouchableOpacity {...buttonProps} style={style}>
-      <Text fontFamily="EuclidCircularA-Bold" style={styles.buttonText}>
+      <Text typography="EuclidCircularA-Bold" style={styles.buttonText}>
         {text}
       </Text>
     </TouchableOpacity>

@@ -56,7 +56,9 @@ const MrzRequestChatView = (props: Props) => {
     <View style={styles.container}>
       <Header theme={theme} title={t('chat.mrzRequest')} leftIconName="id" />
       <View style={styles.subContainer}>
-        <Text style={styles.instructions}>{t('chat.mrzScanChatInst')}</Text>
+        <Text typography="EuclidCircularA-Regular" style={styles.instructions}>
+          {t('chat.mrzScanChatInst')}
+        </Text>
         <SvgIcon name="MRZ" width={'100%'} height={widthPercentageToDP('43')} style={styles.icon} />
         {footer[props.metadata.state]}
       </View>

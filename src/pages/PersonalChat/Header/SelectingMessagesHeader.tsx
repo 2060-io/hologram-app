@@ -29,7 +29,7 @@ const SelectingMessagesHeader: React.FC<Props> = ({ navigation, stopSelectingMes
           <SvgIcon name="arrowBack" width={28} height={28} fill={primaryText} />
         </TouchableOpacity>
         <TouchableOpacity activeOpacity={0.4} style={styles.rowContainer} onPress={stopSelectingMessagesMode}>
-          <Text style={[styles.headerBtnText, styles.cancelText]} fontFamily="EuclidCircularA-Medium">
+          <Text style={[styles.headerBtnText, styles.cancelText]} typography="EuclidCircularA-Medium">
             {t('general.cancel')}
           </Text>
           <SvgIcon name="close" width={28} height={28} fill={primaryText} />

@@ -1,9 +1,9 @@
 import React from 'react'
-import { StyleSheet, View } from 'react-native'
+import { View } from 'react-native'
 import Svg, { Path, SvgProps } from 'react-native-svg'
 
 const Link: React.FC<SvgProps> = props => (
-  <View style={styles.container}>
+  <View style={{ transform: [{ rotate: '325deg' }] }}>
     <Svg viewBox="0 0 17.444 8.722" {...props}>
       <Path
         data-name="Trazado 789"
@@ -13,11 +13,5 @@ const Link: React.FC<SvgProps> = props => (
     </Svg>
   </View>
 )
-
-const styles = StyleSheet.create({
-  container: {
-    transform: [{ rotate: '325deg' }],
-  },
-})
 
 export default Link

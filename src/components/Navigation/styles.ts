@@ -7,12 +7,6 @@ export default (theme: AppTheme) =>
     container: {
       flex: 1,
     },
-    display: {
-      display: 'flex',
-    },
-    hide: {
-      display: 'none',
-    },
     containerOpeningWallet: {
       flex: 1,
       backgroundColor: theme.isDarkMode ? theme.colors.secondary : theme.colors.primary,

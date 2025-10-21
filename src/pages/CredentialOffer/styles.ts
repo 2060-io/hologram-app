@@ -28,9 +28,6 @@ const styles = (theme: AppTheme) =>
       color: theme.colors.primaryText,
       textAlign: 'center',
     },
-    verifiableCredentialText: {
-      marginBottom: 15,
-    },
     containerSectionIssuerInfo: {
       alignSelf: 'center',
       width: widthPercentageToDP('92%'),

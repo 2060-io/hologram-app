@@ -1,6 +1,6 @@
 import React, { memo, useCallback, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, Linking, TouchableOpacity, ViewStyle } from 'react-native'
+import { View, Linking, TouchableOpacity } from 'react-native'
 
 import FullScreenImage from '../FullScreenImage'
 
@@ -18,10 +18,9 @@ import { toast } from '@2060/utils/toast'
 
 type Props = {
   serviceInfo: ServiceInfo
-  containerStyle?: ViewStyle
 }
 
-const ServiceMainInfo = ({ serviceInfo, containerStyle }: Props) => {
+const ServiceMainInfo = ({ serviceInfo }: Props) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
@@ -53,7 +52,7 @@ const ServiceMainInfo = ({ serviceInfo, containerStyle }: Props) => {
   }
 
   return (
-    <View style={[styles.containerCardIssuerInfo, containerStyle]}>
+    <View style={styles.containerCardIssuerInfo}>
       <FullScreenImage
         showFullScreenImage={showFullScreenImage}
         closeFullScreenImage={closeFullScreenImage}
@@ -65,25 +64,35 @@ const ServiceMainInfo = ({ serviceInfo, containerStyle }: Props) => {
         size="25%"
         onImagePressed={onAvatarImagePressed}
       />
-      <Text fontFamily="EuclidCircularA-Medium" style={styles.issuerName}>
+      <Text typography="EuclidCircularA-Medium" style={styles.issuerName}>
         {serviceInfo.name}
       </Text>
-      {serviceInfo.description && <Text style={[styles.text]}>{serviceInfo.description}</Text>}
+      {serviceInfo.description && (
+        <Text typography="EuclidCircularA-Regular" style={[styles.text]}>
+          {serviceInfo.description}
+        </Text>
+      )}
       <VerifiedIcon style={styles.containerIconValidity} status={serviceInfo.status} />
-      <Text style={styles.text}>
-        <Text fontFamily="EuclidCircularA-Bold" style={styles.text}>
+      <Text typography="EuclidCircularA-Regular" style={styles.text}>
+        <Text typography="EuclidCircularA-Bold" style={styles.text}>
           {trimText(serviceInfo.did ?? '')}
         </Text>{' '}
         {serviceIs[serviceInfo.status]}
       </Text>
       {serviceProvider && (
         <View style={styles.serviceProviderInfoContainer}>
-          <Text style={styles.text}>{t('invitation.serviceProvider')}</Text>
+          <Text typography="EuclidCircularA-Regular" style={styles.text}>
+            {t('invitation.serviceProvider')}
+          </Text>
           <View style={styles.serviceProviderName}>
             <Text style={styles.flagEmoji}>{getFlagEmoji(serviceProvider.countryCode)}</Text>
-            <Text style={styles.text}>{serviceProvider.entityName}</Text>
+            <Text typography="EuclidCircularA-Regular" style={styles.text}>
+              {serviceProvider.entityName}
+            </Text>
           </View>
-          <Text style={styles.text}>{serviceProvider.officialPublicRegistryNumber}</Text>
+          <Text typography="EuclidCircularA-Regular" style={styles.text}>
+            {serviceProvider.officialPublicRegistryNumber}
+          </Text>
           {termsAndConditionsUrl && (
             <TouchableOpacity
               style={styles.termsAndConditionsContainer}
@@ -103,7 +112,10 @@ const ServiceMainInfo = ({ serviceInfo, containerStyle }: Props) => {
             </TouchableOpacity>
           )}
           {minimumAgeRequired && (
-            <Text style={{ ...styles.text, ...(ageRestricted && styles.notOldEnoughTextColor) }}>
+            <Text
+              typography="EuclidCircularA-Regular"
+              style={{ ...styles.text, ...(ageRestricted && styles.notOldEnoughTextColor) }}
+            >
               {`${t('invitation.ageRestrictions')} ${minimumAgeRequired}+`}
             </Text>
           )}

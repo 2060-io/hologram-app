@@ -89,7 +89,7 @@ const VideoChatView = memo((props: MediaProps) => {
   const renderVideoDuration = () => (
     <View style={styles.containerDuration}>
       <SvgIcon name="video" fill={theme.colors.primary} />
-      <Text fontFamily="EuclidCircularA-Medium" style={styles.textDuraction}>
+      <Text typography="EuclidCircularA-Medium" style={styles.textDuraction}>
         {textDuration}
       </Text>
     </View>
@@ -108,7 +108,7 @@ const VideoChatView = memo((props: MediaProps) => {
           {isDownloading ? (
             <>
               <ActivityIndicator color={theme.colors.green} size="large" />
-              <Text fontFamily="EuclidCircularA-Medium" style={styles.spinnerText}>
+              <Text typography="EuclidCircularA-Medium" style={styles.spinnerText}>
                 {t('personalChat.downloadingVideo')}
               </Text>
             </>
@@ -116,7 +116,7 @@ const VideoChatView = memo((props: MediaProps) => {
             <TouchableOpacity style={styles.btnDownload} onPress={downloadMedia}>
               <SvgIcon name="download" fill={theme.colors.primary} />
               {byteCount && (
-                <Text fontFamily="EuclidCircularA-Medium" style={styles.textsize}>
+                <Text typography="EuclidCircularA-Medium" style={styles.textsize}>
                   {getFileSize(byteCount)}
                 </Text>
               )}
@@ -128,9 +128,7 @@ const VideoChatView = memo((props: MediaProps) => {
   )
 
   return (
-    <View
-      style={displayTimeAndTicks ? styles.withTimeAndTicksContainer : styles.withoutTimeAndTicksContainer}
-    >
+    <View style={{ marginBottom: displayTimeAndTicks ? theme.edges.messageMargin : 0 }}>
       <View style={styles.containerRootVideo}>
         {isDownloaded ? (
           <Fragment>

@@ -28,10 +28,12 @@ const SignUpMain = ({ navigation }: Props) => {
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.contentContainerStyle}>
         <View style={styles.innerRoot}>
           <AppLogo style={styles.containerAppLogo} />
-          <Text fontFamily="EuclidCircularA-Bold" style={styles.title}>
+          <Text typography="EuclidCircularA-Bold" style={styles.title}>
             {t('signUp.welcomeTitle')}
           </Text>
-          <Text style={styles.subTitle}>{t('signUp.welcomeSubTitle')}</Text>
+          <Text style={styles.subTitle} typography="EuclidCircularA-Regular">
+            {t('signUp.welcomeSubTitle')}
+          </Text>
           <View style={styles.containerNavigationOptions}>
             <TouchableOpacity
               activeOpacity={0.5}
@@ -39,7 +41,9 @@ const SignUpMain = ({ navigation }: Props) => {
               style={[styles.containerOption, styles.itemSeparator]}
             >
               <SvgIcon name="backupRestore" fill={theme.colors.primaryText} />
-              <Text style={styles.optionText}>{t('signUp.restoreABackup')}</Text>
+              <Text typography="EuclidCircularA-Regular" style={styles.optionText}>
+                {t('signUp.restoreABackup')}
+              </Text>
               <View style={styles.containerIconChevronForward}>
                 <SvgIcon name="chevronForward" width={20} height={20} fill={theme.colors.primaryText} />
               </View>
@@ -50,7 +54,9 @@ const SignUpMain = ({ navigation }: Props) => {
               style={styles.containerOption}
             >
               <SvgIcon name="addWallet" fill={theme.colors.primaryText} />
-              <Text style={styles.optionText}>{t('signUp.createNewWallet')}</Text>
+              <Text typography="EuclidCircularA-Regular" style={styles.optionText}>
+                {t('signUp.createNewWallet')}
+              </Text>
               <View style={styles.containerIconChevronForward}>
                 <SvgIcon name="chevronForward" width={20} height={20} fill={theme.colors.primaryText} />
               </View>

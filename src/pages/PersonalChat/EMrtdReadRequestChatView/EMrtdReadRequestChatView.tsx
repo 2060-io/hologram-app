@@ -128,10 +128,11 @@ const EMrtdReadRequestChatView = (props: Props) => {
         <View style={styles.subContainer}>
           <Trans
             i18nKey="chat.eMRTDScanChatInst"
+            typography="EuclidCircularA-Regular"
             style={styles.instructions}
             parent={Text}
             components={{
-              bold: <Text fontFamily="EuclidCircularA-Bold" style={styles.instructions} />,
+              bold: <Text typography="EuclidCircularA-Bold" style={styles.instructions} />,
             }}
           />
           <SvgIcon name="NFC" width={'100%'} height={widthPercentageToDP('43')} style={styles.icon} />

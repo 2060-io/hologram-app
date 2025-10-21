@@ -90,7 +90,7 @@ const InvitationChatView = ({ associatedRecordId: outOfBandId, metadata, role, a
           disabled={ageRestricted}
           text={t('general.connect')}
           onPress={onAccept}
-          style={ageRestricted ? styles.acceptWithAgeRestricted : styles.acceptWithoutAgeRestricted}
+          style={{ opacity: ageRestricted ? 0.3 : 1 }}
         />
         {ageRestricted && (
           <ConnectionRefusedByAge
@@ -103,7 +103,7 @@ const InvitationChatView = ({ associatedRecordId: outOfBandId, metadata, role, a
     ),
     [InvitationState.Accepted]: (
       <View style={styles.acceptedContainer}>
-        <Text fontFamily="EuclidCircularA-Bold" style={styles.acceptedText}>
+        <Text typography="EuclidCircularA-Bold" style={styles.acceptedText}>
           {t('personalChat.acceptedInvitation')}
         </Text>
       </View>
@@ -111,7 +111,7 @@ const InvitationChatView = ({ associatedRecordId: outOfBandId, metadata, role, a
     [InvitationState.AlreadyConnected]: (
       <BlueButton
         text={t('personalChat.alreadyConnected')}
-        style={styles.acceptWithAgeRestricted}
+        style={{ opacity: 0.3 }}
         onPress={goToExistingConnection}
       />
     ),
@@ -144,19 +144,19 @@ const InvitationChatView = ({ associatedRecordId: outOfBandId, metadata, role, a
             {isService(did) && <VerifiedIcon style={styles.containerVerifiedMark} status={serviceStatus} />}
             <Avatar uri={serviceInfo?.logoUrl ?? imageUrl ?? defaultUserImg} label={label} size="19.16%" />
           </View>
-          <Text fontFamily="EuclidCircularA-Medium" style={styles.label}>
+          <Text typography="EuclidCircularA-Medium" style={styles.label}>
             {serviceInfo?.name ?? label}
           </Text>
         </View>
-        <Text style={styles.subTitle}>
+        <Text typography="EuclidCircularA-Regular" style={styles.subTitle}>
           {isReceiver ? t('personalChat.invitationDescription') : t('personalChat.sentInvitationDescription')}
-          <Text fontFamily="EuclidCircularA-SemiBold" style={styles.textSemiBold}>
+          <Text typography="EuclidCircularA-SemiBold" style={styles.textSemiBold}>
             {' '}
             {serviceInfo?.name ?? label}
           </Text>
           {!isService && t('personalChat.asASubConnectionOf')}
           {!isService && (
-            <Text fontFamily="EuclidCircularA-SemiBold" style={styles.textSemiBold}>
+            <Text typography="EuclidCircularA-SemiBold" style={styles.textSemiBold}>
               {' '}
               {chatThread?.topic}
             </Text>

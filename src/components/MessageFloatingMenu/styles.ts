@@ -15,12 +15,6 @@ export default (theme: AppTheme) =>
       alignItems: 'center',
       zIndex: 2,
     },
-    display: {
-      display: 'flex',
-    },
-    hide: {
-      display: 'none',
-    },
     messageContainer: {
       maxHeight: '50%',
       overflow: 'hidden',

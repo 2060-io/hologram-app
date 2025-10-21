@@ -6,10 +6,11 @@ interface Props extends TouchableOpacityProps {
   isEmojiSelected: boolean
 }
 
-const EmojiItem: React.FC<Props> = ({ data, isEmojiSelected, ...props }) => {
+const EmojiItem: React.FC<Props> = ({ data, isEmojiSelected, ...rest }) => {
+  const emojiStyle = isEmojiSelected ? styles.iconSizeSelected : styles.iconSize
   return (
-    <TouchableOpacity {...props} style={[styles.root, isEmojiSelected && styles.emojiSelected]}>
-      <Text style={isEmojiSelected ? styles.iconSizeSelected : styles.iconSize}>{data.emoji}</Text>
+    <TouchableOpacity {...rest} style={[styles.root, isEmojiSelected && styles.emojiSelected]}>
+      <Text style={[emojiStyle, { includeFontPadding: false }]}>{data.emoji}</Text>
     </TouchableOpacity>
   )
 }
@@ -22,11 +23,11 @@ const styles = StyleSheet.create({
   },
   iconSize: {
     fontSize: 16,
-    includeFontPadding: false,
+    color: 'black',
   },
   iconSizeSelected: {
     fontSize: 22,
-    includeFontPadding: false,
+    color: 'black',
   },
   emojiSelected: {
     backgroundColor: '#eee',

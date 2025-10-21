@@ -44,9 +44,6 @@ export default (theme: AppTheme) =>
       marginTop: 12,
       marginBottom: 24,
     },
-    columnWrapperStyle: {
-      gap: 20,
-    },
     footerText: {
       fontSize: theme.fontSize.md,
       color: theme.colors.tertiaryText,

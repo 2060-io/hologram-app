@@ -207,7 +207,9 @@ const BaseCustomView: React.FC<BaseCustomMessageViewProps> = memo(props => {
       return (
         displayTimeAndTicks && (
           <View style={containerStyle}>
-            <Text style={styles.timeText}>{messageTime}</Text>
+            <Text typography="EuclidCircularA-Regular" style={styles.timeText}>
+              {messageTime}
+            </Text>
             {supportsMessageReceipts ? (
               <TicksView role={currentMessage.role} state={currentMessage.state} />
             ) : null}

@@ -48,6 +48,10 @@ RCT_EXPORT_MODULE();
      resolve(outputPaths);
 }
 
+- (void)readChunk:(nonnull NSString *)filePath offset:(double)offset length:(double)length resolve:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject {
+    resolve(nil);
+}
+
 - (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:
     (const facebook::react::ObjCTurboModule::InitParams &)params
 {

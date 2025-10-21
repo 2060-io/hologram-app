@@ -4,7 +4,6 @@ import { View, StyleSheet } from 'react-native'
 
 import { Text } from '@2060/components/common'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { AppTheme } from '@2060/styles'
 
 interface Props {
   currentTime: number
@@ -22,14 +21,13 @@ const getMinutesFromSeconds = (time: number) => {
 }
 
 const ProgressBar = ({ currentTime, duration, onSlideCapture, onSlideComplete, onSlideStart }: Props) => {
-  const theme = useTheme()
-  const styles = getStyles(theme)
   const position = getMinutesFromSeconds(currentTime)
   const fullDuration = getMinutesFromSeconds(duration)
+  const theme = useTheme()
   const handleOnSlide = (time: number) => onSlideCapture({ seekTime: time })
 
   return (
-    <View style={styles.container}>
+    <View style={styles.wrraper}>
       <Slider
         value={currentTime}
         minimumValue={0}
@@ -54,29 +52,28 @@ const ProgressBar = ({ currentTime, duration, onSlideCapture, onSlideComplete, o
   )
 }
 
-const getStyles = (theme: AppTheme) =>
-  StyleSheet.create({
-    container: {
-      position: 'absolute',
-      bottom: 50,
-      paddingHorizontal: 15,
-    },
-    timeWrapper: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-    },
-    timeLeft: {
-      flex: 1,
-      fontSize: theme.fontSize.md2,
-      color: theme.colors.white,
-    },
-    timeRight: {
-      flex: 1,
-      fontSize: theme.fontSize.md2,
-      color: theme.colors.white,
-      textAlign: 'right',
-    },
-  })
+const styles = StyleSheet.create({
+  wrraper: {
+    position: 'absolute',
+    bottom: 50,
+    paddingHorizontal: 15,
+  },
+  timeWrapper: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  timeLeft: {
+    flex: 1,
+    fontSize: 16,
+    color: '#FFFFFF',
+  },
+  timeRight: {
+    flex: 1,
+    fontSize: 16,
+    color: '#FFFFFF',
+    textAlign: 'right',
+  },
+})
 
 export default ProgressBar

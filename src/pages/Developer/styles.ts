@@ -17,10 +17,6 @@ export default (theme: AppTheme) =>
       flexDirection: 'row',
       alignItems: 'center',
     },
-    customDevEnvValue: {
-      flex: 1,
-      marginRight: 4,
-    },
     devEnvsModalContainer: {
       margin: 15,
     },

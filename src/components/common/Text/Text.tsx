@@ -1,14 +1,15 @@
 import React from 'react'
-import { Text as NativeText } from 'react-native'
+import { Text } from 'react-native'
 
 import { TextProps } from './TextProps'
 
-const Text = ({ style, fontFamily = 'EuclidCircularA-Regular', children, ...props }: TextProps) => {
+const CustomText = ({ style, children, typography, ...props }: TextProps) => {
+  const fontFamily = typography ? typography : 'EuclidCircularA-Regular'
   return (
-    <NativeText style={[style, { fontFamily }]} {...props}>
+    <Text style={[style, { fontFamily }]} {...props}>
       {children}
-    </NativeText>
+    </Text>
   )
 }
 
-export default Text
+export default CustomText

@@ -33,10 +33,4 @@ export default (theme: AppTheme) =>
       alignItems: 'flex-end',
       paddingRight: 15,
     },
-    enabledButton: {
-      opacity: 1,
-    },
-    disabledButton: {
-      opacity: 0.5,
-    },
   })

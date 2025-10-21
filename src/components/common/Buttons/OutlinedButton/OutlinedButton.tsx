@@ -20,7 +20,7 @@ const OutlinedButton = ({ iconName, text, ...buttonProps }: Props) => {
           <SvgIcon name={iconName as keyof IconsNames} fill={theme.colors.white} />
         </View>
       )}
-      <Text fontFamily="EuclidCircularA-Medium" style={styles.text}>
+      <Text typography="EuclidCircularA-Medium" style={styles.text}>
         {text}
       </Text>
     </TouchableOpacity>
