@@ -24,7 +24,6 @@ const styles = (theme: AppTheme) =>
     },
     noCredentialsMessage: {
       fontSize: theme.fontSize.md,
-      fontFamily: 'EuclidCircularA-Regular',
       textAlign: 'center',
     },
     noCredentialCardSkeleton: {
