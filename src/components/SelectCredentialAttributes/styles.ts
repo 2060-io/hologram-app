@@ -52,6 +52,12 @@ const styles = (theme: AppTheme) =>
     presentButton: {
       marginTop: 4,
     },
+    presentEnabled: {
+      opacity: 1,
+    },
+    presentDisabled: {
+      opacity: 0.5,
+    },
   })
 
 export default styles

@@ -55,9 +55,7 @@ const PresentCredentialsFromChat = ({ navigation, route }: Props) => {
 
   return (
     <View style={styles.container}>
-      <Text typography="EuclidCircularA-Regular" style={styles.title}>
-        {t('credential.selectCredential')}
-      </Text>
+      <Text style={styles.title}>{t('credential.selectCredential')}</Text>
       <Credentials
         navigation={navigation}
         headerTitle={t('credential.present')}

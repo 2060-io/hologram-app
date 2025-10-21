@@ -12,7 +12,7 @@ type Props = {
 const HeaderTitle = ({ title = '', theme }: Props) => {
   const globalStyles = getGlobalStyles(theme)
   return (
-    <Text typography="EuclidCircularA-Medium" style={globalStyles.headerTitleStyle} numberOfLines={1}>
+    <Text fontFamily="EuclidCircularA-Medium" style={globalStyles.headerTitleStyle} numberOfLines={1}>
       {title}
     </Text>
   )

@@ -23,9 +23,7 @@ const Options = ({ options, styles, tertiaryText, startBackupProcess }: Props) =
       <View style={styles.container}>
         <TouchableOpacity style={styles.rowContainer} onPress={startBackupProcess}>
           <SvgIcon name="cloudDownload" fill={tertiaryText} width={26} height={26} />
-          <Text typography="EuclidCircularA-Regular" style={styles.mediumText}>
-            {t('settings.backupNow')}
-          </Text>
+          <Text style={styles.mediumText}>{t('settings.backupNow')}</Text>
         </TouchableOpacity>
       </View>
       <OptionsList options={options} />

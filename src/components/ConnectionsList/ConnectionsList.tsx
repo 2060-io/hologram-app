@@ -48,11 +48,7 @@ const ConnectionList = ({
           />
         </View>
       )}
-      ListEmptyComponent={
-        <Text style={styles.textEmpty} typography="EuclidCircularA-Regular">
-          {t('connection.noConnectionsFound')}
-        </Text>
-      }
+      ListEmptyComponent={<Text style={styles.textEmpty}>{t('connection.noConnectionsFound')}</Text>}
       keyExtractor={item => item.title}
     />
   )

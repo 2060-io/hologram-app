@@ -112,7 +112,7 @@ const BaseWalletBackup = ({
         </ScrollView>
       ) : (
         <View style={styles.subContainer}>
-          <Text typography="EuclidCircularA-Medium" style={styles.makePasswordText}>
+          <Text fontFamily="EuclidCircularA-Medium" style={styles.makePasswordText}>
             {t('settings.noCloudAvailable', {
               cloud: IS_IOS ? 'iCloud Drive' : 'Google Drive',
             })}
