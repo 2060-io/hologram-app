@@ -22,7 +22,7 @@ const darkColors: ThemeColors = {
   blue: '#E5E9EA',
 }
 
-const palette = {
+export const palette = {
   green: '#3EBDB6',
   lightGrey: '#CADDE2',
   darkGrey: '#536B74',
