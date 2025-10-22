@@ -11,47 +11,34 @@ function truncateLog(log: string): string {
 
 export class HologramCustomLogger implements Logger {
   logLevel: LogLevel
-  isDevelopment: boolean
+  isDevelopment = __DEV__
 
   constructor(logLevel: LogLevel) {
     this.logLevel = logLevel
-    this.isDevelopment = __DEV__
   }
 
   test(message: string, data?: Record<string, unknown>): void {
     if (LogLevel.test >= this.logLevel) {
-      if (this.isDevelopment) {
-        console.debug(`TEST ${message}`, data ? JSON.stringify(data) : '')
-      } else {
-        console.debug(`TEST ${message}`, data ? truncateLog(JSON.stringify(data)) : '')
-      }
+      const extraInfo = this.isDevelopment ? JSON.stringify(data) : truncateLog(JSON.stringify(data))
+      console.debug(`TEST ${message}`, extraInfo)
     }
   }
   trace(message: string, data?: Record<string, unknown>): void {
     if (LogLevel.trace >= this.logLevel) {
-      if (this.isDevelopment) {
-        console.trace(`TRACE: ${message}`, data ? JSON.stringify(data) : '')
-      } else {
-        console.trace(`TRACE ${message}`, data ? truncateLog(JSON.stringify(data)) : '')
-      }
+      const extraInfo = this.isDevelopment ? JSON.stringify(data) : truncateLog(JSON.stringify(data))
+      console.trace(`TRACE: ${message}`, extraInfo)
     }
   }
   debug(message: string, data?: Record<string, unknown>): void {
     if (LogLevel.debug >= this.logLevel) {
-      if (this.isDevelopment) {
-        console.debug(`DEBUG: ${message}`, data ? JSON.stringify(data) : '')
-      } else {
-        console.debug(`DEBUG: ${message}`, data ? truncateLog(JSON.stringify(data)) : '')
-      }
+      const extraInfo = this.isDevelopment ? JSON.stringify(data) : truncateLog(JSON.stringify(data))
+      console.debug(`DEBUG: ${message}`, extraInfo)
     }
   }
   info(message: string, data?: Record<string, unknown>): void {
     if (LogLevel.info >= this.logLevel) {
-      if (this.isDevelopment) {
-        console.info(`INFO: ${message}`, data ? JSON.stringify(data) : '')
-      } else {
-        console.info(`INFO: ${message}`, data ? truncateLog(JSON.stringify(data)) : '')
-      }
+      const extraInfo = this.isDevelopment ? JSON.stringify(data) : truncateLog(JSON.stringify(data))
+      console.info(`INFO: ${message}`, extraInfo)
     }
   }
   warn(message: string, data?: Record<string, unknown>): void {
