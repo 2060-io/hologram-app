@@ -26,12 +26,14 @@ import { toast } from '@2060/utils/toast'
 
 interface Props {
   showMediaOptions: boolean
+  onShowMediaOptions(): void
 }
 
 const MINIMUM_AUDIO_DURATION = 1000
 const INITIAL_TIME_RECORDED = '00:00'
 
 const InputToolbarView = (props: Props) => {
+  const { showMediaOptions, onShowMediaOptions } = props
   const { startRecording, stopRecording } = useAudioRecorder()
   const { onCurrentRecordingWaveformData } = useAudioPlayer()
   const { t } = useTranslation()
@@ -44,7 +46,6 @@ const InputToolbarView = (props: Props) => {
   const { setRepliedMessage, isRecordingVoiceNote, setIsRecordingVoiceNote, repliedMessage } = useChat()
   const isRecordingVoiceNoteAux = useRef(isRecordingVoiceNote)
   const { sendTextMessage, shareMediaToDidComm } = useChatActions()
-  const { showMediaOptions } = props
   const isRepliedMessage = repliedMessage !== undefined
   const hasContentTextInput = valueTextInput.trim().length !== 0
   const theme = useTheme()
@@ -146,6 +147,11 @@ const InputToolbarView = (props: Props) => {
       )}
       <View style={styles.subContainer}>
         <View style={styles.leftAndCenterContainer}>
+          {showMediaOptions && (
+            <TouchableOpacity style={[styles.button, styles.buttonMarginRight]} onPress={onShowMediaOptions}>
+              <SvgIcon name="add" fill={theme.colors.primaryText} />
+            </TouchableOpacity>
+          )}
           <ComposerInput
             textInputRef={textInputRef}
             isRepliedMessage={isRepliedMessage}

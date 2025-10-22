@@ -27,10 +27,6 @@ export default (theme: AppTheme, isRecording?: boolean) =>
       flex: 1,
       marginRight: 4,
     },
-    messageInputContainer: {
-      flex: 1,
-      marginLeft: 4,
-    },
     rightContainer: {
       width: MESSAGE_INPUT_INITIAL_HEIGHT,
       justifyContent: 'center',
@@ -84,7 +80,7 @@ export default (theme: AppTheme, isRecording?: boolean) =>
       justifyContent: 'center',
       alignItems: 'center',
     },
-    cameraButton: {
+    buttonMarginRight: {
       marginRight: 4,
     },
     microphoneIconContainerWhileRecording: {

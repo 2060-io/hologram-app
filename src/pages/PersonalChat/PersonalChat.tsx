@@ -9,6 +9,7 @@ import { uses24HourClock } from 'react-native-localize'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Realm from 'realm'
 
+import AttachmentOptions from './AttachmentOptions'
 import { CustomHeaderProps, ChatEntryMessage } from './ChatMessage/Props'
 import ContextualMenu from './ContextualMenu'
 import { CustomChatHeader, SelectingMessagesHeader } from './Header'
@@ -89,6 +90,7 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
   const { isAppActive } = useAppState()
   const { stopPlayersAndExtractors } = useAudioPlayer()
   const [currentStickyDate, setCurrentStickyDate] = useState<Date>()
+  const [showAttachmentOptions, setShowAttachmentOptions] = useState(false)
   const [showStickyDate, setShowStickyDate] = useState(false)
   const [showContextualMenu, setShowContextualMenu] = useState(false)
   const { realm } = useLocalRealm()
@@ -358,7 +360,12 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
           {flags.isConnectionCompleted &&
             !flags.isConnectionBlocked &&
             !flags.isConnectionTerminated &&
-            !isSelectingMessagesMode && <InputToolbarView showMediaOptions={flags.supportsMediaSharing} />}
+            !isSelectingMessagesMode && (
+              <InputToolbarView
+                onShowMediaOptions={() => setShowAttachmentOptions(true)}
+                showMediaOptions={flags.supportsMediaSharing}
+              />
+            )}
           {showScrollBottomRef.current && (
             <ScrollToBottom numberNewMessages={0} onScrollToBottom={scrollToBottom} />
           )}
@@ -385,8 +392,6 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
       <ModalBottomHalf visible={showAttachmentOptions} onClose={() => setShowAttachmentOptions(false)}>
         <AttachmentOptions
           closeAttachmentOptions={() => setShowAttachmentOptions(false)}
-          onCompressingVideoProgress={setCompressingVideoProgress}
-          getVideoCompressionCancellationId={getVideoCompressionCancellationId}
           navigation={navigation}
           connectionId={chatThreadData.connectionId}
         />
