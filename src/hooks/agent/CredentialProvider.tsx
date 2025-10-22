@@ -1,5 +1,5 @@
 import { W3cCredentialRecord } from '@credo-ts/core'
-import React, { createContext, useState, useEffect, useContext } from 'react'
+import React, { createContext, useState, useEffect, useContext, useCallback } from 'react'
 
 import { useMobileAgent } from './MobileAgentProvider'
 import {
@@ -13,8 +13,8 @@ import {
 } from './recordUtils'
 
 interface CredentialContextInterface {
-  loading: boolean
   records: W3cCredentialRecord[]
+  getCredentialById: (id: string) => W3cCredentialRecord | undefined
 }
 
 const CredentialContext = createContext<CredentialContextInterface | undefined>(undefined)
@@ -24,13 +24,6 @@ export const useCredentials = () => {
   if (!credentialContext) throw new Error('useCredentials must be used within a CredentialContextProvider')
 
   return credentialContext
-}
-
-export const useCredentialById = (id?: string): W3cCredentialRecord | undefined => {
-  const { records } = useCredentials()
-
-  if (!id) return undefined
-  return records.find((c: W3cCredentialRecord) => c.id === id)
 }
 
 interface Props {
@@ -77,11 +70,19 @@ export const CredentialProvider: React.FC<React.PropsWithChildren<Props>> = ({ c
       }
     }
   }, [w3cState, agent])
+
+  const getCredentialById = useCallback(
+    (id: string) => {
+      return w3cState.records.find(credential => credential.id === id)
+    },
+    [w3cState.records],
+  )
+
   return (
     <CredentialContext
       value={{
-        loading: w3cState.loading,
         records: w3cState.records,
+        getCredentialById,
       }}
     >
       {children}

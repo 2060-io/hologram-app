@@ -31,6 +31,7 @@ const styles = (theme: AppTheme) =>
       color: theme.colors.red,
     },
     underLineText: {
+      paddingTop: 0.1,
       textDecorationLine: 'underline',
       marginRight: 6,
     },

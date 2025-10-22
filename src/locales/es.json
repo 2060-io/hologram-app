@@ -206,7 +206,7 @@
       "errorConnectToSelf": "No es posible conectar consigo mismo",
       "serviceProvider": "Proveedor del servicio:",
       "termsAndConditions": "Términos y condiciones",
-      "privacyPolicy": "Política de privacidad.",
+      "privacyPolicy": "Política de privacidad",
       "ageRestrictions": "Restricciones de edad:",
       "noAgeRestrictions": "Sin restricciones",
       "serviceNotVerifiable": "Este servicio no es verificable.",
@@ -226,8 +226,13 @@
       "deleteConfirmationDescription": "Eliminar una credencial vigente no es recomendable.",
       "yesDelete": "Sí, eliminar permanentemente",
       "present": "Presentar credencial",
+      "present_other": "Presentar credenciales",
       "presented": "Credencial presentada",
-      "presentedOn": "Presentado el"
+      "presentedOn": "Presentado el",
+      "selectCredential": "Selecciona la credencial que quieres presentar",
+      "selectAttributes": "Selecciona los Atributos que quieres compartir en la presentación",
+      "selectAll": "Seleccionar todos",
+      "unselectAll": "Quitar todos"
     },
     "credentialOffer": {
       "title": "Credencial ofrecida",
@@ -332,8 +337,6 @@
       "camera": "Tomar foto",
       "takeVideo": "Tomar video",
       "photoAndVideoLibrary": "Galería de fotos y vídeos",
-      "presentCredential": "Presentar credencial",
-      "presentCredential_other": "Presentar credenciales",
       "errorSendingMessage": "Error al enviar mensaje",
       "errorSendingMedia": "Error al enviar medios",
       "errorSendingAnswer": "Error al enviar respuesta",
