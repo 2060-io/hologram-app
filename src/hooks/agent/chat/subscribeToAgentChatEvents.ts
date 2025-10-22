@@ -67,7 +67,7 @@ import {
   OutOfBandInvitationEvent,
   OutOfBandInvitationEventTypes,
 } from '@2060/services/agent/oob/OutOfBandEvents'
-import { log, logWarn } from '@2060/utils'
+import { logWarn } from '@2060/utils'
 import {
   getConnectionDisplayName,
   getConnectionDisplayPicture,
@@ -111,7 +111,6 @@ export function subscribeToAgentChatEvents(
     setLastTimeProfileReceived(connection, agent.context)
     const thread = findChatThread(realm, connection)
     if (thread) {
-      log('daniel llego', getConnectionDisplayPicture(connection).length)
       updateThread(realm, thread.id, {
         topic: getConnectionDisplayName(connection),
         picture: getConnectionDisplayPicture(connection),

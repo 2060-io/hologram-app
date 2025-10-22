@@ -41,7 +41,11 @@ export const useChatThreadWithParticipants = (chatThreadId: string) => {
 
   const participants: ChatParticipant[] = useMemo(
     () => [
-      { id: ChatEntryRole.Sender, name: t('personalChat.you'), avatar: getPictureDataUrl(displayPicture) },
+      {
+        id: ChatEntryRole.Sender,
+        name: t('personalChat.you'),
+        avatar: displayPicture ? getPictureDataUrl(displayPicture) : undefined,
+      },
       {
         id: ChatEntryRole.Receiver,
         name: connection ? getConnectionDisplayName(connection) : undefined,

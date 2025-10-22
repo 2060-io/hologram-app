@@ -42,8 +42,9 @@ const Settings = ({ navigation }: Props) => {
   const theme = useTheme()
   const styles = getStyles(theme)
   const displayPicture = userProfileData?.displayPicture
-  const imgUrl = dataUrl(displayPicture?.mimeType, displayPicture?.base64)
-  const avatarUri = imgUrl || Image.resolveAssetSource(defaultAvatar).uri
+  const avatarUri = displayPicture
+    ? dataUrl(displayPicture.mimeType, displayPicture.base64)
+    : Image.resolveAssetSource(defaultAvatar).uri
 
   const onAvatarImagePressed = () => setShowFullScreenImage(true)
   const closeFullScreenImage = () => setShowFullScreenImage(false)

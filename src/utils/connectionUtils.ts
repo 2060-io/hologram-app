@@ -12,7 +12,7 @@ import {
   Protocol,
 } from '@credo-ts/core'
 
-import { log } from './log'
+import { logError } from './log'
 
 import { dataUrl } from './index'
 
@@ -30,34 +30,35 @@ export const getConnectionDisplayName = (connection: ConnectionRecord) => {
 
 export const getConnectionDisplayPicture = (connection: ConnectionRecord) => {
   let displayPicture = ''
-
   try {
     const profile = getConnectionProfile(connection)
-    log('daniel esto hay', profile?.displayPicture)
-    displayPicture = getPictureDataUrl(profile?.displayPicture)
-    if (displayPicture === '') displayPicture = connection.imageUrl || ''
+    if (profile?.displayPicture) {
+      displayPicture = getPictureDataUrl(profile.displayPicture)
+    } else if (connection.imageUrl) {
+      displayPicture = connection.imageUrl
+    }
   } catch (error) {
-    log(`Cannot get display picture: ${error}`)
+    logError('Error in getConnectionDisplayPicture', error)
   }
   return displayPicture
 }
 
 export const getConnectionDisplayIcon = (connection: ConnectionRecord) => {
   let displayIcon = ''
-
   try {
     const profile = getConnectionProfile(connection)
-    displayIcon = getPictureDataUrl(profile?.displayIcon)
+    if (profile?.displayIcon) displayIcon = getPictureDataUrl(profile.displayIcon)
   } catch (error) {
-    log(`Cannot get display icon: ${error}`)
+    logError('Error in getConnectionDisplayIcon', error)
   }
   return displayIcon
 }
 
-export const getPictureDataUrl = (displayPictureData?: PictureData) =>
-  displayPictureData?.links
+export const getPictureDataUrl = (displayPictureData: PictureData) => {
+  return displayPictureData.links?.length
     ? displayPictureData.links[0]
-    : dataUrl(displayPictureData?.mimeType, displayPictureData?.base64)
+    : dataUrl(displayPictureData.mimeType, displayPictureData.base64)
+}
 
 export const isService = (connection: ConnectionRecord) =>
   connection.invitationDid !== undefined && !connection.invitationDid.startsWith('did:peer')
