@@ -195,7 +195,7 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
       }
     }
     checkIfMustSendProfile()
-  }, [flags.lastTimeProfileSent, flags.myProfileUpdatedAt, agent, connection])
+  }, [])
 
   useEffect(() => {
     const checkIfMustRequestProfile = () => {
@@ -211,7 +211,7 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
       }
     }
     if (connection && supportsUserProfile(connection)) checkIfMustRequestProfile()
-  }, [flags.lastTimeProfileReceived, connection])
+  }, [])
 
   const renderSystemMessage = useMemo(() => {
     const systemMessage = getSystemMessage({

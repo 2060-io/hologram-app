@@ -24,7 +24,7 @@ const WalletBackupHandler = ({
 }: WalletBackupHandlerProps) => (
   <View style={containerStyle}>
     {backupHandler?.isFetching && onLoading()}
-    {backupHandler?.backup && onInfo(backupHandler?.backup)}
+    {backupHandler?.backup && onInfo(backupHandler.backup)}
     {backupHandler?.error && onError()}
     {!backupHandler?.isFetching && !backupHandler?.backup && !backupHandler?.error && onNotExist()}
   </View>
