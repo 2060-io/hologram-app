@@ -5,12 +5,15 @@ import CodeScanner from './CodeScanner'
 import CommunicationChannels from './CommunicationChannels'
 import ConfirmChatDeletion from './ConfirmChatDeletion'
 import ConnectionList from './ConnectionsList'
+import CredentialAttribute from './CredentialAttribute'
 import CredentialDetails from './CredentialDetails'
+import Credentials from './Credentials'
 import IncomingCall from './IncomingCall'
 import LightboxModal from './LightboxModal'
 import ModalBottomHalf from './ModalBottomHalf'
 import ModalConfirmAction from './ModalConfirmAction'
 import SearchInput from './SearchInput'
+import SelectCredentialAttributes from './SelectCredentialAttributes'
 import UserProfileForm from './UserProfileForm'
 import VideoCall from './VideoCall'
 import VideoPlayer from './VideoPlayer'
@@ -34,4 +37,7 @@ export {
   VideoCall,
   IncomingCall,
   VideoPlayer,
+  Credentials,
+  CredentialAttribute,
+  SelectCredentialAttributes,
 }
