@@ -7,10 +7,7 @@ const styles = (theme: AppTheme) =>
   StyleSheet.create({
     container: {
       flex: 1,
-    },
-    subContainer: {
-      flex: 1,
-      paddingTop: 15,
+      marginTop: 12,
     },
     searchInputContainer: {
       width: widthPercentageToDP('95%'),
@@ -32,10 +29,6 @@ const styles = (theme: AppTheme) =>
     },
     noCredentialsMessageP1: {
       color: theme.colors.primaryText,
-    },
-    noCredentialsMessageP2: {
-      color: theme.colors.green,
-      textDecorationLine: 'underline',
     },
     nestedCardSkeletonContainer: {
       marginTop: -screenWidth * 0.35,

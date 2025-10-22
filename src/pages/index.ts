@@ -12,6 +12,7 @@ import MessageDetails from './MessageDetails'
 import ParentalControl from './ParentalControl'
 import PersonalChat from './PersonalChat'
 import PresentCredential from './PresentCredential'
+import PresentCredentialsFromChat from './PresentCredentialsFromChat'
 import Presentation from './Presentation'
 import { DidcommPresentationRequest, OpenIdPresentationRequest } from './PresentationRequest'
 import Privacy from './Privacy'
@@ -54,4 +55,5 @@ export {
   PresentCredential,
   Presentation,
   ParentalControl,
+  PresentCredentialsFromChat,
 }

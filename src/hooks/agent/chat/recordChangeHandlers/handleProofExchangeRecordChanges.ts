@@ -162,7 +162,7 @@ export const handleProofExchangeRecordChanges = async (options: {
       try {
         const formatData = await agent.proofs.getFormatData(proofRecord.id)
         const requestedAttributes = formatData.proposal?.anoncreds?.requested_attributes
-        if (requestedAttributes) {
+        if (requestedAttributes && Object.keys(requestedAttributes).length) {
           for (const attributeId in requestedAttributes) {
             const key = requestedAttributes?.[attributeId]?.name ?? 'unknown'
             attributes[key] = ''
