@@ -34,8 +34,8 @@ export interface ConnectionDetailsProps extends WrapperProps {
 }
 
 interface BaseConnectionDetailsProps extends ConnectionDetailsProps {
-  mainInfo: ReactElement
-  footerInfo?: ReactElement
+  mainInfo: ReactElement | null
+  footerInfo?: ReactElement | null
 }
 
 const BaseConnectionDetails = ({
@@ -68,7 +68,7 @@ const BaseConnectionDetails = ({
       headerLeft: () => null,
       headerRight: () => (
         <TouchableOpacity style={styles.headerRight} onPress={() => navigation.goBack()}>
-          <Text style={styles.headerBtnText} typography="EuclidCircularA-Medium">
+          <Text style={styles.headerBtnText} fontFamily="EuclidCircularA-Medium">
             {t('general.done')}
           </Text>
         </TouchableOpacity>
@@ -142,9 +142,7 @@ const BaseConnectionDetails = ({
     onPress: goToRelatedConnections,
     rightContent: () => (
       <>
-        <Text typography="EuclidCircularA-Regular" style={styles.accountText}>
-          {relatedConnections.length}
-        </Text>
+        <Text style={styles.accountText}>{relatedConnections.length}</Text>
         <SvgIcon name="chevronForward" fill={theme.colors.primaryText} width={16} height={16} />
       </>
     ),
@@ -221,29 +219,21 @@ const BaseConnectionDetails = ({
           {mainInfo}
           {isConnectionTerminated && (
             <View style={[styles.blockedContainer, styles.statusMainContainer]}>
-              <Text typography="EuclidCircularA-Regular" style={styles.blockedText}>
-                {t('connection.terminated')}
-              </Text>
+              <Text style={styles.blockedText}>{t('connection.terminated')}</Text>
             </View>
           )}
           {isConnectionBlocked && (
             <View style={[styles.blockedContainer, styles.statusMainContainer]}>
-              <Text typography="EuclidCircularA-Regular" style={styles.blockedText}>
-                {t('connection.blocked')}
-              </Text>
+              <Text style={styles.blockedText}>{t('connection.blocked')}</Text>
             </View>
           )}
           {!isConnectionCompleted && (
             <View style={[styles.waitingContainer, styles.statusMainContainer]}>
-              <Text typography="EuclidCircularA-Regular" style={styles.pendingText}>
-                {t('connection.pending')}
-              </Text>
+              <Text style={styles.pendingText}>{t('connection.pending')}</Text>
             </View>
           )}
           <View style={styles.nameContainer}>
-            <Text typography="EuclidCircularA-Regular" style={styles.displayName}>
-              {connectionName}
-            </Text>
+            <Text style={styles.displayName}>{connectionName}</Text>
             <ConnectionMainActions
               navigation={navigation}
               connectionId={connection.id}

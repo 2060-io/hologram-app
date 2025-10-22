@@ -48,19 +48,17 @@ const ChatThread = ({
         enableImageRefresh={false}
       />
       <View style={styles.contentText}>
-        <Text typography="EuclidCircularA-Medium" style={styles.nameUser} numberOfLines={1}>
+        <Text fontFamily="EuclidCircularA-Medium" style={styles.nameUser} numberOfLines={1}>
           {topic}
         </Text>
         {hasChildren ? (
-          <Text typography="EuclidCircularA-Regular" style={styles.numberConversationText}>
-            {`${childCount}  ${t('chat.conversations')}`}
-          </Text>
+          <Text style={styles.numberConversationText}>{`${childCount}  ${t('chat.conversations')}`}</Text>
         ) : connectionExists ? (
-          <Text typography="EuclidCircularA-Regular" numberOfLines={2} style={styles.textPreview}>
+          <Text numberOfLines={2} style={styles.textPreview}>
             {preview}
           </Text>
         ) : (
-          <Text typography="EuclidCircularA-Medium" style={styles.textPreview}>
+          <Text fontFamily="EuclidCircularA-Medium" style={styles.textPreview}>
             {t('personalChat.connectionDeleted')}
           </Text>
         )}
@@ -71,7 +69,7 @@ const ChatThread = ({
         </View>
       )}
       <View style={styles.rightContent}>
-        <Text typography="EuclidCircularA-Regular" style={styles.textDate}>
+        <Text style={styles.textDate}>
           {lastActivityDate ? chatDateFormat(lastActivityDate, using24HourFormat) : ''}
         </Text>
         <View style={styles.containerUnreadAndStateIcon}>
@@ -80,7 +78,7 @@ const ChatThread = ({
           )}
           {unreadCount > 0 && (
             <View style={styles.unread}>
-              <Text typography="EuclidCircularA-Medium" style={styles.textNumber}>
+              <Text fontFamily="EuclidCircularA-Medium" style={styles.textNumber}>
                 {unreadCount}
               </Text>
             </View>

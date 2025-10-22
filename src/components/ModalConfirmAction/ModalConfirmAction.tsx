@@ -38,14 +38,10 @@ const ModalConfirmAction = ({
     <ModalBottomHalf visible={visible} onClose={onClose}>
       <SafeAreaView style={styles.containerConfirm}>
         <View style={styles.subContainer}>
-          <Text typography="EuclidCircularA-Medium" style={styles.titleDelete}>
+          <Text fontFamily="EuclidCircularA-Medium" style={styles.titleDelete}>
             {title}
           </Text>
-          {subTitle && (
-            <Text typography="EuclidCircularA-Regular" style={styles.descriptionDelete}>
-              {subTitle}
-            </Text>
-          )}
+          {subTitle && <Text style={styles.descriptionDelete}>{subTitle}</Text>}
           <MainButton text={confirmText} style={styles.button} onPress={onConfirm} />
           {confirmTextSecondary && onConfirmSecondary && (
             <OutlinedGreenButton

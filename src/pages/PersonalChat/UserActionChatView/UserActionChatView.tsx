@@ -23,9 +23,7 @@ const UserActionChatView = ({ message, title, iconName }: Props) => {
   return (
     <View style={styles.container}>
       <Header title={title} theme={theme} leftIconName={iconName} role={ChatEntryRole.Sender} />
-      <Text typography="EuclidCircularA-Regular" style={styles.responseMsg}>
-        {message}
-      </Text>
+      <Text style={styles.responseMsg}>{message}</Text>
     </View>
   )
 }

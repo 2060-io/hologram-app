@@ -133,20 +133,18 @@ const VPChatView = ({ metadata, role, agent, proofRecordId, chatEntryId }: Props
         role={role}
       />
       <View style={styles.subContainer}>
-        <Text style={styles.title} typography="EuclidCircularA-Regular">
-          {mainMessage}
-        </Text>
+        <Text style={styles.title}>{mainMessage}</Text>
         {presentedCredentials.map((credential, index) => {
           const isLast = index === presentedCredentials.length - 1
           const credentialMainInfo = {
             ...credential.mainInfo,
-            dateLabel: isSender ? t('credential.issuedOn') : t('credential.presentedOn'),
+            dateLabel: isSender ? undefined : t('credential.presentedOn'),
           }
           return (
             <CardCredentialMainInformation
               key={credential.mainInfo.id}
               credentialMainInfo={credentialMainInfo}
-              containerStyle={{ marginBottom: isLast ? 0 : theme.edges.messageMargin }}
+              containerStyle={isLast ? styles.lastCredential : styles.credential}
               onPress={() => {
                 chooseWhereToGo({ mainInfo: credentialMainInfo, attributes: credential.attributes })
               }}

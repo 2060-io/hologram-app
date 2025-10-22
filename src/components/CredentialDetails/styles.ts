@@ -7,36 +7,18 @@ const styles = (theme: AppTheme) =>
     container: {
       flex: 1,
     },
-    credentialCardContainer: {
-      paddingHorizontal: 15,
+    credentialMainInfoContainer: {
+      marginBottom: 0,
     },
     title: {
       fontSize: theme.fontSize.lg,
       color: theme.colors.primaryText,
       marginVertical: 15,
     },
-    sectionContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-    },
     sectionRowsContainer: {
       ...cardStyles(theme),
       ...cardShadowStyles(theme.colors),
-    },
-    sectionKey: {
-      color: theme.colors.primaryText,
-      fontSize: theme.fontSize.md2,
-      marginTop: 16,
-      marginBottom: 8,
-    },
-    sectionValue: {
-      color: theme.colors.secondaryText,
-      fontSize: theme.fontSize.md,
-    },
-    sectionKeyImage: {
-      width: 40,
-      height: 40,
-      marginLeft: 10,
+      paddingBottom: 0,
     },
   })
 

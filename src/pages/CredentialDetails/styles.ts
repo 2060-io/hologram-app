@@ -1,8 +1,6 @@
 import { StyleSheet } from 'react-native'
 
-import { cardStyles, cardShadowStyles } from '../../styles/globalStyles'
-
-import { AppTheme } from '@2060/styles'
+import { AppTheme, cardShadowStyles, cardStyles } from '@2060/styles'
 
 const styles = (theme: AppTheme) =>
   StyleSheet.create({
@@ -13,6 +11,9 @@ const styles = (theme: AppTheme) =>
       flex: 1,
       paddingTop: 15,
       paddingHorizontal: 15,
+    },
+    headerRight: {
+      marginRight: 14,
     },
     containerCardBtnDelete: {
       ...cardStyles(theme),

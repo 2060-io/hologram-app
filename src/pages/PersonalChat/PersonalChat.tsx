@@ -13,7 +13,6 @@ import AttachmentOptions from './AttachmentOptions'
 import { CustomHeaderProps, ChatEntryMessage } from './ChatMessage/Props'
 import ContextualMenu from './ContextualMenu'
 import { CustomChatHeader, SelectingMessagesHeader } from './Header'
-import { headerHeight } from './Header/styles'
 import InputToolbarView from './InputToolbarView'
 import PersonalChatContainer, { WrapperPersonalChatProps } from './PersonalChatContainer'
 import ScrollToBottom from './ScrollToBottomView'
@@ -52,6 +51,7 @@ import {
   SystemMessageMetadata,
 } from '@2060/model'
 import { ChatMessageList } from '@2060/pages/PersonalChat/ChatMessageList'
+import { headerHeight } from '@2060/styles'
 import { logWarn } from '@2060/utils'
 import { isService, setLastTimeProfileSent, supportsUserProfile } from '@2060/utils/connectionUtils'
 import { getFormattedDateRange, isDateGreaterThan, timeFromNow } from '@2060/utils/dateUtils'
@@ -378,7 +378,7 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
           {header}
           {showStickyDate && (
             <View style={{ ...styles.containerStickyDate, top: headerHeight }}>
-              <Text typography="EuclidCircularA-Regular" style={styles.stickyDateText}>
+              <Text style={styles.stickyDateText}>
                 {currentStickyDate && getFormattedDateRange(currentStickyDate)}
               </Text>
             </View>
@@ -449,6 +449,8 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
           closeAttachmentOptions={() => setShowAttachmentOptions(false)}
           onCompressingVideoProgress={setCompressingVideoProgress}
           getVideoCompressionCancellationId={getVideoCompressionCancellationId}
+          navigation={navigation}
+          connectionId={chatThreadData.connectionId}
         />
       </ModalBottomHalf>
       <MessageFloatingMenu

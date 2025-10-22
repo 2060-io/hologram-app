@@ -35,9 +35,7 @@ const CardCredentialMainInformation = ({
   const { serviceInfo } = useFetchServiceInfo(credentialMainInfo.issuer.id)
   const using24HourFormat = uses24HourClock()
   const uri = serviceInfo?.logoUrl ?? credentialMainInfo.issuer.logoUrl
-  const issuedOnLabel =
-    credentialMainInfo.dateLabel ??
-    `${t('credential.issuedOn')}: ${dateToString(credentialMainInfo.createdAt, `DD-MM-YYYY ${using24HourFormat ? 'HH:mm' : 'h:mm A'}`)}`
+  const issuedOnLabel = `${credentialMainInfo.dateLabel ?? t('credential.issuedOn')}: ${dateToString(credentialMainInfo.createdAt, `DD-MM-YYYY ${using24HourFormat ? 'HH:mm' : 'h:mm A'}`)}`
 
   return (
     <TouchableOpacity style={[styles.container, containerStyle]} activeOpacity={1} onPress={onPress}>
@@ -49,16 +47,14 @@ const CardCredentialMainInformation = ({
             <Image style={styles.image} resizeMode="contain" source={uri ? { uri } : imagePlaceholder} />
           )}
         </View>
-        <Text style={styles.name} typography="EuclidCircularA-Medium">
+        <Text style={styles.name} fontFamily="EuclidCircularA-Medium">
           {credentialMainInfo.schemaName}
         </Text>
       </View>
       <View>
-        <Text style={styles.issuedOn} typography="EuclidCircularA-Regular">
-          {issuedOnLabel}
-        </Text>
+        <Text style={styles.issuedOn}>{issuedOnLabel}</Text>
         <View style={styles.bottomContainer}>
-          <Text style={styles.bottomText} typography="EuclidCircularA-Medium" numberOfLines={1}>
+          <Text style={styles.bottomText} fontFamily="EuclidCircularA-Medium" numberOfLines={1}>
             {serviceInfo?.name ?? credentialMainInfo.issuer.name}
           </Text>
           <VerifiedIcon status={serviceInfo?.status ?? TrustResolutionOutcome.INVALID} />

@@ -39,6 +39,9 @@ export default (theme: AppTheme) =>
       flexDirection: 'row',
       marginBottom: 15,
     },
+    presentedDateText: {
+      marginLeft: 15,
+    },
     issuerContainer: {
       flexDirection: 'row',
       alignItems: 'center',

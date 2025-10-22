@@ -14,6 +14,9 @@ export default (theme: AppTheme) =>
       marginVertical: 14,
       marginHorizontal: 12,
     },
+    scrollViewContentContainerStyle: {
+      flexGrow: 1,
+    },
     btnDone: {
       paddingLeft: 15,
     },
