@@ -1,4 +1,4 @@
-# Hologram-mobile-agent
+# Hologram App
 
 This repository contains Hologram Mobile Agent, a React Native application used by end users to access different services provided by Hologram network and connect to other DIDComm agents.
 
