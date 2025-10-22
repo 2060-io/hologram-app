@@ -55,7 +55,6 @@ const getStyles = (theme: AppTheme) =>
     textStyle: {
       color: theme.colors.primaryText,
       fontSize: theme.fontSize.md2,
-      fontFamily: 'EuclidCircularA-Regular',
     },
     link: {
       textDecorationLine: 'underline',

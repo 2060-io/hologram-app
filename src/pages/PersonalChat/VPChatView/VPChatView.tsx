@@ -138,7 +138,7 @@ const VPChatView = ({ metadata, role, agent, proofRecordId, chatEntryId }: Props
           const isLast = index === presentedCredentials.length - 1
           const credentialMainInfo = {
             ...credential.mainInfo,
-            dateLabel: isSender ? t('credential.issuedOn') : t('credential.presentedOn'),
+            dateLabel: isSender ? undefined : t('credential.presentedOn'),
           }
           return (
             <CardCredentialMainInformation
