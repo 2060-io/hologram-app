@@ -15,6 +15,7 @@ export type PersonalChatStackParams = {
   ForwardMessages: undefined
   ShareMessages: undefined
   MRZScanner: { didcommThreadId: string }
+  PresentCredentialsFromChat: { connectionId: string }
 }
 
 export type NavigationStackParams = {
@@ -52,6 +53,7 @@ export type NavigationStackParams = {
   }
   PresentCredential: {
     credentialRecordId: string
+    attributesToPresent: string[]
   }
   Presentation: {
     mainInfo: CredentialMainInfo

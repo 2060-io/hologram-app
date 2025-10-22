@@ -180,16 +180,11 @@ export const PersonalChatProvider: React.FC<React.PropsWithChildren<Props>> = ({
 
   const updateSelectedMessages = useCallback((selectedMessage: ChatEntryMessage) => {
     setState(prevState => {
-      const newSelectedMessages = [...prevState.selectedMessages]
-      const messageAlreadySelectedSelectedIndex = newSelectedMessages.findIndex(
-        chatEntry => chatEntry.id === selectedMessage.id,
-      )
-      const messageIsAlreadySelected = messageAlreadySelectedSelectedIndex !== -1
-      if (messageIsAlreadySelected) {
-        newSelectedMessages.splice(messageAlreadySelectedSelectedIndex, 1)
-      } else {
-        newSelectedMessages.push(selectedMessage)
-      }
+      const { selectedMessages } = prevState
+      const messageIsAlreadySelected = selectedMessages.some(({ id }) => id === selectedMessage.id)
+      const newSelectedMessages = messageIsAlreadySelected
+        ? selectedMessages.filter(chatEntry => chatEntry.id !== selectedMessage.id)
+        : [...selectedMessages, selectedMessage]
       return { ...prevState, selectedMessages: newSelectedMessages }
     })
   }, [])
