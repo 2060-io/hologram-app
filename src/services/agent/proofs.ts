@@ -1,9 +1,19 @@
 import {
   AnonCredsProofFormat,
+  AnonCredsProposeProofFormat,
   AnonCredsSelectedCredentials,
   LegacyIndyProofFormat,
 } from '@credo-ts/anoncreds'
-import { ProofEventTypes, ProofFormatPayload, ProofState, ProofStateChangedEvent } from '@credo-ts/core'
+import {
+  AgentMessage,
+  AutoAcceptProof,
+  ProofEventTypes,
+  ProofExchangeRecord,
+  ProofFormatPayload,
+  ProofState,
+  ProofStateChangedEvent,
+  V2ProofProtocol,
+} from '@credo-ts/core'
 
 import { MobileAgent } from './MobileAgent'
 import { DidCommPresentationDisplayMetadata, setDidCommPresentationMetadata } from './RecordMetadata'
@@ -123,5 +133,25 @@ export async function sendProblemReport(options: {
       proofRecord: proofRecord.clone(),
       previousState: null,
     },
+  })
+}
+
+/**
+ * Initiate a new presentation exchange as prover by sending an out of band proof proposal message
+ *
+ * @param options multiple properties like protocol version, proof Formats to build the proof request
+ * @returns the message itself and the proof record associated with the sent request message
+ */
+export async function createProofProposal(options: {
+  agent: MobileAgent
+  anoncreds: AnonCredsProposeProofFormat
+}): Promise<{
+  message: AgentMessage
+  proofRecord: ProofExchangeRecord
+}> {
+  const protocol = options.agent.dependencyManager.resolve(V2ProofProtocol)
+  return await protocol.createProposal(options.agent.context, {
+    proofFormats: { anoncreds: options.anoncreds },
+    autoAcceptProof: AutoAcceptProof.ContentApproved,
   })
 }
