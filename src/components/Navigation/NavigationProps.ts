@@ -46,7 +46,7 @@ export type NavigationStackParams = {
   CredentialPresented: {
     verifier: ServiceInfo
     credentials: CredentialMainInfo[]
-    presentedAt: string
+    presentedAt: Date
   }
   ForwardConnection: {
     connection: ConnectionRecord

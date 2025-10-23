@@ -101,7 +101,6 @@ const DidcommPresentationRequest: React.FC<Props> = ({ navigation, route }: Prop
 
   const goToCredentialPresented = async () => {
     if (!serviceInfo) return
-    const presentedAt = new Date()
     const selectedCredentialsMainInfo: CredentialMainInfo[] = []
     Object.entries(selectedCredentials.current).map(([entryId, credentialId]) => {
       const currentEntry = submission?.entries.find(entry => entry.id === entryId)
@@ -111,7 +110,7 @@ const DidcommPresentationRequest: React.FC<Props> = ({ navigation, route }: Prop
     navigation.replace('CredentialPresented', {
       credentials: selectedCredentialsMainInfo,
       verifier: serviceInfo,
-      presentedAt: presentedAt.toString(),
+      presentedAt: new Date(),
     })
   }
 
