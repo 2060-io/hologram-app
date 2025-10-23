@@ -66,6 +66,7 @@ const PresentCredentialsFromChat = ({ navigation, route }: Props) => {
         attributesSections={currentAttributesSections.current}
         onRequestClose={hideModalSelectAttributesForPresent}
         onPresent={presentCredential}
+        navigate={navigation.navigate}
       />
     </View>
   )

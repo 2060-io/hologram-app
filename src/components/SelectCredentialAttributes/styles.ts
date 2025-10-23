@@ -49,8 +49,9 @@ const styles = (theme: AppTheme) =>
       borderWidth: 1.5,
       borderColor: theme.colors.green,
     },
-    presentButton: {
+    generateQRButton: {
       marginTop: 4,
+      marginBottom: 8,
     },
     presentEnabled: {
       opacity: 1,

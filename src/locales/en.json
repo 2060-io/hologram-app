@@ -104,7 +104,8 @@
       "shareWith": "Share with",
       "PresentCredential": "Present to",
       "Presentation": "Presentation",
-      "ParentalControl": "Parental Control"
+      "ParentalControl": "Parental Control",
+      "PresentCredentialAsQR": "Present Credential as QR"
     },
     "authentication": {
       "walletLocked": "Hologram Locked",
@@ -227,6 +228,8 @@
       "yesDelete": "Yes, delete permanently",
       "present": "Present credential",
       "present_other": "Present Credentials",
+      "presentToConnection": "Present to connection",
+      "createQRCode": "Create QR code",
       "presented": "Credential presented",
       "presentedOn": "Presented on",
       "selectCredential": "Select the credential you want to present",

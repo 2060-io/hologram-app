@@ -61,4 +61,7 @@ export type NavigationStackParams = {
     proofState: ProofState
   }
   ParentalControl: undefined
+  PresentCredentialAsQR: {
+    attributesToPresent: string[]
+  }
 }

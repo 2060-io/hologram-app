@@ -5,10 +5,8 @@ import {
   LegacyIndyProofFormat,
 } from '@credo-ts/anoncreds'
 import {
-  AgentMessage,
   AutoAcceptProof,
   ProofEventTypes,
-  ProofExchangeRecord,
   ProofFormatPayload,
   ProofState,
   ProofStateChangedEvent,
@@ -17,6 +15,8 @@ import {
 
 import { MobileAgent } from './MobileAgent'
 import { DidCommPresentationDisplayMetadata, setDidCommPresentationMetadata } from './RecordMetadata'
+
+import { logError } from '@2060/utils'
 
 type SelectedCredentials = {
   [referent: string]: string
@@ -145,13 +145,14 @@ export async function sendProblemReport(options: {
 export async function createProofProposal(options: {
   agent: MobileAgent
   anoncreds: AnonCredsProposeProofFormat
-}): Promise<{
-  message: AgentMessage
-  proofRecord: ProofExchangeRecord
-}> {
-  const protocol = options.agent.dependencyManager.resolve(V2ProofProtocol)
-  return await protocol.createProposal(options.agent.context, {
-    proofFormats: { anoncreds: options.anoncreds },
-    autoAcceptProof: AutoAcceptProof.ContentApproved,
-  })
+}) {
+  try {
+    const protocol = options.agent.dependencyManager.resolve(V2ProofProtocol)
+    return await protocol.createProposal(options.agent.context, {
+      proofFormats: { anoncreds: options.anoncreds },
+      autoAcceptProof: AutoAcceptProof.ContentApproved,
+    })
+  } catch (error) {
+    logError('Error creating proposal', error)
+  }
 }

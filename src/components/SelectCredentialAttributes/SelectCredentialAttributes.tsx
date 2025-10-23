@@ -1,4 +1,6 @@
-import React, { useMemo, useState } from 'react'
+import { ParamListBase } from '@react-navigation/native'
+import { StackNavigationProp } from '@react-navigation/stack'
+import React, { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ScrollView, View, FlatList, TouchableOpacity, SafeAreaView } from 'react-native'
 
@@ -15,9 +17,16 @@ type Props = {
   attributesSections: CredentialAttributeTable[]
   onRequestClose: () => void
   onPresent: (attributesToPresent: string[]) => void
+  navigate: StackNavigationProp<ParamListBase>['navigate']
 }
 
-const SelectCredentialAttributes = ({ visible, attributesSections, onRequestClose, onPresent }: Props) => {
+const SelectCredentialAttributes = ({
+  visible,
+  attributesSections,
+  onRequestClose,
+  onPresent,
+  navigate,
+}: Props) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
@@ -27,7 +36,7 @@ const SelectCredentialAttributes = ({ visible, attributesSections, onRequestClos
     return attributesSections.map(section => section.rows.map(({ key }) => key)).flat()
   }, [attributesSections])
 
-  const beforeClose = () => {
+  const close = () => {
     cleanStateVars()
     onRequestClose()
   }
@@ -52,10 +61,14 @@ const SelectCredentialAttributes = ({ visible, attributesSections, onRequestClos
     setAreAllSelected(newAreAllSelected)
   }
 
+  const generateQR = useCallback(() => {
+    navigate('PresentCredentialAsQR', { attributesToPresent })
+  }, [attributesToPresent])
+
   return (
-    <Modal visible={visible} statusBarTranslucent={false} onRequestClose={beforeClose} animationType="slide">
+    <Modal visible={visible} statusBarTranslucent={false} onRequestClose={close} animationType="slide">
       <SafeAreaView style={styles.container}>
-        <TouchableOpacity activeOpacity={1} style={styles.cancelContainer} onPress={beforeClose}>
+        <TouchableOpacity activeOpacity={1} style={styles.cancelContainer} onPress={close}>
           <Text style={styles.cancelText} fontFamily="EuclidCircularA-Medium">
             {t('general.cancel')}
           </Text>
@@ -98,12 +111,18 @@ const SelectCredentialAttributes = ({ visible, attributesSections, onRequestClos
             />
             <MainButton
               disabled={!attributesToPresent.length}
-              text={t('credential.present')}
-              onPress={() => onPresent(attributesToPresent)}
+              text={t('credential.createQRCode')}
+              onPress={generateQR}
               style={[
-                styles.presentButton,
+                styles.generateQRButton,
                 attributesToPresent.length ? styles.presentEnabled : styles.presentDisabled,
               ]}
+            />
+            <MainButton
+              disabled={!attributesToPresent.length}
+              text={t('credential.presentToConnection')}
+              onPress={() => onPresent(attributesToPresent)}
+              style={[attributesToPresent.length ? styles.presentEnabled : styles.presentDisabled]}
             />
           </View>
         </ScrollView>
