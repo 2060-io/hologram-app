@@ -1,22 +1,20 @@
 import {
+  AnonCredsPresentationPreviewAttribute,
   AnonCredsProofFormat,
-  AnonCredsProposeProofFormat,
   AnonCredsSelectedCredentials,
   LegacyIndyProofFormat,
 } from '@credo-ts/anoncreds'
 import {
-  AutoAcceptProof,
+  AgentMessage,
   ProofEventTypes,
+  ProofExchangeRecord,
   ProofFormatPayload,
   ProofState,
   ProofStateChangedEvent,
-  V2ProofProtocol,
 } from '@credo-ts/core'
 
 import { MobileAgent } from './MobileAgent'
 import { DidCommPresentationDisplayMetadata, setDidCommPresentationMetadata } from './RecordMetadata'
-
-import { logError } from '@2060/utils'
 
 type SelectedCredentials = {
   [referent: string]: string
@@ -144,15 +142,15 @@ export async function sendProblemReport(options: {
  */
 export async function createProofProposal(options: {
   agent: MobileAgent
-  anoncreds: AnonCredsProposeProofFormat
-}) {
-  try {
-    const protocol = options.agent.dependencyManager.resolve(V2ProofProtocol)
-    return await protocol.createProposal(options.agent.context, {
-      proofFormats: { anoncreds: options.anoncreds },
-      autoAcceptProof: AutoAcceptProof.ContentApproved,
-    })
-  } catch (error) {
-    logError('Error creating proposal', error)
-  }
+  attributes: AnonCredsPresentationPreviewAttribute[]
+}): Promise<{
+  message: AgentMessage
+  proofRecord: ProofExchangeRecord
+}> {
+  const { attributes, agent } = options
+
+  return await agent.proofs.createProofProposal({
+    proofFormats: { anoncreds: { attributes } },
+    protocolVersion: 'v2',
+  })
 }
