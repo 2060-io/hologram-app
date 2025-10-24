@@ -62,6 +62,7 @@ export type NavigationStackParams = {
   }
   ParentalControl: undefined
   PresentCredentialAsQR: {
+    credentialRecordId: string
     attributesToPresent: string[]
   }
 }

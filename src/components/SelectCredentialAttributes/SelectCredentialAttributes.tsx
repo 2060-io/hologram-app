@@ -18,6 +18,7 @@ type Props = {
   onRequestClose: () => void
   onPresent: (attributesToPresent: string[]) => void
   navigate: StackNavigationProp<ParamListBase>['navigate']
+  credentialRecordId: string
 }
 
 const SelectCredentialAttributes = ({
@@ -26,6 +27,7 @@ const SelectCredentialAttributes = ({
   onRequestClose,
   onPresent,
   navigate,
+  credentialRecordId,
 }: Props) => {
   const { t } = useTranslation()
   const theme = useTheme()
@@ -62,7 +64,7 @@ const SelectCredentialAttributes = ({
   }
 
   const generateQR = useCallback(() => {
-    navigate('PresentCredentialAsQR', { attributesToPresent })
+    navigate('PresentCredentialAsQR', { credentialRecordId, attributesToPresent })
   }, [attributesToPresent])
 
   return (
@@ -117,12 +119,14 @@ const SelectCredentialAttributes = ({
                 styles.generateQRButton,
                 attributesToPresent.length ? styles.presentEnabled : styles.presentDisabled,
               ]}
+              iconName="qrcode"
             />
             <MainButton
               disabled={!attributesToPresent.length}
               text={t('credential.presentToConnection')}
               onPress={() => onPresent(attributesToPresent)}
               style={[attributesToPresent.length ? styles.presentEnabled : styles.presentDisabled]}
+              iconName="users"
             />
           </View>
         </ScrollView>

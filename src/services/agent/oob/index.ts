@@ -23,6 +23,7 @@ import {
   MediationRecipientApi,
   isDid,
   utils,
+  CreateOutOfBandInvitationConfig,
 } from '@credo-ts/core'
 import { DidCommDocumentService } from '@credo-ts/core/build/modules/didcomm'
 import { tryParseDid } from '@credo-ts/core/build/modules/dids/domain/parse'
@@ -241,11 +242,13 @@ export const processInvitation = async (
     success: false,
   }
 }
-export const createInvitation = async (agent: MobileAgent, options: { label?: string }) => {
+export const createInvitation = async (
+  agent: MobileAgent,
+  config?: Partial<Omit<CreateOutOfBandInvitationConfig, 'routing'>>,
+) => {
   const oobRecord = await agent.oob.createInvitation({
+    ...config,
     routing: await getMediationRouting(agent.context),
-    label: options.label,
-    multiUseInvitation: true,
   })
   return oobRecord
 }

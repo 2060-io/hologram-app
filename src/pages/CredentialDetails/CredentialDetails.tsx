@@ -121,6 +121,7 @@ const CredentialDetails = ({ route, navigation }: Props) => {
         onRequestClose={hideModalSelectAttributesForPresent}
         onPresent={goToPresentCredential}
         navigate={navigation.navigate}
+        credentialRecordId={credentialRecordId}
       />
       <ModalConfirmAction
         visible={showConfirmationDeleteModal}
