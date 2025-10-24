@@ -6,7 +6,6 @@ const styles = (theme: AppTheme) =>
   StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: theme.colors.secondary,
     },
     cancelContainer: {
       marginVertical: 14,
@@ -22,13 +21,16 @@ const styles = (theme: AppTheme) =>
     },
     subContainer: {
       paddingHorizontal: 12,
-      paddingBottom: 12,
+      marginTop: 12,
+      marginBottom: 6,
     },
     title: {
       color: theme.colors.primaryText,
+      fontSize: theme.fontSize.md,
+      textAlign: 'center',
     },
     selectAllText: {
-      paddingTop: 12,
+      marginTop: 20,
       width: '50%',
       textDecorationLine: 'underline',
       color: theme.colors.tertiaryText,
@@ -39,15 +41,20 @@ const styles = (theme: AppTheme) =>
       color: theme.colors.primaryText,
       marginVertical: 15,
     },
-    credentialAttributeContainer: {
+    attributeContainer: {
+      flex: 1,
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    attributeSubContainer: {
+      flex: 1,
       ...cardStyles(theme),
       ...cardShadowStyles(theme.colors),
       marginBottom: 8,
       padding: 12,
     },
-    selectedCredentialAttribute: {
-      borderWidth: 1.5,
-      borderColor: theme.colors.green,
+    radioButton: {
+      marginRight: 15,
     },
     presentButton: {
       marginTop: 4,

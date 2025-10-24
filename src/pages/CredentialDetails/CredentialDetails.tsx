@@ -10,7 +10,6 @@ import {
   CredentialDetails as CredentialDetailsComponent,
   ModalBottomHalf,
   ModalConfirmAction,
-  SelectCredentialAttributes,
 } from '@2060/components'
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
 import { SvgIcon, Text, ServiceInformation } from '@2060/components/common'
@@ -18,7 +17,6 @@ import { useCredentials, useMobileAgent } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { ServiceInfo } from '@2060/model'
 import { getCredentialDetailsForDisplay } from '@2060/services/agent/display'
-import { formatCredentialSubject } from '@2060/services/agent/formatCredentialSubject'
 import { trimText } from '@2060/utils'
 
 interface Props extends StackScreenProps<NavigationStackParams, 'CredentialDetails'> {}
@@ -31,12 +29,8 @@ const CredentialDetails = ({ route, navigation }: Props) => {
   const { getCredentialById } = useCredentials()
   const [showConfirmationDeleteModal, setShowConfirmationDeleteModal] = useState(false)
   const [showContextualMenu, setShowContextualMenu] = useState(false)
-  const [showModalSelectAttributesForPresent, setDisplayModalSelectAttributesForPresent] = useState(false)
   const credentialRecord = getCredentialById(credentialRecordId)
   const credentialDetails = credentialRecord ? getCredentialDetailsForDisplay(credentialRecord) : undefined
-  const attributesSections = credentialDetails
-    ? formatCredentialSubject({ subject: credentialDetails.attributes })
-    : []
 
   const did = credentialRecord?.credential.issuerId ?? ''
   const serviceInfo = useRef<ServiceInfo>({
@@ -70,18 +64,9 @@ const CredentialDetails = ({ route, navigation }: Props) => {
     navigation.goBack()
   }
 
-  const displayModalSelectAttributesForPresent = () => setDisplayModalSelectAttributesForPresent(true)
-
-  const hideModalSelectAttributesForPresent = () => setDisplayModalSelectAttributesForPresent(false)
-
-  const goToPresentCredential = (attributesToPresent: string[]) => {
-    hideModalSelectAttributesForPresent()
-    navigation.navigate('PresentCredential', { credentialRecordId, attributesToPresent })
-  }
-
   const onPressPresentCredential = () => {
     handleShowContextMenu()
-    displayModalSelectAttributesForPresent()
+    navigation.navigate('SelectCredentialAttributes', { presentDirectly: false, credentialRecordId })
   }
 
   return (
@@ -109,18 +94,12 @@ const CredentialDetails = ({ route, navigation }: Props) => {
             </View>
           </View>
         </ScrollView>
-        <ModalBottomHalf visible={showContextualMenu} onClose={handleShowContextMenu}>
-          <TouchableOpacity style={styles.containerOptionCard} onPress={onPressPresentCredential}>
-            <Text style={styles.actionText}>{t('credential.present')}</Text>
-          </TouchableOpacity>
-        </ModalBottomHalf>
       </SafeAreaView>
-      <SelectCredentialAttributes
-        visible={showModalSelectAttributesForPresent}
-        attributesSections={attributesSections}
-        onRequestClose={hideModalSelectAttributesForPresent}
-        onPresent={goToPresentCredential}
-      />
+      <ModalBottomHalf visible={showContextualMenu} onClose={handleShowContextMenu}>
+        <TouchableOpacity style={styles.containerOptionCard} onPress={onPressPresentCredential}>
+          <Text style={styles.actionText}>{t('credential.present')}</Text>
+        </TouchableOpacity>
+      </ModalBottomHalf>
       <ModalConfirmAction
         visible={showConfirmationDeleteModal}
         title={`${t('credential.deleteConfirmation')} ${credentialDetails?.mainInfo.schemaName}`}

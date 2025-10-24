@@ -28,17 +28,15 @@ const ImageAttribute = ({ image, onPressDetailImage, imageStyle }: ImageSectionP
 type DetailSectionProps = {
   attribute: CredentialAttributeRow
   onPressDetailImage?: (image: string) => void
-  onPress?: (attributeKey: string) => void
   style?: StyleProp<ViewStyle>
 }
 
-const CredentialAttribute = ({ attribute, onPressDetailImage, onPress, style }: DetailSectionProps) => {
+const CredentialAttribute = ({ attribute, onPressDetailImage, style }: DetailSectionProps) => {
   const theme = useTheme()
   const styles = getStyles(theme)
-  const Wrapper = onPress ? TouchableOpacity : View
 
   return (
-    <Wrapper style={[styles.sectionContainer, style]} onPress={() => onPress?.(attribute.key)}>
+    <View style={[styles.sectionContainer, style]}>
       <View style={styles.container}>
         <Text style={styles.sectionKey} fontFamily="EuclidCircularA-Medium">
           {sanitizeString(attribute.key)}
@@ -52,7 +50,7 @@ const CredentialAttribute = ({ attribute, onPressDetailImage, onPress, style }: 
           image={attribute.image}
         />
       )}
-    </Wrapper>
+    </View>
   )
 }
 
