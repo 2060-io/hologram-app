@@ -1,6 +1,7 @@
 import { StyleSheet } from 'react-native'
 
 import { AppTheme, cardShadowStyles, cardStyles } from '@2060/styles'
+import { hexTransparency } from '@2060/utils/colorUtils'
 
 const styles = (theme: AppTheme) =>
   StyleSheet.create({
@@ -48,8 +49,7 @@ const styles = (theme: AppTheme) =>
       padding: 12,
     },
     selectedCredentialAttribute: {
-      borderWidth: 1.4,
-      borderColor: theme.colors.green,
+      backgroundColor: hexTransparency(theme.colors.green, 'CC'),
     },
     presentButton: {
       marginTop: 4,
