@@ -17,43 +17,44 @@ export class HologramCustomLogger implements Logger {
     this.logLevel = logLevel
   }
 
+  getOutput(data: Record<string, unknown>) {
+    if (this.isDevelopment) return JSON.stringify(data, null, '\t')
+    return truncateLog(JSON.stringify(data))
+  }
+
   test(message: string, data?: Record<string, unknown>): void {
     if (LogLevel.test >= this.logLevel) {
-      const extraInfo = this.isDevelopment ? JSON.stringify(data) : truncateLog(JSON.stringify(data))
-      console.debug(`TEST ${message}`, extraInfo)
+      console.debug(`TEST: ${message}`, data ? this.getOutput(data) : '')
     }
   }
   trace(message: string, data?: Record<string, unknown>): void {
     if (LogLevel.trace >= this.logLevel) {
-      const extraInfo = this.isDevelopment ? JSON.stringify(data) : truncateLog(JSON.stringify(data))
-      console.trace(`TRACE: ${message}`, extraInfo)
+      console.trace(`TRACE: ${message}`, data ? this.getOutput(data) : '')
     }
   }
   debug(message: string, data?: Record<string, unknown>): void {
     if (LogLevel.debug >= this.logLevel) {
-      const extraInfo = this.isDevelopment ? JSON.stringify(data) : truncateLog(JSON.stringify(data))
-      console.debug(`DEBUG: ${message}`, extraInfo)
+      console.debug(`DEBUG: ${message}`, data ? this.getOutput(data) : '')
     }
   }
   info(message: string, data?: Record<string, unknown>): void {
     if (LogLevel.info >= this.logLevel) {
-      const extraInfo = this.isDevelopment ? JSON.stringify(data) : truncateLog(JSON.stringify(data))
-      console.info(`INFO: ${message}`, extraInfo)
+      console.info(`INFO: ${message}`, data ? this.getOutput(data) : '')
     }
   }
   warn(message: string, data?: Record<string, unknown>): void {
     if (LogLevel.warn >= this.logLevel) {
-      console.warn(`WARN: ${message}`, data ? JSON.stringify(data) : '')
+      console.warn(`WARN: ${message}`, data ? JSON.stringify(data, null, '\t') : '')
     }
   }
   error(message: string, data?: Record<string, unknown>): void {
     if (LogLevel.error >= this.logLevel) {
-      console.error(`ERROR: ${message}`, data ? JSON.stringify(data) : '')
+      console.error(`ERROR: ${message}`, data ? JSON.stringify(data, null, '\t') : '')
     }
   }
   fatal(message: string, data?: Record<string, unknown>): void {
     if (LogLevel.fatal >= this.logLevel) {
-      console.error(`FATAL: ${message}`, data ? JSON.stringify(data) : '')
+      console.error(`FATAL: ${message}`, data ? JSON.stringify(data, null, '\t') : '')
     }
   }
 }
