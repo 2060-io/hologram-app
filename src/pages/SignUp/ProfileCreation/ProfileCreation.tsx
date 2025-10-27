@@ -1,4 +1,4 @@
-import { PictureData } from '@2060.io/credo-ts-didcomm-user-profile'
+import { UserProfileData } from '@2060.io/credo-ts-didcomm-user-profile'
 import { CommonActions } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import React, { useState, useEffect, useCallback, useTransition } from 'react'
@@ -32,7 +32,7 @@ const ProfileCreation = ({ navigation }: Props) => {
   const [isRegistering, startRegisterTransition] = useTransition()
   const { updateUserProfileData } = useUserProfile()
   const [displayName, setDisplayName] = useState('')
-  const [displayPicture, setDisplayPicture] = useState<PictureData | undefined>()
+  const [displayPicture, setDisplayPicture] = useState<UserProfileData['displayPicture']>()
   const { signUpState, startSignUp } = useSignUp()
   const theme = useTheme()
   const styles = getStyles(theme)
