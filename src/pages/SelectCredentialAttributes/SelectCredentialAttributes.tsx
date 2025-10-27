@@ -1,13 +1,13 @@
 import { StackScreenProps } from '@react-navigation/stack'
 import React, { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ScrollView, View, FlatList, TouchableOpacity, SafeAreaView } from 'react-native'
+import { ScrollView, View, FlatList, SafeAreaView } from 'react-native'
 
 import getStyles from './styles'
 
 import { CredentialAttribute } from '@2060/components'
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
-import { Text, MainButton, RadioButton } from '@2060/components/common'
+import { Text, MainButton } from '@2060/components/common'
 import { usePresentCredential } from '@2060/hooks'
 import { useCredentials } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
@@ -79,17 +79,15 @@ const SelectCredentialAttributes = ({ navigation, route }: Props) => {
                     renderItem={({ item: attribute }) => {
                       const isSelected = attributesToPresent.includes(attribute.key)
                       return (
-                        <TouchableOpacity
-                          style={styles.attributeContainer}
-                          onPress={() => updateSelectedAttributes(attribute.key)}
-                        >
-                          <RadioButton style={styles.radioButton} isChecked={isSelected} />
-                          <CredentialAttribute
-                            key={attribute.key}
-                            attribute={attribute}
-                            style={styles.attributeSubContainer}
-                          />
-                        </TouchableOpacity>
+                        <CredentialAttribute
+                          key={attribute.key}
+                          attribute={attribute}
+                          style={[
+                            styles.credentialAttributeContainer,
+                            isSelected && styles.selectedCredentialAttribute,
+                          ]}
+                          onPress={updateSelectedAttributes}
+                        />
                       )
                     }}
                   />

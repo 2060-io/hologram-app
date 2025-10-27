@@ -28,7 +28,9 @@ const ConnectionList = ({
       data={connectionList}
       renderItem={({ item: section, index: sectionIndex }) => (
         <View key={section.title + sectionIndex}>
-          <Text style={styles.sectionHeaderLabel}>{section.title}</Text>
+          <Text style={styles.sectionHeaderLabel} fontFamily="EuclidCircularA-Medium">
+            {section.title}
+          </Text>
           <FlatList
             style={styles.containerSectionList}
             showsVerticalScrollIndicator={false}

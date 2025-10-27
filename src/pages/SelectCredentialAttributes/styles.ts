@@ -41,20 +41,15 @@ const styles = (theme: AppTheme) =>
       color: theme.colors.primaryText,
       marginVertical: 15,
     },
-    attributeContainer: {
-      flex: 1,
-      flexDirection: 'row',
-      alignItems: 'center',
-    },
-    attributeSubContainer: {
-      flex: 1,
+    credentialAttributeContainer: {
       ...cardStyles(theme),
       ...cardShadowStyles(theme.colors),
       marginBottom: 8,
       padding: 12,
     },
-    radioButton: {
-      marginRight: 15,
+    selectedCredentialAttribute: {
+      borderWidth: 1.4,
+      borderColor: theme.colors.green,
     },
     presentButton: {
       marginTop: 4,

@@ -4,7 +4,7 @@ import { View, TouchableOpacity } from 'react-native'
 import { ConnectionItem } from './ConnectionListProps'
 import getStyles from './styles'
 
-import { Avatar, RadioButton, SvgIcon, Text, VerifiedIcon } from '@2060/components/common'
+import { Avatar, SvgIcon, Text, VerifiedIcon } from '@2060/components/common'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 
 type Props = {
@@ -31,7 +31,11 @@ const Connection = ({
   return (
     <TouchableOpacity
       key={connection.id}
-      style={[styles.containerConnection, isLastInSection && styles.lastConnectionInSection]}
+      style={[
+        styles.containerConnection,
+        isLastInSection && styles.lastConnectionInSection,
+        allowSelection && isSelected && styles.selected,
+      ]}
       onPress={onPress}
     >
       {connection.isService && connection.status && (
@@ -62,7 +66,6 @@ const Connection = ({
           <SvgIcon name="chevronForward" fill={theme.colors.primaryText} />
         </TouchableOpacity>
       )}
-      {allowSelection && <RadioButton style={styles.radioButton} isChecked={isSelected} />}
     </TouchableOpacity>
   )
 }
