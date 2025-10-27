@@ -12,7 +12,7 @@ import {
 import { agentDependencies } from '@credo-ts/react-native'
 import Config from 'react-native-config'
 
-import { HologramCustomLogger } from './HologramCustomLogger'
+import { HologramCustomLogger, HologramCustomLoggerForProd } from './HologramCustomLoggers'
 import { MobileAgent } from './agent/MobileAgent'
 import { createMobileAgent } from './agent/createMobileAgent'
 import { duplicatedMessagesMiddleware } from './agent/duplicatedMessagesMiddleware'
@@ -44,12 +44,14 @@ const getIsDeveloperMode = async () => {
   return (persistedDeveloperMode as boolean) ?? false
 }
 
-let logger: Logger | undefined
+let logger: Logger
 export const setupMobileAgent = async (): Promise<MobileAgent> => {
   const indyVDRProxyBaseUrl = await getIndyVDRProxyBaseUrl()
   const isDeveloperMode = await getIsDeveloperMode()
-  if (__DEV__ || isDeveloperMode) {
+  if (__DEV__) {
     logger = new HologramCustomLogger(LogLevel.debug)
+  } else {
+    logger = new HologramCustomLoggerForProd(LogLevel.debug, isDeveloperMode)
   }
   const agent = createMobileAgent({
     config: {
@@ -65,15 +67,15 @@ export const setupMobileAgent = async (): Promise<MobileAgent> => {
   })
 
   agent.events.on<AgentMessageReceivedEvent>(AgentEventTypes.AgentMessageReceived, async data => {
-    logger?.info('Message received', data.payload.message ?? undefined)
+    logger.info('Message received', data.payload.message ?? undefined)
   })
 
   agent.events.on<AgentMessageProcessedEvent>(AgentEventTypes.AgentMessageProcessed, async data => {
-    logger?.info(`Message received with type: ${data.payload.message.type}`)
+    logger.info(`Message received with type: ${data.payload.message.type}`)
   })
 
   agent.events.on<AgentMessageSentEvent>(AgentEventTypes.AgentMessageSent, async data => {
-    logger?.info(`Message sent (${data.payload.status})`, data.payload.message.message)
+    logger.info(`Message sent (${data.payload.status})`, data.payload.message.message)
   })
 
   const httpOutboundTransporter = new HttpOutboundTransport()
