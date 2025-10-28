@@ -25,6 +25,9 @@ const styles = (theme: AppTheme) =>
       height: 40,
       marginLeft: 10,
     },
+    rightContentContainer: {
+      marginLeft: 6,
+    },
   })
 
 export default styles

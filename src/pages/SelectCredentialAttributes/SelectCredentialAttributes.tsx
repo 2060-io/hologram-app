@@ -7,7 +7,7 @@ import getStyles from './styles'
 
 import { CredentialAttribute } from '@2060/components'
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
-import { Text, MainButton, RadioButton, SvgIcon } from '@2060/components/common'
+import { Text, MainButton, SvgIcon } from '@2060/components/common'
 import { usePresentCredential } from '@2060/hooks'
 import { useCredentials } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'

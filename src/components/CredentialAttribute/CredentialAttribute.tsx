@@ -59,7 +59,7 @@ const CredentialAttribute = ({
           image={attribute.image}
         />
       )}
-      <View style={{ marginLeft: 6 }}>{rightContent}</View>
+      <View style={styles.rightContentContainer}>{rightContent}</View>
     </Wrapper>
   )
 }
