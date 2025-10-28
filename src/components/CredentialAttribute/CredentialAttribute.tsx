@@ -27,16 +27,16 @@ const ImageAttribute = ({ image, onPressDetailImage, imageStyle }: ImageSectionP
 
 type DetailSectionProps = {
   attribute: CredentialAttributeRow
-  onPressDetailImage?: (image: string) => void
   onPress?: (attributeKey: string) => void
+  onPressDetailImage?: (image: string) => void
   style?: StyleProp<ViewStyle>
   rightContent?: React.JSX.Element | null
 }
 
 const CredentialAttribute = ({
   attribute,
-  onPressDetailImage,
   onPress,
+  onPressDetailImage,
   style,
   rightContent,
 }: DetailSectionProps) => {

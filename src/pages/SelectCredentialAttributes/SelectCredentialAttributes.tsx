@@ -1,7 +1,7 @@
 import { StackScreenProps } from '@react-navigation/stack'
 import React, { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ScrollView, View, FlatList, TouchableOpacity, SafeAreaView } from 'react-native'
+import { ScrollView, View, FlatList, SafeAreaView } from 'react-native'
 
 import getStyles from './styles'
 
@@ -79,22 +79,16 @@ const SelectCredentialAttributes = ({ navigation, route }: Props) => {
                     renderItem={({ item: attribute }) => {
                       const isSelected = attributesToPresent.includes(attribute.key)
                       return (
-                        <TouchableOpacity
-                          style={styles.attributeContainer}
-                          onPress={() => updateSelectedAttributes(attribute.key)}
-                        >
-                          <CredentialAttribute
-                            key={attribute.key}
-                            attribute={attribute}
-                            style={[
-                              styles.credentialAttributeContainer,
-                              isSelected && styles.selectedCredentialAttribute,
-                            ]}
-                            rightContent={
-                              isSelected ? <SvgIcon name="done" fill={theme.colors.green} /> : null
-                            }
-                          />
-                        </TouchableOpacity>
+                        <CredentialAttribute
+                          key={attribute.key}
+                          attribute={attribute}
+                          onPress={updateSelectedAttributes}
+                          style={[
+                            styles.credentialAttributeContainer,
+                            isSelected && styles.selectedCredentialAttribute,
+                          ]}
+                          rightContent={isSelected ? <SvgIcon name="done" fill={theme.colors.green} /> : null}
+                        />
                       )
                     }}
                   />

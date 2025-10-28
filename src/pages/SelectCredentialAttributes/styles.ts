@@ -41,11 +41,6 @@ const styles = (theme: AppTheme) =>
       color: theme.colors.primaryText,
       marginVertical: 15,
     },
-    attributeContainer: {
-      flex: 1,
-      flexDirection: 'row',
-      alignItems: 'center',
-    },
     credentialAttributeContainer: {
       ...cardStyles(theme),
       ...cardShadowStyles(theme.colors),
