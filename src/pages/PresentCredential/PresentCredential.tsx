@@ -21,7 +21,7 @@ const PresentCredential = ({ navigation, route }: Props) => {
     <ConnectionsSelection
       navigation={navigation}
       onPressSend={presentCredential}
-      title={t('navigation.PresentCredential')}
+      headerTitle={t('navigation.PresentCredential')}
     />
   )
 }

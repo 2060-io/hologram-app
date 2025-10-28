@@ -19,7 +19,7 @@ interface Props {
   navigation: StackNavigationProp<ParamListBase>
   onPressSend: (connectionsId: string[]) => void
   connectionIdToExclude?: string
-  title?: string
+  headerTitle?: string
 }
 
 type SelectedConnection = {
@@ -27,7 +27,7 @@ type SelectedConnection = {
   name: string
 }
 
-const ConnectionsSelection = ({ navigation, onPressSend, connectionIdToExclude, title }: Props) => {
+const ConnectionsSelection = ({ navigation, onPressSend, connectionIdToExclude, headerTitle }: Props) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
@@ -66,7 +66,7 @@ const ConnectionsSelection = ({ navigation, onPressSend, connectionIdToExclude, 
         <Connections
           navigation={navigation}
           onPressConnection={onPressConnection}
-          headerProps={{ height: headerHeight, title: title ?? t('navigation.ForwardTo') }}
+          headerProps={{ height: headerHeight, title: headerTitle ?? t('navigation.ForwardTo') }}
           allowSelection
           selectedConnections={selectedConnections.map(connection => connection.id)}
           excludedConnections={excludedConnections}
