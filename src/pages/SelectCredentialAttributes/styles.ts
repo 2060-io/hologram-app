@@ -46,12 +46,15 @@ const styles = (theme: AppTheme) =>
       flexDirection: 'row',
       alignItems: 'center',
     },
-    attributeSubContainer: {
-      flex: 1,
+    credentialAttributeContainer: {
       ...cardStyles(theme),
       ...cardShadowStyles(theme.colors),
       marginBottom: 8,
       padding: 12,
+    },
+    selectedCredentialAttribute: {
+      borderWidth: 1.4,
+      borderColor: theme.colors.green,
     },
     presentButton: {
       marginTop: 4,

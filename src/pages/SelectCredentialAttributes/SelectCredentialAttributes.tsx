@@ -86,7 +86,10 @@ const SelectCredentialAttributes = ({ navigation, route }: Props) => {
                           <CredentialAttribute
                             key={attribute.key}
                             attribute={attribute}
-                            style={styles.attributeSubContainer}
+                            style={[
+                              styles.credentialAttributeContainer,
+                              isSelected && styles.selectedCredentialAttribute,
+                            ]}
                             rightContent={
                               isSelected ? <SvgIcon name="done" fill={theme.colors.green} /> : null
                             }

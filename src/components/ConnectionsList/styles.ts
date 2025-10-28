@@ -1,7 +1,6 @@
 import { StyleSheet } from 'react-native'
 
 import { AppTheme } from '@2060/styles'
-import { hexTransparency } from '@2060/utils/colorUtils'
 
 export default (theme: AppTheme) =>
   StyleSheet.create({
@@ -80,6 +79,7 @@ export default (theme: AppTheme) =>
     },
     selected: {
       borderRadius: 9,
-      backgroundColor: hexTransparency(theme.colors.green, 'CC'),
+      borderWidth: 1.4,
+      borderColor: theme.colors.green,
     },
   })

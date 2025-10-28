@@ -31,7 +31,11 @@ const Connection = ({
   return (
     <TouchableOpacity
       key={connection.id}
-      style={[styles.containerConnection, isLastInSection && styles.lastConnectionInSection]}
+      style={[
+        styles.containerConnection,
+        isLastInSection && styles.lastConnectionInSection,
+        allowSelection && isSelected && styles.selected,
+      ]}
       onPress={onPress}
     >
       {connection.isService && connection.status && (
