@@ -5,11 +5,12 @@ import React, { ReactElement, useEffect, memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { SafeAreaView, TouchableOpacity, View } from 'react-native'
 
+import SearchInput from '../SearchInput'
+
+import ConnectionList, { ConnectionItem } from './ConnectionsList'
 import getStyles from './styles'
 import { useConnections } from './useConnections'
 
-import { ConnectionList, SearchInput } from '@2060/components'
-import { ConnectionItem } from '@2060/components/ConnectionsList/ConnectionListProps'
 import { Avatar, HeaderTitle, SvgIcon, Text } from '@2060/components/common'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { getGlobalStyles } from '@2060/styles'
@@ -31,7 +32,7 @@ type Props = {
   excludedConnections?: string[]
 }
 
-const BaseConnections = ({
+const Connections = ({
   navigation,
   onPressConnection,
   headerProps,
@@ -138,4 +139,4 @@ const BaseConnections = ({
   )
 }
 
-export default memo(BaseConnections)
+export default memo(Connections)

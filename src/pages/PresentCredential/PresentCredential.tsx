@@ -2,8 +2,7 @@ import { StackScreenProps } from '@react-navigation/stack'
 import React, { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import BaseForward from '../Forward/BaseForward'
-
+import { ConnectionsSelection } from '@2060/components'
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
 import { usePresentCredential } from '@2060/hooks'
 
@@ -19,7 +18,7 @@ const PresentCredential = ({ navigation, route }: Props) => {
   }, [])
 
   return (
-    <BaseForward
+    <ConnectionsSelection
       navigation={navigation}
       onPressSend={presentCredential}
       title={t('navigation.PresentCredential')}
