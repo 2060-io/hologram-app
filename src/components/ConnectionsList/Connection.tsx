@@ -31,11 +31,7 @@ const Connection = ({
   return (
     <TouchableOpacity
       key={connection.id}
-      style={[
-        styles.containerConnection,
-        isLastInSection && styles.lastConnectionInSection,
-        allowSelection && isSelected && styles.selected,
-      ]}
+      style={[styles.containerConnection, isLastInSection && styles.lastConnectionInSection]}
       onPress={onPress}
     >
       {connection.isService && connection.status && (
@@ -66,6 +62,7 @@ const Connection = ({
           <SvgIcon name="chevronForward" fill={theme.colors.primaryText} />
         </TouchableOpacity>
       )}
+      {allowSelection && isSelected && <SvgIcon name="done" fill={theme.colors.green} />}
     </TouchableOpacity>
   )
 }

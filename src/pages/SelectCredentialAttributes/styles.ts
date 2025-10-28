@@ -1,7 +1,6 @@
 import { StyleSheet } from 'react-native'
 
 import { AppTheme, cardShadowStyles, cardStyles } from '@2060/styles'
-import { hexTransparency } from '@2060/utils/colorUtils'
 
 const styles = (theme: AppTheme) =>
   StyleSheet.create({
@@ -42,14 +41,17 @@ const styles = (theme: AppTheme) =>
       color: theme.colors.primaryText,
       marginVertical: 15,
     },
-    credentialAttributeContainer: {
+    attributeContainer: {
+      flex: 1,
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    attributeSubContainer: {
+      flex: 1,
       ...cardStyles(theme),
       ...cardShadowStyles(theme.colors),
       marginBottom: 8,
       padding: 12,
-    },
-    selectedCredentialAttribute: {
-      backgroundColor: hexTransparency(theme.colors.green, 'CC'),
     },
     presentButton: {
       marginTop: 4,
