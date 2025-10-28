@@ -6,7 +6,7 @@ import CredentialAttribute from '../CredentialAttribute'
 
 import getStyles from './styles'
 
-import { CardCredentialMainInformation, FullScreenImage, Text } from '@2060/components/common'
+import { CredentialMainInformation, FullScreenImage, Text } from '@2060/components/common'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { CredentialDetailsForDisplay } from '@2060/services/agent/display'
 import { formatCredentialSubject } from '@2060/services/agent/formatCredentialSubject'
@@ -36,7 +36,7 @@ const CredentialDetails = ({ credentialDetails }: Props) => {
         closeFullScreenImage={closeFullScreenImage}
         imageUri={biggerImageRef.current!}
       />
-      <CardCredentialMainInformation
+      <CredentialMainInformation
         credentialMainInfo={credentialDetails.mainInfo}
         containerStyle={styles.credentialMainInfoContainer}
       />
