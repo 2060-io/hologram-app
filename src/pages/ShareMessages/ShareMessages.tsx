@@ -87,7 +87,6 @@ const ShareMessages = ({ navigation }: Props) => {
               </TouchableOpacity>
             ),
           }}
-          allowSelection
           selectedConnections={selectedConnections.map(connection => connection.id)}
           excludedConnections={excludedConnections}
         />

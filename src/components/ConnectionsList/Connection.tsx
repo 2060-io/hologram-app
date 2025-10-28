@@ -12,7 +12,6 @@ type Props = {
   onPressRightSide: () => void
   connection: ConnectionItem
   isSearchingMode: boolean
-  allowSelection?: boolean
   isSelected: boolean
   isLastInSection: boolean
 }
@@ -22,7 +21,6 @@ const Connection = ({
   onPressRightSide,
   connection,
   isSearchingMode,
-  allowSelection,
   isSelected,
   isLastInSection,
 }: Props) => {
@@ -34,7 +32,7 @@ const Connection = ({
       style={[
         styles.containerConnection,
         isLastInSection && styles.lastConnectionInSection,
-        allowSelection && isSelected && styles.selected,
+        isSelected && styles.selected,
       ]}
       onPress={onPress}
     >
@@ -66,7 +64,7 @@ const Connection = ({
           <SvgIcon name="chevronForward" fill={theme.colors.primaryText} />
         </TouchableOpacity>
       )}
-      {allowSelection && isSelected && <SvgIcon name="done" fill={theme.colors.green} />}
+      {isSelected && <SvgIcon name="done" fill={theme.colors.green} />}
     </TouchableOpacity>
   )
 }

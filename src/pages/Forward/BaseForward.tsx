@@ -67,7 +67,6 @@ const BaseForward = ({ navigation, onPressSend, connectionId, title }: Props) =>
           navigation={navigation}
           onPressConnection={onPressConnection}
           headerProps={{ height: headerHeight, title: title ?? t('navigation.ForwardTo') }}
-          allowSelection
           selectedConnections={selectedConnections.map(connection => connection.id)}
           excludedConnections={excludedConnections}
         />

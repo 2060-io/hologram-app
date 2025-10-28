@@ -14,7 +14,6 @@ const ConnectionList = ({
   onPressRightSide,
   connectionList,
   isSearchingMode,
-  allowSelection,
   selectedConnections,
 }: Props) => {
   const { t } = useTranslation()
@@ -41,7 +40,6 @@ const ConnectionList = ({
                 onPressRightSide={() => onPressRightSide(connection)}
                 connection={connection}
                 isSearchingMode={isSearchingMode}
-                allowSelection={allowSelection}
                 isSelected={Boolean(selectedConnections?.includes(connection.id))}
                 isLastInSection={index === section.connections.length - 1}
               />
