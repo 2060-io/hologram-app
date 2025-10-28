@@ -66,7 +66,7 @@ const ForwardConnection = ({ navigation, route }: Props) => {
     <ConnectionsSelection
       navigation={navigation}
       onPressSend={forwardConnection}
-      connectionId={connection.id}
+      connectionIdToExclude={connection.id}
     />
   )
 }

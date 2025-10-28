@@ -18,7 +18,7 @@ import { notAllowedConnectionsIdsToSendMessages } from '@2060/utils/connectionUt
 interface Props {
   navigation: StackNavigationProp<ParamListBase>
   onPressSend: (connectionsId: string[]) => void
-  connectionId?: string
+  connectionIdToExclude?: string
   title?: string
 }
 
@@ -27,17 +27,17 @@ type SelectedConnection = {
   name: string
 }
 
-const ConnectionsSelection = ({ navigation, onPressSend, connectionId, title }: Props) => {
+const ConnectionsSelection = ({ navigation, onPressSend, connectionIdToExclude, title }: Props) => {
+  const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
-  const { t } = useTranslation()
   const headerHeight = useHeaderHeight()
   const [selectedConnections, setSelectedConnections] = useState<SelectedConnection[]>([])
   const selectedConnectionNames = selectedConnections.map(({ name }) => name).join(', ')
   const isSendButtonDisabled = !selectedConnections.length
   const { connections } = useConnections()
   const excludedConnections = notAllowedConnectionsIdsToSendMessages(connections)
-  if (connectionId) excludedConnections.push(connectionId)
+  if (connectionIdToExclude) excludedConnections.push(connectionIdToExclude)
 
   const onPressConnection = useCallback((connectionItem: ConnectionItem) => {
     setSelectedConnections(prevState => {

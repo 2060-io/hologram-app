@@ -22,7 +22,7 @@ const ForwardMessages = ({ navigation }: Props) => {
     <ConnectionsSelection
       navigation={navigation}
       onPressSend={forwardMessages}
-      connectionId={chatThread?.data.connectionId}
+      connectionIdToExclude={chatThread?.data.connectionId}
     />
   )
 }
