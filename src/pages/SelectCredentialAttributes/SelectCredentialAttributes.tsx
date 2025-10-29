@@ -58,6 +58,10 @@ const SelectCredentialAttributes = ({ navigation, route }: Props) => {
     }
   }
 
+  const generateQR = useCallback(() => {
+    navigation.navigate('PresentCredentialAsQR', { credentialRecordId, attributesToPresent })
+  }, [attributesToPresent])
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -98,12 +102,20 @@ const SelectCredentialAttributes = ({ navigation, route }: Props) => {
           />
           <MainButton
             disabled={!attributesToPresent.length}
-            text={t('credential.present')}
-            onPress={onPresent}
+            text={t('credential.createQRCode')}
+            onPress={generateQR}
             style={[
-              styles.presentButton,
+              styles.generateQRButton,
               attributesToPresent.length ? styles.presentEnabled : styles.presentDisabled,
             ]}
+            iconName="qrcode"
+          />
+          <MainButton
+            disabled={!attributesToPresent.length}
+            text={t('credential.presentToConnection')}
+            onPress={onPresent}
+            style={[attributesToPresent.length ? styles.presentEnabled : styles.presentDisabled]}
+            iconName="users"
           />
         </View>
       </ScrollView>
