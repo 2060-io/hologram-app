@@ -12,6 +12,7 @@ import getStyles from './styles'
 
 import { WalletBackupInfo } from '@2060/components'
 import { Text, Switch, SvgIcon, MainButton } from '@2060/components/common'
+import { Option } from '@2060/components/common/OptionsList'
 import { IS_ANDROID, IS_IOS } from '@2060/constants'
 import { useGlobalBuildBackup } from '@2060/hooks/providers/BuildBackupProvider'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
@@ -42,7 +43,7 @@ const BaseWalletBackup = ({
 
   const goToChangePassword = () => navigation.navigate('ChangeBackupPassword')
 
-  const options = [
+  const options: Option[] = [
     {
       iconName: 'videoBox',
       text: t('settings.includeVideos'),

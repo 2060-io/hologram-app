@@ -11,7 +11,7 @@ import getStyles from './styles'
 
 import { ModalConfirmAction } from '@2060/components'
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
-import { CardCredentialMainInformation, Text } from '@2060/components/common'
+import { CredentialMainInformation, Text } from '@2060/components/common'
 import { useChat } from '@2060/hooks/agent'
 import { updateChatEntryMetadata } from '@2060/hooks/agent/chat/services'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
@@ -138,10 +138,10 @@ const VPChatView = ({ metadata, role, agent, proofRecordId, chatEntryId }: Props
           const isLast = index === presentedCredentials.length - 1
           const credentialMainInfo = {
             ...credential.mainInfo,
-            dateLabel: isSender ? t('credential.issuedOn') : t('credential.presentedOn'),
+            dateLabel: isSender ? undefined : t('credential.presentedOn'),
           }
           return (
-            <CardCredentialMainInformation
+            <CredentialMainInformation
               key={credential.mainInfo.id}
               credentialMainInfo={credentialMainInfo}
               containerStyle={isLast ? styles.lastCredential : styles.credential}

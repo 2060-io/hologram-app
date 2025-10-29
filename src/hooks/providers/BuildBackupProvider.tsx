@@ -33,7 +33,7 @@ export interface ICloudBackupInfo {
 
 type UploadFileToIcloud = {
   backupICloudPath: string
-  getBackupInfo: () => Promise<ICloudBackupInfo>
+  getBackupInfo: () => Promise<void>
 }
 
 type UploadFileToGoogleDrive = {

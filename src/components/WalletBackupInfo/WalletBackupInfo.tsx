@@ -24,7 +24,7 @@ const WalletBackupInfoHandler = ({
 }: WalletBackupHandlerProps) => (
   <View style={containerStyle}>
     {backupInfoHandler?.isFetching && onLoading()}
-    {backupInfoHandler?.backup && onInfo()}
+    {backupInfoHandler?.backup && onInfo(backupInfoHandler.backup)}
     {backupInfoHandler?.error && onError()}
     {!backupInfoHandler?.isFetching &&
       !backupInfoHandler?.backup &&
@@ -65,16 +65,13 @@ const WalletBackupInfo = ({
         backupInfoHandler={backupInfoHandler}
         containerStyle={styles.subContainer}
         onLoading={() => <ActivityIndicator size="large" color={theme.colors.green} />}
-        onInfo={() => (
+        onInfo={backupInfo => (
           <>
             <Text fontFamily="EuclidCircularA-Medium" style={styles.mediumText}>
-              {`${t('settings.lastBackup')}: ${dateToString(
-                backupInfoHandler?.backup?.modifyDate,
-                'DD/MM/YYYY h:mm a',
-              )}`}
+              {`${t('settings.lastBackup')}: ${dateToString(backupInfo.modifyDate, 'DD/MM/YYYY h:mm a')}`}
             </Text>
             <Text fontFamily="EuclidCircularA-Medium" style={styles.mediumText}>
-              {`${t('settings.backupSize')}: ${getFileSize(Number(backupInfoHandler?.backup?.size))}`}
+              {`${t('settings.backupSize')}: ${getFileSize(Number(backupInfo.size))}`}
             </Text>
             {renderGoogleSelectedAccount()}
             {withSuggestionMessage && (

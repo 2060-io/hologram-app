@@ -5,11 +5,12 @@ import React, { ReactElement, useEffect, memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { SafeAreaView, TouchableOpacity, View } from 'react-native'
 
+import SearchInput from '../SearchInput'
+
+import ConnectionList, { ConnectionItem } from './ConnectionsList'
 import getStyles from './styles'
 import { useConnections } from './useConnections'
 
-import { ConnectionList, SearchInput } from '@2060/components'
-import { ConnectionItem } from '@2060/components/ConnectionsList/ConnectionListProps'
 import { Avatar, HeaderTitle, SvgIcon, Text } from '@2060/components/common'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { getGlobalStyles } from '@2060/styles'
@@ -26,16 +27,14 @@ type Props = {
   navigation: StackNavigationProp<ParamListBase>
   onPressConnection: (connectionItem: ConnectionItem) => void
   headerProps: HeaderProps
-  allowSelection?: boolean
   selectedConnections?: string[]
   excludedConnections?: string[]
 }
 
-const BaseConnections = ({
+const Connections = ({
   navigation,
   onPressConnection,
   headerProps,
-  allowSelection = false,
   excludedConnections = [],
   selectedConnections,
 }: Props) => {
@@ -117,7 +116,6 @@ const BaseConnections = ({
           onPress={onPressConnection}
           connectionList={connectionListForDisplay}
           isSearchingMode={isSearchingMode}
-          allowSelection={allowSelection}
           selectedConnections={selectedConnections}
         />
       </View>
@@ -130,7 +128,6 @@ const BaseConnections = ({
           onPress={onPressConnection}
           connectionList={subConnections}
           isSearchingMode={isSearchingMode}
-          allowSelection={allowSelection}
           selectedConnections={selectedConnections}
         />
       </View>
@@ -138,4 +135,4 @@ const BaseConnections = ({
   )
 }
 
-export default memo(BaseConnections)
+export default memo(Connections)

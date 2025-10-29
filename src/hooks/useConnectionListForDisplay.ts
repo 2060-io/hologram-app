@@ -4,8 +4,7 @@ import { useEffect, useState } from 'react'
 import { useConnections, useMobileAgent, useParentConnections } from './agent'
 import { getStoredServiceInfo } from './useFetchServiceInfo'
 
-import { ConnectionListSection } from '@2060/components/ConnectionsList'
-import { ConnectionItem } from '@2060/components/ConnectionsList/ConnectionListProps'
+import { ConnectionItem, ConnectionListSection } from '@2060/components/Connections/ConnectionsList'
 import { MobileAgent } from '@2060/services/agent'
 import {
   getConnectionDisplayName,

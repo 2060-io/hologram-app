@@ -16,7 +16,7 @@ import {
 import { BACKUP_NAME, BACKUP_ZIP_FILE_PATH, existsBackupFile } from '../utils/walletBackUpUtils'
 
 import { BackupInfoHandler, RestoreProgress, restoreProgressInitialValues } from './backup'
-import { ICloudBackupInfo, useGlobalBuildBackup } from './providers/BuildBackupProvider'
+import { useGlobalBuildBackup } from './providers/BuildBackupProvider'
 import { useAppState } from './useAppState'
 
 import { logError } from '@2060/utils'
@@ -54,39 +54,31 @@ export const useICloud = () => {
   }, [isAppActive])
 
   useEffect(() => {
-    const checkBackup = async () => {
-      await getBackupInfo()
-    }
-    if (isCloudAvailable && !backupInfoHandler.backup) checkBackup()
+    if (isCloudAvailable && !backupInfoHandler.backup) getBackupInfo()
   }, [isCloudAvailable, isAppActive])
 
   const existsBackup = async (): Promise<boolean> => {
-    const info = await getBackupInfo()
-    return info.exists ?? false
+    const info = await query(backupICloudPath)
+    return Boolean(info.isInICloud)
   }
 
-  const getBackupInfo = async (): Promise<ICloudBackupInfo> => {
+  const getBackupInfo = async () => {
     setBackupInfoHandler({ isFetching: true })
     try {
       const info = await query(backupICloudPath)
       setBackupInfoHandler({
         isFetching: false,
-        backup: info.isInICloud
-          ? {
-              size: `${info.fileSize}`,
-              modifyDate: info.modifyTimestamp,
-            }
-          : undefined,
+        backup:
+          info.fileSize && info.modifyTimestamp
+            ? {
+                size: `${info.fileSize}`,
+                modifyDate: info.modifyTimestamp,
+              }
+            : undefined,
       })
-      return {
-        exists: info.isInICloud ?? false,
-        lastModifiedDate: info.modifyTimestamp ? new Date(info.modifyTimestamp).toISOString() : undefined,
-        size: info.fileSize,
-      }
     } catch (error) {
       setBackupInfoHandler({ isFetching: false, error: true })
       logError('Error getting file info', error)
-      return { exists: false }
     }
   }
 
