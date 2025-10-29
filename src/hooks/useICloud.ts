@@ -28,13 +28,6 @@ import { useAppState } from './useAppState'
 import { logError } from '@2060/utils'
 import { copyFile } from '@2060/utils/RNFS'
 
-interface ICloudBackupInfo {
-  exists: boolean
-  path?: string
-  size?: number
-  lastModifiedDate?: string
-}
-
 export const useICloud = () => {
   const iCloudBackupFolderPath = PathUtils.join(defaultICloudContainerPath ?? '', 'Documents')
   const backupICloudPath = `${iCloudBackupFolderPath}/${BACKUP_NAME}`
@@ -73,28 +66,24 @@ export const useICloud = () => {
   }, [isCloudAvailable, isAppActive])
 
   const existsBackup = async (): Promise<boolean> => {
-    const info = await getBackupInfo()
-    return info.exists ?? false
+    const info = await query(backupICloudPath)
+    return Boolean(info.isInICloud)
   }
 
-  const getBackupInfo = async (): Promise<ICloudBackupInfo> => {
+  const getBackupInfo = async () => {
     setBackupHandler({ isFetching: true })
     try {
       const info = await query(backupICloudPath)
       setBackupHandler({
         isFetching: false,
-        backup: info.isInICloud
-          ? {
-              size: `${info.fileSize}`,
-              modifyDate: info.modifyTimestamp,
-            }
-          : undefined,
+        backup:
+          info.fileSize && info.modifyTimestamp
+            ? {
+                size: `${info.fileSize}`,
+                modifyDate: info.modifyTimestamp,
+              }
+            : undefined,
       })
-      return {
-        exists: info.isInICloud ?? false,
-        lastModifiedDate: info.modifyTimestamp ? new Date(info.modifyTimestamp).toISOString() : undefined,
-        size: info.fileSize,
-      }
     } catch (error) {
       setBackupHandler({ isFetching: false, error: true })
       logError('Error getting file info', error)

@@ -15,7 +15,7 @@ import getStyles from './styles'
 
 import { ModalConfirmAction } from '@2060/components'
 import {
-  CardCredentialMainInformation,
+  CredentialMainInformation,
   MainButton,
   Text,
   ServiceMainInfo,
@@ -162,7 +162,7 @@ const BasePresentationRequest: React.FC<Props> = ({
                               style={styles.radioButton}
                               isChecked={selectedCredentialsIndexes?.[entryIndex] === credentialIndex}
                             />
-                            <CardCredentialMainInformation
+                            <CredentialMainInformation
                               credentialMainInfo={credential}
                               onPress={() => goToCredentialDetails(credential.recordId)}
                               size="medium"

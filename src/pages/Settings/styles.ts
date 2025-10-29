@@ -1,7 +1,6 @@
 import { StyleSheet } from 'react-native'
 
 import { AppTheme } from '@2060/styles'
-import { heightPercentageToDP, widthPercentageToDP } from '@2060/utils/responsiveUtils'
 
 export default (theme: AppTheme) =>
   StyleSheet.create({
@@ -16,22 +15,21 @@ export default (theme: AppTheme) =>
       flexGrow: 1,
     },
     btnQr: {
-      paddingLeft: widthPercentageToDP('4%'),
+      paddingLeft: 12,
     },
     btnEdit: {
-      paddingRight: widthPercentageToDP('4%'),
+      paddingRight: 12,
     },
     containerProfile: {
       alignItems: 'center',
       alignSelf: 'center',
-      paddingTop: heightPercentageToDP('6.1%'),
-      paddingBottom: heightPercentageToDP('3.70%'),
+      paddingTop: 40,
+      marginBottom: 20,
     },
     displayName: {
       fontSize: theme.fontSize.xl,
       color: theme.colors.primaryText,
-      paddingTop: heightPercentageToDP('2.77%'),
-      textTransform: 'capitalize',
+      marginTop: 14,
       textAlign: 'center',
     },
     appVersionContainer: {

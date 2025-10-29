@@ -105,6 +105,7 @@
       "PresentCredential": "Presentar a",
       "Presentation": "Presentación",
       "ParentalControl": "Control parental",
+      "SelectCredentialAttributes": "Presentar Credencial",
       "PresentCredentialAsQR": "Presentar Credencial como QR"
     },
     "authentication": {
@@ -233,7 +234,7 @@
       "presented": "Credencial presentada",
       "presentedOn": "Presentado el",
       "selectCredential": "Selecciona la credencial que quieres presentar",
-      "selectAttributes": "Selecciona los Atributos que quieres compartir en la presentación",
+      "selectAttributes": "Selecciona los atributos que te gustaría presentar",
       "selectAll": "Seleccionar todos",
       "unselectAll": "Quitar todos"
     },
