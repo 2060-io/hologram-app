@@ -1,3 +1,4 @@
+import { ParamListBase } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
@@ -5,7 +6,6 @@ import { View, TouchableOpacity, Keyboard } from 'react-native'
 
 import getStyles from './styles'
 
-import { PersonalChatStackParams } from '@2060/components/Navigation/NavigationProps'
 import { SvgIcon, Text } from '@2060/components/common'
 import { IconsNames } from '@2060/components/common/SvgIcon'
 import { IS_ANDROID } from '@2060/constants'
@@ -18,7 +18,7 @@ type Props = {
   closeAttachmentOptions(): void
   onCompressingVideoProgress: (progress: number) => void
   getVideoCompressionCancellationId: (cancellationId: string) => void
-  navigation: StackNavigationProp<PersonalChatStackParams>
+  navigation: StackNavigationProp<ParamListBase>
   connectionId: string
 }
 type OptionId = 'file-camera' | 'file-video' | 'file-gallery' | 'present-credentials'

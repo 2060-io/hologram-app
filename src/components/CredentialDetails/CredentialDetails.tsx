@@ -13,9 +13,10 @@ import { formatCredentialSubject } from '@2060/services/agent/formatCredentialSu
 
 type Props = {
   credentialDetails: CredentialDetailsForDisplay
+  middleInfo?: React.JSX.Element
 }
 
-const CredentialDetails = ({ credentialDetails }: Props) => {
+const CredentialDetails = ({ credentialDetails, middleInfo }: Props) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
@@ -40,6 +41,7 @@ const CredentialDetails = ({ credentialDetails }: Props) => {
         credentialMainInfo={credentialDetails.mainInfo}
         containerStyle={styles.credentialMainInfoContainer}
       />
+      {middleInfo}
       {attributesSections.map((section, index) => (
         <View key={index}>
           <Text style={styles.title} fontFamily="EuclidCircularA-SemiBold">

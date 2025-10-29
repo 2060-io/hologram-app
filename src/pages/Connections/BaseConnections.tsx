@@ -26,7 +26,6 @@ type Props = {
   navigation: StackNavigationProp<ParamListBase>
   onPressConnection: (connectionItem: ConnectionItem) => void
   headerProps: HeaderProps
-  allowSelection?: boolean
   selectedConnections?: string[]
   excludedConnections?: string[]
 }
@@ -35,7 +34,6 @@ const BaseConnections = ({
   navigation,
   onPressConnection,
   headerProps,
-  allowSelection = false,
   excludedConnections = [],
   selectedConnections,
 }: Props) => {
@@ -117,7 +115,6 @@ const BaseConnections = ({
           onPress={onPressConnection}
           connectionList={connectionListForDisplay}
           isSearchingMode={isSearchingMode}
-          allowSelection={allowSelection}
           selectedConnections={selectedConnections}
         />
       </View>
@@ -130,7 +127,6 @@ const BaseConnections = ({
           onPress={onPressConnection}
           connectionList={subConnections}
           isSearchingMode={isSearchingMode}
-          allowSelection={allowSelection}
           selectedConnections={selectedConnections}
         />
       </View>

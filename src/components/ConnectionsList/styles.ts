@@ -10,7 +10,6 @@ export default (theme: AppTheme) =>
     sectionHeaderLabel: {
       fontSize: theme.fontSize.lg,
       color: theme.colors.primaryText,
-      fontFamily: 'EuclidCircularA-Medium',
       textTransform: 'uppercase',
       paddingVertical: 12,
       paddingLeft: 10,
@@ -19,10 +18,13 @@ export default (theme: AppTheme) =>
       flex: 1,
       flexDirection: 'row',
       alignItems: 'center',
-      paddingVertical: 8,
+      marginBottom: 8,
+      paddingVertical: 6,
+      paddingLeft: 10,
+      paddingRight: 8,
     },
     lastConnectionInSection: {
-      paddingBottom: 0,
+      marginBottom: 0,
     },
     rightSideContainer: {
       height: '100%',
@@ -48,7 +50,7 @@ export default (theme: AppTheme) =>
       height: 15,
       position: 'absolute',
       top: 4,
-      left: -6,
+      left: 4,
       zIndex: 1,
     },
     listItemText: {
@@ -64,9 +66,9 @@ export default (theme: AppTheme) =>
     containerSectionList: {
       backgroundColor: theme.colors.primary,
       borderRadius: 8,
-      paddingVertical: 10,
-      paddingLeft: 21,
-      paddingRight: 17,
+      paddingVertical: 8,
+      paddingLeft: 10,
+      paddingRight: 8,
     },
     textEmpty: {
       marginTop: 15,
@@ -75,7 +77,9 @@ export default (theme: AppTheme) =>
       textAlign: 'center',
       color: theme.colors.primaryText,
     },
-    radioButton: {
-      marginLeft: 10,
+    selected: {
+      borderRadius: 9,
+      borderWidth: 1.4,
+      borderColor: theme.colors.green,
     },
   })
