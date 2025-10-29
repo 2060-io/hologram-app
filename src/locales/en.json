@@ -104,7 +104,8 @@
       "shareWith": "Share with",
       "PresentCredential": "Present to",
       "Presentation": "Presentation",
-      "ParentalControl": "Parental Control"
+      "ParentalControl": "Parental Control",
+      "SelectCredentialAttributes": "Present Credential"
     },
     "authentication": {
       "walletLocked": "Hologram Locked",
@@ -230,7 +231,7 @@
       "presented": "Credential presented",
       "presentedOn": "Presented on",
       "selectCredential": "Select the credential you want to present",
-      "selectAttributes": "Select attributes you want to share in presentation",
+      "selectAttributes": "Select attributes you would like to present",
       "selectAll": "Select all",
       "unselectAll": "Unselect all"
     },

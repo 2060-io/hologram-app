@@ -7,7 +7,7 @@ import { View, SafeAreaView, ScrollView, TouchableOpacity } from 'react-native'
 import getStyles from './styles'
 
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
-import { Avatar, CardCredentialMainInformation, SvgIcon, Text } from '@2060/components/common'
+import { Avatar, CredentialMainInformation, SvgIcon, Text } from '@2060/components/common'
 import { useChats, useMobileAgent } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 
@@ -58,7 +58,7 @@ const CredentialPresented = ({ navigation, route }: Props) => {
             </Text>
           </Text>
           {credentials.map(credential => (
-            <CardCredentialMainInformation key={credential.id} credentialMainInfo={credential} />
+            <CredentialMainInformation key={credential.id} credentialMainInfo={credential} />
           ))}
           <View style={styles.card}>
             <View style={styles.presentedDateContainer}>

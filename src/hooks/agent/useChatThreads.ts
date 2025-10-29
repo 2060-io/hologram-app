@@ -17,6 +17,8 @@ import {
   isBlocked,
   isService,
   isTerminated,
+  lastTimeProfileReceived,
+  lastTimeProfileSent,
   supportsMediaSharing,
   supportsMessageReactions,
   supportsMessageReceipts,
@@ -39,7 +41,11 @@ export const useChatThreadWithParticipants = (chatThreadId: string) => {
 
   const participants: ChatParticipant[] = useMemo(
     () => [
-      { id: ChatEntryRole.Sender, name: t('personalChat.you'), avatar: getPictureDataUrl(displayPicture) },
+      {
+        id: ChatEntryRole.Sender,
+        name: t('personalChat.you'),
+        avatar: displayPicture ? getPictureDataUrl(displayPicture) : undefined,
+      },
       {
         id: ChatEntryRole.Receiver,
         name: connection ? getConnectionDisplayName(connection) : undefined,
@@ -62,8 +68,11 @@ export const useChatThreadWithParticipants = (chatThreadId: string) => {
       supportsMediaSharing: Boolean(connection && supportsMediaSharing(connection)),
       supportsMessageReceipts: Boolean(connection && supportsMessageReceipts(connection)),
       supportsMessageReactions: Boolean(connection && supportsMessageReactions(connection)),
+      lastTimeProfileSent: connection ? lastTimeProfileSent(connection) : undefined,
+      myProfileUpdatedAt: userProfileData?.updatedAt,
+      lastTimeProfileReceived: connection ? lastTimeProfileReceived(connection) : undefined,
     }),
-    [connection, serviceInfo],
+    [connection, serviceInfo, userProfileData],
   )
 
   return {

@@ -1,9 +1,9 @@
 import { ProofState, W3cCredentialRepository } from '@credo-ts/core'
-import { ParamListBase } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
 import { AgentActionType, useChats, useMobileAgent } from '@2060/hooks/agent'
 import { AnoncredsAttribute, PresentCredentialParameters } from '@2060/hooks/agent/actions/types'
 import { createChatEntry } from '@2060/hooks/agent/chat/services'
@@ -25,7 +25,7 @@ export const usePresentCredential = () => {
       credentialRecordId: string,
       connectionsId: string[],
       attributesToPresent: string[],
-      navigation: StackNavigationProp<ParamListBase>,
+      navigation: StackNavigationProp<NavigationStackParams>,
     ) => {
       if (!agent || !realm) return
       const credentialRecord = await agent.dependencyManager
@@ -66,7 +66,8 @@ export const usePresentCredential = () => {
         type: 'success',
         message: t('credential.presented'),
       })
-      navigation.goBack()
+      // Go back two screens back to leave it on the screen where started flow
+      navigation.pop(2)
     },
     [],
   )

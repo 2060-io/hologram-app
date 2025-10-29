@@ -10,6 +10,7 @@ import getStyles from './styles'
 
 import { WalletBackupInfo, ModalConfirmAction } from '@2060/components'
 import { Text, Switch, SvgIcon, MainButton } from '@2060/components/common'
+import { Option } from '@2060/components/common/OptionsList'
 import { IS_ANDROID, IS_IOS } from '@2060/constants'
 import { useBuildBackup } from '@2060/hooks'
 import { BackupProgressProps } from '@2060/hooks/backup'
@@ -51,7 +52,7 @@ const BaseWalletBackup = ({
     setUploadProgress,
   })
 
-  const options = [
+  const options: Option[] = [
     {
       iconName: 'videoBox',
       text: t('settings.includeVideos'),

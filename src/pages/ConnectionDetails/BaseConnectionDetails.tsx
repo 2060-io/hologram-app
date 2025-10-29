@@ -1,4 +1,3 @@
-import { getConnectionProfile } from '@2060.io/credo-ts-didcomm-user-profile'
 import { ConnectionRecord, TypedArrayEncoder, Buffer } from '@credo-ts/core'
 import { StackScreenProps } from '@react-navigation/stack'
 import React, { ReactElement, useEffect, useRef, useState } from 'react'
@@ -12,6 +11,7 @@ import getStyles from './styles'
 import { ModalConfirmAction } from '@2060/components'
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
 import { Text, ConnectionMainActions, SvgIcon, ModalLoading, OptionsList } from '@2060/components/common'
+import { Option } from '@2060/components/common/OptionsList'
 import { IS_IOS } from '@2060/constants'
 import {
   useMobileAgent,
@@ -23,13 +23,7 @@ import { deleteConnection, blockConnection, unblockConnection } from '@2060/hook
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { createOobInvitation, MobileAgent } from '@2060/services/agent'
 import { capitalizeFirstLetter, logError } from '@2060/utils'
-import {
-  getConnectionDisplayName,
-  isBlocked,
-  isService,
-  isTerminated,
-  supportsUserProfile,
-} from '@2060/utils/connectionUtils'
+import { getConnectionDisplayName, isBlocked, isService, isTerminated } from '@2060/utils/connectionUtils'
 import { markNewConnectionNotificationAsViewed } from '@2060/utils/pushNotificationsUtils'
 import { toast } from '@2060/utils/toast'
 
@@ -57,7 +51,6 @@ const BaseConnectionDetails = ({
   const theme = useTheme()
   const styles = getStyles(theme)
 
-  const profile = getConnectionProfile(connection)
   const { agent } = useMobileAgent()
   const { t } = useTranslation()
   const connectionName = getConnectionDisplayName(connection)
@@ -144,37 +137,23 @@ const BaseConnectionDetails = ({
     actions[modalConfirmationTypeRef.current]()
   }
 
-  const getUserProfile = async () => {
-    if (!profile || (profile && Object.keys(profile).length === 0)) {
-      if (supportsUserProfile(connection)) {
-        try {
-          await agent?.modules.profile.requestUserProfile({ connectionId: connection.id })
-        } catch (error) {
-          logError(`Cannot get user profile: ${error}`)
-        }
-      }
-    }
-  }
+  const relatedConnectionsOptions: Option[] = [
+    {
+      iconName: 'users',
+      text: t('connection.managedConnections'),
+      onPress: goToRelatedConnections,
+      rightContent: () => (
+        <>
+          <Text style={styles.accountText}>{relatedConnections.length}</Text>
+          <SvgIcon name="chevronForward" fill={theme.colors.primaryText} width={16} height={16} />
+        </>
+      ),
+    },
+  ]
 
-  useEffect(() => {
-    getUserProfile()
-  }, [profile])
+  const mainOptions = relatedConnections.length ? relatedConnectionsOptions : []
 
-  const relatedConnectionsOption = {
-    iconName: 'users',
-    text: t('connection.managedConnections'),
-    onPress: goToRelatedConnections,
-    rightContent: () => (
-      <>
-        <Text style={styles.accountText}>{relatedConnections.length}</Text>
-        <SvgIcon name="chevronForward" fill={theme.colors.primaryText} width={16} height={16} />
-      </>
-    ),
-  }
-
-  const mainOptions = relatedConnections.length ? [relatedConnectionsOption] : []
-
-  const connectionOptions = []
+  const connectionOptions: Option[] = []
   connectionOptions.push({
     iconName: 'trash',
     text: t('connection.clearChat'),

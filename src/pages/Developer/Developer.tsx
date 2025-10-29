@@ -12,6 +12,7 @@ import getStyles from './styles'
 import { ModalBottomHalf } from '@2060/components'
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
 import { ModalLoading, OptionsList, Text, TextInput, Switch } from '@2060/components/common'
+import { Option } from '@2060/components/common/OptionsList'
 import { TextInputForwardRefProps } from '@2060/components/common/TextInput'
 import { IS_ANDROID, IS_IOS } from '@2060/constants'
 import { useMobileAgent } from '@2060/hooks/agent'
@@ -176,7 +177,7 @@ const Developer = ({ navigation }: Props) => {
     }
   }
 
-  const options = [
+  const options: Option[] = [
     {
       iconName: 'trash',
       text: t('settings.deleteWallet'),
