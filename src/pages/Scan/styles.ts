@@ -32,9 +32,9 @@ export default (theme: AppTheme) =>
     input: {
       flex: 1,
       color: theme.colors.secondaryText,
-      fontSize: theme.fontSize.md + 1,
+      fontSize: theme.fontSize.md2,
       paddingLeft: 10,
-      fontFamily: 'EuclidCircularA-Regular',
+      fontFamily: 'EuclidCircularA-Medium',
     },
     containerCodeScanner: {
       flex: 1,

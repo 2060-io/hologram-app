@@ -1,4 +1,4 @@
-import { PictureData } from '@2060.io/credo-ts-didcomm-user-profile'
+import { UserProfileData } from '@2060.io/credo-ts-didcomm-user-profile'
 import React, { memo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, TouchableOpacity, Image } from 'react-native'
@@ -21,17 +21,17 @@ import { getMediaInfo } from '@2060/utils/mediaFileUtils'
 import { handleCameraPermission } from '@2060/utils/permissions'
 
 type Props = {
-  displayPicture: PictureData | undefined
-  displayName: string
-  onHandleChangePicture(pictureData: PictureData | undefined): void
+  displayPicture: UserProfileData['displayPicture']
+  displayName: string | undefined
+  onHandleChangePicture(pictureData: UserProfileData['displayPicture']): void
   onHandleChangeName(value: string): void
 }
 
 const UserProfileForm: React.FC<Props> = props => {
   const { t } = useTranslation()
   const theme = useTheme()
-  const globalStyles = getGlobalStyles(theme)
   const styles = getStyles(theme)
+  const globalStyles = getGlobalStyles(theme)
   const { displayPicture, displayName, onHandleChangePicture, onHandleChangeName } = props
   const [isCameraOpen, setIsCameraOpen] = useState(false)
   const imgUrl = dataUrl(displayPicture?.mimeType, displayPicture?.base64)
@@ -73,10 +73,10 @@ const UserProfileForm: React.FC<Props> = props => {
       </Modal>
       <Text style={styles.textInputDescription}>{t('signUp.textInputNicknameDescription')}</Text>
       <View style={styles.containerRootAvatar}>
-        {imgUrl.length > 0 && (
+        {imgUrl?.length && (
           <TouchableOpacity
             style={styles.btnClose}
-            onPress={() => onHandleChangePicture(undefined)}
+            onPress={() => onHandleChangePicture(null)}
             activeOpacity={0.6}
           >
             <SvgIcon name="close" fill={theme.colors.lightGrey} />
@@ -98,6 +98,7 @@ const UserProfileForm: React.FC<Props> = props => {
         onChangeText={onHandleChangeName}
         placeholder={t('signUp.chooseNickname')}
         placeholderTextColor={theme.colors.secondaryText}
+        autoCapitalize="words"
       />
     </View>
   )

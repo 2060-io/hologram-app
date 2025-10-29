@@ -12,7 +12,7 @@ import { BlueButton, Header, OutlinedBlueButton, State } from '../components'
 import getStyles from './styles'
 
 import { ModalConfirmAction } from '@2060/components'
-import { CardCredentialMainInformation, Text } from '@2060/components/common'
+import { CredentialMainInformation, Text } from '@2060/components/common'
 import { AgentActionType } from '@2060/hooks/agent'
 import {
   AcceptCredentialOfferParameters,
@@ -169,7 +169,7 @@ const VCOfferChatView = ({
         <Text style={styles.title}>
           {t('personalChat.offeringCredential', { sender: metadata.issuerName ?? sender?.name })}
         </Text>
-        <CardCredentialMainInformation
+        <CredentialMainInformation
           credentialMainInfo={credentialMainInfo}
           containerStyle={styles.credentialMainInfoContainer}
           onPress={chooseScreenToGo}

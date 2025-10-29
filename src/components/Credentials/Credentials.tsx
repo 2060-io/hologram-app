@@ -8,7 +8,7 @@ import SearchInput from '../SearchInput'
 
 import getStyles from './styles'
 
-import { CardCredentialMainInformation, HeaderTitle, SvgIcon, Text } from '@2060/components/common'
+import { CredentialMainInformation, HeaderTitle, SvgIcon, Text } from '@2060/components/common'
 import { useCredentials } from '@2060/hooks/agent/CredentialProvider'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { getCredentialMainInfo } from '@2060/services/agent/display'
@@ -76,7 +76,7 @@ const Credentials = ({ navigation, headerTitle, onPressCredential }: Props) => {
         showsVerticalScrollIndicator={false}
         data={credentials}
         renderItem={({ item: credential }) => (
-          <CardCredentialMainInformation
+          <CredentialMainInformation
             credentialMainInfo={credential}
             onPress={() => onPressCredential(credential.recordId)}
           />

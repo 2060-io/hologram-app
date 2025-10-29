@@ -76,7 +76,6 @@ export default (theme: AppTheme) =>
     sectionHeaderLabel: {
       fontSize: theme.fontSize.lg,
       color: theme.colors.primaryText,
-      fontFamily: 'EuclidCircularA-Medium',
       textTransform: 'uppercase',
     },
     rightHeaderButton: {

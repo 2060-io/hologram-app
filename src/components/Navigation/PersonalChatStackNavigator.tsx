@@ -17,8 +17,8 @@ import {
   ForwardMessages,
   ShareMessages,
   MRZScanner,
-  Camera,
   PresentCredentialsFromChat,
+  Camera,
 } from '@2060/pages'
 import { getGlobalStyles } from '@2060/styles'
 

@@ -15,7 +15,6 @@ export type PersonalChatStackParams = {
   ForwardMessages: undefined
   ShareMessages: undefined
   MRZScanner: { didcommThreadId: string }
-  PresentCredentialsFromChat: { connectionId: string }
   Camera: undefined
 }
 
@@ -62,4 +61,10 @@ export type NavigationStackParams = {
     proofState: ProofState
   }
   ParentalControl: undefined
+  PresentCredentialsFromChat: { connectionId: string }
+  SelectCredentialAttributes: {
+    presentDirectly: boolean
+    credentialRecordId: string
+    connectionToPresent?: string
+  }
 }

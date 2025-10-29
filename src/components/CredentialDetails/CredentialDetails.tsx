@@ -6,16 +6,17 @@ import CredentialAttribute from '../CredentialAttribute'
 
 import getStyles from './styles'
 
-import { CardCredentialMainInformation, FullScreenImage, Text } from '@2060/components/common'
+import { CredentialMainInformation, FullScreenImage, Text } from '@2060/components/common'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { CredentialDetailsForDisplay } from '@2060/services/agent/display'
 import { formatCredentialSubject } from '@2060/services/agent/formatCredentialSubject'
 
 type Props = {
   credentialDetails: CredentialDetailsForDisplay
+  middleInfo?: React.JSX.Element
 }
 
-const CredentialDetails = ({ credentialDetails }: Props) => {
+const CredentialDetails = ({ credentialDetails, middleInfo }: Props) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
@@ -36,10 +37,11 @@ const CredentialDetails = ({ credentialDetails }: Props) => {
         closeFullScreenImage={closeFullScreenImage}
         imageUri={biggerImageRef.current!}
       />
-      <CardCredentialMainInformation
+      <CredentialMainInformation
         credentialMainInfo={credentialDetails.mainInfo}
         containerStyle={styles.credentialMainInfoContainer}
       />
+      {middleInfo}
       {attributesSections.map((section, index) => (
         <View key={index}>
           <Text style={styles.title} fontFamily="EuclidCircularA-SemiBold">

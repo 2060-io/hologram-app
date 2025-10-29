@@ -5,11 +5,11 @@ import React, { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { SafeAreaView, TouchableOpacity, View } from 'react-native'
 
-import { BaseConnections } from '../Connections'
+import Connections from '../Connections'
+import { ConnectionItem } from '../Connections/ConnectionsList'
 
 import getStyles from './styles'
 
-import { ConnectionItem } from '@2060/components/ConnectionsList/ConnectionListProps'
 import { SvgIcon, Text } from '@2060/components/common'
 import { useConnections } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
@@ -18,8 +18,8 @@ import { notAllowedConnectionsIdsToSendMessages } from '@2060/utils/connectionUt
 interface Props {
   navigation: StackNavigationProp<ParamListBase>
   onPressSend: (connectionsId: string[]) => void
-  connectionId?: string
-  title?: string
+  connectionIdToExclude?: string
+  headerTitle?: string
 }
 
 type SelectedConnection = {
@@ -27,17 +27,17 @@ type SelectedConnection = {
   name: string
 }
 
-const BaseForward = ({ navigation, onPressSend, connectionId, title }: Props) => {
+const ConnectionsSelection = ({ navigation, onPressSend, connectionIdToExclude, headerTitle }: Props) => {
+  const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
-  const { t } = useTranslation()
   const headerHeight = useHeaderHeight()
   const [selectedConnections, setSelectedConnections] = useState<SelectedConnection[]>([])
   const selectedConnectionNames = selectedConnections.map(({ name }) => name).join(', ')
-  const isForwardButtonDisabled = !selectedConnections.length
+  const isSendButtonDisabled = !selectedConnections.length
   const { connections } = useConnections()
   const excludedConnections = notAllowedConnectionsIdsToSendMessages(connections)
-  if (connectionId) excludedConnections.push(connectionId)
+  if (connectionIdToExclude) excludedConnections.push(connectionIdToExclude)
 
   const onPressConnection = useCallback((connectionItem: ConnectionItem) => {
     setSelectedConnections(prevState => {
@@ -63,25 +63,21 @@ const BaseForward = ({ navigation, onPressSend, connectionId, title }: Props) =>
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.connectionsContainer}>
-        <BaseConnections
+        <Connections
           navigation={navigation}
           onPressConnection={onPressConnection}
-          headerProps={{ height: headerHeight, title: title ?? t('navigation.ForwardTo') }}
-          allowSelection
+          headerProps={{ height: headerHeight, title: headerTitle ?? t('navigation.ForwardTo') }}
           selectedConnections={selectedConnections.map(connection => connection.id)}
           excludedConnections={excludedConnections}
         />
       </View>
-      <View style={styles.forwardContainer}>
-        <Text fontFamily="EuclidCircularA-Medium" style={styles.connectionsToForwardText} numberOfLines={1}>
+      <View style={styles.bottomContainer}>
+        <Text fontFamily="EuclidCircularA-Medium" style={styles.selectedConnectionsText} numberOfLines={1}>
           {selectedConnectionNames}
         </Text>
         <TouchableOpacity
-          style={[
-            styles.forwardButton,
-            isForwardButtonDisabled ? styles.disabledForward : styles.enabledForward,
-          ]}
-          disabled={isForwardButtonDisabled}
+          style={[styles.sendButton, isSendButtonDisabled ? styles.disabledSend : styles.enabledSend]}
+          disabled={isSendButtonDisabled}
           onPress={send}
         >
           <SvgIcon name="send" fill={theme.colors.white} />
@@ -91,4 +87,4 @@ const BaseForward = ({ navigation, onPressSend, connectionId, title }: Props) =>
   )
 }
 
-export default BaseForward
+export default ConnectionsSelection

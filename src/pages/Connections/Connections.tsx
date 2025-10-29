@@ -3,14 +3,13 @@ import { StackScreenProps } from '@react-navigation/stack'
 import React, { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import BaseConnections from './BaseConnections'
-
-import { ConnectionItem } from '@2060/components/ConnectionsList/ConnectionListProps'
+import { Connections } from '@2060/components'
+import { ConnectionItem } from '@2060/components/Connections/ConnectionsList'
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
 
 interface Props extends StackScreenProps<NavigationStackParams, 'Connections'> {}
 
-const Connections = ({ navigation }: Props) => {
+const ConnectionsPage = ({ navigation }: Props) => {
   const { t } = useTranslation()
   const headerHeight = useHeaderHeight()
 
@@ -19,7 +18,7 @@ const Connections = ({ navigation }: Props) => {
   }, [])
 
   return (
-    <BaseConnections
+    <Connections
       navigation={navigation}
       onPressConnection={goToConnectionDetails}
       headerProps={{ height: headerHeight, title: t('navigation.Connections') }}
@@ -27,4 +26,4 @@ const Connections = ({ navigation }: Props) => {
   )
 }
 
-export default Connections
+export default ConnectionsPage

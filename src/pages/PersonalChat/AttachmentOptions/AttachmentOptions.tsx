@@ -1,3 +1,4 @@
+import { ParamListBase } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
@@ -5,14 +6,13 @@ import { View, TouchableOpacity } from 'react-native'
 
 import getStyles from './styles'
 
-import { PersonalChatStackParams } from '@2060/components/Navigation/NavigationProps'
 import { SvgIcon, Text } from '@2060/components/common'
 import { IconsNames } from '@2060/components/common/SvgIcon'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 
 type Props = {
   closeAttachmentOptions(): void
-  navigation: StackNavigationProp<PersonalChatStackParams>
+  navigation: StackNavigationProp<ParamListBase>
   connectionId: string
 }
 type OptionId = 'present-credentials'

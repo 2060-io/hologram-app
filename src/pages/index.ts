@@ -18,6 +18,7 @@ import Presentation from './Presentation'
 import { DidcommPresentationRequest, OpenIdPresentationRequest } from './PresentationRequest'
 import Privacy from './Privacy'
 import RelatedConnections from './RelatedConnections'
+import SelectCredentialAttributes from './SelectCredentialAttributes'
 import { UserProfile, WalletBackup, ChangeBackupPassword } from './Settings'
 import ShareMessages from './ShareMessages'
 import ProfileCreation from './SignUp/ProfileCreation'
@@ -57,5 +58,6 @@ export {
   Presentation,
   ParentalControl,
   PresentCredentialsFromChat,
+  SelectCredentialAttributes,
   Camera,
 }
