@@ -71,6 +71,7 @@ import { logWarn } from '@2060/utils'
 import {
   getConnectionDisplayName,
   getConnectionDisplayPicture,
+  setLastTimeProfileReceived,
   supportsMessageReceipts,
 } from '@2060/utils/connectionUtils'
 
@@ -104,8 +105,10 @@ export function subscribeToAgentChatEvents(
     return
   }
   mobileAgentInstance.setAppIsSubscribedToEvents()
+
   const connectionProfileListener = async (event: ConnectionProfileUpdatedEvent) => {
     const { connection } = event.payload
+    setLastTimeProfileReceived(connection, agent.context)
     const thread = findChatThread(realm, connection)
     if (thread) {
       updateThread(realm, thread.id, {

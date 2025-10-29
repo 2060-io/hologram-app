@@ -78,7 +78,9 @@ const UserInvitation = ({
       >
         <View style={styles.containerContent}>
           <Avatar
-            uri={getPictureDataUrl(userProfileData?.displayPicture)}
+            uri={
+              userProfileData?.displayPicture ? getPictureDataUrl(userProfileData.displayPicture) : undefined
+            }
             label={userProfileData?.displayName}
             size="46%"
           />

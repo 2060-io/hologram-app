@@ -14,7 +14,6 @@ import LightboxModal from './LightboxModal'
 import ModalBottomHalf from './ModalBottomHalf'
 import ModalConfirmAction from './ModalConfirmAction'
 import SearchInput from './SearchInput'
-import SelectCredentialAttributes from './SelectCredentialAttributes'
 import UserProfileForm from './UserProfileForm'
 import VideoCall from './VideoCall'
 import VideoPlayer from './VideoPlayer'
@@ -39,7 +38,6 @@ export {
   VideoPlayer,
   Credentials,
   CredentialAttribute,
-  SelectCredentialAttributes,
   ConnectionsSelection,
   Connections,
 }

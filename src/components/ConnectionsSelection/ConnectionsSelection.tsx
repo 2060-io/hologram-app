@@ -67,7 +67,6 @@ const ConnectionsSelection = ({ navigation, onPressSend, connectionIdToExclude, 
           navigation={navigation}
           onPressConnection={onPressConnection}
           headerProps={{ height: headerHeight, title: headerTitle ?? t('navigation.ForwardTo') }}
-          allowSelection
           selectedConnections={selectedConnections.map(connection => connection.id)}
           excludedConnections={excludedConnections}
         />

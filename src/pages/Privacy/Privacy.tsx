@@ -6,6 +6,8 @@ import getStyles from './styles'
 
 import { ModalBottomHalf } from '@2060/components'
 import { Switch, SvgIcon, OptionsList, Text } from '@2060/components/common'
+import { Option } from '@2060/components/common/OptionsList'
+import { IconsNames } from '@2060/components/common/SvgIcon'
 import { AutomaticDownloadTypes, DownloadOptions, useFileUploadDownload } from '@2060/hooks/agent'
 import {
   useScreenLock,
@@ -14,7 +16,7 @@ import {
 } from '@2060/hooks/providers/ScreenLockProvider'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 
-const mediaIconName: Record<keyof AutomaticDownloadTypes, string> = {
+const mediaIconName: Record<keyof AutomaticDownloadTypes, keyof IconsNames> = {
   audio: 'microphone',
   images: 'camera',
   videos: 'video',
@@ -58,7 +60,7 @@ const Privacy = () => {
     [DownloadOptions.WifiAndMobileData]: t('settings.wifiAndMobileData'),
   }
 
-  const automaticDownloadOptions = useMemo(() => {
+  const automaticDownloadOptions: Option[] = useMemo(() => {
     return Object.entries(automaticDownloadValues).map(([key, value]) => {
       const typedKey = key as keyof AutomaticDownloadTypes
       return {
@@ -79,14 +81,14 @@ const Privacy = () => {
     changeAutomaticDownloadOption(key, value, changeAutomaticDownloadOptionsVisibility)
   }
 
-  const options = [
+  const options: Option[] = [
     {
       iconName: 'lock',
       text: t('settings.screenLock'),
       rightContent: () => <Switch isChecked={isScreenLockEnabled} onToggle={onToggleLockScreen} />,
     },
     ...(isScreenLockEnabled
-      ? [
+      ? ([
           {
             iconName: 'lock',
             text: t('settings.screenLockTimeout'),
@@ -100,7 +102,7 @@ const Privacy = () => {
               </View>
             ),
           },
-        ]
+        ] as Option[])
       : []),
   ]
 

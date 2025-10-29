@@ -114,7 +114,9 @@ const RelatedConnections: React.FC<Props> = ({ navigation, route }) => {
         )}
         renderCustomSectionHeader={section => (
           <View style={styles.sectionHeaderContainer}>
-            <Text style={styles.sectionHeaderLabel}>{section.title}</Text>
+            <Text style={styles.sectionHeaderLabel} fontFamily="EuclidCircularA-Medium">
+              {section.title}
+            </Text>
           </View>
         )}
         showsVerticalScrollIndicator={false}
