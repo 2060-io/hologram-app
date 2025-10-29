@@ -1,12 +1,14 @@
 import { ReactElement } from 'react'
 
-export type OptionProps = {
-  iconName?: string
+import { IconsNames } from '@2060/components/common/SvgIcon'
+
+export type Option = {
+  iconName?: keyof IconsNames
   text: string
   onPress?: () => void
   rightContent?: () => ReactElement
 }
 
 export type Props = {
-  options: Array<OptionProps>
+  options: Option[]
 }

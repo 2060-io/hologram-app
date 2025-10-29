@@ -11,6 +11,7 @@ import getStyles from './styles'
 import { ModalConfirmAction } from '@2060/components'
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
 import { Text, ConnectionMainActions, SvgIcon, ModalLoading, OptionsList } from '@2060/components/common'
+import { Option } from '@2060/components/common/OptionsList'
 import { IS_IOS } from '@2060/constants'
 import {
   useMobileAgent,
@@ -136,21 +137,23 @@ const BaseConnectionDetails = ({
     actions[modalConfirmationTypeRef.current]()
   }
 
-  const relatedConnectionsOption = {
-    iconName: 'users',
-    text: t('connection.managedConnections'),
-    onPress: goToRelatedConnections,
-    rightContent: () => (
-      <>
-        <Text style={styles.accountText}>{relatedConnections.length}</Text>
-        <SvgIcon name="chevronForward" fill={theme.colors.primaryText} width={16} height={16} />
-      </>
-    ),
-  }
+  const relatedConnectionsOptions: Option[] = [
+    {
+      iconName: 'users',
+      text: t('connection.managedConnections'),
+      onPress: goToRelatedConnections,
+      rightContent: () => (
+        <>
+          <Text style={styles.accountText}>{relatedConnections.length}</Text>
+          <SvgIcon name="chevronForward" fill={theme.colors.primaryText} width={16} height={16} />
+        </>
+      ),
+    },
+  ]
 
-  const mainOptions = relatedConnections.length ? [relatedConnectionsOption] : []
+  const mainOptions = relatedConnections.length ? relatedConnectionsOptions : []
 
-  const connectionOptions = []
+  const connectionOptions: Option[] = []
   connectionOptions.push({
     iconName: 'trash',
     text: t('connection.clearChat'),
