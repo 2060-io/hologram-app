@@ -23,7 +23,7 @@ type Props = {
   size?: 'big' | 'medium'
 }
 
-const CardCredentialMainInformation = ({
+const CredentialMainInformation = ({
   credentialMainInfo,
   containerStyle = {},
   onPress,
@@ -35,7 +35,11 @@ const CardCredentialMainInformation = ({
   const { serviceInfo } = useFetchServiceInfo(credentialMainInfo.issuer.id)
   const using24HourFormat = uses24HourClock()
   const uri = serviceInfo?.logoUrl ?? credentialMainInfo.issuer.logoUrl
-  const issuedOnLabel = `${credentialMainInfo.dateLabel ?? t('credential.issuedOn')}: ${dateToString(credentialMainInfo.createdAt, `DD-MM-YYYY ${using24HourFormat ? 'HH:mm' : 'h:mm A'}`)}`
+  const issuedDate = dateToString(
+    credentialMainInfo.createdAt,
+    `DD-MM-YYYY ${using24HourFormat ? 'HH:mm' : 'h:mm A'}`,
+  )
+  const issuedOn = `${credentialMainInfo.dateLabel ?? t('credential.issuedOn')}: ${issuedDate}`
 
   return (
     <TouchableOpacity style={[styles.container, containerStyle]} activeOpacity={1} onPress={onPress}>
@@ -52,7 +56,7 @@ const CardCredentialMainInformation = ({
         </Text>
       </View>
       <View>
-        <Text style={styles.issuedOn}>{issuedOnLabel}</Text>
+        <Text style={styles.issuedOn}>{issuedOn}</Text>
         <View style={styles.bottomContainer}>
           <Text style={styles.bottomText} fontFamily="EuclidCircularA-Medium" numberOfLines={1}>
             {serviceInfo?.name ?? credentialMainInfo.issuer.name}
@@ -64,4 +68,4 @@ const CardCredentialMainInformation = ({
   )
 }
 
-export default memo(CardCredentialMainInformation)
+export default memo(CredentialMainInformation)
