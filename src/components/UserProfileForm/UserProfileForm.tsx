@@ -34,7 +34,7 @@ const UserProfileForm: React.FC<Props> = props => {
   const globalStyles = getGlobalStyles(theme)
   const { displayPicture, displayName, onHandleChangePicture, onHandleChangeName } = props
   const [isCameraOpen, setIsCameraOpen] = useState(false)
-  const imgUrl = dataUrl(displayPicture?.mimeType, displayPicture?.base64)
+  const imgUrl = displayPicture ? dataUrl(displayPicture.mimeType, displayPicture.base64) : null
   const avatarUri = imgUrl || Image.resolveAssetSource(defaultAvatar).uri
 
   const handleOpenCamera = async () => {
