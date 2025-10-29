@@ -9,6 +9,7 @@ import getStyles from './styles'
 import { CredentialDetails as CredentialDetailsComponent, ModalConfirmAction } from '@2060/components'
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
 import { Text, ServiceInformation, OptionsList } from '@2060/components/common'
+import { Option } from '@2060/components/common/OptionsList'
 import { useCredentials, useMobileAgent } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { ServiceInfo } from '@2060/model'
@@ -51,7 +52,7 @@ const CredentialDetails = ({ route, navigation }: Props) => {
     navigation.navigate('SelectCredentialAttributes', { presentDirectly: false, credentialRecordId })
   }
 
-  const options = [
+  const options: Option[] = [
     {
       iconName: 'id',
       text: t('credential.present'),
