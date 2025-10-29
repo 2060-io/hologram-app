@@ -7,7 +7,7 @@ import { ParentalControlEnum, retrieveKeyInConfigFile } from '@2060/services/con
 import { dateToString, timeFromNow } from '@2060/utils/dateUtils'
 
 const calculateAge = (kidBirthday: string) => {
-  return timeFromNow(kidBirthday)
+  return timeFromNow(kidBirthday, 'year')
 }
 
 type Props = {
