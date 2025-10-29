@@ -15,7 +15,7 @@ import getStyles from './styles'
 
 import { ModalConfirmAction } from '@2060/components'
 import {
-  CardCredentialMainInformation,
+  CredentialMainInformation,
   MainButton,
   Text,
   ServiceMainInfo,
@@ -162,7 +162,7 @@ const BasePresentationRequest: React.FC<Props> = ({
                               style={styles.radioButton}
                               isChecked={selectedCredentialsIndexes?.[entryIndex] === credentialIndex}
                             />
-                            <CardCredentialMainInformation
+                            <CredentialMainInformation
                               credentialMainInfo={credential}
                               onPress={() => goToCredentialDetails(credential.recordId)}
                               size="medium"
@@ -176,7 +176,7 @@ const BasePresentationRequest: React.FC<Props> = ({
               })}
               <MainButton
                 disabled={!enabledPresentButton}
-                text={t('personalChat.presentCredential', { count: submission?.entries?.length })}
+                text={t('credential.present', { count: submission?.entries?.length })}
                 onPress={accept}
                 style={enabledPresentButton ? styles.enabledAcceptButton : styles.disabledAcceptButton}
               />

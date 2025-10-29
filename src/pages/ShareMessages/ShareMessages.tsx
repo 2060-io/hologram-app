@@ -4,11 +4,10 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { SafeAreaView, TouchableOpacity, View } from 'react-native'
 
-import { BaseConnections } from '../Connections'
-
 import getStyles from './styles'
 
-import { ConnectionItem } from '@2060/components/ConnectionsList/ConnectionListProps'
+import { Connections } from '@2060/components'
+import { ConnectionItem } from '@2060/components/Connections/ConnectionsList'
 import { PersonalChatStackParams } from '@2060/components/Navigation/NavigationProps'
 import { SvgIcon, Text } from '@2060/components/common'
 import { useChatActions } from '@2060/hooks'
@@ -73,7 +72,7 @@ const ShareMessages = ({ navigation }: Props) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.connectionsContainer}>
-        <BaseConnections
+        <Connections
           navigation={navigation}
           onPressConnection={updateSelectedConnections}
           headerProps={{
@@ -87,7 +86,6 @@ const ShareMessages = ({ navigation }: Props) => {
               </TouchableOpacity>
             ),
           }}
-          allowSelection
           selectedConnections={selectedConnections.map(connection => connection.id)}
           excludedConnections={excludedConnections}
         />

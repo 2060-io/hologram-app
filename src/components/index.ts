@@ -4,8 +4,11 @@ import ChatThread from './ChatThread'
 import CodeScanner from './CodeScanner'
 import CommunicationChannels from './CommunicationChannels'
 import ConfirmChatDeletion from './ConfirmChatDeletion'
-import ConnectionList from './ConnectionsList'
+import Connections from './Connections'
+import ConnectionsSelection from './ConnectionsSelection'
+import CredentialAttribute from './CredentialAttribute'
 import CredentialDetails from './CredentialDetails'
+import Credentials from './Credentials'
 import IncomingCall from './IncomingCall'
 import LightboxModal from './LightboxModal'
 import ModalBottomHalf from './ModalBottomHalf'
@@ -29,9 +32,12 @@ export {
   ChatFilterOptions,
   CredentialDetails,
   ModalConfirmAction,
-  ConnectionList,
   CommunicationChannels,
   VideoCall,
   IncomingCall,
   VideoPlayer,
+  Credentials,
+  CredentialAttribute,
+  ConnectionsSelection,
+  Connections,
 }

@@ -20,6 +20,5 @@ export type Props = {
   onPressRightSide(connectionItem: ConnectionItem): void
   connectionList: ConnectionListSection[]
   isSearchingMode: boolean
-  allowSelection: boolean
   selectedConnections?: string[]
 }

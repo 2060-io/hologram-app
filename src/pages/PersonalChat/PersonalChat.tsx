@@ -13,7 +13,6 @@ import AttachmentOptions from './AttachmentOptions'
 import { CustomHeaderProps, ChatEntryMessage } from './ChatMessage/Props'
 import ContextualMenu from './ContextualMenu'
 import { CustomChatHeader, SelectingMessagesHeader } from './Header'
-import { headerHeight } from './Header/styles'
 import InputToolbarView from './InputToolbarView'
 import PersonalChatContainer, { WrapperPersonalChatProps } from './PersonalChatContainer'
 import ScrollToBottom from './ScrollToBottomView'
@@ -34,9 +33,13 @@ import {
   useActionMenu,
   useChats,
   ChatThreadWithParticipants,
+  AgentActionType,
+  useConnectionById,
 } from '@2060/hooks/agent'
+import { RequestUserProfileParameters, SendUserProfileParameters } from '@2060/hooks/agent/actions/types'
 import { createChatEntry, updateChatEntryMetadata } from '@2060/hooks/agent/chat/services/ChatEntryService'
 import { blockConnection } from '@2060/hooks/agent/connections'
+import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import {
@@ -48,9 +51,10 @@ import {
   SystemMessageMetadata,
 } from '@2060/model'
 import { ChatMessageList } from '@2060/pages/PersonalChat/ChatMessageList'
+import { headerHeight } from '@2060/styles'
 import { logWarn } from '@2060/utils'
-import { isService } from '@2060/utils/connectionUtils'
-import { getFormattedDateRange } from '@2060/utils/dateUtils'
+import { isService, setLastTimeProfileSent, supportsUserProfile } from '@2060/utils/connectionUtils'
+import { getFormattedDateRange, isDateGreaterThan, timeFromNow } from '@2060/utils/dateUtils'
 import { cancelVideoCompression } from '@2060/utils/mediaFileUtils'
 import { markNotificationsOfChatAsViewed } from '@2060/utils/pushNotificationsUtils'
 import { toast } from '@2060/utils/toast'
@@ -92,6 +96,7 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
   const theme = useTheme()
   const styles = getStyles(theme)
   const { data: chatThreadData, flags } = chatThread
+  const connection = useConnectionById(chatThreadData.connectionId)
   const { isAppActive } = useAppState()
   const { stopPlayersAndExtractors } = useAudioPlayer()
   const { realm } = useLocalRealm()
@@ -119,6 +124,7 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
   const { deleteMessagesForMe, deleteMessagesForEveryone, onActionMenuSelection } = useChatActions()
   const { agent } = useMobileAgent()
   const { markThreadAsRead, setActiveChatThreadId } = useChats()
+  const { addAgentActionToQueue } = useAgentActionQueue()
   const { menu } = useActionMenu({ connectionId: chatThreadData.connectionId })
   const using24HourFormat = uses24HourClock()
   const [currentStickyDate, setCurrentStickyDate] = useState<Date>()
@@ -169,6 +175,42 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
 
   useEffect(() => {
     isAlreadyMounted.current = true
+  }, [])
+
+  useEffect(() => {
+    const checkIfMustSendProfile = () => {
+      if (flags.myProfileUpdatedAt && flags.lastTimeProfileSent && agent && connection) {
+        const mustSendProfile = isDateGreaterThan(
+          flags.myProfileUpdatedAt,
+          new Date(flags.lastTimeProfileSent),
+        )
+        if (mustSendProfile) {
+          setLastTimeProfileSent(connection, agent.context)
+          const parameters: SendUserProfileParameters = { connectionId: connection.id }
+          addAgentActionToQueue({
+            type: AgentActionType.SendUserProfile,
+            parameters,
+          })
+        }
+      }
+    }
+    checkIfMustSendProfile()
+  }, [])
+
+  useEffect(() => {
+    const checkIfMustRequestProfile = () => {
+      if (connection && flags.lastTimeProfileReceived) {
+        const mustRequestProfile = timeFromNow(flags.lastTimeProfileReceived, 'days') >= 7
+        if (mustRequestProfile) {
+          const parameters: RequestUserProfileParameters = { connectionId: connection.id }
+          addAgentActionToQueue({
+            type: AgentActionType.RequestUserProfile,
+            parameters,
+          })
+        }
+      }
+    }
+    if (connection && supportsUserProfile(connection)) checkIfMustRequestProfile()
   }, [])
 
   const renderSystemMessage = useMemo(() => {
@@ -245,9 +287,8 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
 
   const report = async (block?: boolean) => {
     hideReportConfirmation()
-    if (!chatThread || !agent || !realm || !selectedMessage) return
+    if (!chatThread || !agent || !realm || !selectedMessage || !connection) return
     try {
-      const connection = await agent.connections.getById(chatThreadData.connectionId)
       const did = isService(connection) ? connection.invitationDid : connection.theirDid
       const { metadata } = selectedMessage
       if (did && metadata) {
@@ -413,6 +454,8 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
           closeAttachmentOptions={() => setShowAttachmentOptions(false)}
           onCompressingVideoProgress={setCompressingVideoProgress}
           getVideoCompressionCancellationId={getVideoCompressionCancellationId}
+          navigation={navigation}
+          connectionId={chatThreadData.connectionId}
         />
       </ModalBottomHalf>
       <MessageFloatingMenu

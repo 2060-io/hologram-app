@@ -49,6 +49,32 @@ index ec3bc8d..cb66aed 100644
          const ids = [];
          for (const attachment of appendedAttachments) {
              ids.push(attachment.id);
+diff --git a/node_modules/@credo-ts/core/build/modules/proofs/protocol/ProofProtocolOptions.d.ts b/node_modules/@credo-ts/core/build/modules/proofs/protocol/ProofProtocolOptions.d.ts
+index f34139b..346e09f 100644
+--- a/node_modules/@credo-ts/core/build/modules/proofs/protocol/ProofProtocolOptions.d.ts
++++ b/node_modules/@credo-ts/core/build/modules/proofs/protocol/ProofProtocolOptions.d.ts
+@@ -66,7 +66,7 @@ interface BaseOptions {
+     goal?: string;
+ }
+ export interface CreateProofProposalOptions<PFs extends ProofFormatService[]> extends BaseOptions {
+-    connectionRecord: ConnectionRecord;
++    connectionRecord?: ConnectionRecord;
+     proofFormats: ProofFormatPayload<ExtractProofFormats<PFs>, 'createProposal'>;
+     parentThreadId?: string;
+ }
+diff --git a/node_modules/@credo-ts/core/build/modules/proofs/protocol/v2/V2ProofProtocol.js b/node_modules/@credo-ts/core/build/modules/proofs/protocol/v2/V2ProofProtocol.js
+index d53b30d..7994182 100644
+--- a/node_modules/@credo-ts/core/build/modules/proofs/protocol/v2/V2ProofProtocol.js
++++ b/node_modules/@credo-ts/core/build/modules/proofs/protocol/v2/V2ProofProtocol.js
+@@ -56,7 +56,7 @@ class V2ProofProtocol extends BaseProofProtocol_1.BaseProofProtocol {
+             throw new error_1.CredoError(`Unable to create proposal. No supported formats`);
+         }
+         const proofRecord = new repository_1.ProofExchangeRecord({
+-            connectionId: connectionRecord.id,
++            connectionId: connectionRecord?.id,
+             threadId: (0, uuid_1.uuid)(),
+             parentThreadId,
+             state: models_2.ProofState.ProposalSent,
 diff --git a/node_modules/@credo-ts/core/build/modules/routing/MediationRecipientApi.js b/node_modules/@credo-ts/core/build/modules/routing/MediationRecipientApi.js
 index fffd69f..e62b949 100644
 --- a/node_modules/@credo-ts/core/build/modules/routing/MediationRecipientApi.js

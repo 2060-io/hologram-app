@@ -52,6 +52,7 @@ export type NavigationStackParams = {
   }
   PresentCredential: {
     credentialRecordId: string
+    attributesToPresent: string[]
   }
   Presentation: {
     mainInfo: CredentialMainInfo
@@ -59,4 +60,10 @@ export type NavigationStackParams = {
     proofState: ProofState
   }
   ParentalControl: undefined
+  PresentCredentialsFromChat: { connectionId: string }
+  SelectCredentialAttributes: {
+    presentDirectly: boolean
+    credentialRecordId: string
+    connectionToPresent?: string
+  }
 }
