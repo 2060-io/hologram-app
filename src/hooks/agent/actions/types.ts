@@ -9,19 +9,20 @@ export type AnoncredsAttribute = {
   credentialDefinitionId: string
 }
 
-type SendTextMessageParameters = {
+type ConnectionIdParameter = {
   connectionId: string
+}
+
+type SendTextMessageParameters = ConnectionIdParameter & {
   message: string
   parentThreadId?: string
 }
 
-type SendReactionParameters = {
-  connectionId: string
+type SendReactionParameters = ConnectionIdParameter & {
   reactions: MessageReactionOptions[]
 }
 
-type SendReceiptsParameters = {
-  connectionId: string
+type SendReceiptsParameters = ConnectionIdParameter & {
   receipts: MessageReceiptOptions[]
 }
 
@@ -29,18 +30,15 @@ type ShareMediaParameters = {
   recordId: string
 }
 
-type MenuSelectionParameters = {
-  connectionId: string
+type MenuSelectionParameters = ConnectionIdParameter & {
   selectedItemName: string
 }
 
-type ForwardConnectionParameters = {
+type ForwardConnectionParameters = ConnectionIdParameter & {
   forwarderConnectionId: string
-  connectionId: string
 }
 
-type PresentCredentialParameters = {
-  connectionId: string
+type PresentCredentialParameters = ConnectionIdParameter & {
   anoncredsAttributes: AnoncredsAttribute[]
 }
 
@@ -49,26 +47,18 @@ type SendAnswerParameters = {
   response: string
 }
 
-type AcceptConnectionRequestParameters = {
-  connectionId: string
-}
+type AcceptConnectionRequestParameters = ConnectionIdParameter
 
-type AcceptConnectionResponseParameters = {
-  connectionId: string
-}
+type AcceptConnectionResponseParameters = ConnectionIdParameter
 
-type QueryServiceFeaturesParameters = {
-  connectionId: string
-}
+type QueryServiceFeaturesParameters = ConnectionIdParameter
 
-type CreateCallOfferParameters = {
-  connectionId: string
+type CreateCallOfferParameters = ConnectionIdParameter & {
   callType: DidCommCallType
   callInfo: CallInfo
 }
 
-type HangupCallParameters = {
-  connectionId: string
+type HangupCallParameters = ConnectionIdParameter & {
   threadId?: string | undefined
 }
 
@@ -88,6 +78,10 @@ type DeclineProofRequestParameters = {
   proofRecordId: string
 }
 
+type SendUserProfileParameters = ConnectionIdParameter
+
+type RequestUserProfileParameters = ConnectionIdParameter
+
 export type {
   SendTextMessageParameters,
   SendReactionParameters,
@@ -106,4 +100,6 @@ export type {
   AcceptCredentialOfferParameters,
   DeclineCredentialOfferParameters,
   DeclineProofRequestParameters,
+  SendUserProfileParameters,
+  RequestUserProfileParameters,
 }

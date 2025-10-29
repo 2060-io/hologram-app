@@ -21,10 +21,6 @@ export default (theme: AppTheme) =>
     headerLeft: {
       paddingLeft: 15,
     },
-    headerBtnText: {
-      fontSize: theme.fontSize.md2,
-      color: theme.colors.green,
-    },
     headerWithSubConnectionsContainer: {
       flexDirection: 'row',
       alignItems: 'center',

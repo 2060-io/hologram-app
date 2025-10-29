@@ -51,6 +51,8 @@ import {
   PresentCredential,
   Presentation,
   ParentalControl,
+  SelectCredentialAttributes,
+  PresentCredentialsFromChat,
   IdentityCredentialIssuers,
 } from '@2060/pages'
 import { MobileAgent } from '@2060/services/agent'
@@ -181,6 +183,8 @@ const Navigation = ({ isSignedUp, agent, theme }: NavigationProps) => {
           <Stack.Screen name="PresentCredential" component={PresentCredential} />
           <Stack.Screen name="Presentation" component={Presentation} />
           <Stack.Screen name="ParentalControl" component={ParentalControl} />
+          <Stack.Screen name="PresentCredentialsFromChat" component={PresentCredentialsFromChat} />
+          <Stack.Screen name="SelectCredentialAttributes" component={SelectCredentialAttributes} />
           <Stack.Screen name="IdentityCredentialIssuers" component={IdentityCredentialIssuers} />
         </Stack.Navigator>
       </View>

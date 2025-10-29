@@ -2,6 +2,7 @@ import { CallEndMessage, CallOfferMessage } from '@2060.io/credo-ts-didcomm-call
 import { ShareMediaMessage } from '@2060.io/credo-ts-didcomm-media-sharing'
 import { MessageReactionsMessage } from '@2060.io/credo-ts-didcomm-reactions'
 import { MessageReceiptsMessage } from '@2060.io/credo-ts-didcomm-receipts'
+import { ProfileMessage, RequestProfileMessage } from '@2060.io/credo-ts-didcomm-user-profile'
 import { PerformMessage } from '@credo-ts/action-menu'
 import {
   BasicMessage,
@@ -36,10 +37,12 @@ import {
   PresentCredentialParameters,
   QueryServiceFeaturesParameters,
   RemoveOutOfBandRecordParameters,
+  RequestUserProfileParameters,
   SendAnswerParameters,
   SendReactionParameters,
   SendReceiptsParameters,
   SendTextMessageParameters,
+  SendUserProfileParameters,
   ShareMediaParameters,
 } from './types'
 
@@ -239,6 +242,22 @@ export const ActionFactoryMap: Record<AgentActionType, ActionFactory> = {
       const { proofRecordId } = parameters
       await options.agent.proofs.declineRequest({ proofRecordId, sendProblemReport: true })
       return { outgoingMessageType: V2PresentationProblemReportMessage.type.messageTypeUri }
+    }
+  },
+  [AgentActionType.SendUserProfile]: action => {
+    return async (options: { agent: MobileAgent }) => {
+      const parameters = action.parameters as SendUserProfileParameters
+      const { connectionId } = parameters
+      await options.agent.modules.profile.sendUserProfile({ connectionId })
+      return { outgoingMessageType: ProfileMessage.type.messageTypeUri }
+    }
+  },
+  [AgentActionType.RequestUserProfile]: action => {
+    return async (options: { agent: MobileAgent }) => {
+      const parameters = action.parameters as RequestUserProfileParameters
+      const { connectionId } = parameters
+      await options.agent.modules.profile.requestUserProfile({ connectionId })
+      return { outgoingMessageType: RequestProfileMessage.type.messageTypeUri }
     }
   },
 }

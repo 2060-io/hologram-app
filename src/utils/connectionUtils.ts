@@ -3,9 +3,16 @@ import { ShareMediaMessage } from '@2060.io/credo-ts-didcomm-media-sharing'
 import { MessageReactionsMessage } from '@2060.io/credo-ts-didcomm-reactions'
 import { MessageReceiptsMessage } from '@2060.io/credo-ts-didcomm-receipts'
 import { ProfileMessage, PictureData, getConnectionProfile } from '@2060.io/credo-ts-didcomm-user-profile'
-import { ConnectionRecord, DidExchangeState, JsonTransformer, Protocol } from '@credo-ts/core'
+import {
+  AgentContext,
+  ConnectionRecord,
+  ConnectionRepository,
+  DidExchangeState,
+  JsonTransformer,
+  Protocol,
+} from '@credo-ts/core'
 
-import { log } from './log'
+import { logError } from './log'
 
 import { dataUrl } from './index'
 
@@ -23,38 +30,59 @@ export const getConnectionDisplayName = (connection: ConnectionRecord) => {
 
 export const getConnectionDisplayPicture = (connection: ConnectionRecord) => {
   let displayPicture = ''
-
   try {
     const profile = getConnectionProfile(connection)
-    displayPicture = getPictureDataUrl(profile?.displayPicture)
-    if (displayPicture === '') displayPicture = connection.imageUrl || ''
+    if (profile?.displayPicture) {
+      displayPicture = getPictureDataUrl(profile.displayPicture)
+    } else if (connection.imageUrl) {
+      displayPicture = connection.imageUrl
+    }
   } catch (error) {
-    log(`Cannot get display picture: ${error}`)
+    logError('Error in getConnectionDisplayPicture', error)
   }
   return displayPicture
 }
 
 export const getConnectionDisplayIcon = (connection: ConnectionRecord) => {
   let displayIcon = ''
-
   try {
     const profile = getConnectionProfile(connection)
-    displayIcon = getPictureDataUrl(profile?.displayIcon)
+    if (profile?.displayIcon) displayIcon = getPictureDataUrl(profile.displayIcon)
   } catch (error) {
-    log(`Cannot get display icon: ${error}`)
+    logError('Error in getConnectionDisplayIcon', error)
   }
   return displayIcon
 }
 
-export const getPictureDataUrl = (displayPictureData?: PictureData) =>
-  displayPictureData?.links
+export const getPictureDataUrl = (displayPictureData: PictureData) => {
+  return displayPictureData.links?.length
     ? displayPictureData.links[0]
-    : dataUrl(displayPictureData?.mimeType, displayPictureData?.base64)
+    : dataUrl(displayPictureData.mimeType, displayPictureData.base64)
+}
 
 export const isService = (connection: ConnectionRecord) =>
   connection.invitationDid !== undefined && !connection.invitationDid.startsWith('did:peer')
 
 export const isBlocked = (connection: ConnectionRecord) => connection.getTag('blocked') === true
+
+export const lastTimeProfileSent = (connection: ConnectionRecord) =>
+  connection.getTag('lastTimeProfileSent')?.toString() ?? connection.createdAt.toString()
+
+export const setLastTimeProfileSent = async (connection: ConnectionRecord, agentContext: AgentContext) => {
+  connection.setTag('lastTimeProfileSent', `${new Date()}`)
+  await agentContext.dependencyManager.resolve(ConnectionRepository).update(agentContext, connection)
+}
+
+export const lastTimeProfileReceived = (connection: ConnectionRecord) =>
+  connection.getTag('lastTimeProfileReceived')?.toString() ?? connection.createdAt.toString()
+
+export const setLastTimeProfileReceived = async (
+  connection: ConnectionRecord,
+  agentContext: AgentContext,
+) => {
+  connection.setTag('lastTimeProfileReceived', `${new Date()}`)
+  await agentContext.dependencyManager.resolve(ConnectionRepository).update(agentContext, connection)
+}
 
 export const isTerminated = (connection: ConnectionRecord) =>
   connection.isReady && (connection.theirDid === undefined || connection.did === undefined)

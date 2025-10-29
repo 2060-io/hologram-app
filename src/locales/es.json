@@ -106,6 +106,7 @@
       "PresentCredential": "Presentar a",
       "Presentation": "Presentación",
       "ParentalControl": "Control parental",
+      "SelectCredentialAttributes": "Presentar Credencial",
       "IdentityCredentialIssuers": "Emisores de credenciales de identidad"
     },
     "authentication": {
@@ -232,7 +233,7 @@
       "presented": "Credencial presentada",
       "presentedOn": "Presentado el",
       "selectCredential": "Selecciona la credencial que quieres presentar",
-      "selectAttributes": "Selecciona los Atributos que quieres compartir en la presentación",
+      "selectAttributes": "Selecciona los atributos que te gustaría presentar",
       "selectAll": "Seleccionar todos",
       "unselectAll": "Quitar todos",
       "citizenship": "Selecciona el país de ciudadanía",

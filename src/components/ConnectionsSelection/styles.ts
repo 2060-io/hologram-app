@@ -4,7 +4,7 @@ import { IS_IOS } from '@2060/constants'
 import { AppTheme } from '@2060/styles'
 import { widthPercentageToDP } from '@2060/utils/responsiveUtils'
 
-const FORWARD_BUTTON_WIDTH = widthPercentageToDP(IS_IOS ? '10%' : '12%')
+const SEND_BUTTON_WIDTH = widthPercentageToDP(IS_IOS ? '10%' : '12%')
 
 export default (theme: AppTheme) =>
   StyleSheet.create({
@@ -14,31 +14,31 @@ export default (theme: AppTheme) =>
     connectionsContainer: {
       flex: 9,
     },
-    forwardContainer: {
+    bottomContainer: {
       flex: 1,
       flexDirection: 'row',
       justifyContent: 'center',
       alignItems: 'center',
       paddingHorizontal: 15,
     },
-    connectionsToForwardText: {
+    selectedConnectionsText: {
       flex: 1,
       fontSize: theme.fontSize.md2,
       color: theme.colors.primaryText,
       marginRight: 10,
     },
-    forwardButton: {
-      width: FORWARD_BUTTON_WIDTH,
-      height: FORWARD_BUTTON_WIDTH,
-      borderRadius: FORWARD_BUTTON_WIDTH / 2,
+    sendButton: {
+      width: SEND_BUTTON_WIDTH,
+      height: SEND_BUTTON_WIDTH,
+      borderRadius: SEND_BUTTON_WIDTH / 2,
       backgroundColor: theme.colors.green,
       justifyContent: 'center',
       alignItems: 'center',
     },
-    enabledForward: {
+    enabledSend: {
       opacity: 1,
     },
-    disabledForward: {
+    disabledSend: {
       opacity: 0.5,
     },
   })

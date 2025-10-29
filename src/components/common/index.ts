@@ -1,7 +1,7 @@
 import Avatar from './Avatar'
-import CardCredentialMainInformation from './CardCredentialMainInformation'
 import ConnectionMainActions from './ConnectionMainActions'
 import ConnectionRefusedByAge from './ConnectionRefusedByAge'
+import CredentialMainInformation from './CredentialMainInformation'
 import Icon from './CustomIcon'
 import FullScreenImage from './FullScreenImage'
 import HeaderTitle from './HeaderTitle'
@@ -35,7 +35,7 @@ export {
   TextInputPassword,
   SvgIcon,
   MessageStateIcon,
-  CardCredentialMainInformation,
+  CredentialMainInformation,
   OptionsList,
   VerifiedIcon,
   Progress,

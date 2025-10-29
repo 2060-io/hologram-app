@@ -14,7 +14,7 @@ import getStyles from './styles'
 import defaultAvatar from '@2060/assets/images/defaultUser.png'
 import { ModalConfirmAction } from '@2060/components'
 import { Avatar, Text, SvgIcon, OptionsList, FullScreenImage } from '@2060/components/common'
-import { OptionProps } from '@2060/components/common/OptionsList/OptionsListProps'
+import { Option } from '@2060/components/common/OptionsList/OptionsListProps'
 import { useMobileAgent, useUserProfile } from '@2060/hooks/agent'
 import { useConfig } from '@2060/hooks/providers/ConfigProvider'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
@@ -32,7 +32,7 @@ const Settings = ({ navigation }: Props) => {
   const developerModeCounter = useRef(0)
   const lastTouch = useRef<number | undefined>(undefined)
   const [showConfirmationDeleteModal, setShowConfirmationDeleteModal] = useState(false)
-  const [options, setOptions] = useState<Array<OptionProps>>([])
+  const [options, setOptions] = useState<Array<Option>>([])
   const [showFullScreenImage, setShowFullScreenImage] = useState<boolean>(false)
   const { t } = useTranslation()
   const { agent, shutdownAgent, isConnectedToCloudAgent } = useMobileAgent()
@@ -42,8 +42,9 @@ const Settings = ({ navigation }: Props) => {
   const theme = useTheme()
   const styles = getStyles(theme)
   const displayPicture = userProfileData?.displayPicture
-  const imgUrl = dataUrl(displayPicture?.mimeType, displayPicture?.base64)
-  const avatarUri = imgUrl || Image.resolveAssetSource(defaultAvatar).uri
+  const avatarUri = displayPicture
+    ? dataUrl(displayPicture.mimeType, displayPicture.base64)
+    : Image.resolveAssetSource(defaultAvatar).uri
 
   const onAvatarImagePressed = () => setShowFullScreenImage(true)
   const closeFullScreenImage = () => setShowFullScreenImage(false)
@@ -89,43 +90,38 @@ const Settings = ({ navigation }: Props) => {
   }
 
   useEffect(() => {
+    const developerModeOptions: Option[] = [
+      {
+        iconName: 'id',
+        text: t('navigation.IdentityCredentialIssuers'),
+        onPress: () => navigateTo('IdentityCredentialIssuers'),
+        rightContent: () => optionRightContent(),
+      },
+      {
+        iconName: 'cloudDownload',
+        text: t('settings.backup'),
+        onPress: () => navigateTo('WalletBackup'),
+        rightContent: () => optionRightContent(),
+      },
+      {
+        iconName: 'developer',
+        text: t('settings.developer'),
+        onPress: () => navigateTo('Developer'),
+        rightContent: () => optionRightContent(),
+      },
+    ]
+    const updateOptions = () => {
+      const newOptions = [...fixedOptions, ...(isDeveloperMode ? developerModeOptions : [])]
+      setOptions(newOptions)
+    }
     updateOptions()
   }, [isDeveloperMode, theme.colors])
-
-  const updateOptions = () => {
-    const newOptions = [
-      ...fixedOptions,
-      ...(isDeveloperMode
-        ? [
-            {
-              iconName: 'id',
-              text: t('navigation.IdentityCredentialIssuers'),
-              onPress: () => navigateTo('IdentityCredentialIssuers'),
-              rightContent: () => optionRightContent(),
-            },
-            {
-              iconName: 'cloudDownload',
-              text: t('settings.backup'),
-              onPress: () => navigateTo('WalletBackup'),
-              rightContent: () => optionRightContent(),
-            },
-            {
-              iconName: 'developer',
-              text: t('settings.developer'),
-              onPress: () => navigateTo('Developer'),
-              rightContent: () => optionRightContent(),
-            },
-          ]
-        : []),
-    ]
-    setOptions(newOptions)
-  }
 
   const optionRightContent = () => (
     <SvgIcon name="chevronForward" width={18} height={18} fill={theme.colors.tertiaryText} />
   )
 
-  const fixedOptions = [
+  const fixedOptions: Option[] = [
     {
       iconName: 'notifications',
       text: t('settings.notifications'),

@@ -79,15 +79,11 @@ const ConnectionDetails = (props: ConnectionDetailsProps) => {
               </View>
               {parentConnectionId && (
                 <View style={styles.relatedConnectionContainer}>
-                  <Text fontFamily={'EuclidCircularA-Regular'} style={styles.connectionRelatedToText}>
-                    {t('connection.connectionManagedBy')}
-                  </Text>
+                  <Text style={styles.connectionRelatedToText}>{t('connection.connectionManagedBy')}</Text>
                   {parentConnectionPicture.length > 0 && (
                     <Image source={{ uri: parentConnectionPicture }} style={styles.connectionRelatedToImg} />
                   )}
-                  <Text fontFamily={'EuclidCircularA-Regular'} style={styles.connectionRelatedToText}>
-                    {parentConnectionName}
-                  </Text>
+                  <Text style={styles.connectionRelatedToText}>{parentConnectionName}</Text>
                 </View>
               )}
               <Text style={styles.createdAtText}>

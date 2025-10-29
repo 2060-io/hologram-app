@@ -18,7 +18,7 @@ const styles = (theme: AppTheme) =>
     },
     textInput: {
       flex: 1,
-      fontFamily: 'EuclidCircularA-Regular',
+      fontFamily: 'EuclidCircularA-Medium',
       fontSize: theme.fontSize.md2,
       color: theme.colors.primaryText,
       marginLeft: 18,

@@ -1,8 +1,7 @@
 import { StackScreenProps } from '@react-navigation/stack'
 import React from 'react'
 
-import BaseForward from './BaseForward'
-
+import { ConnectionsSelection } from '@2060/components'
 import { PersonalChatStackParams } from '@2060/components/Navigation/NavigationProps'
 import { useChatActions } from '@2060/hooks'
 import { useChat } from '@2060/hooks/agent'
@@ -20,10 +19,10 @@ const ForwardMessages = ({ navigation }: Props) => {
   }
 
   return (
-    <BaseForward
+    <ConnectionsSelection
       navigation={navigation}
       onPressSend={forwardMessages}
-      connectionId={chatThread?.data.connectionId}
+      connectionIdToExclude={chatThread?.data.connectionId}
     />
   )
 }

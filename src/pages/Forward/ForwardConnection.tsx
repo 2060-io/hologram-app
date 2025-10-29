@@ -3,8 +3,7 @@ import { StackScreenProps } from '@react-navigation/stack'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 
-import BaseForward from './BaseForward'
-
+import { ConnectionsSelection } from '@2060/components'
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
 import { AgentActionType, useChats, useMobileAgent } from '@2060/hooks/agent'
 import { ForwardConnectionParameters } from '@2060/hooks/agent/actions/types'
@@ -63,7 +62,13 @@ const ForwardConnection = ({ navigation, route }: Props) => {
     navigation.goBack()
   }
 
-  return <BaseForward navigation={navigation} onPressSend={forwardConnection} connectionId={connection.id} />
+  return (
+    <ConnectionsSelection
+      navigation={navigation}
+      onPressSend={forwardConnection}
+      connectionIdToExclude={connection.id}
+    />
+  )
 }
 
 export default ForwardConnection
