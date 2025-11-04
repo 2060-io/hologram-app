@@ -3,7 +3,9 @@ import { StackScreenProps } from '@react-navigation/stack'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { SafeAreaView, Alert, View, TouchableOpacity } from 'react-native'
+import { FileLogger } from 'react-native-file-logger'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import Share from 'react-native-share'
 
 import getStyles from './styles'
 
@@ -29,6 +31,7 @@ import {
   saveLogsEnabled,
   areLogsEnabled,
 } from '@2060/utils/developer'
+import { logError, LOGS_DIRECTORY } from '@2060/utils/log'
 
 interface Props extends StackScreenProps<NavigationStackParams, 'Developer'> {}
 
@@ -129,6 +132,7 @@ const Developer = ({ navigation }: Props) => {
       navigation.navigate('Home')
     } catch (error) {
       Alert.alert('Error', `${error}`)
+      logError(`Error deleting wallet from developer screen: ${error}`)
     } finally {
       setIsDeletingWallet(false)
     }
@@ -156,6 +160,23 @@ const Developer = ({ navigation }: Props) => {
     await saveLogsEnabled(newAreEnabled)
   }
 
+  const exportLogs = async () => {
+    try {
+      const logFilesPaths = await FileLogger.getLogFilePaths()
+      if (!logFilesPaths.length) {
+        Alert.alert(t('settings.noLogsFileFound'))
+        return
+      }
+      Share.open({
+        ...(IS_IOS ? { url: LOGS_DIRECTORY } : { urls: logFilesPaths.map(file => `file://${file}`) }),
+        failOnCancel: false,
+      })
+    } catch (error) {
+      Alert.alert(t('settings.couldNotExportLogs'))
+      logError('Could not export app logs', error)
+    }
+  }
+
   const options: Option[] = [
     {
       iconName: 'trash',
@@ -176,6 +197,11 @@ const Developer = ({ navigation }: Props) => {
       iconName: 'edit',
       text: t('settings.displayLogs'),
       rightContent: () => <Switch isChecked={logsEnabled} onToggle={toggleLogsEnabled} />,
+    },
+    {
+      iconName: 'download',
+      text: t('settings.exportLogs'),
+      onPress: exportLogs,
     },
   ]
 

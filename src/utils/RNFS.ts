@@ -14,27 +14,21 @@ import { logError } from './log'
 import { IS_IOS } from '@2060/constants'
 
 type Encoding = 'utf8' | 'base64' | 'ascii'
-
-const documentDirectoryPath = DocumentDirectoryPath
-const CONFIG_FILE_PATH = `${documentDirectoryPath}/config.json`
-const mediaDirectoryPath = `${documentDirectoryPath}/media`
-const mediaPreviewsDirectoryPath = `${documentDirectoryPath}/media/previews`
-const walletDirectoryPath = `${documentDirectoryPath}/wallet`
+const CONFIG_FILE_PATH = `${DocumentDirectoryPath}/config.json`
+const mediaDirectoryPath = `${DocumentDirectoryPath}/media`
+const mediaPreviewsDirectoryPath = `${DocumentDirectoryPath}/media/previews`
+const walletDirectoryPath = `${DocumentDirectoryPath}/wallet`
 const getLocalMediaFilePath = (fileName: string) => `${mediaDirectoryPath}/${fileName}`
 const getLocalMediaPreviewFilePath = (fileName: string) => `${mediaPreviewsDirectoryPath}/${fileName}`
-const getFullLocalFilePath = (relativeFilePath: string) => `${documentDirectoryPath}/${relativeFilePath}`
+const getFullLocalFilePath = (relativeFilePath: string) => `${DocumentDirectoryPath}/${relativeFilePath}`
 
 const getLocalFileUri = (relativeFilePath: string) => {
   return IS_IOS ? getFullLocalFilePath(relativeFilePath) : `file://${getFullLocalFilePath(relativeFilePath)}`
 }
 
 const readFile = async (path: string, encodingOrOptions: Encoding = 'utf8') => {
-  try {
-    const response = await RNFSReadFile(path, encodingOrOptions)
-    return response
-  } catch (error) {
-    logError(`readFile: ${error}`)
-  }
+  const response = await RNFSReadFile(path, encodingOrOptions)
+  return response
 }
 
 const writeFile = async (filePath: string, content: string, encodingOrOptions: Encoding = 'utf8') => {

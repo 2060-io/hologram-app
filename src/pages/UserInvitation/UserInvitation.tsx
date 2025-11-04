@@ -11,7 +11,7 @@ import withUserInvitation from './withUserInvitation'
 import { Avatar, Text, SvgIcon } from '@2060/components/common'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { getGlobalStyles } from '@2060/styles'
-import { log } from '@2060/utils'
+import { logError } from '@2060/utils'
 import { getPictureDataUrl } from '@2060/utils/connectionUtils'
 import { widthPercentageToDP } from '@2060/utils/responsiveUtils'
 
@@ -66,7 +66,7 @@ const UserInvitation = ({
         }),
       )
     } catch (error) {
-      log('Error sharing', error)
+      logError('Error sharing invitation', error)
     }
   }
 

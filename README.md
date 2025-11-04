@@ -1,6 +1,6 @@
-# 2060-mobile-agent
+# Hologram App
 
-This repository contains 2060 Mobile Agent (Hologram), a React Native application used by end users to access different services provided by 2060 network and connect to other DIDComm agents.
+This repository contains Hologram Mobile Agent, a React Native application used by end users to access different compatible Verifiable Services and connect to other DIDComm agents.
 
 ## Environment setup
 
