@@ -13177,6 +13177,13 @@ react-native-edge-to-edge@1.6.0:
   resolved "https://registry.yarnpkg.com/@2060.io/react-native-eid-reader/-/react-native-eid-reader-0.1.0.tgz#7dd92daeb50f579a7ebf079b04fb1aa14da1a543"
   integrity sha512-dGX8lPGv1OBVy3Ras1vusgPpTmJoMOL8qJxil1Xp4gvtAZ3dvcqm58UtG2Ke/LHYp8QbhMs48FPsCXe9+K7Zfw==
 
+react-native-file-logger@0.7.1:
+  version "0.7.1"
+  resolved "https://registry.yarnpkg.com/react-native-file-logger/-/react-native-file-logger-0.7.1.tgz#bbcc0aadf348fa1afd3464220afab154034aed64"
+  integrity sha512-oQDR+3jdnTw+zvJsrHRarQ1v3EM5JfbWj+GF56ajEj1iiSPtACavWp0zjoBMqZ62F3O/3bvGYqTk0rQVMW7VPw==
+  dependencies:
+    util "^0.12.5"
+
 react-native-fs@2.20.0:
   version "2.20.0"
   resolved "https://registry.yarnpkg.com/react-native-fs/-/react-native-fs-2.20.0.tgz#05a9362b473bfc0910772c0acbb73a78dbc810f6"
@@ -15566,7 +15573,7 @@ util-deprecate@^1.0.1, util-deprecate@^1.0.2, util-deprecate@~1.0.1:
   resolved "https://registry.yarnpkg.com/util-deprecate/-/util-deprecate-1.0.2.tgz#450d4dc9fa70de732762fbd2d4a28981419a0ccf"
   integrity sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==
 
-util@^0.12.3:
+util@^0.12.3, util@^0.12.5:
   version "0.12.5"
   resolved "https://registry.yarnpkg.com/util/-/util-0.12.5.tgz#5f17a6059b73db61a875668781a1c2b136bd6fbc"
   integrity sha512-kZf/K6hEIrWHI6XqOFUiiMa+79wE/D8Q+NCNAWclkyg3b4d2k7s0QGepNjiABc+aR3N1PAyHL7p6UcLY6LmrnA==

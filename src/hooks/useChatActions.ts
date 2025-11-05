@@ -295,7 +295,7 @@ export const useChatActions = () => {
           parameters,
         })
       } catch (error) {
-        log('Error sendTextMessage', error)
+        logError('Error sendTextMessage', error)
       }
     },
     [agent, realm, repliedMessage, chatThread, connectionId],
@@ -467,7 +467,7 @@ export const useChatActions = () => {
           parameters,
         })
       } catch (error) {
-        log('Error onActionMenuSelection', error)
+        logError('Error onActionMenuSelection', error)
       }
     },
     [agent, realm, repliedMessage, chatThread, connectionId],
