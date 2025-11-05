@@ -55,7 +55,7 @@ export type NavigationStackParams = {
     credentialRecordId: string
     attributesToPresent: string[]
   }
-  Presentation: {
+  CredentialPresentation: {
     mainInfo: CredentialMainInfo
     attributes: Record<string, unknown>
     proofState: ProofState

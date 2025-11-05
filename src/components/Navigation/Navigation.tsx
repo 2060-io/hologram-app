@@ -49,7 +49,7 @@ import {
   CredentialPresented,
   ForwardConnection,
   PresentCredential,
-  Presentation,
+  CredentialPresentation,
   ParentalControl,
   SelectCredentialAttributes,
   PresentCredentialsFromChat,
@@ -182,7 +182,7 @@ const Navigation = ({ isSignedUp, agent, theme }: NavigationProps) => {
           <Stack.Screen name="CredentialPresented" component={CredentialPresented} />
           <Stack.Screen name="ForwardConnection" component={ForwardConnection} />
           <Stack.Screen name="PresentCredential" component={PresentCredential} />
-          <Stack.Screen name="Presentation" component={Presentation} />
+          <Stack.Screen name="CredentialPresentation" component={CredentialPresentation} />
           <Stack.Screen name="ParentalControl" component={ParentalControl} />
           <Stack.Screen name="PresentCredentialsFromChat" component={PresentCredentialsFromChat} />
           <Stack.Screen name="SelectCredentialAttributes" component={SelectCredentialAttributes} />

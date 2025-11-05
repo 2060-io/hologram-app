@@ -9,9 +9,9 @@ import { findAllByAssociatedRecordId, updateChatEntryMetadata } from '@2060/hook
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
 import { ChatEntryType } from '@2060/model'
 
-interface Props extends StackScreenProps<NavigationStackParams, 'Presentation'> {}
+interface Props extends StackScreenProps<NavigationStackParams, 'CredentialPresentation'> {}
 
-const Presentation = ({ navigation, route }: Props) => {
+const CredentialPresentation = ({ navigation, route }: Props) => {
   const { proofRecordId } = route.params
   const { realm } = useLocalRealm()
 
@@ -44,4 +44,4 @@ const Presentation = ({ navigation, route }: Props) => {
   )
 }
 
-export default Presentation
+export default CredentialPresentation

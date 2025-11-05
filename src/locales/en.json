@@ -103,7 +103,7 @@
       "ForwardTo": "Forward to",
       "shareWith": "Share with",
       "PresentCredential": "Present to",
-      "Presentation": "Credential Presentation",
+      "CredentialPresentation": "Credential Presentation",
       "ParentalControl": "Parental Control",
       "SelectCredentialAttributes": "Present Credential",
       "PresentCredentialAsQR": "Credential Presentation",

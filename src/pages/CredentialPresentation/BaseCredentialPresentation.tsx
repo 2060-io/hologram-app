@@ -19,7 +19,7 @@ import { toast } from '@2060/utils/toast'
 type Props = {
   navigation: StackNavigationProp<
     NavigationStackParams,
-    'Presentation' | 'EphemeralCredentialPresentation',
+    'CredentialPresentation' | 'EphemeralCredentialPresentation',
     undefined
   >
   mainInfo: CredentialMainInfo
