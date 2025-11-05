@@ -1,3 +1,4 @@
+import EphemeralCredentialPresentation from './EphemeralCredentialPresentation'
 import Presentation from './Presentation'
 
-export default Presentation
+export { Presentation, EphemeralCredentialPresentation }

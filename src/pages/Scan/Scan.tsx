@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle */
-import { OutOfBandInvitation, Buffer } from '@credo-ts/core'
-import { BottomTabScreenProps } from '@react-navigation/bottom-tabs'
-import { useIsFocused, ParamListBase } from '@react-navigation/native'
+import { OutOfBandInvitation, Buffer, ProofState } from '@credo-ts/core'
+import { useIsFocused } from '@react-navigation/native'
+import { StackScreenProps } from '@react-navigation/stack'
 import { parseUrl } from 'query-string'
 import React, { useState, useEffect, useTransition } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -19,16 +19,18 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import getStyles from './styles'
 
 import { CodeScanner } from '@2060/components'
+import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
 import { TextInput, Text, MainButton, ModalLoading } from '@2060/components/common'
 import { useAppState } from '@2060/hooks'
 import { useMobileAgent } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { DidcommInvitationType, getOutOfBandRecordById, processInvitation } from '@2060/services/agent/oob'
 import { isOpenIdCredentialOffer, isOpenIdPresentationRequest } from '@2060/services/agent/parsers'
+import { proposalGetCredentialInfo } from '@2060/services/agent/proofs'
 import { log, logError } from '@2060/utils'
 import { toast } from '@2060/utils/toast'
 
-interface Props extends BottomTabScreenProps<ParamListBase, 'Scan', 'tab_navigator_home'> {}
+interface Props extends StackScreenProps<NavigationStackParams, 'Scan'> {}
 
 const Scan = ({ navigation }: Props) => {
   const { t } = useTranslation()
@@ -53,16 +55,11 @@ const Scan = ({ navigation }: Props) => {
   const processDidcommInvitation = async (invitation: OutOfBandInvitation) => {
     if (!agent) return
     startProcessTransition(async () => {
-      let processInvitationResult
       try {
-        processInvitationResult = await processInvitation(agent, invitation)
-
-        log(`processInvitationResult: ${JSON.stringify(processInvitationResult)}`)
-
-        const { success, existingConnectionId, invitationType, recordId } = processInvitationResult
-
-        if (!success || !recordId) return
-
+        const processInvitationResult = await processInvitation(agent, invitation)
+        log('processInvitationResult:', processInvitationResult)
+        if (!processInvitationResult.success) throw new Error(processInvitationResult.error)
+        const { existingConnectionId, invitationType, recordId } = processInvitationResult
         if (invitationType === DidcommInvitationType.ConnectionRequest) {
           const outOfBandRecord = await getOutOfBandRecordById(agent, recordId)
           navigation.navigate('ConnectionInvitation', {
@@ -78,48 +75,47 @@ const Scan = ({ navigation }: Props) => {
             proofRecordId: recordId,
             did: invitation.invitationDids[0],
           })
+        } else {
+          const credentialInfo = await proposalGetCredentialInfo({ agent, proofRecordId: recordId })
+          if (!credentialInfo) return
+          const { mainInfo, attributes } = credentialInfo
+          navigation.navigate('EphemeralCredentialPresentation', {
+            mainInfo,
+            attributes,
+            proofState: ProofState.ProposalReceived,
+            proofRecordId: recordId,
+          })
         }
       } catch (error) {
-        toast({ type: 'error', message: t('invitation.errorProcessingInvitation') })
-        logError(`Error processing invitation: ${error}`)
-      } finally {
-        if (!processInvitationResult?.success) throw new Error(processInvitationResult?.error)
+        setIsActiveCamera(true)
+        toast({ type: 'error', message: t('invitation.errorProcessingInvitation'), duration: 5000 })
+        logError(`Error processing Didcomm Invitation: ${error}`)
       }
     })
   }
 
-  const processCode = async (codeUrl: string) => {
-    if (!agent) throw new Error('Agent not defined')
+  const onCodeScanned = async (url: string) => {
+    if (!agent) return
     try {
       setIsActiveCamera(false)
-      if (isOpenIdCredentialOffer(codeUrl)) {
-        navigation.navigate('OpenIdCredentialOffer', { url: codeUrl })
-      } else if (isOpenIdPresentationRequest(codeUrl)) {
-        navigation.navigate('OpenIdPresentationRequest', { url: codeUrl })
+      if (isOpenIdCredentialOffer(url)) {
+        navigation.navigate('OpenIdCredentialOffer', { url })
+      } else if (isOpenIdPresentationRequest(url)) {
+        navigation.navigate('OpenIdPresentationRequest', { url })
       } else {
-        // Try to parse a didcomm invitation
-
-        // Pre-parse it to look for _url or oobUrl deep link parameter
-        const parsedUrl = parseUrl(codeUrl)
+        const parsedUrl = parseUrl(url)
         const shortUrl =
           ((parsedUrl.query.oobUrl as string | undefined) ?? (parsedUrl.query._url as string | undefined))
             ? Buffer.from(parsedUrl.query._url as string, 'base64').toString('ascii')
             : undefined
-
-        const invitation = await agent.oob.parseInvitation(shortUrl ?? codeUrl)
-
-        if (!invitation) throw new Error('Invitation undefined')
+        const invitation = await agent.oob.parseInvitation(shortUrl ?? url)
         await processDidcommInvitation(invitation)
       }
       setScannedCode('')
     } catch (error) {
       setIsActiveCamera(true)
-      toast({
-        type: 'error',
-        message: t('scan.errorProcessingCodeOrLink', { message: (error as Error).message }),
-        duration: 5000,
-      })
-      logError('Error processing code', error)
+      toast({ type: 'error', message: t('invitation.errorProcessingInvitation'), duration: 5000 })
+      logError('Error processing code: ', error)
     }
   }
 
@@ -151,7 +147,7 @@ const Scan = ({ navigation }: Props) => {
       <View style={styles.containerDescriptionScanner}>
         <Text style={styles.textDescriptionScanner}>{t('scan.textDescriptionScanner')}</Text>
       </View>
-      <CodeScanner isActive={isActiveCamera} onBarcodeScanned={processCode} />
+      <CodeScanner isActive={isActiveCamera} onCodeScanned={onCodeScanned} />
     </View>
   )
 
@@ -166,15 +162,13 @@ const Scan = ({ navigation }: Props) => {
               multiline={true}
               numberOfLines={6}
               underlineColorAndroid="transparent"
-              onFocus={() => navigation.setOptions({ tabBarHideOnKeyboard: true })}
-              onBlur={() => navigation.setOptions({ tabBarHideOnKeyboard: false })}
               onChangeText={text => setScannedCode(text)}
               style={styles.input}
             />
           </View>
           <MainButton
             text={t('general.open')}
-            onPress={() => processCode(scannedCode)}
+            onPress={() => onCodeScanned(scannedCode)}
             activeOpacity={0.5}
             style={styles.containerBtnOpen}
           />

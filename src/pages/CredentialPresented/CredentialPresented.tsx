@@ -24,18 +24,6 @@ const CredentialPresented = ({ navigation, route }: Props) => {
   const { findOrCreateThread } = useChats()
   const using24HourFormat = uses24HourClock()
 
-  const goToChatScreen = async () => {
-    if (!agent) return
-    const connections = await agent.connections.findByInvitationDid(verifier.did)
-    if (connections.length) {
-      const [connection] = connections
-      const chatThreadId = findOrCreateThread({ connection }).id
-      navigation.dispatch(
-        StackActions.replace('PersonalChatStack', { screen: 'PersonalChat', params: { chatThreadId } }),
-      )
-    }
-  }
-
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => (
@@ -47,6 +35,18 @@ const CredentialPresented = ({ navigation, route }: Props) => {
       ),
     })
   }, [])
+
+  const goToChatScreen = async () => {
+    if (!agent) return
+    const connections = await agent.connections.findByInvitationDid(verifier.did)
+    if (connections.length) {
+      const [connection] = connections
+      const chatThreadId = findOrCreateThread({ connection }).id
+      navigation.dispatch(
+        StackActions.replace('PersonalChatStack', { screen: 'PersonalChat', params: { chatThreadId } }),
+      )
+    }
+  }
 
   return (
     <SafeAreaView style={styles.container}>

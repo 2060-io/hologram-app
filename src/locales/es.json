@@ -86,7 +86,7 @@
       "Scan": "Escanear",
       "UserInvitation": "Invitación",
       "ConnectionDetails": "Conexión",
-      "CredentialDetails": "Detalles de credencial",
+      "CredentialDetails": "Detalles De Credencial",
       "DidcommCredentialOffer": "Credencial ofrecida",
       "OpenIdCredentialOffer": "Credencial ofrecida",
       "DidcommPresentationRequest": "Solicitud de presentación",
@@ -103,10 +103,11 @@
       "ForwardTo": "Reenviar a",
       "shareWith": "Compartir con",
       "PresentCredential": "Presentar a",
-      "Presentation": "Presentación",
+      "Presentation": "Presentación de Credencial",
       "ParentalControl": "Control parental",
       "SelectCredentialAttributes": "Presentar Credencial",
-      "PresentCredentialAsQR": "Presentar Credencial como QR"
+      "PresentCredentialAsQR": "Presentación de Credencial",
+      "EphemeralCredentialPresentation": "Presentación de Credencial"
     },
     "authentication": {
       "walletLocked": "Hologram bloqueada",
@@ -223,7 +224,7 @@
       "noCredentials": "Aún no tienes credenciales",
       "searchCredentials": "Buscar credenciales",
       "issuedOn": "Emitida el",
-      "delete": "Eliminar Credencial",
+      "delete": "Eliminar credencial",
       "deleteConfirmation": "Confirmas eliminar ",
       "deleteConfirmationDescription": "Eliminar una credencial vigente no es recomendable.",
       "yesDelete": "Sí, eliminar permanentemente",
@@ -236,7 +237,8 @@
       "selectCredential": "Selecciona la credencial que quieres presentar",
       "selectAttributes": "Selecciona los atributos que te gustaría presentar",
       "selectAll": "Seleccionar todos",
-      "unselectAll": "Quitar todos"
+      "unselectAll": "Quitar todos",
+      "errorCreatingQR": "Se ha producido un error creando el QR"
     },
     "credentialOffer": {
       "title": "Credencial ofrecida",
@@ -450,8 +452,7 @@
       "useLink": "Usar enlace",
       "textDescriptionScanner": "Usa la cámara para escanear contactos, servicios y acciones compatibles",
       "textDescriptionLink": "Ingresa un enlace y toca en Abrir",
-      "scanner": "Escáner",
-      "errorProcessingCodeOrLink": "Error procesando código:  {{ message }}"
+      "scanner": "Escáner"
     },
     "settings": {
       "deleteWallet": "Eliminar billetera",

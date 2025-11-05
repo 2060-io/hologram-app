@@ -116,8 +116,6 @@ const VPRequestChatView = ({
     refuse()
   }
 
-  if (!metadata) return <View />
-
   const NoCompatibleCredentials = () => (
     <View>
       <Text style={styles.title}>

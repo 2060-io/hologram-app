@@ -86,7 +86,7 @@
       "Scan": "Scan",
       "UserInvitation": "Invitation",
       "ConnectionDetails": "Connection",
-      "CredentialDetails": "Credential details",
+      "CredentialDetails": "Credential Details",
       "DidcommCredentialOffer": "Credential Offer",
       "OpenIdCredentialOffer": "Credential Offer",
       "DidcommPresentationRequest": "Presentation Request",
@@ -103,10 +103,11 @@
       "ForwardTo": "Forward to",
       "shareWith": "Share with",
       "PresentCredential": "Present to",
-      "Presentation": "Presentation",
+      "Presentation": "Credential Presentation",
       "ParentalControl": "Parental Control",
       "SelectCredentialAttributes": "Present Credential",
-      "PresentCredentialAsQR": "Present Credential as QR"
+      "PresentCredentialAsQR": "Credential Presentation",
+      "EphemeralCredentialPresentation": "Credential Presentation"
     },
     "authentication": {
       "walletLocked": "Hologram Locked",
@@ -223,12 +224,12 @@
       "noCredentials": "You do not have any credential yet",
       "searchCredentials": "Search credentials",
       "issuedOn": "Issued on",
-      "delete": "Delete Credential",
+      "delete": "Delete credential",
       "deleteConfirmation": "Confirm delete",
       "deleteConfirmationDescription": "Delete an unexpired credential is not recommended.",
       "yesDelete": "Yes, delete permanently",
       "present": "Present credential",
-      "present_other": "Present Credentials",
+      "present_other": "Present credentials",
       "presentToConnection": "Present to connection",
       "createQRCode": "Create QR code",
       "presented": "Credential presented",
@@ -236,7 +237,8 @@
       "selectCredential": "Select the credential you want to present",
       "selectAttributes": "Select attributes you would like to present",
       "selectAll": "Select all",
-      "unselectAll": "Unselect all"
+      "unselectAll": "Unselect all",
+      "errorCreatingQR": "Error creating QR has occurred"
     },
     "credentialOffer": {
       "title": "Credential Offer",
@@ -450,8 +452,7 @@
       "useLink": "Use link",
       "textDescriptionScanner": "Use your camera to scan contacts, services and compatible actions",
       "textDescriptionLink": "Input link below and tap Open",
-      "scanner": "Scanner",
-      "errorProcessingCodeOrLink": "Cannot process code: {{ message }}"
+      "scanner": "Scanner"
     },
     "settings": {
       "deleteWallet": "Delete wallet",

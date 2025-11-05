@@ -40,7 +40,6 @@ const VPChatView = ({ metadata, role, agent, proofRecordId, chatEntryId }: Props
   const { presentedCredentials: pc, proofState } = metadata
   const otherSidesName = chatThread?.participants.find(p => p.id === ChatEntryRole.Receiver)?.name
   const presentedCredentials: VPResponsePresentedCredential[] = pc ? JSON.parse(pc) : []
-
   const isSender = role === ChatEntryRole.Sender
   const mainMessage = isSender
     ? t('presentationRequest.youPresented', {
@@ -64,6 +63,7 @@ const VPChatView = ({ metadata, role, agent, proofRecordId, chatEntryId }: Props
       mainInfo: credential.mainInfo,
       attributes: credential.attributes ?? {},
       proofState,
+      proofRecordId,
     })
   }
 
@@ -79,7 +79,7 @@ const VPChatView = ({ metadata, role, agent, proofRecordId, chatEntryId }: Props
 
   const acceptCredentialPresentation = async () => {
     if (!agent || !realm) return
-    const newMetadata = { ...metadata, proofState: ProofState.PresentationReceived }
+    const newMetadata = { ...metadata, proofState: ProofState.RequestSent }
     updateChatEntryMetadata(realm, chatEntryId, newMetadata)
     acceptProposal({ agent, proofRecordId })
   }
@@ -92,7 +92,7 @@ const VPChatView = ({ metadata, role, agent, proofRecordId, chatEntryId }: Props
     sendProblemReport({ agent, proofRecordId, description: 'refused' })
   }
 
-  const status: Partial<Record<ProofState, React.ReactElement>> = {
+  const status: Record<ProofState, React.ReactElement | null> = {
     [ProofState.ProposalSent]: <State text={t('presentationRequest.waitingForAcceptance')} type="warning" />,
     [ProofState.ProposalReceived]: (
       <View style={styles.buttonsContainer}>
@@ -108,11 +108,13 @@ const VPChatView = ({ metadata, role, agent, proofRecordId, chatEntryId }: Props
         />
       </View>
     ),
+    [ProofState.RequestSent]: <State text={t('presentationRequest.accepted')} />,
     [ProofState.RequestReceived]: <State text={t('presentationRequest.accepted')} />,
     [ProofState.PresentationReceived]: <State text={t('presentationRequest.accepted')} />,
-    [ProofState.Done]: <State text={t('presentationRequest.accepted')} />,
     [ProofState.Declined]: <State text={t('presentationRequest.refused')} type="error" />,
     [ProofState.Abandoned]: <State text={t('presentationRequest.refused')} type="error" />,
+    [ProofState.Done]: null,
+    [ProofState.PresentationSent]: null,
   }
 
   return (
@@ -152,7 +154,7 @@ const VPChatView = ({ metadata, role, agent, proofRecordId, chatEntryId }: Props
             />
           )
         })}
-        {status[proofState] ? <View style={styles.footerContainer}>{status[proofState]}</View> : null}
+        <View style={styles.footerContainer}>{status[proofState]}</View>
       </View>
     </View>
   )

@@ -12,6 +12,16 @@ export default (theme: AppTheme) =>
       paddingTop: 15,
       paddingHorizontal: 15,
     },
+    headerBtnText: {
+      fontSize: theme.fontSize.md2,
+      color: theme.colors.green,
+    },
+    headerLeft: {
+      paddingLeft: 15,
+    },
+    headerRight: {
+      paddingRight: 15,
+    },
     valuesNoRevealedYet: {
       color: theme.colors.primaryText,
       fontSize: theme.fontSize.md,

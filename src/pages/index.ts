@@ -14,7 +14,7 @@ import PersonalChat from './PersonalChat'
 import PresentCredential from './PresentCredential'
 import PresentCredentialAsQR from './PresentCredentialAsQR'
 import PresentCredentialsFromChat from './PresentCredentialsFromChat'
-import Presentation from './Presentation'
+import { Presentation, EphemeralCredentialPresentation } from './Presentation'
 import { DidcommPresentationRequest, OpenIdPresentationRequest } from './PresentationRequest'
 import Privacy from './Privacy'
 import RelatedConnections from './RelatedConnections'
@@ -60,4 +60,5 @@ export {
   PresentCredentialsFromChat,
   SelectCredentialAttributes,
   PresentCredentialAsQR,
+  EphemeralCredentialPresentation,
 }
