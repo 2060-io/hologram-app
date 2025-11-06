@@ -81,7 +81,7 @@ export const usePresentCredentialAsQR = ({
           connectionId: defaultMediatorConnection.current.id,
           url,
           goalCode: 'share_link',
-          requestedValiditySeconds: 60,
+          requestedValiditySeconds: 120,
         })
         agent.events.on<DidCommShortenedUrlReceivedEvent>(
           DidCommShortenUrlEventTypes.DidCommShortenedUrlReceived,
@@ -134,12 +134,11 @@ export const usePresentCredentialAsQR = ({
       observableOfProofStateChangedEvent.current = observableOfProofStateChanged?.subscribe(async event => {
         const { payload } = event
         const { proofRecord } = payload
-        const states: Partial<Record<ProofState, State>> = {
-          [ProofState.ProposalReceived]: 'scanned',
+        const mappedStates: Partial<Record<ProofState, State>> = {
           [ProofState.RequestReceived]: 'approved',
           [ProofState.Abandoned]: 'rejected',
         }
-        const newState = states[proofRecord.state]
+        const newState = mappedStates[proofRecord.state]
         if (newState) setState(newState)
         const acceptRequest =
           proofRecord.connectionId === ephemeralConnection.current?.id &&
