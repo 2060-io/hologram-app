@@ -99,6 +99,7 @@ export const usePresentCredentialAsQR = ({
       shortenedUrl.current = event.payload.shortenedUrl
       urlForQr.current = `${Config.BASE_INVITATION_URL}?_url=${shortenedUrlToBase64}`
       setState('created')
+      removeDidCommShortenedUrlReceivedListener()
       subscribeToConnectionStateChangedEvent()
     }
 
@@ -150,14 +151,17 @@ export const usePresentCredentialAsQR = ({
           const parameters: AcceptProofRequestParameters = { proofRecordId: proofRecord.id }
           addAgentActionToQueue({ type: AgentActionType.AcceptProofRequest, parameters })
         }
+        deleteConnectionAndInvalidateShortenedUrl()
+        invalidateObservables()
       })
     }
 
-    return () => {
+    const deleteConnectionAndInvalidateShortenedUrl = () => {
       if (!agent) return
       if (ephemeralConnection.current) {
         log(`Deleting ephemeral connection: ${ephemeralConnection.current.id}`)
         deleteConnection(agent, ephemeralConnection.current)
+        ephemeralConnection.current = undefined
       }
       if (shortenedUrl.current && defaultMediatorConnection.current) {
         const options = {
@@ -166,13 +170,26 @@ export const usePresentCredentialAsQR = ({
         }
         log('Invalidating ShortenedUrl:', JSON.stringify(options))
         agent.modules.shortenUrl.invalidateShortenedUrl(options)
+        shortenedUrl.current = undefined
       }
-      observableOfConnectionStateChangedEvent.current?.unsubscribe()
-      observableOfProofStateChangedEvent.current?.unsubscribe()
-      agent.events.off<DidCommShortenedUrlReceivedEvent>(
+    }
+
+    const removeDidCommShortenedUrlReceivedListener = () => {
+      agent?.events.off<DidCommShortenedUrlReceivedEvent>(
         DidCommShortenUrlEventTypes.DidCommShortenedUrlReceived,
         didCommShortenedUrlReceivedListener,
       )
+    }
+
+    const invalidateObservables = () => {
+      observableOfConnectionStateChangedEvent.current?.unsubscribe()
+      observableOfProofStateChangedEvent.current?.unsubscribe()
+    }
+
+    return () => {
+      deleteConnectionAndInvalidateShortenedUrl()
+      invalidateObservables()
+      removeDidCommShortenedUrlReceivedListener()
     }
   }, [agent])
 
