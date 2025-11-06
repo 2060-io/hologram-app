@@ -99,32 +99,37 @@ export const usePresentCredentialAsQR = ({
       shortenedUrlForQr.current = urlForQr
       setState('created')
       subscribeToConnectionStateChangedEvent()
-      subscribeToProofStateChangedEvent()
     }
 
     const subscribeToConnectionStateChangedEvent = () => {
       const observableOfConnectionStateChanged = agent?.events
         .observable<ConnectionStateChangedEvent>(ConnectionEventTypes.ConnectionStateChanged)
-        .pipe(filter(event => event.payload.connectionRecord.outOfBandId === invitation.id))
+        .pipe(
+          filter(
+            event =>
+              event.payload.connectionRecord.outOfBandId === invitation.id &&
+              event.payload.connectionRecord.state === DidExchangeState.RequestReceived,
+          ),
+        )
       observableOfConnectionStateChangedEvent.current = observableOfConnectionStateChanged?.subscribe(
         async event => {
           const { connectionRecord } = event.payload
+          subscribeToProofStateChangedEvent(connectionRecord)
           ephemeralConnection.current = connectionRecord
-          if (connectionRecord.state === DidExchangeState.RequestReceived) {
-            setState('scanned')
-            if (connectionRecord.outOfBandId) {
-              const connectionsApi = agent?.dependencyManager.resolve(ConnectionsApi)
-              connectionsApi?.addConnectionType(connectionRecord.id, 'Ephemeral')
-            }
+          setState('scanned')
+          if (connectionRecord.outOfBandId) {
+            const connectionsApi = agent?.dependencyManager.resolve(ConnectionsApi)
+            connectionsApi?.addConnectionType(connectionRecord.id, 'Ephemeral')
           }
         },
       )
     }
 
-    const subscribeToProofStateChangedEvent = () => {
+    const subscribeToProofStateChangedEvent = (connection: ConnectionRecord) => {
       const observableOfProofStateChanged = agent?.events
         .observable<ProofStateChangedEvent>(ProofEventTypes.ProofStateChanged)
         .pipe(
+          filter(event => event.payload.proofRecord.connectionId === connection.id),
           timeout(120_000),
           catchError(() => {
             setState('timeoutWaiting')
@@ -132,17 +137,14 @@ export const usePresentCredentialAsQR = ({
           }),
         )
       observableOfProofStateChangedEvent.current = observableOfProofStateChanged?.subscribe(async event => {
-        const { payload } = event
-        const { proofRecord } = payload
+        const { proofRecord } = event.payload
         const mappedStates: Partial<Record<ProofState, State>> = {
           [ProofState.RequestReceived]: 'approved',
           [ProofState.Abandoned]: 'rejected',
         }
         const newState = mappedStates[proofRecord.state]
         if (newState) setState(newState)
-        const acceptRequest =
-          proofRecord.connectionId === ephemeralConnection.current?.id &&
-          proofRecord.state === ProofState.RequestReceived
+        const acceptRequest = proofRecord.state === ProofState.RequestReceived
         if (acceptRequest) {
           const parameters: AcceptProofRequestParameters = { proofRecordId: proofRecord.id }
           addAgentActionToQueue({ type: AgentActionType.AcceptProofRequest, parameters })
