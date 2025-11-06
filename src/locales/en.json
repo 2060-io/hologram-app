@@ -230,7 +230,7 @@
       "yesDelete": "Yes, delete permanently",
       "present": "Present credential",
       "present_other": "Present credentials",
-      "presentToConnection": "Present to connection",
+      "presentToConnection": "Present to connection(s)",
       "createQRCode": "Create QR code",
       "presented": "Credential presented",
       "presentedOn": "Presented on",

@@ -230,7 +230,7 @@
       "yesDelete": "Sí, eliminar permanentemente",
       "present": "Presentar credencial",
       "present_other": "Presentar credenciales",
-      "presentToConnection": "Presentar a una conexión",
+      "presentToConnection": "Presentar a una conexión(es)",
       "createQRCode": "Generar código QR",
       "presented": "Credencial presentada",
       "presentedOn": "Presentado el",

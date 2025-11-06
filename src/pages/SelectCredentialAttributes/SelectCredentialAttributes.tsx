@@ -106,22 +106,24 @@ const SelectCredentialAttributes = ({ navigation, route }: Props) => {
               )
             }}
           />
+          {!presentDirectly && (
+            <MainButton
+              disabled={!attributesToPresent.length}
+              text={t('credential.createQRCode')}
+              onPress={generateQR}
+              style={[
+                styles.generateQRButton,
+                attributesToPresent.length ? styles.presentEnabled : styles.presentDisabled,
+              ]}
+              iconName="qrcode"
+            />
+          )}
           <MainButton
             disabled={!attributesToPresent.length}
-            text={t('credential.createQRCode')}
-            onPress={generateQR}
-            style={[
-              styles.generateQRButton,
-              attributesToPresent.length ? styles.presentEnabled : styles.presentDisabled,
-            ]}
-            iconName="qrcode"
-          />
-          <MainButton
-            disabled={!attributesToPresent.length}
-            text={t('credential.presentToConnection')}
+            text={presentDirectly ? t('general.present') : t('credential.presentToConnection')}
             onPress={onPresent}
             style={[attributesToPresent.length ? styles.presentEnabled : styles.presentDisabled]}
-            iconName="users"
+            iconName={presentDirectly ? undefined : 'users'}
           />
         </View>
       </ScrollView>
