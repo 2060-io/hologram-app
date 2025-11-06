@@ -48,7 +48,8 @@ export const usePresentCredentialAsQR = ({
   const { getCredentialById } = useCredentials()
   const { addAgentActionToQueue } = useAgentActionQueue()
   const [state, setState] = useState<State>('creating')
-  const shortenedUrlForQr = useRef<string>(null)
+  const urlForQr = useRef<string>('')
+  const shortenedUrl = useRef<string>(undefined)
   const observableOfProofStateChangedEvent = useRef<Subscription>(undefined)
   const observableOfConnectionStateChangedEvent = useRef<Subscription>(undefined)
   const ephemeralConnection = useRef<ConnectionRecord>(undefined)
@@ -95,8 +96,8 @@ export const usePresentCredentialAsQR = ({
     startFlow()
     const didCommShortenedUrlReceivedListener = (event: DidCommShortenedUrlReceivedEvent) => {
       const shortenedUrlToBase64 = TypedArrayEncoder.toBase64URL(Buffer.from(event.payload.shortenedUrl))
-      const urlForQr = `${Config.BASE_INVITATION_URL}?_url=${shortenedUrlToBase64}`
-      shortenedUrlForQr.current = urlForQr
+      shortenedUrl.current = event.payload.shortenedUrl
+      urlForQr.current = `${Config.BASE_INVITATION_URL}?_url=${shortenedUrlToBase64}`
       setState('created')
       subscribeToConnectionStateChangedEvent()
     }
@@ -158,10 +159,10 @@ export const usePresentCredentialAsQR = ({
         log(`Deleting ephemeral connection: ${ephemeralConnection.current.id}`)
         deleteConnection(agent, ephemeralConnection.current)
       }
-      if (shortenedUrlForQr.current && defaultMediatorConnection.current) {
+      if (shortenedUrl.current && defaultMediatorConnection.current) {
         const options = {
           connectionId: defaultMediatorConnection.current.id,
-          shortenedUrl: shortenedUrlForQr.current,
+          shortenedUrl: shortenedUrl.current,
         }
         log('Invalidating ShortenedUrl:', JSON.stringify(options))
         agent.modules.shortenUrl.invalidateShortenedUrl(options)
@@ -175,5 +176,5 @@ export const usePresentCredentialAsQR = ({
     }
   }, [agent])
 
-  return { state, urlForQr: shortenedUrlForQr.current ?? '' }
+  return { state, urlForQr: urlForQr.current }
 }
