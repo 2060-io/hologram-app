@@ -129,7 +129,11 @@ export const usePresentCredentialAsQR = ({
       const observableOfProofStateChanged = agent?.events
         .observable<ProofStateChangedEvent>(ProofEventTypes.ProofStateChanged)
         .pipe(
-          filter(event => event.payload.proofRecord.connectionId === connection.id),
+          filter(
+            event =>
+              event.payload.proofRecord.connectionId === connection.id &&
+              [ProofState.RequestReceived, ProofState.Abandoned].includes(event.payload.proofRecord.state),
+          ),
           timeout(120_000),
           catchError(() => {
             setState('timeoutWaiting')
@@ -138,14 +142,10 @@ export const usePresentCredentialAsQR = ({
         )
       observableOfProofStateChangedEvent.current = observableOfProofStateChanged?.subscribe(async event => {
         const { proofRecord } = event.payload
-        const mappedStates: Partial<Record<ProofState, State>> = {
-          [ProofState.RequestReceived]: 'approved',
-          [ProofState.Abandoned]: 'rejected',
-        }
-        const newState = mappedStates[proofRecord.state]
-        if (newState) setState(newState)
-        const acceptRequest = proofRecord.state === ProofState.RequestReceived
-        if (acceptRequest) {
+        const isRequestReceived = proofRecord.state === ProofState.RequestReceived
+        const newState: State = isRequestReceived ? 'approved' : 'rejected'
+        setState(newState)
+        if (isRequestReceived) {
           const parameters: AcceptProofRequestParameters = { proofRecordId: proofRecord.id }
           addAgentActionToQueue({ type: AgentActionType.AcceptProofRequest, parameters })
         }
