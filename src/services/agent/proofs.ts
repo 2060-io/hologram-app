@@ -116,11 +116,6 @@ export async function notifyNoCompatibleCredentials(options: { agent: MobileAgen
   await sendProblemReport({ ...options, description: 'e.req.no-compatible-credentials' })
 }
 
-export async function acceptProposal(options: { agent: MobileAgent; proofRecordId: string }) {
-  const { agent, proofRecordId } = options
-  await agent.proofs.acceptProposal({ proofRecordId })
-}
-
 export async function sendProblemReport(options: {
   agent: MobileAgent
   proofRecordId: string

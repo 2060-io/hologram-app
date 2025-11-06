@@ -31,6 +31,7 @@ export enum AgentActionType {
   SendUserProfile = 'SendUserProfile',
   RequestUserProfile = 'RequestUserProfile',
   AcceptProofRequest = 'AcceptProofRequest',
+  AcceptProofProposal = 'AcceptProofProposal',
 }
 
 export type AgentAction = {

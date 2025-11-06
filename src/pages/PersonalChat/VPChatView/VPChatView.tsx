@@ -12,13 +12,15 @@ import getStyles from './styles'
 import { ModalConfirmAction } from '@2060/components'
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
 import { CredentialMainInformation, Text } from '@2060/components/common'
-import { useChat } from '@2060/hooks/agent'
+import { AgentActionType, useChat } from '@2060/hooks/agent'
+import { AcceptProofProposalParameters } from '@2060/hooks/agent/actions/types'
 import { updateChatEntryMetadata } from '@2060/hooks/agent/chat/services'
+import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { ChatEntryRole, VPResponseMetadata, VPResponsePresentedCredential } from '@2060/model'
 import { MobileAgent } from '@2060/services/agent'
-import { acceptProposal, sendProblemReport } from '@2060/services/agent/proofs'
+import { sendProblemReport } from '@2060/services/agent/proofs'
 import { toast } from '@2060/utils/toast'
 
 type Props = {
@@ -35,6 +37,7 @@ const VPChatView = ({ metadata, role, agent, proofRecordId, chatEntryId }: Props
   const styles = getStyles(theme)
   const { chatThread } = useChat()
   const { realm } = useLocalRealm()
+  const { addAgentActionToQueue } = useAgentActionQueue()
   const navigation: StackNavigationProp<NavigationStackParams> = useNavigation()
   const [showModalRefuseConfirmation, setShowModalRefuseConfirmation] = useState(false)
   const { presentedCredentials: pc, proofState } = metadata
@@ -81,7 +84,8 @@ const VPChatView = ({ metadata, role, agent, proofRecordId, chatEntryId }: Props
     if (!agent || !realm) return
     const newMetadata = { ...metadata, proofState: ProofState.RequestSent }
     updateChatEntryMetadata(realm, chatEntryId, newMetadata)
-    acceptProposal({ agent, proofRecordId })
+    const parameters: AcceptProofProposalParameters = { proofRecordId }
+    addAgentActionToQueue({ type: AgentActionType.AcceptProofProposal, parameters })
   }
 
   const refuseCredentialPresentation = async () => {

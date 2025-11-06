@@ -74,17 +74,17 @@ type DeclineCredentialOfferParameters = {
   credentialRecordId: string
 }
 
-type DeclineProofRequestParameters = {
+type BaseProofParameters = {
   proofRecordId: string
 }
+type DeclineProofRequestParameters = BaseProofParameters
 
 type SendUserProfileParameters = ConnectionIdParameter
 
 type RequestUserProfileParameters = ConnectionIdParameter
 
-type AcceptProofRequestParameters = {
-  proofRecordId: string
-}
+type AcceptProofRequestParameters = BaseProofParameters
+type AcceptProofProposalParameters = BaseProofParameters
 
 export type {
   SendTextMessageParameters,
@@ -107,4 +107,5 @@ export type {
   SendUserProfileParameters,
   RequestUserProfileParameters,
   AcceptProofRequestParameters,
+  AcceptProofProposalParameters,
 }

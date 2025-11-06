@@ -10,10 +10,12 @@ import getStyles from './styles'
 import { CredentialAttributes, ModalConfirmAction } from '@2060/components'
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
 import { CredentialMainInformation, Text } from '@2060/components/common'
-import { useMobileAgent } from '@2060/hooks/agent'
+import { AgentActionType, useMobileAgent } from '@2060/hooks/agent'
+import { AcceptProofProposalParameters } from '@2060/hooks/agent/actions/types'
+import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { CredentialMainInfo } from '@2060/services/agent/display'
-import { acceptProposal, sendProblemReport } from '@2060/services/agent/proofs'
+import { sendProblemReport } from '@2060/services/agent/proofs'
 import { toast } from '@2060/utils/toast'
 
 type Props = {
@@ -42,6 +44,7 @@ const BaseCredentialPresentation = ({
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
+  const { addAgentActionToQueue } = useAgentActionQueue()
   const { agent } = useMobileAgent()
   const [showModalRefuseConfirmation, setShowModalRefuseConfirmation] = useState(false)
   const enableMainButtons = proofState === ProofState.ProposalReceived
@@ -73,7 +76,8 @@ const BaseCredentialPresentation = ({
   const hideModalRefuseConfirmation = () => setShowModalRefuseConfirmation(false)
 
   const accept = () => {
-    if (agent) acceptProposal({ agent, proofRecordId })
+    const parameters: AcceptProofProposalParameters = { proofRecordId }
+    addAgentActionToQueue({ type: AgentActionType.AcceptProofProposal, parameters })
     onAcceptCallback?.()
   }
 
