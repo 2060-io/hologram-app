@@ -269,7 +269,7 @@ export const ActionFactoryMap: Record<AgentActionType, ActionFactory> = {
       const requestedCredentials = await options.agent.proofs.selectCredentialsForRequest({
         proofRecordId,
       })
-      options.agent.proofs.acceptRequest({
+      await options.agent.proofs.acceptRequest({
         proofRecordId,
         proofFormats: { anoncreds: requestedCredentials?.proofFormats.anoncreds },
       })
