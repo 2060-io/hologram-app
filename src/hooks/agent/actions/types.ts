@@ -82,6 +82,10 @@ type SendUserProfileParameters = ConnectionIdParameter
 
 type RequestUserProfileParameters = ConnectionIdParameter
 
+type AcceptProofRequestParameters = {
+  proofRecordId: string
+}
+
 export type {
   SendTextMessageParameters,
   SendReactionParameters,
@@ -102,4 +106,5 @@ export type {
   DeclineProofRequestParameters,
   SendUserProfileParameters,
   RequestUserProfileParameters,
+  AcceptProofRequestParameters,
 }

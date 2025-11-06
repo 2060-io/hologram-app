@@ -20,8 +20,10 @@ import { useEffect, useRef, useState } from 'react'
 import Config from 'react-native-config'
 import { timeout, Subscription, catchError, filter } from 'rxjs'
 
-import { useCredentials, useMobileAgent } from '@2060/hooks/agent'
+import { AgentActionType, useCredentials, useMobileAgent } from '@2060/hooks/agent'
+import { AcceptProofRequestParameters } from '@2060/hooks/agent/actions/types'
 import { deleteConnection } from '@2060/hooks/agent/connections'
+import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
 import { createInvitation } from '@2060/services/agent'
 import { createProofProposal } from '@2060/services/agent/proofs'
 import { log, logError } from '@2060/utils'
@@ -44,6 +46,7 @@ export const usePresentCredentialAsQR = ({
 }) => {
   const { agent } = useMobileAgent()
   const { getCredentialById } = useCredentials()
+  const { addAgentActionToQueue } = useAgentActionQueue()
   const [state, setState] = useState<State>('creating')
   const shortenedUrlForQr = useRef<string>(null)
   const observableOfProofStateChangedEvent = useRef<Subscription>(undefined)
@@ -142,17 +145,8 @@ export const usePresentCredentialAsQR = ({
           proofRecord.connectionId === ephemeralConnection.current?.id &&
           proofRecord.state === ProofState.RequestReceived
         if (acceptRequest) {
-          try {
-            const requestedCredentials = await agent?.proofs.selectCredentialsForRequest({
-              proofRecordId: proofRecord.id,
-            })
-            agent?.proofs.acceptRequest({
-              proofRecordId: proofRecord.id,
-              proofFormats: { anoncreds: requestedCredentials?.proofFormats.anoncreds },
-            })
-          } catch (error) {
-            logError('Error accepting proof request', error)
-          }
+          const parameters: AcceptProofRequestParameters = { proofRecordId: proofRecord.id }
+          addAgentActionToQueue({ type: AgentActionType.AcceptProofRequest, parameters })
         }
       })
     }
@@ -168,7 +162,7 @@ export const usePresentCredentialAsQR = ({
           connectionId: defaultMediatorConnection.current.id,
           shortenedUrl: shortenedUrlForQr.current,
         }
-        log(`Invalidating ShortenedUrl for connectionId: ${JSON.stringify(options)}`)
+        log('Invalidating ShortenedUrl:', JSON.stringify(options))
         agent.modules.shortenUrl.invalidateShortenedUrl(options)
       }
       observableOfConnectionStateChangedEvent.current?.unsubscribe()

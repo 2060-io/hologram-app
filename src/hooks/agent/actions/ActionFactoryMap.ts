@@ -20,6 +20,7 @@ import {
   V2CredentialProblemReportMessage,
   V2PresentationProblemReportMessage,
   BaseRecord,
+  V2PresentationMessage,
 } from '@credo-ts/core'
 import { AnswerMessage } from '@credo-ts/question-answer'
 
@@ -28,6 +29,7 @@ import {
   AcceptConnectionRequestParameters,
   AcceptConnectionResponseParameters,
   AcceptCredentialOfferParameters,
+  AcceptProofRequestParameters,
   CreateCallOfferParameters,
   DeclineCredentialOfferParameters,
   DeclineProofRequestParameters,
@@ -258,6 +260,20 @@ export const ActionFactoryMap: Record<AgentActionType, ActionFactory> = {
       const { connectionId } = parameters
       await options.agent.modules.profile.requestUserProfile({ connectionId })
       return { outgoingMessageType: RequestProfileMessage.type.messageTypeUri }
+    }
+  },
+  [AgentActionType.AcceptProofRequest]: action => {
+    return async (options: { agent: MobileAgent }) => {
+      const parameters = action.parameters as AcceptProofRequestParameters
+      const { proofRecordId } = parameters
+      const requestedCredentials = await options.agent.proofs.selectCredentialsForRequest({
+        proofRecordId,
+      })
+      options.agent.proofs.acceptRequest({
+        proofRecordId,
+        proofFormats: { anoncreds: requestedCredentials?.proofFormats.anoncreds },
+      })
+      return { outgoingMessageType: V2PresentationMessage.type.messageTypeUri }
     }
   },
 }
