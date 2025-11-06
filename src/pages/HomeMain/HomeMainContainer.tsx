@@ -1,4 +1,4 @@
-import { OutOfBandInvitation, Buffer, ProofState } from '@credo-ts/core'
+import { OutOfBandInvitation, Buffer } from '@credo-ts/core'
 import React, { ElementType, useEffect, useMemo, useTransition } from 'react'
 import { useTranslation } from 'react-i18next'
 import Config from 'react-native-config'
@@ -12,7 +12,6 @@ import {
   processInvitation as agentProcessInvitation,
   getOutOfBandRecordById,
 } from '@2060/services/agent'
-import { proposalGetCredentialInfo } from '@2060/services/agent/proofs'
 import { log, logError } from '@2060/utils'
 import { toast } from '@2060/utils/toast'
 
@@ -76,15 +75,7 @@ const HomeMainContainer = (HomeMainComponent: ElementType) => {
             did: invitation.invitationDids[0],
           })
         } else {
-          const credentialInfo = await proposalGetCredentialInfo({ agent, proofRecordId: recordId })
-          if (!credentialInfo) return
-          const { mainInfo, attributes } = credentialInfo
-          navigation.navigate('EphemeralCredentialPresentation', {
-            mainInfo,
-            attributes,
-            proofState: ProofState.ProposalReceived,
-            proofRecordId: recordId,
-          })
+          navigation.navigate('EphemeralCredentialPresentation', { proofRecordId: recordId })
         }
       } catch (error) {
         toast({ type: 'error', message: t('invitation.errorProcessingInvitation') })

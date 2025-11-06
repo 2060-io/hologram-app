@@ -28,4 +28,7 @@ export default (theme: AppTheme) =>
       textAlign: 'center',
       marginBottom: 10,
     },
+    credentialMainInfoContainer: {
+      marginBottom: 0,
+    },
   })

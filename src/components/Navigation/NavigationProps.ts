@@ -56,15 +56,12 @@ export type NavigationStackParams = {
     attributesToPresent: string[]
   }
   CredentialPresentation: {
-    mainInfo: CredentialMainInfo
-    attributes: Record<string, unknown>
+    credentialMainInfo: CredentialMainInfo
+    credentialAttributes: Record<string, unknown>
     proofState: ProofState
     proofRecordId: string
   }
   EphemeralCredentialPresentation: {
-    mainInfo: CredentialMainInfo
-    attributes: Record<string, unknown>
-    proofState: ProofState
     proofRecordId: string
   }
   ParentalControl: undefined

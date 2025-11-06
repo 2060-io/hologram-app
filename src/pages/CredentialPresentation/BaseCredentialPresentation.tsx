@@ -7,9 +7,9 @@ import { SafeAreaView, ScrollView, TouchableOpacity, View } from 'react-native'
 
 import getStyles from './styles'
 
-import { CredentialDetails, ModalConfirmAction } from '@2060/components'
+import { CredentialAttributes, ModalConfirmAction } from '@2060/components'
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
-import { Text } from '@2060/components/common'
+import { CredentialMainInformation, Text } from '@2060/components/common'
 import { useMobileAgent } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { CredentialMainInfo } from '@2060/services/agent/display'
@@ -22,8 +22,8 @@ type Props = {
     'CredentialPresentation' | 'EphemeralCredentialPresentation',
     undefined
   >
-  mainInfo: CredentialMainInfo
-  attributes: Record<string, unknown>
+  credentialMainInfo: CredentialMainInfo | null
+  credentialAttributes: Record<string, unknown>
   proofState: ProofState
   proofRecordId: string
   onAcceptCallback?: () => void
@@ -33,8 +33,8 @@ type Props = {
 const BaseCredentialPresentation = ({
   navigation,
   proofState,
-  mainInfo,
-  attributes,
+  credentialMainInfo,
+  credentialAttributes,
   proofRecordId,
   onAcceptCallback,
   onRefuseCallback,
@@ -95,7 +95,13 @@ const BaseCredentialPresentation = ({
                 {t('presentationRequest.valuesNoRevealedYet')}
               </Text>
             )}
-            <CredentialDetails credentialDetails={{ mainInfo, attributes }} />
+            {credentialMainInfo && (
+              <CredentialMainInformation
+                credentialMainInfo={credentialMainInfo}
+                containerStyle={styles.credentialMainInfoContainer}
+              />
+            )}
+            <CredentialAttributes attributes={credentialAttributes} />
           </View>
         </ScrollView>
       </SafeAreaView>

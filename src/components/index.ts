@@ -7,6 +7,7 @@ import ConfirmChatDeletion from './ConfirmChatDeletion'
 import Connections from './Connections'
 import ConnectionsSelection from './ConnectionsSelection'
 import CredentialAttribute from './CredentialAttribute'
+import CredentialAttributes from './CredentialAttributes'
 import CredentialDetails from './CredentialDetails'
 import Credentials from './Credentials'
 import IncomingCall from './IncomingCall'
@@ -40,4 +41,5 @@ export {
   CredentialAttribute,
   ConnectionsSelection,
   Connections,
+  CredentialAttributes,
 }

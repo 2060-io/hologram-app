@@ -162,16 +162,12 @@ export async function createProofProposal(options: {
 }
 
 export const proposalGetCredentialInfo = async (options: { agent: MobileAgent; proofRecordId: string }) => {
+  let credentialMainInfo: CredentialMainInfo | null = null
   try {
     const { agent, proofRecordId } = options
-    const attributes: Record<string, string> = {}
     const formatData = await agent.proofs.getFormatData(proofRecordId)
     const requestedAttributes = formatData.proposal?.anoncreds?.requested_attributes
     if (requestedAttributes && Object.keys(requestedAttributes).length) {
-      for (const attributeId in requestedAttributes) {
-        const key = requestedAttributes?.[attributeId]?.name ?? 'unknown'
-        attributes[key] = ''
-      }
       const firstAttribute = Object.values(requestedAttributes)[0]
 
       if (firstAttribute.restrictions?.length) {
@@ -189,7 +185,7 @@ export const proposalGetCredentialInfo = async (options: { agent: MobileAgent; p
           const schemaName = schemaId
             ? ((await agent.modules.anoncreds.getSchema(schemaId)).schema?.name ?? '')
             : ''
-          const credentialMainInfo: CredentialMainInfo = {
+          credentialMainInfo = {
             id: '',
             recordId: '',
             createdAt: new Date(),
@@ -201,14 +197,31 @@ export const proposalGetCredentialInfo = async (options: { agent: MobileAgent; p
               status: serviceInfo?.status ?? TrustResolutionOutcome.INVALID,
             },
           }
-          return { mainInfo: credentialMainInfo, attributes }
         }
       }
     }
   } catch (error) {
-    logError('Error getting credential presented info', error)
-    return null
+    logError('Error getting credential info', error)
+  } finally {
+    return credentialMainInfo
   }
+}
+
+export const proposalGetCredentialAttributes = async (options: {
+  agent: MobileAgent
+  proofRecordId: string
+}) => {
+  const { agent, proofRecordId } = options
+  const attributes: Record<string, string> = {}
+  const formatData = await agent.proofs.getFormatData(proofRecordId)
+  const requestedAttributes = formatData.proposal?.anoncreds?.requested_attributes
+  if (requestedAttributes && Object.keys(requestedAttributes).length) {
+    for (const attributeId in requestedAttributes) {
+      const key = requestedAttributes?.[attributeId]?.name ?? 'unknown'
+      attributes[key] = ''
+    }
+  }
+  return attributes
 }
 
 export const getCredentialRevealedAttributes = async (options: {

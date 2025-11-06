@@ -1,5 +1,5 @@
 /* eslint-disable no-underscore-dangle */
-import { OutOfBandInvitation, Buffer, ProofState } from '@credo-ts/core'
+import { OutOfBandInvitation, Buffer } from '@credo-ts/core'
 import { useIsFocused } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
 import { parseUrl } from 'query-string'
@@ -26,7 +26,6 @@ import { useMobileAgent } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { DidcommInvitationType, getOutOfBandRecordById, processInvitation } from '@2060/services/agent/oob'
 import { isOpenIdCredentialOffer, isOpenIdPresentationRequest } from '@2060/services/agent/parsers'
-import { proposalGetCredentialInfo } from '@2060/services/agent/proofs'
 import { log, logError } from '@2060/utils'
 import { toast } from '@2060/utils/toast'
 
@@ -76,15 +75,7 @@ const Scan = ({ navigation }: Props) => {
             did: invitation.invitationDids[0],
           })
         } else {
-          const credentialInfo = await proposalGetCredentialInfo({ agent, proofRecordId: recordId })
-          if (!credentialInfo) return
-          const { mainInfo, attributes } = credentialInfo
-          navigation.navigate('EphemeralCredentialPresentation', {
-            mainInfo,
-            attributes,
-            proofState: ProofState.ProposalReceived,
-            proofRecordId: recordId,
-          })
+          navigation.navigate('EphemeralCredentialPresentation', { proofRecordId: recordId })
         }
       } catch (error) {
         setIsActiveCamera(true)

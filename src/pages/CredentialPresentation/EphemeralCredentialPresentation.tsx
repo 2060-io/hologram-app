@@ -12,18 +12,42 @@ import { NavigationStackParams } from '@2060/components/Navigation/NavigationPro
 import { Text } from '@2060/components/common'
 import { useMobileAgent } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { getCredentialRevealedAttributes } from '@2060/services/agent/proofs'
+import { CredentialMainInfo } from '@2060/services/agent/display'
+import {
+  getCredentialRevealedAttributes,
+  proposalGetCredentialAttributes,
+  proposalGetCredentialInfo,
+} from '@2060/services/agent/proofs'
 
 interface Props extends StackScreenProps<NavigationStackParams, 'EphemeralCredentialPresentation'> {}
 
 const EphemeralCredentialPresentation = ({ navigation, route }: Props) => {
-  const { proofState: initialProofState, attributes: initialAttributes, proofRecordId } = route.params
+  const { proofRecordId } = route.params
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
   const { agent } = useMobileAgent()
-  const [proofState, setProofState] = useState(initialProofState)
-  const [attributes, setAttributes] = useState(initialAttributes)
+  const [proofState, setProofState] = useState(ProofState.ProposalReceived)
+  const [credentialAttributes, setCredentialAttributes] = useState({})
+  const [credentialMainInfo, setCredentialMainInfo] = useState<CredentialMainInfo | null>(null)
+
+  useEffect(() => {
+    const getCredentialInfo = async () => {
+      if (!agent) return
+      const info = await proposalGetCredentialInfo({ agent, proofRecordId })
+      setCredentialMainInfo(info)
+    }
+    const getCredentialAttributes = async () => {
+      if (!agent) return
+      const attributes = await proposalGetCredentialAttributes({
+        agent,
+        proofRecordId,
+      })
+      setCredentialAttributes(attributes)
+    }
+    getCredentialInfo()
+    getCredentialAttributes()
+  }, [])
 
   useEffect(() => {
     let observableOfProofStateChangedEvent: Subscription | undefined
@@ -46,7 +70,7 @@ const EphemeralCredentialPresentation = ({ navigation, route }: Props) => {
     const handleProofRecordStateChanged = async () => {
       if (proofState === ProofState.PresentationReceived && agent) {
         const revealedAttributes = await getCredentialRevealedAttributes({ agent, proofRecordId })
-        setAttributes(revealedAttributes)
+        setCredentialAttributes(revealedAttributes)
       }
     }
     handleProofRecordStateChanged()
@@ -69,8 +93,9 @@ const EphemeralCredentialPresentation = ({ navigation, route }: Props) => {
 
   return (
     <BaseCredentialPresentation
-      {...route.params}
-      attributes={attributes}
+      proofRecordId={proofRecordId}
+      credentialMainInfo={credentialMainInfo}
+      credentialAttributes={credentialAttributes}
       proofState={proofState}
       navigation={navigation}
     />

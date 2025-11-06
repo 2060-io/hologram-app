@@ -19,7 +19,11 @@ import {
 import { MobileAgent } from '@2060/services/agent'
 import { getDidCommPresentationDisplayMetadata } from '@2060/services/agent/RecordMetadata'
 import { getCredentialMainInfo, getPresentationRequestForDisplay } from '@2060/services/agent/display'
-import { getCredentialRevealedAttributes, proposalGetCredentialInfo } from '@2060/services/agent/proofs'
+import {
+  getCredentialRevealedAttributes,
+  proposalGetCredentialAttributes,
+  proposalGetCredentialInfo,
+} from '@2060/services/agent/proofs'
 import { logError } from '@2060/utils'
 import { getConnectionDisplayName, getConnectionDisplayPicture } from '@2060/utils/connectionUtils'
 
@@ -151,9 +155,9 @@ export const handleProofExchangeRecordChanges = async (options: {
   } else if (proofRecord.state === ProofState.ProposalReceived) {
     const presentedCredentials: VPResponsePresentedCredential[] = []
     const credentialInfo = await proposalGetCredentialInfo({ agent, proofRecordId: proofRecord.id })
-    if (credentialInfo) {
-      const { mainInfo, attributes } = credentialInfo
-      presentedCredentials.push({ mainInfo, attributes })
+    const attributes = await proposalGetCredentialAttributes({ agent, proofRecordId: proofRecord.id })
+    if (credentialInfo && attributes) {
+      presentedCredentials.push({ mainInfo: credentialInfo, attributes })
     }
     const metadata: VPResponseMetadata = {
       proofState: proofRecord.state,
