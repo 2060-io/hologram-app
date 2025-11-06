@@ -48,7 +48,11 @@ const CredentialMainInformation = ({
           {uri?.endsWith('.svg') ? (
             <SvgUri uri={uri} width={styles.image.width} height={styles.image.height} />
           ) : (
-            <Image style={styles.image} resizeMode="contain" source={uri ? { uri } : imagePlaceholder} />
+            <Image
+              style={styles.image}
+              resizeMode="contain"
+              source={uri?.length ? { uri } : imagePlaceholder}
+            />
           )}
         </View>
         <Text style={styles.name} fontFamily="EuclidCircularA-Medium">
