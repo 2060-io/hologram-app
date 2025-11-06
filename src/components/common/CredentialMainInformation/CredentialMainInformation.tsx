@@ -23,23 +23,17 @@ type Props = {
   size?: 'big' | 'medium'
 }
 
-const CredentialMainInformation = ({
-  credentialMainInfo,
-  containerStyle = {},
-  onPress,
-  size = 'big',
-}: Props) => {
+const CredentialMainInformation = ({ credentialMainInfo, containerStyle, onPress, size = 'big' }: Props) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme, size)
   const { serviceInfo } = useFetchServiceInfo(credentialMainInfo.issuer.id)
   const using24HourFormat = uses24HourClock()
   const uri = serviceInfo?.logoUrl ?? credentialMainInfo.issuer.logoUrl
-  const issuedDate = dateToString(
-    credentialMainInfo.createdAt,
-    `DD-MM-YYYY ${using24HourFormat ? 'HH:mm' : 'h:mm A'}`,
-  )
-  const issuedOn = `${credentialMainInfo.dateLabel ?? t('credential.issuedOn')}: ${issuedDate}`
+  const issuedDate = credentialMainInfo.createdAt
+    ? dateToString(credentialMainInfo.createdAt, `DD-MM-YYYY ${using24HourFormat ? 'HH:mm' : 'h:mm A'}`)
+    : null
+  const issuedOn = issuedDate ? `${t('credential.issuedOn')}: ${issuedDate}` : null
 
   return (
     <TouchableOpacity style={[styles.container, containerStyle]} activeOpacity={1} onPress={onPress}>
@@ -60,7 +54,7 @@ const CredentialMainInformation = ({
         </Text>
       </View>
       <View>
-        <Text style={styles.issuedOn}>{issuedOn}</Text>
+        {issuedOn && <Text style={styles.issuedOn}>{issuedOn}</Text>}
         <View style={styles.bottomContainer}>
           <Text style={styles.bottomText} fontFamily="EuclidCircularA-Medium" numberOfLines={1}>
             {serviceInfo?.name ?? credentialMainInfo.issuer.name}

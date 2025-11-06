@@ -138,17 +138,14 @@ const VPChatView = ({ metadata, role, agent, proofRecordId, chatEntryId }: Props
         <Text style={styles.title}>{mainMessage}</Text>
         {presentedCredentials.map((credential, index) => {
           const isLast = index === presentedCredentials.length - 1
-          const credentialMainInfo = {
-            ...credential.mainInfo,
-            dateLabel: isSender ? undefined : t('credential.presentedOn'),
-          }
+          const { mainInfo } = credential
           return (
             <CredentialMainInformation
-              key={credential.mainInfo.id}
-              credentialMainInfo={credentialMainInfo}
+              key={mainInfo.id}
+              credentialMainInfo={mainInfo}
               containerStyle={isLast ? styles.lastCredential : styles.credential}
               onPress={() => {
-                chooseWhereToGo({ mainInfo: credentialMainInfo, attributes: credential.attributes })
+                chooseWhereToGo({ mainInfo, attributes: credential.attributes })
               }}
               size="medium"
             />

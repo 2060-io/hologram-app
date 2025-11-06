@@ -188,7 +188,6 @@ export const proposalGetCredentialInfo = async (options: { agent: MobileAgent; p
           credentialMainInfo = {
             id: '',
             recordId: '',
-            createdAt: new Date(),
             schemaName: sanitizeString(schemaName),
             issuer: {
               id: credentialDefinition?.issuerId ?? '',
