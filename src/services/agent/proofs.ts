@@ -113,19 +113,11 @@ export async function presentProof(options: PresentProofOptions) {
 }
 
 export async function notifyNoCompatibleCredentials(options: { agent: MobileAgent; proofRecordId: string }) {
-  await sendProblemReport({ ...options, description: 'e.req.no-compatible-credentials' })
-}
-
-export async function sendProblemReport(options: {
-  agent: MobileAgent
-  proofRecordId: string
-  description: string
-}) {
-  const { agent, proofRecordId, description } = options
+  const { agent, proofRecordId } = options
   const proofRecord = await agent.proofs.getById(proofRecordId)
   proofRecord.state = ProofState.Abandoned
   await agent.proofs.update(proofRecord)
-  agent.proofs.sendProblemReport({ proofRecordId, description })
+  agent.proofs.sendProblemReport({ proofRecordId, description: 'e.req.no-compatible-credentials' })
   agent.events.emit<ProofStateChangedEvent>(agent.context, {
     type: ProofEventTypes.ProofStateChanged,
     payload: {

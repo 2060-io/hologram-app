@@ -85,6 +85,7 @@ type RequestUserProfileParameters = ConnectionIdParameter
 
 type AcceptProofRequestParameters = BaseProofParameters
 type AcceptProofProposalParameters = BaseProofParameters
+type RefuseProofProposalParameters = BaseProofParameters
 
 export type {
   SendTextMessageParameters,
@@ -108,4 +109,5 @@ export type {
   RequestUserProfileParameters,
   AcceptProofRequestParameters,
   AcceptProofProposalParameters,
+  RefuseProofProposalParameters,
 }

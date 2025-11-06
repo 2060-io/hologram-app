@@ -22,6 +22,9 @@ import {
   BaseRecord,
   V2PresentationMessage,
   V2RequestPresentationMessage,
+  ProofState,
+  ProofStateChangedEvent,
+  ProofEventTypes,
 } from '@credo-ts/core'
 import { AnswerMessage } from '@credo-ts/question-answer'
 
@@ -40,6 +43,7 @@ import {
   MenuSelectionParameters,
   PresentCredentialParameters,
   QueryServiceFeaturesParameters,
+  RefuseProofProposalParameters,
   RemoveOutOfBandRecordParameters,
   RequestUserProfileParameters,
   SendAnswerParameters,
@@ -284,6 +288,24 @@ export const ActionFactoryMap: Record<AgentActionType, ActionFactory> = {
       const { proofRecordId } = parameters
       await options.agent.proofs.acceptProposal({ proofRecordId })
       return { outgoingMessageType: V2RequestPresentationMessage.type.messageTypeUri }
+    }
+  },
+  [AgentActionType.RefuseProofProposal]: action => {
+    return async (options: { agent: MobileAgent }) => {
+      const parameters = action.parameters as RefuseProofProposalParameters
+      const { proofRecordId } = parameters
+      const proofRecord = await options.agent.proofs.getById(proofRecordId)
+      proofRecord.state = ProofState.Abandoned
+      await options.agent.proofs.update(proofRecord)
+      await options.agent.proofs.sendProblemReport({ proofRecordId, description: 'refused' })
+      options.agent.events.emit<ProofStateChangedEvent>(options.agent.context, {
+        type: ProofEventTypes.ProofStateChanged,
+        payload: {
+          proofRecord: proofRecord.clone(),
+          previousState: null,
+        },
+      })
+      return { outgoingMessageType: V2PresentationProblemReportMessage.type.messageTypeUri }
     }
   },
 }
