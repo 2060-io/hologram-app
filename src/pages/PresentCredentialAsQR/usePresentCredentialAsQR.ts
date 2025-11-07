@@ -94,6 +94,7 @@ export const usePresentCredentialAsQR = ({
       }
     }
     startFlow()
+
     const didCommShortenedUrlReceivedListener = (event: DidCommShortenedUrlReceivedEvent) => {
       const shortenedUrlToBase64 = TypedArrayEncoder.toBase64URL(Buffer.from(event.payload.shortenedUrl))
       shortenedUrl.current = event.payload.shortenedUrl
@@ -116,9 +117,11 @@ export const usePresentCredentialAsQR = ({
       observableOfConnectionStateChangedEvent.current = observableOfConnectionStateChanged?.subscribe(
         async event => {
           const { connectionRecord } = event.payload
+          setState('scanned')
+          invalidateShortenedUrl()
+          invalidateObservableOfConnectionStateChangedEvent()
           subscribeToProofStateChangedEvent(connectionRecord)
           ephemeralConnection.current = connectionRecord
-          setState('scanned')
           if (connectionRecord.outOfBandId) {
             const connectionsApi = agent?.dependencyManager.resolve(ConnectionsApi)
             connectionsApi?.addConnectionType(connectionRecord.id, 'Ephemeral')
@@ -134,7 +137,9 @@ export const usePresentCredentialAsQR = ({
           filter(
             event =>
               event.payload.proofRecord.connectionId === connection.id &&
-              [ProofState.RequestReceived, ProofState.Abandoned].includes(event.payload.proofRecord.state),
+              [ProofState.RequestReceived, ProofState.Abandoned, ProofState.Done].includes(
+                event.payload.proofRecord.state,
+              ),
           ),
           timeout(120_000),
           catchError(() => {
@@ -144,25 +149,35 @@ export const usePresentCredentialAsQR = ({
         )
       observableOfProofStateChangedEvent.current = observableOfProofStateChanged?.subscribe(async event => {
         const { proofRecord } = event.payload
-        const isRequestReceived = proofRecord.state === ProofState.RequestReceived
-        const newState: State = isRequestReceived ? 'approved' : 'rejected'
-        setState(newState)
-        if (isRequestReceived) {
-          const parameters: AcceptProofRequestParameters = { proofRecordId: proofRecord.id }
-          addAgentActionToQueue({ type: AgentActionType.AcceptProofRequest, parameters })
+        switch (proofRecord.state) {
+          case ProofState.RequestReceived:
+            setState('approved')
+            const parameters: AcceptProofRequestParameters = { proofRecordId: proofRecord.id }
+            addAgentActionToQueue({ type: AgentActionType.AcceptProofRequest, parameters })
+            break
+          case ProofState.Abandoned:
+            setState('rejected')
+            break
+          case ProofState.Done:
+            invalidateObservableOfProofStateChangedEvent()
+            removeConnection()
+            break
+          default:
+            break
         }
-        deleteConnectionAndInvalidateShortenedUrl()
-        invalidateObservables()
       })
     }
-
-    const deleteConnectionAndInvalidateShortenedUrl = () => {
+    const removeConnection = () => {
       if (!agent) return
       if (ephemeralConnection.current) {
         log(`Deleting ephemeral connection: ${ephemeralConnection.current.id}`)
         deleteConnection(agent, ephemeralConnection.current)
         ephemeralConnection.current = undefined
       }
+    }
+
+    const invalidateShortenedUrl = () => {
+      if (!agent) return
       if (shortenedUrl.current && defaultMediatorConnection.current) {
         const options = {
           connectionId: defaultMediatorConnection.current.id,
@@ -181,15 +196,20 @@ export const usePresentCredentialAsQR = ({
       )
     }
 
-    const invalidateObservables = () => {
+    const invalidateObservableOfConnectionStateChangedEvent = () => {
       observableOfConnectionStateChangedEvent.current?.unsubscribe()
+    }
+
+    const invalidateObservableOfProofStateChangedEvent = () => {
       observableOfProofStateChangedEvent.current?.unsubscribe()
     }
 
     return () => {
-      deleteConnectionAndInvalidateShortenedUrl()
-      invalidateObservables()
       removeDidCommShortenedUrlReceivedListener()
+      invalidateShortenedUrl()
+      invalidateObservableOfConnectionStateChangedEvent()
+      invalidateObservableOfProofStateChangedEvent()
+      removeConnection()
     }
   }, [agent])
 
