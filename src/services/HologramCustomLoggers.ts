@@ -44,17 +44,17 @@ export class HologramCustomLogger implements Logger {
   }
   warn(message: string, data?: Record<string, unknown>) {
     if (LogLevel.warn >= this.logLevel) {
-      console.warn(`WARN: ${message}`, data ? JSON.stringify(data, null, '\t') : '')
+      console.warn(`WARN: ${message}`, data)
     }
   }
   error(message: string, data?: Record<string, unknown>) {
     if (LogLevel.error >= this.logLevel) {
-      console.error(`ERROR: ${message}`, data ? JSON.stringify(data, null, '\t') : '')
+      console.error(`ERROR: ${message}`, data)
     }
   }
   fatal(message: string, data?: Record<string, unknown>) {
     if (LogLevel.fatal >= this.logLevel) {
-      console.error(`FATAL: ${message}`, data ? JSON.stringify(data, null, '\t') : '')
+      console.error(`FATAL: ${message}`, data)
     }
   }
 }
