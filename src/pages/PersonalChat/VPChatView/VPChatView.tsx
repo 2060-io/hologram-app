@@ -13,7 +13,10 @@ import { ModalConfirmAction } from '@2060/components'
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
 import { CredentialMainInformation, Text } from '@2060/components/common'
 import { AgentActionType, useChat } from '@2060/hooks/agent'
-import { AcceptProofProposalParameters, RefuseProofProposalParameters } from '@2060/hooks/agent/actions/types'
+import {
+  AcceptProofProposalParameters,
+  ProofSendProblemReportParameters,
+} from '@2060/hooks/agent/actions/types'
 import { updateChatEntryMetadata } from '@2060/hooks/agent/chat/services'
 import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
@@ -94,8 +97,8 @@ const VPChatView = ({ metadata, role, agent, proofRecordId, chatEntryId }: Props
       const newMetadata = { ...metadata, proofState: ProofState.Abandoned }
       updateChatEntryMetadata(realm, chatEntryId, newMetadata)
     }
-    const parameters: RefuseProofProposalParameters = { proofRecordId }
-    addAgentActionToQueue({ type: AgentActionType.RefuseProofProposal, parameters })
+    const parameters: ProofSendProblemReportParameters = { proofRecordId, description: 'refused' }
+    addAgentActionToQueue({ type: AgentActionType.ProofSendProblemReport, parameters })
   }
 
   const status: Record<ProofState, React.ReactElement | null> = {

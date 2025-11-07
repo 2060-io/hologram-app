@@ -4,14 +4,7 @@ import {
   AnonCredsSelectedCredentials,
   LegacyIndyProofFormat,
 } from '@credo-ts/anoncreds'
-import {
-  AgentMessage,
-  ProofEventTypes,
-  ProofExchangeRecord,
-  ProofFormatPayload,
-  ProofState,
-  ProofStateChangedEvent,
-} from '@credo-ts/core'
+import { AgentMessage, ProofExchangeRecord, ProofFormatPayload } from '@credo-ts/core'
 import { TrustResolutionOutcome } from '@verana-labs/verre'
 
 import { getServiceInfo } from '../trustResolution'
@@ -110,21 +103,6 @@ export async function presentProof(options: PresentProofOptions) {
   await agent.proofs.update(proofRecord)
 
   await agent.proofs.acceptRequest({ proofRecordId, proofFormats: proofFormatPayload })
-}
-
-export async function notifyNoCompatibleCredentials(options: { agent: MobileAgent; proofRecordId: string }) {
-  const { agent, proofRecordId } = options
-  const proofRecord = await agent.proofs.getById(proofRecordId)
-  proofRecord.state = ProofState.Abandoned
-  await agent.proofs.update(proofRecord)
-  agent.proofs.sendProblemReport({ proofRecordId, description: 'e.req.no-compatible-credentials' })
-  agent.events.emit<ProofStateChangedEvent>(agent.context, {
-    type: ProofEventTypes.ProofStateChanged,
-    payload: {
-      proofRecord: proofRecord.clone(),
-      previousState: null,
-    },
-  })
 }
 
 /**

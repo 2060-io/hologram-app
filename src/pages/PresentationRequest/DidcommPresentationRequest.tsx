@@ -8,7 +8,10 @@ import BasePresentationRequest from './BasePresentationRequest'
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
 import { useFetchServiceInfo } from '@2060/hooks'
 import { AgentActionType, useMobileAgent } from '@2060/hooks/agent'
-import { DeclineProofRequestParameters } from '@2060/hooks/agent/actions/types'
+import {
+  DeclineProofRequestParameters,
+  ProofSendProblemReportParameters,
+} from '@2060/hooks/agent/actions/types'
 import { findAllByAssociatedRecordId, updateChatEntryMetadata } from '@2060/hooks/agent/chat/services'
 import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
@@ -18,7 +21,7 @@ import {
   FormattedSubmission,
   formatDidcommPresentationSubmission,
 } from '@2060/services/agent/formatPresentation'
-import { notifyNoCompatibleCredentials, presentProof } from '@2060/services/agent/proofs'
+import { presentProof } from '@2060/services/agent/proofs'
 import { logError } from '@2060/utils'
 import { toast } from '@2060/utils/toast'
 
@@ -95,8 +98,11 @@ const DidcommPresentationRequest: React.FC<Props> = ({ navigation, route }: Prop
   }
 
   const notify = () => {
-    if (!agent) return
-    notifyNoCompatibleCredentials({ agent, proofRecordId })
+    const parameters: ProofSendProblemReportParameters = {
+      proofRecordId,
+      description: 'e.req.no-compatible-credentials',
+    }
+    addAgentActionToQueue({ type: AgentActionType.ProofSendProblemReport, parameters })
   }
 
   const goToCredentialPresented = async () => {

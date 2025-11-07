@@ -42,8 +42,8 @@ import {
   HangupCallParameters,
   MenuSelectionParameters,
   PresentCredentialParameters,
+  ProofSendProblemReportParameters,
   QueryServiceFeaturesParameters,
-  RefuseProofProposalParameters,
   RemoveOutOfBandRecordParameters,
   RequestUserProfileParameters,
   SendAnswerParameters,
@@ -290,14 +290,14 @@ export const ActionFactoryMap: Record<AgentActionType, ActionFactory> = {
       return { outgoingMessageType: V2RequestPresentationMessage.type.messageTypeUri }
     }
   },
-  [AgentActionType.RefuseProofProposal]: action => {
+  [AgentActionType.ProofSendProblemReport]: action => {
     return async (options: { agent: MobileAgent }) => {
-      const parameters = action.parameters as RefuseProofProposalParameters
-      const { proofRecordId } = parameters
+      const parameters = action.parameters as ProofSendProblemReportParameters
+      const { proofRecordId, description } = parameters
       const proofRecord = await options.agent.proofs.getById(proofRecordId)
       proofRecord.state = ProofState.Abandoned
       await options.agent.proofs.update(proofRecord)
-      await options.agent.proofs.sendProblemReport({ proofRecordId, description: 'refused' })
+      await options.agent.proofs.sendProblemReport({ proofRecordId, description })
       options.agent.events.emit<ProofStateChangedEvent>(options.agent.context, {
         type: ProofEventTypes.ProofStateChanged,
         payload: {

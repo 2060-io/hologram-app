@@ -15,7 +15,10 @@ import getStyles from './styles'
 import { ModalConfirmAction } from '@2060/components'
 import { Text } from '@2060/components/common'
 import { AgentActionType } from '@2060/hooks/agent'
-import { DeclineProofRequestParameters } from '@2060/hooks/agent/actions/types'
+import {
+  DeclineProofRequestParameters,
+  ProofSendProblemReportParameters,
+} from '@2060/hooks/agent/actions/types'
 import { updateChatEntryMetadata } from '@2060/hooks/agent/chat/services'
 import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
@@ -27,7 +30,6 @@ import {
   FormattedSubmission,
   formatDidcommPresentationSubmission,
 } from '@2060/services/agent/formatPresentation'
-import { notifyNoCompatibleCredentials } from '@2060/services/agent/proofs'
 
 interface Props {
   sender?: ChatParticipant
@@ -89,7 +91,11 @@ const VPRequestChatView = ({
     if (!agent || !realm) return
     const newMetadata = { ...metadata, proofState: ProofState.Abandoned }
     updateChatEntryMetadata(realm, chatEntryId, newMetadata)
-    notifyNoCompatibleCredentials({ agent, proofRecordId })
+    const parameters: ProofSendProblemReportParameters = {
+      proofRecordId,
+      description: 'e.req.no-compatible-credentials',
+    }
+    addAgentActionToQueue({ type: AgentActionType.ProofSendProblemReport, parameters })
   }
 
   const goToDidCommPresentationRequest = () => {
@@ -105,10 +111,7 @@ const VPRequestChatView = ({
       updateChatEntryMetadata(realm, chatEntryId, newMetadata)
     }
     const parameters: DeclineProofRequestParameters = { proofRecordId }
-    addAgentActionToQueue({
-      type: AgentActionType.DeclineProofRequest,
-      parameters,
-    })
+    addAgentActionToQueue({ type: AgentActionType.DeclineProofRequest, parameters })
   }
 
   const refuseFromChat = async () => {

@@ -85,7 +85,10 @@ type RequestUserProfileParameters = ConnectionIdParameter
 
 type AcceptProofRequestParameters = BaseProofParameters
 type AcceptProofProposalParameters = BaseProofParameters
-type RefuseProofProposalParameters = BaseProofParameters
+
+type ProofSendProblemReportParameters = BaseProofParameters & {
+  description: 'refused' | 'e.req.no-compatible-credentials'
+}
 
 export type {
   SendTextMessageParameters,
@@ -109,5 +112,5 @@ export type {
   RequestUserProfileParameters,
   AcceptProofRequestParameters,
   AcceptProofProposalParameters,
-  RefuseProofProposalParameters,
+  ProofSendProblemReportParameters,
 }
