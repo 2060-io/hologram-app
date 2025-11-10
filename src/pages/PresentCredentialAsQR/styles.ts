@@ -22,4 +22,17 @@ export default (theme: AppTheme) =>
       color: theme.colors.red,
       fontSize: theme.fontSize.md,
     },
+    scannedText: {
+      color: theme.colors.primaryText,
+      fontSize: theme.fontSize.md2,
+      marginBottom: 10,
+    },
+    containerScanned: {
+      flex: 1,
+    },
+    subContainerScanned: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
   })

@@ -96,7 +96,7 @@ const BaseCredentialPresentation = ({
       <SafeAreaView style={styles.container}>
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.subContainer}>
-            {proofState !== ProofState.PresentationReceived && (
+            {![ProofState.PresentationReceived, ProofState.Done].includes(proofState) && (
               <Text fontFamily="EuclidCircularA-Medium" style={styles.valuesNoRevealedYet}>
                 {t('presentationRequest.valuesNoRevealedYet')}
               </Text>
