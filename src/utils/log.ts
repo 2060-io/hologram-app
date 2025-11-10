@@ -6,15 +6,15 @@ import { toast } from './toast'
 export const LOGS_DIRECTORY = `${DocumentDirectoryPath}/hologramLogs`
 export function log(message: string, ...optionalParams: unknown[]) {
   if (__DEV__) {
-    console.log(message, ...optionalParams)
+    console.log(`APP_DEBUG: ${message}`, ...optionalParams)
   }
 }
 
 export function logError(message: string, ...optionalParams: unknown[]) {
-  console.error(message, ...optionalParams)
+  console.error(`APP_ERROR: ${message}`, ...optionalParams)
 }
 
 export function logWarn(message: string, displayToast = false) {
   if (displayToast) toast({ message, type: 'warning' })
-  console.warn(message)
+  console.warn(`APP_WARN: ${message}`)
 }
