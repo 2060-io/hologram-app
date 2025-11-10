@@ -25,6 +25,7 @@ import {
   ProofState,
   ProofStateChangedEvent,
   ProofEventTypes,
+  AutoAcceptProof,
 } from '@credo-ts/core'
 import { AnswerMessage } from '@credo-ts/question-answer'
 
@@ -286,7 +287,10 @@ export const ActionFactoryMap: Record<AgentActionType, ActionFactory> = {
     return async (options: { agent: MobileAgent }) => {
       const parameters = action.parameters as AcceptProofProposalParameters
       const { proofRecordId } = parameters
-      await options.agent.proofs.acceptProposal({ proofRecordId })
+      await options.agent.proofs.acceptProposal({
+        proofRecordId,
+        autoAcceptProof: AutoAcceptProof.ContentApproved,
+      })
       return { outgoingMessageType: V2RequestPresentationMessage.type.messageTypeUri }
     }
   },
