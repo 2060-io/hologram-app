@@ -26,7 +26,7 @@ import {
   devEnvPlaceholder,
   DevEnvsKeys,
   DevEnvObject,
-  isBackgroundNotificationHandlerEnabled,
+  getIsBackgroundNotificationHandlerEnabled,
   savePushNotificationHandlerEnabled,
   saveLogsEnabled,
   areLogsEnabled,
@@ -53,7 +53,7 @@ const Developer = ({ navigation }: Props) => {
 
   useEffect(() => {
     const setupBackgroundNotificationsEnabled = async () => {
-      const persistedIsBackgroundNotificationsEnabled = await isBackgroundNotificationHandlerEnabled()
+      const persistedIsBackgroundNotificationsEnabled = await getIsBackgroundNotificationHandlerEnabled()
       setAreBackgroundNotificationsEnabled(persistedIsBackgroundNotificationsEnabled)
     }
     const setupAreLogsEnabled = async () => {
