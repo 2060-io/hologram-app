@@ -29,6 +29,7 @@ export default (theme: AppTheme) =>
     },
     containerScanned: {
       flex: 1,
+      backgroundColor: theme.colors.secondary,
     },
     subContainerScanned: {
       flex: 1,
