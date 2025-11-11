@@ -46,7 +46,7 @@ export const allDevEnvs: DevEnv[] = [
   },
 ]
 
-export const isBackgroundNotificationHandlerEnabled = async () => {
+export const getIsBackgroundNotificationHandlerEnabled = async () => {
   return (
     ((await getStorageData(BACKGROUND_PUSH_NOTIFICATION_HANDLER_ENABLED_PERSIST_KEY)) as boolean) ?? false
   )

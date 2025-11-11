@@ -6,8 +6,8 @@ import RealmSingleton from './RealmSingleton'
 
 import { manageBackgroundChatEntryChanges, subscribeToAgentChatEvents } from '@2060/hooks/agent/chat'
 import { manageConnectionStateChangedEvent } from '@2060/hooks/agent/connections/manageConnectionStateChangedEvent'
-import { log } from '@2060/utils'
-import { isBackgroundNotificationHandlerEnabled } from '@2060/utils/developer'
+import { log, logWarn } from '@2060/utils'
+import { getIsBackgroundNotificationHandlerEnabled } from '@2060/utils/developer'
 import { arePushNotificationsAllowed, deleteRemoteNotifications } from '@2060/utils/pushNotificationsUtils'
 
 const makeRequestToLocalServer = (payload: Record<string, string>) => {
@@ -24,18 +24,26 @@ let isProcessingBackgroundNotification = false
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function backgroundPushNotificationHandler(remoteMessage: FirebaseMessagingTypes.RemoteMessage) {
-  const persistedIsBackgroundNotificationsEnabled = await isBackgroundNotificationHandlerEnabled()
-  if (!persistedIsBackgroundNotificationsEnabled) return
+  const isBackgroundNotificationHandlerEnabled = await getIsBackgroundNotificationHandlerEnabled()
+  if (!isBackgroundNotificationHandlerEnabled) {
+    logWarn('User does not have processing background notifications enabled')
+    return
+  }
   // Note: When user disables notifications and are not displayed (remote notifications) this code can be
   //  executed. For that reason, we need to check if push notifications are allowed to continue processing
-  if (!(await arePushNotificationsAllowed())) return
+  if (!(await arePushNotificationsAllowed())) {
+    logWarn('User does not have push notifications enabled on device')
+    return
+  }
   deleteRemoteNotifications()
   if (isProcessingBackgroundNotification) {
+    logWarn('BACKGROUND PUSH NOTIFICATIONS HANDLER is executing at the moment!!')
     makeRequestToLocalServer({ data: 'BACKGROUND PUSH NOTIFICATIONS HANDLER is executing at the moment!!' })
     return
   }
   isProcessingBackgroundNotification = true
-  makeRequestToLocalServer({ data: 'START EXECUTING BACKGROUND PUSH NOTIFICATIONS HANDLER' })
+  logWarn('STARTED EXECUTING BACKGROUND PUSH NOTIFICATIONS HANDLER')
+  makeRequestToLocalServer({ data: 'STARTED EXECUTING BACKGROUND PUSH NOTIFICATIONS HANDLER' })
   try {
     const realmInstance = RealmSingleton.instance
     await realmInstance.openRealmIfIsClosed()
@@ -56,12 +64,12 @@ export async function backgroundPushNotificationHandler(remoteMessage: FirebaseM
     if (!mobileAgentInstance.getMobileAgent()?.isInitialized) {
       await mobileAgentInstance.openAndInitMobileAgent()
     } else {
-      log('From backgroundPushNotificationHandler agent is already initialized')
+      logWarn('From backgroundPushNotificationHandler agent is already initialized')
     }
     if (!mobileAgentInstance.getIsAppSubscribedToEvents()) {
       subscribeToAgentChatEvents(agent, realm, false, () => undefined)
     } else {
-      log('From backgroundPushNotificationHandler App is already subscribed to agent events')
+      logWarn('From backgroundPushNotificationHandler App is already subscribed to agent events')
     }
     const mediatorConnection = await agent.mediationRecipient.findDefaultMediatorConnection()
     await agent.messagePickup.pickupMessages({
