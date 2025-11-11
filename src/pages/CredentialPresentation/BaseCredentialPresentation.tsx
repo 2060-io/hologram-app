@@ -102,12 +102,10 @@ const BaseCredentialPresentation = ({
                 {t('presentationRequest.valuesNoRevealedYet')}
               </Text>
             )}
-            {credentialMainInfo && (
-              <CredentialMainInformation
-                credentialMainInfo={credentialMainInfo}
-                containerStyle={styles.credentialMainInfoContainer}
-              />
-            )}
+            <CredentialMainInformation
+              credentialMainInfo={credentialMainInfo}
+              containerStyle={styles.credentialMainInfoContainer}
+            />
             <CredentialAttributes attributes={credentialAttributes} />
           </View>
         </ScrollView>
