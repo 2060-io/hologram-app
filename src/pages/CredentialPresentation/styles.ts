@@ -13,14 +13,17 @@ export default (theme: AppTheme) =>
       paddingHorizontal: 15,
     },
     headerBtnText: {
-      fontSize: theme.fontSize.md2,
+      fontSize: theme.fontSize.md + 1,
       color: theme.colors.green,
     },
     headerLeft: {
-      paddingLeft: 15,
+      width: 80,
+      paddingLeft: 5,
     },
     headerRight: {
-      paddingRight: 15,
+      width: 80,
+      paddingRight: 5,
+      alignItems: 'flex-end',
     },
     valuesNoRevealedYet: {
       color: theme.colors.primaryText,

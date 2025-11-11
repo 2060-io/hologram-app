@@ -9,7 +9,7 @@ import getStyles from './styles'
 
 import { CredentialAttributes, ModalConfirmAction } from '@2060/components'
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
-import { CredentialMainInformation, Text } from '@2060/components/common'
+import { CredentialMainInformation, HeaderTitle, Text } from '@2060/components/common'
 import { AgentActionType } from '@2060/hooks/agent'
 import {
   AcceptProofProposalParameters,
@@ -62,6 +62,7 @@ const BaseCredentialPresentation = ({
         ) : (
           <HeaderBackButton {...props} />
         ),
+      headerTitle: () => <HeaderTitle title={t('navigation.CredentialPresentation')} theme={theme} />,
       headerRight: () =>
         enableMainButtons ? (
           <TouchableOpacity style={styles.headerRight} onPress={accept}>
