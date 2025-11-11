@@ -105,6 +105,7 @@
       "PresentCredential": "Present to",
       "CredentialPresentation": "Credential Presentation",
       "ParentalControl": "Parental Control",
+      "PresentCredentialsFromChat": "Present Credential",
       "SelectCredentialAttributes": "Present Credential",
       "PresentCredentialAsQR": "Credential Presentation",
       "EphemeralCredentialPresentation": "Credential Presentation"
