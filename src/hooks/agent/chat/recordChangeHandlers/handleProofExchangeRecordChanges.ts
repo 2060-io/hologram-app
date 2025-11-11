@@ -176,7 +176,7 @@ export const handleProofExchangeRecordChanges = async (options: {
     if (thread.id !== activeChatThreadId) {
       addUnread(realm, thread.id, 1)
     }
-  } else if (proofRecord.state === ProofState.PresentationReceived) {
+  } else if (proofRecord.state === ProofState.PresentationReceived || proofRecord.state === ProofState.Done) {
     const [vpResponseChatEntry] = findAllByAssociatedRecordId(realm, proofRecord.id, ChatEntryType.VPResponse)
     if (vpResponseChatEntry) {
       const currentMetadata = vpResponseChatEntry.metadata as VPResponseMetadata

@@ -122,7 +122,7 @@ const VPChatView = ({ metadata, role, agent, proofRecordId, chatEntryId }: Props
     [ProofState.PresentationReceived]: <State text={t('presentationRequest.accepted')} />,
     [ProofState.Declined]: <State text={t('presentationRequest.refused')} type="error" />,
     [ProofState.Abandoned]: <State text={t('presentationRequest.refused')} type="error" />,
-    [ProofState.Done]: null,
+    [ProofState.Done]: <State text={t('presentationRequest.accepted')} />,
     [ProofState.PresentationSent]: null,
   }
 
