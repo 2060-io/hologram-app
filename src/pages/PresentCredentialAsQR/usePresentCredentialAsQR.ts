@@ -122,10 +122,8 @@ export const usePresentCredentialAsQR = ({
           invalidateObservableOfConnectionStateChangedEvent()
           subscribeToProofStateChangedEvent(connectionRecord)
           ephemeralConnection.current = connectionRecord
-          if (connectionRecord.outOfBandId) {
-            const connectionsApi = agent?.dependencyManager.resolve(ConnectionsApi)
-            connectionsApi?.addConnectionType(connectionRecord.id, 'Ephemeral')
-          }
+          const connectionsApi = agent?.dependencyManager.resolve(ConnectionsApi)
+          connectionsApi?.addConnectionType(connectionRecord.id, 'Ephemeral')
         },
       )
     }

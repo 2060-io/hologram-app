@@ -204,7 +204,7 @@ export const processInvitation = async (
     )
     const { connectionRecord } = await acceptInvitation(agent.context, { outOfBandId: outOfBandRecord.id })
     connectionId = connectionRecord?.id
-    if (connectionRecord?.id) agent.connections.addConnectionType(connectionRecord?.id, 'Ephemeral')
+    if (connectionRecord?.id) agent.connections.addConnectionType(connectionRecord.id, 'Ephemeral')
     try {
       const event = await eventPromise
       if (event.type === CredentialEventTypes.CredentialStateChanged) {
