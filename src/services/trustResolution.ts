@@ -5,6 +5,19 @@ import { MobileAgent } from './agent'
 import { ServiceInfo } from '@2060/model'
 import { logError } from '@2060/utils'
 
+const verifiablePublicRegistries = [
+  {
+    id: 'vpr:verana:vna-testnet-1',
+    baseUrls: ['https://api.testnet.verana.network/verana'],
+    production: false,
+  },
+  {
+    id: 'vpr:verana:vna-mainnet-1',
+    baseUrls: ['https://api.testnet.verana.network/verana'],
+    production: true,
+  },
+]
+
 export async function getServiceInfo(options: {
   agent: MobileAgent
   did: string
@@ -13,6 +26,7 @@ export async function getServiceInfo(options: {
 
   const trustResolution = await resolve(did, {
     agentContext: agent.context,
+    verifiablePublicRegistries,
   })
 
   if (!trustResolution.service || !trustResolution.didDocument) {
