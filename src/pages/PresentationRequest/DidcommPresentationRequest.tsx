@@ -116,7 +116,6 @@ const DidcommPresentationRequest: React.FC<Props> = ({ navigation, route }: Prop
     navigation.replace('CredentialPresented', {
       credentials: selectedCredentialsMainInfo,
       verifier: serviceInfo,
-      presentedAt: new Date(),
     })
   }
 

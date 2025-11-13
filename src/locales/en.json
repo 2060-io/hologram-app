@@ -239,7 +239,9 @@
       "selectAttributes": "Select attributes you would like to present",
       "selectAll": "Select all",
       "unselectAll": "Unselect all",
-      "errorCreatingQR": "Error creating QR has occurred"
+      "generatedQRTitle": "Show this QR code to the person you want to present your credentials to. This is a single-use code.",
+      "scannedQR": "Waiting until the other party accepts the presentation.",
+      "errorCreatingQR": "An error creating credential QR has occurred. Try again"
     },
     "credentialOffer": {
       "title": "Credential Offer",
@@ -254,6 +256,7 @@
       "verifiablePresentation": "Verifiable Presentation",
       "selectCredentialYouWouldLikeToPresentTo": "Select the credential you would like to present to ",
       "successfullyReceived": "Presentation successfully received by ",
+      "rejected": "Presentation rejected by ",
       "viewInChat": "View in chat",
       "presented": "Presented",
       "selectCredential": "Select credential",

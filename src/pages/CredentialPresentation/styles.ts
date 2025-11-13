@@ -29,9 +29,5 @@ export default (theme: AppTheme) =>
       color: theme.colors.primaryText,
       fontSize: theme.fontSize.md,
       textAlign: 'center',
-      marginBottom: 10,
-    },
-    credentialMainInfoContainer: {
-      marginBottom: 0,
     },
   })

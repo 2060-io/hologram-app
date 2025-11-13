@@ -6,8 +6,13 @@ export default (theme: AppTheme) =>
   StyleSheet.create({
     container: {
       flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
+    },
+    headerRight: {
+      paddingRight: 15,
+    },
+    headerRightText: {
+      fontSize: theme.fontSize.md2,
+      color: theme.colors.green,
     },
     containerCardQR: {
       ...cardStyles(theme),
@@ -18,22 +23,27 @@ export default (theme: AppTheme) =>
       backgroundColor: theme.colors.white,
       marginBottom: 14,
     },
-    errorCreatingText: {
-      color: theme.colors.red,
-      fontSize: theme.fontSize.md,
+    generatedContainer: {
+      flex: 1,
+      justifyContent: 'space-evenly',
+    },
+    generatedTitle: {
+      textAlign: 'center',
+      color: theme.colors.tertiaryText,
     },
     scannedText: {
       color: theme.colors.primaryText,
+      textAlign: 'center',
       fontSize: theme.fontSize.md2,
       marginBottom: 10,
     },
-    containerScanned: {
-      flex: 1,
-      backgroundColor: theme.colors.secondary,
-    },
     subContainerScanned: {
-      flex: 1,
+      flex: 8,
       justifyContent: 'center',
       alignItems: 'center',
+    },
+    cancelButtonContainer: {
+      flex: 2,
+      justifyContent: 'center',
     },
   })

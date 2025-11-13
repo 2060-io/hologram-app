@@ -9,6 +9,7 @@ import ConnectionsSelection from './ConnectionsSelection'
 import CredentialAttribute from './CredentialAttribute'
 import CredentialAttributes from './CredentialAttributes'
 import CredentialDetails from './CredentialDetails'
+import CredentialPresented from './CredentialPresented'
 import Credentials from './Credentials'
 import IncomingCall from './IncomingCall'
 import LightboxModal from './LightboxModal'
@@ -42,4 +43,5 @@ export {
   ConnectionsSelection,
   Connections,
   CredentialAttributes,
+  CredentialPresented,
 }

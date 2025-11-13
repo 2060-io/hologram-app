@@ -1,16 +1,17 @@
 import { StackScreenProps } from '@react-navigation/stack'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ActivityIndicator, Platform, View } from 'react-native'
+import { ActivityIndicator, Platform, TouchableOpacity, View } from 'react-native'
 import QRCode from 'react-native-qrcode-svg'
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import Share, { ShareOptions } from 'react-native-share'
 
 import getStyles from './styles'
 import { State, usePresentCredentialAsQR } from './usePresentCredentialAsQR'
 
+import { CredentialPresented } from '@2060/components'
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
-import { MainButton, Modal, ModalLoading, Text } from '@2060/components/common'
+import { MainButton, ModalLoading, Text } from '@2060/components/common'
+import { IS_IOS } from '@2060/constants'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { logError } from '@2060/utils'
 import { widthPercentageToDP } from '@2060/utils/responsiveUtils'
@@ -21,9 +22,33 @@ const PresentCredentialAsQR = ({ navigation, route }: Props) => {
   const { credentialRecordId, attributesToPresent } = route.params
   const { t } = useTranslation()
   const theme = useTheme()
-  const insets = useSafeAreaInsets()
   const styles = getStyles(theme)
-  const { state, urlForQr } = usePresentCredentialAsQR({ credentialRecordId, attributesToPresent })
+  const { state, urlForQr, credentialPresentedInfo } = usePresentCredentialAsQR({
+    credentialRecordId,
+    attributesToPresent,
+    navigation,
+  })
+
+  useEffect(() => {
+    if (IS_IOS) return
+    const unsubscribe = navigation.addListener('beforeRemove', e => {
+      if (e.data.action.type === 'GO_BACK') e.preventDefault()
+    })
+    return unsubscribe
+  }, [])
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => null,
+      headerRight: () => (
+        <TouchableOpacity style={styles.headerRight} onPress={() => navigation.pop(2)}>
+          <Text fontFamily="EuclidCircularA-Medium" style={styles.headerRightText}>
+            {t('general.done')}
+          </Text>
+        </TouchableOpacity>
+      ),
+    })
+  }, [])
 
   const shareShortenedUrl = async () => {
     try {
@@ -48,10 +73,11 @@ const PresentCredentialAsQR = ({ navigation, route }: Props) => {
     }
   }
 
-  const renderContent: Record<State, React.JSX.Element> = {
+  const renderContent: Record<State, React.JSX.Element | null> = {
     creating: <ModalLoading visible />,
     created: (
-      <>
+      <View style={styles.generatedContainer}>
+        <Text style={styles.generatedTitle}>{t('credential.generatedQRTitle')}</Text>
         <View style={styles.containerCardQR}>
           <QRCode
             size={widthPercentageToDP('70%')}
@@ -61,26 +87,25 @@ const PresentCredentialAsQR = ({ navigation, route }: Props) => {
           />
         </View>
         <MainButton onPress={shareShortenedUrl} text={t('connection.share')} iconName="shareSocial" />
+      </View>
+    ),
+    scanned: (
+      <>
+        <View style={styles.subContainerScanned}>
+          <Text style={styles.scannedText}>{t('credential.scannedQR')}</Text>
+          <ActivityIndicator size="large" color={theme.colors.green} />
+        </View>
+        <View style={styles.cancelButtonContainer}>
+          <MainButton text={t('general.cancel')} onPress={() => navigation.goBack()} />
+        </View>
       </>
     ),
-    errorCreating: <Text style={styles.errorCreatingText}>{t('credential.errorCreatingQR')}</Text>,
-    scanned: (
-      <Modal visible>
-        <SafeAreaView style={styles.containerScanned}>
-          <View style={styles.subContainerScanned}>
-            <Text style={styles.scannedText}>Other side scan QR, please wait</Text>
-            <ActivityIndicator size="large" color={theme.colors.green} />
-          </View>
-          <MainButton
-            text={t('general.cancel')}
-            onPress={() => navigation.goBack()}
-            style={{ marginBottom: insets.bottom }}
-          />
-        </SafeAreaView>
-      </Modal>
-    ),
-    approved: <Text>approved</Text>,
-    rejected: <Text>rejected</Text>,
+    approved: credentialPresentedInfo ? (
+      <CredentialPresented {...credentialPresentedInfo} type="approved" />
+    ) : null,
+    rejected: credentialPresentedInfo ? (
+      <CredentialPresented {...credentialPresentedInfo} type="rejected" />
+    ) : null,
     timeoutWaiting: <Text>Other side does not respond within limit time</Text>,
   }
 

@@ -97,15 +97,12 @@ const BaseCredentialPresentation = ({
       <SafeAreaView style={styles.container}>
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.subContainer}>
+            <CredentialMainInformation credentialMainInfo={credentialMainInfo} />
             {![ProofState.PresentationReceived, ProofState.Done].includes(proofState) && (
               <Text fontFamily="EuclidCircularA-Medium" style={styles.valuesNoRevealedYet}>
                 {t('presentationRequest.valuesNoRevealedYet')}
               </Text>
             )}
-            <CredentialMainInformation
-              credentialMainInfo={credentialMainInfo}
-              containerStyle={styles.credentialMainInfoContainer}
-            />
             <CredentialAttributes attributes={credentialAttributes} />
           </View>
         </ScrollView>

@@ -186,7 +186,11 @@ const Navigation = ({ isSignedUp, agent, theme }: NavigationProps) => {
           <Stack.Screen name="ParentalControl" component={ParentalControl} />
           <Stack.Screen name="PresentCredentialsFromChat" component={PresentCredentialsFromChat} />
           <Stack.Screen name="SelectCredentialAttributes" component={SelectCredentialAttributes} />
-          <Stack.Screen name="PresentCredentialAsQR" component={PresentCredentialAsQR} />
+          <Stack.Screen
+            name="PresentCredentialAsQR"
+            component={PresentCredentialAsQR}
+            options={{ gestureEnabled: false }}
+          />
           <Stack.Screen name="EphemeralCredentialPresentation" component={EphemeralCredentialPresentation} />
         </Stack.Navigator>
       </View>

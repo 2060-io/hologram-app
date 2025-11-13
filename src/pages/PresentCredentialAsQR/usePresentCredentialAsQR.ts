@@ -15,8 +15,12 @@ import {
   ConnectionsApi,
   OutOfBandRecord,
   ConnectionRecord,
+  W3cCredentialRecord,
 } from '@credo-ts/core'
+import { ParamListBase } from '@react-navigation/native'
+import { StackNavigationProp } from '@react-navigation/stack'
 import { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import Config from 'react-native-config'
 import { timeout, Subscription, catchError, filter } from 'rxjs'
 
@@ -25,35 +29,40 @@ import { AcceptProofRequestParameters } from '@2060/hooks/agent/actions/types'
 import { deleteConnection } from '@2060/hooks/agent/connections'
 import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
 import { createInvitation } from '@2060/services/agent'
+import { CredentialMainInfo, getCredentialMainInfo } from '@2060/services/agent/display'
 import { createProofProposal } from '@2060/services/agent/proofs'
 import { log, logError } from '@2060/utils'
+import { getConnectionDisplayName, getConnectionDisplayPicture } from '@2060/utils/connectionUtils'
+import { toast } from '@2060/utils/toast'
 
-export type State =
-  | 'creating'
-  | 'created'
-  | 'errorCreating'
-  | 'scanned'
-  | 'approved'
-  | 'rejected'
-  | 'timeoutWaiting'
+export type State = 'creating' | 'created' | 'scanned' | 'approved' | 'rejected' | 'timeoutWaiting'
 
 export const usePresentCredentialAsQR = ({
   credentialRecordId,
   attributesToPresent,
+  navigation,
 }: {
   credentialRecordId: string
   attributesToPresent: string[]
+  navigation: StackNavigationProp<ParamListBase>
 }) => {
+  const { t } = useTranslation()
   const { agent } = useMobileAgent()
   const { getCredentialById } = useCredentials()
   const { addAgentActionToQueue } = useAgentActionQueue()
   const [state, setState] = useState<State>('creating')
+  const credentialRecord = useRef<W3cCredentialRecord>(undefined)
   const urlForQr = useRef<string>('')
   const shortenedUrl = useRef<string>(undefined)
   const observableOfProofStateChangedEvent = useRef<Subscription>(undefined)
   const observableOfConnectionStateChangedEvent = useRef<Subscription>(undefined)
   const ephemeralConnection = useRef<ConnectionRecord>(undefined)
   const defaultMediatorConnection = useRef<ConnectionRecord>(null)
+  const credentialPresentedInfo = useRef<{
+    credentials: CredentialMainInfo[]
+    verifierName: string
+    verifierPicture: string
+  }>(undefined)
 
   useEffect(() => {
     let invitation: OutOfBandRecord
@@ -62,9 +71,11 @@ export const usePresentCredentialAsQR = ({
         if (!agent) return
         defaultMediatorConnection.current = await agent.mediationRecipient.findDefaultMediatorConnection()
         if (!defaultMediatorConnection.current) return
-        const credentialRecord = getCredentialById(credentialRecordId)
-        if (!credentialRecord) return
-        const credentialDefinitionId = credentialRecord.getTag('anonCredsCredentialDefinitionId') as string
+        credentialRecord.current = getCredentialById(credentialRecordId)
+        if (!credentialRecord.current) return
+        const credentialDefinitionId = credentialRecord.current.getTag(
+          'anonCredsCredentialDefinitionId',
+        ) as string
         if (!credentialDefinitionId) return
         const attributes: AnonCredsPresentationPreviewAttribute[] = attributesToPresent.map(attribute => ({
           name: attribute,
@@ -89,7 +100,8 @@ export const usePresentCredentialAsQR = ({
           didCommShortenedUrlReceivedListener,
         )
       } catch (error) {
-        setState('errorCreating')
+        navigation.goBack()
+        toast({ type: 'error', message: t('credential.errorCreatingQR') })
         logError('Error creating credential QR has occurred', error)
       }
     }
@@ -148,14 +160,36 @@ export const usePresentCredentialAsQR = ({
       observableOfProofStateChangedEvent.current = observableOfProofStateChanged?.subscribe(async event => {
         const { proofRecord } = event.payload
         switch (proofRecord.state) {
-          case ProofState.RequestReceived:
-            setState('approved')
+          case ProofState.RequestReceived: {
             const parameters: AcceptProofRequestParameters = { proofRecordId: proofRecord.id }
             addAgentActionToQueue({ type: AgentActionType.AcceptProofRequest, parameters })
+            const verifierName = getConnectionDisplayName(connection)
+            const verifierPicture = getConnectionDisplayPicture(connection)
+            const credentials = credentialRecord.current
+              ? [getCredentialMainInfo(credentialRecord.current)]
+              : []
+            credentialPresentedInfo.current = {
+              credentials,
+              verifierName,
+              verifierPicture,
+            }
+            setState('approved')
             break
-          case ProofState.Abandoned:
+          }
+          case ProofState.Abandoned: {
+            const verifierName = getConnectionDisplayName(connection)
+            const verifierPicture = getConnectionDisplayPicture(connection)
+            const credentials = credentialRecord.current
+              ? [getCredentialMainInfo(credentialRecord.current)]
+              : []
+            credentialPresentedInfo.current = {
+              credentials,
+              verifierName,
+              verifierPicture,
+            }
             setState('rejected')
             break
+          }
           case ProofState.Done:
             invalidateObservableOfProofStateChangedEvent()
             removeConnection()
@@ -211,5 +245,5 @@ export const usePresentCredentialAsQR = ({
     }
   }, [agent])
 
-  return { state, urlForQr: urlForQr.current }
+  return { state, urlForQr: urlForQr.current, credentialPresentedInfo: credentialPresentedInfo.current }
 }
