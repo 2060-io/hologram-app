@@ -5305,7 +5305,7 @@
     multiformats "9.7.1"
     uint8arrays "^3.0.0"
 
-"@verana-labs/verre@0.0.15":
+"@verana-labs/verre@^0.0.15":
   version "0.0.15"
   resolved "https://registry.yarnpkg.com/@verana-labs/verre/-/verre-0.0.15.tgz#3a33b9ab917799f659d4418794347a5106517d64"
   integrity sha512-tXMcaLCyFdhZsomQyhm2zdindq4NxpSzRgvFgUtTrQ6uF2K0rw/ozKOhy+XFNQV+Wczd1rzsZL6HvAchM6SbaA==
