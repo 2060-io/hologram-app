@@ -61,9 +61,12 @@ const EphemeralCredentialPresentation = ({ navigation, route }: Props) => {
           filter(
             event =>
               event.payload.proofRecord.id === proofRecordId &&
-              [ProofState.RequestSent, ProofState.PresentationReceived, ProofState.Done].includes(
-                event.payload.proofRecord.state,
-              ),
+              [
+                ProofState.RequestSent,
+                ProofState.PresentationReceived,
+                ProofState.Done,
+                ProofState.Abandoned,
+              ].includes(event.payload.proofRecord.state),
           ),
         )
       observableOfProofStateChangedEvent.current = observableOfProofStateChanged?.subscribe(async event => {
@@ -74,7 +77,7 @@ const EphemeralCredentialPresentation = ({ navigation, route }: Props) => {
     }
     subscribeToProofStateChangedEvent()
     return () => {
-      observableOfProofStateChangedEvent.current?.unsubscribe()
+      removeObservableOfProofStateChangedEvent()
     }
   }, [agent])
 
@@ -84,17 +87,31 @@ const EphemeralCredentialPresentation = ({ navigation, route }: Props) => {
         const revealedAttributes = await getCredentialRevealedAttributes({ agent, proofRecordId })
         setCredentialAttributes(revealedAttributes)
       }
-      if (proofState === ProofState.Done && agent) {
-        observableOfProofStateChangedEvent.current?.unsubscribe()
-        if (agent && connectionId.current) {
-          log(`Deleting ephemeral connection: ${connectionId.current}`)
-          const connection = await agent.connections.getById(connectionId.current)
-          deleteConnection(agent, connection)
-        }
+      if (proofState === ProofState.Done || proofState === ProofState.Abandoned) {
+        removeObservableOfProofStateChangedEvent()
+        removeConnectionAndProofRecord()
+        if (proofState === ProofState.Abandoned) navigation.goBack()
       }
     }
     handleProofRecordStateChanged()
   }, [agent, proofState])
+
+  const removeObservableOfProofStateChangedEvent = () => {
+    log('removing observableOfProofStateChangedEvent')
+    observableOfProofStateChangedEvent.current?.unsubscribe()
+  }
+
+  const removeConnectionAndProofRecord = async () => {
+    if (agent && connectionId.current) {
+      log(`Deleting ephemeral connection: ${connectionId.current}`)
+      const connection = await agent.connections.getById(connectionId.current)
+      deleteConnection(agent, connection)
+    }
+    if (agent) {
+      log(`Deleting proof record: ${proofRecordId}`)
+      agent.proofs.deleteById(proofRecordId)
+    }
+  }
 
   useEffect(() => {
     if (proofState !== ProofState.ProposalReceived) {

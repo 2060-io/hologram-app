@@ -87,9 +87,8 @@ const BaseCredentialPresentation = ({
     const parameters: ProofSendProblemReportParameters = { proofRecordId, description: 'refused' }
     addAgentActionToQueue({ type: AgentActionType.ProofSendProblemReport, parameters })
     hideModalRefuseConfirmation()
-    toast({ type: 'error', message: 'You refused credential presentation', duration: 5000 })
+    toast({ type: 'error', message: t('credential.youRefusedPresentation'), duration: 5000 })
     onRefuseCallback?.()
-    navigation.goBack()
   }
 
   return (

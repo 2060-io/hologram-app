@@ -10,7 +10,7 @@ import { State, usePresentCredentialAsQR } from './usePresentCredentialAsQR'
 
 import { CredentialPresented } from '@2060/components'
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
-import { MainButton, ModalLoading, Text } from '@2060/components/common'
+import { MainButton, ModalLoading, SvgIcon, Text } from '@2060/components/common'
 import { IS_IOS } from '@2060/constants'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { logError } from '@2060/utils'
@@ -23,11 +23,12 @@ const PresentCredentialAsQR = ({ navigation, route }: Props) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
-  const { state, urlForQr, credentialPresentedInfo } = usePresentCredentialAsQR({
+  const { state, urlForQr, credentialPresentedInfo, refreshQRCode } = usePresentCredentialAsQR({
     credentialRecordId,
     attributesToPresent,
     navigation,
   })
+  const goBackToCredentialDetails = () => navigation.pop(2)
 
   useEffect(() => {
     if (IS_IOS) return
@@ -41,7 +42,7 @@ const PresentCredentialAsQR = ({ navigation, route }: Props) => {
     navigation.setOptions({
       headerLeft: () => null,
       headerRight: () => (
-        <TouchableOpacity style={styles.headerRight} onPress={() => navigation.pop(2)}>
+        <TouchableOpacity style={styles.headerRight} onPress={goBackToCredentialDetails}>
           <Text fontFamily="EuclidCircularA-Medium" style={styles.headerRightText}>
             {t('general.done')}
           </Text>
@@ -52,7 +53,7 @@ const PresentCredentialAsQR = ({ navigation, route }: Props) => {
 
   const shareShortenedUrl = async () => {
     try {
-      const title = 'This is my credential QR'
+      const title = t('credential.shareQrTitle')
       await Share.open(
         Platform.select<ShareOptions>({
           ios: {
@@ -65,7 +66,7 @@ const PresentCredentialAsQR = ({ navigation, route }: Props) => {
               },
             ],
           },
-          default: { title, message: title, url: urlForQr, failOnCancel: false },
+          default: { url: urlForQr, failOnCancel: false },
         }),
       )
     } catch (error) {
@@ -89,14 +90,24 @@ const PresentCredentialAsQR = ({ navigation, route }: Props) => {
         <MainButton onPress={shareShortenedUrl} text={t('connection.share')} iconName="shareSocial" />
       </View>
     ),
+    expiredShortenedUrl: (
+      <>
+        <View style={styles.subContainerScannedOrExpired}>
+          <Text style={styles.commonText}>{t('credential.expiredQR')}</Text>
+        </View>
+        <View style={styles.containerButtonScannedOrExpired}>
+          <MainButton text={t('invitation.refresh')} onPress={refreshQRCode} />
+        </View>
+      </>
+    ),
     scanned: (
       <>
-        <View style={styles.subContainerScanned}>
-          <Text style={styles.scannedText}>{t('credential.scannedQR')}</Text>
+        <View style={styles.subContainerScannedOrExpired}>
+          <Text style={styles.commonText}>{t('credential.scannedQR')}</Text>
           <ActivityIndicator size="large" color={theme.colors.green} />
         </View>
-        <View style={styles.cancelButtonContainer}>
-          <MainButton text={t('general.cancel')} onPress={() => navigation.goBack()} />
+        <View style={styles.containerButtonScannedOrExpired}>
+          <MainButton text={t('general.cancel')} onPress={goBackToCredentialDetails} />
         </View>
       </>
     ),
@@ -106,7 +117,14 @@ const PresentCredentialAsQR = ({ navigation, route }: Props) => {
     rejected: credentialPresentedInfo ? (
       <CredentialPresented {...credentialPresentedInfo} type="rejected" />
     ) : null,
-    timeoutWaiting: <Text>Other side does not respond within limit time</Text>,
+    timeoutWaiting: (
+      <View style={styles.timeoutWaitingContainer}>
+        <Text style={styles.commonText}>{t('credential.noResponseFromVerifier')}</Text>
+        <View style={styles.timeoutWaitingIconContainer}>
+          <SvgIcon fill={theme.colors.white} name="close" width={64} height={64} />
+        </View>
+      </View>
+    ),
   }
 
   return <View style={styles.container}>{renderContent[state]}</View>

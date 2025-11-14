@@ -31,19 +31,32 @@ export default (theme: AppTheme) =>
       textAlign: 'center',
       color: theme.colors.tertiaryText,
     },
-    scannedText: {
+    commonText: {
       color: theme.colors.primaryText,
       textAlign: 'center',
       fontSize: theme.fontSize.md2,
       marginBottom: 10,
     },
-    subContainerScanned: {
+    subContainerScannedOrExpired: {
       flex: 8,
       justifyContent: 'center',
       alignItems: 'center',
     },
-    cancelButtonContainer: {
+    containerButtonScannedOrExpired: {
       flex: 2,
+      justifyContent: 'center',
+    },
+    timeoutWaitingContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    timeoutWaitingIconContainer: {
+      width: 60,
+      height: 60,
+      borderRadius: 32,
+      backgroundColor: 'red',
+      alignItems: 'center',
       justifyContent: 'center',
     },
   })

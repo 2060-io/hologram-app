@@ -239,9 +239,13 @@
       "selectAttributes": "Selecciona los atributos que te gustaría presentar",
       "selectAll": "Seleccionar todos",
       "unselectAll": "Quitar todos",
-      "generatedQRTitle": "Muestra este código QR a la persona a la que le quieres presentar la credencial. Este es un código de un solo uso",
+      "generatedQRTitle": "Muestra este código QR a la persona a la que le quieres presentar la credencial. Este es un código de un solo uso. Y, tiene una válidez de 2 minutos antes de expirar",
+      "shareQrTitle": "Esta es mi presentación de credencial",
+      "expiredQR": "Código QR a expirado presionar el boton 'Refrescar' para crear uno nuevo",
       "scannedQR": "Esperando que la otra parte accepte la presentación",
-      "errorCreatingQR": "Ha ocurrido un error creando el QR . Intentalo nuevamente"
+      "errorCreatingQR": "Ha ocurrido un error creando el QR . Intentalo nuevamente",
+      "youRefusedPresentation": "Rechazaste la presentación de la credencial",
+      "noResponseFromVerifier": "No hubo respuesta de verificador dentro del tiempo limite. La presentación es finalizada."
     },
     "credentialOffer": {
       "title": "Credencial ofrecida",
