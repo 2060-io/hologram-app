@@ -17,6 +17,7 @@ import { Text } from '@2060/components/common'
 import { AgentActionType } from '@2060/hooks/agent'
 import {
   DeclineProofRequestParameters,
+  ProofSendProblemReportDescription,
   ProofSendProblemReportParameters,
 } from '@2060/hooks/agent/actions/types'
 import { updateChatEntryMetadata } from '@2060/hooks/agent/chat/services'
@@ -93,7 +94,7 @@ const VPRequestChatView = ({
     updateChatEntryMetadata(realm, chatEntryId, newMetadata)
     const parameters: ProofSendProblemReportParameters = {
       proofRecordId,
-      description: 'e.req.no-compatible-credentials',
+      description: ProofSendProblemReportDescription.NoCompatibleCredentials,
     }
     addAgentActionToQueue({ type: AgentActionType.ProofSendProblemReport, parameters })
   }

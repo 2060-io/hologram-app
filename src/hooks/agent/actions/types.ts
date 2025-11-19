@@ -86,8 +86,14 @@ type RequestUserProfileParameters = ConnectionIdParameter
 type AcceptProofRequestParameters = BaseProofParameters
 type AcceptProofProposalParameters = BaseProofParameters
 
+export enum ProofSendProblemReportDescription {
+  Refused = 'refused',
+  NoCompatibleCredentials = 'e.req.no-compatible-credentials',
+  TimeoutWaitingForResponse = 'timeout-waiting-for-response',
+}
+
 type ProofSendProblemReportParameters = BaseProofParameters & {
-  description: 'refused' | 'e.req.no-compatible-credentials'
+  description: ProofSendProblemReportDescription
 }
 
 export type {

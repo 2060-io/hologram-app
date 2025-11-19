@@ -10,6 +10,7 @@ import { useFetchServiceInfo } from '@2060/hooks'
 import { AgentActionType, useMobileAgent } from '@2060/hooks/agent'
 import {
   DeclineProofRequestParameters,
+  ProofSendProblemReportDescription,
   ProofSendProblemReportParameters,
 } from '@2060/hooks/agent/actions/types'
 import { findAllByAssociatedRecordId, updateChatEntryMetadata } from '@2060/hooks/agent/chat/services'
@@ -100,7 +101,7 @@ const DidcommPresentationRequest: React.FC<Props> = ({ navigation, route }: Prop
   const notify = () => {
     const parameters: ProofSendProblemReportParameters = {
       proofRecordId,
-      description: 'e.req.no-compatible-credentials',
+      description: ProofSendProblemReportDescription.NoCompatibleCredentials,
     }
     addAgentActionToQueue({ type: AgentActionType.ProofSendProblemReport, parameters })
   }

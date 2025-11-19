@@ -13,6 +13,7 @@ import { CredentialMainInformation, HeaderTitle, Text } from '@2060/components/c
 import { AgentActionType } from '@2060/hooks/agent'
 import {
   AcceptProofProposalParameters,
+  ProofSendProblemReportDescription,
   ProofSendProblemReportParameters,
 } from '@2060/hooks/agent/actions/types'
 import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
@@ -84,7 +85,10 @@ const BaseCredentialPresentation = ({
   }
 
   const refuse = () => {
-    const parameters: ProofSendProblemReportParameters = { proofRecordId, description: 'refused' }
+    const parameters: ProofSendProblemReportParameters = {
+      proofRecordId,
+      description: ProofSendProblemReportDescription.Refused,
+    }
     addAgentActionToQueue({ type: AgentActionType.ProofSendProblemReport, parameters })
     hideModalRefuseConfirmation()
     toast({ type: 'error', message: t('credential.youRefusedPresentation'), duration: 5000 })

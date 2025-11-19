@@ -15,6 +15,7 @@ import { CredentialMainInformation, Text } from '@2060/components/common'
 import { AgentActionType, useChat } from '@2060/hooks/agent'
 import {
   AcceptProofProposalParameters,
+  ProofSendProblemReportDescription,
   ProofSendProblemReportParameters,
 } from '@2060/hooks/agent/actions/types'
 import { updateChatEntryMetadata } from '@2060/hooks/agent/chat/services'
@@ -97,7 +98,10 @@ const VPChatView = ({ metadata, role, agent, proofRecordId, chatEntryId }: Props
       const newMetadata = { ...metadata, proofState: ProofState.Abandoned }
       updateChatEntryMetadata(realm, chatEntryId, newMetadata)
     }
-    const parameters: ProofSendProblemReportParameters = { proofRecordId, description: 'refused' }
+    const parameters: ProofSendProblemReportParameters = {
+      proofRecordId,
+      description: ProofSendProblemReportDescription.Refused,
+    }
     addAgentActionToQueue({ type: AgentActionType.ProofSendProblemReport, parameters })
   }
 
