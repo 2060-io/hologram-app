@@ -26,7 +26,11 @@ import Config from 'react-native-config'
 import { timeout, Subscription, catchError, filter } from 'rxjs'
 
 import { AgentActionType, useCredentials, useMobileAgent } from '@2060/hooks/agent'
-import { AcceptProofRequestParameters } from '@2060/hooks/agent/actions/types'
+import {
+  AcceptProofRequestParameters,
+  ProofSendProblemReportDescription,
+  ProofSendProblemReportParameters,
+} from '@2060/hooks/agent/actions/types'
 import { deleteConnection } from '@2060/hooks/agent/connections'
 import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
 import { createInvitation } from '@2060/services/agent'
@@ -112,6 +116,7 @@ export const usePresentCredentialAsQR = ({
         credentialDefinitionId,
       }))
       const proofProposal = await createProofProposal({ agent, attributes })
+      proofRecordId.current = proofProposal.proofRecord.id
       invitation.current = await createInvitation(agent, {
         multiUseInvitation: false,
         messages: [proofProposal.message],
@@ -209,6 +214,11 @@ export const usePresentCredentialAsQR = ({
         ephemeralConnection.current = connectionRecord
         const connectionsApi = agent?.dependencyManager.resolve(ConnectionsApi)
         connectionsApi?.addConnectionType(connectionRecord.id, 'Ephemeral')
+        if (proofRecordId.current && agent) {
+          const proofRecord = await agent.proofs.getById(proofRecordId.current)
+          proofRecord.connectionId = connectionRecord.id
+          await agent?.proofs.update(proofRecord)
+        }
       },
     )
   }
@@ -217,7 +227,13 @@ export const usePresentCredentialAsQR = ({
     const hasNotReceivedResponseFromVerifier = stateAux.current === 'scanned'
     if (hasNotReceivedResponseFromVerifier) {
       setState('timeoutWaiting')
-      logError('No response from verifier for the credential presentation within the time limit')
+      if (proofRecordId.current) {
+        const parameters: ProofSendProblemReportParameters = {
+          proofRecordId: proofRecordId.current,
+          description: ProofSendProblemReportDescription.TimeoutWaitingForResponse,
+        }
+        addAgentActionToQueue({ type: AgentActionType.ProofSendProblemReport, parameters })
+      }
     }
     throw new Error('proofStateChangedEventSubscription Error')
   }
@@ -239,7 +255,6 @@ export const usePresentCredentialAsQR = ({
 
     observableOfProofStateChangedEvent.current = observableOfProofStateChanged?.subscribe(async event => {
       const { proofRecord } = event.payload
-      proofRecordId.current = proofRecord.id
       switch (proofRecord.state) {
         case ProofState.RequestReceived: {
           setState('approved')

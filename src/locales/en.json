@@ -245,7 +245,8 @@
       "scannedQR": "Waiting until the other party accepts the presentation.",
       "errorCreatingQR": "An error creating credential QR has occurred. Try again",
       "youRefusedPresentation": "You refused credential presentation",
-      "noResponseFromVerifier": "No response from verifier within the limit time. Presentation is finished."
+      "noResponseFromVerifier": "No response from verifier within the limit time. Presentation is finished.",
+      "youDidNotResponseWithinTime": "You did not respond within the time limit. Presentation is finished."
     },
     "credentialOffer": {
       "title": "Credential Offer",

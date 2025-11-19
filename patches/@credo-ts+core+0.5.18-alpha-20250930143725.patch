@@ -83,7 +83,7 @@ index 5f6e368..bdbdb8c 100644
      getCredentialsForRequest(options: GetCredentialsForProofRequestOptions<PPs>): Promise<GetCredentialsForProofRequestReturn<PPs>>;
      sendProblemReport(options: SendProofProblemReportOptions): Promise<ProofExchangeRecord>;
 diff --git a/node_modules/@credo-ts/core/build/modules/proofs/ProofsApi.js b/node_modules/@credo-ts/core/build/modules/proofs/ProofsApi.js
-index c69da63..1137856 100644
+index c69da63..b0f16e1 100644
 --- a/node_modules/@credo-ts/core/build/modules/proofs/ProofsApi.js
 +++ b/node_modules/@credo-ts/core/build/modules/proofs/ProofsApi.js
 @@ -63,6 +63,22 @@ let ProofsApi = class ProofsApi {
@@ -109,6 +109,41 @@ index c69da63..1137856 100644
      /**
       * Accept a presentation proposal as verifier (by sending a presentation request message) to the connection
       * associated with the proof record.
+@@ -341,7 +357,9 @@ let ProofsApi = class ProofsApi {
+     async sendProblemReport(options) {
+         const proofRecord = await this.getById(options.proofRecordId);
+         const protocol = this.getProtocol(proofRecord.protocolVersion);
+-        const requestMessage = await protocol.findRequestMessage(this.agentContext, proofRecord.id);
++        const lastReceivedMessage = proofRecord.state === ProofState_1.ProofState.ProposalSent ?
++        await protocol.findProposalMessage(this.agentContext, proofRecord.id) :
++        await protocol.findRequestMessage(this.agentContext, proofRecord.id);
+         const { message: problemReport } = await protocol.createProblemReport(this.agentContext, {
+             proofRecord,
+             description: options.description,
+@@ -351,18 +369,18 @@ let ProofsApi = class ProofsApi {
+             ? await this.connectionService.getById(this.agentContext, proofRecord.connectionId)
+             : undefined;
+         connectionRecord?.assertReady();
+-        // If there's no connection (so connection-less, we require the state to be request received)
++        // If there's no connection (so connection-less, we require the state to be request received or proposal sent)
+         if (!connectionRecord) {
+-            proofRecord.assertState(ProofState_1.ProofState.RequestReceived);
+-            if (!requestMessage) {
+-                throw new error_1.CredoError(`No request message found for proof record with id '${proofRecord.id}'`);
++            proofRecord.assertState([ProofState_1.ProofState.RequestReceived, ProofState_1.ProofState.ProposalSent]);
++            if (!lastReceivedMessage) {
++                throw new error_1.CredoError(`No message found for proof record with id '${proofRecord.id}'`);
+             }
+         }
+         const outboundMessageContext = await (0, getOutboundMessageContext_1.getOutboundMessageContext)(this.agentContext, {
+             message: problemReport,
+             connectionRecord,
+             associatedRecord: proofRecord,
+-            lastReceivedMessage: requestMessage ?? undefined,
++            lastReceivedMessage: lastReceivedMessage ?? undefined,
+         });
+         await this.messageSender.sendMessage(outboundMessageContext);
+         return proofRecord;
 diff --git a/node_modules/@credo-ts/core/build/modules/proofs/ProofsApi.js.map b/node_modules/@credo-ts/core/build/modules/proofs/ProofsApi.js.map
 index d2f0259..f680ee6 100644
 --- a/node_modules/@credo-ts/core/build/modules/proofs/ProofsApi.js.map

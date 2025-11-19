@@ -299,9 +299,9 @@ export const ActionFactoryMap: Record<AgentActionType, ActionFactory> = {
       const parameters = action.parameters as ProofSendProblemReportParameters
       const { proofRecordId, description } = parameters
       const proofRecord = await options.agent.proofs.getById(proofRecordId)
+      await options.agent.proofs.sendProblemReport({ proofRecordId, description })
       proofRecord.state = ProofState.Abandoned
       await options.agent.proofs.update(proofRecord)
-      await options.agent.proofs.sendProblemReport({ proofRecordId, description })
       options.agent.events.emit<ProofStateChangedEvent>(options.agent.context, {
         type: ProofEventTypes.ProofStateChanged,
         payload: {

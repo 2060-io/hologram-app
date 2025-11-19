@@ -11,6 +11,7 @@ import getStyles from './styles'
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
 import { Text } from '@2060/components/common'
 import { useMobileAgent } from '@2060/hooks/agent'
+import { ProofSendProblemReportDescription } from '@2060/hooks/agent/actions/types'
 import { deleteConnection } from '@2060/hooks/agent/connections'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { CredentialMainInfo } from '@2060/services/agent/display'
@@ -20,6 +21,7 @@ import {
   proposalGetCredentialInfo,
 } from '@2060/services/agent/proofs'
 import { log } from '@2060/utils'
+import { toast } from '@2060/utils/toast'
 
 interface Props extends StackScreenProps<NavigationStackParams, 'EphemeralCredentialPresentation'> {}
 
@@ -73,6 +75,23 @@ const EphemeralCredentialPresentation = ({ navigation, route }: Props) => {
         const { proofRecord } = event.payload
         setProofState(proofRecord.state)
         connectionId.current = proofRecord.connectionId
+        if (proofRecord.state === ProofState.PresentationReceived && agent) {
+          const revealedAttributes = await getCredentialRevealedAttributes({ agent, proofRecordId })
+          setCredentialAttributes(revealedAttributes)
+        }
+        if (proofRecord.state === ProofState.Done || proofRecord.state === ProofState.Abandoned) {
+          removeObservableOfProofStateChangedEvent()
+          removeConnectionAndProofRecord()
+          if (proofRecord.state === ProofState.Abandoned) {
+            const isAbandonedDueNoResponse = proofRecord.errorMessage?.includes(
+              ProofSendProblemReportDescription.TimeoutWaitingForResponse,
+            )
+            if (isAbandonedDueNoResponse) {
+              toast({ type: 'error', message: t('credential.youDidNotResponseWithinTime'), duration: 5000 })
+            }
+            navigation.goBack()
+          }
+        }
       })
     }
     subscribeToProofStateChangedEvent()
@@ -80,21 +99,6 @@ const EphemeralCredentialPresentation = ({ navigation, route }: Props) => {
       removeObservableOfProofStateChangedEvent()
     }
   }, [agent])
-
-  useEffect(() => {
-    const handleProofRecordStateChanged = async () => {
-      if (proofState === ProofState.PresentationReceived && agent) {
-        const revealedAttributes = await getCredentialRevealedAttributes({ agent, proofRecordId })
-        setCredentialAttributes(revealedAttributes)
-      }
-      if (proofState === ProofState.Done || proofState === ProofState.Abandoned) {
-        removeObservableOfProofStateChangedEvent()
-        removeConnectionAndProofRecord()
-        if (proofState === ProofState.Abandoned) navigation.goBack()
-      }
-    }
-    handleProofRecordStateChanged()
-  }, [agent, proofState])
 
   const removeObservableOfProofStateChangedEvent = () => {
     log('removing observableOfProofStateChangedEvent')
