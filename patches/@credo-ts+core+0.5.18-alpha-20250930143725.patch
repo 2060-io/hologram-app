@@ -152,7 +152,7 @@ index f34139b..346e09f 100644
      parentThreadId?: string;
  }
 diff --git a/node_modules/@credo-ts/core/build/modules/proofs/protocol/v2/V2ProofProtocol.js b/node_modules/@credo-ts/core/build/modules/proofs/protocol/v2/V2ProofProtocol.js
-index d53b30d..bad3885 100644
+index d53b30d..13a99ea 100644
 --- a/node_modules/@credo-ts/core/build/modules/proofs/protocol/v2/V2ProofProtocol.js
 +++ b/node_modules/@credo-ts/core/build/modules/proofs/protocol/v2/V2ProofProtocol.js
 @@ -56,7 +56,7 @@ class V2ProofProtocol extends BaseProofProtocol_1.BaseProofProtocol {
@@ -164,7 +164,15 @@ index d53b30d..bad3885 100644
              threadId: (0, uuid_1.uuid)(),
              parentThreadId,
              state: models_2.ProofState.ProposalSent,
-@@ -302,6 +302,8 @@ class V2ProofProtocol extends BaseProofProtocol_1.BaseProofProtocol {
+@@ -276,7 +276,6 @@ class V2ProofProtocol extends BaseProofProtocol_1.BaseProofProtocol {
+         let proofRecord = await this.findByProperties(messageContext.agentContext, {
+             threadId: requestMessage.threadId,
+             role: models_2.ProofRole.Prover,
+-            connectionId: connection?.id,
+         });
+         const formatServices = this.getFormatServicesFromMessage(requestMessage.formats);
+         if (formatServices.length === 0) {
+@@ -302,6 +301,8 @@ class V2ProofProtocol extends BaseProofProtocol_1.BaseProofProtocol {
                  lastSentMessage,
                  expectedConnectionId: proofRecord.connectionId,
              });
