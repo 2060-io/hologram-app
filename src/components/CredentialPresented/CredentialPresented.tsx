@@ -1,3 +1,4 @@
+import { Skeleton } from 'moti/skeleton'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, SafeAreaView, ScrollView, TouchableOpacity } from 'react-native'
@@ -9,6 +10,7 @@ import { Avatar, CredentialMainInformation, SvgIcon, Text } from '@2060/componen
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { CredentialMainInfo } from '@2060/services/agent/display'
 import { dateToString } from '@2060/utils/dateUtils'
+import { widthPercentageToDP } from '@2060/utils/responsiveUtils'
 
 type Props = {
   credentials: CredentialMainInfo[]
@@ -70,10 +72,28 @@ const CredentialPresented = ({
               </View>
             </View>
             <View style={styles.issuerContainer}>
-              <Avatar uri={verifierPicture} label={verifierName} size="13%" />
-              <Text fontFamily="EuclidCircularA-Medium" style={styles.verifierName}>
-                {verifierName}
-              </Text>
+              <Skeleton
+                height={widthPercentageToDP('13%')}
+                width={widthPercentageToDP('13%')}
+                colorMode={theme.isDarkMode ? 'dark' : 'light'}
+                radius="round"
+                show={!verifierPicture?.length && !verifierName.length}
+              >
+                <Avatar uri={verifierPicture} label={verifierName} size="13%" />
+              </Skeleton>
+              <View style={styles.verifierNameContainer}>
+                <Skeleton
+                  height={styles.verifierName.fontSize + 2}
+                  width="75%"
+                  colorMode={theme.isDarkMode ? 'dark' : 'light'}
+                  radius="round"
+                  show={!verifierName.length}
+                >
+                  <Text fontFamily="EuclidCircularA-Medium" style={styles.verifierName}>
+                    {verifierName}
+                  </Text>
+                </Skeleton>
+              </View>
             </View>
             {viewInChatButton && (
               <TouchableOpacity style={styles.viewInChatButton} onPress={viewInChatButton}>

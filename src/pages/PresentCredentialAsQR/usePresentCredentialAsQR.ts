@@ -3,6 +3,7 @@ import {
   DidCommShortenedUrlReceivedEvent,
   DidCommShortenUrlEventTypes,
 } from '@2060.io/credo-ts-didcomm-shorten-url'
+import { ConnectionProfileUpdatedEvent, ProfileEventTypes } from '@2060.io/credo-ts-didcomm-user-profile'
 import { AnonCredsPresentationPreviewAttribute } from '@credo-ts/anoncreds'
 import {
   TypedArrayEncoder,
@@ -76,24 +77,26 @@ export const usePresentCredentialAsQR = ({
   const shortenedUrlTimeout = useRef<NodeJS.Timeout>(undefined)
   const observableOfProofStateChangedEvent = useRef<Subscription>(undefined)
   const observableOfConnectionStateChangedEvent = useRef<Subscription>(undefined)
+  const observableOfConnectionProfileUpdatedEventEvent = useRef<Subscription>(undefined)
   const ephemeralConnection = useRef<ConnectionRecord>(undefined)
   const defaultMediatorConnection = useRef<ConnectionRecord>(null)
   const credentialPresentedInfo = useRef<{
     credentials: CredentialMainInfo[]
     verifierName: string
     verifierPicture: string
-  }>(undefined)
+  }>({ credentials: [], verifierName: '', verifierPicture: '' })
 
   useEffect(() => {
     createQRCode()
     return () => {
+      removeConnectionAndProofRecord()
       clearShortenedUrlStatusValidator()
-      removeDidCommShortenedUrlReceivedListener()
       invalidateCurrentShortenedUrl()
+      removeDidCommShortenedUrlReceivedListener()
       removeDidCommShortenedUrlInvalidatedListener()
       removeObservableOfConnectionStateChangedEvent()
+      removeObservableOfConnectionProfileUpdatedEvent()
       removeObservableOfProofStateChangedEvent()
-      removeConnectionAndProofRecord()
     }
   }, [])
 
@@ -210,6 +213,7 @@ export const usePresentCredentialAsQR = ({
         clearShortenedUrlStatusValidator()
         invalidateCurrentShortenedUrl()
         removeObservableOfConnectionStateChangedEvent()
+        subscribeToConnectionProfileUpdatedEvent(connectionRecord.id)
         subscribeToProofStateChangedEvent(connectionRecord)
         ephemeralConnection.current = connectionRecord
         const connectionsApi = agent?.dependencyManager.resolve(ConnectionsApi)
@@ -221,6 +225,25 @@ export const usePresentCredentialAsQR = ({
         }
       },
     )
+  }
+
+  function subscribeToConnectionProfileUpdatedEvent(connectionId: string) {
+    const observableOfConnectionProfileUpdatedEvent = agent?.events
+      .observable<ConnectionProfileUpdatedEvent>(ProfileEventTypes.ConnectionProfileUpdated)
+      .pipe(filter(event => event.payload.connection.id === connectionId))
+
+    observableOfConnectionProfileUpdatedEventEvent.current =
+      observableOfConnectionProfileUpdatedEvent?.subscribe(event => {
+        const { connection } = event.payload
+        const verifierName = getConnectionDisplayName(connection)
+        const verifierPicture = getConnectionDisplayPicture(connection)
+        credentialPresentedInfo.current = {
+          ...credentialPresentedInfo.current,
+          verifierName,
+          verifierPicture,
+        }
+        removeObservableOfConnectionProfileUpdatedEvent()
+      })
   }
 
   const onObservableOfProofStateChangedTimeout = () => {
@@ -260,29 +283,19 @@ export const usePresentCredentialAsQR = ({
           setState('approved')
           const parameters: AcceptProofRequestParameters = { proofRecordId: proofRecord.id }
           addAgentActionToQueue({ type: AgentActionType.AcceptProofRequest, parameters })
-          const verifierName = getConnectionDisplayName(connection)
-          const verifierPicture = getConnectionDisplayPicture(connection)
-          const credentials = credentialRecord.current
-            ? [getCredentialMainInfo(credentialRecord.current)]
-            : []
+          const presentedCredential = getCredentialMainInfo(credentialRecord.current!)
           credentialPresentedInfo.current = {
-            credentials,
-            verifierName,
-            verifierPicture,
+            ...credentialPresentedInfo.current,
+            credentials: [presentedCredential],
           }
           break
         }
         case ProofState.Abandoned: {
           setState('rejected')
-          const verifierName = getConnectionDisplayName(connection)
-          const verifierPicture = getConnectionDisplayPicture(connection)
-          const credentials = credentialRecord.current
-            ? [getCredentialMainInfo(credentialRecord.current)]
-            : []
+          const presentedCredential = getCredentialMainInfo(credentialRecord.current!)
           credentialPresentedInfo.current = {
-            credentials,
-            verifierName,
-            verifierPicture,
+            ...credentialPresentedInfo.current,
+            credentials: [presentedCredential],
           }
           removeObservableOfProofStateChangedEvent()
           removeConnectionAndProofRecord()
@@ -339,6 +352,11 @@ export const usePresentCredentialAsQR = ({
   function removeObservableOfProofStateChangedEvent() {
     log('removing observableOfProofStateChangedEvent')
     observableOfProofStateChangedEvent.current?.unsubscribe()
+  }
+
+  function removeObservableOfConnectionProfileUpdatedEvent() {
+    log('removing observableOfConnectionProfileUpdatedEvent')
+    observableOfConnectionProfileUpdatedEventEvent.current?.unsubscribe()
   }
 
   return {

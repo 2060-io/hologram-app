@@ -52,11 +52,13 @@ export default (theme: AppTheme) =>
       fontSize: theme.fontSize.md - 1,
       color: theme.colors.tertiaryText,
     },
-    verifierName: {
+    verifierNameContainer: {
       flex: 1,
+      marginLeft: 15,
+    },
+    verifierName: {
       color: theme.colors.primaryText,
       fontSize: theme.fontSize.md2,
-      marginLeft: 15,
     },
     viewInChatButton: {
       alignSelf: 'flex-end',

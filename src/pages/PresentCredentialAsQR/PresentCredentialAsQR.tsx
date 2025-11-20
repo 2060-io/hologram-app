@@ -111,12 +111,8 @@ const PresentCredentialAsQR = ({ navigation, route }: Props) => {
         </View>
       </>
     ),
-    approved: credentialPresentedInfo ? (
-      <CredentialPresented {...credentialPresentedInfo} type="approved" />
-    ) : null,
-    rejected: credentialPresentedInfo ? (
-      <CredentialPresented {...credentialPresentedInfo} type="rejected" />
-    ) : null,
+    approved: <CredentialPresented {...credentialPresentedInfo} type="approved" />,
+    rejected: <CredentialPresented {...credentialPresentedInfo} type="rejected" />,
     timeoutWaiting: (
       <View style={styles.timeoutWaitingContainer}>
         <Text style={styles.commonText}>{t('credential.noResponseFromVerifier')}</Text>
