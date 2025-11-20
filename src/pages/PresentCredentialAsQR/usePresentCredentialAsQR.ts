@@ -80,7 +80,7 @@ export const usePresentCredentialAsQR = ({
   const observableOfConnectionProfileUpdatedEventEvent = useRef<Subscription>(undefined)
   const ephemeralConnection = useRef<ConnectionRecord>(undefined)
   const defaultMediatorConnection = useRef<ConnectionRecord>(null)
-  const credentialPresentedInfo = useRef<{
+  const [credentialPresentedInfo, setPresentedCredentialInfo] = useState<{
     credentials: CredentialMainInfo[]
     verifierName: string
     verifierPicture: string
@@ -237,11 +237,11 @@ export const usePresentCredentialAsQR = ({
         const { connection } = event.payload
         const verifierName = getConnectionDisplayName(connection)
         const verifierPicture = getConnectionDisplayPicture(connection)
-        credentialPresentedInfo.current = {
-          ...credentialPresentedInfo.current,
+        setPresentedCredentialInfo(prevState => ({
+          ...prevState,
           verifierName,
           verifierPicture,
-        }
+        }))
         removeObservableOfConnectionProfileUpdatedEvent()
       })
   }
@@ -284,26 +284,24 @@ export const usePresentCredentialAsQR = ({
           const parameters: AcceptProofRequestParameters = { proofRecordId: proofRecord.id }
           addAgentActionToQueue({ type: AgentActionType.AcceptProofRequest, parameters })
           const presentedCredential = getCredentialMainInfo(credentialRecord.current!)
-          credentialPresentedInfo.current = {
-            ...credentialPresentedInfo.current,
+          setPresentedCredentialInfo(prevState => ({
+            ...prevState,
             credentials: [presentedCredential],
-          }
+          }))
           break
         }
         case ProofState.Abandoned: {
           setState('rejected')
           const presentedCredential = getCredentialMainInfo(credentialRecord.current!)
-          credentialPresentedInfo.current = {
-            ...credentialPresentedInfo.current,
+          setPresentedCredentialInfo(prevState => ({
+            ...prevState,
             credentials: [presentedCredential],
-          }
+          }))
           removeObservableOfProofStateChangedEvent()
-          removeConnectionAndProofRecord()
           break
         }
         case ProofState.Done:
           removeObservableOfProofStateChangedEvent()
-          removeConnectionAndProofRecord()
           break
         default:
           break
@@ -362,7 +360,7 @@ export const usePresentCredentialAsQR = ({
   return {
     state,
     urlForQr: urlForQr.current,
-    credentialPresentedInfo: credentialPresentedInfo.current,
+    credentialPresentedInfo,
     refreshQRCode,
   }
 }

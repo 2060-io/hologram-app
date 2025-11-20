@@ -81,7 +81,6 @@ const EphemeralCredentialPresentation = ({ navigation, route }: Props) => {
         }
         if (proofRecord.state === ProofState.Done || proofRecord.state === ProofState.Abandoned) {
           removeObservableOfProofStateChangedEvent()
-          removeConnectionAndProofRecord()
           if (proofRecord.state === ProofState.Abandoned) {
             const isAbandonedDueNoResponse = proofRecord.errorMessage?.includes(
               ProofSendProblemReportDescription.TimeoutWaitingForResponse,
@@ -89,7 +88,6 @@ const EphemeralCredentialPresentation = ({ navigation, route }: Props) => {
             if (isAbandonedDueNoResponse) {
               toast({ type: 'error', message: t('credential.youDidNotResponseWithinTime'), duration: 5000 })
             }
-            navigation.goBack()
           }
         }
       })
@@ -97,6 +95,7 @@ const EphemeralCredentialPresentation = ({ navigation, route }: Props) => {
     subscribeToProofStateChangedEvent()
     return () => {
       removeObservableOfProofStateChangedEvent()
+      removeConnectionAndProofRecord()
     }
   }, [agent])
 
