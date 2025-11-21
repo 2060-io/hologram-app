@@ -106,6 +106,14 @@ ICONS_FOLDER_DST="ios/hologram/Images.xcassets/AppIconStaging.appiconset/"
 cp -rf $ICONS_FOLDER_SRC $ICONS_FOLDER_DST
 echo -e "\t=> Set iOS App Icon Done"
 
+# ---------------------------------------------------------------------
+# Update app.json Hologram Label
+# ---------------------------------------------------------------------
+echo -e "\t=> Updating app.json Hologram Label"
+APP_JSON_FILE="app.json"
+inplace_sed "s|Hologram|$APP_NAME|g" $APP_JSON_FILE
+echo -e "\t=> Set app.json Hologram Label Done"
+
 
 # ---------------------------------------------------------------------
 # Update iOS Info-Staging.Plist Hologram Labels
@@ -114,6 +122,7 @@ echo -e "\t=> Updating iOS Info-Staging.Plist Labels"
 INFO_PLIST_FILE="ios/hologram/InfoPlist/Info-Staging.plist"
 inplace_sed "s|Hologram|$APP_NAME|g" $INFO_PLIST_FILE
 echo -e "\t=> Set iOS Info-Staging.Plist Labels Done"
+
 
 # ---------------------------------------------------------------------
 # Update Internationalization Files Hologram Labels
