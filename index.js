@@ -18,10 +18,10 @@ import { LOGS_DIRECTORY, log, logError } from '@2060/utils/log'
 // Register handler for FCM notifications when app is in quit state
 const messaging = getMessaging()
 setBackgroundMessageHandler(messaging, backgroundPushNotificationHandler)
-AppRegistry.registerComponent(appName, () => AppHeadless)
+AppRegistry.registerComponent('hologram', () => AppHeadless)
 FileLogger.configure({
   logsDirectory: LOGS_DIRECTORY,
-  logPrefix: 'hologram',
+  logPrefix: appName,
   maximumFileSize: TEN_MB,
   formatter,
 })
