@@ -133,3 +133,12 @@ ES_FILE="src/locales/es.json"
 inplace_sed "s|Hologram|$APP_NAME|g" $EN_FILE
 inplace_sed "s|Hologram|$APP_NAME|g" $ES_FILE
 echo -e "\t=> Set Internationalization Files Hologram Labels Done"
+
+
+# ---------------------------------------------------------------------
+# Update AppIcon.tsx in Base64
+# ---------------------------------------------------------------------
+echo -e "\t=> Updating App Icon in base64"
+APP_ICON_FILE="src/assets/icons/AppIcon.tsx"
+inplace_sed "s|(xlinkHref[[:space:]]*=[[:space:]]*\")[^\"]*(\")|\1${APP_ICON_BASE64}\2|g" $APP_ICON_FILE
+echo -e "\t=> Set AppIcon.tsx in Base64 Done"
