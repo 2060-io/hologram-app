@@ -22,7 +22,8 @@
     "android:prod-release": "react-native run-android --active-arch-only --mode=prodrelease --appId=io.twentysixty.mobileagent.m",
     "ios:dev": "react-native run-ios --scheme 2060Dev",
     "ios:staging": "react-native run-ios --scheme 2060Staging",
-    "ios:prod": "react-native run-ios --scheme 2060Prod"
+    "ios:prod": "react-native run-ios --scheme 2060Prod",
+    "white-label:verana": "WHITE_LABEL_DIR=verana bash ./scripts/configure_white_label.sh"
   },
   "expo": {
     "autolinking": {
