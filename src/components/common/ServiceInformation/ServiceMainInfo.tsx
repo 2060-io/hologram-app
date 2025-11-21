@@ -13,7 +13,7 @@ import VerifiedIcon from '@2060/components/common/VerifiedIcon'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { useValidateKidAgeRestrictions } from '@2060/hooks/useValidateKidAgeRestrictions'
 import { ServiceInfo, ServiceStatus } from '@2060/model'
-import { getFlagEmoji, trimText } from '@2060/utils'
+import { getFlagEmoji } from '@2060/utils'
 import { toast } from '@2060/utils/toast'
 
 type Props = {
@@ -71,9 +71,7 @@ const ServiceMainInfo = ({ serviceInfo, containerStyle }: Props) => {
       {serviceInfo.description && <Text style={[styles.text]}>{serviceInfo.description}</Text>}
       <VerifiedIcon style={styles.containerIconValidity} status={serviceInfo.status} />
       <Text style={styles.text}>
-        <Text fontFamily="EuclidCircularA-Bold" style={styles.text}>
-          {trimText(serviceInfo.did ?? '')}
-        </Text>{' '}
+        <Text fontFamily="EuclidCircularA-Bold" style={styles.text}>{`${serviceInfo.did} `}</Text>
         {serviceIs[serviceInfo.status]}
       </Text>
       {serviceProvider && (
