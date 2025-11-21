@@ -42,7 +42,7 @@ set +a
 echo -e "\t=> Updating Android App Name"
 # File path
 STRINGS_FILE_PATH="android/app/src/staging/res/values/strings.xml"
-inplace_sed "s#<string name=\"app_name\">[^<]*</string>#<string name=\"app_name\">$APP_NAME</string>#" "$STRINGS_FILE_PATH"
+inplace_sed "s#<string name=\"app_name\">[^<]*</string>#<string name=\"app_name\">$APP_NAME</string>#" $STRINGS_FILE_PATH
 echo -e "\t=> Set Android App Name Done"
 
 
@@ -52,7 +52,7 @@ echo -e "\t=> Set Android App Name Done"
 echo -e "\t=> Updating Android Splash Screen Color"
 # File path
 COLORS_FILE_PATH="android/app/src/main/res/values/colors.xml"
-inplace_sed "s|<color name=\"splashscreen_background_staging\">[^<]*</color>|<color name=\"splashscreen_background_staging\">$ANDROID_SPLASH_SCREEN_COLOR</color>|" "$COLORS_FILE_PATH"
+inplace_sed "s|<color name=\"splashscreen_background_staging\">[^<]*</color>|<color name=\"splashscreen_background_staging\">$ANDROID_SPLASH_SCREEN_COLOR</color>|" $COLORS_FILE_PATH
 echo -e "\t=> Set Android Splash Screen Color Done"
 
 
@@ -71,7 +71,7 @@ echo -e "\t=> Set Android App Icons Done"
 # ---------------------------------------------------------------------
 echo -e "\t=> Updating iOS App name"
 PLIST_FILE_PATH="ios/hologram/InfoPlist/Info-Staging.plist"
-inplace_sed "/<key>CFBundleDisplayName<\/key>/ {n; s|<string>.*</string>|<string>$APP_NAME</string>|;}" "$PLIST_FILE_PATH"
+inplace_sed "/<key>CFBundleDisplayName<\/key>/ {n; s|<string>.*</string>|<string>$APP_NAME</string>|;}" $PLIST_FILE_PATH
 echo -e "\t=> Set iOS App Name Done"
 
 
@@ -91,9 +91,9 @@ echo -e "\t=> Set iOS Splash Screen Icon Done"
 echo -e "\t=> Updating iOS Splash Screen Color."
 # File path
 STORYBOARD_FILE_PATH="ios/SplashScreenStaging.storyboard"
-inplace_sed "s|(<color[^>]*key=\"backgroundColor\"[^>]*)red=\"[^\"]*\"|\1red=\"$IOS_SPLASH_SCREEN_COLOR_R\"|g" "$STORYBOARD_FILE_PATH"
-inplace_sed "s|(<color[^>]*key=\"backgroundColor\"[^>]*)green=\"[^\"]*\"|\1green=\"$IOS_SPLASH_SCREEN_COLOR_G\"|g" "$STORYBOARD_FILE_PATH"
-inplace_sed "s|(<color[^>]*key=\"backgroundColor\"[^>]*)blue=\"[^\"]*\"|\1blue=\"$IOS_SPLASH_SCREEN_COLOR_B\"|g" "$STORYBOARD_FILE_PATH"
+inplace_sed "s|(<color[^>]*key=\"backgroundColor\"[^>]*)red=\"[^\"]*\"|\1red=\"$IOS_SPLASH_SCREEN_COLOR_R\"|g" $STORYBOARD_FILE_PATH
+inplace_sed "s|(<color[^>]*key=\"backgroundColor\"[^>]*)green=\"[^\"]*\"|\1green=\"$IOS_SPLASH_SCREEN_COLOR_G\"|g" $STORYBOARD_FILE_PATH
+inplace_sed "s|(<color[^>]*key=\"backgroundColor\"[^>]*)blue=\"[^\"]*\"|\1blue=\"$IOS_SPLASH_SCREEN_COLOR_B\"|g" $STORYBOARD_FILE_PATH
 echo -e "\t=> Set iOS Splash Screen Color Done"
 
 
@@ -105,3 +105,22 @@ ICONS_FOLDER_SRC="${whiteLabelDir}ios/Images.xcassets/AppIcon.appiconset/"
 ICONS_FOLDER_DST="ios/hologram/Images.xcassets/AppIconStaging.appiconset/"
 cp -rf $ICONS_FOLDER_SRC $ICONS_FOLDER_DST
 echo -e "\t=> Set iOS App Icon Done"
+
+
+# ---------------------------------------------------------------------
+# Update iOS Info-Staging.Plist Hologram Labels
+# ---------------------------------------------------------------------
+echo -e "\t=> Updating iOS Info-Staging.Plist Labels"
+INFO_PLIST_FILE="ios/hologram/InfoPlist/Info-Staging.plist"
+inplace_sed "s|Hologram|$APP_NAME|g" $INFO_PLIST_FILE
+echo -e "\t=> Set iOS Info-Staging.Plist Labels Done"
+
+# ---------------------------------------------------------------------
+# Update Internationalization Files Hologram Labels
+# ---------------------------------------------------------------------
+echo -e "\t=> Updating Internationalization Files Hologram Labels"
+EN_FILE="src/locales/en.json"
+ES_FILE="src/locales/es.json"
+inplace_sed "s|Hologram|$APP_NAME|g" $EN_FILE
+inplace_sed "s|Hologram|$APP_NAME|g" $ES_FILE
+echo -e "\t=> Set Internationalization Files Hologram Labels Done"
