@@ -4,7 +4,7 @@ import { FileLogger } from 'react-native-file-logger'
 
 import 'react-native-reanimated'
 import 'react-native-gesture-handler'
-import { name as appName } from './app.json'
+import { appName } from './app.json'
 import AppHeadless from './src/AppHeadless'
 import { backgroundPushNotificationHandler } from './src/services/backgroundPushNotificationHandler'
 

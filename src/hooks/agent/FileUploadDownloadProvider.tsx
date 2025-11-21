@@ -9,6 +9,7 @@ import Upload, { CompletedData, UploadOptions } from 'react-native-background-up
 import { copyFile, downloadFile } from 'react-native-fs'
 import { createChunks } from 'react-native-local-native-modules'
 
+import { appName } from '../../../app.json'
 import { generateFileName } from '../media/files'
 import { createLocalPreview } from '../media/preview'
 import { useConfig } from '../providers/ConfigProvider'
@@ -88,7 +89,7 @@ const uploadChunk = async (dataStoreUrl: string, filePath: string, fileId: strin
     notification: {
       autoClear: true,
       onProgressMessage: t('personalChat.uploadingMedia'),
-      onProgressTitle: 'Hologram',
+      onProgressTitle: appName,
     },
   }
   log(`uploading chunk with options: ${JSON.stringify(options)}`)

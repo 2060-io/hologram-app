@@ -88,7 +88,7 @@ export const useChatActions = () => {
         url,
         title,
         type: mimeType,
-        message: `${textType} from ${userProfileData?.displayName ?? 'Hologram'}`,
+        message: `${textType} from ${userProfileData?.displayName}`,
         filename: `${textType}.${subType}`,
         failOnCancel: false,
         subject: title,

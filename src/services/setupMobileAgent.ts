@@ -12,6 +12,8 @@ import {
 import { agentDependencies } from '@credo-ts/react-native'
 import Config from 'react-native-config'
 
+import { appName } from '../../app.json'
+
 import { HologramCustomLogger, HologramCustomLoggerForProd } from './HologramCustomLoggers'
 import { MobileAgent } from './agent/MobileAgent'
 import { createMobileAgent } from './agent/createMobileAgent'
@@ -55,7 +57,7 @@ export const setupMobileAgent = async (): Promise<MobileAgent> => {
   }
   const agent = createMobileAgent({
     config: {
-      label: 'Hologram',
+      label: appName,
       logger,
       autoUpdateStorageOnStartup: true,
     },
