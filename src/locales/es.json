@@ -279,7 +279,7 @@
       "refused": "Rechazada",
       "acepted": "Aceptada",
       "waitingForAcceptance": "Esperando aceptación",
-      "valuesNoRevealedYet": "Los valores se revelarán una vez sea aceptada la propuesta de presentación"
+      "valuesNoRevealedYet": "Los valores se revelarán un poco después de que aceptes esta presentación de credencial"
     },
     "connection": {
       "editName": "Editar nombre",

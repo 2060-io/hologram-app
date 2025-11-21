@@ -279,7 +279,7 @@
       "refused": "Refused",
       "accepted": "Accepted",
       "waitingForAcceptance": "Waiting for acceptance",
-      "valuesNoRevealedYet": "Values will be revealed once the presentation proposal is accepted"
+      "valuesNoRevealedYet": "Values will be revealed a little after you accept this credential presentation."
     },
     "connection": {
       "editName": "Edit name",
