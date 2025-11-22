@@ -16,7 +16,6 @@ const styles = (theme: AppTheme) =>
     },
     containerAppLogo: {
       paddingTop: 60,
-      alignItems: 'center',
     },
     title: {
       fontSize: theme.fontSize.xl + 3,
