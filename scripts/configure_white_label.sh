@@ -67,6 +67,15 @@ echo -e "\t=> Set Android App Icons Done"
 
 
 # ---------------------------------------------------------------------
+# Update Android google-services.json
+# ---------------------------------------------------------------------
+echo -e "\t=> Updating google-services.json"
+GOOGLE_SERVICES_JSON_SRC="${whiteLabelDir}android/app/google-services.json"
+GOOGLE_SERVICES_JSON_DST="android/app/google-services.json"
+cp -rf $GOOGLE_SERVICES_JSON_SRC $GOOGLE_SERVICES_JSON_DST
+echo -e "\t=> Set google-services.json Done"
+
+# ---------------------------------------------------------------------
 # Update Android applicationId
 # ---------------------------------------------------------------------
 echo -e "\t=> Updating Android applicationId"

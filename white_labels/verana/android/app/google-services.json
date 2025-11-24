@@ -1,0 +1,166 @@
+{
+  "project_info": {
+    "project_number": "97387742563",
+    "project_id": "hologram-51078",
+    "storage_bucket": "hologram-51078.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:97387742563:android:39454b6f995d2382cc7f56",
+        "android_client_info": {
+          "package_name": "io.twentysixty.verana.dev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "97387742563-53nn4brsgo35dvnkfn2s1741brj7eu2f.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "io.twentysixty.verana.dev",
+            "certificate_hash": "19382136ab890b905ee3f84a59c915b1828666fe"
+          }
+        },
+        {
+          "client_id": "97387742563-kvbutcl410juhk520nlb72jsi31kg2fi.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "io.twentysixty.verana.dev",
+            "certificate_hash": "534bdadf470003753bc7070f8250073231172cf9"
+          }
+        },
+        {
+          "client_id": "97387742563-iqua9uf3q9rrhg8mbgdp7b334dj20ugm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAtz9hRzSGffBJmYcTBwldDvXc06F5luMw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "97387742563-iqua9uf3q9rrhg8mbgdp7b334dj20ugm.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "97387742563-6veg9t5u05qr9obbokdrdb3r807tu8ck.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "io.2060.mobileagent.m"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:97387742563:android:215b02f56be02221cc7f56",
+        "android_client_info": {
+          "package_name": "io.twentysixty.verana.m"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "97387742563-5k7tta6g1kqnb3qh196fthctsac5hgbi.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "io.twentysixty.verana.m",
+            "certificate_hash": "19382136ab890b905ee3f84a59c915b1828666fe"
+          }
+        },
+        {
+          "client_id": "97387742563-do1o3lg9d8nlk8p4jt4l3m7j5florfb4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "io.twentysixty.verana.m",
+            "certificate_hash": "4d59b0693dc547654aeb665be280394254c5a116"
+          }
+        },
+        {
+          "client_id": "97387742563-iqua9uf3q9rrhg8mbgdp7b334dj20ugm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAtz9hRzSGffBJmYcTBwldDvXc06F5luMw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "97387742563-iqua9uf3q9rrhg8mbgdp7b334dj20ugm.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "97387742563-6veg9t5u05qr9obbokdrdb3r807tu8ck.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "io.2060.mobileagent.m"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:97387742563:android:880719e0994e53d6cc7f56",
+        "android_client_info": {
+          "package_name": "io.twentysixty.verana.st"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "97387742563-6dj9o9ej0o9b1q70lvihmii8bcdrhdpk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "io.twentysixty.verana.st",
+            "certificate_hash": "534bdadf470003753bc7070f8250073231172cf9"
+          }
+        },
+        {
+          "client_id": "97387742563-fia5v02b28pbabhpumc5u7bg9artrr76.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "io.twentysixty.verana.st",
+            "certificate_hash": "19382136ab890b905ee3f84a59c915b1828666fe"
+          }
+        },
+        {
+          "client_id": "97387742563-iqua9uf3q9rrhg8mbgdp7b334dj20ugm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAtz9hRzSGffBJmYcTBwldDvXc06F5luMw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "97387742563-iqua9uf3q9rrhg8mbgdp7b334dj20ugm.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "97387742563-6veg9t5u05qr9obbokdrdb3r807tu8ck.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "io.2060.mobileagent.m"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
