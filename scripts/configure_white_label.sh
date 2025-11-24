@@ -67,6 +67,23 @@ echo -e "\t=> Set Android App Icons Done"
 
 
 # ---------------------------------------------------------------------
+# Update Android applicationId
+# ---------------------------------------------------------------------
+echo -e "\t=> Updating Android applicationId"
+MAIN_ACTIVITY_CLASS_SRC="android/app/src/main/java/io/twentysixty/mobileagent/MainActivity.kt"
+MAIN_APPLICATION_CLASS_SRC="android/app/src/main/java/io/twentysixty/mobileagent/MainApplication.kt"
+BUILD_GRADLE_SRC="android/app/build.gradle"
+PROGUARD_RULES_SRC="android/app/proguard-rules.pro"
+PACKAGE_JSON_SRC="package.json"
+inplace_sed "s|io.twentysixty.mobileagent|$ANDROID_APP_ID|g" $MAIN_ACTIVITY_CLASS_SRC
+inplace_sed "s|io.twentysixty.mobileagent|$ANDROID_APP_ID|g" $MAIN_APPLICATION_CLASS_SRC
+inplace_sed "s|io.twentysixty.mobileagent|$ANDROID_APP_ID|g" $BUILD_GRADLE_SRC
+inplace_sed "s|io.twentysixty.mobileagent|$ANDROID_APP_ID|g" $PROGUARD_RULES_SRC
+inplace_sed "s|io.twentysixty.mobileagent|$ANDROID_APP_ID|g" $PACKAGE_JSON_SRC
+echo -e "\t=> Set Android applicationId Done"
+
+
+# ---------------------------------------------------------------------
 # Update iOS App Name In Strings
 # ---------------------------------------------------------------------
 echo -e "\t=> Updating iOS App name"
