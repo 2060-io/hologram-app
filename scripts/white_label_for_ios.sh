@@ -47,8 +47,5 @@ echo -e "\t=> Set iOS Info-Staging.Plist Labels Done"
 # Update iOS Bundle ID
 # ---------------------------------------------------------------------
 echo -e "\t=> Updating iOS Bundle ID"
-# force C locale to avoid "illegal byte sequence"
-export LC_ALL=C
-IOS_DIRECTORY="ios"
 grep -Rl "io.2060.mobileagent" ios | xargs sed -E -i '' "s/io\.2060\.mobileagent/${BASE_APP_ID}/g"
 echo -e "\t=> Set iOS Bundle ID Done"
