@@ -23,7 +23,9 @@
     "ios:dev": "react-native run-ios --scheme 2060Dev",
     "ios:staging": "react-native run-ios --scheme 2060Staging",
     "ios:prod": "react-native run-ios --scheme 2060Prod",
-    "white-label:verana": "WHITE_LABEL_DIR=verana bash ./scripts/configure_white_label.sh"
+    "white-label:android": "WHITE_LABEL_DIR=verana bash ./scripts/white_label_for_android.sh",
+    "white-label:ios": "WHITE_LABEL_DIR=verana bash ./scripts/white_label_for_ios.sh",
+    "white-label:react-native": "WHITE_LABEL_DIR=verana bash ./scripts/white_label_for_react_native.sh"
   },
   "expo": {
     "autolinking": {
