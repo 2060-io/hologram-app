@@ -50,7 +50,5 @@ echo -e "\t=> Updating iOS Bundle ID"
 # force C locale to avoid "illegal byte sequence"
 export LC_ALL=C
 IOS_DIRECTORY="ios"
-find "$IOS_DIRECTORY" -type f -print0 | while IFS= read -r -d '' file; do
-inplace_sed "s|io\.2060\.mobileagent|${BASE_APP_ID}|g" "$file" || echo "skipped: $file"
-done
+grep -Rl "io.2060.mobileagent" ios | xargs sed -E -i '' "s/io\.2060\.mobileagent/${BASE_APP_ID}/g"
 echo -e "\t=> Set iOS Bundle ID Done"
