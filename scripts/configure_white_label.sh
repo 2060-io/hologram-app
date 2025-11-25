@@ -57,23 +57,14 @@ echo -e "\t=> Set Android Splash Screen Color Done"
 
 
 # ---------------------------------------------------------------------
-# Update Android App Icons
+# Update Android App Icons and google-services.json
 # ---------------------------------------------------------------------
-echo -e "\t=> Updating Android App Icons"
-ANDROID_ICONS_SRC="${whiteLabelDir}android/res/"
-ANDROID_ICONS_DST="android/app/src/staging/res/"
-cp -rf $ANDROID_ICONS_SRC $ANDROID_ICONS_DST
-echo -e "\t=> Set Android App Icons Done"
+echo -e "\t=> Copying android base directory into ./android"
+ANDROID_SRC="${whiteLabelDir}android/"
+ANDROID_DST="android/"
+cp -rf $ANDROID_SRC $ANDROID_DST
+echo -e "\t=> Set Copying android base directory into ./android Done"
 
-
-# ---------------------------------------------------------------------
-# Update Android google-services.json
-# ---------------------------------------------------------------------
-echo -e "\t=> Updating google-services.json"
-GOOGLE_SERVICES_JSON_SRC="${whiteLabelDir}android/app/google-services.json"
-GOOGLE_SERVICES_JSON_DST="android/app/google-services.json"
-cp -rf $GOOGLE_SERVICES_JSON_SRC $GOOGLE_SERVICES_JSON_DST
-echo -e "\t=> Set google-services.json Done"
 
 # ---------------------------------------------------------------------
 # Update Android applicationId
@@ -84,11 +75,11 @@ MAIN_APPLICATION_CLASS_SRC="android/app/src/main/java/io/twentysixty/mobileagent
 BUILD_GRADLE_SRC="android/app/build.gradle"
 PROGUARD_RULES_SRC="android/app/proguard-rules.pro"
 PACKAGE_JSON_SRC="package.json"
-inplace_sed "s|io.twentysixty.mobileagent|$ANDROID_APP_ID|g" $MAIN_ACTIVITY_CLASS_SRC
-inplace_sed "s|io.twentysixty.mobileagent|$ANDROID_APP_ID|g" $MAIN_APPLICATION_CLASS_SRC
-inplace_sed "s|io.twentysixty.mobileagent|$ANDROID_APP_ID|g" $BUILD_GRADLE_SRC
-inplace_sed "s|io.twentysixty.mobileagent|$ANDROID_APP_ID|g" $PROGUARD_RULES_SRC
-inplace_sed "s|io.twentysixty.mobileagent|$ANDROID_APP_ID|g" $PACKAGE_JSON_SRC
+inplace_sed "s|io.twentysixty.mobileagent|$BASE_APP_ID|g" $MAIN_ACTIVITY_CLASS_SRC
+inplace_sed "s|io.twentysixty.mobileagent|$BASE_APP_ID|g" $MAIN_APPLICATION_CLASS_SRC
+inplace_sed "s|io.twentysixty.mobileagent|$BASE_APP_ID|g" $BUILD_GRADLE_SRC
+inplace_sed "s|io.twentysixty.mobileagent|$BASE_APP_ID|g" $PROGUARD_RULES_SRC
+inplace_sed "s|io.twentysixty.mobileagent|$BASE_APP_ID|g" $PACKAGE_JSON_SRC
 echo -e "\t=> Set Android applicationId Done"
 
 
@@ -99,16 +90,6 @@ echo -e "\t=> Updating iOS App name"
 PLIST_FILE_PATH="ios/hologram/InfoPlist/Info-Staging.plist"
 inplace_sed "/<key>CFBundleDisplayName<\/key>/ {n; s|<string>.*</string>|<string>$APP_NAME</string>|;}" $PLIST_FILE_PATH
 echo -e "\t=> Set iOS App Name Done"
-
-
-# ---------------------------------------------------------------------
-# Update iOS Splash Screen Icon
-# ---------------------------------------------------------------------
-echo -e "\t=> Updating iOS Splash Screen Icon."
-SPLASH_ICON_SRC="${whiteLabelDir}ios/Images.xcassets/SplashIcon.png"
-SPLASH_ICON_DST="ios/hologram/Images.xcassets/SplashScreenIconStaging.imageset/SplashIcon.png"
-cp -f $SPLASH_ICON_SRC $SPLASH_ICON_DST
-echo -e "\t=> Set iOS Splash Screen Icon Done"
 
 
 # ---------------------------------------------------------------------
@@ -124,13 +105,13 @@ echo -e "\t=> Set iOS Splash Screen Color Done"
 
 
 # ---------------------------------------------------------------------
-# Update iOS App Icon
+# Update iOS App Icon, Splash Screen Icon, ExportOptions.plist Files, Firebase Files
 # ---------------------------------------------------------------------
-echo -e "\t=> Updating iOS App Icon."
-ICONS_FOLDER_SRC="${whiteLabelDir}ios/Images.xcassets/AppIcon.appiconset/"
-ICONS_FOLDER_DST="ios/hologram/Images.xcassets/AppIconStaging.appiconset/"
-cp -rf $ICONS_FOLDER_SRC $ICONS_FOLDER_DST
-echo -e "\t=> Set iOS App Icon Done"
+echo -e "\t=> Copying ios base directory into ios/hologram/"
+IOS_FOLDER_SRC="${whiteLabelDir}ios/base/"
+IOS_FOLDER_DST="ios/hologram/"
+cp -rf $IOS_FOLDER_SRC $IOS_FOLDER_DST
+echo -e "\t=> Set Copying ios base directory into ios/hologram/ Done"
 
 
 # ---------------------------------------------------------------------
@@ -141,6 +122,18 @@ INFO_PLIST_FILE="ios/hologram/InfoPlist/Info-Staging.plist"
 inplace_sed "s|Hologram|$APP_NAME|g" $INFO_PLIST_FILE
 echo -e "\t=> Set iOS Info-Staging.Plist Labels Done"
 
+
+# ---------------------------------------------------------------------
+# Update iOS Bundle ID
+# ---------------------------------------------------------------------
+echo -e "\t=> Updating iOS Bundle ID"
+# force C locale to avoid "illegal byte sequence"
+export LC_ALL=C
+IOS_DIRECTORY="ios"
+find "$IOS_DIRECTORY" -type f -print0 | while IFS= read -r -d '' file; do
+inplace_sed "s|io\.2060\.mobileagent|${BASE_APP_ID}|g" "$file" || echo "skipped: $file"
+done
+echo -e "\t=> Set iOS Bundle ID Done"
 
 # ---------------------------------------------------------------------
 # Update AppIcon.tsx in Base64
@@ -155,7 +148,7 @@ echo -e "\t=> Set AppIcon.tsx in Base64 Done"
 # Update React Native Small App Icon
 # ---------------------------------------------------------------------
 echo -e "\t=> Updating React Native Small App Icon"
-SMALL_ICON_SRC="${whiteLabelDir}ios/Images.xcassets/AppIcon.appiconset/AppIcon@2x.png"
+SMALL_ICON_SRC="${whiteLabelDir}ios/base/Images.xcassets/AppIconStaging.appiconset/AppIcon@2x.png"
 SMALL_ICON_DST="src/assets/images/smallAppIcon.png"
 cp -f $SMALL_ICON_SRC $SMALL_ICON_DST
 echo -e "\t=> Set React Native Small App Icon Done"

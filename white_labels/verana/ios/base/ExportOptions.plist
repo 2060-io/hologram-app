@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>method</key>
+	<string>development</string>
+	<key>signingStyle</key>
+	<string>manual</string>
+	<key>provisioningProfiles</key>
+	<dict>
+		<key>YOUR_IOS_BASE_BUNDLE_IDENTIFIER_HERE.dev</key>
+		<string>YOUR_PROVISIONING_PROFILE_NAME_FOR_DEV_HERE</string>
+		<key>YOUR_IOS_BASE_BUNDLE_IDENTIFIER_HERE.dev.share</key>
+		<string>YOUR_PROVISIONING_PROFILE_NAME_FOR_SHARE_EXTENSION_DEV_HERE</string>
+		<key>YOUR_IOS_BASE_BUNDLE_IDENTIFIER_HERE.st</key>
+		<string>YOUR_PROVISIONING_PROFILE_NAME_FOR_ST_HERE</string>
+		<key>YOUR_IOS_BASE_BUNDLE_IDENTIFIER_HERE.st.share</key>
+		<string>YOUR_PROVISIONING_PROFILE_NAME_FOR_SHARE_EXTENSION_ST_HERE</string>
+		<key>YOUR_IOS_BASE_BUNDLE_IDENTIFIER_HERE.m</key>
+		<string>YOUR_PROVISIONING_PROFILE_NAME_FOR_PROD_HERE</string>
+		<key>YOUR_IOS_BASE_BUNDLE_IDENTIFIER_HERE.m.share</key>
+		<string>YOUR_PROVISIONING_PROFILE_NAME_FOR_SHARE_EXTENSION_PROD_HERE</string>
+	</dict>
+	<key>compileBitcode</key>
+	<false/>
+	<key>iCloudContainerEnvironment</key>
+	<string>Production</string>
+</dict>
+</plist>
