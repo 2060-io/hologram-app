@@ -48,3 +48,11 @@ inplace_sed "s|io.twentysixty.mobileagent|$BASE_APP_ID|g" $BUILD_GRADLE_SRC
 inplace_sed "s|io.twentysixty.mobileagent|$BASE_APP_ID|g" $PROGUARD_RULES_SRC
 inplace_sed "s|io.twentysixty.mobileagent|$BASE_APP_ID|g" $PACKAGE_JSON_SRC
 echo -e "\t=> Set Android applicationId Done"
+
+
+# ---------------------------------------------------------------------
+# Update ANDROID_FIREBASE_DEBUG_TOKEN
+# ---------------------------------------------------------------------
+echo -e "\t=> Updating ANDROID_FIREBASE_DEBUG_TOKEN"
+inplace_sed "s|^ANDROID_FIREBASE_DEBUG_TOKEN=.*|ANDROID_FIREBASE_DEBUG_TOKEN=$ANDROID_FIREBASE_DEBUG_TOKEN|" ".env.staging"
+echo -e "\t=> Set ANDROID_FIREBASE_DEBUG_TOKEN Done"

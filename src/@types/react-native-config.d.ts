@@ -9,6 +9,8 @@ declare module 'react-native-config' {
     BACKUP_NAME: string
     APP_CHECK_DEBUG_MODE: boolean
     WEBRTC_SERVER_BASE_URL: string
+    IOS_FIREBASE_DEBUG_TOKEN: string
+    ANDROID_FIREBASE_DEBUG_TOKEN: string
   }
 
   export const Config: NativeConfig
