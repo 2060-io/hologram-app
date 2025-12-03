@@ -25,7 +25,7 @@ echo -e "\t=> Set iOS Splash Screen Color Done"
 
 
 # ---------------------------------------------------------------------
-# Update iOS App Icon, Splash Screen Icon, ExportOptions.plist Files, Firebase Files
+# Update iOS App Icon, Splash Screen Icon, Firebase Files
 # ---------------------------------------------------------------------
 echo -e "\t=> Copying ios base directory into ios/hologram/"
 IOS_FOLDER_SRC="${whiteLabelDir}ios/base/"
@@ -50,8 +50,18 @@ echo -e "\t=> Updating iOS Bundle ID"
 export LC_ALL=C
 find ios -type f \( -name '*.pbxproj' -o -name '*.plist' -o -name '*.entitlements' -o -name '*.xcscheme' \) -print0 | \
   xargs -0 sed -E -i '' "s/io\.2060\.mobileagent/${BASE_APP_ID}/g"
-
 echo -e "\t=> Set iOS Bundle ID Done"
+
+
+# ---------------------------------------------------------------------
+# Update ExportOptions Files
+# ---------------------------------------------------------------------
+echo -e "\t=> Updating iOS ExportOptions Files"
+EXPORT_OPTIONS_FILE="ios/hologram/ExportOptions.plist"
+EXPORT_OPTIONS_PROD_FILE="ios/hologram/ExportOptionsProd.plist"
+inplace_sed "s|2060|"PP"|g" $EXPORT_OPTIONS_FILE
+inplace_sed "s|2060|"PP"|g" $EXPORT_OPTIONS_PROD_FILE
+echo -e "\t=> Set iOS ExportOptions Files Done"
 
 # ---------------------------------------------------------------------
 # Update IOS_FIREBASE_DEBUG_TOKEN

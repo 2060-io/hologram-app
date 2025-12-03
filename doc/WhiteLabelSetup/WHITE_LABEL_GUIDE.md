@@ -6,7 +6,7 @@ Para customizar la aplicación se necesita modificar 3 lugares claves en este pr
 
 Antes de empezar con el proceso vamos a entender un poco mejor donde y como reemplazar estos valores y que actividades debemos de realizar previo a la ejecución de los comandos.
 
-En el directorio white_labels/verana encontrarás una estrutura de directorios android y ios y un .env.example. Cada uno contiene directorios y archivos con valores por defecto que deberas de reemplazar por los tuyos.
+En el directorio white_labels/verana encontrarás una estrutura de directorios android y iOS y un .env.example. Cada uno contiene directorios y archivos con valores por defecto que deberas de reemplazar por los tuyos.
 
 ![](./images/RootStructure.png)
 
@@ -16,7 +16,7 @@ Empezemos con el directorio de android:
 
 Dentro de este directorio se encuentran alojados los recursos necesarios que necesitarás para customizar el icono de tu app y el archivo google-services.json que deberás de reemplazar con el contenido que te genera tu proyecto Firebase para android. Paso que se detallará mas adelante como hacerlo.
 
-Siguiendo con el directorio de ios encontrarás la siguiente estructura:
+Siguiendo con el directorio de iOS encontrarás la siguiente estructura:
 
 ![](./images/iOSStructure.png)
 
@@ -28,8 +28,6 @@ Dentro del directorio Images.xcassets nos encontraremos con 2 directorios:
 
 2. SplashScreenIconStaging.imageset dentro de este directorio deberás de ubicar tu splash screen icon
 
-Y por ultimo están los archivos ExportOptions.plist y ExportOptionsProd.plist dentro de estos archivos deberás de ubicar los provisioning profiles names y id respectivos. Provisioning profiles que vas a crear en la cuenta desarrolladora de apple más adelante
-
 Nota super importante: Cabe resaltar que la estructura con la que se encuentran construidos estos directorios en white_labels/verana y sus archivos corresponden al como están estructurados los recursos en un proyecto react-native tipico de esta forma el reemplazo de estos valores hacia el proyecto base va a ser mucho mas limpio, sencillo y escalable. Para resumir: Ni los nombres, ni la distribución u organización de los archivos deberán de ser modificados. Solamente su contenido deben de ser modificados.
 
 Teniendo esto muy en cuenta y claro, sigamos.
@@ -39,7 +37,7 @@ Por ultimo en el directorio se encuentra el archivo .env.example que cuenta con 
 - APP_NAME => En esta deberas de colocar el nombre con el que quieres que se vea la app. Ej: "Verana"
 - BASE_APP_ID => Aquí deberás de colocar el app id de tu app. Ej: "com.mycompany.verana"
 - ANDROID_SPLASH_SCREEN_COLOR => Aqui deberás de asignar el color de fondo en formato hexadecimal del splash screen de la app para Android. Ej: "#6A3DE7"
-- ANDROID_FIREBASE_DEBUG_TOKEN => Firebase Debug Token
+- ANDROID_FIREBASE_DEBUG_TOKEN => Firebase Debug Token For Android
 
 Nota: Debido a como iOS asigna el color de fondo de un splash screen es necesario que proveamos este color en formato sRGB
 debiendo entonces asignar sus respectivos valores para Red, Green y Blue. En el siguiente ejemplo podemos ver los valores que si los convertimos a hexadecimal obtendriamos: #6A3DE7
@@ -47,11 +45,12 @@ debiendo entonces asignar sus respectivos valores para Red, Green y Blue. En el 
 - IOS_SPLASH_SCREEN_COLOR_G="0.239"
 - IOS_SPLASH_SCREEN_COLOR_B="0.908"
 
+- IOS_FIREBASE_DEBUG_TOKEN => Firebase Debug Token For iOS
 - APP_ICON_BASE64 => Este es nuestro icono pero en formato base64 esto debido a que en la app vamos a mostrarlo por ejemplo en la pantalla de Registro. Ej: "data:image/png;base64,contentHere...."
 
 Ahora, teniendo ya definido el identificador de nuestra app, debemos saber como va a terminar siendo el identificador final de nuestra app.
 
-Contexto: Esta app cuenta con tres tipos de releases: dev, staging y prod lo que quiere decir es que si queremos y necesitamos vamos a poder tener instalado en nuestros dispositivos esta app 3 veces como apps completamente independientes cada una. Con esto claro, vamos a suponer que tenemos como identificador el valor de "org.hologram.verana" y este el que vamos a asignarle a nuestra variable de entorno BASE_APP_ID en el archivo .env.example, pero debemos de tener muy en cuenta que este "org.hologram.verana" no va a ser el identificador pleno de nuestra app sino que se la va agregar un sufijo al final (.dev, .st ó .m) dependiendo de que tipo de release hagamos a la app. Por ejemplo para el release de la app en dev el identificador final terminaria siendo "org.hologram.verana.dev", para staging seria "org.hologram.verana.st" y para producción seria "org.hologram.verana.m". Por qué es importante saber esto? Porque cuando estemos creando nuestro proyecto de Firebase y los provisioning profiles en apple estos van a pedir que les proveamos cuales van a ser los identificadores de nuestra app tanto en iOS como en Android, entonces vamos a tener que proveerles el valor completo de nuestros identificadores.
+Contexto: Esta app cuenta con tres tipos de releases: dev, staging y prod lo que quiere decir es que si queremos y necesitamos vamos a poder tener instalado en nuestros dispositivos esta app 3 veces como apps completamente independientes cada una. Con esto claro, vamos a suponer que tenemos como identificador el valor de "org.hologram.verana" y este el que vamos a asignarle a nuestra variable de entorno BASE_APP_ID en el archivo .env.example, pero debemos de tener muy en cuenta que este "org.hologram.verana" no va a ser el identificador pleno de nuestra app sino que se la va agregar un sufijo al final (.dev, .st ó .m) dependiendo de que tipo de release hagamos a la app. Por ejemplo para el release de la app en dev el identificador final terminaria siendo "org.hologram.verana.dev", para staging seria "org.hologram.verana.st" y para producción seria "org.hologram.verana.m". Por qué es importante saber esto? Porque cuando estemos creando nuestro proyecto de Firebase y los provisioning profiles en apple estos van a pedir que les proveamos cuales van a ser los identificadores de nuestra app tanto en iOS como en Android, entonces vamos a tener que proveerles el valor pleno de nuestros identificadores.
 
 ## Firebase Android
 
@@ -66,7 +65,7 @@ https://rnfirebase.io/#installation-for-react-native-cli-non-expo-projects
 Vamos al siguiente enlace:
 https://console.firebase.google.com/
 
-Creamos un proyecto Firebase y luego vamos a crear las apps para Android y iOS. Para ello vamos a ir a "Project settings"
+Creamos un proyecto Firebase y luego vamos a crear las apps para Android. Para ello vamos a ir a "Project settings"
 
 ![](./images/FirebaseProjectSettings.png)
 
@@ -94,12 +93,11 @@ De igual manera si queremos confirmar que efectivamente ese es el SHA correcto p
 keytool -list -v -keystore [full path of the android/app/debug.keystore] -alias androiddebugkey
 ```
 
-
-Luego procedemos a dar click en el boton Save para registar nuestra app con App Check. No olvidar que debemos de hacer el registro de nuestras tres apps asignando este mismo SHA en cada una y al final del proceso debemos de tener 3 apps para Android como se muestra en la siguiente imagen:
+Luego procedemos a dar click en el boton Save para registar nuestra app con App Check. No olvidar que debemos de hacer el registro de nuestras tres apps asignando este mismo SHA en cada una y al final del proceso debemos de tener 3 apps registradas para Android como se muestra en la siguiente imagen:
 
 ![](./images/FirebaseAndroidAppCheckApps.png)
 
-Aún nos falta un último paso en Android y es obtener el valor para ANDROID_FIREBASE_DEBUG_TOKEN para ello vamos a parar el cursor de nuestro mouse sobre alguna de las apps creada y presionamos el botón de los tres punticos. Para efectos practicos en un video corto vamos a hacer el paso a paso:
+Aún nos falta un último paso en Android y es obtener el valor para ANDROID_FIREBASE_DEBUG_TOKEN. Para ello vamos a parar el cursor de nuestro mouse sobre alguna de las apps creada y presionamos el botón de los tres punticos. Para efectos practicos en un video corto vamos a hacer el paso a paso:
 
 
 <video width="100%" controls>
@@ -112,14 +110,14 @@ Un tema importante es guardar el valor del token generado, estos por dos razones
 1. Vamos a hacer el mismo proceso que se hizo en el video para las otras dos apps restantes pero en vez de decirle que genere un token le vamos a asignar el valor del token que acabamos de crear, asi la app móvil usará un mismo debug token para sus 3 releases
 2. Vamos a asignarle este valor a nuestra variable de entorno ANDROID_FIREBASE_DEBUG_TOKEN en el archivo .env.example
 
-Habiendo hecho los dos puntos anteriores vamos nuevamente a Project Settings sección Your Apps seleccionamos cualquiera de las 3 apps creadas y presionamos el botón google-services.json para descargar el archivo. Una vez descargado vamos a poner el contenido de este archivo dentro del archivo white_labels/verana/android/app/google-services.json
+Habiendo hecho los dos puntos anteriores vamos nuevamente a Project Settings sección Your Apps seleccionamos cualquiera de las 3 apps creadas y presionamos el botón google-services.json para descargar el archivo. Una vez descargado vamos a poner el contenido de este archivo dentro del archivo: white_labels/verana/android/app/google-services.json
 
 Ahora solo nos falta crear el icono para nuestra app para Android. Recordemos que el conjunto de iconos que vamos a colocar en white_labels/verana/android/app/src/staging/res deben cumplir con los requisitos y estandares puestos por google para el icono de una app.
 
 Para generar el conjunto de iconos requeridos puedes usar:
 https://icon.kitchen/
 
-Esta herramienta te ayuda a generar tu icono con los recursos necesarios no solo para android sino también para iOS aunque como estamos con Android solo vamos usar los recursos para Android màs adelante los de iOS. Ahora ya sea que uses esta herramienta u otra deberas tener una carpeta res con los iconos correspondientes a las diferentes densidades de pantallas para dispostivos Android. Deberias de tener una carpeta con una estructura como la de la siguiente imagen:
+Esta herramienta te ayuda a generar tu icono con los recursos necesarios no solo para Android sino también para iOS aunque como estamos con Android solo vamos usar los recursos para Android más adelante revisaremos los de iOS. Ahora ya sea que uses esta herramienta u otra deberas tener una carpeta res con los iconos correspondientes a las diferentes densidades de pantallas para dispostivos Android. Deberias de tener una carpeta con una estructura como la de la siguiente imagen:
 
 ![](./images/AndroidAppAssetsExample.png)
 
@@ -133,7 +131,7 @@ yarn white-label:android
 
 ### iOS
 
-El proceso de setup en iOS es un poco más extenso ya que para iOS necesitamos estar asociados al Apple Developer Program y adicional debemos de crear los diferentes provisioning profiles para nuestros 3 targets (releases) de la app
+El proceso de setup en iOS es un poco más extenso ya que para iOS necesitamos estar asociados al Apple Developer Program
 
 Pero empezemos por lo primero, empezemos con la asignación deL icono de nuestro splash screen y nuestro set de iconos para la app en iOS.
 
@@ -143,11 +141,11 @@ https://www.appicon.co/ ó https://icon.kitchen/ recomiendo la última principal
 
 ![](./images/iOSIconsExample.png)
 
-En esta imagen podemos ver una gran cantidad de iconos generados pero de todas esas imagenes solo necesitamos 10 en total que son todos ellos menos los que tengan los sufijos de ~ipad.png ni ~car.png ya que la app no compila para estos. Una vez ya tengamos estos 10 assest procedemos a ubicarlos en: white_labels/verana/ios/base/Images.xcassets/AppIconStaging.appiconset.
+En esta imagen podemos ver una gran cantidad de iconos generados pero de todas esas imagenes solo necesitamos 10 en total que son todos ellos menos los que tengan los sufijos de ~ipad.png ni ~car.png ya que la app no compila para estas plataformas. Una vez ya tengamos estos 10 assest procedemos a ubicarlos en: white_labels/verana/ios/base/Images.xcassets/AppIconStaging.appiconset.
 
-Si todo sale bien deberiamos de haber sobreescrito los iconos de ejemplo que ya tenia esta directorio destino
+Si todo sale bien deberiamos de haber sobreescrito los iconos de ejemplo que ya tenia el directorio destino
 
-Ahora vamos a asingar nuestro icono de la splash screen en formato png, icono que puede tener dimesiones de 515 x 512 ó de 1024 x 1024. Una vez tengamos este png con nombre SplashIcon.png procedemos a ubicarlo en: white_labels/verana/ios/base/Images.xcassets/SplashScreenIconStaging.imageset
+Ahora vamos a asingar nuestro icono de la splash screen en formato png. Icono que puede tener dimesiones de 515 x 512 ó de 1024 x 1024. Una vez tengamos este png con nombre SplashIcon.png procedemos a ubicarlo en: white_labels/verana/ios/base/Images.xcassets/SplashScreenIconStaging.imageset
 
 Si todo sale bien deberiamos de haber sobreescrito el icono de ejemplo que ya tenia esta directorio destino
 
@@ -155,36 +153,11 @@ Con estos dos pasos ya habremos asignado tanto el icono de la app como el icono 
 
 Siguiendo con iOS debemos ahora de enrolarnos en apple developer program para poder crear una organización y dentro de esta poder crear los diferentes provisioning profiles, certificates y identifiers que se necesitan en xCode para poder compilar la app con sus diferentes capabilities (nfc tag reading, push notifications, etc)
 
-Teniendo ya la organización creada en apple developer program vamos al archivo: white_labels/verana/ios/base/ExportOptions.plist
-En este vamos a encontrar una serie de key/values como la siguiente:
-
-```xml
-<dict>
-  <key>YOUR_APP_ID_FOR_STAGING</key>
-  <string>YOUR_PROVISIONING_PROFILE_NAME_FOR_ST_HERE</string>
-  <key>YOUR_APP_ID_FOR_STAGING.share</key>
-  <string>YOUR_PROVISIONING_PROFILE_NAME_FOR_SHARE_EXTENSION_ST_HERE</string>
-</dict>
-```
-
-y que debemos de reemplazar por los valores que vamos en nuestra app. Vamos a usar un ejemplo como el siguiente:
-
-```xml
-<dict>
-    <key>org.hologram.verana.st</key>
-    <string>Verana Staging</string>
-    <key>org.hologram.verana.st.share</key>
-    <string>Verana Share Extension - Staging</string>
-</dict>
-```
-
-Recordemos que org.hologram.verana.st hace referencia al bundle id de nuestra app en el release de staging y que org.hologram.verana.st.share hace referencia al bundle id de nuestra share extension para staging. Recordemos que estos son valores del ejemplo, deberás de asignar los id correctos de tu app. Ahora, los valores que queramos colocarles a cada key en el tag <string> son completamente libres de asignar solo que se recomienda dejar un nombre relacionado al bundle id al que esta asociado asi como se mostró en el ejemplo
-
-Habiendo ya asignando estos valores en el archivo ExportOptions.plist seguimos con el setup de Firebase para iOS
+Teniendo ya la organización creada en apple developer program seguimos con el setup de Firebase para iOS
 
 ## Firebase iOS
 
-Así como en Android tuvimos que crear 3 apps también aquí debemos de crear 3 apps para iOS. Para ello vamos a ir a "Project settings"
+Así como en Android tuvimos que crear 3 apps también aquí debemos de crear 3 apps para iOS. Para ello vamos a ir nuevamente a "Project settings"
 
 ![](./images/FirebaseProjectSettings.png)
 
@@ -224,7 +197,7 @@ Habiendo hecho los dos puntos anteriores vamos nuevamente a Project Settings sec
 
 ![](./images/FirebaseiOSApps.png)
 
-En total tendremos 3 archivos descargados y ahora, debemos de ir al directorio: white_labels/verana/ios/base/Firebase dentro de este veremos tres archivos:
+En total tendremos 3 archivos descargados. Ahora, debemos de ir al directorio: white_labels/verana/ios/base/Firebase dentro de este veremos tres archivos:
 
 - GoogleService-Info-Dev.plist
 - GoogleService-Info-Staging.plist
