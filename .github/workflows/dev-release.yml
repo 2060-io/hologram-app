@@ -175,7 +175,7 @@ jobs:
           echo $RELEASE_VERSION
           cd ios
           pod install --repo-update
-          xcodebuild clean archive -workspace  hologram.xcworkspace -scheme 2060Dev -allowProvisioningUpdates -sdk iphoneos -archivePath builds/hologram.xcarchive -destination "generic/platform=iOS" | xcpretty
+          xcodebuild clean archive -workspace  hologram.xcworkspace -scheme Dev -allowProvisioningUpdates -sdk iphoneos -archivePath builds/hologram.xcarchive -destination "generic/platform=iOS" | xcpretty
           xcodebuild -exportArchive -archivePath "builds/hologram.xcarchive" -exportPath "builds" -exportOptionsPlist hologram/ExportOptions.plist | xcpretty
 
       - name: Create manifest.plist
@@ -259,7 +259,7 @@ jobs:
 
       - name: Upload app.ipa to MinIO
         run: |
-          mc cp ./ios/builds/2060Dev.ipa myminio/repository/dev/hologram-app/$NEW_RELEASE_VERSION/app.ipa
+          mc cp ./ios/builds/Dev.ipa myminio/repository/dev/hologram-app/$NEW_RELEASE_VERSION/app.ipa
           echo "app.ipa uploaded to MinIO successfully."
 
   notify-subscribers:

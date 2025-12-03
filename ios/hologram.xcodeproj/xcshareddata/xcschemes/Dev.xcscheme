@@ -24,8 +24,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "375723032A86CEF500ECF0CE"
-               BuildableName = "2060Dev.app"
-               BlueprintName = "2060Dev"
+               BuildableName = "Dev.app"
+               BlueprintName = "Dev"
                ReferencedContainer = "container:hologram.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -62,8 +62,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "375723032A86CEF500ECF0CE"
-            BuildableName = "2060Dev.app"
-            BlueprintName = "2060Dev"
+            BuildableName = "Dev.app"
+            BlueprintName = "Dev"
             ReferencedContainer = "container:hologram.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -79,8 +79,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "375723032A86CEF500ECF0CE"
-            BuildableName = "2060Dev.app"
-            BlueprintName = "2060Dev"
+            BuildableName = "Dev.app"
+            BlueprintName = "Dev"
             ReferencedContainer = "container:hologram.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
