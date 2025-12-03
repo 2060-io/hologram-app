@@ -8,17 +8,17 @@ Antes de empezar con el proceso vamos a entender un poco mejor donde y como reem
 
 En el directorio white_labels/verana encontrarás una estrutura de directorios android y iOS y un .env.example. Cada uno contiene directorios y archivos con valores por defecto que deberas de reemplazar por los tuyos.
 
-![](./images/RootStructure.png)
+![](./assets/RootStructure.png)
 
 Empezemos con el directorio de android:
 
-![](./images/AndroidStructure.png)
+![](./assets/AndroidStructure.png)
 
 Dentro de este directorio se encuentran alojados los recursos necesarios que necesitarás para customizar el icono de tu app y el archivo google-services.json que deberás de reemplazar con el contenido que te genera tu proyecto Firebase para android. Paso que se detallará mas adelante como hacerlo.
 
 Siguiendo con el directorio de iOS encontrarás la siguiente estructura:
 
-![](./images/iOSStructure.png)
+![](./assets/iOSStructure.png)
 
 Dentro del directorio Firebase/ encontraras los 3 archivos relacionados al proyecto Firebase archivos que deberás de llenar con el contenido que te genera tu proyecto Firebase para iOS. Paso que se detallará mas adelante como hacerlo.
 
@@ -67,23 +67,23 @@ https://console.firebase.google.com/
 
 Creamos un proyecto Firebase y luego vamos a crear las apps para Android. Para ello vamos a ir a "Project settings"
 
-![](./images/FirebaseProjectSettings.png)
+![](./assets/FirebaseProjectSettings.png)
 
 Estando en Project Settings tab General vamos a ver una sección llamada "Your apps" y un botón que dice "Add app" presionamos este botón y luego seleccionamos Android
 
-![](./images/FirebaseAddAndroidApp.png)
+![](./assets/FirebaseAddAndroidApp.png)
 
 Diligenciamos estos dos campos teniendo en cuenta que debemos de poner el identificador de nuestra app en Android para el release que queremos configurar para este ejemplo para el release de dev seria: org.hologram.verana.dev y el App Nickname que deseemos damos en Next, Next hasta que terminemos el flujo.
 
 Nota importante: Debido a que la app cuenta con tres tipos de releases DEBEMOS DE CREAR 3 APPS EN TOTAL PARA Android, el proceso de creación es el mismo en todas solo que debemos ir cambiando el Android package name en cada app que creemos. Al final del proceso debemos de quedar con tres apps configuradas para Android como se muestra en la siguiente imagen de ejemplo:
 
-![](./images/FirebaseAndroidApps.png)
+![](./assets/FirebaseAndroidApps.png)
 
 ### Firebase Android App Check y Debug Token
 
 Teniendo las 3 apps creadas para Android vamos a Build / App Check y damos click en el botón "Register apps". Deberíamos de ver las 3 apps que acabamos de crear para Android. Presionamos el boton "Register" en cualquiera de estas y deberiamos de ver algo como lo siguiente:
 
-![](./images/FirebaseAndroidRegisterAppCheck.png)
+![](./assets/FirebaseAndroidRegisterAppCheck.png)
 
 Ahora, para el campo SHA-256 ..... vamos a asignar el siguiente valor que hace referencia al fingerprint del archivo debug.keystore con el cual se firma la app cuando la corremos en modo debug: 20:bf:ec:c1:eb:84:8c:63:5d:d3:a5:74:66:51:42:b7:6f:a6:ea:9e:0f:48:d9:b6:1e:95:7e:02:6e:80:ae:1d
 
@@ -95,15 +95,12 @@ keytool -list -v -keystore [full path of the android/app/debug.keystore] -alias 
 
 Luego procedemos a dar click en el boton Save para registar nuestra app con App Check. No olvidar que debemos de hacer el registro de nuestras tres apps asignando este mismo SHA en cada una y al final del proceso debemos de tener 3 apps registradas para Android como se muestra en la siguiente imagen:
 
-![](./images/FirebaseAndroidAppCheckApps.png)
+![](./assets/FirebaseAndroidAppCheckApps.png)
 
 Aún nos falta un último paso en Android y es obtener el valor para ANDROID_FIREBASE_DEBUG_TOKEN. Para ello vamos a parar el cursor de nuestro mouse sobre alguna de las apps creada y presionamos el botón de los tres punticos. Para efectos practicos en un video corto vamos a hacer el paso a paso:
 
 
-<video width="100%" controls>
-  <source src="./images/FirebaseAddAndroidDebugTokens.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
+![](./assets/FirebaseAddAiOSDebugTokens.gif)
 
 Un tema importante es guardar el valor del token generado, estos por dos razones importantes:
 
@@ -119,7 +116,7 @@ https://icon.kitchen/
 
 Esta herramienta te ayuda a generar tu icono con los recursos necesarios no solo para Android sino también para iOS aunque como estamos con Android solo vamos usar los recursos para Android más adelante revisaremos los de iOS. Ahora ya sea que uses esta herramienta u otra deberas tener una carpeta res con los iconos correspondientes a las diferentes densidades de pantallas para dispostivos Android. Deberias de tener una carpeta con una estructura como la de la siguiente imagen:
 
-![](./images/AndroidAppAssetsExample.png)
+![](./assets/AndroidAppAssetsExample.png)
 
 Teniendo estos assest de nuestro icono para android procedemos a reemplazar todo lo que tengamos dentro del directorio res en: white_labels/verana/android/app/src/staging/res quedando con una estructura igual a la que tenemos en la imagen, lo unico que se hizo es reemplazar archivos y sus contenidos pero la estructura debe de mantenerse igual
 
@@ -139,7 +136,7 @@ Para el icono de nuestra vamos a usar alguna herramienta para generación de ico
 
 https://www.appicon.co/ ó https://icon.kitchen/ recomiendo la última principalmente ya que los nombres de los pngs creados coinciden con los que tiene la app originalmente y adicional sus nombres son dicientes con las dimensiones de cada icono. Si usamos icon.kitchen al descargar el set de iconos vamos a ver una estructura como la siguiente:
 
-![](./images/iOSIconsExample.png)
+![](./assets/iOSIconsExample.png)
 
 En esta imagen podemos ver una gran cantidad de iconos generados pero de todas esas imagenes solo necesitamos 10 en total que son todos ellos menos los que tengan los sufijos de ~ipad.png ni ~car.png ya que la app no compila para estas plataformas. Una vez ya tengamos estos 10 assest procedemos a ubicarlos en: white_labels/verana/ios/base/Images.xcassets/AppIconStaging.appiconset.
 
@@ -159,33 +156,30 @@ Teniendo ya la organización creada en apple developer program seguimos con el s
 
 Así como en Android tuvimos que crear 3 apps también aquí debemos de crear 3 apps para iOS. Para ello vamos a ir nuevamente a "Project settings"
 
-![](./images/FirebaseProjectSettings.png)
+![](./assets/FirebaseProjectSettings.png)
 
 Estando en Project Settings tab General vamos a ver una sección llamada "Your apps" y un botón que dice "Add app" presionamos este botón y luego seleccionamos Apple iOS
 
-![](./images/FirebaseAppiOSApp.png)
+![](./assets/FirebaseAppiOSApp.png)
 
 Como podemos ver en la imagen va a ser un proceso practicamente igual al que hicimos para Android, asignamos el app bundle id que para este ejemplo para el release de dev también sería: org.hologram.verana.dev y el App nickname que deseemos, el campo App Store ID de momento no lo dilegenciamos y luego... Next Next hasta terminar el flujo. Recordemos que debemos de tener 3 apps para iOS creadas al final del proceso y debemos de tener 3 apps para iOS asi como se muestra en la siguiente imagen:
 
-![](./images/FirebaseiOSApps.png)
+![](./assets/FirebaseiOSApps.png)
 
 ### Firebase iOS App Check y Debug Token
 
 Teniendo las 3 apps creadas para iOS vamos a Build / App Check y damos click en el botón "Register apps". Deberíamos de ver las 3 apps que acabamos de crear para iOS. Presionamos el boton "Register" en cualquiera de estas y luego en la opción "App Attest" y deberiamos de ver algo como lo siguiente:
 
-![](./images/FirebaseiOSRegisterAppCheck.png)
+![](./assets/FirebaseiOSRegisterAppCheck.png)
 
 Para el campo Team ID vamos a colocar nuestro Team ID in the Apple Member Center. Pon el cursor del mouse sobre el signo de interrogación para ver la ayuda. Hacemos asi para las 3 apps en iOS y al final del proceso debemos de tener 3 apps para iOS registradas en App Check como se muestra en la siguiente imagen:
 
-![](./images/FirebaseiOSAppCheckApps.png)
+![](./assets/FirebaseiOSAppCheckApps.png)
 
 Aún nos falta un último paso en iOS asi como lo hicimos en Android y es obtener el valor para IOS_FIREBASE_DEBUG_TOKEN para ello vamos a parar el cursor de nuestro mouse sobre alguna de las apps creada y presionamos el botón de los tres punticos. Para efectos practicos en un video corto vamos a hacer el paso a paso:
 
 
-<video width="100%" controls>
-  <source src="./images/FirebaseAddAiOSDebugTokens.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
+![](./assets/FirebaseAddAndroidDebugTokens.gif)
 
 Un tema importante es guardar el valor del token generado, estos por dos razones importantes:
 
@@ -195,7 +189,7 @@ Un tema importante es guardar el valor del token generado, estos por dos razones
 
 Habiendo hecho los dos puntos anteriores vamos nuevamente a Project Settings sección Your Apps tenemos que por cada app de iOS presionar el botón GoogleService-Info.plist para descargar el .plist de cada una.
 
-![](./images/FirebaseiOSApps.png)
+![](./assets/FirebaseiOSApps.png)
 
 En total tendremos 3 archivos descargados. Ahora, debemos de ir al directorio: white_labels/verana/ios/base/Firebase dentro de este veremos tres archivos:
 
