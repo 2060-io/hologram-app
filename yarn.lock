@@ -68,10 +68,10 @@
     tsyringe "^4.8.0"
     uuid "^9.0.0"
 
-"@2060.io/credo-ts-didcomm-shorten-url@0.0.6":
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/@2060.io/credo-ts-didcomm-shorten-url/-/credo-ts-didcomm-shorten-url-0.0.6.tgz#49b3d4bb6a25fdfd339b193a232050953b263218"
-  integrity sha512-yEhcJdrlOZiqAqtNHja8lZmGtA7k9njsyncvyniKr2czRs9DYP8pJR27IEe/SDQfkunKRCkxbYlPRM2p5d+pZQ==
+"@2060.io/credo-ts-didcomm-shorten-url@0.0.11":
+  version "0.0.11"
+  resolved "https://registry.yarnpkg.com/@2060.io/credo-ts-didcomm-shorten-url/-/credo-ts-didcomm-shorten-url-0.0.11.tgz#d03eac47c5fa973e9853304082e6a55e19e8aa17"
+  integrity sha512-YDpjBub2PzXZodFu9cJQQTsf3FI9+2Qx992/oQ1/7w2jp5R87bT7IZf/KtkCpX+SDaOrvw071z9SrkOCVIBSCQ==
   dependencies:
     class-transformer "0.5.1"
     class-validator "0.14.1"

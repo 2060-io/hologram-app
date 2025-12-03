@@ -1,7 +1,8 @@
 import {
-  DidCommInvalidateShortenedUrlReceivedEvent,
+  DidCommShortenedUrlInvalidatedEvent,
   DidCommShortenedUrlReceivedEvent,
   DidCommShortenUrlEventTypes,
+  DidCommShortenUrlRepository,
 } from '@2060.io/credo-ts-didcomm-shorten-url'
 import { ConnectionProfileUpdatedEvent, ProfileEventTypes } from '@2060.io/credo-ts-didcomm-user-profile'
 import { AnonCredsPresentationPreviewAttribute } from '@credo-ts/anoncreds'
@@ -137,6 +138,7 @@ export const usePresentCredentialAsQR = ({
 
   function requestShortenedUrl() {
     if (!defaultMediatorConnection.current?.id || !invitationUrl.current) return
+    log('Requesting shortened URL')
     agent?.modules.shortenUrl.requestShortenedUrl({
       connectionId: defaultMediatorConnection.current.id,
       url: invitationUrl.current,
@@ -150,8 +152,10 @@ export const usePresentCredentialAsQR = ({
   }
 
   function onDidCommShortenedUrlReceived(event: DidCommShortenedUrlReceivedEvent) {
-    const shortenedUrlToBase64 = TypedArrayEncoder.toBase64URL(Buffer.from(event.payload.shortenedUrl))
-    shortenedUrl.current = event.payload.shortenedUrl
+    log('DidCommShortenedUrlReceivedEvent received', event)
+    const { shortenUrlRecord } = event.payload
+    const shortenedUrlToBase64 = TypedArrayEncoder.toBase64URL(Buffer.from(shortenUrlRecord.shortenedUrl!))
+    shortenedUrl.current = shortenUrlRecord.shortenedUrl
     urlForQr.current = `${Config.BASE_INVITATION_URL}?_url=${shortenedUrlToBase64}`
     setState('created')
     removeDidCommShortenedUrlReceivedListener()
@@ -162,29 +166,33 @@ export const usePresentCredentialAsQR = ({
   function refreshQRCode() {
     setState('creating')
     invalidateCurrentShortenedUrl()
-    agent?.events.on<DidCommInvalidateShortenedUrlReceivedEvent>(
-      DidCommShortenUrlEventTypes.DidCommInvalidateShortenedUrlReceived,
+    agent?.events.on<DidCommShortenedUrlInvalidatedEvent>(
+      DidCommShortenUrlEventTypes.DidCommShortenedUrlInvalidated,
       onDidCommShortenedUrlInvalidated,
     )
   }
 
-  function invalidateCurrentShortenedUrl() {
+  async function invalidateCurrentShortenedUrl() {
     if (!agent) return
-    if (shortenedUrl.current && defaultMediatorConnection.current) {
-      const options = {
-        connectionId: defaultMediatorConnection.current.id,
+    if (shortenedUrl.current) {
+      const shortenUrlRepository = agent.dependencyManager.resolve(DidCommShortenUrlRepository)
+      const record = await shortenUrlRepository.getSingleByQuery(agent.context, {
         shortenedUrl: shortenedUrl.current,
-      }
-      log('Invalidating ShortenedUrl:', JSON.stringify(options))
-      agent.modules.shortenUrl.invalidateShortenedUrl(options)
+      })
+      log('Invalidating ShortenedUrl for record id', record.id)
+      agent.modules.shortenUrl.invalidateShortenedUrl({ recordId: record.id })
       shortenedUrl.current = undefined
     }
   }
 
-  function onDidCommShortenedUrlInvalidated(event: DidCommInvalidateShortenedUrlReceivedEvent) {
-    log('DidCommInvalidateShortenedUrlReceivedEvent', event)
+  function onDidCommShortenedUrlInvalidated(event: DidCommShortenedUrlInvalidatedEvent) {
+    log('DidCommShortenedUrlInvalidatedEvent', event)
     removeDidCommShortenedUrlInvalidatedListener()
     requestShortenedUrl()
+    if (agent) {
+      const shortenUrlRepository = agent.dependencyManager.resolve(DidCommShortenUrlRepository)
+      shortenUrlRepository.deleteById(agent.context, event.payload.shortenUrlRecord.id)
+    }
   }
 
   function validateShortenedUrlStatus() {
@@ -335,9 +343,9 @@ export const usePresentCredentialAsQR = ({
   }
 
   function removeDidCommShortenedUrlInvalidatedListener() {
-    log('removing DidCommInvalidateShortenedUrlReceivedEvent')
-    agent?.events.off<DidCommInvalidateShortenedUrlReceivedEvent>(
-      DidCommShortenUrlEventTypes.DidCommInvalidateShortenedUrlReceived,
+    log('removing DidCommShortenedUrlInvalidatedEvent')
+    agent?.events.off<DidCommShortenedUrlInvalidatedEvent>(
+      DidCommShortenUrlEventTypes.DidCommShortenedUrlInvalidated,
       onDidCommShortenedUrlInvalidated,
     )
   }
