@@ -86,7 +86,7 @@ The `.env.example` file contains the following variables:
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `APP_NAME` | Display name of your app | `"Verana"` |
-| `BASE_APP_ID` | Base bundle identifier | `"com.mycompany.verana"` |
+| `BASE_APP_ID` | Base bundle identifier | `"org.hologram.verana"` |
 | `ANDROID_SPLASH_SCREEN_COLOR` | Splash screen background color (hex) | `"#6A3DE7"` |
 | `ANDROID_FIREBASE_DEBUG_TOKEN` | Firebase Debug Token for Android | - |
 | `IOS_SPLASH_SCREEN_COLOR_R` | iOS splash background - Red (sRGB) | `"0.417"` |
