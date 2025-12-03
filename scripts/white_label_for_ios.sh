@@ -47,5 +47,15 @@ echo -e "\t=> Set iOS Info-Staging.Plist Labels Done"
 # Update iOS Bundle ID
 # ---------------------------------------------------------------------
 echo -e "\t=> Updating iOS Bundle ID"
-grep -Rl "io.2060.mobileagent" ios | xargs sed -E -i '' "s/io\.2060\.mobileagent/${BASE_APP_ID}/g"
+export LC_ALL=C
+find ios -type f \( -name '*.pbxproj' -o -name '*.plist' -o -name '*.entitlements' -o -name '*.xcscheme' \) -print0 | \
+  xargs -0 sed -E -i '' "s/io\.2060\.mobileagent/${BASE_APP_ID}/g"
+
 echo -e "\t=> Set iOS Bundle ID Done"
+
+# ---------------------------------------------------------------------
+# Update IOS_FIREBASE_DEBUG_TOKEN
+# ---------------------------------------------------------------------
+echo -e "\t=> Updating IOS_FIREBASE_DEBUG_TOKEN"
+inplace_sed "s|^IOS_FIREBASE_DEBUG_TOKEN=.*|IOS_FIREBASE_DEBUG_TOKEN=$IOS_FIREBASE_DEBUG_TOKEN|" ".env.staging"
+echo -e "\t=> Set IOS_FIREBASE_DEBUG_TOKEN Done"
