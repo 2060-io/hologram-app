@@ -270,8 +270,16 @@ This script will automatically apply all your Android customizations to the proj
 
 ### Prerequisites
 
-- Enrollment in **Apple Developer Program** is required
+- **Apple Developer Program enrollment is required** for the account you'll use
 - An active organization in Apple Developer
+
+> ⚠️ **IMPORTANT**: This app uses advanced capabilities (Push Notifications, App Check, NFC Tag Reading) that require a **paid Apple Developer Program membership** ($99/year for individuals or organizations).
+>
+> 📖 **Compare membership options**: [Apple Developer Program Comparison](https://developer.apple.com/support/compare-memberships/)
+>
+> 📖 **Enroll in the Apple Developer Program**: [Apple Become a member](https://developer.apple.com/programs/enroll/)
+>
+> The free Apple Developer account is **not sufficient** for building and distributing this app.
 
 ---
 
