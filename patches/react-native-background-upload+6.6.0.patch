@@ -1,5 +1,5 @@
 diff --git a/node_modules/react-native-background-upload/android/build.gradle b/node_modules/react-native-background-upload/android/build.gradle
-index fa6963f8..7a3c908a 100755
+index fa6963f..7a3c908 100755
 --- a/node_modules/react-native-background-upload/android/build.gradle
 +++ b/node_modules/react-native-background-upload/android/build.gradle
 @@ -1,9 +1,9 @@
@@ -34,3 +34,16 @@ index fa6963f8..7a3c908a 100755
  
      implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
  }
+diff --git a/node_modules/react-native-background-upload/android/src/main/java/com/vydia/RNUploader/UploaderModule.kt b/node_modules/react-native-background-upload/android/src/main/java/com/vydia/RNUploader/UploaderModule.kt
+index 0258e95..800fbcd 100644
+--- a/node_modules/react-native-background-upload/android/src/main/java/com/vydia/RNUploader/UploaderModule.kt
++++ b/node_modules/react-native-background-upload/android/src/main/java/com/vydia/RNUploader/UploaderModule.kt
+@@ -48,7 +48,7 @@ class UploaderModule(val reactContext: ReactApplicationContext) : ReactContextBa
+         params.putString("size", fileInfo.length().toString()) //use string form of long because there is no putLong and converting to int results in a max size of 17.2 gb, which could happen.  Javascript will need to convert it to a number
+         val extension = MimeTypeMap.getFileExtensionFromUrl(path)
+         params.putString("extension", extension)
+-        val mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension.toLowerCase())
++        val mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension.lowercase())
+         params.putString("mimeType", mimeType)
+       }
+       promise.resolve(params)
