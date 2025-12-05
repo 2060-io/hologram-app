@@ -4,6 +4,7 @@ import { View, Linking, TouchableOpacity, ViewStyle } from 'react-native'
 
 import FullScreenImage from '../FullScreenImage'
 
+import Did from './Did'
 import getStyles from './styles'
 
 import Avatar from '@2060/components/common/Avatar'
@@ -12,8 +13,8 @@ import Text from '@2060/components/common/Text'
 import VerifiedIcon from '@2060/components/common/VerifiedIcon'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { useValidateKidAgeRestrictions } from '@2060/hooks/useValidateKidAgeRestrictions'
-import { ServiceInfo, ServiceStatus } from '@2060/model'
-import { getFlagEmoji, trimText } from '@2060/utils'
+import { ServiceInfo } from '@2060/model'
+import { getFlagEmoji } from '@2060/utils'
 import { toast } from '@2060/utils/toast'
 
 type Props = {
@@ -45,13 +46,6 @@ const ServiceMainInfo = ({ serviceInfo, containerStyle }: Props) => {
     }
   }, [])
 
-  const serviceIs: Record<ServiceStatus, string> = {
-    verified: t('invitation.isATrustedService'),
-    'verified-test': t('invitation.notTrustedService'),
-    'not-trusted': t('invitation.notTrustedService'),
-    invalid: t('invitation.notFoundService'),
-  }
-
   return (
     <View style={[styles.containerCardIssuerInfo, containerStyle]}>
       <FullScreenImage
@@ -70,12 +64,7 @@ const ServiceMainInfo = ({ serviceInfo, containerStyle }: Props) => {
       </Text>
       {serviceInfo.description && <Text style={[styles.text]}>{serviceInfo.description}</Text>}
       <VerifiedIcon style={styles.containerIconValidity} status={serviceInfo.status} />
-      <Text style={styles.text}>
-        <Text fontFamily="EuclidCircularA-Bold" style={styles.text}>
-          {trimText(serviceInfo.did ?? '')}
-        </Text>{' '}
-        {serviceIs[serviceInfo.status]}
-      </Text>
+      <Did did={serviceInfo.did} serviceInfoStatus={serviceInfo.status} />
       {serviceProvider && (
         <View style={styles.serviceProviderInfoContainer}>
           <Text style={styles.text}>{t('invitation.serviceProvider')}</Text>
