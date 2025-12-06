@@ -63,6 +63,7 @@ const withUserInvitation = (UserInvitationComponent: ElementType<UserInvitationP
         try {
           const newOutOfBandRecord = await createInvitation(agent, {
             label: userProfileData?.displayName,
+            multiUseInvitation: true,
           })
           setInvitation({
             displayName: newOutOfBandRecord.outOfBandInvitation.label ?? 'Unlabeled',

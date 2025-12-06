@@ -64,28 +64,24 @@ const CredentialDetails = ({ route, navigation }: Props) => {
       onPress: () => setShowConfirmationDeleteModal(true),
     },
   ]
-
+  if (!credentialDetails) return null
   return (
     <>
       <SafeAreaView style={styles.container}>
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.subContainer}>
-            {credentialDetails && (
-              <>
-                <CredentialDetailsComponent
-                  credentialDetails={credentialDetails}
-                  middleInfo={
-                    <View style={styles.optionsContainer}>
-                      <OptionsList options={options} />
-                    </View>
-                  }
-                />
-                <Text fontFamily="EuclidCircularA-SemiBold" style={styles.titleIssuerInfo}>
-                  {t('credentialOffer.issuerInformation')}
-                </Text>
-                <ServiceInformation did={did} initialServiceInfo={serviceInfo.current} />
-              </>
-            )}
+            <CredentialDetailsComponent
+              credentialDetails={credentialDetails}
+              middleInfo={
+                <View style={styles.optionsContainer}>
+                  <OptionsList options={options} />
+                </View>
+              }
+            />
+            <Text fontFamily="EuclidCircularA-SemiBold" style={styles.titleIssuerInfo}>
+              {t('credentialOffer.issuerInformation')}
+            </Text>
+            <ServiceInformation did={did} initialServiceInfo={serviceInfo.current} />
           </View>
         </ScrollView>
       </SafeAreaView>

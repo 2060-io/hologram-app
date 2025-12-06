@@ -8,7 +8,7 @@ import { UserInvitationProps } from './UserInvitationProps'
 import getStyles from './styles'
 import withUserInvitation from './withUserInvitation'
 
-import { Avatar, Text, SvgIcon } from '@2060/components/common'
+import { Avatar, Text, MainButton } from '@2060/components/common'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { getGlobalStyles } from '@2060/styles'
 import { logError } from '@2060/utils'
@@ -98,12 +98,7 @@ const UserInvitation = ({
             </View>
             <Text style={styles.pressRefreshText}>{t('invitation.pressRefresh')}</Text>
           </View>
-          <TouchableOpacity style={styles.containerBtnShare} activeOpacity={0.6} onPress={shareInvitation}>
-            <SvgIcon name="shareSocial" fill={theme.colors.white} />
-            <Text fontFamily="EuclidCircularA-Medium" style={styles.btnShareText}>
-              {t('connection.share')}
-            </Text>
-          </TouchableOpacity>
+          <MainButton onPress={shareInvitation} text={t('connection.share')} iconName="shareSocial" />
         </View>
       </ScrollView>
     </SafeAreaView>

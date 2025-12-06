@@ -24,10 +24,9 @@ import { IssuerInfo, VerifierInfo } from '@2060/model/ServiceInfo'
 export type CredentialMainInfo = {
   id: string
   recordId: string
-  createdAt: Date
+  createdAt?: Date
   schemaName: string
   issuer: IssuerInfo
-  dateLabel?: string
 }
 
 export type CredentialDetailsForDisplay = {

@@ -1,15 +1,12 @@
-import React, { useRef, useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import React from 'react'
 import { View } from 'react-native'
 
-import CredentialAttribute from '../CredentialAttribute'
+import CredentialAttributes from '../CredentialAttributes'
 
-import getStyles from './styles'
+import styles from './styles'
 
-import { CredentialMainInformation, FullScreenImage, Text } from '@2060/components/common'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
+import { CredentialMainInformation } from '@2060/components/common'
 import { CredentialDetailsForDisplay } from '@2060/services/agent/display'
-import { formatCredentialSubject } from '@2060/services/agent/formatCredentialSubject'
 
 type Props = {
   credentialDetails: CredentialDetailsForDisplay
@@ -17,47 +14,14 @@ type Props = {
 }
 
 const CredentialDetails = ({ credentialDetails, middleInfo }: Props) => {
-  const { t } = useTranslation()
-  const theme = useTheme()
-  const styles = getStyles(theme)
-  const attributesSections = formatCredentialSubject({ subject: credentialDetails.attributes })
-  const [showImageFullScreen, setShowImageFullScreen] = useState(false)
-  const biggerImageRef = useRef<string | null>(null)
-
-  const onPressDetailImage = (imageUrl: string) => {
-    biggerImageRef.current = imageUrl
-    setShowImageFullScreen(true)
-  }
-  const closeFullScreenImage = () => setShowImageFullScreen(false)
-
   return (
     <View style={styles.container}>
-      <FullScreenImage
-        showFullScreenImage={showImageFullScreen}
-        closeFullScreenImage={closeFullScreenImage}
-        imageUri={biggerImageRef.current!}
-      />
       <CredentialMainInformation
         credentialMainInfo={credentialDetails.mainInfo}
         containerStyle={styles.credentialMainInfoContainer}
       />
       {middleInfo}
-      {attributesSections.map((section, index) => (
-        <View key={index}>
-          <Text style={styles.title} fontFamily="EuclidCircularA-SemiBold">
-            {section.title ?? t('credentialOffer.claims')}
-          </Text>
-          <View style={styles.sectionRowsContainer}>
-            {section.rows.map(rowDetail => (
-              <CredentialAttribute
-                key={rowDetail.key}
-                attribute={rowDetail}
-                onPressDetailImage={onPressDetailImage}
-              />
-            ))}
-          </View>
-        </View>
-      ))}
+      <CredentialAttributes attributes={credentialDetails.attributes} />
     </View>
   )
 }
