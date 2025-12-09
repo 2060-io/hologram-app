@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { SafeAreaView, TouchableOpacity } from 'react-native'
+import { TouchableOpacity, View } from 'react-native'
 import DatePicker from 'react-native-date-picker'
 
 import SetPIN from './SetPIN'
@@ -115,7 +115,7 @@ const ParentalControl = () => {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <SetPIN
         visible={openSetControlPIN}
         mode={isParentalControlEnabled ? 'enable' : 'disable'}
@@ -142,7 +142,7 @@ const ParentalControl = () => {
       />
       <Text style={styles.parentalControlMessage}>{t('parentalControl.message')}</Text>
       <OptionsList options={options} />
-    </SafeAreaView>
+    </View>
   )
 }
 

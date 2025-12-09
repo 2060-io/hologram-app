@@ -1,6 +1,7 @@
 import React from 'react'
 import { Trans, useTranslation } from 'react-i18next'
-import { SafeAreaView, TouchableOpacity, View } from 'react-native'
+import { TouchableOpacity, View } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 import getStyles from './styles'
 
@@ -25,7 +26,7 @@ const EMrtdInstructions = ({ scan, dismissPopup, refuse }: Props) => {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['bottom', 'top']}>
       <View style={styles.subContainer}>
         <View style={styles.flex1}>
           <View style={styles.headerContainer}>

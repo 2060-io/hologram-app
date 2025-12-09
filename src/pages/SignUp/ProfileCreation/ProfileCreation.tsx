@@ -3,8 +3,9 @@ import { CommonActions } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import React, { useState, useEffect, useCallback, useTransition } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, SafeAreaView, Platform } from 'react-native'
+import { View, Platform } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 import getStyles from './styles'
 
@@ -107,7 +108,7 @@ const ProfileCreation = ({ navigation }: Props) => {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['bottom']}>
       <ModalLoading visible={isRegistering} />
       <KeyboardAwareScrollView
         showsVerticalScrollIndicator={false}

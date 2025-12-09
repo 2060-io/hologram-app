@@ -1,7 +1,7 @@
 import { Skeleton } from 'moti/skeleton'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, SafeAreaView, ScrollView, TouchableOpacity } from 'react-native'
+import { View, ScrollView, TouchableOpacity } from 'react-native'
 import { uses24HourClock } from 'react-native-localize'
 
 import getStyles from './styles'
@@ -46,7 +46,7 @@ const CredentialPresented = ({
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.subContainer}>
           {header[type]}
@@ -103,7 +103,7 @@ const CredentialPresented = ({
           </View>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   )
 }
 

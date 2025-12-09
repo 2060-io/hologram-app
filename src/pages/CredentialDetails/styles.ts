@@ -9,7 +9,7 @@ const styles = (theme: AppTheme) =>
     },
     subContainer: {
       flex: 1,
-      paddingVertical: 15,
+      marginTop: 15,
       paddingHorizontal: 15,
     },
     optionsContainer: {

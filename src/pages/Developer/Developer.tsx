@@ -2,7 +2,7 @@ import { CacheModuleConfig } from '@credo-ts/core'
 import { StackScreenProps } from '@react-navigation/stack'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { SafeAreaView, Alert, View, TouchableOpacity } from 'react-native'
+import { Alert, View, TouchableOpacity } from 'react-native'
 import { FileLogger } from 'react-native-file-logger'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import Share from 'react-native-share'
@@ -246,65 +246,63 @@ const Developer = ({ navigation }: Props) => {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
-        <View style={styles.subContainer}>
-          <ModalLoading visible={isDeletingWallet} />
-          <OptionsList options={options} />
-          <Text fontFamily="EuclidCircularA-Medium" style={styles.title}>
-            {t('settings.developmentEnvironments')}
-          </Text>
-          {isEditionCustomDevEnvMode && (
-            <View style={styles.editionCustomDevEnvContainer}>
-              <Text fontFamily="EuclidCircularA-SemiBold" style={styles.title}>
-                {currentDevEnv?.key && devEnvPlaceholder[currentDevEnv.key]}
+    <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
+      <View style={styles.subContainer}>
+        <ModalLoading visible={isDeletingWallet} />
+        <OptionsList options={options} />
+        <Text fontFamily="EuclidCircularA-Medium" style={styles.title}>
+          {t('settings.developmentEnvironments')}
+        </Text>
+        {isEditionCustomDevEnvMode && (
+          <View style={styles.editionCustomDevEnvContainer}>
+            <Text fontFamily="EuclidCircularA-SemiBold" style={styles.title}>
+              {currentDevEnv?.key && devEnvPlaceholder[currentDevEnv.key]}
+            </Text>
+            <View style={styles.rowContainer}>
+              <TextInput
+                ref={customDevInputRef}
+                value={tempCustomDevEnvValue}
+                onChangeText={setTempCustomDevEnvValue}
+                placeholder={t('general.valueHere')}
+                style={styles.textInput}
+              />
+              <Text
+                disabled={!tempCustomDevEnvValue?.length}
+                onPress={onSaveCustomDevEnv}
+                fontFamily="EuclidCircularA-SemiBold"
+                style={styles.textButton}
+              >
+                {t('general.save')}
               </Text>
-              <View style={styles.rowContainer}>
-                <TextInput
-                  ref={customDevInputRef}
-                  value={tempCustomDevEnvValue}
-                  onChangeText={setTempCustomDevEnvValue}
-                  placeholder={t('general.valueHere')}
-                  style={styles.textInput}
-                />
-                <Text
-                  disabled={!tempCustomDevEnvValue?.length}
-                  onPress={onSaveCustomDevEnv}
-                  fontFamily="EuclidCircularA-SemiBold"
-                  style={styles.textButton}
-                >
-                  {t('general.save')}
-                </Text>
-              </View>
+            </View>
+          </View>
+        )}
+        <OptionsList options={devEnvsForRender} />
+        <ModalBottomHalf visible={displayDevEnvOptions} onClose={changeDevEnvOptionsVisibility}>
+          {currentDevEnv && (
+            <View style={styles.devEnvsModalContainer}>
+              <Text fontFamily="EuclidCircularA-SemiBold" style={styles.title}>
+                {devEnvPlaceholder[currentDevEnv.key]}
+              </Text>
+              {currentDevEnv.values.map(option => {
+                const currentDevEnvSelected = devEnvs?.[currentDevEnv.key]
+                const isSelected = option === currentDevEnvSelected
+                return (
+                  <TouchableOpacity
+                    key={option}
+                    style={{ ...styles.optionContainer, ...(isSelected && styles.optionSelected) }}
+                    onPress={() => onSelectDevEnvOption(currentDevEnv.key, option)}
+                  >
+                    <Text style={styles.devEnvText}>{option}</Text>
+                  </TouchableOpacity>
+                )
+              })}
+              {renderCustomDevEnv()}
             </View>
           )}
-          <OptionsList options={devEnvsForRender} />
-          <ModalBottomHalf visible={displayDevEnvOptions} onClose={changeDevEnvOptionsVisibility}>
-            {currentDevEnv && (
-              <View style={styles.devEnvsModalContainer}>
-                <Text fontFamily="EuclidCircularA-SemiBold" style={styles.title}>
-                  {devEnvPlaceholder[currentDevEnv.key]}
-                </Text>
-                {currentDevEnv.values.map(option => {
-                  const currentDevEnvSelected = devEnvs?.[currentDevEnv.key]
-                  const isSelected = option === currentDevEnvSelected
-                  return (
-                    <TouchableOpacity
-                      key={option}
-                      style={{ ...styles.optionContainer, ...(isSelected && styles.optionSelected) }}
-                      onPress={() => onSelectDevEnvOption(currentDevEnv.key, option)}
-                    >
-                      <Text style={styles.devEnvText}>{option}</Text>
-                    </TouchableOpacity>
-                  )
-                })}
-                {renderCustomDevEnv()}
-              </View>
-            )}
-          </ModalBottomHalf>
-        </View>
-      </KeyboardAwareScrollView>
-    </SafeAreaView>
+        </ModalBottomHalf>
+      </View>
+    </KeyboardAwareScrollView>
   )
 }
 
