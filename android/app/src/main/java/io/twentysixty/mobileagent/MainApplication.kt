@@ -1,52 +1,47 @@
 package io.twentysixty.mobileagent
 
-import android.app.Application
 import android.content.res.Configuration
+import expo.modules.ApplicationLifecycleDispatcher
+import expo.modules.ReactNativeHostWrapper
+import android.app.Application
 import com.facebook.react.PackageList
 import com.facebook.react.ReactApplication
 import com.facebook.react.ReactHost
 import com.facebook.react.ReactNativeApplicationEntryPoint.loadReactNative
 import com.facebook.react.ReactNativeHost
 import com.facebook.react.ReactPackage
-import com.facebook.react.defaults.DefaultReactHost.getDefaultReactHost
 import com.facebook.react.defaults.DefaultReactNativeHost
 import com.reactnativecompressor.CompressorPackage
-import expo.modules.ApplicationLifecycleDispatcher.onConfigurationChanged
-import expo.modules.ReactNativeHostWrapper
 
 class MainApplication : Application(), ReactApplication {
+
     override val reactNativeHost: ReactNativeHost =
-        ReactNativeHostWrapper(this, object : DefaultReactNativeHost(
-            this
-        ) {
-            override fun getUseDeveloperSupport(): Boolean {
-                return BuildConfig.DEBUG
-            }
+        ReactNativeHostWrapper(this, object : DefaultReactNativeHost(this) {
+            override fun getPackages(): List<ReactPackage> =
+                PackageList(this).packages.apply {
+                    // Packages that cannot be auto linked yet can be added manually here
+                    add(CompressorPackage())
+                }
 
-            override fun getPackages(): List<ReactPackage> {
-                val packages: MutableList<ReactPackage> = PackageList(this).packages
+            override fun getJSMainModuleName(): String = "index"
 
-                // Packages that cannot be auto linked yet can be added manually here, for example:
-                 packages.add(CompressorPackage());
-                return packages
-            }
+            override fun getUseDeveloperSupport(): Boolean = BuildConfig.DEBUG
 
-            override fun getJSMainModuleName(): String {
-                return "index"
-            }
-
+            override val isNewArchEnabled: Boolean = BuildConfig.IS_NEW_ARCHITECTURE_ENABLED
+            override val isHermesEnabled: Boolean = BuildConfig.IS_HERMES_ENABLED
         })
 
     override val reactHost: ReactHost
-        get() = getDefaultReactHost(applicationContext, reactNativeHost)
+        get() = ReactNativeHostWrapper.createReactHost(applicationContext, reactNativeHost)
 
     override fun onCreate() {
         super.onCreate()
         loadReactNative(this)
+        ApplicationLifecycleDispatcher.onApplicationCreate(this)
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        onConfigurationChanged(this, newConfig)
+        ApplicationLifecycleDispatcher.onConfigurationChanged(this, newConfig)
     }
 }
