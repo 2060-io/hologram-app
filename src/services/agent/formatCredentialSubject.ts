@@ -3,21 +3,21 @@ import { stringToStringDate } from '@2060/utils/dateUtils'
 /* eslint-disable max-len */
 type CredentialAttributeRowString = {
   key: string
-  value: string
   type: 'string'
+  value: string
 }
 
 type CredentialAttributeRowImage = {
-  type: 'image'
   key: string
+  type: 'image'
   image: string
 }
 
 type CredentialAttributeRowImageAndString = {
-  type: 'imageAndString'
   key: string
-  image: string
+  type: 'imageAndString'
   value: string
+  image: string
 }
 
 export type CredentialAttributeRow =

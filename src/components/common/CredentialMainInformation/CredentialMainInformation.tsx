@@ -24,12 +24,7 @@ type Props = {
   size?: 'big' | 'medium'
 }
 
-const CredentialMainInformation = ({
-  credentialMainInfo,
-  containerStyle = {},
-  onPress,
-  size = 'big',
-}: Props) => {
+const CredentialMainInformation = ({ credentialMainInfo, containerStyle, onPress, size = 'big' }: Props) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme, size)
@@ -65,7 +60,7 @@ const CredentialMainInformation = ({
             </View>
           </Skeleton>
           <View style={styles.nameContainer}>
-            <Skeleton height={22} width="50%" colorMode={colorMode} radius="round">
+            <Skeleton height={styles.name.fontSize + 2} width="50%" colorMode={colorMode} radius="round">
               <Text style={styles.name} fontFamily="EuclidCircularA-Medium">
                 {credentialMainInfo?.schemaName}
               </Text>

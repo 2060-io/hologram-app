@@ -8,11 +8,12 @@ import getStyles from './styles'
 import { CredentialAttribute } from '@2060/components'
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
 import { Text, MainButton, SvgIcon } from '@2060/components/common'
-import { usePresentCredential } from '@2060/hooks'
+import { useNetwork, usePresentCredential } from '@2060/hooks'
 import { useCredentials } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { getCredentialAttributes } from '@2060/services/agent/display'
 import { formatCredentialSubject } from '@2060/services/agent/formatCredentialSubject'
+import { toast } from '@2060/utils/toast'
 
 interface Props extends StackScreenProps<NavigationStackParams, 'SelectCredentialAttributes'> {}
 
@@ -21,6 +22,7 @@ const SelectCredentialAttributes = ({ navigation, route }: Props) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
+  const { netInfo } = useNetwork()
   const { present } = usePresentCredential()
   const { getCredentialById } = useCredentials()
   const credentialRecord = getCredentialById(credentialRecordId)
@@ -57,6 +59,14 @@ const SelectCredentialAttributes = ({ navigation, route }: Props) => {
       navigation.navigate('PresentCredential', { credentialRecordId, attributesToPresent })
     }
   }
+
+  const generateQR = useCallback(() => {
+    if (!netInfo.isConnected) {
+      toast({ type: 'error', message: t('call.youNeedInternetConnection') })
+      return
+    }
+    navigation.navigate('PresentCredentialAsQR', { credentialRecordId, attributesToPresent })
+  }, [attributesToPresent, netInfo])
 
   return (
     <SafeAreaView style={styles.container}>
@@ -96,14 +106,24 @@ const SelectCredentialAttributes = ({ navigation, route }: Props) => {
               )
             }}
           />
+          {!presentDirectly && (
+            <MainButton
+              disabled={!attributesToPresent.length}
+              text={t('credential.createQRCode')}
+              onPress={generateQR}
+              style={[
+                styles.generateQRButton,
+                attributesToPresent.length ? styles.presentEnabled : styles.presentDisabled,
+              ]}
+              iconName="qrcode"
+            />
+          )}
           <MainButton
             disabled={!attributesToPresent.length}
-            text={t('credential.present')}
+            text={presentDirectly ? t('general.present') : t('credential.presentToConnection')}
             onPress={onPresent}
-            style={[
-              styles.presentButton,
-              attributesToPresent.length ? styles.presentEnabled : styles.presentDisabled,
-            ]}
+            style={[attributesToPresent.length ? styles.presentEnabled : styles.presentDisabled]}
+            iconName={presentDirectly ? undefined : 'users'}
           />
         </View>
       </ScrollView>

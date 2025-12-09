@@ -12,7 +12,7 @@ import {
   processInvitation as agentProcessInvitation,
   getOutOfBandRecordById,
 } from '@2060/services/agent'
-import { logError } from '@2060/utils'
+import { log, logError } from '@2060/utils'
 import { toast } from '@2060/utils/toast'
 
 const HomeMainContainer = (HomeMainComponent: ElementType) => {
@@ -36,18 +36,15 @@ const HomeMainContainer = (HomeMainComponent: ElementType) => {
       if (!agent) return
       startProcessDeepLinkTransition(async () => {
         try {
-          const [[parameterType, value]] = Object.entries(route.params!)
-
+          const [[parameterType, urlValue]] = Object.entries(route.params!)
           let invitationUrl: string | undefined
-          if (parameterType === 'oobUrl') invitationUrl = value
+          if (parameterType === 'oobUrl') invitationUrl = urlValue
           else if (parameterType === '_url') {
-            invitationUrl = value ? Buffer.from(value, 'base64').toString('ascii') : undefined
-          } else invitationUrl = `${Config.BASE_INVITATION_URL}?${parameterType}=${value}`
-
+            invitationUrl = urlValue ? Buffer.from(urlValue, 'base64').toString('ascii') : undefined
+          } else invitationUrl = `${Config.BASE_INVITATION_URL}?${parameterType}=${urlValue}`
           if (!invitationUrl) throw new Error('Invalid invitation URL')
-
-          const invitation = await agent?.oob.parseInvitation(invitationUrl)
-          if (invitation) processInvitation(invitation)
+          const invitation = await agent.oob.parseInvitation(invitationUrl)
+          processInvitation(invitation)
         } catch (error) {
           toast({ type: 'error', message: `${error}` })
           logError('Error processing deep link', error)
@@ -58,10 +55,10 @@ const HomeMainContainer = (HomeMainComponent: ElementType) => {
     const processInvitation = async (invitation: OutOfBandInvitation) => {
       if (!agent) return
       try {
-        const { success, existingConnectionId, invitationType, recordId, error } =
-          await agentProcessInvitation(agent, invitation)
-        if (!success || !recordId) throw new Error(error)
-
+        const processInvitationResult = await agentProcessInvitation(agent, invitation)
+        log('processInvitationResult:', processInvitationResult)
+        if (!processInvitationResult.success) throw new Error(processInvitationResult.error)
+        const { recordId, existingConnectionId, invitationType } = processInvitationResult
         if (invitationType === DidcommInvitationType.ConnectionRequest) {
           const outOfBandRecord = await getOutOfBandRecordById(agent, recordId)
           navigation.navigate('ConnectionInvitation', {
@@ -77,6 +74,8 @@ const HomeMainContainer = (HomeMainComponent: ElementType) => {
             proofRecordId: recordId,
             did: invitation.invitationDids[0],
           })
+        } else {
+          navigation.navigate('EphemeralCredentialPresentation', { proofRecordId: recordId })
         }
       } catch (error) {
         toast({ type: 'error', message: t('invitation.errorProcessingInvitation') })

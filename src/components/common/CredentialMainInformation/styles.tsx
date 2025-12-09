@@ -32,6 +32,7 @@ const styles = (theme: AppTheme, size: string) => {
     name: {
       fontSize: theme.fontSize.lg + 2,
       color: theme.colors.primaryText,
+      textAlign: 'right',
     },
     issuedOnContainer: {
       marginBottom: 5,

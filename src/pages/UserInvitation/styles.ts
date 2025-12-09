@@ -45,20 +45,4 @@ export default (theme: AppTheme) =>
       textAlign: 'center',
       color: theme.colors.tertiaryText,
     },
-    containerBtnShare: {
-      alignItems: 'center',
-      alignSelf: 'center',
-      backgroundColor: theme.colors.green,
-      borderRadius: 23,
-      flexDirection: 'row',
-      justifyContent: 'center',
-      paddingVertical: 12,
-      width: '100%',
-    },
-    btnShareText: {
-      fontSize: theme.fontSize.md2 + 1,
-      color: theme.colors.white,
-      textAlign: 'center',
-      paddingLeft: 17,
-    },
   })
