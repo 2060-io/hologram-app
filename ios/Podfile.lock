@@ -2315,7 +2315,7 @@ PODS:
     - Yoga
   - react-native-netinfo (11.4.1):
     - React-Core
-  - react-native-safe-area-context (5.5.2):
+  - react-native-safe-area-context (5.6.2):
     - boost
     - DoubleConversion
     - fast_float
@@ -2333,8 +2333,8 @@ PODS:
     - React-graphics
     - React-ImageManager
     - React-jsi
-    - react-native-safe-area-context/common (= 5.5.2)
-    - react-native-safe-area-context/fabric (= 5.5.2)
+    - react-native-safe-area-context/common (= 5.6.2)
+    - react-native-safe-area-context/fabric (= 5.6.2)
     - React-NativeModulesApple
     - React-RCTFabric
     - React-renderercss
@@ -2345,7 +2345,7 @@ PODS:
     - ReactCommon/turbomodule/core
     - SocketRocket
     - Yoga
-  - react-native-safe-area-context/common (5.5.2):
+  - react-native-safe-area-context/common (5.6.2):
     - boost
     - DoubleConversion
     - fast_float
@@ -2373,7 +2373,7 @@ PODS:
     - ReactCommon/turbomodule/core
     - SocketRocket
     - Yoga
-  - react-native-safe-area-context/fabric (5.5.2):
+  - react-native-safe-area-context/fabric (5.6.2):
     - boost
     - DoubleConversion
     - fast_float
@@ -3576,7 +3576,7 @@ PODS:
     - Yoga
   - RNShareMenu (0.0.0):
     - React
-  - RNSVG (15.12.0):
+  - RNSVG (15.14.0):
     - boost
     - DoubleConversion
     - fast_float
@@ -3602,10 +3602,10 @@ PODS:
     - ReactCodegen
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
-    - RNSVG/common (= 15.12.0)
+    - RNSVG/common (= 15.14.0)
     - SocketRocket
     - Yoga
-  - RNSVG/common (15.12.0):
+  - RNSVG/common (15.14.0):
     - boost
     - DoubleConversion
     - fast_float
@@ -4218,7 +4218,7 @@ SPEC CHECKSUMS:
   react-native-job-queue: cfd8b0a4e23743b702efedf109f64692250c1dc3
   react-native-keyboard-controller: 8bd5f5572b6d5d402a2f77987a17492f869e5d62
   react-native-netinfo: cec9c4e86083cb5b6aba0e0711f563e2fbbff187
-  react-native-safe-area-context: 84a754cad3fbb25117482cde6b8defca6c6f6a53
+  react-native-safe-area-context: c00143b4823773bba23f2f19f85663ae89ceb460
   react-native-splash-screen: a3f3c31e39f4466e880296008749138b276929ed
   react-native-video: a509f299d71020addc12bff98bc094c142d3f09c
   react-native-webrtc: e8f0ce746353adc2744a2b933645e1aeb41eaa74
@@ -4274,7 +4274,7 @@ SPEC CHECKSUMS:
   RNScreens: d821082c6dd1cb397cc0c98b026eeafaa68be479
   RNShare: e273da7d123eedb1daa2d48916d40b2835873571
   RNShareMenu: 107956974f695db0947c7beb43f3a12c4ac9e51f
-  RNSVG: d6b2fc2f4058b36a2fcbde615ef859f2913cdee4
+  RNSVG: c5807de8e337c7a643f9bad2ecf48a15aefcc23c
   RNVectorIcons: 791f13226ec4a3fd13062eda9e892159f0981fae
   RNZipArchive: f4a5af907d1581e995c879e34799be35c6bc3e21
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
