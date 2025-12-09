@@ -13634,10 +13634,10 @@ react-native-date-picker@5.0.12:
   resolved "https://registry.yarnpkg.com/react-native-date-picker/-/react-native-date-picker-5.0.12.tgz#12540b6a58500811ee7e4fc0244e3accc7cca9c1"
   integrity sha512-R/mUnCKhcuxbhKPFwYdBQCxQt9HHLqpM4ruRUqlcBjiUZ3N2wdnwOMyc888Ps8qp8e7v29PrDHtUlG8LPuFn9w==
 
-"react-native-eid-reader@npm:@2060.io/react-native-eid-reader@0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@2060.io/react-native-eid-reader/-/react-native-eid-reader-0.1.0.tgz#7dd92daeb50f579a7ebf079b04fb1aa14da1a543"
-  integrity sha512-dGX8lPGv1OBVy3Ras1vusgPpTmJoMOL8qJxil1Xp4gvtAZ3dvcqm58UtG2Ke/LHYp8QbhMs48FPsCXe9+K7Zfw==
+"react-native-eid-reader@npm:@2060.io/react-native-eid-reader@0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@2060.io/react-native-eid-reader/-/react-native-eid-reader-0.1.1.tgz#2e1517cf5ca776fc60c73b7b4a453d55da3676c1"
+  integrity sha512-fiEZB3f4Eu47cSf0+E6uw9ZNaZIPnFGa5LiTdHaT3J4q9e/ZY5UEPEwkGODZrQ4Tn7cKUkgjDlf1q+t+w8Rr4w==
 
 react-native-file-logger@0.7.1:
   version "0.7.1"
