@@ -3,8 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { Dimensions, LayoutChangeEvent, Platform, StyleSheet, TouchableOpacity, View } from 'react-native'
 import { Svg, Rect } from 'react-native-svg'
 import { Camera, runAtTargetFps, useCameraFormat, useFrameProcessor } from 'react-native-vision-camera'
-import { useTextRecognition } from 'react-native-vision-camera-text-recognition'
-import { Text as ResolvedText, ScanRegion } from 'react-native-vision-camera-text-recognition/src/types'
+import { useTextRecognition, Text as ResolvedText } from 'react-native-vision-camera-ocr-plus'
 import { Worklets } from 'react-native-worklets-core'
 
 import { MRZCameraProps } from './MRZScannerProps'
@@ -21,7 +20,7 @@ const SCREEN_HEIGHT = Platform.select<number>({
   ios: Dimensions.get('window').height,
 }) as number
 
-const scanRegion: ScanRegion = {
+const scanRegion = {
   left: 5,
   top: 28,
   width: 90,
@@ -36,7 +35,11 @@ const MRZCamera = ({ skipScan, cameraProps, onData, scanSuccess, refuse }: MRZCa
   const screenAspectRatio = SCREEN_HEIGHT / SCREEN_WIDTH
   const theme = useTheme()
   const styles = getStyles(theme)
-  const { scanText } = useTextRecognition({ language: 'latin', scanRegion })
+  const { scanText } = useTextRecognition({
+    frameSkipThreshold: 1,
+    useLightweightMode: true,
+    scanRegion,
+  })
   const [containerHeight, setContainerHeight] = useState(0)
   const supports60Fps = useMemo(() => device?.formats.some(f => f.maxFps >= 60), [device?.formats])
   const format = useCameraFormat(device, [
@@ -59,9 +62,7 @@ const MRZCamera = ({ skipScan, cameraProps, onData, scanSuccess, refuse }: MRZCa
         data.blocks.forEach(block => {
           lines.push(block.blockText)
         })
-        if (lines.length > 0 && isActive && onData) {
-          onData(lines)
-        }
+        if (lines.length > 0 && isActive) onData(lines)
       }
     },
     [isActive, onData],

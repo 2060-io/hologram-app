@@ -1,10 +1,10 @@
-diff --git a/node_modules/react-native-vision-camera-text-recognition/android/src/main/java/com/visioncameratextrecognition/BitmapUtils.kt b/node_modules/react-native-vision-camera-text-recognition/android/src/main/java/com/visioncameratextrecognition/BitmapUtils.kt
+diff --git a/node_modules/react-native-vision-camera-ocr-plus/android/src/main/java/com/rnvisioncameraocr/BitmapUtils.kt b/node_modules/react-native-vision-camera-ocr-plus/android/src/main/java/com/rnvisioncameraocr/BitmapUtils.kt
 new file mode 100644
-index 0000000..410f702
+index 0000000..bba014a
 --- /dev/null
-+++ b/node_modules/react-native-vision-camera-text-recognition/android/src/main/java/com/visioncameratextrecognition/BitmapUtils.kt
-@@ -0,0 +1,202 @@
-+package com.visioncameratextrecognition
++++ b/node_modules/react-native-vision-camera-ocr-plus/android/src/main/java/com/rnvisioncameraocr/BitmapUtils.kt
+@@ -0,0 +1,201 @@
++package com.rnvisioncameraocr
 +
 +import android.graphics.Bitmap
 +import android.graphics.BitmapFactory
@@ -134,7 +134,7 @@ index 0000000..410f702
 +            // Unpack Y.
 +            unpackPlane(yuv420888planes[0], width, height, out, 0, 1)
 +            // Unpack U.
-+            unpackPlane(yuv420888planes[1], width, height, out, imageSize + 1, 2)
++            unpackPlane(yuv420888planes[1], width, height, out, imageSize  +1, 2)
 +            // Unpack V.
 +            unpackPlane(yuv420888planes[2], width, height, out, imageSize, 2)
 +        }
@@ -198,21 +198,21 @@ index 0000000..410f702
 +            var inputPos = rowStart
 +            for (col in 0 until numCol) {
 +                out[outputPos] = buffer[inputPos]
-+                outputPos += pixelStride
-+                inputPos += plane.pixelStride
++                outputPos = pixelStride
++                inputPos = plane.pixelStride
 +            }
-+            rowStart += plane.rowStride
++            rowStart = plane.rowStride
 +        }
 +    }
 +}
-+
-diff --git a/node_modules/react-native-vision-camera-text-recognition/android/src/main/java/com/visioncameratextrecognition/FrameMetadata.kt b/node_modules/react-native-vision-camera-text-recognition/android/src/main/java/com/visioncameratextrecognition/FrameMetadata.kt
+\ No newline at end of file
+diff --git a/node_modules/react-native-vision-camera-ocr-plus/android/src/main/java/com/rnvisioncameraocr/FrameMetadata.kt b/node_modules/react-native-vision-camera-ocr-plus/android/src/main/java/com/rnvisioncameraocr/FrameMetadata.kt
 new file mode 100644
-index 0000000..def6599
+index 0000000..e3ff40c
 --- /dev/null
-+++ b/node_modules/react-native-vision-camera-text-recognition/android/src/main/java/com/visioncameratextrecognition/FrameMetadata.kt
++++ b/node_modules/react-native-vision-camera-ocr-plus/android/src/main/java/com/rnvisioncameraocr/FrameMetadata.kt
 @@ -0,0 +1,29 @@
-+package com.visioncameratextrecognition
++package com.rnvisioncameraocr
 +
 +class FrameMetadata private constructor(@JvmField val width: Int, @JvmField val height: Int, @JvmField val rotation: Int) {
 +    /** Builder of [FrameMetadata].  */
@@ -241,24 +241,19 @@ index 0000000..def6599
 +        }
 +    }
 +}
-diff --git a/node_modules/react-native-vision-camera-text-recognition/android/src/main/java/com/visioncameratextrecognition/VisionCameraTextRecognitionPlugin.kt b/node_modules/react-native-vision-camera-text-recognition/android/src/main/java/com/visioncameratextrecognition/VisionCameraTextRecognitionPlugin.kt
-index f48c947..71747c9 100644
---- a/node_modules/react-native-vision-camera-text-recognition/android/src/main/java/com/visioncameratextrecognition/VisionCameraTextRecognitionPlugin.kt
-+++ b/node_modules/react-native-vision-camera-text-recognition/android/src/main/java/com/visioncameratextrecognition/VisionCameraTextRecognitionPlugin.kt
-@@ -1,5 +1,6 @@
- package com.visioncameratextrecognition
- 
-+import android.graphics.Bitmap
- import android.graphics.Point
- import android.graphics.Rect
- import android.media.Image
-@@ -18,12 +19,12 @@ import com.google.mlkit.vision.text.latin.TextRecognizerOptions
+\ No newline at end of file
+diff --git a/node_modules/react-native-vision-camera-ocr-plus/android/src/main/java/com/rnvisioncameraocr/RNVisionCameraOCRPlugin.kt b/node_modules/react-native-vision-camera-ocr-plus/android/src/main/java/com/rnvisioncameraocr/RNVisionCameraOCRPlugin.kt
+index 714904c..d7efb99 100644
+--- a/node_modules/react-native-vision-camera-ocr-plus/android/src/main/java/com/rnvisioncameraocr/RNVisionCameraOCRPlugin.kt
++++ b/node_modules/react-native-vision-camera-ocr-plus/android/src/main/java/com/rnvisioncameraocr/RNVisionCameraOCRPlugin.kt
+@@ -18,12 +18,13 @@ import com.google.mlkit.vision.text.latin.TextRecognizerOptions
  import com.mrousavy.camera.frameprocessors.Frame
  import com.mrousavy.camera.frameprocessors.FrameProcessorPlugin
  import com.mrousavy.camera.frameprocessors.VisionCameraProxy
 -import java.util.HashMap
++import android.graphics.Bitmap
  
- class VisionCameraTextRecognitionPlugin(proxy: VisionCameraProxy, options: Map<String, Any>?) :
+ class RNVisionCameraOCRPlugin(proxy: VisionCameraProxy, options: Map<String, Any>?) :
      FrameProcessorPlugin() {
  
      private var recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
@@ -266,77 +261,73 @@ index f48c947..71747c9 100644
      private val latinOptions = TextRecognizerOptions.DEFAULT_OPTIONS
      private val chineseOptions = ChineseTextRecognizerOptions.Builder().build()
      private val devanagariOptions = DevanagariTextRecognizerOptions.Builder().build()
-@@ -32,6 +33,7 @@ class VisionCameraTextRecognitionPlugin(proxy: VisionCameraProxy, options: Map<S
+@@ -44,6 +45,7 @@ class RNVisionCameraOCRPlugin(proxy: VisionCameraProxy, options: Map<String, Any
  
      init {
          val language = options?.get("language").toString()
 +        scanRegion =  options?.get("scanRegion") as Map<*, *>?
-         recognizer = when (language) {
-             "latin" -> TextRecognition.getClient(latinOptions)
-             "chinese" -> TextRecognition.getClient(chineseOptions)
-@@ -42,11 +44,30 @@ class VisionCameraTextRecognitionPlugin(proxy: VisionCameraProxy, options: Map<S
-         }
-     }
- 
--    override fun callback(frame: Frame, arguments: Map<String, Any>?): HashMap<String, Any>? {
-+    override fun callback(frame: Frame, arguments: Map<String, Any>?): HashMap<String, Any?>? {
-         val data = WritableNativeMap()
--        val mediaImage: Image = frame.image
--        val image =
--            InputImage.fromMediaImage(mediaImage, frame.imageProxy.imageInfo.rotationDegrees)
-+        var image: InputImage? = null
-+        if (scanRegion != null) {
-+            var bm: Bitmap? = BitmapUtils.getBitmap(frame)
-+            if (bm === null) return null
-+            val left = (scanRegion!!["left"] as Double) / 100.0 * bm.width
-+            val top = (scanRegion!!["top"] as Double) / 100.0 * bm.height
-+            val width = (scanRegion!!["width"] as Double) / 100.0 * bm.width
-+            val height = (scanRegion!!["height"] as Double) / 100.0 * bm.height
-+            bm = Bitmap.createBitmap(
-+                bm,
-+                left.toInt(),
-+                top.toInt(),
-+                width.toInt(),
-+                height.toInt(),
-+                null,
-+                false
-+            )
-+            image = InputImage.fromBitmap(bm,frame.imageProxy.imageInfo.rotationDegrees);
-+        } else {
-+            val mediaImage: Image = frame.image
-+            image = InputImage.fromMediaImage(mediaImage, frame.imageProxy.imageInfo.rotationDegrees)
-+        }
-         val task: Task<Text> = recognizer.process(image)
-         try {
-             val text: Text = Tasks.await(task)
-diff --git a/node_modules/react-native-vision-camera-text-recognition/ios/VisionCameraTextRecognition.swift b/node_modules/react-native-vision-camera-text-recognition/ios/VisionCameraTextRecognition.swift
-index 8bf8aef..2739368 100644
---- a/node_modules/react-native-vision-camera-text-recognition/ios/VisionCameraTextRecognition.swift
-+++ b/node_modules/react-native-vision-camera-text-recognition/ios/VisionCameraTextRecognition.swift
+         frameSkipThreshold = (options?.get("frameSkipThreshold") as? Number)?.toInt() ?: 10
+         useLightweightMode = (options?.get("useLightweightMode") as? Boolean) ?: false
+         
+@@ -67,8 +69,28 @@ class RNVisionCameraOCRPlugin(proxy: VisionCameraProxy, options: Map<String, Any
+         isProcessing = true
+         
+         return try {
+-            val mediaImage: Image = frame.image
+-            val image = InputImage.fromMediaImage(mediaImage, frame.imageProxy.imageInfo.rotationDegrees)
++            var image: InputImage? = null
++            if (scanRegion != null) {
++                var bm: Bitmap? = BitmapUtils.getBitmap(frame)
++                if (bm === null) return null
++                val left = (scanRegion!!["left"] as Double) / 100.0 * bm.width
++                val top = (scanRegion!!["top"] as Double) / 100.0 * bm.height
++                val width = (scanRegion!!["width"] as Double) / 100.0 * bm.width
++                val height = (scanRegion!!["height"] as Double) / 100.0 * bm.height
++                bm = Bitmap.createBitmap(
++                    bm,
++                    left.toInt(),
++                    top.toInt(),
++                    width.toInt(),
++                    height.toInt(),
++                    null,
++                    false
++                )
++                image = InputImage.fromBitmap(bm,frame.imageProxy.imageInfo.rotationDegrees);
++            } else {
++                val mediaImage: Image = frame.image
++                image = InputImage.fromMediaImage(mediaImage, frame.imageProxy.imageInfo.rotationDegrees)
++            }
+             
+             // Use ML Kit recognition
+             val task: Task<Text> = recognizer.process(image)
+diff --git a/node_modules/react-native-vision-camera-ocr-plus/ios/RNVisionCameraOCR.swift b/node_modules/react-native-vision-camera-ocr-plus/ios/RNVisionCameraOCR.swift
+index 78e9d9f..198c98a 100644
+--- a/node_modules/react-native-vision-camera-ocr-plus/ios/RNVisionCameraOCR.swift
++++ b/node_modules/react-native-vision-camera-ocr-plus/ios/RNVisionCameraOCR.swift
 @@ -12,6 +12,7 @@ import MLKitCommon
- public class VisionCameraTextRecognition: FrameProcessorPlugin {
+ public class RNVisionCameraOCR: FrameProcessorPlugin {
  
      private var textRecognizer = TextRecognizer()
 +    private var scanRegion: [String: Int]? = nil
      private static let latinOptions = TextRecognizerOptions()
      private static let chineseOptions = ChineseTextRecognizerOptions()
      private static let devanagariOptions = DevanagariTextRecognizerOptions()
-@@ -23,6 +24,7 @@ public class VisionCameraTextRecognition: FrameProcessorPlugin {
+@@ -22,6 +23,7 @@ public class RNVisionCameraOCR: FrameProcessorPlugin {
+ 
      public override init(proxy: VisionCameraProxyHolder, options: [AnyHashable: Any]! = [:]) {
          super.init(proxy: proxy, options: options)
-         let language = options["language"] as? String ?? "latin"
 +        scanRegion = options["scanRegion"] as? [String: Int]
+         let language = options["language"] as? String ?? "latin"
          switch language {
          case "chinese":
-             self.textRecognizer = TextRecognizer.textRecognizer(options: VisionCameraTextRecognition.chineseOptions)
-@@ -40,11 +42,39 @@ public class VisionCameraTextRecognition: FrameProcessorPlugin {
+@@ -40,11 +42,40 @@ public class RNVisionCameraOCR: FrameProcessorPlugin {
  
      public override func callback(_ frame: Frame, withArguments arguments: [AnyHashable: Any]?) -> Any {
          let buffer = frame.buffer
 -        let image = VisionImage(buffer: buffer)
 -        image.orientation = getOrientation(orientation: frame.orientation)
--
-+        var image: VisionImage?;
++        var image: VisionImage?
+ 
          do {
 -            let result = try self.textRecognizer.results(in: image)
 +            if scanRegion != nil {
@@ -370,82 +361,79 @@ index 8bf8aef..2739368 100644
 +                image!.orientation = getOrientation(orientation: frame.orientation)
 +            }
 +            let result = try self.textRecognizer.results(in: image!)
-             let blocks = VisionCameraTextRecognition.processBlocks(blocks: result.blocks)
+             let blocks = RNVisionCameraOCR.processBlocks(blocks: result.blocks)
              data["resultText"] = result.text
              data["blocks"] = blocks
-diff --git a/node_modules/react-native-vision-camera-text-recognition/lib/typescript/src/types.d.ts b/node_modules/react-native-vision-camera-text-recognition/lib/typescript/src/types.d.ts
-index cb0693a..8f6e0b8 100644
---- a/node_modules/react-native-vision-camera-text-recognition/lib/typescript/src/types.d.ts
-+++ b/node_modules/react-native-vision-camera-text-recognition/lib/typescript/src/types.d.ts
-@@ -2,8 +2,15 @@ export type { Frame, ReadonlyFrameProcessor, FrameProcessorPlugin, FrameInternal
+diff --git a/node_modules/react-native-vision-camera-ocr-plus/lib/.DS_Store b/node_modules/react-native-vision-camera-ocr-plus/lib/.DS_Store
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/react-native-vision-camera-ocr-plus/lib/typescript/.DS_Store b/node_modules/react-native-vision-camera-ocr-plus/lib/typescript/.DS_Store
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/react-native-vision-camera-ocr-plus/lib/typescript/src/types.d.ts b/node_modules/react-native-vision-camera-ocr-plus/lib/typescript/src/types.d.ts
+index d3706e2..6c10030 100644
+--- a/node_modules/react-native-vision-camera-ocr-plus/lib/typescript/src/types.d.ts
++++ b/node_modules/react-native-vision-camera-ocr-plus/lib/typescript/src/types.d.ts
+@@ -2,12 +2,19 @@ export type { Frame, ReadonlyFrameProcessor, FrameProcessorPlugin, FrameInternal
  export type { ForwardedRef } from 'react';
  import type { CameraProps, Frame } from 'react-native-vision-camera';
  export type Languages = 'af' | 'sq' | 'ar' | 'be' | 'bn' | 'bg' | 'ca' | 'zh' | 'cs' | 'da' | 'nl' | 'en' | 'eo' | 'et' | 'fi' | 'fr' | 'gl' | 'ka' | 'de' | 'el' | 'gu' | 'ht' | 'he' | 'hi' | 'hu' | 'is' | 'id' | 'ga' | 'it' | 'ja' | 'kn' | 'ko' | 'lv' | 'lt' | 'mk' | 'ms' | 'mt' | 'mr' | 'no' | 'fa' | 'pl' | 'pt' | 'ro' | 'ru' | 'sk' | 'sl' | 'es' | 'sw' | 'tl' | 'ta' | 'te' | 'th' | 'tr' | 'uk' | 'ur' | 'vi' | 'cy';
 +export type ScanRegion = {
-+    left: number,
-+    top: number,
-+    width: number,
-+    height: number,
++  left: number;
++  top: number;
++  width: number;
++  height: number;
 +}
  export type TextRecognitionOptions = {
-     language: 'latin' | 'chinese' | 'devanagari' | 'japanese' | 'korean';
-+    scanRegion?: ScanRegion
+     /**
+      * Language to recognize
+      * @default 'latin'
+      */
+     language?: 'latin' | 'chinese' | 'devanagari' | 'japanese' | 'korean';
++    scanRegion?: ScanRegion;
+     /**
+      * Performance optimization: Skip frames to reduce processing load
+      * Higher values = better performance, lower accuracy
+@@ -27,7 +34,7 @@ export type TranslatorOptions = {
+     to: Languages;
  };
- export type TranslatorOptions = {
-     from: Languages;
-@@ -19,23 +26,30 @@ export type CameraTypes = {
+ export type CameraTypes = {
+-    callback: (data: string | Text[]) => void;
++    callback: (data: string | Text) => void;
+     mode: 'translate' | 'recognize';
+ } & CameraProps & ({
+     mode: 'recognize';
+@@ -36,9 +43,10 @@ export type CameraTypes = {
      mode: 'translate';
      options: TranslatorOptions;
  });
-+type ScanRegion = {
-+    left: number;
-+    top: number;
-+    width: number;
-+    height: number;
-+};
-+export type ScanTextConfig = { scanRegion: ScanRegion };
++export type ScanTextConfig = { scanRegion: ScanRegion }
  export type TextRecognitionPlugin = {
 -    scanText: (frame: Frame) => Text[];
-+  scanText: (frame: Frame, config?: ScanTextConfig) => Text;
- };
+-};
++    scanText: (frame: Frame, config?: ScanTextConfig) => Text
++}
  export type TranslatorPlugin = {
      translate: (frame: Frame) => string;
  };
- export type Text = {
--    blocks: BlocksData;
-+    blocks: BlocksData[];
-     resultText: string;
- };
--type BlocksData = [
-+type BlocksData = {
-     blockFrame: FrameType,
-     blockCornerPoints: CornerPointsType,
-     lines: LinesData,
-     blockLanguages: string[] | [],
-     blockText: string
--];
-+};
- type CornerPointsType = [{
-     x: number;
-     y: number;
-diff --git a/node_modules/react-native-vision-camera-text-recognition/src/Camera.tsx b/node_modules/react-native-vision-camera-text-recognition/src/Camera.tsx
-index 8ae84f5..3ab8371 100644
---- a/node_modules/react-native-vision-camera-text-recognition/src/Camera.tsx
-+++ b/node_modules/react-native-vision-camera-text-recognition/src/Camera.tsx
+diff --git a/node_modules/react-native-vision-camera-ocr-plus/src/Camera.tsx b/node_modules/react-native-vision-camera-ocr-plus/src/Camera.tsx
+index 153509a..1e479d2 100644
+--- a/node_modules/react-native-vision-camera-ocr-plus/src/Camera.tsx
++++ b/node_modules/react-native-vision-camera-ocr-plus/src/Camera.tsx
 @@ -44,7 +44,7 @@ export const Camera = forwardRef(function Camera(
    const frameProcessor: ReadonlyFrameProcessor = useFrameProcessor(
      (frame: Frame) => {
        'worklet';
 -      const data: Text[] | string = plugin(frame);
 +      const data: Text | string = plugin(frame);
-       // @ts-ignore
-       useWorklets(data);
+       runOnJS(data);
      },
-diff --git a/node_modules/react-native-vision-camera-text-recognition/src/scanText.ts b/node_modules/react-native-vision-camera-text-recognition/src/scanText.ts
-index fbd9d79..70fbeae 100644
---- a/node_modules/react-native-vision-camera-text-recognition/src/scanText.ts
-+++ b/node_modules/react-native-vision-camera-text-recognition/src/scanText.ts
-@@ -18,10 +18,10 @@ export function createTextRecognitionPlugin(
+     []
+diff --git a/node_modules/react-native-vision-camera-ocr-plus/src/scanText.ts b/node_modules/react-native-vision-camera-ocr-plus/src/scanText.ts
+index bbf86a2..ae9c3c9 100644
+--- a/node_modules/react-native-vision-camera-ocr-plus/src/scanText.ts
++++ b/node_modules/react-native-vision-camera-ocr-plus/src/scanText.ts
+@@ -25,10 +25,10 @@ export function createTextRecognitionPlugin(
      throw new Error(LINKING_ERROR);
    }
    return {
@@ -458,57 +446,48 @@ index fbd9d79..70fbeae 100644
      },
    };
  }
-diff --git a/node_modules/react-native-vision-camera-text-recognition/src/types.ts b/node_modules/react-native-vision-camera-text-recognition/src/types.ts
-index ad397e6..dffa681 100644
---- a/node_modules/react-native-vision-camera-text-recognition/src/types.ts
-+++ b/node_modules/react-native-vision-camera-text-recognition/src/types.ts
-@@ -68,8 +68,16 @@ export type Languages =
+diff --git a/node_modules/react-native-vision-camera-ocr-plus/src/types.ts b/node_modules/react-native-vision-camera-ocr-plus/src/types.ts
+index f1cf578..7fad0ba 100644
+--- a/node_modules/react-native-vision-camera-ocr-plus/src/types.ts
++++ b/node_modules/react-native-vision-camera-ocr-plus/src/types.ts
+@@ -68,12 +68,20 @@ export type Languages =
    | 'vi'
    | 'cy';
  
 +export type ScanRegion = {
-+  left: number,
-+  top: number,
-+  width: number,
-+  height: number,
-+}
++  left: number;
++  top: number;
++  width: number;
++  height: number;
++};
 +
  export type TextRecognitionOptions = {
-   language: 'latin' | 'chinese' | 'devanagari' | 'japanese' | 'korean';
-+  scanRegion?: ScanRegion
+   /**
+    * Language to recognize
+    * @default 'latin'
+    */
+   language?: 'latin' | 'chinese' | 'devanagari' | 'japanese' | 'korean';
++  scanRegion?: ScanRegion;
+   /**
+    * Performance optimization: Skip frames to reduce processing load
+    * Higher values = better performance, lower accuracy
+@@ -95,7 +103,7 @@ export type TranslatorOptions = {
  };
  
- export type TranslatorOptions = {
-@@ -85,27 +93,26 @@ export type CameraTypes = {
-   | { mode: 'translate'; options: TranslatorOptions }
-   );;
+ export type CameraTypes = {
+-  callback: (data: string | Text[]) => void;
++  callback: (data: string | Text) => void;
+   mode: 'translate' | 'recognize';
+ } & CameraProps &
+   (
+@@ -103,8 +111,9 @@ export type CameraTypes = {
+     | { mode: 'translate'; options: TranslatorOptions }
+   );
  
--
--
++export type ScanTextConfig = { scanRegion: ScanRegion };
  export type TextRecognitionPlugin = {
 -  scanText: (frame: Frame) => Text[];
-+  scanText: (frame: Frame) => Text;
++  scanText: (frame: Frame, config?: ScanTextConfig) => Text;
  };
-+
  export type TranslatorPlugin = {
    translate: (frame: Frame) => string;
- };
- 
- export type Text = {
--  blocks: BlocksData;
-+  blocks: BlocksData[];
-   resultText: string;
- };
- 
--type BlocksData = [
-+type BlocksData = {
-   blockFrame: FrameType,
-   blockCornerPoints: CornerPointsType,
-   lines: LinesData,
-   blockLanguages: string[] | [],
-   blockText: string,
--];
-+};
- 
- type CornerPointsType = [{ x: number; y: number }];
- 
