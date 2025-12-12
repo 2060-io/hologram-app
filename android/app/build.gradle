@@ -155,7 +155,7 @@ android {
             matchingFallbacks = ['debug', 'release']
         }
         release {
-            signingConfig signingConfigs.release
+            signingConfig file('upload-key.keystore').exists() ? signingConfigs.release : signingConfigs.debug
             minifyEnabled enableProguardInReleaseBuilds
             shrinkResources enableShrinkResources
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"

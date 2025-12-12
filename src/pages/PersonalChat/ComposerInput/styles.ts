@@ -23,7 +23,7 @@ export default (theme: AppTheme) =>
       paddingTop: 0,
       paddingRight: 8,
       color: theme.colors.primaryText,
-      fontFamily: 'EuclidCircularA-Medium',
+      fontFamily: 'EuclidCircularA-Regular',
       fontSize: theme.fontSize.md2,
     },
     composerStylesWhenResponding: {

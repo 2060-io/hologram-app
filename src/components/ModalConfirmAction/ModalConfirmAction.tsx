@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, SafeAreaView } from 'react-native'
+import { View } from 'react-native'
 
 import getStyles from './styles'
 
@@ -36,23 +36,21 @@ const ModalConfirmAction = ({
   const styles = getStyles(theme)
   return (
     <ModalBottomHalf visible={visible} onClose={onClose}>
-      <SafeAreaView style={styles.containerConfirm}>
-        <View style={styles.subContainer}>
-          <Text fontFamily="EuclidCircularA-Medium" style={styles.titleDelete}>
-            {title}
-          </Text>
-          {subTitle && <Text style={styles.descriptionDelete}>{subTitle}</Text>}
-          <MainButton text={confirmText} style={styles.button} onPress={onConfirm} />
-          {confirmTextSecondary && onConfirmSecondary && (
-            <OutlinedGreenButton
-              text={confirmTextSecondary}
-              style={styles.button}
-              onPress={onConfirmSecondary}
-            />
-          )}
-          <OutlinedButton text={cancelText} onPress={onCancel} />
-        </View>
-      </SafeAreaView>
+      <View style={styles.container}>
+        <Text fontFamily="EuclidCircularA-Medium" style={styles.titleDelete}>
+          {title}
+        </Text>
+        {subTitle && <Text style={styles.descriptionDelete}>{subTitle}</Text>}
+        <MainButton text={confirmText} style={styles.button} onPress={onConfirm} />
+        {confirmTextSecondary && onConfirmSecondary && (
+          <OutlinedGreenButton
+            text={confirmTextSecondary}
+            style={styles.button}
+            onPress={onConfirmSecondary}
+          />
+        )}
+        <OutlinedButton text={cancelText} onPress={onCancel} />
+      </View>
     </ModalBottomHalf>
   )
 }

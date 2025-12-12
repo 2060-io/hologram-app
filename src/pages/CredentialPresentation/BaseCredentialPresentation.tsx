@@ -3,7 +3,8 @@ import { HeaderBackButton } from '@react-navigation/elements'
 import { StackNavigationProp } from '@react-navigation/stack'
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { SafeAreaView, ScrollView, TouchableOpacity, View } from 'react-native'
+import { ScrollView, TouchableOpacity, View } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 import getStyles from './styles'
 
@@ -97,7 +98,7 @@ const BaseCredentialPresentation = ({
 
   return (
     <>
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={styles.container} edges={['bottom']}>
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.subContainer}>
             <CredentialMainInformation credentialMainInfo={credentialMainInfo} />

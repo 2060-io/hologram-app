@@ -9,6 +9,7 @@ import {
   ViewStyle,
   TouchableWithoutFeedback,
 } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 import { Modal } from '../common'
 
@@ -87,7 +88,7 @@ const ModalBottomHalf = ({ visible, onClose, styleContainer, children }: ModalBo
           <Animated.View {...panResponders.panHandlers}>
             <Animated.View style={[styles.container, { top }, styleContainer]}>
               <View style={styles.containerIcon} />
-              {children}
+              <SafeAreaView>{children}</SafeAreaView>
             </Animated.View>
           </Animated.View>
         </View>

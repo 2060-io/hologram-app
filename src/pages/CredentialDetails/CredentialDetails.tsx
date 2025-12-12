@@ -2,7 +2,8 @@ import { StackScreenProps } from '@react-navigation/stack'
 import { TrustResolutionOutcome } from '@verana-labs/verre'
 import React, { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ScrollView, SafeAreaView, View } from 'react-native'
+import { ScrollView, View } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 import getStyles from './styles'
 
@@ -67,7 +68,7 @@ const CredentialDetails = ({ route, navigation }: Props) => {
   if (!credentialDetails) return null
   return (
     <>
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={styles.container} edges={['bottom']}>
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.subContainer}>
             <CredentialDetailsComponent

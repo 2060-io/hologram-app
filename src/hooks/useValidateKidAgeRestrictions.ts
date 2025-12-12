@@ -4,10 +4,10 @@ import { useEffect, useState } from 'react'
 import { KID_BIRTHDATE_DATE_FORMAT } from '@2060/constants'
 import { ServiceStatus } from '@2060/model'
 import { ParentalControlEnum, retrieveKeyInConfigFile } from '@2060/services/config'
-import { dateToString, timeFromNow } from '@2060/utils/dateUtils'
+import { dateToString, stringToDate, timeFromNow } from '@2060/utils/dateUtils'
 
 const calculateAge = (kidBirthday: string) => {
-  return timeFromNow(kidBirthday, 'year')
+  return timeFromNow(stringToDate(kidBirthday, KID_BIRTHDATE_DATE_FORMAT), 'year')
 }
 
 type Props = {

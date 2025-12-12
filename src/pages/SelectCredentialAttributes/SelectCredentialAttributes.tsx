@@ -1,7 +1,8 @@
 import { StackScreenProps } from '@react-navigation/stack'
 import React, { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ScrollView, View, FlatList, SafeAreaView } from 'react-native'
+import { ScrollView, View, FlatList } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 import getStyles from './styles'
 
@@ -69,7 +70,7 @@ const SelectCredentialAttributes = ({ navigation, route }: Props) => {
   }, [attributesToPresent, netInfo])
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['bottom']}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.subContainer}>
           <Text style={styles.title}>{t('credential.selectAttributes')}</Text>
