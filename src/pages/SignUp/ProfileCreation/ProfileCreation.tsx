@@ -108,34 +108,36 @@ const ProfileCreation = ({ navigation }: Props) => {
   }
 
   return (
-    <SafeAreaView style={styles.container} edges={['bottom']}>
+    <>
+      <SafeAreaView style={styles.container} edges={['bottom', 'top']}>
+        <KeyboardAwareScrollView
+          showsVerticalScrollIndicator={false}
+          enableOnAndroid={true}
+          extraScrollHeight={70}
+        >
+          <View style={styles.container}>
+            <AppLogo style={styles.appLogoContainer} />
+            <Text fontFamily="EuclidCircularA-Bold" style={styles.title}>
+              {t('signUp.welcomeTitle')}
+            </Text>
+            <UserProfileForm
+              displayName={displayName}
+              displayPicture={displayPicture}
+              onHandleChangeName={setDisplayName}
+              onHandleChangePicture={setDisplayPicture}
+            />
+            <MainButton
+              text={t('signUp.getStarted')}
+              activeOpacity={0.6}
+              disabled={disableGetStartedBtn}
+              onPress={signUp}
+              style={[styles.containerBtn, disableGetStartedBtn && styles.btnDisabled]}
+            />
+          </View>
+        </KeyboardAwareScrollView>
+      </SafeAreaView>
       <ModalLoading visible={isRegistering} />
-      <KeyboardAwareScrollView
-        showsVerticalScrollIndicator={false}
-        enableOnAndroid={true}
-        extraScrollHeight={70}
-      >
-        <View style={styles.container}>
-          <AppLogo style={styles.appLogoContainer} />
-          <Text fontFamily="EuclidCircularA-Bold" style={styles.title}>
-            {t('signUp.welcomeTitle')}
-          </Text>
-          <UserProfileForm
-            displayName={displayName}
-            displayPicture={displayPicture}
-            onHandleChangeName={setDisplayName}
-            onHandleChangePicture={setDisplayPicture}
-          />
-          <MainButton
-            text={t('signUp.getStarted')}
-            activeOpacity={0.6}
-            disabled={disableGetStartedBtn}
-            onPress={signUp}
-            style={[styles.containerBtn, disableGetStartedBtn && styles.btnDisabled]}
-          />
-        </View>
-      </KeyboardAwareScrollView>
-    </SafeAreaView>
+    </>
   )
 }
 
