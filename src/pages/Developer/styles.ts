@@ -23,6 +23,7 @@ export default (theme: AppTheme) =>
     },
     devEnvsModalContainer: {
       margin: 15,
+      marginBottom: 0,
     },
     title: {
       textAlign: 'center',

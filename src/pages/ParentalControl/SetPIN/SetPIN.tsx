@@ -1,7 +1,7 @@
 import { TypedArrayEncoder } from '@credo-ts/core'
 import React, { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, SafeAreaView, FlatList, TouchableOpacity } from 'react-native'
+import { View, FlatList, TouchableOpacity } from 'react-native'
 
 import Dial from './Dial'
 import getStyles from './styles'
@@ -138,7 +138,7 @@ const SetPIN = ({ visible, onRequestClose, mode, oniOSDismiss }: Props) => {
 
   return (
     <Modal visible={visible} transparent onDismiss={oniOSDismiss}>
-      <SafeAreaView style={styles.modalContainer}>
+      <View style={styles.modalContainer}>
         <View style={styles.contentContainer}>
           <Text fontFamily="EuclidCircularA-SemiBold" style={styles.title}>
             {getTitle(currentFlowState)}
@@ -167,7 +167,7 @@ const SetPIN = ({ visible, onRequestClose, mode, oniOSDismiss }: Props) => {
             </Text>
           </TouchableOpacity>
         </View>
-      </SafeAreaView>
+      </View>
     </Modal>
   )
 }

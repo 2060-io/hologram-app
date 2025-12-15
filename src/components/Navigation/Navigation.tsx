@@ -49,10 +49,12 @@ import {
   CredentialPresented,
   ForwardConnection,
   PresentCredential,
-  Presentation,
+  CredentialPresentation,
   ParentalControl,
   SelectCredentialAttributes,
   PresentCredentialsFromChat,
+  PresentCredentialAsQR,
+  EphemeralCredentialPresentation,
 } from '@2060/pages'
 import { MobileAgent } from '@2060/services/agent'
 import { AppTheme, getGlobalStyles } from '@2060/styles'
@@ -180,10 +182,16 @@ const Navigation = ({ isSignedUp, agent, theme }: NavigationProps) => {
           <Stack.Screen name="CredentialPresented" component={CredentialPresented} />
           <Stack.Screen name="ForwardConnection" component={ForwardConnection} />
           <Stack.Screen name="PresentCredential" component={PresentCredential} />
-          <Stack.Screen name="Presentation" component={Presentation} />
+          <Stack.Screen name="CredentialPresentation" component={CredentialPresentation} />
           <Stack.Screen name="ParentalControl" component={ParentalControl} />
           <Stack.Screen name="PresentCredentialsFromChat" component={PresentCredentialsFromChat} />
           <Stack.Screen name="SelectCredentialAttributes" component={SelectCredentialAttributes} />
+          <Stack.Screen
+            name="PresentCredentialAsQR"
+            component={PresentCredentialAsQR}
+            options={{ gestureEnabled: false }}
+          />
+          <Stack.Screen name="EphemeralCredentialPresentation" component={EphemeralCredentialPresentation} />
         </Stack.Navigator>
       </View>
     </NavigationContainer>

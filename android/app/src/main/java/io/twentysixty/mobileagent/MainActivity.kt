@@ -14,7 +14,7 @@ class MainActivity : ReactActivity() {
      * Returns the name of the main component registered from JavaScript. This is used to schedule
      * rendering of the component.
      */
-    override fun getMainComponentName(): String? {
+    override fun getMainComponentName(): String {
         return "hologram"
     }
 
@@ -25,18 +25,9 @@ class MainActivity : ReactActivity() {
     }
 
     /**
-     * Returns the instance of the [ReactActivityDelegate]. Here we use a util class [ ] which allows you to easily enable Fabric and Concurrent React
-     * (aka React 18) with two boolean flags.
+     * Returns the instance of the [ReactActivityDelegate]. We use [DefaultReactActivityDelegate]
+     * which allows you to enable New Architecture with a single boolean flags [fabricEnabled]
      */
-    override fun createReactActivityDelegate(): ReactActivityDelegate {
-        return ReactActivityDelegateWrapper(
-            this, BuildConfig.IS_NEW_ARCHITECTURE_ENABLED, DefaultReactActivityDelegate(
-                this,
-                mainComponentName!!,  // If you opted-in for the New Architecture, we enable the Fabric Renderer.
-                fabricEnabled,  // fabricEnabled
-                // If you opted-in for the New Architecture, we enable Concurrent React (i.e. React 18).
-                concurrentReactEnabled // concurrentRootEnabled
-            )
-        )
-    }
+    override fun createReactActivityDelegate(): ReactActivityDelegate =
+        ReactActivityDelegateWrapper(this, BuildConfig.IS_NEW_ARCHITECTURE_ENABLED, DefaultReactActivityDelegate(this, mainComponentName, fabricEnabled))
 }

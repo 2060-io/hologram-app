@@ -1,0 +1,63 @@
+name: Continuous Integration - Build
+
+on:
+  push:
+    branches: ['build/**', 'feat/bump**']
+
+  workflow_dispatch:
+
+jobs:
+  build-android:
+    runs-on: self-hosted
+    env:
+      UPLOAD_KEYSTORE_PASSWORD: ${{ secrets.UPLOAD_KEY_KEYSTORE_PASSWORD }}
+      UPLOAD_KEY_PASSWORD: ${{ secrets.UPLOAD_KEY_PASSWORD }}
+      UPLOAD_KEY_KEYSTORE_B64: ${{ secrets.UPLOAD_KEY_KEYSTORE_B64 }}
+    steps:
+      - name: Checkout hologram-app
+        uses: actions/checkout@v4
+
+      - name: Setup node v22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: 'https://registry.npmjs.org/'
+          cache: yarn
+
+      - name: Install dependencies
+        run: |
+          yarn install --immutable
+
+      - name: Clean And Build Android
+        run: |
+          echo $UPLOAD_KEY_KEYSTORE_B64 | base64 --decode > ./android/app/upload-key.keystore
+          npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/build/intermediates/res/merged/release/
+          cd android
+          rm -rf .gradle build app/build app/.cxx
+          ./gradlew clean generateCodegenSchemaFromJavaScript generateCodegenArtifactsFromSchema assembleDevRelease
+
+  build-ios:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout hologram-app
+        uses: actions/checkout@v4
+
+      - name: Setup node v22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: 'https://registry.npmjs.org/'
+          cache: yarn
+
+      - name: Install dependencies
+        run: |
+          yarn install --immutable
+
+      - name: Build IOS
+        run: |
+          echo "New release published!"
+          echo $RELEASE_VERSION
+          cd ios
+          pod install --repo-update
+          xcodebuild clean archive -workspace  hologram.xcworkspace -scheme 2060Dev -allowProvisioningUpdates -sdk iphoneos -archivePath builds/hologram.xcarchive -destination "generic/platform=iOS" | xcpretty
+          xcodebuild -exportArchive -archivePath "builds/hologram.xcarchive" -exportPath "builds" -exportOptionsPlist hologram/ExportOptions.plist | xcpretty

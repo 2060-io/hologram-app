@@ -2,7 +2,7 @@ import { ConnectionRecord } from '@credo-ts/core'
 import { StackScreenProps } from '@react-navigation/stack'
 import React, { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, Image, TouchableOpacity, SafeAreaView } from 'react-native'
+import { View, Image, TouchableOpacity } from 'react-native'
 import { AlphabetList, IData } from 'react-native-section-alphabet-list'
 
 import getStyles from './styles'
@@ -83,7 +83,7 @@ const RelatedConnections: React.FC<Props> = ({ navigation, route }) => {
   if (!parentConnectionId) onGoToBack()
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       {showSearchInput && (
         <SearchInput
           containerStyle={styles.searchInputContainer}
@@ -128,7 +128,7 @@ const RelatedConnections: React.FC<Props> = ({ navigation, route }) => {
           </View>
         )}
       />
-    </SafeAreaView>
+    </View>
   )
 }
 

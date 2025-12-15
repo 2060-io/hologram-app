@@ -1,8 +1,8 @@
 diff --git a/node_modules/@simform_solutions/react-native-audio-waveform/android/src/main/java/com/audiowaveform/AudioWaveformModule.kt b/node_modules/@simform_solutions/react-native-audio-waveform/android/src/main/java/com/audiowaveform/AudioWaveformModule.kt
-index 25b9376..cf5744a 100644
+index 6e2f7db..0777442 100644
 --- a/node_modules/@simform_solutions/react-native-audio-waveform/android/src/main/java/com/audiowaveform/AudioWaveformModule.kt
 +++ b/node_modules/@simform_solutions/react-native-audio-waveform/android/src/main/java/com/audiowaveform/AudioWaveformModule.kt
-@@ -108,13 +108,13 @@ class AudioWaveformModule(context: ReactApplicationContext): ReactContextBaseJav
+@@ -103,13 +103,13 @@ class AudioWaveformModule(context: ReactApplicationContext): ReactContextBaseJav
          }
  
          try {
@@ -17,9 +17,9 @@ index 25b9376..cf5744a 100644
              audioRecorder.stopRecording(recorder, path!!, promise)
              recorder = null
              path = null
-@@ -415,6 +415,9 @@ class AudioWaveformModule(context: ReactApplicationContext): ReactContextBaseJav
+@@ -410,6 +410,9 @@ class AudioWaveformModule(context: ReactApplicationContext): ReactContextBaseJav
          override fun run() {
-             val currentDecibel = getDecibel()
+             val currentDecibel = audioRecorder.getDecibel(recorder)
              val args: WritableMap = Arguments.createMap()
 +            val currentTime = System.currentTimeMillis()
 +            val progress =  currentTime - startTime
@@ -27,19 +27,6 @@ index 25b9376..cf5744a 100644
              if (currentDecibel == Double.NEGATIVE_INFINITY) {
                  args.putDouble(Constants.currentDecibel, 0.0)
              } else {
-diff --git a/node_modules/@simform_solutions/react-native-audio-waveform/ios/AudioPlayer.swift b/node_modules/@simform_solutions/react-native-audio-waveform/ios/AudioPlayer.swift
-index 059f127..71d2c9a 100644
---- a/node_modules/@simform_solutions/react-native-audio-waveform/ios/AudioPlayer.swift
-+++ b/node_modules/@simform_solutions/react-native-audio-waveform/ios/AudioPlayer.swift
-@@ -39,6 +39,8 @@ class AudioPlayer: NSObject, AVAudioPlayerDelegate {
-       }
-      
-       do {
-+        try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: [])
-+        try AVAudioSession.sharedInstance().setActive(true)
-         player = try AVAudioPlayer(contentsOf: audioUrl!)
-         player?.prepareToPlay()
-         player?.volume = Float(volume ?? 100.0)
 diff --git a/node_modules/@simform_solutions/react-native-audio-waveform/ios/AudioRecorder.swift b/node_modules/@simform_solutions/react-native-audio-waveform/ios/AudioRecorder.swift
 index d571ca0..9a735da 100644
 --- a/node_modules/@simform_solutions/react-native-audio-waveform/ios/AudioRecorder.swift

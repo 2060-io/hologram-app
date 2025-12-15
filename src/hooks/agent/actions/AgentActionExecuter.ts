@@ -23,7 +23,7 @@ export class AgentActionExecuter {
   }): Promise<{ status: ActionExecutionStatus; outboundMessageContextData?: OutboundMessageContextData }> {
     const { agent, realm, action } = options
     const replaySubject = new ReplaySubject<AgentMessageSentEvent>()
-    log(`Execute action: ${JSON.stringify(action)}`)
+    log('Execute Agent Action', JSON.stringify(action))
 
     const chatEntry = action.chatEntryId
       ? realm.objectForPrimaryKey(ChatEntry, action.chatEntryId)
@@ -96,8 +96,7 @@ export class AgentActionExecuter {
           },
         }
       } else {
-        logError(`Agent Action Executer Error: ${error}`)
-
+        logError('Agent Action Executer Error', error)
         throw error
       }
     } finally {

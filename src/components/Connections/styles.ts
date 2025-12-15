@@ -8,7 +8,6 @@ export default (theme: AppTheme) =>
     container: {
       flex: 1,
       marginHorizontal: 15,
-      backgroundColor: theme.colors.secondary,
     },
     searchInputContainer: {
       width: widthPercentageToDP('95%'),
