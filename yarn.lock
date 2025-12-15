@@ -13206,10 +13206,10 @@ react-native-video@6.16.1:
   resolved "https://registry.yarnpkg.com/react-native-video/-/react-native-video-6.16.1.tgz#c4f5f71eac930a4ae4e2faadb22fc05d78b9b7fe"
   integrity sha512-+G6tVVGbwFqNTyPivqb+PhQzWr5OudDQ1dgvBNyBRAgcS8rOcbwuS6oX+m8cxOsXHn1UT9ofQnjQEwkGOsvomg==
 
-react-native-vision-camera-ocr-plus@1.0.13:
-  version "1.0.13"
-  resolved "https://registry.yarnpkg.com/react-native-vision-camera-ocr-plus/-/react-native-vision-camera-ocr-plus-1.0.13.tgz#069e5253d13eaf9e9ed5b00077108f650da37b94"
-  integrity sha512-ffGMSkA2WInl0Ig1moK50yeZC1Z/vOtXw2Qes8QFuWMMQjO1qoLcGBmYQHVG+yuMr5Vgxh6+zDjrrJZ5mIigzQ==
+react-native-vision-camera-ocr-plus@1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/react-native-vision-camera-ocr-plus/-/react-native-vision-camera-ocr-plus-1.1.0.tgz#d8baa571909a6ecbed823ac1049aa2712b171c6b"
+  integrity sha512-NmZzX7XyKtSmiojdhCI2ZMVbT/YO9M4wH457bCADzvORKdgosqcSxV2S3G9hK4CGCfqTNB3KQ7tzBBhIv8cgqQ==
 
 react-native-vision-camera@4.7.1:
   version "4.7.1"

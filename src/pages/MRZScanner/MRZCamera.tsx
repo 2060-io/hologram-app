@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { Dimensions, LayoutChangeEvent, Platform, StyleSheet, TouchableOpacity, View } from 'react-native'
 import { Svg, Rect } from 'react-native-svg'
 import { Camera, runAtTargetFps, useCameraFormat, useFrameProcessor } from 'react-native-vision-camera'
-import { useTextRecognition, Text as ResolvedText } from 'react-native-vision-camera-ocr-plus'
+import { useTextRecognition, Text as ResolvedText, ScanRegion } from 'react-native-vision-camera-ocr-plus'
 import { Worklets } from 'react-native-worklets-core'
 
 import { MRZCameraProps } from './MRZScannerProps'
@@ -20,11 +20,11 @@ const SCREEN_HEIGHT = Platform.select<number>({
   ios: Dimensions.get('window').height,
 }) as number
 
-const scanRegion = {
-  left: 5,
-  top: 28,
-  width: 90,
-  height: 24,
+const scanRegion: ScanRegion = {
+  left: '5%',
+  top: '28%',
+  width: '90%',
+  height: '24%',
 }
 const RUN_TARGET_FPS = IS_IOS ? 5 : 1
 
@@ -105,9 +105,9 @@ const MRZCamera = ({ skipScan, cameraProps, onData, scanSuccess, refuse }: MRZCa
         <Svg preserveAspectRatio="xMidYMid slice" style={StyleSheet.absoluteFill}>
           <Rect
             x={0}
-            y={(scanRegion.top / 100) * containerHeight}
+            y={(parseFloat(scanRegion.top) / 100) * containerHeight}
             width={'100%'}
-            height={(scanRegion.height / 100) * containerHeight}
+            height={(parseFloat(scanRegion.height) / 100) * containerHeight}
             strokeWidth="3"
             stroke={theme.colors.green}
             fillOpacity={0}
