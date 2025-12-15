@@ -2,7 +2,7 @@ import { UserProfileData } from '@2060.io/credo-ts-didcomm-user-profile'
 import { StackScreenProps } from '@react-navigation/stack'
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ScrollView, TouchableOpacity, SafeAreaView } from 'react-native'
+import { ScrollView, TouchableOpacity } from 'react-native'
 
 import getStyles from './styles'
 
@@ -63,16 +63,14 @@ const UserProfile = ({ navigation }: Props) => {
   }
 
   return (
-    <SafeAreaView style={styles.root}>
-      <ScrollView style={styles.root}>
-        <UserProfileForm
-          displayName={displayName}
-          displayPicture={displayPicture}
-          onHandleChangeName={setDisplayName}
-          onHandleChangePicture={setDisplayPicture}
-        />
-      </ScrollView>
-    </SafeAreaView>
+    <ScrollView style={styles.root}>
+      <UserProfileForm
+        displayName={displayName}
+        displayPicture={displayPicture}
+        onHandleChangeName={setDisplayName}
+        onHandleChangePicture={setDisplayPicture}
+      />
+    </ScrollView>
   )
 }
 

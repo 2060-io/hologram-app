@@ -2,7 +2,7 @@ import { useHeaderHeight } from '@react-navigation/elements'
 import { StackScreenProps } from '@react-navigation/stack'
 import React, { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { SafeAreaView, TouchableOpacity, View } from 'react-native'
+import { TouchableOpacity, View } from 'react-native'
 
 import getStyles from './styles'
 
@@ -70,7 +70,7 @@ const ShareMessages = ({ navigation }: Props) => {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <View style={styles.connectionsContainer}>
         <Connections
           navigation={navigation}
@@ -102,7 +102,7 @@ const ShareMessages = ({ navigation }: Props) => {
           <SvgIcon name="send" fill={theme.colors.white} />
         </TouchableOpacity>
       </View>
-    </SafeAreaView>
+    </View>
   )
 }
 

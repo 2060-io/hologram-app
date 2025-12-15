@@ -83,6 +83,7 @@ export const useChatActions = () => {
         title,
         type: mimeType,
         filename: `${textType}.${subType}`,
+        failOnCancel: false,
       },
       android: {
         url,

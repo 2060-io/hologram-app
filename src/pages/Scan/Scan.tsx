@@ -12,9 +12,7 @@ import {
   TouchableWithoutFeedback,
   Platform,
   TouchableOpacity,
-  ScrollView,
 } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
 
 import getStyles from './styles'
 
@@ -168,24 +166,13 @@ const Scan = ({ navigation }: Props) => {
     </KeyboardAvoidingView>
   )
 
-  useEffect(() => {
-    if (!isFocused) toast(null)
-  }, [isFocused])
-
   return (
-    <SafeAreaView style={styles.container} edges={['left', 'right']}>
-      <ScrollView
-        contentContainerStyle={styles.scrollViewContentContainerStyle}
-        showsVerticalScrollIndicator={false}
-      >
-        <ModalLoading visible={processing} />
-        <View style={styles.container}>
-          {renderTabs()}
-          {tabType === 'link' && renderLinkInput()}
-          {tabType === 'scanner' && renderScanner()}
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+    <View style={styles.container}>
+      <ModalLoading visible={processing} />
+      {renderTabs()}
+      {tabType === 'link' && renderLinkInput()}
+      {tabType === 'scanner' && renderScanner()}
+    </View>
   )
 }
 

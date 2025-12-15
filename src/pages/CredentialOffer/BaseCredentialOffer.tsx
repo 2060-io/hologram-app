@@ -4,7 +4,8 @@ import { StackNavigationProp } from '@react-navigation/stack'
 import { TrustResolutionOutcome } from '@verana-labs/verre'
 import React, { useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, TouchableOpacity, ScrollView, SafeAreaView } from 'react-native'
+import { View, TouchableOpacity, ScrollView } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 import getStyles from './styles'
 
@@ -75,7 +76,7 @@ const BaseCredentialOffer: React.FC<Props> = ({
   }, [enableMainButtons])
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['bottom']}>
       <ModalConfirmAction
         visible={showModalRefuseConfirmation}
         title={t('personalChat.confirmRefuseCredentialOffer')}

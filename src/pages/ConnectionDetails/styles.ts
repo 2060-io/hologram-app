@@ -10,7 +10,6 @@ export default (theme: AppTheme) =>
     },
     subContainer: {
       paddingHorizontal: 15,
-      paddingBottom: 10,
     },
     containerSectionInfo: {
       alignSelf: 'center',

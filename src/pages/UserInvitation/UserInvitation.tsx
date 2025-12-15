@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, TouchableOpacity, Platform, SafeAreaView, ScrollView } from 'react-native'
+import { View, TouchableOpacity, Platform } from 'react-native'
 import QRCode from 'react-native-qrcode-svg'
 import Share, { ShareOptions } from 'react-native-share'
 
@@ -71,37 +71,28 @@ const UserInvitation = ({
   }
 
   return (
-    <SafeAreaView style={styles.containerRoot}>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollViewContentContainerStyle}
-      >
-        <View style={styles.containerContent}>
-          <Avatar
-            uri={
-              userProfileData?.displayPicture ? getPictureDataUrl(userProfileData.displayPicture) : undefined
-            }
-            label={userProfileData?.displayName}
-            size="46%"
+    <View style={styles.container}>
+      <Avatar
+        uri={userProfileData?.displayPicture ? getPictureDataUrl(userProfileData.displayPicture) : undefined}
+        label={userProfileData?.displayName}
+        size="46%"
+      />
+      <Text fontFamily="EuclidCircularA-Medium" style={styles.displayName}>
+        {userProfileData?.displayName}
+      </Text>
+      <View>
+        <View style={styles.containerCardQR}>
+          <QRCode
+            size={widthPercentageToDP('70%')}
+            color={theme.colors.black}
+            backgroundColor={theme.colors.white}
+            value={url}
           />
-          <Text fontFamily="EuclidCircularA-Medium" style={styles.displayName}>
-            {userProfileData?.displayName}
-          </Text>
-          <View>
-            <View style={styles.containerCardQR}>
-              <QRCode
-                size={widthPercentageToDP('70%')}
-                color={theme.colors.black}
-                backgroundColor={theme.colors.white}
-                value={url}
-              />
-            </View>
-            <Text style={styles.pressRefreshText}>{t('invitation.pressRefresh')}</Text>
-          </View>
-          <MainButton onPress={shareInvitation} text={t('connection.share')} iconName="shareSocial" />
         </View>
-      </ScrollView>
-    </SafeAreaView>
+        <Text style={styles.pressRefreshText}>{t('invitation.pressRefresh')}</Text>
+      </View>
+      <MainButton onPress={shareInvitation} text={t('connection.share')} iconName="shareSocial" />
+    </View>
   )
 }
 

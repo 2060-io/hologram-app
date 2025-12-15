@@ -11,7 +11,6 @@ const styles = (theme: AppTheme) =>
     subContainer: {
       marginTop: 15,
       paddingHorizontal: 15,
-      paddingBottom: 10,
     },
     btnRefuse: {
       paddingLeft: widthPercentageToDP('4%'),

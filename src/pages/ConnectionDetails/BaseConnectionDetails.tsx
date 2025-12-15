@@ -2,8 +2,9 @@ import { ConnectionRecord, TypedArrayEncoder, Buffer } from '@credo-ts/core'
 import { StackScreenProps } from '@react-navigation/stack'
 import React, { ReactElement, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, SafeAreaView, ScrollView, TouchableOpacity, Platform } from 'react-native'
+import { View, ScrollView, TouchableOpacity, Platform } from 'react-native'
 import Config from 'react-native-config'
+import { SafeAreaView } from 'react-native-safe-area-context'
 import Share, { ShareOptions } from 'react-native-share'
 
 import getStyles from './styles'
@@ -212,7 +213,7 @@ const BaseConnectionDetails = ({
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['bottom']}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.subContainer}>
           <ModalLoading

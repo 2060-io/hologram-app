@@ -1,0 +1,22 @@
+diff --git a/node_modules/@robinbobin/react-native-google-drive-api-wrapper/GDrive.ts b/node_modules/@robinbobin/react-native-google-drive-api-wrapper/GDrive.ts
+index d620ab6..0cd3abe 100644
+--- a/node_modules/@robinbobin/react-native-google-drive-api-wrapper/GDrive.ts
++++ b/node_modules/@robinbobin/react-native-google-drive-api-wrapper/GDrive.ts
+@@ -26,7 +26,7 @@ export default class GDrive {
+ 
+   set accessToken(accessToken) {
+     for (const api of this.__apis.values()) {
+-      api.accessToken = accessToken
++      if(accessToken)api.accessToken = accessToken
+     }
+   }
+ 
+@@ -65,7 +65,7 @@ export default class GDrive {
+   }
+ 
+   __setApi(api: GDriveApi, apiName: string) {
+-    api.accessToken = this.accessToken
++    if(this.accessToken) api.accessToken = this.accessToken
+ 
+     this.__apis.set(apiName, api)
+   }

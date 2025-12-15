@@ -1,7 +1,8 @@
 import { OrientationLock, lockAsync, unlockAsync } from 'expo-screen-orientation'
 import React, { memo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Image, TouchableOpacity, View, SafeAreaView } from 'react-native'
+import { Image, TouchableOpacity, View } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 import { SvgUri } from 'react-native-svg'
 import WebView from 'react-native-webview'
 
@@ -137,7 +138,7 @@ const HtmlChatView = (props: HtmlChatViewProps) => {
           supportedOrientations={['portrait', 'landscape']}
           statusBarTranslucent={false}
         >
-          <SafeAreaView style={styles.fullScreenOpenedContainer}>
+          <SafeAreaView style={styles.fullScreenOpenedContainer} edges={['bottom', 'top']}>
             {!isFullScreen && renderCustomHeader({ onSomeActionDispatched: closeWebView })}
             {renderWebView()}
           </SafeAreaView>
