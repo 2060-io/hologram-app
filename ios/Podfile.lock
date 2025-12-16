@@ -1,5 +1,5 @@
 PODS:
-  - anoncreds (0.3.3-alpha-20251002113617):
+  - anoncreds (0.3.4):
     - React
     - React-callinvoker
     - React-Core
@@ -7,7 +7,7 @@ PODS:
     - GoogleUtilities/Environment (~> 8.0)
     - GoogleUtilities/UserDefaults (~> 8.0)
     - PromisesObjC (~> 2.4)
-  - askar (0.4.2-alpha-20251001231628):
+  - askar (0.4.3):
     - React
     - React-callinvoker
     - React-Core
@@ -4121,9 +4121,9 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
-  anoncreds: b58555401f1217305f1bba7f24da6e1b8e61fb64
+  anoncreds: d48fc0f3bde44f97aef5bb907f6821bf9191d758
   AppCheckCore: cc8fd0a3a230ddd401f326489c99990b013f0c4f
-  askar: 92872c37f9438ff2ffd235c2663d84b72428f3d2
+  askar: 2bbf4b40a242b330d7995cd73ed99b177b489ff9
   boost: 7e761d76ca2ce687f7cc98e698152abd03a18f90
   CocoaLumberjack: 5644158777912b7de7469fa881f8a3f259c2512a
   DoubleConversion: cb417026b2400c8f53ae97020b2be961b59470cb

@@ -1175,23 +1175,23 @@
   resolved "https://registry.yarnpkg.com/@colors/colors/-/colors-1.5.0.tgz#bb504579c1cae923e6576a4f5da43d25f97bdbd9"
   integrity sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ==
 
-"@credo-ts/action-menu@0.5.18-alpha-20250930143725":
-  version "0.5.18-alpha-20250930143725"
-  resolved "https://registry.yarnpkg.com/@credo-ts/action-menu/-/action-menu-0.5.18-alpha-20250930143725.tgz#d4751647b6284e5df9e5e8d645f369b56ee58d05"
-  integrity sha512-/nfWF0F/BwzH2aCsZVylu/037SKUCYMgFoXaZgz7sWVdzDldVeJpgBM1Kvy9BBIEeEbv5Fx8bR2TZzBou03HrA==
+"@credo-ts/action-menu@0.5.19":
+  version "0.5.19"
+  resolved "https://registry.yarnpkg.com/@credo-ts/action-menu/-/action-menu-0.5.19.tgz#541b338d2e0f9fe93ab00e6662ed23aecdf542bb"
+  integrity sha512-7Gc2XLcpL+iKrlCRSb2WDi4GRm/7l/hNE6e6y8v0J5rrrxtm0tda7BBERylZnQkxAGOV642gOSmMsuLrF82qtg==
   dependencies:
-    "@credo-ts/core" "0.5.18-alpha-20250930143725"
+    "@credo-ts/core" "0.5.19"
     class-transformer "0.5.1"
     class-validator "0.14.1"
     rxjs "^7.8.0"
 
-"@credo-ts/anoncreds@0.5.18-alpha-20250930143725", "@credo-ts/anoncreds@^0.5.11":
-  version "0.5.18-alpha-20250930143725"
-  resolved "https://registry.yarnpkg.com/@credo-ts/anoncreds/-/anoncreds-0.5.18-alpha-20250930143725.tgz#b53963a738f6ad7073bcc3eee4e322d94d1f53e5"
-  integrity sha512-Ill3lPGwD3IPh4f46xq1ZhM4m4q9VVFO0uDTPBA1TXtbeRsSPPD5LUoQ0MAPWLvwTlaZ70yKnxIkp44/4Z6RFA==
+"@credo-ts/anoncreds@0.5.19", "@credo-ts/anoncreds@^0.5.11":
+  version "0.5.19"
+  resolved "https://registry.yarnpkg.com/@credo-ts/anoncreds/-/anoncreds-0.5.19.tgz#78279d4aed9431d804a33122e01545885b9c59ed"
+  integrity sha512-+q4UakW4Gvw+Ohcm8MlPL8YZeOf//P7qCz1su2XFD0jHQOnr1uaIGR38i68JG3cXWmAGv+cxssnZjHl5c+tyag==
   dependencies:
     "@astronautlabs/jsonpath" "^1.1.2"
-    "@credo-ts/core" "0.5.18-alpha-20250930143725"
+    "@credo-ts/core" "0.5.19"
     "@sphereon/pex-models" "^2.3.1"
     big-integer "^1.6.51"
     bn.js "^5.2.1"
@@ -1199,24 +1199,24 @@
     class-validator "0.14.1"
     reflect-metadata "^0.1.13"
 
-"@credo-ts/askar@0.5.18-alpha-20250930143725":
-  version "0.5.18-alpha-20250930143725"
-  resolved "https://registry.yarnpkg.com/@credo-ts/askar/-/askar-0.5.18-alpha-20250930143725.tgz#b1c26814bedd1028be974a4cec210499433772ae"
-  integrity sha512-VLk3qoCfrxogYyNi+KJ2Dc/qqudtj5mwvc5Uibx0IHZgdp9NxQgBhbOSOxEElch2Uot7teIzPhpHtfautvtrtA==
+"@credo-ts/askar@0.5.19":
+  version "0.5.19"
+  resolved "https://registry.yarnpkg.com/@credo-ts/askar/-/askar-0.5.19.tgz#01be1159e441b5189c823905c87ed5b62d7f30e9"
+  integrity sha512-q6c4+JXVKnpSNpehjSrfiqWp7ZSW4zhjb4k0LrTXBahj/eGWdm0meHNkWn3J5ot5W56KBFJj0pDjJvlHhWTwqQ==
   dependencies:
-    "@credo-ts/core" "0.5.18-alpha-20250930143725"
+    "@credo-ts/core" "0.5.19"
     "@hyperledger/aries-askar-shared" "^0.2.3"
-    "@openwallet-foundation/askar-shared" "^0.4.1"
+    "@openwallet-foundation/askar-shared" "^0.4.2"
     bn.js "^5.2.1"
     class-transformer "0.5.1"
     class-validator "0.14.1"
     rxjs "^7.8.0"
     tsyringe "^4.8.0"
 
-"@credo-ts/core@0.5.13", "@credo-ts/core@0.5.18-alpha-20250930143725", "@credo-ts/core@^0.5.11", "@credo-ts/core@^0.5.17":
-  version "0.5.18-alpha-20250930143725"
-  resolved "https://registry.yarnpkg.com/@credo-ts/core/-/core-0.5.18-alpha-20250930143725.tgz#da7571966e0f29300e50d4e99e326f373dd61477"
-  integrity sha512-bQ6rjnE4NSnQbiUMYN2nzP4Ci4NOWc/t5PFGsJ+Lcqh6EPqsLrevavG1CwIjE5npL/9BaydFWghxQS4spcyeYQ==
+"@credo-ts/core@0.5.13", "@credo-ts/core@0.5.19", "@credo-ts/core@^0.5.11", "@credo-ts/core@^0.5.17":
+  version "0.5.19"
+  resolved "https://registry.yarnpkg.com/@credo-ts/core/-/core-0.5.19.tgz#17b6d96f788eb58e96d6688c274f2cedc8002fb6"
+  integrity sha512-KPLSq5MJ6t76HTIj2/Zz+oYbcpn5o3tGSoUPXObDdwFwqnYYWpXHG3hUDm19uexL7Ot7oB0WRCkN3cXwJwEVDQ==
   dependencies:
     "@animo-id/mdoc" "0.2.38"
     "@animo-id/pex" "4.1.1-alpha.0"
@@ -1241,7 +1241,6 @@
     "@sphereon/ssi-types" "0.30.2-next.135"
     "@stablelib/ed25519" "^1.0.2"
     "@types/ws" "^8.5.4"
-    abort-controller "^3.0.0"
     big-integer "^1.6.51"
     borc "^3.0.0"
     buffer "^6.0.3"
@@ -1261,12 +1260,12 @@
     web-did-resolver "^2.0.21"
     webcrypto-core "^1.8.0"
 
-"@credo-ts/openid4vc@0.5.18-alpha-20250930143725":
-  version "0.5.18-alpha-20250930143725"
-  resolved "https://registry.yarnpkg.com/@credo-ts/openid4vc/-/openid4vc-0.5.18-alpha-20250930143725.tgz#5d1ab9aeb3d1433c1abf17239819e51c5bfd08b7"
-  integrity sha512-12t6K6uR6OOgkvTfn1Mwy/4+1mf3Tb6l7QZ2odY5OLyY4WYkWHDIv6UREfRuZzyio5tNEaI57pcqvLB91LGcEg==
+"@credo-ts/openid4vc@0.5.19":
+  version "0.5.19"
+  resolved "https://registry.yarnpkg.com/@credo-ts/openid4vc/-/openid4vc-0.5.19.tgz#ae7acbb8d94cc2f458d7723adb93f3623c246a84"
+  integrity sha512-28qFXHFYsQQuCUMi8uG9GwaPdnIFYjouLW7z2tKSoDisTJfcHdrqBZzuixHgch9jBNu0bM+Wk4sjigS27avqtQ==
   dependencies:
-    "@credo-ts/core" "0.5.18-alpha-20250930143725"
+    "@credo-ts/core" "0.5.19"
     "@sphereon/did-auth-siop" "0.16.1-fix.173"
     "@sphereon/oid4vc-common" "0.16.1-fix.173"
     "@sphereon/oid4vci-client" "0.16.1-fix.173"
@@ -1285,35 +1284,35 @@
     class-validator "0.14.1"
     tsyringe "^4.6.0"
 
-"@credo-ts/question-answer@0.5.18-alpha-20250930143725":
-  version "0.5.18-alpha-20250930143725"
-  resolved "https://registry.yarnpkg.com/@credo-ts/question-answer/-/question-answer-0.5.18-alpha-20250930143725.tgz#b8b9aea2c89dacce4032e4f29805bbab270672bb"
-  integrity sha512-HS8bscWyd4mpFa7sd/ddVWCRag1tYpAF5fYslh9v/W4iye24Hj/prFxQEjTKDggeeikWEH82E4MSe9egwtvvSw==
+"@credo-ts/question-answer@0.5.19":
+  version "0.5.19"
+  resolved "https://registry.yarnpkg.com/@credo-ts/question-answer/-/question-answer-0.5.19.tgz#e2b75d40392ef8d7248a2cca1a949dad7761459b"
+  integrity sha512-rlfC1PR7L0bMQW/GozDOzy5lsdHG2d7hyx5iU8wBQs6sMbb2Hray/Gws4heRkvt12rHM3DtdE410ir2epQUT5g==
   dependencies:
-    "@credo-ts/core" "0.5.18-alpha-20250930143725"
+    "@credo-ts/core" "0.5.19"
     class-transformer "0.5.1"
     class-validator "0.14.1"
     rxjs "^7.8.0"
 
-"@credo-ts/react-native@0.5.18-alpha-20250930143725":
-  version "0.5.18-alpha-20250930143725"
-  resolved "https://registry.yarnpkg.com/@credo-ts/react-native/-/react-native-0.5.18-alpha-20250930143725.tgz#e9d554fec18e3df098666f8185f60b465ed98bdf"
-  integrity sha512-gV2nG+xDPFHY7Q6dftdlUHBI3Ee4T3H+IJFAoFNA6ii0kEtVhQgQl8bZ7NZ36WXTjVwVg+0m3OA0WVgNvHZPNg==
+"@credo-ts/react-native@0.5.19":
+  version "0.5.19"
+  resolved "https://registry.yarnpkg.com/@credo-ts/react-native/-/react-native-0.5.19.tgz#5c45a02bb0f301f57cda1a080e736742bfa34872"
+  integrity sha512-eTUp4iPqPXGJMHPdoXlD5ax2fdWP2Q/Z5+MaHZKaO7i68tWuTKlIiW0C0HYd7Sp7JzYlNSKqJgpfzosYFZhT5Q==
   dependencies:
     "@azure/core-asynciterator-polyfill" "^1.0.2"
-    "@credo-ts/core" "0.5.18-alpha-20250930143725"
+    "@credo-ts/core" "0.5.19"
     events "^3.3.0"
 
-"@credo-ts/webvh@0.5.18-alpha-20250930143725":
-  version "0.5.18-alpha-20250930143725"
-  resolved "https://registry.yarnpkg.com/@credo-ts/webvh/-/webvh-0.5.18-alpha-20250930143725.tgz#7c6003e3d7baeeda927a5d55efdc1acd20223b9d"
-  integrity sha512-gyUTLF4D3N+7/K6HvKYrjxUItBwmQDzMASQM+YkpHt9hCg63O99rAdJ8TaBH1oFynyeMeqqSfhyMBUZJRivZ1Q==
+"@credo-ts/webvh@0.5.19":
+  version "0.5.19"
+  resolved "https://registry.yarnpkg.com/@credo-ts/webvh/-/webvh-0.5.19.tgz#ab3c2e69c6bd3805d91e4b92312fd6839ad2aef3"
+  integrity sha512-LAk4L1VNso6W+KLWU5Q9+zNFTXyM3XjnFYsYi8Zci7vIhD9oUhdB4iVyadzQIfkUpTFcu1rcjhCvAqdyyrAl4w==
   dependencies:
-    "@credo-ts/anoncreds" "0.5.18-alpha-20250930143725"
-    "@credo-ts/core" "0.5.18-alpha-20250930143725"
+    "@credo-ts/anoncreds" "0.5.19"
+    "@credo-ts/core" "0.5.19"
     class-transformer "^0.5.1"
     class-validator "0.14.1"
-    didwebvh-ts "^2.5.3"
+    didwebvh-ts "^2.5.6"
     json-canonicalize "^1.2.0"
     tsyringe "^4.8.0"
 
@@ -2618,17 +2617,17 @@
   resolved "https://registry.yarnpkg.com/@humanwhocodes/retry/-/retry-0.4.3.tgz#c2b9d2e374ee62c586d3adbea87199b1d7a7a6ba"
   integrity sha512-bV0Tgo9K4hfPCek+aMAn81RppFKv2ySDQeMoSZuvTASywNTnVJCArCZE2FWqpvIatKu7VMRLWlR1EazvVhDyhQ==
 
-"@hyperledger/anoncreds-react-native@0.3.3-alpha-20251002113617":
-  version "0.3.3-alpha-20251002113617"
-  resolved "https://registry.yarnpkg.com/@hyperledger/anoncreds-react-native/-/anoncreds-react-native-0.3.3-alpha-20251002113617.tgz#495da71a34eb0ba507815c7cabb2836803103ec4"
-  integrity sha512-h/ipP9iZ5fiJczA87pCPaPEP1sO6w+HjxAnH/hdeZBDGzDgNjgHLsgIXOYVEXzFQ0xj3Rga/syflqTN4cIxANQ==
+"@hyperledger/anoncreds-react-native@0.3.4":
+  version "0.3.4"
+  resolved "https://registry.yarnpkg.com/@hyperledger/anoncreds-react-native/-/anoncreds-react-native-0.3.4.tgz#e754e07fb2f44440e0fca1a03ca1e4506c29374b"
+  integrity sha512-GF6vpV8UZk4FTPSuQeE8chW7yBnCZlBUO7mtWqG/DiQlDsP3iSSnE5tYOp51iwA10r9tN6qD24WVkIe4xMd1sw==
   dependencies:
-    "@hyperledger/anoncreds-shared" "0.3.3-alpha-20251002113617"
+    "@hyperledger/anoncreds-shared" "0.3.4"
 
-"@hyperledger/anoncreds-shared@0.3.3-alpha-20251002113617":
-  version "0.3.3-alpha-20251002113617"
-  resolved "https://registry.yarnpkg.com/@hyperledger/anoncreds-shared/-/anoncreds-shared-0.3.3-alpha-20251002113617.tgz#9c1b290a8edbb1f23d755f9b3826b2bc48ee58bf"
-  integrity sha512-XYrBqoI5nEsI8czooNV0JRmCtFF664kd8I2PhURCtqsyB3FbDSbYBdAQmGa3CbOEZqDOG0XsJy+5RxtgmtCB/Q==
+"@hyperledger/anoncreds-shared@0.3.4":
+  version "0.3.4"
+  resolved "https://registry.yarnpkg.com/@hyperledger/anoncreds-shared/-/anoncreds-shared-0.3.4.tgz#d6b62aa2720f3da8a8f7e79bd8cc167aeb5009cb"
+  integrity sha512-XRyX39yWjn+ymUxy+4BvE0gdRIkfTmHtj1A19aOE8gALaDIAMiBbe0HxO8dkM+iAUXntBtqRJEL87Kwcx6xd8g==
   dependencies:
     tar "^7.4.3"
 
@@ -3249,17 +3248,17 @@
   resolved "https://registry.yarnpkg.com/@one-ini/wasm/-/wasm-0.1.1.tgz#6013659736c9dbfccc96e8a9c2b3de317df39323"
   integrity sha512-XuySG1E38YScSJoMlqovLru4KTUNSjgVTIjyh7qMX6aNN5HY5Ct5LhRJdxO79JtTzKfzV/bnWpz+zquYrISsvw==
 
-"@openwallet-foundation/askar-react-native@0.4.2-alpha-20251001231628":
-  version "0.4.2-alpha-20251001231628"
-  resolved "https://registry.yarnpkg.com/@openwallet-foundation/askar-react-native/-/askar-react-native-0.4.2-alpha-20251001231628.tgz#e2ec1dd9eb4aada2598a39305f73727259b3440e"
-  integrity sha512-2RQ7Xj7NLlrxYIiGwb8236rqOb8hatiH9s9+xLtSKvMmUbW3A5hx3lU6Sh0FPFWVTqzep3F6MmpKQ8pqiyaUtw==
+"@openwallet-foundation/askar-react-native@0.4.3":
+  version "0.4.3"
+  resolved "https://registry.yarnpkg.com/@openwallet-foundation/askar-react-native/-/askar-react-native-0.4.3.tgz#95e82b7e6580ce54a0fa27857d5ffdcfa307d0ca"
+  integrity sha512-hcUbvLByWTa4cVPKziojfdyZDRtdqI45INdyad4oJOlrDwtjjvDU9+x6MaykmO1VjaDYDk+bPTP1AhU0g3jJ4Q==
   dependencies:
-    "@openwallet-foundation/askar-shared" "0.4.2-alpha-20251001231628"
+    "@openwallet-foundation/askar-shared" "0.4.3"
 
-"@openwallet-foundation/askar-shared@0.4.2-alpha-20251001231628", "@openwallet-foundation/askar-shared@^0.4.1":
-  version "0.4.2-alpha-20251001231628"
-  resolved "https://registry.yarnpkg.com/@openwallet-foundation/askar-shared/-/askar-shared-0.4.2-alpha-20251001231628.tgz#8c79af82130cac46556ac546730c2b0b1a81233c"
-  integrity sha512-SvP9dQSxoGmwP7Ft0toF7Hqwa55LBz0DSFbeKep4ImZETFNaTPz3+DLiGwDAIUI9HJtor9YkOgVQSTYlMM+9uw==
+"@openwallet-foundation/askar-shared@0.4.3", "@openwallet-foundation/askar-shared@^0.4.2":
+  version "0.4.3"
+  resolved "https://registry.yarnpkg.com/@openwallet-foundation/askar-shared/-/askar-shared-0.4.3.tgz#e1e4576e347c922c18a3a6abd452945060bb1520"
+  integrity sha512-Zt9zlvjJxNs8UWlnRydZH594Lak15YPHY72VT1+iDbXh0OjTdyq6Bf0FIsh9sfFnRYIgh2zd8+VoXxZ07GjADA==
   dependencies:
     buffer "^6.0.3"
     tar "^7.4.3"
@@ -7262,10 +7261,10 @@ did-resolver@^4.0.0, did-resolver@^4.0.1, did-resolver@^4.1.0:
   resolved "https://registry.yarnpkg.com/did-resolver/-/did-resolver-4.1.0.tgz#740852083c4fd5bf9729d528eca5d105aff45eb6"
   integrity sha512-S6fWHvCXkZg2IhS4RcVHxwuyVejPR7c+a4Go0xbQ9ps5kILa8viiYQgrM4gfTyeTjJ0ekgJH9gk/BawTpmkbZA==
 
-didwebvh-ts@^2.5.3:
-  version "2.5.3"
-  resolved "https://registry.yarnpkg.com/didwebvh-ts/-/didwebvh-ts-2.5.3.tgz#41af55c5046780aa6a2c544209f7372d29bb6f24"
-  integrity sha512-VTjA6yKRplrxV2lA1d14lf6B+0uVLdZzPwoqnTuHm/RQVPG1xNj7CRm6Gl5wEnq3NEd/9xJBabqAY7adX94MIQ==
+didwebvh-ts@^2.5.6:
+  version "2.5.6"
+  resolved "https://registry.yarnpkg.com/didwebvh-ts/-/didwebvh-ts-2.5.6.tgz#127bc15a1e972eb1f6ec82b7d9e3d01a2d3066f0"
+  integrity sha512-O9H6ZSrO1za+ot65ybfRU5FAOKuWZN5HzEJG9GFhNK7M3zV6SY3kfibAj1TJGKwzBnWocUXYfq2F7HNX0MC9Yg==
   dependencies:
     "@noble/hashes" "^1.8.0"
     json-canonicalize "^1.0.6"
