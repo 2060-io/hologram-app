@@ -134,7 +134,8 @@ jobs:
           npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/build/intermediates/res/merged/release/
           cd android
           rm -rf .gradle build app/build app/.cxx
-          ./gradlew clean generateCodegenSchemaFromJavaScript generateCodegenArtifactsFromSchema assembleDevRelease
+          ./gradlew generateCodegenSchemaFromJavaScript generateCodegenArtifactsFromSchema
+          ./gradlew assembleDevRelease
 
       - name: Setup MinIO Client and Upload app.apk to MinIO
         run: |
