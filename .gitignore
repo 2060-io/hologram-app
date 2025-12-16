@@ -69,7 +69,6 @@ coverage
 package-lock.json
 .env
 test/volumes
-android/app/src/main/assets/index.android.bundle
 android/app/upload-key.keystore
 **/.xcode.env.local
 
