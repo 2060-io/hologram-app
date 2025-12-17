@@ -2160,9 +2160,9 @@ PODS:
     - ReactCommon/turbomodule/core
     - SocketRocket
     - Yoga
-  - react-native-config (1.5.5):
-    - react-native-config/App (= 1.5.5)
-  - react-native-config/App (1.5.5):
+  - react-native-config (1.5.10):
+    - react-native-config/App (= 1.5.10)
+  - react-native-config/App (1.5.10):
     - React-Core
   - react-native-create-thumbnail (2.1.1):
     - React-Core
@@ -4209,7 +4209,7 @@ SPEC CHECKSUMS:
   react-native-cameraroll: bb98380ee21115d5fe1ae0f8b80c86e044613746
   react-native-cloud-store: cc96ca8d9a4400a1a7d8ceb33d2605bccc4986cf
   react-native-compressor: 3e04a6c707791c9731cda048c45d4ee343d7296e
-  react-native-config: 644074ab88db883fcfaa584f03520ec29589d7df
+  react-native-config: eae2b928a919c9743d710bbff3b7592882268fe8
   react-native-create-thumbnail: 733160dca9a548262e1030e7fcdae90a93d203ca
   react-native-date-picker: 9e761de1a6b100b2f61669de1f2c3e5717e2b525
   react-native-eid-reader: dee1b73c0fcfb75e3d768d0cc026a7cdb07073a2
