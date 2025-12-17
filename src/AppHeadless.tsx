@@ -24,8 +24,7 @@ const AppHeadless = () => {
       })
   }, [appState])
 
-  if (isHeadless) return null
-  return <App />
+  return isHeadless ? null : <App />
 }
 
 export default AppHeadless

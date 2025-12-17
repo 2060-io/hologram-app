@@ -7,7 +7,6 @@ import RealmSingleton from './RealmSingleton'
 import { manageBackgroundChatEntryChanges, subscribeToAgentChatEvents } from '@2060/hooks/agent/chat'
 import { manageConnectionStateChangedEvent } from '@2060/hooks/agent/connections/manageConnectionStateChangedEvent'
 import { log, logWarn } from '@2060/utils'
-import { getIsBackgroundNotificationHandlerEnabled } from '@2060/utils/developer'
 import { arePushNotificationsAllowed, deleteRemoteNotifications } from '@2060/utils/pushNotificationsUtils'
 
 const makeRequestToLocalServer = (payload: Record<string, string>) => {
@@ -24,11 +23,6 @@ let isProcessingBackgroundNotification = false
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function backgroundPushNotificationHandler(remoteMessage: FirebaseMessagingTypes.RemoteMessage) {
-  const isBackgroundNotificationHandlerEnabled = await getIsBackgroundNotificationHandlerEnabled()
-  if (!isBackgroundNotificationHandlerEnabled) {
-    logWarn('User does not have processing background notifications enabled')
-    return
-  }
   // Note: When user disables notifications and are not displayed (remote notifications) this code can be
   //  executed. For that reason, we need to check if push notifications are allowed to continue processing
   if (!(await arePushNotificationsAllowed())) {
