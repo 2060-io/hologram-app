@@ -1,5 +1,5 @@
 PODS:
-  - anoncreds (0.3.3-alpha-20251002113617):
+  - anoncreds (0.3.4):
     - React
     - React-callinvoker
     - React-Core
@@ -7,7 +7,7 @@ PODS:
     - GoogleUtilities/Environment (~> 8.0)
     - GoogleUtilities/UserDefaults (~> 8.0)
     - PromisesObjC (~> 2.4)
-  - askar (0.4.2-alpha-20251001231628):
+  - askar (0.4.3):
     - React
     - React-callinvoker
     - React-Core
@@ -2160,9 +2160,9 @@ PODS:
     - ReactCommon/turbomodule/core
     - SocketRocket
     - Yoga
-  - react-native-config (1.5.5):
-    - react-native-config/App (= 1.5.5)
-  - react-native-config/App (1.5.5):
+  - react-native-config (1.5.10):
+    - react-native-config/App (= 1.5.10)
+  - react-native-config/App (1.5.10):
     - React-Core
   - react-native-create-thumbnail (2.1.1):
     - React-Core
@@ -3661,6 +3661,15 @@ PODS:
     - ReactCommon/turbomodule/core
     - SocketRocket
     - Yoga
+  - RNVisionCameraOCR (1.1.0):
+    - GoogleMLKit/TextRecognition
+    - GoogleMLKit/TextRecognitionChinese
+    - GoogleMLKit/TextRecognitionDevanagari
+    - GoogleMLKit/TextRecognitionJapanese
+    - GoogleMLKit/TextRecognitionKorean
+    - GoogleMLKit/Translate
+    - React-Core
+    - VisionCamera
   - RNZipArchive (7.0.1):
     - React-Core
     - RNZipArchive/Core (= 7.0.1)
@@ -3683,15 +3692,6 @@ PODS:
   - VisionCamera/React (4.7.3):
     - React-Core
     - VisionCamera/FrameProcessors
-  - VisionCameraTextRecognition (3.1.1):
-    - GoogleMLKit/TextRecognition
-    - GoogleMLKit/TextRecognitionChinese
-    - GoogleMLKit/TextRecognitionDevanagari
-    - GoogleMLKit/TextRecognitionJapanese
-    - GoogleMLKit/TextRecognitionKorean
-    - GoogleMLKit/Translate
-    - React-Core
-    - VisionCamera
   - Yoga (0.0.0)
 
 DEPENDENCIES:
@@ -3821,10 +3821,10 @@ DEPENDENCIES:
   - RNShareMenu (from `../node_modules/react-native-share-menu`)
   - RNSVG (from `../node_modules/react-native-svg`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
+  - RNVisionCameraOCR (from `../node_modules/react-native-vision-camera-ocr-plus`)
   - RNZipArchive (from `../node_modules/react-native-zip-archive`)
   - SocketRocket (~> 0.7.1)
   - VisionCamera (from `../node_modules/react-native-vision-camera`)
-  - VisionCameraTextRecognition (from `../node_modules/react-native-vision-camera-text-recognition`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -4111,19 +4111,19 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-svg"
   RNVectorIcons:
     :path: "../node_modules/react-native-vector-icons"
+  RNVisionCameraOCR:
+    :path: "../node_modules/react-native-vision-camera-ocr-plus"
   RNZipArchive:
     :path: "../node_modules/react-native-zip-archive"
   VisionCamera:
     :path: "../node_modules/react-native-vision-camera"
-  VisionCameraTextRecognition:
-    :path: "../node_modules/react-native-vision-camera-text-recognition"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
-  anoncreds: b58555401f1217305f1bba7f24da6e1b8e61fb64
+  anoncreds: d48fc0f3bde44f97aef5bb907f6821bf9191d758
   AppCheckCore: cc8fd0a3a230ddd401f326489c99990b013f0c4f
-  askar: 92872c37f9438ff2ffd235c2663d84b72428f3d2
+  askar: 2bbf4b40a242b330d7995cd73ed99b177b489ff9
   boost: 7e761d76ca2ce687f7cc98e698152abd03a18f90
   CocoaLumberjack: 5644158777912b7de7469fa881f8a3f259c2512a
   DoubleConversion: cb417026b2400c8f53ae97020b2be961b59470cb
@@ -4209,7 +4209,7 @@ SPEC CHECKSUMS:
   react-native-cameraroll: bb98380ee21115d5fe1ae0f8b80c86e044613746
   react-native-cloud-store: cc96ca8d9a4400a1a7d8ceb33d2605bccc4986cf
   react-native-compressor: 3e04a6c707791c9731cda048c45d4ee343d7296e
-  react-native-config: 644074ab88db883fcfaa584f03520ec29589d7df
+  react-native-config: eae2b928a919c9743d710bbff3b7592882268fe8
   react-native-create-thumbnail: 733160dca9a548262e1030e7fcdae90a93d203ca
   react-native-date-picker: 9e761de1a6b100b2f61669de1f2c3e5717e2b525
   react-native-eid-reader: dee1b73c0fcfb75e3d768d0cc026a7cdb07073a2
@@ -4276,12 +4276,12 @@ SPEC CHECKSUMS:
   RNShareMenu: 107956974f695db0947c7beb43f3a12c4ac9e51f
   RNSVG: c5807de8e337c7a643f9bad2ecf48a15aefcc23c
   RNVectorIcons: 791f13226ec4a3fd13062eda9e892159f0981fae
+  RNVisionCameraOCR: 808889da6a323fb778b554009021b2ab83689593
   RNZipArchive: f4a5af907d1581e995c879e34799be35c6bc3e21
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
   SSZipArchive: c69881e8ac5521f0e622291387add5f60f30f3c4
   TOCropViewController: 80b8985ad794298fb69d3341de183f33d1853654
   VisionCamera: 0044a94f7489f19e19d5938e97dfc36f4784af3c
-  VisionCameraTextRecognition: d183547eed78b904622eac9e6860d0690a0c3f0c
   Yoga: 728df40394d49f3f471688747cf558158b3a3bd1
 
 PODFILE CHECKSUM: 491b4e994ea5f5c23741e0d728cc937b11f38bbd
