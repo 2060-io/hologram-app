@@ -1,9 +1,4 @@
-import {
-  getStorageData,
-  setStorageData,
-  BACKGROUND_PUSH_NOTIFICATION_HANDLER_ENABLED_PERSIST_KEY,
-  LOGS_ENABLED_PERSIST_KEY,
-} from '@2060/services/localStorage'
+import { getStorageData, setStorageData, LOGS_ENABLED_PERSIST_KEY } from '@2060/services/localStorage'
 
 export interface DevEnvsKeys {
   DATA_STORE_URL: string
@@ -45,16 +40,6 @@ export const allDevEnvs: DevEnv[] = [
     values: ['https://indyvdrproxy.ca.dev.2060.io', 'https://indyvdrproxy.ca.2060.io'],
   },
 ]
-
-export const getIsBackgroundNotificationHandlerEnabled = async () => {
-  return (
-    ((await getStorageData(BACKGROUND_PUSH_NOTIFICATION_HANDLER_ENABLED_PERSIST_KEY)) as boolean) ?? false
-  )
-}
-
-export const savePushNotificationHandlerEnabled = async (newValue: boolean) => {
-  await setStorageData(BACKGROUND_PUSH_NOTIFICATION_HANDLER_ENABLED_PERSIST_KEY, newValue)
-}
 
 export const areLogsEnabled = async () => {
   return ((await getStorageData(LOGS_ENABLED_PERSIST_KEY)) as boolean) ?? false
