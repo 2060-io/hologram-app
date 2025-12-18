@@ -21,12 +21,12 @@ interface Props extends StackScreenProps<NavigationStackParams, 'DidcommCredenti
 const DidcommCredentialOffer: React.FC<Props> = ({ route, navigation }) => {
   const routes = navigation.getState()?.routes
   const prevRoute = routes[routes.length - 2]
-  const comesFromChat = prevRoute.name === 'PersonalChatStack'
+  const comesFromChat = prevRoute?.name === 'PersonalChatStack'
   const { credentialRecordId } = route.params
   const { credentialDetails, credentialState } = useCredentialExchangeForDisplay({ credentialRecordId })
   const { addAgentActionToQueue } = useAgentActionQueue()
   const { realm } = useLocalRealm()
-  const enableAcceptRejectButtons = credentialState === CredentialState.OfferReceived
+  const enableMainButtons = credentialState === CredentialState.OfferReceived
 
   const updateChatEntryMetadataIfNecessary = (newCredentialState: CredentialState) => {
     if (realm && comesFromChat) {
@@ -60,18 +60,15 @@ const DidcommCredentialOffer: React.FC<Props> = ({ route, navigation }) => {
     else navigation.replace('Home')
   }
 
+  if (!credentialDetails) return null
   return (
-    <>
-      {credentialDetails ? (
-        <BaseCredentialOffer
-          navigation={navigation}
-          credentialDetails={credentialDetails}
-          accept={accept}
-          refuse={refuse}
-          enableAcceptRejectButtons={enableAcceptRejectButtons}
-        />
-      ) : null}
-    </>
+    <BaseCredentialOffer
+      navigation={navigation}
+      credentialDetails={credentialDetails}
+      accept={accept}
+      refuse={refuse}
+      enableMainButtons={enableMainButtons}
+    />
   )
 }
 

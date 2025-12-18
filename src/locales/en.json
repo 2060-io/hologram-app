@@ -86,7 +86,7 @@
       "Scan": "Scan",
       "UserInvitation": "Invitation",
       "ConnectionDetails": "Connection",
-      "CredentialDetails": "Credential details",
+      "CredentialDetails": "Credential Details",
       "DidcommCredentialOffer": "Credential Offer",
       "OpenIdCredentialOffer": "Credential Offer",
       "DidcommPresentationRequest": "Presentation Request",
@@ -103,9 +103,12 @@
       "ForwardTo": "Forward to",
       "shareWith": "Share with",
       "PresentCredential": "Present to",
-      "Presentation": "Presentation",
+      "CredentialPresentation": "Credential Presentation",
       "ParentalControl": "Parental Control",
-      "SelectCredentialAttributes": "Present Credential"
+      "PresentCredentialsFromChat": "Present Credential",
+      "SelectCredentialAttributes": "Present Credential",
+      "PresentCredentialAsQR": "Credential Presentation",
+      "EphemeralCredentialPresentation": "Credential Presentation"
     },
     "authentication": {
       "walletLocked": "Hologram Locked",
@@ -222,18 +225,28 @@
       "noCredentials": "You do not have any credential yet",
       "searchCredentials": "Search credentials",
       "issuedOn": "Issued on",
-      "delete": "Delete Credential",
+      "delete": "Delete credential",
       "deleteConfirmation": "Confirm delete",
       "deleteConfirmationDescription": "Delete an unexpired credential is not recommended.",
       "yesDelete": "Yes, delete permanently",
       "present": "Present credential",
-      "present_other": "Present Credentials",
+      "present_other": "Present credentials",
+      "presentToConnection": "Present to connection(s)",
+      "createQRCode": "Create QR code",
       "presented": "Credential presented",
       "presentedOn": "Presented on",
       "selectCredential": "Select the credential you want to present",
       "selectAttributes": "Select attributes you would like to present",
       "selectAll": "Select all",
-      "unselectAll": "Unselect all"
+      "unselectAll": "Unselect all",
+      "generatedQRTitle": "Show this QR code to the person you want to present your credentials to. This is a single-use code. And, it is valid for 2 minutes before expiry",
+      "shareQrTitle": "This is my credential presentation",
+      "expiredQR": "QR code has expired press 'Refresh' button to create a new one",
+      "scannedQR": "Waiting until the other party accepts the presentation.",
+      "errorCreatingQR": "An error creating credential QR has occurred. Try again",
+      "youRefusedPresentation": "You refused credential presentation",
+      "noResponseFromVerifier": "No response from verifier within the limit time. Presentation is finished.",
+      "youDidNotResponseWithinTime": "You did not respond within the time limit. Presentation is finished."
     },
     "credentialOffer": {
       "title": "Credential Offer",
@@ -248,6 +261,7 @@
       "verifiablePresentation": "Verifiable Presentation",
       "selectCredentialYouWouldLikeToPresentTo": "Select the credential you would like to present to ",
       "successfullyReceived": "Presentation successfully received by ",
+      "rejected": "Presentation rejected by ",
       "viewInChat": "View in chat",
       "presented": "Presented",
       "selectCredential": "Select credential",
@@ -265,7 +279,7 @@
       "refused": "Refused",
       "accepted": "Accepted",
       "waitingForAcceptance": "Waiting for acceptance",
-      "valuesNoRevealedYet": "Values will be revealed once the presentation proposal is accepted"
+      "valuesNoRevealedYet": "Values will be revealed a little after you accept this credential presentation."
     },
     "connection": {
       "editName": "Edit name",
@@ -447,8 +461,7 @@
       "useLink": "Use link",
       "textDescriptionScanner": "Use your camera to scan contacts, services and compatible actions",
       "textDescriptionLink": "Input link below and tap Open",
-      "scanner": "Scanner",
-      "errorProcessingCodeOrLink": "Cannot process code: {{ message }}"
+      "scanner": "Scanner"
     },
     "settings": {
       "deleteWallet": "Delete wallet",
@@ -483,8 +496,10 @@
       "passwordSaved": "Your password has been successfully updated",
       "autoBackup": "Auto backup",
       "includeVideos": "Include videos",
-      "backgroundNotifications": "Background Notifications",
       "displayLogs": "Display Logs",
+      "exportLogs": "Export logs",
+      "noLogsFileFound": "'No log file found",
+      "couldNotExportLogs": "Could not export logs. Please try again.",
       "closeAppAfterChange": "To see your changes reflected, close the app completely and open it again",
       "changePassword": "Change password",
       "preparingFiles": "Preparing files",

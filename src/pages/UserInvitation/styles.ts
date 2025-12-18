@@ -4,18 +4,12 @@ import { AppTheme, cardShadowStyles, cardStyles } from '@2060/styles'
 
 export default (theme: AppTheme) =>
   StyleSheet.create({
-    containerRoot: {
+    container: {
       flex: 1,
-    },
-    containerContent: {
-      flex: 1,
-      justifyContent: 'space-between',
+      justifyContent: 'space-around',
       alignItems: 'center',
-      marginVertical: 14,
+      marginBottom: 14,
       marginHorizontal: 12,
-    },
-    scrollViewContentContainerStyle: {
-      flexGrow: 1,
     },
     btnDone: {
       paddingLeft: 15,
@@ -44,21 +38,5 @@ export default (theme: AppTheme) =>
     pressRefreshText: {
       textAlign: 'center',
       color: theme.colors.tertiaryText,
-    },
-    containerBtnShare: {
-      alignItems: 'center',
-      alignSelf: 'center',
-      backgroundColor: theme.colors.green,
-      borderRadius: 23,
-      flexDirection: 'row',
-      justifyContent: 'center',
-      paddingVertical: 12,
-      width: '100%',
-    },
-    btnShareText: {
-      fontSize: theme.fontSize.md2 + 1,
-      color: theme.colors.white,
-      textAlign: 'center',
-      paddingLeft: 17,
     },
   })

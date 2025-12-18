@@ -12,10 +12,22 @@ export default (theme: AppTheme) =>
       paddingTop: 15,
       paddingHorizontal: 15,
     },
+    headerBtnText: {
+      fontSize: theme.fontSize.md + 1,
+      color: theme.colors.green,
+    },
+    headerLeft: {
+      width: 80,
+      paddingLeft: 5,
+    },
+    headerRight: {
+      width: 80,
+      paddingRight: 5,
+      alignItems: 'flex-end',
+    },
     valuesNoRevealedYet: {
       color: theme.colors.primaryText,
       fontSize: theme.fontSize.md,
       textAlign: 'center',
-      marginBottom: 10,
     },
   })

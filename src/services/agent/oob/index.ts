@@ -23,6 +23,8 @@ import {
   MediationRecipientApi,
   isDid,
   utils,
+  CreateOutOfBandInvitationConfig,
+  V2ProposePresentationMessage,
 } from '@credo-ts/core'
 import { DidCommDocumentService } from '@credo-ts/core/build/modules/didcomm'
 import { tryParseDid } from '@credo-ts/core/build/modules/dids/domain/parse'
@@ -42,6 +44,7 @@ export enum DidcommInvitationType {
   ConnectionRequest = 'connection-request',
   PresentationRequest = 'presentation-request',
   CredentialOffer = 'credential-offer',
+  CredentialPresentation = 'credential-presentation',
 }
 
 /**
@@ -106,6 +109,17 @@ export const getOutOfBandRecord = async (
   return { outOfBandRecord, existingConnection }
 }
 
+type ProcessInvitationResult =
+  | {
+      success: true
+      recordId: string
+      existingConnectionId?: string
+      invitationType: DidcommInvitationType
+    }
+  | {
+      success: false
+      error: string
+    }
 /**
  * Process a DIDComm invitation by assigning an out of band record to it. In case of regular connection
  * invitations, it will return specifying if there was already a connection associated to it.
@@ -122,13 +136,7 @@ export const getOutOfBandRecord = async (
 export const processInvitation = async (
   agent: MobileAgent,
   invitation: OutOfBandInvitation,
-): Promise<{
-  success: boolean
-  error?: string
-  existingConnectionId?: string
-  recordId?: string
-  invitationType?: DidcommInvitationType
-}> => {
+): Promise<ProcessInvitationResult> => {
   try {
     const { outOfBandRecord, existingConnection } = await getOutOfBandRecord(agent.context, { invitation })
     if (outOfBandRecord.state !== OutOfBandState.Initial) {
@@ -153,10 +161,10 @@ export const processInvitation = async (
       supportsIncomingMessageType(parsedMessageType, V1OfferCredentialMessage.type) ||
       supportsIncomingMessageType(parsedMessageType, V2OfferCredentialMessage.type) ||
       supportsIncomingMessageType(parsedMessageType, V1RequestPresentationMessage.type) ||
-      supportsIncomingMessageType(parsedMessageType, V2RequestPresentationMessage.type)
+      supportsIncomingMessageType(parsedMessageType, V2RequestPresentationMessage.type) ||
+      supportsIncomingMessageType(parsedMessageType, V2ProposePresentationMessage.type)
 
     if (!isValidRequestMessage) {
-      logError('Message request is not from supported protocol.')
       throw new Error('Message request is not from supported protocol.')
     }
 
@@ -177,7 +185,9 @@ export const processInvitation = async (
     const proofRequest = agent.events
       .observable<ProofStateChangedEvent>(ProofEventTypes.ProofStateChanged)
       .pipe(
-        filter(event => event.payload.proofRecord.state === ProofState.RequestReceived),
+        filter(event =>
+          [ProofState.RequestReceived, ProofState.ProposalReceived].includes(event.payload.proofRecord.state),
+        ),
         filter(event =>
           connectionId
             ? event.payload.proofRecord.connectionId === connectionId
@@ -194,10 +204,9 @@ export const processInvitation = async (
     )
     const { connectionRecord } = await acceptInvitation(agent.context, { outOfBandId: outOfBandRecord.id })
     connectionId = connectionRecord?.id
-
+    if (connectionRecord?.id) agent.connections.addConnectionType(connectionRecord.id, 'Ephemeral')
     try {
       const event = await eventPromise
-
       if (event.type === CredentialEventTypes.CredentialStateChanged) {
         return {
           success: true,
@@ -206,9 +215,17 @@ export const processInvitation = async (
           recordId: event.payload.credentialRecord.id,
         }
       } else if (event.type === ProofEventTypes.ProofStateChanged) {
+        if (event.payload.proofRecord.state === ProofState.RequestReceived) {
+          return {
+            success: true,
+            invitationType: DidcommInvitationType.PresentationRequest,
+            existingConnectionId: existingConnection?.id,
+            recordId: event.payload.proofRecord.id,
+          }
+        }
         return {
           success: true,
-          invitationType: DidcommInvitationType.PresentationRequest,
+          invitationType: DidcommInvitationType.CredentialPresentation,
           existingConnectionId: existingConnection?.id,
           recordId: event.payload.proofRecord.id,
         }
@@ -226,7 +243,6 @@ export const processInvitation = async (
       }
       return {
         success: false,
-        existingConnectionId: existingConnection?.id,
         error: (error as Error).message,
       }
     }
@@ -239,13 +255,16 @@ export const processInvitation = async (
 
   return {
     success: false,
+    error: 'Unknown error',
   }
 }
-export const createInvitation = async (agent: MobileAgent, options: { label?: string }) => {
+export const createInvitation = async (
+  agent: MobileAgent,
+  config?: Partial<Omit<CreateOutOfBandInvitationConfig, 'routing'>>,
+) => {
   const oobRecord = await agent.oob.createInvitation({
+    ...config,
     routing: await getMediationRouting(agent.context),
-    label: options.label,
-    multiUseInvitation: true,
   })
   return oobRecord
 }

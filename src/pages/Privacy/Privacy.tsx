@@ -1,6 +1,6 @@
 import React, { useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { SafeAreaView, TouchableOpacity, View } from 'react-native'
+import { TouchableOpacity, View } from 'react-native'
 
 import getStyles from './styles'
 
@@ -121,7 +121,7 @@ const Privacy = () => {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <Text fontFamily="EuclidCircularA-SemiBold" style={styles.title}>
         {t('settings.appSecurity')}
       </Text>
@@ -177,7 +177,7 @@ const Privacy = () => {
           })}
         </View>
       </ModalBottomHalf>
-    </SafeAreaView>
+    </View>
   )
 }
 

@@ -24,7 +24,7 @@ import {
 } from './actions/AgentAction'
 import { AgentActionExecuter } from './actions/AgentActionExecuter'
 
-import { log } from '@2060/utils'
+import { log, logError } from '@2060/utils'
 
 class ActionExecutionError extends Error {
   public outboundMessageContextData?: OutboundMessageContextData
@@ -133,7 +133,7 @@ export const useAgentActionQueue = () => {
               }),
             )
           } catch (error) {
-            log(`error: ${error}`)
+            logError(`error trying resending message: ${error}`)
             throw new ActionExecutionError('Execution error', payload.outboundMessageContextData)
           }
         },
@@ -142,11 +142,11 @@ export const useAgentActionQueue = () => {
             if (error instanceof ActionExecutionError) {
               const remainingAttempts = job.payload.remainingAttempts - 1
               if (remainingAttempts < 1) {
-                log('retry message error. No more attempts left')
+                logError('retry message error. No more attempts left')
                 return
               }
 
-              log('retry message error. re-adding to queue')
+              logError('retry message error. re-adding to queue')
               const newRetryAction = {
                 outboundMessageContextData: error.outboundMessageContextData,
                 remainingAttempts,

@@ -25,16 +25,21 @@ const styles = (theme: AppTheme, size: string) => {
       width: screenWidth * 0.15,
       height: screenWidth * 0.15,
     },
+    nameContainer: {
+      flex: 1,
+      alignItems: 'flex-end',
+    },
     name: {
-      flex: 7,
-      textAlign: 'right',
       fontSize: theme.fontSize.lg + 2,
       color: theme.colors.primaryText,
+      textAlign: 'right',
+    },
+    issuedOnContainer: {
+      marginBottom: 5,
     },
     issuedOn: {
       fontSize: theme.fontSize.sm - 2,
       color: theme.colors.secondaryText,
-      marginBottom: 5,
     },
     bottomContainer: {
       flexDirection: 'row',

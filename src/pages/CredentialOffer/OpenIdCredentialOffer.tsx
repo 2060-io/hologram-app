@@ -123,7 +123,7 @@ const OpenIdCredentialOffer: React.FC<Props> = ({ route, navigation }) => {
           credentialDetails={credential}
           accept={accept}
           refuse={refuse}
-          enableAcceptRejectButtons
+          enableMainButtons
         />
       ) : null}
     </>

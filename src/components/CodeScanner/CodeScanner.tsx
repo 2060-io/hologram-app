@@ -25,10 +25,10 @@ const SCREEN_HEIGHT = Platform.select<number>({
 
 interface Props {
   isActive: boolean
-  onBarcodeScanned: (barcode: string) => void
+  onCodeScanned: (barcode: string) => void
 }
 
-const CodeScanner: React.FC<Props> = ({ isActive, onBarcodeScanned }) => {
+const CodeScanner: React.FC<Props> = ({ isActive, onCodeScanned }) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
@@ -48,7 +48,7 @@ const CodeScanner: React.FC<Props> = ({ isActive, onBarcodeScanned }) => {
       const scannedCode = codes[0].value
       if (scannedCode) {
         const hasNotBeenScanned = !scannedCodes.current.includes(scannedCode)
-        if (hasNotBeenScanned) onBarcodeScanned(scannedCode)
+        if (hasNotBeenScanned) onCodeScanned(scannedCode)
         scannedCodes.current = [...scannedCodes.current, scannedCode]
       }
     },

@@ -1,8 +1,8 @@
 import { MobileAgent } from './agent/MobileAgent'
 import { KeyChainService, retrieveEncryptedKey } from './keys'
-import { baseAgentConfig, setupMobileAgent } from './setupMobileAgent'
+import { setupMobileAgent } from './setupMobileAgent'
 
-import { logError, logWarn } from '@2060/utils'
+import { logError, log } from '@2060/utils'
 import { walletDirectoryPath } from '@2060/utils/RNFS'
 
 export class AgentSingleton {
@@ -21,7 +21,7 @@ export class AgentSingleton {
 
   async setupMobileAgent() {
     if (this.isSetup) return
-    const agent = await setupMobileAgent(baseAgentConfig)
+    const agent = await setupMobileAgent()
     this.mobileAgent = agent
     this.isSetup = true
   }
@@ -34,14 +34,14 @@ export class AgentSingleton {
       if (!key) throw new Error('No wallet key stored')
       if (!this.isOpening) {
         this.isOpening = true
-        logWarn('opening agent...')
+        log('opening agent...')
         await this.mobileAgent?.wallet.open(getWalletConfig(key))
       } else {
-        logWarn('Agent is being opened, so skipping opening again to avoid error')
+        log('Agent is being opened, so skipping opening again to avoid error')
       }
-      logWarn('initializing agent...')
+      log('initializing agent...')
       await this.mobileAgent?.initialize()
-      logWarn('¡agent initialized!')
+      log('¡agent initialized!')
     } catch (error) {
       logError(`error initializing singleton agent: ${error}`)
     } finally {
