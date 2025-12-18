@@ -26,8 +26,6 @@ import {
   devEnvPlaceholder,
   DevEnvsKeys,
   DevEnvObject,
-  getIsBackgroundNotificationHandlerEnabled,
-  savePushNotificationHandlerEnabled,
   saveLogsEnabled,
   areLogsEnabled,
 } from '@2060/utils/developer'
@@ -43,7 +41,6 @@ const Developer = ({ navigation }: Props) => {
   const [displayDevEnvOptions, setDisplayDevEnvOptions] = useState(false)
   const [tempCustomDevEnvValue, setTempCustomDevEnvValue] = useState<string>()
   const [isEditionCustomDevEnvMode, setIsEditionCustomDevEnvMode] = useState(false)
-  const [areBackgroundNotificationsEnabled, setAreBackgroundNotificationsEnabled] = useState(false)
   const [logsEnabled, setAreLogsEnabled] = useState(false)
   const customDevInputRef = useRef<TextInputForwardRefProps>(null)
   const { agent, shutdownAgent } = useMobileAgent()
@@ -52,15 +49,10 @@ const Developer = ({ navigation }: Props) => {
   const { t } = useTranslation()
 
   useEffect(() => {
-    const setupBackgroundNotificationsEnabled = async () => {
-      const persistedIsBackgroundNotificationsEnabled = await getIsBackgroundNotificationHandlerEnabled()
-      setAreBackgroundNotificationsEnabled(persistedIsBackgroundNotificationsEnabled)
-    }
     const setupAreLogsEnabled = async () => {
       const persistedAreLogsEnabled = await areLogsEnabled()
       setAreLogsEnabled(persistedAreLogsEnabled)
     }
-    setupBackgroundNotificationsEnabled()
     setupAreLogsEnabled()
   }, [])
 
@@ -147,13 +139,6 @@ const Developer = ({ navigation }: Props) => {
     ])
   }
 
-  const toggleBackgroundPushNotificationHandler = async () => {
-    const newAreEnabled = !areBackgroundNotificationsEnabled
-    setAreBackgroundNotificationsEnabled(newAreEnabled)
-    await savePushNotificationHandlerEnabled(newAreEnabled)
-    displayAlertAfterChange()
-  }
-
   const toggleLogsEnabled = async () => {
     const newAreEnabled = !logsEnabled
     setAreLogsEnabled(newAreEnabled)
@@ -182,16 +167,6 @@ const Developer = ({ navigation }: Props) => {
       iconName: 'trash',
       text: t('settings.deleteWallet'),
       onPress: confirmWalletDeletion,
-    },
-    {
-      iconName: 'notifications',
-      text: t('settings.backgroundNotifications'),
-      rightContent: () => (
-        <Switch
-          isChecked={areBackgroundNotificationsEnabled}
-          onToggle={toggleBackgroundPushNotificationHandler}
-        />
-      ),
     },
     {
       iconName: 'edit',
