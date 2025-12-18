@@ -5,7 +5,9 @@ import { FileLogger } from 'react-native-file-logger'
 import 'react-native-reanimated'
 import 'react-native-gesture-handler'
 import { appName } from './app.json'
+import App from './src/App'
 import AppHeadless from './src/AppHeadless'
+import { IS_IOS } from './src/constants'
 import { backgroundPushNotificationHandler } from './src/services/backgroundPushNotificationHandler'
 
 const formatter = (_, msg) => {
@@ -18,7 +20,7 @@ import { LOGS_DIRECTORY, log, logError } from '@2060/utils/log'
 // Register handler for FCM notifications when app is in quit state
 const messaging = getMessaging()
 setBackgroundMessageHandler(messaging, backgroundPushNotificationHandler)
-AppRegistry.registerComponent('hologram', () => AppHeadless)
+AppRegistry.registerComponent('hologram', () => (IS_IOS ? AppHeadless : App))
 FileLogger.configure({
   logsDirectory: LOGS_DIRECTORY,
   logPrefix: appName,
