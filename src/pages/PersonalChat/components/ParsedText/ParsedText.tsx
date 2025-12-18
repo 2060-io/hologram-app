@@ -3,7 +3,7 @@ import { Linking, StyleSheet, TextProps } from 'react-native'
 
 import { Text } from '@2060/components/common'
 import { AppTheme } from '@2060/styles'
-import { log } from '@2060/utils'
+import { logError } from '@2060/utils'
 
 type ParsedTextProps = {
   theme: AppTheme
@@ -18,7 +18,7 @@ const ParsedText: React.FC<ParsedTextProps> = ({ theme, text, textProps }) => {
     if (/^www\./i.test(url)) {
       onUrlPress(`https://${url}`)
     } else {
-      Linking.openURL(url).catch(() => log('No handler for URL:', url))
+      Linking.openURL(url).catch(() => logError('No handler for URL:', url))
     }
   }
   const textIncludesHttp = text?.includes('http')

@@ -3,7 +3,7 @@ import { ParamListBase } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import React, { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { SafeAreaView, TouchableOpacity, View } from 'react-native'
+import { TouchableOpacity, View } from 'react-native'
 
 import Connections from '../Connections'
 import { ConnectionItem } from '../Connections/ConnectionsList'
@@ -61,7 +61,7 @@ const ConnectionsSelection = ({ navigation, onPressSend, connectionIdToExclude, 
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <View style={styles.connectionsContainer}>
         <Connections
           navigation={navigation}
@@ -83,7 +83,7 @@ const ConnectionsSelection = ({ navigation, onPressSend, connectionIdToExclude, 
           <SvgIcon name="send" fill={theme.colors.white} />
         </TouchableOpacity>
       </View>
-    </SafeAreaView>
+    </View>
   )
 }
 

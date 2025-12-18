@@ -9,7 +9,6 @@ export default (theme: AppTheme) =>
       width: widthPercentageToDP('92%'),
       alignSelf: 'center',
       marginTop: 9,
-      marginBottom: 20,
     },
     containerAction: {
       width: '100%',

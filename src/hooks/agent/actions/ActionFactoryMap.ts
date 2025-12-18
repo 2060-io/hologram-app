@@ -20,6 +20,12 @@ import {
   V2CredentialProblemReportMessage,
   V2PresentationProblemReportMessage,
   BaseRecord,
+  V2PresentationMessage,
+  V2RequestPresentationMessage,
+  ProofState,
+  ProofStateChangedEvent,
+  ProofEventTypes,
+  AutoAcceptProof,
 } from '@credo-ts/core'
 import { AnswerMessage } from '@credo-ts/question-answer'
 
@@ -28,6 +34,8 @@ import {
   AcceptConnectionRequestParameters,
   AcceptConnectionResponseParameters,
   AcceptCredentialOfferParameters,
+  AcceptProofProposalParameters,
+  AcceptProofRequestParameters,
   CreateCallOfferParameters,
   DeclineCredentialOfferParameters,
   DeclineProofRequestParameters,
@@ -35,6 +43,7 @@ import {
   HangupCallParameters,
   MenuSelectionParameters,
   PresentCredentialParameters,
+  ProofSendProblemReportParameters,
   QueryServiceFeaturesParameters,
   RemoveOutOfBandRecordParameters,
   RequestUserProfileParameters,
@@ -258,6 +267,49 @@ export const ActionFactoryMap: Record<AgentActionType, ActionFactory> = {
       const { connectionId } = parameters
       await options.agent.modules.profile.requestUserProfile({ connectionId })
       return { outgoingMessageType: RequestProfileMessage.type.messageTypeUri }
+    }
+  },
+  [AgentActionType.AcceptProofRequest]: action => {
+    return async (options: { agent: MobileAgent }) => {
+      const parameters = action.parameters as AcceptProofRequestParameters
+      const { proofRecordId } = parameters
+      const requestedCredentials = await options.agent.proofs.selectCredentialsForRequest({
+        proofRecordId,
+      })
+      await options.agent.proofs.acceptRequest({
+        proofRecordId,
+        proofFormats: { anoncreds: requestedCredentials?.proofFormats.anoncreds },
+      })
+      return { outgoingMessageType: V2PresentationMessage.type.messageTypeUri }
+    }
+  },
+  [AgentActionType.AcceptProofProposal]: action => {
+    return async (options: { agent: MobileAgent }) => {
+      const parameters = action.parameters as AcceptProofProposalParameters
+      const { proofRecordId } = parameters
+      await options.agent.proofs.acceptProposal({
+        proofRecordId,
+        autoAcceptProof: AutoAcceptProof.ContentApproved,
+      })
+      return { outgoingMessageType: V2RequestPresentationMessage.type.messageTypeUri }
+    }
+  },
+  [AgentActionType.ProofSendProblemReport]: action => {
+    return async (options: { agent: MobileAgent }) => {
+      const parameters = action.parameters as ProofSendProblemReportParameters
+      const { proofRecordId, description } = parameters
+      const proofRecord = await options.agent.proofs.getById(proofRecordId)
+      await options.agent.proofs.sendProblemReport({ proofRecordId, description })
+      proofRecord.state = ProofState.Abandoned
+      await options.agent.proofs.update(proofRecord)
+      options.agent.events.emit<ProofStateChangedEvent>(options.agent.context, {
+        type: ProofEventTypes.ProofStateChanged,
+        payload: {
+          proofRecord: proofRecord.clone(),
+          previousState: null,
+        },
+      })
+      return { outgoingMessageType: V2PresentationProblemReportMessage.type.messageTypeUri }
     }
   },
 }

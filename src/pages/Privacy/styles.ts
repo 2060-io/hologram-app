@@ -21,6 +21,7 @@ export default (theme: AppTheme) =>
     },
     optionsContainer: {
       margin: 15,
+      marginBottom: 0,
     },
     timeoutOptionsTitle: {
       marginBottom: 12,

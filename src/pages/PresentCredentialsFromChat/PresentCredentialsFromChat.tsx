@@ -31,7 +31,7 @@ const PresentCredentialsFromChat = ({ navigation, route }: Props) => {
       <Text style={styles.title}>{t('credential.selectCredential')}</Text>
       <Credentials
         navigation={navigation}
-        headerTitle={t('credential.present')}
+        headerTitle={t('navigation.PresentCredentialsFromChat')}
         onPressCredential={onPressCredential}
       />
     </View>

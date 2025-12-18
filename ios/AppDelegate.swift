@@ -31,10 +31,6 @@ class AppDelegate: ExpoAppDelegate {
     factory.startReactNative(
       withModuleName: "hologram",
       in: window,
-      initialProperties: RNFBMessagingModule.addCustomProps(
-        toUserProps: nil,
-        withLaunchOptions: launchOptions
-      ),
       launchOptions: launchOptions
     )
  

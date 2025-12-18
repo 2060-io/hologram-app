@@ -74,13 +74,27 @@ type DeclineCredentialOfferParameters = {
   credentialRecordId: string
 }
 
-type DeclineProofRequestParameters = {
+type BaseProofParameters = {
   proofRecordId: string
 }
+type DeclineProofRequestParameters = BaseProofParameters
 
 type SendUserProfileParameters = ConnectionIdParameter
 
 type RequestUserProfileParameters = ConnectionIdParameter
+
+type AcceptProofRequestParameters = BaseProofParameters
+type AcceptProofProposalParameters = BaseProofParameters
+
+export enum ProofSendProblemReportDescription {
+  Refused = 'refused',
+  NoCompatibleCredentials = 'e.req.no-compatible-credentials',
+  TimeoutWaitingForResponse = 'timeout-waiting-for-response',
+}
+
+type ProofSendProblemReportParameters = BaseProofParameters & {
+  description: ProofSendProblemReportDescription
+}
 
 export type {
   SendTextMessageParameters,
@@ -102,4 +116,7 @@ export type {
   DeclineProofRequestParameters,
   SendUserProfileParameters,
   RequestUserProfileParameters,
+  AcceptProofRequestParameters,
+  AcceptProofProposalParameters,
+  ProofSendProblemReportParameters,
 }

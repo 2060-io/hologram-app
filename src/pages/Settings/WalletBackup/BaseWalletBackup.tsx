@@ -2,7 +2,7 @@ import { ParamListBase, useIsFocused, useNavigation } from '@react-navigation/na
 import { StackNavigationProp } from '@react-navigation/stack'
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ScrollView, View, SafeAreaView } from 'react-native'
+import { ScrollView, View } from 'react-native'
 
 import Building from './Building'
 import Options from './Options'
@@ -60,7 +60,7 @@ const BaseWalletBackup = ({
   ]
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       {isCloudAvailable ? (
         <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
           <View style={styles.subContainer}>
@@ -113,7 +113,7 @@ const BaseWalletBackup = ({
           {IS_ANDROID && <MainButton text={t('general.retry')} onPress={selectAccount} />}
         </View>
       )}
-    </SafeAreaView>
+    </View>
   )
 }
 

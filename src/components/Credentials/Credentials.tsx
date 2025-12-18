@@ -57,6 +57,7 @@ const Credentials = ({ navigation, headerTitle, onPressCredential }: Props) => {
 
   const credentials = useMemo(() => {
     return records
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
       .map(getCredentialMainInfo)
       .filter(credential => {
         const credentialDisplayName = credential.schemaName ?? ''
@@ -67,7 +68,6 @@ const Credentials = ({ navigation, headerTitle, onPressCredential }: Props) => {
           credentialIssuerName.toLocaleLowerCase().includes(search.toLocaleLowerCase())
         )
       })
-      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
   }, [records, search])
 
   return (

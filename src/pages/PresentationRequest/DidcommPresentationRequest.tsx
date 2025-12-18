@@ -8,7 +8,11 @@ import BasePresentationRequest from './BasePresentationRequest'
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
 import { useFetchServiceInfo } from '@2060/hooks'
 import { AgentActionType, useMobileAgent } from '@2060/hooks/agent'
-import { DeclineProofRequestParameters } from '@2060/hooks/agent/actions/types'
+import {
+  DeclineProofRequestParameters,
+  ProofSendProblemReportDescription,
+  ProofSendProblemReportParameters,
+} from '@2060/hooks/agent/actions/types'
 import { findAllByAssociatedRecordId, updateChatEntryMetadata } from '@2060/hooks/agent/chat/services'
 import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
@@ -18,7 +22,7 @@ import {
   FormattedSubmission,
   formatDidcommPresentationSubmission,
 } from '@2060/services/agent/formatPresentation'
-import { notifyNoCompatibleCredentials, presentProof } from '@2060/services/agent/proofs'
+import { presentProof } from '@2060/services/agent/proofs'
 import { logError } from '@2060/utils'
 import { toast } from '@2060/utils/toast'
 
@@ -27,7 +31,7 @@ interface Props extends StackScreenProps<NavigationStackParams, 'DidcommPresenta
 const DidcommPresentationRequest: React.FC<Props> = ({ navigation, route }: Props) => {
   const routes = navigation.getState()?.routes
   const prevRoute = routes[routes.length - 2]
-  const comesFromChat = prevRoute.name === 'PersonalChatStack'
+  const comesFromChat = prevRoute?.name === 'PersonalChatStack'
   const { realm } = useLocalRealm()
   const { agent } = useMobileAgent()
   const { addAgentActionToQueue } = useAgentActionQueue()
@@ -95,13 +99,15 @@ const DidcommPresentationRequest: React.FC<Props> = ({ navigation, route }: Prop
   }
 
   const notify = () => {
-    if (!agent) return
-    notifyNoCompatibleCredentials({ agent, proofRecordId })
+    const parameters: ProofSendProblemReportParameters = {
+      proofRecordId,
+      description: ProofSendProblemReportDescription.NoCompatibleCredentials,
+    }
+    addAgentActionToQueue({ type: AgentActionType.ProofSendProblemReport, parameters })
   }
 
   const goToCredentialPresented = async () => {
     if (!serviceInfo) return
-    const presentedAt = new Date()
     const selectedCredentialsMainInfo: CredentialMainInfo[] = []
     Object.entries(selectedCredentials.current).map(([entryId, credentialId]) => {
       const currentEntry = submission?.entries.find(entry => entry.id === entryId)
@@ -111,7 +117,6 @@ const DidcommPresentationRequest: React.FC<Props> = ({ navigation, route }: Prop
     navigation.replace('CredentialPresented', {
       credentials: selectedCredentialsMainInfo,
       verifier: serviceInfo,
-      presentedAt: presentedAt.toString(),
     })
   }
 

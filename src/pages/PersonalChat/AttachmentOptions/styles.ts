@@ -5,10 +5,10 @@ import { widthPercentageToDP } from '@2060/utils/responsiveUtils'
 
 export default (theme: AppTheme) =>
   StyleSheet.create({
-    subContainer: {
+    container: {
       width: widthPercentageToDP('92%'),
       alignSelf: 'center',
-      paddingVertical: 20,
+      marginTop: 20,
     },
     containerOption: {
       width: '100%',

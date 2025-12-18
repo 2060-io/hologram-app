@@ -130,6 +130,7 @@ const InvitationChatView = ({ associatedRecordId: outOfBandId, metadata, role, a
         rightIcon={
           state !== InvitationState.Refused && isReceiver ? (
             <TouchableOpacity
+              disabled={ageRestricted && state === InvitationState.Received}
               onPress={state === InvitationState.Received ? goToInvitation : goToExistingConnection}
             >
               <SvgIcon name="info" fill={theme.colors.blue} width={20} height={20} />

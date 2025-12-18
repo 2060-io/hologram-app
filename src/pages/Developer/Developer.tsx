@@ -2,8 +2,10 @@ import { CacheModuleConfig } from '@credo-ts/core'
 import { StackScreenProps } from '@react-navigation/stack'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { SafeAreaView, Alert, View, TouchableOpacity } from 'react-native'
+import { Alert, View, TouchableOpacity } from 'react-native'
+import { FileLogger } from 'react-native-file-logger'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import Share from 'react-native-share'
 
 import getStyles from './styles'
 
@@ -24,11 +26,10 @@ import {
   devEnvPlaceholder,
   DevEnvsKeys,
   DevEnvObject,
-  isBackgroundNotificationHandlerEnabled,
-  savePushNotificationHandlerEnabled,
   saveLogsEnabled,
   areLogsEnabled,
 } from '@2060/utils/developer'
+import { logError, LOGS_DIRECTORY } from '@2060/utils/log'
 
 interface Props extends StackScreenProps<NavigationStackParams, 'Developer'> {}
 
@@ -40,7 +41,6 @@ const Developer = ({ navigation }: Props) => {
   const [displayDevEnvOptions, setDisplayDevEnvOptions] = useState(false)
   const [tempCustomDevEnvValue, setTempCustomDevEnvValue] = useState<string>()
   const [isEditionCustomDevEnvMode, setIsEditionCustomDevEnvMode] = useState(false)
-  const [areBackgroundNotificationsEnabled, setAreBackgroundNotificationsEnabled] = useState(false)
   const [logsEnabled, setAreLogsEnabled] = useState(false)
   const customDevInputRef = useRef<TextInputForwardRefProps>(null)
   const { agent, shutdownAgent } = useMobileAgent()
@@ -49,15 +49,10 @@ const Developer = ({ navigation }: Props) => {
   const { t } = useTranslation()
 
   useEffect(() => {
-    const setupBackgroundNotificationsEnabled = async () => {
-      const persistedIsBackgroundNotificationsEnabled = await isBackgroundNotificationHandlerEnabled()
-      setAreBackgroundNotificationsEnabled(persistedIsBackgroundNotificationsEnabled)
-    }
     const setupAreLogsEnabled = async () => {
       const persistedAreLogsEnabled = await areLogsEnabled()
       setAreLogsEnabled(persistedAreLogsEnabled)
     }
-    setupBackgroundNotificationsEnabled()
     setupAreLogsEnabled()
   }, [])
 
@@ -129,6 +124,7 @@ const Developer = ({ navigation }: Props) => {
       navigation.navigate('Home')
     } catch (error) {
       Alert.alert('Error', `${error}`)
+      logError(`Error deleting wallet from developer screen: ${error}`)
     } finally {
       setIsDeletingWallet(false)
     }
@@ -143,17 +139,27 @@ const Developer = ({ navigation }: Props) => {
     ])
   }
 
-  const toggleBackgroundPushNotificationHandler = async () => {
-    const newAreEnabled = !areBackgroundNotificationsEnabled
-    setAreBackgroundNotificationsEnabled(newAreEnabled)
-    await savePushNotificationHandlerEnabled(newAreEnabled)
-    displayAlertAfterChange()
-  }
-
   const toggleLogsEnabled = async () => {
     const newAreEnabled = !logsEnabled
     setAreLogsEnabled(newAreEnabled)
     await saveLogsEnabled(newAreEnabled)
+  }
+
+  const exportLogs = async () => {
+    try {
+      const logFilesPaths = await FileLogger.getLogFilePaths()
+      if (!logFilesPaths.length) {
+        Alert.alert(t('settings.noLogsFileFound'))
+        return
+      }
+      Share.open({
+        ...(IS_IOS ? { url: LOGS_DIRECTORY } : { urls: logFilesPaths.map(file => `file://${file}`) }),
+        failOnCancel: false,
+      })
+    } catch (error) {
+      Alert.alert(t('settings.couldNotExportLogs'))
+      logError('Could not export app logs', error)
+    }
   }
 
   const options: Option[] = [
@@ -163,19 +169,14 @@ const Developer = ({ navigation }: Props) => {
       onPress: confirmWalletDeletion,
     },
     {
-      iconName: 'notifications',
-      text: t('settings.backgroundNotifications'),
-      rightContent: () => (
-        <Switch
-          isChecked={areBackgroundNotificationsEnabled}
-          onToggle={toggleBackgroundPushNotificationHandler}
-        />
-      ),
-    },
-    {
       iconName: 'edit',
       text: t('settings.displayLogs'),
       rightContent: () => <Switch isChecked={logsEnabled} onToggle={toggleLogsEnabled} />,
+    },
+    {
+      iconName: 'download',
+      text: t('settings.exportLogs'),
+      onPress: exportLogs,
     },
   ]
 
@@ -220,65 +221,63 @@ const Developer = ({ navigation }: Props) => {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
-        <View style={styles.subContainer}>
-          <ModalLoading visible={isDeletingWallet} />
-          <OptionsList options={options} />
-          <Text fontFamily="EuclidCircularA-Medium" style={styles.title}>
-            {t('settings.developmentEnvironments')}
-          </Text>
-          {isEditionCustomDevEnvMode && (
-            <View style={styles.editionCustomDevEnvContainer}>
-              <Text fontFamily="EuclidCircularA-SemiBold" style={styles.title}>
-                {currentDevEnv?.key && devEnvPlaceholder[currentDevEnv.key]}
+    <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
+      <View style={styles.subContainer}>
+        <ModalLoading visible={isDeletingWallet} />
+        <OptionsList options={options} />
+        <Text fontFamily="EuclidCircularA-Medium" style={styles.title}>
+          {t('settings.developmentEnvironments')}
+        </Text>
+        {isEditionCustomDevEnvMode && (
+          <View style={styles.editionCustomDevEnvContainer}>
+            <Text fontFamily="EuclidCircularA-SemiBold" style={styles.title}>
+              {currentDevEnv?.key && devEnvPlaceholder[currentDevEnv.key]}
+            </Text>
+            <View style={styles.rowContainer}>
+              <TextInput
+                ref={customDevInputRef}
+                value={tempCustomDevEnvValue}
+                onChangeText={setTempCustomDevEnvValue}
+                placeholder={t('general.valueHere')}
+                style={styles.textInput}
+              />
+              <Text
+                disabled={!tempCustomDevEnvValue?.length}
+                onPress={onSaveCustomDevEnv}
+                fontFamily="EuclidCircularA-SemiBold"
+                style={styles.textButton}
+              >
+                {t('general.save')}
               </Text>
-              <View style={styles.rowContainer}>
-                <TextInput
-                  ref={customDevInputRef}
-                  value={tempCustomDevEnvValue}
-                  onChangeText={setTempCustomDevEnvValue}
-                  placeholder={t('general.valueHere')}
-                  style={styles.textInput}
-                />
-                <Text
-                  disabled={!tempCustomDevEnvValue?.length}
-                  onPress={onSaveCustomDevEnv}
-                  fontFamily="EuclidCircularA-SemiBold"
-                  style={styles.textButton}
-                >
-                  {t('general.save')}
-                </Text>
-              </View>
+            </View>
+          </View>
+        )}
+        <OptionsList options={devEnvsForRender} />
+        <ModalBottomHalf visible={displayDevEnvOptions} onClose={changeDevEnvOptionsVisibility}>
+          {currentDevEnv && (
+            <View style={styles.devEnvsModalContainer}>
+              <Text fontFamily="EuclidCircularA-SemiBold" style={styles.title}>
+                {devEnvPlaceholder[currentDevEnv.key]}
+              </Text>
+              {currentDevEnv.values.map(option => {
+                const currentDevEnvSelected = devEnvs?.[currentDevEnv.key]
+                const isSelected = option === currentDevEnvSelected
+                return (
+                  <TouchableOpacity
+                    key={option}
+                    style={{ ...styles.optionContainer, ...(isSelected && styles.optionSelected) }}
+                    onPress={() => onSelectDevEnvOption(currentDevEnv.key, option)}
+                  >
+                    <Text style={styles.devEnvText}>{option}</Text>
+                  </TouchableOpacity>
+                )
+              })}
+              {renderCustomDevEnv()}
             </View>
           )}
-          <OptionsList options={devEnvsForRender} />
-          <ModalBottomHalf visible={displayDevEnvOptions} onClose={changeDevEnvOptionsVisibility}>
-            {currentDevEnv && (
-              <View style={styles.devEnvsModalContainer}>
-                <Text fontFamily="EuclidCircularA-SemiBold" style={styles.title}>
-                  {devEnvPlaceholder[currentDevEnv.key]}
-                </Text>
-                {currentDevEnv.values.map(option => {
-                  const currentDevEnvSelected = devEnvs?.[currentDevEnv.key]
-                  const isSelected = option === currentDevEnvSelected
-                  return (
-                    <TouchableOpacity
-                      key={option}
-                      style={{ ...styles.optionContainer, ...(isSelected && styles.optionSelected) }}
-                      onPress={() => onSelectDevEnvOption(currentDevEnv.key, option)}
-                    >
-                      <Text style={styles.devEnvText}>{option}</Text>
-                    </TouchableOpacity>
-                  )
-                })}
-                {renderCustomDevEnv()}
-              </View>
-            )}
-          </ModalBottomHalf>
-        </View>
-      </KeyboardAwareScrollView>
-    </SafeAreaView>
+        </ModalBottomHalf>
+      </View>
+    </KeyboardAwareScrollView>
   )
 }
 

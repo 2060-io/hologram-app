@@ -86,7 +86,7 @@
       "Scan": "Escanear",
       "UserInvitation": "Invitación",
       "ConnectionDetails": "Conexión",
-      "CredentialDetails": "Detalles de credencial",
+      "CredentialDetails": "Detalles De Credencial",
       "DidcommCredentialOffer": "Credencial ofrecida",
       "OpenIdCredentialOffer": "Credencial ofrecida",
       "DidcommPresentationRequest": "Solicitud de presentación",
@@ -103,9 +103,12 @@
       "ForwardTo": "Reenviar a",
       "shareWith": "Compartir con",
       "PresentCredential": "Presentar a",
-      "Presentation": "Presentación",
+      "CredentialPresentation": "Presentación de Credencial",
       "ParentalControl": "Control parental",
-      "SelectCredentialAttributes": "Presentar Credencial"
+      "PresentCredentialsFromChat": "Presentar Credencial",
+      "SelectCredentialAttributes": "Presentar Credencial",
+      "PresentCredentialAsQR": "Presentación de Credencial",
+      "EphemeralCredentialPresentation": "Presentación de Credencial"
     },
     "authentication": {
       "walletLocked": "Hologram bloqueada",
@@ -222,18 +225,28 @@
       "noCredentials": "Aún no tienes credenciales",
       "searchCredentials": "Buscar credenciales",
       "issuedOn": "Emitida el",
-      "delete": "Eliminar Credencial",
+      "delete": "Eliminar credencial",
       "deleteConfirmation": "Confirmas eliminar ",
       "deleteConfirmationDescription": "Eliminar una credencial vigente no es recomendable.",
       "yesDelete": "Sí, eliminar permanentemente",
       "present": "Presentar credencial",
       "present_other": "Presentar credenciales",
+      "presentToConnection": "Presentar a una conexión(es)",
+      "createQRCode": "Generar código QR",
       "presented": "Credencial presentada",
       "presentedOn": "Presentado el",
       "selectCredential": "Selecciona la credencial que quieres presentar",
       "selectAttributes": "Selecciona los atributos que te gustaría presentar",
       "selectAll": "Seleccionar todos",
-      "unselectAll": "Quitar todos"
+      "unselectAll": "Quitar todos",
+      "generatedQRTitle": "Muestra este código QR a la persona a la que le quieres presentar la credencial. Este es un código de un solo uso. Y, tiene una válidez de 2 minutos antes de expirar",
+      "shareQrTitle": "Esta es mi presentación de credencial",
+      "expiredQR": "Código QR a expirado presionar el boton 'Refrescar' para crear uno nuevo",
+      "scannedQR": "Esperando que la otra parte accepte la presentación",
+      "errorCreatingQR": "Ha ocurrido un error creando el QR . Intentalo nuevamente",
+      "youRefusedPresentation": "Rechazaste la presentación de la credencial",
+      "noResponseFromVerifier": "No hubo respuesta de parte del verificador dentro del tiempo limite. La presentación es finalizada.",
+      "youDidNotResponseWithinTime": "No respondiste dentro del tiempo limite. La presentación es finalizada."
     },
     "credentialOffer": {
       "title": "Credencial ofrecida",
@@ -248,6 +261,7 @@
       "verifiablePresentation": "Presentación verificable",
       "selectCredentialYouWouldLikeToPresentTo": "Selecciona la credencial que te gustaría presentar a ",
       "successfullyReceived": "Presentation recibida exitosamente por ",
+      "rejected": "Presentación rechazada por ",
       "viewInChat": "Ver en la conversación",
       "presented": "Presentado",
       "selectCredential": "Seleccionar credencial",
@@ -265,7 +279,7 @@
       "refused": "Rechazada",
       "acepted": "Aceptada",
       "waitingForAcceptance": "Esperando aceptación",
-      "valuesNoRevealedYet": "Los valores se revelarán una vez sea aceptada la propuesta de presentación"
+      "valuesNoRevealedYet": "Los valores se revelarán un poco después de que aceptes esta presentación de credencial"
     },
     "connection": {
       "editName": "Editar nombre",
@@ -447,8 +461,7 @@
       "useLink": "Usar enlace",
       "textDescriptionScanner": "Usa la cámara para escanear contactos, servicios y acciones compatibles",
       "textDescriptionLink": "Ingresa un enlace y toca en Abrir",
-      "scanner": "Escáner",
-      "errorProcessingCodeOrLink": "Error procesando código:  {{ message }}"
+      "scanner": "Escáner"
     },
     "settings": {
       "deleteWallet": "Eliminar billetera",
@@ -483,8 +496,10 @@
       "passwordSaved": "Contraseña actualizada exitosamente",
       "autoBackup": "Copia de seguridad automática",
       "includeVideos": "Incluir videos",
-      "backgroundNotifications": "Background Notifications",
       "displayLogs": "Mostrar logs",
+      "exportLogs": "Exportar logs",
+      "noLogsFileFound": "'No se encontró el archivo de logs",
+      "couldNotExportLogs": "No se pudieron exportar los logs. Intenta nuevamente",
       "closeAppAfterChange": "Para ver sus cambios reflejados, cierre la app completamente y vuelvala a abrir",
       "changePassword": "Cambiar contraseña",
       "preparingFiles": "Preparando archivos",

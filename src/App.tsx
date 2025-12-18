@@ -5,6 +5,8 @@ import 'dayjs/locale/fr'
 import React, { PropsWithChildren, ReactNode, useEffect, useState } from 'react'
 import SplashScreen from 'react-native-splash-screen'
 
+import Toast from './components/Toast'
+
 import Navigation from '@2060/components/Navigation'
 import {
   MobileAgentProvider,
@@ -79,11 +81,16 @@ const App = () => {
     }, 0)
   }, [])
 
-  return translationsLoaded ? (
-    <ProvidersTree>
-      <Navigation />
-    </ProvidersTree>
-  ) : null
+  return (
+    <>
+      <Toast />
+      {translationsLoaded ? (
+        <ProvidersTree>
+          <Navigation />
+        </ProvidersTree>
+      ) : null}
+    </>
+  )
 }
 
 export default App
