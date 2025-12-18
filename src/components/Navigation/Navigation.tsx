@@ -4,7 +4,6 @@ import {
   getToken,
   initializeAppCheck,
 } from '@react-native-firebase/app-check'
-import { getMessaging, onTokenRefresh } from '@react-native-firebase/messaging'
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import React, { useEffect } from 'react'
@@ -23,9 +22,6 @@ import getStyles from './styles'
 
 import { IS_ANDROID } from '@2060/constants'
 import { useNetwork } from '@2060/hooks'
-import { AgentActionType } from '@2060/hooks/agent'
-import { SavePushNotificationDeviceInfoParameters } from '@2060/hooks/agent/actions/types'
-import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
 import { useMessagePickup } from '@2060/hooks/agent/useMessagePickup'
 import { useConfig } from '@2060/hooks/providers/ConfigProvider'
 import {
@@ -61,7 +57,7 @@ import {
 } from '@2060/pages'
 import { MobileAgent } from '@2060/services/agent'
 import { AppTheme, getGlobalStyles } from '@2060/styles'
-import { log, logError, logWarn } from '@2060/utils'
+import { log, logError } from '@2060/utils'
 
 const Stack = createStackNavigator<NavigationStackParams>()
 type NavigationProps = {
@@ -74,7 +70,6 @@ const Navigation = ({ isSignedUp, agent, theme }: NavigationProps) => {
   const { t } = useTranslation()
   const styles = getStyles(theme)
   const globalStyles = getGlobalStyles(theme)
-  const { addAgentActionToQueue } = useAgentActionQueue()
   const { isDeveloperMode } = useConfig()
   const InitialComponent = isSignedUp ? HomeMain : isDeveloperMode ? SignUpMain : ProfileCreation
 
@@ -112,23 +107,6 @@ const Navigation = ({ isSignedUp, agent, theme }: NavigationProps) => {
       }
     }
     configureFirebaseProviderAndInitializeAppCheck()
-  }, [])
-
-  useEffect(() => {
-    const messaging = getMessaging()
-    const unsubscribe = onTokenRefresh(messaging, (deviceToken: string) => {
-      agent?.mediationRecipient.findDefaultMediatorConnection().then(mediatorConnection => {
-        if (mediatorConnection) {
-          const parameters: SavePushNotificationDeviceInfoParameters = {
-            connectionId: mediatorConnection.id,
-            deviceToken,
-          }
-          logWarn('Refreshing push notification device token')
-          addAgentActionToQueue({ type: AgentActionType.SavePushNotificationDeviceInfo, parameters })
-        }
-      })
-    })
-    return () => unsubscribe()
   }, [])
 
   useEffect(() => {
