@@ -192,9 +192,9 @@ const Settings = ({ navigation }: Props) => {
       developerModeCounter.current++
       if (developerModeCounter.current === TIMES_TO_ENABLE_DEV_MODE) {
         const newMessage = isDeveloperMode ? t('settings.devModeDisabled') : t('settings.devModeEnabled')
-        toast({ type: 'success', message: newMessage })
         initializeDevModeVariables()
         changeDeveloperModeStatus()
+        Alert.alert(newMessage, t('settings.closeAppAfterChange'))
       }
     } else {
       developerModeCounter.current = 1

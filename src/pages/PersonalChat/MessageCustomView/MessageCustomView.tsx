@@ -41,7 +41,7 @@ const MessageCustomView: React.FC<MessageProps> = memo(props => {
   useEffect(() => {
     if (tappedRepliedMessageChatEntryId === currentMessage.id) {
       setTemporaryStylesForRepliedMessage(styles.tappedRepliedMessageTemporaryStyle)
-      setTimeout(() => setTemporaryStylesForRepliedMessage({}), 3000)
+      setTimeout(() => setTemporaryStylesForRepliedMessage(styles.removedRepliedMessageTemporaryStyle), 3_000)
     }
   }, [tappedRepliedMessageChatEntryId])
 

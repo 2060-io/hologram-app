@@ -3,8 +3,9 @@ import { CommonActions } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import React, { useState, useEffect, useCallback, useTransition } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, SafeAreaView, Platform } from 'react-native'
+import { View, Platform } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 import getStyles from './styles'
 
@@ -110,34 +111,36 @@ const ProfileCreation = ({ navigation }: Props) => {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <>
+      <SafeAreaView style={styles.container} edges={['bottom', 'top']}>
+        <KeyboardAwareScrollView
+          showsVerticalScrollIndicator={false}
+          enableOnAndroid={true}
+          extraScrollHeight={70}
+        >
+          <View style={styles.container}>
+            <AppLogo style={styles.appLogoContainer} />
+            <Text fontFamily="EuclidCircularA-Bold" style={styles.title}>
+              {t('signUp.welcomeTitle')}
+            </Text>
+            <UserProfileForm
+              displayName={displayName}
+              displayPicture={displayPicture}
+              onHandleChangeName={setDisplayName}
+              onHandleChangePicture={setDisplayPicture}
+            />
+            <MainButton
+              text={t('signUp.getStarted')}
+              activeOpacity={0.6}
+              disabled={disableGetStartedBtn}
+              onPress={signUp}
+              style={[styles.containerBtn, disableGetStartedBtn && styles.btnDisabled]}
+            />
+          </View>
+        </KeyboardAwareScrollView>
+      </SafeAreaView>
       <ModalLoading visible={isRegistering} />
-      <KeyboardAwareScrollView
-        showsVerticalScrollIndicator={false}
-        enableOnAndroid={true}
-        extraScrollHeight={70}
-      >
-        <View style={styles.container}>
-          <AppLogo style={styles.appLogoContainer} />
-          <Text fontFamily="EuclidCircularA-Bold" style={styles.title}>
-            {t('signUp.welcomeTitle')}
-          </Text>
-          <UserProfileForm
-            displayName={displayName}
-            displayPicture={displayPicture}
-            onHandleChangeName={setDisplayName}
-            onHandleChangePicture={setDisplayPicture}
-          />
-          <MainButton
-            text={t('signUp.getStarted')}
-            activeOpacity={0.6}
-            disabled={disableGetStartedBtn}
-            onPress={signUp}
-            style={[styles.containerBtn, disableGetStartedBtn && styles.btnDisabled]}
-          />
-        </View>
-      </KeyboardAwareScrollView>
-    </SafeAreaView>
+    </>
   )
 }
 

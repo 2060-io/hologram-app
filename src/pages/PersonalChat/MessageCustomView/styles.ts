@@ -98,4 +98,8 @@ export default (theme: AppTheme) =>
       borderWidth: 2,
       borderColor: theme.colors.green,
     },
+    removedRepliedMessageTemporaryStyle: {
+      borderWidth: 0,
+      borderColor: 'transparent',
+    },
   })

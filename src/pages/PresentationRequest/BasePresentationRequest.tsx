@@ -2,14 +2,8 @@ import { ParamListBase } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import {
-  View,
-  TouchableOpacity,
-  ScrollView,
-  TouchableWithoutFeedback,
-  SafeAreaView,
-  ActivityIndicator,
-} from 'react-native'
+import { View, TouchableOpacity, ScrollView, TouchableWithoutFeedback, ActivityIndicator } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 import getStyles from './styles'
 
@@ -114,7 +108,7 @@ const BasePresentationRequest: React.FC<Props> = ({
   }
   if (isAccepting) return <ActivityIndicator color={theme.colors.green} size={'large'} />
   return (
-    <SafeAreaView style={styles.root}>
+    <SafeAreaView style={styles.root} edges={['bottom']}>
       <ModalConfirmAction
         visible={showModalRefuseConfirmation}
         title={t('personalChat.confirmRefusePresentCredential')}

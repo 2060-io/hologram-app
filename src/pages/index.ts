@@ -2,6 +2,7 @@ import ConnectionDetails from './ConnectionDetails'
 import { Connections, ConnectionsForNewChat } from './Connections'
 import CredentialDetails from './CredentialDetails'
 import { DidcommCredentialOffer, OpenIdCredentialOffer } from './CredentialOffer'
+import { CredentialPresentation, EphemeralCredentialPresentation } from './CredentialPresentation'
 import CredentialPresented from './CredentialPresented'
 import Developer from './Developer'
 import { ForwardMessages, ForwardConnection } from './Forward'
@@ -13,8 +14,8 @@ import MessageDetails from './MessageDetails'
 import ParentalControl from './ParentalControl'
 import PersonalChat from './PersonalChat'
 import PresentCredential from './PresentCredential'
+import PresentCredentialAsQR from './PresentCredentialAsQR'
 import PresentCredentialsFromChat from './PresentCredentialsFromChat'
-import Presentation from './Presentation'
 import { DidcommPresentationRequest, OpenIdPresentationRequest } from './PresentationRequest'
 import Privacy from './Privacy'
 import RelatedConnections from './RelatedConnections'
@@ -55,9 +56,11 @@ export {
   ShareMessages,
   MRZScanner,
   PresentCredential,
-  Presentation,
+  CredentialPresentation,
   ParentalControl,
   PresentCredentialsFromChat,
   SelectCredentialAttributes,
+  PresentCredentialAsQR,
+  EphemeralCredentialPresentation,
   IdentityCredentialIssuers,
 }

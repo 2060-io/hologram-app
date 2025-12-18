@@ -1,3 +1,4 @@
+import { Skeleton } from 'moti/skeleton'
 import React from 'react'
 import { View, Image, TouchableOpacity, StyleProp, ImageStyle, ViewStyle } from 'react-native'
 import EIdReader from 'react-native-eid-reader'
@@ -43,6 +44,7 @@ const CredentialAttribute = ({
   const theme = useTheme()
   const styles = getStyles(theme)
   const Wrapper = onPress ? TouchableOpacity : View
+  const showSkeleton = 'value' in attribute && !attribute.value.length
 
   return (
     <Wrapper style={[styles.sectionContainer, style]} onPress={() => onPress?.(attribute.key)}>
@@ -50,7 +52,15 @@ const CredentialAttribute = ({
         <Text style={styles.sectionKey} fontFamily="EuclidCircularA-Medium">
           {sanitizeString(attribute.key)}
         </Text>
-        <Text style={styles.sectionValue}>{'value' in attribute && attribute.value}</Text>
+        <Skeleton
+          height={styles.sectionValue.fontSize + 2}
+          width="75%"
+          colorMode={theme.isDarkMode ? 'dark' : 'light'}
+          radius="round"
+          show={showSkeleton}
+        >
+          <Text style={styles.sectionValue}>{'value' in attribute && attribute.value}</Text>
+        </Skeleton>
       </View>
       {'image' in attribute && (
         <ImageAttribute

@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { SafeAreaView, View, Keyboard, TouchableWithoutFeedback, TouchableOpacity } from 'react-native'
+import { View, Keyboard, TouchableWithoutFeedback, TouchableOpacity } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 import OnSuccessFinish from './OnSuccessFinish'
 import { RestoreProps, BaseRestoreWalletBackupProps } from './RestoreWalletBackupProps'
@@ -75,7 +76,7 @@ const BaseRestoreWalletBackup = ({
   }, [])
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['bottom']}>
       <KeyboardAwareScrollView
         showsVerticalScrollIndicator={false}
         enableOnAndroid={true}

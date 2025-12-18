@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, SafeAreaView } from 'react-native'
+import { View } from 'react-native'
 
 import { CallButton, Text, Avatar } from '../common'
 
@@ -34,7 +34,7 @@ const VideoCall = () => {
   }, [didcommConnection])
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       {connectionStatus.status === CallStatus.Connecting && (
         <View style={styles.subContainer}>
           {renderAvatar}
@@ -66,7 +66,7 @@ const VideoCall = () => {
           <Text style={styles.text}>{connectionStatus.statusMessage}</Text>
         </View>
       )}
-    </SafeAreaView>
+    </View>
   )
 }
 

@@ -1,7 +1,6 @@
-import { ConnectionRecord, OutOfBandRecord, ProofState } from '@credo-ts/core'
-
 import { ChatEntryData, ServiceInfo } from '@2060/model'
 import { CredentialMainInfo } from '@2060/services/agent/display'
+import { ConnectionRecord, OutOfBandRecord, ProofState } from '@credo-ts/core'
 
 type TypeParameters = 'oob' | 'd_m' | 'c_i'
 type HomeParams = {
@@ -21,6 +20,7 @@ export type NavigationStackParams = {
   Home: HomeParams | undefined
   SignUpMain: undefined
   Settings: undefined
+  Scan: undefined
   Connections: undefined
   ConnectionsForNewChat: undefined
   Privacy: undefined
@@ -45,7 +45,6 @@ export type NavigationStackParams = {
   CredentialPresented: {
     verifier: ServiceInfo
     credentials: CredentialMainInfo[]
-    presentedAt: string
   }
   ForwardConnection: {
     connection: ConnectionRecord
@@ -54,10 +53,14 @@ export type NavigationStackParams = {
     credentialRecordId: string
     attributesToPresent: string[]
   }
-  Presentation: {
-    mainInfo: CredentialMainInfo
-    attributes: Record<string, unknown>
+  CredentialPresentation: {
+    credentialMainInfo: CredentialMainInfo
+    credentialAttributes: Record<string, unknown>
     proofState: ProofState
+    proofRecordId: string
+  }
+  EphemeralCredentialPresentation: {
+    proofRecordId: string
   }
   ParentalControl: undefined
   PresentCredentialsFromChat: { connectionId: string }
@@ -65,6 +68,10 @@ export type NavigationStackParams = {
     presentDirectly: boolean
     credentialRecordId: string
     connectionToPresent?: string
+  }
+  PresentCredentialAsQR: {
+    credentialRecordId: string
+    attributesToPresent: string[]
   }
   IdentityCredentialIssuers: undefined
 }

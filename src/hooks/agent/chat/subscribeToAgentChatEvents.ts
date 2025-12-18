@@ -67,7 +67,7 @@ import {
   OutOfBandInvitationEvent,
   OutOfBandInvitationEventTypes,
 } from '@2060/services/agent/oob/OutOfBandEvents'
-import { logWarn } from '@2060/utils'
+import { log } from '@2060/utils'
 import {
   getConnectionDisplayName,
   getConnectionDisplayPicture,
@@ -101,7 +101,7 @@ export function subscribeToAgentChatEvents(
   getActiveChatThreadId = forceRefreshFunctionReference ? receivedGetActiveChatThreadId : () => undefined
   const mobileAgentInstance = AgentSingleton.instance
   if (mobileAgentInstance.getIsAppSubscribedToEvents()) {
-    logWarn('From main flow App is already subscribed to agent events')
+    log('From main flow App is already subscribed to agent events')
     return
   }
   mobileAgentInstance.setAppIsSubscribedToEvents()

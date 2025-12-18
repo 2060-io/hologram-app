@@ -3,7 +3,8 @@ import { ParamListBase } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import React, { ReactElement, useEffect, memo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { SafeAreaView, TouchableOpacity, View } from 'react-native'
+import { TouchableOpacity, View } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 import SearchInput from '../SearchInput'
 
@@ -100,7 +101,7 @@ const Connections = ({
   }, [showSearchInput, theme.colors, currentConnectionToFilter])
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['bottom']}>
       {showSearchInput && (
         <SearchInput
           containerStyle={styles.searchInputContainer}
