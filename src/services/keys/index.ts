@@ -1,11 +1,10 @@
 import { TypedArrayEncoder } from '@credo-ts/core'
 import { Key, KeyAlgorithm } from '@openwallet-foundation/askar-react-native'
-import { readFile } from 'react-native-fs'
 
 import { ConfigJsonSignature, PARENTAL_CONTROL } from '../config'
 
 import { logError } from '@2060/utils'
-import { CONFIG_FILE_PATH, writeFile } from '@2060/utils/RNFS'
+import { CONFIG_FILE_PATH, readFile, writeFile } from '@2060/utils/RNFS'
 
 export enum KeyChainService {
   AfjWallet = 'afj-wallet',

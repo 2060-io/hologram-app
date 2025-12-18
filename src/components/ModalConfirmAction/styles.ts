@@ -4,11 +4,7 @@ import { AppTheme } from '@2060/styles/types'
 
 const styles = (theme: AppTheme) =>
   StyleSheet.create({
-    containerConfirm: {
-      width: '100%',
-      backgroundColor: theme.colors.secondary,
-    },
-    subContainer: {
+    container: {
       width: '100%',
       marginTop: 32,
       paddingHorizontal: theme.edges.messageMargin,

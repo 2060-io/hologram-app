@@ -84,7 +84,7 @@ const AttachmentOptions: React.FC<Props> = ({
   }
 
   return (
-    <View style={styles.subContainer}>
+    <View style={styles.container}>
       {options.map(option => (
         <View style={styles.containerOptionCard} key={option.id}>
           <TouchableOpacity style={styles.containerOption} onPress={onSelectedOption[option.id]}>

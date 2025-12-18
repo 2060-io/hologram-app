@@ -34,7 +34,7 @@
       android:supportsRtl="true"
       android:requestLegacyExternalStorage="true"
       android:extractNativeLibs="true"
-      android:usesCleartextTraffic="true">
+      android:usesCleartextTraffic="${usesCleartextTraffic}">
       <meta-data android:name="expo.modules.updates.EXPO_UPDATE_URL" android:value="YOUR-APP-URL-HERE"/>
       <meta-data android:name="expo.modules.updates.EXPO_SDK_VERSION" android:value="YOUR-APP-SDK-VERSION-HERE"/>
       <meta-data

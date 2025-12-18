@@ -2,7 +2,8 @@ import { StackScreenProps } from '@react-navigation/stack'
 import { TrustResolutionOutcome } from '@verana-labs/verre'
 import React, { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ScrollView, SafeAreaView, View } from 'react-native'
+import { ScrollView, View } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 import getStyles from './styles'
 
@@ -64,28 +65,24 @@ const CredentialDetails = ({ route, navigation }: Props) => {
       onPress: () => setShowConfirmationDeleteModal(true),
     },
   ]
-
+  if (!credentialDetails) return null
   return (
     <>
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={styles.container} edges={['bottom']}>
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.subContainer}>
-            {credentialDetails && (
-              <>
-                <CredentialDetailsComponent
-                  credentialDetails={credentialDetails}
-                  middleInfo={
-                    <View style={styles.optionsContainer}>
-                      <OptionsList options={options} />
-                    </View>
-                  }
-                />
-                <Text fontFamily="EuclidCircularA-SemiBold" style={styles.titleIssuerInfo}>
-                  {t('credentialOffer.issuerInformation')}
-                </Text>
-                <ServiceInformation did={did} initialServiceInfo={serviceInfo.current} />
-              </>
-            )}
+            <CredentialDetailsComponent
+              credentialDetails={credentialDetails}
+              middleInfo={
+                <View style={styles.optionsContainer}>
+                  <OptionsList options={options} />
+                </View>
+              }
+            />
+            <Text fontFamily="EuclidCircularA-SemiBold" style={styles.titleIssuerInfo}>
+              {t('credentialOffer.issuerInformation')}
+            </Text>
+            <ServiceInformation did={did} initialServiceInfo={serviceInfo.current} />
           </View>
         </ScrollView>
       </SafeAreaView>

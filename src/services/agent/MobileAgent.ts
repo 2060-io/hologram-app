@@ -3,6 +3,7 @@ import { MediaSharingModule } from '@2060.io/credo-ts-didcomm-media-sharing'
 import { DidCommMrtdModule } from '@2060.io/credo-ts-didcomm-mrtd'
 import { DidCommReactionsModule } from '@2060.io/credo-ts-didcomm-reactions'
 import { ReceiptsModule } from '@2060.io/credo-ts-didcomm-receipts'
+import { DidCommShortenUrlModule } from '@2060.io/credo-ts-didcomm-shorten-url'
 import { UserProfileModule, UserProfileModuleConfig } from '@2060.io/credo-ts-didcomm-user-profile'
 import { ActionMenuModule } from '@credo-ts/action-menu'
 import {
@@ -123,6 +124,7 @@ export const getMobileAgentModules = (config: {
     pushNotifications: new PushNotificationsFcmModule(),
     questionAnswer: new QuestionAnswerModule(),
     receipts: new ReceiptsModule(),
+    shortenUrl: new DidCommShortenUrlModule(),
   } as const
 }
 

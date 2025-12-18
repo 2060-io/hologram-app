@@ -1,22 +1,19 @@
 import {
+  AnonCredsPresentationPreviewAttribute,
   AnonCredsProofFormat,
-  AnonCredsProposeProofFormat,
   AnonCredsSelectedCredentials,
   LegacyIndyProofFormat,
 } from '@credo-ts/anoncreds'
-import {
-  AgentMessage,
-  AutoAcceptProof,
-  ProofEventTypes,
-  ProofExchangeRecord,
-  ProofFormatPayload,
-  ProofState,
-  ProofStateChangedEvent,
-  V2ProofProtocol,
-} from '@credo-ts/core'
+import { AgentMessage, ProofExchangeRecord, ProofFormatPayload } from '@credo-ts/core'
+import { TrustResolutionOutcome } from '@verana-labs/verre'
+
+import { getServiceInfo } from '../trustResolution'
 
 import { MobileAgent } from './MobileAgent'
 import { DidCommPresentationDisplayMetadata, setDidCommPresentationMetadata } from './RecordMetadata'
+import { CredentialMainInfo, sanitizeString } from './display'
+
+import { logError } from '@2060/utils'
 
 type SelectedCredentials = {
   [referent: string]: string
@@ -108,34 +105,6 @@ export async function presentProof(options: PresentProofOptions) {
   await agent.proofs.acceptRequest({ proofRecordId, proofFormats: proofFormatPayload })
 }
 
-export async function notifyNoCompatibleCredentials(options: { agent: MobileAgent; proofRecordId: string }) {
-  await sendProblemReport({ ...options, description: 'e.req.no-compatible-credentials' })
-}
-
-export async function acceptProposal(options: { agent: MobileAgent; proofRecordId: string }) {
-  const { agent, proofRecordId } = options
-  await agent?.proofs.acceptProposal({ proofRecordId })
-}
-
-export async function sendProblemReport(options: {
-  agent: MobileAgent
-  proofRecordId: string
-  description: string
-}) {
-  const { agent, proofRecordId, description } = options
-  const proofRecord = await agent.proofs.getById(proofRecordId)
-  proofRecord.state = ProofState.Abandoned
-  await agent.proofs.update(proofRecord)
-  agent.proofs.sendProblemReport({ proofRecordId, description })
-  agent.events.emit<ProofStateChangedEvent>(agent.context, {
-    type: ProofEventTypes.ProofStateChanged,
-    payload: {
-      proofRecord: proofRecord.clone(),
-      previousState: null,
-    },
-  })
-}
-
 /**
  * Initiate a new presentation exchange as prover by sending an out of band proof proposal message
  *
@@ -144,14 +113,94 @@ export async function sendProblemReport(options: {
  */
 export async function createProofProposal(options: {
   agent: MobileAgent
-  anoncreds: AnonCredsProposeProofFormat
+  attributes: AnonCredsPresentationPreviewAttribute[]
 }): Promise<{
   message: AgentMessage
   proofRecord: ProofExchangeRecord
 }> {
-  const protocol = options.agent.dependencyManager.resolve(V2ProofProtocol)
-  return await protocol.createProposal(options.agent.context, {
-    proofFormats: { anoncreds: options.anoncreds },
-    autoAcceptProof: AutoAcceptProof.ContentApproved,
+  const { attributes, agent } = options
+
+  return await agent.proofs.createProofProposal({
+    proofFormats: { anoncreds: { attributes } },
+    protocolVersion: 'v2',
   })
+}
+
+export const proposalGetCredentialInfo = async (options: { agent: MobileAgent; proofRecordId: string }) => {
+  let credentialMainInfo: CredentialMainInfo | null = null
+  try {
+    const { agent, proofRecordId } = options
+    const formatData = await agent.proofs.getFormatData(proofRecordId)
+    const requestedAttributes = formatData.proposal?.anoncreds?.requested_attributes
+    if (requestedAttributes && Object.keys(requestedAttributes).length) {
+      const firstAttribute = Object.values(requestedAttributes)[0]
+
+      if (firstAttribute.restrictions?.length) {
+        const credentialDefinitionId = firstAttribute.restrictions[0].cred_def_id
+
+        if (credentialDefinitionId) {
+          const serviceInfo = await getServiceInfo({
+            agent: agent,
+            did: credentialDefinitionId,
+          })
+          const credentialDefinition = (
+            await agent.modules.anoncreds.getCredentialDefinition(credentialDefinitionId)
+          ).credentialDefinition
+          const schemaId = credentialDefinition?.schemaId
+          const schemaName = schemaId
+            ? ((await agent.modules.anoncreds.getSchema(schemaId)).schema?.name ?? '')
+            : ''
+          credentialMainInfo = {
+            id: '',
+            recordId: '',
+            schemaName: sanitizeString(schemaName),
+            issuer: {
+              id: credentialDefinition?.issuerId ?? '',
+              name: serviceInfo?.name ?? credentialDefinitionId,
+              logoUrl: serviceInfo?.logoUrl,
+              status: serviceInfo?.status ?? TrustResolutionOutcome.INVALID,
+            },
+          }
+        }
+      }
+    }
+  } catch (error) {
+    logError('Error getting credential info', error)
+  } finally {
+    return credentialMainInfo
+  }
+}
+
+export const proposalGetCredentialAttributes = async (options: {
+  agent: MobileAgent
+  proofRecordId: string
+}) => {
+  const { agent, proofRecordId } = options
+  const attributes: Record<string, string> = {}
+  const formatData = await agent.proofs.getFormatData(proofRecordId)
+  const requestedAttributes = formatData.proposal?.anoncreds?.requested_attributes
+  if (requestedAttributes && Object.keys(requestedAttributes).length) {
+    for (const attributeId in requestedAttributes) {
+      const key = requestedAttributes?.[attributeId]?.name ?? 'unknown'
+      attributes[key] = ''
+    }
+  }
+  return attributes
+}
+
+export const getCredentialRevealedAttributes = async (options: {
+  agent: MobileAgent
+  proofRecordId: string
+}) => {
+  const { agent, proofRecordId } = options
+  const formatData = await agent.proofs.getFormatData(proofRecordId)
+  const revealedAttributes = formatData.presentation?.anoncreds?.requested_proof.revealed_attrs
+  const attributesIds = formatData.proposal?.anoncreds?.requested_attributes
+  const attributes: Record<string, string> = {}
+  for (const attributeId in revealedAttributes) {
+    const item = revealedAttributes[attributeId]
+    const key = attributesIds?.[attributeId]?.name ?? 'unknown'
+    attributes[key] = item.raw
+  }
+  return attributes
 }

@@ -1,15 +1,12 @@
 import { StackActions } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
 import React, { useCallback, useLayoutEffect, useMemo, useState, useRef, useTransition } from 'react'
-import { SafeAreaView } from 'react-native'
 
 import BasePresentationRequest from './BasePresentationRequest'
-import getStyles from './styles'
 
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
 import { ModalLoading } from '@2060/components/common'
 import { useMobileAgent } from '@2060/hooks/agent'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { formatW3cPresentationSubmission } from '@2060/services/agent/formatPresentation'
 import { getCredentialsForProofRequest, shareProof } from '@2060/services/agent/parsers'
 import { logError } from '@2060/utils'
@@ -19,8 +16,6 @@ interface Props extends StackScreenProps<NavigationStackParams, 'OpenIdPresentat
 
 const OpenIdPresentationRequest: React.FC<Props> = ({ route, navigation }) => {
   const { agent } = useMobileAgent()
-  const theme = useTheme()
-  const styles = getStyles(theme)
   const url = route.params.url
   const [isAcceptingRequest, startAcceptRequestTransition] = useTransition()
   const [isProcessingCode, setIsProcessingCode] = useState(false)
@@ -92,7 +87,7 @@ const OpenIdPresentationRequest: React.FC<Props> = ({ route, navigation }) => {
   }, [])
 
   return (
-    <SafeAreaView style={styles.root}>
+    <>
       <ModalLoading visible={isProcessingCode} />
       {submission && (
         <BasePresentationRequest
@@ -105,7 +100,7 @@ const OpenIdPresentationRequest: React.FC<Props> = ({ route, navigation }) => {
           isAccepting={isAcceptingRequest}
         />
       )}
-    </SafeAreaView>
+    </>
   )
 }
 

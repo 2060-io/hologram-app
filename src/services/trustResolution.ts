@@ -3,7 +3,7 @@ import { IOrg, resolve } from '@verana-labs/verre'
 import { MobileAgent } from './agent'
 
 import { ServiceInfo } from '@2060/model'
-import { logError } from '@2060/utils'
+import { log, logError } from '@2060/utils'
 
 export async function getServiceInfo(options: {
   agent: MobileAgent
@@ -13,12 +13,20 @@ export async function getServiceInfo(options: {
 
   const trustResolution = await resolve(did, {
     agentContext: agent.context,
+    verifiablePublicRegistries: [
+      {
+        id: 'vpr:verana:vna-testnet-1',
+        baseUrls: ['https://api.testnet.verana.network/verana'],
+        production: true, // FIXME: set to false once we have mainnet ready
+      },
+    ],
   })
 
   if (!trustResolution.service || !trustResolution.didDocument) {
     logError(`trustResolution: ${JSON.stringify(trustResolution)}`)
     return null
   }
+  log(`trustResolution: ${JSON.stringify(trustResolution)}`)
 
   const serviceInfo: ServiceInfo = {
     did: trustResolution.didDocument.id,

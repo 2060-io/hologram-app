@@ -3,7 +3,8 @@ import { StackScreenProps } from '@react-navigation/stack'
 import { TrustResolutionOutcome } from '@verana-labs/verre'
 import React, { useLayoutEffect, useState, useRef, useEffect, useTransition } from 'react'
 import { useTranslation } from 'react-i18next'
-import { TouchableOpacity, View, ScrollView, SafeAreaView } from 'react-native'
+import { TouchableOpacity, View, ScrollView } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 import AlreadyConnected from './AlreadyConnected'
 import PublicService from './PublicService'
@@ -138,7 +139,7 @@ const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => 
   useLayoutEffect(handleChangeHeaderOptions, [canConnect, theme.colors])
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['bottom']}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <ModalLoading visible={isAcceptingInvitation} />
         <View style={styles.subContainer}>
