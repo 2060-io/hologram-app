@@ -24,11 +24,11 @@ const AppDependencies = () => {
     const devDeps: Dependency[] = []
 
     Object.entries(packageJson.dependencies).forEach(([name, version]) => {
-      deps.push({ name, version: version as string })
+      deps.push({ name, version })
     })
 
     Object.entries(packageJson.devDependencies).forEach(([name, version]) => {
-      devDeps.push({ name, version: version as string })
+      devDeps.push({ name, version })
     })
 
     setDependencies(deps.sort((a, b) => a.name.localeCompare(b.name)))
