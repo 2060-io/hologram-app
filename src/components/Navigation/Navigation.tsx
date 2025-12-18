@@ -9,7 +9,7 @@ import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/
 import { createStackNavigator } from '@react-navigation/stack'
 import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Platform, StatusBar, View } from 'react-native'
+import { StatusBar, View } from 'react-native'
 import Config from 'react-native-config'
 import 'isomorphic-webcrypto'
 
@@ -23,6 +23,9 @@ import getStyles from './styles'
 
 import { IS_ANDROID } from '@2060/constants'
 import { useNetwork } from '@2060/hooks'
+import { AgentActionType } from '@2060/hooks/agent'
+import { SavePushNotificationDeviceInfoParameters } from '@2060/hooks/agent/actions/types'
+import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
 import { useMessagePickup } from '@2060/hooks/agent/useMessagePickup'
 import { useConfig } from '@2060/hooks/providers/ConfigProvider'
 import {
@@ -58,7 +61,7 @@ import {
 } from '@2060/pages'
 import { MobileAgent } from '@2060/services/agent'
 import { AppTheme, getGlobalStyles } from '@2060/styles'
-import { log, logError } from '@2060/utils'
+import { log, logError, logWarn } from '@2060/utils'
 
 const Stack = createStackNavigator<NavigationStackParams>()
 type NavigationProps = {
@@ -71,6 +74,7 @@ const Navigation = ({ isSignedUp, agent, theme }: NavigationProps) => {
   const { t } = useTranslation()
   const styles = getStyles(theme)
   const globalStyles = getGlobalStyles(theme)
+  const { addAgentActionToQueue } = useAgentActionQueue()
   const { isDeveloperMode } = useConfig()
   const InitialComponent = isSignedUp ? HomeMain : isDeveloperMode ? SignUpMain : ProfileCreation
 
@@ -115,10 +119,12 @@ const Navigation = ({ isSignedUp, agent, theme }: NavigationProps) => {
     const unsubscribe = onTokenRefresh(messaging, (deviceToken: string) => {
       agent?.mediationRecipient.findDefaultMediatorConnection().then(mediatorConnection => {
         if (mediatorConnection) {
-          agent?.modules.pushNotifications.setDeviceInfo(mediatorConnection.id, {
+          const parameters: SavePushNotificationDeviceInfoParameters = {
+            connectionId: mediatorConnection.id,
             deviceToken,
-            devicePlatform: Platform.OS,
-          })
+          }
+          logWarn('Refreshing push notification device token')
+          addAgentActionToQueue({ type: AgentActionType.SavePushNotificationDeviceInfo, parameters })
         }
       })
     })
