@@ -1,6 +1,6 @@
 import { DidCommCallType } from '@2060.io/credo-ts-didcomm-calls'
-import { MessageReactionOptions } from '@2060.io/credo-ts-didcomm-reactions/build/messages/MessageReactionsMessage'
-import { MessageReceiptOptions } from '@2060.io/credo-ts-didcomm-receipts'
+import { DidCommMessageReactionOptions } from '@2060.io/credo-ts-didcomm-reactions'
+import { DidCommMessageReceiptOptions } from '@2060.io/credo-ts-didcomm-receipts'
 
 import { CallInfo } from '@2060/hooks/providers/useVideoCallContext'
 
@@ -19,11 +19,11 @@ type SendTextMessageParameters = ConnectionIdParameter & {
 }
 
 type SendReactionParameters = ConnectionIdParameter & {
-  reactions: MessageReactionOptions[]
+  reactions: DidCommMessageReactionOptions[]
 }
 
 type SendReceiptsParameters = ConnectionIdParameter & {
-  receipts: MessageReceiptOptions[]
+  receipts: DidCommMessageReceiptOptions[]
 }
 
 type ShareMediaParameters = {

@@ -113,7 +113,7 @@ const Navigation = ({ isSignedUp, agent, theme }: NavigationProps) => {
   useEffect(() => {
     const messaging = getMessaging()
     const unsubscribe = onTokenRefresh(messaging, (deviceToken: string) => {
-      agent?.mediationRecipient.findDefaultMediatorConnection().then(mediatorConnection => {
+      agent?.didcomm.mediationRecipient.findDefaultMediatorConnection().then(mediatorConnection => {
         if (mediatorConnection) {
           agent?.modules.pushNotifications.setDeviceInfo(mediatorConnection.id, {
             deviceToken,

@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unstable-nested-components */
 
-import { ProofState } from '@credo-ts/core'
+import { DidCommProofState } from '@credo-ts/didcomm'
 import { useNavigation, ParamListBase } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import React, { useState, memo, useEffect } from 'react'
@@ -46,7 +46,7 @@ type RequestedCredentialsForDisplay = {
 }
 
 type MainButtonsProps = {
-  proofState: ProofState
+  proofState: DidCommProofState
 }
 
 const VPRequestChatView = ({
@@ -82,7 +82,7 @@ const VPRequestChatView = ({
       })
       setFormattedPresentationRequest(newFormattedPresentationRequest)
     }
-    metadata.proofState === ProofState.RequestReceived && getFormattedPresentation()
+    metadata.proofState === DidCommProofState.RequestReceived && getFormattedPresentation()
   }, [])
 
   const hideModalRefuseConfirmation = () => setShowModalRefuseConfirmation(false)
@@ -90,7 +90,7 @@ const VPRequestChatView = ({
 
   const notify = async () => {
     if (!agent || !realm) return
-    const newMetadata = { ...metadata, proofState: ProofState.Abandoned }
+    const newMetadata = { ...metadata, proofState: DidCommProofState.Abandoned }
     updateChatEntryMetadata(realm, chatEntryId, newMetadata)
     const parameters: ProofSendProblemReportParameters = {
       proofRecordId,
@@ -108,7 +108,7 @@ const VPRequestChatView = ({
 
   const refuse = async () => {
     if (realm) {
-      const newMetadata = { ...metadata, proofState: ProofState.Declined }
+      const newMetadata = { ...metadata, proofState: DidCommProofState.Declined }
       updateChatEntryMetadata(realm, chatEntryId, newMetadata)
     }
     const parameters: DeclineProofRequestParameters = { proofRecordId }
@@ -134,17 +134,17 @@ const VPRequestChatView = ({
   )
 
   const MainButtons = ({ proofState }: MainButtonsProps) => {
-    const opacity = proofState === ProofState.RequestReceived ? 1 : 0.3
+    const opacity = proofState === DidCommProofState.RequestReceived ? 1 : 0.3
     return (
       <View style={styles.buttonsContainer}>
         <OutlinedBlueButton
-          disabled={proofState !== ProofState.RequestReceived}
+          disabled={proofState !== DidCommProofState.RequestReceived}
           text={t('general.refuse')}
           onPress={displayModalRefuseConfirmation}
           style={[styles.refuseButton, { opacity }]}
         />
         <BlueButton
-          disabled={proofState !== ProofState.RequestReceived}
+          disabled={proofState !== DidCommProofState.RequestReceived}
           text={t('presentationRequest.selectCredential', {
             count: requestedCredentialsForDisplay?.requestedCredentials?.length,
           })}
@@ -155,8 +155,8 @@ const VPRequestChatView = ({
     )
   }
 
-  const status: Partial<Record<ProofState, React.ReactElement>> = {
-    [ProofState.Abandoned]: (
+  const status: Partial<Record<DidCommProofState, React.ReactElement>> = {
+    [DidCommProofState.Abandoned]: (
       <>
         <Text style={styles.title}>
           {t('presentationRequest.noCompatibleCredentials', { sender: senderName })}
@@ -169,7 +169,7 @@ const VPRequestChatView = ({
         />
       </>
     ),
-    [ProofState.Declined]: (
+    [DidCommProofState.Declined]: (
       <View style={[styles.baseFooterContainer, styles.refusedContainer]}>
         <Text fontFamily="EuclidCircularA-Bold" style={styles.refusedText}>
           {t('personalChat.youRefusedRequest')}
@@ -178,11 +178,11 @@ const VPRequestChatView = ({
     ),
   }
 
-  const renderFooterOptions = (proofState: ProofState) => {
-    if (proofState === ProofState.RequestReceived && !formattedPresentationRequest) {
+  const renderFooterOptions = (proofState: DidCommProofState) => {
+    if (proofState === DidCommProofState.RequestReceived && !formattedPresentationRequest) {
       return <ActivityIndicator color={theme.colors.green} />
     }
-    if (proofState === ProofState.RequestReceived && !formattedPresentationRequest?.areAllSatisfied) {
+    if (proofState === DidCommProofState.RequestReceived && !formattedPresentationRequest?.areAllSatisfied) {
       return <NoCompatibleCredentials />
     }
     return status[proofState] ?? <MainButtons proofState={proofState} />

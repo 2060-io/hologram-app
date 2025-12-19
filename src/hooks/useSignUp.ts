@@ -27,37 +27,45 @@ export const useSignUp = () => {
 
     setSignUpState(SignUpState.Started)
 
-    let { connectionRecord: cloudAgentConnection } = await agent.oob.receiveImplicitInvitation({
+    let { connectionRecord: cloudAgentConnection } = await agent.didcomm.oob.receiveImplicitInvitation({
+      label: 'Hologram',
       did: cloudAgentPublicDid,
       alias: 'Cloud Agent',
       autoAcceptConnection: true,
     })
     if (!cloudAgentConnection) throw new Error('Agency connection not created')
 
-    cloudAgentConnection = await agent.connections.returnWhenIsConnected(cloudAgentConnection.id, {
+    cloudAgentConnection = await agent.didcomm.connections.returnWhenIsConnected(cloudAgentConnection.id, {
       timeoutMs: 5000,
     })
 
     setSignUpState(SignUpState.Connected)
 
-    const mediationRecord = await agent.mediationRecipient.requestAndAwaitGrant(cloudAgentConnection, 5000)
-    await agent.mediationRecipient.setDefaultMediator(mediationRecord)
-    await agent.mediationRecipient.initialize()
+    const mediationRecord = await agent.didcomm.mediationRecipient.requestAndAwaitGrant(
+      cloudAgentConnection,
+      5000,
+    )
+    await agent.didcomm.mediationRecipient.setDefaultMediator(mediationRecord)
+    await agent.didcomm.mediationRecipient.initiateMessagePickup()
     setSignUpState(SignUpState.AgentCreated)
     const isSignedUp = await isRegistered(agent)
     handleChangeAgentState({ isSignedUp })
 
     try {
-      let { connectionRecord: defaultServiceConnection } = await agent.oob.receiveImplicitInvitation({
+      let { connectionRecord: defaultServiceConnection } = await agent.didcomm.oob.receiveImplicitInvitation({
+        label: 'Hologram',
         did: defaultServicePublicDid,
         alias: defaultServiceAlias,
         autoAcceptConnection: true,
       })
       if (!defaultServiceConnection) throw new Error('Default service connection not created')
 
-      defaultServiceConnection = await agent.connections.returnWhenIsConnected(defaultServiceConnection.id, {
-        timeoutMs: 5000,
-      })
+      defaultServiceConnection = await agent.didcomm.connections.returnWhenIsConnected(
+        defaultServiceConnection.id,
+        {
+          timeoutMs: 5000,
+        },
+      )
 
       log('connected with default service')
     } catch (error) {

@@ -19,7 +19,7 @@ const BlockedConnectionMessageView: React.FC<BlockedConnectionMessageProps> = pr
     if (!connectionId || !agent) return
     startUnlockTransition(async () => {
       try {
-        const connection = await agent.connections.getById(connectionId)
+        const connection = await agent.didcomm.connections.getById(connectionId)
         await unblockConnection(agent, connection)
       } catch (error) {
         toast({ type: 'error', message: `${error}` })

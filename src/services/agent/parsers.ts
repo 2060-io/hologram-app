@@ -3,11 +3,10 @@ import {
   DifPresentationExchangeService,
   Agent,
   KeyDidCreateOptions,
-  KeyType,
   TypedArrayEncoder,
   DidKey,
 } from '@credo-ts/core'
-import { OpenId4VcSiopVerifiedAuthorizationRequest } from '@credo-ts/openid4vc'
+import { OpenId4VpVerifiedAuthorizationRequest } from '@credo-ts/openid4vc'
 
 import { MobileAgent } from './MobileAgent'
 
@@ -81,7 +80,7 @@ export const shareProof = async ({
   selectResults,
 }: {
   agent: MobileAgent
-  verifiedAuthorizationRequest: OpenId4VcSiopVerifiedAuthorizationRequest
+  verifiedAuthorizationRequest: OpenId4VpVerifiedAuthorizationRequest
   selectResults: DifPexCredentialsForRequest
   submissionEntryIndexes: number[]
 }) => {

@@ -1,4 +1,5 @@
-import { ConnectionRecord, TypedArrayEncoder, Buffer } from '@credo-ts/core'
+import { TypedArrayEncoder, Buffer } from '@credo-ts/core'
+import { DidCommConnectionRecord } from '@credo-ts/didcomm'
 import { StackScreenProps } from '@react-navigation/stack'
 import React, { ReactElement, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -32,7 +33,7 @@ type confirmationTypes = 'deleteChat' | 'block' | 'unblock' | 'deleteConnection'
 export interface WrapperProps extends StackScreenProps<NavigationStackParams, 'ConnectionDetails'> {}
 
 export interface ConnectionDetailsProps extends WrapperProps {
-  connection: ConnectionRecord
+  connection: DidCommConnectionRecord
 }
 
 interface BaseConnectionDetailsProps extends ConnectionDetailsProps {
@@ -105,7 +106,9 @@ const BaseConnectionDetails = ({
     }
   }
 
-  const toggleBlock = async (action: (agent: MobileAgent, record: ConnectionRecord) => Promise<void>) => {
+  const toggleBlock = async (
+    action: (agent: MobileAgent, record: DidCommConnectionRecord) => Promise<void>,
+  ) => {
     if (!agent) return
     setTimeout(
       async () => {

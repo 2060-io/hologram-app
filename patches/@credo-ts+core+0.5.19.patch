@@ -181,8 +181,8 @@ index f34139b..346e09f 100644
      goal?: string;
  }
  export interface CreateProofProposalOptions<PFs extends ProofFormatService[]> extends BaseOptions {
--    connectionRecord: ConnectionRecord;
-+    connectionRecord?: ConnectionRecord;
+-    connectionRecord: DidCommConnectionRecord;
++    connectionRecord?: DidCommConnectionRecord;
      proofFormats: ProofFormatPayload<ExtractProofFormats<PFs>, 'createProposal'>;
      parentThreadId?: string;
  }

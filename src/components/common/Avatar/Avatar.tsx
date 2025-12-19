@@ -1,4 +1,3 @@
-import { isUri } from '@credo-ts/core/build/utils'
 import React, { useEffect, useRef, useState } from 'react'
 import { Image, TouchableOpacity, View } from 'react-native'
 import { SvgUri } from 'react-native-svg'
@@ -20,6 +19,8 @@ const getNameInitials = (fullName: string) => {
 const isHttpUrl = (uri: string) => {
   return uri.startsWith('https://') || uri.startsWith('http://')
 }
+
+const isUri = (value: string) => /\w+:(\/?\/?)[^\s]+/.test(value)
 
 type Props = {
   uri?: string

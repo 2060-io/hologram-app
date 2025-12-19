@@ -1,8 +1,9 @@
 /* eslint-disable no-underscore-dangle */
-import { OutOfBandInvitation, Buffer } from '@credo-ts/core'
+import { Buffer } from '@credo-ts/core'
+import { DidCommOutOfBandInvitation } from '@credo-ts/didcomm'
 import { useIsFocused } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
-import { parseUrl } from 'query-string'
+import queryString from 'query-string'
 import React, { useState, useEffect, useTransition } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
@@ -49,7 +50,7 @@ const Scan = ({ navigation }: Props) => {
 
   const isTabSelected = (tab: string) => tab === tabType
 
-  const processDidcommInvitation = async (invitation: OutOfBandInvitation) => {
+  const processDidcommInvitation = async (invitation: DidCommOutOfBandInvitation) => {
     if (!agent) return
     startProcessTransition(async () => {
       try {
@@ -92,12 +93,12 @@ const Scan = ({ navigation }: Props) => {
       } else if (isOpenIdPresentationRequest(url)) {
         navigation.navigate('OpenIdPresentationRequest', { url })
       } else {
-        const parsedUrl = parseUrl(url)
+        const parsedUrl = queryString.parseUrl(url)
         const shortUrl =
           ((parsedUrl.query.oobUrl as string | undefined) ?? (parsedUrl.query._url as string | undefined))
             ? Buffer.from(parsedUrl.query._url as string, 'base64').toString('ascii')
             : undefined
-        const invitation = await agent.oob.parseInvitation(shortUrl ?? url)
+        const invitation = await agent.didcomm.oob.parseInvitation(shortUrl ?? url)
         await processDidcommInvitation(invitation)
       }
       setScannedCode('')

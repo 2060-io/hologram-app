@@ -1,13 +1,12 @@
 import { MediaSharingRecord } from '@2060.io/credo-ts-didcomm-media-sharing'
 import { ActionMenuRecord, ActionMenuRepository } from '@credo-ts/action-menu'
+import { BaseRecord, JsonTransformer } from '@credo-ts/core'
 import {
-  AgentMessage,
-  BaseRecord,
-  BasicMessageRecord,
-  JsonTransformer,
-  MessageSender,
-  getOutboundMessageContext,
-} from '@credo-ts/core'
+  DidCommMessage,
+  DidCommBasicMessageRecord,
+  DidCommMessageSender,
+  getOutboundDidCommMessageContext,
+} from '@credo-ts/didcomm'
 import { useCallback, useEffect, useState } from 'react'
 import queue, { Worker } from 'react-native-job-queue'
 
@@ -94,7 +93,7 @@ export const useAgentActionQueue = () => {
 
     const getAssociatedRecord = async (options: { recordType: string; recordId: string }) => {
       const { recordType, recordId } = options
-      if (recordType === BasicMessageRecord.type) return agent.basicMessages.getById(recordId)
+      if (recordType === DidCommBasicMessageRecord.type) return agent.didcomm.basicMessages.getById(recordId)
       if (recordType === MediaSharingRecord.type) return agent.modules.media.findById(recordId)
       if (recordType === ActionMenuRecord.type) {
         return agent.dependencyManager.resolve(ActionMenuRepository).findById(agent.context, recordId)
@@ -110,10 +109,10 @@ export const useAgentActionQueue = () => {
             throw Error('No outbound message context data for this action')
           }
 
-          const messageSender = agent.dependencyManager.resolve(MessageSender)
+          const messageSender = agent.dependencyManager.resolve(DidCommMessageSender)
 
           const connectionRecord = payload.outboundMessageContextData.didcommConnectionId
-            ? await agent.connections.getById(payload.outboundMessageContextData.didcommConnectionId)
+            ? await agent.didcomm.connections.getById(payload.outboundMessageContextData.didcommConnectionId)
             : undefined
 
           try {
@@ -126,8 +125,8 @@ export const useAgentActionQueue = () => {
             }
 
             await messageSender.sendMessage(
-              await getOutboundMessageContext(agent.context, {
-                message: JsonTransformer.fromJSON(payload.outboundMessageContextData.message, AgentMessage),
+              await getOutboundDidCommMessageContext(agent.context, {
+                message: JsonTransformer.fromJSON(payload.outboundMessageContextData.message, DidCommMessage),
                 associatedRecord: associatedRecord ?? undefined,
                 connectionRecord,
               }),

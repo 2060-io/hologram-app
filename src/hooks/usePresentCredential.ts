@@ -1,4 +1,5 @@
-import { ProofState, W3cCredentialRepository } from '@credo-ts/core'
+import { W3cCredentialRepository } from '@credo-ts/core'
+import { DidCommProofState } from '@credo-ts/didcomm'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -40,10 +41,10 @@ export const usePresentCredential = () => {
         anoncredsAttributes.push({ name: attribute, credentialDefinitionId })
       })
       connectionsId.forEach(async connectionId => {
-        const didcommConnection = await agent.connections.getById(connectionId)
+        const didcommConnection = await agent.didcomm.connections.getById(connectionId)
         const chatThreadId = findOrCreateThread({ connection: didcommConnection }).id
         const metadata: VPResponseMetadata = {
-          proofState: ProofState.ProposalSent,
+          proofState: DidCommProofState.ProposalSent,
           presentedCredentials: JSON.stringify([{ mainInfo }]),
         }
         const chatEntry = createChatEntry(realm, {

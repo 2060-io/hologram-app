@@ -1,20 +1,19 @@
 import {
   ConnectionProfileUpdatedEvent,
   ProfileEventTypes,
-  UserProfileApi,
+  DidCommUserProfileApi,
   UserProfileRequestedEvent,
 } from '@2060.io/credo-ts-didcomm-user-profile'
+import { AgentContext, EventEmitter } from '@credo-ts/core'
 import {
-  DiscoverFeaturesDisclosureReceivedEvent,
-  DidExchangeRole,
-  ConnectionStateChangedEvent,
-  ConnectionEventTypes,
-  DiscoverFeaturesEventTypes,
-  AgentContext,
-  ConnectionService,
-  EventEmitter,
-  DidExchangeState,
-} from '@credo-ts/core'
+  DidCommConnectionEventTypes,
+  DidCommConnectionService,
+  DidCommConnectionStateChangedEvent,
+  DidCommDidExchangeRole,
+  DidCommDidExchangeState,
+  DidCommDiscoverFeaturesDisclosureReceivedEvent,
+  DidCommDiscoverFeaturesEventTypes,
+} from '@credo-ts/didcomm'
 
 import { AgentActionOptions, AgentActionType } from '../actions/AgentAction'
 import {
@@ -32,10 +31,10 @@ export function manageAgentConnectionEvents(
 ) {
   const eventEmitter = context.dependencyManager.resolve(EventEmitter)
 
-  const disclosureListener = async (event: DiscoverFeaturesDisclosureReceivedEvent) => {
+  const disclosureListener = async (event: DidCommDiscoverFeaturesDisclosureReceivedEvent) => {
     const connection = event.payload.connection
-    const connectionService = context.dependencyManager.resolve(ConnectionService)
-    const userProfileApi = context.dependencyManager.resolve(UserProfileApi)
+    const connectionService = context.dependencyManager.resolve(DidCommConnectionService)
+    const userProfileApi = context.dependencyManager.resolve(DidCommUserProfileApi)
 
     const features = event.payload.disclosures
     features.forEach(item => connection.metadata.add(`features-${item.type}`, { [item.id]: item.toJSON() }))
@@ -43,7 +42,7 @@ export function manageAgentConnectionEvents(
     await connectionService.update(context, connection)
 
     if (supportsUserProfile(connection)) {
-      if (connection.role === DidExchangeRole.Responder) {
+      if (connection.role === DidCommDidExchangeRole.Responder) {
         await userProfileApi.sendUserProfile({
           connectionId: connection.id,
           sendBackYours: true,
@@ -57,7 +56,7 @@ export function manageAgentConnectionEvents(
   }
 
   const profileRequestListener = async (event: UserProfileRequestedEvent) => {
-    const userProfileApi = context.dependencyManager.resolve(UserProfileApi)
+    const userProfileApi = context.dependencyManager.resolve(DidCommUserProfileApi)
     await userProfileApi.sendUserProfile({
       connectionId: event.payload.connection.id,
       sendBackYours: false,
@@ -70,7 +69,7 @@ export function manageAgentConnectionEvents(
   }
 
   const profileUpdatedListener = async (event: ConnectionProfileUpdatedEvent) => {
-    const userProfileApi = context.dependencyManager.resolve(UserProfileApi)
+    const userProfileApi = context.dependencyManager.resolve(DidCommUserProfileApi)
     if (event.payload.sendBackYoursRequested) {
       await userProfileApi.sendUserProfile({
         connectionId: event.payload.connection.id,
@@ -85,16 +84,16 @@ export function manageAgentConnectionEvents(
   }
 
   // Track connections and proof exchanges to update connection metadata accordingly
-  const connectionListener = async (event: ConnectionStateChangedEvent) => {
+  const connectionListener = async (event: DidCommConnectionStateChangedEvent) => {
     const { connectionRecord } = event.payload
-    if (connectionRecord.state === DidExchangeState.RequestReceived) {
+    if (connectionRecord.state === DidCommDidExchangeState.RequestReceived) {
       const parameters: AcceptConnectionRequestParameters = { connectionId: connectionRecord.id }
       addAgentActionToQueue({
         type: AgentActionType.AcceptConnectionRequest,
         parameters,
       })
     } else if (
-      connectionRecord.state === DidExchangeState.ResponseReceived &&
+      connectionRecord.state === DidCommDidExchangeState.ResponseReceived &&
       !connectionRecord.autoAcceptConnection
     ) {
       const parameters: AcceptConnectionResponseParameters = { connectionId: connectionRecord.id }
@@ -112,14 +111,14 @@ export function manageAgentConnectionEvents(
     }
   }
 
-  eventEmitter.on(ConnectionEventTypes.ConnectionStateChanged, connectionListener)
-  eventEmitter.on(DiscoverFeaturesEventTypes.DisclosureReceived, disclosureListener)
+  eventEmitter.on(DidCommConnectionEventTypes.DidCommConnectionStateChanged, connectionListener)
+  eventEmitter.on(DidCommDiscoverFeaturesEventTypes.DisclosureReceived, disclosureListener)
   eventEmitter.on(ProfileEventTypes.UserProfileRequested, profileRequestListener)
   eventEmitter.on(ProfileEventTypes.ConnectionProfileUpdated, profileUpdatedListener)
 
   return () => {
-    eventEmitter.off(ConnectionEventTypes.ConnectionStateChanged, connectionListener)
-    eventEmitter.off(DiscoverFeaturesEventTypes.DisclosureReceived, disclosureListener)
+    eventEmitter.off(DidCommConnectionEventTypes.DidCommConnectionStateChanged, connectionListener)
+    eventEmitter.off(DidCommDiscoverFeaturesEventTypes.DisclosureReceived, disclosureListener)
     eventEmitter.off(ProfileEventTypes.UserProfileRequested, profileRequestListener)
     eventEmitter.off(ProfileEventTypes.ConnectionProfileUpdated, profileUpdatedListener)
   }

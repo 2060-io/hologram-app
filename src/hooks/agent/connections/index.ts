@@ -1,15 +1,14 @@
+import { AgentContext, tryParseDid } from '@credo-ts/core'
 import {
-  OutOfBandInvitation,
-  AgentContext,
-  ConnectionRecord,
-  ConnectionsApi,
-  OutOfBandRole,
-  KeylistUpdateAction,
-  MediationRecipientService,
-  ConnectionService,
-  ConnectionRepository,
-} from '@credo-ts/core'
-import { tryParseDid } from '@credo-ts/core/build/modules/dids/domain/parse'
+  DidCommConnectionRecord,
+  DidCommConnectionRepository,
+  DidCommConnectionsApi,
+  DidCommConnectionService,
+  DidCommKeylistUpdateAction,
+  DidCommMediationRecipientService,
+  DidCommOutOfBandInvitation,
+  DidCommOutOfBandRole,
+} from '@credo-ts/didcomm'
 
 import { MobileAgent } from '@2060/services/agent/MobileAgent'
 import { logWarn } from '@2060/utils'
@@ -17,11 +16,11 @@ import { isTerminated, isBlocked } from '@2060/utils/connectionUtils'
 
 export const findExistingConnection = async (
   agentContext: AgentContext,
-  invitation: OutOfBandInvitation,
-): Promise<ConnectionRecord | undefined> => {
+  invitation: DidCommOutOfBandInvitation,
+): Promise<DidCommConnectionRecord | undefined> => {
   // If it is an invitation from a public DID, check if there is a connection established with it
   const existingConnections = await agentContext.dependencyManager
-    .resolve(ConnectionsApi)
+    .resolve(DidCommConnectionsApi)
     .findByInvitationDid(tryParseDid(invitation.id) ? invitation.id : invitation.invitationDids[0])
   if (existingConnections.length > 1) {
     logWarn(`Multiple connections found related to invitation id ${invitation.id}`)
@@ -30,13 +29,13 @@ export const findExistingConnection = async (
   if (existingConnections.length > 0) return existingConnections[0]
 }
 
-export const deleteConnection = async (agent: MobileAgent, record: ConnectionRecord) => {
+export const deleteConnection = async (agent: MobileAgent, record: DidCommConnectionRecord) => {
   const outOfBandRecordId = record.outOfBandId
   try {
     if (record.isReady && !isTerminated(record)) {
-      await agent.connections.hangup({ connectionId: record.id, deleteAfterHangup: true })
+      await agent.didcomm.connections.hangup({ connectionId: record.id, deleteAfterHangup: true })
     } else {
-      await agent.connections.deleteById(record.id)
+      await agent.didcomm.connections.deleteById(record.id)
     }
   } catch (error) {
     // In case of error, delete the connection since it is already unusable.
@@ -46,28 +45,30 @@ export const deleteConnection = async (agent: MobileAgent, record: ConnectionRec
     // this is to retry sending these messages. However, since they are sent internally by Credo,
     // we should wait until a good Message Sending refactoring is done there
     logWarn(`Warning: error while hanging up connection ${record.id}. Record will be force-deleted.`)
-    await agent.context.dependencyManager.resolve(ConnectionRepository).deleteById(agent.context, record.id)
+    await agent.context.dependencyManager
+      .resolve(DidCommConnectionRepository)
+      .deleteById(agent.context, record.id)
   }
 
   // Once the connection has been eliminated, delete its associated OOB record (only if we were invited, as
   // the OOB record can be still valid for invitations we have created)
   if (!outOfBandRecordId) return
-  const outOfBandRecord = await agent.oob.findById(outOfBandRecordId)
-  if (outOfBandRecord?.role === OutOfBandRole.Receiver) {
-    await agent.oob.deleteById(outOfBandRecordId)
+  const outOfBandRecord = await agent.didcomm.oob.findById(outOfBandRecordId)
+  if (outOfBandRecord?.role === DidCommOutOfBandRole.Receiver) {
+    await agent.didcomm.oob.deleteById(outOfBandRecordId)
   }
 }
 
 const updateConnectionMediationKeylist = async (
   agent: MobileAgent,
-  record: ConnectionRecord,
-  action: KeylistUpdateAction,
+  record: DidCommConnectionRecord,
+  action: DidCommKeylistUpdateAction,
 ) => {
   if (record.mediatorId && record.did) {
     const did = await agent.dids.resolve(record.did)
 
     if (did.didDocument) {
-      const mediationRecipientService = agent.dependencyManager.resolve(MediationRecipientService)
+      const mediationRecipientService = agent.dependencyManager.resolve(DidCommMediationRecipientService)
       const mediationRecord = await mediationRecipientService.getById(agent.context, record.mediatorId)
       await mediationRecipientService.keylistUpdateAndAwait(
         agent.context,
@@ -83,18 +84,18 @@ const updateConnectionMediationKeylist = async (
   }
 }
 
-export const blockConnection = async (agent: MobileAgent, record: ConnectionRecord) => {
+export const blockConnection = async (agent: MobileAgent, record: DidCommConnectionRecord) => {
   if (!isBlocked(record)) {
-    await updateConnectionMediationKeylist(agent, record, KeylistUpdateAction.remove)
+    await updateConnectionMediationKeylist(agent, record, DidCommKeylistUpdateAction.remove)
     record.setTag('blocked', true)
-    await agent.dependencyManager.resolve(ConnectionService).update(agent.context, record)
+    await agent.dependencyManager.resolve(DidCommConnectionService).update(agent.context, record)
   }
 }
 
-export const unblockConnection = async (agent: MobileAgent, record: ConnectionRecord) => {
+export const unblockConnection = async (agent: MobileAgent, record: DidCommConnectionRecord) => {
   if (isBlocked(record)) {
-    await updateConnectionMediationKeylist(agent, record, KeylistUpdateAction.add)
+    await updateConnectionMediationKeylist(agent, record, DidCommKeylistUpdateAction.add)
     record.setTag('blocked', false)
-    await agent.dependencyManager.resolve(ConnectionService).update(agent.context, record)
+    await agent.dependencyManager.resolve(DidCommConnectionService).update(agent.context, record)
   }
 }

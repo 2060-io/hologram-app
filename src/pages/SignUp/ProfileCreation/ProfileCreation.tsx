@@ -78,7 +78,7 @@ const ProfileCreation = ({ navigation }: Props) => {
   const updateNotificationInfo = useCallback(async () => {
     if (!agent) return
 
-    const connection = await agent.mediationRecipient.findDefaultMediatorConnection()
+    const connection = await agent.didcomm.mediationRecipient.findDefaultMediatorConnection()
     if (!connection) return
 
     const deviceToken = await getFcmDeviceToken()

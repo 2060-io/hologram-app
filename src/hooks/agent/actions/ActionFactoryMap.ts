@@ -1,32 +1,32 @@
 import { CallEndMessage, CallOfferMessage } from '@2060.io/credo-ts-didcomm-calls'
 import { ShareMediaMessage } from '@2060.io/credo-ts-didcomm-media-sharing'
 import { MessageReactionsMessage } from '@2060.io/credo-ts-didcomm-reactions'
-import { MessageReceiptsMessage } from '@2060.io/credo-ts-didcomm-receipts'
-import { ProfileMessage, RequestProfileMessage } from '@2060.io/credo-ts-didcomm-user-profile'
+import { DidCommMessageReceiptsMessage } from '@2060.io/credo-ts-didcomm-receipts'
+import { DidCommProfileMessage, DidCommRequestProfileMessage } from '@2060.io/credo-ts-didcomm-user-profile'
 import { PerformMessage } from '@credo-ts/action-menu'
+import { BaseRecord } from '@credo-ts/core'
 import {
-  BasicMessage,
-  MessageSender,
-  OutboundMessageContext,
-  OutOfBandInvitation,
-  V2ProposePresentationMessage,
-  DidExchangeResponseMessage,
-  DidExchangeCompleteMessage,
-  DiscoverFeaturesApi,
-  V2QueriesMessage,
-  KeylistUpdateMessage,
-  AutoAcceptCredential,
-  V2RequestCredentialMessage,
-  V2CredentialProblemReportMessage,
-  V2PresentationProblemReportMessage,
-  BaseRecord,
-  V2PresentationMessage,
-  V2RequestPresentationMessage,
-  ProofState,
-  ProofStateChangedEvent,
-  ProofEventTypes,
-  AutoAcceptProof,
-} from '@credo-ts/core'
+  DidCommBasicMessage,
+  DidCommMessageSender,
+  DidCommOutboundMessageContext,
+  DidCommOutOfBandInvitation,
+  DidCommProposePresentationV2Message,
+  DidCommDidExchangeResponseMessage,
+  DidCommDidExchangeCompleteMessage,
+  DidCommDiscoverFeaturesApi,
+  DidCommKeylistUpdateMessage,
+  DidCommAutoAcceptCredential,
+  DidCommRequestCredentialV2Message,
+  DidCommCredentialV2ProblemReportMessage,
+  DidCommPresentationV2ProblemReportMessage,
+  DidCommPresentationV2Message,
+  DidCommRequestPresentationV2Message,
+  DidCommProofState,
+  DidCommProofStateChangedEvent,
+  DidCommProofEventTypes,
+  DidCommAutoAcceptProof,
+  DidCommFeaturesQueriesMessage,
+} from '@credo-ts/didcomm'
 import { AnswerMessage } from '@credo-ts/question-answer'
 
 import { AgentAction, AgentActionType } from './AgentAction'
@@ -69,10 +69,14 @@ export const ActionFactoryMap: Record<AgentActionType, ActionFactory> = {
     return async (options: { agent: MobileAgent }) => {
       const parameters = action.parameters as SendTextMessageParameters
       const { connectionId, message, parentThreadId } = parameters
-      const record = await options.agent.basicMessages.sendMessage(connectionId, message, parentThreadId)
+      const record = await options.agent.didcomm.basicMessages.sendMessage(
+        connectionId,
+        message,
+        parentThreadId,
+      )
       return {
         associatedRecord: record,
-        outgoingMessageType: BasicMessage.type.messageTypeUri,
+        outgoingMessageType: DidCommBasicMessage.type.messageTypeUri,
       }
     }
   },
@@ -95,7 +99,7 @@ export const ActionFactoryMap: Record<AgentActionType, ActionFactory> = {
           timestamp: item.timestamp ? new Date(item.timestamp) : new Date(),
         })),
       })
-      return { outgoingMessageType: MessageReceiptsMessage.type.messageTypeUri }
+      return { outgoingMessageType: DidCommMessageReceiptsMessage.type.messageTypeUri }
     }
   },
   [AgentActionType.ShareMedia]: action => {
@@ -121,30 +125,30 @@ export const ActionFactoryMap: Record<AgentActionType, ActionFactory> = {
     return async (options: { agent: MobileAgent }) => {
       const parameters = action.parameters as ForwardConnectionParameters
       const { forwarderConnectionId, connectionId } = parameters
-      const originDidcommConnection = await options.agent?.connections.getById(forwarderConnectionId)
+      const originDidcommConnection = await options.agent?.didcomm.connections.getById(forwarderConnectionId)
       const outOfBandInvitation = createOobInvitation(originDidcommConnection)
-      const connection = await options.agent?.connections.getById(connectionId)
-      const messageSender = options.agent?.context.dependencyManager.resolve(MessageSender)
+      const connection = await options.agent?.didcomm.connections.getById(connectionId)
+      const messageSender = options.agent?.context.dependencyManager.resolve(DidCommMessageSender)
       await messageSender.sendMessage(
-        new OutboundMessageContext(outOfBandInvitation, {
+        new DidCommOutboundMessageContext(outOfBandInvitation, {
           agentContext: options.agent?.context,
           connection,
         }),
       )
-      return { outgoingMessageType: OutOfBandInvitation.type.messageTypeUri }
+      return { outgoingMessageType: DidCommOutOfBandInvitation.type.messageTypeUri }
     }
   },
   [AgentActionType.PresentCredential]: action => {
     return async (options: { agent: MobileAgent }) => {
       const parameters = action.parameters as PresentCredentialParameters
       const { connectionId, anoncredsAttributes } = parameters
-      const proofExchangeRecord = await options.agent.proofs.proposeProof({
+      const proofExchangeRecord = await options.agent.didcomm.proofs.proposeProof({
         proofFormats: { anoncreds: { attributes: anoncredsAttributes } },
         connectionId,
         protocolVersion: 'v2',
       })
       return {
-        outgoingMessageType: V2ProposePresentationMessage.type.messageTypeUri,
+        outgoingMessageType: DidCommProposePresentationV2Message.type.messageTypeUri,
         associatedRecord: proofExchangeRecord,
       }
     }
@@ -167,23 +171,23 @@ export const ActionFactoryMap: Record<AgentActionType, ActionFactory> = {
     return async (options: { agent: MobileAgent }) => {
       const parameters = action.parameters as AcceptConnectionRequestParameters
       const { connectionId } = parameters
-      await options.agent.connections.acceptRequest(connectionId)
-      return { outgoingMessageType: DidExchangeResponseMessage.type.messageTypeUri }
+      await options.agent.didcomm.connections.acceptRequest(connectionId)
+      return { outgoingMessageType: DidCommDidExchangeResponseMessage.type.messageTypeUri }
     }
   },
   [AgentActionType.AcceptConnectionResponse]: action => {
     return async (options: { agent: MobileAgent }) => {
       const parameters = action.parameters as AcceptConnectionResponseParameters
       const { connectionId } = parameters
-      await options.agent.connections.acceptResponse(connectionId)
-      return { outgoingMessageType: DidExchangeCompleteMessage.type.messageTypeUri }
+      await options.agent.didcomm.connections.acceptResponse(connectionId)
+      return { outgoingMessageType: DidCommDidExchangeCompleteMessage.type.messageTypeUri }
     }
   },
   [AgentActionType.QueryServiceFeatures]: action => {
     return async (options: { agent: MobileAgent }) => {
       const parameters = action.parameters as QueryServiceFeaturesParameters
       const { connectionId } = parameters
-      const discoverFeaturesApi = options.agent.context.dependencyManager.resolve(DiscoverFeaturesApi)
+      const discoverFeaturesApi = options.agent.context.dependencyManager.resolve(DidCommDiscoverFeaturesApi)
       await discoverFeaturesApi.queryFeatures({
         protocolVersion: 'v2',
         queries: [
@@ -195,7 +199,7 @@ export const ActionFactoryMap: Record<AgentActionType, ActionFactory> = {
         ],
         connectionId,
       })
-      return { outgoingMessageType: V2QueriesMessage.type.messageTypeUri }
+      return { outgoingMessageType: DidCommFeaturesQueriesMessage.type.messageTypeUri }
     }
   },
   [AgentActionType.CreateCallOffer]: action => {
@@ -220,37 +224,41 @@ export const ActionFactoryMap: Record<AgentActionType, ActionFactory> = {
   [AgentActionType.RemoveOutOfBandRecord]: action => {
     return async (options: { agent: MobileAgent }) => {
       const parameters = action.parameters as RemoveOutOfBandRecordParameters
-      await options.agent.oob.deleteById(parameters.outOfBandId)
-      return { outgoingMessageType: KeylistUpdateMessage.type.messageTypeUri }
+      await options.agent.didcomm.oob.deleteById(parameters.outOfBandId)
+      return { outgoingMessageType: DidCommKeylistUpdateMessage.type.messageTypeUri }
     }
   },
   [AgentActionType.AcceptCredentialOffer]: action => {
     return async (options: { agent: MobileAgent }) => {
       const parameters = action.parameters as AcceptCredentialOfferParameters
       const { credentialRecordId } = parameters
-      await options.agent.credentials.acceptOffer({
-        credentialRecordId,
-        autoAcceptCredential: AutoAcceptCredential.ContentApproved,
+      await options.agent.didcomm.credentials.acceptOffer({
+        credentialExchangeRecordId: credentialRecordId,
+        autoAcceptCredential: DidCommAutoAcceptCredential.ContentApproved,
       })
-      return { outgoingMessageType: V2RequestCredentialMessage.type.messageTypeUri }
+      return { outgoingMessageType: DidCommRequestCredentialV2Message.type.messageTypeUri }
     }
   },
   [AgentActionType.DeclineCredentialOffer]: action => {
     return async (options: { agent: MobileAgent }) => {
       const parameters = action.parameters as DeclineCredentialOfferParameters
-      await options.agent.credentials.declineOffer(parameters.credentialRecordId, {
+      await options.agent.didcomm.credentials.declineOffer({
+        credentialExchangeRecordId: parameters.credentialRecordId,
         sendProblemReport: true,
         problemReportDescription: 'e.msg.refused',
       })
-      return { outgoingMessageType: V2CredentialProblemReportMessage.type.messageTypeUri }
+      return { outgoingMessageType: DidCommCredentialV2ProblemReportMessage.type.messageTypeUri }
     }
   },
   [AgentActionType.DeclineProofRequest]: action => {
     return async (options: { agent: MobileAgent }) => {
       const parameters = action.parameters as DeclineProofRequestParameters
       const { proofRecordId } = parameters
-      await options.agent.proofs.declineRequest({ proofRecordId, sendProblemReport: true })
-      return { outgoingMessageType: V2PresentationProblemReportMessage.type.messageTypeUri }
+      await options.agent.didcomm.proofs.declineRequest({
+        proofExchangeRecordId: proofRecordId,
+        sendProblemReport: true,
+      })
+      return { outgoingMessageType: DidCommPresentationV2ProblemReportMessage.type.messageTypeUri }
     }
   },
   [AgentActionType.SendUserProfile]: action => {
@@ -258,7 +266,7 @@ export const ActionFactoryMap: Record<AgentActionType, ActionFactory> = {
       const parameters = action.parameters as SendUserProfileParameters
       const { connectionId } = parameters
       await options.agent.modules.profile.sendUserProfile({ connectionId })
-      return { outgoingMessageType: ProfileMessage.type.messageTypeUri }
+      return { outgoingMessageType: DidCommProfileMessage.type.messageTypeUri }
     }
   },
   [AgentActionType.RequestUserProfile]: action => {
@@ -266,50 +274,53 @@ export const ActionFactoryMap: Record<AgentActionType, ActionFactory> = {
       const parameters = action.parameters as RequestUserProfileParameters
       const { connectionId } = parameters
       await options.agent.modules.profile.requestUserProfile({ connectionId })
-      return { outgoingMessageType: RequestProfileMessage.type.messageTypeUri }
+      return { outgoingMessageType: DidCommRequestProfileMessage.type.messageTypeUri }
     }
   },
   [AgentActionType.AcceptProofRequest]: action => {
     return async (options: { agent: MobileAgent }) => {
       const parameters = action.parameters as AcceptProofRequestParameters
       const { proofRecordId } = parameters
-      const requestedCredentials = await options.agent.proofs.selectCredentialsForRequest({
-        proofRecordId,
+      const requestedCredentials = await options.agent.didcomm.proofs.selectCredentialsForRequest({
+        proofExchangeRecordId: proofRecordId,
       })
-      await options.agent.proofs.acceptRequest({
-        proofRecordId,
+      await options.agent.didcomm.proofs.acceptRequest({
+        proofExchangeRecordId: proofRecordId,
         proofFormats: { anoncreds: requestedCredentials?.proofFormats.anoncreds },
       })
-      return { outgoingMessageType: V2PresentationMessage.type.messageTypeUri }
+      return { outgoingMessageType: DidCommPresentationV2Message.type.messageTypeUri }
     }
   },
   [AgentActionType.AcceptProofProposal]: action => {
     return async (options: { agent: MobileAgent }) => {
       const parameters = action.parameters as AcceptProofProposalParameters
       const { proofRecordId } = parameters
-      await options.agent.proofs.acceptProposal({
-        proofRecordId,
-        autoAcceptProof: AutoAcceptProof.ContentApproved,
+      await options.agent.didcomm.proofs.acceptProposal({
+        proofExchangeRecordId: proofRecordId,
+        autoAcceptProof: DidCommAutoAcceptProof.ContentApproved,
       })
-      return { outgoingMessageType: V2RequestPresentationMessage.type.messageTypeUri }
+      return { outgoingMessageType: DidCommRequestPresentationV2Message.type.messageTypeUri }
     }
   },
   [AgentActionType.ProofSendProblemReport]: action => {
     return async (options: { agent: MobileAgent }) => {
       const parameters = action.parameters as ProofSendProblemReportParameters
       const { proofRecordId, description } = parameters
-      const proofRecord = await options.agent.proofs.getById(proofRecordId)
-      await options.agent.proofs.sendProblemReport({ proofRecordId, description })
-      proofRecord.state = ProofState.Abandoned
-      await options.agent.proofs.update(proofRecord)
-      options.agent.events.emit<ProofStateChangedEvent>(options.agent.context, {
-        type: ProofEventTypes.ProofStateChanged,
+      const proofRecord = await options.agent.didcomm.proofs.getById(proofRecordId)
+      await options.agent.didcomm.proofs.sendProblemReport({
+        proofExchangeRecordId: proofRecordId,
+        description,
+      })
+      proofRecord.state = DidCommProofState.Abandoned
+      await options.agent.didcomm.proofs.update(proofRecord)
+      options.agent.events.emit<DidCommProofStateChangedEvent>(options.agent.context, {
+        type: DidCommProofEventTypes.ProofStateChanged,
         payload: {
           proofRecord: proofRecord.clone(),
           previousState: null,
         },
       })
-      return { outgoingMessageType: V2PresentationProblemReportMessage.type.messageTypeUri }
+      return { outgoingMessageType: DidCommPresentationV2ProblemReportMessage.type.messageTypeUri }
     }
   },
 }

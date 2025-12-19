@@ -1,4 +1,4 @@
-import { CredentialState } from '@credo-ts/core'
+import { DidCommCredentialState } from '@credo-ts/didcomm'
 import { useNavigation, ParamListBase } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { TrustResolutionOutcome } from '@verana-labs/verre'
@@ -50,7 +50,7 @@ const VCOfferChatView = ({
   const { addAgentActionToQueue } = useAgentActionQueue()
   const { realm } = useLocalRealm()
   const { credentialState } = metadata
-  const opacity = credentialState !== CredentialState.OfferReceived ? 0.3 : 1
+  const opacity = credentialState !== DidCommCredentialState.OfferReceived ? 0.3 : 1
 
   const credentialMainInfo: CredentialMainInfo = useMemo(
     () => ({
@@ -68,14 +68,14 @@ const VCOfferChatView = ({
     [metadata],
   )
 
-  const updateMetadata = (newCredentialState: CredentialState) => {
+  const updateMetadata = (newCredentialState: DidCommCredentialState) => {
     if (!realm) return
     const newMetadata = { ...metadata, credentialState: newCredentialState }
     updateChatEntryMetadata(realm, chatEntryId, newMetadata)
   }
 
   const accept = () => {
-    updateMetadata(CredentialState.RequestSent)
+    updateMetadata(DidCommCredentialState.RequestSent)
     const parameters: AcceptCredentialOfferParameters = { credentialRecordId: associatedRecordId }
     addAgentActionToQueue({
       type: AgentActionType.AcceptCredentialOffer,
@@ -84,7 +84,7 @@ const VCOfferChatView = ({
   }
 
   const refuse = () => {
-    updateMetadata(CredentialState.Declined)
+    updateMetadata(DidCommCredentialState.Declined)
     const parameters: DeclineCredentialOfferParameters = { credentialRecordId: associatedRecordId }
     addAgentActionToQueue({
       type: AgentActionType.DeclineCredentialOffer,
@@ -101,10 +101,12 @@ const VCOfferChatView = ({
   const displayModalRefuseConfirmation = () => setShowModalRefuseConfirmation(true)
 
   const chooseScreenToGo = () => {
-    if ([CredentialState.OfferReceived, CredentialState.RequestSent].includes(credentialState)) {
+    if (
+      [DidCommCredentialState.OfferReceived, DidCommCredentialState.RequestSent].includes(credentialState)
+    ) {
       goToCredentialOffer()
     }
-    if ([CredentialState.CredentialReceived, CredentialState.Done].includes(credentialState)) {
+    if ([DidCommCredentialState.CredentialReceived, DidCommCredentialState.Done].includes(credentialState)) {
       verifyCanGoToCredentialDetails()
     }
   }
@@ -112,7 +114,7 @@ const VCOfferChatView = ({
   const verifyCanGoToCredentialDetails = async () => {
     if (!agent) return
     try {
-      const credentialRecordId = (await agent.credentials.getById(associatedRecordId)).credentials[0]
+      const credentialRecordId = (await agent.didcomm.credentials.getById(associatedRecordId)).credentials[0]
         .credentialRecordId
       goToCredentialDetails(credentialRecordId)
     } catch (error) {
@@ -130,8 +132,8 @@ const VCOfferChatView = ({
 
   if (!metadata) return <View />
 
-  const status: Partial<Record<CredentialState, React.ReactElement>> = {
-    [CredentialState.OfferReceived]: (
+  const status: Partial<Record<DidCommCredentialState, React.ReactElement>> = {
+    [DidCommCredentialState.OfferReceived]: (
       <View style={styles.buttonsContainer}>
         <OutlinedBlueButton
           text={t('general.refuse')}
@@ -141,16 +143,16 @@ const VCOfferChatView = ({
         <BlueButton text={t('general.accept')} onPress={accept} style={[styles.acceptButton, { opacity }]} />
       </View>
     ),
-    [CredentialState.RequestSent]: (
+    [DidCommCredentialState.RequestSent]: (
       <View style={[styles.baseFooterContainer, styles.acceptingContainer]}>
         <Text fontFamily="EuclidCircularA-Bold" style={styles.acceptingText}>
           {t('personalChat.accepting')}
         </Text>
       </View>
     ),
-    [CredentialState.Declined]: <State text={t('personalChat.youRefusedCredential')} type="error" />,
-    [CredentialState.CredentialReceived]: <State text={t('personalChat.credentialAdded')} />,
-    [CredentialState.Done]: <State text={t('personalChat.credentialAdded')} />,
+    [DidCommCredentialState.Declined]: <State text={t('personalChat.youRefusedCredential')} type="error" />,
+    [DidCommCredentialState.CredentialReceived]: <State text={t('personalChat.credentialAdded')} />,
+    [DidCommCredentialState.Done]: <State text={t('personalChat.credentialAdded')} />,
   }
   return (
     <View style={styles.container}>

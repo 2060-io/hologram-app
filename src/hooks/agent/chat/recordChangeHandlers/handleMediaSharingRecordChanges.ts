@@ -35,7 +35,7 @@ export const handleMediaSharingRecordChanges = async (options: {
 }) => {
   const { agent, realm, record, activeChatThreadId } = options
   // find associated thread according to the connection id. If not found, create it
-  const connection = await agent.connections.getById(record.connectionId)
+  const connection = await agent.didcomm.connections.getById(record.connectionId)
   const thread = findOrCreateChatThread(realm, connection)
 
   const data = getChatEntrySpecificData(record)

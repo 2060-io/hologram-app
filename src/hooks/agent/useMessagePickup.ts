@@ -1,4 +1,4 @@
-import { MediatorPickupStrategy } from '@credo-ts/core'
+import { DidCommMediatorPickupStrategy } from '@credo-ts/didcomm'
 import { useEffect } from 'react'
 
 import { useLocalRealm } from '../providers/RealmProvider'
@@ -32,7 +32,7 @@ export function useMessagePickup({ agent, isEnabled }: { agent?: MobileAgent; is
       if (!isAppActive && !isScreenLockForceDisabled) {
         log('App in background ...')
         stopMessagePickup(agent)
-        agent.outboundTransports[1].stop()
+        agent.didcomm.outboundTransports[1].stop()
         return () => {
           log('App in foreground ...')
           initiateMessagePickup(agent)
@@ -54,12 +54,15 @@ export async function initiateMessagePickup(agent: MobileAgent) {
   agent.config.logger.info('Starting Message Pickup')
 
   // Initiate message pickup from the mediator. Passing no mediator, will use default mediator
-  await agent.mediationRecipient.initiateMessagePickup(undefined, MediatorPickupStrategy.PickUpV2LiveMode)
+  await agent.didcomm.mediationRecipient.initiateMessagePickup(
+    undefined,
+    DidCommMediatorPickupStrategy.PickUpV2LiveMode,
+  )
 }
 
 async function stopMessagePickup(agent: MobileAgent) {
   agent.config.logger.info('Stopping Message Pickup')
 
   // Stop message pickup. Will stop all message pickup, not just from the mediator
-  await agent.mediationRecipient.stopMessagePickup()
+  await agent.didcomm.mediationRecipient.stopMessagePickup()
 }

@@ -6,20 +6,18 @@ import {
 } from '@2060.io/credo-ts-didcomm-shorten-url'
 import { ConnectionProfileUpdatedEvent, ProfileEventTypes } from '@2060.io/credo-ts-didcomm-user-profile'
 import { AnonCredsPresentationPreviewAttribute } from '@credo-ts/anoncreds'
+import { TypedArrayEncoder, Buffer, W3cCredentialRecord } from '@credo-ts/core'
 import {
-  TypedArrayEncoder,
-  Buffer,
-  ProofStateChangedEvent,
-  ProofEventTypes,
-  ProofState,
-  ConnectionEventTypes,
-  ConnectionStateChangedEvent,
-  DidExchangeState,
-  ConnectionsApi,
-  OutOfBandRecord,
-  ConnectionRecord,
-  W3cCredentialRecord,
-} from '@credo-ts/core'
+  DidCommProofStateChangedEvent,
+  DidCommProofEventTypes,
+  DidCommProofState,
+  DidCommConnectionEventTypes,
+  DidCommConnectionStateChangedEvent,
+  DidCommDidExchangeState,
+  DidCommOutOfBandRecord,
+  DidCommConnectionRecord,
+  DidCommConnectionsApi,
+} from '@credo-ts/didcomm'
 import { ParamListBase } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { useEffect, useRef, useState } from 'react'
@@ -69,7 +67,7 @@ export const usePresentCredentialAsQR = ({
   const { addAgentActionToQueue } = useAgentActionQueue()
   const [state, setState] = useState<State>('creating')
   const stateAux = useRef<State>('creating')
-  const invitation = useRef<OutOfBandRecord>(undefined)
+  const invitation = useRef<DidCommOutOfBandRecord>(undefined)
   const invitationUrl = useRef<string>(undefined)
   const proofRecordId = useRef<string>(undefined)
   const credentialRecord = useRef<W3cCredentialRecord>(undefined)
@@ -79,8 +77,8 @@ export const usePresentCredentialAsQR = ({
   const observableOfProofStateChangedEvent = useRef<Subscription>(undefined)
   const observableOfConnectionStateChangedEvent = useRef<Subscription>(undefined)
   const observableOfConnectionProfileUpdatedEventEvent = useRef<Subscription>(undefined)
-  const ephemeralConnection = useRef<ConnectionRecord>(undefined)
-  const defaultMediatorConnection = useRef<ConnectionRecord>(null)
+  const ephemeralConnection = useRef<DidCommConnectionRecord>(undefined)
+  const defaultMediatorConnection = useRef<DidCommConnectionRecord>(null)
   const [credentialPresentedInfo, setPresentedCredentialInfo] = useState<{
     credentials: CredentialMainInfo[]
     verifierName: string
@@ -108,7 +106,8 @@ export const usePresentCredentialAsQR = ({
   async function createQRCode() {
     try {
       if (!agent) return
-      defaultMediatorConnection.current = await agent.mediationRecipient.findDefaultMediatorConnection()
+      defaultMediatorConnection.current =
+        await agent.didcomm.mediationRecipient.findDefaultMediatorConnection()
       credentialRecord.current = getCredentialById(credentialRecordId)
       if (!credentialRecord.current) return
       const credentialDefinitionId = credentialRecord.current.getTag(
@@ -206,12 +205,14 @@ export const usePresentCredentialAsQR = ({
 
   function subscribeToConnectionStateChangedEvent() {
     const observableOfConnectionStateChanged = agent?.events
-      .observable<ConnectionStateChangedEvent>(ConnectionEventTypes.ConnectionStateChanged)
+      .observable<DidCommConnectionStateChangedEvent>(
+        DidCommConnectionEventTypes.DidCommConnectionStateChanged,
+      )
       .pipe(
         filter(
           event =>
             event.payload.connectionRecord.outOfBandId === invitation.current?.id &&
-            event.payload.connectionRecord.state === DidExchangeState.RequestReceived,
+            event.payload.connectionRecord.state === DidCommDidExchangeState.RequestReceived,
         ),
       )
     observableOfConnectionStateChangedEvent.current = observableOfConnectionStateChanged?.subscribe(
@@ -224,12 +225,12 @@ export const usePresentCredentialAsQR = ({
         subscribeToConnectionProfileUpdatedEvent(connectionRecord.id)
         subscribeToProofStateChangedEvent(connectionRecord)
         ephemeralConnection.current = connectionRecord
-        const connectionsApi = agent?.dependencyManager.resolve(ConnectionsApi)
+        const connectionsApi = agent?.dependencyManager.resolve(DidCommConnectionsApi)
         connectionsApi?.addConnectionType(connectionRecord.id, 'Ephemeral')
         if (proofRecordId.current && agent) {
-          const proofRecord = await agent.proofs.getById(proofRecordId.current)
+          const proofRecord = await agent.didcomm.proofs.getById(proofRecordId.current)
           proofRecord.connectionId = connectionRecord.id
-          await agent?.proofs.update(proofRecord)
+          await agent?.didcomm.proofs.update(proofRecord)
         }
       },
     )
@@ -269,14 +270,14 @@ export const usePresentCredentialAsQR = ({
     throw new Error('proofStateChangedEventSubscription Error')
   }
 
-  function subscribeToProofStateChangedEvent(connection: ConnectionRecord) {
+  function subscribeToProofStateChangedEvent(connection: DidCommConnectionRecord) {
     const observableOfProofStateChanged = agent?.events
-      .observable<ProofStateChangedEvent>(ProofEventTypes.ProofStateChanged)
+      .observable<DidCommProofStateChangedEvent>(DidCommProofEventTypes.ProofStateChanged)
       .pipe(
         filter(
           event =>
             event.payload.proofRecord.connectionId === connection.id &&
-            [ProofState.RequestReceived, ProofState.Abandoned, ProofState.Done].includes(
+            [DidCommProofState.RequestReceived, DidCommProofState.Abandoned, DidCommProofState.Done].includes(
               event.payload.proofRecord.state,
             ),
         ),
@@ -287,7 +288,7 @@ export const usePresentCredentialAsQR = ({
     observableOfProofStateChangedEvent.current = observableOfProofStateChanged?.subscribe(async event => {
       const { proofRecord } = event.payload
       switch (proofRecord.state) {
-        case ProofState.RequestReceived: {
+        case DidCommProofState.RequestReceived: {
           setState('approved')
           const parameters: AcceptProofRequestParameters = { proofRecordId: proofRecord.id }
           addAgentActionToQueue({ type: AgentActionType.AcceptProofRequest, parameters })
@@ -298,7 +299,7 @@ export const usePresentCredentialAsQR = ({
           }))
           break
         }
-        case ProofState.Abandoned: {
+        case DidCommProofState.Abandoned: {
           setState('rejected')
           const presentedCredential = getCredentialMainInfo(credentialRecord.current!)
           setPresentedCredentialInfo(prevState => ({
@@ -308,7 +309,7 @@ export const usePresentCredentialAsQR = ({
           removeObservableOfProofStateChangedEvent()
           break
         }
-        case ProofState.Done:
+        case DidCommProofState.Done:
           removeObservableOfProofStateChangedEvent()
           break
         default:
@@ -326,7 +327,7 @@ export const usePresentCredentialAsQR = ({
     }
     if (proofRecordId.current) {
       log(`Deleting proof record: ${proofRecordId.current}`)
-      agent.proofs.deleteById(proofRecordId.current)
+      agent.didcomm.proofs.deleteById(proofRecordId.current)
     }
   }
 

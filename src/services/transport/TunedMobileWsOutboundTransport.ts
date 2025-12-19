@@ -1,19 +1,16 @@
+import { CredoError, EventEmitter, Logger, Buffer, JsonEncoder, AgentContext, DidsApi } from '@credo-ts/core'
 import {
-  Agent,
-  AgentEventTypes,
-  AgentMessageReceivedEvent,
-  CredoError,
-  ConnectionRecord,
-  EventEmitter,
-  Logger,
-  OutboundPackage,
-  OutboundTransport,
-  OutboundWebSocketOpenedEvent,
-  OutboundWebSocketClosedEvent,
-  TransportEventTypes,
-  Buffer,
-} from '@credo-ts/core'
-import { isValidJweStructure, JsonEncoder } from '@credo-ts/core/build/utils'
+  DidCommEventTypes,
+  DidCommMessageReceivedEvent,
+  DidCommConnectionRecord,
+  DidCommOutboundPackage,
+  DidCommOutboundTransport,
+  DidCommOutboundWebSocketOpenedEvent,
+  DidCommOutboundWebSocketClosedEvent,
+  DidCommTransportEventTypes,
+  isValidJweStructure,
+  DidCommMediationRecipientApi,
+} from '@credo-ts/didcomm'
 import WebSocket from 'ws'
 
 import { MediatorConnectedEvent, MediatorDisconnectedEvent, MediatorEventTypes } from './MediatorEventTypes'
@@ -26,16 +23,16 @@ interface MobileOutboundWs {
   connectionIds: Set<string>
 }
 
-export class TunedMobileWsOutboundTransport implements OutboundTransport {
+export class TunedMobileWsOutboundTransport implements DidCommOutboundTransport {
   private transportTable: Map<string, MobileOutboundWs> = new Map<string, MobileOutboundWs>()
-  private agent!: Agent
+  private agentContext!: AgentContext
   private logger!: Logger
   private eventEmitter!: EventEmitter
   private WebSocketClass!: typeof WebSocket
   public supportedSchemes = ['ws', 'wss']
   private mediatorEndpoints: string[]
 
-  private defaultMediatorConnection?: ConnectionRecord | null
+  private defaultMediatorConnection?: DidCommConnectionRecord | null
   public constructor() {
     this.mediatorEndpoints = []
   }
@@ -45,17 +42,21 @@ export class TunedMobileWsOutboundTransport implements OutboundTransport {
     return record ? record[1].opened : false
   }
 
-  public async start(agent: Agent): Promise<void> {
-    this.agent = agent
-    const agentConfig = agent.config
+  public async start(agentContext: AgentContext): Promise<void> {
+    this.agentContext = agentContext
+    const agentConfig = agentContext.config
     this.logger = agentConfig.logger
-    this.eventEmitter = agent.events
+    this.eventEmitter = agentContext.dependencyManager.resolve(EventEmitter)
     this.logger.debug('Starting WS outbound transport')
     this.WebSocketClass = agentConfig.agentDependencies.WebSocketClass
 
-    this.defaultMediatorConnection = await this.agent.mediationRecipient.findDefaultMediatorConnection()
+    this.defaultMediatorConnection = await this.agentContext
+      .resolve(DidCommMediationRecipientApi)
+      .findDefaultMediatorConnection()
     if (this.defaultMediatorConnection?.theirDid) {
-      const didDoc = await agent.dids.resolveDidDocument(this.defaultMediatorConnection.theirDid)
+      const didDoc = await this.agentContext
+        .resolve(DidsApi)
+        .resolveDidDocument(this.defaultMediatorConnection.theirDid)
       this.mediatorEndpoints = didDoc.didCommServices.map(service => service.serviceEndpoint)
     }
 
@@ -88,7 +89,7 @@ export class TunedMobileWsOutboundTransport implements OutboundTransport {
     })
   }
 
-  public async sendMessage(outboundPackage: OutboundPackage) {
+  public async sendMessage(outboundPackage: DidCommOutboundPackage) {
     const { payload, endpoint, connectionId } = outboundPackage
     this.logger.debug(`Sending outbound message to endpoint '${endpoint}' over WebSocket transport.`, {
       payload,
@@ -135,17 +136,19 @@ export class TunedMobileWsOutboundTransport implements OutboundTransport {
     // Socket already opened, but inform the connection socket is ready
     else if (connectionId) {
       socket.connectionIds.add(connectionId)
-      this.agent.events.emit<OutboundWebSocketOpenedEvent>(this.agent.context, {
-        type: TransportEventTypes.OutboundWebSocketOpenedEvent,
+      this.eventEmitter.emit<DidCommOutboundWebSocketOpenedEvent>(this.agentContext, {
+        type: DidCommTransportEventTypes.DidCommOutboundWebSocketOpenedEvent,
         payload: {
           socketId,
           connectionId: connectionId,
         },
       })
 
-      const mediationRecord = await this.agent.mediationRecipient.findByConnectionId(connectionId)
+      const mediationRecord = await this.agentContext
+        .resolve(DidCommMediationRecipientApi)
+        .findByConnectionId(connectionId)
       if (mediationRecord) {
-        this.agent.events.emit<MediatorConnectedEvent>(this.agent.context, {
+        this.agentContext.resolve(EventEmitter).emit<MediatorConnectedEvent>(this.agentContext, {
           type: MediatorEventTypes.MediatorConnected,
           payload: {
             mediatorId: mediationRecord.id,
@@ -176,8 +179,8 @@ export class TunedMobileWsOutboundTransport implements OutboundTransport {
     }
 
     this.logger.debug('Payload received from mediator')
-    this.eventEmitter.emit<AgentMessageReceivedEvent>(this.agent.context, {
-      type: AgentEventTypes.AgentMessageReceived,
+    this.eventEmitter.emit<DidCommMessageReceivedEvent>(this.agentContext, {
+      type: DidCommEventTypes.DidCommMessageReceived,
       payload: {
         message: payload,
       },
@@ -208,8 +211,8 @@ export class TunedMobileWsOutboundTransport implements OutboundTransport {
 
         resolve(socket)
 
-        this.agent.events.emit<OutboundWebSocketOpenedEvent>(this.agent.context, {
-          type: TransportEventTypes.OutboundWebSocketOpenedEvent,
+        this.eventEmitter.emit<DidCommOutboundWebSocketOpenedEvent>(this.agentContext, {
+          type: DidCommTransportEventTypes.DidCommOutboundWebSocketOpenedEvent,
           payload: {
             socketId,
             connectionId: connectionId,
@@ -217,17 +220,20 @@ export class TunedMobileWsOutboundTransport implements OutboundTransport {
         })
 
         if (connectionId) {
-          this.agent.mediationRecipient.findByConnectionId(connectionId).then(mediationRecord => {
-            if (mediationRecord) {
-              this.agent.events.emit<MediatorConnectedEvent>(this.agent.context, {
-                type: MediatorEventTypes.MediatorConnected,
-                payload: {
-                  mediatorId: mediationRecord.id,
-                  connectionId: connectionId,
-                },
-              })
-            }
-          })
+          this.agentContext
+            .resolve(DidCommMediationRecipientApi)
+            .findByConnectionId(connectionId)
+            .then(mediationRecord => {
+              if (mediationRecord) {
+                this.eventEmitter.emit<MediatorConnectedEvent>(this.agentContext, {
+                  type: MediatorEventTypes.MediatorConnected,
+                  payload: {
+                    mediatorId: mediationRecord.id,
+                    connectionId: connectionId,
+                  },
+                })
+              }
+            })
         }
       }
 
@@ -247,46 +253,52 @@ export class TunedMobileWsOutboundTransport implements OutboundTransport {
         const connections = record?.connectionIds
         if (connections && record?.connectionIds && record?.opened) {
           for (const item of connections) {
-            this.eventEmitter.emit<OutboundWebSocketClosedEvent>(this.agent.context, {
-              type: TransportEventTypes.OutboundWebSocketClosedEvent,
+            this.eventEmitter.emit<DidCommOutboundWebSocketClosedEvent>(this.agentContext, {
+              type: DidCommTransportEventTypes.DidCommOutboundWebSocketClosedEvent,
               payload: {
                 socketId,
                 connectionId: item,
               },
             })
 
-            this.agent.mediationRecipient.findByConnectionId(item).then(mediationRecord => {
-              if (mediationRecord) {
-                this.agent.events.emit<MediatorDisconnectedEvent>(this.agent.context, {
-                  type: MediatorEventTypes.MediatorDisconnected,
-                  payload: {
-                    mediatorId: mediationRecord.id,
-                    connectionId: item,
-                  },
-                })
-              }
-            })
+            this.agentContext
+              .resolve(DidCommMediationRecipientApi)
+              .findByConnectionId(item)
+              .then(mediationRecord => {
+                if (mediationRecord) {
+                  this.eventEmitter.emit<MediatorDisconnectedEvent>(this.agentContext, {
+                    type: MediatorEventTypes.MediatorDisconnected,
+                    payload: {
+                      mediatorId: mediationRecord.id,
+                      connectionId: item,
+                    },
+                  })
+                }
+              })
           }
         } else {
-          this.eventEmitter.emit<OutboundWebSocketClosedEvent>(this.agent.context, {
-            type: TransportEventTypes.OutboundWebSocketClosedEvent,
+          this.eventEmitter.emit<DidCommOutboundWebSocketClosedEvent>(this.agentContext, {
+            type: DidCommTransportEventTypes.DidCommOutboundWebSocketClosedEvent,
             payload: {
               socketId,
               connectionId,
             },
           })
           if (connectionId && record?.opened) {
-            this.agent.mediationRecipient.findByConnectionId(connectionId).then(mediationRecord => {
-              if (mediationRecord) {
-                this.agent.events.emit<MediatorDisconnectedEvent>(this.agent.context, {
-                  type: MediatorEventTypes.MediatorDisconnected,
-                  payload: {
-                    mediatorId: mediationRecord.id,
-                    connectionId: connectionId,
-                  },
-                })
-              }
-            })
+            this.agentContext
+              .resolve(DidCommMediationRecipientApi)
+              .findByConnectionId(connectionId)
+              .then(mediationRecord => {
+                if (mediationRecord) {
+                  this.eventEmitter.emit<MediatorDisconnectedEvent>(this.agentContext, {
+                    type: MediatorEventTypes.MediatorDisconnected,
+                    payload: {
+                      mediatorId: mediationRecord.id,
+                      connectionId: connectionId,
+                    },
+                  })
+                }
+              })
           }
         }
         this.transportTable.delete(socketId)

@@ -65,8 +65,8 @@ const Settings = ({ navigation }: Props) => {
       if (!isConnectedToCloudAgent) throw new Error('Not connected to Cloud Agent')
       // It will only proceed in case it is possible to send hang-up signal to mediator, in order to
       // let it delete all connection data (recipient keys, FCM token, etc.)
-      const mediatorConnection = await agent.mediationRecipient.findDefaultMediatorConnection()
-      if (mediatorConnection) await agent.connections.hangup({ connectionId: mediatorConnection.id })
+      const mediatorConnection = await agent.didcomm.mediationRecipient.findDefaultMediatorConnection()
+      if (mediatorConnection) await agent.didcomm.connections.hangup({ connectionId: mediatorConnection.id })
 
       realm?.write(() => realm?.deleteAll())
       await agent.wallet.delete()

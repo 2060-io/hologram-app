@@ -36,7 +36,7 @@ const CredentialPresentedPage = ({ navigation, route }: Props) => {
 
   const goToChatScreen = async () => {
     if (!agent) return
-    const connections = await agent.connections.findByInvitationDid(verifier.did)
+    const connections = await agent.didcomm.connections.findByInvitationDid(verifier.did)
     if (connections.length) {
       const [connection] = connections
       const chatThreadId = findOrCreateThread({ connection }).id

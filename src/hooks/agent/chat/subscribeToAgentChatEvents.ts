@@ -1,39 +1,40 @@
 import { CallOfferMessage } from '@2060.io/credo-ts-didcomm-calls'
 import {
-  MediaSharingEventTypes,
-  MediaSharingRecord,
-  MediaSharingState,
-  MediaSharingStateChangedEvent,
-  ShareMediaMessage,
+  DidCommMediaSharingEventTypes,
+  DidCommMediaSharingRecord,
+  DidCommMediaSharingState,
+  DidCommMediaSharingStateChangedEvent,
+  DidCommShareMediaMessage,
 } from '@2060.io/credo-ts-didcomm-media-sharing'
 import { MrzDataRequestMessage } from '@2060.io/credo-ts-didcomm-mrtd'
-import { MessageReactionsReceivedEvent, ReactionsEventTypes } from '@2060.io/credo-ts-didcomm-reactions'
+import {
+  DidCommMessageReactionsReceivedEvent,
+  DidCommReactionsEventTypes,
+} from '@2060.io/credo-ts-didcomm-reactions'
 import {
   ReceiptsEventTypes,
   MessageReceiptsReceivedEvent,
   MessageState,
-  MessageReceiptOptions,
-  MessageReceipt,
+  DidCommMessageReceiptOptions,
+  DidCommMessageReceipt,
 } from '@2060.io/credo-ts-didcomm-receipts'
 import { ConnectionProfileUpdatedEvent, ProfileEventTypes } from '@2060.io/credo-ts-didcomm-user-profile'
-import { V1ProposeCredentialMessage } from '@credo-ts/anoncreds'
+import { DidCommProposeCredentialV1Message } from '@credo-ts/anoncreds'
+import { RecordUpdatedEvent, RepositoryEventTypes, tryParseDid } from '@credo-ts/core'
 import {
-  AgentEventTypes,
-  AgentMessage,
-  AgentMessageProcessedEvent,
-  AgentMessageSentEvent,
-  BasicMessage,
-  ConnectionRecord,
-  ConnectionType,
-  OutOfBandInvitation,
-  OutOfBandState,
-  OutboundMessageSendStatus,
-  RecordUpdatedEvent,
-  RepositoryEventTypes,
-  V2ProposePresentationMessage,
+  DidCommEventTypes,
+  DidCommMessage,
+  DidCommMessageProcessedEvent,
+  DidCommMessageSentEvent,
+  DidCommBasicMessage,
+  DidCommConnectionRecord,
+  DidCommConnectionType,
+  DidCommOutOfBandInvitation,
+  DidCommOutOfBandState,
+  DidCommProposePresentationV2Message,
   parseMessageType,
-} from '@credo-ts/core'
-import { tryParseDid } from '@credo-ts/core/build/modules/dids/domain/parse'
+  OutboundMessageSendStatus,
+} from '@credo-ts/didcomm'
 import { QuestionMessage, AnswerMessage } from '@credo-ts/question-answer'
 import agentActionQueue from 'react-native-job-queue'
 import Realm from 'realm'
@@ -119,15 +120,15 @@ export function subscribeToAgentChatEvents(
   }
 
   const messageEventsListener = async (options: {
-    message: AgentMessage
+    message: DidCommMessage
     direction: DidCommMessageDirection
-    connection?: ConnectionRecord
+    connection?: DidCommConnectionRecord
     receivedAt?: Date
   }) => {
     const { message, direction, connection, receivedAt } = options
     const messageType = parseMessageType(message.type)
-    if (messageType.protocolName === BasicMessage.type.protocolName) {
-      const record = await agent.basicMessages.getByThreadId(message.threadId)
+    if (messageType.protocolName === DidCommBasicMessage.type.protocolName) {
+      const record = await agent.didcomm.basicMessages.getByThreadId(message.threadId)
       await handleBasicMessageRecordChanges({
         agent,
         realm,
@@ -137,7 +138,7 @@ export function subscribeToAgentChatEvents(
       })
     }
 
-    if (messageType.protocolName === ShareMediaMessage.type.protocolName) {
+    if (messageType.protocolName === DidCommShareMediaMessage.type.protocolName) {
       const record = await agent.modules.media.findByThreadId(message.threadId)
       if (!record) return
       await handleMediaSharingRecordChanges({
@@ -161,8 +162,8 @@ export function subscribeToAgentChatEvents(
       })
     }
 
-    if (messageType.protocolName === V1ProposeCredentialMessage.type.protocolName) {
-      const [record] = await agent.credentials.findAllByQuery({ threadId: message.threadId })
+    if (messageType.protocolName === DidCommProposeCredentialV1Message.type.protocolName) {
+      const [record] = await agent.didcomm.credentials.findAllByQuery({ threadId: message.threadId })
       if (!record) return
       await handleCredentialExchangeRecordChanges({
         agent,
@@ -174,8 +175,8 @@ export function subscribeToAgentChatEvents(
       })
     }
 
-    if (messageType.protocolName === V2ProposePresentationMessage.type.protocolName) {
-      const [record] = await agent.proofs.findAllByQuery({ threadId: message.threadId })
+    if (messageType.protocolName === DidCommProposePresentationV2Message.type.protocolName) {
+      const [record] = await agent.didcomm.proofs.findAllByQuery({ threadId: message.threadId })
       if (!record) return
       await handleProofExchangeRecordChanges({
         agent,
@@ -208,7 +209,7 @@ export function subscribeToAgentChatEvents(
     }
   }
 
-  const agentMessageSentEventListener = async (data: AgentMessageSentEvent) => {
+  const agentMessageSentEventListener = async (data: DidCommMessageSentEvent) => {
     const outboundMessage = data.payload.message
     const status = data.payload.status
     const associatedRecord = outboundMessage.associatedRecord
@@ -247,7 +248,7 @@ export function subscribeToAgentChatEvents(
     }
   }
 
-  const messageReactionsReceivedListener = async (data: MessageReactionsReceivedEvent) => {
+  const messageReactionsReceivedListener = async (data: DidCommMessageReactionsReceivedEvent) => {
     const reactions = data.payload.reactions
 
     realm.write(() => {
@@ -273,12 +274,12 @@ export function subscribeToAgentChatEvents(
     })
   }
 
-  const agentMessageProcessedListener = async (data: AgentMessageProcessedEvent) => {
+  const agentMessageProcessedListener = async (data: DidCommMessageProcessedEvent) => {
     const connection = data.payload.connection
     const receivedAt = data.payload.receivedAt
 
     // Ignore any message coming directly from mediator
-    if (connection?.connectionTypes.includes(ConnectionType.Mediator)) return
+    if (connection?.connectionTypes.includes(DidCommConnectionType.Mediator)) return
 
     await messageEventsListener({
       message: data.payload.message,
@@ -291,10 +292,10 @@ export function subscribeToAgentChatEvents(
     const validMessagesTypesForReceipts = [
       QuestionMessage.type.messageTypeUri,
       AnswerMessage.type.messageTypeUri,
-      BasicMessage.type.messageTypeUri,
-      ShareMediaMessage.type.messageTypeUri,
-      OutOfBandInvitation.type.messageTypeUri,
-      V2ProposePresentationMessage.type.messageTypeUri,
+      DidCommBasicMessage.type.messageTypeUri,
+      DidCommShareMediaMessage.type.messageTypeUri,
+      DidCommOutOfBandInvitation.type.messageTypeUri,
+      DidCommProposePresentationV2Message.type.messageTypeUri,
     ]
 
     if (connection) {
@@ -309,12 +310,12 @@ export function subscribeToAgentChatEvents(
         const state = thread.id === getActiveChatThreadId() ? MessageState.Viewed : MessageState.Received
 
         // TODO: Add to a queue and send receipts in a batch
-        const receipt: MessageReceiptOptions = {
+        const receipt: DidCommMessageReceiptOptions = {
           messageId: data.payload.message.id,
           state,
           timestamp: new Date(),
         }
-        addReceiptToRelatedEntries(realm, receipt as MessageReceipt)
+        addReceiptToRelatedEntries(realm, receipt as DidCommMessageReceipt)
         const parameters: SendReceiptsParameters = {
           connectionId: connection.id,
           receipts: [receipt],
@@ -373,9 +374,9 @@ export function subscribeToAgentChatEvents(
     if (action === 'Received') {
       const { label, imageUrl, invitationDids, id } = outOfBandRecord.outOfBandInvitation
       const did = tryParseDid(id) ? id : invitationDids[0]
-      const [existingConnection] = await agent.connections.findByInvitationDid(did)
+      const [existingConnection] = await agent.didcomm.connections.findByInvitationDid(did)
       const metadata: InvitationMetadata =
-        outOfBandRecord.state === OutOfBandState.Done
+        outOfBandRecord.state === DidCommOutOfBandState.Done
           ? {
               state: InvitationState.AlreadyConnected,
               label: existingConnection
@@ -410,9 +411,9 @@ export function subscribeToAgentChatEvents(
 
   // We'll handle the particular case of Media created to react immediately to it (TODO: remove as soon as
   //  we implement AgentActions)
-  const mediaSharingCreationEventListener = async (data: MediaSharingStateChangedEvent) => {
+  const mediaSharingCreationEventListener = async (data: DidCommMediaSharingStateChangedEvent) => {
     const record = data.payload.mediaSharingRecord
-    if (record.state === MediaSharingState.Init) {
+    if (record.state === DidCommMediaSharingState.Init) {
       await handleMediaSharingRecordChanges({
         agent,
         realm,
@@ -421,9 +422,9 @@ export function subscribeToAgentChatEvents(
       })
     }
   }
-  const mediaSharingMetadataUpdateListener = async (data: RecordUpdatedEvent<MediaSharingRecord>) => {
+  const mediaSharingMetadataUpdateListener = async (data: RecordUpdatedEvent<DidCommMediaSharingRecord>) => {
     const record = data.payload.record
-    if (record?.type !== MediaSharingRecord.type) return
+    if (record?.type !== DidCommMediaSharingRecord.type) return
     await handleMediaSharingRecordChanges({
       agent,
       realm,
@@ -433,21 +434,27 @@ export function subscribeToAgentChatEvents(
   }
 
   agent.events.on(RepositoryEventTypes.RecordUpdated, mediaSharingMetadataUpdateListener)
-  agent.events.on(MediaSharingEventTypes.StateChanged, mediaSharingCreationEventListener)
-  agent.events.on(AgentEventTypes.AgentMessageSent, agentMessageSentEventListener)
+  agent.events.on(DidCommMediaSharingEventTypes.StateChanged, mediaSharingCreationEventListener)
+  agent.events.on(DidCommEventTypes.DidCommMessageSent, agentMessageSentEventListener)
   agent.events.on(ReceiptsEventTypes.MessageReceiptsReceived, messageReceiptsReceivedListener)
-  agent.events.on(ReactionsEventTypes.MessageReactionsReceived, messageReactionsReceivedListener)
-  agent.events.on(AgentEventTypes.AgentMessageProcessed, agentMessageProcessedListener)
+  agent.events.on(
+    DidCommReactionsEventTypes.DidCommMessageReactionsReceived,
+    messageReactionsReceivedListener,
+  )
+  agent.events.on(DidCommEventTypes.DidCommMessageProcessed, agentMessageProcessedListener)
   agent.events.on(OutOfBandInvitationEventTypes.OutOfBandInvitationEvent, oobListener)
   agent.events.on(ProfileEventTypes.ConnectionProfileUpdated, connectionProfileListener)
 
   return () => {
     agent.events.off(RepositoryEventTypes.RecordUpdated, mediaSharingMetadataUpdateListener)
-    agent.events.off(MediaSharingEventTypes.StateChanged, mediaSharingCreationEventListener)
-    agent.events.off(AgentEventTypes.AgentMessageSent, agentMessageSentEventListener)
+    agent.events.off(DidCommMediaSharingEventTypes.StateChanged, mediaSharingCreationEventListener)
+    agent.events.off(DidCommEventTypes.DidCommMessageSent, agentMessageSentEventListener)
     agent.events.off(ReceiptsEventTypes.MessageReceiptsReceived, messageReceiptsReceivedListener)
-    agent.events.off(ReactionsEventTypes.MessageReactionsReceived, messageReactionsReceivedListener)
-    agent.events.off(AgentEventTypes.AgentMessageProcessed, agentMessageProcessedListener)
+    agent.events.off(
+      DidCommReactionsEventTypes.DidCommMessageReactionsReceived,
+      messageReactionsReceivedListener,
+    )
+    agent.events.off(DidCommEventTypes.DidCommMessageProcessed, agentMessageProcessedListener)
     agent.events.off(OutOfBandInvitationEventTypes.OutOfBandInvitationEvent, oobListener)
     agent.events.off(ProfileEventTypes.ConnectionProfileUpdated, connectionProfileListener)
   }

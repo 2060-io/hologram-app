@@ -1,14 +1,3 @@
-import {
-  AgentDependencies,
-  AgentEventTypes,
-  AgentMessageProcessedEvent,
-  AgentMessageSentEvent,
-  HttpOutboundTransport,
-  Logger,
-  MediatorPickupStrategy,
-  AgentMessageReceivedEvent,
-  LogLevel,
-} from '@credo-ts/core'
 import { agentDependencies } from '@credo-ts/react-native'
 import Config from 'react-native-config'
 
@@ -17,18 +6,19 @@ import { MobileAgent } from './agent/MobileAgent'
 import { createMobileAgent } from './agent/createMobileAgent'
 import { duplicatedMessagesMiddleware } from './agent/duplicatedMessagesMiddleware'
 import { DEV_ENVS_PERSIST_KEY, DEVELOPER_MODE_ENABLED_PERSIST_KEY, getStorageData } from './localStorage'
-import { TunedMobileWsOutboundTransport } from './transport/TunedMobileWsOutboundTransport'
 
 import { DevEnvsObject } from '@2060/utils/developer'
+import { AgentDependencies, Logger, LogLevel } from '@credo-ts/core'
+import { DidCommEventTypes, DidCommMediatorPickupStrategy, DidCommMessageProcessedEvent, DidCommMessageReceivedEvent, DidCommMessageSentEvent } from '@credo-ts/didcomm'
 
 interface MobileAgentConfig {
   agentDependencies: AgentDependencies
-  mediatorPickupStrategy: MediatorPickupStrategy
+  mediatorPickupStrategy: DidCommMediatorPickupStrategy
 }
 
 const baseAgentConfig: MobileAgentConfig = {
   agentDependencies,
-  mediatorPickupStrategy: MediatorPickupStrategy.None,
+  mediatorPickupStrategy: DidCommMediatorPickupStrategy.None,
 }
 
 const getIndyVDRProxyBaseUrl = async () => {
@@ -54,8 +44,9 @@ export const setupMobileAgent = async (): Promise<MobileAgent> => {
     logger = new HologramCustomLoggerForProd(LogLevel.debug, isDeveloperMode)
   }
   const agent = createMobileAgent({
+    storeId: '',
     config: {
-      label: 'Hologram',
+
       logger,
       autoUpdateStorageOnStartup: true,
     },
@@ -66,26 +57,19 @@ export const setupMobileAgent = async (): Promise<MobileAgent> => {
     dependencies: baseAgentConfig.agentDependencies,
   })
 
-  agent.events.on<AgentMessageReceivedEvent>(AgentEventTypes.AgentMessageReceived, async data => {
+  agent.events.on<DidCommMessageReceivedEvent>(DidCommEventTypes.DidCommMessageReceived, async data => {
     logger.info('Message received', data.payload.message ?? undefined)
   })
 
-  agent.events.on<AgentMessageProcessedEvent>(AgentEventTypes.AgentMessageProcessed, async data => {
+  agent.events.on<DidCommMessageProcessedEvent>(DidCommEventTypes.DidCommMessageProcessed, async data => {
     logger.info(`Message received with type: ${data.payload.message.type}`)
   })
 
-  agent.events.on<AgentMessageSentEvent>(AgentEventTypes.AgentMessageSent, async data => {
+  agent.events.on<DidCommMessageSentEvent>(DidCommEventTypes.DidCommMessageSent, async data => {
     logger.info(`Message sent (${data.payload.status})`, data.payload.message.message)
   })
 
-  const httpOutboundTransporter = new HttpOutboundTransport()
-  //const wsOutboundTransporter = new MobileWsOutboundTransport();
-  const wsOutboundTransporter = new TunedMobileWsOutboundTransport()
-
-  agent.registerOutboundTransport(httpOutboundTransporter)
-  agent.registerOutboundTransport(wsOutboundTransporter)
-
-  agent.dependencyManager.registerMessageHandlerMiddleware(duplicatedMessagesMiddleware)
+  agent.didcomm.registerMessageHandlerMiddleware(duplicatedMessagesMiddleware)
 
   return agent
 }

@@ -1,4 +1,4 @@
-import { ProofState } from '@credo-ts/core'
+import { DidCommProofState } from '@credo-ts/didcomm'
 import { useNavigation } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import React, { memo, useState } from 'react'
@@ -76,7 +76,7 @@ const VPChatView = ({ metadata, role, agent, proofRecordId, chatEntryId }: Props
   const verifyCanGoToCredentialDetails = async (credentialRecordId: string) => {
     if (!agent) return
     try {
-      await agent.w3cCredentials.getCredentialRecordById(credentialRecordId)
+      await agent.w3cCredentials.getById(credentialRecordId)
       navigation.navigate('CredentialDetails', { credentialRecordId })
     } catch (error) {
       toast({ type: 'error', message: t('personalChat.noCredentialFound') })
@@ -85,7 +85,7 @@ const VPChatView = ({ metadata, role, agent, proofRecordId, chatEntryId }: Props
 
   const acceptCredentialPresentation = async () => {
     if (realm) {
-      const newMetadata = { ...metadata, proofState: ProofState.RequestSent }
+      const newMetadata = { ...metadata, proofState: DidCommProofState.RequestSent }
       updateChatEntryMetadata(realm, chatEntryId, newMetadata)
     }
     const parameters: AcceptProofProposalParameters = { proofRecordId }
@@ -95,7 +95,7 @@ const VPChatView = ({ metadata, role, agent, proofRecordId, chatEntryId }: Props
   const refuseCredentialPresentation = async () => {
     hideModalRefuseConfirmation()
     if (realm) {
-      const newMetadata = { ...metadata, proofState: ProofState.Abandoned }
+      const newMetadata = { ...metadata, proofState: DidCommProofState.Abandoned }
       updateChatEntryMetadata(realm, chatEntryId, newMetadata)
     }
     const parameters: ProofSendProblemReportParameters = {
@@ -105,9 +105,11 @@ const VPChatView = ({ metadata, role, agent, proofRecordId, chatEntryId }: Props
     addAgentActionToQueue({ type: AgentActionType.ProofSendProblemReport, parameters })
   }
 
-  const status: Record<ProofState, React.ReactElement | null> = {
-    [ProofState.ProposalSent]: <State text={t('presentationRequest.waitingForAcceptance')} type="warning" />,
-    [ProofState.ProposalReceived]: (
+  const status: Record<DidCommProofState, React.ReactElement | null> = {
+    [DidCommProofState.ProposalSent]: (
+      <State text={t('presentationRequest.waitingForAcceptance')} type="warning" />
+    ),
+    [DidCommProofState.ProposalReceived]: (
       <View style={styles.buttonsContainer}>
         <OutlinedBlueButton
           text={t('general.refuse')}
@@ -121,13 +123,13 @@ const VPChatView = ({ metadata, role, agent, proofRecordId, chatEntryId }: Props
         />
       </View>
     ),
-    [ProofState.RequestSent]: <State text={t('presentationRequest.accepted')} />,
-    [ProofState.RequestReceived]: <State text={t('presentationRequest.accepted')} />,
-    [ProofState.PresentationReceived]: <State text={t('presentationRequest.accepted')} />,
-    [ProofState.Declined]: <State text={t('presentationRequest.refused')} type="error" />,
-    [ProofState.Abandoned]: <State text={t('presentationRequest.refused')} type="error" />,
-    [ProofState.Done]: <State text={t('presentationRequest.accepted')} />,
-    [ProofState.PresentationSent]: null,
+    [DidCommProofState.RequestSent]: <State text={t('presentationRequest.accepted')} />,
+    [DidCommProofState.RequestReceived]: <State text={t('presentationRequest.accepted')} />,
+    [DidCommProofState.PresentationReceived]: <State text={t('presentationRequest.accepted')} />,
+    [DidCommProofState.Declined]: <State text={t('presentationRequest.refused')} type="error" />,
+    [DidCommProofState.Abandoned]: <State text={t('presentationRequest.refused')} type="error" />,
+    [DidCommProofState.Done]: <State text={t('presentationRequest.accepted')} />,
+    [DidCommProofState.PresentationSent]: null,
   }
 
   return (
