@@ -11,15 +11,13 @@ function truncateLog(log: string): string {
 
 export class HologramCustomLogger implements Logger {
   logLevel: LogLevel
-  isDevelopment = __DEV__
 
   constructor(logLevel: LogLevel) {
     this.logLevel = logLevel
   }
 
   getOutput(data: Record<string, unknown>) {
-    if (this.isDevelopment) return JSON.stringify(data, null, '\t')
-    return truncateLog(JSON.stringify(data))
+    return __DEV__ ? JSON.stringify(data, null, '\t') : truncateLog(JSON.stringify(data))
   }
 
   test(message: string, data?: Record<string, unknown>) {
@@ -56,27 +54,5 @@ export class HologramCustomLogger implements Logger {
     if (LogLevel.fatal >= this.logLevel) {
       console.error(`FATAL: ${message}`, data)
     }
-  }
-}
-
-export class HologramCustomLoggerForProd extends HologramCustomLogger {
-  isDeveloperMode: boolean
-
-  constructor(logLevel: LogLevel, isDeveloperMode: boolean) {
-    super(logLevel)
-    this.isDeveloperMode = isDeveloperMode
-  }
-
-  test(message: string, data?: Record<string, unknown>) {
-    if (this.isDeveloperMode) super.test(message, data)
-  }
-  trace(message: string, data?: Record<string, unknown>) {
-    if (this.isDeveloperMode) super.trace(message, data)
-  }
-  debug(message: string, data?: Record<string, unknown>) {
-    if (this.isDeveloperMode) super.debug(message, data)
-  }
-  info(message: string, data?: Record<string, unknown>) {
-    if (this.isDeveloperMode) super.info(message, data)
   }
 }
