@@ -106,7 +106,6 @@ export const MobileAgentProvider: React.FC<Props> = ({ children }) => {
       const cache = agent.dependencyManager.resolve(CacheModuleConfig).cache
       await cache.get(agent.context, 'dummy')
 
-
       const isSignedUp = await isRegistered(agent)
 
       const defaultMediatorConnection = await agent.didcomm.mediationRecipient.findDefaultMediatorConnection()
