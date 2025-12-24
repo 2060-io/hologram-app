@@ -1,5 +1,5 @@
 import { CallEndMessage, CallOfferMessage } from '@2060.io/credo-ts-didcomm-calls'
-import { ShareMediaMessage } from '@2060.io/credo-ts-didcomm-media-sharing'
+import { DidCommShareMediaMessage } from '@2060.io/credo-ts-didcomm-media-sharing'
 import { MessageReactionsMessage } from '@2060.io/credo-ts-didcomm-reactions'
 import { DidCommMessageReceiptsMessage } from '@2060.io/credo-ts-didcomm-receipts'
 import { DidCommProfileMessage, DidCommRequestProfileMessage } from '@2060.io/credo-ts-didcomm-user-profile'
@@ -107,7 +107,7 @@ export const ActionFactoryMap: Record<AgentActionType, ActionFactory> = {
       const parameters = action.parameters as ShareMediaParameters
       const { recordId } = parameters
       await options.agent.modules.media.share({ recordId })
-      return { outgoingMessageType: ShareMediaMessage.type.messageTypeUri }
+      return { outgoingMessageType: DidCommShareMediaMessage.type.messageTypeUri }
     }
   },
   [AgentActionType.MenuSelection]: action => {

@@ -1,3 +1,11 @@
+import { AgentDependencies, Logger, LogLevel } from '@credo-ts/core'
+import {
+  DidCommEventTypes,
+  DidCommMediatorPickupStrategy,
+  DidCommMessageProcessedEvent,
+  DidCommMessageReceivedEvent,
+  DidCommMessageSentEvent,
+} from '@credo-ts/didcomm'
 import { agentDependencies } from '@credo-ts/react-native'
 import Config from 'react-native-config'
 
@@ -8,8 +16,6 @@ import { duplicatedMessagesMiddleware } from './agent/duplicatedMessagesMiddlewa
 import { DEV_ENVS_PERSIST_KEY, DEVELOPER_MODE_ENABLED_PERSIST_KEY, getStorageData } from './localStorage'
 
 import { DevEnvsObject } from '@2060/utils/developer'
-import { AgentDependencies, Logger, LogLevel } from '@credo-ts/core'
-import { DidCommEventTypes, DidCommMediatorPickupStrategy, DidCommMessageProcessedEvent, DidCommMessageReceivedEvent, DidCommMessageSentEvent } from '@credo-ts/didcomm'
 
 interface MobileAgentConfig {
   agentDependencies: AgentDependencies
@@ -44,9 +50,7 @@ export const setupMobileAgent = async (): Promise<MobileAgent> => {
     logger = new HologramCustomLoggerForProd(LogLevel.debug, isDeveloperMode)
   }
   const agent = createMobileAgent({
-    storeId: '',
     config: {
-
       logger,
       autoUpdateStorageOnStartup: true,
     },

@@ -37,8 +37,7 @@ import {
   DidCommProofV2Protocol,
   DidCommHttpOutboundTransport,
 } from '@credo-ts/didcomm'
-import { OpenId4VcHolderModule } from '@credo-ts/openid4vc'
-//FIXME import { PushNotificationsFcmModule } from '@credo-ts/push-notifications'
+import { DidCommPushNotificationsFcmModule } from '@credo-ts/didcomm-push-notifications'
 import { QuestionAnswerModule } from '@credo-ts/question-answer'
 import { WebVhAnonCredsRegistry, WebVhDidResolver } from '@credo-ts/webvh'
 import { anoncreds } from '@hyperledger/anoncreds-react-native'
@@ -48,13 +47,12 @@ import { IndyVdrProxyDidResolver, IndyVdrProxyAnonCredsRegistry } from 'credo-ts
 
 import { TunedMobileWsOutboundTransport } from '../transport/TunedMobileWsOutboundTransport'
 
+import { walletDirectoryPath } from '@2060/utils/RNFS'
 import { getAppCheckHeaders } from '@2060/utils/firebaseUtils'
 
 const SECONDS_PER_DAY = 60 * 60 * 24
 
 export const getMobileAgentModules = (config: {
-  storeId: string
-  storeKey: string
   mediatorPickupStrategy?: DidCommMediatorPickupStrategy
   indyVDRProxyBaseUrl: string
 }) => {
@@ -63,8 +61,9 @@ export const getMobileAgentModules = (config: {
     askar: new AskarModule({
       askar,
       store: {
-        id: config.storeId,
-        key: config.storeKey,
+        id: 'afj',
+        key: 'key', // This will be replaced afterwards
+        database: { type: 'sqlite', config: { path: `${walletDirectoryPath}/afj.sqlite` } },
       },
     }),
     anoncreds: new AnonCredsModule({
@@ -139,9 +138,8 @@ export const getMobileAgentModules = (config: {
     reactions: new DidCommReactionsModule(),
     media: new DidCommMediaSharingModule(),
     mrtd: new DidCommMrtdModule(),
-    openId4VcHolder: new OpenId4VcHolderModule(),
     profile: new DidCommUserProfileModule(new UserProfileModuleConfig({ autoSendProfile: false })),
-    //FIXME: pushNotifications: new PushNotificationsFcmModule(),
+    pushNotifications: new DidCommPushNotificationsFcmModule(),
     questionAnswer: new QuestionAnswerModule(),
     receipts: new DidCommReceiptsModule(),
     shortenUrl: new DidCommShortenUrlModule(),

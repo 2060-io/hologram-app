@@ -6,8 +6,6 @@ import { DidCommOutOfBandInvitationHandler } from './oob/OutOfBandInvitationHand
 
 export const createMobileAgent = (
   options: {
-    storeId: string
-    storeKey: string
     config: InitConfig
     indyVDRProxyBaseUrl: string
     modulesConfig: {
@@ -22,8 +20,6 @@ export const createMobileAgent = (
       config: options.config,
       dependencies: options.dependencies,
       modules: getMobileAgentModules({
-        storeId: options.storeId,
-        storeKey: options.storeKey,
         mediatorPickupStrategy: options.modulesConfig.mediatorPickupStrategy,
         indyVDRProxyBaseUrl: options.indyVDRProxyBaseUrl,
       }),

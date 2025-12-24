@@ -1,4 +1,4 @@
-import { MediaSharingRecord } from '@2060.io/credo-ts-didcomm-media-sharing'
+import { DidCommMediaSharingRecord } from '@2060.io/credo-ts-didcomm-media-sharing'
 import { DidCommBasicMessageRecord } from '@credo-ts/didcomm'
 import Realm from 'realm'
 
@@ -10,7 +10,7 @@ import { MobileAgent } from '@2060/services/agent'
 // FIXME: This first tries in BasicMessage repo and then in MediaSharing repo. It sould be actually a tag in
 // ChatEntryRecord, as we only need the record itself and its didcommThreadId
 export async function getChatEntryByDidcommThreadId(agent: MobileAgent, realm: Realm, threadId: string) {
-  let originMessage: DidCommBasicMessageRecord | MediaSharingRecord
+  let originMessage: DidCommBasicMessageRecord | DidCommMediaSharingRecord
   try {
     originMessage = await agent.didcomm.basicMessages.getByThreadId(threadId)
   } catch (error) {

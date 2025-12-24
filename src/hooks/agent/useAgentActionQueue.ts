@@ -1,4 +1,4 @@
-import { MediaSharingRecord } from '@2060.io/credo-ts-didcomm-media-sharing'
+import { DidCommMediaSharingRecord } from '@2060.io/credo-ts-didcomm-media-sharing'
 import { ActionMenuRecord, ActionMenuRepository } from '@credo-ts/action-menu'
 import { BaseRecord, JsonTransformer } from '@credo-ts/core'
 import {
@@ -94,7 +94,7 @@ export const useAgentActionQueue = () => {
     const getAssociatedRecord = async (options: { recordType: string; recordId: string }) => {
       const { recordType, recordId } = options
       if (recordType === DidCommBasicMessageRecord.type) return agent.didcomm.basicMessages.getById(recordId)
-      if (recordType === MediaSharingRecord.type) return agent.modules.media.findById(recordId)
+      if (recordType === DidCommMediaSharingRecord.type) return agent.modules.media.findById(recordId)
       if (recordType === ActionMenuRecord.type) {
         return agent.dependencyManager.resolve(ActionMenuRepository).findById(agent.context, recordId)
       }

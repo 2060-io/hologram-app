@@ -69,7 +69,7 @@ const Settings = ({ navigation }: Props) => {
       if (mediatorConnection) await agent.didcomm.connections.hangup({ connectionId: mediatorConnection.id })
 
       realm?.write(() => realm?.deleteAll())
-      await agent.wallet.delete()
+      await agent.modules.askar.deleteStore()
 
       // FIXME: Workaround to make sure cache is unloaded from memory
       const cache = agent.dependencyManager.resolve(CacheModuleConfig).cache

@@ -1,5 +1,7 @@
-import { MessageReactionAction } from '@2060.io/credo-ts-didcomm-reactions'
-import { DidCommMessageReactionOptions } from '@2060.io/credo-ts-didcomm-reactions'
+import {
+  DidCommMessageReactionAction,
+  DidCommMessageReactionOptions,
+} from '@2060.io/credo-ts-didcomm-reactions'
 import { DidCommMessageReceiptOptions, MessageState } from '@2060.io/credo-ts-didcomm-receipts'
 import { ActionMenuRole, ActionMenuState } from '@credo-ts/action-menu'
 import { CameraRoll } from '@react-native-camera-roll/camera-roll'
@@ -204,7 +206,7 @@ export const useChatActions = () => {
 
         // Reactions to send to the other party through didcommm
         const reactions: DidCommMessageReactionOptions[] = [
-          { messageId: associatedMessageId ?? '', action: action as MessageReactionAction, emoji },
+          { messageId: associatedMessageId ?? '', action: action as DidCommMessageReactionAction, emoji },
         ]
 
         if (!realm) throw new Error('No active Realm')
@@ -225,7 +227,7 @@ export const useChatActions = () => {
 
             reactions.push({
               messageId: associatedMessageId ?? '',
-              action: MessageReactionAction.Unreact,
+              action: DidCommMessageReactionAction.Unreact,
               emoji: myPreviousReaction.emoji,
             })
             objectReactions[reactionIndex] = { emoji, role: ChatEntryRole.Sender }

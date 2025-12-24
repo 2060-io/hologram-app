@@ -90,20 +90,25 @@ export const useRestoreBackup = ({ restoreProgress, setRestoreProgress, download
 
   const importWallet = async (backupKey: string) => {
     try {
+      if (!agent) throw new Error('Agent')
       const key = await createAndStoreEncryptedKey(KeyChainService.AfjWallet)
-      const walletConfig = {
-        id: 'afj',
-        key,
-        storage: { type: 'sqlite', config: { path: `${walletDirectoryPath}/afj.sqlite` } },
-      }
-      const walletToImportConfig = {
-        key: backupKey,
-        path: BackupUtils.AFJ_BACKUP_FILE_PATH,
-      }
+
       // make sure wallet directories exist (TODO: centralize this process somewhere...)
       await makeDirectory(walletDirectoryPath)
 
-      await agent?.wallet.import(walletConfig, walletToImportConfig)
+      // Reconfigure askar store config with this new key
+      agent.modules.askar.config.store.key = key
+
+      // Create empty store and import data
+      await agent.modules.askar.provisionStore()
+      await agent.modules.askar.importStore({
+        importFromStore: {
+          id: 'afj',
+          key: backupKey,
+          database: { type: 'sqlite', config: { path: BackupUtils.AFJ_BACKUP_FILE_PATH } },
+        },
+      })
+
       return true
     } catch (error) {
       await deleteDir(walletDirectoryPath)
@@ -130,13 +135,16 @@ export const useRestoreBackup = ({ restoreProgress, setRestoreProgress, download
   const updateNotificationInfo = useCallback(async () => {
     if (!agent) return
 
-    const connection = await agent.mediationRecipient.findDefaultMediatorConnection()
+    const connection = await agent.didcomm.mediationRecipient.findDefaultMediatorConnection()
     if (!connection) return
 
     const deviceToken = await getFcmDeviceToken()
-    await agent.modules.pushNotifications.setDeviceInfo(connection.id, {
-      deviceToken: deviceToken,
-      devicePlatform: Platform.OS,
+    await agent.modules.pushNotifications.setDeviceInfo({
+      connectionId: connection.id,
+      deviceInfo: {
+        deviceToken: deviceToken,
+        devicePlatform: Platform.OS,
+      },
     })
   }, [agent])
 

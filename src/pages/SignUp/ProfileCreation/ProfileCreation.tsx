@@ -67,11 +67,12 @@ const ProfileCreation = ({ navigation }: Props) => {
       await makeDirectory(walletDirectoryPath)
       await makeDirectory(mediaDirectoryPath)
 
-      const storage = { type: 'sqlite', config: { path: `${walletDirectoryPath}/afj.sqlite` } }
-      const getWalletConfig = (storeKey: string) => ({ id: 'afj', key: storeKey, storage })
-
       const key = await createAndStoreEncryptedKey(KeyChainService.AfjWallet)
-      await agent.wallet.create(getWalletConfig(key))
+
+      // Reconfigure askar store config with this new key
+      agent.modules.askar.config.store.key = key
+
+      await agent.modules.askar.provisionStore()
     }
   }, [agent])
 
@@ -82,9 +83,12 @@ const ProfileCreation = ({ navigation }: Props) => {
     if (!connection) return
 
     const deviceToken = await getFcmDeviceToken()
-    await agent.modules.pushNotifications.setDeviceInfo(connection.id, {
-      deviceToken,
-      devicePlatform: Platform.OS,
+    await agent.modules.pushNotifications.setDeviceInfo({
+      connectionId: connection.id,
+      deviceInfo: {
+        deviceToken,
+        devicePlatform: Platform.OS,
+      },
     })
   }, [agent])
 

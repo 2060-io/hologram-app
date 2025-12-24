@@ -1837,7 +1837,7 @@
     class-validator "^0.14.1"
     rxjs "^7.8.2"
 
-"@credo-ts/anoncreds@0.6.1", "@credo-ts/anoncreds@^0.5.11", "@credo-ts/anoncreds@^0.6.1":
+"@credo-ts/anoncreds@0.6.1", "@credo-ts/anoncreds@^0.6.1":
   version "0.6.1"
   resolved "https://registry.yarnpkg.com/@credo-ts/anoncreds/-/anoncreds-0.6.1.tgz#604d9ec391034f85ba66132f6512f145c374b99f"
   integrity sha512-woHktaf84z8ECdyUKb8nzRbk960bK6ZEMf6mavoC91bND54VoSAKRV2nkhXFydrH3AT/H8FS/NHBLN0CD4XthQ==
@@ -1861,7 +1861,7 @@
     rxjs "^7.8.2"
     tsyringe "^4.10.0"
 
-"@credo-ts/core@0.6.1", "@credo-ts/core@^0.5.11", "@credo-ts/core@^0.5.17", "@credo-ts/core@^0.6.1":
+"@credo-ts/core@0.6.1", "@credo-ts/core@^0.5.17", "@credo-ts/core@^0.6.1":
   version "0.6.1"
   resolved "https://registry.yarnpkg.com/@credo-ts/core/-/core-0.6.1.tgz#4fe8c484e6ad12e9700c4c9757da8205ee908278"
   integrity sha512-KAl9c2tNWn8c6R3o1fJRkkalyjP0wsdKjHc/xEoxb2w3i1q+4nsqe9f0sWelDjbCtQ/lwxH82TCZPhfGfHHk3g==
@@ -1909,6 +1909,14 @@
     webcrypto-core "^1.8.1"
     zod "^4.1.12"
 
+"@credo-ts/didcomm-push-notifications@^0.0.2-alpha-20251223125919":
+  version "0.0.2-alpha-20251223125919"
+  resolved "https://registry.yarnpkg.com/@credo-ts/didcomm-push-notifications/-/didcomm-push-notifications-0.0.2-alpha-20251223125919.tgz#f8871aa2a90527ed4cf4b67f9e744acad07b38e7"
+  integrity sha512-ESIGktOzX4NZ4x/1zKyiHk8pB0YJsafmk4VlswNc0x3RPIKmme00JGyBW9JVmuUQmls92X815UyZCKo+EPKUvg==
+  dependencies:
+    class-transformer "^0.5.1"
+    class-validator "^0.14.2"
+
 "@credo-ts/didcomm@0.6.1", "@credo-ts/didcomm@^0.6.1":
   version "0.6.1"
   resolved "https://registry.yarnpkg.com/@credo-ts/didcomm/-/didcomm-0.6.1.tgz#994b11746998bca8fd12664c0694f271ee93c728"
@@ -1936,15 +1944,6 @@
     express "^5.2.0"
     rxjs "^7.8.2"
     zod "^4.1.12"
-
-"@credo-ts/push-notifications@^0.7.1":
-  version "0.7.1"
-  resolved "https://registry.yarnpkg.com/@credo-ts/push-notifications/-/push-notifications-0.7.1.tgz#368c9c6f8a7b442a9ce2e6e31324d913f8a49350"
-  integrity sha512-HpaHT9MIeEF3Mlm2ETpgLS30gA6uA3UPxV5cRp5G48sCzHTSs1iIYzgTwcQl91M7Ccd6i85OTzKgw9W2S4xv8g==
-  dependencies:
-    class-transformer "0.5.1"
-    class-validator "0.14.1"
-    tsyringe "^4.6.0"
 
 "@credo-ts/question-answer@0.6.1", "@credo-ts/question-answer@^0.6.1":
   version "0.6.1"
@@ -5311,6 +5310,11 @@
   resolved "https://registry.yarnpkg.com/@types/validator/-/validator-13.12.2.tgz#760329e756e18a4aab82fc502b51ebdfebbe49f5"
   integrity sha512-6SlHBzUW8Jhf3liqrGGXyTJSIFe4nqlJ5A5KaMZ2l/vbM3Wh3KSybots/wfWVzNLK4D1NZluDlSQIbIEPx6oyA==
 
+"@types/validator@^13.15.3":
+  version "13.15.10"
+  resolved "https://registry.yarnpkg.com/@types/validator/-/validator-13.15.10.tgz#742b77ec34d58554b94a76a14cef30d59e3c16b9"
+  integrity sha512-T8L6i7wCuyoK8A/ZeLYt1+q0ty3Zb9+qbSSvrIVitzT3YjZqkTZ40IbRsPanlB4h1QB3JVL1SYCdR6ngtFYcuA==
+
 "@types/websocket@*":
   version "1.0.10"
   resolved "https://registry.yarnpkg.com/@types/websocket/-/websocket-1.0.10.tgz#804b1a02780da522f5742bc184a6d16a2eb78c7c"
@@ -6688,6 +6692,15 @@ class-validator@0.14.1, class-validator@^0.14.1:
     libphonenumber-js "^1.10.53"
     validator "^13.9.0"
 
+class-validator@^0.14.2:
+  version "0.14.3"
+  resolved "https://registry.yarnpkg.com/class-validator/-/class-validator-0.14.3.tgz#834a4caafa8359aed73d7708badb4cf271be50fe"
+  integrity sha512-rXXekcjofVN1LTOSw+u4u9WXVEUvNBVjORW154q/IdmYWy1nMbOU9aNtZB0t8m+FJQ9q91jlr2f9CwwUFdFMRA==
+  dependencies:
+    "@types/validator" "^13.15.3"
+    libphonenumber-js "^1.11.1"
+    validator "^13.15.20"
+
 clean-css@^4.2.1:
   version "4.2.4"
   resolved "https://registry.yarnpkg.com/clean-css/-/clean-css-4.2.4.tgz#733bf46eba4e607c6891ea57c24a989356831178"
@@ -7086,14 +7099,13 @@ credo-ts-didweb-anoncreds@^0.0.2-alpha.4:
     canonicalize "^2.1.0"
     query-string "^9.3.1"
 
-credo-ts-indy-vdr-proxy-client@^0.2.2:
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/credo-ts-indy-vdr-proxy-client/-/credo-ts-indy-vdr-proxy-client-0.2.3.tgz#a85ef0656545c5ed3e0d97ab45714c2cff8b8e95"
-  integrity sha512-CHhQXBotwBktQ2mSRM1OQiA6daku1P+HTX/pI2jwcLMAYKkd4Rz/5MJwC1U3Ylj+ZbZF1ifFROL9XL2OY8BkWQ==
+credo-ts-indy-vdr-proxy-client@^0.2.8:
+  version "0.2.8"
+  resolved "https://registry.yarnpkg.com/credo-ts-indy-vdr-proxy-client/-/credo-ts-indy-vdr-proxy-client-0.2.8.tgz#53cc210e519c4632876238b761d96a477cb03d12"
+  integrity sha512-ZJ52r0LZaUGoF6/h3M80cnSWKPnXU8H8qCLsVNYPHZYWA2jOicZU2EsdKOfE4KXEcqXCOza09zGIBQUAu6/Q+w==
   dependencies:
-    "@credo-ts/anoncreds" "^0.5.11"
-    "@credo-ts/core" "^0.5.11"
-    nock "^13.5.4"
+    "@credo-ts/anoncreds" "^0.6.1"
+    "@credo-ts/core" "^0.6.1"
     uuid "^9.0.0"
 
 cross-fetch@^3.1.5:
@@ -10542,6 +10554,11 @@ libphonenumber-js@^1.10.53:
   resolved "https://registry.yarnpkg.com/libphonenumber-js/-/libphonenumber-js-1.12.5.tgz#8e6043a67112d4beedb8627b359a613f04d88fba"
   integrity sha512-DOjiaVjjSmap12ztyb4QgoFmUe/GbgnEXHu+R7iowk0lzDIjScvPAm8cK9RYTEobbRb0OPlwlZUGTTJPJg13Kw==
 
+libphonenumber-js@^1.11.1:
+  version "1.12.33"
+  resolved "https://registry.yarnpkg.com/libphonenumber-js/-/libphonenumber-js-1.12.33.tgz#c92ca21e5fe081ed978e8a3331511842f08fd5df"
+  integrity sha512-r9kw4OA6oDO4dPXkOrXTkArQAafIKAU71hChInV4FxZ69dxCfbwQGDPzqR5/vea94wU705/3AZroEbSoeVWrQw==
+
 lighthouse-logger@^1.0.0:
   version "1.4.2"
   resolved "https://registry.yarnpkg.com/lighthouse-logger/-/lighthouse-logger-1.4.2.tgz#aef90f9e97cd81db367c7634292ee22079280aaa"
@@ -11867,15 +11884,6 @@ nocache@^3.0.1:
   resolved "https://registry.yarnpkg.com/nocache/-/nocache-3.0.4.tgz#5b37a56ec6e09fc7d401dceaed2eab40c8bfdf79"
   integrity sha512-WDD0bdg9mbq6F4mRxEYcPWwfA1vxd0mrvKOyxI7Xj/atfRHVeutzuWByG//jfm4uPzp0y4Kj051EORCBSQMycw==
 
-nock@^13.5.4:
-  version "13.5.6"
-  resolved "https://registry.yarnpkg.com/nock/-/nock-13.5.6.tgz#5e693ec2300bbf603b61dae6df0225673e6c4997"
-  integrity sha512-o2zOYiCpzRqSzPj0Zt/dQ/DqZeYoaQ7TUonc/xUPjCGl9WeHpNbxgVvOquXYAaJzI0M9BXV3HTzG0p8IUAbBTQ==
-  dependencies:
-    debug "^4.1.0"
-    json-stringify-safe "^5.0.1"
-    propagate "^2.0.0"
-
 node-abi@^3.3.0:
   version "3.85.0"
   resolved "https://registry.yarnpkg.com/node-abi/-/node-abi-3.85.0.tgz#b115d575e52b2495ef08372b058e13d202875a7d"
@@ -13064,11 +13072,6 @@ prop-types@15.8.1, prop-types@^15.6.2, prop-types@^15.7.2, prop-types@^15.8.0, p
     loose-envify "^1.4.0"
     object-assign "^4.1.1"
     react-is "^16.13.1"
-
-propagate@^2.0.0:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/propagate/-/propagate-2.0.1.tgz#40cdedab18085c792334e64f0ac17256d38f9a45"
-  integrity sha512-vGrhOavPSTz4QVNuBNdcNXePNdNMaO1xj9yBeH1ScQPjk/rhg9sSlCXPhMkFuaNNW/syTvYqsnbIJxMBfRbbag==
 
 proto-list@~1.2.1:
   version "1.2.4"
@@ -15380,7 +15383,7 @@ tsyringe@^4.10.0:
   dependencies:
     tslib "^1.9.3"
 
-tsyringe@^4.6.0, tsyringe@^4.8.0:
+tsyringe@^4.8.0:
   version "4.8.0"
   resolved "https://registry.yarnpkg.com/tsyringe/-/tsyringe-4.8.0.tgz#d599651b36793ba872870fee4f845bd484a5cac1"
   integrity sha512-YB1FG+axdxADa3ncEtRnQCFq/M0lALGLxSZeVNbTU8NqhOVc51nnv2CISTcvc1kyv6EGPtXVr0v6lWeDxiijOA==
@@ -15811,6 +15814,11 @@ validate-npm-package-name@^6.0.0:
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/validate-npm-package-name/-/validate-npm-package-name-6.0.0.tgz#3add966c853cfe36e0e8e6a762edd72ae6f1d6ac"
   integrity sha512-d7KLgL1LD3U3fgnvWEY1cQXoO/q6EQ1BSz48Sa149V/5zVTAbgmZIpyI8TRi6U9/JNyeYLlTKsEMPtLC27RFUg==
+
+validator@^13.15.20:
+  version "13.15.26"
+  resolved "https://registry.yarnpkg.com/validator/-/validator-13.15.26.tgz#36c3deeab30e97806a658728a155c66fcaa5b944"
+  integrity sha512-spH26xU080ydGggxRyR1Yhcbgx+j3y5jbNXk/8L+iRvdIEQ4uTRH2Sgf2dokud6Q4oAtsbNvJ1Ft+9xmm6IZcA==
 
 validator@^13.9.0:
   version "13.12.0"

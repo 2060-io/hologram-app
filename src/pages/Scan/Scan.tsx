@@ -24,7 +24,6 @@ import { useAppState } from '@2060/hooks'
 import { useMobileAgent } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { DidcommInvitationType, getOutOfBandRecordById, processInvitation } from '@2060/services/agent/oob'
-import { isOpenIdCredentialOffer, isOpenIdPresentationRequest } from '@2060/services/agent/parsers'
 import { log, logError } from '@2060/utils'
 import { toast } from '@2060/utils/toast'
 
@@ -88,19 +87,14 @@ const Scan = ({ navigation }: Props) => {
     if (!agent) return
     try {
       setIsActiveCamera(false)
-      if (isOpenIdCredentialOffer(url)) {
-        navigation.navigate('OpenIdCredentialOffer', { url })
-      } else if (isOpenIdPresentationRequest(url)) {
-        navigation.navigate('OpenIdPresentationRequest', { url })
-      } else {
-        const parsedUrl = queryString.parseUrl(url)
-        const shortUrl =
-          ((parsedUrl.query.oobUrl as string | undefined) ?? (parsedUrl.query._url as string | undefined))
-            ? Buffer.from(parsedUrl.query._url as string, 'base64').toString('ascii')
-            : undefined
-        const invitation = await agent.didcomm.oob.parseInvitation(shortUrl ?? url)
-        await processDidcommInvitation(invitation)
-      }
+
+      const parsedUrl = queryString.parseUrl(url)
+      const shortUrl =
+        ((parsedUrl.query.oobUrl as string | undefined) ?? (parsedUrl.query._url as string | undefined))
+          ? Buffer.from(parsedUrl.query._url as string, 'base64').toString('ascii')
+          : undefined
+      const invitation = await agent.didcomm.oob.parseInvitation(shortUrl ?? url)
+      await processDidcommInvitation(invitation)
       setScannedCode('')
     } catch (error) {
       setIsActiveCamera(true)

@@ -111,7 +111,7 @@ const Developer = ({ navigation }: Props) => {
     setIsDeletingWallet(true)
     try {
       realm?.write(() => realm?.deleteAll())
-      await agent.wallet.delete()
+      await agent.modules.askar.deleteStore()
       // FIXME: Workaround to make sure cache is unloaded from memory
       const cache = agent.dependencyManager.resolve(CacheModuleConfig).cache
 

@@ -73,9 +73,9 @@ const updateConnectionMediationKeylist = async (
       await mediationRecipientService.keylistUpdateAndAwait(
         agent.context,
         mediationRecord,
-        did.didDocument.recipientKeys.map(item => {
+        did.didDocument.getRecipientKeysWithVerificationMethod({ mapX25519ToEd25519: true }).map(item => {
           return {
-            recipientKey: item,
+            recipientKey: item.publicJwk,
             action,
           }
         }),
