@@ -27,7 +27,9 @@ import {
   DidCommAutoAcceptProof,
   DidCommFeaturesQueriesMessage,
 } from '@credo-ts/didcomm'
+import { DidCommPushNotificationsFcmSetDeviceInfoMessage } from '@credo-ts/didcomm-push-notifications'
 import { AnswerMessage } from '@credo-ts/question-answer'
+import { Platform } from 'react-native'
 
 import { AgentAction, AgentActionType } from './AgentAction'
 import {
@@ -47,6 +49,7 @@ import {
   QueryServiceFeaturesParameters,
   RemoveOutOfBandRecordParameters,
   RequestUserProfileParameters,
+  SavePushNotificationDeviceInfoParameters,
   SendAnswerParameters,
   SendReactionParameters,
   SendReceiptsParameters,
@@ -64,7 +67,7 @@ type AgentCallbackReturnType<T extends BaseRecord = BaseRecord> = {
 type ActionCallback = (options: { agent: MobileAgent }) => Promise<AgentCallbackReturnType<BaseRecord>>
 type ActionFactory = (action: AgentAction) => ActionCallback
 
-export const ActionFactoryMap: Record<AgentActionType, ActionFactory> = {
+export const AgentActionExecuterMap: Record<AgentActionType, ActionFactory> = {
   [AgentActionType.SendTextMessage]: action => {
     return async (options: { agent: MobileAgent }) => {
       const parameters = action.parameters as SendTextMessageParameters
@@ -321,6 +324,20 @@ export const ActionFactoryMap: Record<AgentActionType, ActionFactory> = {
         },
       })
       return { outgoingMessageType: DidCommPresentationV2ProblemReportMessage.type.messageTypeUri }
+    }
+  },
+  [AgentActionType.SavePushNotificationDeviceInfo]: action => {
+    return async (options: { agent: MobileAgent }) => {
+      const parameters = action.parameters as SavePushNotificationDeviceInfoParameters
+      const { connectionId, deviceToken } = parameters
+      await options.agent.modules.pushNotifications.setDeviceInfo({
+        connectionId,
+        deviceInfo: {
+          deviceToken,
+          devicePlatform: Platform.OS,
+        },
+      })
+      return { outgoingMessageType: DidCommPushNotificationsFcmSetDeviceInfoMessage.type.messageTypeUri }
     }
   },
 }

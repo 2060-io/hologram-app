@@ -96,6 +96,11 @@ type ProofSendProblemReportParameters = BaseProofParameters & {
   description: ProofSendProblemReportDescription
 }
 
+type SavePushNotificationDeviceInfoParameters = {
+  connectionId: string
+  deviceToken: string
+}
+
 export type {
   SendTextMessageParameters,
   SendReactionParameters,
@@ -119,4 +124,5 @@ export type {
   AcceptProofRequestParameters,
   AcceptProofProposalParameters,
   ProofSendProblemReportParameters,
+  SavePushNotificationDeviceInfoParameters,
 }

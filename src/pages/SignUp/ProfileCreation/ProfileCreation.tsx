@@ -1,9 +1,7 @@
-import { UserProfileData } from '@2060.io/credo-ts-didcomm-user-profile'
-import { CommonActions } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
-import React, { useState, useEffect, useCallback, useTransition } from 'react'
+import React, { useEffect, useCallback, useTransition } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, Platform } from 'react-native'
+import { View } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
@@ -13,8 +11,10 @@ import AppLogo from '@2060/assets/icons/AppLogo'
 import { UserProfileForm } from '@2060/components'
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
 import { ModalLoading, MainButton, Text } from '@2060/components/common'
-import { useSignUp, SignUpState, useWallet } from '@2060/hooks'
-import { useMobileAgent, useUserProfile } from '@2060/hooks/agent'
+import { useSignUp, useWallet } from '@2060/hooks'
+import { AgentActionType, useMobileAgent } from '@2060/hooks/agent'
+import { SavePushNotificationDeviceInfoParameters } from '@2060/hooks/agent/actions/types'
+import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { createAndStoreEncryptedKey, KeyChainService } from '@2060/services/keys'
 import { logError } from '@2060/utils'
@@ -28,34 +28,18 @@ type Props = {
 
 const ProfileCreation = ({ navigation }: Props) => {
   const { t } = useTranslation()
-  const { agent } = useMobileAgent()
-  const { openWallet } = useWallet()
-  const [isRegistering, startRegisterTransition] = useTransition()
-  const { updateUserProfileData } = useUserProfile()
-  const [displayName, setDisplayName] = useState('')
-  const [displayPicture, setDisplayPicture] = useState<UserProfileData['displayPicture']>()
-  const { signUpState, startSignUp } = useSignUp()
   const theme = useTheme()
   const styles = getStyles(theme)
+  const { agent } = useMobileAgent()
+  const { openWallet } = useWallet()
+  const { addAgentActionToQueue } = useAgentActionQueue()
+  const [isRegistering, startRegisterTransition] = useTransition()
+  const { startSignUp, displayName, setDisplayName, displayPicture, setDisplayPicture } = useSignUp()
   const disableGetStartedBtn = displayName.trim() === ''
 
   useEffect(() => {
     navigation.setOptions({ headerTitle: () => <></> })
   }, [])
-
-  useEffect(() => {
-    const handleRegistrationStatusUpdate = async () => {
-      if (signUpState === SignUpState.AgentCreated) {
-        updateUserProfileData({ displayName: displayName.trim(), displayPicture })
-        goHome()
-      }
-    }
-    handleRegistrationStatusUpdate()
-  }, [signUpState])
-
-  const goHome = () => {
-    navigation.dispatch(CommonActions.reset({ index: 0, routes: [{ name: 'Home' }] }))
-  }
 
   const createNewWallet = useCallback(async () => {
     if (!agent) throw new Error('Agent not defined')
@@ -81,15 +65,12 @@ const ProfileCreation = ({ navigation }: Props) => {
 
     const connection = await agent.didcomm.mediationRecipient.findDefaultMediatorConnection()
     if (!connection) return
-
     const deviceToken = await getFcmDeviceToken()
-    await agent.modules.pushNotifications.setDeviceInfo({
+    const parameters: SavePushNotificationDeviceInfoParameters = {
       connectionId: connection.id,
-      deviceInfo: {
-        deviceToken,
-        devicePlatform: Platform.OS,
-      },
-    })
+      deviceToken,
+    }
+    addAgentActionToQueue({ type: AgentActionType.SavePushNotificationDeviceInfo, parameters })
   }, [agent])
 
   const handleNotificationsPermission = async () => {

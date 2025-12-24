@@ -4,12 +4,11 @@ import {
   getToken,
   initializeAppCheck,
 } from '@react-native-firebase/app-check'
-import { getMessaging, onTokenRefresh } from '@react-native-firebase/messaging'
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Platform, StatusBar, View } from 'react-native'
+import { StatusBar, View } from 'react-native'
 import Config from 'react-native-config'
 import 'isomorphic-webcrypto'
 
@@ -106,24 +105,6 @@ const Navigation = ({ isSignedUp, agent, theme }: NavigationProps) => {
       }
     }
     configureFirebaseProviderAndInitializeAppCheck()
-  }, [])
-
-  useEffect(() => {
-    const messaging = getMessaging()
-    const unsubscribe = onTokenRefresh(messaging, (deviceToken: string) => {
-      agent?.didcomm.mediationRecipient.findDefaultMediatorConnection().then(mediatorConnection => {
-        if (mediatorConnection) {
-          agent?.modules.pushNotifications.setDeviceInfo({
-            connectionId: mediatorConnection.id,
-            deviceInfo: {
-              deviceToken,
-              devicePlatform: Platform.OS,
-            },
-          })
-        }
-      })
-    })
-    return () => unsubscribe()
   }, [])
 
   useEffect(() => {

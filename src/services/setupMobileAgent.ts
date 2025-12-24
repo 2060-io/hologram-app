@@ -9,7 +9,7 @@ import {
 import { agentDependencies } from '@credo-ts/react-native'
 import Config from 'react-native-config'
 
-import { HologramCustomLogger, HologramCustomLoggerForProd } from './HologramCustomLoggers'
+import { HologramCustomLogger } from './HologramCustomLoggers'
 import { MobileAgent } from './agent/MobileAgent'
 import { createMobileAgent } from './agent/createMobileAgent'
 import { duplicatedMessagesMiddleware } from './agent/duplicatedMessagesMiddleware'
@@ -47,7 +47,7 @@ export const setupMobileAgent = async (): Promise<MobileAgent> => {
   if (__DEV__) {
     logger = new HologramCustomLogger(LogLevel.debug)
   } else {
-    logger = new HologramCustomLoggerForProd(LogLevel.debug, isDeveloperMode)
+    logger = new HologramCustomLogger(isDeveloperMode ? LogLevel.debug : LogLevel.warn)
   }
   const agent = createMobileAgent({
     config: {
