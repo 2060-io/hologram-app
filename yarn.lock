@@ -1929,7 +1929,7 @@
     query-string "^9.3.1"
     rxjs "^7.8.2"
 
-"@credo-ts/openid4vc@0.6.1", "@credo-ts/openid4vc@^0.6.1":
+"@credo-ts/openid4vc@0.6.1":
   version "0.6.1"
   resolved "https://registry.yarnpkg.com/@credo-ts/openid4vc/-/openid4vc-0.6.1.tgz#13996edce859639b1281a2905654dcd6788bf3c8"
   integrity sha512-Odl1u4wnuy90dP2bI0MHIa7W8Al6+gQbG2eR1RFDAEgYmFA/0OQcqSlBSLI/YpceFBTEuzabp/7ohr0Z9GS4wA==

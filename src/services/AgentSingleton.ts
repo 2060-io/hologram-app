@@ -3,7 +3,6 @@ import { KeyChainService, retrieveEncryptedKey } from './keys'
 import { setupMobileAgent } from './setupMobileAgent'
 
 import { logError, log } from '@2060/utils'
-import { walletDirectoryPath } from '@2060/utils/RNFS'
 
 export class AgentSingleton {
   private static agentInstance: AgentSingleton
