@@ -35,9 +35,12 @@ export const useChatEntries = (threadId: string) => {
     entries.current?.removeAllListeners()
     const query = `chatThreadId == '${threadId}' SORT(createdAt DESC) LIMIT(${limit.current})`
     entries.current = realm.objects(ChatEntry).filtered(query)
-    const newLoadedChatEntries = entries.current.slice(limit.current - LIMIT_STEP_SIZE, limit.current)
+    const newLoadedChatEntries = entries.current
+      .slice(limit.current - LIMIT_STEP_SIZE, limit.current)
+      .reverse()
+      .map(getChatEntryData)
     limit.current += LIMIT_STEP_SIZE
-    setChatEntries([...chatEntries, ...newLoadedChatEntries.map(getChatEntryData).reverse()])
+    setChatEntries([...newLoadedChatEntries, ...chatEntries])
     updateChatEntryListener()
   }
 
