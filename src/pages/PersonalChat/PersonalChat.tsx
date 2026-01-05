@@ -1,5 +1,5 @@
+import { LegendListRef } from '@legendapp/list'
 import { useFocusEffect } from '@react-navigation/native'
-import { FlashListRef } from '@shopify/flash-list'
 import { useAudioPlayer } from '@simform_solutions/react-native-audio-waveform'
 import React, { useState, useRef, useCallback, memo, useMemo, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -134,7 +134,7 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
   const [compressingVideoProgress, setCompressingVideoProgress] = useState(0)
   const showScrollBottomRef = useRef(false)
   const isScrolling = useRef(false)
-  const listViewRef = useRef<FlashListRef<ChatEntryMessage> | null>(null)
+  const listViewRef = useRef<LegendListRef | null>(null)
   const timerStickyDate = useRef<ReturnType<typeof setTimeout>>(undefined)
   const videoCompressionCancellationId = useRef<string>('')
   const isAlreadyMounted = useRef(false)
@@ -267,12 +267,13 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
 
   const scrollToMessage = useCallback(
     (chatEntryId: string) => {
-      const dataList = listViewRef.current?.props.data as Array<ChatEntryMessage>
+      const dataList = listViewRef.current?.getState()?.data as Array<ChatEntryMessage>
       const messageIndex = dataList.findIndex(value => value.id === chatEntryId)
       setTappedRepliedMessageChatEntryId(chatEntryId)
       if (messageIndex === -1) return loadMoreMessages()
       const mustScrollToIndex =
-        listViewRef?.current?.props?.data?.length && listViewRef.current.props.data.length > messageIndex
+        listViewRef?.current?.getState()?.data?.length &&
+        listViewRef.current.getState()?.data.length > messageIndex
       if (mustScrollToIndex) {
         listViewRef.current?.scrollToIndex({ animated: true, index: messageIndex, viewPosition: 0.5 })
         setTimeout(() => {

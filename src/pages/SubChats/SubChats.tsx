@@ -1,6 +1,6 @@
+import { LegendList } from '@legendapp/list'
 import { StackActions } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
-import { FlashList } from '@shopify/flash-list'
 import React, { useLayoutEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, Image, TouchableOpacity } from 'react-native'
@@ -142,7 +142,7 @@ const SubChats: React.FC<Props> = ({ route, navigation }) => {
   return (
     <SafeAreaView style={styles.root} edges={['left', 'right']}>
       <View style={styles.root}>
-        <FlashList
+        <LegendList
           showsVerticalScrollIndicator={false}
           data={subChatsList}
           extraData={[selectedChatIds, theme.isDarkMode]}

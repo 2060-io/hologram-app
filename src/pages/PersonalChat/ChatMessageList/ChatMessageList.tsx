@@ -1,23 +1,22 @@
-import { FlashList, FlashListProps, FlashListRef } from '@shopify/flash-list'
+import { LegendList, LegendListProps, LegendListRef, LegendListRenderItemProps } from '@legendapp/list'
 import React, { memo, Ref } from 'react'
 
 import { ChatMessage } from '../ChatMessage'
 
+import { ChatEntryData } from '@2060/model'
 import { CommonMessageProps, ChatEntryMessage } from '@2060/pages/PersonalChat/ChatMessage/Props'
 
-interface ListViewProps<TMessage> extends FlashListProps<TMessage> {
-  ref: Ref<FlashListRef<TMessage>>
+type ListViewProps<TMessage> = LegendListProps<TMessage> & {
+  ref: Ref<LegendListRef>
 }
 
 type ChatMessageListProps = {
   commonMessageProps: CommonMessageProps
   messages: ChatEntryMessage[]
-  listViewProps?: Partial<ListViewProps<ChatEntryMessage>>
+  listViewProps?: Partial<Omit<ListViewProps<ChatEntryMessage>, 'children'>>
 }
 
-type ItemProps = {
-  index: number
-  item: ChatEntryMessage
+type ItemProps = LegendListRenderItemProps<ChatEntryData> & {
   props: ChatMessageListProps
 }
 
@@ -37,21 +36,18 @@ const keyExtractor = (item: ChatEntryMessage) => `${item.id}`
 
 export const ChatMessageList = memo((props: ChatMessageListProps) => {
   const { messages, listViewProps } = props
-  const renderListFromBottom = messages.length > 1
-
   return (
-    <FlashList
+    <LegendList
       keyExtractor={keyExtractor}
       data={messages}
-      maintainVisibleContentPosition={{
-        startRenderingFromBottom: renderListFromBottom,
-        autoscrollToBottomThreshold: 1,
-      }}
       renderItem={itemProps => renderItem({ ...itemProps, props })}
       keyboardShouldPersistTaps="handled"
       scrollEventThrottle={16}
-      onStartReachedThreshold={1}
       showsVerticalScrollIndicator={false}
+      alignItemsAtEnd
+      maintainScrollAtEnd
+      maintainScrollAtEndThreshold={1}
+      initialScrollIndex={messages.length - 1}
       {...listViewProps}
     />
   )
