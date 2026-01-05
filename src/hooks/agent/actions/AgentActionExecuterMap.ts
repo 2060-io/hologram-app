@@ -259,8 +259,7 @@ export const AgentActionExecuterMap: Record<AgentActionType, ActionFactory> = {
   [AgentActionType.SendUserProfile]: action => {
     return async (options: { agent: MobileAgent }) => {
       const parameters = action.parameters as SendUserProfileParameters
-      const { connectionId } = parameters
-      await options.agent.modules.profile.sendUserProfile({ connectionId })
+      await options.agent.modules.profile.sendUserProfile(parameters)
       return { outgoingMessageType: ProfileMessage.type.messageTypeUri }
     }
   },
