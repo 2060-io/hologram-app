@@ -53,6 +53,7 @@ export const ChatMessageList = memo((props: ChatMessageListProps) => {
       scrollEventThrottle={16}
       showsVerticalScrollIndicator={false}
       initialNumToRender={20}
+      alwaysBounceVertical={false}
       {...listViewProps}
     />
   )
