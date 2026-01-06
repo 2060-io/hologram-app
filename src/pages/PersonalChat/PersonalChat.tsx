@@ -281,6 +281,12 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
     },
     [listViewRef.current, tappedRepliedMessageChatEntryId],
   )
+  const onScrollToIndexFailed = ({ index }: { index: number }) => {
+    const wait = new Promise<void>(resolve => setTimeout(() => resolve(), 500))
+    wait.then(() => {
+      listViewRef.current?.scrollToIndex({ index, animated: true, viewPosition: 0.5 })
+    })
+  }
 
   const hideReportConfirmation = () => setDisplayReportMessageConfirmation(false)
 
@@ -327,9 +333,7 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
   }
 
   const scrollToBottom = useCallback(() => {
-    if (listViewRef && listViewRef.current) {
-      listViewRef.current.scrollToOffset({ animated: true, offset: 0 })
-    }
+    listViewRef.current?.scrollToOffset({ animated: true, offset: 0 })
   }, [])
 
   const onScroll = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
@@ -408,6 +412,7 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
               onContentSizeChange,
               onViewableItemsChanged: updateStickyDate,
               ListHeaderComponent: renderSystemMessage,
+              onScrollToIndexFailed,
             }}
           />
           {flags.isConnectionCompleted &&
