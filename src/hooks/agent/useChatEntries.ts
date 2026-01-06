@@ -24,7 +24,7 @@ export const useChatEntries = (threadId: string) => {
     const onChatEntryChange: Realm.CollectionChangeCallback<ChatEntry> = (newEntries, changes) => {
       const { newModifications, deletions, insertions } = changes
       if (insertions.length || newModifications.length || deletions.length) {
-        setChatEntries(newEntries.map(getChatEntryData).reverse())
+        setChatEntries(newEntries.map(getChatEntryData))
       }
     }
     entries.current?.addListener(onChatEntryChange)
@@ -37,10 +37,9 @@ export const useChatEntries = (threadId: string) => {
     entries.current = realm.objects(ChatEntry).filtered(query)
     const newLoadedChatEntries = entries.current
       .slice(limit.current - LIMIT_STEP_SIZE, limit.current)
-      .reverse()
       .map(getChatEntryData)
     limit.current += LIMIT_STEP_SIZE
-    setChatEntries([...newLoadedChatEntries, ...chatEntries])
+    setChatEntries([...chatEntries, ...newLoadedChatEntries])
     updateChatEntryListener()
   }
 

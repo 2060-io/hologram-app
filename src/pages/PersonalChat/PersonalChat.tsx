@@ -1,9 +1,8 @@
-import { LegendListRef } from '@legendapp/list'
 import { useFocusEffect } from '@react-navigation/native'
 import { useAudioPlayer } from '@simform_solutions/react-native-audio-waveform'
 import React, { useState, useRef, useCallback, memo, useMemo, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, NativeSyntheticEvent, NativeScrollEvent, ViewToken } from 'react-native'
+import { View, NativeSyntheticEvent, NativeScrollEvent, ViewToken, FlatList } from 'react-native'
 import { KeyboardAvoidingView } from 'react-native-keyboard-controller'
 import { uses24HourClock } from 'react-native-localize'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -134,7 +133,7 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
   const [compressingVideoProgress, setCompressingVideoProgress] = useState(0)
   const showScrollBottomRef = useRef(false)
   const isScrolling = useRef(false)
-  const listViewRef = useRef<LegendListRef | null>(null)
+  const listViewRef = useRef<FlatList<ChatEntryMessage> | null>(null)
   const timerStickyDate = useRef<ReturnType<typeof setTimeout>>(undefined)
   const videoCompressionCancellationId = useRef<string>('')
   const isAlreadyMounted = useRef(false)
@@ -267,13 +266,12 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
 
   const scrollToMessage = useCallback(
     (chatEntryId: string) => {
-      const dataList = listViewRef.current?.getState()?.data as Array<ChatEntryMessage>
+      const dataList = listViewRef.current?.props.data as Array<ChatEntryMessage>
       const messageIndex = dataList.findIndex(value => value.id === chatEntryId)
       setTappedRepliedMessageChatEntryId(chatEntryId)
       if (messageIndex === -1) return loadMoreMessages()
       const mustScrollToIndex =
-        listViewRef?.current?.getState()?.data?.length &&
-        listViewRef.current.getState()?.data.length > messageIndex
+        listViewRef?.current?.props?.data?.length && listViewRef.current.props.data.length > messageIndex
       if (mustScrollToIndex) {
         listViewRef.current?.scrollToIndex({ animated: true, index: messageIndex, viewPosition: 0.5 })
         setTimeout(() => {
@@ -308,7 +306,6 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
   const onContentSizeChange = () => {
     if (tappedRepliedMessageChatEntryId) scrollToMessage(tappedRepliedMessageChatEntryId)
   }
-  const getItemType = (item: ChatEntryMessage) => item.type
 
   const updateStickyDate = useCallback(({ viewableItems }: { viewableItems: ViewToken[] }) => {
     const [firstVisibleItem] = viewableItems
@@ -331,7 +328,7 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
 
   const scrollToBottom = useCallback(() => {
     if (listViewRef && listViewRef.current) {
-      listViewRef.current.scrollToEnd({ animated: true })
+      listViewRef.current.scrollToOffset({ animated: true, offset: 0 })
     }
   }, [])
 
@@ -340,10 +337,9 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
     const distanceToTopOfContentList = nativeEvent.contentOffset.y
     const listCurrentFullHeight = nativeEvent.contentSize.height
     const layoutHeight = nativeEvent.layoutMeasurement.height
-    const distanceToBottomOfContentList = listCurrentFullHeight - (layoutHeight + distanceToTopOfContentList)
     const scrollToBottomOffset = 200
     const hiddenContentHeight = listCurrentFullHeight - layoutHeight
-    showScrollBottomRef.current = distanceToBottomOfContentList > scrollToBottomOffset
+    showScrollBottomRef.current = distanceToTopOfContentList > scrollToBottomOffset
     const isAtTheBottomOfList = distanceToTopOfContentList > hiddenContentHeight
     setShowStickyDate(!isAtTheBottomOfList)
   }, [])
@@ -409,7 +405,6 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
               onScroll,
               onScrollEndDrag: onScrollEnd,
               onMomentumScrollEnd: onScrollEnd,
-              getItemType,
               onContentSizeChange,
               onViewableItemsChanged: updateStickyDate,
               ListFooterComponent: renderSystemMessage,
