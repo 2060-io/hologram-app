@@ -399,7 +399,7 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
             messages={chatEntries}
             listViewProps={{
               ref: listViewRef,
-              onStartReached: loadMoreMessages,
+              onEndReached: loadMoreMessages,
               onScrollBeginDrag: onScrollBegin,
               onMomentumScrollBegin: onScrollBegin,
               onScroll,
@@ -407,7 +407,7 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
               onMomentumScrollEnd: onScrollEnd,
               onContentSizeChange,
               onViewableItemsChanged: updateStickyDate,
-              ListFooterComponent: renderSystemMessage,
+              ListHeaderComponent: renderSystemMessage,
             }}
           />
           {flags.isConnectionCompleted &&
