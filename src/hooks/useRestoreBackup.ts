@@ -1,11 +1,13 @@
 import { CommonActions, useNavigation } from '@react-navigation/native'
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Platform } from 'react-native'
 
 import { RestoreProgress, restoreProgressInitialValues } from './backup'
 
+import { AgentActionType } from '@2060/hooks/agent'
 import { useMobileAgent } from '@2060/hooks/agent/MobileAgentProvider'
+import { SavePushNotificationDeviceInfoParameters } from '@2060/hooks/agent/actions/types'
+import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
 import { useWallet } from '@2060/hooks/useWallet'
 import { KeyChainService, createAndStoreEncryptedKey } from '@2060/services/keys'
@@ -26,6 +28,7 @@ export const useRestoreBackup = ({ restoreProgress, setRestoreProgress, download
   const { agent } = useMobileAgent()
   const { openWallet } = useWallet()
   const { importAndOpenRealm } = useLocalRealm()
+  const { addAgentActionToQueue } = useAgentActionQueue()
   const [recoveryPassword, setRecoveryPassword] = useState('')
   const [showConfirmLeaveScreen, setShowConfirmLeaveScreen] = useState(false)
 
@@ -128,16 +131,14 @@ export const useRestoreBackup = ({ restoreProgress, setRestoreProgress, download
   }
 
   const updateNotificationInfo = useCallback(async () => {
-    if (!agent) return
-
-    const connection = await agent.mediationRecipient.findDefaultMediatorConnection()
+    const connection = await agent?.mediationRecipient.findDefaultMediatorConnection()
     if (!connection) return
-
     const deviceToken = await getFcmDeviceToken()
-    await agent.modules.pushNotifications.setDeviceInfo(connection.id, {
-      deviceToken: deviceToken,
-      devicePlatform: Platform.OS,
-    })
+    const parameters: SavePushNotificationDeviceInfoParameters = {
+      connectionId: connection.id,
+      deviceToken,
+    }
+    addAgentActionToQueue({ type: AgentActionType.SavePushNotificationDeviceInfo, parameters })
   }, [agent])
 
   const handleNotificationsPermission = async () => {
