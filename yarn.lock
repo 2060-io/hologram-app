@@ -3496,13 +3496,6 @@
   resolved "https://registry.yarnpkg.com/@js-joda/timezone/-/timezone-2.3.0.tgz#72878f6dc8afef20c29906e5d8d946f91618a2c3"
   integrity sha512-DHXdNs0SydSqC5f0oRJPpTcNfnpRojgBqMCFupQFv6WgeZAjU3DBx+A7JtaGPP3dHrP2Odi2N8Vf+uAm/8ynCQ==
 
-"@legendapp/list@^2.0.19":
-  version "2.0.19"
-  resolved "https://registry.yarnpkg.com/@legendapp/list/-/list-2.0.19.tgz#86fcef3c07f2fa62e3faec002be82f177070b7ee"
-  integrity sha512-zDWg8yg0smKxxk+M7gwAbZAnf5uczohPA+IjqLSkImz7+e9ytxeT0Mq35RBO9RTKODOXfV/aIgm1uqUHLBEdmg==
-  dependencies:
-    use-sync-external-store "^1.5.0"
-
 "@li0ard/tsemrtd@^0.2.2":
   version "0.2.2"
   resolved "https://registry.yarnpkg.com/@li0ard/tsemrtd/-/tsemrtd-0.2.2.tgz#a6dfdca33f9f3b0737a16f6a8be00e13d214713c"

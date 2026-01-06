@@ -55,7 +55,6 @@
     "@credo-ts/webvh": "0.5.19",
     "@hyperledger/anoncreds-react-native": "0.3.4",
     "@hyperledger/anoncreds-shared": "0.3.4",
-    "@legendapp/list": "^2.0.19",
     "@noble/hashes": "^2.0.1",
     "@notifee/react-native": "9.1.8",
     "@openwallet-foundation/askar-react-native": "0.4.3",
