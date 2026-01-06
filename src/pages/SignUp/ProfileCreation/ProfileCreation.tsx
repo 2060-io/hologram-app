@@ -34,7 +34,8 @@ const ProfileCreation = ({ navigation }: Props) => {
   const { openWallet } = useWallet()
   const { addAgentActionToQueue } = useAgentActionQueue()
   const [isRegistering, startRegisterTransition] = useTransition()
-  const { startSignUp, displayName, setDisplayName, displayPicture, setDisplayPicture } = useSignUp()
+  const { startSignUp, displayName, setDisplayName, displayPicture, setDisplayPicture } =
+    useSignUp(navigation)
   const disableGetStartedBtn = displayName.trim() === ''
 
   useEffect(() => {
