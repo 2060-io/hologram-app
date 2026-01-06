@@ -44,12 +44,15 @@ export function manageAgentConnectionEvents(
 
     if (supportsUserProfile(connection)) {
       if (connection.role === DidExchangeRole.Responder) {
-        await userProfileApi.sendUserProfile({
-          connectionId: connection.id,
-          sendBackYours: true,
-          profileData: {
-            ...(await userProfileApi.getUserProfileData()),
-            preferredLanguage: language,
+        addAgentActionToQueue({
+          type: AgentActionType.SendUserProfile,
+          parameters: {
+            connectionId: connection.id,
+            sendBackYours: true,
+            profileData: {
+              ...(await userProfileApi.getUserProfileData()),
+              preferredLanguage: language,
+            },
           },
         })
       }
@@ -58,13 +61,16 @@ export function manageAgentConnectionEvents(
 
   const profileRequestListener = async (event: UserProfileRequestedEvent) => {
     const userProfileApi = context.dependencyManager.resolve(UserProfileApi)
-    await userProfileApi.sendUserProfile({
-      connectionId: event.payload.connection.id,
-      sendBackYours: false,
-      threadId: event.payload.threadId,
-      profileData: {
-        ...(await userProfileApi.getUserProfileData()),
-        preferredLanguage: language,
+    addAgentActionToQueue({
+      type: AgentActionType.SendUserProfile,
+      parameters: {
+        connectionId: event.payload.connection.id,
+        sendBackYours: false,
+        threadId: event.payload.threadId,
+        profileData: {
+          ...(await userProfileApi.getUserProfileData()),
+          preferredLanguage: language,
+        },
       },
     })
   }
@@ -72,13 +78,16 @@ export function manageAgentConnectionEvents(
   const profileUpdatedListener = async (event: ConnectionProfileUpdatedEvent) => {
     const userProfileApi = context.dependencyManager.resolve(UserProfileApi)
     if (event.payload.sendBackYoursRequested) {
-      await userProfileApi.sendUserProfile({
-        connectionId: event.payload.connection.id,
-        sendBackYours: false,
-        threadId: event.payload.threadId,
-        profileData: {
-          ...(await userProfileApi.getUserProfileData()),
-          preferredLanguage: language,
+      addAgentActionToQueue({
+        type: AgentActionType.SendUserProfile,
+        parameters: {
+          connectionId: event.payload.connection.id,
+          sendBackYours: false,
+          threadId: event.payload.threadId,
+          profileData: {
+            ...(await userProfileApi.getUserProfileData()),
+            preferredLanguage: language,
+          },
         },
       })
     }

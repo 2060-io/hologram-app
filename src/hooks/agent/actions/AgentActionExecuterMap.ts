@@ -27,7 +27,9 @@ import {
   ProofEventTypes,
   AutoAcceptProof,
 } from '@credo-ts/core'
+import { PushNotificationsFcmSetDeviceInfoMessage } from '@credo-ts/push-notifications'
 import { AnswerMessage } from '@credo-ts/question-answer'
+import { Platform } from 'react-native'
 
 import { AgentAction, AgentActionType } from './AgentAction'
 import {
@@ -47,6 +49,7 @@ import {
   QueryServiceFeaturesParameters,
   RemoveOutOfBandRecordParameters,
   RequestUserProfileParameters,
+  SavePushNotificationDeviceInfoParameters,
   SendAnswerParameters,
   SendReactionParameters,
   SendReceiptsParameters,
@@ -64,7 +67,7 @@ type AgentCallbackReturnType<T extends BaseRecord = BaseRecord> = {
 type ActionCallback = (options: { agent: MobileAgent }) => Promise<AgentCallbackReturnType<BaseRecord>>
 type ActionFactory = (action: AgentAction) => ActionCallback
 
-export const ActionFactoryMap: Record<AgentActionType, ActionFactory> = {
+export const AgentActionExecuterMap: Record<AgentActionType, ActionFactory> = {
   [AgentActionType.SendTextMessage]: action => {
     return async (options: { agent: MobileAgent }) => {
       const parameters = action.parameters as SendTextMessageParameters
@@ -256,8 +259,7 @@ export const ActionFactoryMap: Record<AgentActionType, ActionFactory> = {
   [AgentActionType.SendUserProfile]: action => {
     return async (options: { agent: MobileAgent }) => {
       const parameters = action.parameters as SendUserProfileParameters
-      const { connectionId } = parameters
-      await options.agent.modules.profile.sendUserProfile({ connectionId })
+      await options.agent.modules.profile.sendUserProfile(parameters)
       return { outgoingMessageType: ProfileMessage.type.messageTypeUri }
     }
   },
@@ -310,6 +312,17 @@ export const ActionFactoryMap: Record<AgentActionType, ActionFactory> = {
         },
       })
       return { outgoingMessageType: V2PresentationProblemReportMessage.type.messageTypeUri }
+    }
+  },
+  [AgentActionType.SavePushNotificationDeviceInfo]: action => {
+    return async (options: { agent: MobileAgent }) => {
+      const parameters = action.parameters as SavePushNotificationDeviceInfoParameters
+      const { connectionId, deviceToken } = parameters
+      await options.agent.modules.pushNotifications.setDeviceInfo(connectionId, {
+        deviceToken,
+        devicePlatform: Platform.OS,
+      })
+      return { outgoingMessageType: PushNotificationsFcmSetDeviceInfoMessage.type.messageTypeUri }
     }
   },
 }

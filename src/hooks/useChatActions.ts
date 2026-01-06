@@ -107,6 +107,8 @@ export const useChatActions = () => {
       toast({ type: 'success', message: t('personalChat.saveSucceededFileMedia') })
     } catch (error) {
       toast({ type: 'error', message: t('personalChat.saveFailedFileMedia') })
+      logError('Error saving file to gallery', error)
+      throw new Error(`${error}`)
     }
   }, [])
 

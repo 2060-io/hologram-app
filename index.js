@@ -9,6 +9,7 @@ import App from './src/App'
 import AppHeadless from './src/AppHeadless'
 import { IS_IOS } from './src/constants'
 import { backgroundPushNotificationHandler } from './src/services/backgroundPushNotificationHandler'
+import { LOGS_DIRECTORY, log, logError } from './src/utils/log'
 
 const formatter = (_, msg) => {
   const now = new Date()
@@ -16,7 +17,6 @@ const formatter = (_, msg) => {
 }
 
 const TEN_MB = 1024 * 1024 * 10
-import { LOGS_DIRECTORY, log, logError } from '@2060/utils/log'
 // Register handler for FCM notifications when app is in quit state
 const messaging = getMessaging()
 setBackgroundMessageHandler(messaging, backgroundPushNotificationHandler)
