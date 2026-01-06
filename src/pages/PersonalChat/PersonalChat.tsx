@@ -308,9 +308,9 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
   }
 
   const updateStickyDate = useCallback(({ viewableItems }: { viewableItems: ViewToken[] }) => {
-    const [firstVisibleItem] = viewableItems
-    if (firstVisibleItem && firstVisibleItem.item && firstVisibleItem.item.createdAt) {
-      setCurrentStickyDate(firstVisibleItem.item.createdAt as Date)
+    const lastVisibleItem = viewableItems.at(-1)
+    if (lastVisibleItem && lastVisibleItem.item && lastVisibleItem.item.createdAt) {
+      setCurrentStickyDate(lastVisibleItem.item.createdAt as Date)
     }
   }, [])
 
