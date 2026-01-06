@@ -16,20 +16,20 @@ type ChatMessageListProps = {
 }
 
 type ItemProps = {
-  item: ChatEntryMessage
+  currentMessage: ChatEntryMessage
   previousMessage?: ChatEntryMessage
   nextMessage?: ChatEntryMessage
   commonMessageProps: CommonMessageProps
 }
 
-const renderItem = ({ item, previousMessage, nextMessage, commonMessageProps }: ItemProps) => {
+const renderItem = ({ currentMessage, previousMessage, nextMessage, commonMessageProps }: ItemProps) => {
   const messageProps = {
     ...commonMessageProps,
-    currentMessage: item,
+    currentMessage,
     previousMessage,
     nextMessage,
   }
-  return <ChatMessage key={item.id} {...messageProps} />
+  return <ChatMessage key={currentMessage.id} {...messageProps} />
 }
 const keyExtractor = (item: ChatEntryMessage) => `${item.id}`
 
@@ -40,9 +40,9 @@ export const ChatMessageList = memo((props: ChatMessageListProps) => {
       data={messages}
       inverted
       keyExtractor={keyExtractor}
-      renderItem={({ item, index }) =>
+      renderItem={({ item: currentMessage, index }) =>
         renderItem({
-          item,
+          currentMessage,
           previousMessage: messages[index + 1],
           nextMessage: messages[index - 1],
           commonMessageProps,
