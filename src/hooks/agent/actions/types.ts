@@ -1,6 +1,7 @@
 import { DidCommCallType } from '@2060.io/credo-ts-didcomm-calls'
 import { MessageReactionOptions } from '@2060.io/credo-ts-didcomm-reactions/build/messages/MessageReactionsMessage'
 import { MessageReceiptOptions } from '@2060.io/credo-ts-didcomm-receipts'
+import { UserProfileData } from '@2060.io/credo-ts-didcomm-user-profile'
 
 import { CallInfo } from '@2060/hooks/providers/useVideoCallContext'
 
@@ -79,7 +80,12 @@ type BaseProofParameters = {
 }
 type DeclineProofRequestParameters = BaseProofParameters
 
-type SendUserProfileParameters = ConnectionIdParameter
+type SendUserProfileParameters = ConnectionIdParameter & {
+  threadId?: string
+  parentThreadId?: string
+  profileData?: Partial<UserProfileData> | Record<string, unknown>
+  sendBackYours?: boolean
+}
 
 type RequestUserProfileParameters = ConnectionIdParameter
 
