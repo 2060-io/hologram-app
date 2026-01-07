@@ -5,7 +5,7 @@ import { useLocalRealm } from '../providers/RealmProvider'
 
 import { ChatEntry, ChatEntryData, getChatEntryData } from '@2060/model'
 
-const LIMIT_STEP_SIZE = 25
+const LIMIT_STEP_SIZE = 50
 
 export const useChatEntries = (threadId: string) => {
   const { realm } = useLocalRealm()
