@@ -14,16 +14,15 @@ import queue, { Worker } from 'react-native-job-queue'
 import { useLocalRealm } from '../providers/RealmProvider'
 import { useNetwork } from '../useNetwork'
 
-import { AgentActionExecuter } from './actions/AgentActionExecuter'
-
+import { useMobileAgent } from './MobileAgentProvider'
 import {
   ActionExecutionStatus,
   AgentAction,
   AgentActionOptions,
   OutboundMessageContextData,
   RetryAgentAction,
-  useMobileAgent,
-} from './'
+} from './actions/AgentAction'
+import { AgentActionExecuter } from './actions/AgentActionExecuter'
 
 import { log, logError } from '@2060/utils'
 
