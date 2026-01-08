@@ -1,9 +1,8 @@
 import { StackActions } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
-import { FlashList } from '@shopify/flash-list'
 import React, { useLayoutEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, TouchableOpacity } from 'react-native'
+import { View, TouchableOpacity, FlatList } from 'react-native'
 import { uses24HourClock } from 'react-native-localize'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { SwipeRow } from 'react-native-swipe-list-view'
@@ -149,8 +148,7 @@ const Chats = ({ navigation }: Props) => {
   return (
     <SafeAreaView style={styles.root} edges={['left', 'right']}>
       <View style={styles.root}>
-        <FlashList
-          estimatedItemSize={97}
+        <FlatList
           showsVerticalScrollIndicator={false}
           data={threads}
           extraData={[selectedChatIds, theme.isDarkMode]}

@@ -1,16 +1,12 @@
-import { FlashList, FlashListProps } from '@shopify/flash-list'
-import React, { useState, useRef, memo } from 'react'
-import { View, Keyboard, TouchableWithoutFeedback, LayoutChangeEvent } from 'react-native'
+import React, { memo, Ref } from 'react'
+import { FlatList, FlatListProps, StyleSheet } from 'react-native'
 
 import { ChatMessage } from '../ChatMessage'
 
-import styles from './styles'
-
 import { CommonMessageProps, ChatEntryMessage } from '@2060/pages/PersonalChat/ChatMessage/Props'
-import { screenHeight, screenWidth } from '@2060/utils/responsiveUtils'
 
-interface ListViewProps<TMessage> extends FlashListProps<TMessage> {
-  ref: React.MutableRefObject<FlashList<TMessage> | null>
+type ListViewProps<TMessage> = FlatListProps<TMessage> & {
+  ref?: Ref<FlatList<TMessage>>
 }
 
 type ChatMessageListProps = {
@@ -20,67 +16,52 @@ type ChatMessageListProps = {
 }
 
 type ItemProps = {
-  index: number
-  item: ChatEntryMessage
-  props: ChatMessageListProps
+  currentMessage: ChatEntryMessage
+  previousMessage?: ChatEntryMessage
+  nextMessage?: ChatEntryMessage
+  commonMessageProps: CommonMessageProps
 }
 
-const renderItem = ({ item, index, props }: ItemProps) => {
-  const { messages, commonMessageProps } = props
-  const previousMessage = messages[index + 1]
-  const nextMessage = messages[index - 1]
+const renderItem = ({ currentMessage, previousMessage, nextMessage, commonMessageProps }: ItemProps) => {
   const messageProps = {
     ...commonMessageProps,
-    currentMessage: item,
+    currentMessage,
     previousMessage,
     nextMessage,
   }
-  return <ChatMessage key={item.id} {...messageProps} />
+  return <ChatMessage key={currentMessage.id} {...messageProps} />
 }
 const keyExtractor = (item: ChatEntryMessage) => `${item.id}`
 
 export const ChatMessageList = memo((props: ChatMessageListProps) => {
-  const [scrollEnabled, setScrollEnabled] = useState(true)
-  const containerHeight = useRef(0)
-  const listHeight = useRef(0)
-
-  const checkIfScrollIsEnabled = () => {
-    const scrollIsEnabled = listHeight.current >= containerHeight.current
-    setScrollEnabled(scrollIsEnabled)
-  }
-
-  const onContainerLayout = (event: LayoutChangeEvent) => {
-    containerHeight.current = event.nativeEvent.layout.height
-    checkIfScrollIsEnabled()
-  }
-
-  const onListLayout = (event: LayoutChangeEvent) => {
-    listHeight.current = event.nativeEvent.layout.height
-    checkIfScrollIsEnabled()
-  }
-
+  const { messages, listViewProps, commonMessageProps } = props
   return (
-    <View style={styles.container} onLayout={onContainerLayout}>
-      <View style={styles.containerAlignTop}>
-        <FlashList
-          keyExtractor={keyExtractor}
-          data={props.messages}
-          inverted
-          renderItem={itemProps => renderItem({ ...itemProps, props })}
-          keyboardShouldPersistTaps="handled"
-          scrollEventThrottle={16}
-          onEndReachedThreshold={1}
-          estimatedItemSize={150}
-          estimatedListSize={{ height: screenHeight, width: screenWidth }}
-          showsVerticalScrollIndicator={false}
-          scrollEnabled={scrollEnabled}
-          onLayout={onListLayout}
-          {...props.listViewProps}
-        />
-      </View>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={styles.contentContainerStyle} />
-      </TouchableWithoutFeedback>
-    </View>
+    <FlatList
+      data={messages}
+      inverted
+      keyExtractor={keyExtractor}
+      renderItem={({ item: currentMessage, index }) =>
+        renderItem({
+          currentMessage,
+          previousMessage: messages[index + 1],
+          nextMessage: messages[index - 1],
+          commonMessageProps,
+        })
+      }
+      contentContainerStyle={styles.contentContainer}
+      keyboardShouldPersistTaps="handled"
+      scrollEventThrottle={16}
+      showsVerticalScrollIndicator={false}
+      initialNumToRender={20}
+      alwaysBounceVertical={false}
+      {...listViewProps}
+    />
   )
+})
+
+const styles = StyleSheet.create({
+  contentContainer: {
+    flexGrow: 1,
+    justifyContent: 'flex-end',
+  },
 })
