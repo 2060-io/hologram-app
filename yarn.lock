@@ -6054,10 +6054,10 @@
     multiformats "9.7.1"
     uint8arrays "^3.0.0"
 
-"@verana-labs/verre@^0.0.15":
-  version "0.0.15"
-  resolved "https://registry.yarnpkg.com/@verana-labs/verre/-/verre-0.0.15.tgz#3a33b9ab917799f659d4418794347a5106517d64"
-  integrity sha512-tXMcaLCyFdhZsomQyhm2zdindq4NxpSzRgvFgUtTrQ6uF2K0rw/ozKOhy+XFNQV+Wczd1rzsZL6HvAchM6SbaA==
+"@verana-labs/verre@0.0.16":
+  version "0.0.16"
+  resolved "https://registry.yarnpkg.com/@verana-labs/verre/-/verre-0.0.16.tgz#c49e90380ac23b1c7582e4a7fbd2b81088629a80"
+  integrity sha512-Mc7/0u1AzY2cIoZ7TWTWkq/jjDzCso5uqnEoXvVHQVyI0D2oz4hz/ZevLYP7wv+fvN3dXiCBhG5Ugi7AdhaJ7Q==
   dependencies:
     "@credo-ts/core" "^0.5.17"
     "@digitalcredentials/jsonld-signatures" "^12.0.1"
