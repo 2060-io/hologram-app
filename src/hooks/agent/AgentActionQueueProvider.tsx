@@ -8,21 +8,22 @@ import {
   MessageSender,
   getOutboundMessageContext,
 } from '@credo-ts/core'
-import { useCallback, useEffect, useState } from 'react'
+import React, { createContext, PropsWithChildren, useCallback, useContext, useEffect, useState } from 'react'
 import queue, { Worker } from 'react-native-job-queue'
 
 import { useLocalRealm } from '../providers/RealmProvider'
 import { useNetwork } from '../useNetwork'
 
-import { useMobileAgent } from './MobileAgentProvider'
+import { AgentActionExecuter } from './actions/AgentActionExecuter'
+
 import {
   ActionExecutionStatus,
   AgentAction,
   AgentActionOptions,
   OutboundMessageContextData,
   RetryAgentAction,
-} from './actions/AgentAction'
-import { AgentActionExecuter } from './actions/AgentActionExecuter'
+  useMobileAgent,
+} from './'
 
 import { log, logError } from '@2060/utils'
 
@@ -33,11 +34,23 @@ class ActionExecutionError extends Error {
     this.outboundMessageContextData = outboundMessageContextData
   }
 }
+type AgentActionQueueContextProps = {
+  addAgentActionToQueue: (action: AgentActionOptions) => void
+}
 
 export const useAgentActionQueue = () => {
+  const agentActionQueueContext = useContext(AgentActionQueueContext)
+  if (!agentActionQueueContext) {
+    throw new Error('useAgentActionQueue must be used within a AgentActionQueueProvider')
+  }
+  return agentActionQueueContext
+}
+
+const AgentActionQueueContext = createContext<AgentActionQueueContextProps | undefined>(undefined)
+
+export const AgentActionQueueProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const { realm } = useLocalRealm()
   const { agent } = useMobileAgent()
-
   const [isReady, setIsReady] = useState<boolean>(false)
   const { assertConnectedNetwork } = useNetwork()
   const isNetworkConnected = assertConnectedNetwork()
@@ -171,5 +184,5 @@ export const useAgentActionQueue = () => {
     [realm, agent, isNetworkConnected],
   )
 
-  return { addAgentActionToQueue }
+  return <AgentActionQueueContext value={{ addAgentActionToQueue }}>{children}</AgentActionQueueContext>
 }
