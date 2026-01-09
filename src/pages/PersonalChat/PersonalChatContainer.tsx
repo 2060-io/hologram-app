@@ -11,10 +11,9 @@ const PersonalChatContainer = (PersonalChatComponent: ElementType) => {
   const WrapperPersonalChat = (props: WrapperPersonalChatProps) => {
     const { chatThreadId } = props.route.params
     const chatThread = useChatThreadWithParticipants(chatThreadId)
-
     const { chatEntries, loadChatEntries } = useChatEntries(chatThreadId)
 
-    if (!chatThread.data || !props.route.params.chatThreadId) return <></>
+    if (!chatThread.data.id || !props.route.params.chatThreadId) return <></>
     return (
       <PersonalChatComponent
         {...props}
