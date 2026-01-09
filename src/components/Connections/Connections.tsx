@@ -10,7 +10,7 @@ import SearchInput from '../SearchInput'
 
 import ConnectionList, { ConnectionItem } from './ConnectionsList'
 import getStyles from './styles'
-import { useConnections } from './useConnections'
+import { useConnectionsBySections } from './useConnectionsBySections'
 
 import { Avatar, HeaderTitle, SvgIcon, Text } from '@2060/components/common'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
@@ -48,13 +48,13 @@ const Connections = ({
     setSearch,
     showSearchInput,
     setShowSearchInput,
-    connectionListForDisplay,
+    connectionsBySections,
     isSearchingMode,
     currentConnectionToFilter,
     setCurrentConnectionToFilter,
     subConnections,
     displaySubConnectionsOfConnection,
-  } = useConnections({ excludedConnections })
+  } = useConnectionsBySections({ excludedConnections })
 
   const renderHeaderTitleForSubConnections = () => (
     <View style={styles.headerWithSubConnectionsContainer}>
@@ -115,7 +115,7 @@ const Connections = ({
         <ConnectionList
           onPressRightSide={displaySubConnectionsOfConnection}
           onPress={onPressConnection}
-          connectionList={connectionListForDisplay}
+          connectionList={connectionsBySections}
           isSearchingMode={isSearchingMode}
           selectedConnections={selectedConnections}
         />

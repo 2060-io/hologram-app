@@ -30,17 +30,14 @@ const getSubConnectionsFiltered = ({ search, connections }: Props) => {
   return connectionsGroupBySections
 }
 
-export const useConnections = (options: { excludedConnections: string[] }) => {
-  const { excludedConnections } = options
-
+export const useConnectionsBySections = ({ excludedConnections }: { excludedConnections: string[] }) => {
   const [search, setSearch] = useState('')
   const [showSearchInput, setShowSearchInput] = useState(false)
-
-  const { connectionListForDisplay, isSearchingMode } = useConnectionListForDisplay({
+  const [currentConnectionToFilter, setCurrentConnectionToFilter] = useState<ConnectionItem>()
+  const { connectionsBySections, isSearchingMode } = useConnectionListForDisplay({
     search,
     excludedConnections,
   })
-  const [currentConnectionToFilter, setCurrentConnectionToFilter] = useState<ConnectionItem>()
 
   const subConnections = useMemo(() => {
     if (!currentConnectionToFilter) return []
@@ -60,7 +57,7 @@ export const useConnections = (options: { excludedConnections: string[] }) => {
     setSearch,
     showSearchInput,
     setShowSearchInput,
-    connectionListForDisplay,
+    connectionsBySections,
     isSearchingMode,
     currentConnectionToFilter,
     setCurrentConnectionToFilter,

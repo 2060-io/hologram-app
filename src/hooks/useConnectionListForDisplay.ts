@@ -50,7 +50,7 @@ const getConnectionItem = async (
  * @returns connection list for display in the form of an array containing each capital letter and
  * the connections starting with it
  */
-const getConnectionSections = async (
+const getConnectionBySections = async (
   connections: ConnectionRecord[],
   findSubConnections: (connectionId: string) => ConnectionRecord[],
   agent: MobileAgent,
@@ -77,43 +77,45 @@ const getConnectionSections = async (
     .sort((a, b) => a.title.localeCompare(b.title))
 }
 
-export const useConnectionListForDisplay = (options: { search: string; excludedConnections: string[] }) => {
-  const [sections, setSections] = useState<ConnectionListSection[]>([])
+// FIXME: This is not very efficient, as it does multiple searches
+const searchByName = (dataList: ConnectionListSection[], search: string) => {
+  const matches = dataList.map(section => ({
+    ...section,
+    connections: section.connections
+      .filter(connection => {
+        const names = [
+          connection.name.toLocaleLowerCase(),
+          ...connection.subConnections.map(subConnection => subConnection.name.toLocaleLowerCase()),
+        ]
+        return names.some(name => name.includes(search.toLocaleLowerCase()))
+      })
+      .map(connection => ({
+        ...connection,
+        subConnectionsThatMatchWithSearch: connection.subConnections.filter(subConnection =>
+          subConnection.name.toLocaleLowerCase().includes(search.toLocaleLowerCase()),
+        ).length,
+      })),
+  }))
+  // Only those sections with at least a matching connection
+  return matches.filter(section => section.connections.length)
+}
 
-  const { search, excludedConnections } = options
-  const rootConnections = useParentConnections()
+export const useConnectionListForDisplay = ({
+  search,
+  excludedConnections,
+}: {
+  search: string
+  excludedConnections: string[]
+}) => {
   const { connections } = useConnections()
-
-  // FIXME: This is not very efficient, as it does multiple searches
-  const searchByName = (dataList: ConnectionListSection[]) => {
-    const matches = dataList.map(section => ({
-      ...section,
-      connections: section.connections
-        .filter(connection => {
-          const names = [
-            connection.name.toLocaleLowerCase(),
-            ...connection.subConnections.map(subConnection => subConnection.name.toLocaleLowerCase()),
-          ]
-          return names.some(name => name.includes(search.toLocaleLowerCase()))
-        })
-        .map(connection => ({
-          ...connection,
-          subConnectionsThatMatchWithSearch: connection.subConnections.filter(subConnection =>
-            subConnection.name.toLocaleLowerCase().includes(search.toLocaleLowerCase()),
-          ).length,
-        })),
-    }))
-
-    // Only those sections with at least a matching connection
-    return matches.filter(section => section.connections.length)
-  }
-
   const { agent } = useMobileAgent()
+  const rootConnections = useParentConnections()
+  const [connectionsBySections, setConnectionsBySections] = useState<ConnectionListSection[]>([])
 
   useEffect(() => {
     const getSections = async () => {
       if (!agent) return
-      let newSections = await getConnectionSections(
+      let newConnectionsBySections = await getConnectionBySections(
         rootConnections.filter(item => !excludedConnections.includes(item.id)),
         (connectionId: string) =>
           filterConnectionsByParentId(
@@ -122,12 +124,11 @@ export const useConnectionListForDisplay = (options: { search: string; excludedC
           ),
         agent,
       )
-      if (search.length >= 2) newSections = searchByName(newSections)
-      setSections(newSections)
+      if (search.length >= 2) newConnectionsBySections = searchByName(newConnectionsBySections, search)
+      setConnectionsBySections(newConnectionsBySections)
     }
-
     getSections()
   }, [search, rootConnections, connections, agent])
 
-  return { connectionListForDisplay: sections, isSearchingMode: search.length >= 2 }
+  return { connectionsBySections, isSearchingMode: search.length >= 2 }
 }
