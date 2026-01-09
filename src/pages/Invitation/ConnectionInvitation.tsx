@@ -77,7 +77,7 @@ const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => 
       navigation.dispatch(
         StackActions.replace('PersonalChatStack', {
           screen: 'PersonalChat',
-          params: { chatThreadId: chatThreadId.current },
+          params: { chatThreadId: chatThreadId.current, redirectToHomeOnBack: true },
         }),
       )
     }

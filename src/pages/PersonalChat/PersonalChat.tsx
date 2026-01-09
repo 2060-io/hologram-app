@@ -62,6 +62,7 @@ interface PersonalChatProps extends WrapperPersonalChatProps {
   chatEntries: ChatEntryData[]
   loadMoreMessages(): void
   chatThread: ChatThreadWithParticipants
+  redirectToHomeOnBack?: boolean
 }
 
 const createReportedMessageChatEntry = (params: {
@@ -90,7 +91,13 @@ const createReportedMessageChatEntry = (params: {
   })
 }
 
-const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }: PersonalChatProps) => {
+const PersonalChat = ({
+  chatEntries,
+  chatThread,
+  navigation,
+  loadMoreMessages,
+  redirectToHomeOnBack,
+}: PersonalChatProps) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
@@ -173,6 +180,7 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
   }, [isAppActive])
 
   useEffect(() => {
+    if (redirectToHomeOnBack) navigation.getParent?.()?.setOptions({ gestureEnabled: false })
     isAlreadyMounted.current = true
   }, [])
 
@@ -250,6 +258,7 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
             navigation.navigate('ConnectionDetails', { connectionId: chatThreadData.connectionId })
           }
         }}
+        redirectToHomeOnBack={redirectToHomeOnBack}
       />
     )
   }
