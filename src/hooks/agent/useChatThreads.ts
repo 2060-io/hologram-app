@@ -78,7 +78,11 @@ export const useChatThreadWithParticipants = (chatThreadId: string) => {
   return {
     participants,
     flags,
-    data: chatThread,
+    data: {
+      ...chatThread,
+      topic: serviceInfo?.name ?? chatThread?.topic,
+      picture: serviceInfo?.logoUrl ?? chatThread?.picture,
+    },
   }
 }
 
