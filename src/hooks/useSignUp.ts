@@ -51,7 +51,7 @@ export const useSignUp = () => {
 
       log('connected with default service')
     } catch (error) {
-      logError(`cannot connect to default service: ${error}`)
+      logError(`Could not connect to default service: ${defaultServicePublicDid}`, error)
     }
   }, [agent, displayName, displayPicture])
 
