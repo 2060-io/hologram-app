@@ -1,6 +1,7 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, SafeAreaView } from 'react-native'
+import { View } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 import { CallButton, AnswerButton, HangupButton, Avatar, Text } from '../common'
 
@@ -24,7 +25,7 @@ const IncomingCall = () => {
     <SafeAreaView style={styles.container}>
       <View style={styles.subContainer}>
         <Avatar uri={displayPicture} label={connectionName} size="46%" />
-        <Text typography="EuclidCircularA-Medium" style={styles.textConnectionName}>
+        <Text fontFamily="EuclidCircularA-Medium" style={styles.textConnectionName}>
           {connectionName}
         </Text>
       </View>

@@ -17,6 +17,11 @@ import {
 } from '@credo-ts/core'
 
 import { AgentActionOptions, AgentActionType } from '../actions/AgentAction'
+import {
+  AcceptConnectionRequestParameters,
+  AcceptConnectionResponseParameters,
+  QueryServiceFeaturesParameters,
+} from '../actions/types'
 
 import { supportsUserProfile } from '@2060/utils/connectionUtils'
 import { language } from '@2060/utils/language'
@@ -39,12 +44,15 @@ export function manageAgentConnectionEvents(
 
     if (supportsUserProfile(connection)) {
       if (connection.role === DidExchangeRole.Responder) {
-        await userProfileApi.sendUserProfile({
-          connectionId: connection.id,
-          sendBackYours: true,
-          profileData: {
-            ...(await userProfileApi.getUserProfileData()),
-            preferredLanguage: language,
+        addAgentActionToQueue({
+          type: AgentActionType.SendUserProfile,
+          parameters: {
+            connectionId: connection.id,
+            sendBackYours: true,
+            profileData: {
+              ...(await userProfileApi.getUserProfileData()),
+              preferredLanguage: language,
+            },
           },
         })
       }
@@ -53,13 +61,16 @@ export function manageAgentConnectionEvents(
 
   const profileRequestListener = async (event: UserProfileRequestedEvent) => {
     const userProfileApi = context.dependencyManager.resolve(UserProfileApi)
-    await userProfileApi.sendUserProfile({
-      connectionId: event.payload.connection.id,
-      sendBackYours: false,
-      threadId: event.payload.threadId,
-      profileData: {
-        ...(await userProfileApi.getUserProfileData()),
-        preferredLanguage: language,
+    addAgentActionToQueue({
+      type: AgentActionType.SendUserProfile,
+      parameters: {
+        connectionId: event.payload.connection.id,
+        sendBackYours: false,
+        threadId: event.payload.threadId,
+        profileData: {
+          ...(await userProfileApi.getUserProfileData()),
+          preferredLanguage: language,
+        },
       },
     })
   }
@@ -67,13 +78,16 @@ export function manageAgentConnectionEvents(
   const profileUpdatedListener = async (event: ConnectionProfileUpdatedEvent) => {
     const userProfileApi = context.dependencyManager.resolve(UserProfileApi)
     if (event.payload.sendBackYoursRequested) {
-      await userProfileApi.sendUserProfile({
-        connectionId: event.payload.connection.id,
-        sendBackYours: false,
-        threadId: event.payload.threadId,
-        profileData: {
-          ...(await userProfileApi.getUserProfileData()),
-          preferredLanguage: language,
+      addAgentActionToQueue({
+        type: AgentActionType.SendUserProfile,
+        parameters: {
+          connectionId: event.payload.connection.id,
+          sendBackYours: false,
+          threadId: event.payload.threadId,
+          profileData: {
+            ...(await userProfileApi.getUserProfileData()),
+            preferredLanguage: language,
+          },
         },
       })
     }
@@ -83,29 +97,26 @@ export function manageAgentConnectionEvents(
   const connectionListener = async (event: ConnectionStateChangedEvent) => {
     const { connectionRecord } = event.payload
     if (connectionRecord.state === DidExchangeState.RequestReceived) {
+      const parameters: AcceptConnectionRequestParameters = { connectionId: connectionRecord.id }
       addAgentActionToQueue({
         type: AgentActionType.AcceptConnectionRequest,
-        parameters: {
-          connectionId: connectionRecord.id,
-        },
+        parameters,
       })
     } else if (
       connectionRecord.state === DidExchangeState.ResponseReceived &&
       !connectionRecord.autoAcceptConnection
     ) {
+      const parameters: AcceptConnectionResponseParameters = { connectionId: connectionRecord.id }
       addAgentActionToQueue({
         type: AgentActionType.AcceptConnectionResponse,
-        parameters: {
-          connectionId: connectionRecord.id,
-        },
+        parameters,
       })
     }
     if (connectionRecord.isReady) {
+      const parameters: QueryServiceFeaturesParameters = { connectionId: connectionRecord.id }
       addAgentActionToQueue({
         type: AgentActionType.QueryServiceFeatures,
-        parameters: {
-          connectionId: connectionRecord.id,
-        },
+        parameters,
       })
     }
   }

@@ -1,6 +1,6 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { ScrollView, View, SafeAreaView } from 'react-native'
+import { ScrollView, View } from 'react-native'
 
 import Building from './Building'
 import Options from './Options'
@@ -10,6 +10,7 @@ import getStyles from './styles'
 
 import { WalletBackupInfo, ModalConfirmAction } from '@2060/components'
 import { Text, Switch, SvgIcon, MainButton } from '@2060/components/common'
+import { Option } from '@2060/components/common/OptionsList'
 import { IS_ANDROID, IS_IOS } from '@2060/constants'
 import { useBuildBackup } from '@2060/hooks'
 import { BackupProgressProps } from '@2060/hooks/backup'
@@ -51,7 +52,7 @@ const BaseWalletBackup = ({
     setUploadProgress,
   })
 
-  const options = [
+  const options: Option[] = [
     {
       iconName: 'videoBox',
       text: t('settings.includeVideos'),
@@ -68,7 +69,7 @@ const BaseWalletBackup = ({
   ]
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       {isCloudAvailable ? (
         <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
           <View style={styles.subContainer}>
@@ -112,7 +113,7 @@ const BaseWalletBackup = ({
         </ScrollView>
       ) : (
         <View style={styles.subContainer}>
-          <Text typography="EuclidCircularA-Medium" style={styles.makePasswordText}>
+          <Text fontFamily="EuclidCircularA-Medium" style={styles.makePasswordText}>
             {t('settings.noCloudAvailable', {
               cloud: IS_IOS ? 'iCloud Drive' : 'Google Drive',
             })}
@@ -130,7 +131,7 @@ const BaseWalletBackup = ({
         onConfirm={leaveScreen}
         onCancel={closeConfirmLeaveScreen}
       />
-    </SafeAreaView>
+    </View>
   )
 }
 

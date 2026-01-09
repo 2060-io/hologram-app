@@ -54,7 +54,7 @@ class GoogleDrive(reactContext: ReactApplicationContext): NativeGoogleDriveSpec(
                     val pendingIntent = authorizationResult.pendingIntent
                     try {
                         ActivityCompat.startIntentSenderForResult(
-                            this.currentActivity!!,
+                            reactApplicationContext.getCurrentActivity()!!,
                             pendingIntent!!.intentSender,
                             INTENT_AUTH_REQUEST_CODE,
                             null,
@@ -113,7 +113,7 @@ class GoogleDrive(reactContext: ReactApplicationContext): NativeGoogleDriveSpec(
             null,
             null
         )
-        val activity = this.currentActivity
+        val activity = reactApplicationContext.getCurrentActivity()
         if (activity == null) {
             authorizationRequestPromise!!.reject(
                 "NO_CURRENT_UI_ACTIVITY",
@@ -124,8 +124,10 @@ class GoogleDrive(reactContext: ReactApplicationContext): NativeGoogleDriveSpec(
         }
     }
 
+    override fun onNewIntent(intent: Intent) {}
+
     override fun onActivityResult(
-        activity: Activity?,
+        activity: Activity,
         requestCode: Int,
         resultCode: Int,
         data: Intent?
@@ -150,11 +152,9 @@ class GoogleDrive(reactContext: ReactApplicationContext): NativeGoogleDriveSpec(
                     this.reactApplicationContext
                 ).getAuthorizationResultFromIntent(data)
                 authorizationRequestPromise!!.resolve(true)
-            } catch (e: ApiException) {
+            } catch (_: ApiException) {
                 authorizationRequestPromise!!.reject(NAME, "Failed to authorize")
             }
         }
     }
-
-    override fun onNewIntent(p0: Intent?) {}
 }

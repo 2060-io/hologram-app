@@ -61,4 +61,10 @@ export default (theme: AppTheme) =>
       fontSize: theme.fontSize.sm,
       color: theme.colors.primaryText,
     },
+    acceptWithAgeRestricted: {
+      opacity: 0.3,
+    },
+    acceptWithoutAgeRestricted: {
+      opacity: 1,
+    },
   })

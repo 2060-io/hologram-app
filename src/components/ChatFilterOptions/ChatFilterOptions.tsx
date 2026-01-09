@@ -1,6 +1,6 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { TouchableOpacity, View, SafeAreaView } from 'react-native'
+import { TouchableOpacity, View } from 'react-native'
 
 import { IconsNames } from '../common/SvgIcon'
 
@@ -31,33 +31,29 @@ const ChatFilterOptions: React.FC<Props> = ({ options = defaultOptions, selected
   const styles = getStyles(theme)
   const { t } = useTranslation()
   return (
-    <SafeAreaView>
-      <View style={styles.subContainer}>
-        {options.map(option => (
-          <View
-            key={option.id}
-            style={[
-              styles.containerOptionCard,
-              option.value === selectedOption && styles.btnTextFilterOptionSelected,
-            ]}
+    <View style={styles.container}>
+      {options.map(option => (
+        <View
+          key={option.id}
+          style={[
+            styles.containerOptionCard,
+            option.value === selectedOption && styles.btnTextFilterOptionSelected,
+          ]}
+        >
+          <TouchableOpacity
+            style={styles.containerOption}
+            activeOpacity={0.9}
+            onPress={() => onChangeOption(option.value)}
           >
-            <TouchableOpacity
-              style={styles.containerOption}
-              activeOpacity={0.9}
-              onPress={() => onChangeOption(option.value)}
-            >
-              <SvgIcon
-                name={(option.name === 'allChats' ? 'messages' : option.name) as keyof IconsNames}
-                fill={theme.colors.blue}
-              />
-              <Text typography="EuclidCircularA-Regular" style={styles.btnOptionText}>
-                {`${t(`chat.${option.name}`)}`}
-              </Text>
-            </TouchableOpacity>
-          </View>
-        ))}
-      </View>
-    </SafeAreaView>
+            <SvgIcon
+              name={(option.name === 'allChats' ? 'messages' : option.name) as keyof IconsNames}
+              fill={theme.colors.blue}
+            />
+            <Text style={styles.btnOptionText}>{`${t(`chat.${option.name}`)}`}</Text>
+          </TouchableOpacity>
+        </View>
+      ))}
+    </View>
   )
 }
 

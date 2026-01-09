@@ -1,5 +1,6 @@
 import React, { memo } from 'react'
-import { View, TouchableOpacity } from 'react-native'
+import { useTranslation } from 'react-i18next'
+import { View, TouchableOpacity, Alert } from 'react-native'
 import { uses24HourClock } from 'react-native-localize'
 
 import { MediaInfo } from '../PersonalChatProps'
@@ -10,7 +11,6 @@ import { Icon, Text } from '@2060/components/common'
 import { useChatActions } from '@2060/hooks'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { ChatEntryMessage } from '@2060/pages/PersonalChat/ChatMessage/Props'
-import { log } from '@2060/utils'
 import { getFormattedDateRangeWithTime } from '@2060/utils/dateUtils'
 
 type LightboxHeaderProps = {
@@ -27,21 +27,20 @@ const Button = ({ iconName, onPress, color }: { iconName: string; onPress(): voi
 
 const LightboxHeader = memo(({ fileMediaInfo, onBack, chatEntry }: LightboxHeaderProps) => {
   const { shareMediaToApp, saveFileToGallery, deleteMessagesForMe } = useChatActions()
+  const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
   const using24HourFormat = uses24HourClock()
   const iconColor = theme.colors.tertiaryText
 
   const handleSaveFileToGallery = () => {
-    saveFileToGallery(chatEntry).then(() => {
-      onBack()
-    })
+    saveFileToGallery(chatEntry)
+      .then(() => Alert.alert(t('personalChat.saveSucceededFileMedia')))
+      .catch(() => Alert.alert(t('personalChat.saveFailedFileMedia')))
   }
 
   const handleShareMediaToApp = () => {
     shareMediaToApp(chatEntry)
-      .then(() => onBack())
-      .catch(log)
   }
 
   const handleMessageDelete = () => {
@@ -54,10 +53,10 @@ const LightboxHeader = memo(({ fileMediaInfo, onBack, chatEntry }: LightboxHeade
       <View style={styles.containerHeaderLeft}>
         <Button iconName="arrow-back-circle-outline" onPress={onBack} color={iconColor} />
         <View style={styles.containerUserInfo}>
-          <Text typography="EuclidCircularA-Medium" style={styles.text}>
+          <Text fontFamily="EuclidCircularA-Medium" style={styles.text}>
             {fileMediaInfo.sender?.name}
           </Text>
-          <Text typography="EuclidCircularA-Regular" style={styles.text}>
+          <Text style={styles.text}>
             {getFormattedDateRangeWithTime(new Date(fileMediaInfo.createdAt), using24HourFormat)}
           </Text>
         </View>

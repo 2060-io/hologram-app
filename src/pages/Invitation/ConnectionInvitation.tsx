@@ -1,9 +1,10 @@
 import { StackActions } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
 import { TrustResolutionOutcome } from '@verana-labs/verre'
-import React, { useLayoutEffect, useState, useRef, useEffect } from 'react'
+import React, { useLayoutEffect, useState, useRef, useEffect, useTransition } from 'react'
 import { useTranslation } from 'react-i18next'
-import { TouchableOpacity, View, ScrollView, SafeAreaView } from 'react-native'
+import { TouchableOpacity, View, ScrollView } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 import AlreadyConnected from './AlreadyConnected'
 import PublicService from './PublicService'
@@ -38,7 +39,7 @@ interface Props extends StackScreenProps<NavigationStackParams, 'ConnectionInvit
 const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => {
   const { outOfBandRecord, existingConnectionId } = route.params
   const isAlreadyConnected = !!existingConnectionId
-  const [isAcceptingInvitation, setIsAcceptingInvitation] = useState(false)
+  const [isAcceptingInvitation, startAcceptInvitationTransition] = useTransition()
   const [communicationChannels, setCommunicationChannels] = useState({
     allowChats: true,
     allowAudioCalls: false,
@@ -87,28 +88,25 @@ const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => 
     else navigation.dispatch(StackActions.replace('Home'))
   }
 
-  const onFinishAddingConnection = () => setIsAcceptingInvitation(false)
-
   const onPressRightButton = () => {
     canConnect ? accept() : navigation.goBack()
   }
 
   const accept = async () => {
-    const invitationOptions = {
-      outOfBandId,
-      label: userProfileData?.displayName,
-      connectionId: parentConnectionId,
-    }
-    setIsAcceptingInvitation(true)
-    try {
-      if (!agent) throw new Error('Agent not initialized')
-      const { connectionRecord } = await acceptInvitation(agent.context, invitationOptions)
-      chatThreadId.current = findOrCreateThread({ connection: connectionRecord! }).id
-    } catch (error) {
-      toast({ type: 'error', message: `Failed to add connection ${error}` })
-    } finally {
-      onFinishAddingConnection()
-    }
+    if (!agent) return
+    startAcceptInvitationTransition(async () => {
+      try {
+        const invitationOptions = {
+          outOfBandId,
+          label: userProfileData?.displayName,
+          connectionId: parentConnectionId,
+        }
+        const { connectionRecord } = await acceptInvitation(agent.context, invitationOptions)
+        chatThreadId.current = findOrCreateThread({ connection: connectionRecord! }).id
+      } catch (error) {
+        toast({ type: 'error', message: `Failed to add connection ${error}` })
+      }
+    })
   }
 
   const handleChangeHeaderOptions = () => {
@@ -122,7 +120,7 @@ const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => 
       headerLeft: canConnect
         ? () => (
             <TouchableOpacity style={styles.btnRefuse} onPress={onRefuse}>
-              <Text typography="EuclidCircularA-Medium" style={styles.headerBtnText}>
+              <Text fontFamily="EuclidCircularA-Medium" style={styles.headerBtnText}>
                 {t('general.refuse')}
               </Text>
             </TouchableOpacity>
@@ -130,7 +128,7 @@ const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => 
         : () => <></>,
       headerRight: () => (
         <TouchableOpacity style={styles.btnAccept} onPress={onPressRightButton}>
-          <Text typography="EuclidCircularA-Medium" style={styles.headerBtnText}>
+          <Text fontFamily="EuclidCircularA-Medium" style={styles.headerBtnText}>
             {canConnect ? t('general.accept') : t('general.done')}
           </Text>
         </TouchableOpacity>
@@ -141,7 +139,7 @@ const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => 
   useLayoutEffect(handleChangeHeaderOptions, [canConnect, theme.colors])
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['bottom']}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <ModalLoading visible={isAcceptingInvitation} />
         <View style={styles.subContainer}>
@@ -163,7 +161,7 @@ const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => 
             <View>
               <View style={styles.card}>
                 <Avatar uri={invitation?.imageUrl} label={invitation?.label} size="25%" withBorder={true} />
-                <Text typography="EuclidCircularA-Medium" style={styles.invitationLabel}>
+                <Text fontFamily="EuclidCircularA-Medium" style={styles.invitationLabel}>
                   {invitation?.label}
                 </Text>
                 {invitationType === 'peer' && (
@@ -172,21 +170,21 @@ const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => 
                   </Text>
                 )}
                 {invitationType === 'subInvitation' && (
-                  <Text typography="EuclidCircularA-Regular" style={styles.content}>
+                  <Text style={styles.content}>
                     {t('invitation.subConnectionInvitationDescription')}{' '}
-                    <Text typography="EuclidCircularA-Bold" style={styles.fontFamilyBold}>
+                    <Text fontFamily="EuclidCircularA-Bold" style={styles.fontFamilyBold}>
                       {`${invitation?.label} `}{' '}
                     </Text>
                     {t('invitation.subConnectionInvitationDescriptionAs')}{' '}
-                    <Text typography="EuclidCircularA-Bold" style={styles.fontFamilyBold}>
+                    <Text fontFamily="EuclidCircularA-Bold" style={styles.fontFamilyBold}>
                       {parentConnectionName}
                     </Text>
                   </Text>
                 )}
               </View>
-              {invitationType === 'peer' && (
+              {!isAlreadyConnected && invitationType === 'peer' && (
                 <View style={styles.card}>
-                  <Text typography="EuclidCircularA-Regular" style={styles.enabledChannelsText}>
+                  <Text style={styles.enabledChannelsText}>
                     {`${invitation?.label} ${t('invitation.enabledCommunicationChannelsDescription')}`}
                   </Text>
                   <View style={styles.separator} />

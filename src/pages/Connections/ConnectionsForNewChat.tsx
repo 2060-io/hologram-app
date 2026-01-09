@@ -2,16 +2,15 @@ import { StackActions } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
 import React, { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import { TouchableOpacity } from 'react-native'
+import { StyleSheet, TouchableOpacity } from 'react-native'
 
-import BaseConnections from './BaseConnections'
-import getStyles from './styles'
-
-import { ConnectionItem } from '@2060/components/ConnectionsList/ConnectionListProps'
+import { Connections } from '@2060/components'
+import { ConnectionItem } from '@2060/components/Connections/ConnectionsList'
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
 import { Text } from '@2060/components/common'
 import { useChats, useConnections } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
+import { AppTheme } from '@2060/styles'
 
 interface Props extends StackScreenProps<NavigationStackParams, 'ConnectionsForNewChat'> {}
 
@@ -36,7 +35,7 @@ const ConnectionsForNewChat = ({ navigation }: Props) => {
   }
 
   return (
-    <BaseConnections
+    <Connections
       navigation={navigation}
       onPressConnection={tryGoToChatScreen}
       headerProps={{
@@ -46,7 +45,7 @@ const ConnectionsForNewChat = ({ navigation }: Props) => {
         titleForSubConnections: t('chat.newMessage'),
         defaultBackButton: (
           <TouchableOpacity style={styles.headerLeft} onPress={() => navigation.goBack()}>
-            <Text typography="EuclidCircularA-Medium" style={styles.headerBtnText}>
+            <Text fontFamily="EuclidCircularA-Medium" style={styles.headerBtnText}>
               {t('general.cancel')}
             </Text>
           </TouchableOpacity>
@@ -56,4 +55,14 @@ const ConnectionsForNewChat = ({ navigation }: Props) => {
   )
 }
 
+const getStyles = (theme: AppTheme) =>
+  StyleSheet.create({
+    headerLeft: {
+      paddingLeft: 15,
+    },
+    headerBtnText: {
+      fontSize: theme.fontSize.md2,
+      color: theme.colors.green,
+    },
+  })
 export default ConnectionsForNewChat

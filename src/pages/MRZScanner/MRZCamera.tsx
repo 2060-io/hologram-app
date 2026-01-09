@@ -3,8 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { Dimensions, LayoutChangeEvent, Platform, StyleSheet, TouchableOpacity, View } from 'react-native'
 import { Svg, Rect } from 'react-native-svg'
 import { Camera, runAtTargetFps, useCameraFormat, useFrameProcessor } from 'react-native-vision-camera'
-import { useTextRecognition } from 'react-native-vision-camera-text-recognition'
-import { Text as ResolvedText, ScanRegion } from 'react-native-vision-camera-text-recognition/src/types'
+import { useTextRecognition, Text as ResolvedText, ScanRegion } from 'react-native-vision-camera-ocr-plus'
 import { Worklets } from 'react-native-worklets-core'
 
 import { MRZCameraProps } from './MRZScannerProps'
@@ -22,10 +21,10 @@ const SCREEN_HEIGHT = Platform.select<number>({
 }) as number
 
 const scanRegion: ScanRegion = {
-  left: 5,
-  top: 28,
-  width: 90,
-  height: 24,
+  left: '5%',
+  top: '28%',
+  width: '90%',
+  height: '24%',
 }
 const RUN_TARGET_FPS = IS_IOS ? 5 : 1
 
@@ -36,7 +35,11 @@ const MRZCamera = ({ skipScan, cameraProps, onData, scanSuccess, refuse }: MRZCa
   const screenAspectRatio = SCREEN_HEIGHT / SCREEN_WIDTH
   const theme = useTheme()
   const styles = getStyles(theme)
-  const { scanText } = useTextRecognition({ language: 'latin', scanRegion })
+  const { scanText } = useTextRecognition({
+    frameSkipThreshold: 1,
+    useLightweightMode: true,
+    scanRegion,
+  })
   const [containerHeight, setContainerHeight] = useState(0)
   const supports60Fps = useMemo(() => device?.formats.some(f => f.maxFps >= 60), [device?.formats])
   const format = useCameraFormat(device, [
@@ -59,9 +62,7 @@ const MRZCamera = ({ skipScan, cameraProps, onData, scanSuccess, refuse }: MRZCa
         data.blocks.forEach(block => {
           lines.push(block.blockText)
         })
-        if (lines.length > 0 && isActive && onData) {
-          onData(lines)
-        }
+        if (lines.length > 0 && isActive) onData(lines)
       }
     },
     [isActive, onData],
@@ -104,9 +105,9 @@ const MRZCamera = ({ skipScan, cameraProps, onData, scanSuccess, refuse }: MRZCa
         <Svg preserveAspectRatio="xMidYMid slice" style={StyleSheet.absoluteFill}>
           <Rect
             x={0}
-            y={(scanRegion.top / 100) * containerHeight}
+            y={(parseFloat(scanRegion.top) / 100) * containerHeight}
             width={'100%'}
-            height={(scanRegion.height / 100) * containerHeight}
+            height={(parseFloat(scanRegion.height) / 100) * containerHeight}
             strokeWidth="3"
             stroke={theme.colors.green}
             fillOpacity={0}
@@ -116,23 +117,21 @@ const MRZCamera = ({ skipScan, cameraProps, onData, scanSuccess, refuse }: MRZCa
       <View style={{ ...styles.topOverlayContainer, height: containerHeight * 0.28 }}>
         <View style={styles.headerContainer}>
           <TouchableOpacity style={styles.headerLeft} onPress={skipScan}>
-            <Text typography="EuclidCircularA-Medium" style={styles.headerBtnText}>
+            <Text fontFamily="EuclidCircularA-Medium" style={styles.headerBtnText}>
               {t('general.cancel')}
             </Text>
           </TouchableOpacity>
           <HeaderTitle title={t('chat.mrzRequest')} theme={theme} />
         </View>
-        <Text typography="EuclidCircularA-Bold" style={styles.title}>
+        <Text fontFamily="EuclidCircularA-Bold" style={styles.title}>
           {t('chat.mrzScanTitle')}
         </Text>
-        <Text typography="EuclidCircularA-Regular" style={styles.instructions}>
-          {t('chat.mrzScanInst')}
-        </Text>
+        <Text style={styles.instructions}>{t('chat.mrzScanInst')}</Text>
       </View>
       <View style={{ ...styles.bottomOverlayContainer, height: containerHeight * 0.48 }}>
         <SvgIcon name="MRZ" height={widthPercentageToDP('43')} width={widthPercentageToDP('72')} />
         <TouchableOpacity onPress={refuse}>
-          <Text typography="EuclidCircularA-Medium" style={styles.refuse}>
+          <Text fontFamily="EuclidCircularA-Medium" style={styles.refuse}>
             {t('general.refuse')}
           </Text>
         </TouchableOpacity>

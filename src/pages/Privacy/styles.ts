@@ -21,6 +21,7 @@ export default (theme: AppTheme) =>
     },
     optionsContainer: {
       margin: 15,
+      marginBottom: 0,
     },
     timeoutOptionsTitle: {
       marginBottom: 12,
@@ -48,5 +49,8 @@ export default (theme: AppTheme) =>
     option: {
       fontSize: theme.fontSize.md2,
       color: theme.colors.primaryText,
+    },
+    automaticMediaDownloadTitle: {
+      marginVertical: 12,
     },
   })

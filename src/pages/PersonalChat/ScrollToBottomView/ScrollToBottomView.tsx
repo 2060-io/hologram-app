@@ -8,22 +8,22 @@ import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 
 type Props = {
   numberNewMessages: number
-  onScrollToBottom(): void
+  scrollToBottom(): void
 }
 
-const ScrollToBottom: React.FC<Props> = ({ numberNewMessages, onScrollToBottom }) => {
+const ScrollToBottom: React.FC<Props> = ({ numberNewMessages, scrollToBottom }) => {
   const theme = useTheme()
   const styles = getStyles(theme)
   return (
     <TouchableOpacity
       style={styles.container}
-      onPress={onScrollToBottom}
+      onPress={scrollToBottom}
       hitSlop={{ top: 5, left: 5, right: 5, bottom: 5 }}
     >
       <Icon as="Ionicons" name="arrow-down-sharp" size={22} color={theme.colors.primaryText} />
       {!!numberNewMessages && (
         <View style={styles.containerMsgNew}>
-          <Text typography="EuclidCircularA-SemiBold" style={styles.newMsgText}>
+          <Text fontFamily="EuclidCircularA-SemiBold" style={styles.newMsgText}>
             {numberNewMessages}
           </Text>
         </View>

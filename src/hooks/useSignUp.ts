@@ -1,35 +1,26 @@
+import { UserProfileData } from '@2060.io/credo-ts-didcomm-user-profile'
 import { useCallback, useState } from 'react'
+import Config from 'react-native-config'
 
-import { useMobileAgent } from '../hooks/agent'
-
+import { useMobileAgent, useUserProfile } from '@2060/hooks/agent'
 import { isRegistered } from '@2060/services/agent'
 import { log, logError } from '@2060/utils'
 
-export enum SignUpState {
-  Init = 'Init',
-  Started = 'Started',
-  Connected = 'Connected',
-  AgentCreated = 'AgentCreated',
-}
+const defaultServicePublicDid = Config.DEFAULT_SERVICE_PUBLIC_DID as string
+const defaultServiceAlias = Config.DEFAULT_SERVICE_ALIAS as string
+const cloudAgentPublicDid = Config.CLOUD_AGENT_PUBLIC_DID as string
 
-interface SignUpOptions {
-  cloudAgentPublicDid: string
-  defaultServicePublicDid: string
-  defaultServiceAlias: string
-}
-
-export const useSignUp = (options: SignUpOptions) => {
+export const useSignUp = () => {
   const { agent, handleChangeAgentState } = useMobileAgent()
-
-  const [signUpState, setSignUpState] = useState<SignUpState>(SignUpState.Init)
+  const { updateUserProfileData } = useUserProfile()
+  const [displayName, setDisplayName] = useState('')
+  const [displayPicture, setDisplayPicture] = useState<UserProfileData['displayPicture']>()
 
   const startSignUp = useCallback(async () => {
     if (!agent || !agent?.isInitialized) throw new Error('Agent not initialized')
 
-    setSignUpState(SignUpState.Started)
-
     let { connectionRecord: cloudAgentConnection } = await agent.oob.receiveImplicitInvitation({
-      did: options.cloudAgentPublicDid,
+      did: cloudAgentPublicDid,
       alias: 'Cloud Agent',
       autoAcceptConnection: true,
     })
@@ -39,19 +30,17 @@ export const useSignUp = (options: SignUpOptions) => {
       timeoutMs: 5000,
     })
 
-    setSignUpState(SignUpState.Connected)
-
     const mediationRecord = await agent.mediationRecipient.requestAndAwaitGrant(cloudAgentConnection, 5000)
     await agent.mediationRecipient.setDefaultMediator(mediationRecord)
     await agent.mediationRecipient.initialize()
-    setSignUpState(SignUpState.AgentCreated)
+    updateUserProfileData({ displayName: displayName.trim(), displayPicture })
     const isSignedUp = await isRegistered(agent)
     handleChangeAgentState({ isSignedUp })
 
     try {
       let { connectionRecord: defaultServiceConnection } = await agent.oob.receiveImplicitInvitation({
-        did: options.defaultServicePublicDid,
-        alias: options.defaultServiceAlias,
+        did: defaultServicePublicDid,
+        alias: defaultServiceAlias,
         autoAcceptConnection: true,
       })
       if (!defaultServiceConnection) throw new Error('Default service connection not created')
@@ -64,7 +53,7 @@ export const useSignUp = (options: SignUpOptions) => {
     } catch (error) {
       logError(`cannot connect to default service: ${error}`)
     }
-  }, [agent])
+  }, [agent, displayName, displayPicture])
 
-  return { signUpState, startSignUp }
+  return { startSignUp, displayName, setDisplayName, displayPicture, setDisplayPicture }
 }

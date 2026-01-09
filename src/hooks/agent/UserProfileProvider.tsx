@@ -1,12 +1,11 @@
-import { UserProfileData } from '@2060.io/credo-ts-didcomm-user-profile'
+import { GetUserProfileDataReturnType, UserProfileData } from '@2060.io/credo-ts-didcomm-user-profile'
 import React, { createContext, useState, useEffect, useContext, useCallback } from 'react'
 
 import { useMobileAgent } from './MobileAgentProvider'
 
 interface UserProfileContextInterface {
-  loading: boolean
-  userProfileData?: UserProfileData
-  setUserProfileData?: (data: Partial<UserProfileData>) => unknown
+  userProfileData?: GetUserProfileDataReturnType
+  updateUserProfileData: (data: UserProfileData) => void
 }
 
 const UserProfileContext = createContext<UserProfileContextInterface | undefined>(undefined)
@@ -24,37 +23,29 @@ interface Props {
 
 export const UserProfileProvider: React.FC<Props> = ({ children }) => {
   const { isInitialized, agent } = useMobileAgent()
-
-  const [userProfileState, setUserProfileState] = useState<UserProfileContextInterface>({
-    loading: true,
-  })
-
-  const setUserProfileDataInternal = useCallback(
-    async (data: Partial<UserProfileData>) => {
-      if (agent && agent.isInitialized) {
-        const newUserProfileData = await agent?.modules.profile.updateUserProfileData(data)
-        setUserProfileState(prevState => ({ ...prevState, userProfileData: newUserProfileData }))
-      }
-    },
-    [userProfileState],
-  )
-
-  const setInitialState = async () => {
-    if (agent && isInitialized) {
-      const profileData = await agent.modules.profile.getUserProfileData()
-      setUserProfileState({
-        loading: false,
-        userProfileData: profileData,
-        setUserProfileData: setUserProfileDataInternal,
-      })
-    } else {
-      setUserProfileState({ loading: true })
-    }
-  }
+  const [userProfileState, setUserProfileState] = useState<{
+    userProfileData?: GetUserProfileDataReturnType
+  }>()
 
   useEffect(() => {
+    const setInitialState = async () => {
+      if (agent && isInitialized) {
+        const userProfileData = await agent.modules.profile.getUserProfileData()
+        setUserProfileState({ userProfileData })
+      }
+    }
     setInitialState()
   }, [agent, isInitialized])
 
-  return <UserProfileContext value={userProfileState}>{children}</UserProfileContext>
+  const updateUserProfileData = useCallback(
+    async (data: Partial<UserProfileData>) => {
+      const userProfileData = await agent?.modules.profile.updateUserProfileData(data)
+      setUserProfileState({ userProfileData })
+    },
+    [agent],
+  )
+
+  return (
+    <UserProfileContext value={{ ...userProfileState, updateUserProfileData }}>{children}</UserProfileContext>
+  )
 }

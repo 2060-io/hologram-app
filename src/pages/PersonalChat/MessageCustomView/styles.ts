@@ -87,7 +87,7 @@ export default (theme: AppTheme) =>
     },
     reactionEmoji: {
       fontSize: theme.fontSize.md,
-      color: 'black',
+      color: theme.colors.black,
     },
     reactionEmojiQuantity: {
       fontSize: theme.fontSize.md - 1,
@@ -97,5 +97,9 @@ export default (theme: AppTheme) =>
     tappedRepliedMessageTemporaryStyle: {
       borderWidth: 2,
       borderColor: theme.colors.green,
+    },
+    removedRepliedMessageTemporaryStyle: {
+      borderWidth: 0,
+      borderColor: 'transparent',
     },
   })

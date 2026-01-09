@@ -5,9 +5,6 @@ import { logError } from '@2060/utils'
 // This storage key saves the value that indicates if user has enable display logs as toast message
 export const LOGS_ENABLED_PERSIST_KEY = 'logsEnabled'
 
-// This storage key saves the value that indicates if user has enable background notifications handler
-export const BACKGROUND_PUSH_NOTIFICATION_HANDLER_ENABLED_PERSIST_KEY = 'backgroundPushNotificationsEnabled'
-
 // Android only. This storage key saves the value of current google account selected in backup process
 export const GOOGLE_ACCOUNT_BACKUP_PERSIST_KEY = 'googleAccountBackup'
 
@@ -44,6 +41,9 @@ export const SCREEN_LOCK_TIMEOUT_PERSIST_KEY = 'screenLockTimeout'
 
 // This storage key saves the value that indicates if user has screen lock enabled
 export const SCREEN_LOCK_ENABLED_PERSIST_KEY = 'screenLockEnabled'
+
+// This storage key saves the id of the OutOfBandRecord when user creates his invitation to share it
+export const USER_INVITATION_OUT_OF_BAND_RECORD_ID = 'userInvitationOutOfBandRecordId'
 
 export const setStorageData = async (key: string, value: unknown) => {
   try {

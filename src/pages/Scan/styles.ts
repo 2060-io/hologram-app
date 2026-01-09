@@ -5,8 +5,11 @@ import { heightPercentageToDP, widthPercentageToDP } from '@2060/utils/responsiv
 
 export default (theme: AppTheme) =>
   StyleSheet.create({
-    root: {
+    container: {
       flex: 1,
+    },
+    scrollViewContentContainerStyle: {
+      flexGrow: 1,
     },
     containerContent: {
       width: widthPercentageToDP('93%'),
@@ -29,9 +32,9 @@ export default (theme: AppTheme) =>
     input: {
       flex: 1,
       color: theme.colors.secondaryText,
-      fontSize: theme.fontSize.md + 1,
+      fontSize: theme.fontSize.md2,
       paddingLeft: 10,
-      fontFamily: 'EuclidCircularA-Regular',
+      fontFamily: 'EuclidCircularA-Medium',
     },
     containerCodeScanner: {
       flex: 1,

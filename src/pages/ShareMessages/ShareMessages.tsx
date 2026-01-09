@@ -2,13 +2,12 @@ import { useHeaderHeight } from '@react-navigation/elements'
 import { StackScreenProps } from '@react-navigation/stack'
 import React, { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { SafeAreaView, TouchableOpacity, View } from 'react-native'
-
-import { BaseConnections } from '../Connections'
+import { TouchableOpacity, View } from 'react-native'
 
 import getStyles from './styles'
 
-import { ConnectionItem } from '@2060/components/ConnectionsList/ConnectionListProps'
+import { Connections } from '@2060/components'
+import { ConnectionItem } from '@2060/components/Connections/ConnectionsList'
 import { PersonalChatStackParams } from '@2060/components/Navigation/NavigationProps'
 import { SvgIcon, Text } from '@2060/components/common'
 import { useChatActions } from '@2060/hooks'
@@ -71,9 +70,9 @@ const ShareMessages = ({ navigation }: Props) => {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <View style={styles.connectionsContainer}>
-        <BaseConnections
+        <Connections
           navigation={navigation}
           onPressConnection={updateSelectedConnections}
           headerProps={{
@@ -81,30 +80,29 @@ const ShareMessages = ({ navigation }: Props) => {
             title: t('navigation.shareWith'),
             defaultBackButton: (
               <TouchableOpacity style={styles.headerLeft} onPress={() => navigation.goBack()}>
-                <Text typography="EuclidCircularA-Medium" style={styles.headerBtnText}>
+                <Text fontFamily="EuclidCircularA-Medium" style={styles.headerBtnText}>
                   {t('general.cancel')}
                 </Text>
               </TouchableOpacity>
             ),
           }}
-          allowSelection
           selectedConnections={selectedConnections.map(connection => connection.id)}
           excludedConnections={excludedConnections}
         />
       </View>
       <View style={styles.shareContainer}>
-        <Text typography="EuclidCircularA-Medium" style={styles.connectionsToShareText} numberOfLines={1}>
+        <Text fontFamily="EuclidCircularA-Medium" style={styles.connectionsToShareText} numberOfLines={1}>
           {selectedConnectionNames}
         </Text>
         <TouchableOpacity
-          style={[styles.shareButton, { opacity: isShareButtonDisabled ? 0.5 : 1 }]}
+          style={[styles.shareButton, isShareButtonDisabled ? styles.disabledForward : styles.enabledForward]}
           disabled={isShareButtonDisabled}
           onPress={onShareMessages}
         >
           <SvgIcon name="send" fill={theme.colors.white} />
         </TouchableOpacity>
       </View>
-    </SafeAreaView>
+    </View>
   )
 }
 

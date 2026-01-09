@@ -23,7 +23,7 @@ const ProofOfTrust = ({ serviceInfo }: Props) => {
 
   return (
     <View style={styles.container}>
-      <Text typography="EuclidCircularA-Bold" style={styles.title}>
+      <Text fontFamily="EuclidCircularA-Bold" style={styles.title}>
         {t('connection.proofOfTrust')}
       </Text>
       {serviceProvider ? (
@@ -31,9 +31,7 @@ const ProofOfTrust = ({ serviceInfo }: Props) => {
       ) : (
         <>
           <VerifiedIcon style={styles.notVerifiableIcon} status={serviceInfo.status} />
-          <Text typography="EuclidCircularA-Regular" style={styles.notVerifiable}>
-            {t('invitation.serviceNotVerifiable')}
-          </Text>
+          <Text style={styles.notVerifiable}>{t('invitation.serviceNotVerifiable')}</Text>
         </>
       )}
     </View>

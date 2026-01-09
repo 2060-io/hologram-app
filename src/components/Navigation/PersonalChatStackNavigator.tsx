@@ -20,6 +20,7 @@ const PersonalChatStackNavigator = () => {
   const theme = useTheme()
   const styles = getStyles(theme)
   const globalStyles = getGlobalStyles(theme)
+
   return (
     <PersonalChatProvider>
       <MediaPlayerProvider>

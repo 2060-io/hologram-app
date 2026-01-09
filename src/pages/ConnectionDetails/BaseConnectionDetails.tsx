@@ -1,10 +1,10 @@
-import { getConnectionProfile } from '@2060.io/credo-ts-didcomm-user-profile'
 import { ConnectionRecord, TypedArrayEncoder, Buffer } from '@credo-ts/core'
 import { StackScreenProps } from '@react-navigation/stack'
 import React, { ReactElement, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, SafeAreaView, ScrollView, TouchableOpacity, Platform } from 'react-native'
+import { View, ScrollView, TouchableOpacity, Platform } from 'react-native'
 import Config from 'react-native-config'
+import { SafeAreaView } from 'react-native-safe-area-context'
 import Share, { ShareOptions } from 'react-native-share'
 
 import getStyles from './styles'
@@ -12,6 +12,7 @@ import getStyles from './styles'
 import { ModalConfirmAction } from '@2060/components'
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
 import { Text, ConnectionMainActions, SvgIcon, ModalLoading, OptionsList } from '@2060/components/common'
+import { Option } from '@2060/components/common/OptionsList'
 import { IS_IOS } from '@2060/constants'
 import {
   useMobileAgent,
@@ -22,14 +23,8 @@ import {
 import { deleteConnection, blockConnection, unblockConnection } from '@2060/hooks/agent/connections'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { createOobInvitation, MobileAgent } from '@2060/services/agent'
-import { capitalizeFirstLetter, log, logError } from '@2060/utils'
-import {
-  getConnectionDisplayName,
-  isBlocked,
-  isService,
-  isTerminated,
-  supportsUserProfile,
-} from '@2060/utils/connectionUtils'
+import { capitalizeFirstLetter, logError } from '@2060/utils'
+import { getConnectionDisplayName, isBlocked, isService, isTerminated } from '@2060/utils/connectionUtils'
 import { markNewConnectionNotificationAsViewed } from '@2060/utils/pushNotificationsUtils'
 import { toast } from '@2060/utils/toast'
 
@@ -41,8 +36,8 @@ export interface ConnectionDetailsProps extends WrapperProps {
 }
 
 interface BaseConnectionDetailsProps extends ConnectionDetailsProps {
-  mainInfo: ReactElement
-  footerInfo?: ReactElement
+  mainInfo: ReactElement | null
+  footerInfo?: ReactElement | null
 }
 
 const BaseConnectionDetails = ({
@@ -57,7 +52,6 @@ const BaseConnectionDetails = ({
   const theme = useTheme()
   const styles = getStyles(theme)
 
-  const profile = getConnectionProfile(connection)
   const { agent } = useMobileAgent()
   const { t } = useTranslation()
   const connectionName = getConnectionDisplayName(connection)
@@ -76,7 +70,7 @@ const BaseConnectionDetails = ({
       headerLeft: () => null,
       headerRight: () => (
         <TouchableOpacity style={styles.headerRight} onPress={() => navigation.goBack()}>
-          <Text style={styles.headerBtnText} typography="EuclidCircularA-Medium">
+          <Text style={styles.headerBtnText} fontFamily="EuclidCircularA-Medium">
             {t('general.done')}
           </Text>
         </TouchableOpacity>
@@ -144,39 +138,23 @@ const BaseConnectionDetails = ({
     actions[modalConfirmationTypeRef.current]()
   }
 
-  const getUserProfile = async () => {
-    if (!profile || (profile && Object.keys(profile).length === 0)) {
-      if (supportsUserProfile(connection)) {
-        try {
-          await agent?.modules.profile.requestUserProfile({ connectionId: connection.id })
-        } catch (error) {
-          log(`Cannot get user profile: ${error}`)
-        }
-      }
-    }
-  }
+  const relatedConnectionsOptions: Option[] = [
+    {
+      iconName: 'users',
+      text: t('connection.managedConnections'),
+      onPress: goToRelatedConnections,
+      rightContent: () => (
+        <>
+          <Text style={styles.accountText}>{relatedConnections.length}</Text>
+          <SvgIcon name="chevronForward" fill={theme.colors.primaryText} width={16} height={16} />
+        </>
+      ),
+    },
+  ]
 
-  useEffect(() => {
-    getUserProfile()
-  }, [profile])
+  const mainOptions = relatedConnections.length ? relatedConnectionsOptions : []
 
-  const relatedConnectionsOption = {
-    iconName: 'users',
-    text: t('connection.managedConnections'),
-    onPress: goToRelatedConnections,
-    rightContent: () => (
-      <>
-        <Text typography="EuclidCircularA-Regular" style={styles.accountText}>
-          {relatedConnections.length}
-        </Text>
-        <SvgIcon name="chevronForward" fill={theme.colors.primaryText} width={16} height={16} />
-      </>
-    ),
-  }
-
-  const mainOptions = relatedConnections.length ? [relatedConnectionsOption] : []
-
-  const connectionOptions = []
+  const connectionOptions: Option[] = []
   connectionOptions.push({
     iconName: 'trash',
     text: t('connection.clearChat'),
@@ -235,7 +213,7 @@ const BaseConnectionDetails = ({
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['bottom']}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.subContainer}>
           <ModalLoading
@@ -245,29 +223,21 @@ const BaseConnectionDetails = ({
           {mainInfo}
           {isConnectionTerminated && (
             <View style={[styles.blockedContainer, styles.statusMainContainer]}>
-              <Text typography="EuclidCircularA-Regular" style={styles.blockedText}>
-                {t('connection.terminated')}
-              </Text>
+              <Text style={styles.blockedText}>{t('connection.terminated')}</Text>
             </View>
           )}
           {isConnectionBlocked && (
             <View style={[styles.blockedContainer, styles.statusMainContainer]}>
-              <Text typography="EuclidCircularA-Regular" style={styles.blockedText}>
-                {t('connection.blocked')}
-              </Text>
+              <Text style={styles.blockedText}>{t('connection.blocked')}</Text>
             </View>
           )}
           {!isConnectionCompleted && (
             <View style={[styles.waitingContainer, styles.statusMainContainer]}>
-              <Text typography="EuclidCircularA-Regular" style={styles.pendingText}>
-                {t('connection.pending')}
-              </Text>
+              <Text style={styles.pendingText}>{t('connection.pending')}</Text>
             </View>
           )}
           <View style={styles.nameContainer}>
-            <Text typography="EuclidCircularA-Regular" style={styles.displayName}>
-              {connectionName}
-            </Text>
+            <Text style={styles.displayName}>{connectionName}</Text>
             <ConnectionMainActions
               navigation={navigation}
               connectionId={connection.id}

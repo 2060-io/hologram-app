@@ -12,6 +12,7 @@ import InCallManager from 'react-native-incall-manager'
 import { MediaStream, mediaDevices, registerGlobals } from 'react-native-webrtc'
 
 import { AgentActionType, useMobileAgent } from '@2060/hooks/agent'
+import { CreateCallOfferParameters, HangupCallParameters } from '@2060/hooks/agent/actions/types'
 import { findAllDidcommThreadId, updateChatEntryMetadata } from '@2060/hooks/agent/chat/services'
 import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
 import { useConfig } from '@2060/hooks/providers/ConfigProvider'
@@ -168,9 +169,14 @@ export const useVideoCall = () => {
           await joinRoom()
           await startToProduceStream()
           if (!incomingCallInfo && !lostConnection.current) {
+            const parameters: CreateCallOfferParameters = {
+              callType: didcommCallType,
+              connectionId: didcommConnection.id,
+              callInfo,
+            }
             addAgentActionToQueue({
               type: AgentActionType.CreateCallOffer,
-              parameters: { callType: didcommCallType, connectionId: didcommConnection.id, callInfo },
+              parameters,
             })
           }
           updateCallStatus({ status: CallStatus.Connected, statusMessage: 'Connected' })
@@ -345,8 +351,8 @@ export const useVideoCall = () => {
       const request = isMicrophoneOnRef.current ? 'resumeProducer' : 'pauseProducer'
       peer.current?.request(request, { producerId: micProducer.current?.id })
     }
-    localAudioStreamRef.current?.getAudioTracks().forEach(track => {
-      track.enabled = isMicrophoneOnRef.current
+    localAudioStreamRef.current?.getAudioTracks().forEach(audioTrack => {
+      audioTrack.enabled = isMicrophoneOnRef.current
     })
   }
 
@@ -442,10 +448,10 @@ export const useVideoCall = () => {
   }
 
   const startToProduceAudio = async () => {
-    const stream = await mediaDevices.getUserMedia({
+    const audioStream = await mediaDevices.getUserMedia({
       audio: true,
     })
-    localAudioStreamRef.current = stream
+    localAudioStreamRef.current = audioStream
     const audioTrack = localAudioStreamRef.current.getAudioTracks()[0]
     micProducer.current = await sendTransport.current?.produce({
       track: audioTrack,
@@ -454,13 +460,13 @@ export const useVideoCall = () => {
   }
 
   const startToProduceVideo = async () => {
-    const stream = await mediaDevices.getUserMedia({
+    const videoStream = await mediaDevices.getUserMedia({
       video: {
         facingMode: facingMode.current,
       },
     })
-    setLocalVideoStream(stream)
-    const videoTrack = stream.getVideoTracks()[0]
+    setLocalVideoStream(videoStream)
+    const videoTrack = videoStream.getVideoTracks()[0]
     videoProducer.current = await sendTransport.current?.produce({
       track: videoTrack,
     })
@@ -513,9 +519,9 @@ export const useVideoCall = () => {
 
   const handleSwitchCamera = () => {
     facingMode.current = facingMode.current === 'environment' ? 'user' : 'environment'
-    localVideoStream?.getVideoTracks().forEach(track => {
-      // eslint-disable-next-line no-underscore-dangle
-      track._switchCamera()
+    const constraints = { facingMode: facingMode.current }
+    localVideoStream?.getVideoTracks().forEach(videoTrack => {
+      videoTrack.applyConstraints(constraints)
     })
   }
 
@@ -524,9 +530,13 @@ export const useVideoCall = () => {
   const hangup = async () => {
     if (!agent || !didcommConnection || !realm) return
     try {
+      const parameters: HangupCallParameters = {
+        connectionId: didcommConnection.id,
+        threadId: didcommThreadId,
+      }
       addAgentActionToQueue({
         type: AgentActionType.HangupCall,
-        parameters: { connectionId: didcommConnection.id, threadId: didcommThreadId },
+        parameters,
       })
       peer.current?.request('leaveRoom')
       finishCall()

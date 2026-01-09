@@ -1,8 +1,8 @@
-import { PictureData } from '@2060.io/credo-ts-didcomm-user-profile'
+import { UserProfileData } from '@2060.io/credo-ts-didcomm-user-profile'
 import { StackScreenProps } from '@react-navigation/stack'
-import React, { useLayoutEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ScrollView, TouchableOpacity, SafeAreaView } from 'react-native'
+import { ScrollView, TouchableOpacity } from 'react-native'
 
 import getStyles from './styles'
 
@@ -16,68 +16,61 @@ import { getGlobalStyles } from '@2060/styles'
 interface Props extends StackScreenProps<NavigationStackParams, 'UserProfile'> {}
 
 const UserProfile = ({ navigation }: Props) => {
-  const { userProfileData, setUserProfileData } = useUserProfile()
-  const [displayName, setDisplayName] = useState(userProfileData?.displayName ?? '')
-  const [displayPicture, setDisplayPicture] = useState<PictureData | undefined>(
-    userProfileData?.displayPicture,
-  )
-
-  const theme = useTheme()
   const { t } = useTranslation()
-  const isChangeBase64 = displayPicture?.base64 !== userProfileData?.displayPicture?.base64
-  const isChangeDisplayName = displayName.trim() !== userProfileData?.displayName
+  const theme = useTheme()
   const globalStyles = getGlobalStyles(theme)
   const styles = getStyles(theme)
+  const { userProfileData, updateUserProfileData } = useUserProfile()
+  const [displayName, setDisplayName] = useState(userProfileData?.displayName)
+  const [displayPicture, setDisplayPicture] = useState<UserProfileData['displayPicture']>(
+    userProfileData?.displayPicture,
+  )
+  const hasChangedPicture =
+    displayPicture && userProfileData?.displayPicture
+      ? displayPicture.base64 !== userProfileData.displayPicture.base64
+      : displayPicture !== userProfileData?.displayPicture
+  const hasChangedName = displayName?.trim() !== userProfileData?.displayName
 
-  const goToBack = () => navigation.canGoBack() && navigation.goBack()
-
-  const onSaveInfoUser = () => {
-    setUserProfileData?.({ displayName: displayName.trim(), displayPicture })
-    goToBack()
-  }
-
-  const onHandleCancelingValueChanges = () => {
-    setUserProfileData?.({
-      displayName: userProfileData?.displayName,
-      displayPicture: userProfileData?.displayPicture,
-    })
-    goToBack()
-  }
-
-  const handleChangeHeaderOptions = () => {
-    navigation.setOptions({
-      headerStyle: globalStyles.headerStyle,
-      headerLeft: () => (
-        <TouchableOpacity style={{ paddingLeft: 20 }} onPress={onHandleCancelingValueChanges}>
-          <Text typography="EuclidCircularA-Medium" style={styles.headerBtnText}>
-            {t('general.cancel')}
-          </Text>
-        </TouchableOpacity>
-      ),
-      headerRight: () =>
-        (isChangeBase64 || isChangeDisplayName) && (
-          <TouchableOpacity style={{ paddingRight: 20 }} onPress={onSaveInfoUser}>
-            <Text typography="EuclidCircularA-Medium" style={styles.headerBtnText}>
-              {t('general.done')}
+  useEffect(() => {
+    const handleChangeHeaderOptions = () => {
+      navigation.setOptions({
+        headerStyle: globalStyles.headerStyle,
+        headerLeft: () => (
+          <TouchableOpacity style={styles.headerLeft} onPress={goToBack}>
+            <Text fontFamily="EuclidCircularA-Medium" style={styles.headerBtnText}>
+              {t('general.cancel')}
             </Text>
           </TouchableOpacity>
         ),
-    })
+        headerRight: () =>
+          (hasChangedName || hasChangedPicture) && (
+            <TouchableOpacity style={styles.headerRight} onPress={onSaveInfoUser}>
+              <Text fontFamily="EuclidCircularA-Medium" style={styles.headerBtnText}>
+                {t('general.done')}
+              </Text>
+            </TouchableOpacity>
+          ),
+      })
+    }
+    handleChangeHeaderOptions()
+  }, [hasChangedName, hasChangedPicture, displayName, displayPicture, theme])
+
+  const goToBack = () => navigation.goBack()
+
+  const onSaveInfoUser = () => {
+    updateUserProfileData({ displayName: displayName?.trim(), displayPicture })
+    goToBack()
   }
 
-  useLayoutEffect(handleChangeHeaderOptions, [displayName, displayPicture?.base64, theme])
-
   return (
-    <SafeAreaView style={styles.root}>
-      <ScrollView style={styles.root}>
-        <UserProfileForm
-          displayName={displayName}
-          displayPicture={displayPicture}
-          onHandleChangeName={setDisplayName}
-          onHandleChangePicture={setDisplayPicture}
-        />
-      </ScrollView>
-    </SafeAreaView>
+    <ScrollView style={styles.root}>
+      <UserProfileForm
+        displayName={displayName}
+        displayPicture={displayPicture}
+        onHandleChangeName={setDisplayName}
+        onHandleChangePicture={setDisplayPicture}
+      />
+    </ScrollView>
   )
 }
 

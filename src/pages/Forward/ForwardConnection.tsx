@@ -3,10 +3,10 @@ import { StackScreenProps } from '@react-navigation/stack'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 
-import BaseForward from './BaseForward'
-
+import { ConnectionsSelection } from '@2060/components'
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
 import { AgentActionType, useChats, useMobileAgent } from '@2060/hooks/agent'
+import { ForwardConnectionParameters } from '@2060/hooks/agent/actions/types'
 import { createChatEntry } from '@2060/hooks/agent/chat/services'
 import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
@@ -36,7 +36,6 @@ const ForwardConnection = ({ navigation, route }: Props) => {
         imageUrl: connection.imageUrl,
         did: connection.invitationDid,
       }
-      // Create chat entry
       const chatEntry = createChatEntry(realm, {
         chatThreadId,
         type: ChatEntryType.Invitation,
@@ -46,13 +45,14 @@ const ForwardConnection = ({ navigation, route }: Props) => {
         createdAt: new Date().getTime(),
         associatedRecordId: '',
       })
+      const parameters: ForwardConnectionParameters = {
+        forwarderConnectionId: connection.id,
+        connectionId,
+      }
       addAgentActionToQueue({
         type: AgentActionType.ForwardConnection,
         chatEntryId: chatEntry.id,
-        parameters: {
-          forwardedConnectionId: connection.id,
-          didcommConnectionId: connectionId,
-        },
+        parameters,
       })
     })
     toast({
@@ -62,7 +62,13 @@ const ForwardConnection = ({ navigation, route }: Props) => {
     navigation.goBack()
   }
 
-  return <BaseForward navigation={navigation} onPressSend={forwardConnection} connectionId={connection.id} />
+  return (
+    <ConnectionsSelection
+      navigation={navigation}
+      onPressSend={forwardConnection}
+      connectionIdToExclude={connection.id}
+    />
+  )
 }
 
 export default ForwardConnection

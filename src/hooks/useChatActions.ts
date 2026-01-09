@@ -1,4 +1,5 @@
 import { MessageReactionAction } from '@2060.io/credo-ts-didcomm-reactions'
+import { MessageReactionOptions } from '@2060.io/credo-ts-didcomm-reactions/build/messages/MessageReactionsMessage'
 import { MessageReceiptOptions, MessageState } from '@2060.io/credo-ts-didcomm-receipts'
 import { ActionMenuRole, ActionMenuState } from '@credo-ts/action-menu'
 import { CameraRoll } from '@react-native-camera-roll/camera-roll'
@@ -8,17 +9,23 @@ import { Platform } from 'react-native'
 import Share, { ShareOptions } from 'react-native-share'
 import { SharedData } from 'react-native-share-menu'
 
-import { getLastEntryInChatThread, getMediaChatEntriesExcludingThread } from './../utils/realmQueries'
 import {
   useMobileAgent,
   useUserProfile,
   useChat,
   useFileUploadDownload,
   RepliedMessage,
-  useChats,
   AgentActionType,
   DidCommMediaFileSharingData,
 } from './agent'
+import {
+  MenuSelectionParameters,
+  SendAnswerParameters,
+  SendReactionParameters,
+  SendReceiptsParameters,
+  SendTextMessageParameters,
+  ShareMediaParameters,
+} from './agent/actions/types'
 import { getLocalizedPreview, getThumbnail } from './agent/chat/preview'
 import { createTextChatEntry } from './agent/chat/recordChangeHandlers/handleBasicMessageRecordChanges'
 import {
@@ -29,6 +36,7 @@ import {
   updateChatEntryMetadata,
   updateThread,
 } from './agent/chat/services'
+import { useAgentActionQueue } from './agent/useAgentActionQueue'
 import { useLocalRealm } from './providers/RealmProvider'
 
 import { MAX_VIDEO_DURATION } from '@2060/constants'
@@ -48,6 +56,7 @@ import { checkIfDeleteFilesFromMedia } from '@2060/pages/PersonalChat/utils'
 import { log, logError } from '@2060/utils'
 import { getLocalFileUri } from '@2060/utils/RNFS'
 import { compressVideo, getMediaFileSharingData } from '@2060/utils/mediaFileUtils'
+import { getLastEntryInChatThread, getMediaChatEntriesExcludingThread } from '@2060/utils/realmQueries'
 import { toast, ToastOptions } from '@2060/utils/toast'
 
 export const useChatActions = () => {
@@ -58,7 +67,7 @@ export const useChatActions = () => {
   const connectionId = chatThread?.data.connectionId
   const { startMediaUpload } = useFileUploadDownload()
   const { realm } = useLocalRealm()
-  const { addAgentActionToQueue } = useChats()
+  const { addAgentActionToQueue } = useAgentActionQueue()
 
   const onClearRepliedMessageState = () => setRepliedMessage()
 
@@ -74,6 +83,7 @@ export const useChatActions = () => {
         title,
         type: mimeType,
         filename: `${textType}.${subType}`,
+        failOnCancel: false,
       },
       android: {
         url,
@@ -97,6 +107,8 @@ export const useChatActions = () => {
       toast({ type: 'success', message: t('personalChat.saveSucceededFileMedia') })
     } catch (error) {
       toast({ type: 'error', message: t('personalChat.saveFailedFileMedia') })
+      logError('Error saving file to gallery', error)
+      throw new Error(`${error}`)
     }
   }, [])
 
@@ -165,16 +177,10 @@ export const useChatActions = () => {
             }
             receipts.push({ messageId: associatedMessageId ?? '', state: MessageState.Deleted })
           })
+          const parameters: SendReceiptsParameters = { connectionId, receipts }
           addAgentActionToQueue({
             type: AgentActionType.SendReceipts,
-            parameters: {
-              didcommConnectionId: connectionId,
-              receipts: receipts.map(item => ({
-                messageId: item.messageId,
-                state: item.state,
-                timestamp: item.timestamp?.getTime(),
-              })),
-            },
+            parameters,
           })
           toast({
             type: 'success',
@@ -199,7 +205,7 @@ export const useChatActions = () => {
         const { id: entryId, associatedMessageId } = message
 
         // Reactions to send to the other party through didcommm
-        const didcommReactions = [
+        const reactions: MessageReactionOptions[] = [
           { messageId: associatedMessageId ?? '', action: action as MessageReactionAction, emoji },
         ]
 
@@ -219,7 +225,7 @@ export const useChatActions = () => {
           } else if (action === 'react' && reactionIndex !== -1) {
             const myPreviousReaction = objectReactions[reactionIndex]
 
-            didcommReactions.push({
+            reactions.push({
               messageId: associatedMessageId ?? '',
               action: MessageReactionAction.Unreact,
               emoji: myPreviousReaction.emoji,
@@ -230,20 +236,18 @@ export const useChatActions = () => {
             objectReactions.splice(reactionIndex, 1)
             // Case 3: remove reaction but no previous reaction => Do nothing
           } else if (action === 'unreact' && reactionIndex === -1) {
-            didcommReactions.splice(0)
+            reactions.splice(0)
           }
 
           object.reactions = objectReactions
           object.updatedAt = new Date().getTime()
         })
 
-        if (didcommReactions.length) {
+        if (reactions.length) {
+          const parameters: SendReactionParameters = { connectionId, reactions }
           addAgentActionToQueue({
             type: AgentActionType.SendReaction,
-            parameters: {
-              didcommConnectionId: connectionId,
-              didcommReactions,
-            },
+            parameters,
           })
         }
       } catch (error) {
@@ -269,7 +273,7 @@ export const useChatActions = () => {
   }, [])
 
   const sendTextMessage = useCallback(
-    async (text: string) => {
+    async (message: string) => {
       if (!agent || !connectionId) throw new Error('Agent is undefined')
       if (!realm) throw new Error('Realm is undefined')
       try {
@@ -278,23 +282,23 @@ export const useChatActions = () => {
         const chatEntry = createTextChatEntry({
           agent,
           chatThreadId: chatThread.data.id,
-          content: text,
+          content: message,
           realm,
           role: ChatEntryRole.Sender,
           parentThreadId: repliedMessage?.didcommThreadId,
         })
+        const parameters: SendTextMessageParameters = {
+          connectionId,
+          message,
+          parentThreadId: repliedMessage?.didcommThreadId,
+        }
         addAgentActionToQueue({
           type: AgentActionType.SendTextMessage,
           chatEntryId: chatEntry.id,
-          parameters: {
-            text,
-            didcommThreadId: repliedMessage?.didcommThreadId,
-            chatThreadId: chatThread.data.id,
-            didcommConnectionId: connectionId,
-          },
+          parameters,
         })
       } catch (error) {
-        log('Error sendTextMessage', error)
+        logError('Error sendTextMessage', error)
       }
     },
     [agent, realm, repliedMessage, chatThread, connectionId],
@@ -319,14 +323,14 @@ export const useChatActions = () => {
               realm,
               role: ChatEntryRole.Sender,
             })
+            const parameters: SendTextMessageParameters = {
+              connectionId: connection.id,
+              message: text,
+            }
             addAgentActionToQueue({
               type: AgentActionType.SendTextMessage,
               chatEntryId: chatEntry.id,
-              parameters: {
-                text,
-                chatThreadId: thread.id,
-                didcommConnectionId: connection.id,
-              },
+              parameters,
             })
           } else if (isMediaType(message.type)) {
             // NOTE: Here we assume that the file is persisted in the remote data store
@@ -363,11 +367,10 @@ export const useChatActions = () => {
                 originalRecord.metadata.get('waveform') as string,
               )
             }
+            const parameters: ShareMediaParameters = { recordId: newRecord.id }
             addAgentActionToQueue({
               type: AgentActionType.ShareMedia,
-              parameters: {
-                recordId: newRecord.id,
-              },
+              parameters,
             })
           }
         }
@@ -399,14 +402,14 @@ export const useChatActions = () => {
               realm,
               role: ChatEntryRole.Sender,
             })
+            const parameters: SendTextMessageParameters = {
+              connectionId: connection.id,
+              message: text,
+            }
             addAgentActionToQueue({
               type: AgentActionType.SendTextMessage,
               chatEntryId: chatEntry.id,
-              parameters: {
-                text,
-                chatThreadId: thread.id,
-                didcommConnectionId: connection.id,
-              },
+              parameters,
             })
           }
         } else if (mimeType.startsWith('image') || mimeType.startsWith('video')) {
@@ -460,16 +463,14 @@ export const useChatActions = () => {
           associatedRecordId: actionMenuRecord?.id,
           metadata: { selectedItemName } as ActionMenuSelectionMetadata,
         })
+        const parameters: MenuSelectionParameters = { connectionId, selectedItemName }
         addAgentActionToQueue({
-          type: AgentActionType.ActionMenuSelection,
+          type: AgentActionType.MenuSelection,
           chatEntryId: chatEntry.id,
-          parameters: {
-            didcommConnectionId: connectionId,
-            selectedItemName,
-          },
+          parameters,
         })
       } catch (error) {
-        log('Error onActionMenuSelection', error)
+        logError('Error onActionMenuSelection', error)
       }
     },
     [agent, realm, repliedMessage, chatThread, connectionId],
@@ -497,10 +498,11 @@ export const useChatActions = () => {
         }
         updateChatEntryMetadata(realm, questionEntry.id, questionMetadata)
       }
+      const parameters: SendAnswerParameters = { response, questionRecordId: associatedRecordId }
       addAgentActionToQueue({
         type: AgentActionType.SendAnswer,
         chatEntryId: chatEntry.id,
-        parameters: { response, associatedRecordId },
+        parameters,
       })
     },
     [realm, chatThread],

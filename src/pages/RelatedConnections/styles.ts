@@ -5,7 +5,7 @@ import { widthPercentageToDP } from '@2060/utils/responsiveUtils'
 
 export default (theme: AppTheme) =>
   StyleSheet.create({
-    containierMain: {
+    container: {
       flex: 1,
       marginHorizontal: 15,
       backgroundColor: theme.colors.secondary,
@@ -15,6 +15,10 @@ export default (theme: AppTheme) =>
       width: '100%',
       flexDirection: 'row',
       alignItems: 'center',
+    },
+    listContainer: {
+      flex: 1,
+      marginBottom: 10,
     },
     containerImage: {
       height: widthPercentageToDP('9.50%'),
@@ -58,7 +62,7 @@ export default (theme: AppTheme) =>
       flex: 1,
       flexDirection: 'row',
       paddingVertical: 10,
-      backgroundColor: 'white',
+      backgroundColor: theme.colors.white,
     },
     listItemText: {
       margin: 12,
@@ -72,7 +76,6 @@ export default (theme: AppTheme) =>
     sectionHeaderLabel: {
       fontSize: theme.fontSize.lg,
       color: theme.colors.primaryText,
-      fontFamily: 'EuclidCircularA-Medium',
       textTransform: 'uppercase',
     },
     rightHeaderButton: {

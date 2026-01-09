@@ -1,25 +1,23 @@
-import { sanitizeString } from './display'
-
 import { stringToStringDate } from '@2060/utils/dateUtils'
 
 /* eslint-disable max-len */
 type CredentialAttributeRowString = {
   key: string
-  value: string
   type: 'string'
+  value: string
 }
 
 type CredentialAttributeRowImage = {
-  type: 'image'
   key: string
+  type: 'image'
   image: string
 }
 
 type CredentialAttributeRowImageAndString = {
-  type: 'imageAndString'
   key: string
-  image: string
+  type: 'imageAndString'
   value: string
+  image: string
 }
 
 export type CredentialAttributeRow =
@@ -27,7 +25,7 @@ export type CredentialAttributeRow =
   | CredentialAttributeRowImage
   | CredentialAttributeRowImageAndString
 
-type CredentialAttributeTable = {
+export type CredentialAttributeTable = {
   title?: string
   rows: CredentialAttributeRow[]
   depth: number // depth level
@@ -45,7 +43,6 @@ type FormatCredentialSubject = {
   depth?: number
   parent?: string
   title?: string
-  sanitizeKey?: boolean
 }
 /**
  * Formats the subject of a credential into a tables to display attributes.
@@ -54,11 +51,10 @@ type FormatCredentialSubject = {
  * @param depth the current depth of the nested objects within the credential subject. Starts at 0 for the top-level object.
  * @param parent the title of the parent object of the current nested object. Undefined for the top-level object.
  * @param title the title of the current nested object. This corresponds to the key of the nested object within the parent object.
- * @param sanitizeKey a boolean value that indicates if key value of must be sanitized or not
  * @returns an array of CredentialAttributeTable objects, each representing a table with rows of key-value pairs. Nested objects are represented as separate tables.
  */
 export function formatCredentialSubject(args: FormatCredentialSubject): CredentialAttributeTable[] {
-  const { subject, depth = 0, parent, title, sanitizeKey = true } = args
+  const { subject, depth = 0, parent, title } = args
   const stringRows: CredentialAttributeRow[] = []
   const objectTables: CredentialAttributeTable[] = []
 
@@ -67,22 +63,21 @@ export function formatCredentialSubject(args: FormatCredentialSubject): Credenti
 
     const value = subject[key]
 
-    const keyValue = sanitizeKey ? sanitizeString(key) : key
     if (typeof value === 'number') {
       stringRows.push({
-        key: keyValue,
+        key,
         value: transformToDateIfItIs(key, `${value}`),
         type: 'string',
       })
     } else if (typeof value === 'string' && value.startsWith('data:image/')) {
       stringRows.push({
-        key: keyValue,
+        key,
         image: value,
         type: 'image',
       })
     } else if (typeof value === 'string') {
       stringRows.push({
-        key: keyValue,
+        key,
         value: transformToDateIfItIs(key, value),
         type: 'string',
       })
@@ -93,7 +88,7 @@ export function formatCredentialSubject(args: FormatCredentialSubject): Credenti
       if ('type' in value && value.type === 'Image') {
         if ('id' in value && typeof value.id === 'string') {
           stringRows.push({
-            key: keyValue,
+            key,
             image: value.id,
             type: 'image',
           })
@@ -104,8 +99,7 @@ export function formatCredentialSubject(args: FormatCredentialSubject): Credenti
             subject: value as Record<string, unknown>,
             depth: depth + 1,
             parent: title,
-            title: keyValue,
-            sanitizeKey,
+            title,
           }),
         )
       }
@@ -119,8 +113,8 @@ export function formatCredentialSubject(args: FormatCredentialSubject): Credenti
     .map(table => {
       // Special rendering for OpenBadgeCredentials, which include a single 'image' and 'name'
       // We'll combine both into an 'imageAndString' to make it look nicer
-      const imageKeyValue = sanitizeKey ? sanitizeString('image') : 'image'
-      const nameKeyValue = sanitizeKey ? sanitizeString('name') : 'name'
+      const imageKeyValue = 'image'
+      const nameKeyValue = 'name'
       const firstImageIndex = table.rows.findIndex(row => row.type === 'image' && row.key === imageKeyValue)
       const firstStringIndex = table.rows.findIndex(row => row.type === 'string' && row.key === nameKeyValue)
       let rows = table.rows

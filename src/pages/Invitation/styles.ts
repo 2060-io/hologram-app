@@ -1,8 +1,6 @@
 import { StyleSheet } from 'react-native'
 
-import { cardStyles, cardShadowStyles } from '../../styles/globalStyles'
-
-import { AppTheme } from '@2060/styles'
+import { AppTheme, cardShadowStyles, cardStyles } from '@2060/styles'
 import { heightPercentageToDP, widthPercentageToDP } from '@2060/utils/responsiveUtils'
 
 const styles = (theme: AppTheme) =>
@@ -13,7 +11,6 @@ const styles = (theme: AppTheme) =>
     subContainer: {
       marginTop: 15,
       paddingHorizontal: 15,
-      paddingBottom: 10,
     },
     btnRefuse: {
       paddingLeft: widthPercentageToDP('4%'),

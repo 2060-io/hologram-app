@@ -21,6 +21,7 @@ export type NavigationStackParams = {
   Home: HomeParams | undefined
   SignUpMain: undefined
   Settings: undefined
+  Scan: undefined
   Connections: undefined
   ConnectionsForNewChat: undefined
   Privacy: undefined
@@ -45,18 +46,32 @@ export type NavigationStackParams = {
   CredentialPresented: {
     verifier: ServiceInfo
     credentials: CredentialMainInfo[]
-    presentedAt: string
   }
   ForwardConnection: {
     connection: ConnectionRecord
   }
   PresentCredential: {
     credentialRecordId: string
+    attributesToPresent: string[]
   }
-  Presentation: {
-    mainInfo: CredentialMainInfo
-    attributes: Record<string, unknown>
+  CredentialPresentation: {
+    credentialMainInfo: CredentialMainInfo
+    credentialAttributes: Record<string, unknown>
     proofState: ProofState
+    proofRecordId: string
+  }
+  EphemeralCredentialPresentation: {
+    proofRecordId: string
   }
   ParentalControl: undefined
+  PresentCredentialsFromChat: { connectionId: string }
+  SelectCredentialAttributes: {
+    presentDirectly: boolean
+    credentialRecordId: string
+    connectionToPresent?: string
+  }
+  PresentCredentialAsQR: {
+    credentialRecordId: string
+    attributesToPresent: string[]
+  }
 }

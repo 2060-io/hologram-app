@@ -1,21 +1,16 @@
 import { StyleSheet } from 'react-native'
 
-import { cardStyles, cardShadowStyles } from '../../styles/globalStyles'
-
+import { cardShadowStyles, cardStyles } from '@2060/styles'
 import { AppTheme } from '@2060/styles/types'
 import { waterColor } from '@2060/utils/colorUtils'
 import { heightPercentageToDP } from '@2060/utils/responsiveUtils'
 
 const styles = (theme: AppTheme) =>
   StyleSheet.create({
-    containerFilterOptions: {
-      backgroundColor: theme.colors.secondary,
-      alignItems: 'center',
-    },
-    subContainer: {
+    container: {
       width: '92%',
       alignSelf: 'center',
-      paddingVertical: 19.26,
+      marginTop: 19,
     },
     containerOptionCard: {
       ...cardStyles(theme),
@@ -37,9 +32,9 @@ const styles = (theme: AppTheme) =>
       paddingLeft: 12.84,
     },
     btnOptionText: {
-      fontSize: theme.fontSize.md2 + 1.12,
+      fontSize: theme.fontSize.md2 + 1,
       color: theme.colors.primaryText,
-      paddingLeft: 12.84,
+      marginLeft: 12,
     },
   })
 

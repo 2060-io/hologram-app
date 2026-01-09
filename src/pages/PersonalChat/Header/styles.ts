@@ -1,16 +1,14 @@
 import { StyleSheet } from 'react-native'
 
-import { AppTheme } from '@2060/styles'
-import { heightPercentageToDP, widthPercentageToDP } from '@2060/utils/responsiveUtils'
-
-export const headerHeight = heightPercentageToDP('7%')
+import { AppTheme, headerHeight } from '@2060/styles'
+import { widthPercentageToDP } from '@2060/utils/responsiveUtils'
 
 export default (theme: AppTheme) =>
   StyleSheet.create({
     container: {
       backgroundColor: theme.isDarkMode ? theme.colors.secondary : theme.colors.primary,
       height: headerHeight,
-      paddingHorizontal: widthPercentageToDP('4%'),
+      paddingHorizontal: 12,
       borderBottomWidth: 1.5,
       borderBottomColor: theme.colors.grey,
     },

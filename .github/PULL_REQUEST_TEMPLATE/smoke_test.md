@@ -18,8 +18,8 @@ Next are some of the app basic features must be tested before a release to dev o
 
 Note: Validate next items and commands using: Demo Chat Bot Agent
 
-- [ ] Receive a credential
 - [ ] Receive a proof request (before and after receiving the credential)
+- [ ] Receive a credential
 - [ ] Question and answer, action menu
 - [ ] Invitation to services. Send next message: /invitation did:web:em-vs.demos.2060.io
 - [ ] Invitation to subconnection. Send next message: /invitation this_is_a_child_connection
@@ -50,7 +50,6 @@ Note: Validate next items and commands using: Demo Chat Bot Agent
 
 - [ ] Share text, images and videos from other apps (Slack, Signal, Whatsapp, Google Photos, etc) to app
 
-- [ ] Realize next verana flow https://verana.foundation/page/demos/
 
 ### Chats Screen
 
@@ -63,8 +62,10 @@ Note: Validate next items and commands using: Demo Chat Bot Agent
 
 - [ ] Check that if a credential is added it appears in this list (BCGov, chatbot, gaia etc)
 - [ ] Tap a credential and check all possible information is displayed and delete option works
-- [ ] Tab a credential and in credential details screen press contextual menu and choose "Present credential" and send it to a connection. Now, in approver(receiver) side Accept this credential presentation and check status changes to "Accepted" in both sides. Also, in approver(receiver) side press Credential Card and veriy main credential details and claims with its values are displayed
-- [ ] Tab a credential and in its credential details screen press contextual menu and choose "Present credential" and send it to a connection. Now, in receiver side Refuse credential presentation and check status changes to "Refused" in both sides.
+- [ ] Tab a credential and in credential details screen press button "Present credential" and then press button "Present to connection(s)". Now, in approver(receiver) side Accept this credential presentation and check status changes to "Accepted" in both sides. Also, in approver(receiver) side press Credential Card and verify main credential details and claims with its values are displayed
+- [ ] Tab a credential and in credential details screen press button "Present credential" and then press button "Present to connection(s)". Now, in receiver side Refuse credential presentation and check status changes to "Refused" in both sides.
+- [ ] Tab a credential and in credential details screen press button "Present credential" and then press button "Create QR code". Now using another device scan this QR using Hologram app and Accept this credential presentation. After that, check that both prover and verifier see on its screens updated info with accepted credential presentation
+- [ ] Tab a credential and in credential details screen press button "Present credential" and then press button "Create QR code". Now using another device scan this QR using Hologram app and Refuse this credential presentation. After that, check that both prover and verifier see on its screens updated with rejected credential presentation
 
 ### Settings Section
 
@@ -90,6 +91,8 @@ Note: Validate next items and commands using: Demo Chat Bot Agent
 - [ ] Touch Settings screen 7 times and see a new option called "Developer" appears
 - [ ] Modify profile info (name, and picture)
 - [ ] Generate qr code invitation and share to other app
+- [ ] Scan your invitation QR with another device and after connect with it scan this same QR once again in the same device and a popup indicating "You are already connected..." must appear
+- After previous test in Invitation screen press "Refresh" button and QR should be updated. After that, scan this new QR in same device you scan previous QR and now you should be able to connect with it as if it were a new connection
 - [ ] Check delete wallet work and let user in SingUp screen (Do this after creation of wallet backup)
 
 ##### Backup (Must be enabled developer mode to see it)

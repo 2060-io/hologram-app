@@ -1,15 +1,12 @@
 import { StackActions } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
-import React, { useCallback, useLayoutEffect, useMemo, useState, useRef } from 'react'
-import { SafeAreaView } from 'react-native'
+import React, { useCallback, useLayoutEffect, useMemo, useState, useRef, useTransition } from 'react'
 
 import BasePresentationRequest from './BasePresentationRequest'
-import getStyles from './styles'
 
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
 import { ModalLoading } from '@2060/components/common'
 import { useMobileAgent } from '@2060/hooks/agent'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { formatW3cPresentationSubmission } from '@2060/services/agent/formatPresentation'
 import { getCredentialsForProofRequest, shareProof } from '@2060/services/agent/parsers'
 import { logError } from '@2060/utils'
@@ -19,10 +16,8 @@ interface Props extends StackScreenProps<NavigationStackParams, 'OpenIdPresentat
 
 const OpenIdPresentationRequest: React.FC<Props> = ({ route, navigation }) => {
   const { agent } = useMobileAgent()
-  const theme = useTheme()
-  const styles = getStyles(theme)
   const url = route.params.url
-  const [isAcceptingRequest, setIsAcceptingRequest] = useState(false)
+  const [isAcceptingRequest, startAcceptRequestTransition] = useTransition()
   const [isProcessingCode, setIsProcessingCode] = useState(false)
   const submissionEntryIndexes = useRef<number[]>([])
 
@@ -52,23 +47,22 @@ const OpenIdPresentationRequest: React.FC<Props> = ({ route, navigation }) => {
   }
 
   const onAccept = useCallback(async () => {
-    setIsAcceptingRequest(true)
-    try {
-      if (!agent) throw new Error('Agent not initialized')
-      if (!credentialsForRequest?.selectResults) throw Error('No credentialsForRequest')
-      await shareProof({
-        selectResults: credentialsForRequest.selectResults,
-        verifiedAuthorizationRequest: credentialsForRequest.verifiedAuthorizationRequest,
-        agent,
-        submissionEntryIndexes: submissionEntryIndexes.current,
-      })
-      if (navigation.canGoBack()) navigation.goBack()
-      else navigation.dispatch(StackActions.replace('Home'))
-    } catch (error) {
-      toast({ type: 'error', message: `Failed to accept offer: ${error}` })
-    } finally {
-      setIsAcceptingRequest(false)
-    }
+    startAcceptRequestTransition(async () => {
+      try {
+        if (!agent) throw new Error('Agent not initialized')
+        if (!credentialsForRequest?.selectResults) throw Error('No credentialsForRequest')
+        await shareProof({
+          selectResults: credentialsForRequest.selectResults,
+          verifiedAuthorizationRequest: credentialsForRequest.verifiedAuthorizationRequest,
+          agent,
+          submissionEntryIndexes: submissionEntryIndexes.current,
+        })
+        if (navigation.canGoBack()) navigation.goBack()
+        else navigation.dispatch(StackActions.replace('Home'))
+      } catch (error) {
+        toast({ type: 'error', message: `Failed to accept offer: ${error}` })
+      }
+    })
   }, [credentialsForRequest, submissionEntryIndexes.current])
 
   const processCode = async () => {
@@ -93,7 +87,7 @@ const OpenIdPresentationRequest: React.FC<Props> = ({ route, navigation }) => {
   }, [])
 
   return (
-    <SafeAreaView style={styles.root}>
+    <>
       <ModalLoading visible={isProcessingCode} />
       {submission && (
         <BasePresentationRequest
@@ -106,7 +100,7 @@ const OpenIdPresentationRequest: React.FC<Props> = ({ route, navigation }) => {
           isAccepting={isAcceptingRequest}
         />
       )}
-    </SafeAreaView>
+    </>
   )
 }
 

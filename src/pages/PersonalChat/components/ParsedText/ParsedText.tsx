@@ -3,7 +3,7 @@ import { Linking, StyleSheet, TextProps } from 'react-native'
 
 import { Text } from '@2060/components/common'
 import { AppTheme } from '@2060/styles'
-import { log } from '@2060/utils'
+import { logError } from '@2060/utils'
 
 type ParsedTextProps = {
   theme: AppTheme
@@ -18,13 +18,13 @@ const ParsedText: React.FC<ParsedTextProps> = ({ theme, text, textProps }) => {
     if (/^www\./i.test(url)) {
       onUrlPress(`https://${url}`)
     } else {
-      Linking.openURL(url).catch(() => log('No handler for URL:', url))
+      Linking.openURL(url).catch(() => logError('No handler for URL:', url))
     }
   }
   const textIncludesHttp = text?.includes('http')
 
   return (
-    <Text style={styles.textStyle} typography="EuclidCircularA-Regular" {...textProps}>
+    <Text style={styles.textStyle} {...textProps}>
       {textIncludesHttp
         ? text?.split?.(' ')?.map(value => {
             if (value.startsWith('http')) {
@@ -36,7 +36,6 @@ const ParsedText: React.FC<ParsedTextProps> = ({ theme, text, textProps }) => {
                     styles.link,
                     { color: isSecureUrl ? theme.colors.green : theme.colors.orange },
                   ]}
-                  typography="EuclidCircularA-Regular"
                   onPress={() => onUrlPress(value)}
                   key={value}
                 >
@@ -56,7 +55,6 @@ const getStyles = (theme: AppTheme) =>
     textStyle: {
       color: theme.colors.primaryText,
       fontSize: theme.fontSize.md2,
-      fontFamily: 'EuclidCircularA-Regular',
     },
     link: {
       textDecorationLine: 'underline',

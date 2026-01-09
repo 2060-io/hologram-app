@@ -10,7 +10,7 @@ const styles = (theme: AppTheme) =>
     subContainer: {
       marginTop: 15,
       paddingHorizontal: 15,
-      paddingBottom: 40,
+      paddingBottom: 10,
     },
     card: {
       ...cardStyles(theme),
@@ -58,6 +58,12 @@ const styles = (theme: AppTheme) =>
     headerBtnText: {
       fontSize: theme.fontSize.md2,
       color: theme.colors.green,
+    },
+    enabledAcceptButton: {
+      opacity: 1,
+    },
+    disabledAcceptButton: {
+      opacity: 0.5,
     },
   })
 

@@ -1,5 +1,5 @@
 {
-  "extends": "@tsconfig/react-native/tsconfig.json",
+  "extends": "@react-native/typescript-config",
   "compilerOptions": {
     "types": ["node"],
     "outDir": "./build",
@@ -14,6 +14,6 @@
       "@2060/*": ["src/*"],
     },
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "build"]
+  "include": ["**/*.ts", "**/*.tsx", "src/**/*"],
+  "exclude": ["**/node_modules", "**/Pods", "build"]
 }

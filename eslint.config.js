@@ -129,7 +129,7 @@ module.exports = defineConfig([
       'react-hooks/exhaustive-deps': 'off',
       /* This is a rule that disables the eslint rule for unlimited disable. */
       'eslint-comments/no-unlimited-disable': 'off',
-      'react-native/no-inline-styles': 0,
+      'react-native/no-inline-styles': 'error',
       'linebreak-style': 0,
       'prettier/prettier': [
         'error',

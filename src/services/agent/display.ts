@@ -24,10 +24,9 @@ import { IssuerInfo, VerifierInfo } from '@2060/model/ServiceInfo'
 export type CredentialMainInfo = {
   id: string
   recordId: string
-  createdAt: Date
+  createdAt?: Date
   schemaName: string
   issuer: IssuerInfo
-  dateLabel?: string
 }
 
 export type CredentialDetailsForDisplay = {
@@ -336,10 +335,8 @@ export function getOfferedCredentialDetailsForDisplay(
   }
 }
 
-export function getCredentialDetailsForDisplay(
-  credentialRecord: W3cCredentialRecord,
-): CredentialDetailsForDisplay {
-  let attributes: { [key: string]: unknown } = {}
+export function getCredentialAttributes(credentialRecord: W3cCredentialRecord) {
+  let attributes: Record<string, unknown> = {}
   if (credentialRecord.type === W3cCredentialRecord.type) {
     const credential = JsonTransformer.toJSON(
       credentialRecord.credential.claimFormat === ClaimFormat.JwtVc
@@ -352,10 +349,15 @@ export function getCredentialDetailsForDisplay(
       ? (credential.credentialSubject[0] ?? {})
       : credential.credentialSubject
   }
+  return attributes
+}
 
+export function getCredentialDetailsForDisplay(
+  credentialRecord: W3cCredentialRecord,
+): CredentialDetailsForDisplay {
   return {
     mainInfo: getCredentialMainInfo(credentialRecord),
-    attributes,
+    attributes: getCredentialAttributes(credentialRecord),
   }
 }
 

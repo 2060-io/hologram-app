@@ -1,60 +1,42 @@
 import { StyleSheet } from 'react-native'
 
-import { cardStyles, cardShadowStyles } from '../../styles/globalStyles'
-
-import { AppTheme } from '@2060/styles'
-import { heightPercentageToDP, widthPercentageToDP } from '@2060/utils/responsiveUtils'
+import { AppTheme, cardShadowStyles, cardStyles } from '@2060/styles'
 
 export default (theme: AppTheme) =>
   StyleSheet.create({
-    containerRoot: {
+    container: {
       flex: 1,
-      backgroundColor: theme.colors.secondary,
-    },
-    containerContent: {
-      flex: 1,
-      justifyContent: 'space-between',
+      justifyContent: 'space-around',
       alignItems: 'center',
-      paddingTop: heightPercentageToDP('4%'),
-      paddingBottom: heightPercentageToDP('2%'),
+      marginBottom: 14,
+      marginHorizontal: 12,
     },
     btnDone: {
-      paddingRight: 19,
+      paddingLeft: 15,
     },
-    btnDoneText: {
+    btnRefresh: {
+      paddingRight: 15,
+    },
+    headerText: {
       color: theme.colors.green,
-      fontSize: theme.fontSize.md2 + 1,
+      fontSize: theme.fontSize.md2,
     },
     displayName: {
       fontSize: theme.fontSize.xl,
       color: theme.colors.primaryText,
-      paddingBottom: heightPercentageToDP('3%'),
-      paddingTop: heightPercentageToDP('2%'),
       textTransform: 'capitalize',
     },
     containerCardQR: {
       ...cardStyles(theme),
       ...cardShadowStyles(theme.colors),
-      width: widthPercentageToDP('75%'),
+      width: '75%',
       alignItems: 'center',
       alignSelf: 'center',
       backgroundColor: theme.colors.white,
-      marginBottom: heightPercentageToDP('5%'),
+      marginBottom: 8,
     },
-    containerBtnShare: {
-      alignItems: 'center',
-      alignSelf: 'center',
-      backgroundColor: theme.colors.green,
-      borderRadius: 23,
-      flexDirection: 'row',
-      justifyContent: 'center',
-      paddingVertical: 12,
-      width: widthPercentageToDP('92%'),
-    },
-    btnShareText: {
-      fontSize: theme.fontSize.md2 + 1,
-      color: theme.colors.white,
+    pressRefreshText: {
       textAlign: 'center',
-      paddingLeft: 17,
+      color: theme.colors.tertiaryText,
     },
   })

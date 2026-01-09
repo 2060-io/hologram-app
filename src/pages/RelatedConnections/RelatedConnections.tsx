@@ -2,7 +2,7 @@ import { ConnectionRecord } from '@credo-ts/core'
 import { StackScreenProps } from '@react-navigation/stack'
 import React, { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, Image, TouchableOpacity, SafeAreaView } from 'react-native'
+import { View, Image, TouchableOpacity } from 'react-native'
 import { AlphabetList, IData } from 'react-native-section-alphabet-list'
 
 import getStyles from './styles'
@@ -60,7 +60,7 @@ const RelatedConnections: React.FC<Props> = ({ navigation, route }) => {
           <Image source={{ uri: haveParentDisplayImage }} style={styles.avatarHeader} />
         </View>
       )}
-      <Text style={styles.titleHeader} typography="EuclidCircularA-Medium" numberOfLines={1}>
+      <Text style={styles.titleHeader} fontFamily="EuclidCircularA-Medium" numberOfLines={1}>
         {parentConnectionName}
       </Text>
     </View>
@@ -83,7 +83,7 @@ const RelatedConnections: React.FC<Props> = ({ navigation, route }) => {
   if (!parentConnectionId) onGoToBack()
 
   return (
-    <SafeAreaView style={styles.containierMain}>
+    <View style={styles.container}>
       {showSearchInput && (
         <SearchInput
           containerStyle={styles.searchInputContainer}
@@ -93,13 +93,12 @@ const RelatedConnections: React.FC<Props> = ({ navigation, route }) => {
           textInputProps={{ autoFocus: true }}
         />
       )}
-
-      <Text typography="EuclidCircularA-Regular" style={styles.connectionRelatedToText}>
+      <Text style={styles.connectionRelatedToText}>
         {`${t('connection.connectionsManagedBy')} ${parentConnectionName}`}
       </Text>
-
       {/* <ConnectionList onPressConnection={goToConnectionDetails} connectionList={subConnectionList} /> */}
       <AlphabetList
+        style={styles.listContainer}
         data={subConnectionList}
         indexLetterStyle={styles.letterStyle}
         renderCustomItem={item => (
@@ -108,27 +107,28 @@ const RelatedConnections: React.FC<Props> = ({ navigation, route }) => {
             onPress={() => handleSelectedSubConnection(item.key)}
           >
             <Avatar uri={(item as SubConnectionData).avatar} label={item.value} size="8.41%" />
-            <Text typography="EuclidCircularA-SemiBold" style={styles.listItemText}>
+            <Text fontFamily="EuclidCircularA-SemiBold" style={styles.listItemText}>
               {item.value}
             </Text>
           </TouchableOpacity>
         )}
         renderCustomSectionHeader={section => (
           <View style={styles.sectionHeaderContainer}>
-            <Text style={styles.sectionHeaderLabel}>{section.title}</Text>
+            <Text style={styles.sectionHeaderLabel} fontFamily="EuclidCircularA-Medium">
+              {section.title}
+            </Text>
           </View>
         )}
         showsVerticalScrollIndicator={false}
-        style={{ flex: 1, marginBottom: 10 }}
         ListEmptyComponent={() => (
           <View style={styles.containerEmptyList}>
-            <Text typography="EuclidCircularA-SemiBold" style={styles.textEmpty}>
+            <Text fontFamily="EuclidCircularA-SemiBold" style={styles.textEmpty}>
               {t('connection.noConnectionsFound')}
             </Text>
           </View>
         )}
       />
-    </SafeAreaView>
+    </View>
   )
 }
 

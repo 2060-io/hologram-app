@@ -4,7 +4,8 @@ import { StackNavigationProp } from '@react-navigation/stack'
 import { TrustResolutionOutcome } from '@verana-labs/verre'
 import React, { useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, TouchableOpacity, ScrollView, SafeAreaView } from 'react-native'
+import { View, TouchableOpacity, ScrollView } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 import getStyles from './styles'
 
@@ -19,7 +20,7 @@ type Props = {
   credentialDetails: CredentialDetailsForDisplay
   accept: () => void
   refuse: () => void
-  enableAcceptRejectButtons: boolean
+  enableMainButtons: boolean
 }
 
 const BaseCredentialOffer: React.FC<Props> = ({
@@ -27,10 +28,12 @@ const BaseCredentialOffer: React.FC<Props> = ({
   credentialDetails,
   accept,
   refuse,
-  enableAcceptRejectButtons,
+  enableMainButtons,
 }) => {
+  const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
+  const [showModalRefuseConfirmation, setShowModalRefuseConfirmation] = useState(false)
 
   const serviceInfo = useRef<ServiceInfo>({
     did: credentialDetails.mainInfo.issuer.id,
@@ -40,9 +43,6 @@ const BaseCredentialOffer: React.FC<Props> = ({
     minimumAgeRequired: 0,
     status: TrustResolutionOutcome.INVALID,
   })
-
-  const { t } = useTranslation()
-  const [showModalRefuseConfirmation, setShowModalRefuseConfirmation] = useState(false)
 
   const displayModalRefuseConfirmation = () => setShowModalRefuseConfirmation(true)
   const hideModalRefuseConfirmation = () => setShowModalRefuseConfirmation(false)
@@ -55,9 +55,9 @@ const BaseCredentialOffer: React.FC<Props> = ({
   useEffect(() => {
     navigation.setOptions({
       headerLeft: props =>
-        enableAcceptRejectButtons ? (
+        enableMainButtons ? (
           <TouchableOpacity style={styles.headerLeft} onPress={displayModalRefuseConfirmation}>
-            <Text typography="EuclidCircularA-Medium" style={styles.headerBtnText}>
+            <Text fontFamily="EuclidCircularA-Medium" style={styles.headerBtnText}>
               {t('general.refuse')}
             </Text>
           </TouchableOpacity>
@@ -65,18 +65,18 @@ const BaseCredentialOffer: React.FC<Props> = ({
           <HeaderBackButton {...props} />
         ),
       headerRight: () =>
-        enableAcceptRejectButtons ? (
+        enableMainButtons ? (
           <TouchableOpacity style={styles.headerRight} onPress={accept}>
-            <Text typography="EuclidCircularA-Medium" style={styles.headerBtnText}>
+            <Text fontFamily="EuclidCircularA-Medium" style={styles.headerBtnText}>
               {t('general.accept')}
             </Text>
           </TouchableOpacity>
         ) : null,
     })
-  }, [enableAcceptRejectButtons])
+  }, [enableMainButtons])
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['bottom']}>
       <ModalConfirmAction
         visible={showModalRefuseConfirmation}
         title={t('personalChat.confirmRefuseCredentialOffer')}
@@ -90,15 +90,18 @@ const BaseCredentialOffer: React.FC<Props> = ({
       {credentialDetails && (
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.subContainer}>
-            <Text typography="EuclidCircularA-Regular" style={styles.credentialTitle}>
+            <Text style={styles.credentialTitle}>
               {credentialDetails.mainInfo.issuer.name} {t('credentialOffer.offeringYou')}
             </Text>
-            <Text typography="EuclidCircularA-Bold" style={[styles.credentialTitle, { marginBottom: 15 }]}>
+            <Text
+              fontFamily="EuclidCircularA-Bold"
+              style={[styles.credentialTitle, styles.verifiableCredentialText]}
+            >
               {t('credentialOffer.verifiableCredential')}
             </Text>
             <CredentialDetails credentialDetails={credentialDetails} />
             <View style={styles.containerSectionIssuerInfo}>
-              <Text typography="EuclidCircularA-Medium" style={styles.titleIssuerInfo}>
+              <Text fontFamily="EuclidCircularA-Medium" style={styles.titleIssuerInfo}>
                 {t('credentialOffer.issuerInformation')}
               </Text>
               <ServiceInformation

@@ -1,20 +1,13 @@
 import { StyleSheet } from 'react-native'
 
-import { cardStyles, cardShadowStyles } from '../../../styles/globalStyles'
-
-import { AppTheme } from '@2060/styles'
+import { AppTheme, cardShadowStyles, cardStyles } from '@2060/styles'
 import { widthPercentageToDP } from '@2060/utils/responsiveUtils'
 
 const styles = (theme: AppTheme) =>
   StyleSheet.create({
-    root: {
+    container: {
       flex: 1,
-    },
-    innerRoot: {
-      flexGrow: 1,
-    },
-    contentContainerStyle: {
-      flexGrow: 1,
+      marginHorizontal: 12,
     },
     containerAppLogo: {
       paddingTop: 60,

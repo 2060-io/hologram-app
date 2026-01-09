@@ -4,12 +4,11 @@ import {
   getToken,
   initializeAppCheck,
 } from '@react-native-firebase/app-check'
-import { getMessaging, onTokenRefresh } from '@react-native-firebase/messaging'
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Platform, StatusBar, View } from 'react-native'
+import { StatusBar, View } from 'react-native'
 import Config from 'react-native-config'
 import 'isomorphic-webcrypto'
 
@@ -49,8 +48,12 @@ import {
   CredentialPresented,
   ForwardConnection,
   PresentCredential,
-  Presentation,
+  CredentialPresentation,
   ParentalControl,
+  SelectCredentialAttributes,
+  PresentCredentialsFromChat,
+  PresentCredentialAsQR,
+  EphemeralCredentialPresentation,
 } from '@2060/pages'
 import { MobileAgent } from '@2060/services/agent'
 import { AppTheme, getGlobalStyles } from '@2060/styles'
@@ -104,21 +107,6 @@ const Navigation = ({ isSignedUp, agent, theme }: NavigationProps) => {
       }
     }
     configureFirebaseProviderAndInitializeAppCheck()
-  }, [])
-
-  useEffect(() => {
-    const messaging = getMessaging()
-    const unsubscribe = onTokenRefresh(messaging, (deviceToken: string) => {
-      agent?.mediationRecipient.findDefaultMediatorConnection().then(mediatorConnection => {
-        if (mediatorConnection) {
-          agent?.modules.pushNotifications.setDeviceInfo(mediatorConnection.id, {
-            deviceToken,
-            devicePlatform: Platform.OS,
-          })
-        }
-      })
-    })
-    return () => unsubscribe()
   }, [])
 
   useEffect(() => {
@@ -178,8 +166,16 @@ const Navigation = ({ isSignedUp, agent, theme }: NavigationProps) => {
           <Stack.Screen name="CredentialPresented" component={CredentialPresented} />
           <Stack.Screen name="ForwardConnection" component={ForwardConnection} />
           <Stack.Screen name="PresentCredential" component={PresentCredential} />
-          <Stack.Screen name="Presentation" component={Presentation} />
+          <Stack.Screen name="CredentialPresentation" component={CredentialPresentation} />
           <Stack.Screen name="ParentalControl" component={ParentalControl} />
+          <Stack.Screen name="PresentCredentialsFromChat" component={PresentCredentialsFromChat} />
+          <Stack.Screen name="SelectCredentialAttributes" component={SelectCredentialAttributes} />
+          <Stack.Screen
+            name="PresentCredentialAsQR"
+            component={PresentCredentialAsQR}
+            options={{ gestureEnabled: false }}
+          />
+          <Stack.Screen name="EphemeralCredentialPresentation" component={EphemeralCredentialPresentation} />
         </Stack.Navigator>
       </View>
     </NavigationContainer>

@@ -2,20 +2,14 @@ import { ParamListBase } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import {
-  View,
-  TouchableOpacity,
-  ScrollView,
-  TouchableWithoutFeedback,
-  SafeAreaView,
-  ActivityIndicator,
-} from 'react-native'
+import { View, TouchableOpacity, ScrollView, TouchableWithoutFeedback, ActivityIndicator } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 import getStyles from './styles'
 
 import { ModalConfirmAction } from '@2060/components'
 import {
-  CardCredentialMainInformation,
+  CredentialMainInformation,
   MainButton,
   Text,
   ServiceMainInfo,
@@ -71,13 +65,13 @@ const BasePresentationRequest: React.FC<Props> = ({
       headerLeft: () =>
         hasCompatibleCredentials && !isAccepting ? (
           <TouchableOpacity style={styles.headerLeft} onPress={displayModalRefuseConfirmation}>
-            <Text style={styles.headerBtnText} typography="EuclidCircularA-Medium">
+            <Text style={styles.headerBtnText} fontFamily="EuclidCircularA-Medium">
               {t('general.refuse')}
             </Text>
           </TouchableOpacity>
         ) : (
           <TouchableOpacity style={styles.headerLeft} onPress={() => navigation.goBack()}>
-            <Text style={styles.headerBtnText} typography="EuclidCircularA-Medium">
+            <Text style={styles.headerBtnText} fontFamily="EuclidCircularA-Medium">
               {t('general.dismiss')}
             </Text>
           </TouchableOpacity>
@@ -114,7 +108,7 @@ const BasePresentationRequest: React.FC<Props> = ({
   }
   if (isAccepting) return <ActivityIndicator color={theme.colors.green} size={'large'} />
   return (
-    <SafeAreaView style={styles.root}>
+    <SafeAreaView style={styles.root} edges={['bottom']}>
       <ModalConfirmAction
         visible={showModalRefuseConfirmation}
         title={t('personalChat.confirmRefusePresentCredential')}
@@ -130,9 +124,9 @@ const BasePresentationRequest: React.FC<Props> = ({
           {serviceInfo && <ServiceMainInfo serviceInfo={serviceInfo} />}
           {hasCompatibleCredentials ? (
             <>
-              <Text style={[styles.title, styles.mainTitle]} typography="EuclidCircularA-Regular">
+              <Text style={[styles.title, styles.mainTitle]}>
                 {t('presentationRequest.selectCredentialYouWouldLikeToPresentTo')}
-                <Text style={styles.title} typography="EuclidCircularA-SemiBold">
+                <Text style={styles.title} fontFamily="EuclidCircularA-SemiBold">
                   {submission.verifier.name}
                 </Text>
               </Text>
@@ -140,12 +134,12 @@ const BasePresentationRequest: React.FC<Props> = ({
                 const title = `${submission.verifier.name} ${t('presentationRequest.isRequestingYou')}`
                 return (
                   <View key={entry.name}>
-                    <Text style={styles.submissionSectionTitle} typography="EuclidCircularA-SemiBold">
+                    <Text style={styles.submissionSectionTitle} fontFamily="EuclidCircularA-SemiBold">
                       {entry.name}
                     </Text>
-                    <Text style={styles.title} typography="EuclidCircularA-Regular">
+                    <Text style={styles.title}>
                       {title}
-                      <Text style={styles.title} typography="EuclidCircularA-SemiBold">
+                      <Text style={styles.title} fontFamily="EuclidCircularA-SemiBold">
                         {entry?.requestedAttributes?.join(', ')}
                       </Text>
                     </Text>
@@ -162,7 +156,7 @@ const BasePresentationRequest: React.FC<Props> = ({
                               style={styles.radioButton}
                               isChecked={selectedCredentialsIndexes?.[entryIndex] === credentialIndex}
                             />
-                            <CardCredentialMainInformation
+                            <CredentialMainInformation
                               credentialMainInfo={credential}
                               onPress={() => goToCredentialDetails(credential.recordId)}
                               size="medium"
@@ -176,16 +170,14 @@ const BasePresentationRequest: React.FC<Props> = ({
               })}
               <MainButton
                 disabled={!enabledPresentButton}
-                text={t('personalChat.presentCredential', { count: submission?.entries?.length })}
+                text={t('credential.present', { count: submission?.entries?.length })}
                 onPress={accept}
-                style={{ opacity: enabledPresentButton ? 1 : 0.5 }}
+                style={enabledPresentButton ? styles.enabledAcceptButton : styles.disabledAcceptButton}
               />
             </>
           ) : (
             <View style={styles.noCompatibleCredentialContainer}>
-              <Text style={styles.title} typography="EuclidCircularA-Regular">
-                {t('presentationRequest.noCredentials')}
-              </Text>
+              <Text style={styles.title}>{t('presentationRequest.noCredentials')}</Text>
             </View>
           )}
         </View>

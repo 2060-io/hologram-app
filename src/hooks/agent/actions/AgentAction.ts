@@ -15,7 +15,7 @@ export enum AgentActionType {
   ShareMedia = 'ShareMedia',
   SendReaction = 'SendReaction',
   SendReceipts = 'SendReceipts',
-  ActionMenuSelection = 'ActionMenuSelection',
+  MenuSelection = 'MenuSelection',
   ForwardConnection = 'ForwardConnection',
   PresentCredential = 'PresentCredential',
   SendAnswer = 'SendAnswer',
@@ -24,6 +24,16 @@ export enum AgentActionType {
   QueryServiceFeatures = 'QueryServiceFeatures',
   CreateCallOffer = 'CreateCallOffer',
   HangupCall = 'HangupCall',
+  RemoveOutOfBandRecord = 'RemoveOutOfBandRecord',
+  AcceptCredentialOffer = 'AcceptCredentialOffer',
+  DeclineCredentialOffer = 'DeclineCredentialOffer',
+  DeclineProofRequest = 'DeclineProofRequest',
+  SendUserProfile = 'SendUserProfile',
+  RequestUserProfile = 'RequestUserProfile',
+  AcceptProofRequest = 'AcceptProofRequest',
+  AcceptProofProposal = 'AcceptProofProposal',
+  ProofSendProblemReport = 'ProofSendProblemReport',
+  SavePushNotificationDeviceInfo = 'SavePushNotificationDeviceInfo',
 }
 
 export type AgentAction = {

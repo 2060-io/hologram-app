@@ -1,3 +1,5 @@
+import { StyleProp, ViewStyle } from 'react-native'
+
 import { BackupHandler, RestoreProgress } from '@2060/hooks/backup'
 
 export interface RestoreProgressProps extends RestoreProgress {}
@@ -18,4 +20,5 @@ export type RestoreProps = {
   onDownloading: () => React.ReactNode
   onError: () => React.ReactNode
   onSuccessFinish: () => React.ReactNode
+  style: StyleProp<ViewStyle>
 }

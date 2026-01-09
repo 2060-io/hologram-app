@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, SafeAreaView } from 'react-native'
+import { View } from 'react-native'
 
 import { CallButton, Text, Avatar } from '../common'
 
@@ -26,7 +26,7 @@ const VideoCall = () => {
     return (
       <>
         <Avatar uri={displayPicture} label={connectionName} size="46%" />
-        <Text typography="EuclidCircularA-Medium" style={styles.textConnectionName}>
+        <Text fontFamily="EuclidCircularA-Medium" style={styles.textConnectionName}>
           {connectionName}
         </Text>
       </>
@@ -34,13 +34,11 @@ const VideoCall = () => {
   }, [didcommConnection])
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       {connectionStatus.status === CallStatus.Connecting && (
         <View style={styles.subContainer}>
           {renderAvatar}
-          <Text typography="EuclidCircularA-Regular" style={styles.text}>
-            {t('call.connecting')}
-          </Text>
+          <Text style={styles.text}>{t('call.connecting')}</Text>
         </View>
       )}
       {connectionStatus.status === CallStatus.Connected && (
@@ -50,12 +48,8 @@ const VideoCall = () => {
         <>
           <View style={styles.subContainer}>
             {renderAvatar}
-            <Text typography="EuclidCircularA-Regular" style={styles.textConnectionLost}>
-              {t('call.connectionLost')}
-            </Text>
-            <Text typography="EuclidCircularA-Regular" style={styles.text}>
-              {t('call.reconnecting')}
-            </Text>
+            <Text style={styles.textConnectionLost}>{t('call.connectionLost')}</Text>
+            <Text style={styles.text}>{t('call.reconnecting')}</Text>
           </View>
           <View style={styles.buttonsContainer}>
             <CallButton
@@ -69,12 +63,10 @@ const VideoCall = () => {
       {connectionStatus.status === CallStatus.Finished && (
         <View style={styles.subContainer}>
           {renderAvatar}
-          <Text typography="EuclidCircularA-Regular" style={styles.text}>
-            {connectionStatus.statusMessage}
-          </Text>
+          <Text style={styles.text}>{connectionStatus.statusMessage}</Text>
         </View>
       )}
-    </SafeAreaView>
+    </View>
   )
 }
 

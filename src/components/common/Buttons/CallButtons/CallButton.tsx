@@ -22,9 +22,7 @@ const CallButton = ({ iconName, text, ...buttonProps }: Props) => {
           height={'50%'}
         />
       </TouchableOpacity>
-      <Text typography="EuclidCircularA-Regular" style={styles.text}>
-        {text}
-      </Text>
+      <Text style={styles.text}>{text}</Text>
     </View>
   )
 }

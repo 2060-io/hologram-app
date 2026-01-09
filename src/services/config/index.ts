@@ -1,7 +1,5 @@
-import { readFile } from 'react-native-fs'
-
 import { logError } from '@2060/utils'
-import { CONFIG_FILE_PATH, writeFile } from '@2060/utils/RNFS'
+import { CONFIG_FILE_PATH, readFile, writeFile } from '@2060/utils/RNFS'
 
 export enum ParentalControlEnum {
   Enabled = 'enabled',

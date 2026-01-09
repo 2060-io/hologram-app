@@ -11,14 +11,19 @@ import getStyles from './styles'
 
 import { ModalConfirmAction } from '@2060/components'
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
-import { CardCredentialMainInformation, Text } from '@2060/components/common'
-import { useChat } from '@2060/hooks/agent'
+import { CredentialMainInformation, Text } from '@2060/components/common'
+import { AgentActionType, useChat } from '@2060/hooks/agent'
+import {
+  AcceptProofProposalParameters,
+  ProofSendProblemReportDescription,
+  ProofSendProblemReportParameters,
+} from '@2060/hooks/agent/actions/types'
 import { updateChatEntryMetadata } from '@2060/hooks/agent/chat/services'
+import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { ChatEntryRole, VPResponseMetadata, VPResponsePresentedCredential } from '@2060/model'
 import { MobileAgent } from '@2060/services/agent'
-import { acceptProposal, sendProblemReport } from '@2060/services/agent/proofs'
 import { toast } from '@2060/utils/toast'
 
 type Props = {
@@ -35,12 +40,12 @@ const VPChatView = ({ metadata, role, agent, proofRecordId, chatEntryId }: Props
   const styles = getStyles(theme)
   const { chatThread } = useChat()
   const { realm } = useLocalRealm()
+  const { addAgentActionToQueue } = useAgentActionQueue()
   const navigation: StackNavigationProp<NavigationStackParams> = useNavigation()
   const [showModalRefuseConfirmation, setShowModalRefuseConfirmation] = useState(false)
   const { presentedCredentials: pc, proofState } = metadata
   const otherSidesName = chatThread?.participants.find(p => p.id === ChatEntryRole.Receiver)?.name
   const presentedCredentials: VPResponsePresentedCredential[] = pc ? JSON.parse(pc) : []
-
   const isSender = role === ChatEntryRole.Sender
   const mainMessage = isSender
     ? t('presentationRequest.youPresented', {
@@ -60,10 +65,11 @@ const VPChatView = ({ metadata, role, agent, proofRecordId, chatEntryId }: Props
   }
 
   const goToPresentation = (credential: VPResponsePresentedCredential) => {
-    navigation.navigate('Presentation', {
-      mainInfo: credential.mainInfo,
-      attributes: credential.attributes ?? {},
+    navigation.navigate('CredentialPresentation', {
+      credentialMainInfo: credential.mainInfo,
+      credentialAttributes: credential.attributes ?? {},
       proofState,
+      proofRecordId,
     })
   }
 
@@ -78,21 +84,28 @@ const VPChatView = ({ metadata, role, agent, proofRecordId, chatEntryId }: Props
   }
 
   const acceptCredentialPresentation = async () => {
-    if (!agent || !realm) return
-    const newMetadata = { ...metadata, proofState: ProofState.PresentationReceived }
-    updateChatEntryMetadata(realm, chatEntryId, newMetadata)
-    acceptProposal({ agent, proofRecordId })
+    if (realm) {
+      const newMetadata = { ...metadata, proofState: ProofState.RequestSent }
+      updateChatEntryMetadata(realm, chatEntryId, newMetadata)
+    }
+    const parameters: AcceptProofProposalParameters = { proofRecordId }
+    addAgentActionToQueue({ type: AgentActionType.AcceptProofProposal, parameters })
   }
 
   const refuseCredentialPresentation = async () => {
     hideModalRefuseConfirmation()
-    if (!agent || !realm) return
-    const newMetadata = { ...metadata, proofState: ProofState.Abandoned }
-    updateChatEntryMetadata(realm, chatEntryId, newMetadata)
-    sendProblemReport({ agent, proofRecordId, description: 'refused' })
+    if (realm) {
+      const newMetadata = { ...metadata, proofState: ProofState.Abandoned }
+      updateChatEntryMetadata(realm, chatEntryId, newMetadata)
+    }
+    const parameters: ProofSendProblemReportParameters = {
+      proofRecordId,
+      description: ProofSendProblemReportDescription.Refused,
+    }
+    addAgentActionToQueue({ type: AgentActionType.ProofSendProblemReport, parameters })
   }
 
-  const status: Partial<Record<ProofState, React.ReactElement>> = {
+  const status: Record<ProofState, React.ReactElement | null> = {
     [ProofState.ProposalSent]: <State text={t('presentationRequest.waitingForAcceptance')} type="warning" />,
     [ProofState.ProposalReceived]: (
       <View style={styles.buttonsContainer}>
@@ -108,11 +121,13 @@ const VPChatView = ({ metadata, role, agent, proofRecordId, chatEntryId }: Props
         />
       </View>
     ),
+    [ProofState.RequestSent]: <State text={t('presentationRequest.accepted')} />,
     [ProofState.RequestReceived]: <State text={t('presentationRequest.accepted')} />,
     [ProofState.PresentationReceived]: <State text={t('presentationRequest.accepted')} />,
-    [ProofState.Done]: <State text={t('presentationRequest.accepted')} />,
     [ProofState.Declined]: <State text={t('presentationRequest.refused')} type="error" />,
     [ProofState.Abandoned]: <State text={t('presentationRequest.refused')} type="error" />,
+    [ProofState.Done]: <State text={t('presentationRequest.accepted')} />,
+    [ProofState.PresentationSent]: null,
   }
 
   return (
@@ -133,28 +148,23 @@ const VPChatView = ({ metadata, role, agent, proofRecordId, chatEntryId }: Props
         role={role}
       />
       <View style={styles.subContainer}>
-        <Text style={styles.title} typography="EuclidCircularA-Regular">
-          {mainMessage}
-        </Text>
+        <Text style={styles.title}>{mainMessage}</Text>
         {presentedCredentials.map((credential, index) => {
           const isLast = index === presentedCredentials.length - 1
-          const credentialMainInfo = {
-            ...credential.mainInfo,
-            dateLabel: isSender ? t('credential.issuedOn') : t('credential.presentedOn'),
-          }
+          const { mainInfo } = credential
           return (
-            <CardCredentialMainInformation
-              key={credential.mainInfo.id}
-              credentialMainInfo={credentialMainInfo}
-              containerStyle={{ marginBottom: isLast ? 0 : theme.edges.messageMargin }}
+            <CredentialMainInformation
+              key={mainInfo.id}
+              credentialMainInfo={mainInfo}
+              containerStyle={isLast ? styles.lastCredential : styles.credential}
               onPress={() => {
-                chooseWhereToGo({ mainInfo: credentialMainInfo, attributes: credential.attributes })
+                chooseWhereToGo({ mainInfo, attributes: credential.attributes })
               }}
               size="medium"
             />
           )
         })}
-        {status[proofState] ? <View style={styles.footerContainer}>{status[proofState]}</View> : null}
+        <View style={styles.footerContainer}>{status[proofState]}</View>
       </View>
     </View>
   )

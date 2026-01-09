@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Dimensions, Platform, StyleSheet, View } from 'react-native'
+import { Dimensions, Platform, View } from 'react-native'
 import {
   CameraRuntimeError,
   useCameraDevices,
@@ -11,10 +11,10 @@ import {
   useCameraFormat,
 } from 'react-native-vision-camera'
 
+import getStyles from './styles'
+
 import { Text } from '@2060/components/common'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { AppTheme } from '@2060/styles'
-import { screenHeight } from '@2060/utils/responsiveUtils'
 import { toast } from '@2060/utils/toast'
 
 const SCREEN_WIDTH = Dimensions.get('window').width
@@ -25,10 +25,10 @@ const SCREEN_HEIGHT = Platform.select<number>({
 
 interface Props {
   isActive: boolean
-  onBarcodeScanned: (barcode: string) => void
+  onCodeScanned: (barcode: string) => void
 }
 
-const CodeScanner: React.FC<Props> = ({ isActive, onBarcodeScanned }) => {
+const CodeScanner: React.FC<Props> = ({ isActive, onCodeScanned }) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
@@ -48,7 +48,7 @@ const CodeScanner: React.FC<Props> = ({ isActive, onBarcodeScanned }) => {
       const scannedCode = codes[0].value
       if (scannedCode) {
         const hasNotBeenScanned = !scannedCodes.current.includes(scannedCode)
-        if (hasNotBeenScanned) onBarcodeScanned(scannedCode)
+        if (hasNotBeenScanned) onCodeScanned(scannedCode)
         scannedCodes.current = [...scannedCodes.current, scannedCode]
       }
     },
@@ -85,7 +85,7 @@ const CodeScanner: React.FC<Props> = ({ isActive, onBarcodeScanned }) => {
     <React.Fragment>
       {device && isActive && hasPermission ? (
         <Camera
-          style={{ height: screenHeight, zIndex: -1 }}
+          style={styles.camera}
           device={device}
           format={format}
           isActive={isActive}
@@ -96,7 +96,7 @@ const CodeScanner: React.FC<Props> = ({ isActive, onBarcodeScanned }) => {
         />
       ) : (
         <View style={styles.containerLoadingCamera}>
-          <Text typography="EuclidCircularA-Medium" style={styles.loadingCameraText}>
+          <Text fontFamily="EuclidCircularA-Medium" style={styles.loadingCameraText}>
             {t('scan.loadingCamera')}
           </Text>
         </View>
@@ -104,19 +104,5 @@ const CodeScanner: React.FC<Props> = ({ isActive, onBarcodeScanned }) => {
     </React.Fragment>
   )
 }
-
-const getStyles = (theme: AppTheme) =>
-  StyleSheet.create({
-    containerLoadingCamera: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    loadingCameraText: {
-      color: theme.colors.primaryText,
-      fontSize: theme.fontSize.xl,
-      lineHeight: 20,
-    },
-  })
 
 export default CodeScanner

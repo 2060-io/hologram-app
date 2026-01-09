@@ -1,5 +1,5 @@
 import { CredentialExchangeRecord, CredentialState } from '@credo-ts/core'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useTransition } from 'react'
 
 import { useMobileAgent } from './agent'
 import { recordsRemovedByType, recordsUpdatedByType } from './agent/recordUtils'
@@ -12,19 +12,19 @@ export const useCredentialExchangeForDisplay = (options: { credentialRecordId: s
   const { agent } = useMobileAgent()
   const [credentialDetails, setCredentialDetails] = useState<CredentialDetailsForDisplay>()
   const [credentialState, setCredentialState] = useState<CredentialState>()
-  const [loading, setLoading] = useState<boolean>(true)
+  const [isGettingCredentialDetails, startGetCredentialDetailsTransition] = useTransition()
 
   const getCredentialDetails = async () => {
     if (!agent) return
-    try {
-      const { details, state } = await getCredentialDetailsFromExchange(agent, credentialExchangeRecordId)
-      setCredentialDetails(details)
-      setCredentialState(state)
-    } catch (error) {
-      logError(`error getting credential details: ${error}`)
-    } finally {
-      setLoading(false)
-    }
+    startGetCredentialDetailsTransition(async () => {
+      try {
+        const { details, state } = await getCredentialDetailsFromExchange(agent, credentialExchangeRecordId)
+        setCredentialDetails(details)
+        setCredentialState(state)
+      } catch (error) {
+        logError(`Error getting credential details: ${error}`)
+      }
+    })
   }
 
   useEffect(() => {
@@ -33,7 +33,7 @@ export const useCredentialExchangeForDisplay = (options: { credentialRecordId: s
 
   // TODO: optimize to use credentialExchangeRecord directly instead of querying every time
   useEffect(() => {
-    if (!loading) {
+    if (!isGettingCredentialDetails) {
       const credentialUpdated$ = recordsUpdatedByType(agent, CredentialExchangeRecord).subscribe(() =>
         getCredentialDetails(),
       )
@@ -47,7 +47,7 @@ export const useCredentialExchangeForDisplay = (options: { credentialRecordId: s
         credentialRemoved$.unsubscribe()
       }
     }
-  }, [loading, credentialDetails, agent])
+  }, [isGettingCredentialDetails, credentialDetails, agent])
 
-  return { loading, credentialDetails, credentialState }
+  return { credentialDetails, credentialState }
 }

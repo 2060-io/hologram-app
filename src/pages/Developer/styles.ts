@@ -17,13 +17,19 @@ export default (theme: AppTheme) =>
       flexDirection: 'row',
       alignItems: 'center',
     },
+    customDevEnvValue: {
+      flex: 1,
+      marginRight: 4,
+    },
     devEnvsModalContainer: {
       margin: 15,
+      marginBottom: 0,
     },
     title: {
       textAlign: 'center',
       fontSize: theme.fontSize.lg,
-      marginVertical: 10,
+      marginTop: 20,
+      marginBottom: 10,
       color: theme.colors.primaryText,
     },
     textInput: {

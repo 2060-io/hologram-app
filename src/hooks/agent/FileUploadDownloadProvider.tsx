@@ -14,9 +14,10 @@ import { createLocalPreview } from '../media/preview'
 import { useConfig } from '../providers/ConfigProvider'
 import { useLocalRealm } from '../providers/RealmProvider'
 
-import { useChats } from './ChatProvider'
 import { useMobileAgent } from './MobileAgentProvider'
 import { AgentActionType } from './actions/AgentAction'
+import { ShareMediaParameters } from './actions/types'
+import { useAgentActionQueue } from './useAgentActionQueue'
 import {
   AutomaticDownloadTypes,
   DownloadOptions,
@@ -107,7 +108,7 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
 
   // TODO: Make persistent using realm
   const uploadTasks = useRef<UploadTask[]>([])
-  const { addAgentActionToQueue } = useChats()
+  const { addAgentActionToQueue } = useAgentActionQueue()
 
   useEffect(() => {
     const setupAutomaticDownloadValues = async () => {
@@ -477,14 +478,12 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
 
         if (isTaskFinished) {
           await agent.modules.media.setMetadata(mediaRecordId, 'mediaUploadState', Done)
-
           // TODO: ShareMedia should not receive recordId,
           // but all parameters needed to create/share through DIDComm
+          const parameters: ShareMediaParameters = { recordId: relatedRecord.id }
           addAgentActionToQueue({
             type: AgentActionType.ShareMedia,
-            parameters: {
-              recordId: relatedRecord.id,
-            },
+            parameters,
           })
         }
       }

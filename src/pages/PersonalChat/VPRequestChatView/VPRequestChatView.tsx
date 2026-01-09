@@ -14,7 +14,14 @@ import getStyles from './styles'
 
 import { ModalConfirmAction } from '@2060/components'
 import { Text } from '@2060/components/common'
+import { AgentActionType } from '@2060/hooks/agent'
+import {
+  DeclineProofRequestParameters,
+  ProofSendProblemReportDescription,
+  ProofSendProblemReportParameters,
+} from '@2060/hooks/agent/actions/types'
 import { updateChatEntryMetadata } from '@2060/hooks/agent/chat/services'
+import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { VerifierInfo, VPRequestMetadata } from '@2060/model'
@@ -24,7 +31,6 @@ import {
   FormattedSubmission,
   formatDidcommPresentationSubmission,
 } from '@2060/services/agent/formatPresentation'
-import { notifyNoCompatibleCredentials } from '@2060/services/agent/proofs'
 
 interface Props {
   sender?: ChatParticipant
@@ -50,12 +56,12 @@ const VPRequestChatView = ({
   agent,
   chatEntryId,
 }: Props): React.ReactElement => {
-  const { t } = useTranslation()
-  const { realm } = useLocalRealm()
   const navigation: StackNavigationProp<ParamListBase> = useNavigation()
+  const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
-
+  const { realm } = useLocalRealm()
+  const { addAgentActionToQueue } = useAgentActionQueue()
   const [showModalRefuseConfirmation, setShowModalRefuseConfirmation] = useState(false)
   const [formattedPresentationRequest, setFormattedPresentationRequest] = useState<FormattedSubmission>()
 
@@ -86,7 +92,11 @@ const VPRequestChatView = ({
     if (!agent || !realm) return
     const newMetadata = { ...metadata, proofState: ProofState.Abandoned }
     updateChatEntryMetadata(realm, chatEntryId, newMetadata)
-    notifyNoCompatibleCredentials({ agent, proofRecordId })
+    const parameters: ProofSendProblemReportParameters = {
+      proofRecordId,
+      description: ProofSendProblemReportDescription.NoCompatibleCredentials,
+    }
+    addAgentActionToQueue({ type: AgentActionType.ProofSendProblemReport, parameters })
   }
 
   const goToDidCommPresentationRequest = () => {
@@ -96,12 +106,13 @@ const VPRequestChatView = ({
     })
   }
 
-  // TODO: Move to an AgentAction
   const refuse = async () => {
-    if (!agent || !realm) return
-    const newMetadata = { ...metadata, proofState: ProofState.Declined }
-    updateChatEntryMetadata(realm, chatEntryId, newMetadata)
-    await agent.proofs.declineRequest({ proofRecordId, sendProblemReport: true })
+    if (realm) {
+      const newMetadata = { ...metadata, proofState: ProofState.Declined }
+      updateChatEntryMetadata(realm, chatEntryId, newMetadata)
+    }
+    const parameters: DeclineProofRequestParameters = { proofRecordId }
+    addAgentActionToQueue({ type: AgentActionType.DeclineProofRequest, parameters })
   }
 
   const refuseFromChat = async () => {
@@ -109,11 +120,9 @@ const VPRequestChatView = ({
     refuse()
   }
 
-  if (!metadata) return <View />
-
   const NoCompatibleCredentials = () => (
     <View>
-      <Text style={styles.title} typography="EuclidCircularA-Regular">
+      <Text style={styles.title}>
         {t('presentationRequest.noCompatibleCredentials', { sender: senderName })}
       </Text>
       <BlueButton
@@ -149,7 +158,7 @@ const VPRequestChatView = ({
   const status: Partial<Record<ProofState, React.ReactElement>> = {
     [ProofState.Abandoned]: (
       <>
-        <Text style={styles.title} typography="EuclidCircularA-Regular">
+        <Text style={styles.title}>
           {t('presentationRequest.noCompatibleCredentials', { sender: senderName })}
         </Text>
         <BlueButton
@@ -162,7 +171,7 @@ const VPRequestChatView = ({
     ),
     [ProofState.Declined]: (
       <View style={[styles.baseFooterContainer, styles.refusedContainer]}>
-        <Text typography="EuclidCircularA-Bold" style={styles.refusedText}>
+        <Text fontFamily="EuclidCircularA-Bold" style={styles.refusedText}>
           {t('personalChat.youRefusedRequest')}
         </Text>
       </View>
@@ -194,7 +203,7 @@ const VPRequestChatView = ({
       <View style={styles.subContainer}>
         {requestedCredentialsForDisplay?.requestedCredentials?.map(requestedCredential => (
           <View key={requestedCredential?.schemaName}>
-            <Text style={styles.title} typography="EuclidCircularA-Regular">
+            <Text style={styles.title}>
               {t('personalChat.isRequestingYou', {
                 sender: senderName,
                 schemaName: requestedCredential?.schemaName,
@@ -203,7 +212,7 @@ const VPRequestChatView = ({
             <View style={styles.credentialAttributesContainer}>
               {requestedCredential?.attributes?.map((attribute: string) => (
                 <View key={attribute} style={styles.credentialAttributeContainer}>
-                  <Text typography="EuclidCircularA-Bold" style={styles.credentialAttribute}>
+                  <Text fontFamily="EuclidCircularA-Bold" style={styles.credentialAttribute}>
                     {attribute}
                   </Text>
                 </View>

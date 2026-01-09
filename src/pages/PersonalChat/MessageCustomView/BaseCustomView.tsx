@@ -14,7 +14,7 @@ import QuestionChatView from '../QuestionChatView'
 import RepliedMessageView from '../RepliedMessageView'
 import TicksView from '../TicksView'
 import UserActionChatView from '../UserActionChatView'
-import VCOfferChatView from '../VCOfferChatView '
+import VCOfferChatView from '../VCOfferChatView'
 import VPChatView from '../VPChatView'
 import VPRequestChatView from '../VPRequestChatView'
 import VideoChatView from '../VideoChatView'
@@ -160,6 +160,7 @@ const BaseCustomView: React.FC<BaseCustomMessageViewProps> = memo(props => {
               metadata={chatEntry.metadata as VCOfferMetadata}
               agent={agent}
               sender={sender}
+              chatEntryId={chatEntry.id}
             />
           )
         case ChatEntryType.Invitation:
@@ -206,9 +207,7 @@ const BaseCustomView: React.FC<BaseCustomMessageViewProps> = memo(props => {
       return (
         displayTimeAndTicks && (
           <View style={containerStyle}>
-            <Text typography="EuclidCircularA-Regular" style={styles.timeText}>
-              {messageTime}
-            </Text>
+            <Text style={styles.timeText}>{messageTime}</Text>
             {supportsMessageReceipts ? (
               <TicksView role={currentMessage.role} state={currentMessage.state} />
             ) : null}

@@ -4,11 +4,10 @@ import React, { createContext, useContext, useState, useCallback, useRef, useEff
 import { useScreenLock } from './ScreenLockProvider'
 import { useVideoCallContext } from './useVideoCallContext'
 
-import { LightboxModal } from '@2060/components'
+import { LightboxModal, VideoPlayer } from '@2060/components'
 import { ChatEntryMessage } from '@2060/pages/PersonalChat/ChatMessage/Props'
 import LightboxHeader from '@2060/pages/PersonalChat/ImageChatView/LightboxHeader'
 import { MediaInfo } from '@2060/pages/PersonalChat/PersonalChatProps'
-import VideoPlayer from '@2060/pages/PersonalChat/VideoChatView/VideoPlayer'
 
 type Callback = () => Promise<void>
 
@@ -102,6 +101,8 @@ export const MediaPlayerProvider: React.FC<React.PropsWithChildren<Props>> = ({ 
     setAudioMessageIdFinished(newAudioMessageId)
   }, [])
 
+  const closeVideoPlayer = () => setRenderVideoPlayer(false)
+
   return (
     <MediaPlayerContext
       value={{
@@ -115,17 +116,17 @@ export const MediaPlayerProvider: React.FC<React.PropsWithChildren<Props>> = ({ 
     >
       <LightboxModal
         visible={renderVideoPlayer}
-        renderHeader={close =>
+        renderHeader={() =>
           showControl &&
           videoState && (
             <LightboxHeader
               chatEntry={videoState.chatEntry}
               fileMediaInfo={videoState.fileMediaInfo}
-              onBack={close}
+              onBack={closeVideoPlayer}
             />
           )
         }
-        onCloseModal={() => setRenderVideoPlayer(false)}
+        closeModal={closeVideoPlayer}
       >
         <VideoPlayer
           uri={videoState?.videoFileUri ?? ''}

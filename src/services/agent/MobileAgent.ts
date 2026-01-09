@@ -3,6 +3,7 @@ import { MediaSharingModule } from '@2060.io/credo-ts-didcomm-media-sharing'
 import { DidCommMrtdModule } from '@2060.io/credo-ts-didcomm-mrtd'
 import { DidCommReactionsModule } from '@2060.io/credo-ts-didcomm-reactions'
 import { ReceiptsModule } from '@2060.io/credo-ts-didcomm-receipts'
+import { DidCommShortenUrlModule } from '@2060.io/credo-ts-didcomm-shorten-url'
 import { UserProfileModule, UserProfileModuleConfig } from '@2060.io/credo-ts-didcomm-user-profile'
 import { ActionMenuModule } from '@credo-ts/action-menu'
 import {
@@ -41,7 +42,7 @@ import { PushNotificationsFcmModule } from '@credo-ts/push-notifications'
 import { QuestionAnswerModule } from '@credo-ts/question-answer'
 import { WebVhAnonCredsRegistry, WebvhDidResolver } from '@credo-ts/webvh'
 import { anoncreds } from '@hyperledger/anoncreds-react-native'
-import { ariesAskar } from '@hyperledger/aries-askar-react-native'
+import { askar } from '@openwallet-foundation/askar-react-native'
 import { DidWebAnonCredsRegistry } from 'credo-ts-didweb-anoncreds'
 import { IndyVdrProxyDidResolver, IndyVdrProxyAnonCredsRegistry } from 'credo-ts-indy-vdr-proxy-client'
 
@@ -55,7 +56,7 @@ export const getMobileAgentModules = (config: {
 }) => {
   const proxyBaseUrl = config.indyVDRProxyBaseUrl
   return {
-    askar: new AskarModule({ ariesAskar }),
+    askar: new AskarModule({ ariesAskar: askar }),
     anoncreds: new AnonCredsModule({
       registries: [
         new DidWebAnonCredsRegistry({
@@ -123,6 +124,7 @@ export const getMobileAgentModules = (config: {
     pushNotifications: new PushNotificationsFcmModule(),
     questionAnswer: new QuestionAnswerModule(),
     receipts: new ReceiptsModule(),
+    shortenUrl: new DidCommShortenUrlModule(),
   } as const
 }
 
