@@ -9,7 +9,7 @@ export interface WrapperPersonalChatProps
 
 const PersonalChatContainer = (PersonalChatComponent: ElementType) => {
   const WrapperPersonalChat = (props: WrapperPersonalChatProps) => {
-    const { chatThreadId } = props.route.params
+    const { chatThreadId, redirectToHomeOnBack } = props.route.params
     const chatThread = useChatThreadWithParticipants(chatThreadId)
 
     const { chatEntries, loadChatEntries } = useChatEntries(chatThreadId)
@@ -21,6 +21,7 @@ const PersonalChatContainer = (PersonalChatComponent: ElementType) => {
         chatEntries={chatEntries}
         loadMoreMessages={loadChatEntries}
         chatThread={chatThread}
+        redirectToHomeOnBack={redirectToHomeOnBack}
       />
     )
   }
