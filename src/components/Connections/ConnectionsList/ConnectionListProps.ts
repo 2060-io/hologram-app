@@ -10,6 +10,7 @@ export type ConnectionItem = {
   avatarUrl: string
   name: string
   isService: boolean
+  invitationDid?: string
   subConnections: ConnectionItem[]
   subConnectionsThatMatchWithSearch?: number
   status?: ServiceStatus

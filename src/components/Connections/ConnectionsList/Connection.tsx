@@ -5,6 +5,7 @@ import { ConnectionItem } from './ConnectionListProps'
 import getStyles from './styles'
 
 import { Avatar, SvgIcon, Text, VerifiedIcon } from '@2060/components/common'
+import { useFetchServiceInfo } from '@2060/hooks'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 
 type Props = {
@@ -26,6 +27,12 @@ const Connection = ({
 }: Props) => {
   const theme = useTheme()
   const styles = getStyles(theme)
+  const { serviceInfo } = useFetchServiceInfo(
+    connection.invitationDid && connection.isService ? connection.invitationDid : undefined,
+  )
+  const name = serviceInfo?.name ?? connection.name
+  const logoUrl = serviceInfo?.logoUrl ?? connection.avatarUrl
+
   return (
     <TouchableOpacity
       key={connection.id}
@@ -40,14 +47,14 @@ const Connection = ({
         <VerifiedIcon style={styles.containerVerifiedMark} status={connection.status} />
       )}
       <Avatar
-        uri={connection.avatarUrl}
-        label={connection.name}
+        uri={logoUrl}
+        label={name}
         size="8.41%"
         bgAvatarInitials={theme.colors.secondary}
         enableImageRefresh={false}
       />
       <Text fontFamily="EuclidCircularA-Medium" style={styles.listItemText}>
-        {connection.name}{' '}
+        {`${name} `}
         {!!connection.subConnections.length && !isSearchingMode && (
           <Text style={styles.numberSubConnect}>{`(+${connection.subConnections.length})`}</Text>
         )}

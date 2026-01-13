@@ -23,6 +23,7 @@ const getConnectionItem = async (
     id: connection.id,
     name: getConnectionDisplayName(connection),
     isService: isConnectionService,
+    invitationDid: connection.invitationDid,
     avatarUrl: getConnectionDisplayPicture(connection),
     subConnections: await Promise.all(
       findSubConnections(connection.id).map(
@@ -58,13 +59,13 @@ const getConnectionBySections = async (
   const connectionsGroupBySections: ConnectionListSection[] = []
   for (const connection of connections) {
     const connectionName = getConnectionDisplayName(connection) as string
-    const newSectionItem = await getConnectionItem(connection, findSubConnections, agent)
+    const connectionItem = await getConnectionItem(connection, findSubConnections, agent)
     const firstLetter = connectionName.charAt(0).toLocaleLowerCase()
     const sectionAlreadyExists = connectionsGroupBySections.findIndex(item => item.title === firstLetter)
     if (sectionAlreadyExists >= 0) {
-      connectionsGroupBySections[sectionAlreadyExists].connections.push(newSectionItem)
+      connectionsGroupBySections[sectionAlreadyExists].connections.push(connectionItem)
     } else {
-      const newSection = { connections: [newSectionItem], title: firstLetter }
+      const newSection = { connections: [connectionItem], title: firstLetter }
       connectionsGroupBySections.push(newSection)
     }
   }
