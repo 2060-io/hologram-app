@@ -35,10 +35,9 @@ import {
 } from '@credo-ts/core'
 import { tryParseDid } from '@credo-ts/core/build/modules/dids/domain/parse'
 import { QuestionMessage, AnswerMessage } from '@credo-ts/question-answer'
-import agentActionQueue from 'react-native-job-queue'
 import Realm from 'realm'
 
-import { AgentAction, AgentActionType } from '../actions/AgentAction'
+import { AgentActionType } from '../actions/AgentAction'
 import { SendReceiptsParameters } from '../actions/types'
 
 import { DidCommMessageDirection } from './DidCommMessageDirection'
@@ -61,6 +60,7 @@ import { addUnread, findChatThread, findOrCreateChatThread, updateThread } from 
 
 import { ChatEntryType, ChatEntryRole, ChatEntryState, InvitationMetadata } from '@2060/model'
 import { InvitationState } from '@2060/model/InvitationState'
+import { AgentActionQueueSingleton } from '@2060/services/AgentActionQueueSingleton'
 import AgentSingleton from '@2060/services/AgentSingleton'
 import { MobileAgent } from '@2060/services/agent'
 import {
@@ -319,16 +319,9 @@ export function subscribeToAgentChatEvents(
           connectionId: connection.id,
           receipts: [receipt],
         }
-        agentActionQueue.addJob(
-          'AgentAction',
-          {
-            attempts: 4,
-            type: AgentActionType.SendReceipts,
-            parameters,
-          } as AgentAction,
-          undefined,
-          true,
-        )
+        const agentActionQueueSingleton = AgentActionQueueSingleton.instance
+        agentActionQueueSingleton.configureQueue()
+        agentActionQueueSingleton.addJob({ type: AgentActionType.SendReceipts, parameters }, true)
       }
     }
   }
