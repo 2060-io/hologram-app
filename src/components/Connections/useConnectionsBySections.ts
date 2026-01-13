@@ -1,8 +1,7 @@
 import { useState, useMemo, useCallback } from 'react'
 
 import { ConnectionItem, ConnectionListSection } from './ConnectionsList'
-
-import { useConnectionListForDisplay } from '@2060/hooks'
+import { useConnectionListForDisplay } from './useConnectionListForDisplay'
 
 type Props = {
   search: string
