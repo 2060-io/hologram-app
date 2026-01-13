@@ -8,7 +8,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 
 import SearchInput from '../SearchInput'
 
-import ConnectionList, { ConnectionItem } from './ConnectionsList'
+import ConnectionsList, { ConnectionItem } from './ConnectionsList'
 import getStyles from './styles'
 import { useConnectionsBySections } from './useConnectionsBySections'
 
@@ -52,7 +52,7 @@ const Connections = ({
     isSearchingMode,
     currentConnectionToFilter,
     setCurrentConnectionToFilter,
-    subConnections,
+    subConnectionsBySections,
     displaySubConnectionsOfConnection,
   } = useConnectionsBySections({ excludedConnections })
 
@@ -112,10 +112,10 @@ const Connections = ({
         />
       )}
       <View style={currentConnectionToFilter ? styles.hideConnectionsList : styles.displayConnectionsList}>
-        <ConnectionList
+        <ConnectionsList
           onPressRightSide={displaySubConnectionsOfConnection}
           onPress={onPressConnection}
-          connectionList={connectionsBySections}
+          connectionsBySections={connectionsBySections}
           isSearchingMode={isSearchingMode}
           selectedConnections={selectedConnections}
         />
@@ -124,10 +124,10 @@ const Connections = ({
         <Text style={styles.connectionsRelatedText}>
           {`${t('connection.connectionsManagedBy')} ${currentConnectionToFilter?.name}`}
         </Text>
-        <ConnectionList
+        <ConnectionsList
           onPressRightSide={onPressConnection}
           onPress={onPressConnection}
-          connectionList={subConnections}
+          connectionsBySections={subConnectionsBySections}
           isSearchingMode={isSearchingMode}
           selectedConnections={selectedConnections}
         />

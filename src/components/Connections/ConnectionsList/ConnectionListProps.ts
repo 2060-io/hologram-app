@@ -1,6 +1,6 @@
 import { ServiceStatus } from '@2060/model'
 
-export type ConnectionListSection = {
+export type ConnectionsBySections = {
   title: string
   connections: ConnectionItem[]
 }
@@ -19,7 +19,7 @@ export type ConnectionItem = {
 export type Props = {
   onPress(connectionItem: ConnectionItem): void
   onPressRightSide(connectionItem: ConnectionItem): void
-  connectionList: ConnectionListSection[]
+  connectionsBySections: ConnectionsBySections[]
   isSearchingMode: boolean
   selectedConnections?: string[]
 }

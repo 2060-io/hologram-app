@@ -1,7 +1,7 @@
 import { ConnectionRecord } from '@credo-ts/core'
 import { useEffect, useState } from 'react'
 
-import { ConnectionItem, ConnectionListSection } from '@2060/components/Connections/ConnectionsList'
+import { ConnectionItem, ConnectionsBySections } from '@2060/components/Connections/ConnectionsList'
 import { getStoredServiceInfo } from '@2060/hooks'
 import { useConnections, useParentConnections } from '@2060/hooks/agent'
 import { useMobileAgent } from '@2060/hooks/agent/MobileAgentProvider'
@@ -43,7 +43,7 @@ const getConnectionItem = async (
 
 /**
  *
- * Get the connection list ready for display
+ * Get the connections list ready for display
  *
  * @param connections Array containing all connection records
  * @param findSubConnections Callback that returns all connection records whose parent
@@ -51,12 +51,12 @@ const getConnectionItem = async (
  * @returns connection list for display in the form of an array containing each capital letter and
  * the connections starting with it
  */
-const getConnectionBySections = async (
+const getConnectionsBySections = async (
   connections: ConnectionRecord[],
   findSubConnections: (connectionId: string) => ConnectionRecord[],
   agent: MobileAgent,
 ) => {
-  const connectionsGroupBySections: ConnectionListSection[] = []
+  const connectionsGroupBySections: ConnectionsBySections[] = []
   for (const connection of connections) {
     const connectionName = getConnectionDisplayName(connection) as string
     const connectionItem = await getConnectionItem(connection, findSubConnections, agent)
@@ -79,7 +79,7 @@ const getConnectionBySections = async (
 }
 
 // FIXME: This is not very efficient, as it does multiple searches
-const searchByName = (dataList: ConnectionListSection[], search: string) => {
+const searchByName = (dataList: ConnectionsBySections[], search: string) => {
   const matches = dataList.map(section => ({
     ...section,
     connections: section.connections
@@ -111,12 +111,12 @@ export const useConnectionListForDisplay = ({
   const { connections } = useConnections()
   const { agent } = useMobileAgent()
   const rootConnections = useParentConnections()
-  const [connectionsBySections, setConnectionsBySections] = useState<ConnectionListSection[]>([])
+  const [connectionsBySections, setConnectionsBySections] = useState<ConnectionsBySections[]>([])
 
   useEffect(() => {
     const getSections = async () => {
       if (!agent) return
-      let newConnectionsBySections = await getConnectionBySections(
+      let newConnectionsBySections = await getConnectionsBySections(
         rootConnections.filter(item => !excludedConnections.includes(item.id)),
         (connectionId: string) =>
           filterConnectionsByParentId(

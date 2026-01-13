@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback } from 'react'
 
-import { ConnectionItem, ConnectionListSection } from './ConnectionsList'
+import { ConnectionItem, ConnectionsBySections } from './ConnectionsList'
 import { useConnectionListForDisplay } from './useConnectionListForDisplay'
 
 type Props = {
@@ -15,18 +15,18 @@ const getSubConnectionsFiltered = ({ search, connections }: Props) => {
           connection.name.toLocaleLowerCase().includes(search.toLocaleLowerCase()),
         )
       : connections
-  const connectionsGroupBySections: ConnectionListSection[] = []
+  const connectionsBySections: ConnectionsBySections[] = []
   connectionsThatMatchWithSearch.forEach(connection => {
     const firstLetter = connection.name.charAt(0).toLocaleLowerCase()
-    const sectionAlreadyExists = connectionsGroupBySections.findIndex(item => item.title === firstLetter)
+    const sectionAlreadyExists = connectionsBySections.findIndex(item => item.title === firstLetter)
     if (sectionAlreadyExists >= 0) {
-      connectionsGroupBySections[sectionAlreadyExists].connections.push(connection)
+      connectionsBySections[sectionAlreadyExists].connections.push(connection)
     } else {
       const newSection = { connections: [connection], title: firstLetter }
-      connectionsGroupBySections.push(newSection)
+      connectionsBySections.push(newSection)
     }
   })
-  return connectionsGroupBySections
+  return connectionsBySections
 }
 
 export const useConnectionsBySections = ({ excludedConnections }: { excludedConnections: string[] }) => {
@@ -38,13 +38,13 @@ export const useConnectionsBySections = ({ excludedConnections }: { excludedConn
     excludedConnections,
   })
 
-  const subConnections = useMemo(() => {
+  const subConnectionsBySections = useMemo(() => {
     if (!currentConnectionToFilter) return []
-    const connectionsGroupBySections = getSubConnectionsFiltered({
+    const newSubConnectionsBySections = getSubConnectionsFiltered({
       search,
       connections: currentConnectionToFilter?.subConnections,
     })
-    return connectionsGroupBySections
+    return newSubConnectionsBySections
   }, [search, currentConnectionToFilter])
 
   const displaySubConnectionsOfConnection = useCallback((connectionItem: ConnectionItem) => {
@@ -60,7 +60,7 @@ export const useConnectionsBySections = ({ excludedConnections }: { excludedConn
     isSearchingMode,
     currentConnectionToFilter,
     setCurrentConnectionToFilter,
-    subConnections,
+    subConnectionsBySections,
     displaySubConnectionsOfConnection,
   }
 }

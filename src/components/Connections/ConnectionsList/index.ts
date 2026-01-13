@@ -1,4 +1,4 @@
 import ConnectionList from './ConnectionsList'
 
 export default ConnectionList
-export type { ConnectionListSection, ConnectionItem } from './ConnectionListProps'
+export type { ConnectionsBySections, ConnectionItem } from './ConnectionListProps'

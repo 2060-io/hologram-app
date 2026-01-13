@@ -9,10 +9,10 @@ import getStyles from './styles'
 import Text from '@2060/components/common/Text'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 
-const ConnectionList = ({
+const ConnectionsList = ({
   onPress,
   onPressRightSide,
-  connectionList,
+  connectionsBySections,
   isSearchingMode,
   selectedConnections,
 }: Props) => {
@@ -24,7 +24,7 @@ const ConnectionList = ({
     <FlatList
       style={styles.container}
       showsVerticalScrollIndicator={false}
-      data={connectionList}
+      data={connectionsBySections}
       renderItem={({ item: section, index: sectionIndex }) => (
         <View key={section.title + sectionIndex}>
           <Text style={styles.sectionHeaderLabel} fontFamily="EuclidCircularA-Medium">
@@ -54,4 +54,4 @@ const ConnectionList = ({
   )
 }
 
-export default memo(ConnectionList)
+export default memo(ConnectionsList)
