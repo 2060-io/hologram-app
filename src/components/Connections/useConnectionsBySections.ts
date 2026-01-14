@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback } from 'react'
 
-import { ConnectionItem, ConnectionsBySections } from './ConnectionsList'
+import { ConnectionItem, ConnectionsBySections } from './ConnectionList'
 import { useConnectionListForDisplay } from './useConnectionListForDisplay'
 
 type Props = {

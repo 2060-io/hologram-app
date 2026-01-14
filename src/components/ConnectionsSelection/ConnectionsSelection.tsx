@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { TouchableOpacity, View } from 'react-native'
 
 import Connections from '../Connections'
-import { ConnectionItem } from '../Connections/ConnectionsList'
+import { ConnectionItem } from '../Connections/ConnectionList'
 
 import getStyles from './styles'
 

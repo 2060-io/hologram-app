@@ -9,7 +9,7 @@ import getStyles from './styles'
 import Text from '@2060/components/common/Text'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 
-const ConnectionsList = ({
+const ConnectionList = ({
   onPress,
   onPressRightSide,
   connectionsBySections,
@@ -54,4 +54,4 @@ const ConnectionsList = ({
   )
 }
 
-export default memo(ConnectionsList)
+export default memo(ConnectionList)

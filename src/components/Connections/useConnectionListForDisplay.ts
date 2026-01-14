@@ -1,7 +1,7 @@
 import { ConnectionRecord } from '@credo-ts/core'
 import { useEffect, useState } from 'react'
 
-import { ConnectionItem, ConnectionsBySections } from '@2060/components/Connections/ConnectionsList'
+import { ConnectionItem, ConnectionsBySections } from '@2060/components/Connections/ConnectionList'
 import { getStoredServiceInfo } from '@2060/hooks'
 import { useConnections, useParentConnections } from '@2060/hooks/agent'
 import { useMobileAgent } from '@2060/hooks/agent/MobileAgentProvider'
