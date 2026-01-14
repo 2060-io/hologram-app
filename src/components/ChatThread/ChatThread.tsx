@@ -41,14 +41,14 @@ const ChatThread = ({
     connection && isService(connection) ? connection.invitationDid : undefined,
   )
   const connectionName = serviceInfo?.name ?? topic
-  const logoUrl = serviceInfo?.logoUrl ?? picture
+  const avatarUrl = serviceInfo?.logoUrl ?? picture
   const hasChildren = childCount && childCount > 0
   const lastActivityDate = hasChildren ? lastChildActivityAt : lastActivityAt
 
   return (
     <TouchableOpacity activeOpacity={0.5} onPress={onPressChatThread} style={styles.container}>
       <Avatar
-        uri={logoUrl}
+        uri={avatarUrl}
         label={connectionName}
         size="13%"
         bgAvatarInitials={theme.colors.secondary}

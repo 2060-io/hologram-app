@@ -31,7 +31,7 @@ const Connection = ({
     connection.invitationDid && connection.isService ? connection.invitationDid : undefined,
   )
   const name = serviceInfo?.name ?? connection.name
-  const logoUrl = serviceInfo?.logoUrl ?? connection.avatarUrl
+  const avatarUrl = serviceInfo?.logoUrl ?? connection.avatarUrl
 
   return (
     <TouchableOpacity
@@ -47,7 +47,7 @@ const Connection = ({
         <VerifiedIcon style={styles.containerVerifiedMark} status={connection.status} />
       )}
       <Avatar
-        uri={logoUrl}
+        uri={avatarUrl}
         label={name}
         size="8.41%"
         bgAvatarInitials={theme.colors.secondary}
