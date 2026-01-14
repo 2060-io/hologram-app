@@ -2,10 +2,13 @@ import { CacheModuleConfig } from '@credo-ts/core'
 import { TrustResolutionOutcome } from '@verana-labs/verre'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import Realm from 'realm'
 
 import { getServiceInfo as getServiceInfoApi } from '../services/trustResolution'
 
 import { useMobileAgent } from './agent/MobileAgentProvider'
+import { findChatThread, updateThread } from './agent/chat/services'
+import { useLocalRealm } from './providers/RealmProvider'
 
 import { useNetwork } from '@2060/hooks/useNetwork'
 import { isServiceInfo, ServiceInfo } from '@2060/model'
@@ -20,12 +23,13 @@ import { toast } from '@2060/utils/toast'
  * try only to take info from there. But it is possible to force to refresh,
  * useful in cases where it is important to be up to date.
  *
- * @param did decentralised identifier of the service
+ * @param did decentralized identifier of the service
  * @param forceFetch attempt to refresh service info, even if it is already cached
  *
  * @returns ServiceInfo object if found, undefined otherwise
  */
 export const useFetchServiceInfo = (did?: string, forceFetch?: boolean) => {
+  const { realm } = useLocalRealm()
   const [serviceInfo, setServiceInfo] = useState<ServiceInfo | undefined>()
   const [isFetching, setIsFetching] = useState(true)
   const { assertConnectedNetwork } = useNetwork()
@@ -62,8 +66,9 @@ export const useFetchServiceInfo = (did?: string, forceFetch?: boolean) => {
         })
 
         if (serviceInfoResponse) {
-          if (agent) await storeServiceInfo(did, agent, serviceInfoResponse)
+          await storeServiceInfo(did, agent, serviceInfoResponse)
           setServiceInfo(serviceInfoResponse)
+          if (realm) updateChatThread({ did, serviceInfoResponse, realm, agent })
         }
       } catch (error) {
         logError(`Error getting service ${did} info API: ${error}`)
@@ -73,7 +78,7 @@ export const useFetchServiceInfo = (did?: string, forceFetch?: boolean) => {
       }
     }
     getServiceInfo()
-  }, [did, forceFetch])
+  }, [did, forceFetch, realm])
 
   return {
     serviceInfo,
@@ -112,4 +117,25 @@ async function storeServiceInfo(did: string, agent: MobileAgent, serviceInfo: Se
   const cache = agent.dependencyManager.resolve(CacheModuleConfig).cache
 
   await cache.set<ServiceInfo>(agent.context, `serviceInfo:${did}`, serviceInfo)
+}
+
+async function updateChatThread({
+  did,
+  serviceInfoResponse,
+  realm,
+  agent,
+}: {
+  did: string
+  serviceInfoResponse: ServiceInfo
+  realm: Realm
+  agent: MobileAgent
+}) {
+  const [connection] = await agent.connections.findByInvitationDid(did)
+  if (!connection) return
+  const thread = findChatThread(realm, connection)
+  if (!thread) return
+  updateThread(realm, thread.id, {
+    topic: serviceInfoResponse.name,
+    picture: serviceInfoResponse.logoUrl,
+  })
 }

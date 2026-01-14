@@ -7,11 +7,9 @@ import Avatar from '../common/Avatar'
 import getStyles from './styles'
 
 import { Text, MessageStateIcon, SvgIcon } from '@2060/components/common'
-import { useFetchServiceInfo } from '@2060/hooks'
 import { useConnectionById } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { ChatEntryState, ChatThreadData } from '@2060/model'
-import { isService } from '@2060/utils/connectionUtils'
 import { chatDateFormat } from '@2060/utils/dateUtils'
 
 interface Props extends ChatThreadData {
@@ -37,26 +35,21 @@ const ChatThread = ({
   const styles = getStyles(theme)
   const { t } = useTranslation()
   const connection = useConnectionById(connectionId)
-  const { serviceInfo } = useFetchServiceInfo(
-    connection && isService(connection) ? connection.invitationDid : undefined,
-  )
-  const connectionName = serviceInfo?.name ?? topic
-  const avatarUrl = serviceInfo?.logoUrl ?? picture
   const hasChildren = childCount && childCount > 0
   const lastActivityDate = hasChildren ? lastChildActivityAt : lastActivityAt
 
   return (
     <TouchableOpacity activeOpacity={0.5} onPress={onPressChatThread} style={styles.container}>
       <Avatar
-        uri={avatarUrl}
-        label={connectionName}
+        uri={picture}
+        label={topic}
         size="13%"
         bgAvatarInitials={theme.colors.secondary}
         enableImageRefresh={false}
       />
       <View style={styles.contentText}>
         <Text fontFamily="EuclidCircularA-Medium" style={styles.nameUser} numberOfLines={1}>
-          {connectionName}
+          {topic}
         </Text>
         {hasChildren ? (
           <Text style={styles.numberConversationText}>{`${childCount}  ${t('chat.conversations')}`}</Text>
