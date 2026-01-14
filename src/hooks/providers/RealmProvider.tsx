@@ -1,5 +1,5 @@
 import { TypedArrayEncoder } from '@credo-ts/core'
-import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
+import React, { createContext, useCallback, useContext, useRef, useState } from 'react'
 import Realm from 'realm'
 
 import { UploadTask } from '@2060/model'
@@ -18,6 +18,7 @@ interface RealmState {
 }
 
 interface RealmContextInterface extends RealmState {
+  openRealm(): Promise<void>
   importAndOpenRealm: (realmFilePath: string, backupKeySeed: string) => Promise<void>
   closeRealm: () => void
 }
@@ -37,13 +38,10 @@ export const RealmProvider: React.FC<React.PropsWithChildren<Props>> = ({ childr
   const [realm, setRealm] = useState<Realm | undefined>()
   const realmInstance = useRef(RealmSingleton.instance)
 
-  useEffect(() => {
-    const openRealm = async () => {
-      await realmInstance.current.openRealmIfIsClosed()
-      const newRealm = realmInstance.current.getRealm()
-      if (newRealm) setRealm(newRealm)
-    }
-    openRealm()
+  const openRealm = useCallback(async () => {
+    await realmInstance.current.openRealmIfIsClosed()
+    const newRealm = realmInstance.current.getRealm()
+    if (newRealm) setRealm(newRealm)
   }, [])
 
   const importAndOpenRealm = useCallback(
@@ -86,5 +84,9 @@ export const RealmProvider: React.FC<React.PropsWithChildren<Props>> = ({ childr
     }
   }, [realm])
 
-  return <LocalRealmContext value={{ realm, importAndOpenRealm, closeRealm }}>{children}</LocalRealmContext>
+  return (
+    <LocalRealmContext value={{ realm, openRealm, importAndOpenRealm, closeRealm }}>
+      {children}
+    </LocalRealmContext>
+  )
 }
