@@ -287,21 +287,16 @@ export function subscribeToAgentChatEvents(
       receivedAt,
     })
 
-    // Send receipts
-    const validMessagesTypesForReceipts = [
-      QuestionMessage.type.messageTypeUri,
-      AnswerMessage.type.messageTypeUri,
-      BasicMessage.type.messageTypeUri,
-      ShareMediaMessage.type.messageTypeUri,
-      OutOfBandInvitation.type.messageTypeUri,
-      V2ProposePresentationMessage.type.messageTypeUri,
-    ]
-
-    if (connection) {
-      if (
-        supportsMessageReceipts(connection) &&
-        validMessagesTypesForReceipts.includes(data.payload.message.type)
-      ) {
+    if (connection && supportsMessageReceipts(connection)) {
+      const validMessagesTypesForReceipts = [
+        QuestionMessage.type.messageTypeUri,
+        AnswerMessage.type.messageTypeUri,
+        BasicMessage.type.messageTypeUri,
+        ShareMediaMessage.type.messageTypeUri,
+        OutOfBandInvitation.type.messageTypeUri,
+        V2ProposePresentationMessage.type.messageTypeUri,
+      ]
+      if (validMessagesTypesForReceipts.includes(data.payload.message.type)) {
         // Find associated thread and see if it's the active one
         const thread = findChatThread(realm, connection)
 
