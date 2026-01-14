@@ -160,11 +160,9 @@ const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => 
               <View>
                 <View style={styles.card}>
                   <Avatar uri={invitation?.imageUrl} label={invitation?.label} size="25%" withBorder={true} />
-                  {invitation.label && (
-                    <Text fontFamily="EuclidCircularA-Medium" style={styles.invitationLabel}>
-                      {invitation.label}
-                    </Text>
-                  )}
+                  <Text fontFamily="EuclidCircularA-Medium" style={styles.invitationLabel}>
+                    {invitation.label}
+                  </Text>
                   {invitationType === 'peer' && (
                     <Text style={styles.content}>
                       {t('invitation.peerInvitationDescription', { label: invitation?.label })}
@@ -172,11 +170,11 @@ const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => 
                   )}
                   {invitationType === 'subInvitation' && (
                     <Text style={styles.content}>
-                      {t('invitation.subConnectionInvitationDescription')}{' '}
+                      {`${t('invitation.subConnectionInvitationDescription')} `}
                       <Text fontFamily="EuclidCircularA-Bold" style={styles.fontFamilyBold}>
-                        {`${invitation?.label} `}{' '}
+                        {`${invitation?.label} `}
                       </Text>
-                      {t('invitation.subConnectionInvitationDescriptionAs')}{' '}
+                      {`${t('invitation.subConnectionInvitationDescriptionAs')} `}
                       <Text fontFamily="EuclidCircularA-Bold" style={styles.fontFamilyBold}>
                         {parentConnectionName}
                       </Text>
@@ -188,7 +186,6 @@ const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => 
                     <Text style={styles.enabledChannelsText}>
                       {`${invitation?.label} ${t('invitation.enabledCommunicationChannelsDescription')}`}
                     </Text>
-                    <View style={styles.separator} />
                     <CommunicationChannels
                       channels={communicationChannels}
                       setChannels={setCommunicationChannels}

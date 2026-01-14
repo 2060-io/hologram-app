@@ -1,7 +1,6 @@
 import { StyleSheet } from 'react-native'
 
 import { AppTheme, cardShadowStyles, cardStyles } from '@2060/styles'
-import { heightPercentageToDP, widthPercentageToDP } from '@2060/utils/responsiveUtils'
 
 const styles = (theme: AppTheme) =>
   StyleSheet.create({
@@ -13,10 +12,10 @@ const styles = (theme: AppTheme) =>
       paddingHorizontal: 15,
     },
     btnRefuse: {
-      paddingLeft: widthPercentageToDP('4%'),
+      paddingLeft: 12,
     },
     btnAccept: {
-      paddingRight: widthPercentageToDP('4%'),
+      paddingRight: 12,
     },
     card: {
       ...cardStyles(theme),
@@ -27,8 +26,7 @@ const styles = (theme: AppTheme) =>
     invitationLabel: {
       color: theme.colors.primaryText,
       fontSize: theme.fontSize.lg,
-      marginTop: heightPercentageToDP('1.62%'),
-      marginBottom: heightPercentageToDP('3.24%'),
+      marginTop: 12,
       textAlign: 'center',
     },
     content: {
@@ -46,12 +44,7 @@ const styles = (theme: AppTheme) =>
     enabledChannelsText: {
       fontSize: theme.fontSize.md + 1,
       color: theme.colors.primaryText,
-    },
-    separator: {
-      borderBottomWidth: 1,
-      borderBottomColor: theme.colors.secondary,
-      marginTop: heightPercentageToDP('1.8%'),
-      marginBottom: heightPercentageToDP('1.40%'),
+      marginBottom: 20,
     },
   })
 
