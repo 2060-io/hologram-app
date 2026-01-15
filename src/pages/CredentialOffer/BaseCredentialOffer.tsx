@@ -1,8 +1,7 @@
 import { HeaderBackButton } from '@react-navigation/elements'
 import { ParamListBase } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
-import { TrustResolutionOutcome } from '@verana-labs/verre'
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, TouchableOpacity, ScrollView } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -12,7 +11,6 @@ import getStyles from './styles'
 import { CredentialDetails, ModalConfirmAction } from '@2060/components'
 import { Text, ServiceInformation } from '@2060/components/common'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { ServiceInfo } from '@2060/model'
 import { CredentialDetailsForDisplay } from '@2060/services/agent/display'
 
 type Props = {
@@ -34,15 +32,6 @@ const BaseCredentialOffer: React.FC<Props> = ({
   const theme = useTheme()
   const styles = getStyles(theme)
   const [showModalRefuseConfirmation, setShowModalRefuseConfirmation] = useState(false)
-
-  const serviceInfo = useRef<ServiceInfo>({
-    did: credentialDetails.mainInfo.issuer.id,
-    id: credentialDetails.mainInfo.issuer.id,
-    name: credentialDetails.mainInfo.issuer.name,
-    logoUrl: credentialDetails.mainInfo.issuer.logoUrl,
-    minimumAgeRequired: 0,
-    status: TrustResolutionOutcome.INVALID,
-  })
 
   const displayModalRefuseConfirmation = () => setShowModalRefuseConfirmation(true)
   const hideModalRefuseConfirmation = () => setShowModalRefuseConfirmation(false)
@@ -104,10 +93,7 @@ const BaseCredentialOffer: React.FC<Props> = ({
               <Text fontFamily="EuclidCircularA-Medium" style={styles.titleIssuerInfo}>
                 {t('credentialOffer.issuerInformation')}
               </Text>
-              <ServiceInformation
-                did={credentialDetails.mainInfo.issuer.id}
-                initialServiceInfo={serviceInfo.current}
-              />
+              <ServiceInformation did={credentialDetails.mainInfo.issuer.id} />
             </View>
           </View>
         </ScrollView>

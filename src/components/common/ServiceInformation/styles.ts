@@ -10,17 +10,24 @@ const styles = (theme: AppTheme) =>
       justifyContent: 'center',
       alignItems: 'center',
     },
+    issuerNameContainer: {
+      paddingTop: 10,
+      marginBottom: 14,
+      width: '100%',
+      alignItems: 'center',
+    },
     issuerName: {
       color: theme.colors.primaryText,
       fontSize: theme.fontSize.lg,
-      paddingTop: 10,
-      marginBottom: 14,
+      textAlign: 'center',
     },
     containerIconValidity: {
+      marginVertical: 14,
+    },
+    iconValidity: {
       width: 30,
       height: 30,
       borderRadius: 15,
-      marginVertical: 14,
     },
     text: {
       fontSize: theme.fontSize.md,

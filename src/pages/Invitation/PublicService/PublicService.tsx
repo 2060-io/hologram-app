@@ -28,7 +28,6 @@ const PublicService = ({ did, initialServiceInfo, setAgeRestricted, userName }: 
       {ageRestricted && <CanNotConnect kidAge={kidAge} userName={userName} />}
       <ServiceInformation
         did={did}
-        initialServiceInfo={initialServiceInfo}
         onServiceInfoUpdated={serviceInfo => {
           setMinimumAgeRequired(serviceInfo.minimumAgeRequired)
           setServiceStatus(serviceInfo.status)

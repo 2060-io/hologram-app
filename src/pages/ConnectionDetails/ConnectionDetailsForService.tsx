@@ -13,11 +13,7 @@ const ConnectionDetailsForService = (props: ConnectionDetailsProps) => {
   return (
     <BaseConnectionDetails
       {...props}
-      mainInfo={
-        serviceInfo ? (
-          <ServiceMainInfo serviceInfo={serviceInfo} containerStyle={styles.mainInfoContainer} />
-        ) : null
-      }
+      mainInfo={<ServiceMainInfo serviceInfo={serviceInfo} containerStyle={styles.mainInfoContainer} />}
       footerInfo={serviceInfo ? <ProofOfTrust serviceInfo={serviceInfo} /> : null}
     />
   )

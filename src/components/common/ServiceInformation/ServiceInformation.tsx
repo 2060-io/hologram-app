@@ -9,13 +9,11 @@ import { ServiceInfo } from '@2060/model'
 
 type Props = {
   did: string
-  initialServiceInfo: ServiceInfo
   onServiceInfoUpdated?: (serviceInfo: ServiceInfo) => void
 }
 
-const ServiceInformation = ({ did, initialServiceInfo, onServiceInfoUpdated }: Props) => {
+const ServiceInformation = ({ did, onServiceInfoUpdated }: Props) => {
   const { serviceInfo } = useFetchServiceInfo(did, true)
-  const serviceInfoToDisplay = serviceInfo ?? initialServiceInfo
 
   useEffect(() => {
     if (serviceInfo) onServiceInfoUpdated?.(serviceInfo)
@@ -23,8 +21,8 @@ const ServiceInformation = ({ did, initialServiceInfo, onServiceInfoUpdated }: P
 
   return (
     <View>
-      <ServiceMainInfo serviceInfo={serviceInfoToDisplay} />
-      <ProofOfTrust serviceInfo={serviceInfoToDisplay} />
+      <ServiceMainInfo serviceInfo={serviceInfo} />
+      {serviceInfo && <ProofOfTrust serviceInfo={serviceInfo} />}
     </View>
   )
 }

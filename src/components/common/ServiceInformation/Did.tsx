@@ -1,3 +1,4 @@
+import { Skeleton } from 'moti/skeleton'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { StyleSheet, TouchableOpacity } from 'react-native'
@@ -20,12 +21,12 @@ const truncateDid = (fullDid: string) => {
   return `${did}:${method}:${truncatedHash}...${domain}`
 }
 
-const Did = ({ did, serviceInfoStatus }: { did: string; serviceInfoStatus: ServiceStatus }) => {
+const Did = ({ did, serviceInfoStatus }: { did?: string; serviceInfoStatus: ServiceStatus }) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
-  const initialDid = did.length > DID_MAX_DISPLAY_CHARS ? truncateDid(did) : did
-  const [truncated, setTruncated] = useState<boolean>(did.length > DID_MAX_DISPLAY_CHARS)
+  const initialDid = did && did.length > DID_MAX_DISPLAY_CHARS ? truncateDid(did) : did
+  const [truncated, setTruncated] = useState<boolean>(did ? did.length > DID_MAX_DISPLAY_CHARS : false)
 
   const serviceIs: Record<ServiceStatus, string> = {
     verified: t('invitation.isATrustedService'),
@@ -37,15 +38,27 @@ const Did = ({ did, serviceInfoStatus }: { did: string; serviceInfoStatus: Servi
   const onPressDid = () => setTruncated(!truncated)
 
   return (
-    <TouchableOpacity onPress={onPressDid} activeOpacity={0} disabled={did.length <= DID_MAX_DISPLAY_CHARS}>
-      <Text style={styles.text}>
-        <Text
-          fontFamily="EuclidCircularA-Bold"
-          style={styles.text}
-        >{`${truncated ? initialDid : did} `}</Text>
-        {serviceIs[serviceInfoStatus]}
-      </Text>
-    </TouchableOpacity>
+    <Skeleton
+      height={styles.text.fontSize * 3 + 6}
+      width={'100%'}
+      colorMode={theme.isDarkMode ? 'dark' : 'light'}
+      radius="round"
+      show={!did}
+    >
+      <TouchableOpacity
+        onPress={onPressDid}
+        activeOpacity={0}
+        disabled={Number(did?.length) <= DID_MAX_DISPLAY_CHARS}
+      >
+        <Text style={styles.text}>
+          <Text
+            fontFamily="EuclidCircularA-Bold"
+            style={styles.text}
+          >{`${truncated ? initialDid : did} `}</Text>
+          {serviceIs[serviceInfoStatus]}
+        </Text>
+      </TouchableOpacity>
+    </Skeleton>
   )
 }
 

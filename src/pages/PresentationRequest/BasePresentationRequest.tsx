@@ -27,7 +27,7 @@ type Props = {
   onSelectDidcommCredential?: (...args: [string, string]) => void
   accept: () => void
   refuse: () => void
-  serviceInfo?: ServiceInfo | null
+  serviceInfo?: ServiceInfo
   isAccepting: boolean
   notifyNoCompatibleCredentials?: () => void
 }
@@ -121,7 +121,7 @@ const BasePresentationRequest: React.FC<Props> = ({
       />
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.subContainer}>
-          {serviceInfo && <ServiceMainInfo serviceInfo={serviceInfo} />}
+          <ServiceMainInfo serviceInfo={serviceInfo} />
           {hasCompatibleCredentials ? (
             <>
               <Text style={[styles.title, styles.mainTitle]}>
