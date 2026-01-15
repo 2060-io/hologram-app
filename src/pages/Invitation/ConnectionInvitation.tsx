@@ -55,7 +55,6 @@ const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => 
   const invitationDid = invitation.invitationDids[0]
   const serviceInfo = useRef<ServiceInfo>({
     did: invitationDid,
-    description: invitation.label,
     id: invitation.id,
     logoUrl: invitation.imageUrl,
     name: invitation.label ?? '',
