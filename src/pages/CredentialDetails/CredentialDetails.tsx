@@ -1,5 +1,6 @@
 import { StackScreenProps } from '@react-navigation/stack'
-import React, { useState } from 'react'
+import { TrustResolutionOutcome } from '@verana-labs/verre'
+import React, { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ScrollView, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -12,7 +13,9 @@ import { Text, ServiceInformation, OptionsList } from '@2060/components/common'
 import { Option } from '@2060/components/common/OptionsList'
 import { useCredentials, useMobileAgent } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
+import { ServiceInfo } from '@2060/model'
 import { getCredentialDetailsForDisplay } from '@2060/services/agent/display'
+import { trimText } from '@2060/utils'
 
 interface Props extends StackScreenProps<NavigationStackParams, 'CredentialDetails'> {}
 const CredentialDetails = ({ route, navigation }: Props) => {
@@ -27,6 +30,14 @@ const CredentialDetails = ({ route, navigation }: Props) => {
   const credentialDetails = credentialRecord ? getCredentialDetailsForDisplay(credentialRecord) : undefined
 
   const did = credentialRecord?.credential.issuerId ?? ''
+  const serviceInfo = useRef<ServiceInfo>({
+    did,
+    id: did,
+    name: credentialDetails?.mainInfo.issuer.name ?? trimText(did),
+    logoUrl: credentialDetails?.mainInfo.issuer.logoUrl,
+    minimumAgeRequired: 0,
+    status: TrustResolutionOutcome.INVALID,
+  })
 
   const hideConfirmationDeleteModal = () => setShowConfirmationDeleteModal(false)
 
@@ -71,7 +82,7 @@ const CredentialDetails = ({ route, navigation }: Props) => {
             <Text fontFamily="EuclidCircularA-SemiBold" style={styles.titleIssuerInfo}>
               {t('credentialOffer.issuerInformation')}
             </Text>
-            <ServiceInformation did={did} />
+            <ServiceInformation did={did} initialServiceInfo={serviceInfo.current} />
           </View>
         </ScrollView>
       </SafeAreaView>
