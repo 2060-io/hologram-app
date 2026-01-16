@@ -1,6 +1,6 @@
 import { StackActions } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
-import React, { useLayoutEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, TouchableOpacity, FlatList } from 'react-native'
 import { uses24HourClock } from 'react-native-localize'
@@ -25,29 +25,28 @@ import { ChatThreadData } from '@2060/model'
 import { ChatsStackParams } from '@2060/navigators/ChatStackParams'
 import { widthPercentageToDP } from '@2060/utils/responsiveUtils'
 
-type contextMenuTypes = 'confirm-deletion' | 'filter-options'
 interface Props extends StackScreenProps<ChatsStackParams, 'ChatsMain'> {}
 
 const Chats = ({ navigation }: Props) => {
+  const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
   const { agent } = useMobileAgent()
-  const [showContextMenu, setShowContextMenu] = useState(false)
-  const [showSearchInput, setShowSearchInput] = useState(false)
-  const [selectedChatIds, setSelectedChatIds] = useState<string[]>([])
-  const [chatThreadToDelete, setChatThreadToDelete] = useState<{ id: string; connectionId: string } | null>(
-    null,
-  )
   const using24HourFormat = uses24HourClock()
   /* eslint-disable object-curly-newline */
   const { loading, deleteThread, archiveThreads, unarchiveThreads, filters, setFilters, threads } = useChats()
-  const { t } = useTranslation()
+  const [showConfirmChatDeletion, setShowConfirmChatDeletion] = useState(false)
+  const [showFilterOptions, setShowFilterOptions] = useState(false)
+  const [showSearchInput, setShowSearchInput] = useState(false)
+  const [selectedChatIds, setSelectedChatIds] = useState<string[]>([])
+  const swipeRowReferences = useRef<SwipeRow<unknown>[]>([])
+  const [chatThreadToDelete, setChatThreadToDelete] = useState<{ id: string; connectionId: string } | null>(
+    null,
+  )
   const isCategoryAll = filters.category === 'all'
   const isCategoryArchived = isCategoryAll && filters.archived
   const selectedCategory = isCategoryArchived ? 'archived' : filters.category
 
-  const swipeRowReferences = useRef<SwipeRow<unknown>[]>([])
-  const contextMenutypeRef = useRef<contextMenuTypes>('filter-options')
   const unreadThreadsCount = (total: number, { unreadCount }: ChatThreadData) => {
     return unreadCount ? total + unreadCount : total
   }
@@ -58,34 +57,27 @@ const Chats = ({ navigation }: Props) => {
     )
   }
 
-  const goToSubchatList = (chatThreadId: string) => {
+  const goToSubChats = (chatThreadId: string) => {
     navigation.navigate('SubChats', { chatThreadId })
   }
 
-  const handleChangeFilterOption = (option: string) => {
+  const closeFilterOptions = () => {
+    setShowFilterOptions(false)
+  }
+
+  const onChangeFilterOption = (option: string) => {
     const archived = option === 'archived'
     const category = (option === 'archived' ? 'all' : option) as ChatCategory
     setFilters({ category, archived })
-    handleClosingContextMenu()
+    closeFilterOptions()
   }
 
-  const handleDeleteChat = (chatId: string, connectionId: string) => {
-    handleOpenigContextMenu('confirm-deletion')
+  const onDeleteChat = (chatId: string, connectionId: string) => {
+    setShowConfirmChatDeletion(true)
     setChatThreadToDelete({ id: chatId, connectionId })
   }
 
-  const handleOpenigContextMenu = (contextMenuType: contextMenuTypes) => {
-    contextMenutypeRef.current = contextMenuType
-    setShowContextMenu(true)
-  }
-
-  const handleClosingContextMenu = () => {
-    contextMenutypeRef.current = 'filter-options'
-    if (chatThreadToDelete?.id) swipeRowReferences.current[Number(chatThreadToDelete.id)].closeRow()
-    setShowContextMenu(false)
-  }
-
-  const handleChangeSearch = (value: string) => {
+  const onChangeSearch = (value: string) => {
     const searchString = value.length >= 3 ? value : ''
     setFilters({ topic: searchString })
   }
@@ -96,39 +88,54 @@ const Chats = ({ navigation }: Props) => {
     return categoryMatches && archivedMatches && chat.active
   }
 
-  const renderSearchInput = () => (
-    <SearchInput
-      containerStyle={styles.searchInputContainer}
-      value={filters.topic}
-      placeholder={t('chat.searchInputPlaceHolder')}
-      onDebounced={handleChangeSearch}
-      renderLeftIcon={() => (
-        <TouchableOpacity onPress={() => setShowSearchInput(false)}>
-          <SvgIcon name="arrowLeft" width={18} height={18} fill={theme.colors.secondaryText} />
-        </TouchableOpacity>
-      )}
-      textInputProps={{ autoFocus: true }}
-    />
-  )
+  const closeConfirmChatDeletion = () => {
+    if (chatThreadToDelete?.id) swipeRowReferences.current[Number(chatThreadToDelete.id)].closeRow()
+    setShowConfirmChatDeletion(false)
+  }
 
-  const renderHeaderTitle = () => (
-    <HeaderTitle
-      title={
-        t('chat.chats') + ` ${isCategoryAll && !filters.archived ? '' : '- ' + t(`chat.${selectedCategory}`)}`
-      }
-      theme={theme}
-    />
-  )
+  const deleteChat = () => {
+    closeConfirmChatDeletion()
+    if (chatThreadToDelete?.id) deleteThread(chatThreadToDelete.id)
+  }
 
-  useLayoutEffect(() => {
+  const deleteChatAndConnection = async () => {
+    closeConfirmChatDeletion()
+    if (chatThreadToDelete?.id) deleteThread(chatThreadToDelete.id)
+    const connection = chatThreadToDelete?.connectionId
+      ? await agent?.connections.getById(chatThreadToDelete.connectionId)
+      : null
+    if (agent && connection) await deleteConnection(agent, connection)
+  }
+
+  useEffect(() => {
+    const renderSearchInput = () => (
+      <SearchInput
+        containerStyle={styles.searchInputContainer}
+        value={filters.topic}
+        placeholder={t('chat.searchInputPlaceHolder')}
+        onDebounced={onChangeSearch}
+        renderLeftIcon={() => (
+          <TouchableOpacity onPress={() => setShowSearchInput(false)}>
+            <SvgIcon name="arrowLeft" width={18} height={18} fill={theme.colors.secondaryText} />
+          </TouchableOpacity>
+        )}
+        textInputProps={{ autoFocus: true }}
+      />
+    )
+    const renderHeaderTitle = () => (
+      <HeaderTitle
+        title={
+          t('chat.chats') +
+          ` ${isCategoryAll && !filters.archived ? '' : '- ' + t(`chat.${selectedCategory}`)}`
+        }
+        theme={theme}
+      />
+    )
     navigation.setOptions({
       headerTitle: showSearchInput ? renderSearchInput : renderHeaderTitle,
       headerLeft: () =>
         !showSearchInput && (
-          <TouchableOpacity
-            style={styles.btnIconContextMenu}
-            onPress={() => handleOpenigContextMenu('filter-options')}
-          >
+          <TouchableOpacity style={styles.btnIconContextMenu} onPress={() => setShowFilterOptions(true)}>
             <SvgIcon name="filterOutline" fill={theme.colors.primaryText} />
           </TouchableOpacity>
         ),
@@ -150,8 +157,8 @@ const Chats = ({ navigation }: Props) => {
   }, [filters.category, filters.archived, theme.colors, showSearchInput])
 
   return (
-    <SafeAreaView style={styles.root} edges={['left', 'right']}>
-      <View style={styles.root}>
+    <>
+      <SafeAreaView style={styles.root} edges={['left', 'right']}>
         <FlatList
           showsVerticalScrollIndicator={false}
           data={threads}
@@ -168,7 +175,7 @@ const Chats = ({ navigation }: Props) => {
                     isMainChatIncluded(chat) ? chat.unreadCount : 0,
                   )}
                   using24HourFormat={using24HourFormat}
-                  onPressChatThread={() => goToSubchatList(chat.id)}
+                  onPressChatThread={() => goToSubChats(chat.id)}
                 />
               )
             }
@@ -188,7 +195,7 @@ const Chats = ({ navigation }: Props) => {
                 <ChatSwipeOptions
                   isSwiped={isSwiped}
                   isArchived={chat.archived}
-                  onDeleteChat={() => handleDeleteChat(chat.id, chat.connectionId)}
+                  onDeleteChat={() => onDeleteChat(chat.id, chat.connectionId)}
                   onArchiveChat={() => {
                     swipeRowReferences.current[Number(chat.id)].closeRow()
                     chat.archived ? unarchiveThreads([chat.id]) : archiveThreads([chat.id])
@@ -214,36 +221,18 @@ const Chats = ({ navigation }: Props) => {
             ) : null
           }
         />
-        {showContextMenu && contextMenutypeRef.current === 'confirm-deletion' && (
-          <ConfirmChatDeletion
-            onClose={handleClosingContextMenu}
-            onCloseContextMenu={() => {
-              swipeRowReferences.current[Number(chatThreadToDelete?.id)].closeRow()
-              handleClosingContextMenu()
-            }}
-            onDeleteChat={() => {
-              swipeRowReferences.current[Number(chatThreadToDelete?.id)].closeRow()
-              if (chatThreadToDelete?.id) deleteThread(chatThreadToDelete.id)
-              handleClosingContextMenu()
-            }}
-            onConfirmSecondary={async () => {
-              swipeRowReferences.current[Number(chatThreadToDelete?.id)].closeRow()
-              if (chatThreadToDelete?.id) deleteThread(chatThreadToDelete.id)
-              const connection = chatThreadToDelete?.connectionId
-                ? await agent?.connections.getById(chatThreadToDelete.connectionId)
-                : null
-              if (agent && connection) await deleteConnection(agent, connection)
-              handleClosingContextMenu()
-            }}
-          />
-        )}
-        {showContextMenu && contextMenutypeRef.current === 'filter-options' && (
-          <ModalBottomHalf visible={showContextMenu} onClose={handleClosingContextMenu}>
-            <ChatFilterOptions onChangeOption={handleChangeFilterOption} selectedOption={selectedCategory} />
-          </ModalBottomHalf>
-        )}
-      </View>
-    </SafeAreaView>
+        <ConfirmChatDeletion
+          visible={showConfirmChatDeletion}
+          onClose={closeConfirmChatDeletion}
+          onCancel={closeConfirmChatDeletion}
+          onDeleteChat={deleteChat}
+          onConfirmSecondary={deleteChatAndConnection}
+        />
+        <ModalBottomHalf visible={showFilterOptions} onClose={closeFilterOptions}>
+          <ChatFilterOptions onChangeOption={onChangeFilterOption} selectedOption={selectedCategory} />
+        </ModalBottomHalf>
+      </SafeAreaView>
+    </>
   )
 }
 

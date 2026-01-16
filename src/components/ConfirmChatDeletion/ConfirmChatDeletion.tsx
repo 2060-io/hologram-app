@@ -4,29 +4,31 @@ import React from 'react'
 import ModalConfirmAction from '../ModalConfirmAction'
 
 type Props = {
+  visible: boolean
   onClose(): void
   onDeleteChat(): void
-  onCloseContextMenu(): void
+  onCancel(): void
   onConfirmSecondary(): void
 }
 
 const ConfirmChatDeletion: React.FC<Props> = ({
+  visible,
   onClose,
   onDeleteChat,
   onConfirmSecondary,
-  onCloseContextMenu,
+  onCancel,
 }) => {
   return (
     <ModalConfirmAction
-      visible={true}
+      visible={visible}
       title={t('connection.titleDeleteChat')}
       subTitle={t('connection.subTitleDeleteChat')}
-      confirmText={t('chat.yesDelete')}
+      confirmText={t('general.yesDelete')}
       cancelText={'No'}
       onClose={onClose}
       onConfirm={onDeleteChat}
-      onCancel={onCloseContextMenu}
-      confirmTextSecondary={'Yes, and delete connection, too'}
+      onCancel={onCancel}
+      confirmTextSecondary={t('general.yesDeleteAndConnection')}
       onConfirmSecondary={onConfirmSecondary}
     />
   )
