@@ -40,9 +40,11 @@ const Chats = ({ navigation }: Props) => {
   const [showSearchInput, setShowSearchInput] = useState(false)
   const [selectedChatIds, setSelectedChatIds] = useState<string[]>([])
   const swipeRowReferences = useRef<SwipeRow<unknown>[]>([])
-  const [chatThreadToDelete, setChatThreadToDelete] = useState<{ id: string; connectionId: string } | null>(
-    null,
-  )
+  const [chatThreadToDelete, setChatThreadToDelete] = useState<{
+    id: string
+    connectionId: string
+    withDeleteConnectionOption: boolean
+  } | null>(null)
   const isCategoryAll = filters.category === 'all'
   const isCategoryArchived = isCategoryAll && filters.archived
   const selectedCategory = isCategoryArchived ? 'archived' : filters.category
@@ -72,9 +74,10 @@ const Chats = ({ navigation }: Props) => {
     closeFilterOptions()
   }
 
-  const onDeleteChat = (chatId: string, connectionId: string) => {
+  const onDeleteChat = async (chatId: string, connectionId: string) => {
     setShowConfirmChatDeletion(true)
-    setChatThreadToDelete({ id: chatId, connectionId })
+    const connection = await agent?.connections.getById(connectionId)
+    setChatThreadToDelete({ id: chatId, connectionId, withDeleteConnectionOption: !!connection })
   }
 
   const onChangeSearch = (value: string) => {
@@ -226,7 +229,9 @@ const Chats = ({ navigation }: Props) => {
           onClose={closeConfirmChatDeletion}
           onCancel={closeConfirmChatDeletion}
           onDeleteChat={deleteChat}
-          onConfirmSecondary={deleteChatAndConnection}
+          onConfirmSecondary={
+            chatThreadToDelete?.withDeleteConnectionOption ? deleteChatAndConnection : undefined
+          }
         />
         <ModalBottomHalf visible={showFilterOptions} onClose={closeFilterOptions}>
           <ChatFilterOptions onChangeOption={onChangeFilterOption} selectedOption={selectedCategory} />

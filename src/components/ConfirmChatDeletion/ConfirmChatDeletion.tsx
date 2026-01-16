@@ -8,7 +8,7 @@ type Props = {
   onClose(): void
   onDeleteChat(): void
   onCancel(): void
-  onConfirmSecondary(): void
+  onConfirmSecondary: (() => void) | undefined
 }
 
 const ConfirmChatDeletion: React.FC<Props> = ({
