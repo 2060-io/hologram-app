@@ -20,6 +20,7 @@ import {
 import { Text, SvgIcon, HeaderTitle } from '@2060/components/common'
 import { ChatCategory, useChats, useMobileAgent } from '@2060/hooks/agent'
 import { deleteConnection } from '@2060/hooks/agent/connections'
+import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { ChatThreadData } from '@2060/model'
 import { ChatsStackParams } from '@2060/navigators/ChatStackParams'
@@ -32,6 +33,7 @@ const Chats = ({ navigation }: Props) => {
   const theme = useTheme()
   const styles = getStyles(theme)
   const { agent } = useMobileAgent()
+  const { addAgentActionToQueue } = useAgentActionQueue()
   const using24HourFormat = uses24HourClock()
   /* eslint-disable object-curly-newline */
   const { loading, deleteThread, archiveThreads, unarchiveThreads, filters, setFilters, threads } = useChats()
@@ -107,7 +109,7 @@ const Chats = ({ navigation }: Props) => {
     const connection = chatThreadToDelete?.connectionId
       ? await agent?.connections.getById(chatThreadToDelete.connectionId)
       : null
-    if (agent && connection) await deleteConnection(agent, connection)
+    if (agent && connection) await deleteConnection(agent, connection, addAgentActionToQueue)
   }
 
   useEffect(() => {

@@ -36,7 +36,7 @@ import { MobileAgent } from '../MobileAgent'
 
 import { OutOfBandInvitationEvent, OutOfBandInvitationEventTypes } from './OutOfBandEvents'
 
-import { deleteConnection, findExistingConnection } from '@2060/hooks/agent/connections'
+import { deleteNotReadyConnection, findExistingConnection } from '@2060/hooks/agent/connections'
 import { log, logError } from '@2060/utils'
 import { toast } from '@2060/utils/toast'
 
@@ -239,7 +239,7 @@ export const processInvitation = async (
       // Delete connection record (only if it was created from this flow)
       if (!existingConnection && connectionRecord) {
         log(`Deleting connection`)
-        await deleteConnection(agent, connectionRecord)
+        await deleteNotReadyConnection(agent, connectionRecord)
       }
       return {
         success: false,

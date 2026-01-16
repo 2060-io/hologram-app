@@ -321,7 +321,7 @@ export const usePresentCredentialAsQR = ({
     if (!agent) return
     if (ephemeralConnection.current) {
       log(`Deleting ephemeral connection: ${ephemeralConnection.current.id}`)
-      deleteConnection(agent, ephemeralConnection.current)
+      deleteConnection(agent, ephemeralConnection.current, addAgentActionToQueue)
       ephemeralConnection.current = undefined
     }
     if (proofRecordId.current) {

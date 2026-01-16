@@ -26,6 +26,8 @@ import {
   ProofStateChangedEvent,
   ProofEventTypes,
   AutoAcceptProof,
+  HangupMessage,
+  OutOfBandRole,
 } from '@credo-ts/core'
 import { PushNotificationsFcmSetDeviceInfoMessage } from '@credo-ts/push-notifications'
 import { AnswerMessage } from '@credo-ts/question-answer'
@@ -41,6 +43,7 @@ import {
   CreateCallOfferParameters,
   DeclineCredentialOfferParameters,
   DeclineProofRequestParameters,
+  DeleteConnectionParameters,
   ForwardConnectionParameters,
   HangupCallParameters,
   MenuSelectionParameters,
@@ -323,6 +326,22 @@ export const AgentActionExecuterMap: Record<AgentActionType, ActionFactory> = {
         devicePlatform: Platform.OS,
       })
       return { outgoingMessageType: PushNotificationsFcmSetDeviceInfoMessage.type.messageTypeUri }
+    }
+  },
+  [AgentActionType.DeleteConnection]: action => {
+    return async (options: { agent: MobileAgent }) => {
+      const parameters = action.parameters as DeleteConnectionParameters
+      const { connectionId, outOfBandRecordId } = parameters
+      await options.agent.connections.hangup({ connectionId, deleteAfterHangup: true })
+      // Once the connection has been eliminated, delete its associated OOB record (only if we were invited
+      // as the OOB record can be still valid for invitations we have created)
+      if (outOfBandRecordId) {
+        const outOfBandRecord = await options.agent.oob.findById(outOfBandRecordId)
+        if (outOfBandRecord?.role === OutOfBandRole.Receiver) {
+          await options.agent.oob.deleteById(outOfBandRecordId)
+        }
+      }
+      return { outgoingMessageType: HangupMessage.type.messageTypeUri }
     }
   },
 }

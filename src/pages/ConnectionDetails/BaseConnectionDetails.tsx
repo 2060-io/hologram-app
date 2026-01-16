@@ -21,6 +21,7 @@ import {
   useUserProfile,
 } from '@2060/hooks/agent'
 import { deleteConnection, blockConnection, unblockConnection } from '@2060/hooks/agent/connections'
+import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { createOobInvitation, MobileAgent } from '@2060/services/agent'
 import { capitalizeFirstLetter, logError } from '@2060/utils'
@@ -46,24 +47,22 @@ const BaseConnectionDetails = ({
   mainInfo,
   footerInfo,
 }: BaseConnectionDetailsProps) => {
+  const { t } = useTranslation()
+  const theme = useTheme()
+  const styles = getStyles(theme)
+  const { addAgentActionToQueue } = useAgentActionQueue()
+  const { agent } = useMobileAgent()
+  const { userProfileData } = useUserProfile()
+  const { clearChat, findOrCreateThread } = useChats()
+  const relatedConnections = useConnectionByParentConnectionId(connection.id)
   const [showConfirmationModal, setShowConfirmationModal] = useState(false)
   const [blockingConnection, setBlockingConnection] = useState(false)
   const modalConfirmationTypeRef = useRef<confirmationTypes>('deleteChat')
-  const theme = useTheme()
-  const styles = getStyles(theme)
-
-  const { agent } = useMobileAgent()
-  const { t } = useTranslation()
   const connectionName = getConnectionDisplayName(connection)
-  const relatedConnections = useConnectionByParentConnectionId(connection.id)
-  const { userProfileData } = useUserProfile()
-
   const isConnectionCompleted = connection.isReady
   const isConnectionBlocked = isBlocked(connection)
   const isConnectionTerminated = isTerminated(connection)
   const isConnectionService = isService(connection)
-
-  const { clearChat, findOrCreateThread } = useChats()
 
   const setHeaderOptions = () => {
     navigation.setOptions({
@@ -97,7 +96,7 @@ const BaseConnectionDetails = ({
   const handleDeleteConnection = async () => {
     if (agent) {
       try {
-        await deleteConnection(agent, connection)
+        await deleteConnection(agent, connection, addAgentActionToQueue)
         if (navigation.canGoBack()) navigation.goBack()
       } catch (error) {
         toast({ message: `${error}`, type: 'error' })

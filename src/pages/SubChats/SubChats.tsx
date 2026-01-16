@@ -20,6 +20,7 @@ import {
 import { Text, SvgIcon, HeaderTitle } from '@2060/components/common'
 import { useChatThreadById, useChatThreadsbyParentId, useChats, useMobileAgent } from '@2060/hooks/agent'
 import { deleteConnection } from '@2060/hooks/agent/connections'
+import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { ChatThreadData } from '@2060/model'
 import { ChatsStackParams } from '@2060/navigators/ChatStackParams'
@@ -32,6 +33,7 @@ const SubChats: React.FC<Props> = ({ route, navigation }) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
+  const { addAgentActionToQueue } = useAgentActionQueue()
   const { agent } = useMobileAgent()
   const [showConfirmChatDeletion, setShowConfirmChatDeletion] = useState(false)
   const [showFilterOptions, setShowFilterOptions] = useState(false)
@@ -104,7 +106,7 @@ const SubChats: React.FC<Props> = ({ route, navigation }) => {
     const connection = chatThreadToDelete?.connectionId
       ? await agent?.connections.getById(chatThreadToDelete.connectionId)
       : null
-    if (agent && connection) await deleteConnection(agent, connection)
+    if (agent && connection) await deleteConnection(agent, connection, addAgentActionToQueue)
   }
 
   useEffect(() => {
