@@ -18,7 +18,8 @@ import {
   ChatFilterOptions,
 } from '@2060/components'
 import { Text, SvgIcon, HeaderTitle } from '@2060/components/common'
-import { ChatCategory, useChats } from '@2060/hooks/agent'
+import { ChatCategory, useChats, useMobileAgent } from '@2060/hooks/agent'
+import { deleteConnection } from '@2060/hooks/agent/connections'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { ChatThreadData } from '@2060/model'
 import { ChatsStackParams } from '@2060/navigators/ChatStackParams'
@@ -30,10 +31,13 @@ interface Props extends StackScreenProps<ChatsStackParams, 'ChatsMain'> {}
 const Chats = ({ navigation }: Props) => {
   const theme = useTheme()
   const styles = getStyles(theme)
+  const { agent } = useMobileAgent()
   const [showContextMenu, setShowContextMenu] = useState(false)
   const [showSearchInput, setShowSearchInput] = useState(false)
   const [selectedChatIds, setSelectedChatIds] = useState<string[]>([])
-  const [chatIdToDelete, setChatIdToDelete] = useState<string>('')
+  const [chatThreadToDelete, setChatThreadToDelete] = useState<{ id: string; connectionId: string } | null>(
+    null,
+  )
   const using24HourFormat = uses24HourClock()
   /* eslint-disable object-curly-newline */
   const { loading, deleteThread, archiveThreads, unarchiveThreads, filters, setFilters, threads } = useChats()
@@ -65,9 +69,9 @@ const Chats = ({ navigation }: Props) => {
     handleClosingContextMenu()
   }
 
-  const handleDeleteChat = (chatId: string) => {
+  const handleDeleteChat = (chatId: string, connectionId: string) => {
     handleOpenigContextMenu('confirm-deletion')
-    setChatIdToDelete(chatId)
+    setChatThreadToDelete({ id: chatId, connectionId })
   }
 
   const handleOpenigContextMenu = (contextMenuType: contextMenuTypes) => {
@@ -77,7 +81,7 @@ const Chats = ({ navigation }: Props) => {
 
   const handleClosingContextMenu = () => {
     contextMenutypeRef.current = 'filter-options'
-    if (chatIdToDelete) swipeRowReferences.current[Number(chatIdToDelete)].closeRow()
+    if (chatThreadToDelete?.id) swipeRowReferences.current[Number(chatThreadToDelete.id)].closeRow()
     setShowContextMenu(false)
   }
 
@@ -184,7 +188,7 @@ const Chats = ({ navigation }: Props) => {
                 <ChatSwipeOptions
                   isSwiped={isSwiped}
                   isArchived={chat.archived}
-                  onDeleteChat={() => handleDeleteChat(chat.id)}
+                  onDeleteChat={() => handleDeleteChat(chat.id, chat.connectionId)}
                   onArchiveChat={() => {
                     swipeRowReferences.current[Number(chat.id)].closeRow()
                     chat.archived ? unarchiveThreads([chat.id]) : archiveThreads([chat.id])
@@ -214,12 +218,21 @@ const Chats = ({ navigation }: Props) => {
           <ConfirmChatDeletion
             onClose={handleClosingContextMenu}
             onCloseContextMenu={() => {
-              swipeRowReferences.current[Number(chatIdToDelete)].closeRow()
+              swipeRowReferences.current[Number(chatThreadToDelete?.id)].closeRow()
               handleClosingContextMenu()
             }}
             onDeleteChat={() => {
-              swipeRowReferences.current[Number(chatIdToDelete)].closeRow()
-              deleteThread(chatIdToDelete)
+              swipeRowReferences.current[Number(chatThreadToDelete?.id)].closeRow()
+              if (chatThreadToDelete?.id) deleteThread(chatThreadToDelete.id)
+              handleClosingContextMenu()
+            }}
+            onConfirmSecondary={async () => {
+              swipeRowReferences.current[Number(chatThreadToDelete?.id)].closeRow()
+              if (chatThreadToDelete?.id) deleteThread(chatThreadToDelete.id)
+              const connection = chatThreadToDelete?.connectionId
+                ? await agent?.connections.getById(chatThreadToDelete.connectionId)
+                : null
+              if (agent && connection) await deleteConnection(agent, connection)
               handleClosingContextMenu()
             }}
           />

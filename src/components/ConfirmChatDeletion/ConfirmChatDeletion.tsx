@@ -7,9 +7,15 @@ type Props = {
   onClose(): void
   onDeleteChat(): void
   onCloseContextMenu(): void
+  onConfirmSecondary(): void
 }
 
-const ConfirmChatDeletion: React.FC<Props> = ({ onClose, onDeleteChat, onCloseContextMenu }) => {
+const ConfirmChatDeletion: React.FC<Props> = ({
+  onClose,
+  onDeleteChat,
+  onConfirmSecondary,
+  onCloseContextMenu,
+}) => {
   return (
     <ModalConfirmAction
       visible={true}
@@ -20,6 +26,8 @@ const ConfirmChatDeletion: React.FC<Props> = ({ onClose, onDeleteChat, onCloseCo
       onClose={onClose}
       onConfirm={onDeleteChat}
       onCancel={onCloseContextMenu}
+      confirmTextSecondary={'Yes, and delete connection, too'}
+      onConfirmSecondary={onConfirmSecondary}
     />
   )
 }
