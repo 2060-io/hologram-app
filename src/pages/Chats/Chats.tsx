@@ -193,7 +193,6 @@ const Chats = ({ navigation }: Props) => {
                 <View style={isSwiped ? styles.bgSelectedChat : styles.bgContainerChat}>
                   <ChatThread
                     {...chat}
-                    lastActivityAt={chat.lastActivityAt ?? chat.createdAt}
                     using24HourFormat={using24HourFormat}
                     onPressChatThread={() => goToChat(chat.id)}
                   />
