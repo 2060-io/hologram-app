@@ -10,10 +10,9 @@ import getStyles from './styles'
 
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
 import { Text } from '@2060/components/common'
-import { useMobileAgent } from '@2060/hooks/agent'
+import { useAgentActionQueue, useMobileAgent } from '@2060/hooks/agent'
 import { ProofSendProblemReportDescription } from '@2060/hooks/agent/actions/types'
 import { deleteConnection } from '@2060/hooks/agent/connections'
-import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { CredentialMainInfo } from '@2060/services/agent/display'
 import {

@@ -19,9 +19,9 @@ import {
   useChats,
   useConnectionByParentConnectionId,
   useUserProfile,
+  useAgentActionQueue,
 } from '@2060/hooks/agent'
 import { deleteConnection, blockConnection, unblockConnection } from '@2060/hooks/agent/connections'
-import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { createOobInvitation, MobileAgent } from '@2060/services/agent'
 import { capitalizeFirstLetter, logError } from '@2060/utils'

@@ -18,9 +18,14 @@ import {
   ChatFilterOptions,
 } from '@2060/components'
 import { Text, SvgIcon, HeaderTitle } from '@2060/components/common'
-import { useChatThreadById, useChatThreadsbyParentId, useChats, useMobileAgent } from '@2060/hooks/agent'
+import {
+  useAgentActionQueue,
+  useChatThreadById,
+  useChatThreadsbyParentId,
+  useChats,
+  useMobileAgent,
+} from '@2060/hooks/agent'
 import { deleteConnection } from '@2060/hooks/agent/connections'
-import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { ChatThreadData } from '@2060/model'
 import { ChatsStackParams } from '@2060/navigators/ChatStackParams'
