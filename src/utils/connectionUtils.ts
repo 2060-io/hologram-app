@@ -7,16 +7,21 @@ import {
   AgentContext,
   ConnectionRecord,
   ConnectionRepository,
+  ConnectionsApi,
   DidExchangeState,
   JsonTransformer,
+  OutOfBandInvitation,
+  OutOfBandRole,
   Protocol,
 } from '@credo-ts/core'
+import { tryParseDid } from '@credo-ts/core/build/modules/dids/domain/parse'
 
-import { logError } from './log'
+import { log, logError, logWarn } from './log'
 
 import { dataUrl } from './index'
 
 import { ConnectionType } from '@2060/model'
+import { MobileAgent } from '@2060/services/agent/MobileAgent'
 
 export const getConnectionDisplayName = (connection: ConnectionRecord) => {
   const profile = getConnectionProfile(connection)
@@ -133,4 +138,36 @@ export const notAllowedConnectionsIdsToSendMessages = (connections: ConnectionRe
   return connections
     .filter(connection => connection.state !== DidExchangeState.Completed || isBlocked(connection))
     .map(({ id }) => id)
+}
+
+export const findExistingConnection = async (
+  agentContext: AgentContext,
+  invitation: OutOfBandInvitation,
+): Promise<ConnectionRecord | undefined> => {
+  // If it is an invitation from a public DID, check if there is a connection established with it
+  const existingConnections = await agentContext.dependencyManager
+    .resolve(ConnectionsApi)
+    .findByInvitationDid(tryParseDid(invitation.id) ? invitation.id : invitation.invitationDids[0])
+  if (existingConnections.length > 1) {
+    logWarn(`Multiple connections found related to invitation id ${invitation.id}`)
+  }
+
+  if (existingConnections.length > 0) return existingConnections[0]
+}
+
+export const deletePendingConnection = async (agent: MobileAgent, connection: ConnectionRecord) => {
+  try {
+    log(`Deleting pending connection with id: ${connection.id}`)
+    await agent.connections.deleteById(connection.id)
+    // Once the connection has been eliminated, delete its associated OOB record (only if we were invited
+    // as the OOB record can be still valid for invitations we have created)
+    const outOfBandRecordId = connection.outOfBandId
+    if (!outOfBandRecordId) return
+    const outOfBandRecord = await agent.oob.findById(outOfBandRecordId)
+    if (outOfBandRecord?.role === OutOfBandRole.Receiver) {
+      await agent.oob.deleteById(outOfBandRecordId)
+    }
+  } catch (error) {
+    logError(`Error deleting pending connection with id: ${connection.id}`, error)
+  }
 }

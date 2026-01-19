@@ -36,8 +36,8 @@ import { MobileAgent } from '../MobileAgent'
 
 import { OutOfBandInvitationEvent, OutOfBandInvitationEventTypes } from './OutOfBandEvents'
 
-import { deletePendingConnection, findExistingConnection } from '@2060/hooks/agent/connections'
 import { log, logError } from '@2060/utils'
+import { deletePendingConnection, findExistingConnection } from '@2060/utils/connectionUtils'
 import { toast } from '@2060/utils/toast'
 
 export enum DidcommInvitationType {
