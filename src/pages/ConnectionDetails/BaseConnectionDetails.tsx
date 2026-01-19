@@ -20,11 +20,18 @@ import {
   useConnectionByParentConnectionId,
   useUserProfile,
 } from '@2060/hooks/agent'
-import { deleteConnection, blockConnection, unblockConnection } from '@2060/hooks/agent/connections'
+import { deleteConnection } from '@2060/hooks/agent/connections'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { createOobInvitation, MobileAgent } from '@2060/services/agent'
 import { capitalizeFirstLetter, logError } from '@2060/utils'
-import { getConnectionDisplayName, isBlocked, isService, isTerminated } from '@2060/utils/connectionUtils'
+import {
+  blockConnection,
+  getConnectionDisplayName,
+  isBlocked,
+  isService,
+  isTerminated,
+  unblockConnection,
+} from '@2060/utils/connectionUtils'
 import { markNewConnectionNotificationAsViewed } from '@2060/utils/pushNotificationsUtils'
 import { toast } from '@2060/utils/toast'
 
