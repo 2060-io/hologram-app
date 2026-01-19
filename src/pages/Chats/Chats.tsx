@@ -41,12 +41,10 @@ const Chats = ({ navigation }: Props) => {
   const [showFilterOptions, setShowFilterOptions] = useState(false)
   const [showSearchInput, setShowSearchInput] = useState(false)
   const [selectedChatIds, setSelectedChatIds] = useState<string[]>([])
-  const swipeRowReferences = useRef<SwipeRow<unknown>[]>([])
-  const [chatThreadToDelete, setChatThreadToDelete] = useState<{
-    id: string
-    connectionId: string
-    withDeleteConnectionOption: boolean
-  } | null>(null)
+  const swipeRowReferences = useRef<Record<string, SwipeRow<unknown>>>({})
+  const [chatThreadToDelete, setChatThreadToDelete] = useState<{ id: string; connectionId?: string } | null>(
+    null,
+  )
   const isCategoryAll = filters.category === 'all'
   const isCategoryArchived = isCategoryAll && filters.archived
   const selectedCategory = isCategoryArchived ? 'archived' : filters.category
@@ -78,8 +76,12 @@ const Chats = ({ navigation }: Props) => {
 
   const onDeleteChat = async (chatId: string, connectionId: string) => {
     setShowConfirmChatDeletion(true)
-    const connection = await agent?.connections.getById(connectionId)
-    setChatThreadToDelete({ id: chatId, connectionId, withDeleteConnectionOption: !!connection })
+    try {
+      await agent?.connections.getById(connectionId)
+      setChatThreadToDelete({ id: chatId, connectionId })
+    } catch (error) {
+      setChatThreadToDelete({ id: chatId })
+    }
   }
 
   const onChangeSearch = (value: string) => {
@@ -94,7 +96,7 @@ const Chats = ({ navigation }: Props) => {
   }
 
   const closeConfirmChatDeletion = () => {
-    if (chatThreadToDelete?.id) swipeRowReferences.current[Number(chatThreadToDelete.id)].closeRow()
+    if (chatThreadToDelete?.id) swipeRowReferences.current?.[chatThreadToDelete.id]?.closeRow()
     setShowConfirmChatDeletion(false)
   }
 
@@ -188,7 +190,7 @@ const Chats = ({ navigation }: Props) => {
             return (
               <SwipeRow
                 ref={ref => {
-                  if (ref) swipeRowReferences.current[Number(chat.id)] = ref
+                  if (ref) swipeRowReferences.current[chat.id] = ref
                 }}
                 key={chat.id}
                 disableRightSwipe
@@ -202,7 +204,7 @@ const Chats = ({ navigation }: Props) => {
                   isArchived={chat.archived}
                   onDeleteChat={() => onDeleteChat(chat.id, chat.connectionId)}
                   onArchiveChat={() => {
-                    swipeRowReferences.current[Number(chat.id)].closeRow()
+                    swipeRowReferences.current?.[chat.id]?.closeRow()
                     chat.archived ? unarchiveThreads([chat.id]) : archiveThreads([chat.id])
                   }}
                 />
@@ -231,9 +233,7 @@ const Chats = ({ navigation }: Props) => {
           onClose={closeConfirmChatDeletion}
           onCancel={closeConfirmChatDeletion}
           onDeleteChat={deleteChat}
-          onConfirmSecondary={
-            chatThreadToDelete?.withDeleteConnectionOption ? deleteChatAndConnection : undefined
-          }
+          onConfirmSecondary={chatThreadToDelete?.connectionId ? deleteChatAndConnection : undefined}
         />
         <ModalBottomHalf visible={showFilterOptions} onClose={closeFilterOptions}>
           <ChatFilterOptions onChangeOption={onChangeFilterOption} selectedOption={selectedCategory} />
