@@ -19,7 +19,6 @@ import {
   useChats,
   useConnectionByParentConnectionId,
   useUserProfile,
-  useAgentActionQueue,
 } from '@2060/hooks/agent'
 import { deleteConnection, blockConnection, unblockConnection } from '@2060/hooks/agent/connections'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
@@ -50,7 +49,6 @@ const BaseConnectionDetails = ({
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
-  const { addAgentActionToQueue } = useAgentActionQueue()
   const { agent } = useMobileAgent()
   const { userProfileData } = useUserProfile()
   const { clearChat, findOrCreateThread } = useChats()
@@ -96,7 +94,7 @@ const BaseConnectionDetails = ({
   const handleDeleteConnection = async () => {
     if (agent) {
       try {
-        await deleteConnection(agent, connection, addAgentActionToQueue)
+        await deleteConnection(agent, connection)
         if (navigation.canGoBack()) navigation.goBack()
       } catch (error) {
         toast({ message: `${error}`, type: 'error' })

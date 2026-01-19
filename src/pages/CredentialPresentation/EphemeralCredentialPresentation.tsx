@@ -10,7 +10,7 @@ import getStyles from './styles'
 
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
 import { Text } from '@2060/components/common'
-import { useAgentActionQueue, useMobileAgent } from '@2060/hooks/agent'
+import { useMobileAgent } from '@2060/hooks/agent'
 import { ProofSendProblemReportDescription } from '@2060/hooks/agent/actions/types'
 import { deleteConnection } from '@2060/hooks/agent/connections'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
@@ -30,7 +30,6 @@ const EphemeralCredentialPresentation = ({ navigation, route }: Props) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
-  const { addAgentActionToQueue } = useAgentActionQueue()
   const { agent } = useMobileAgent()
   const [proofState, setProofState] = useState(ProofState.ProposalReceived)
   const [credentialAttributes, setCredentialAttributes] = useState({})
@@ -109,7 +108,7 @@ const EphemeralCredentialPresentation = ({ navigation, route }: Props) => {
     if (agent && connectionId.current) {
       log(`Deleting ephemeral connection: ${connectionId.current}`)
       const connection = await agent.connections.getById(connectionId.current)
-      deleteConnection(agent, connection, addAgentActionToQueue)
+      deleteConnection(agent, connection)
     }
     if (agent) {
       log(`Deleting proof record: ${proofRecordId}`)

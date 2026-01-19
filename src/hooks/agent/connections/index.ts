@@ -9,10 +9,12 @@ import {
   ConnectionService,
 } from '@credo-ts/core'
 import { tryParseDid } from '@credo-ts/core/build/modules/dids/domain/parse'
+import { fetch as NetInfo } from '@react-native-community/netinfo'
 
-import { AgentActionOptions, AgentActionType } from '../actions/AgentAction'
+import { AgentActionType } from '../actions/AgentAction'
 import { DeleteConnectionParameters } from '../actions/types'
 
+import { AgentActionQueueSingleton } from '@2060/services/AgentActionQueueSingleton'
 import { MobileAgent } from '@2060/services/agent/MobileAgent'
 import { log, logError, logWarn } from '@2060/utils'
 import { isTerminated, isBlocked } from '@2060/utils/connectionUtils'
@@ -49,21 +51,23 @@ export const deletePendingConnection = async (agent: MobileAgent, connection: Co
   }
 }
 
-export const deleteConnection = async (
-  agent: MobileAgent,
-  connection: ConnectionRecord,
-  addAgentActionToQueue: (action: AgentActionOptions) => void,
-) => {
+export const deleteConnection = async (agent: MobileAgent, connection: ConnectionRecord) => {
   if (connection.isReady && !isTerminated(connection)) {
     const parameters: DeleteConnectionParameters = {
       connectionId: connection.id,
       outOfBandRecordId: connection.outOfBandId,
     }
-    // TODO: When PR #376 be merged, remove this and call addJob of the new AgentActionQueueSingleton directly
-    addAgentActionToQueue({
-      type: AgentActionType.DeleteConnection,
-      parameters,
-    })
+    // Lazy import to avoid circular dependency
+    const agentActionQueueSingleton = AgentActionQueueSingleton.instance
+    agentActionQueueSingleton.configureQueue()
+    const isConnectedToInternet = Boolean((await NetInfo()).isConnected)
+    agentActionQueueSingleton.addJob(
+      {
+        type: AgentActionType.DeleteConnection,
+        parameters,
+      },
+      isConnectedToInternet,
+    )
   } else {
     await deletePendingConnection(agent, connection)
   }
