@@ -4,26 +4,23 @@ import {
   AgentMessage,
   BaseRecord,
   BasicMessageRecord,
+  getOutboundMessageContext,
   JsonTransformer,
   MessageSender,
-  getOutboundMessageContext,
 } from '@credo-ts/core'
-import { useCallback, useEffect, useState } from 'react'
 import queue, { Worker } from 'react-native-job-queue'
 
-import { useLocalRealm } from '../providers/RealmProvider'
-import { useNetwork } from '../useNetwork'
+import AgentSingleton from './AgentSingleton'
+import RealmSingleton from './RealmSingleton'
 
-import { useMobileAgent } from './MobileAgentProvider'
 import {
   ActionExecutionStatus,
   AgentAction,
   AgentActionOptions,
   OutboundMessageContextData,
   RetryAgentAction,
-} from './actions/AgentAction'
-import { AgentActionExecuter } from './actions/AgentActionExecuter'
-
+} from '@2060/hooks/agent/actions/AgentAction'
+import { AgentActionExecuter } from '@2060/hooks/agent/actions/AgentActionExecuter'
 import { log, logError } from '@2060/utils'
 
 class ActionExecutionError extends Error {
@@ -34,24 +31,27 @@ class ActionExecutionError extends Error {
   }
 }
 
-export const useAgentActionQueue = () => {
-  const { realm } = useLocalRealm()
-  const { agent } = useMobileAgent()
+export class AgentActionQueueSingleton {
+  private static agentActionQueueInstance: AgentActionQueueSingleton
+  private isConfigured = false
 
-  const [isReady, setIsReady] = useState<boolean>(false)
-  const { assertConnectedNetwork } = useNetwork()
-  const isNetworkConnected = assertConnectedNetwork()
-
-  useEffect(() => {
-    if (isNetworkConnected) {
-      if (isReady) queue.start()
-    } else {
-      queue.stop()
+  static get instance() {
+    if (!this.agentActionQueueInstance) {
+      this.agentActionQueueInstance = new AgentActionQueueSingleton()
     }
-  }, [isNetworkConnected, isReady])
+    return this.agentActionQueueInstance
+  }
 
-  useEffect(() => {
-    if (!realm || !agent || isReady) return
+  configureQueue() {
+    if (this.isConfigured) return
+    const realm = RealmSingleton.instance.getRealm()
+    if (!realm) throw new Error('Realm is not open yet. You must openRealmIfIsClosed first')
+    const agent = AgentSingleton.instance.getMobileAgent()
+    if (!agent?.isInitialized) {
+      throw new Error(
+        'Agent is not initialized yet. You must setupMobileAgent and openAndInitMobileAgent first',
+      )
+    }
 
     for (const worker in queue.registeredWorkers) {
       queue.removeWorker(worker)
@@ -85,7 +85,7 @@ export const useAgentActionQueue = () => {
 
               setTimeout(() => {
                 queue.addJob<RetryAgentAction>('RetryAgentAction', retryAction, undefined, false)
-              }, 2000)
+              }, 2_000)
             }
           },
         },
@@ -154,22 +154,20 @@ export const useAgentActionQueue = () => {
 
               setTimeout(() => {
                 queue.addJob<RetryAgentAction>('RetryAgentAction', newRetryAction, undefined, false)
-              }, 2000)
+              }, 2_000)
             }
           },
         },
       ),
     )
-    setIsReady(true)
-  }, [agent, realm])
+    this.isConfigured = true
+  }
 
-  const addAgentActionToQueue = useCallback(
-    (action: AgentActionOptions) => {
-      const attempts = 4 // TODO: Define a default
-      queue.addJob('AgentAction', { ...action, attempts }, undefined, isNetworkConnected)
-    },
-    [realm, agent, isNetworkConnected],
-  )
+  getQueue() {
+    return queue
+  }
 
-  return { addAgentActionToQueue }
+  addJob(payload: AgentActionOptions, startQueue: boolean) {
+    queue.addJob('AgentAction', { ...payload, attempts: 4 }, undefined, startQueue)
+  }
 }

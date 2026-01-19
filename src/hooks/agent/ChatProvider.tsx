@@ -2,6 +2,7 @@ import { MessageReceipt, MessageReceiptOptions, MessageState } from '@2060.io/cr
 import { ConnectionRecord, utils } from '@credo-ts/core'
 import React, { createContext, useCallback, useState, useEffect, useContext, useRef } from 'react'
 
+import { useAgentActionQueue } from './AgentActionQueueProvider'
 import { useMobileAgent } from './MobileAgentProvider'
 import { AgentActionType } from './actions/AgentAction'
 import { SendReceiptsParameters } from './actions/types'
@@ -15,7 +16,6 @@ import {
   updateThread,
 } from './chat/services/ChatThreadService'
 import { subscribeToAgentChatEvents } from './chat/subscribeToAgentChatEvents'
-import { useAgentActionQueue } from './useAgentActionQueue'
 
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
 import {
