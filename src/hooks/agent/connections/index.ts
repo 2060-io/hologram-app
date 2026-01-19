@@ -14,10 +14,8 @@ export const deleteConnection = async (agent: MobileAgent, connection: Connectio
       connectionId: connection.id,
       outOfBandRecordId: connection.outOfBandId,
     }
-    const agentActionQueueSingleton = AgentActionQueueSingleton.instance
-    agentActionQueueSingleton.configureQueue()
     const isConnectedToInternet = Boolean((await NetInfo()).isConnected)
-    agentActionQueueSingleton.addJob(
+    AgentActionQueueSingleton.instance.addJob(
       {
         type: AgentActionType.DeleteConnection,
         parameters,
