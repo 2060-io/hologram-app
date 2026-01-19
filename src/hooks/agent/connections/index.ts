@@ -32,9 +32,9 @@ export const findExistingConnection = async (
   if (existingConnections.length > 0) return existingConnections[0]
 }
 
-export const deleteNotReadyConnection = async (agent: MobileAgent, connection: ConnectionRecord) => {
+export const deletePendingConnection = async (agent: MobileAgent, connection: ConnectionRecord) => {
   try {
-    log(`Deleting not ready connection with id: ${connection.id}`)
+    log(`Deleting pending connection with id: ${connection.id}`)
     await agent.connections.deleteById(connection.id)
     // Once the connection has been eliminated, delete its associated OOB record (only if we were invited
     // as the OOB record can be still valid for invitations we have created)
@@ -45,7 +45,7 @@ export const deleteNotReadyConnection = async (agent: MobileAgent, connection: C
       await agent.oob.deleteById(outOfBandRecordId)
     }
   } catch (error) {
-    logError(`Error deleting  not ready connection with id: ${connection.id}`, error)
+    logError(`Error deleting pending connection with id: ${connection.id}`, error)
   }
 }
 
@@ -65,7 +65,7 @@ export const deleteConnection = async (
       parameters,
     })
   } else {
-    await deleteNotReadyConnection(agent, connection)
+    await deletePendingConnection(agent, connection)
   }
 }
 
