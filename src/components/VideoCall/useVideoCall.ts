@@ -11,10 +11,9 @@ import { useTranslation } from 'react-i18next'
 import InCallManager from 'react-native-incall-manager'
 import { MediaStream, mediaDevices, registerGlobals } from 'react-native-webrtc'
 
-import { AgentActionType, useMobileAgent } from '@2060/hooks/agent'
+import { AgentActionType, useAgentActionQueue, useMobileAgent } from '@2060/hooks/agent'
 import { CreateCallOfferParameters, HangupCallParameters } from '@2060/hooks/agent/actions/types'
 import { findAllDidcommThreadId, updateChatEntryMetadata } from '@2060/hooks/agent/chat/services'
-import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
 import { useConfig } from '@2060/hooks/providers/ConfigProvider'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
 import {
