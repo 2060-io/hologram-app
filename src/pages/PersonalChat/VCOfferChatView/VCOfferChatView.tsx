@@ -13,13 +13,12 @@ import getStyles from './styles'
 
 import { ModalConfirmAction } from '@2060/components'
 import { CredentialMainInformation, Text } from '@2060/components/common'
-import { AgentActionType } from '@2060/hooks/agent'
+import { AgentActionType, useAgentActionQueue } from '@2060/hooks/agent'
 import {
   AcceptCredentialOfferParameters,
   DeclineCredentialOfferParameters,
 } from '@2060/hooks/agent/actions/types'
 import { updateChatEntryMetadata } from '@2060/hooks/agent/chat/services'
-import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { VCOfferMetadata } from '@2060/model'

@@ -107,6 +107,10 @@ type SavePushNotificationDeviceInfoParameters = {
   deviceToken: string
 }
 
+type DeleteConnectionParameters = ConnectionIdParameter & {
+  outOfBandRecordId?: string
+}
+
 export type {
   SendTextMessageParameters,
   SendReactionParameters,
@@ -131,4 +135,5 @@ export type {
   AcceptProofProposalParameters,
   ProofSendProblemReportParameters,
   SavePushNotificationDeviceInfoParameters,
+  DeleteConnectionParameters,
 }

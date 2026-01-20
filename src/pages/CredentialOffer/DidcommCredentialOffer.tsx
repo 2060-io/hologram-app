@@ -5,13 +5,12 @@ import React from 'react'
 import BaseCredentialOffer from './BaseCredentialOffer'
 
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
-import { AgentActionType } from '@2060/hooks/agent'
+import { AgentActionType, useAgentActionQueue } from '@2060/hooks/agent'
 import {
   AcceptCredentialOfferParameters,
   DeclineCredentialOfferParameters,
 } from '@2060/hooks/agent/actions/types'
 import { findAllByAssociatedRecordId, updateChatEntryMetadata } from '@2060/hooks/agent/chat/services'
-import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
 import { useCredentialExchangeForDisplay } from '@2060/hooks/useCredentialExchangeForDisplay'
 import { ChatEntryType } from '@2060/model'

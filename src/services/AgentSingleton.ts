@@ -53,8 +53,8 @@ export class AgentSingleton {
     return this.mobileAgent
   }
 
-  setAppIsSubscribedToEvents() {
-    this.isAppSubscribedToEvents = true
+  setAppIsSubscribedToEvents(isAppSubscribedToEvents: boolean) {
+    this.isAppSubscribedToEvents = isAppSubscribedToEvents
   }
 
   getIsAppSubscribedToEvents() {

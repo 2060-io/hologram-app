@@ -11,13 +11,12 @@ import getStyles from './styles'
 import { CredentialAttributes, ModalConfirmAction } from '@2060/components'
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
 import { CredentialMainInformation, HeaderTitle, Text } from '@2060/components/common'
-import { AgentActionType } from '@2060/hooks/agent'
+import { AgentActionType, useAgentActionQueue } from '@2060/hooks/agent'
 import {
   AcceptProofProposalParameters,
   ProofSendProblemReportDescription,
   ProofSendProblemReportParameters,
 } from '@2060/hooks/agent/actions/types'
-import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { CredentialMainInfo } from '@2060/services/agent/display'
 import { toast } from '@2060/utils/toast'
