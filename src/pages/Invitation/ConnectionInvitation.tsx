@@ -89,15 +89,12 @@ const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => 
   }
 
   const onPressHeaderRightButton = async () => {
-    if (canConnect) {
-      accept()
+    if (canConnect) accept()
+    else if (isAlreadyConnected) {
+      const connection = await agent?.connections.findById(existingConnectionId!)
+      if (connection) goToChat(connection)
     } else {
-      if (isAlreadyConnected) {
-        const connection = await agent?.connections.getById(existingConnectionId!)
-        if (connection) goToChat(connection)
-      } else {
-        navigation.goBack()
-      }
+      navigation.goBack()
     }
   }
 
