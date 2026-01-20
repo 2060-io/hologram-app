@@ -1,9 +1,8 @@
 import { useFocusEffect } from '@react-navigation/native'
-import { FlashList } from '@shopify/flash-list'
 import { useAudioPlayer } from '@simform_solutions/react-native-audio-waveform'
 import React, { useState, useRef, useCallback, memo, useMemo, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, NativeSyntheticEvent, NativeScrollEvent, ViewToken } from 'react-native'
+import { View, NativeSyntheticEvent, NativeScrollEvent, ViewToken, FlatList } from 'react-native'
 import { KeyboardAvoidingView } from 'react-native-keyboard-controller'
 import { uses24HourClock } from 'react-native-localize'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -33,13 +32,12 @@ import {
   useActionMenu,
   useChats,
   ChatThreadWithParticipants,
-  useConnectionById,
   AgentActionType,
+  useConnectionById,
+  useAgentActionQueue,
 } from '@2060/hooks/agent'
 import { RequestUserProfileParameters, SendUserProfileParameters } from '@2060/hooks/agent/actions/types'
 import { createChatEntry, updateChatEntryMetadata } from '@2060/hooks/agent/chat/services/ChatEntryService'
-import { blockConnection } from '@2060/hooks/agent/connections'
-import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import {
@@ -53,7 +51,12 @@ import {
 import { ChatMessageList } from '@2060/pages/PersonalChat/ChatMessageList'
 import { headerHeight } from '@2060/styles'
 import { logWarn } from '@2060/utils'
-import { isService, setLastTimeProfileSent, supportsUserProfile } from '@2060/utils/connectionUtils'
+import {
+  blockConnection,
+  isService,
+  setLastTimeProfileSent,
+  supportsUserProfile,
+} from '@2060/utils/connectionUtils'
 import { getFormattedDateRange, isDateGreaterThan, timeFromNow } from '@2060/utils/dateUtils'
 import { cancelVideoCompression } from '@2060/utils/mediaFileUtils'
 import { markNotificationsOfChatAsViewed } from '@2060/utils/pushNotificationsUtils'
@@ -63,6 +66,7 @@ interface PersonalChatProps extends WrapperPersonalChatProps {
   chatEntries: ChatEntryData[]
   loadMoreMessages(): void
   chatThread: ChatThreadWithParticipants
+  redirectToHomeOnBack?: boolean
 }
 
 const createReportedMessageChatEntry = (params: {
@@ -91,15 +95,20 @@ const createReportedMessageChatEntry = (params: {
   })
 }
 
-const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }: PersonalChatProps) => {
+const PersonalChat = ({
+  chatEntries,
+  chatThread,
+  navigation,
+  loadMoreMessages,
+  redirectToHomeOnBack,
+}: PersonalChatProps) => {
   const { t } = useTranslation()
+  const theme = useTheme()
+  const styles = getStyles(theme)
+  const { data: chatThreadData, flags } = chatThread
+  const connection = useConnectionById(chatThreadData.connectionId)
   const { isAppActive } = useAppState()
   const { stopPlayersAndExtractors } = useAudioPlayer()
-  const [currentStickyDate, setCurrentStickyDate] = useState<Date>()
-  const [showAttachmentOptions, setShowAttachmentOptions] = useState(false)
-  const [showStickyDate, setShowStickyDate] = useState(false)
-  const [showContextualMenu, setShowContextualMenu] = useState(false)
-  const [compressingVideoProgress, setCompressingVideoProgress] = useState(0)
   const { realm } = useLocalRealm()
   const {
     setChatThread,
@@ -126,18 +135,19 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
   const { agent } = useMobileAgent()
   const { markThreadAsRead, setActiveChatThreadId } = useChats()
   const { addAgentActionToQueue } = useAgentActionQueue()
+  const { menu } = useActionMenu({ connectionId: chatThreadData.connectionId })
   const using24HourFormat = uses24HourClock()
-  const theme = useTheme()
+  const [currentStickyDate, setCurrentStickyDate] = useState<Date>()
+  const [showAttachmentOptions, setShowAttachmentOptions] = useState(false)
+  const [showStickyDate, setShowStickyDate] = useState(false)
+  const [showContextualMenu, setShowContextualMenu] = useState(false)
+  const [compressingVideoProgress, setCompressingVideoProgress] = useState(0)
   const showScrollBottomRef = useRef(false)
   const isScrolling = useRef(false)
-  const listViewRef = useRef<FlashList<ChatEntryMessage> | null>(null)
+  const listViewRef = useRef<FlatList<ChatEntryMessage> | null>(null)
   const timerStickyDate = useRef<ReturnType<typeof setTimeout>>(undefined)
   const videoCompressionCancellationId = useRef<string>('')
   const isAlreadyMounted = useRef(false)
-  const { data: chatThreadData, flags } = chatThread
-  const connection = useConnectionById(chatThreadData.connectionId)
-  const { menu } = useActionMenu({ connectionId: chatThreadData.connectionId })
-  const styles = getStyles(theme)
 
   useFocusEffect(
     useCallback(() => {
@@ -174,6 +184,7 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
   }, [isAppActive])
 
   useEffect(() => {
+    if (redirectToHomeOnBack) navigation.getParent?.()?.setOptions({ gestureEnabled: false })
     isAlreadyMounted.current = true
   }, [])
 
@@ -233,23 +244,6 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
     }
   }
 
-  const scrollToBottom = useCallback(() => {
-    if (listViewRef && listViewRef.current) {
-      listViewRef.current.scrollToOffset({ animated: true, offset: 0 })
-    }
-  }, [])
-
-  const handleOnScroll = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const { nativeEvent } = event
-    const contentOffsetY = nativeEvent.contentOffset.y
-    const contentSizeHeight = nativeEvent.contentSize.height
-    const layoutMeasurementHeight = nativeEvent.layoutMeasurement.height
-    const scrollToBottomOffset = 200
-
-    showScrollBottomRef.current = contentOffsetY > scrollToBottomOffset
-    setShowStickyDate(contentOffsetY > 100 && contentSizeHeight - layoutMeasurementHeight > contentOffsetY)
-  }, [])
-
   const renderCustomHeader = (props: CustomHeaderProps) => {
     const { isConnectionBlocked, isConnectionTerminated, isConnectionDeleted, isConnectionCompleted } = flags
     const canPerformActions =
@@ -268,6 +262,7 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
             navigation.navigate('ConnectionDetails', { connectionId: chatThreadData.connectionId })
           }
         }}
+        redirectToHomeOnBack={redirectToHomeOnBack}
       />
     )
   }
@@ -299,6 +294,12 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
     },
     [listViewRef.current, tappedRepliedMessageChatEntryId],
   )
+  const onScrollToIndexFailed = ({ index }: { index: number }) => {
+    const wait = new Promise<void>(resolve => setTimeout(() => resolve(), 500))
+    wait.then(() => {
+      listViewRef.current?.scrollToIndex({ index, animated: true, viewPosition: 0.5 })
+    })
+  }
 
   const hideReportConfirmation = () => setDisplayReportMessageConfirmation(false)
 
@@ -324,23 +325,41 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
   const onContentSizeChange = () => {
     if (tappedRepliedMessageChatEntryId) scrollToMessage(tappedRepliedMessageChatEntryId)
   }
-  const getItemType = (item: ChatEntryMessage) => item.type
 
   const updateStickyDate = useCallback(({ viewableItems }: { viewableItems: ViewToken[] }) => {
-    const lastVisibleItem = viewableItems[viewableItems.length - 1]
-
+    const lastVisibleItem = viewableItems.at(-1)
     if (lastVisibleItem && lastVisibleItem.item && lastVisibleItem.item.createdAt) {
       setCurrentStickyDate(lastVisibleItem.item.createdAt as Date)
     }
   }, [])
 
-  const onScrollBegin = () => (isScrolling.current = true)
+  const onScrollBegin = () => {
+    isScrolling.current = true
+  }
+
   const onScrollEnd = () => {
     isScrolling.current = false
+    // Hide sticky date 1 second after user stops scrolling
     timerStickyDate.current = setTimeout(() => {
       if (!isScrolling.current) setShowStickyDate(false)
     }, 1000)
   }
+
+  const scrollToBottom = useCallback(() => {
+    listViewRef.current?.scrollToOffset({ animated: true, offset: 0 })
+  }, [])
+
+  const onScroll = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const { nativeEvent } = event
+    const distanceToTopOfContentList = nativeEvent.contentOffset.y
+    const listCurrentFullHeight = nativeEvent.contentSize.height
+    const layoutHeight = nativeEvent.layoutMeasurement.height
+    const scrollToBottomOffset = 200
+    const hiddenContentHeight = listCurrentFullHeight - layoutHeight
+    showScrollBottomRef.current = distanceToTopOfContentList > scrollToBottomOffset
+    const isAtTheBottomOfList = distanceToTopOfContentList > hiddenContentHeight
+    setShowStickyDate(!isAtTheBottomOfList)
+  }, [])
 
   const deleteForMe = () => {
     if (!selectedMessage) return
@@ -397,16 +416,16 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
             messages={chatEntries}
             listViewProps={{
               ref: listViewRef,
-              onScroll: handleOnScroll,
-              getItemType,
-              onContentSizeChange,
-              onViewableItemsChanged: updateStickyDate,
               onEndReached: loadMoreMessages,
               onScrollBeginDrag: onScrollBegin,
-              onScrollEndDrag: onScrollEnd,
               onMomentumScrollBegin: onScrollBegin,
+              onScroll,
+              onScrollEndDrag: onScrollEnd,
               onMomentumScrollEnd: onScrollEnd,
+              onContentSizeChange,
+              onViewableItemsChanged: updateStickyDate,
               ListHeaderComponent: renderSystemMessage,
+              onScrollToIndexFailed,
             }}
           />
           {flags.isConnectionCompleted &&
@@ -419,7 +438,7 @@ const PersonalChat = ({ chatEntries, chatThread, navigation, loadMoreMessages }:
               />
             )}
           {showScrollBottomRef.current && (
-            <ScrollToBottom numberNewMessages={0} onScrollToBottom={scrollToBottom} />
+            <ScrollToBottom numberNewMessages={0} scrollToBottom={scrollToBottom} />
           )}
           {isSelectingMessagesMode && (
             <SelectingMessagesBottomMenu

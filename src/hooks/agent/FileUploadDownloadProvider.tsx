@@ -15,10 +15,10 @@ import { createLocalPreview } from '../media/preview'
 import { useConfig } from '../providers/ConfigProvider'
 import { useLocalRealm } from '../providers/RealmProvider'
 
+import { useAgentActionQueue } from './AgentActionQueueProvider'
 import { useMobileAgent } from './MobileAgentProvider'
 import { AgentActionType } from './actions/AgentAction'
 import { ShareMediaParameters } from './actions/types'
-import { useAgentActionQueue } from './useAgentActionQueue'
 import {
   AutomaticDownloadTypes,
   DownloadOptions,
