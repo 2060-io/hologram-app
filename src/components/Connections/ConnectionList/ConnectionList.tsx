@@ -44,7 +44,7 @@ const ConnectionList = ({
                 isLastInSection={index === section.connections.length - 1}
               />
             )}
-            keyExtractor={item => item.name}
+            keyExtractor={item => item.id}
           />
         </View>
       )}
