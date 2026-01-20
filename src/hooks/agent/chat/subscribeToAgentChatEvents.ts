@@ -35,10 +35,9 @@ import {
 } from '@credo-ts/core'
 import { tryParseDid } from '@credo-ts/core/build/modules/dids/domain/parse'
 import { QuestionMessage, AnswerMessage } from '@credo-ts/question-answer'
-import agentActionQueue from 'react-native-job-queue'
 import Realm from 'realm'
 
-import { AgentAction, AgentActionType } from '../actions/AgentAction'
+import { AgentActionType } from '../actions/AgentAction'
 import { SendReceiptsParameters } from '../actions/types'
 
 import { DidCommMessageDirection } from './DidCommMessageDirection'
@@ -61,6 +60,7 @@ import { addUnread, findChatThread, findOrCreateChatThread, updateThread } from 
 
 import { ChatEntryType, ChatEntryRole, ChatEntryState, InvitationMetadata } from '@2060/model'
 import { InvitationState } from '@2060/model/InvitationState'
+import { AgentActionQueueSingleton } from '@2060/services/AgentActionQueueSingleton'
 import AgentSingleton from '@2060/services/AgentSingleton'
 import { MobileAgent } from '@2060/services/agent'
 import {
@@ -105,7 +105,7 @@ export function subscribeToAgentChatEvents(
     return
   }
   logForProd('Subscribing app to agent chat events...')
-  mobileAgentInstance.setAppIsSubscribedToEvents()
+  mobileAgentInstance.setAppIsSubscribedToEvents(true)
 
   const connectionProfileListener = async (event: ConnectionProfileUpdatedEvent) => {
     const { connection } = event.payload
@@ -288,21 +288,16 @@ export function subscribeToAgentChatEvents(
       receivedAt,
     })
 
-    // Send receipts
-    const validMessagesTypesForReceipts = [
-      QuestionMessage.type.messageTypeUri,
-      AnswerMessage.type.messageTypeUri,
-      BasicMessage.type.messageTypeUri,
-      ShareMediaMessage.type.messageTypeUri,
-      OutOfBandInvitation.type.messageTypeUri,
-      V2ProposePresentationMessage.type.messageTypeUri,
-    ]
-
-    if (connection) {
-      if (
-        supportsMessageReceipts(connection) &&
-        validMessagesTypesForReceipts.includes(data.payload.message.type)
-      ) {
+    if (connection && supportsMessageReceipts(connection)) {
+      const validMessagesTypesForReceipts = [
+        QuestionMessage.type.messageTypeUri,
+        AnswerMessage.type.messageTypeUri,
+        BasicMessage.type.messageTypeUri,
+        ShareMediaMessage.type.messageTypeUri,
+        OutOfBandInvitation.type.messageTypeUri,
+        V2ProposePresentationMessage.type.messageTypeUri,
+      ]
+      if (validMessagesTypesForReceipts.includes(data.payload.message.type)) {
         // Find associated thread and see if it's the active one
         const thread = findChatThread(realm, connection)
 
@@ -320,16 +315,9 @@ export function subscribeToAgentChatEvents(
           connectionId: connection.id,
           receipts: [receipt],
         }
-        agentActionQueue.addJob(
-          'AgentAction',
-          {
-            attempts: 4,
-            type: AgentActionType.SendReceipts,
-            parameters,
-          } as AgentAction,
-          undefined,
-          true,
-        )
+        const agentActionQueueSingleton = AgentActionQueueSingleton.instance
+        agentActionQueueSingleton.configureQueue()
+        agentActionQueueSingleton.addJob({ type: AgentActionType.SendReceipts, parameters }, true)
       }
     }
   }

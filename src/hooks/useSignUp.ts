@@ -1,4 +1,5 @@
 import { UserProfileData } from '@2060.io/credo-ts-didcomm-user-profile'
+import { CommonActions, useNavigation } from '@react-navigation/native'
 import { useCallback, useState } from 'react'
 import Config from 'react-native-config'
 
@@ -11,6 +12,7 @@ const defaultServiceAlias = Config.DEFAULT_SERVICE_ALIAS as string
 const cloudAgentPublicDid = Config.CLOUD_AGENT_PUBLIC_DID as string
 
 export const useSignUp = () => {
+  const navigation = useNavigation()
   const { agent, handleChangeAgentState } = useMobileAgent()
   const { updateUserProfileData } = useUserProfile()
   const [displayName, setDisplayName] = useState('')
@@ -34,6 +36,7 @@ export const useSignUp = () => {
     await agent.mediationRecipient.setDefaultMediator(mediationRecord)
     await agent.mediationRecipient.initialize()
     updateUserProfileData({ displayName: displayName.trim(), displayPicture })
+    navigation.dispatch(CommonActions.reset({ index: 0, routes: [{ name: 'Home' }] }))
     const isSignedUp = await isRegistered(agent)
     handleChangeAgentState({ isSignedUp })
 
