@@ -167,6 +167,10 @@ export class AgentActionQueueSingleton {
     return queue
   }
 
+  setIsConfigured(isConfigured: boolean) {
+    this.isConfigured = isConfigured
+  }
+
   addJob(payload: AgentActionOptions, startQueue: boolean) {
     queue.addJob('AgentAction', { ...payload, attempts: 4 }, undefined, startQueue)
   }
