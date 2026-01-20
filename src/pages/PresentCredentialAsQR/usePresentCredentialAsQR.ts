@@ -25,16 +25,15 @@ import { StackNavigationProp } from '@react-navigation/stack'
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import Config from 'react-native-config'
-import { timeout, Subscription, catchError, filter } from 'rxjs'
+import { timeout, Subscription, catchError, filter, EMPTY } from 'rxjs'
 
-import { AgentActionType, useCredentials, useMobileAgent } from '@2060/hooks/agent'
+import { AgentActionType, useCredentials, useMobileAgent, useAgentActionQueue } from '@2060/hooks/agent'
 import {
   AcceptProofRequestParameters,
   ProofSendProblemReportDescription,
   ProofSendProblemReportParameters,
 } from '@2060/hooks/agent/actions/types'
 import { deleteConnection } from '@2060/hooks/agent/connections'
-import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
 import { createInvitation } from '@2060/services/agent'
 import { CredentialMainInfo, getCredentialMainInfo } from '@2060/services/agent/display'
 import { createProofProposal } from '@2060/services/agent/proofs'
@@ -266,7 +265,7 @@ export const usePresentCredentialAsQR = ({
         addAgentActionToQueue({ type: AgentActionType.ProofSendProblemReport, parameters })
       }
     }
-    throw new Error('proofStateChangedEventSubscription Error')
+    return EMPTY
   }
 
   function subscribeToProofStateChangedEvent(connection: ConnectionRecord) {

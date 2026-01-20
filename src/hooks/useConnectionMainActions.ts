@@ -6,7 +6,7 @@ import { useConfig } from './providers/ConfigProvider'
 import { useVideoCallContext } from './providers/useVideoCallContext'
 
 import { ActionProps, ConnectionMainActionsProps } from '@2060/components/common/ConnectionMainActions/Props'
-import { isService, supportsAudioCalls, supportsVideoCalls } from '@2060/utils/connectionUtils'
+import { isBlocked, isService, supportsAudioCalls, supportsVideoCalls } from '@2060/utils/connectionUtils'
 
 type Props = Omit<ConnectionMainActionsProps, 'connectionId'>
 
@@ -15,6 +15,7 @@ export const useConnectionMainActions = ({ connection, navigation, includeDefaul
   const { isDeveloperMode } = useConfig()
   const { findOrCreateThread } = useChats()
   const isConnectionService = isService(connection)
+  const isConnectionBlocked = isBlocked(connection)
 
   const goToChat = () => {
     const chatThreadId = findOrCreateThread({ connection }).id
@@ -25,8 +26,10 @@ export const useConnectionMainActions = ({ connection, navigation, includeDefaul
   const defaultActions: ActionProps[] = includeDefaultActions ? [{ value: 'text', onPress: goToChat }] : []
 
   const actions = useMemo(() => {
+    if (!isDeveloperMode || isConnectionService || !connection.isReady || isConnectionBlocked) {
+      return defaultActions
+    }
     const actionsToReturn: ActionProps[] = [...defaultActions]
-    if (!isDeveloperMode || isConnectionService) return actionsToReturn
     if (supportsAudioCalls(connection)) {
       actionsToReturn.push({
         value: 'audio',
@@ -40,7 +43,7 @@ export const useConnectionMainActions = ({ connection, navigation, includeDefaul
       })
     }
     return actionsToReturn
-  }, [connection, isDeveloperMode])
+  }, [connection, isDeveloperMode, isConnectionBlocked])
 
   return {
     actions,

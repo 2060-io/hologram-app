@@ -28,7 +28,8 @@ export default (theme: AppTheme) =>
     title: {
       textAlign: 'center',
       fontSize: theme.fontSize.lg,
-      marginVertical: 10,
+      marginTop: 20,
+      marginBottom: 10,
       color: theme.colors.primaryText,
     },
     textInput: {

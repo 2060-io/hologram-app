@@ -1,4 +1,4 @@
-import { IOrg, resolve } from '@verana-labs/verre'
+import { IOrg, resolveDID } from '@verana-labs/verre'
 
 import { MobileAgent } from './agent'
 
@@ -11,7 +11,7 @@ export async function getServiceInfo(options: {
 }): Promise<ServiceInfo | null> {
   const { agent, did } = options
 
-  const trustResolution = await resolve(did, {
+  const trustResolution = await resolveDID(did, {
     agentContext: agent.context,
     verifiablePublicRegistries: [
       {

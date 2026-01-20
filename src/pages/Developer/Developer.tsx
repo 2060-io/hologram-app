@@ -7,6 +7,7 @@ import { FileLogger } from 'react-native-file-logger'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import Share from 'react-native-share'
 
+import AppDependencies from './AppDependencies'
 import getStyles from './styles'
 
 import { ModalBottomHalf } from '@2060/components'
@@ -19,6 +20,8 @@ import { useMobileAgent } from '@2060/hooks/agent'
 import { useConfig } from '@2060/hooks/providers/ConfigProvider'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
+import { AgentActionQueueSingleton } from '@2060/services/AgentActionQueueSingleton'
+import AgentSingleton from '@2060/services/AgentSingleton'
 import { deleteAllKeys } from '@2060/services/keys'
 import {
   allDevEnvs,
@@ -30,6 +33,7 @@ import {
   areLogsEnabled,
 } from '@2060/utils/developer'
 import { logError, LOGS_DIRECTORY } from '@2060/utils/log'
+import { toast } from '@2060/utils/toast'
 
 interface Props extends StackScreenProps<NavigationStackParams, 'Developer'> {}
 
@@ -122,8 +126,10 @@ const Developer = ({ navigation }: Props) => {
       await deleteAllKeys()
       closeRealm()
       navigation.navigate('Home')
+      AgentSingleton.instance.setAppIsSubscribedToEvents(false)
+      AgentActionQueueSingleton.instance.setIsConfigured(false)
     } catch (error) {
-      Alert.alert('Error', `${error}`)
+      toast({ type: 'error', message: t('settings.deleteWalletError') })
       logError(`Error deleting wallet from developer screen: ${error}`)
     } finally {
       setIsDeletingWallet(false)
@@ -221,63 +227,66 @@ const Developer = ({ navigation }: Props) => {
   }
 
   return (
-    <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
-      <View style={styles.subContainer}>
-        <ModalLoading visible={isDeletingWallet} />
-        <OptionsList options={options} />
-        <Text fontFamily="EuclidCircularA-Medium" style={styles.title}>
-          {t('settings.developmentEnvironments')}
-        </Text>
-        {isEditionCustomDevEnvMode && (
-          <View style={styles.editionCustomDevEnvContainer}>
-            <Text fontFamily="EuclidCircularA-SemiBold" style={styles.title}>
-              {currentDevEnv?.key && devEnvPlaceholder[currentDevEnv.key]}
-            </Text>
-            <View style={styles.rowContainer}>
-              <TextInput
-                ref={customDevInputRef}
-                value={tempCustomDevEnvValue}
-                onChangeText={setTempCustomDevEnvValue}
-                placeholder={t('general.valueHere')}
-                style={styles.textInput}
-              />
-              <Text
-                disabled={!tempCustomDevEnvValue?.length}
-                onPress={onSaveCustomDevEnv}
-                fontFamily="EuclidCircularA-SemiBold"
-                style={styles.textButton}
-              >
-                {t('general.save')}
-              </Text>
-            </View>
-          </View>
-        )}
-        <OptionsList options={devEnvsForRender} />
-        <ModalBottomHalf visible={displayDevEnvOptions} onClose={changeDevEnvOptionsVisibility}>
-          {currentDevEnv && (
-            <View style={styles.devEnvsModalContainer}>
+    <>
+      <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
+        <View style={styles.subContainer}>
+          <OptionsList options={options} />
+          <Text fontFamily="EuclidCircularA-Medium" style={styles.title}>
+            {t('settings.developmentEnvironments')}
+          </Text>
+          {isEditionCustomDevEnvMode && (
+            <View style={styles.editionCustomDevEnvContainer}>
               <Text fontFamily="EuclidCircularA-SemiBold" style={styles.title}>
-                {devEnvPlaceholder[currentDevEnv.key]}
+                {currentDevEnv?.key && devEnvPlaceholder[currentDevEnv.key]}
               </Text>
-              {currentDevEnv.values.map(option => {
-                const currentDevEnvSelected = devEnvs?.[currentDevEnv.key]
-                const isSelected = option === currentDevEnvSelected
-                return (
-                  <TouchableOpacity
-                    key={option}
-                    style={{ ...styles.optionContainer, ...(isSelected && styles.optionSelected) }}
-                    onPress={() => onSelectDevEnvOption(currentDevEnv.key, option)}
-                  >
-                    <Text style={styles.devEnvText}>{option}</Text>
-                  </TouchableOpacity>
-                )
-              })}
-              {renderCustomDevEnv()}
+              <View style={styles.rowContainer}>
+                <TextInput
+                  ref={customDevInputRef}
+                  value={tempCustomDevEnvValue}
+                  onChangeText={setTempCustomDevEnvValue}
+                  placeholder={t('general.valueHere')}
+                  style={styles.textInput}
+                />
+                <Text
+                  disabled={!tempCustomDevEnvValue?.length}
+                  onPress={onSaveCustomDevEnv}
+                  fontFamily="EuclidCircularA-SemiBold"
+                  style={styles.textButton}
+                >
+                  {t('general.save')}
+                </Text>
+              </View>
             </View>
           )}
-        </ModalBottomHalf>
-      </View>
-    </KeyboardAwareScrollView>
+          <OptionsList options={devEnvsForRender} />
+          <AppDependencies />
+        </View>
+      </KeyboardAwareScrollView>
+      <ModalLoading visible={isDeletingWallet} />
+      <ModalBottomHalf visible={displayDevEnvOptions} onClose={changeDevEnvOptionsVisibility}>
+        {currentDevEnv && (
+          <View style={styles.devEnvsModalContainer}>
+            <Text fontFamily="EuclidCircularA-SemiBold" style={styles.title}>
+              {devEnvPlaceholder[currentDevEnv.key]}
+            </Text>
+            {currentDevEnv.values.map(option => {
+              const currentDevEnvSelected = devEnvs?.[currentDevEnv.key]
+              const isSelected = option === currentDevEnvSelected
+              return (
+                <TouchableOpacity
+                  key={option}
+                  style={{ ...styles.optionContainer, ...(isSelected && styles.optionSelected) }}
+                  onPress={() => onSelectDevEnvOption(currentDevEnv.key, option)}
+                >
+                  <Text style={styles.devEnvText}>{option}</Text>
+                </TouchableOpacity>
+              )
+            })}
+            {renderCustomDevEnv()}
+          </View>
+        )}
+      </ModalBottomHalf>
+    </>
   )
 }
 

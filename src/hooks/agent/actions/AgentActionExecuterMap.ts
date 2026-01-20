@@ -26,8 +26,12 @@ import {
   ProofStateChangedEvent,
   ProofEventTypes,
   AutoAcceptProof,
+  HangupMessage,
+  OutOfBandRole,
 } from '@credo-ts/core'
+import { PushNotificationsFcmSetDeviceInfoMessage } from '@credo-ts/push-notifications'
 import { AnswerMessage } from '@credo-ts/question-answer'
+import { Platform } from 'react-native'
 
 import { AgentAction, AgentActionType } from './AgentAction'
 import {
@@ -39,6 +43,7 @@ import {
   CreateCallOfferParameters,
   DeclineCredentialOfferParameters,
   DeclineProofRequestParameters,
+  DeleteConnectionParameters,
   ForwardConnectionParameters,
   HangupCallParameters,
   MenuSelectionParameters,
@@ -47,6 +52,7 @@ import {
   QueryServiceFeaturesParameters,
   RemoveOutOfBandRecordParameters,
   RequestUserProfileParameters,
+  SavePushNotificationDeviceInfoParameters,
   SendAnswerParameters,
   SendReactionParameters,
   SendReceiptsParameters,
@@ -64,7 +70,7 @@ type AgentCallbackReturnType<T extends BaseRecord = BaseRecord> = {
 type ActionCallback = (options: { agent: MobileAgent }) => Promise<AgentCallbackReturnType<BaseRecord>>
 type ActionFactory = (action: AgentAction) => ActionCallback
 
-export const ActionFactoryMap: Record<AgentActionType, ActionFactory> = {
+export const AgentActionExecuterMap: Record<AgentActionType, ActionFactory> = {
   [AgentActionType.SendTextMessage]: action => {
     return async (options: { agent: MobileAgent }) => {
       const parameters = action.parameters as SendTextMessageParameters
@@ -256,8 +262,7 @@ export const ActionFactoryMap: Record<AgentActionType, ActionFactory> = {
   [AgentActionType.SendUserProfile]: action => {
     return async (options: { agent: MobileAgent }) => {
       const parameters = action.parameters as SendUserProfileParameters
-      const { connectionId } = parameters
-      await options.agent.modules.profile.sendUserProfile({ connectionId })
+      await options.agent.modules.profile.sendUserProfile(parameters)
       return { outgoingMessageType: ProfileMessage.type.messageTypeUri }
     }
   },
@@ -310,6 +315,33 @@ export const ActionFactoryMap: Record<AgentActionType, ActionFactory> = {
         },
       })
       return { outgoingMessageType: V2PresentationProblemReportMessage.type.messageTypeUri }
+    }
+  },
+  [AgentActionType.SavePushNotificationDeviceInfo]: action => {
+    return async (options: { agent: MobileAgent }) => {
+      const parameters = action.parameters as SavePushNotificationDeviceInfoParameters
+      const { connectionId, deviceToken } = parameters
+      await options.agent.modules.pushNotifications.setDeviceInfo(connectionId, {
+        deviceToken,
+        devicePlatform: Platform.OS,
+      })
+      return { outgoingMessageType: PushNotificationsFcmSetDeviceInfoMessage.type.messageTypeUri }
+    }
+  },
+  [AgentActionType.DeleteConnection]: action => {
+    return async (options: { agent: MobileAgent }) => {
+      const parameters = action.parameters as DeleteConnectionParameters
+      const { connectionId, outOfBandRecordId } = parameters
+      await options.agent.connections.hangup({ connectionId, deleteAfterHangup: true })
+      // Once the connection has been eliminated, delete its associated OOB record (only if we were invited
+      // as the OOB record can be still valid for invitations we have created)
+      if (outOfBandRecordId) {
+        const outOfBandRecord = await options.agent.oob.findById(outOfBandRecordId)
+        if (outOfBandRecord?.role === OutOfBandRole.Receiver) {
+          await options.agent.oob.deleteById(outOfBandRecordId)
+        }
+      }
+      return { outgoingMessageType: HangupMessage.type.messageTypeUri }
     }
   },
 }
