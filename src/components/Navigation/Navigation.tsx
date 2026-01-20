@@ -57,7 +57,7 @@ import {
 } from '@2060/pages'
 import { MobileAgent } from '@2060/services/agent'
 import { AppTheme, getGlobalStyles } from '@2060/styles'
-import { logError, logForProd } from '@2060/utils'
+import { log, logError } from '@2060/utils'
 
 const Stack = createStackNavigator<NavigationStackParams>()
 type NavigationProps = {
@@ -101,9 +101,9 @@ const Navigation = ({ isSignedUp, agent, theme }: NavigationProps) => {
       // Now verify AppCheck was initialized correctly
       try {
         const { token } = await getToken(appCheck)
-        if (token.length) logForProd('AppCheck verification passed')
+        if (token.length) log('AppCheck verification passed')
       } catch (error) {
-        logError('AppCheck verification failed', error)
+        logError(`AppCheck verification failed: ${error}`)
       }
     }
     configureFirebaseProviderAndInitializeAppCheck()
