@@ -1,7 +1,8 @@
+import { ConnectionRecord } from '@credo-ts/core'
 import { StackActions } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
 import { TrustResolutionOutcome } from '@verana-labs/verre'
-import React, { useLayoutEffect, useState, useRef, useEffect, useTransition } from 'react'
+import React, { useLayoutEffect, useState, useRef, useTransition } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TouchableOpacity, View, ScrollView } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -17,6 +18,7 @@ import { useChats, useConnectionById, useMobileAgent, useUserProfile } from '@20
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { ServiceInfo } from '@2060/model'
 import { acceptInvitation } from '@2060/services/agent/oob'
+import { logError } from '@2060/utils'
 import { getConnectionDisplayName } from '@2060/utils/connectionUtils'
 import { toast } from '@2060/utils/toast'
 
@@ -63,7 +65,6 @@ const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => 
   const styles = getStyles(theme)
   const { findOrCreateThread } = useChats()
   const { userProfileData } = useUserProfile()
-  const chatThreadId = useRef<string>(undefined)
   const outOfBandId = outOfBandRecord.id
   const parentConnectionId = outOfBandRecord.getTag('parentConnectionId') as string | undefined
   const invitationType = getInvitationType(invitationDid, parentConnectionId)
@@ -72,24 +73,29 @@ const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => 
   const [ageRestricted, setAgeRestricted] = useState(false)
   const canConnect = !isAlreadyConnected && !ageRestricted
 
-  useEffect(() => {
-    if (!isAcceptingInvitation && chatThreadId.current) {
-      navigation.dispatch(
-        StackActions.replace('PersonalChatStack', {
-          screen: 'PersonalChat',
-          params: { chatThreadId: chatThreadId.current },
-        }),
-      )
-    }
-  }, [isAcceptingInvitation])
+  const goToChat = (connection: ConnectionRecord) => {
+    const chatThreadId = findOrCreateThread({ connection }).id
+    navigation.dispatch(
+      StackActions.replace('PersonalChatStack', {
+        screen: 'PersonalChat',
+        params: { chatThreadId, redirectToHomeOnBack: true },
+      }),
+    )
+  }
 
-  const onRefuse = () => {
+  const onPressHeaderLeftButton = () => {
     if (navigation.canGoBack()) navigation.goBack()
     else navigation.dispatch(StackActions.replace('Home'))
   }
 
-  const onPressRightButton = () => {
-    canConnect ? accept() : navigation.goBack()
+  const onPressHeaderRightButton = async () => {
+    if (canConnect) accept()
+    else if (isAlreadyConnected) {
+      const connection = await agent?.connections.findById(existingConnectionId!)
+      if (connection) goToChat(connection)
+    } else {
+      navigation.goBack()
+    }
   }
 
   const accept = async () => {
@@ -102,9 +108,10 @@ const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => 
           connectionId: parentConnectionId,
         }
         const { connectionRecord } = await acceptInvitation(agent.context, invitationOptions)
-        chatThreadId.current = findOrCreateThread({ connection: connectionRecord! }).id
+        if (connectionRecord) goToChat(connectionRecord)
       } catch (error) {
         toast({ type: 'error', message: `Failed to add connection ${error}` })
+        logError('Error accepting connection invitation', error)
       }
     })
   }
@@ -117,17 +124,15 @@ const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => 
     }
     navigation.setOptions({
       headerTitle: () => <HeaderTitle title={headerTitles[invitationType]} theme={theme} />,
-      headerLeft: canConnect
-        ? () => (
-            <TouchableOpacity style={styles.btnRefuse} onPress={onRefuse}>
-              <Text fontFamily="EuclidCircularA-Medium" style={styles.headerBtnText}>
-                {t('general.refuse')}
-              </Text>
-            </TouchableOpacity>
-          )
-        : () => <></>,
+      headerLeft: () => (
+        <TouchableOpacity style={styles.btnRefuse} onPress={onPressHeaderLeftButton}>
+          <Text fontFamily="EuclidCircularA-Medium" style={styles.headerBtnText}>
+            {isAlreadyConnected ? t('general.cancel') : t('general.refuse')}
+          </Text>
+        </TouchableOpacity>
+      ),
       headerRight: () => (
-        <TouchableOpacity style={styles.btnAccept} onPress={onPressRightButton}>
+        <TouchableOpacity style={styles.btnAccept} onPress={onPressHeaderRightButton}>
           <Text fontFamily="EuclidCircularA-Medium" style={styles.headerBtnText}>
             {canConnect ? t('general.accept') : t('general.done')}
           </Text>

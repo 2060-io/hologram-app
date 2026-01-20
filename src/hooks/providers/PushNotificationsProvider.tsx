@@ -1,7 +1,10 @@
 import notifee, { Notification, EventType } from '@notifee/react-native'
+import { getMessaging, onTokenRefresh } from '@react-native-firebase/messaging'
 import React, { createContext, useCallback, useContext, useEffect, useState } from 'react'
 
-import { log } from '@2060/utils'
+import { AgentActionType, useMobileAgent, useAgentActionQueue } from '@2060/hooks/agent'
+import { SavePushNotificationDeviceInfoParameters } from '@2060/hooks/agent/actions/types'
+import { log, logWarn } from '@2060/utils'
 
 interface Props {
   children?: React.ReactNode
@@ -30,6 +33,25 @@ export const usePushNotifications = () => {
 
 export const PushNotificationsProvider: React.FC<React.PropsWithChildren<Props>> = ({ children }) => {
   const [pushNotification, setPushNotification] = useState<PushNotification>()
+  const { addAgentActionToQueue } = useAgentActionQueue()
+  const { agent } = useMobileAgent()
+
+  useEffect(() => {
+    const messaging = getMessaging()
+    const unsubscribe = onTokenRefresh(messaging, (deviceToken: string) => {
+      agent?.mediationRecipient.findDefaultMediatorConnection().then(mediatorConnection => {
+        if (mediatorConnection) {
+          const parameters: SavePushNotificationDeviceInfoParameters = {
+            connectionId: mediatorConnection.id,
+            deviceToken,
+          }
+          logWarn('Refreshing push notification device token')
+          addAgentActionToQueue({ type: AgentActionType.SavePushNotificationDeviceInfo, parameters })
+        }
+      })
+    })
+    return () => unsubscribe()
+  }, [])
 
   const onNotificationPressed = useCallback((notification?: Notification) => {
     const data = notification?.data

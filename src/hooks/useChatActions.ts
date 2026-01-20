@@ -17,6 +17,7 @@ import {
   RepliedMessage,
   AgentActionType,
   DidCommMediaFileSharingData,
+  useAgentActionQueue,
 } from './agent'
 import {
   MenuSelectionParameters,
@@ -36,7 +37,6 @@ import {
   updateChatEntryMetadata,
   updateThread,
 } from './agent/chat/services'
-import { useAgentActionQueue } from './agent/useAgentActionQueue'
 import { useLocalRealm } from './providers/RealmProvider'
 
 import { MAX_VIDEO_DURATION } from '@2060/constants'
@@ -107,6 +107,8 @@ export const useChatActions = () => {
       toast({ type: 'success', message: t('personalChat.saveSucceededFileMedia') })
     } catch (error) {
       toast({ type: 'error', message: t('personalChat.saveFailedFileMedia') })
+      logError('Error saving file to gallery', error)
+      throw new Error(`${error}`)
     }
   }, [])
 
