@@ -1,4 +1,5 @@
 import { CacheModuleConfig } from '@credo-ts/core'
+import { fetch as NetInfo } from '@react-native-community/netinfo'
 import { TrustResolutionOutcome } from '@verana-labs/verre'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -10,7 +11,6 @@ import { useMobileAgent } from './agent/MobileAgentProvider'
 import { findChatThread, updateThread } from './agent/chat/services'
 import { useLocalRealm } from './providers/RealmProvider'
 
-import { useNetwork } from '@2060/hooks/useNetwork'
 import { isServiceInfo, ServiceInfo } from '@2060/model'
 import { MobileAgent } from '@2060/services/agent'
 import { logError } from '@2060/utils'
@@ -29,23 +29,20 @@ import { toast } from '@2060/utils/toast'
  * @returns ServiceInfo object if found, undefined otherwise
  */
 export const useFetchServiceInfo = (did?: string, forceFetch?: boolean) => {
+  const { t } = useTranslation()
+  const { agent } = useMobileAgent()
   const { realm } = useLocalRealm()
   const [serviceInfo, setServiceInfo] = useState<ServiceInfo | undefined>()
   const [isFetching, setIsFetching] = useState(true)
-  const { assertConnectedNetwork } = useNetwork()
-  const isNetworkConnected = assertConnectedNetwork()
-  const { t } = useTranslation()
-  const { agent } = useMobileAgent()
 
   useEffect(() => {
     const getServiceInfo = async () => {
-      if (!did) {
-        setServiceInfo(undefined)
+      if (!did || !agent) {
         setIsFetching(false)
         return
       }
 
-      const cachedServiceInfo = agent ? await getStoredServiceInfo(did, agent) : undefined
+      const cachedServiceInfo = await getStoredServiceInfo(did, agent)
       if (cachedServiceInfo) setServiceInfo(cachedServiceInfo)
 
       if (cachedServiceInfo && !forceFetch) {
@@ -53,32 +50,28 @@ export const useFetchServiceInfo = (did?: string, forceFetch?: boolean) => {
         return
       }
 
+      const isNetworkConnected = Boolean((await NetInfo()).isConnected)
       if (!isNetworkConnected) {
         toast({ type: 'error', message: t('invitation.unableToGetServiceInfo') })
         return
       }
 
       try {
-        if (!agent) return
-        const serviceInfoResponse = await getServiceInfoApi({
-          agent,
-          did,
-        })
-
+        const serviceInfoResponse = await getServiceInfoApi({ agent, did })
         if (serviceInfoResponse) {
-          await storeServiceInfo(did, agent, serviceInfoResponse)
           setServiceInfo(serviceInfoResponse)
+          await storeServiceInfo(did, agent, serviceInfoResponse)
           if (realm) updateChatThread({ did, serviceInfoResponse, realm, agent })
         }
       } catch (error) {
-        logError(`Error getting service ${did} info API: ${error}`)
-        toast({ type: 'error', message: `${t('invitation.errorGettingServiceInfoAPI')} ${error}` })
+        logError(`Error getting service ${did} info API`, error)
+        toast({ type: 'error', message: t('invitation.errorGettingServiceInfoAPI') })
       } finally {
         setIsFetching(false)
       }
     }
     getServiceInfo()
-  }, [did, forceFetch, realm])
+  }, [realm])
 
   return {
     serviceInfo,
