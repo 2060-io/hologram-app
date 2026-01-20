@@ -2,9 +2,8 @@ import notifee, { Notification, EventType } from '@notifee/react-native'
 import { getMessaging, onTokenRefresh } from '@react-native-firebase/messaging'
 import React, { createContext, useCallback, useContext, useEffect, useState } from 'react'
 
-import { AgentActionType, useMobileAgent } from '@2060/hooks/agent'
+import { AgentActionType, useMobileAgent, useAgentActionQueue } from '@2060/hooks/agent'
 import { SavePushNotificationDeviceInfoParameters } from '@2060/hooks/agent/actions/types'
-import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
 import { log, logWarn } from '@2060/utils'
 
 interface Props {

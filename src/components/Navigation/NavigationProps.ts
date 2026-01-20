@@ -9,7 +9,7 @@ type HomeParams = {
 }
 
 export type PersonalChatStackParams = {
-  PersonalChat: { chatThreadId: string }
+  PersonalChat: { chatThreadId: string; redirectToHomeOnBack?: boolean }
   MessageDetails: { selectedMessage: ChatEntryData }
   ConnectionDetails: { connectionId: string }
   ForwardMessages: undefined

@@ -1,3 +1,4 @@
+import { StackActions } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
@@ -20,29 +21,41 @@ interface Props {
   onGoToConnectionDetails(): void
   onShowContextMenu(): void
   onSomeActionDispatched?(): void
+  redirectToHomeOnBack: boolean | undefined
 }
 
-const CustomChatHeader: React.FC<Props> = props => {
-  const { chatThread, isTyping, onShowContextMenu, showMenuIcon, isConnectionDeleted } = props
+const CustomChatHeader: React.FC<Props> = ({
+  chatThread,
+  isTyping,
+  onShowContextMenu,
+  showMenuIcon,
+  isConnectionDeleted,
+  navigation,
+  onSomeActionDispatched,
+  onGoToConnectionDetails,
+  redirectToHomeOnBack,
+}) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
-
-  const { primaryText, secondary } = theme.colors
-
   const connection = useConnectionById(chatThread.connectionId)
+
   const goBack = () => {
-    props.navigation.goBack()
-    props?.onSomeActionDispatched?.()
+    if (redirectToHomeOnBack) {
+      navigation.dispatch(StackActions.replace('Home'))
+    } else {
+      navigation.goBack()
+    }
+    onSomeActionDispatched?.()
   }
 
   const goToConnectionDetails = () => {
-    props?.onSomeActionDispatched?.()
-    props.onGoToConnectionDetails()
+    onSomeActionDispatched?.()
+    onGoToConnectionDetails()
   }
 
   const handleShowContextMenu = () => {
-    props?.onSomeActionDispatched?.()
+    onSomeActionDispatched?.()
     onShowContextMenu()
   }
 
@@ -50,13 +63,13 @@ const CustomChatHeader: React.FC<Props> = props => {
     <View style={styles.container}>
       <View style={styles.containerHeader}>
         <TouchableOpacity activeOpacity={0.4} onPress={goBack} style={styles.rowContainer}>
-          <SvgIcon name="arrowBack" width={28} height={28} fill={primaryText} />
+          <SvgIcon name="arrowBack" width={28} height={28} fill={theme.colors.primaryText} />
           <View style={styles.containerAvatar}>
             <Avatar
               uri={chatThread.picture}
               label={chatThread.topic}
               size="9.50%"
-              bgAvatarInitials={secondary}
+              bgAvatarInitials={theme.colors.secondary}
             />
           </View>
         </TouchableOpacity>
@@ -67,7 +80,7 @@ const CustomChatHeader: React.FC<Props> = props => {
           onPress={goToConnectionDetails}
         >
           <Text fontFamily="EuclidCircularA-Medium" style={styles.name} numberOfLines={1}>
-            {props.chatThread.topic}
+            {chatThread.topic}
           </Text>
           {isTyping && (
             <Text fontFamily="EuclidCircularA-Medium" style={styles.typing}>
@@ -78,13 +91,13 @@ const CustomChatHeader: React.FC<Props> = props => {
         {connection && (
           <ConnectionMainActions
             connectionId={connection.id}
-            navigation={props.navigation}
+            navigation={navigation}
             includeDefaultActions={false}
           />
         )}
         {showMenuIcon && (
           <TouchableOpacity onPress={handleShowContextMenu} style={styles.containerIconMenu}>
-            <SvgIcon name="menuOutline" fill={primaryText} />
+            <SvgIcon name="menuOutline" fill={theme.colors.primaryText} />
           </TouchableOpacity>
         )}
       </View>

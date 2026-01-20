@@ -12,9 +12,8 @@ import { UserProfileForm } from '@2060/components'
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
 import { ModalLoading, MainButton, Text } from '@2060/components/common'
 import { useSignUp, useWallet } from '@2060/hooks'
-import { AgentActionType, useMobileAgent } from '@2060/hooks/agent'
+import { AgentActionType, useMobileAgent, useAgentActionQueue } from '@2060/hooks/agent'
 import { SavePushNotificationDeviceInfoParameters } from '@2060/hooks/agent/actions/types'
-import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { createAndStoreEncryptedKey, KeyChainService } from '@2060/services/keys'
 import { logError } from '@2060/utils'
@@ -34,8 +33,7 @@ const ProfileCreation = ({ navigation }: Props) => {
   const { openWallet } = useWallet()
   const { addAgentActionToQueue } = useAgentActionQueue()
   const [isRegistering, startRegisterTransition] = useTransition()
-  const { startSignUp, displayName, setDisplayName, displayPicture, setDisplayPicture } =
-    useSignUp(navigation)
+  const { startSignUp, displayName, setDisplayName, displayPicture, setDisplayPicture } = useSignUp()
   const disableGetStartedBtn = displayName.trim() === ''
 
   useEffect(() => {

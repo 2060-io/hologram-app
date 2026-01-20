@@ -1,10 +1,8 @@
 import { UserProfileData } from '@2060.io/credo-ts-didcomm-user-profile'
-import { CommonActions } from '@react-navigation/native'
-import { StackNavigationProp } from '@react-navigation/stack'
+import { CommonActions, useNavigation } from '@react-navigation/native'
 import { useCallback, useState } from 'react'
 import Config from 'react-native-config'
 
-import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
 import { useMobileAgent, useUserProfile } from '@2060/hooks/agent'
 import { useConfig } from '@2060/hooks/providers/ConfigProvider'
 import { isRegistered } from '@2060/services/agent'
@@ -14,7 +12,8 @@ const defaultServicePublicDid = Config.DEFAULT_SERVICE_PUBLIC_DID as string
 const defaultServiceAlias = Config.DEFAULT_SERVICE_ALIAS as string
 const cloudAgentPublicDid = Config.CLOUD_AGENT_PUBLIC_DID as string
 
-export const useSignUp = (navigation: StackNavigationProp<NavigationStackParams, 'ProfileCreation'>) => {
+export const useSignUp = () => {
+  const navigation = useNavigation()
   const { isDeveloperMode } = useConfig()
   const { agent, handleChangeAgentState } = useMobileAgent()
   const { updateUserProfileData } = useUserProfile()

@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 
+import { useAgentActionQueue } from '../AgentActionQueueProvider'
 import { useMobileAgent } from '../MobileAgentProvider'
-import { useAgentActionQueue } from '../useAgentActionQueue'
 
 import { manageAgentConnectionEvents } from './manageAgentConnectionEvents'
 
