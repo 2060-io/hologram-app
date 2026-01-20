@@ -5,9 +5,8 @@ import Config from 'react-native-config'
 import { Invitation, UserInvitationProps, WrapperUserInvitationProps } from './UserInvitationProps'
 
 import { ModalLoading } from '@2060/components/common'
-import { AgentActionType, useMobileAgent, useUserProfile } from '@2060/hooks/agent'
+import { AgentActionType, useAgentActionQueue, useMobileAgent, useUserProfile } from '@2060/hooks/agent'
 import { RemoveOutOfBandRecordParameters } from '@2060/hooks/agent/actions/types'
-import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
 import { createInvitation, getOutOfBandRecordById } from '@2060/services/agent/oob'
 import {
   getStorageData,

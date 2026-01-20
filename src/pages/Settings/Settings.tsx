@@ -19,6 +19,8 @@ import { useMobileAgent, useUserProfile } from '@2060/hooks/agent'
 import { useConfig } from '@2060/hooks/providers/ConfigProvider'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
+import { AgentActionQueueSingleton } from '@2060/services/AgentActionQueueSingleton'
+import { AgentSingleton } from '@2060/services/AgentSingleton'
 import { deleteAllKeys } from '@2060/services/keys'
 import { logError, dataUrl } from '@2060/utils'
 import { toast } from '@2060/utils/toast'
@@ -81,6 +83,8 @@ const Settings = ({ navigation }: Props) => {
       await shutdownAgent()
       await deleteAllKeys()
       closeRealm()
+      AgentSingleton.instance.setAppIsSubscribedToEvents(false)
+      AgentActionQueueSingleton.instance.setIsConfigured(false)
     } catch (error) {
       logError(`Error deleting wallet: ${error}`)
       toast({ type: 'error', message: t('settings.deleteWalletError') })

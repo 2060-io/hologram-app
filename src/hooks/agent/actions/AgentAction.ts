@@ -34,6 +34,7 @@ export enum AgentActionType {
   AcceptProofProposal = 'AcceptProofProposal',
   ProofSendProblemReport = 'ProofSendProblemReport',
   SavePushNotificationDeviceInfo = 'SavePushNotificationDeviceInfo',
+  DeleteConnection = 'DeleteConnection',
 }
 
 export type AgentAction = {

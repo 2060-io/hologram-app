@@ -7,14 +7,13 @@ import BasePresentationRequest from './BasePresentationRequest'
 
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
 import { useFetchServiceInfo } from '@2060/hooks'
-import { AgentActionType, useMobileAgent } from '@2060/hooks/agent'
+import { AgentActionType, useMobileAgent, useAgentActionQueue } from '@2060/hooks/agent'
 import {
   DeclineProofRequestParameters,
   ProofSendProblemReportDescription,
   ProofSendProblemReportParameters,
 } from '@2060/hooks/agent/actions/types'
 import { findAllByAssociatedRecordId, updateChatEntryMetadata } from '@2060/hooks/agent/chat/services'
-import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
 import { ChatEntryType } from '@2060/model'
 import { CredentialMainInfo } from '@2060/services/agent/display'

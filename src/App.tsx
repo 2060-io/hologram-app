@@ -16,6 +16,7 @@ import {
   ChatProvider,
   CredentialProvider,
   FileUploadDownloadProvider,
+  AgentActionQueueProvider,
 } from '@2060/hooks/agent'
 import {
   ConfigProvider,
@@ -50,6 +51,7 @@ const ProvidersTree = buildProvidersTree([
   [ThemeProvider],
   [RealmProvider],
   [MobileAgentProvider],
+  [AgentActionQueueProvider],
   [ConnectionProvider],
   [CredentialProvider],
   [ChatProvider],

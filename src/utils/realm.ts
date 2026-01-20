@@ -20,7 +20,7 @@ import {
 import { InvitationState } from '@2060/model/InvitationState'
 import { CredentialMainInfo } from '@2060/services/agent/display'
 
-const CURRENT_REALM_SCHEMA_VERSION = 17
+const CURRENT_REALM_SCHEMA_VERSION = 18
 
 export const getRealmConfig = (encryptionKey: string): Realm.Configuration => {
   const realmConfig: Realm.Configuration = {
@@ -64,6 +64,9 @@ const onMigration = (oldRealm: Realm, newRealm: Realm) => {
     }
     if (oldRealm.schemaVersion < 7) {
       newThreads[i].active = true
+    }
+    if (oldRealm.schemaVersion < 18) {
+      newThreads[i].lastActivityAt = oldThreads[i].lastActivityAt ?? oldThreads[i].createdAt
     }
   }
 

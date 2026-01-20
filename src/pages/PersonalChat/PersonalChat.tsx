@@ -34,11 +34,10 @@ import {
   ChatThreadWithParticipants,
   AgentActionType,
   useConnectionById,
+  useAgentActionQueue,
 } from '@2060/hooks/agent'
 import { RequestUserProfileParameters, SendUserProfileParameters } from '@2060/hooks/agent/actions/types'
 import { createChatEntry, updateChatEntryMetadata } from '@2060/hooks/agent/chat/services/ChatEntryService'
-import { blockConnection } from '@2060/hooks/agent/connections'
-import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import {
@@ -52,7 +51,12 @@ import {
 import { ChatMessageList } from '@2060/pages/PersonalChat/ChatMessageList'
 import { headerHeight } from '@2060/styles'
 import { logWarn } from '@2060/utils'
-import { isService, setLastTimeProfileSent, supportsUserProfile } from '@2060/utils/connectionUtils'
+import {
+  blockConnection,
+  isService,
+  setLastTimeProfileSent,
+  supportsUserProfile,
+} from '@2060/utils/connectionUtils'
 import { getFormattedDateRange, isDateGreaterThan, timeFromNow } from '@2060/utils/dateUtils'
 import { cancelVideoCompression } from '@2060/utils/mediaFileUtils'
 import { markNotificationsOfChatAsViewed } from '@2060/utils/pushNotificationsUtils'
