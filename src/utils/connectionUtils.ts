@@ -51,17 +51,6 @@ export const getConnectionDisplayPicture = (connection: ConnectionRecord) => {
   return displayPicture
 }
 
-export const getConnectionDisplayIcon = (connection: ConnectionRecord) => {
-  let displayIcon = ''
-  try {
-    const profile = getConnectionProfile(connection)
-    if (profile?.displayIcon) displayIcon = getPictureDataUrl(profile.displayIcon)
-  } catch (error) {
-    logError('Error in getConnectionDisplayIcon', error)
-  }
-  return displayIcon
-}
-
 export const getPictureDataUrl = (displayPictureData: PictureData) => {
   return displayPictureData.links?.length
     ? displayPictureData.links[0]
