@@ -104,7 +104,7 @@ export function subscribeToAgentChatEvents(
     log('From main flow App is already subscribed to agent events')
     return
   }
-  mobileAgentInstance.setAppIsSubscribedToEvents()
+  mobileAgentInstance.setAppIsSubscribedToEvents(true)
 
   const connectionProfileListener = async (event: ConnectionProfileUpdatedEvent) => {
     const { connection } = event.payload
