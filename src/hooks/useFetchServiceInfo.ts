@@ -52,6 +52,7 @@ export const useFetchServiceInfo = (did?: string, forceFetch?: boolean) => {
 
       const isNetworkConnected = Boolean((await NetInfo()).isConnected)
       if (!isNetworkConnected) {
+        setIsFetching(false)
         toast({ type: 'error', message: t('invitation.unableToGetServiceInfo') })
         return
       }
