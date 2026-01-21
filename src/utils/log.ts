@@ -1,13 +1,12 @@
 /* eslint-disable no-console */
 import { DocumentDirectoryPath } from 'react-native-fs'
 
+import { getIsDeveloperMode } from './developer'
 import { toast } from './toast'
-
-import { DEVELOPER_MODE_ENABLED_PERSIST_KEY, getStorageData } from '@2060/services/localStorage'
 
 let isDeveloperMode = false
 ;(async function () {
-  isDeveloperMode = Boolean(await getStorageData(DEVELOPER_MODE_ENABLED_PERSIST_KEY))
+  isDeveloperMode = await getIsDeveloperMode()
 })()
 
 export const LOGS_DIRECTORY = `${DocumentDirectoryPath}/hologramLogs`

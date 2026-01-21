@@ -16,10 +16,10 @@ import { HologramCustomLogger } from './HologramCustomLoggers'
 import { MobileAgent } from './agent/MobileAgent'
 import { createMobileAgent } from './agent/createMobileAgent'
 import { duplicatedMessagesMiddleware } from './agent/duplicatedMessagesMiddleware'
-import { DEV_ENVS_PERSIST_KEY, DEVELOPER_MODE_ENABLED_PERSIST_KEY, getStorageData } from './localStorage'
+import { DEV_ENVS_PERSIST_KEY, getStorageData } from './localStorage'
 import { TunedMobileWsOutboundTransport } from './transport/TunedMobileWsOutboundTransport'
 
-import { DevEnvsObject } from '@2060/utils/developer'
+import { DevEnvsObject, getIsDeveloperMode } from '@2060/utils/developer'
 
 interface MobileAgentConfig {
   agentDependencies: AgentDependencies
@@ -37,11 +37,6 @@ const getIndyVDRProxyBaseUrl = async () => {
     return (persistedDevEnvs as DevEnvsObject).INDY_VDR_PROXY_BASE_URL
   }
   return Config.INDY_VDR_PROXY_BASE_URL
-}
-
-const getIsDeveloperMode = async () => {
-  const persistedDeveloperMode = await getStorageData(DEVELOPER_MODE_ENABLED_PERSIST_KEY)
-  return (persistedDeveloperMode as boolean) ?? false
 }
 
 let logger: Logger
