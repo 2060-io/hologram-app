@@ -23,12 +23,11 @@ const CredentialPresentation = ({ navigation, route }: Props) => {
   const [proofState, setProofState] = useState<ProofState>(route.params.proofState)
 
   useEffect(() => {
-    if (!realm) return
-    const chatEntry = realm.objects(ChatEntry).filtered(`id = '${chatEntryId}'`)
+    const chatEntry = realm?.objects(ChatEntry).filtered(`id = '${chatEntryId}'`)
     const onChatEntryChange: Realm.CollectionChangeCallback<ChatEntry> = (_, changes) => {
       const { newModifications } = changes
       if (newModifications.length) {
-        if (chatEntry[0].metadata) {
+        if (chatEntry && chatEntry[0].metadata) {
           const { presentedCredentials: pc, proofState: ps } = chatEntry[0].metadata as VPResponseMetadata
           const presentedCredentials: VPResponsePresentedCredential[] = pc ? JSON.parse(pc) : []
           setProofState(ps)
@@ -38,9 +37,9 @@ const CredentialPresentation = ({ navigation, route }: Props) => {
         }
       }
     }
-    chatEntry.addListener(onChatEntryChange)
+    chatEntry?.addListener(onChatEntryChange)
     return () => {
-      chatEntry.removeListener(onChatEntryChange)
+      chatEntry?.removeListener(onChatEntryChange)
     }
   }, [])
 
