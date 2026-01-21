@@ -3,9 +3,16 @@ import { DocumentDirectoryPath } from 'react-native-fs'
 
 import { toast } from './toast'
 
+import { DEVELOPER_MODE_ENABLED_PERSIST_KEY, getStorageData } from '@2060/services/localStorage'
+
+let isDeveloperMode = false
+;(async function () {
+  isDeveloperMode = Boolean(await getStorageData(DEVELOPER_MODE_ENABLED_PERSIST_KEY))
+})()
+
 export const LOGS_DIRECTORY = `${DocumentDirectoryPath}/hologramLogs`
 export function log(message: string, ...optionalParams: unknown[]) {
-  if (__DEV__) {
+  if (__DEV__ || isDeveloperMode) {
     console.log(`APP_DEBUG: ${message}`, ...optionalParams)
   }
 }
