@@ -65,6 +65,7 @@ const VPChatView = ({ metadata, role, agent, proofRecordId, chatEntryId }: Props
 
   const goToPresentation = (credential: VPResponsePresentedCredential) => {
     navigation.navigate('CredentialPresentation', {
+      chatEntryId,
       credentialMainInfo: credential.mainInfo,
       credentialAttributes: credential.attributes ?? {},
       proofState,
