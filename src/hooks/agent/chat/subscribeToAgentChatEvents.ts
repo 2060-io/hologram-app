@@ -316,7 +316,7 @@ export function subscribeToAgentChatEvents(
         }
         const agentActionQueueSingleton = AgentActionQueueSingleton.instance
         agentActionQueueSingleton.configureQueue()
-        agentActionQueueSingleton.addJob({ type: AgentActionType.SendReceipts, parameters }, true)
+        agentActionQueueSingleton.addJob({ type: AgentActionType.SendReceipts, parameters })
       }
     }
   }
