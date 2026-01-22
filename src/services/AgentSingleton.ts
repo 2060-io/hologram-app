@@ -11,6 +11,7 @@ export class AgentSingleton {
   private isOpening = false
   private mobileAgent: MobileAgent | null = null
   private isAppSubscribedToChatEvents = false
+  private isAppSubscribedToConnectionEvents = false
 
   static get instance() {
     if (!this.agentInstance) {
@@ -59,6 +60,14 @@ export class AgentSingleton {
 
   getIsAppSubscribedToChatEvents() {
     return this.isAppSubscribedToChatEvents
+  }
+
+  setIsAppSubscribedToConnectionEvents(isAppSubscribedToConnectionEvents: boolean) {
+    this.isAppSubscribedToConnectionEvents = isAppSubscribedToConnectionEvents
+  }
+
+  getIsAppSubscribedToConnectionEvents() {
+    return this.isAppSubscribedToConnectionEvents
   }
 }
 

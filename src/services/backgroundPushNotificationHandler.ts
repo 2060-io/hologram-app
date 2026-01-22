@@ -1,17 +1,19 @@
 import { AgentMessageProcessedEvent, V2StatusMessage, AgentEventTypes } from '@credo-ts/core'
 import { FirebaseMessagingTypes } from '@react-native-firebase/messaging'
 
+import { AgentActionQueueSingleton } from './AgentActionQueueSingleton'
 import AgentSingleton from './AgentSingleton'
 import RealmSingleton from './RealmSingleton'
 
 import { manageBackgroundChatEntryChanges, subscribeToAgentChatEvents } from '@2060/hooks/agent/chat'
 import { manageConnectionStateChangedEvent } from '@2060/hooks/agent/connections/manageConnectionStateChangedEvent'
+import { subscribeToAgentConnectionEvents } from '@2060/hooks/agent/connections/subscribeToAgentConnectionEvents'
 import { log, logWarn } from '@2060/utils'
 import { arePushNotificationsAllowed, deleteRemoteNotifications } from '@2060/utils/pushNotificationsUtils'
 
 const makeRequestToLocalServer = (payload: Record<string, string>) => {
   if (__DEV__) {
-    fetch('http://192.168.1.9:3000/api/echo', {
+    fetch('http://172.20.10.3:3000/api/echo', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
@@ -60,8 +62,12 @@ export async function backgroundPushNotificationHandler(remoteMessage: FirebaseM
     } else {
       logWarn('From backgroundPushNotificationHandler agent is already initialized')
     }
+    AgentActionQueueSingleton.instance.configureQueue()
     if (!mobileAgentInstance.getIsAppSubscribedToChatEvents()) {
       subscribeToAgentChatEvents(agent, realm, false, () => undefined)
+    }
+    if (!mobileAgentInstance.getIsAppSubscribedToConnectionEvents()) {
+      subscribeToAgentConnectionEvents(agent.context)
     }
     const mediatorConnection = await agent.mediationRecipient.findDefaultMediatorConnection()
     await agent.messagePickup.pickupMessages({

@@ -84,6 +84,7 @@ const Settings = ({ navigation }: Props) => {
       await deleteAllKeys()
       closeRealm()
       AgentSingleton.instance.setAppIsSubscribedChatToEvents(false)
+      AgentSingleton.instance.setIsAppSubscribedToConnectionEvents(false)
       AgentActionQueueSingleton.instance.setIsConfigured(false)
     } catch (error) {
       logError(`Error deleting wallet: ${error}`)

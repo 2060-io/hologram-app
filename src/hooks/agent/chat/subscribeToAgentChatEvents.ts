@@ -101,7 +101,7 @@ export function subscribeToAgentChatEvents(
   getActiveChatThreadId = forceRefreshFunctionReference ? receivedGetActiveChatThreadId : () => undefined
   const mobileAgentInstance = AgentSingleton.instance
   if (mobileAgentInstance.getIsAppSubscribedToChatEvents()) {
-    log('From main flow App is already subscribed to agent events')
+    log('From main flow App is already subscribed to agent chat events')
     return
   }
   mobileAgentInstance.setAppIsSubscribedChatToEvents(true)
@@ -314,9 +314,7 @@ export function subscribeToAgentChatEvents(
           connectionId: connection.id,
           receipts: [receipt],
         }
-        const agentActionQueueSingleton = AgentActionQueueSingleton.instance
-        agentActionQueueSingleton.configureQueue()
-        agentActionQueueSingleton.addJob({ type: AgentActionType.SendReceipts, parameters })
+        AgentActionQueueSingleton.instance.addJob({ type: AgentActionType.SendReceipts, parameters })
       }
     }
   }

@@ -72,7 +72,7 @@ export const ConnectionProvider: React.FC<React.PropsWithChildren<Props>> = ({ c
   })
 
   useEffect(() => {
-    if (agent) return subscribeToAgentConnectionEvents(agent.context)
+    if (agent) subscribeToAgentConnectionEvents(agent.context)
   }, [agent])
 
   useEffect(() => {

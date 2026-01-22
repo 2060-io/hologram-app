@@ -24,10 +24,18 @@ import {
 } from '../actions/types'
 
 import { AgentActionQueueSingleton } from '@2060/services/AgentActionQueueSingleton'
+import AgentSingleton from '@2060/services/AgentSingleton'
 import { supportsUserProfile } from '@2060/utils/connectionUtils'
 import { language } from '@2060/utils/language'
+import { log } from '@2060/utils/log'
 
 export function subscribeToAgentConnectionEvents(context: AgentContext) {
+  const mobileAgentInstance = AgentSingleton.instance
+  if (mobileAgentInstance.getIsAppSubscribedToConnectionEvents()) {
+    log('From main flow App is already subscribed to agent connection events')
+    return
+  }
+  mobileAgentInstance.setIsAppSubscribedToConnectionEvents(true)
   const agentActionQueueSingleton = AgentActionQueueSingleton.instance
   const eventEmitter = context.dependencyManager.resolve(EventEmitter)
 

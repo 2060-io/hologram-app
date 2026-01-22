@@ -125,9 +125,10 @@ const Developer = ({ navigation }: Props) => {
       await shutdownAgent()
       await deleteAllKeys()
       closeRealm()
-      navigation.navigate('Home')
       AgentSingleton.instance.setAppIsSubscribedChatToEvents(false)
+      AgentSingleton.instance.setIsAppSubscribedToConnectionEvents(false)
       AgentActionQueueSingleton.instance.setIsConfigured(false)
+      navigation.navigate('Home')
     } catch (error) {
       toast({ type: 'error', message: t('settings.deleteWalletError') })
       logError(`Error deleting wallet from developer screen: ${error}`)
