@@ -126,7 +126,7 @@ const Developer = ({ navigation }: Props) => {
       await deleteAllKeys()
       closeRealm()
       navigation.navigate('Home')
-      AgentSingleton.instance.setAppIsSubscribedToEvents(false)
+      AgentSingleton.instance.setAppIsSubscribedChatToEvents(false)
       AgentActionQueueSingleton.instance.setIsConfigured(false)
     } catch (error) {
       toast({ type: 'error', message: t('settings.deleteWalletError') })

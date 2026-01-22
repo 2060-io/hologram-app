@@ -100,11 +100,11 @@ export function subscribeToAgentChatEvents(
 ) {
   getActiveChatThreadId = forceRefreshFunctionReference ? receivedGetActiveChatThreadId : () => undefined
   const mobileAgentInstance = AgentSingleton.instance
-  if (mobileAgentInstance.getIsAppSubscribedToEvents()) {
+  if (mobileAgentInstance.getIsAppSubscribedToChatEvents()) {
     log('From main flow App is already subscribed to agent events')
     return
   }
-  mobileAgentInstance.setAppIsSubscribedToEvents(true)
+  mobileAgentInstance.setAppIsSubscribedChatToEvents(true)
 
   const connectionProfileListener = async (event: ConnectionProfileUpdatedEvent) => {
     const { connection } = event.payload

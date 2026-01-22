@@ -60,10 +60,8 @@ export async function backgroundPushNotificationHandler(remoteMessage: FirebaseM
     } else {
       logWarn('From backgroundPushNotificationHandler agent is already initialized')
     }
-    if (!mobileAgentInstance.getIsAppSubscribedToEvents()) {
+    if (!mobileAgentInstance.getIsAppSubscribedToChatEvents()) {
       subscribeToAgentChatEvents(agent, realm, false, () => undefined)
-    } else {
-      logWarn('From backgroundPushNotificationHandler App is already subscribed to agent events')
     }
     const mediatorConnection = await agent.mediationRecipient.findDefaultMediatorConnection()
     await agent.messagePickup.pickupMessages({
