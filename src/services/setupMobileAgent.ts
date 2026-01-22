@@ -19,7 +19,7 @@ import { duplicatedMessagesMiddleware } from './agent/duplicatedMessagesMiddlewa
 import { DEV_ENVS_PERSIST_KEY, getStorageData } from './localStorage'
 import { TunedMobileWsOutboundTransport } from './transport/TunedMobileWsOutboundTransport'
 
-import { DevEnvsObject, getIsDeveloperMode } from '@2060/utils/developer'
+import { DevEnvsObject, getAreLogsEnabled } from '@2060/utils/developer'
 
 interface MobileAgentConfig {
   agentDependencies: AgentDependencies
@@ -42,11 +42,11 @@ const getIndyVDRProxyBaseUrl = async () => {
 let logger: Logger
 export const setupMobileAgent = async (): Promise<MobileAgent> => {
   const indyVDRProxyBaseUrl = await getIndyVDRProxyBaseUrl()
-  const isDeveloperMode = await getIsDeveloperMode()
+  const areLogsEnabled = await getAreLogsEnabled()
   if (__DEV__) {
     logger = new HologramCustomLogger(LogLevel.debug)
   } else {
-    logger = new HologramCustomLogger(isDeveloperMode ? LogLevel.debug : LogLevel.warn)
+    logger = new HologramCustomLogger(areLogsEnabled ? LogLevel.debug : LogLevel.warn)
   }
   const agent = createMobileAgent({
     config: {

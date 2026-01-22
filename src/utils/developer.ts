@@ -46,8 +46,8 @@ export const allDevEnvs: DevEnv[] = [
   },
 ]
 
-export const areLogsEnabled = async () => {
-  return ((await getStorageData(LOGS_ENABLED_PERSIST_KEY)) as boolean) ?? false
+export const getAreLogsEnabled = async () => {
+  return Boolean(await getStorageData(LOGS_ENABLED_PERSIST_KEY))
 }
 
 export const saveLogsEnabled = async (newValue: boolean) => {

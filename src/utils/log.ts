@@ -1,17 +1,17 @@
 /* eslint-disable no-console */
 import { DocumentDirectoryPath } from 'react-native-fs'
 
-import { getIsDeveloperMode } from './developer'
+import { getAreLogsEnabled } from './developer'
 import { toast } from './toast'
 
-let isDeveloperMode = false
+let areLogsEnabled = false
 ;(async function () {
-  isDeveloperMode = await getIsDeveloperMode()
+  areLogsEnabled = await getAreLogsEnabled()
 })()
 
 export const LOGS_DIRECTORY = `${DocumentDirectoryPath}/hologramLogs`
 export function log(message: string, ...optionalParams: unknown[]) {
-  if (__DEV__ || isDeveloperMode) {
+  if (__DEV__ || areLogsEnabled) {
     console.log(`APP_DEBUG: ${message}`, ...optionalParams)
   }
 }

@@ -30,7 +30,7 @@ import {
   DevEnvsKeys,
   DevEnvObject,
   saveLogsEnabled,
-  areLogsEnabled,
+  getAreLogsEnabled,
 } from '@2060/utils/developer'
 import { logError, LOGS_DIRECTORY } from '@2060/utils/log'
 import { toast } from '@2060/utils/toast'
@@ -54,7 +54,7 @@ const Developer = ({ navigation }: Props) => {
 
   useEffect(() => {
     const setupAreLogsEnabled = async () => {
-      const persistedAreLogsEnabled = await areLogsEnabled()
+      const persistedAreLogsEnabled = await getAreLogsEnabled()
       setAreLogsEnabled(persistedAreLogsEnabled)
     }
     setupAreLogsEnabled()
@@ -149,6 +149,7 @@ const Developer = ({ navigation }: Props) => {
     const newAreEnabled = !logsEnabled
     setAreLogsEnabled(newAreEnabled)
     await saveLogsEnabled(newAreEnabled)
+    Alert.alert('¡INFO!', t('settings.closeAppAfterChange'))
   }
 
   const exportLogs = async () => {
