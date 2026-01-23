@@ -28,7 +28,7 @@ import { toast } from '@2060/utils/toast'
  *
  * @returns ServiceInfo object if found, undefined otherwise
  */
-export const useFetchServiceInfo = (did?: string, forceFetch?: boolean) => {
+export const useFetchServiceInfo = (did?: string, forceFetch: boolean = true) => {
   const { t } = useTranslation()
   const { agent } = useMobileAgent()
   const { realm } = useLocalRealm()
@@ -72,7 +72,7 @@ export const useFetchServiceInfo = (did?: string, forceFetch?: boolean) => {
       }
     }
     getServiceInfo()
-  }, [realm])
+  }, [realm, did])
 
   return {
     serviceInfo,

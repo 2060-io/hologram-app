@@ -8,7 +8,7 @@ import { useFetchServiceInfo } from '@2060/hooks'
 
 const ConnectionDetailsForService = (props: ConnectionDetailsProps) => {
   const { connection } = props
-  const { serviceInfo } = useFetchServiceInfo(connection.invitationDid, true)
+  const { serviceInfo } = useFetchServiceInfo(connection.invitationDid)
 
   return (
     <BaseConnectionDetails

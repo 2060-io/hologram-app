@@ -29,6 +29,7 @@ const Connection = ({
   const styles = getStyles(theme)
   const { serviceInfo } = useFetchServiceInfo(
     connection.invitationDid && connection.isService ? connection.invitationDid : undefined,
+    false,
   )
   const name = serviceInfo?.name ?? connection.name
   const avatarUrl = serviceInfo?.logoUrl ?? connection.avatarUrl

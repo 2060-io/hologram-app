@@ -36,7 +36,7 @@ const DidcommPresentationRequest: React.FC<Props> = ({ navigation, route }: Prop
   const { addAgentActionToQueue } = useAgentActionQueue()
   const selectedCredentials = useRef({})
   const { proofRecordId, did } = route.params
-  const { serviceInfo } = useFetchServiceInfo(did, true)
+  const { serviceInfo } = useFetchServiceInfo(did)
   const [submission, setSubmission] = useState<FormattedSubmission | undefined>(undefined)
   const [isAccepting, startAcceptTransition] = useTransition()
 

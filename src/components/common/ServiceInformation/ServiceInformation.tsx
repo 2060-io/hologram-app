@@ -30,7 +30,7 @@ const getServiceInfoToDisplay = ({
 
 const ServiceInformation = ({ did, initialServiceInfo, onServiceInfoUpdated }: Props) => {
   const theme = useTheme()
-  const { isFetching, serviceInfo } = useFetchServiceInfo(did, true)
+  const { isFetching, serviceInfo } = useFetchServiceInfo(did)
   const serviceInfoToDisplay = getServiceInfoToDisplay({ serviceInfo, initialServiceInfo, isFetching })
 
   useEffect(() => {
