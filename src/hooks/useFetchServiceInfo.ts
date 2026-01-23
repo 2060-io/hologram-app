@@ -33,7 +33,8 @@ export const useFetchServiceInfo = (did?: string, forceFetch: boolean = true) =>
   const { agent } = useMobileAgent()
   const { realm } = useLocalRealm()
   const [serviceInfo, setServiceInfo] = useState<ServiceInfo | undefined>()
-  const [isFetching, setIsFetching] = useState(false)
+  const [isFetchingServiceInfo, setIsFetching] = useState(false)
+  const [failedFetchServiceInfo, setFailed] = useState<boolean>(false)
 
   useEffect(() => {
     const getServiceInfo = async () => {
@@ -50,6 +51,7 @@ export const useFetchServiceInfo = (did?: string, forceFetch: boolean = true) =>
 
       const isNetworkConnected = Boolean((await NetInfo()).isConnected)
       if (!isNetworkConnected) {
+        setFailed(true)
         toast({ type: 'error', message: t('invitation.unableToGetServiceInfo') })
         return
       }
@@ -74,7 +76,8 @@ export const useFetchServiceInfo = (did?: string, forceFetch: boolean = true) =>
 
   return {
     serviceInfo,
-    isFetching,
+    isFetchingServiceInfo,
+    failedFetchServiceInfo,
   }
 }
 

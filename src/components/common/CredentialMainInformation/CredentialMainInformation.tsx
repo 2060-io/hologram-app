@@ -1,11 +1,11 @@
-import { TrustResolutionOutcome } from '@verana-labs/verre'
 import { Skeleton } from 'moti/skeleton'
-import React, { memo } from 'react'
+import React, { memo, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, Image, StyleProp, ViewStyle, TouchableOpacity } from 'react-native'
+import { View, Image, StyleProp, ViewStyle, TouchableOpacity, ActivityIndicator } from 'react-native'
 import { uses24HourClock } from 'react-native-localize'
 import { SvgUri } from 'react-native-svg'
 
+import SvgIcon from '../SvgIcon'
 import Text from '../Text'
 import VerifiedIcon from '../VerifiedIcon'
 
@@ -28,7 +28,9 @@ const CredentialMainInformation = ({ credentialMainInfo, containerStyle, onPress
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme, size)
-  const { serviceInfo } = useFetchServiceInfo(credentialMainInfo?.issuer.id)
+  const { isFetchingServiceInfo, serviceInfo, failedFetchServiceInfo } = useFetchServiceInfo(
+    credentialMainInfo?.issuer.id,
+  )
   const using24HourFormat = uses24HourClock()
   const uri = serviceInfo?.logoUrl ?? credentialMainInfo?.issuer.logoUrl
   const issuedDate = credentialMainInfo?.createdAt
@@ -36,6 +38,33 @@ const CredentialMainInformation = ({ credentialMainInfo, containerStyle, onPress
     : null
   const issuedOn = issuedDate ? `${t('credential.issuedOn')}: ${issuedDate}` : null
   const colorMode = theme.isDarkMode ? 'dark' : 'light'
+
+  const badge = useMemo(() => {
+    if (isFetchingServiceInfo) return <ActivityIndicator size="large" color={theme.colors.green} />
+    if (failedFetchServiceInfo) {
+      return (
+        <SvgIcon
+          name="warning"
+          width={styles.image.width}
+          height={styles.image.height}
+          fill={theme.colors.orange}
+        />
+      )
+    }
+    return (
+      <>
+        {uri?.endsWith('.svg') ? (
+          <SvgUri uri={uri} width={styles.image.width} height={styles.image.height} />
+        ) : (
+          <Image
+            style={styles.image}
+            resizeMode="contain"
+            source={uri?.length ? { uri } : imagePlaceholder}
+          />
+        )}
+      </>
+    )
+  }, [isFetchingServiceInfo, failedFetchServiceInfo, uri])
 
   return (
     <Skeleton.Group show={!credentialMainInfo}>
@@ -47,17 +76,7 @@ const CredentialMainInformation = ({ credentialMainInfo, containerStyle, onPress
             colorMode={colorMode}
             radius="square"
           >
-            <View style={styles.imageContainer}>
-              {uri?.endsWith('.svg') ? (
-                <SvgUri uri={uri} width={styles.image.width} height={styles.image.height} />
-              ) : (
-                <Image
-                  style={styles.image}
-                  resizeMode="contain"
-                  source={uri?.length ? { uri } : imagePlaceholder}
-                />
-              )}
-            </View>
+            <View style={styles.imageContainer}>{badge}</View>
           </Skeleton>
           <View style={styles.nameContainer}>
             <Skeleton height={styles.name.fontSize + 2} width="50%" colorMode={colorMode} radius="round">
@@ -78,7 +97,7 @@ const CredentialMainInformation = ({ credentialMainInfo, containerStyle, onPress
               <Text style={styles.bottomText} fontFamily="EuclidCircularA-Medium" numberOfLines={1}>
                 {serviceInfo?.name ?? credentialMainInfo?.issuer.name}
               </Text>
-              <VerifiedIcon status={serviceInfo?.status ?? TrustResolutionOutcome.INVALID} />
+              {serviceInfo?.status && <VerifiedIcon status={serviceInfo.status} />}
             </View>
           </Skeleton>
         </View>
