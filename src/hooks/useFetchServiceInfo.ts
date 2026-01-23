@@ -33,14 +33,11 @@ export const useFetchServiceInfo = (did?: string, forceFetch: boolean = true) =>
   const { agent } = useMobileAgent()
   const { realm } = useLocalRealm()
   const [serviceInfo, setServiceInfo] = useState<ServiceInfo | undefined>()
-  const [isFetching, setIsFetching] = useState(true)
+  const [isFetching, setIsFetching] = useState(false)
 
   useEffect(() => {
     const getServiceInfo = async () => {
-      if (!did || !agent) {
-        setIsFetching(false)
-        return
-      }
+      if (!did || !agent) return
 
       const cachedServiceInfo = await getStoredServiceInfo(did, agent)
       if (cachedServiceInfo) setServiceInfo(cachedServiceInfo)
@@ -49,19 +46,16 @@ export const useFetchServiceInfo = (did?: string, forceFetch: boolean = true) =>
       const secondConditionToFetch =
         !cachedServiceInfo?.lastTimeUpdated || isOlderThan24Hours(cachedServiceInfo.lastTimeUpdated)
       const mustTriggerFetch = firstConditionToFetch && secondConditionToFetch
-      if (!mustTriggerFetch) {
-        setIsFetching(false)
-        return
-      }
+      if (!mustTriggerFetch) return
 
       const isNetworkConnected = Boolean((await NetInfo()).isConnected)
       if (!isNetworkConnected) {
-        setIsFetching(false)
         toast({ type: 'error', message: t('invitation.unableToGetServiceInfo') })
         return
       }
 
       try {
+        setIsFetching(true)
         const serviceInfoResponse = await getServiceInfoApi({ agent, did })
         if (serviceInfoResponse) {
           setServiceInfo(serviceInfoResponse)
