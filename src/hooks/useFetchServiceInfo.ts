@@ -45,7 +45,11 @@ export const useFetchServiceInfo = (did?: string, forceFetch: boolean = true) =>
       const cachedServiceInfo = await getStoredServiceInfo(did, agent)
       if (cachedServiceInfo) setServiceInfo(cachedServiceInfo)
 
-      if (cachedServiceInfo && !forceFetch) {
+      const firstConditionToFetch = forceFetch
+      const secondConditionToFetch =
+        !cachedServiceInfo?.lastTimeUpdated || isOlderThan24Hours(cachedServiceInfo.lastTimeUpdated)
+      const mustTriggerFetch = firstConditionToFetch && secondConditionToFetch
+      if (!mustTriggerFetch) {
         setIsFetching(false)
         return
       }
@@ -109,8 +113,10 @@ export async function getStoredServiceInfo(
 
 async function storeServiceInfo(did: string, agent: MobileAgent, serviceInfo: ServiceInfo) {
   const cache = agent.dependencyManager.resolve(CacheModuleConfig).cache
-
-  await cache.set<ServiceInfo>(agent.context, `serviceInfo:${did}`, serviceInfo)
+  await cache.set<ServiceInfo>(agent.context, `serviceInfo:${did}`, {
+    ...serviceInfo,
+    lastTimeUpdated: new Date().getTime(),
+  })
 }
 
 async function updateChatThread({
@@ -132,4 +138,9 @@ async function updateChatThread({
     topic: serviceInfoResponse.name,
     picture: serviceInfoResponse.logoUrl,
   })
+}
+
+const TWENTY_FOUR_HOURS_MS = 24 * 60 * 60 * 1000 // 86400000 ms
+function isOlderThan24Hours(lastTimeUpdated: number): boolean {
+  return new Date().getTime() - lastTimeUpdated >= TWENTY_FOUR_HOURS_MS
 }
