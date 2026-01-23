@@ -74,7 +74,8 @@
       "canNotOpenURL": "Cannot open ",
       "dismiss": "Dismiss",
       "selected": "1 selected",
-      "selected_other": "{{ count }} selected"
+      "selected_other": "{{ count }} selected",
+      "by": "by "
     },
     "navigation": {
       "back": "Back",
@@ -260,7 +261,7 @@
       "title": "Presentation Request",
       "verifiablePresentation": "Verifiable Presentation",
       "selectCredentialYouWouldLikeToPresentTo": "Select the credential you would like to present to ",
-      "successfullyReceived": "Presentation successfully received by ",
+      "successfullyReceived": "Presentation successfully received ",
       "rejected": "Presentation rejected by ",
       "viewInChat": "View in chat",
       "presented": "Presented",
