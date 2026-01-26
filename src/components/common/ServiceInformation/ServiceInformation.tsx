@@ -28,7 +28,11 @@ const ServiceInformation = ({ did, initialServiceInfo, onServiceInfoUpdated }: P
         isFetchingInfo={isFetchingInfo}
         failedFetchInfo={failedFetchInfo}
       />
-      <ProofOfTrust serviceInfo={serviceInfoToDisplay} />
+      <ProofOfTrust
+        serviceInfo={serviceInfoToDisplay}
+        isFetchingInfo={isFetchingInfo}
+        failedFetchInfo={failedFetchInfo}
+      />
     </View>
   )
 }
