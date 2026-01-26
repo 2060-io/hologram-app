@@ -14,7 +14,7 @@ type Props = {
 }
 
 const ServiceInformation = ({ did, initialServiceInfo, onServiceInfoUpdated }: Props) => {
-  const { serviceInfo } = useFetchServiceInfo(did)
+  const { isFetchingInfo, serviceInfo, failedFetchInfo } = useFetchServiceInfo(did)
   const serviceInfoToDisplay = serviceInfo ?? initialServiceInfo
 
   useEffect(() => {
@@ -23,7 +23,11 @@ const ServiceInformation = ({ did, initialServiceInfo, onServiceInfoUpdated }: P
 
   return (
     <View>
-      <ServiceMainInfo serviceInfo={serviceInfoToDisplay} />
+      <ServiceMainInfo
+        serviceInfo={serviceInfoToDisplay}
+        isFetchingInfo={isFetchingInfo}
+        failedFetchInfo={failedFetchInfo}
+      />
       <ProofOfTrust serviceInfo={serviceInfoToDisplay} />
     </View>
   )

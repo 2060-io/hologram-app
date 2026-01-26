@@ -247,7 +247,8 @@
       "errorCreatingQR": "Ha ocurrido un error creando el QR . Intentalo nuevamente",
       "youRefusedPresentation": "Rechazaste la presentación de la credencial",
       "noResponseFromVerifier": "No hubo respuesta de parte del verificador dentro del tiempo limite. La presentación es finalizada.",
-      "youDidNotResponseWithinTime": "No respondiste dentro del tiempo limite. La presentación es finalizada."
+      "youDidNotResponseWithinTime": "No respondiste dentro del tiempo limite. La presentación es finalizada.",
+      "failedFetchInfo": "Error obteniendo información del este servicio"
     },
     "credentialOffer": {
       "title": "Credencial ofrecida",

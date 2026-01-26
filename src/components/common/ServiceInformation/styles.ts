@@ -59,6 +59,12 @@ const styles = (theme: AppTheme) =>
       alignItems: 'center',
       marginBottom: 14,
     },
+    failedToFetchInfoText: {
+      color: theme.colors.red,
+      marginTop: 10,
+      fontSize: theme.fontSize.md,
+      textAlign: 'center',
+    },
   })
 
 export default styles

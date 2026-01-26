@@ -28,9 +28,7 @@ const CredentialMainInformation = ({ credentialMainInfo, containerStyle, onPress
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme, size)
-  const { isFetchingServiceInfo, serviceInfo, failedFetchServiceInfo } = useFetchServiceInfo(
-    credentialMainInfo?.issuer.id,
-  )
+  const { isFetchingInfo, serviceInfo, failedFetchInfo } = useFetchServiceInfo(credentialMainInfo?.issuer.id)
   const using24HourFormat = uses24HourClock()
   const uri = serviceInfo?.logoUrl ?? credentialMainInfo?.issuer.logoUrl
   const issuedDate = credentialMainInfo?.createdAt
@@ -40,14 +38,14 @@ const CredentialMainInformation = ({ credentialMainInfo, containerStyle, onPress
   const colorMode = theme.isDarkMode ? 'dark' : 'light'
 
   const badge = useMemo(() => {
-    if (isFetchingServiceInfo) return <ActivityIndicator size="large" color={theme.colors.green} />
-    if (failedFetchServiceInfo) {
+    if (isFetchingInfo) return <ActivityIndicator size="large" color={theme.colors.green} />
+    if (failedFetchInfo) {
       return (
         <SvgIcon
           name="warning"
           width={styles.image.width}
           height={styles.image.height}
-          fill={theme.colors.orange}
+          fill={theme.colors.lightGrey}
         />
       )
     }
@@ -64,7 +62,7 @@ const CredentialMainInformation = ({ credentialMainInfo, containerStyle, onPress
         )}
       </>
     )
-  }, [isFetchingServiceInfo, failedFetchServiceInfo, uri])
+  }, [isFetchingInfo, failedFetchInfo, uri])
 
   return (
     <Skeleton.Group show={!credentialMainInfo}>

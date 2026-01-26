@@ -33,8 +33,8 @@ export const useFetchServiceInfo = (did?: string, forceFetch: boolean = true) =>
   const { agent } = useMobileAgent()
   const { realm } = useLocalRealm()
   const [serviceInfo, setServiceInfo] = useState<ServiceInfo | undefined>()
-  const [isFetchingServiceInfo, setIsFetching] = useState(false)
-  const [failedFetchServiceInfo, setFailed] = useState<boolean>(false)
+  const [isFetchingInfo, setIsFetching] = useState(false)
+  const [failedFetchInfo, setFailed] = useState<boolean>(false)
 
   useEffect(() => {
     const getServiceInfo = async () => {
@@ -76,8 +76,8 @@ export const useFetchServiceInfo = (did?: string, forceFetch: boolean = true) =>
 
   return {
     serviceInfo,
-    isFetchingServiceInfo,
-    failedFetchServiceInfo,
+    isFetchingInfo,
+    failedFetchInfo,
   }
 }
 
