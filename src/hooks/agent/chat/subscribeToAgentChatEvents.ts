@@ -100,11 +100,11 @@ export function subscribeToAgentChatEvents(
 ) {
   getActiveChatThreadId = forceRefreshFunctionReference ? receivedGetActiveChatThreadId : () => undefined
   const mobileAgentInstance = AgentSingleton.instance
-  if (mobileAgentInstance.getIsAppSubscribedToEvents()) {
-    log('From main flow App is already subscribed to agent events')
+  if (mobileAgentInstance.getIsAppSubscribedToChatEvents()) {
+    log('From main flow App is already subscribed to agent chat events')
     return
   }
-  mobileAgentInstance.setAppIsSubscribedToEvents(true)
+  mobileAgentInstance.setAppIsSubscribedChatToEvents(true)
 
   const connectionProfileListener = async (event: ConnectionProfileUpdatedEvent) => {
     const { connection } = event.payload
@@ -314,9 +314,7 @@ export function subscribeToAgentChatEvents(
           connectionId: connection.id,
           receipts: [receipt],
         }
-        const agentActionQueueSingleton = AgentActionQueueSingleton.instance
-        agentActionQueueSingleton.configureQueue()
-        agentActionQueueSingleton.addJob({ type: AgentActionType.SendReceipts, parameters }, true)
+        AgentActionQueueSingleton.instance.addJob({ type: AgentActionType.SendReceipts, parameters })
       }
     }
   }
