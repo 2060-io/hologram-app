@@ -59,10 +59,13 @@ export const useFetchServiceInfo = (did?: string, forceFetch: boolean = true) =>
       try {
         setIsFetching(true)
         const serviceInfoResponse = await getServiceInfoApi({ agent, did })
+        // if service exists in trust registry, store it in cache otherwise keep the cached one (if any)
         if (serviceInfoResponse) {
           setServiceInfo(serviceInfoResponse)
           await storeServiceInfo(did, agent, serviceInfoResponse)
           if (realm) updateChatThread({ did, serviceInfoResponse, realm, agent })
+        } else if (cachedServiceInfo) {
+          await storeServiceInfo(did, agent, cachedServiceInfo)
         }
       } catch (error) {
         logError(`Error getting service ${did} info API`, error)
