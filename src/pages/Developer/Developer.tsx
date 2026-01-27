@@ -30,7 +30,7 @@ import {
   DevEnvsKeys,
   DevEnvObject,
   saveLogsEnabled,
-  getAreLogsEnabled,
+  areLogsEnabled,
 } from '@2060/utils/developer'
 import { logError, LOGS_DIRECTORY } from '@2060/utils/log'
 import { toast } from '@2060/utils/toast'
@@ -54,7 +54,7 @@ const Developer = ({ navigation }: Props) => {
 
   useEffect(() => {
     const setupAreLogsEnabled = async () => {
-      const persistedAreLogsEnabled = await getAreLogsEnabled()
+      const persistedAreLogsEnabled = await areLogsEnabled()
       setAreLogsEnabled(persistedAreLogsEnabled)
     }
     setupAreLogsEnabled()

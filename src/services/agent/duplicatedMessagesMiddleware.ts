@@ -1,7 +1,7 @@
 import { AgentContext, AgentMessage, CacheModuleConfig, InboundMessageContext } from '@credo-ts/core'
 
 import { logWarn } from '@2060/utils'
-import { getAreLogsEnabled } from '@2060/utils/developer'
+import { areLogsEnabled } from '@2060/utils/developer'
 
 export const duplicatedMessagesMiddleware = async (
   inboundMessageContext: InboundMessageContext,
@@ -10,7 +10,7 @@ export const duplicatedMessagesMiddleware = async (
   const { agentContext, message } = inboundMessageContext
 
   if (await isInCache(agentContext, message.id)) {
-    const displayToast = await getAreLogsEnabled()
+    const displayToast = await areLogsEnabled()
     logWarn(`Received duplicated message with id '${message.id}'`, displayToast)
     return
   }
