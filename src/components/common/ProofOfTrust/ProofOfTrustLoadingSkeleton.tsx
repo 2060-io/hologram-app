@@ -16,13 +16,13 @@ const ProofOfTrustLoadingSkeleton = () => {
 
   return (
     <>
-      <Skeleton height={styles.entityName.fontSize + 4} width="45%" colorMode={colorMode} radius="square" />
+      <Skeleton height={styles.entityName.fontSize + 4} width="45%" colorMode={colorMode} radius="round" />
       <Separator />
-      <Skeleton height={styles.entityName.fontSize + 4} width="45%" colorMode={colorMode} radius="square" />
+      <Skeleton height={styles.entityName.fontSize + 4} width="45%" colorMode={colorMode} radius="round" />
       <Separator />
-      <Skeleton height={styles.entityName.fontSize + 4} width="45%" colorMode={colorMode} radius="square" />
+      <Skeleton height={styles.entityName.fontSize + 4} width="45%" colorMode={colorMode} radius="round" />
       <Separator />
-      <Skeleton height={styles.entityName.fontSize + 4} width="45%" colorMode={colorMode} radius="square" />
+      <Skeleton height={styles.entityName.fontSize + 4} width="45%" colorMode={colorMode} radius="round" />
     </>
   )
 }
