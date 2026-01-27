@@ -1,7 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
 
-import { logError } from '@2060/utils'
-
 // This storage key saves the value that indicates if user has enable display logs as toast message
 export const LOGS_ENABLED_PERSIST_KEY = 'logsEnabled'
 
@@ -49,8 +47,9 @@ export const setStorageData = async (key: string, value: unknown) => {
   try {
     const jsonValue = JSON.stringify(value)
     await AsyncStorage.setItem(key, jsonValue)
+    return true
   } catch (error) {
-    logError(JSON.stringify(error))
+    return false
   }
 }
 
@@ -58,9 +57,8 @@ export const getStorageData = async (key: string): Promise<unknown | null | unde
   try {
     const value = await AsyncStorage.getItem(key)
     if (value) return JSON.parse(value)
-
     return null
   } catch (error) {
-    logError(JSON.stringify(error))
+    return null
   }
 }

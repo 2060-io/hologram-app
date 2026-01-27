@@ -150,6 +150,7 @@ const Developer = ({ navigation }: Props) => {
     const newAreEnabled = !logsEnabled
     setAreLogsEnabled(newAreEnabled)
     await saveLogsEnabled(newAreEnabled)
+    Alert.alert('¡INFO!', t('settings.closeAppAfterChange'))
   }
 
   const exportLogs = async () => {

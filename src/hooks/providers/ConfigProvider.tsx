@@ -8,7 +8,7 @@ import {
   DEVELOPER_MODE_ENABLED_PERSIST_KEY,
   setStorageData,
 } from '@2060/services/localStorage'
-import { DevEnvsObject, DevEnvObject } from '@2060/utils/developer'
+import { DevEnvsObject, DevEnvObject, getIsDeveloperMode } from '@2060/utils/developer'
 
 const defaultDevEnvs: DevEnvsObject = {
   CLOUD_AGENT_PUBLIC_DID: Config.CLOUD_AGENT_PUBLIC_DID as string,
@@ -41,7 +41,7 @@ export const ConfigProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
   useEffect(() => {
     const setupDeveloperMode = async () => {
-      const persistedDeveloperMode = (await getStorageData(DEVELOPER_MODE_ENABLED_PERSIST_KEY)) as boolean
+      const persistedDeveloperMode = await getIsDeveloperMode()
       if (persistedDeveloperMode) setIsDeveloperMode(persistedDeveloperMode)
     }
     setupDeveloperMode()
