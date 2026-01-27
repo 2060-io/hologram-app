@@ -1,8 +1,7 @@
 /* eslint-disable react/no-unstable-nested-components */
 import { Skeleton } from 'moti/skeleton'
 import React, { memo } from 'react'
-
-import Text from '../Text'
+import { View } from 'react-native'
 
 import getStyles from './styles'
 
@@ -13,21 +12,17 @@ const ProofOfTrustLoadingSkeleton = () => {
   const styles = getStyles(theme)
   const colorMode = theme.isDarkMode ? 'dark' : 'light'
 
-  const Separator = () => (
-    <Text fontFamily="EuclidCircularA-Bold" style={styles.separator}>
-      |
-    </Text>
-  )
+  const Separator = () => <View style={styles.loadingSkeletonSeparator} />
 
   return (
     <>
-      <Skeleton height={styles.entityName.fontSize + 2} width="40%" colorMode={colorMode} radius="square" />
+      <Skeleton height={styles.entityName.fontSize + 4} width="45%" colorMode={colorMode} radius="square" />
       <Separator />
-      <Skeleton height={styles.entityName.fontSize + 2} width="40%" colorMode={colorMode} radius="square" />
+      <Skeleton height={styles.entityName.fontSize + 4} width="45%" colorMode={colorMode} radius="square" />
       <Separator />
-      <Skeleton height={styles.entityName.fontSize + 2} width="40%" colorMode={colorMode} radius="square" />
+      <Skeleton height={styles.entityName.fontSize + 4} width="45%" colorMode={colorMode} radius="square" />
       <Separator />
-      <Skeleton height={styles.entityName.fontSize + 2} width="40%" colorMode={colorMode} radius="square" />
+      <Skeleton height={styles.entityName.fontSize + 4} width="45%" colorMode={colorMode} radius="square" />
     </>
   )
 }
