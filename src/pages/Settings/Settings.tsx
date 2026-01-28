@@ -190,10 +190,10 @@ const Settings = ({ navigation }: Props) => {
     if (isValidTouch) {
       developerModeCounter.current++
       if (developerModeCounter.current === TIMES_TO_ENABLE_DEV_MODE) {
-        const newMessage = isDeveloperMode ? t('settings.devModeDisabled') : t('settings.devModeEnabled')
+        const title = isDeveloperMode ? t('settings.devModeDisabled') : t('settings.devModeEnabled')
         initializeDevModeVariables()
         changeDeveloperModeStatus()
-        Alert.alert(newMessage, t('settings.closeAppAfterChange'))
+        Alert.alert(title, t('settings.closeAppAfterChange'))
       }
     } else {
       developerModeCounter.current = 1
