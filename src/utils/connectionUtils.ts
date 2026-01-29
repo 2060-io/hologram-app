@@ -8,7 +8,8 @@ import {
   getConnectionProfile,
 } from '@2060.io/credo-ts-didcomm-user-profile'
 import { AgentContext, JsonTransformer, tryParseDid } from '@credo-ts/core'
-import {DidCommConnectionRecord,
+import {
+  DidCommConnectionRecord,
   DidCommConnectionRepository,
   DidCommDidExchangeState,
   DidCommProtocol,

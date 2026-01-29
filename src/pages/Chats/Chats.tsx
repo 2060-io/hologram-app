@@ -75,7 +75,7 @@ const Chats = ({ navigation }: Props) => {
   const onDeleteChat = async (chatId: string, connectionId: string) => {
     setShowConfirmChatDeletion(true)
     try {
-      await agent?.connections.getById(connectionId)
+      await agent?.didcomm.connections.getById(connectionId)
       setChatThreadToDelete({ id: chatId, connectionId })
     } catch (error) {
       setChatThreadToDelete({ id: chatId })
@@ -107,7 +107,7 @@ const Chats = ({ navigation }: Props) => {
     closeConfirmChatDeletion()
     if (chatThreadToDelete?.id) deleteThread(chatThreadToDelete.id)
     const connection = chatThreadToDelete?.connectionId
-      ? await agent?.connections.getById(chatThreadToDelete.connectionId)
+      ? await agent?.didcomm.connections.getById(chatThreadToDelete.connectionId)
       : null
     if (agent && connection) await deleteConnection(agent, connection)
   }
