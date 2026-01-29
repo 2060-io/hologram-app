@@ -21,11 +21,18 @@ import {
   useConnectionByParentConnectionId,
   useUserProfile,
 } from '@2060/hooks/agent'
-import { deleteConnection, blockConnection, unblockConnection } from '@2060/hooks/agent/connections'
+import { deleteConnection } from '@2060/hooks/agent/connections'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { createOobInvitation, MobileAgent } from '@2060/services/agent'
 import { capitalizeFirstLetter, logError } from '@2060/utils'
-import { getConnectionDisplayName, isBlocked, isService, isTerminated } from '@2060/utils/connectionUtils'
+import {
+  blockConnection,
+  getConnectionDisplayName,
+  isBlocked,
+  isService,
+  isTerminated,
+  unblockConnection,
+} from '@2060/utils/connectionUtils'
 import { markNewConnectionNotificationAsViewed } from '@2060/utils/pushNotificationsUtils'
 import { toast } from '@2060/utils/toast'
 
@@ -47,24 +54,21 @@ const BaseConnectionDetails = ({
   mainInfo,
   footerInfo,
 }: BaseConnectionDetailsProps) => {
+  const { t } = useTranslation()
+  const theme = useTheme()
+  const styles = getStyles(theme)
+  const { agent } = useMobileAgent()
+  const { userProfileData } = useUserProfile()
+  const { clearChat, findOrCreateThread } = useChats()
+  const relatedConnections = useConnectionByParentConnectionId(connection.id)
   const [showConfirmationModal, setShowConfirmationModal] = useState(false)
   const [blockingConnection, setBlockingConnection] = useState(false)
   const modalConfirmationTypeRef = useRef<confirmationTypes>('deleteChat')
-  const theme = useTheme()
-  const styles = getStyles(theme)
-
-  const { agent } = useMobileAgent()
-  const { t } = useTranslation()
   const connectionName = getConnectionDisplayName(connection)
-  const relatedConnections = useConnectionByParentConnectionId(connection.id)
-  const { userProfileData } = useUserProfile()
-
   const isConnectionCompleted = connection.isReady
   const isConnectionBlocked = isBlocked(connection)
   const isConnectionTerminated = isTerminated(connection)
   const isConnectionService = isService(connection)
-
-  const { clearChat, findOrCreateThread } = useChats()
 
   const setHeaderOptions = () => {
     navigation.setOptions({

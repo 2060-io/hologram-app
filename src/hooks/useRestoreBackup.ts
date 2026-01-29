@@ -4,10 +4,9 @@ import { useTranslation } from 'react-i18next'
 
 import { RestoreProgress, restoreProgressInitialValues } from './backup'
 
-import { AgentActionType } from '@2060/hooks/agent'
+import { AgentActionType, useAgentActionQueue } from '@2060/hooks/agent'
 import { useMobileAgent } from '@2060/hooks/agent/MobileAgentProvider'
 import { SavePushNotificationDeviceInfoParameters } from '@2060/hooks/agent/actions/types'
-import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
 import { useWallet } from '@2060/hooks/useWallet'
 import { KeyChainService, createAndStoreEncryptedKey } from '@2060/services/keys'

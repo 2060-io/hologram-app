@@ -46,10 +46,12 @@ export function findOrCreateChatThread(realm: Realm, connection: DidCommConnecti
   }
 
   const chatThreadRecord = realm.write(() => {
+    const createdAt = new Date()
     const newThread = new ChatThread(realm, {
       id: utils.uuid(),
       archived: false,
-      createdAt: new Date(),
+      createdAt,
+      lastActivityAt: createdAt,
       connectionId: connection.id,
       picture: getConnectionDisplayPicture(connection),
       topic: getConnectionDisplayName(connection),

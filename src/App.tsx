@@ -19,6 +19,7 @@ import {
   ChatProvider,
   CredentialProvider,
   FileUploadDownloadProvider,
+  AgentActionQueueProvider,
 } from '@2060/hooks/agent'
 import {
   ConfigProvider,
@@ -53,6 +54,7 @@ const ProvidersTree = buildProvidersTree([
   [ThemeProvider],
   [RealmProvider],
   [MobileAgentProvider],
+  [AgentActionQueueProvider],
   [ConnectionProvider],
   [CredentialProvider],
   [ChatProvider],
@@ -71,15 +73,7 @@ const App = () => {
   initializeI18n.then(() => setTranslationsLoaded(true))
 
   useEffect(() => {
-    /**
-     * FIXME: The SplashScreen.hide() was added inside a 0 timeout to
-     * works well in android. So a probably reason could be the order
-     * execution of this setTimeout in the main thread, even if timeout is 0
-     * function well be executed after main thread be free (other react native tasks finished)
-     */
-    setTimeout(() => {
-      SplashScreen.hide()
-    }, 0)
+    SplashScreen.hide()
   }, [])
 
   return (

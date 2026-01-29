@@ -2,7 +2,7 @@ import { DidCommConnectionRecord } from '@credo-ts/didcomm'
 import React, { createContext, useState, useEffect, useContext, useMemo } from 'react'
 
 import { useMobileAgent } from './MobileAgentProvider'
-import { useAgentConnectionEvents } from './connections/useAgentConnectionEvents'
+import { subscribeToAgentConnectionEvents } from './connections/subscribeToAgentConnectionEvents'
 import {
   addRecord,
   recordsAddedByType,
@@ -68,21 +68,23 @@ interface Props {
 }
 
 export const ConnectionProvider: React.FC<React.PropsWithChildren<Props>> = ({ children }) => {
+  const { isInitialized, agent } = useMobileAgent()
   const [state, setState] = useState<RecordsState<DidCommConnectionRecord>>({
     records: [],
     loading: true,
   })
 
-  const { isInitialized, agent } = useMobileAgent()
-
-  const setInitialState = async () => {
-    if (agent && isInitialized) {
-      const records = await agent.didcomm.connections.getAll()
-      setState({ records, loading: false })
-    }
-  }
+  useEffect(() => {
+    if (agent) subscribeToAgentConnectionEvents(agent.context)
+  }, [agent])
 
   useEffect(() => {
+    const setInitialState = async () => {
+      if (agent && isInitialized) {
+        const records = await agent.didcomm.connections.getAll()
+        setState({ records, loading: false })
+      }
+    }
     setInitialState()
   }, [agent, isInitialized])
 
@@ -107,8 +109,6 @@ export const ConnectionProvider: React.FC<React.PropsWithChildren<Props>> = ({ c
       }
     }
   }, [state, agent])
-
-  useAgentConnectionEvents()
 
   return (
     <ConnectionContext value={{ connections: state.records, loading: state.loading }}>

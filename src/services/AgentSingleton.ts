@@ -9,7 +9,8 @@ export class AgentSingleton {
   private isSetup = false
   private isOpening = false
   private mobileAgent: MobileAgent | null = null
-  private isAppSubscribedToEvents = false
+  private isAppSubscribedToChatEvents = false
+  private isAppSubscribedToConnectionEvents = false
 
   static get instance() {
     if (!this.agentInstance) {
@@ -53,12 +54,20 @@ export class AgentSingleton {
     return this.mobileAgent
   }
 
-  setAppIsSubscribedToEvents() {
-    this.isAppSubscribedToEvents = true
+  setAppIsSubscribedChatToEvents(isAppSubscribedToChatEvents: boolean) {
+    this.isAppSubscribedToChatEvents = isAppSubscribedToChatEvents
   }
 
-  getIsAppSubscribedToEvents() {
-    return this.isAppSubscribedToEvents
+  getIsAppSubscribedToChatEvents() {
+    return this.isAppSubscribedToChatEvents
+  }
+
+  setIsAppSubscribedToConnectionEvents(isAppSubscribedToConnectionEvents: boolean) {
+    this.isAppSubscribedToConnectionEvents = isAppSubscribedToConnectionEvents
+  }
+
+  getIsAppSubscribedToConnectionEvents() {
+    return this.isAppSubscribedToConnectionEvents
   }
 }
 

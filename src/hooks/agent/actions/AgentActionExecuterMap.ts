@@ -25,6 +25,8 @@ import {
   DidCommProofStateChangedEvent,
   DidCommProofEventTypes,
   DidCommAutoAcceptProof,
+  DidCommHangupMessage,
+  DidCommOutOfBandRole,
   DidCommFeaturesQueriesMessage,
 } from '@credo-ts/didcomm'
 import { DidCommPushNotificationsFcmSetDeviceInfoMessage } from '@credo-ts/didcomm-push-notifications'
@@ -41,6 +43,7 @@ import {
   CreateCallOfferParameters,
   DeclineCredentialOfferParameters,
   DeclineProofRequestParameters,
+  DeleteConnectionParameters,
   ForwardConnectionParameters,
   HangupCallParameters,
   MenuSelectionParameters,
@@ -267,8 +270,7 @@ export const AgentActionExecuterMap: Record<AgentActionType, ActionFactory> = {
   [AgentActionType.SendUserProfile]: action => {
     return async (options: { agent: MobileAgent }) => {
       const parameters = action.parameters as SendUserProfileParameters
-      const { connectionId } = parameters
-      await options.agent.modules.profile.sendUserProfile({ connectionId })
+      await options.agent.modules.profile.sendUserProfile(parameters)
       return { outgoingMessageType: DidCommProfileMessage.type.messageTypeUri }
     }
   },
@@ -338,6 +340,22 @@ export const AgentActionExecuterMap: Record<AgentActionType, ActionFactory> = {
         },
       })
       return { outgoingMessageType: DidCommPushNotificationsFcmSetDeviceInfoMessage.type.messageTypeUri }
+    }
+  },
+  [AgentActionType.DeleteConnection]: action => {
+    return async (options: { agent: MobileAgent }) => {
+      const parameters = action.parameters as DeleteConnectionParameters
+      const { connectionId, outOfBandRecordId } = parameters
+      await options.agent.didcomm.connections.hangup({ connectionId, deleteAfterHangup: true })
+      // Once the connection has been eliminated, delete its associated OOB record (only if we were invited
+      // as the OOB record can be still valid for invitations we have created)
+      if (outOfBandRecordId) {
+        const outOfBandRecord = await options.agent.didcomm.oob.findById(outOfBandRecordId)
+        if (outOfBandRecord?.role === DidCommOutOfBandRole.Receiver) {
+          await options.agent.didcomm.oob.deleteById(outOfBandRecordId)
+        }
+      }
+      return { outgoingMessageType: DidCommHangupMessage.type.messageTypeUri }
     }
   },
 }

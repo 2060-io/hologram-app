@@ -6,7 +6,7 @@ export interface ChatThreadData {
   id: string
   connectionId: string
   createdAt: Date
-  lastActivityAt?: Date
+  lastActivityAt: Date
   lastReadAt?: Date
   unreadCount: number
   preview?: string
@@ -25,7 +25,7 @@ export class ChatThread extends Realm.Object<ChatThread> {
   id!: string
   createdAt!: Date
   connectionId!: string
-  lastActivityAt?: Date
+  lastActivityAt!: Date
   lastReadAt?: Date
   unreadCount!: number
   preview?: string
@@ -44,7 +44,7 @@ export class ChatThread extends Realm.Object<ChatThread> {
     properties: {
       id: { type: 'string' },
       connectionId: { type: 'string' },
-      lastActivityAt: { type: 'date', optional: true },
+      lastActivityAt: { type: 'date', optional: false },
       lastReadAt: { type: 'date', optional: true },
       unreadCount: { type: 'int', default: 0 },
       preview: { type: 'string', optional: true },

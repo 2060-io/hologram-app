@@ -19,6 +19,7 @@ import {
   RepliedMessage,
   AgentActionType,
   DidCommMediaFileSharingData,
+  useAgentActionQueue,
 } from './agent'
 import {
   MenuSelectionParameters,
@@ -38,7 +39,6 @@ import {
   updateChatEntryMetadata,
   updateThread,
 } from './agent/chat/services'
-import { useAgentActionQueue } from './agent/useAgentActionQueue'
 import { useLocalRealm } from './providers/RealmProvider'
 
 import { MAX_VIDEO_DURATION } from '@2060/constants'

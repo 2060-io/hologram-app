@@ -96,7 +96,7 @@ export class AgentActionExecuter {
           },
         }
       } else {
-        logError('Agent Action Executer Error', error)
+        logError(`Agent Action Executer Error: ${JSON.stringify(error)}`)
         throw error
       }
     } finally {

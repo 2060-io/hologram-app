@@ -7,6 +7,7 @@ import { utils } from '@credo-ts/core'
 import { DidCommConnectionRecord } from '@credo-ts/didcomm'
 import React, { createContext, useCallback, useState, useEffect, useContext, useRef } from 'react'
 
+import { useAgentActionQueue } from './AgentActionQueueProvider'
 import { useMobileAgent } from './MobileAgentProvider'
 import { AgentActionType } from './actions/AgentAction'
 import { SendReceiptsParameters } from './actions/types'
@@ -20,7 +21,6 @@ import {
   updateThread,
 } from './chat/services/ChatThreadService'
 import { subscribeToAgentChatEvents } from './chat/subscribeToAgentChatEvents'
-import { useAgentActionQueue } from './useAgentActionQueue'
 
 import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
 import {
@@ -130,9 +130,8 @@ export const ChatProvider: React.FC<Props> = ({ children }) => {
     const query = `topic CONTAINS[c] '${topic}' 
     ${categoryFilterMapping[category]} 
     && ${parentFilter} 
-    SORT(lastChildActivityAt DESC)`
-    const chatThreads = realm.objects(ChatThread).filtered(query).sorted('lastChildActivityAt', true)
-
+    SORT(lastActivityAt DESC)`
+    const chatThreads = realm.objects(ChatThread).filtered(query).sorted('lastActivityAt', true)
     // TODO: implement pagination
     const threads = getFilteredEntries(chatThreads, archived)
     setChatState(prevState => ({ ...prevState, threads, loading: false }))
