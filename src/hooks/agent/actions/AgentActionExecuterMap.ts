@@ -28,6 +28,7 @@ import {
   AutoAcceptProof,
   HangupMessage,
   OutOfBandRole,
+  ConnectionService,
 } from '@credo-ts/core'
 import { PushNotificationsFcmSetDeviceInfoMessage } from '@credo-ts/push-notifications'
 import { AnswerMessage } from '@credo-ts/question-answer'
@@ -325,6 +326,13 @@ export const AgentActionExecuterMap: Record<AgentActionType, ActionFactory> = {
         deviceToken,
         devicePlatform: Platform.OS,
       })
+      const defaultMediatorConnection = await options.agent.mediationRecipient.findDefaultMediatorConnection()
+      if (defaultMediatorConnection) {
+        defaultMediatorConnection.setTag('deviceToken', deviceToken)
+        await options.agent.dependencyManager
+          .resolve(ConnectionService)
+          .update(options.agent.context, defaultMediatorConnection)
+      }
       return { outgoingMessageType: PushNotificationsFcmSetDeviceInfoMessage.type.messageTypeUri }
     }
   },

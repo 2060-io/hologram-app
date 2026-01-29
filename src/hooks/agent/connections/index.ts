@@ -14,13 +14,13 @@ export const deleteConnection = async (agent: MobileAgent, connection: Connectio
       connectionId: connection.id,
       outOfBandRecordId: connection.outOfBandId,
     }
-    const isConnectedToInternet = Boolean((await NetInfo()).isConnected)
+    const isNetworkConnected = Boolean((await NetInfo()).isConnected)
     AgentActionQueueSingleton.instance.addJob(
       {
         type: AgentActionType.DeleteConnection,
         parameters,
       },
-      isConnectedToInternet,
+      isNetworkConnected,
     )
   } else {
     await deletePendingConnection(agent, connection)
