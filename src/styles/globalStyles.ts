@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native'
+import { StatusBar, StyleSheet } from 'react-native'
 
 import { AppTheme, AppColors } from './types'
 
@@ -21,7 +21,9 @@ export const getGlobalStyles = (theme: AppTheme) =>
       elevation: 0,
       shadowOpacity: 0,
       shadowColor: 'transparent',
-      height: heightPercentageToDP(IS_IOS ? '12.10%' : '7.48%'),
+      height: IS_IOS
+        ? heightPercentageToDP('12.1%')
+        : heightPercentageToDP('7.48%') + (StatusBar.currentHeight ?? 0),
     },
   })
 
