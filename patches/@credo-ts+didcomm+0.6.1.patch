@@ -7,13 +7,13 @@ index a7575ff..c3bc951 100644
  			const outboundMessage = await messageHandler.handle(inboundMessageContext);
  			if (outboundMessage) inboundMessageContext.setResponseMessage(outboundMessage);
 +
-+			this.eventEmitter.emit(inboundMessageContext.agentContext, {
++			this.eventEmitter.emit(agentContext, {
 +			type: DidCommEventTypes.DidCommMessageProcessed,
 +			payload: {
-+				message: inboundMessageContext.message,
-+				connection: inboundMessageContext.connection,
-+				receivedAt: inboundMessageContext.receivedAt,
-+				encryptedMessage: inboundMessageContext.encryptedMessage
++				message,
++				connection,
++				receivedAt: messageContext.receivedAt,
++				encryptedMessage
 +			}
 +			});
  			await next();
