@@ -1,0 +1,31 @@
+diff --git a/node_modules/@2060.io/credo-ts-didcomm-media-sharing/build/index.mjs b/node_modules/@2060.io/credo-ts-didcomm-media-sharing/build/index.mjs
+index 1e7c55f..4eb2370 100644
+--- a/node_modules/@2060.io/credo-ts-didcomm-media-sharing/build/index.mjs
++++ b/node_modules/@2060.io/credo-ts-didcomm-media-sharing/build/index.mjs
+@@ -1,7 +1,7 @@
+-import { AgentContext, BaseRecord, CredoError, EventEmitter, InjectionSymbols, Repository, injectable, utils } from "@credo-ts/core";
++import { AgentContext, BaseRecord, CredoError, EventEmitter, InjectionSymbols, Repository, injectable, utils , inject} from "@credo-ts/core";
+ import { DidCommAttachment, DidCommConnectionService, DidCommFeatureRegistry, DidCommInboundMessageContext, DidCommMessage, DidCommMessageHandlerRegistry, DidCommMessageSender, DidCommOutboundMessageContext, DidCommProtocol, IsValidMessageType, parseMessageType } from "@credo-ts/didcomm";
+ import { Expose, Transform, Type } from "class-transformer";
+-import { Lifecycle, inject, scoped } from "tsyringe";
++import { Lifecycle, scoped } from "tsyringe";
+ import { IsDate, IsOptional, IsString } from "class-validator";
+ 
+ //#region src/model/DidCommMediaSharingRole.ts
+@@ -120,6 +120,7 @@ let DidCommMediaSharingRepository = class DidCommMediaSharingRepository$1 extend
+ 	}
+ };
+ DidCommMediaSharingRepository = __decorate([
++	injectable(),
+ 	scoped(Lifecycle.ContainerScoped),
+ 	__decorateParam(0, inject(InjectionSymbols.StorageService)),
+ 	__decorateMetadata("design:paramtypes", [Object, typeof (_ref$4 = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _ref$4 : Object])
+@@ -450,7 +451,7 @@ let DidCommMediaSharingService = class DidCommMediaSharingService$1 {
+ 		return await this.mediaSharingRepository.update(agentContext, record);
+ 	}
+ };
+-DidCommMediaSharingService = __decorate([scoped(Lifecycle.ContainerScoped), __decorateMetadata("design:paramtypes", [typeof (_ref$1 = typeof DidCommMediaSharingRepository !== "undefined" && DidCommMediaSharingRepository) === "function" ? _ref$1 : Object, typeof (_ref2$1 = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _ref2$1 : Object])], DidCommMediaSharingService);
++DidCommMediaSharingService = __decorate([injectable(), scoped(Lifecycle.ContainerScoped), __decorateMetadata("design:paramtypes", [typeof (_ref$1 = typeof DidCommMediaSharingRepository !== "undefined" && DidCommMediaSharingRepository) === "function" ? _ref$1 : Object, typeof (_ref2$1 = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _ref2$1 : Object])], DidCommMediaSharingService);
+ 
+ //#endregion
+ //#region src/DidCommMediaSharingApi.ts
