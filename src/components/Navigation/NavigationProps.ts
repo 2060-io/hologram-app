@@ -28,7 +28,7 @@ export type NavigationStackParams = {
   PersonalChatStack: undefined
   OpenIdCredentialOffer: { url: string }
   OpenIdPresentationRequest: { url: string }
-  DidcommCredentialOffer: { credentialRecordId: string }
+  DidcommCredentialOffer: { credentialRecordId: string; did: string }
   DidcommPresentationRequest: { did: string; proofRecordId: string }
   ConnectionInvitation: { outOfBandRecord: OutOfBandRecord; existingConnectionId?: string }
   ConnectionDetails: { connectionId: string }
