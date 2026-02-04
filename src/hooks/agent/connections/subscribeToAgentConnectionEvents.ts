@@ -16,20 +16,29 @@ import {
   DidExchangeState,
 } from '@credo-ts/core'
 
-import { AgentActionOptions, AgentActionType } from '../actions/AgentAction'
+import { AgentActionType } from '../actions/AgentAction'
 import {
   AcceptConnectionRequestParameters,
   AcceptConnectionResponseParameters,
   QueryServiceFeaturesParameters,
 } from '../actions/types'
+import { findOrCreateChatThread } from '../chat/services'
 
+import { AgentActionQueueSingleton } from '@2060/services/AgentActionQueueSingleton'
+import AgentSingleton from '@2060/services/AgentSingleton'
+import RealmSingleton from '@2060/services/RealmSingleton'
 import { supportsUserProfile } from '@2060/utils/connectionUtils'
 import { language } from '@2060/utils/language'
+import { log } from '@2060/utils/log'
 
-export function manageAgentConnectionEvents(
-  context: AgentContext,
-  addAgentActionToQueue: (action: AgentActionOptions) => void,
-) {
+export function subscribeToAgentConnectionEvents(context: AgentContext) {
+  const mobileAgentInstance = AgentSingleton.instance
+  if (mobileAgentInstance.getIsAppSubscribedToConnectionEvents()) {
+    log('From main flow App is already subscribed to agent connection events')
+    return
+  }
+  mobileAgentInstance.setIsAppSubscribedToConnectionEvents(true)
+  const agentActionQueueSingleton = AgentActionQueueSingleton.instance
   const eventEmitter = context.dependencyManager.resolve(EventEmitter)
 
   const disclosureListener = async (event: DiscoverFeaturesDisclosureReceivedEvent) => {
@@ -44,7 +53,7 @@ export function manageAgentConnectionEvents(
 
     if (supportsUserProfile(connection)) {
       if (connection.role === DidExchangeRole.Responder) {
-        addAgentActionToQueue({
+        agentActionQueueSingleton.addJob({
           type: AgentActionType.SendUserProfile,
           parameters: {
             connectionId: connection.id,
@@ -61,7 +70,7 @@ export function manageAgentConnectionEvents(
 
   const profileRequestListener = async (event: UserProfileRequestedEvent) => {
     const userProfileApi = context.dependencyManager.resolve(UserProfileApi)
-    addAgentActionToQueue({
+    agentActionQueueSingleton.addJob({
       type: AgentActionType.SendUserProfile,
       parameters: {
         connectionId: event.payload.connection.id,
@@ -78,7 +87,7 @@ export function manageAgentConnectionEvents(
   const profileUpdatedListener = async (event: ConnectionProfileUpdatedEvent) => {
     const userProfileApi = context.dependencyManager.resolve(UserProfileApi)
     if (event.payload.sendBackYoursRequested) {
-      addAgentActionToQueue({
+      agentActionQueueSingleton.addJob({
         type: AgentActionType.SendUserProfile,
         parameters: {
           connectionId: event.payload.connection.id,
@@ -98,7 +107,7 @@ export function manageAgentConnectionEvents(
     const { connectionRecord } = event.payload
     if (connectionRecord.state === DidExchangeState.RequestReceived) {
       const parameters: AcceptConnectionRequestParameters = { connectionId: connectionRecord.id }
-      addAgentActionToQueue({
+      agentActionQueueSingleton.addJob({
         type: AgentActionType.AcceptConnectionRequest,
         parameters,
       })
@@ -107,17 +116,22 @@ export function manageAgentConnectionEvents(
       !connectionRecord.autoAcceptConnection
     ) {
       const parameters: AcceptConnectionResponseParameters = { connectionId: connectionRecord.id }
-      addAgentActionToQueue({
+      agentActionQueueSingleton.addJob({
         type: AgentActionType.AcceptConnectionResponse,
         parameters,
       })
     }
-    if (connectionRecord.isReady) {
+    if (connectionRecord.state === DidExchangeState.Completed) {
       const parameters: QueryServiceFeaturesParameters = { connectionId: connectionRecord.id }
-      addAgentActionToQueue({
+      agentActionQueueSingleton.addJob({
         type: AgentActionType.QueryServiceFeatures,
         parameters,
       })
+      const isResponder = !connectionRecord.isRequester
+      if (isResponder) {
+        const realm = RealmSingleton.instance.getRealm()
+        if (realm) findOrCreateChatThread(realm, connectionRecord)
+      }
     }
   }
 
