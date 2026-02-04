@@ -22,9 +22,11 @@ import {
   AcceptConnectionResponseParameters,
   QueryServiceFeaturesParameters,
 } from '../actions/types'
+import { findOrCreateChatThread } from '../chat/services'
 
 import { AgentActionQueueSingleton } from '@2060/services/AgentActionQueueSingleton'
 import AgentSingleton from '@2060/services/AgentSingleton'
+import RealmSingleton from '@2060/services/RealmSingleton'
 import { supportsUserProfile } from '@2060/utils/connectionUtils'
 import { language } from '@2060/utils/language'
 import { log } from '@2060/utils/log'
@@ -119,12 +121,17 @@ export function subscribeToAgentConnectionEvents(context: AgentContext) {
         parameters,
       })
     }
-    if (connectionRecord.isReady) {
+    if (connectionRecord.state === DidExchangeState.Completed) {
       const parameters: QueryServiceFeaturesParameters = { connectionId: connectionRecord.id }
       agentActionQueueSingleton.addJob({
         type: AgentActionType.QueryServiceFeatures,
         parameters,
       })
+      const isResponder = !connectionRecord.isRequester
+      if (isResponder) {
+        const realm = RealmSingleton.instance.getRealm()
+        if (realm) findOrCreateChatThread(realm, connectionRecord)
+      }
     }
   }
 
