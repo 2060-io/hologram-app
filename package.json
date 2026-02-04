@@ -188,7 +188,8 @@
     "rdf-canonize": "4.0.1",
     "isomorphic-webcrypto": "npm:@sphereon/isomorphic-webcrypto@2.5.0-rn-crypto.2",
     "react": "19.1.0",
-    "react-dom": "19.1.0"
+    "react-dom": "19.1.0",
+    "tsyringe": "4.10.0"
   },
   "engines": {
     "node": ">=22"
