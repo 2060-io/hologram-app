@@ -69,8 +69,7 @@ const DidcommCredentialOffer: React.FC<Props> = ({ route, navigation }) => {
       type: AgentActionType.DeclineCredentialOffer,
       parameters,
     })
-    if (navigation.canGoBack()) navigation.goBack()
-    else navigation.replace('Home')
+    goToChatScreen()
   }
 
   if (!credentialDetails) return null
