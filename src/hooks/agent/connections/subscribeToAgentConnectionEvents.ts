@@ -120,7 +120,7 @@ export function subscribeToAgentConnectionEvents(context: AgentContext) {
         parameters,
       })
     }
-    if (connectionRecord.state === DidExchangeState.Completed) {
+    if (connectionRecord.state === DidCommDidExchangeState.Completed) {
       const parameters: QueryServiceFeaturesParameters = { connectionId: connectionRecord.id }
       agentActionQueueSingleton.addJob({
         type: AgentActionType.QueryServiceFeatures,
