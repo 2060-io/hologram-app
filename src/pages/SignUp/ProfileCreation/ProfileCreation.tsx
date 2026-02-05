@@ -56,6 +56,8 @@ const ProfileCreation = ({ navigation }: Props) => {
       agent.modules.askar.config.store.key = key
 
       await agent.modules.askar.provisionStore()
+    } else {
+      logError('createNewWallet: Agent already initialized!')
     }
   }, [agent])
 

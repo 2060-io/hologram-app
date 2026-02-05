@@ -17,7 +17,7 @@ export function useMessagePickup({ agent, isEnabled }: { agent?: MobileAgent; is
   const { isAppActive } = useAppState()
 
   useEffect(() => {
-    if (!agent) return
+    if (!agent?.isInitialized) return
     if (isEnabled) {
       initiateMessagePickup(agent)
     } else {
@@ -42,7 +42,7 @@ export function useMessagePickup({ agent, isEnabled }: { agent?: MobileAgent; is
   }, [agent, realm, isAppActive, isScreenLockForceDisabled])
 
   useEffect(() => {
-    if (!agent) return
+    if (!agent?.isInitialized) return
     return () => {
       logWarn('useMessagePickup: Component unmounted, stopping message pickup')
       stopMessagePickup(agent)

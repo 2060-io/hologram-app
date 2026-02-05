@@ -23,6 +23,7 @@ import { AgentActionQueueSingleton } from '@2060/services/AgentActionQueueSingle
 import { AgentSingleton } from '@2060/services/AgentSingleton'
 import { deleteAllKeys } from '@2060/services/keys'
 import { logError, dataUrl } from '@2060/utils'
+import { deleteDir, walletDirectoryPath } from '@2060/utils/RNFS'
 import { toast } from '@2060/utils/toast'
 
 interface Props extends StackScreenProps<HomeMainTabParams, 'Settings'> {}
@@ -71,7 +72,6 @@ const Settings = ({ navigation }: Props) => {
       if (mediatorConnection) await agent.didcomm.connections.hangup({ connectionId: mediatorConnection.id })
 
       realm?.write(() => realm?.deleteAll())
-      await agent.modules.askar.deleteStore()
 
       // FIXME: Workaround to make sure cache is unloaded from memory
       const cache = agent.dependencyManager.resolve(CacheModuleConfig).cache
@@ -81,6 +81,10 @@ const Settings = ({ navigation }: Props) => {
       cache._cache = undefined
 
       await shutdownAgent()
+
+      // Delete store and wallet directory
+      await agent.modules.askar.deleteStore()
+      await deleteDir(walletDirectoryPath)
       await deleteAllKeys()
       closeRealm()
       AgentSingleton.instance.setAppIsSubscribedChatToEvents(false)
