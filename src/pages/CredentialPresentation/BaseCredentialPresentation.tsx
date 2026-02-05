@@ -1,4 +1,4 @@
-import { ProofState } from '@credo-ts/core'
+import { DidCommProofState } from '@credo-ts/didcomm'
 import { HeaderBackButton } from '@react-navigation/elements'
 import { StackNavigationProp } from '@react-navigation/stack'
 import React, { useEffect, useState } from 'react'
@@ -29,7 +29,7 @@ type Props = {
   >
   credentialMainInfo: CredentialMainInfo | null
   credentialAttributes: Record<string, unknown>
-  proofState: ProofState
+  proofState: DidCommProofState
   proofRecordId: string
   onAcceptCallback?: () => void
   onRefuseCallback?: () => void
@@ -49,7 +49,7 @@ const BaseCredentialPresentation = ({
   const styles = getStyles(theme)
   const { addAgentActionToQueue } = useAgentActionQueue()
   const [showModalRefuseConfirmation, setShowModalRefuseConfirmation] = useState(false)
-  const enableMainButtons = proofState === ProofState.ProposalReceived
+  const enableMainButtons = proofState === DidCommProofState.ProposalReceived
 
   useEffect(() => {
     navigation.setOptions({
@@ -101,7 +101,7 @@ const BaseCredentialPresentation = ({
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.subContainer}>
             <CredentialMainInformation credentialMainInfo={credentialMainInfo} />
-            {![ProofState.PresentationReceived, ProofState.Done].includes(proofState) && (
+            {![DidCommProofState.PresentationReceived, DidCommProofState.Done].includes(proofState) && (
               <Text fontFamily="EuclidCircularA-Medium" style={styles.valuesNoRevealedYet}>
                 {t('presentationRequest.valuesNoRevealedYet')}
               </Text>

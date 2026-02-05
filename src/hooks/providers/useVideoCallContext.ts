@@ -1,5 +1,5 @@
 import { DidCommCallType } from '@2060.io/credo-ts-didcomm-calls'
-import { ConnectionRecord } from '@credo-ts/core'
+import { DidCommConnectionRecord } from '@credo-ts/didcomm'
 import { createContext, useContext, MutableRefObject } from 'react'
 
 export enum CallStatus {
@@ -28,13 +28,13 @@ export type StateProps = {
   isRejected: boolean | undefined
   incomingCallInfo: CallInfo | undefined
   didcommThreadId: string | undefined
-  didcommConnection: ConnectionRecord | undefined
+  didcommConnection: DidCommConnectionRecord | undefined
   didcommCallType: DidCommCallType | undefined
   isFinishedCall: boolean
 }
 
 export type StartCallPros = {
-  connection: ConnectionRecord
+  connection: DidCommConnectionRecord
   callType: DidCommCallType
 }
 
