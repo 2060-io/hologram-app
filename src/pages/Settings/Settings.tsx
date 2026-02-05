@@ -21,11 +21,10 @@ import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { AgentActionQueueSingleton } from '@2060/services/AgentActionQueueSingleton'
 import { AgentSingleton } from '@2060/services/AgentSingleton'
-import { deleteAllKeys, deleteEncryptedKey, KeyChainService } from '@2060/services/keys'
+import { deleteAllKeys } from '@2060/services/keys'
 import { logError, dataUrl } from '@2060/utils'
 import { deleteDir, walletDirectoryPath } from '@2060/utils/RNFS'
 import { toast } from '@2060/utils/toast'
-import { deleteDir, walletDirectoryPath } from '@2060/utils/RNFS'
 
 interface Props extends StackScreenProps<HomeMainTabParams, 'Settings'> {}
 
