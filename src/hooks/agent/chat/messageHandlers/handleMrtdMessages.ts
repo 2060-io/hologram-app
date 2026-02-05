@@ -6,7 +6,12 @@ import {
   MrzDataMessage,
   MrzDataRequestMessage,
 } from '@2060.io/credo-ts-didcomm-mrtd'
-import { AgentMessage, ConnectionRecord, parseMessageType, ProblemReportMessage } from '@credo-ts/core'
+import {
+  DidCommConnectionRecord,
+  DidCommMessage,
+  DidCommProblemReportMessage,
+  parseMessageType,
+} from '@credo-ts/didcomm'
 import { parse } from 'mrz'
 import Realm from 'realm'
 
@@ -29,10 +34,10 @@ import { log } from '@2060/utils'
 
 export const handleMrtdMessages = (options: {
   realm: Realm
-  connection: ConnectionRecord
+  connection: DidCommConnectionRecord
   activeChatThreadId?: string
   receivedAt?: Date
-  message: AgentMessage
+  message: DidCommMessage
   direction: DidCommMessageDirection
 }) => {
   const { realm, connection, activeChatThreadId, receivedAt, message, direction } = options
@@ -127,7 +132,7 @@ export const handleMrtdMessages = (options: {
 
   if (messageType.messageTypeUri === MrtdProblemReportMessage.type.messageTypeUri) {
     const { MrzRefused, EmrtdRefused } = MrtdProblemReportReason
-    const problemReportMessage = message as ProblemReportMessage
+    const problemReportMessage = message as DidCommProblemReportMessage
     const code = problemReportMessage.description.code as MrtdProblemReportReason
     if (![MrzRefused, EmrtdRefused].includes(code) || !message.thread?.parentThreadId) {
       return

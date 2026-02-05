@@ -1,4 +1,4 @@
-import { MessageReceipt, MessageState } from '@2060.io/credo-ts-didcomm-receipts'
+import { DidCommMessageReceipt, MessageState } from '@2060.io/credo-ts-didcomm-receipts'
 import { utils } from '@credo-ts/core'
 import Realm from 'realm'
 
@@ -111,7 +111,7 @@ export function updateChatEntry(
   updateThreadIfNeeded(realm, chatEntryRecord)
 }
 
-export function addReceiptToRelatedEntries(realm: Realm, receipt: MessageReceipt) {
+export function addReceiptToRelatedEntries(realm: Realm, receipt: DidCommMessageReceipt) {
   const validNewStatesForCurrentState: Record<ChatEntryState, ChatEntryState[]> = {
     created: [
       ChatEntryState.Deleted,

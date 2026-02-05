@@ -1,4 +1,4 @@
-import { CredentialState } from '@credo-ts/core'
+import { DidCommCredentialState } from '@credo-ts/didcomm'
 import { StackActions } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
 import React from 'react'
@@ -25,9 +25,9 @@ const DidcommCredentialOffer: React.FC<Props> = ({ route, navigation }) => {
   const { addAgentActionToQueue } = useAgentActionQueue()
   const { realm } = useLocalRealm()
   const { findOrCreateThread } = useChats()
-  const enableMainButtons = credentialState === CredentialState.OfferReceived
+  const enableMainButtons = credentialState === DidCommCredentialState.OfferReceived
 
-  const updateChatEntryMetadataIfNecessary = (newCredentialState: CredentialState) => {
+  const updateChatEntryMetadataIfNecessary = (newCredentialState: DidCommCredentialState) => {
     if (realm) {
       const [chatEntry] = findAllByAssociatedRecordId(realm, credentialRecordId, ChatEntryType.VCOffer)
       if (chatEntry) {
@@ -39,7 +39,7 @@ const DidcommCredentialOffer: React.FC<Props> = ({ route, navigation }) => {
 
   const goToChatScreen = async () => {
     if (!agent) return
-    const connections = await agent.connections.findByInvitationDid(did)
+    const connections = await agent.didcomm.connections.findByInvitationDid(did)
     if (connections.length) {
       const [connection] = connections
       const chatThreadId = findOrCreateThread({ connection }).id
@@ -53,7 +53,7 @@ const DidcommCredentialOffer: React.FC<Props> = ({ route, navigation }) => {
   }
 
   const accept = () => {
-    updateChatEntryMetadataIfNecessary(CredentialState.RequestSent)
+    updateChatEntryMetadataIfNecessary(DidCommCredentialState.RequestSent)
     const parameters: AcceptCredentialOfferParameters = { credentialRecordId }
     addAgentActionToQueue({
       type: AgentActionType.AcceptCredentialOffer,
@@ -63,7 +63,7 @@ const DidcommCredentialOffer: React.FC<Props> = ({ route, navigation }) => {
   }
 
   const refuse = () => {
-    updateChatEntryMetadataIfNecessary(CredentialState.Declined)
+    updateChatEntryMetadataIfNecessary(DidCommCredentialState.Declined)
     const parameters: DeclineCredentialOfferParameters = { credentialRecordId }
     addAgentActionToQueue({
       type: AgentActionType.DeclineCredentialOffer,

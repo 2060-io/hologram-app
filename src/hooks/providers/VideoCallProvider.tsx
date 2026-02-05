@@ -5,7 +5,7 @@ import {
   CallRejectMessage,
   DidCommCallType,
 } from '@2060.io/credo-ts-didcomm-calls'
-import { AgentEventTypes, AgentMessageProcessedEvent, AgentMessageSentEvent } from '@credo-ts/core'
+import { DidCommEventTypes, DidCommMessageProcessedEvent, DidCommMessageSentEvent } from '@credo-ts/didcomm'
 import React, { PropsWithChildren, useState, useEffect, useRef, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { StyleSheet, View } from 'react-native'
@@ -79,7 +79,7 @@ export const VideoCallProvider: React.FC<PropsWithChildren> = ({ children }) => 
 
   /*
   const startIncomingCall = (
-    connection: ConnectionRecord,
+    connection: DidCommConnectionRecord,
     callType: DidCommCallType,
     incomingCallInfo: CallInfo,
   ) => {
@@ -155,7 +155,7 @@ export const VideoCallProvider: React.FC<PropsWithChildren> = ({ children }) => 
       if (!microphonePermission) return
       const cameraPermission = await handleCameraPermission()
       if (!cameraPermission) return
-      const connection = await agent.connections.getById(connectionId)
+      const connection = await agent.didcomm.connections.getById(connectionId)
       updateState({
         didcommThreadId,
         didcommConnection: connection,
@@ -172,13 +172,13 @@ export const VideoCallProvider: React.FC<PropsWithChildren> = ({ children }) => 
 
   useEffect(() => {
     if (agent) {
-      const agentMessageSentListener = async (data: AgentMessageSentEvent) => {
+      const agentMessageSentListener = async (data: DidCommMessageSentEvent) => {
         const { message } = data.payload.message
         if (message.type === CallOfferMessage.type.messageTypeUri) {
           updateState({ didcommThreadId: message.threadId })
         }
       }
-      const agentMessageProcessedListener = async (data: AgentMessageProcessedEvent) => {
+      const agentMessageProcessedListener = async (data: DidCommMessageProcessedEvent) => {
         const { message } = data.payload
 
         // Call reject
@@ -199,15 +199,15 @@ export const VideoCallProvider: React.FC<PropsWithChildren> = ({ children }) => 
         }
       }
 
-      agent.events.on(AgentEventTypes.AgentMessageSent, agentMessageSentListener)
-      agent.events.on<AgentMessageProcessedEvent>(
-        AgentEventTypes.AgentMessageProcessed,
+      agent.events.on(DidCommEventTypes.DidCommMessageSent, agentMessageSentListener)
+      agent.events.on<DidCommMessageProcessedEvent>(
+        DidCommEventTypes.DidCommMessageProcessed,
         agentMessageProcessedListener,
       )
 
       return () => {
-        agent.events.off(AgentEventTypes.AgentMessageSent, agentMessageSentListener)
-        agent.events.off(AgentEventTypes.AgentMessageProcessed, agentMessageProcessedListener)
+        agent.events.off(DidCommEventTypes.DidCommMessageSent, agentMessageSentListener)
+        agent.events.off(DidCommEventTypes.DidCommMessageProcessed, agentMessageProcessedListener)
       }
     }
   }, [agent, realm, activeChatThreadId])

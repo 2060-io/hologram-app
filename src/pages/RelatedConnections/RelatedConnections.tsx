@@ -1,4 +1,4 @@
-import { ConnectionRecord } from '@credo-ts/core'
+import { DidCommConnectionRecord } from '@credo-ts/didcomm'
 import { StackScreenProps } from '@react-navigation/stack'
 import React, { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -23,7 +23,7 @@ const RelatedConnections: React.FC<Props> = ({ navigation, route }) => {
   const [showSearchInput, setShowSearchInput] = useState(false)
   const [search, setSearch] = useState('')
   const parentConnectionId = route.params.parentConnectionId as string
-  const connectionParent = useConnectionById(parentConnectionId) as ConnectionRecord
+  const connectionParent = useConnectionById(parentConnectionId) as DidCommConnectionRecord
   const haveParentDisplayImage = getConnectionDisplayPicture(connectionParent)
   const parentConnectionName = getConnectionDisplayName(connectionParent)
   const { t } = useTranslation()

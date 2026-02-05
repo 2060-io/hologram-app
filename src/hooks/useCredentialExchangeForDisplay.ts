@@ -1,4 +1,4 @@
-import { CredentialExchangeRecord, CredentialState } from '@credo-ts/core'
+import { DidCommCredentialExchangeRecord, DidCommCredentialState } from '@credo-ts/didcomm'
 import { useEffect, useState, useTransition } from 'react'
 
 import { useMobileAgent } from './agent'
@@ -11,7 +11,7 @@ export const useCredentialExchangeForDisplay = (options: { credentialRecordId: s
   const credentialExchangeRecordId = options.credentialRecordId
   const { agent } = useMobileAgent()
   const [credentialDetails, setCredentialDetails] = useState<CredentialDetailsForDisplay>()
-  const [credentialState, setCredentialState] = useState<CredentialState>()
+  const [credentialState, setCredentialState] = useState<DidCommCredentialState>()
   const [isGettingCredentialDetails, startGetCredentialDetailsTransition] = useTransition()
 
   const getCredentialDetails = async () => {
@@ -34,11 +34,11 @@ export const useCredentialExchangeForDisplay = (options: { credentialRecordId: s
   // TODO: optimize to use credentialExchangeRecord directly instead of querying every time
   useEffect(() => {
     if (!isGettingCredentialDetails) {
-      const credentialUpdated$ = recordsUpdatedByType(agent, CredentialExchangeRecord).subscribe(() =>
+      const credentialUpdated$ = recordsUpdatedByType(agent, DidCommCredentialExchangeRecord).subscribe(() =>
         getCredentialDetails(),
       )
 
-      const credentialRemoved$ = recordsRemovedByType(agent, CredentialExchangeRecord).subscribe(() =>
+      const credentialRemoved$ = recordsRemovedByType(agent, DidCommCredentialExchangeRecord).subscribe(() =>
         getCredentialDetails(),
       )
 

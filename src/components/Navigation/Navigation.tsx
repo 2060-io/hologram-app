@@ -42,9 +42,7 @@ import {
   Developer,
   CredentialDetails,
   DidcommCredentialOffer,
-  OpenIdCredentialOffer,
   DidcommPresentationRequest,
-  OpenIdPresentationRequest,
   CredentialPresented,
   ForwardConnection,
   PresentCredential,
@@ -150,10 +148,8 @@ const Navigation = ({ isSignedUp, agent, theme }: NavigationProps) => {
           <Stack.Screen name="ConnectionDetails" component={ConnectionDetails} />
           <Stack.Screen name="RelatedConnections" component={RelatedConnections} />
           <Stack.Screen name="DidcommCredentialOffer" component={DidcommCredentialOffer} />
-          <Stack.Screen name="OpenIdCredentialOffer" component={OpenIdCredentialOffer} />
           <Stack.Screen name="DidcommPresentationRequest" component={DidcommPresentationRequest} />
           <Stack.Screen name="ConnectionInvitation" component={ConnectionInvitation} />
-          <Stack.Screen name="OpenIdPresentationRequest" component={OpenIdPresentationRequest} />
           <Stack.Screen name="UserProfile" component={UserProfile} />
           <Stack.Screen name="UserInvitation" component={UserInvitation} />
           <Stack.Screen name="Connections" component={Connections} />
