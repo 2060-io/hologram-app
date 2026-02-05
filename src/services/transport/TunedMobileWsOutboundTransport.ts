@@ -261,20 +261,15 @@ export class TunedMobileWsOutboundTransport implements DidCommOutboundTransport 
               },
             })
 
-            this.agentContext
-              .resolve(DidCommMediationRecipientApi)
-              .findByConnectionId(item)
-              .then(mediationRecord => {
-                if (mediationRecord) {
-                  this.eventEmitter.emit<MediatorDisconnectedEvent>(this.agentContext, {
-                    type: MediatorEventTypes.MediatorDisconnected,
-                    payload: {
-                      mediatorId: mediationRecord.id,
-                      connectionId: item,
-                    },
-                  })
-                }
+            if (this.defaultMediatorConnection?.id === item) {
+              this.eventEmitter.emit<MediatorDisconnectedEvent>(this.agentContext, {
+                type: MediatorEventTypes.MediatorDisconnected,
+                payload: {
+                  mediatorId: this.defaultMediatorConnection.mediatorId,
+                  connectionId: item,
+                },
               })
+            }
           }
         } else {
           this.eventEmitter.emit<DidCommOutboundWebSocketClosedEvent>(this.agentContext, {
@@ -285,20 +280,15 @@ export class TunedMobileWsOutboundTransport implements DidCommOutboundTransport 
             },
           })
           if (connectionId && record?.opened) {
-            this.agentContext
-              .resolve(DidCommMediationRecipientApi)
-              .findByConnectionId(connectionId)
-              .then(mediationRecord => {
-                if (mediationRecord) {
-                  this.eventEmitter.emit<MediatorDisconnectedEvent>(this.agentContext, {
-                    type: MediatorEventTypes.MediatorDisconnected,
-                    payload: {
-                      mediatorId: mediationRecord.id,
-                      connectionId: connectionId,
-                    },
-                  })
-                }
+            if (this.defaultMediatorConnection?.id === connectionId) {
+              this.eventEmitter.emit<MediatorDisconnectedEvent>(this.agentContext, {
+                type: MediatorEventTypes.MediatorDisconnected,
+                payload: {
+                  mediatorId: this.defaultMediatorConnection.mediatorId,
+                  connectionId: connectionId,
+                },
               })
+            }
           }
         }
         this.transportTable.delete(socketId)

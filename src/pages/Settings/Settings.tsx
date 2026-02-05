@@ -21,9 +21,10 @@ import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { AgentActionQueueSingleton } from '@2060/services/AgentActionQueueSingleton'
 import { AgentSingleton } from '@2060/services/AgentSingleton'
-import { deleteAllKeys } from '@2060/services/keys'
+import { deleteAllKeys, deleteEncryptedKey, KeyChainService } from '@2060/services/keys'
 import { logError, dataUrl } from '@2060/utils'
 import { toast } from '@2060/utils/toast'
+import { deleteDir, walletDirectoryPath } from '@2060/utils/RNFS'
 
 interface Props extends StackScreenProps<HomeMainTabParams, 'Settings'> {}
 
@@ -71,7 +72,6 @@ const Settings = ({ navigation }: Props) => {
       if (mediatorConnection) await agent.didcomm.connections.hangup({ connectionId: mediatorConnection.id })
 
       realm?.write(() => realm?.deleteAll())
-      await agent.modules.askar.deleteStore()
 
       // FIXME: Workaround to make sure cache is unloaded from memory
       const cache = agent.dependencyManager.resolve(CacheModuleConfig).cache
@@ -81,6 +81,10 @@ const Settings = ({ navigation }: Props) => {
       cache._cache = undefined
 
       await shutdownAgent()
+
+      // Delete store and wallet directory
+      await agent.modules.askar.deleteStore()
+      await deleteDir(walletDirectoryPath)
       await deleteAllKeys()
       closeRealm()
       AgentSingleton.instance.setAppIsSubscribedChatToEvents(false)

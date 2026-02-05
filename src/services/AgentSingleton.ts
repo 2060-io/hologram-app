@@ -36,13 +36,13 @@ export class AgentSingleton {
         log('opening agent...')
         // Reconfigure askar store config with retrieved key
         this.mobileAgent.modules.askar.config.store.key = key
-        await this.mobileAgent.modules.askar.openStore()
+
+        log('initializing agent...')
+        await this.mobileAgent.initialize()
+        log('agent initialized!')
       } else {
         log('Agent is being opened, so skipping opening again to avoid error')
       }
-      log('initializing agent...')
-      await this.mobileAgent?.initialize()
-      log('¡agent initialized!')
     } catch (error) {
       logError(`error initializing singleton agent: ${error}`)
     } finally {
