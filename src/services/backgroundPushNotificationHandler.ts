@@ -1,4 +1,4 @@
-import { AgentMessageProcessedEvent, V2StatusMessage, AgentEventTypes } from '@credo-ts/core'
+import { DidCommMessageProcessedEvent, DidCommStatusV2Message, DidCommEventTypes } from '@credo-ts/didcomm'
 import { FirebaseMessagingTypes } from '@react-native-firebase/messaging'
 
 import { AgentActionQueueSingleton } from './AgentActionQueueSingleton'
@@ -69,21 +69,21 @@ export async function backgroundPushNotificationHandler(remoteMessage: FirebaseM
     if (!mobileAgentInstance.getIsAppSubscribedToConnectionEvents()) {
       subscribeToAgentConnectionEvents(agent.context)
     }
-    const mediatorConnection = await agent.mediationRecipient.findDefaultMediatorConnection()
-    await agent.messagePickup.pickupMessages({
+    const mediatorConnection = await agent.didcomm.mediationRecipient.findDefaultMediatorConnection()
+    await agent.didcomm.messagePickup.pickupMessages({
       connectionId: mediatorConnection!.id,
       protocolVersion: 'v2',
     })
 
     // this events is yet calling when app awakes and receives more because agent is still alive and the same
-    agent.events.on<AgentMessageProcessedEvent>(AgentEventTypes.AgentMessageProcessed, async data => {
+    agent.events.on<DidCommMessageProcessedEvent>(DidCommEventTypes.DidCommMessageProcessed, async data => {
       const message = data.payload.message
       log(`Message processed for connection id ${data.payload.connection?.id} Type: ${message.type}`)
       makeRequestToLocalServer({
         data: `Message processed for connection id ${data.payload.connection?.id}`,
       })
-      if (message.type === V2StatusMessage.type.messageTypeUri) {
-        const messageCount = (message as V2StatusMessage).messageCount
+      if (message.type === DidCommStatusV2Message.type.messageTypeUri) {
+        const messageCount = (message as DidCommStatusV2Message).messageCount
         log(`Status message received. Remaining messages: ${messageCount}`)
         makeRequestToLocalServer({
           data: `Status message received. Remaining messages: ${messageCount}`,

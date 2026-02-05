@@ -1,5 +1,4 @@
 /* eslint-disable max-len */
-import type { OpenId4VcCredentialMetadata } from './oidcMetadata'
 import type { W3cCredentialJson, W3cIssuerJson } from './types'
 
 import { AnonCredsProofRequestRestriction } from '@credo-ts/anoncreds'
@@ -9,15 +8,14 @@ import {
   W3cCredentialRepository,
   ClaimFormat,
   JsonTransformer,
-  CredentialState,
   MdocRecord,
 } from '@credo-ts/core'
+import { DidCommCredentialState } from '@credo-ts/didcomm'
 import { OpenId4VciResolvedCredentialOffer } from '@credo-ts/openid4vc'
 import { TrustResolutionOutcome } from '@verana-labs/verre'
 
 import { MobileAgent } from './MobileAgent'
 import { getDidCommCredentialDisplayMetadata } from './RecordMetadata'
-import { getOpenId4VcCredentialMetadata } from './oidcMetadata'
 
 import { IssuerInfo, VerifierInfo } from '@2060/model/ServiceInfo'
 
@@ -91,46 +89,8 @@ export function sanitizeString(str?: string) {
   return words.join(' ')
 }
 
-function findDisplay<Display extends { locale?: string }>(display?: Display[]): Display | undefined {
-  if (!display) return undefined
-
-  let item = display.find(d => d.locale?.startsWith('en-'))
-  if (!item) item = display.find(d => !d.locale)
-  if (!item) item = display[0]
-
-  return item
-}
-
-function getIssuerDisplay(
-  credential: W3cCredentialJson,
-  openId4VcMetadata?: OpenId4VcCredentialMetadata | null,
-): CredentialIssuerDisplay {
+function getIssuerDisplay(credential: W3cCredentialJson): CredentialIssuerDisplay {
   const issuerDisplay: Partial<CredentialIssuerDisplay> = {}
-
-  // Try to extract from openid metadata first
-  if (openId4VcMetadata) {
-    const openidIssuerDisplay = findDisplay(openId4VcMetadata.issuer.display)
-
-    if (openidIssuerDisplay) {
-      issuerDisplay.name = openidIssuerDisplay.name
-
-      if (openidIssuerDisplay.logo) {
-        issuerDisplay.logo = {
-          url: openidIssuerDisplay.logo?.url,
-          altText: openidIssuerDisplay.logo?.alt_text,
-        }
-      }
-    }
-
-    // If the credentialDisplay contains a logo, and the issuerDisplay does not, use the logo from the credentialDisplay
-    const openidCredentialDisplay = findDisplay(openId4VcMetadata.credential.display)
-    if (openidCredentialDisplay && !issuerDisplay.logo && openidCredentialDisplay.logo) {
-      issuerDisplay.logo = {
-        url: openidCredentialDisplay.logo?.url,
-        altText: openidCredentialDisplay.logo?.alt_text,
-      }
-    }
-  }
 
   // If openid metadata is not available, try to extract display metadata from the credential based on JFF metadata
   const jffCredential = credential as JffW3cCredentialJson
@@ -154,42 +114,14 @@ function getIssuerDisplay(
     issuerDisplay.name = issuerJson?.name
   }
 
-  // Last fallback: use issuer id from openid4vc
-  if (!issuerDisplay.name && openId4VcMetadata?.issuer.id) {
-    issuerDisplay.name = openId4VcMetadata.issuer.id
-  }
-
   return {
     ...issuerDisplay,
     name: issuerDisplay.name ?? 'Unknown',
   }
 }
 
-function getW3cCredentialDisplay(
-  credential: W3cCredentialJson,
-  openId4VcMetadata?: OpenId4VcCredentialMetadata | null,
-) {
+function getW3cCredentialDisplay(credential: W3cCredentialJson) {
   const credentialDisplay: Partial<CredentialDisplay> = {}
-
-  if (openId4VcMetadata) {
-    const openidCredentialDisplay = findDisplay(openId4VcMetadata.credential.display)
-
-    if (openidCredentialDisplay) {
-      credentialDisplay.name = openidCredentialDisplay.name
-      credentialDisplay.description = openidCredentialDisplay.description
-      credentialDisplay.textColor = openidCredentialDisplay.text_color
-      credentialDisplay.backgroundColor = openidCredentialDisplay.background_color
-
-      if (openidCredentialDisplay.background_image) {
-        credentialDisplay.backgroundImage = {
-          url: openidCredentialDisplay.background_image.url,
-          altText: openidCredentialDisplay.background_image.alt_text,
-        }
-      }
-
-      // NOTE: logo is used in issuer display (not sure if that's right though)
-    }
-  }
 
   // If openid metadata is not available, try to extract display metadata from the credential based on JFF metadata
   const jffCredential = credential as JffW3cCredentialJson
@@ -216,7 +148,7 @@ function getW3cCredentialDisplay(
 }
 
 type CredentialDetailsFromExchange = {
-  state: CredentialState
+  state: DidCommCredentialState
   details: CredentialDetailsForDisplay
 }
 
@@ -224,11 +156,11 @@ export async function getCredentialDetailsFromExchange(
   agent: MobileAgent,
   credentialExchangeRecordId: string,
 ): Promise<CredentialDetailsFromExchange> {
-  const credentialExchangeRecord = await agent.credentials.getById(credentialExchangeRecordId)
+  const credentialExchangeRecord = await agent.didcomm.credentials.getById(credentialExchangeRecordId)
 
   // Credential already issued: take info from it
   if (credentialExchangeRecord.credentials[0]) {
-    const credentialRecord = await agent.w3cCredentials.getCredentialRecordById(
+    const credentialRecord = await agent.w3cCredentials.getById(
       credentialExchangeRecord.credentials[0].credentialRecordId,
     )
     const details = getCredentialDetailsForDisplay(credentialRecord)
@@ -236,7 +168,7 @@ export async function getCredentialDetailsFromExchange(
   }
 
   // Credential not yet issued: take info from offer
-  const formatData = await agent.credentials.getFormatData(credentialExchangeRecordId)
+  const formatData = await agent.didcomm.credentials.getFormatData(credentialExchangeRecordId)
 
   const attributes: Record<string, string> = {}
 
@@ -274,9 +206,9 @@ export function getCredentialMainInfo(
 ): CredentialMainInfo {
   if (credentialRecord instanceof W3cCredentialRecord) {
     const credential = JsonTransformer.toJSON(
-      credentialRecord.credential.claimFormat === ClaimFormat.JwtVc
-        ? credentialRecord.credential.credential
-        : credentialRecord.credential,
+      credentialRecord.firstCredential.claimFormat === ClaimFormat.JwtVc
+        ? credentialRecord.firstCredential.credential
+        : credentialRecord.firstCredential,
     ) as W3cCredentialJson
 
     // Give priority to any metadata created by a DIDComm credential exchange
@@ -296,9 +228,8 @@ export function getCredentialMainInfo(
       }
     }
 
-    const openId4VcMetadata = getOpenId4VcCredentialMetadata(credentialRecord)
-    const issuerDisplay = getIssuerDisplay(credential, openId4VcMetadata)
-    const credentialDisplay = getW3cCredentialDisplay(credential, openId4VcMetadata)
+    const issuerDisplay = getIssuerDisplay(credential)
+    const credentialDisplay = getW3cCredentialDisplay(credential)
 
     return {
       id: credentialRecord.id,
@@ -318,7 +249,7 @@ export function getCredentialMainInfo(
 export function getOfferedCredentialDetailsForDisplay(
   data: OpenId4VciResolvedCredentialOffer,
 ): CredentialDetailsForDisplay {
-  const credential = data.offeredCredentials[0]
+  const credential = data.offeredCredentialConfigurations[0]
 
   if (!credential) throw new Error('No credential offered')
 
@@ -339,9 +270,9 @@ export function getCredentialAttributes(credentialRecord: W3cCredentialRecord) {
   let attributes: Record<string, unknown> = {}
   if (credentialRecord.type === W3cCredentialRecord.type) {
     const credential = JsonTransformer.toJSON(
-      credentialRecord.credential.claimFormat === ClaimFormat.JwtVc
-        ? credentialRecord.credential.credential
-        : credentialRecord.credential,
+      credentialRecord.firstCredential.claimFormat === ClaimFormat.JwtVc
+        ? credentialRecord.firstCredential.credential
+        : credentialRecord.firstCredential,
     ) as W3cCredentialJson
 
     // FIXME: support credential with multiple subjects
@@ -428,11 +359,13 @@ export async function getPresentationRequestForDisplay(options: {
 }) {
   const { agent, proofRecordId, includeMatches } = options
 
-  const formatData = await agent.proofs.getFormatData(proofRecordId)
+  const formatData = await agent.didcomm.proofs.getFormatData(proofRecordId)
   const data = formatData.request?.anoncreds ?? formatData.request?.indy
   if (!data) throw new Error(`No available data for proof record with id ${proofRecordId}`)
 
-  const availableCredentials = await agent.proofs.getCredentialsForRequest({ proofRecordId })
+  const availableCredentials = await agent.didcomm.proofs.getCredentialsForRequest({
+    proofExchangeRecordId: proofRecordId,
+  })
   const availableCredentialsData =
     availableCredentials.proofFormats.anoncreds ?? availableCredentials.proofFormats.indy
 

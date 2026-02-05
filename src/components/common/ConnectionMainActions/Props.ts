@@ -1,4 +1,4 @@
-import { ConnectionRecord } from '@credo-ts/core'
+import { DidCommConnectionRecord } from '@credo-ts/didcomm'
 import { ParamListBase } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 
@@ -16,5 +16,5 @@ export type InitialConnectionMainActionsProps = {
 }
 
 export type ConnectionMainActionsProps = InitialConnectionMainActionsProps & {
-  connection: ConnectionRecord
+  connection: DidCommConnectionRecord
 }
