@@ -130,7 +130,7 @@ async function updateChatThread({
   realm: Realm
   agent: MobileAgent
 }) {
-  const [connection] = await agent.connections.findByInvitationDid(did)
+  const [connection] = await agent.didcomm.connections.findByInvitationDid(did)
   if (!connection) return
   const thread = findChatThread(realm, connection)
   if (!thread) return

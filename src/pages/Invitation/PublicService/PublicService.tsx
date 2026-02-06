@@ -1,4 +1,4 @@
-import { OutOfBandInvitation } from '@credo-ts/core'
+import { DidCommOutOfBandInvitation } from '@credo-ts/didcomm'
 import { TrustResolutionOutcome } from 'node_modules/@verana-labs/verre/build/types'
 import React, { useEffect, useRef, useState } from 'react'
 import { View } from 'react-native'
@@ -11,7 +11,7 @@ import { ServiceInfo, ServiceStatus } from '@2060/model'
 
 type Props = {
   did: string
-  invitation: OutOfBandInvitation
+  invitation: DidCommOutOfBandInvitation
   setAgeRestricted(canConnect: boolean): void
   userName: string | undefined
 }
