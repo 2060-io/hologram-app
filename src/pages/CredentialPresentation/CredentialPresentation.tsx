@@ -55,7 +55,6 @@ const CredentialPresentation = ({ navigation, route }: Props) => {
 
   const onAcceptCallback = () => {
     updateChatEntryMetadataIfNecessary(DidCommProofState.RequestSent)
-    navigation.goBack()
   }
 
   const onRefuseCallback = () => {
