@@ -50,16 +50,21 @@ const ProfileCreation = ({ navigation }: Props) => {
       await makeDirectory(walletDirectoryPath)
       await makeDirectory(mediaDirectoryPath)
 
-      const storage = { type: 'sqlite', config: { path: `${walletDirectoryPath}/afj.sqlite` } }
-      const getWalletConfig = (storeKey: string) => ({ id: 'afj', key: storeKey, storage })
-
       const key = await createAndStoreEncryptedKey(KeyChainService.AfjWallet)
-      await agent.wallet.create(getWalletConfig(key))
+
+      // Reconfigure askar store config with this new key
+      agent.modules.askar.config.store.key = key
+
+      await agent.modules.askar.provisionStore()
+    } else {
+      logError('createNewWallet: Agent already initialized!')
     }
   }, [agent])
 
   const updateNotificationInfo = useCallback(async () => {
-    const connection = await agent?.mediationRecipient.findDefaultMediatorConnection()
+    if (!agent) return
+
+    const connection = await agent.didcomm.mediationRecipient.findDefaultMediatorConnection()
     if (!connection) return
     const deviceToken = await getFcmDeviceToken()
     const parameters: SavePushNotificationDeviceInfoParameters = {

@@ -1,13 +1,12 @@
-import { MediaSharingRecord } from '@2060.io/credo-ts-didcomm-media-sharing'
+import { DidCommMediaSharingRecord } from '@2060.io/credo-ts-didcomm-media-sharing'
 import { ActionMenuRecord, ActionMenuRepository } from '@credo-ts/action-menu'
+import { BaseRecord, JsonTransformer } from '@credo-ts/core'
 import {
-  AgentMessage,
-  BaseRecord,
-  BasicMessageRecord,
-  getOutboundMessageContext,
-  JsonTransformer,
-  MessageSender,
-} from '@credo-ts/core'
+  DidCommMessage,
+  DidCommBasicMessageRecord,
+  DidCommMessageSender,
+  getOutboundDidCommMessageContext,
+} from '@credo-ts/didcomm'
 import queue, { Worker } from 'react-native-job-queue'
 
 import AgentSingleton from './AgentSingleton'
@@ -94,8 +93,8 @@ export class AgentActionQueueSingleton {
 
     const getAssociatedRecord = async (options: { recordType: string; recordId: string }) => {
       const { recordType, recordId } = options
-      if (recordType === BasicMessageRecord.type) return agent.basicMessages.getById(recordId)
-      if (recordType === MediaSharingRecord.type) return agent.modules.media.findById(recordId)
+      if (recordType === DidCommBasicMessageRecord.type) return agent.didcomm.basicMessages.getById(recordId)
+      if (recordType === DidCommMediaSharingRecord.type) return agent.modules.media.findById(recordId)
       if (recordType === ActionMenuRecord.type) {
         return agent.dependencyManager.resolve(ActionMenuRepository).findById(agent.context, recordId)
       }
@@ -110,10 +109,10 @@ export class AgentActionQueueSingleton {
             throw Error('No outbound message context data for this action')
           }
 
-          const messageSender = agent.dependencyManager.resolve(MessageSender)
+          const messageSender = agent.dependencyManager.resolve(DidCommMessageSender)
 
           const connectionRecord = payload.outboundMessageContextData.didcommConnectionId
-            ? await agent.connections.getById(payload.outboundMessageContextData.didcommConnectionId)
+            ? await agent.didcomm.connections.getById(payload.outboundMessageContextData.didcommConnectionId)
             : undefined
 
           try {
@@ -126,8 +125,8 @@ export class AgentActionQueueSingleton {
             }
 
             await messageSender.sendMessage(
-              await getOutboundMessageContext(agent.context, {
-                message: JsonTransformer.fromJSON(payload.outboundMessageContextData.message, AgentMessage),
+              await getOutboundDidCommMessageContext(agent.context, {
+                message: JsonTransformer.fromJSON(payload.outboundMessageContextData.message, DidCommMessage),
                 associatedRecord: associatedRecord ?? undefined,
                 connectionRecord,
               }),
@@ -171,7 +170,7 @@ export class AgentActionQueueSingleton {
     this.isConfigured = isConfigured
   }
 
-  addJob(payload: AgentActionOptions, startQueue: boolean) {
+  addJob(payload: AgentActionOptions, startQueue: boolean = true) {
     queue.addJob('AgentAction', { ...payload, attempts: 4 }, undefined, startQueue)
   }
 }

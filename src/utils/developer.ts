@@ -1,4 +1,9 @@
-import { getStorageData, setStorageData, LOGS_ENABLED_PERSIST_KEY } from '@2060/services/localStorage'
+import {
+  getStorageData,
+  setStorageData,
+  LOGS_ENABLED_PERSIST_KEY,
+  DEVELOPER_MODE_ENABLED_PERSIST_KEY,
+} from '@2060/services/localStorage'
 
 export interface DevEnvsKeys {
   DATA_STORE_URL: string
@@ -42,9 +47,13 @@ export const allDevEnvs: DevEnv[] = [
 ]
 
 export const areLogsEnabled = async () => {
-  return ((await getStorageData(LOGS_ENABLED_PERSIST_KEY)) as boolean) ?? false
+  return Boolean(await getStorageData(LOGS_ENABLED_PERSIST_KEY))
 }
 
 export const saveLogsEnabled = async (newValue: boolean) => {
   await setStorageData(LOGS_ENABLED_PERSIST_KEY, newValue)
+}
+
+export const getIsDeveloperMode = async () => {
+  return Boolean(await getStorageData(DEVELOPER_MODE_ENABLED_PERSIST_KEY))
 }
