@@ -20,7 +20,7 @@ const CredentialPresentation = ({ navigation, route }: Props) => {
   } = route.params
   const { realm } = useLocalRealm()
   const [credentialAttributes, setCredentialAttributes] = useState(initCredentialAttributes)
-  const [proofState, setProofState] = useState<ProofState>(route.params.proofState)
+  const [proofState, setProofState] = useState<DidCommProofState>(route.params.proofState)
 
   useEffect(() => {
     const chatEntry = realm?.objects(ChatEntry).filtered(`id = '${chatEntryId}'`)
