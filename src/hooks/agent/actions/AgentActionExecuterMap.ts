@@ -340,12 +340,10 @@ export const AgentActionExecuterMap: Record<AgentActionType, ActionFactory> = {
           devicePlatform: Platform.OS,
         },
       })
-      const defaultMediatorConnection =
-        await options.agent.didcomm.mediationRecipient.findDefaultMediatorConnection()
-      defaultMediatorConnection!.setTag('deviceToken', deviceToken)
-      await options.agent.dependencyManager
-        .resolve(DidCommConnectionService)
-        .update(options.agent.context, defaultMediatorConnection!)
+      const didCommConnectionService = options.agent.dependencyManager.resolve(DidCommConnectionService)
+      const connection = await didCommConnectionService.getById(options.agent.context, connectionId)
+      connection.setTag('deviceToken', deviceToken)
+      await didCommConnectionService.update(options.agent.context, connection)
       return { outgoingMessageType: DidCommPushNotificationsFcmSetDeviceInfoMessage.type.messageTypeUri }
     }
   },
