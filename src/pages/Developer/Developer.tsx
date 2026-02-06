@@ -23,6 +23,7 @@ import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { AgentActionQueueSingleton } from '@2060/services/AgentActionQueueSingleton'
 import AgentSingleton from '@2060/services/AgentSingleton'
 import { deleteAllKeys } from '@2060/services/keys'
+import { removeStorageData, USER_INVITATION_OUT_OF_BAND_RECORD_ID } from '@2060/services/localStorage'
 import { deleteDir, walletDirectoryPath } from '@2060/utils/RNFS'
 import {
   allDevEnvs,
@@ -129,6 +130,7 @@ const Developer = ({ navigation }: Props) => {
       await agent.modules.askar.deleteStore()
       await deleteDir(walletDirectoryPath)
       await deleteAllKeys()
+      await removeStorageData(USER_INVITATION_OUT_OF_BAND_RECORD_ID)
       closeRealm()
       AgentSingleton.instance.setAppIsSubscribedChatToEvents(false)
       AgentSingleton.instance.setIsAppSubscribedToConnectionEvents(false)

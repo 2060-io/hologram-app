@@ -1,4 +1,5 @@
-import React, { memo, useCallback, useRef, useState } from 'react'
+import { Skeleton } from 'moti/skeleton'
+import React, { memo, useCallback, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, Linking, TouchableOpacity, ViewStyle } from 'react-native'
 
@@ -15,14 +16,17 @@ import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { useValidateKidAgeRestrictions } from '@2060/hooks/useValidateKidAgeRestrictions'
 import { ServiceInfo } from '@2060/model'
 import { getFlagEmoji } from '@2060/utils'
+import { widthPercentageToDP } from '@2060/utils/responsiveUtils'
 import { toast } from '@2060/utils/toast'
 
 type Props = {
   serviceInfo: ServiceInfo
+  isFetchingInfo: boolean
+  failedFetchInfo: boolean
   containerStyle?: ViewStyle
 }
 
-const ServiceMainInfo = ({ serviceInfo, containerStyle }: Props) => {
+const ServiceMainInfo = ({ serviceInfo, isFetchingInfo, failedFetchInfo, containerStyle }: Props) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
@@ -46,6 +50,35 @@ const ServiceMainInfo = ({ serviceInfo, containerStyle }: Props) => {
     }
   }, [])
 
+  const badge = useMemo(() => {
+    if (failedFetchInfo) {
+      return (
+        <SvgIcon
+          name="warning"
+          width={widthPercentageToDP('25%')}
+          height={widthPercentageToDP('25%')}
+          fill={theme.colors.lightGrey}
+        />
+      )
+    }
+    return (
+      <Skeleton
+        height={widthPercentageToDP('25%')}
+        width={widthPercentageToDP('25%')}
+        colorMode={theme.isDarkMode ? 'dark' : 'light'}
+        radius="round"
+        show={isFetchingInfo}
+      >
+        <Avatar
+          uri={serviceInfo?.logoUrl}
+          label={serviceInfo?.name}
+          size="25%"
+          onImagePressed={onAvatarImagePressed}
+        />
+      </Skeleton>
+    )
+  }, [isFetchingInfo, failedFetchInfo, serviceInfo])
+
   return (
     <View style={[styles.containerCardIssuerInfo, containerStyle]}>
       <FullScreenImage
@@ -53,18 +86,24 @@ const ServiceMainInfo = ({ serviceInfo, containerStyle }: Props) => {
         closeFullScreenImage={closeFullScreenImage}
         imageUri={imageFullScreenUri.current!}
       />
-      <Avatar
-        uri={serviceInfo.logoUrl}
-        label={serviceInfo.name}
-        size="25%"
-        onImagePressed={onAvatarImagePressed}
-      />
+      {badge}
       <Text fontFamily="EuclidCircularA-Medium" style={styles.issuerName}>
         {serviceInfo.name}
       </Text>
       {serviceInfo.description && <Text style={[styles.text]}>{serviceInfo.description}</Text>}
-      <VerifiedIcon style={styles.containerIconValidity} status={serviceInfo.status} />
-      <Did did={serviceInfo.did} serviceInfoStatus={serviceInfo.status} />
+      <View style={styles.containerIconValidity}>
+        <Skeleton
+          height={styles.iconValidity.height}
+          width={styles.iconValidity.width}
+          colorMode={theme.isDarkMode ? 'dark' : 'light'}
+          radius="round"
+          show={isFetchingInfo}
+        >
+          <VerifiedIcon style={styles.iconValidity} status={serviceInfo.status} />
+        </Skeleton>
+      </View>
+      <Did did={serviceInfo.did} serviceInfoStatus={serviceInfo.status} isFetchingInfo={isFetchingInfo} />
+      {failedFetchInfo && <Text style={styles.failedToFetchInfoText}>{t('credential.failedFetchInfo')}</Text>}
       {serviceProvider && (
         <View style={styles.serviceProviderInfoContainer}>
           <Text style={styles.text}>{t('invitation.serviceProvider')}</Text>

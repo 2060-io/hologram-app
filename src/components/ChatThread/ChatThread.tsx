@@ -34,7 +34,7 @@ const ChatThread = ({
   const theme = useTheme()
   const styles = getStyles(theme)
   const { t } = useTranslation()
-  const connectionExists = useConnectionById(connectionId)
+  const connection = useConnectionById(connectionId)
   const hasChildren = childCount && childCount > 0
   const lastActivityDate = hasChildren ? lastChildActivityAt : lastActivityAt
 
@@ -53,7 +53,7 @@ const ChatThread = ({
         </Text>
         {hasChildren ? (
           <Text style={styles.numberConversationText}>{`${childCount}  ${t('chat.conversations')}`}</Text>
-        ) : connectionExists ? (
+        ) : connection ? (
           <Text numberOfLines={2} style={styles.textPreview}>
             {preview}
           </Text>

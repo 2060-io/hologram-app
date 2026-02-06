@@ -75,7 +75,8 @@
       "canNotOpenURL": "Cannot open ",
       "dismiss": "Dismiss",
       "selected": "1 selected",
-      "selected_other": "{{ count }} selected"
+      "selected_other": "{{ count }} selected",
+      "by": "by "
     },
     "navigation": {
       "back": "Back",
@@ -247,7 +248,8 @@
       "errorCreatingQR": "An error creating credential QR has occurred. Try again",
       "youRefusedPresentation": "You refused credential presentation",
       "noResponseFromVerifier": "No response from verifier within the limit time. Presentation is finished.",
-      "youDidNotResponseWithinTime": "You did not respond within the time limit. Presentation is finished."
+      "youDidNotResponseWithinTime": "You did not respond within the time limit. Presentation is finished.",
+      "failedFetchInfo": "Error while trying to resolve this service"
     },
     "credentialOffer": {
       "title": "Credential Offer",
@@ -261,7 +263,7 @@
       "title": "Presentation Request",
       "verifiablePresentation": "Verifiable Presentation",
       "selectCredentialYouWouldLikeToPresentTo": "Select the credential you would like to present to ",
-      "successfullyReceived": "Presentation successfully received by ",
+      "successfullyReceived": "Presentation successfully received ",
       "rejected": "Presentation rejected by ",
       "viewInChat": "View in chat",
       "presented": "Presented",

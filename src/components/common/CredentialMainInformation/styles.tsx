@@ -20,6 +20,8 @@ const styles = (theme: AppTheme, size: string) => {
     },
     imageContainer: {
       flex: 3,
+      justifyContent: 'center',
+      alignItems: 'center',
     },
     image: {
       width: screenWidth * 0.15,

@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { StyleSheet, TouchableOpacity } from 'react-native'
 
 import { Connections } from '@2060/components'
-import { ConnectionItem } from '@2060/components/Connections/ConnectionsList'
+import { ConnectionItem } from '@2060/components/Connections/ConnectionList'
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
 import { Text } from '@2060/components/common'
 import { IS_IOS } from '@2060/constants'

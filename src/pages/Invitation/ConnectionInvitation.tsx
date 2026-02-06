@@ -1,8 +1,7 @@
 import { DidCommConnectionRecord } from '@credo-ts/didcomm'
 import { StackActions } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
-import { TrustResolutionOutcome } from '@verana-labs/verre'
-import React, { useLayoutEffect, useState, useRef, useTransition } from 'react'
+import React, { useLayoutEffect, useState, useTransition } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TouchableOpacity, View, ScrollView } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -16,7 +15,6 @@ import { NavigationStackParams } from '@2060/components/Navigation/NavigationPro
 import { Avatar, HeaderTitle, ModalLoading, Text } from '@2060/components/common'
 import { useChats, useConnectionById, useMobileAgent, useUserProfile } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { ServiceInfo } from '@2060/model'
 import { acceptInvitation } from '@2060/services/agent/oob'
 import { logError } from '@2060/utils'
 import { getConnectionDisplayName } from '@2060/utils/connectionUtils'
@@ -39,38 +37,28 @@ const getInvitationType = (
 interface Props extends StackScreenProps<NavigationStackParams, 'ConnectionInvitation'> {}
 
 const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => {
-  const { outOfBandRecord, existingConnectionId } = route.params
-  const isAlreadyConnected = !!existingConnectionId
+  const { t } = useTranslation()
+  const theme = useTheme()
+  const styles = getStyles(theme)
+  const { agent } = useMobileAgent()
+  const { findOrCreateThread } = useChats()
+  const { userProfileData } = useUserProfile()
   const [isAcceptingInvitation, startAcceptInvitationTransition] = useTransition()
   const [communicationChannels, setCommunicationChannels] = useState({
     allowChats: true,
     allowAudioCalls: false,
     allowVideoCalls: false,
   })
+  const [ageRestricted, setAgeRestricted] = useState(false)
+  const { outOfBandRecord, existingConnectionId } = route.params
   const invitation = outOfBandRecord?.outOfBandInvitation
   const invitationDid = invitation.invitationDids[0]
-  const serviceInfo = useRef<ServiceInfo>({
-    did: invitationDid,
-    description: invitation.label,
-    id: invitation.id,
-    logoUrl: invitation.imageUrl,
-    name: invitation.label ?? '',
-    minimumAgeRequired: 0,
-    status: TrustResolutionOutcome.INVALID,
-  })
-
-  const { t } = useTranslation()
-  const { agent } = useMobileAgent()
-  const theme = useTheme()
-  const styles = getStyles(theme)
-  const { findOrCreateThread } = useChats()
-  const { userProfileData } = useUserProfile()
   const outOfBandId = outOfBandRecord.id
   const parentConnectionId = outOfBandRecord.getTag('parentConnectionId') as string | undefined
   const invitationType = getInvitationType(invitationDid, parentConnectionId)
   const connectionParent = useConnectionById(parentConnectionId)
   const parentConnectionName = connectionParent ? getConnectionDisplayName(connectionParent) : ''
-  const [ageRestricted, setAgeRestricted] = useState(false)
+  const isAlreadyConnected = !!existingConnectionId
   const canConnect = !isAlreadyConnected && !ageRestricted
 
   const goToChat = (connection: DidCommConnectionRecord) => {
@@ -158,7 +146,7 @@ const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => 
           {invitationType === 'public' ? (
             <PublicService
               did={invitationDid}
-              initialServiceInfo={serviceInfo.current}
+              invitation={invitation}
               setAgeRestricted={setAgeRestricted}
               userName={userProfileData?.displayName}
             />

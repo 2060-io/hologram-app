@@ -458,7 +458,7 @@ const PersonalChat = ({
         {menu ? (
           <ContextualMenu
             menu={menu}
-            connectionIconUrl={flags.connectionIconUrl}
+            connectionIconUrl={chatThreadData.picture}
             onSelectOption={handleOptionSelectedContextualMenu}
           />
         ) : null}

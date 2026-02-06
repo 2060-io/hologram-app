@@ -1,3 +1,4 @@
+import { Skeleton } from 'moti/skeleton'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { StyleSheet, TouchableOpacity } from 'react-native'
@@ -20,7 +21,13 @@ const truncateDid = (fullDid: string) => {
   return `${did}:${method}:${truncatedHash}...${domain}`
 }
 
-const Did = ({ did, serviceInfoStatus }: { did: string; serviceInfoStatus: ServiceStatus }) => {
+type Props = {
+  did: string
+  serviceInfoStatus: ServiceStatus
+  isFetchingInfo: boolean
+}
+
+const Did = ({ did, serviceInfoStatus, isFetchingInfo }: Props) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
@@ -37,15 +44,29 @@ const Did = ({ did, serviceInfoStatus }: { did: string; serviceInfoStatus: Servi
   const onPressDid = () => setTruncated(!truncated)
 
   return (
-    <TouchableOpacity onPress={onPressDid} activeOpacity={0} disabled={did.length <= DID_MAX_DISPLAY_CHARS}>
-      <Text style={styles.text}>
-        <Text
-          fontFamily="EuclidCircularA-Bold"
-          style={styles.text}
-        >{`${truncated ? initialDid : did} `}</Text>
-        {serviceIs[serviceInfoStatus]}
-      </Text>
-    </TouchableOpacity>
+    <Skeleton
+      height={styles.text.fontSize * 3 + 6}
+      width={'100%'}
+      colorMode={theme.isDarkMode ? 'dark' : 'light'}
+      radius="round"
+      show={isFetchingInfo}
+    >
+      {isFetchingInfo ? null : (
+        <TouchableOpacity
+          onPress={onPressDid}
+          activeOpacity={0}
+          disabled={did.length <= DID_MAX_DISPLAY_CHARS}
+        >
+          <Text style={styles.text}>
+            <Text
+              fontFamily="EuclidCircularA-Bold"
+              style={styles.text}
+            >{`${truncated ? initialDid : did} `}</Text>
+            {serviceIs[serviceInfoStatus]}
+          </Text>
+        </TouchableOpacity>
+      )}
+    </Skeleton>
   )
 }
 

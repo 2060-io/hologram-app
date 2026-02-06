@@ -1,13 +1,16 @@
 import { CacheModuleConfig } from '@credo-ts/core'
+import { fetch as NetInfo } from '@react-native-community/netinfo'
 import { TrustResolutionOutcome } from '@verana-labs/verre'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import Realm from 'realm'
 
 import { getServiceInfo as getServiceInfoApi } from '../services/trustResolution'
 
 import { useMobileAgent } from './agent/MobileAgentProvider'
+import { findChatThread, updateThread } from './agent/chat/services'
+import { useLocalRealm } from './providers/RealmProvider'
 
-import { useNetwork } from '@2060/hooks/useNetwork'
 import { isServiceInfo, ServiceInfo } from '@2060/model'
 import { MobileAgent } from '@2060/services/agent'
 import { logError } from '@2060/utils'
@@ -20,64 +23,64 @@ import { toast } from '@2060/utils/toast'
  * try only to take info from there. But it is possible to force to refresh,
  * useful in cases where it is important to be up to date.
  *
- * @param did decentralised identifier of the service
+ * @param did decentralized identifier of the service
  * @param forceFetch attempt to refresh service info, even if it is already cached
  *
  * @returns ServiceInfo object if found, undefined otherwise
  */
-export const useFetchServiceInfo = (did?: string, forceFetch?: boolean) => {
-  const [serviceInfo, setServiceInfo] = useState<ServiceInfo | undefined>()
-  const [isFetching, setIsFetching] = useState(true)
-  const { assertConnectedNetwork } = useNetwork()
-  const isNetworkConnected = assertConnectedNetwork()
+export const useFetchServiceInfo = (did?: string, forceFetch: boolean = true) => {
   const { t } = useTranslation()
   const { agent } = useMobileAgent()
+  const { realm } = useLocalRealm()
+  const [serviceInfo, setServiceInfo] = useState<ServiceInfo | undefined>()
+  const [isFetchingInfo, setIsFetching] = useState(false)
+  const [failedFetchInfo, setFailed] = useState<boolean>(false)
 
   useEffect(() => {
     const getServiceInfo = async () => {
-      if (!did) {
-        setServiceInfo(undefined)
-        setIsFetching(false)
-        return
-      }
+      if (!did || !agent) return
 
-      const cachedServiceInfo = agent ? await getStoredServiceInfo(did, agent) : undefined
+      const cachedServiceInfo = await getStoredServiceInfo(did, agent)
       if (cachedServiceInfo) setServiceInfo(cachedServiceInfo)
 
-      if (cachedServiceInfo && !forceFetch) {
-        setIsFetching(false)
-        return
-      }
+      const firstConditionToFetch = forceFetch
+      const secondConditionToFetch =
+        !cachedServiceInfo?.lastTimeUpdated || isOlderThan24Hours(cachedServiceInfo.lastTimeUpdated)
+      const mustTriggerFetch = firstConditionToFetch && secondConditionToFetch
+      if (!mustTriggerFetch) return
 
+      const isNetworkConnected = Boolean((await NetInfo()).isConnected)
       if (!isNetworkConnected) {
+        setFailed(true)
         toast({ type: 'error', message: t('invitation.unableToGetServiceInfo') })
         return
       }
 
       try {
-        if (!agent) return
-        const serviceInfoResponse = await getServiceInfoApi({
-          agent,
-          did,
-        })
-
+        setIsFetching(true)
+        const serviceInfoResponse = await getServiceInfoApi({ agent, did })
+        // if service exists in trust registry, store it in cache otherwise keep the cached one (if any)
         if (serviceInfoResponse) {
-          if (agent) await storeServiceInfo(did, agent, serviceInfoResponse)
           setServiceInfo(serviceInfoResponse)
+          await storeServiceInfo(did, agent, serviceInfoResponse)
+          if (realm) updateChatThread({ did, serviceInfoResponse, realm, agent })
+        } else if (cachedServiceInfo) {
+          await storeServiceInfo(did, agent, cachedServiceInfo)
         }
       } catch (error) {
-        logError(`Error getting service ${did} info API: ${error}`)
-        toast({ type: 'error', message: `${t('invitation.errorGettingServiceInfoAPI')} ${error}` })
+        logError(`Error getting service ${did} info API`, error)
+        toast({ type: 'error', message: t('invitation.errorGettingServiceInfoAPI') })
       } finally {
         setIsFetching(false)
       }
     }
     getServiceInfo()
-  }, [did, forceFetch])
+  }, [realm, did])
 
   return {
     serviceInfo,
-    isFetching,
+    isFetchingInfo,
+    failedFetchInfo,
   }
 }
 
@@ -110,6 +113,34 @@ export async function getStoredServiceInfo(
 
 async function storeServiceInfo(did: string, agent: MobileAgent, serviceInfo: ServiceInfo) {
   const cache = agent.dependencyManager.resolve(CacheModuleConfig).cache
+  await cache.set<ServiceInfo>(agent.context, `serviceInfo:${did}`, {
+    ...serviceInfo,
+    lastTimeUpdated: new Date().getTime(),
+  })
+}
 
-  await cache.set<ServiceInfo>(agent.context, `serviceInfo:${did}`, serviceInfo)
+async function updateChatThread({
+  did,
+  serviceInfoResponse,
+  realm,
+  agent,
+}: {
+  did: string
+  serviceInfoResponse: ServiceInfo
+  realm: Realm
+  agent: MobileAgent
+}) {
+  const [connection] = await agent.didcomm.connections.findByInvitationDid(did)
+  if (!connection) return
+  const thread = findChatThread(realm, connection)
+  if (!thread) return
+  updateThread(realm, thread.id, {
+    topic: serviceInfoResponse.name,
+    picture: serviceInfoResponse.logoUrl,
+  })
+}
+
+const TWENTY_FOUR_HOURS_MS = 24 * 60 * 60 * 1000 // 86400000 ms
+function isOlderThan24Hours(lastTimeUpdated: number): boolean {
+  return new Date().getTime() - lastTimeUpdated >= TWENTY_FOUR_HOURS_MS
 }
