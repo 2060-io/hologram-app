@@ -66,6 +66,7 @@ const Scan = ({ navigation }: Props) => {
         } else if (invitationType === DidcommInvitationType.CredentialOffer) {
           navigation.navigate('DidcommCredentialOffer', {
             credentialRecordId: recordId,
+            did: invitation.invitationDids[0],
           })
         } else if (invitationType === DidcommInvitationType.PresentationRequest) {
           navigation.navigate('DidcommPresentationRequest', {
