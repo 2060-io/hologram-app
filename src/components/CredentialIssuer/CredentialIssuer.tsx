@@ -1,4 +1,4 @@
-import { ConnectionRecord } from '@credo-ts/core'
+import { DidCommConnectionRecord } from '@credo-ts/didcomm'
 import React, { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ActivityIndicator, TouchableOpacity, View } from 'react-native'
@@ -13,7 +13,7 @@ import { getFlagEmoji, trimText } from '@2060/utils'
 
 type Props = {
   service: ServiceInfo
-  connect: (service: ServiceInfo) => Promise<ConnectionRecord | null>
+  connect: (service: ServiceInfo) => Promise<DidCommConnectionRecord | null>
   tryToOpenURL: (url: string) => void
   goToConnectionDetails: (connectionId: string) => void
   agent: MobileAgent | undefined
@@ -37,12 +37,12 @@ const CredentialIssuer = ({ service, connect, tryToOpenURL, goToConnectionDetail
     connectionExists: false,
     isJustConnected: false,
   })
-  const connectionRef = useRef<ConnectionRecord>(undefined)
+  const connectionRef = useRef<DidCommConnectionRecord>(undefined)
 
   useEffect(() => {
     const verifyConnectionExists = async () => {
       if (!agent) return
-      const [connection] = await agent.connections.findByInvitationDid(did)
+      const [connection] = await agent.didcomm.connections.findByInvitationDid(did)
       setState(prevState => ({ ...prevState, connectionExists: !!connection, isJustConnected: false }))
       connectionRef.current = connection
     }

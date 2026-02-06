@@ -62,7 +62,7 @@ const IdentityCredentialIssuers = ({ navigation }: Props) => {
     if (!agent) return null
     try {
       setUserMadeSomeAction(true)
-      let { connectionRecord } = await agent.oob.receiveImplicitInvitation({
+      let { connectionRecord } = await agent.didcomm.oob.receiveImplicitInvitation({
         did: service.did,
         label: service.name,
         imageUrl: service.logoUrl,
@@ -70,7 +70,7 @@ const IdentityCredentialIssuers = ({ navigation }: Props) => {
       })
       if (!connectionRecord) throw new Error('Error connecting')
 
-      connectionRecord = await agent.connections.returnWhenIsConnected(connectionRecord.id, {
+      connectionRecord = await agent.didcomm.connections.returnWhenIsConnected(connectionRecord.id, {
         timeoutMs: 5000,
       })
       findOrCreateThread({ connection: connectionRecord })

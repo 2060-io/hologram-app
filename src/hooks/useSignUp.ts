@@ -24,7 +24,6 @@ export const useSignUp = () => {
     if (!agent || !agent?.isInitialized) throw new Error('Agent not initialized')
 
     let { connectionRecord: cloudAgentConnection } = await agent.didcomm.oob.receiveImplicitInvitation({
-      label: 'Hologram',
       did: cloudAgentPublicDid,
       label: defaultServiceAlias,
       imageUrl: 'https://i.welcome.hologram.2060.io/avatar.png',
