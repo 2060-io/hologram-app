@@ -37,9 +37,9 @@ const DidcommCredentialOffer: React.FC<Props> = ({ route, navigation }) => {
     }
   }
 
-  const goToChatScreen = async () => {
+  const goToChatScreen = async (invitationDid: string) => {
     if (!agent) return
-    const connections = await agent.didcomm.connections.findByInvitationDid(did)
+    const connections = await agent.didcomm.connections.findByInvitationDid(invitationDid)
     if (connections.length) {
       const [connection] = connections
       const chatThreadId = findOrCreateThread({ connection }).id
@@ -59,7 +59,7 @@ const DidcommCredentialOffer: React.FC<Props> = ({ route, navigation }) => {
       type: AgentActionType.AcceptCredentialOffer,
       parameters,
     })
-    goToChatScreen()
+    did ? goToChatScreen(did) : navigation.goBack()
   }
 
   const refuse = () => {
@@ -69,7 +69,7 @@ const DidcommCredentialOffer: React.FC<Props> = ({ route, navigation }) => {
       type: AgentActionType.DeclineCredentialOffer,
       parameters,
     })
-    goToChatScreen()
+    did ? goToChatScreen(did) : navigation.goBack()
   }
 
   if (!credentialDetails) return null
