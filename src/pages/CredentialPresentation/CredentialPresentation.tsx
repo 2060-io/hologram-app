@@ -1,4 +1,4 @@
-import { ProofState } from '@credo-ts/core'
+import { DidCommProofState } from '@credo-ts/didcomm'
 import { StackScreenProps } from '@react-navigation/stack'
 import React, { useEffect, useState } from 'react'
 
@@ -43,7 +43,7 @@ const CredentialPresentation = ({ navigation, route }: Props) => {
     }
   }, [])
 
-  const updateChatEntryMetadataIfNecessary = (newProofState: ProofState) => {
+  const updateChatEntryMetadataIfNecessary = (newProofState: DidCommProofState) => {
     if (realm) {
       const [chatEntry] = findAllByAssociatedRecordId(realm, proofRecordId, ChatEntryType.VPResponse)
       if (chatEntry) {
@@ -54,12 +54,12 @@ const CredentialPresentation = ({ navigation, route }: Props) => {
   }
 
   const onAcceptCallback = () => {
-    updateChatEntryMetadataIfNecessary(ProofState.RequestSent)
+    updateChatEntryMetadataIfNecessary(DidCommProofState.RequestSent)
     navigation.goBack()
   }
 
   const onRefuseCallback = () => {
-    updateChatEntryMetadataIfNecessary(ProofState.Abandoned)
+    updateChatEntryMetadataIfNecessary(DidCommProofState.Abandoned)
     navigation.goBack()
   }
 

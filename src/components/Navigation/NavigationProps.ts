@@ -1,4 +1,4 @@
-import { ConnectionRecord, OutOfBandRecord, ProofState } from '@credo-ts/core'
+import { DidCommConnectionRecord, DidCommOutOfBandRecord, DidCommProofState } from '@credo-ts/didcomm'
 
 import { ChatEntryData, ServiceInfo } from '@2060/model'
 import { CredentialMainInfo } from '@2060/services/agent/display'
@@ -28,9 +28,9 @@ export type NavigationStackParams = {
   PersonalChatStack: undefined
   OpenIdCredentialOffer: { url: string }
   OpenIdPresentationRequest: { url: string }
-  DidcommCredentialOffer: { credentialRecordId: string }
+  DidcommCredentialOffer: { credentialRecordId: string; did: string }
   DidcommPresentationRequest: { did: string; proofRecordId: string }
-  ConnectionInvitation: { outOfBandRecord: OutOfBandRecord; existingConnectionId?: string }
+  ConnectionInvitation: { outOfBandRecord: DidCommOutOfBandRecord; existingConnectionId?: string }
   ConnectionDetails: { connectionId: string }
   RelatedConnections: { parentConnectionId: string }
   UserInvitation: undefined
@@ -48,7 +48,7 @@ export type NavigationStackParams = {
     credentials: CredentialMainInfo[]
   }
   ForwardConnection: {
-    connection: ConnectionRecord
+    connection: DidCommConnectionRecord
   }
   PresentCredential: {
     credentialRecordId: string
@@ -58,7 +58,7 @@ export type NavigationStackParams = {
     chatEntryId: string
     credentialMainInfo: CredentialMainInfo
     credentialAttributes: Record<string, unknown>
-    proofState: ProofState
+    proofState: DidCommProofState
     proofRecordId: string
   }
   EphemeralCredentialPresentation: {

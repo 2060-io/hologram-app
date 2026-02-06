@@ -1,8 +1,8 @@
-import { ConnectionRecord } from '@credo-ts/core'
+import { DidCommConnectionRecord } from '@credo-ts/didcomm'
 import React, { createContext, useState, useEffect, useContext, useMemo } from 'react'
 
 import { useMobileAgent } from './MobileAgentProvider'
-import { useAgentConnectionEvents } from './connections/useAgentConnectionEvents'
+import { subscribeToAgentConnectionEvents } from './connections/subscribeToAgentConnectionEvents'
 import {
   addRecord,
   recordsAddedByType,
@@ -18,7 +18,7 @@ import { getConnectionType } from '@2060/utils/connectionUtils'
 
 interface ConnectionContextInterface {
   loading: boolean
-  connections: ConnectionRecord[]
+  connections: DidCommConnectionRecord[]
 }
 
 const ConnectionContext = createContext<ConnectionContextInterface | undefined>(undefined)
@@ -30,19 +30,19 @@ export const useConnections = () => {
   return connectionContext
 }
 
-export const useConnectionById = (id?: string): ConnectionRecord | undefined => {
+export const useConnectionById = (id?: string): DidCommConnectionRecord | undefined => {
   const { connections } = useConnections()
 
   if (!id) return undefined
-  return connections.find((c: ConnectionRecord) => c.id === id)
+  return connections.find((c: DidCommConnectionRecord) => c.id === id)
 }
 
-export const useParentConnections = (): ConnectionRecord[] => {
+export const useParentConnections = (): DidCommConnectionRecord[] => {
   const { connections } = useConnections()
   const filteredConnections = useMemo(
     () =>
       connections.filter(
-        (c: ConnectionRecord) =>
+        (c: DidCommConnectionRecord) =>
           c.getTag('parentConnectionId') === undefined &&
           [ConnectionType.Peer, ConnectionType.Service].includes(getConnectionType(c) as ConnectionType),
       ),
@@ -51,10 +51,13 @@ export const useParentConnections = (): ConnectionRecord[] => {
   return filteredConnections
 }
 
-export const useConnectionByParentConnectionId = (parentConnectionId: string): ConnectionRecord[] => {
+export const useConnectionByParentConnectionId = (parentConnectionId: string): DidCommConnectionRecord[] => {
   const { connections } = useConnections()
   const filteredConnections = useMemo(
-    () => connections.filter((c: ConnectionRecord) => c.getTag('parentConnectionId') === parentConnectionId),
+    () =>
+      connections.filter(
+        (c: DidCommConnectionRecord) => c.getTag('parentConnectionId') === parentConnectionId,
+      ),
     [connections, parentConnectionId],
   )
   return filteredConnections
@@ -65,35 +68,37 @@ interface Props {
 }
 
 export const ConnectionProvider: React.FC<React.PropsWithChildren<Props>> = ({ children }) => {
-  const [state, setState] = useState<RecordsState<ConnectionRecord>>({
+  const { isInitialized, agent } = useMobileAgent()
+  const [state, setState] = useState<RecordsState<DidCommConnectionRecord>>({
     records: [],
     loading: true,
   })
 
-  const { isInitialized, agent } = useMobileAgent()
-
-  const setInitialState = async () => {
-    if (agent && isInitialized) {
-      const records = await agent.connections.getAll()
-      setState({ records, loading: false })
-    }
-  }
+  useEffect(() => {
+    if (agent) subscribeToAgentConnectionEvents(agent.context)
+  }, [agent])
 
   useEffect(() => {
+    const setInitialState = async () => {
+      if (agent && isInitialized) {
+        const records = await agent.didcomm.connections.getAll()
+        setState({ records, loading: false })
+      }
+    }
     setInitialState()
   }, [agent, isInitialized])
 
   useEffect(() => {
     if (!state.loading) {
-      const connectionAdded$ = recordsAddedByType(agent, ConnectionRecord).subscribe(record =>
+      const connectionAdded$ = recordsAddedByType(agent, DidCommConnectionRecord).subscribe(record =>
         setState(addRecord(record, state)),
       )
 
-      const connectionUpdated$ = recordsUpdatedByType(agent, ConnectionRecord).subscribe(record =>
+      const connectionUpdated$ = recordsUpdatedByType(agent, DidCommConnectionRecord).subscribe(record =>
         setState(updateRecord(record, state)),
       )
 
-      const connectionRemoved$ = recordsRemovedByType(agent, ConnectionRecord).subscribe(record =>
+      const connectionRemoved$ = recordsRemovedByType(agent, DidCommConnectionRecord).subscribe(record =>
         setState(removeRecord(record, state)),
       )
 
@@ -104,8 +109,6 @@ export const ConnectionProvider: React.FC<React.PropsWithChildren<Props>> = ({ c
       }
     }
   }, [state, agent])
-
-  useAgentConnectionEvents()
 
   return (
     <ConnectionContext value={{ connections: state.records, loading: state.loading }}>

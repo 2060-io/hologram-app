@@ -1,4 +1,5 @@
-import { ProofExchangeRecord, ProofState, W3cCredentialRepository } from '@credo-ts/core'
+import { W3cCredentialRepository } from '@credo-ts/core'
+import { DidCommProofExchangeRecord, DidCommProofState } from '@credo-ts/didcomm'
 import Realm from 'realm'
 
 import {
@@ -30,17 +31,17 @@ import { getConnectionDisplayName, getConnectionDisplayPicture } from '@2060/uti
 export const handleProofExchangeRecordChanges = async (options: {
   agent: MobileAgent
   realm: Realm
-  record: ProofExchangeRecord
+  record: DidCommProofExchangeRecord
   activeChatThreadId?: string
   receivedAt?: Date
 }) => {
   const { agent, realm, record: proofRecord, activeChatThreadId } = options
   if (!proofRecord.connectionId) return
-  const connection = await agent.connections.getById(proofRecord.connectionId)
+  const connection = await agent.didcomm.connections.getById(proofRecord.connectionId)
   const isEphemeral = connection.connectionTypes.includes('Ephemeral')
   if (isEphemeral) return
   const thread = findOrCreateChatThread(realm, connection)
-  if (proofRecord.state === ProofState.RequestReceived) {
+  if (proofRecord.state === DidCommProofState.RequestReceived) {
     const [vpResponseChatEntry] = findAllByAssociatedRecordId(realm, proofRecord.id, ChatEntryType.VPResponse)
     if (vpResponseChatEntry) {
       const newChatEntryMetadata = {
@@ -49,11 +50,11 @@ export const handleProofExchangeRecordChanges = async (options: {
       } as VPResponseMetadata
       updateChatEntryMetadata(realm, vpResponseChatEntry.id, newChatEntryMetadata)
       try {
-        const requestedCredentials = await agent.proofs.selectCredentialsForRequest({
-          proofRecordId: proofRecord.id,
+        const requestedCredentials = await agent.didcomm.proofs.selectCredentialsForRequest({
+          proofExchangeRecordId: proofRecord.id,
         })
-        agent.proofs.acceptRequest({
-          proofRecordId: proofRecord.id,
+        agent.didcomm.proofs.acceptRequest({
+          proofExchangeRecordId: proofRecord.id,
           proofFormats: { anoncreds: requestedCredentials.proofFormats.anoncreds },
         })
       } catch (error) {
@@ -97,16 +98,16 @@ export const handleProofExchangeRecordChanges = async (options: {
       }
     }
   } else if (
-    proofRecord.state === ProofState.PresentationSent ||
-    proofRecord.state === ProofState.RequestSent ||
-    proofRecord.state === ProofState.Declined ||
-    proofRecord.state === ProofState.Abandoned
+    proofRecord.state === DidCommProofState.PresentationSent ||
+    proofRecord.state === DidCommProofState.RequestSent ||
+    proofRecord.state === DidCommProofState.Declined ||
+    proofRecord.state === DidCommProofState.Abandoned
   ) {
     let [vpResponseChatEntry] = findAllByAssociatedRecordId(realm, proofRecord.id, ChatEntryType.VPResponse)
     // If a presentation has been effectively done, create an additional chat entry
     // including the preview of the credentials that have been sent
-    if (proofRecord.state === ProofState.PresentationSent) {
-      const associatedMessageId = (await agent.proofs.findPresentationMessage(proofRecord.id))?.id
+    if (proofRecord.state === DidCommProofState.PresentationSent) {
+      const associatedMessageId = (await agent.didcomm.proofs.findPresentationMessage(proofRecord.id))?.id
 
       const didcommRecordMetadata = getDidCommPresentationDisplayMetadata(proofRecord)
       if (!didcommRecordMetadata) return
@@ -152,7 +153,7 @@ export const handleProofExchangeRecordChanges = async (options: {
       const metadata = { ...vpRequestEntry.metadata, proofState: proofRecord.state, replied: true }
       updateChatEntryMetadata(realm, vpRequestEntry.id, metadata)
     }
-  } else if (proofRecord.state === ProofState.ProposalReceived) {
+  } else if (proofRecord.state === DidCommProofState.ProposalReceived) {
     const presentedCredentials: VPResponsePresentedCredential[] = []
     const credentialInfo = await proposalGetCredentialInfo({ agent, proofRecordId: proofRecord.id })
     const attributes = await proposalGetCredentialAttributes({ agent, proofRecordId: proofRecord.id })
@@ -176,7 +177,10 @@ export const handleProofExchangeRecordChanges = async (options: {
     if (thread.id !== activeChatThreadId) {
       addUnread(realm, thread.id, 1)
     }
-  } else if (proofRecord.state === ProofState.PresentationReceived || proofRecord.state === ProofState.Done) {
+  } else if (
+    proofRecord.state === DidCommProofState.PresentationReceived ||
+    proofRecord.state === DidCommProofState.Done
+  ) {
     const [vpResponseChatEntry] = findAllByAssociatedRecordId(realm, proofRecord.id, ChatEntryType.VPResponse)
     if (vpResponseChatEntry) {
       const currentMetadata = vpResponseChatEntry.metadata as VPResponseMetadata
