@@ -1,11 +1,12 @@
-import { CredentialState } from '@credo-ts/core'
+import { DidCommCredentialState } from '@credo-ts/didcomm'
+import { StackActions } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
 import React from 'react'
 
 import BaseCredentialOffer from './BaseCredentialOffer'
 
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
-import { AgentActionType, useAgentActionQueue } from '@2060/hooks/agent'
+import { AgentActionType, useAgentActionQueue, useChats, useMobileAgent } from '@2060/hooks/agent'
 import {
   AcceptCredentialOfferParameters,
   DeclineCredentialOfferParameters,
@@ -18,17 +19,16 @@ import { ChatEntryType } from '@2060/model'
 interface Props extends StackScreenProps<NavigationStackParams, 'DidcommCredentialOffer'> {}
 
 const DidcommCredentialOffer: React.FC<Props> = ({ route, navigation }) => {
-  const routes = navigation.getState()?.routes
-  const prevRoute = routes[routes.length - 2]
-  const comesFromChat = prevRoute?.name === 'PersonalChatStack'
-  const { credentialRecordId } = route.params
+  const { credentialRecordId, did } = route.params
+  const { agent } = useMobileAgent()
   const { credentialDetails, credentialState } = useCredentialExchangeForDisplay({ credentialRecordId })
   const { addAgentActionToQueue } = useAgentActionQueue()
   const { realm } = useLocalRealm()
-  const enableMainButtons = credentialState === CredentialState.OfferReceived
+  const { findOrCreateThread } = useChats()
+  const enableMainButtons = credentialState === DidCommCredentialState.OfferReceived
 
-  const updateChatEntryMetadataIfNecessary = (newCredentialState: CredentialState) => {
-    if (realm && comesFromChat) {
+  const updateChatEntryMetadataIfNecessary = (newCredentialState: DidCommCredentialState) => {
+    if (realm) {
       const [chatEntry] = findAllByAssociatedRecordId(realm, credentialRecordId, ChatEntryType.VCOffer)
       if (chatEntry) {
         const newMetadata = { ...chatEntry.metadata, credentialState: newCredentialState }
@@ -37,26 +37,39 @@ const DidcommCredentialOffer: React.FC<Props> = ({ route, navigation }) => {
     }
   }
 
+  const goToChatScreen = async () => {
+    if (!agent) return
+    const connections = await agent.didcomm.connections.findByInvitationDid(did)
+    if (connections.length) {
+      const [connection] = connections
+      const chatThreadId = findOrCreateThread({ connection }).id
+      navigation.dispatch(
+        StackActions.replace('PersonalChatStack', {
+          screen: 'PersonalChat',
+          params: { chatThreadId, redirectToHomeOnBack: true },
+        }),
+      )
+    }
+  }
+
   const accept = () => {
-    updateChatEntryMetadataIfNecessary(CredentialState.RequestSent)
+    updateChatEntryMetadataIfNecessary(DidCommCredentialState.RequestSent)
     const parameters: AcceptCredentialOfferParameters = { credentialRecordId }
     addAgentActionToQueue({
       type: AgentActionType.AcceptCredentialOffer,
       parameters,
     })
-    if (navigation.canGoBack()) navigation.goBack()
-    else navigation.replace('Home')
+    goToChatScreen()
   }
 
   const refuse = () => {
-    updateChatEntryMetadataIfNecessary(CredentialState.Declined)
+    updateChatEntryMetadataIfNecessary(DidCommCredentialState.Declined)
     const parameters: DeclineCredentialOfferParameters = { credentialRecordId }
     addAgentActionToQueue({
       type: AgentActionType.DeclineCredentialOffer,
       parameters,
     })
-    if (navigation.canGoBack()) navigation.goBack()
-    else navigation.replace('Home')
+    goToChatScreen()
   }
 
   if (!credentialDetails) return null

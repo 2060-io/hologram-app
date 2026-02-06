@@ -102,7 +102,7 @@ const SubChats: React.FC<Props> = ({ route, navigation }) => {
     closeConfirmChatDeletion()
     if (chatThreadToDelete?.id) deleteThread(chatThreadToDelete.id)
     const connection = chatThreadToDelete?.connectionId
-      ? await agent?.connections.getById(chatThreadToDelete.connectionId)
+      ? await agent?.didcomm.connections.getById(chatThreadToDelete.connectionId)
       : null
     if (agent && connection) await deleteConnection(agent, connection)
   }

@@ -1,17 +1,17 @@
-import { ConnectionRecord } from '@credo-ts/core'
+import { DidCommConnectionRecord } from '@credo-ts/didcomm'
 
 import { ServiceInfo } from '@2060/model'
 
 export type Props = {
-  connection: ConnectionRecord
+  connection: DidCommConnectionRecord
 }
 
 export type WithConnectionValidateProps = {
-  connection?: ConnectionRecord
+  connection?: DidCommConnectionRecord
 }
 
 export type PeerSecuritySystemMessageProps = {
-  connection?: ConnectionRecord
+  connection?: DidCommConnectionRecord
 }
 
 export type ServiceSecuritySystemMessageProps = {

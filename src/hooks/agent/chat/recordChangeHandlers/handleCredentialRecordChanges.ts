@@ -1,13 +1,13 @@
-import { V1CredentialProblemReportMessage } from '@credo-ts/anoncreds'
+import { DidCommCredentialV1ProblemReportMessage } from '@credo-ts/anoncreds'
+import { W3cCredentialRepository } from '@credo-ts/core'
 import {
-  AgentMessage,
-  CredentialExchangeRecord,
-  CredentialState,
+  DidCommCredentialExchangeRecord,
+  DidCommCredentialState,
+  DidCommCredentialV2ProblemReportMessage,
+  DidCommMessage,
+  DidCommProblemReportMessage,
   parseMessageType,
-  ProblemReportMessage,
-  V2CredentialProblemReportMessage,
-  W3cCredentialRepository,
-} from '@credo-ts/core'
+} from '@credo-ts/didcomm'
 import { TrustResolutionOutcome } from '@verana-labs/verre'
 import Realm from 'realm'
 
@@ -25,19 +25,21 @@ import { getConnectionDisplayName, getConnectionDisplayPicture } from '@2060/uti
 export const handleCredentialExchangeRecordChanges = async (options: {
   agent: MobileAgent
   realm: Realm
-  record: CredentialExchangeRecord
+  record: DidCommCredentialExchangeRecord
   activeChatThreadId?: string
   receivedAt?: Date
-  message: AgentMessage
+  message: DidCommMessage
 }) => {
   const { agent, realm, record: credentialExchangeRecord, activeChatThreadId, message } = options
   if (!credentialExchangeRecord.connectionId) return
 
-  const connection = await agent.connections.getById(credentialExchangeRecord.connectionId)
+  const connection = await agent.didcomm.connections.getById(credentialExchangeRecord.connectionId)
   const thread = findOrCreateChatThread(realm, connection)
-  const associatedMessageId = (await agent.credentials.findRequestMessage(credentialExchangeRecord.id))?.id
+  const associatedMessageId = (
+    await agent.didcomm.credentials.findRequestMessage(credentialExchangeRecord.id)
+  )?.id
 
-  const formatData = await agent.credentials.getFormatData(credentialExchangeRecord.id)
+  const formatData = await agent.didcomm.credentials.getFormatData(credentialExchangeRecord.id)
   const schemaId = formatData.offer?.anoncreds?.schema_id ?? formatData.offer?.indy?.schema_id
   const credentialDefinitionId =
     formatData.offer?.anoncreds?.cred_def_id ?? formatData.offer?.indy?.cred_def_id
@@ -52,15 +54,15 @@ export const handleCredentialExchangeRecordChanges = async (options: {
     const { messageTypeUri } = parseMessageType(message.type)
     let isRefused = false
     const isProblemReportMessage = [
-      V1CredentialProblemReportMessage.type.messageTypeUri,
-      V2CredentialProblemReportMessage.type.messageTypeUri,
+      DidCommCredentialV1ProblemReportMessage.type.messageTypeUri,
+      DidCommCredentialV2ProblemReportMessage.type.messageTypeUri,
     ].includes(messageTypeUri)
     if (isProblemReportMessage) {
-      const problemReportMessage = message as ProblemReportMessage
+      const problemReportMessage = message as DidCommProblemReportMessage
       const description = problemReportMessage?.description?.en
       isRefused = description === 'e.msg.refused'
     }
-    const credentialState = isRefused ? CredentialState.Declined : credentialExchangeRecord.state
+    const credentialState = isRefused ? DidCommCredentialState.Declined : credentialExchangeRecord.state
     updateChatEntry(realm, {
       recordId: vcOfferEntry.id,
       state: vcOfferEntry.state, // TODO: update state
@@ -127,7 +129,7 @@ export const handleCredentialExchangeRecordChanges = async (options: {
     issuerName,
     issuerStatus,
   })
-  await agent.credentials.update(credentialExchangeRecord)
+  await agent.didcomm.credentials.update(credentialExchangeRecord)
 
   if (thread.id !== activeChatThreadId) {
     addUnread(realm, thread.id, 1)
