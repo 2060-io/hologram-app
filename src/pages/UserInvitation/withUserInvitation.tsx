@@ -37,9 +37,10 @@ const withUserInvitation = (UserInvitationComponent: ElementType<UserInvitationP
     const getCurrentInvitation = async () => {
       if (!agent) return
       try {
-        const persistedOutOfBandRecordId = (await getStorageData(
-          USER_INVITATION_OUT_OF_BAND_RECORD_ID,
-        )) as string
+        const persistedOutOfBandRecordId = (await getStorageData(USER_INVITATION_OUT_OF_BAND_RECORD_ID)) as
+          | string
+          | null
+        if (!persistedOutOfBandRecordId) return
 
         currentInvitationOutOfBandRecordId.current = persistedOutOfBandRecordId
         const { outOfBandInvitation } = await getOutOfBandRecordById(agent, persistedOutOfBandRecordId)
