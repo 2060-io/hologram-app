@@ -1,4 +1,5 @@
-import { CredentialExchangeRecord, ProofExchangeRecord, W3cCredentialRecord } from '@credo-ts/core'
+import { W3cCredentialRecord } from '@credo-ts/core'
+import { DidCommCredentialExchangeRecord, DidCommProofExchangeRecord } from '@credo-ts/didcomm'
 
 import { ServiceStatus } from '@2060/model/ServiceInfo'
 
@@ -19,26 +20,26 @@ const didCommCredentialDisplayMetadataKey = '_2060/credentialDisplayMetadata'
 const didCommPresentationDisplayMetadataKey = '_2060/presentationDisplayMetadata'
 
 export function getDidCommCredentialDisplayMetadata(
-  credentialExchangeRecord: CredentialExchangeRecord | W3cCredentialRecord,
+  credentialExchangeRecord: DidCommCredentialExchangeRecord | W3cCredentialRecord,
 ): DidCommCredentialDisplayMetadata | null {
   return credentialExchangeRecord.metadata.get(didCommCredentialDisplayMetadataKey)
 }
 
 export function setDidCommCredentialMetadata(
-  credentialExchangeRecord: CredentialExchangeRecord | W3cCredentialRecord,
+  credentialExchangeRecord: DidCommCredentialExchangeRecord | W3cCredentialRecord,
   metadata: DidCommCredentialDisplayMetadata,
 ) {
   credentialExchangeRecord.metadata.set(didCommCredentialDisplayMetadataKey, metadata)
 }
 
 export function getDidCommPresentationDisplayMetadata(
-  proofExchangeRecord: ProofExchangeRecord,
+  proofExchangeRecord: DidCommProofExchangeRecord,
 ): DidCommPresentationDisplayMetadata | null {
   return proofExchangeRecord.metadata.get(didCommPresentationDisplayMetadataKey)
 }
 
 export function setDidCommPresentationMetadata(
-  proofExchangeRecord: ProofExchangeRecord,
+  proofExchangeRecord: DidCommProofExchangeRecord,
   metadata: DidCommPresentationDisplayMetadata,
 ) {
   proofExchangeRecord.metadata.set(didCommPresentationDisplayMetadataKey, metadata)

@@ -3,6 +3,7 @@ module.exports = {
   plugins: [
     ['react-native-worklets-core/plugin'],
     ['@babel/plugin-proposal-decorators', { legacy: true }],
+    '@babel/plugin-transform-class-static-block',
     'babel-plugin-transform-typescript-metadata',
     [
       'module-resolver',

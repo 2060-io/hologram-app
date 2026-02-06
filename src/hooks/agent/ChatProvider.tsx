@@ -1,5 +1,10 @@
-import { MessageReceipt, MessageReceiptOptions, MessageState } from '@2060.io/credo-ts-didcomm-receipts'
-import { ConnectionRecord, utils } from '@credo-ts/core'
+import {
+  DidCommMessageReceipt,
+  DidCommMessageReceiptOptions,
+  MessageState,
+} from '@2060.io/credo-ts-didcomm-receipts'
+import { utils } from '@credo-ts/core'
+import { DidCommConnectionRecord } from '@credo-ts/didcomm'
 import React, { createContext, useCallback, useState, useEffect, useContext, useRef } from 'react'
 
 import { useAgentActionQueue } from './AgentActionQueueProvider'
@@ -41,7 +46,7 @@ export type ChatCategory = 'all' | 'people' | 'services'
 type ChatFilters = { topic: string; archived: boolean; category: ChatCategory; parentId?: string }
 
 interface CreateThreadOptions {
-  connection: ConnectionRecord
+  connection: DidCommConnectionRecord
 }
 
 interface MarkThreadAsReadOptions {
@@ -205,19 +210,19 @@ export const ChatProvider: React.FC<Props> = ({ children }) => {
       const { id, lastReadAt } = options
 
       const { messageIds, connectionId } = chatTSMarkThreadAsRead(realm, id, lastReadAt)
-      const connection = await agent?.connections.findById(connectionId)
+      const connection = await agent?.didcomm.connections.findById(connectionId)
 
       // No receipts to send
       if (!connection || !supportsMessageReceipts(connection) || messageIds.length === 0) return
 
-      const receipts: MessageReceiptOptions[] = messageIds.map(messageId => ({
+      const receipts: DidCommMessageReceiptOptions[] = messageIds.map(messageId => ({
         messageId,
         state: MessageState.Viewed,
         timestamp: lastReadAt,
       }))
 
       for (const receipt of receipts) {
-        addReceiptToRelatedEntries(realm, receipt as MessageReceipt)
+        addReceiptToRelatedEntries(realm, receipt as DidCommMessageReceipt)
       }
       const parameters: SendReceiptsParameters = { connectionId, receipts }
       addAgentActionToQueue({

@@ -16,7 +16,7 @@ export const manageBackgroundChatEntryChanges = (realm: Realm, agent: MobileAgen
       const [thread] = realm.objects(ChatThread).filtered(`id == '${entry.chatThreadId}'`)
       if (!thread) return
 
-      const connection = await agent.connections.findById(thread.connectionId)
+      const connection = await agent.didcomm.connections.findById(thread.connectionId)
       if (!connection) return
       displayNewChatMessageNotification(connection, entry)
     }

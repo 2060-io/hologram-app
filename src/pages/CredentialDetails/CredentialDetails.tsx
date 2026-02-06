@@ -29,7 +29,7 @@ const CredentialDetails = ({ route, navigation }: Props) => {
   const credentialRecord = getCredentialById(credentialRecordId)
   const credentialDetails = credentialRecord ? getCredentialDetailsForDisplay(credentialRecord) : undefined
 
-  const did = credentialRecord?.credential.issuerId ?? ''
+  const did = credentialRecord?.firstCredential.issuerId ?? ''
   const serviceInfo = useRef<ServiceInfo>({
     did,
     id: did,
@@ -43,7 +43,7 @@ const CredentialDetails = ({ route, navigation }: Props) => {
 
   const deleteCredential = async () => {
     if (credentialDetails) {
-      await agent?.w3cCredentials.removeCredentialRecord(credentialDetails.mainInfo.id)
+      await agent?.w3cCredentials.deleteById(credentialDetails.mainInfo.id)
     }
     hideConfirmationDeleteModal()
     navigation.goBack()

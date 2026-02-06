@@ -42,6 +42,7 @@
       "confirm": "Confirmar",
       "cancel": "Cancelar",
       "settings": "Ajustes",
+      "permissionDenied": "Permiso bloqueado",
       "permissionNeededMessage": "Para continuar Hologram necesita acceso a tu {{permission}}. Toca ajustes y activa tu {{permission}}",
       "microphone": "Micrófono",
       "instant": "Instantáneo",

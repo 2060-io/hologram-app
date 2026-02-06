@@ -1,17 +1,19 @@
-import { AgentMessageProcessedEvent, V2StatusMessage, AgentEventTypes } from '@credo-ts/core'
+import { DidCommMessageProcessedEvent, DidCommStatusV2Message, DidCommEventTypes } from '@credo-ts/didcomm'
 import { FirebaseMessagingTypes } from '@react-native-firebase/messaging'
 
+import { AgentActionQueueSingleton } from './AgentActionQueueSingleton'
 import AgentSingleton from './AgentSingleton'
 import RealmSingleton from './RealmSingleton'
 
 import { manageBackgroundChatEntryChanges, subscribeToAgentChatEvents } from '@2060/hooks/agent/chat'
 import { manageConnectionStateChangedEvent } from '@2060/hooks/agent/connections/manageConnectionStateChangedEvent'
+import { subscribeToAgentConnectionEvents } from '@2060/hooks/agent/connections/subscribeToAgentConnectionEvents'
 import { log, logWarn } from '@2060/utils'
 import { arePushNotificationsAllowed, deleteRemoteNotifications } from '@2060/utils/pushNotificationsUtils'
 
 const makeRequestToLocalServer = (payload: Record<string, string>) => {
   if (__DEV__) {
-    fetch('http://192.168.1.9:3000/api/echo', {
+    fetch('http://172.20.10.3:3000/api/echo', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
@@ -60,26 +62,28 @@ export async function backgroundPushNotificationHandler(remoteMessage: FirebaseM
     } else {
       logWarn('From backgroundPushNotificationHandler agent is already initialized')
     }
-    if (!mobileAgentInstance.getIsAppSubscribedToEvents()) {
+    AgentActionQueueSingleton.instance.configureQueue()
+    if (!mobileAgentInstance.getIsAppSubscribedToChatEvents()) {
       subscribeToAgentChatEvents(agent, realm, false, () => undefined)
-    } else {
-      logWarn('From backgroundPushNotificationHandler App is already subscribed to agent events')
     }
-    const mediatorConnection = await agent.mediationRecipient.findDefaultMediatorConnection()
-    await agent.messagePickup.pickupMessages({
+    if (!mobileAgentInstance.getIsAppSubscribedToConnectionEvents()) {
+      subscribeToAgentConnectionEvents(agent.context)
+    }
+    const mediatorConnection = await agent.didcomm.mediationRecipient.findDefaultMediatorConnection()
+    await agent.didcomm.messagePickup.pickupMessages({
       connectionId: mediatorConnection!.id,
       protocolVersion: 'v2',
     })
 
     // this events is yet calling when app awakes and receives more because agent is still alive and the same
-    agent.events.on<AgentMessageProcessedEvent>(AgentEventTypes.AgentMessageProcessed, async data => {
+    agent.events.on<DidCommMessageProcessedEvent>(DidCommEventTypes.DidCommMessageProcessed, async data => {
       const message = data.payload.message
       log(`Message processed for connection id ${data.payload.connection?.id} Type: ${message.type}`)
       makeRequestToLocalServer({
         data: `Message processed for connection id ${data.payload.connection?.id}`,
       })
-      if (message.type === V2StatusMessage.type.messageTypeUri) {
-        const messageCount = (message as V2StatusMessage).messageCount
+      if (message.type === DidCommStatusV2Message.type.messageTypeUri) {
+        const messageCount = (message as DidCommStatusV2Message).messageCount
         log(`Status message received. Remaining messages: ${messageCount}`)
         makeRequestToLocalServer({
           data: `Status message received. Remaining messages: ${messageCount}`,

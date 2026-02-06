@@ -40,7 +40,7 @@ export const CredentialProvider: React.FC<React.PropsWithChildren<Props>> = ({ c
 
   const setInitialState = async () => {
     if (agent && isInitialized) {
-      const w3cRecords = await agent.w3cCredentials.getAllCredentialRecords()
+      const w3cRecords = await agent.w3cCredentials.getAll()
       setW3CState({ records: w3cRecords, loading: false })
     }
   }

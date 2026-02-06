@@ -121,9 +121,12 @@ export const BuildBackupProvider: React.FC<PropsWithChildren> = ({ children }) =
 
   const createWalletFile = async (backupKey: string) => {
     try {
-      await agent?.wallet.export({
-        key: backupKey,
-        path: BackupUtils.AFJ_BACKUP_FILE_PATH,
+      await agent?.modules.askar.exportStore({
+        exportToStore: {
+          id: 'afj',
+          key: backupKey,
+          database: { type: 'sqlite', config: { path: BackupUtils.AFJ_BACKUP_FILE_PATH } },
+        },
       })
     } catch (error) {
       setBackupState(prev => ({ ...prev, error: `${error}` }))

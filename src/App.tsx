@@ -1,3 +1,6 @@
+import 'reflect-metadata'
+// Workaround for issue in Askar wrapper register method (to be fixed in 0.5)
+import '@openwallet-foundation/askar-react-native'
 import { locale, extend } from 'dayjs'
 import localizedFormat from 'dayjs/plugin/localizedFormat'
 import 'dayjs/locale/es'
