@@ -49,4 +49,7 @@ export default (theme: AppTheme) =>
     separator: {
       color: theme.colors.green,
     },
+    loadingSkeletonSeparator: {
+      marginBottom: 10,
+    },
   })

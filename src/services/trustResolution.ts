@@ -31,13 +31,13 @@ export async function getServiceInfo(options: {
   const serviceInfo: ServiceInfo = {
     did: trustResolution.didDocument.id,
     id: trustResolution.didDocument.id,
-    minimumAgeRequired: trustResolution.service.minimumAgeRequired!,
+    minimumAgeRequired: trustResolution.service.minimumAgeRequired,
     name: trustResolution.service.name,
     status: trustResolution.outcome,
     dataPrivacyUrl: trustResolution.service.privacyPolicy,
-    description: trustResolution.service?.description,
-    logoUrl: trustResolution.service?.logo,
-    termsAndConditionsUrl: trustResolution.service?.termsAndConditions,
+    description: trustResolution.service.description,
+    logoUrl: trustResolution.service.logo,
+    termsAndConditionsUrl: trustResolution.service.termsAndConditions,
     serviceProvider: {
       certificationEntity: {
         countryCode: (trustResolution.serviceProvider! as IOrg).countryCode,

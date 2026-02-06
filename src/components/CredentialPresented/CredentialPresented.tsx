@@ -52,9 +52,12 @@ const CredentialPresented = ({
           {header[type]}
           <Text style={[styles.title, styles.mainTitle]}>
             {title[type]}
-            <Text style={styles.title} fontFamily="EuclidCircularA-SemiBold">
-              {verifierName}
-            </Text>
+            {verifierName.length > 0 && t('general.by')}
+            {verifierName.length > 0 && (
+              <Text style={styles.title} fontFamily="EuclidCircularA-SemiBold">
+                {verifierName}
+              </Text>
+            )}
           </Text>
           {credentials.map(credential => (
             <CredentialMainInformation key={credential.id} credentialMainInfo={credential} />

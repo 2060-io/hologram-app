@@ -10,7 +10,6 @@ import { useUserProfile } from './UserProfileProvider'
 import { ChatThreadData, ChatThread, getChatThreadData, ChatEntryRole } from '@2060/model'
 import { ChatParticipant } from '@2060/pages/PersonalChat/ChatMessage/Props'
 import {
-  getConnectionDisplayIcon,
   getConnectionDisplayName,
   getConnectionDisplayPicture,
   getPictureDataUrl,
@@ -57,11 +56,8 @@ export const useChatThreadWithParticipants = (chatThreadId: string) => {
 
   const flags = useMemo(
     () => ({
-      did: connection?.invitationDid,
-      isService: connection ? isService(connection) : false,
       serviceInfo,
       isConnectionDeleted: connection === undefined,
-      connectionIconUrl: connection ? getConnectionDisplayIcon(connection) : undefined,
       isConnectionBlocked: connection ? isBlocked(connection) : false,
       isConnectionTerminated: connection ? isTerminated(connection) : false,
       isConnectionCompleted: connection ? connection.isReady : false,
@@ -78,7 +74,11 @@ export const useChatThreadWithParticipants = (chatThreadId: string) => {
   return {
     participants,
     flags,
-    data: chatThread,
+    data: {
+      ...chatThread,
+      topic: serviceInfo?.name ?? chatThread?.topic,
+      picture: serviceInfo?.logoUrl ?? chatThread?.picture,
+    },
   }
 }
 
