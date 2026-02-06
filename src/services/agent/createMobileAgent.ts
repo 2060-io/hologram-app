@@ -1,14 +1,15 @@
-import { InitConfig, MediatorPickupStrategy, AgentDependencies, DependencyManager } from '@credo-ts/core'
+import { InitConfig, AgentDependencies, DependencyManager } from '@credo-ts/core'
+import { DidCommMediatorPickupStrategy } from '@credo-ts/didcomm'
 
 import { MobileAgent, getMobileAgentModules } from './MobileAgent'
-import { OutOfBandInvitationHandler } from './oob/OutOfBandInvitationHandler'
+import { DidCommOutOfBandInvitationHandler } from './oob/OutOfBandInvitationHandler'
 
 export const createMobileAgent = (
   options: {
     config: InitConfig
     indyVDRProxyBaseUrl: string
     modulesConfig: {
-      mediatorPickupStrategy?: MediatorPickupStrategy
+      mediatorPickupStrategy?: DidCommMediatorPickupStrategy
     }
     dependencies: AgentDependencies
   },
@@ -26,7 +27,7 @@ export const createMobileAgent = (
     dependencyManager,
   )
 
-  agent.dependencyManager.registerMessageHandlers([new OutOfBandInvitationHandler()])
+  agent.didcomm.registerMessageHandlers([new DidCommOutOfBandInvitationHandler()])
 
   return agent
 }

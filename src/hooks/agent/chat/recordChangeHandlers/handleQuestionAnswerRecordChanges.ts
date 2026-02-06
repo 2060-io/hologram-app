@@ -16,7 +16,7 @@ export const handleQuestionAnswerRecordChanges = async (options: {
 }) => {
   const { agent, realm, record: questionAnswerRecord, activeChatThreadId } = options
   // Find associated thread according to the connection id. If not found, create it
-  const connection = await agent.connections.getById(questionAnswerRecord.connectionId)
+  const connection = await agent.didcomm.connections.getById(questionAnswerRecord.connectionId)
   const thread = findOrCreateChatThread(realm, connection)
 
   const recordState = questionAnswerRecord.state
