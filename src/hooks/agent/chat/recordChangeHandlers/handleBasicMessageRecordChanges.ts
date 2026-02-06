@@ -1,4 +1,4 @@
-import { BasicMessageRecord, BasicMessageRole } from '@credo-ts/core'
+import { DidCommBasicMessageRecord, DidCommBasicMessageRole } from '@credo-ts/didcomm'
 import Realm from 'realm'
 
 import { getLocalizedPreview, getThumbnail } from '../preview'
@@ -11,16 +11,16 @@ import { MobileAgent } from '@2060/services/agent'
 export const handleBasicMessageRecordChanges = async (options: {
   agent: MobileAgent
   realm: Realm
-  record: BasicMessageRecord
+  record: DidCommBasicMessageRecord
   activeChatThreadId?: string
   receivedAt?: Date
 }) => {
   const { agent, realm, record: basicMessageRecord, activeChatThreadId } = options
   // find associated thread according to the connection id. If not found, create it
-  const connection = await agent.connections.getById(basicMessageRecord.connectionId)
+  const connection = await agent.didcomm.connections.getById(basicMessageRecord.connectionId)
   const thread = findOrCreateChatThread(realm, connection)
 
-  if (basicMessageRecord.role === BasicMessageRole.Receiver) {
+  if (basicMessageRecord.role === DidCommBasicMessageRole.Receiver) {
     createTextChatEntry({
       agent,
       realm,
@@ -29,7 +29,9 @@ export const handleBasicMessageRecordChanges = async (options: {
       chatThreadId: thread.id,
       didcommThreadId: basicMessageRecord.threadId,
       role:
-        basicMessageRecord.role === BasicMessageRole.Receiver ? ChatEntryRole.Receiver : ChatEntryRole.Sender,
+        basicMessageRecord.role === DidCommBasicMessageRole.Receiver
+          ? ChatEntryRole.Receiver
+          : ChatEntryRole.Sender,
       createdAt: (options.receivedAt ?? new Date(basicMessageRecord.sentTime)).getTime(),
       content: basicMessageRecord.content,
       parentThreadId: basicMessageRecord.parentThreadId,

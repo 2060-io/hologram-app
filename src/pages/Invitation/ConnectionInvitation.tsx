@@ -1,4 +1,4 @@
-import { ConnectionRecord } from '@credo-ts/core'
+import { DidCommConnectionRecord } from '@credo-ts/didcomm'
 import { StackActions } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
 import { TrustResolutionOutcome } from '@verana-labs/verre'
@@ -73,7 +73,7 @@ const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => 
   const [ageRestricted, setAgeRestricted] = useState(false)
   const canConnect = !isAlreadyConnected && !ageRestricted
 
-  const goToChat = (connection: ConnectionRecord) => {
+  const goToChat = (connection: DidCommConnectionRecord) => {
     const chatThreadId = findOrCreateThread({ connection }).id
     navigation.dispatch(
       StackActions.replace('PersonalChatStack', {
@@ -91,7 +91,7 @@ const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => 
   const onPressHeaderRightButton = async () => {
     if (canConnect) accept()
     else if (isAlreadyConnected) {
-      const connection = await agent?.connections.findById(existingConnectionId!)
+      const connection = await agent?.didcomm.connections.findById(existingConnectionId!)
       if (connection) goToChat(connection)
     } else {
       navigation.goBack()

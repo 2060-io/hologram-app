@@ -1,4 +1,4 @@
-import { CredentialState } from '@credo-ts/core'
+import { DidCommCredentialState } from '@credo-ts/didcomm'
 import { StackScreenProps } from '@react-navigation/stack'
 import React from 'react'
 
@@ -25,9 +25,9 @@ const DidcommCredentialOffer: React.FC<Props> = ({ route, navigation }) => {
   const { credentialDetails, credentialState } = useCredentialExchangeForDisplay({ credentialRecordId })
   const { addAgentActionToQueue } = useAgentActionQueue()
   const { realm } = useLocalRealm()
-  const enableMainButtons = credentialState === CredentialState.OfferReceived
+  const enableMainButtons = credentialState === DidCommCredentialState.OfferReceived
 
-  const updateChatEntryMetadataIfNecessary = (newCredentialState: CredentialState) => {
+  const updateChatEntryMetadataIfNecessary = (newCredentialState: DidCommCredentialState) => {
     if (realm && comesFromChat) {
       const [chatEntry] = findAllByAssociatedRecordId(realm, credentialRecordId, ChatEntryType.VCOffer)
       if (chatEntry) {
@@ -38,7 +38,7 @@ const DidcommCredentialOffer: React.FC<Props> = ({ route, navigation }) => {
   }
 
   const accept = () => {
-    updateChatEntryMetadataIfNecessary(CredentialState.RequestSent)
+    updateChatEntryMetadataIfNecessary(DidCommCredentialState.RequestSent)
     const parameters: AcceptCredentialOfferParameters = { credentialRecordId }
     addAgentActionToQueue({
       type: AgentActionType.AcceptCredentialOffer,
@@ -49,7 +49,7 @@ const DidcommCredentialOffer: React.FC<Props> = ({ route, navigation }) => {
   }
 
   const refuse = () => {
-    updateChatEntryMetadataIfNecessary(CredentialState.Declined)
+    updateChatEntryMetadataIfNecessary(DidCommCredentialState.Declined)
     const parameters: DeclineCredentialOfferParameters = { credentialRecordId }
     addAgentActionToQueue({
       type: AgentActionType.DeclineCredentialOffer,

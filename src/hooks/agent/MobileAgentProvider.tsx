@@ -6,7 +6,6 @@ import { useNetwork } from '../useNetwork'
 
 import AgentSingleton from '@2060/services/AgentSingleton'
 import { isRegistered, MobileAgent } from '@2060/services/agent/MobileAgent'
-import { migrateAnonCredsRecords } from '@2060/services/agent/migrateAnonCredsRecords'
 import { MediatorEventTypes } from '@2060/services/transport/MediatorEventTypes'
 import { TunedMobileWsOutboundTransport } from '@2060/services/transport/TunedMobileWsOutboundTransport'
 import { logError, logWarn } from '@2060/utils'
@@ -107,15 +106,12 @@ export const MobileAgentProvider: React.FC<Props> = ({ children }) => {
       const cache = agent.dependencyManager.resolve(CacheModuleConfig).cache
       await cache.get(agent.context, 'dummy')
 
-      // Migrate any existing anoncredsRecord to w3c
-      await migrateAnonCredsRecords(agent)
-
       const isSignedUp = await isRegistered(agent)
 
-      const defaultMediatorConnection = await agent.mediationRecipient.findDefaultMediatorConnection()
+      const defaultMediatorConnection = await agent.didcomm.mediationRecipient.findDefaultMediatorConnection()
       let isConnectedToCloudAgent = false
       if (defaultMediatorConnection) {
-        for (const transport of agent.outboundTransports) {
+        for (const transport of agent.didcomm.outboundTransports) {
           if (transport.supportedSchemes.includes('ws')) {
             isConnectedToCloudAgent = (transport as TunedMobileWsOutboundTransport).isConnectedTo(
               defaultMediatorConnection.id,

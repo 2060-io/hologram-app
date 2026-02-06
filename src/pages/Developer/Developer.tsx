@@ -23,6 +23,7 @@ import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { AgentActionQueueSingleton } from '@2060/services/AgentActionQueueSingleton'
 import AgentSingleton from '@2060/services/AgentSingleton'
 import { deleteAllKeys } from '@2060/services/keys'
+import { deleteDir, walletDirectoryPath } from '@2060/utils/RNFS'
 import {
   allDevEnvs,
   DevEnv,
@@ -115,7 +116,7 @@ const Developer = ({ navigation }: Props) => {
     setIsDeletingWallet(true)
     try {
       realm?.write(() => realm?.deleteAll())
-      await agent.wallet.delete()
+
       // FIXME: Workaround to make sure cache is unloaded from memory
       const cache = agent.dependencyManager.resolve(CacheModuleConfig).cache
 
@@ -123,6 +124,10 @@ const Developer = ({ navigation }: Props) => {
       // eslint-disable-next-line no-underscore-dangle
       cache._cache = undefined
       await shutdownAgent()
+
+      // Delete store and wallet directory
+      await agent.modules.askar.deleteStore()
+      await deleteDir(walletDirectoryPath)
       await deleteAllKeys()
       closeRealm()
       AgentSingleton.instance.setAppIsSubscribedChatToEvents(false)
