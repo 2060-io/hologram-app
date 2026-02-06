@@ -55,6 +55,7 @@ export type NavigationStackParams = {
     attributesToPresent: string[]
   }
   CredentialPresentation: {
+    chatEntryId: string
     credentialMainInfo: CredentialMainInfo
     credentialAttributes: Record<string, unknown>
     proofState: DidCommProofState
