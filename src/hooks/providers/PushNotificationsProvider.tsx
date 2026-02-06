@@ -57,7 +57,8 @@ export const PushNotificationsProvider: React.FC<React.PropsWithChildren<Props>>
 
   useEffect(() => {
     const verifyPushNotificationTokenIsRegistered = async () => {
-      const defaultMediatorConnection = await agent?.mediationRecipient.findDefaultMediatorConnection()
+      const defaultMediatorConnection =
+        await agent?.didcomm.mediationRecipient.findDefaultMediatorConnection()
       if (!defaultMediatorConnection) return
       const storedDeviceToken = defaultMediatorConnection.getTag('deviceToken')
       if (storedDeviceToken) return
