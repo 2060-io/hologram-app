@@ -31,7 +31,6 @@ const renderItem = ({ currentMessage, previousMessage, nextMessage, commonMessag
   }
   return <ChatMessage key={currentMessage.id} {...messageProps} />
 }
-const keyExtractor = (item: ChatEntryMessage) => `${item.id}`
 
 export const ChatMessageList = memo((props: ChatMessageListProps) => {
   const { messages, listViewProps, commonMessageProps } = props
@@ -39,7 +38,7 @@ export const ChatMessageList = memo((props: ChatMessageListProps) => {
     <FlatList
       data={messages}
       inverted
-      keyExtractor={keyExtractor}
+      keyExtractor={item => item.id}
       renderItem={({ item: currentMessage, index }) =>
         renderItem({
           currentMessage,

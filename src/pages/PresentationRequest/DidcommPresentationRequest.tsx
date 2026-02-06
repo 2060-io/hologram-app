@@ -36,7 +36,7 @@ const DidcommPresentationRequest: React.FC<Props> = ({ navigation, route }: Prop
   const { addAgentActionToQueue } = useAgentActionQueue()
   const selectedCredentials = useRef({})
   const { proofRecordId, did } = route.params
-  const { serviceInfo } = useFetchServiceInfo(did, true)
+  const { isFetchingInfo, serviceInfo, failedFetchInfo } = useFetchServiceInfo(did)
   const [submission, setSubmission] = useState<FormattedSubmission | undefined>(undefined)
   const [isAccepting, startAcceptTransition] = useTransition()
 
@@ -133,7 +133,9 @@ const DidcommPresentationRequest: React.FC<Props> = ({ navigation, route }: Prop
       onSelectDidcommCredential={onSelectCredential}
       accept={accept}
       refuse={refuse}
+      isFetchingInfo={isFetchingInfo}
       serviceInfo={serviceInfo}
+      failedFetchInfo={failedFetchInfo}
       isAccepting={isAccepting}
       notifyNoCompatibleCredentials={notify}
     />

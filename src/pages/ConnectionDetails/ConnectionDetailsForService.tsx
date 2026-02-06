@@ -8,17 +8,28 @@ import { useFetchServiceInfo } from '@2060/hooks'
 
 const ConnectionDetailsForService = (props: ConnectionDetailsProps) => {
   const { connection } = props
-  const { serviceInfo } = useFetchServiceInfo(connection.invitationDid, true)
+  const { isFetchingInfo, serviceInfo, failedFetchInfo } = useFetchServiceInfo(connection.invitationDid)
 
   return (
     <BaseConnectionDetails
       {...props}
       mainInfo={
         serviceInfo ? (
-          <ServiceMainInfo serviceInfo={serviceInfo} containerStyle={styles.mainInfoContainer} />
+          <ServiceMainInfo
+            isFetchingInfo={isFetchingInfo}
+            serviceInfo={serviceInfo}
+            failedFetchInfo={failedFetchInfo}
+            containerStyle={styles.mainInfoContainer}
+          />
         ) : null
       }
-      footerInfo={serviceInfo ? <ProofOfTrust serviceInfo={serviceInfo} /> : null}
+      footerInfo={
+        <ProofOfTrust
+          serviceInfo={serviceInfo}
+          isFetchingInfo={isFetchingInfo}
+          failedFetchInfo={failedFetchInfo}
+        />
+      }
     />
   )
 }

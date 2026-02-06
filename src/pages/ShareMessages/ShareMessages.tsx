@@ -7,7 +7,7 @@ import { TouchableOpacity, View } from 'react-native'
 import getStyles from './styles'
 
 import { Connections } from '@2060/components'
-import { ConnectionItem } from '@2060/components/Connections/ConnectionsList'
+import { ConnectionItem } from '@2060/components/Connections/ConnectionList'
 import { PersonalChatStackParams } from '@2060/components/Navigation/NavigationProps'
 import { SvgIcon, Text } from '@2060/components/common'
 import { useChatActions } from '@2060/hooks'

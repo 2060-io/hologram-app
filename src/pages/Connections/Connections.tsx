@@ -4,7 +4,7 @@ import React, { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { Connections } from '@2060/components'
-import { ConnectionItem } from '@2060/components/Connections/ConnectionsList'
+import { ConnectionItem } from '@2060/components/Connections/ConnectionList'
 import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
 
 interface Props extends StackScreenProps<NavigationStackParams, 'Connections'> {}

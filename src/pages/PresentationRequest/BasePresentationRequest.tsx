@@ -27,7 +27,9 @@ type Props = {
   onSelectDidcommCredential?: (...args: [string, string]) => void
   accept: () => void
   refuse: () => void
+  isFetchingInfo?: boolean
   serviceInfo?: ServiceInfo | null
+  failedFetchInfo?: boolean
   isAccepting: boolean
   notifyNoCompatibleCredentials?: () => void
 }
@@ -40,7 +42,9 @@ const BasePresentationRequest: React.FC<Props> = ({
   onSelectDidcommCredential = () => {},
   accept,
   refuse,
+  isFetchingInfo,
   serviceInfo,
+  failedFetchInfo,
   isAccepting,
   notifyNoCompatibleCredentials = () => {},
 }) => {
@@ -121,7 +125,13 @@ const BasePresentationRequest: React.FC<Props> = ({
       />
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.subContainer}>
-          {serviceInfo && <ServiceMainInfo serviceInfo={serviceInfo} />}
+          {serviceInfo && isFetchingInfo !== undefined && failedFetchInfo !== undefined && (
+            <ServiceMainInfo
+              isFetchingInfo={isFetchingInfo}
+              serviceInfo={serviceInfo}
+              failedFetchInfo={failedFetchInfo}
+            />
+          )}
           {hasCompatibleCredentials ? (
             <>
               <Text style={[styles.title, styles.mainTitle]}>

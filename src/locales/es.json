@@ -75,7 +75,8 @@
       "canNotOpenURL": "No se pudo abrir ",
       "dismiss": "Cerrar",
       "selected": "1 seleccionado",
-      "selected_other": "{{ count }} seleccionados"
+      "selected_other": "{{ count }} seleccionados",
+      "by": "por "
     },
     "navigation": {
       "back": "Atras",
@@ -247,7 +248,8 @@
       "errorCreatingQR": "Ha ocurrido un error creando el QR . Intentalo nuevamente",
       "youRefusedPresentation": "Rechazaste la presentación de la credencial",
       "noResponseFromVerifier": "No hubo respuesta de parte del verificador dentro del tiempo limite. La presentación es finalizada.",
-      "youDidNotResponseWithinTime": "No respondiste dentro del tiempo limite. La presentación es finalizada."
+      "youDidNotResponseWithinTime": "No respondiste dentro del tiempo limite. La presentación es finalizada.",
+      "failedFetchInfo": "Error obteniendo información del este servicio"
     },
     "credentialOffer": {
       "title": "Credencial ofrecida",
@@ -261,7 +263,7 @@
       "title": "Solicitud de presentación",
       "verifiablePresentation": "Presentación verificable",
       "selectCredentialYouWouldLikeToPresentTo": "Selecciona la credencial que te gustaría presentar a ",
-      "successfullyReceived": "Presentation recibida exitosamente por ",
+      "successfullyReceived": "Presentation recibida exitosamente ",
       "rejected": "Presentación rechazada por ",
       "viewInChat": "Ver en la conversación",
       "presented": "Presentado",

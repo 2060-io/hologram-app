@@ -12,7 +12,7 @@ import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 const ConnectionList = ({
   onPress,
   onPressRightSide,
-  connectionList,
+  connectionsBySections,
   isSearchingMode,
   selectedConnections,
 }: Props) => {
@@ -24,7 +24,7 @@ const ConnectionList = ({
     <FlatList
       style={styles.container}
       showsVerticalScrollIndicator={false}
-      data={connectionList}
+      data={connectionsBySections}
       renderItem={({ item: section, index: sectionIndex }) => (
         <View key={section.title + sectionIndex}>
           <Text style={styles.sectionHeaderLabel} fontFamily="EuclidCircularA-Medium">
@@ -44,7 +44,7 @@ const ConnectionList = ({
                 isLastInSection={index === section.connections.length - 1}
               />
             )}
-            keyExtractor={item => item.name}
+            keyExtractor={item => item.id}
           />
         </View>
       )}
