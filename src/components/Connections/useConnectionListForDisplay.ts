@@ -1,4 +1,4 @@
-import { ConnectionRecord } from '@credo-ts/core'
+import { DidCommConnectionRecord } from '@credo-ts/didcomm'
 import { useEffect, useState } from 'react'
 
 import { ConnectionItem, ConnectionsBySections } from '@2060/components/Connections/ConnectionList'
@@ -14,8 +14,8 @@ import {
 } from '@2060/utils/connectionUtils'
 
 const getConnectionItem = async (
-  connection: ConnectionRecord,
-  findSubConnections: (connectionId: string) => ConnectionRecord[],
+  connection: DidCommConnectionRecord,
+  findSubConnections: (connectionId: string) => DidCommConnectionRecord[],
   agent: MobileAgent,
 ): Promise<ConnectionItem> => {
   const isConnectionService = isService(connection)
@@ -52,8 +52,8 @@ const getConnectionItem = async (
  * the connections starting with it
  */
 const getConnectionsBySections = async (
-  connections: ConnectionRecord[],
-  findSubConnections: (connectionId: string) => ConnectionRecord[],
+  connections: DidCommConnectionRecord[],
+  findSubConnections: (connectionId: string) => DidCommConnectionRecord[],
   agent: MobileAgent,
 ) => {
   const connectionsGroupBySections: ConnectionsBySections[] = []

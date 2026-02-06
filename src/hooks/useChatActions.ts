@@ -1,6 +1,8 @@
-import { MessageReactionAction } from '@2060.io/credo-ts-didcomm-reactions'
-import { MessageReactionOptions } from '@2060.io/credo-ts-didcomm-reactions/build/messages/MessageReactionsMessage'
-import { MessageReceiptOptions, MessageState } from '@2060.io/credo-ts-didcomm-receipts'
+import {
+  DidCommMessageReactionAction,
+  DidCommMessageReactionOptions,
+} from '@2060.io/credo-ts-didcomm-reactions'
+import { DidCommMessageReceiptOptions, MessageState } from '@2060.io/credo-ts-didcomm-receipts'
 import { ActionMenuRole, ActionMenuState } from '@credo-ts/action-menu'
 import { CameraRoll } from '@react-native-camera-roll/camera-roll'
 import { useCallback } from 'react'
@@ -158,7 +160,7 @@ export const useChatActions = () => {
       return new Promise<void>((resolve, reject) => {
         try {
           if (!agent || !connectionId || !realm) return
-          const receipts: MessageReceiptOptions[] = []
+          const receipts: DidCommMessageReceiptOptions[] = []
           const isSomeMessageTypeMedia = messages.some(message => isMediaType(message.type))
           const mediaChatEntriesExcludingThread = isSomeMessageTypeMedia
             ? getMediaChatEntriesExcludingThread(realm, messages[0].chatThreadId)
@@ -205,8 +207,8 @@ export const useChatActions = () => {
         const { id: entryId, associatedMessageId } = message
 
         // Reactions to send to the other party through didcommm
-        const reactions: MessageReactionOptions[] = [
-          { messageId: associatedMessageId ?? '', action: action as MessageReactionAction, emoji },
+        const reactions: DidCommMessageReactionOptions[] = [
+          { messageId: associatedMessageId ?? '', action: action as DidCommMessageReactionAction, emoji },
         ]
 
         if (!realm) throw new Error('No active Realm')
@@ -227,7 +229,7 @@ export const useChatActions = () => {
 
             reactions.push({
               messageId: associatedMessageId ?? '',
-              action: MessageReactionAction.Unreact,
+              action: DidCommMessageReactionAction.Unreact,
               emoji: myPreviousReaction.emoji,
             })
             objectReactions[reactionIndex] = { emoji, role: ChatEntryRole.Sender }
@@ -309,7 +311,7 @@ export const useChatActions = () => {
       if (!agent || !realm) return
 
       for (const id of connectionIds) {
-        const connection = await agent.connections.getById(id)
+        const connection = await agent.didcomm.connections.getById(id)
         const thread = findOrCreateChatThread(realm, connection)
 
         for (const message of selectedMessages) {
@@ -392,7 +394,7 @@ export const useChatActions = () => {
         if (mimeType === 'text/plain') {
           const text = message.data
           for (const id of connectionIds) {
-            const connection = await agent.connections.getById(id)
+            const connection = await agent.didcomm.connections.getById(id)
             const thread = findOrCreateChatThread(realm, connection)
 
             const chatEntry = createTextChatEntry({

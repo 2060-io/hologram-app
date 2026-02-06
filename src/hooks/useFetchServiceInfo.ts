@@ -95,7 +95,7 @@ export async function getStoredServiceInfo(
   if (cachedServiceInfo && isServiceInfo(cachedServiceInfo)) return cachedServiceInfo as ServiceInfo
 
   // If info is not in cache, attempt to find it from an existing connection
-  const [connection] = await agent.connections.findByInvitationDid(did)
+  const [connection] = await agent.didcomm.connections.findByInvitationDid(did)
 
   if (connection) {
     return {

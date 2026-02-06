@@ -51,7 +51,7 @@ const InvitationChatView = ({ associatedRecordId: outOfBandId, metadata, role, a
   const { kidAge, ageRestricted } = useValidateKidAgeRestrictions({ minimumAgeRequired, serviceStatus })
 
   const goToInvitation = async () => {
-    const outOfBandRecord = await agent?.oob.findById(outOfBandId)
+    const outOfBandRecord = await agent?.didcomm.oob.findById(outOfBandId)
     if (outOfBandRecord) navigation.dispatch(StackActions.push('ConnectionInvitation', { outOfBandRecord }))
   }
   const onAccept = async () => {
@@ -75,7 +75,7 @@ const InvitationChatView = ({ associatedRecordId: outOfBandId, metadata, role, a
 
   const goToExistingConnection = async () => {
     if (!agent) return
-    const [connection] = await agent.connections.findAllByOutOfBandId(outOfBandId)
+    const [connection] = await agent.didcomm.connections.findAllByOutOfBandId(outOfBandId)
     if (connection) {
       navigation.dispatch(StackActions.push('ConnectionDetails', { connectionId: connection.id }))
     } else {

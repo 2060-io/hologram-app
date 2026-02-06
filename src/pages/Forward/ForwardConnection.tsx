@@ -1,4 +1,4 @@
-import { MessageSender } from '@credo-ts/core'
+import { DidCommMessageSender } from '@credo-ts/didcomm'
 import { StackScreenProps } from '@react-navigation/stack'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
@@ -19,7 +19,7 @@ const ForwardConnection = ({ navigation, route }: Props) => {
   const { t } = useTranslation()
   const { connection } = route.params
   const { agent } = useMobileAgent()
-  const messageSender = agent?.context.dependencyManager.resolve(MessageSender)
+  const messageSender = agent?.context.dependencyManager.resolve(DidCommMessageSender)
   const { addAgentActionToQueue } = useAgentActionQueue()
   const { realm } = useLocalRealm()
   const { findOrCreateThread } = useChats()
@@ -27,7 +27,7 @@ const ForwardConnection = ({ navigation, route }: Props) => {
   const forwardConnection = async (connectionsId: string[]) => {
     if (!agent || !messageSender || !realm) return
     connectionsId.forEach(async connectionId => {
-      const didcommConnection = await agent.connections.getById(connectionId)
+      const didcommConnection = await agent.didcomm.connections.getById(connectionId)
       const chatThreadId = findOrCreateThread({ connection: didcommConnection }).id
       const metadata = {
         state: InvitationState.AlreadyConnected,

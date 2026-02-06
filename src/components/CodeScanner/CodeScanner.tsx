@@ -6,7 +6,6 @@ import {
   useCameraDevices,
   Camera,
   Code,
-  CameraPermissionStatus,
   useCodeScanner,
   useCameraFormat,
 } from 'react-native-vision-camera'
@@ -15,6 +14,7 @@ import getStyles from './styles'
 
 import { Text } from '@2060/components/common'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
+import { handleCameraPermission } from '@2060/utils/permissions'
 import { toast } from '@2060/utils/toast'
 
 const SCREEN_WIDTH = Dimensions.get('window').width
@@ -32,11 +32,18 @@ const CodeScanner: React.FC<Props> = ({ isActive, onCodeScanned }) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
-  const [cameraPermissionStatus, setCameraPermissionStatus] = useState<CameraPermissionStatus>()
+  const [hasCameraPermission, setHasCameraPermission] = useState<boolean>()
   const scannedCodes = useRef<string[]>([])
   const devices = useCameraDevices()
   const device = devices.find(dev => dev.position === 'back')
-  const hasPermission = cameraPermissionStatus === 'granted'
+
+  useEffect(() => {
+    const requestCameraPermission = async () => {
+      const cameraPermission = await handleCameraPermission()
+      setHasCameraPermission(cameraPermission)
+    }
+    requestCameraPermission()
+  }, [])
 
   useEffect(() => {
     scannedCodes.current = []
@@ -67,15 +74,6 @@ const CodeScanner: React.FC<Props> = ({ isActive, onCodeScanned }) => {
 
   const fps = Math.min(format?.maxFps ?? 1, supports60Fps ? 60 : 30)
 
-  const onRequestCameraPermission = async () => {
-    await Camera.requestCameraPermission()
-    setCameraPermissionStatus(Camera.getCameraPermissionStatus())
-  }
-
-  useEffect(() => {
-    onRequestCameraPermission()
-  }, [])
-
   // Camera callbacks
   const onError = useCallback((error: CameraRuntimeError) => {
     toast({ type: 'error', message: `${t('scan.errorReadingQRCode')}:${error.message}` })
@@ -83,7 +81,7 @@ const CodeScanner: React.FC<Props> = ({ isActive, onCodeScanned }) => {
 
   return (
     <React.Fragment>
-      {device && isActive && hasPermission ? (
+      {device && isActive && hasCameraPermission ? (
         <Camera
           style={styles.camera}
           device={device}

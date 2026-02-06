@@ -3,7 +3,6 @@ import { KeyChainService, retrieveEncryptedKey } from './keys'
 import { setupMobileAgent } from './setupMobileAgent'
 
 import { logError, log } from '@2060/utils'
-import { walletDirectoryPath } from '@2060/utils/RNFS'
 
 export class AgentSingleton {
   private static agentInstance: AgentSingleton
@@ -29,20 +28,21 @@ export class AgentSingleton {
 
   async openAndInitMobileAgent() {
     try {
-      const storage = { type: 'sqlite', config: { path: `${walletDirectoryPath}/afj.sqlite` } }
-      const getWalletConfig = (storeKey: string) => ({ id: 'afj', key: storeKey, storage })
       const key = await retrieveEncryptedKey(KeyChainService.AfjWallet)
+      if (!this.mobileAgent) return
       if (!key) throw new Error('No wallet key stored')
       if (!this.isOpening) {
         this.isOpening = true
         log('opening agent...')
-        await this.mobileAgent?.wallet.open(getWalletConfig(key))
+        // Reconfigure askar store config with retrieved key
+        this.mobileAgent.modules.askar.config.store.key = key
+
+        log('initializing agent...')
+        await this.mobileAgent.initialize()
+        log('agent initialized!')
       } else {
         log('Agent is being opened, so skipping opening again to avoid error')
       }
-      log('initializing agent...')
-      await this.mobileAgent?.initialize()
-      log('¡agent initialized!')
     } catch (error) {
       logError(`error initializing singleton agent: ${error}`)
     } finally {

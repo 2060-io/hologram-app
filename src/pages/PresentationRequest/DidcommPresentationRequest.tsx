@@ -1,4 +1,4 @@
-import { ProofState } from '@credo-ts/core'
+import { DidCommProofState } from '@credo-ts/didcomm'
 import { useFocusEffect } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
 import React, { useRef, useCallback, useState, useTransition } from 'react'
@@ -80,7 +80,7 @@ const DidcommPresentationRequest: React.FC<Props> = ({ navigation, route }: Prop
     if (realm && comesFromChat) {
       const [vpRequestChatEntry] = findAllByAssociatedRecordId(realm, proofRecordId, ChatEntryType.VPRequest)
       if (vpRequestChatEntry) {
-        const newMetadata = { ...vpRequestChatEntry.metadata, proofState: ProofState.Declined }
+        const newMetadata = { ...vpRequestChatEntry.metadata, proofState: DidCommProofState.Declined }
         updateChatEntryMetadata(realm, vpRequestChatEntry.id, newMetadata)
       }
     }

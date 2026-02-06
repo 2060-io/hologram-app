@@ -1,10 +1,11 @@
-import { AgentContext, AgentMessage, CacheModuleConfig, InboundMessageContext } from '@credo-ts/core'
+import { AgentContext, CacheModuleConfig } from '@credo-ts/core'
+import { DidCommInboundMessageContext, DidCommMessage } from '@credo-ts/didcomm'
 
 import { logWarn } from '@2060/utils'
 import { areLogsEnabled } from '@2060/utils/developer'
 
 export const duplicatedMessagesMiddleware = async (
-  inboundMessageContext: InboundMessageContext,
+  inboundMessageContext: DidCommInboundMessageContext,
   next: () => Promise<void>,
 ) => {
   const { agentContext, message } = inboundMessageContext
@@ -27,7 +28,7 @@ async function isInCache(agentContext: AgentContext, messageId: string) {
   return cachedMessage !== null
 }
 
-async function saveInCache(agentContext: AgentContext, message: AgentMessage) {
+async function saveInCache(agentContext: AgentContext, message: DidCommMessage) {
   const cache = agentContext.dependencyManager.resolve(CacheModuleConfig).cache
   const cacheKey = `didcomm:receivedmessages:${message.id}`
   await cache.set(agentContext, cacheKey, {}, 300)
