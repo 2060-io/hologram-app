@@ -1,4 +1,5 @@
-import { OutOfBandInvitation, Buffer } from '@credo-ts/core'
+import { Buffer } from '@credo-ts/core'
+import { DidCommOutOfBandInvitation } from '@credo-ts/didcomm'
 import React, { ElementType, useEffect, useMemo, useTransition } from 'react'
 import { useTranslation } from 'react-i18next'
 import Config from 'react-native-config'
@@ -43,7 +44,7 @@ const HomeMainContainer = (HomeMainComponent: ElementType) => {
             invitationUrl = urlValue ? Buffer.from(urlValue, 'base64').toString('ascii') : undefined
           } else invitationUrl = `${Config.BASE_INVITATION_URL}?${parameterType}=${urlValue}`
           if (!invitationUrl) throw new Error('Invalid invitation URL')
-          const invitation = await agent.oob.parseInvitation(invitationUrl)
+          const invitation = await agent.didcomm.oob.parseInvitation(invitationUrl)
           processInvitation(invitation)
         } catch (error) {
           toast({ type: 'error', message: `${error}` })
@@ -52,7 +53,7 @@ const HomeMainContainer = (HomeMainComponent: ElementType) => {
       })
     }
 
-    const processInvitation = async (invitation: OutOfBandInvitation) => {
+    const processInvitation = async (invitation: DidCommOutOfBandInvitation) => {
       if (!agent) return
       try {
         const processInvitationResult = await agentProcessInvitation(agent, invitation)
@@ -68,6 +69,7 @@ const HomeMainContainer = (HomeMainComponent: ElementType) => {
         } else if (invitationType === DidcommInvitationType.CredentialOffer) {
           navigation.navigate('DidcommCredentialOffer', {
             credentialRecordId: recordId,
+            did: invitation.invitationDids[0],
           })
         } else if (invitationType === DidcommInvitationType.PresentationRequest) {
           navigation.navigate('DidcommPresentationRequest', {

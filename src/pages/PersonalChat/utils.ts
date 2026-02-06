@@ -1,4 +1,4 @@
-import { uuid } from '@credo-ts/core/build/utils/uuid'
+import { utils } from '@credo-ts/core'
 import { t } from 'i18next'
 import { Results } from 'realm'
 
@@ -23,7 +23,7 @@ const buildSystemMessage = (options: {
 }): ChatEntryMessage => {
   const { kind, text, createdAt } = options
   return {
-    id: uuid(),
+    id: utils.uuid(),
     createdAt: (createdAt ?? new Date()).getTime(),
     type: ChatEntryType.System,
     associatedRecordId: '', // TODO: make it optional

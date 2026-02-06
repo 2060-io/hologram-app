@@ -3,6 +3,7 @@ import { openPicker, Options, Image, Video, CommonOptions } from 'react-native-i
 
 import { MAX_VIDEO_DURATION } from '@2060/constants'
 import { logError } from '@2060/utils'
+import { handleCameraPermission } from '@2060/utils/permissions'
 import { toast } from '@2060/utils/toast'
 
 const MAX_VIDEO_SECONDS_DURATION = 60
