@@ -13,7 +13,7 @@ import {
   setStorageData,
   USER_INVITATION_OUT_OF_BAND_RECORD_ID,
 } from '@2060/services/localStorage'
-import { logError } from '@2060/utils'
+import { logError, logWarn } from '@2060/utils'
 import { toast } from '@2060/utils/toast'
 
 const withUserInvitation = (UserInvitationComponent: ElementType<UserInvitationProps>) => {
@@ -28,31 +28,29 @@ const withUserInvitation = (UserInvitationComponent: ElementType<UserInvitationP
 
     useEffect(() => {
       const setupInvitation = async () => {
-        const persistedOutOfBandRecordId = (await getStorageData(
-          USER_INVITATION_OUT_OF_BAND_RECORD_ID,
-        )) as string
-        if (persistedOutOfBandRecordId) {
-          getCurrentInvitation(persistedOutOfBandRecordId)
-        } else {
-          createNewInvitation()
-        }
+        const currentInvitation = await getCurrentInvitation()
+        if (!currentInvitation) createNewInvitation()
       }
       setupInvitation()
     }, [])
 
-    const getCurrentInvitation = async (outOfBandRecordId: string) => {
+    const getCurrentInvitation = async () => {
       if (!agent) return
       try {
-        currentInvitationOutOfBandRecordId.current = outOfBandRecordId
-        const { outOfBandInvitation } = await getOutOfBandRecordById(agent, outOfBandRecordId)
+        const persistedOutOfBandRecordId = (await getStorageData(
+          USER_INVITATION_OUT_OF_BAND_RECORD_ID,
+        )) as string
+
+        currentInvitationOutOfBandRecordId.current = persistedOutOfBandRecordId
+        const { outOfBandInvitation } = await getOutOfBandRecordById(agent, persistedOutOfBandRecordId)
         setInvitation({
           displayName: outOfBandInvitation.label ?? 'Unlabeled',
           url: outOfBandInvitation.toUrl({ domain: Config.BASE_INVITATION_URL as string }),
         })
+        return outOfBandInvitation
       } catch (error) {
-        props.navigation.goBack()
-        toast({ type: 'error', message: t('invitation.errorGettingInvitation') })
-        logError(`Error getting current invitation ${error}`)
+        toast({ type: 'warning', message: t('invitation.errorGettingInvitation') })
+        logWarn(`Couldn't get current invitation: ${error}`)
       }
     }
 
