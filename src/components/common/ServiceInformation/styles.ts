@@ -17,10 +17,12 @@ const styles = (theme: AppTheme) =>
       marginBottom: 14,
     },
     containerIconValidity: {
+      marginVertical: 14,
+    },
+    iconValidity: {
       width: 30,
       height: 30,
       borderRadius: 15,
-      marginVertical: 14,
     },
     text: {
       fontSize: theme.fontSize.md,

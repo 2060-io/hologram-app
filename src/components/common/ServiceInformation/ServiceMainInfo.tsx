@@ -91,8 +91,18 @@ const ServiceMainInfo = ({ serviceInfo, isFetchingInfo, failedFetchInfo, contain
         {serviceInfo.name}
       </Text>
       {serviceInfo.description && <Text style={[styles.text]}>{serviceInfo.description}</Text>}
-      <VerifiedIcon style={styles.containerIconValidity} status={serviceInfo.status} />
-      <Did did={serviceInfo.did} serviceInfoStatus={serviceInfo.status} />
+      <View style={styles.containerIconValidity}>
+        <Skeleton
+          height={styles.iconValidity.height}
+          width={styles.iconValidity.width}
+          colorMode={theme.isDarkMode ? 'dark' : 'light'}
+          radius="round"
+          show={isFetchingInfo}
+        >
+          <VerifiedIcon style={styles.iconValidity} status={serviceInfo.status} />
+        </Skeleton>
+      </View>
+      <Did did={serviceInfo.did} serviceInfoStatus={serviceInfo.status} isFetchingInfo={isFetchingInfo} />
       {failedFetchInfo && <Text style={styles.failedToFetchInfoText}>{t('credential.failedFetchInfo')}</Text>}
       {serviceProvider && (
         <View style={styles.serviceProviderInfoContainer}>
