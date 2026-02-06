@@ -5,6 +5,7 @@ import { createDidCommPreview } from './media/preview'
 
 import { MAX_VIDEO_DURATION } from '@2060/constants'
 import { logError } from '@2060/utils'
+import { handleCameraPermission } from '@2060/utils/permissions'
 import { toast } from '@2060/utils/toast'
 
 const MAX_VIDEO_SECONDS_DURATION = 60
@@ -67,6 +68,8 @@ export const useImageCropPicker = () => {
   const takePhotoOrVideo = async (onSuccess: (values: ImageOrVideo) => void, options?: Options) => {
     const mediaType = options?.mediaType || 'photo'
     try {
+      const cameraPermission = await handleCameraPermission()
+      if (!cameraPermission) return
       const fileInfo = (await openCamera({ ...optionsDefault[mediaType], ...options })) as ImageOrVideo
       const infoMedia = await createPreview(fileInfo, mediaType)
       onSuccess(infoMedia)
