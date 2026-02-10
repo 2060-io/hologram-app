@@ -182,7 +182,7 @@ const BaseConnectionDetails = ({
   if (isConnectionService) {
     connectionOptions.push({
       iconName: 'forward',
-      text: t('personalChat.forward'),
+      text: t('chatConversation.forward'),
       onPress: () => navigation.navigate('ForwardConnection', { connection }),
     })
     connectionOptions.push({

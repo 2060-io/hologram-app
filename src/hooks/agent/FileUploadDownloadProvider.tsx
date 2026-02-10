@@ -87,7 +87,7 @@ const uploadChunk = async (dataStoreUrl: string, filePath: string, fileId: strin
     headers,
     notification: {
       autoClear: true,
-      onProgressMessage: t('personalChat.uploadingMedia'),
+      onProgressMessage: t('chatConversation.uploadingMedia'),
       onProgressTitle: 'Hologram',
     },
   }

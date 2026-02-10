@@ -4,18 +4,18 @@ import { useTranslation } from 'react-i18next'
 import { ScrollView, View } from 'react-native'
 import { uses24HourClock } from 'react-native-localize'
 
-import { FloatingChatMessage } from '../PersonalChat/MessageCustomView'
+import { FloatingChatMessage } from '../ChatConversation/MessageCustomView'
 
 import getStyles from './styles'
 
-import { PersonalChatStackParams } from '@2060/components/Navigation/NavigationProps'
+import { ChatConversationStackParams } from '@2060/components/Navigation/NavigationProps'
 import { Avatar, Text } from '@2060/components/common'
 import { useChat, useMobileAgent } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { ChatEntryState } from '@2060/model'
 import { getFormattedDateRangeWithTime } from '@2060/utils/dateUtils'
 
-interface Props extends StackScreenProps<PersonalChatStackParams, 'MessageDetails'> {}
+interface Props extends StackScreenProps<ChatConversationStackParams, 'MessageDetails'> {}
 
 const MessageDetails = ({ route }: Props) => {
   const { selectedMessage } = route.params
@@ -47,21 +47,21 @@ const MessageDetails = ({ route }: Props) => {
           />
         </View>
         <Text style={styles.infoText}>
-          {`${t('personalChat.sent')} ${getTransformedDate(selectedMessage.createdAt)}`}
+          {`${t('chatConversation.sent')} ${getTransformedDate(selectedMessage.createdAt)}`}
         </Text>
         {receivedReceipt && (
           <Text style={styles.infoText}>
-            {`${t('personalChat.received')} ${getTransformedDate(receivedReceipt.timestamp)}`}
+            {`${t('chatConversation.received')} ${getTransformedDate(receivedReceipt.timestamp)}`}
           </Text>
         )}
         {viewedReceipt && (
           <Text style={styles.infoText}>
-            {`${t('personalChat.read')} ${getTransformedDate(viewedReceipt.timestamp)}`}
+            {`${t('chatConversation.read')} ${getTransformedDate(viewedReceipt.timestamp)}`}
           </Text>
         )}
       </View>
       <Text fontFamily="EuclidCircularA-Medium" style={styles.sentByText}>
-        {t('personalChat.sentBy')}
+        {t('chatConversation.sentBy')}
       </Text>
       <View style={styles.senderContainer}>
         <Avatar

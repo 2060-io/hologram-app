@@ -53,7 +53,7 @@ const Chats = ({ navigation }: Props) => {
 
   const goToChat = (chatThreadId: string) => {
     navigation.dispatch(
-      StackActions.push('PersonalChatStack', { screen: 'PersonalChat', params: { chatThreadId } }),
+      StackActions.push('ChatConversationStack', { screen: 'ChatConversation', params: { chatThreadId } }),
     )
   }
 

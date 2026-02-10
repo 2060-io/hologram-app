@@ -79,7 +79,7 @@ const BaseCredentialOffer: React.FC<Props> = ({
     <SafeAreaView style={styles.container} edges={['bottom']}>
       <ModalConfirmAction
         visible={showModalRefuseConfirmation}
-        title={t('personalChat.confirmRefuseCredentialOffer')}
+        title={t('chatConversation.confirmRefuseCredentialOffer')}
         subTitle=""
         confirmText={t('general.confirm')}
         cancelText="No"

@@ -53,8 +53,8 @@ import {
   TextMessageMetadata,
   isMediaType,
 } from '@2060/model'
-import { ChatEntryMessage } from '@2060/pages/PersonalChat/ChatMessage/Props'
-import { checkIfDeleteFilesFromMedia } from '@2060/pages/PersonalChat/utils'
+import { ChatEntryMessage } from '@2060/pages/ChatConversation/ChatMessage/Props'
+import { checkIfDeleteFilesFromMedia } from '@2060/pages/ChatConversation/utils'
 import { log, logError } from '@2060/utils'
 import { getLocalFileUri } from '@2060/utils/RNFS'
 import { compressVideo, getMediaFileSharingData } from '@2060/utils/mediaFileUtils'
@@ -106,9 +106,9 @@ export const useChatActions = () => {
       const { localFilePath } = extractDataFromMessage(message)
       const path = getLocalFileUri(localFilePath)
       await CameraRoll.saveAsset(path)
-      toast({ type: 'success', message: t('personalChat.saveSucceededFileMedia') })
+      toast({ type: 'success', message: t('chatConversation.saveSucceededFileMedia') })
     } catch (error) {
-      toast({ type: 'error', message: t('personalChat.saveFailedFileMedia') })
+      toast({ type: 'error', message: t('chatConversation.saveFailedFileMedia') })
       logError('Error saving file to gallery', error)
       throw new Error(`${error}`)
     }
@@ -142,12 +142,12 @@ export const useChatActions = () => {
           updateThread(realm, chatThreadId, { lastChatEntry: lastEntryInChatThread })
           toast({
             type: 'success',
-            message: t('personalChat.messageDeletedSuccessfully', { count: messages.length }),
+            message: t('chatConversation.messageDeletedSuccessfully', { count: messages.length }),
           })
           resolve()
         } catch (error) {
           logError('Error deleting messages', error)
-          toast({ type: 'error', message: t('personalChat.messageUnsuccessfulDeletion') })
+          toast({ type: 'error', message: t('chatConversation.messageUnsuccessfulDeletion') })
           reject(`${error}`)
         }
       })
@@ -186,12 +186,12 @@ export const useChatActions = () => {
           })
           toast({
             type: 'success',
-            message: t('personalChat.messageDeletedSuccessfully', { count: messages.length }),
+            message: t('chatConversation.messageDeletedSuccessfully', { count: messages.length }),
           })
           resolve()
         } catch (error) {
           logError('Error deleting messages', error)
-          toast({ type: 'error', message: t('personalChat.messageUnsuccessfulDeletion') })
+          toast({ type: 'error', message: t('chatConversation.messageUnsuccessfulDeletion') })
           reject(`${error}`)
         }
       })
@@ -254,7 +254,7 @@ export const useChatActions = () => {
         }
       } catch (error) {
         logError((error as Error).message)
-        toast({ type: 'error', message: t('personalChat.messageUnsuccessfulReaction') })
+        toast({ type: 'error', message: t('chatConversation.messageUnsuccessfulReaction') })
       }
     },
     [agent, connectionId],
@@ -379,7 +379,7 @@ export const useChatActions = () => {
       }
       toast({
         type: 'success',
-        message: t('personalChat.messageForwarded', { count: selectedMessages.length }),
+        message: t('chatConversation.messageForwarded', { count: selectedMessages.length }),
       })
     },
     [agent, realm, selectedMessages],
@@ -554,20 +554,20 @@ const getSharedMessagesToastOptions = (
   if (excludedLongVideosCount === messagesSharedCount) {
     return {
       type: 'error',
-      message: t('personalChat.messagesNotShared', { count: messagesSharedCount }),
+      message: t('chatConversation.messagesNotShared', { count: messagesSharedCount }),
       duration: 5000,
     }
   }
   if (excludedLongVideosCount) {
     return {
       type: 'warning',
-      message: t('personalChat.messagesSharedExcept'),
+      message: t('chatConversation.messagesSharedExcept'),
       duration: 5000,
     }
   }
   return {
     type: 'success',
-    message: t('personalChat.messageShared', { count: messagesSharedCount }),
+    message: t('chatConversation.messageShared', { count: messagesSharedCount }),
   }
 }
 

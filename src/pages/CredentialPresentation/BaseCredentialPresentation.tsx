@@ -112,7 +112,7 @@ const BaseCredentialPresentation = ({
       </SafeAreaView>
       <ModalConfirmAction
         visible={showModalRefuseConfirmation}
-        title={t('personalChat.confirmRefuseVerifiablePresentation')}
+        title={t('chatConversation.confirmRefuseVerifiablePresentation')}
         confirmText={t('general.confirm')}
         cancelText="No"
         onClose={hideModalRefuseConfirmation}

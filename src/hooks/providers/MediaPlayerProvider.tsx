@@ -5,9 +5,9 @@ import { useScreenLock } from './ScreenLockProvider'
 import { useVideoCallContext } from './useVideoCallContext'
 
 import { LightboxModal, VideoPlayer } from '@2060/components'
-import { ChatEntryMessage } from '@2060/pages/PersonalChat/ChatMessage/Props'
-import LightboxHeader from '@2060/pages/PersonalChat/ImageChatView/LightboxHeader'
-import { MediaInfo } from '@2060/pages/PersonalChat/PersonalChatProps'
+import { MediaInfo } from '@2060/pages/ChatConversation/ChatConversationProps'
+import { ChatEntryMessage } from '@2060/pages/ChatConversation/ChatMessage/Props'
+import LightboxHeader from '@2060/pages/ChatConversation/ImageChatView/LightboxHeader'
 
 type Callback = () => Promise<void>
 

@@ -44,8 +44,8 @@ const DidcommCredentialOffer: React.FC<Props> = ({ route, navigation }) => {
       const [connection] = connections
       const chatThreadId = findOrCreateThread({ connection }).id
       navigation.dispatch(
-        StackActions.replace('PersonalChatStack', {
-          screen: 'PersonalChat',
+        StackActions.replace('ChatConversationStack', {
+          screen: 'ChatConversation',
           params: { chatThreadId, redirectToHomeOnBack: true },
         }),
       )

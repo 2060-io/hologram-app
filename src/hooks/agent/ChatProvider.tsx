@@ -34,7 +34,7 @@ import {
   ChatEntryState,
   MediaSharingMetadata,
 } from '@2060/model'
-import { checkIfDeleteFilesFromMedia } from '@2060/pages/PersonalChat/utils'
+import { checkIfDeleteFilesFromMedia } from '@2060/pages/ChatConversation/utils'
 import { supportsMessageReceipts } from '@2060/utils/connectionUtils'
 import {
   getLastEntryInChatThread,

@@ -20,7 +20,7 @@ export const useConnectionMainActions = ({ connection, navigation, includeDefaul
   const goToChat = () => {
     const chatThreadId = findOrCreateThread({ connection }).id
     navigation.dispatch(
-      StackActions.push('PersonalChatStack', { screen: 'PersonalChat', params: { chatThreadId } }),
+      StackActions.push('ChatConversationStack', { screen: 'ChatConversation', params: { chatThreadId } }),
     )
   }
   const defaultActions: ActionProps[] = includeDefaultActions ? [{ value: 'text', onPress: goToChat }] : []

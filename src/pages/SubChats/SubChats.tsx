@@ -50,7 +50,7 @@ const SubChats: React.FC<Props> = ({ route, navigation }) => {
 
   const goToChat = (chatThreadId: string) => {
     navigation.dispatch(
-      StackActions.push('PersonalChatStack', { screen: 'PersonalChat', params: { chatThreadId } }),
+      StackActions.push('ChatConversationStack', { screen: 'ChatConversation', params: { chatThreadId } }),
     )
   }
 

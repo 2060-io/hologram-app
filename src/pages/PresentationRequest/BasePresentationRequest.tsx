@@ -115,7 +115,7 @@ const BasePresentationRequest: React.FC<Props> = ({
     <SafeAreaView style={styles.root} edges={['bottom']}>
       <ModalConfirmAction
         visible={showModalRefuseConfirmation}
-        title={t('personalChat.confirmRefusePresentCredential')}
+        title={t('chatConversation.confirmRefusePresentCredential')}
         subTitle=""
         confirmText={t('general.confirm')}
         cancelText="No"

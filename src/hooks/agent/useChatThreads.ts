@@ -8,7 +8,7 @@ import { useConnectionById } from './ConnectionProvider'
 import { useUserProfile } from './UserProfileProvider'
 
 import { ChatThreadData, ChatThread, getChatThreadData, ChatEntryRole } from '@2060/model'
-import { ChatParticipant } from '@2060/pages/PersonalChat/ChatMessage/Props'
+import { ChatParticipant } from '@2060/pages/ChatConversation/ChatMessage/Props'
 import {
   getConnectionDisplayName,
   getConnectionDisplayPicture,
@@ -42,7 +42,7 @@ export const useChatThreadWithParticipants = (chatThreadId: string) => {
     () => [
       {
         id: ChatEntryRole.Sender,
-        name: t('personalChat.you'),
+        name: t('chatConversation.you'),
         avatar: displayPicture ? getPictureDataUrl(displayPicture) : undefined,
       },
       {

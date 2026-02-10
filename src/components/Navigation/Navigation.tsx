@@ -14,9 +14,9 @@ import 'isomorphic-webcrypto'
 
 import { SvgIcon, HeaderTitle } from '../common'
 
+import ChatConversationStackNavigator from './ChatConversationStackNavigator'
 import Container from './NavigationContainer'
 import { NavigationStackParams } from './NavigationProps'
-import PersonalChatStackNavigator from './PersonalChatStackNavigator'
 import deepLinking from './deepLinking'
 import getStyles from './styles'
 
@@ -135,8 +135,8 @@ const Navigation = ({ isSignedUp, agent, theme }: NavigationProps) => {
         >
           <Stack.Screen name="Home" component={InitialComponent} options={{ headerShown: false }} />
           <Stack.Screen
-            name="PersonalChatStack"
-            component={PersonalChatStackNavigator}
+            name="ChatConversationStack"
+            component={ChatConversationStackNavigator}
             options={{ headerShown: false }}
           />
           <Stack.Screen name="ProfileCreation" component={ProfileCreation} />

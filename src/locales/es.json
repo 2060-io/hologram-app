@@ -94,7 +94,7 @@
       "OpenIdCredentialOffer": "Credencial ofrecida",
       "DidcommPresentationRequest": "Solicitud de presentación",
       "OpenIdPresentationRequest": "Solicitud de presentación",
-      "PersonalChat": "Conversación",
+      "ChatConversation": "Conversación",
       "Chats": "Conversaciones",
       "UserProfile": "Edición del perfil",
       "WalletBackup": "Copia de seguridad",
@@ -347,7 +347,7 @@
       "titleShare": "Código de invitación de {{displayName}}",
       "dialogTitleShare": "Código de invitación de conexión de {{displayName}}"
     },
-    "personalChat": {
+    "chatConversation": {
       "loadingMessages": "Cargando mensajes...",
       "loadEarlierMessages": "Cargar mensajes anteriores",
       "message": "Mensaje",

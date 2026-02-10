@@ -24,28 +24,28 @@ export const useHomeMain = ({ navigation }: { navigation: StackNavigationProp<Pa
             }),
           )
         }
-        if (pushNotification.screen === 'PersonalChat') {
+        if (pushNotification.screen === 'ChatConversation') {
           markNotificationsOfChatAsViewed(pushNotification.params?.connectionId as string)
           const currentScreenParams = navigation.getState().routes.at(-1)?.params as {
             screen?: string
             params?: Record<string, unknown>
           }
-          const isChatCurrentScreen = currentScreenParams?.screen === 'PersonalChat'
+          const isChatCurrentScreen = currentScreenParams?.screen === 'ChatConversation'
           if (isChatCurrentScreen) {
             const isUserInTheChatOfTheNotification =
               currentScreenParams?.params?.chatThreadId === pushNotification.params?.chatThreadId
             if (!isUserInTheChatOfTheNotification) {
               navigation.dispatch(
-                StackActions.replace('PersonalChatStack', {
-                  screen: 'PersonalChat',
+                StackActions.replace('ChatConversationStack', {
+                  screen: 'ChatConversation',
                   params: { chatThreadId: pushNotification.params?.chatThreadId },
                 }),
               )
             }
           } else {
             navigation.dispatch(
-              StackActions.push('PersonalChatStack', {
-                screen: 'PersonalChat',
+              StackActions.push('ChatConversationStack', {
+                screen: 'ChatConversation',
                 params: { chatThreadId: pushNotification.params?.chatThreadId },
               }),
             )
@@ -60,7 +60,7 @@ export const useHomeMain = ({ navigation }: { navigation: StackNavigationProp<Pa
 
   useEffect(() => {
     if (displayShareMessagesScreen) {
-      navigation.dispatch(StackActions.push('PersonalChatStack', { screen: 'ShareMessages' }))
+      navigation.dispatch(StackActions.push('ChatConversationStack', { screen: 'ShareMessages' }))
     }
   }, [displayShareMessagesScreen])
 }
