@@ -54,7 +54,7 @@ export const PushNotificationsProvider: React.FC<React.PropsWithChildren<Props>>
       })
     })
     return () => unsubscribe()
-  }, [agent, addAgentActionToQueue])
+  }, [agent?.isInitialized, isSignedUp])
 
   useEffect(() => {
     const verifyPushNotificationTokenIsRegistered = async () => {
