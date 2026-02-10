@@ -18,8 +18,6 @@ const CONFIG_FILE_PATH = `${DocumentDirectoryPath}/config.json`
 const mediaDirectoryPath = `${DocumentDirectoryPath}/media`
 const mediaPreviewsDirectoryPath = `${DocumentDirectoryPath}/media/previews`
 const walletDirectoryPath = `${DocumentDirectoryPath}/wallet`
-const walletPath = `${walletDirectoryPath}/afj.sqlite`
-
 const getLocalMediaFilePath = (fileName: string) => `${mediaDirectoryPath}/${fileName}`
 const getLocalMediaPreviewFilePath = (fileName: string) => `${mediaPreviewsDirectoryPath}/${fileName}`
 const getFullLocalFilePath = (relativeFilePath: string) => `${DocumentDirectoryPath}/${relativeFilePath}`
@@ -108,5 +106,4 @@ export {
   getLocalFileUri,
   existsFile,
   CONFIG_FILE_PATH,
-  walletPath,
 }

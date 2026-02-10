@@ -3,19 +3,24 @@ import { useCallback, useState } from 'react'
 import { useMobileAgent } from './agent'
 import { useLocalRealm } from './providers/RealmProvider'
 
+import { KeyChainService, retrieveEncryptedKey } from '@2060/services/keys'
 import { logWarn } from '@2060/utils'
-import { existsFile, walletPath } from '@2060/utils/RNFS'
 
 export const useWallet = (isOpeningWalletDefaultValue = false) => {
   const [openingWallet, setOpeningWallet] = useState(isOpeningWalletDefaultValue)
   const { agent, openAndInitMobileAgent } = useMobileAgent()
   const { openRealm } = useLocalRealm()
 
+  const checkIfCanOpenWallet = async () => {
+    const walletKey = await retrieveEncryptedKey(KeyChainService.AfjWallet)
+    return walletKey
+  }
+
   const openWallet = useCallback(async () => {
     if (!agent) return
     try {
-      const canOpenWallet = await existsFile(walletPath)
-      if (!canOpenWallet) throw new Error('No wallet file found, so wallet can not be opened')
+      const canOpenWallet = await checkIfCanOpenWallet()
+      if (!canOpenWallet) throw new Error('No wallet key stored, so wallet can not be opened')
       await openAndInitMobileAgent()
       await openRealm()
     } catch (error) {
