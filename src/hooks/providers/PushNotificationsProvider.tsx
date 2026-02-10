@@ -41,6 +41,7 @@ export const PushNotificationsProvider: React.FC<React.PropsWithChildren<Props>>
   useEffect(() => {
     const messaging = getMessaging()
     const unsubscribe = onTokenRefresh(messaging, (deviceToken: string) => {
+      if (!isSignedUp) return
       agent?.didcomm.mediationRecipient.findDefaultMediatorConnection().then(mediatorConnection => {
         if (mediatorConnection) {
           const parameters: SavePushNotificationDeviceInfoParameters = {
