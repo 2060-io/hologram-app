@@ -149,7 +149,9 @@ const VCOfferChatView = ({
         </Text>
       </View>
     ),
-    [DidCommCredentialState.Declined]: <State text={t('chatConversation.youRefusedCredential')} type="error" />,
+    [DidCommCredentialState.Declined]: (
+      <State text={t('chatConversation.youRefusedCredential')} type="error" />
+    ),
     [DidCommCredentialState.CredentialReceived]: <State text={t('chatConversation.credentialAdded')} />,
     [DidCommCredentialState.Done]: <State text={t('chatConversation.credentialAdded')} />,
   }
