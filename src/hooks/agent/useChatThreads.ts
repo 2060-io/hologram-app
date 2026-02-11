@@ -4,11 +4,11 @@ import { useState, useEffect, useMemo } from 'react'
 import { useLocalRealm } from '../providers/RealmProvider'
 import { useFetchServiceInfo } from '../useFetchServiceInfo'
 
-import { useConnectionById } from './ConnectionProvider'
+import { useConnectionById } from './ConnectionsProvider'
 import { useUserProfile } from './UserProfileProvider'
 
 import { ChatThreadData, ChatThread, getChatThreadData, ChatEntryRole } from '@src/model'
-import { ChatParticipant } from '@src/pages/PersonalChat/ChatMessage/Props'
+import { ChatParticipant } from '@src/pages/Chat/ChatMessage/Props'
 import {
   getConnectionDisplayName,
   getConnectionDisplayPicture,
@@ -42,7 +42,7 @@ export const useChatThreadWithParticipants = (chatThreadId: string) => {
     () => [
       {
         id: ChatEntryRole.Sender,
-        name: t('personalChat.you'),
+        name: t('chat.you'),
         avatar: displayPicture ? getPictureDataUrl(displayPicture) : undefined,
       },
       {

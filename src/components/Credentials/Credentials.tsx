@@ -9,7 +9,7 @@ import SearchInput from '../SearchInput'
 import getStyles from './styles'
 
 import { CredentialMainInformation, HeaderTitle, SvgIcon, Text } from '@src/components/common'
-import { useCredentials } from '@src/hooks/agent/CredentialProvider'
+import { useCredentials } from '@src/hooks/agent/CredentialsProvider'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { getCredentialMainInfo } from '@src/services/agent/display'
 

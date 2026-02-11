@@ -64,8 +64,8 @@ const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => 
   const goToChat = (connection: DidCommConnectionRecord) => {
     const chatThreadId = findOrCreateThread({ connection }).id
     navigation.dispatch(
-      StackActions.replace('PersonalChatStack', {
-        screen: 'PersonalChat',
+      StackActions.replace('ChatStack', {
+        screen: 'Chat',
         params: { chatThreadId, redirectToHomeOnBack: true },
       }),
     )

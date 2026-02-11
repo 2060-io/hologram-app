@@ -8,7 +8,7 @@ import getStyles from './styles'
 
 import { Connections } from '@src/components'
 import { ConnectionItem } from '@src/components/Connections/ConnectionList'
-import { PersonalChatStackParams } from '@src/components/Navigation/NavigationProps'
+import { ChatStackParams } from '@src/components/Navigation/NavigationProps'
 import { SvgIcon, Text } from '@src/components/common'
 import { useChatActions } from '@src/hooks'
 import { useConnections } from '@src/hooks/agent'
@@ -16,7 +16,7 @@ import { useSharedDataFromOtherApps } from '@src/hooks/providers/SharedDataFromO
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { notAllowedConnectionsIdsToSendMessages } from '@src/utils/connectionUtils'
 
-interface Props extends StackScreenProps<PersonalChatStackParams, 'ShareMessages'> {}
+interface Props extends StackScreenProps<ChatStackParams, 'ShareMessages'> {}
 
 type SelectedConnection = {
   id: string

@@ -49,9 +49,7 @@ const SubChats: React.FC<Props> = ({ route, navigation }) => {
   const swipeRowReferences = useRef<SwipeRow<unknown>[]>([])
 
   const goToChat = (chatThreadId: string) => {
-    navigation.dispatch(
-      StackActions.push('PersonalChatStack', { screen: 'PersonalChat', params: { chatThreadId } }),
-    )
+    navigation.dispatch(StackActions.push('ChatStack', { screen: 'Chat', params: { chatThreadId } }))
   }
 
   const getChatThreads = (subChats: ChatThreadData[]) => {

@@ -8,7 +8,7 @@ import getStyles from './styles'
 import { Icon } from '@src/components/common'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { ChatEntryRole } from '@src/model'
-import { ChatEntryMessage } from '@src/pages/PersonalChat/ChatMessage/Props'
+import { ChatEntryMessage } from '@src/pages/Chat/ChatMessage/Props'
 
 const mainEmojis = [
   { emoji: '😂', name: 'laugh' },

@@ -12,10 +12,10 @@ import { useCameraDevices } from 'react-native-vision-camera'
 import MRZCamera from './MRZCamera'
 import { findAndParseMrz } from './findAndParseMrz'
 
-import { PersonalChatStackParams } from '@src/components/Navigation/NavigationProps'
+import { ChatStackParams } from '@src/components/Navigation/NavigationProps'
 import { useChat, useMobileAgent } from '@src/hooks/agent'
 
-interface Props extends StackScreenProps<PersonalChatStackParams, 'MRZScanner'> {}
+interface Props extends StackScreenProps<ChatStackParams, 'MRZScanner'> {}
 
 const MRZScanner = ({ navigation, route }: Props) => {
   const devices = useCameraDevices()

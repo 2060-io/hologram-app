@@ -1,7 +1,7 @@
 import { StackActions } from '@react-navigation/native'
 import { useMemo } from 'react'
 
-import { useChats } from './agent/ChatProvider'
+import { useChats } from './agent/ChatsProvider'
 import { useConfig } from './providers/ConfigProvider'
 import { useVideoCallContext } from './providers/useVideoCallContext'
 
@@ -19,9 +19,7 @@ export const useConnectionMainActions = ({ connection, navigation, includeDefaul
 
   const goToChat = () => {
     const chatThreadId = findOrCreateThread({ connection }).id
-    navigation.dispatch(
-      StackActions.push('PersonalChatStack', { screen: 'PersonalChat', params: { chatThreadId } }),
-    )
+    navigation.dispatch(StackActions.push('ChatStack', { screen: 'Chat', params: { chatThreadId } }))
   }
   const defaultActions: ActionProps[] = includeDefaultActions ? [{ value: 'text', onPress: goToChat }] : []
 

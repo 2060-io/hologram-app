@@ -5,7 +5,7 @@ import getStyles from './styles'
 
 import { Text, Icon } from '@src/components/common'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
-import { MessageAction } from '@src/pages/PersonalChat/PersonalChatProps'
+import { MessageAction } from '@src/pages/Chat/ChatProps'
 
 interface Props extends MessageAction {
   onActionSelected(actionId: string): void

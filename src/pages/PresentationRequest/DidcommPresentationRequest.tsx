@@ -30,7 +30,7 @@ interface Props extends StackScreenProps<NavigationStackParams, 'DidcommPresenta
 const DidcommPresentationRequest: React.FC<Props> = ({ navigation, route }: Props) => {
   const routes = navigation.getState()?.routes
   const prevRoute = routes[routes.length - 2]
-  const comesFromChat = prevRoute?.name === 'PersonalChatStack'
+  const comesFromChat = prevRoute?.name === 'ChatStack'
   const { realm } = useLocalRealm()
   const { agent } = useMobileAgent()
   const { addAgentActionToQueue } = useAgentActionQueue()

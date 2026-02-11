@@ -8,8 +8,8 @@ type HomeParams = {
   [K in TypeParameters]: string | undefined
 }
 
-export type PersonalChatStackParams = {
-  PersonalChat: { chatThreadId: string; redirectToHomeOnBack?: boolean }
+export type ChatStackParams = {
+  Chat: { chatThreadId: string; redirectToHomeOnBack?: boolean }
   MessageDetails: { selectedMessage: ChatEntryData }
   ConnectionDetails: { connectionId: string }
   ForwardMessages: undefined
@@ -25,7 +25,7 @@ export type NavigationStackParams = {
   Connections: undefined
   ConnectionsForNewChat: undefined
   Privacy: undefined
-  PersonalChatStack: undefined
+  ChatStack: undefined
   OpenIdCredentialOffer: { url: string }
   OpenIdPresentationRequest: { url: string }
   DidcommCredentialOffer: { credentialRecordId: string; did?: string }
