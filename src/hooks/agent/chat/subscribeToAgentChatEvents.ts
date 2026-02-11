@@ -59,22 +59,22 @@ import {
 } from './services/ChatEntryService'
 import { addUnread, findChatThread, findOrCreateChatThread, updateThread } from './services/ChatThreadService'
 
-import { ChatEntryType, ChatEntryRole, ChatEntryState, InvitationMetadata } from '@2060/model'
-import { InvitationState } from '@2060/model/InvitationState'
-import { AgentActionQueueSingleton } from '@2060/services/AgentActionQueueSingleton'
-import AgentSingleton from '@2060/services/AgentSingleton'
-import { MobileAgent } from '@2060/services/agent'
+import { ChatEntryType, ChatEntryRole, ChatEntryState, InvitationMetadata } from '@src/model'
+import { InvitationState } from '@src/model/InvitationState'
+import { AgentActionQueueSingleton } from '@src/services/AgentActionQueueSingleton'
+import AgentSingleton from '@src/services/AgentSingleton'
+import { MobileAgent } from '@src/services/agent'
 import {
   OutOfBandInvitationEvent,
   OutOfBandInvitationEventTypes,
-} from '@2060/services/agent/oob/OutOfBandEvents'
-import { log } from '@2060/utils'
+} from '@src/services/agent/oob/OutOfBandEvents'
+import { log } from '@src/utils'
 import {
   getConnectionDisplayName,
   getConnectionDisplayPicture,
   setLastTimeProfileReceived,
   supportsMessageReceipts,
-} from '@2060/utils/connectionUtils'
+} from '@src/utils/connectionUtils'
 
 let getActiveChatThreadId: () => string | undefined
 

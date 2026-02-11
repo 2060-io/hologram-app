@@ -23,8 +23,8 @@ import {
   RelatedEntryProps,
   VideoMetadata,
   VoiceNoteMetadata,
-} from '@2060/model'
-import { MobileAgent } from '@2060/services/agent'
+} from '@src/model'
+import { MobileAgent } from '@src/services/agent'
 
 export const handleMediaSharingRecordChanges = async (options: {
   agent: MobileAgent

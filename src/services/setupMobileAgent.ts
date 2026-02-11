@@ -15,7 +15,7 @@ import { createMobileAgent } from './agent/createMobileAgent'
 import { duplicatedMessagesMiddleware } from './agent/duplicatedMessagesMiddleware'
 import { DEV_ENVS_PERSIST_KEY, getStorageData } from './localStorage'
 
-import { DevEnvsObject, areLogsEnabled } from '@2060/utils/developer'
+import { DevEnvsObject, areLogsEnabled } from '@src/utils/developer'
 
 interface MobileAgentConfig {
   agentDependencies: AgentDependencies

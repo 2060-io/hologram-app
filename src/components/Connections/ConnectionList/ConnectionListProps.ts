@@ -1,4 +1,4 @@
-import { ServiceStatus } from '@2060/model'
+import { ServiceStatus } from '@src/model'
 
 export type ConnectionsBySections = {
   title: string

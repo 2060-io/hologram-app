@@ -16,17 +16,17 @@ import {
   VerifierInfo,
   VPResponseMetadata,
   VPResponsePresentedCredential,
-} from '@2060/model'
-import { MobileAgent } from '@2060/services/agent'
-import { getDidCommPresentationDisplayMetadata } from '@2060/services/agent/RecordMetadata'
-import { getCredentialMainInfo, getPresentationRequestForDisplay } from '@2060/services/agent/display'
+} from '@src/model'
+import { MobileAgent } from '@src/services/agent'
+import { getDidCommPresentationDisplayMetadata } from '@src/services/agent/RecordMetadata'
+import { getCredentialMainInfo, getPresentationRequestForDisplay } from '@src/services/agent/display'
 import {
   getCredentialRevealedAttributes,
   proposalGetCredentialAttributes,
   proposalGetCredentialInfo,
-} from '@2060/services/agent/proofs'
-import { logError } from '@2060/utils'
-import { getConnectionDisplayName, getConnectionDisplayPicture } from '@2060/utils/connectionUtils'
+} from '@src/services/agent/proofs'
+import { logError } from '@src/utils'
+import { getConnectionDisplayName, getConnectionDisplayPicture } from '@src/utils/connectionUtils'
 
 export const handleProofExchangeRecordChanges = async (options: {
   agent: MobileAgent

@@ -4,9 +4,9 @@ import { View, TouchableOpacity } from 'react-native'
 import { ConnectionItem } from './ConnectionListProps'
 import getStyles from './styles'
 
-import { Avatar, SvgIcon, Text, VerifiedIcon } from '@2060/components/common'
-import { useFetchServiceInfo } from '@2060/hooks'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
+import { Avatar, SvgIcon, Text, VerifiedIcon } from '@src/components/common'
+import { useFetchServiceInfo } from '@src/hooks'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
 
 type Props = {
   onPress: () => void

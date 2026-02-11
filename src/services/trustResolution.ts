@@ -2,8 +2,8 @@ import { IOrg, resolveDID } from '@verana-labs/verre'
 
 import { MobileAgent } from './agent'
 
-import { ServiceInfo } from '@2060/model'
-import { log, logError } from '@2060/utils'
+import { ServiceInfo } from '@src/model'
+import { log, logError } from '@src/utils'
 
 export async function getServiceInfo(options: {
   agent: MobileAgent

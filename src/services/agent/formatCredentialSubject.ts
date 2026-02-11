@@ -1,4 +1,4 @@
-import { stringToStringDate } from '@2060/utils/dateUtils'
+import { stringToStringDate } from '@src/utils/dateUtils'
 
 /* eslint-disable max-len */
 type CredentialAttributeRowString = {

@@ -5,8 +5,8 @@ import CredentialAttributes from '../CredentialAttributes'
 
 import styles from './styles'
 
-import { CredentialMainInformation } from '@2060/components/common'
-import { CredentialDetailsForDisplay } from '@2060/services/agent/display'
+import { CredentialMainInformation } from '@src/components/common'
+import { CredentialDetailsForDisplay } from '@src/services/agent/display'
 
 type Props = {
   credentialDetails: CredentialDetailsForDisplay

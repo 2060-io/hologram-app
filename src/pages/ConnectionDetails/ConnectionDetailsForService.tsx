@@ -3,8 +3,8 @@ import { StyleSheet } from 'react-native'
 
 import BaseConnectionDetails, { ConnectionDetailsProps } from './BaseConnectionDetails'
 
-import { ProofOfTrust, ServiceMainInfo } from '@2060/components/common'
-import { useFetchServiceInfo } from '@2060/hooks'
+import { ProofOfTrust, ServiceMainInfo } from '@src/components/common'
+import { useFetchServiceInfo } from '@src/hooks'
 
 const ConnectionDetailsForService = (props: ConnectionDetailsProps) => {
   const { connection } = props

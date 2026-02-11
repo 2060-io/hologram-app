@@ -5,11 +5,11 @@ import { AgentActionQueueSingleton } from './AgentActionQueueSingleton'
 import AgentSingleton from './AgentSingleton'
 import RealmSingleton from './RealmSingleton'
 
-import { manageBackgroundChatEntryChanges, subscribeToAgentChatEvents } from '@2060/hooks/agent/chat'
-import { manageConnectionStateChangedEvent } from '@2060/hooks/agent/connections/manageConnectionStateChangedEvent'
-import { subscribeToAgentConnectionEvents } from '@2060/hooks/agent/connections/subscribeToAgentConnectionEvents'
-import { log, logWarn } from '@2060/utils'
-import { arePushNotificationsAllowed, deleteRemoteNotifications } from '@2060/utils/pushNotificationsUtils'
+import { manageBackgroundChatEntryChanges, subscribeToAgentChatEvents } from '@src/hooks/agent/chat'
+import { manageConnectionStateChangedEvent } from '@src/hooks/agent/connections/manageConnectionStateChangedEvent'
+import { subscribeToAgentConnectionEvents } from '@src/hooks/agent/connections/subscribeToAgentConnectionEvents'
+import { log, logWarn } from '@src/utils'
+import { arePushNotificationsAllowed, deleteRemoteNotifications } from '@src/utils/pushNotificationsUtils'
 
 const makeRequestToLocalServer = (payload: Record<string, string>) => {
   if (__DEV__) {

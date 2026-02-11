@@ -11,11 +11,11 @@ import VerifiedIcon from '../VerifiedIcon'
 
 import getStyles from './styles'
 
-import imagePlaceholder from '@2060/assets/images/placeholderImg.png'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { useFetchServiceInfo } from '@2060/hooks/useFetchServiceInfo'
-import { CredentialMainInfo } from '@2060/services/agent/display'
-import { dateToString } from '@2060/utils/dateUtils'
+import imagePlaceholder from '@src/assets/images/placeholderImg.png'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { useFetchServiceInfo } from '@src/hooks/useFetchServiceInfo'
+import { CredentialMainInfo } from '@src/services/agent/display'
+import { dateToString } from '@src/utils/dateUtils'
 
 type Props = {
   credentialMainInfo: CredentialMainInfo | null

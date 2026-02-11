@@ -62,7 +62,7 @@ import {
   ShareMediaParameters,
 } from './types'
 
-import { createOobInvitation, MobileAgent } from '@2060/services/agent'
+import { createOobInvitation, MobileAgent } from '@src/services/agent'
 
 type AgentCallbackReturnType<T extends BaseRecord = BaseRecord> = {
   associatedRecord?: T

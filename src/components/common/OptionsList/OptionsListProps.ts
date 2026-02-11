@@ -1,6 +1,6 @@
 import { ReactElement } from 'react'
 
-import { IconsNames } from '@2060/components/common/SvgIcon'
+import { IconsNames } from '@src/components/common/SvgIcon'
 
 export type Option = {
   iconName?: keyof IconsNames

@@ -47,8 +47,8 @@ import { IndyVdrProxyDidResolver, IndyVdrProxyAnonCredsRegistry } from 'credo-ts
 
 import { TunedMobileWsOutboundTransport } from '../transport/TunedMobileWsOutboundTransport'
 
-import { walletDirectoryPath } from '@2060/utils/RNFS'
-import { getAppCheckHeaders } from '@2060/utils/firebaseUtils'
+import { walletDirectoryPath } from '@src/utils/RNFS'
+import { getAppCheckHeaders } from '@src/utils/firebaseUtils'
 
 const SECONDS_PER_DAY = 60 * 60 * 24
 

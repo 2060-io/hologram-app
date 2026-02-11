@@ -1,15 +1,15 @@
 import { DidCommConnectionRecord, DidCommOutOfBandRecord, DidCommProofState } from '@credo-ts/didcomm'
 
-import { ChatEntryData, ServiceInfo } from '@2060/model'
-import { CredentialMainInfo } from '@2060/services/agent/display'
+import { ChatEntryData, ServiceInfo } from '@src/model'
+import { CredentialMainInfo } from '@src/services/agent/display'
 
 type TypeParameters = 'oob' | 'd_m' | 'c_i'
 type HomeParams = {
   [K in TypeParameters]: string | undefined
 }
 
-export type PersonalChatStackParams = {
-  PersonalChat: { chatThreadId: string; redirectToHomeOnBack?: boolean }
+export type ChatStackParams = {
+  Chat: { chatThreadId: string; redirectToHomeOnBack?: boolean }
   MessageDetails: { selectedMessage: ChatEntryData }
   ConnectionDetails: { connectionId: string }
   ForwardMessages: undefined
@@ -25,7 +25,7 @@ export type NavigationStackParams = {
   Connections: undefined
   ConnectionsForNewChat: undefined
   Privacy: undefined
-  PersonalChatStack: undefined
+  ChatStack: undefined
   OpenIdCredentialOffer: { url: string }
   OpenIdPresentationRequest: { url: string }
   DidcommCredentialOffer: { credentialRecordId: string; did?: string }

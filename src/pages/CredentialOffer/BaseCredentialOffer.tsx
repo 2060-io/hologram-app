@@ -9,11 +9,11 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 
 import getStyles from './styles'
 
-import { CredentialDetails, ModalConfirmAction } from '@2060/components'
-import { Text, ServiceInformation } from '@2060/components/common'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { ServiceInfo } from '@2060/model'
-import { CredentialDetailsForDisplay } from '@2060/services/agent/display'
+import { CredentialDetails, ModalConfirmAction } from '@src/components'
+import { Text, ServiceInformation } from '@src/components/common'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { ServiceInfo } from '@src/model'
+import { CredentialDetailsForDisplay } from '@src/services/agent/display'
 
 type Props = {
   navigation: StackNavigationProp<ParamListBase>
@@ -79,7 +79,7 @@ const BaseCredentialOffer: React.FC<Props> = ({
     <SafeAreaView style={styles.container} edges={['bottom']}>
       <ModalConfirmAction
         visible={showModalRefuseConfirmation}
-        title={t('personalChat.confirmRefuseCredentialOffer')}
+        title={t('chat.confirmRefuseCredentialOffer')}
         subTitle=""
         confirmText={t('general.confirm')}
         cancelText="No"

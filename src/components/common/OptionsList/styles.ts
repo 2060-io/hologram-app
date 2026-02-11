@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native'
 
-import { AppTheme, cardStyles, cardShadowStyles } from '@2060/styles'
-import { hexTransparency } from '@2060/utils/colorUtils'
+import { AppTheme, cardStyles, cardShadowStyles } from '@src/styles'
+import { hexTransparency } from '@src/utils/colorUtils'
 
 export default (theme: AppTheme) =>
   StyleSheet.create({

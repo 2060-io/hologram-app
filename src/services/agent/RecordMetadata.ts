@@ -1,7 +1,7 @@
 import { W3cCredentialRecord } from '@credo-ts/core'
 import { DidCommCredentialExchangeRecord, DidCommProofExchangeRecord } from '@credo-ts/didcomm'
 
-import { ServiceStatus } from '@2060/model/ServiceInfo'
+import { ServiceStatus } from '@src/model/ServiceInfo'
 
 interface DidCommCredentialDisplayMetadata {
   issuedAt: number

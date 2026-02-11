@@ -4,15 +4,15 @@ import { View, ActivityIndicator, TouchableOpacity } from 'react-native'
 
 import getStyles from './styles'
 
-import { Text, SvgIcon, MainButton } from '@2060/components/common'
-import { IS_ANDROID, IS_IOS } from '@2060/constants'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
+import { Text, SvgIcon, MainButton } from '@src/components/common'
+import { IS_ANDROID, IS_IOS } from '@src/constants'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import {
   WalletBackupInfoProps,
   WalletBackupHandlerProps,
-} from '@2060/pages/Settings/WalletBackup/WalletBackupProps'
-import { getFileSize } from '@2060/utils'
-import { dateToString } from '@2060/utils/dateUtils'
+} from '@src/pages/Settings/WalletBackup/WalletBackupProps'
+import { getFileSize } from '@src/utils'
+import { dateToString } from '@src/utils/dateUtils'
 
 const WalletBackupHandler = ({
   containerStyle,

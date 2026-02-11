@@ -2,8 +2,8 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, TouchableOpacity } from 'react-native'
 
-import { SvgIcon, Text, OptionsList } from '@2060/components/common'
-import { Option } from '@2060/components/common/OptionsList'
+import { SvgIcon, Text, OptionsList } from '@src/components/common'
+import { Option } from '@src/components/common/OptionsList'
 
 interface StyleObject {
   [key: string]: object

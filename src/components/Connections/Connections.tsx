@@ -12,9 +12,9 @@ import ConnectionList, { ConnectionItem } from './ConnectionList'
 import getStyles from './styles'
 import { useConnectionsBySections } from './useConnectionsBySections'
 
-import { Avatar, HeaderTitle, SvgIcon, Text } from '@2060/components/common'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { getGlobalStyles } from '@2060/styles'
+import { Avatar, HeaderTitle, SvgIcon, Text } from '@src/components/common'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { getGlobalStyles } from '@src/styles'
 
 type HeaderProps = {
   presentation?: 'card' | 'modal' | 'transparentModal'

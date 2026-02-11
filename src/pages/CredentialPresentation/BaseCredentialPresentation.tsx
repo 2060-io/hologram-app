@@ -8,18 +8,18 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 
 import getStyles from './styles'
 
-import { CredentialAttributes, ModalConfirmAction } from '@2060/components'
-import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
-import { CredentialMainInformation, HeaderTitle, Text } from '@2060/components/common'
-import { AgentActionType, useAgentActionQueue } from '@2060/hooks/agent'
+import { CredentialAttributes, ModalConfirmAction } from '@src/components'
+import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
+import { CredentialMainInformation, HeaderTitle, Text } from '@src/components/common'
+import { AgentActionType, useAgentActionQueue } from '@src/hooks/agent'
 import {
   AcceptProofProposalParameters,
   ProofSendProblemReportDescription,
   ProofSendProblemReportParameters,
-} from '@2060/hooks/agent/actions/types'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { CredentialMainInfo } from '@2060/services/agent/display'
-import { toast } from '@2060/utils/toast'
+} from '@src/hooks/agent/actions/types'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { CredentialMainInfo } from '@src/services/agent/display'
+import { toast } from '@src/utils/toast'
 
 type Props = {
   navigation: StackNavigationProp<
@@ -112,7 +112,7 @@ const BaseCredentialPresentation = ({
       </SafeAreaView>
       <ModalConfirmAction
         visible={showModalRefuseConfirmation}
-        title={t('personalChat.confirmRefuseVerifiablePresentation')}
+        title={t('chat.confirmRefuseVerifiablePresentation')}
         confirmText={t('general.confirm')}
         cancelText="No"
         onClose={hideModalRefuseConfirmation}

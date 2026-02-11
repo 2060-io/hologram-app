@@ -5,10 +5,10 @@ import { ReplaySubject, firstValueFrom, filter, first, timeout, catchError, map 
 import { ActionExecutionStatus, AgentAction, OutboundMessageContextData } from './AgentAction'
 import { AgentActionExecuterMap } from './AgentActionExecuterMap'
 
-import { updateChatEntry } from '@2060/hooks/agent/chat/services/ChatEntryService'
-import { ChatEntry, ChatEntryState } from '@2060/model'
-import { MobileAgent } from '@2060/services/agent'
-import { log, logError } from '@2060/utils'
+import { updateChatEntry } from '@src/hooks/agent/chat/services/ChatEntryService'
+import { ChatEntry, ChatEntryState } from '@src/model'
+import { MobileAgent } from '@src/services/agent'
+import { log, logError } from '@src/utils'
 
 export class AgentActionExecuter {
   /**

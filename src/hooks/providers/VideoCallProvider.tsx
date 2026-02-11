@@ -24,10 +24,10 @@ import {
   CallInfo,
 } from './useVideoCallContext'
 
-import { VideoCall, IncomingCall } from '@2060/components'
-import { Modal } from '@2060/components/common'
-import { handleCameraPermission, handleMicrophonePermission } from '@2060/utils/permissions'
-import { toast } from '@2060/utils/toast'
+import { VideoCall, IncomingCall } from '@src/components'
+import { Modal } from '@src/components/common'
+import { handleCameraPermission, handleMicrophonePermission } from '@src/utils/permissions'
+import { toast } from '@src/utils/toast'
 
 const stateInitialValues: StateProps = {
   isCameraOn: false,
