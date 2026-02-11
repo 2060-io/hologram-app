@@ -6,9 +6,9 @@ import { View, FlatList, TouchableOpacity } from 'react-native'
 import Dial from './Dial'
 import getStyles from './styles'
 
-import { Modal, Text } from '@2060/components/common'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { retrieveEncryptedKey, KeyChainService, aes256KeyFromSeed } from '@2060/services/keys'
+import { Modal, Text } from '@src/components/common'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { retrieveEncryptedKey, KeyChainService, aes256KeyFromSeed } from '@src/services/keys'
 
 type OnSuccessCallback = { action: ActionToTake; pinCode?: string }
 

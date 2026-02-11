@@ -5,7 +5,7 @@ import { InvitationState } from './InvitationState'
 import { MediaDownloadState } from './MediaDownloadState'
 import { MediaUploadState } from './MediaUploadState'
 
-import { CredentialMainInfo } from '@2060/services/agent/display'
+import { CredentialMainInfo } from '@src/services/agent/display'
 
 export type TextMessageMetadata = {
   content: string

@@ -1,17 +1,17 @@
 import { DidCommConnectionRecord } from '@credo-ts/didcomm'
 import { useEffect, useState } from 'react'
 
-import { ConnectionItem, ConnectionsBySections } from '@2060/components/Connections/ConnectionList'
-import { getStoredServiceInfo } from '@2060/hooks'
-import { useConnections, useParentConnections } from '@2060/hooks/agent'
-import { useMobileAgent } from '@2060/hooks/agent/MobileAgentProvider'
-import { MobileAgent } from '@2060/services/agent'
+import { ConnectionItem, ConnectionsBySections } from '@src/components/Connections/ConnectionList'
+import { getStoredServiceInfo } from '@src/hooks'
+import { useConnections, useParentConnections } from '@src/hooks/agent'
+import { useMobileAgent } from '@src/hooks/agent/MobileAgentProvider'
+import { MobileAgent } from '@src/services/agent'
 import {
   getConnectionDisplayName,
   getConnectionDisplayPicture,
   filterConnectionsByParentId,
   isService,
-} from '@2060/utils/connectionUtils'
+} from '@src/utils/connectionUtils'
 
 const getConnectionItem = async (
   connection: DidCommConnectionRecord,

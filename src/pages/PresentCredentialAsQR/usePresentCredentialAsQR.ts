@@ -25,19 +25,19 @@ import { useTranslation } from 'react-i18next'
 import Config from 'react-native-config'
 import { timeout, Subscription, catchError, filter, EMPTY } from 'rxjs'
 
-import { AgentActionType, useCredentials, useMobileAgent, useAgentActionQueue } from '@2060/hooks/agent'
+import { AgentActionType, useCredentials, useMobileAgent, useAgentActionQueue } from '@src/hooks/agent'
 import {
   AcceptProofRequestParameters,
   ProofSendProblemReportDescription,
   ProofSendProblemReportParameters,
-} from '@2060/hooks/agent/actions/types'
-import { deleteConnection } from '@2060/hooks/agent/connections'
-import { createInvitation } from '@2060/services/agent'
-import { CredentialMainInfo, getCredentialMainInfo } from '@2060/services/agent/display'
-import { createProofProposal } from '@2060/services/agent/proofs'
-import { log, logError } from '@2060/utils'
-import { getConnectionDisplayName, getConnectionDisplayPicture } from '@2060/utils/connectionUtils'
-import { toast } from '@2060/utils/toast'
+} from '@src/hooks/agent/actions/types'
+import { deleteConnection } from '@src/hooks/agent/connections'
+import { createInvitation } from '@src/services/agent'
+import { CredentialMainInfo, getCredentialMainInfo } from '@src/services/agent/display'
+import { createProofProposal } from '@src/services/agent/proofs'
+import { log, logError } from '@src/utils'
+import { getConnectionDisplayName, getConnectionDisplayPicture } from '@src/utils/connectionUtils'
+import { toast } from '@src/utils/toast'
 
 export type State =
   | 'creating'

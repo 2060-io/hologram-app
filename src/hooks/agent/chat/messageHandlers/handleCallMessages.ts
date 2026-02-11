@@ -15,9 +15,9 @@ import {
 } from '../services/ChatEntryService'
 import { addUnread, findOrCreateChatThread } from '../services/ChatThreadService'
 
-import { CallInfo } from '@2060/hooks/providers/useVideoCallContext'
-import { CallOfferMetadata, CallOfferState, ChatEntryRole, ChatEntryState, ChatEntryType } from '@2060/model'
-import { logError } from '@2060/utils'
+import { CallInfo } from '@src/hooks/providers/useVideoCallContext'
+import { CallOfferMetadata, CallOfferState, ChatEntryRole, ChatEntryState, ChatEntryType } from '@src/model'
+import { logError } from '@src/utils'
 
 export const handleCallMessages = (options: {
   realm: Realm

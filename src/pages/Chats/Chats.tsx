@@ -16,14 +16,14 @@ import {
   ModalBottomHalf,
   ConfirmChatDeletion,
   ChatFilterOptions,
-} from '@2060/components'
-import { Text, SvgIcon, HeaderTitle } from '@2060/components/common'
-import { ChatCategory, useChats, useMobileAgent } from '@2060/hooks/agent'
-import { deleteConnection } from '@2060/hooks/agent/connections'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { ChatThreadData } from '@2060/model'
-import { ChatsStackParams } from '@2060/navigators/ChatStackParams'
-import { widthPercentageToDP } from '@2060/utils/responsiveUtils'
+} from '@src/components'
+import { Text, SvgIcon, HeaderTitle } from '@src/components/common'
+import { ChatCategory, useChats, useMobileAgent } from '@src/hooks/agent'
+import { deleteConnection } from '@src/hooks/agent/connections'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { ChatThreadData } from '@src/model'
+import { ChatsStackParams } from '@src/navigators/ChatStackParams'
+import { widthPercentageToDP } from '@src/utils/responsiveUtils'
 
 interface Props extends StackScreenProps<ChatsStackParams, 'ChatsMain'> {}
 

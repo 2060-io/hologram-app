@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native'
 
-import { AppTheme, cardShadowStyles } from '@2060/styles'
-import { heightPercentageToDP, widthPercentageToDP } from '@2060/utils/responsiveUtils'
+import { AppTheme, cardShadowStyles } from '@src/styles'
+import { heightPercentageToDP, widthPercentageToDP } from '@src/utils/responsiveUtils'
 
 export const REACTIONS_MARGIN_BOTTOM = 20
 export default (theme: AppTheme) =>

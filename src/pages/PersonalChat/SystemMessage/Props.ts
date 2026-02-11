@@ -1,6 +1,6 @@
 import { DidCommConnectionRecord } from '@credo-ts/didcomm'
 
-import { SystemMessageKind } from '@2060/model'
+import { SystemMessageKind } from '@src/model'
 
 export type SystemMessageProps = {
   connection?: DidCommConnectionRecord

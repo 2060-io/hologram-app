@@ -8,7 +8,7 @@ import {
   SystemMessageMetadata,
   TextMessageMetadata,
   VideoMetadata,
-} from '@2060/model'
+} from '@src/model'
 
 /**
  * Returns a string containing a localized preview for a given chat entry. It is mostly used

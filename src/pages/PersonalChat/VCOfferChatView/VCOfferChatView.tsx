@@ -11,20 +11,20 @@ import { BlueButton, Header, OutlinedBlueButton, State } from '../components'
 
 import getStyles from './styles'
 
-import { ModalConfirmAction } from '@2060/components'
-import { CredentialMainInformation, Text } from '@2060/components/common'
-import { AgentActionType, useAgentActionQueue } from '@2060/hooks/agent'
+import { ModalConfirmAction } from '@src/components'
+import { CredentialMainInformation, Text } from '@src/components/common'
+import { AgentActionType, useAgentActionQueue } from '@src/hooks/agent'
 import {
   AcceptCredentialOfferParameters,
   DeclineCredentialOfferParameters,
-} from '@2060/hooks/agent/actions/types'
-import { updateChatEntryMetadata } from '@2060/hooks/agent/chat/services'
-import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { VCOfferMetadata } from '@2060/model'
-import { MobileAgent } from '@2060/services/agent'
-import { CredentialMainInfo, sanitizeString } from '@2060/services/agent/display'
-import { toast } from '@2060/utils/toast'
+} from '@src/hooks/agent/actions/types'
+import { updateChatEntryMetadata } from '@src/hooks/agent/chat/services'
+import { useLocalRealm } from '@src/hooks/providers/RealmProvider'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { VCOfferMetadata } from '@src/model'
+import { MobileAgent } from '@src/services/agent'
+import { CredentialMainInfo, sanitizeString } from '@src/services/agent/display'
+import { toast } from '@src/utils/toast'
 
 interface Props {
   sender?: ChatParticipant

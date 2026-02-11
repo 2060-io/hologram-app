@@ -11,9 +11,9 @@ import { Header, BlueButton } from '../components'
 import { HtmlChatViewProps } from './HtmlChatViewProps'
 import getStyles from './styles'
 
-import { Modal, SvgIcon, Text } from '@2060/components/common'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { log, logError } from '@2060/utils'
+import { Modal, SvgIcon, Text } from '@src/components/common'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { log, logError } from '@src/utils'
 
 const extractDomainFromUrl = (url: string) => {
   const domainRegex = /^(?:https?:\/\/)?(?:www\.)?([^/]+)/

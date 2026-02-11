@@ -11,7 +11,7 @@ module.exports = {
         root: ['.'],
         alias: {
           // This has to be mirrored in tsconfig.json
-          '^@2060/(.+)': './src/\\1',
+          '^@src/(.+)': './src/\\1',
         },
       },
     ],

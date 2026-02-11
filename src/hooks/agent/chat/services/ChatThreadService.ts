@@ -12,14 +12,14 @@ import {
   ChatThread,
   SystemMessageMetadata,
   getChatThreadData,
-} from '@2060/model'
+} from '@src/model'
 import {
   getConnectionDisplayName,
   getConnectionDisplayPicture,
   getConnectionParentId,
   isService,
-} from '@2060/utils/connectionUtils'
-import { getLastEntryInChatThread } from '@2060/utils/realmQueries'
+} from '@src/utils/connectionUtils'
+import { getLastEntryInChatThread } from '@src/utils/realmQueries'
 
 export function findChatThread(realm: Realm, connection: DidCommConnectionRecord) {
   const [thread] = realm.objects(ChatThread).filtered(`connectionId == '${connection.id}'`)

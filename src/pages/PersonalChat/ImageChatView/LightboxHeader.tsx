@@ -7,11 +7,11 @@ import { MediaInfo } from '../PersonalChatProps'
 
 import getStyles from './styles'
 
-import { Icon, Text } from '@2060/components/common'
-import { useChatActions } from '@2060/hooks'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { ChatEntryMessage } from '@2060/pages/PersonalChat/ChatMessage/Props'
-import { getFormattedDateRangeWithTime } from '@2060/utils/dateUtils'
+import { Icon, Text } from '@src/components/common'
+import { useChatActions } from '@src/hooks'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { ChatEntryMessage } from '@src/pages/PersonalChat/ChatMessage/Props'
+import { getFormattedDateRangeWithTime } from '@src/utils/dateUtils'
 
 type LightboxHeaderProps = {
   fileMediaInfo: MediaInfo

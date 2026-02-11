@@ -4,9 +4,9 @@ import { useCallback, useEffect, useRef, useState, useTransition } from 'react'
 import { AutomaticDownloadTypes, DownloadOptions, useFileUploadDownload } from './agent'
 import { useNetwork } from './useNetwork'
 
-import { ChatEntryRole, MediaDownloadState } from '@2060/model'
-import { logError } from '@2060/utils'
-import { existsFile, getFullLocalFilePath } from '@2060/utils/RNFS'
+import { ChatEntryRole, MediaDownloadState } from '@src/model'
+import { logError } from '@src/utils'
+import { existsFile, getFullLocalFilePath } from '@src/utils/RNFS'
 
 const { Pending, Downloading, Failed } = MediaDownloadState
 const { Never, Wifi, WifiAndMobileData } = DownloadOptions

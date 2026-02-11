@@ -5,9 +5,9 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
 
 import getStyles from './styles'
 
-import { MainButton, SvgIcon, Text } from '@2060/components/common'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { widthPercentageToDP } from '@2060/utils/responsiveUtils'
+import { MainButton, SvgIcon, Text } from '@src/components/common'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { widthPercentageToDP } from '@src/utils/responsiveUtils'
 
 type Props = {
   scan: () => void

@@ -3,9 +3,9 @@ import { TouchableOpacity, View } from 'react-native'
 
 import getStyles from './styles'
 
-import { Text, Icon } from '@2060/components/common'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { MessageAction } from '@2060/pages/PersonalChat/PersonalChatProps'
+import { Text, Icon } from '@src/components/common'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { MessageAction } from '@src/pages/PersonalChat/PersonalChatProps'
 
 interface Props extends MessageAction {
   onActionSelected(actionId: string): void

@@ -18,9 +18,9 @@ import {
   AgentActionOptions,
   OutboundMessageContextData,
   RetryAgentAction,
-} from '@2060/hooks/agent/actions/AgentAction'
-import { AgentActionExecuter } from '@2060/hooks/agent/actions/AgentActionExecuter'
-import { log, logError } from '@2060/utils'
+} from '@src/hooks/agent/actions/AgentAction'
+import { AgentActionExecuter } from '@src/hooks/agent/actions/AgentActionExecuter'
+import { log, logError } from '@src/utils'
 
 class ActionExecutionError extends Error {
   public outboundMessageContextData?: OutboundMessageContextData

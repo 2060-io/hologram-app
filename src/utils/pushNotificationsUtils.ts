@@ -21,9 +21,9 @@ import { requestNotifications, RESULTS } from 'react-native-permissions'
 
 import { getConnectionDisplayName } from './connectionUtils'
 
-import { IS_ANDROID, IS_IOS, isAndroid13OrHigher } from '@2060/constants'
-import { getLocalizedPreview } from '@2060/hooks/agent/chat/preview'
-import { ChatEntry } from '@2060/model'
+import { IS_ANDROID, IS_IOS, isAndroid13OrHigher } from '@src/constants'
+import { getLocalizedPreview } from '@src/hooks/agent/chat/preview'
+import { ChatEntry } from '@src/model'
 
 const LOCAL_NOTIFICATION_ID_PREFIX = 'local-notification'
 const optionsNotificationAndroid = (options?: NotificationAndroid): NotificationAndroid => ({

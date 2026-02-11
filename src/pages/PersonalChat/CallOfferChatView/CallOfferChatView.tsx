@@ -7,13 +7,13 @@ import { BlueButton, Header, OutlinedBlueButton, State } from '../components'
 import { Props } from './CallOfferChatViewProps'
 import getStyles from './styles'
 
-import { Text } from '@2060/components/common'
-import { useChat, useMobileAgent } from '@2060/hooks/agent'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { useVideoCallContext } from '@2060/hooks/providers/useVideoCallContext'
-import { CallOfferState, ChatEntryRole } from '@2060/model'
-import { isNowAfterThanDate } from '@2060/utils/dateUtils'
-import { toast } from '@2060/utils/toast'
+import { Text } from '@src/components/common'
+import { useChat, useMobileAgent } from '@src/hooks/agent'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { useVideoCallContext } from '@src/hooks/providers/useVideoCallContext'
+import { CallOfferState, ChatEntryRole } from '@src/model'
+import { isNowAfterThanDate } from '@src/utils/dateUtils'
+import { toast } from '@src/utils/toast'
 
 const CallOfferChatView = ({ metadata, didcommThreadId, role }: Props) => {
   const theme = useTheme()

@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native'
 
-import { AppTheme } from '@2060/styles/types'
-import { widthPercentageToDP } from '@2060/utils/responsiveUtils'
+import { AppTheme } from '@src/styles/types'
+import { widthPercentageToDP } from '@src/utils/responsiveUtils'
 
 const styles = (theme: AppTheme) =>
   StyleSheet.create({

@@ -14,14 +14,14 @@ import { useAppState } from '../useAppState'
 
 import { useVideoCallContext } from './useVideoCallContext'
 
-import Authentication from '@2060/components/Authentication'
-import Modal from '@2060/components/common/Modal'
+import Authentication from '@src/components/Authentication'
+import Modal from '@src/components/common/Modal'
 import {
   setStorageData,
   getStorageData,
   SCREEN_LOCK_ENABLED_PERSIST_KEY,
   SCREEN_LOCK_TIMEOUT_PERSIST_KEY,
-} from '@2060/services/localStorage'
+} from '@src/services/localStorage'
 
 interface ScreenLockInterface {
   isScreenLockEnabled: boolean

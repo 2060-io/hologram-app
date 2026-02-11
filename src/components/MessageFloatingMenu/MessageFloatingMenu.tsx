@@ -10,14 +10,14 @@ import ReactionMenu from '../ReactionMenu'
 import MenuItem from './MenuItem'
 import getStyles from './styles'
 
-import { useChatActions } from '@2060/hooks'
-import { RepliedMessage } from '@2060/hooks/agent'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { ChatEntryState, TextMessageMetadata } from '@2060/model'
-import { ChatEntryMessage } from '@2060/pages/PersonalChat/ChatMessage/Props'
-import FloatingChatMessage from '@2060/pages/PersonalChat/MessageCustomView/FloatingChatMessage'
-import { MessageAction } from '@2060/pages/PersonalChat/PersonalChatProps'
-import { MobileAgent } from '@2060/services/agent'
+import { useChatActions } from '@src/hooks'
+import { RepliedMessage } from '@src/hooks/agent'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { ChatEntryState, TextMessageMetadata } from '@src/model'
+import { ChatEntryMessage } from '@src/pages/PersonalChat/ChatMessage/Props'
+import FloatingChatMessage from '@src/pages/PersonalChat/MessageCustomView/FloatingChatMessage'
+import { MessageAction } from '@src/pages/PersonalChat/PersonalChatProps'
+import { MobileAgent } from '@src/services/agent'
 
 type Props = {
   navigation: StackNavigationProp<PersonalChatStackParams>

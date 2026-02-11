@@ -1,8 +1,8 @@
 import { StackScreenProps } from '@react-navigation/stack'
 import React, { ElementType } from 'react'
 
-import { PersonalChatStackParams } from '@2060/components/Navigation/NavigationProps'
-import { useChatEntries, useChatThreadWithParticipants } from '@2060/hooks/agent'
+import { PersonalChatStackParams } from '@src/components/Navigation/NavigationProps'
+import { useChatEntries, useChatThreadWithParticipants } from '@src/hooks/agent'
 
 export interface WrapperPersonalChatProps
   extends StackScreenProps<PersonalChatStackParams, 'PersonalChat', 'stack_navigator_main'> {}

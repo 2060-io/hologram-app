@@ -2,8 +2,8 @@ import Realm from 'realm'
 
 import { createAndStoreEncryptedKey, KeyChainService, retrieveEncryptedKey } from './keys'
 
-import { log, logError } from '@2060/utils'
-import { getRealmConfig } from '@2060/utils/realm'
+import { log, logError } from '@src/utils'
+import { getRealmConfig } from '@src/utils/realm'
 
 export class RealmSingleton {
   private static realmInstance: RealmSingleton

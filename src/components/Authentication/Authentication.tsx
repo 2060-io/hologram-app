@@ -5,10 +5,10 @@ import { View, TouchableOpacity } from 'react-native'
 
 import getStyles from './styles'
 
-import AppIcon from '@2060/assets/icons/AppIcon'
-import { SvgIcon, Text } from '@2060/components/common'
-import { useNavigation } from '@2060/hooks/agent/NavigationProvider'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
+import AppIcon from '@src/assets/icons/AppIcon'
+import { SvgIcon, Text } from '@src/components/common'
+import { useNavigation } from '@src/hooks/agent/NavigationProvider'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
 
 type Props = {
   isAppActive: boolean
