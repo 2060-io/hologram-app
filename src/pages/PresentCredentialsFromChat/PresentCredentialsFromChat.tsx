@@ -5,10 +5,10 @@ import { View } from 'react-native'
 
 import getStyles from './styles'
 
-import { Credentials } from '@2060/components'
-import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
-import { Text } from '@2060/components/common'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
+import { Credentials } from '@src/components'
+import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
+import { Text } from '@src/components/common'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
 
 interface Props extends StackScreenProps<NavigationStackParams, 'PresentCredentialsFromChat'> {}
 

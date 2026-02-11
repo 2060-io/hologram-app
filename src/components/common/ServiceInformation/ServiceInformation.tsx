@@ -3,9 +3,9 @@ import { View } from 'react-native'
 
 import ServiceMainInfo from './ServiceMainInfo'
 
-import ProofOfTrust from '@2060/components/common/ProofOfTrust'
-import { useFetchServiceInfo } from '@2060/hooks/useFetchServiceInfo'
-import { ServiceInfo } from '@2060/model'
+import ProofOfTrust from '@src/components/common/ProofOfTrust'
+import { useFetchServiceInfo } from '@src/hooks/useFetchServiceInfo'
+import { ServiceInfo } from '@src/model'
 
 type Props = {
   did: string

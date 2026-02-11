@@ -6,12 +6,12 @@ import { ScrollView, TouchableOpacity } from 'react-native'
 
 import getStyles from './styles'
 
-import { UserProfileForm } from '@2060/components'
-import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
-import { Text } from '@2060/components/common'
-import { useUserProfile } from '@2060/hooks/agent'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { getGlobalStyles } from '@2060/styles'
+import { UserProfileForm } from '@src/components'
+import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
+import { Text } from '@src/components/common'
+import { useUserProfile } from '@src/hooks/agent'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { getGlobalStyles } from '@src/styles'
 
 interface Props extends StackScreenProps<NavigationStackParams, 'UserProfile'> {}
 

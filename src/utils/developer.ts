@@ -3,7 +3,7 @@ import {
   setStorageData,
   LOGS_ENABLED_PERSIST_KEY,
   DEVELOPER_MODE_ENABLED_PERSIST_KEY,
-} from '@2060/services/localStorage'
+} from '@src/services/localStorage'
 
 export interface DevEnvsKeys {
   DATA_STORE_URL: string

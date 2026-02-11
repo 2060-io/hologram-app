@@ -3,8 +3,8 @@ import { Key, KeyAlgorithm } from '@openwallet-foundation/askar-react-native'
 
 import { ConfigJsonSignature, PARENTAL_CONTROL } from '../config'
 
-import { logError } from '@2060/utils'
-import { CONFIG_FILE_PATH, readFile, writeFile } from '@2060/utils/RNFS'
+import { logError } from '@src/utils'
+import { CONFIG_FILE_PATH, readFile, writeFile } from '@src/utils/RNFS'
 
 export enum KeyChainService {
   AfjWallet = 'afj-wallet',

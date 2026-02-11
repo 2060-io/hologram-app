@@ -2,12 +2,12 @@ import { ParamListBase, StackActions } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { useEffect } from 'react'
 
-import { usePushNotifications } from '@2060/hooks/providers/PushNotificationsProvider'
-import { useSharedDataFromOtherApps } from '@2060/hooks/providers/SharedDataFromOtherAppsProvider'
+import { usePushNotifications } from '@src/hooks/providers/PushNotificationsProvider'
+import { useSharedDataFromOtherApps } from '@src/hooks/providers/SharedDataFromOtherAppsProvider'
 import {
   markNewConnectionNotificationAsViewed,
   markNotificationsOfChatAsViewed,
-} from '@2060/utils/pushNotificationsUtils'
+} from '@src/utils/pushNotificationsUtils'
 
 export const useHomeMain = ({ navigation }: { navigation: StackNavigationProp<ParamListBase> }) => {
   const { pushNotification, setPushNotification } = usePushNotifications()

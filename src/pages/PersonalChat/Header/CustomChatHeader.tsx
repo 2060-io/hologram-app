@@ -6,11 +6,11 @@ import { View, TouchableOpacity } from 'react-native'
 
 import getStyles from './styles'
 
-import { PersonalChatStackParams } from '@2060/components/Navigation/NavigationProps'
-import { Avatar, Text, SvgIcon, ConnectionMainActions } from '@2060/components/common'
-import { useConnectionById } from '@2060/hooks/agent'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { ChatThreadData } from '@2060/model'
+import { PersonalChatStackParams } from '@src/components/Navigation/NavigationProps'
+import { Avatar, Text, SvgIcon, ConnectionMainActions } from '@src/components/common'
+import { useConnectionById } from '@src/hooks/agent'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { ChatThreadData } from '@src/model'
 
 interface Props {
   navigation: StackNavigationProp<PersonalChatStackParams, 'PersonalChat', 'stack_navigator_main'>

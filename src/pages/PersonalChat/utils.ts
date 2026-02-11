@@ -12,9 +12,9 @@ import {
   ChatEntryState,
   SystemMessageMetadata,
   ChatEntry,
-} from '@2060/model'
-import { ChatEntryMessage } from '@2060/pages/PersonalChat/ChatMessage/Props'
-import { deleteFile, getLocalFileUri } from '@2060/utils/RNFS'
+} from '@src/model'
+import { ChatEntryMessage } from '@src/pages/PersonalChat/ChatMessage/Props'
+import { deleteFile, getLocalFileUri } from '@src/utils/RNFS'
 
 const buildSystemMessage = (options: {
   kind: SystemMessageKind

@@ -2,8 +2,8 @@ import ImageResizer from '@bam.tech/react-native-image-resizer'
 import { createThumbnail } from 'react-native-create-thumbnail'
 import { moveFile } from 'react-native-fs'
 
-import { IS_ANDROID } from '@2060/constants'
-import { dataUrl, logError } from '@2060/utils'
+import { IS_ANDROID } from '@src/constants'
+import { dataUrl, logError } from '@src/utils'
 import {
   deleteFile,
   existsFile,
@@ -11,7 +11,7 @@ import {
   makeDirectory,
   mediaPreviewsDirectoryPath,
   readFile,
-} from '@2060/utils/RNFS'
+} from '@src/utils/RNFS'
 
 export const LOCAL_PREVIEW_IMAGE_WIDTH = 512
 const LOCAL_PREVIEW_IMAGE_HEIGHT = 512

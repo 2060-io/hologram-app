@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native'
 
-import { AppTheme } from '@2060/styles'
-import { widthPercentageToDP } from '@2060/utils/responsiveUtils'
+import { AppTheme } from '@src/styles'
+import { widthPercentageToDP } from '@src/utils/responsiveUtils'
 
 const PLAY_BUTTON_WIDTH = widthPercentageToDP('9%')
 

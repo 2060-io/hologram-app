@@ -7,16 +7,16 @@ import BaseConnectionDetails, { ConnectionDetailsProps, WrapperProps } from './B
 import ConnectionDetailsForService from './ConnectionDetailsForService'
 import getStyles from './styles'
 
-import { Avatar, FullScreenImage, Text } from '@2060/components/common'
-import { useConnectionById } from '@2060/hooks/agent'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
+import { Avatar, FullScreenImage, Text } from '@src/components/common'
+import { useConnectionById } from '@src/hooks/agent'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import {
   getConnectionDisplayName,
   getConnectionDisplayPicture,
   getConnectionParentId,
   isService,
-} from '@2060/utils/connectionUtils'
-import { dateToString } from '@2060/utils/dateUtils'
+} from '@src/utils/connectionUtils'
+import { dateToString } from '@src/utils/dateUtils'
 
 const validateConnectionExists = () => {
   const Wrapper = (props: WrapperProps) => {

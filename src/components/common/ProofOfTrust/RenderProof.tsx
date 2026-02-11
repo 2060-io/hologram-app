@@ -7,9 +7,9 @@ import VerifiedIcon from '../VerifiedIcon'
 
 import getStyles from './styles'
 
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { ServiceInfo, ServiceProvider, ServiceStatus, BaseEntity } from '@2060/model'
-import { getFlagEmoji } from '@2060/utils'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { ServiceInfo, ServiceProvider, ServiceStatus, BaseEntity } from '@src/model'
+import { getFlagEmoji } from '@src/utils'
 
 export interface ServiceInfoForRenderProof extends ServiceInfo {
   serviceProvider: ServiceProvider

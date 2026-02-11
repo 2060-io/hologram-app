@@ -17,15 +17,15 @@ import {
 
 import getStyles from './styles'
 
-import { CodeScanner } from '@2060/components'
-import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
-import { TextInput, Text, MainButton, ModalLoading } from '@2060/components/common'
-import { useAppState } from '@2060/hooks'
-import { useMobileAgent } from '@2060/hooks/agent'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { DidcommInvitationType, getOutOfBandRecordById, processInvitation } from '@2060/services/agent/oob'
-import { log, logError } from '@2060/utils'
-import { toast } from '@2060/utils/toast'
+import { CodeScanner } from '@src/components'
+import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
+import { TextInput, Text, MainButton, ModalLoading } from '@src/components/common'
+import { useAppState } from '@src/hooks'
+import { useMobileAgent } from '@src/hooks/agent'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { DidcommInvitationType, getOutOfBandRecordById, processInvitation } from '@src/services/agent/oob'
+import { log, logError } from '@src/utils'
+import { toast } from '@src/utils/toast'
 
 interface Props extends StackScreenProps<NavigationStackParams, 'Scan'> {}
 

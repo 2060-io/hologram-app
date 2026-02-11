@@ -8,12 +8,12 @@ import { FloatingChatMessage } from '../PersonalChat/MessageCustomView'
 
 import getStyles from './styles'
 
-import { PersonalChatStackParams } from '@2060/components/Navigation/NavigationProps'
-import { Avatar, Text } from '@2060/components/common'
-import { useChat, useMobileAgent } from '@2060/hooks/agent'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { ChatEntryState } from '@2060/model'
-import { getFormattedDateRangeWithTime } from '@2060/utils/dateUtils'
+import { PersonalChatStackParams } from '@src/components/Navigation/NavigationProps'
+import { Avatar, Text } from '@src/components/common'
+import { useChat, useMobileAgent } from '@src/hooks/agent'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { ChatEntryState } from '@src/model'
+import { getFormattedDateRangeWithTime } from '@src/utils/dateUtils'
 
 interface Props extends StackScreenProps<PersonalChatStackParams, 'MessageDetails'> {}
 

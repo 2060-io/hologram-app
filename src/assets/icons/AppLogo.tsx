@@ -2,7 +2,7 @@ import React from 'react'
 import { ViewStyle, View } from 'react-native'
 import Svg, { Defs, Pattern, Image, Path } from 'react-native-svg'
 
-import { widthPercentageToDP } from '@2060/utils/responsiveUtils'
+import { widthPercentageToDP } from '@src/utils/responsiveUtils'
 
 const AppLogo = ({ style }: { style?: ViewStyle }) => (
   <View style={style}>

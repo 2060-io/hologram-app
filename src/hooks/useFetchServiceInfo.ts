@@ -11,11 +11,11 @@ import { useMobileAgent } from './agent/MobileAgentProvider'
 import { findChatThread, updateThread } from './agent/chat/services'
 import { useLocalRealm } from './providers/RealmProvider'
 
-import { isServiceInfo, ServiceInfo } from '@2060/model'
-import { MobileAgent } from '@2060/services/agent'
-import { logError } from '@2060/utils'
-import { getConnectionDisplayName, getConnectionDisplayPicture } from '@2060/utils/connectionUtils'
-import { toast } from '@2060/utils/toast'
+import { isServiceInfo, ServiceInfo } from '@src/model'
+import { MobileAgent } from '@src/services/agent'
+import { logError } from '@src/utils'
+import { getConnectionDisplayName, getConnectionDisplayPicture } from '@src/utils/connectionUtils'
+import { toast } from '@src/utils/toast'
 
 /**
  * This hook will attempt to retrieve a given Verifiable Service information from Trust Registry. This

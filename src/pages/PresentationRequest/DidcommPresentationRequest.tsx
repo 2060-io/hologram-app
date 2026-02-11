@@ -5,25 +5,25 @@ import React, { useRef, useCallback, useState, useTransition } from 'react'
 
 import BasePresentationRequest from './BasePresentationRequest'
 
-import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
-import { useFetchServiceInfo } from '@2060/hooks'
-import { AgentActionType, useMobileAgent, useAgentActionQueue } from '@2060/hooks/agent'
+import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
+import { useFetchServiceInfo } from '@src/hooks'
+import { AgentActionType, useMobileAgent, useAgentActionQueue } from '@src/hooks/agent'
 import {
   DeclineProofRequestParameters,
   ProofSendProblemReportDescription,
   ProofSendProblemReportParameters,
-} from '@2060/hooks/agent/actions/types'
-import { findAllByAssociatedRecordId, updateChatEntryMetadata } from '@2060/hooks/agent/chat/services'
-import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
-import { ChatEntryType } from '@2060/model'
-import { CredentialMainInfo } from '@2060/services/agent/display'
+} from '@src/hooks/agent/actions/types'
+import { findAllByAssociatedRecordId, updateChatEntryMetadata } from '@src/hooks/agent/chat/services'
+import { useLocalRealm } from '@src/hooks/providers/RealmProvider'
+import { ChatEntryType } from '@src/model'
+import { CredentialMainInfo } from '@src/services/agent/display'
 import {
   FormattedSubmission,
   formatDidcommPresentationSubmission,
-} from '@2060/services/agent/formatPresentation'
-import { presentProof } from '@2060/services/agent/proofs'
-import { logError } from '@2060/utils'
-import { toast } from '@2060/utils/toast'
+} from '@src/services/agent/formatPresentation'
+import { presentProof } from '@src/services/agent/proofs'
+import { logError } from '@src/utils'
+import { toast } from '@src/utils/toast'
 
 interface Props extends StackScreenProps<NavigationStackParams, 'DidcommPresentationRequest'> {}
 

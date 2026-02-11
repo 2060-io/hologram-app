@@ -11,7 +11,7 @@ import {
 
 import { logError } from './log'
 
-import { IS_IOS } from '@2060/constants'
+import { IS_IOS } from '@src/constants'
 
 type Encoding = 'utf8' | 'base64' | 'ascii'
 const CONFIG_FILE_PATH = `${DocumentDirectoryPath}/config.json`

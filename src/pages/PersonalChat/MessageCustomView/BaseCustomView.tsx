@@ -23,9 +23,9 @@ import VoiceNoteChatView from '../VoiceNoteChatView'
 import getStyles from './styles'
 import { mustDisplayAckAndTime } from './utils'
 
-import { Text } from '@2060/components/common'
-import { useChat } from '@2060/hooks/agent'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
+import { Text } from '@src/components/common'
+import { useChat } from '@src/hooks/agent'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import {
   CallOfferMetadata,
   ChatEntryState,
@@ -40,9 +40,9 @@ import {
   VoiceNoteMetadata,
   VPRequestMetadata,
   VPResponseMetadata,
-} from '@2060/model'
-import { BaseCustomMessageViewProps } from '@2060/pages/PersonalChat/ChatMessage/Props'
-import { dateToString } from '@2060/utils/dateUtils'
+} from '@src/model'
+import { BaseCustomMessageViewProps } from '@src/pages/PersonalChat/ChatMessage/Props'
+import { dateToString } from '@src/utils/dateUtils'
 
 const BaseCustomView: React.FC<BaseCustomMessageViewProps> = memo(props => {
   const {

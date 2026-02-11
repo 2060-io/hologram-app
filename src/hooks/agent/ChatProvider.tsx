@@ -22,7 +22,7 @@ import {
 } from './chat/services/ChatThreadService'
 import { subscribeToAgentChatEvents } from './chat/subscribeToAgentChatEvents'
 
-import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
+import { useLocalRealm } from '@src/hooks/providers/RealmProvider'
 import {
   ChatThread,
   ChatThreadData,
@@ -33,14 +33,14 @@ import {
   SystemMessageMetadata,
   ChatEntryState,
   MediaSharingMetadata,
-} from '@2060/model'
-import { checkIfDeleteFilesFromMedia } from '@2060/pages/PersonalChat/utils'
-import { supportsMessageReceipts } from '@2060/utils/connectionUtils'
+} from '@src/model'
+import { checkIfDeleteFilesFromMedia } from '@src/pages/PersonalChat/utils'
+import { supportsMessageReceipts } from '@src/utils/connectionUtils'
 import {
   getLastEntryInChatThread,
   getMediaChatEntriesExcludingThread,
   queryOfTypeMedia,
-} from '@2060/utils/realmQueries'
+} from '@src/utils/realmQueries'
 
 export type ChatCategory = 'all' | 'people' | 'services'
 type ChatFilters = { topic: string; archived: boolean; category: ChatCategory; parentId?: string }

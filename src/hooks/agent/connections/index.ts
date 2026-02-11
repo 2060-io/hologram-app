@@ -4,9 +4,9 @@ import { fetch as NetInfo } from '@react-native-community/netinfo'
 import { AgentActionType } from '../actions/AgentAction'
 import { DeleteConnectionParameters } from '../actions/types'
 
-import { AgentActionQueueSingleton } from '@2060/services/AgentActionQueueSingleton'
-import { MobileAgent } from '@2060/services/agent/MobileAgent'
-import { isTerminated, deletePendingConnection } from '@2060/utils/connectionUtils'
+import { AgentActionQueueSingleton } from '@src/services/AgentActionQueueSingleton'
+import { MobileAgent } from '@src/services/agent/MobileAgent'
+import { isTerminated, deletePendingConnection } from '@src/utils/connectionUtils'
 
 export const deleteConnection = async (agent: MobileAgent, connection: DidCommConnectionRecord) => {
   if (connection.isReady && !isTerminated(connection)) {

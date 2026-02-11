@@ -11,20 +11,20 @@ import { getMinutesAndSeconds } from '../utils'
 import { SendButton, AudioButton } from './components'
 import getStyles from './styles'
 
-import { Icon, SvgIcon, Text } from '@2060/components/common'
-import { TextInputForwardRefProps } from '@2060/components/common/TextInput'
-import { useChatActions } from '@2060/hooks'
-import { useChat } from '@2060/hooks/agent'
-import { generateFileName } from '@2060/hooks/media/files'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { logWarn } from '@2060/utils'
-import { deleteFile } from '@2060/utils/RNFS'
+import { Icon, SvgIcon, Text } from '@src/components/common'
+import { TextInputForwardRefProps } from '@src/components/common/TextInput'
+import { useChatActions } from '@src/hooks'
+import { useChat } from '@src/hooks/agent'
+import { generateFileName } from '@src/hooks/media/files'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { logWarn } from '@src/utils'
+import { deleteFile } from '@src/utils/RNFS'
 import {
   handleMicrophonePermission,
   checkMicrophonePermission,
   askMicrophonePermission,
-} from '@2060/utils/permissions'
-import { toast } from '@2060/utils/toast'
+} from '@src/utils/permissions'
+import { toast } from '@src/utils/toast'
 
 interface Props {
   onShowMediaOptions(): void

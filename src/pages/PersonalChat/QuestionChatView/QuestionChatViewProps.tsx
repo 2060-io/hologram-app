@@ -1,4 +1,4 @@
-import { QuestionMetadata } from '@2060/model'
+import { QuestionMetadata } from '@src/model'
 
 export interface QuestionChatViewProps {
   question: QuestionMetadata

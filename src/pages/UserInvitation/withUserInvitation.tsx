@@ -4,17 +4,17 @@ import Config from 'react-native-config'
 
 import { Invitation, UserInvitationProps, WrapperUserInvitationProps } from './UserInvitationProps'
 
-import { ModalLoading } from '@2060/components/common'
-import { AgentActionType, useAgentActionQueue, useMobileAgent, useUserProfile } from '@2060/hooks/agent'
-import { RemoveOutOfBandRecordParameters } from '@2060/hooks/agent/actions/types'
-import { createInvitation, getOutOfBandRecordById } from '@2060/services/agent/oob'
+import { ModalLoading } from '@src/components/common'
+import { AgentActionType, useAgentActionQueue, useMobileAgent, useUserProfile } from '@src/hooks/agent'
+import { RemoveOutOfBandRecordParameters } from '@src/hooks/agent/actions/types'
+import { createInvitation, getOutOfBandRecordById } from '@src/services/agent/oob'
 import {
   getStorageData,
   setStorageData,
   USER_INVITATION_OUT_OF_BAND_RECORD_ID,
-} from '@2060/services/localStorage'
-import { logError, logWarn } from '@2060/utils'
-import { toast } from '@2060/utils/toast'
+} from '@src/services/localStorage'
+import { logError, logWarn } from '@src/utils'
+import { toast } from '@src/utils/toast'
 
 const withUserInvitation = (UserInvitationComponent: ElementType<UserInvitationProps>) => {
   const WrapperUserInvitation = (props: WrapperUserInvitationProps) => {

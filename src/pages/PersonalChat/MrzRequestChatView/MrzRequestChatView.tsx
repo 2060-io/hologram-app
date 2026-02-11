@@ -10,13 +10,13 @@ import { BlueButton, Header, OutlinedBlueButton, State } from '../components'
 import { Props } from './MrzRequestChatViewProps'
 import getStyles from './styles'
 
-import { PersonalChatStackParams } from '@2060/components/Navigation/NavigationProps'
-import { SvgIcon, Text } from '@2060/components/common'
-import { useChat, useMobileAgent } from '@2060/hooks/agent'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { MrzRequestState } from '@2060/model'
-import { handleCameraPermission } from '@2060/utils/permissions'
-import { widthPercentageToDP } from '@2060/utils/responsiveUtils'
+import { PersonalChatStackParams } from '@src/components/Navigation/NavigationProps'
+import { SvgIcon, Text } from '@src/components/common'
+import { useChat, useMobileAgent } from '@src/hooks/agent'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { MrzRequestState } from '@src/model'
+import { handleCameraPermission } from '@src/utils/permissions'
+import { widthPercentageToDP } from '@src/utils/responsiveUtils'
 
 const MrzRequestChatView = (props: Props) => {
   const theme = useTheme()

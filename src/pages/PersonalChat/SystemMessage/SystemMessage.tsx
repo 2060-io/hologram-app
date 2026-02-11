@@ -6,7 +6,7 @@ import SecuritySystemMessageView from '../SecuritySystemMessageView'
 import BlockedConnectionMessageView from './BlockedConnectionMessageView'
 import { SystemMessageProps } from './Props'
 
-import { useChat, useConnectionById } from '@2060/hooks/agent'
+import { useChat, useConnectionById } from '@src/hooks/agent'
 
 const SystemMessage: React.FC<SystemMessageProps> = props => {
   const { chatThread } = useChat()

@@ -1,10 +1,10 @@
 import { TrustResolutionOutcome } from '@verana-labs/verre'
 import { useEffect, useState } from 'react'
 
-import { KID_BIRTHDATE_DATE_FORMAT } from '@2060/constants'
-import { ServiceStatus } from '@2060/model'
-import { ParentalControlEnum, retrieveKeyInConfigFile } from '@2060/services/config'
-import { dateToString, stringToDate, timeFromNow } from '@2060/utils/dateUtils'
+import { KID_BIRTHDATE_DATE_FORMAT } from '@src/constants'
+import { ServiceStatus } from '@src/model'
+import { ParentalControlEnum, retrieveKeyInConfigFile } from '@src/services/config'
+import { dateToString, stringToDate, timeFromNow } from '@src/utils/dateUtils'
 
 const calculateAge = (kidBirthday: string) => {
   return timeFromNow(stringToDate(kidBirthday, KID_BIRTHDATE_DATE_FORMAT), 'year')

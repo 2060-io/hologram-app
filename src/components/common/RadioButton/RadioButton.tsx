@@ -3,7 +3,7 @@ import { View, ViewStyle } from 'react-native'
 
 import getStyles from './styles'
 
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
 
 type Props = {
   style?: ViewStyle

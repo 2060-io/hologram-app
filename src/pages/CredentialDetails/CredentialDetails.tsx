@@ -7,15 +7,15 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 
 import getStyles from './styles'
 
-import { CredentialDetails as CredentialDetailsComponent, ModalConfirmAction } from '@2060/components'
-import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
-import { Text, ServiceInformation, OptionsList } from '@2060/components/common'
-import { Option } from '@2060/components/common/OptionsList'
-import { useCredentials, useMobileAgent } from '@2060/hooks/agent'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { ServiceInfo } from '@2060/model'
-import { getCredentialDetailsForDisplay } from '@2060/services/agent/display'
-import { trimText } from '@2060/utils'
+import { CredentialDetails as CredentialDetailsComponent, ModalConfirmAction } from '@src/components'
+import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
+import { Text, ServiceInformation, OptionsList } from '@src/components/common'
+import { Option } from '@src/components/common/OptionsList'
+import { useCredentials, useMobileAgent } from '@src/hooks/agent'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { ServiceInfo } from '@src/model'
+import { getCredentialDetailsForDisplay } from '@src/services/agent/display'
+import { trimText } from '@src/utils'
 
 interface Props extends StackScreenProps<NavigationStackParams, 'CredentialDetails'> {}
 const CredentialDetails = ({ route, navigation }: Props) => {

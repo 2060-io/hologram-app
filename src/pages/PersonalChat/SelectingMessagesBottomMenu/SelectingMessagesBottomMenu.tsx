@@ -6,10 +6,10 @@ import { ChatEntryMessage } from '../ChatMessage/Props'
 
 import getStyles from './styles'
 
-import { ModalConfirmAction } from '@2060/components'
-import { SvgIcon, Text } from '@2060/components/common'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { ChatEntryRole, ChatEntryState, ChatEntryType } from '@2060/model'
+import { ModalConfirmAction } from '@src/components'
+import { SvgIcon, Text } from '@src/components/common'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { ChatEntryRole, ChatEntryState, ChatEntryType } from '@src/model'
 
 type Props = {
   selectedMessages: ChatEntryMessage[]

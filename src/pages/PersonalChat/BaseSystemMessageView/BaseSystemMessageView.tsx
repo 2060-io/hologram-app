@@ -3,8 +3,8 @@ import { TouchableOpacity } from 'react-native'
 
 import getStyles from './styles'
 
-import { Text } from '@2060/components/common'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
+import { Text } from '@src/components/common'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
 
 type Props = {
   text?: string

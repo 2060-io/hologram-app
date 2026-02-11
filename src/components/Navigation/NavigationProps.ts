@@ -1,7 +1,7 @@
 import { DidCommConnectionRecord, DidCommOutOfBandRecord, DidCommProofState } from '@credo-ts/didcomm'
 
-import { ChatEntryData, ServiceInfo } from '@2060/model'
-import { CredentialMainInfo } from '@2060/services/agent/display'
+import { ChatEntryData, ServiceInfo } from '@src/model'
+import { CredentialMainInfo } from '@src/services/agent/display'
 
 type TypeParameters = 'oob' | 'd_m' | 'c_i'
 type HomeParams = {

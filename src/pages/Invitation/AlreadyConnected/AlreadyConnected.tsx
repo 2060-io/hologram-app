@@ -6,15 +6,15 @@ import { withRenderConnectionMainActions } from '../../ConnectionDetails/withRen
 
 import getStyles from './styles'
 
-import { SvgIcon, Text } from '@2060/components/common'
+import { SvgIcon, Text } from '@src/components/common'
 import {
   ConnectionMainActionsProps,
   ActionIconsNames,
-} from '@2060/components/common/ConnectionMainActions/Props'
-import { IconsNames } from '@2060/components/common/SvgIcon'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { useConnectionMainActions } from '@2060/hooks/useConnectionMainActions'
-import { getConnectionDisplayName } from '@2060/utils/connectionUtils'
+} from '@src/components/common/ConnectionMainActions/Props'
+import { IconsNames } from '@src/components/common/SvgIcon'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { useConnectionMainActions } from '@src/hooks/useConnectionMainActions'
+import { getConnectionDisplayName } from '@src/utils/connectionUtils'
 
 const AlreadyConnected = ({ navigation, connection, includeDefaultActions }: ConnectionMainActionsProps) => {
   const { t } = useTranslation()

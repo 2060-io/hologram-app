@@ -13,7 +13,7 @@ import { MobileAgent } from './MobileAgent'
 import { DidCommPresentationDisplayMetadata, setDidCommPresentationMetadata } from './RecordMetadata'
 import { CredentialMainInfo, sanitizeString } from './display'
 
-import { logError } from '@2060/utils'
+import { logError } from '@src/utils'
 
 type SelectedCredentials = {
   [referent: string]: string

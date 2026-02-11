@@ -1,6 +1,6 @@
 import { DidCommConnectionRecord } from '@credo-ts/didcomm'
 
-import { ServiceInfo } from '@2060/model'
+import { ServiceInfo } from '@src/model'
 
 export type Props = {
   connection: DidCommConnectionRecord

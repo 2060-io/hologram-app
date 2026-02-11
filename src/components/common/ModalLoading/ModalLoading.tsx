@@ -6,7 +6,7 @@ import Modal from '../Modal'
 
 import getStyles from './styles'
 
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
 
 interface Props extends ModalProps {
   message?: string

@@ -2,7 +2,7 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
 
-import { Text, MainButton } from '@2060/components/common'
+import { Text, MainButton } from '@src/components/common'
 
 interface StyleObject {
   [key: string]: object

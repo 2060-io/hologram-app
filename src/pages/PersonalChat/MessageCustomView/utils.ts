@@ -1,5 +1,5 @@
-import { ChatEntryData, ChatEntryRole } from '@2060/model'
-import { dateToString } from '@2060/utils/dateUtils'
+import { ChatEntryData, ChatEntryRole } from '@src/model'
+import { dateToString } from '@src/utils/dateUtils'
 
 type MustDisplayProps = {
   messageTime: string

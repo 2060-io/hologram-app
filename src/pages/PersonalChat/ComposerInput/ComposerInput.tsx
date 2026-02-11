@@ -6,9 +6,9 @@ import { MESSAGE_INPUT_INITIAL_HEIGHT } from '../InputToolbarView/styles'
 
 import getStyles from './styles'
 
-import { TextInput } from '@2060/components/common'
-import { TextInputForwardRefProps } from '@2060/components/common/TextInput'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
+import { TextInput } from '@src/components/common'
+import { TextInputForwardRefProps } from '@src/components/common/TextInput'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
 
 interface Props {
   isRepliedMessage: boolean

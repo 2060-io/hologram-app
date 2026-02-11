@@ -5,10 +5,10 @@ import { Header } from '../components'
 
 import getStyles from './styles'
 
-import { Text } from '@2060/components/common'
-import { IconsNames } from '@2060/components/common/SvgIcon'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { ChatEntryRole } from '@2060/model'
+import { Text } from '@src/components/common'
+import { IconsNames } from '@src/components/common/SvgIcon'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { ChatEntryRole } from '@src/model'
 
 type Props = {
   message: string

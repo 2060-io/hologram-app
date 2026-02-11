@@ -7,17 +7,17 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 
 import getStyles from './styles'
 
-import { ModalConfirmAction } from '@2060/components'
+import { ModalConfirmAction } from '@src/components'
 import {
   CredentialMainInformation,
   MainButton,
   Text,
   ServiceMainInfo,
   RadioButton,
-} from '@2060/components/common'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { ServiceInfo } from '@2060/model'
-import { FormattedSubmission } from '@2060/services/agent/formatPresentation'
+} from '@src/components/common'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { ServiceInfo } from '@src/model'
+import { FormattedSubmission } from '@src/services/agent/formatPresentation'
 
 type Props = {
   navigation: StackNavigationProp<ParamListBase>
