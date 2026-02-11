@@ -67,7 +67,7 @@ interface Props {
   children?: React.ReactNode
 }
 
-export const ConnectionProvider: React.FC<React.PropsWithChildren<Props>> = ({ children }) => {
+export const ConnectionsProvider: React.FC<React.PropsWithChildren<Props>> = ({ children }) => {
   const { isInitialized, agent } = useMobileAgent()
   const [state, setState] = useState<RecordsState<DidCommConnectionRecord>>({
     records: [],

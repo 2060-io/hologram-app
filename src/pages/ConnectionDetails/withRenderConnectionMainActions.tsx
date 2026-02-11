@@ -4,7 +4,7 @@ import {
   ConnectionMainActionsProps,
   InitialConnectionMainActionsProps,
 } from '@src/components/common/ConnectionMainActions/Props'
-import { useConnectionById } from '@src/hooks/agent/ConnectionProvider'
+import { useConnectionById } from '@src/hooks/agent/ConnectionsProvider'
 import { isTerminated } from '@src/utils/connectionUtils'
 
 export const withRenderConnectionMainActions =

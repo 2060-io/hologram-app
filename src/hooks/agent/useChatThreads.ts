@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo } from 'react'
 import { useLocalRealm } from '../providers/RealmProvider'
 import { useFetchServiceInfo } from '../useFetchServiceInfo'
 
-import { useConnectionById } from './ConnectionProvider'
+import { useConnectionById } from './ConnectionsProvider'
 import { useUserProfile } from './UserProfileProvider'
 
 import { ChatThreadData, ChatThread, getChatThreadData, ChatEntryRole } from '@src/model'

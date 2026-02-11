@@ -30,7 +30,7 @@ interface Props {
   children?: React.ReactNode
 }
 
-export const CredentialProvider: React.FC<React.PropsWithChildren<Props>> = ({ children }) => {
+export const CredentialsProvider: React.FC<React.PropsWithChildren<Props>> = ({ children }) => {
   const [w3cState, setW3CState] = useState<RecordsState<W3cCredentialRecord>>({
     records: [],
     loading: true,
@@ -79,13 +79,6 @@ export const CredentialProvider: React.FC<React.PropsWithChildren<Props>> = ({ c
   )
 
   return (
-    <CredentialContext
-      value={{
-        records: w3cState.records,
-        getCredentialById,
-      }}
-    >
-      {children}
-    </CredentialContext>
+    <CredentialContext value={{ records: w3cState.records, getCredentialById }}>{children}</CredentialContext>
   )
 }
