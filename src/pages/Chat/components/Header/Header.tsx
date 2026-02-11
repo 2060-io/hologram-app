@@ -1,10 +1,10 @@
 import React from 'react'
 import { StyleSheet, View } from 'react-native'
 
-import { SvgIcon, Text } from '@2060/components/common'
-import { IconsNames } from '@2060/components/common/SvgIcon'
-import { ChatEntryRole } from '@2060/model'
-import { AppTheme } from '@2060/styles'
+import { SvgIcon, Text } from '@src/components/common'
+import { IconsNames } from '@src/components/common/SvgIcon'
+import { ChatEntryRole } from '@src/model'
+import { AppTheme } from '@src/styles'
 
 type Props = {
   theme: AppTheme

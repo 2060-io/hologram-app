@@ -4,8 +4,8 @@ import { useEffect, useState, useTransition } from 'react'
 import { useMobileAgent } from './agent'
 import { recordsRemovedByType, recordsUpdatedByType } from './agent/recordUtils'
 
-import { CredentialDetailsForDisplay, getCredentialDetailsFromExchange } from '@2060/services/agent/display'
-import { logError } from '@2060/utils'
+import { CredentialDetailsForDisplay, getCredentialDetailsFromExchange } from '@src/services/agent/display'
+import { logError } from '@src/utils'
 
 export const useCredentialExchangeForDisplay = (options: { credentialRecordId: string }) => {
   const credentialExchangeRecordId = options.credentialRecordId

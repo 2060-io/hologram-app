@@ -8,11 +8,11 @@ import { SvgIcon, HeaderTitle } from '../common'
 import { ChatStackParams } from './NavigationProps'
 import getStyles from './styles'
 
-import { ChatProvider } from '@2060/hooks/agent'
-import { MediaPlayerProvider } from '@2060/hooks/providers'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { Chat, MessageDetails, ForwardMessages, ShareMessages, MRZScanner } from '@2060/pages'
-import { getGlobalStyles } from '@2060/styles'
+import { ChatProvider } from '@src/hooks/agent'
+import { MediaPlayerProvider } from '@src/hooks/providers'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { Chat, MessageDetails, ForwardMessages, ShareMessages, MRZScanner } from '@src/pages'
+import { getGlobalStyles } from '@src/styles'
 
 const ChatStack = createStackNavigator<ChatStackParams>()
 const ChatStackNavigator = () => {

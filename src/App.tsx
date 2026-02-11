@@ -10,7 +10,7 @@ import SplashScreen from 'react-native-splash-screen'
 
 import Toast from './components/Toast'
 
-import Navigation from '@2060/components/Navigation'
+import Navigation from '@src/components/Navigation'
 import {
   MobileAgentProvider,
   NavigationProvider,
@@ -20,7 +20,7 @@ import {
   CredentialProvider,
   FileUploadDownloadProvider,
   AgentActionQueueProvider,
-} from '@2060/hooks/agent'
+} from '@src/hooks/agent'
 import {
   ConfigProvider,
   PushNotificationsProvider,
@@ -30,8 +30,8 @@ import {
   ThemeProvider,
   VideoCallProvider,
   RefreshedAvatarsUrlsProvider,
-} from '@2060/hooks/providers'
-import { initializeI18n, language } from '@2060/utils/language'
+} from '@src/hooks/providers'
+import { initializeI18n, language } from '@src/utils/language'
 
 locale(language)
 extend(localizedFormat)

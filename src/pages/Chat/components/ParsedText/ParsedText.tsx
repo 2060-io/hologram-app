@@ -1,9 +1,9 @@
 import React from 'react'
 import { Linking, StyleSheet, TextProps } from 'react-native'
 
-import { Text } from '@2060/components/common'
-import { AppTheme } from '@2060/styles'
-import { logError } from '@2060/utils'
+import { Text } from '@src/components/common'
+import { AppTheme } from '@src/styles'
+import { logError } from '@src/utils'
 
 type ParsedTextProps = {
   theme: AppTheme

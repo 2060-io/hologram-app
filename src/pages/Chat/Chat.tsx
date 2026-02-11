@@ -21,11 +21,11 @@ import { CompressingVideo } from './components'
 import getStyles from './styles'
 import { getSystemMessage, chatEntryEqual } from './utils'
 
-import { ModalBottomHalf, ModalConfirmAction } from '@2060/components'
-import MessageFloatingMenu from '@2060/components/MessageFloatingMenu'
-import { Text } from '@2060/components/common'
-import { IS_IOS } from '@2060/constants'
-import { useAppState, useChatActions } from '@2060/hooks'
+import { ModalBottomHalf, ModalConfirmAction } from '@src/components'
+import MessageFloatingMenu from '@src/components/MessageFloatingMenu'
+import { Text } from '@src/components/common'
+import { IS_IOS } from '@src/constants'
+import { useAppState, useChatActions } from '@src/hooks'
 import {
   useMobileAgent,
   useChat,
@@ -35,11 +35,11 @@ import {
   AgentActionType,
   useConnectionById,
   useAgentActionQueue,
-} from '@2060/hooks/agent'
-import { RequestUserProfileParameters, SendUserProfileParameters } from '@2060/hooks/agent/actions/types'
-import { createChatEntry, updateChatEntryMetadata } from '@2060/hooks/agent/chat/services/ChatEntryService'
-import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
+} from '@src/hooks/agent'
+import { RequestUserProfileParameters, SendUserProfileParameters } from '@src/hooks/agent/actions/types'
+import { createChatEntry, updateChatEntryMetadata } from '@src/hooks/agent/chat/services/ChatEntryService'
+import { useLocalRealm } from '@src/hooks/providers/RealmProvider'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import {
   ChatEntryData,
   ChatEntryRole,
@@ -47,20 +47,20 @@ import {
   ChatEntryType,
   ChatThreadData,
   SystemMessageMetadata,
-} from '@2060/model'
-import { ChatMessageList } from '@2060/pages/Chat/ChatMessageList'
-import { headerHeight } from '@2060/styles'
-import { logWarn } from '@2060/utils'
+} from '@src/model'
+import { ChatMessageList } from '@src/pages/Chat/ChatMessageList'
+import { headerHeight } from '@src/styles'
+import { logWarn } from '@src/utils'
 import {
   blockConnection,
   isService,
   setLastTimeProfileSent,
   supportsUserProfile,
-} from '@2060/utils/connectionUtils'
-import { getFormattedDateRange, isDateGreaterThan, timeFromNow } from '@2060/utils/dateUtils'
-import { cancelVideoCompression } from '@2060/utils/mediaFileUtils'
-import { markNotificationsOfChatAsViewed } from '@2060/utils/pushNotificationsUtils'
-import { toast } from '@2060/utils/toast'
+} from '@src/utils/connectionUtils'
+import { getFormattedDateRange, isDateGreaterThan, timeFromNow } from '@src/utils/dateUtils'
+import { cancelVideoCompression } from '@src/utils/mediaFileUtils'
+import { markNotificationsOfChatAsViewed } from '@src/utils/pushNotificationsUtils'
+import { toast } from '@src/utils/toast'
 
 interface ChatProps extends WrapperChatProps {
   chatEntries: ChatEntryData[]

@@ -6,13 +6,13 @@ import { View, TouchableOpacity, Keyboard } from 'react-native'
 
 import getStyles from './styles'
 
-import { SvgIcon, Text } from '@2060/components/common'
-import { IconsNames } from '@2060/components/common/SvgIcon'
-import { IS_ANDROID } from '@2060/constants'
-import { useImageCropPicker, ImageOrVideo, useChatActions } from '@2060/hooks'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { logError } from '@2060/utils'
-import { compressVideo } from '@2060/utils/mediaFileUtils'
+import { SvgIcon, Text } from '@src/components/common'
+import { IconsNames } from '@src/components/common/SvgIcon'
+import { IS_ANDROID } from '@src/constants'
+import { useImageCropPicker, ImageOrVideo, useChatActions } from '@src/hooks'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { logError } from '@src/utils'
+import { compressVideo } from '@src/utils/mediaFileUtils'
 
 type Props = {
   closeAttachmentOptions(): void

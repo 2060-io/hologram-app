@@ -5,9 +5,9 @@ import { Props } from '../Props'
 
 import getStyles from './styles'
 
-import SvgIcon, { IconsNames } from '@2060/components/common/SvgIcon'
-import Text from '@2060/components/common/Text'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
+import SvgIcon, { IconsNames } from '@src/components/common/SvgIcon'
+import Text from '@src/components/common/Text'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
 
 const OutlinedButton = ({ iconName, text, ...buttonProps }: Props) => {
   const theme = useTheme()

@@ -3,9 +3,9 @@ import { View } from 'react-native'
 
 import getStyles from './styles'
 
-import { ConnectionRefusedByAge, SvgIcon } from '@2060/components/common'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { widthPercentageToDP } from '@2060/utils/responsiveUtils'
+import { ConnectionRefusedByAge, SvgIcon } from '@src/components/common'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { widthPercentageToDP } from '@src/utils/responsiveUtils'
 
 type Props = {
   kidAge: number

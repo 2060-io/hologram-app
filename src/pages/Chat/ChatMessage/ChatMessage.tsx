@@ -8,9 +8,9 @@ import { MessageCustomView } from '../MessageCustomView'
 import SystemMessage from '../SystemMessage'
 import { chatEntryEqual } from '../utils'
 
-import { ChatEntryType, SystemMessageMetadata } from '@2060/model'
-import { MessageProps } from '@2060/pages/Chat/ChatMessage/Props'
-import { dateToString } from '@2060/utils/dateUtils'
+import { ChatEntryType, SystemMessageMetadata } from '@src/model'
+import { MessageProps } from '@src/pages/Chat/ChatMessage/Props'
+import { dateToString } from '@src/utils/dateUtils'
 
 const ChatMessage = (props: MessageProps) => {
   const { t } = useTranslation()

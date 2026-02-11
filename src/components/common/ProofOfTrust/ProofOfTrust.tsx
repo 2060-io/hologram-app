@@ -8,8 +8,8 @@ import ProofOfTrustLoadingSkeleton from './ProofOfTrustLoadingSkeleton'
 import RenderProof, { ServiceInfoForRenderProof } from './RenderProof'
 import getStyles from './styles'
 
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { ServiceInfo } from '@2060/model'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { ServiceInfo } from '@src/model'
 
 type Props = {
   serviceInfo: ServiceInfo | undefined

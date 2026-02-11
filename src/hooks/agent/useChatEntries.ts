@@ -3,7 +3,7 @@ import { Results } from 'realm'
 
 import { useLocalRealm } from '../providers/RealmProvider'
 
-import { ChatEntry, ChatEntryData, getChatEntryData } from '@2060/model'
+import { ChatEntry, ChatEntryData, getChatEntryData } from '@src/model'
 
 const LIMIT_STEP_SIZE = 50
 

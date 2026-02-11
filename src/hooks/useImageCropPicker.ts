@@ -3,10 +3,10 @@ import { openPicker, openCamera, Options, Image, Video, CommonOptions } from 're
 
 import { createDidCommPreview } from './media/preview'
 
-import { MAX_VIDEO_DURATION } from '@2060/constants'
-import { logError } from '@2060/utils'
-import { handleCameraPermission } from '@2060/utils/permissions'
-import { toast } from '@2060/utils/toast'
+import { MAX_VIDEO_DURATION } from '@src/constants'
+import { logError } from '@src/utils'
+import { handleCameraPermission } from '@src/utils/permissions'
+import { toast } from '@src/utils/toast'
 
 const MAX_VIDEO_SECONDS_DURATION = 60
 const optionsCommon: CommonOptions = {

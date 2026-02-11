@@ -1,7 +1,7 @@
 import { DidCommConnectionEventTypes, DidCommConnectionStateChangedEvent } from '@credo-ts/didcomm'
 
-import { MobileAgent } from '@2060/services/agent'
-import { displayNewConnectionNotification } from '@2060/utils/pushNotificationsUtils'
+import { MobileAgent } from '@src/services/agent'
+import { displayNewConnectionNotification } from '@src/utils/pushNotificationsUtils'
 
 export const manageConnectionStateChangedEvent = (agent: MobileAgent) => {
   const connectionsListener = async (data: DidCommConnectionStateChangedEvent) => {

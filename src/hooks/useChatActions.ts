@@ -41,7 +41,7 @@ import {
 } from './agent/chat/services'
 import { useLocalRealm } from './providers/RealmProvider'
 
-import { MAX_VIDEO_DURATION } from '@2060/constants'
+import { MAX_VIDEO_DURATION } from '@src/constants'
 import {
   ActionMenuSelectionMetadata,
   AnswerMetadata,
@@ -52,14 +52,14 @@ import {
   MediaSharingMetadata,
   TextMessageMetadata,
   isMediaType,
-} from '@2060/model'
-import { ChatEntryMessage } from '@2060/pages/Chat/ChatMessage/Props'
-import { checkIfDeleteFilesFromMedia } from '@2060/pages/Chat/utils'
-import { log, logError } from '@2060/utils'
-import { getLocalFileUri } from '@2060/utils/RNFS'
-import { compressVideo, getMediaFileSharingData } from '@2060/utils/mediaFileUtils'
-import { getLastEntryInChatThread, getMediaChatEntriesExcludingThread } from '@2060/utils/realmQueries'
-import { toast, ToastOptions } from '@2060/utils/toast'
+} from '@src/model'
+import { ChatEntryMessage } from '@src/pages/Chat/ChatMessage/Props'
+import { checkIfDeleteFilesFromMedia } from '@src/pages/Chat/utils'
+import { log, logError } from '@src/utils'
+import { getLocalFileUri } from '@src/utils/RNFS'
+import { compressVideo, getMediaFileSharingData } from '@src/utils/mediaFileUtils'
+import { getLastEntryInChatThread, getMediaChatEntriesExcludingThread } from '@src/utils/realmQueries'
+import { toast, ToastOptions } from '@src/utils/toast'
 
 export const useChatActions = () => {
   const { t } = useTranslation()

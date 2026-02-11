@@ -5,10 +5,10 @@ import { View } from 'react-native'
 import { PeerSecuritySystemMessageProps } from './Props'
 import getStyles from './styles'
 
-import { SvgIcon, Text } from '@2060/components/common'
-import { useConnectionById } from '@2060/hooks/agent'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { getConnectionParentId } from '@2060/utils/connectionUtils'
+import { SvgIcon, Text } from '@src/components/common'
+import { useConnectionById } from '@src/hooks/agent'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { getConnectionParentId } from '@src/utils/connectionUtils'
 
 const PeerSecuritySystemMessage = ({ connection }: PeerSecuritySystemMessageProps) => {
   const theme = useTheme()

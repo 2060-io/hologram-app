@@ -1,4 +1,4 @@
-import { CONFIG_FILE_PATH, readFile, writeFile } from '@2060/utils/RNFS'
+import { CONFIG_FILE_PATH, readFile, writeFile } from '@src/utils/RNFS'
 
 export enum ParentalControlEnum {
   Enabled = 'enabled',

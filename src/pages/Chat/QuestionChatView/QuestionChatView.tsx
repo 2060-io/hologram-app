@@ -7,9 +7,9 @@ import { Header } from '../components'
 import { QuestionAnswerOption, QuestionChatViewProps } from './QuestionChatViewProps'
 import getStyles from './styles'
 
-import { Text } from '@2060/components/common'
-import { useChatActions } from '@2060/hooks'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
+import { Text } from '@src/components/common'
+import { useChatActions } from '@src/hooks'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
 
 const QuestionChatView = ({ question, associatedRecordId }: QuestionChatViewProps) => {
   const [optionSelected, setOptionSelected] = useState<string | undefined>(question.response)

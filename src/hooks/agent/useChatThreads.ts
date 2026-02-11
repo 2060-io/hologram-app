@@ -7,8 +7,8 @@ import { useFetchServiceInfo } from '../useFetchServiceInfo'
 import { useConnectionById } from './ConnectionProvider'
 import { useUserProfile } from './UserProfileProvider'
 
-import { ChatThreadData, ChatThread, getChatThreadData, ChatEntryRole } from '@2060/model'
-import { ChatParticipant } from '@2060/pages/Chat/ChatMessage/Props'
+import { ChatThreadData, ChatThread, getChatThreadData, ChatEntryRole } from '@src/model'
+import { ChatParticipant } from '@src/pages/Chat/ChatMessage/Props'
 import {
   getConnectionDisplayName,
   getConnectionDisplayPicture,
@@ -21,7 +21,7 @@ import {
   supportsMediaSharing,
   supportsMessageReactions,
   supportsMessageReceipts,
-} from '@2060/utils/connectionUtils'
+} from '@src/utils/connectionUtils'
 
 export const useUnreadChatThreads = () => {
   return useChatThreadsHook('unreadCount > 0')

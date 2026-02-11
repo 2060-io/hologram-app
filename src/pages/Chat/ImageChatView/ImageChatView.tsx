@@ -9,14 +9,14 @@ import { ParsedText } from '../components'
 import ImageView from './ImageView'
 import getStyles from './styles'
 
-import imagePlaceholder from '@2060/assets/images/placeholderImg.png'
-import { Icon, Text, Progress } from '@2060/components/common'
-import { useMedia } from '@2060/hooks'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { ImageMetadata, MediaDownloadState, MediaUploadState } from '@2060/model'
-import { getFileSize } from '@2060/utils'
-import { getLocalFileUri } from '@2060/utils/RNFS'
-import { screenWidth } from '@2060/utils/responsiveUtils'
+import imagePlaceholder from '@src/assets/images/placeholderImg.png'
+import { Icon, Text, Progress } from '@src/components/common'
+import { useMedia } from '@src/hooks'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { ImageMetadata, MediaDownloadState, MediaUploadState } from '@src/model'
+import { getFileSize } from '@src/utils'
+import { getLocalFileUri } from '@src/utils/RNFS'
+import { screenWidth } from '@src/utils/responsiveUtils'
 
 const MINIMUM_ASPECT_RATIO = 2 / 3
 const SCREEN_WIDTH_TO_75_PERCENTAGE = screenWidth * 0.75

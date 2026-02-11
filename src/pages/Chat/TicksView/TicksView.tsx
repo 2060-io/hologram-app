@@ -1,8 +1,8 @@
 import React from 'react'
 
-import { MessageStateIcon } from '@2060/components/common'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { ChatEntryRole, ChatEntryState } from '@2060/model'
+import { MessageStateIcon } from '@src/components/common'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { ChatEntryRole, ChatEntryState } from '@src/model'
 
 type Props = {
   role: ChatEntryRole

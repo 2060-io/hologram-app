@@ -5,8 +5,8 @@ import { useChats } from './agent/ChatsProvider'
 import { useConfig } from './providers/ConfigProvider'
 import { useVideoCallContext } from './providers/useVideoCallContext'
 
-import { ActionProps, ConnectionMainActionsProps } from '@2060/components/common/ConnectionMainActions/Props'
-import { isBlocked, isService, supportsAudioCalls, supportsVideoCalls } from '@2060/utils/connectionUtils'
+import { ActionProps, ConnectionMainActionsProps } from '@src/components/common/ConnectionMainActions/Props'
+import { isBlocked, isService, supportsAudioCalls, supportsVideoCalls } from '@src/utils/connectionUtils'
 
 type Props = Omit<ConnectionMainActionsProps, 'connectionId'>
 

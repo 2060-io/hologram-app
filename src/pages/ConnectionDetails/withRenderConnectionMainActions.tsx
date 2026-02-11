@@ -3,9 +3,9 @@ import React from 'react'
 import {
   ConnectionMainActionsProps,
   InitialConnectionMainActionsProps,
-} from '@2060/components/common/ConnectionMainActions/Props'
-import { useConnectionById } from '@2060/hooks/agent/ConnectionProvider'
-import { isTerminated } from '@2060/utils/connectionUtils'
+} from '@src/components/common/ConnectionMainActions/Props'
+import { useConnectionById } from '@src/hooks/agent/ConnectionProvider'
+import { isTerminated } from '@src/utils/connectionUtils'
 
 export const withRenderConnectionMainActions =
   (Component: React.ComponentType<ConnectionMainActionsProps>) =>

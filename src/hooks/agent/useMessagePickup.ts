@@ -5,8 +5,8 @@ import { useLocalRealm } from '../providers/RealmProvider'
 import { useScreenLock } from '../providers/ScreenLockProvider'
 import { useAppState } from '../useAppState'
 
-import { MobileAgent } from '@2060/services/agent'
-import { log, logWarn } from '@2060/utils'
+import { MobileAgent } from '@src/services/agent'
+import { log, logWarn } from '@src/utils'
 
 /**
  * Hook to manage message pickup initialization and stopping

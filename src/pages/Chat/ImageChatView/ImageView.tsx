@@ -6,10 +6,10 @@ import { MediaInfo } from '../ChatProps'
 import LightboxHeader from './LightboxHeader'
 import getStyles from './styles'
 
-import { LightboxModal } from '@2060/components'
-import { useChat } from '@2060/hooks/agent'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { ChatEntryMessage } from '@2060/pages/Chat/ChatMessage/Props'
+import { LightboxModal } from '@src/components'
+import { useChat } from '@src/hooks/agent'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { ChatEntryMessage } from '@src/pages/Chat/ChatMessage/Props'
 
 type ImageView = {
   imagePreviewUri: string

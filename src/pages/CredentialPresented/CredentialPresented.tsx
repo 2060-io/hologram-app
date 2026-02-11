@@ -6,11 +6,11 @@ import { TouchableOpacity } from 'react-native'
 
 import getStyles from './styles'
 
-import { CredentialPresented } from '@2060/components'
-import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
-import { Text } from '@2060/components/common'
-import { useChats, useMobileAgent } from '@2060/hooks/agent'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
+import { CredentialPresented } from '@src/components'
+import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
+import { Text } from '@src/components/common'
+import { useChats, useMobileAgent } from '@src/hooks/agent'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
 
 interface Props extends StackScreenProps<NavigationStackParams, 'CredentialPresented'> {}
 

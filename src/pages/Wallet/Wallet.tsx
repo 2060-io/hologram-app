@@ -2,8 +2,8 @@ import { StackScreenProps } from '@react-navigation/stack'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { Credentials } from '@2060/components'
-import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
+import { Credentials } from '@src/components'
+import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
 
 interface Props extends StackScreenProps<NavigationStackParams, 'Wallet'> {}
 const Wallet = ({ navigation }: Props) => {

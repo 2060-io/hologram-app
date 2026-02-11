@@ -1,6 +1,6 @@
 import { utils } from '@credo-ts/core'
 
-import { dateToString } from '@2060/utils/dateUtils'
+import { dateToString } from '@src/utils/dateUtils'
 
 /**
  * Generates an unique file name, based on the media type (used for name prefix)

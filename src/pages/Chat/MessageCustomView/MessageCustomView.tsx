@@ -8,11 +8,11 @@ import Reactions from './Reactions'
 import getStyles, { REACTIONS_MARGIN_BOTTOM } from './styles'
 import { getMessageBorders } from './utils'
 
-import { RadioButton } from '@2060/components/common'
-import { useChat } from '@2060/hooks/agent'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { ChatEntryRole, ChatEntryState } from '@2060/model'
-import { MessageProps } from '@2060/pages/Chat/ChatMessage/Props'
+import { RadioButton } from '@src/components/common'
+import { useChat } from '@src/hooks/agent'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { ChatEntryRole, ChatEntryState } from '@src/model'
+import { MessageProps } from '@src/pages/Chat/ChatMessage/Props'
 
 const MessageCustomView: React.FC<MessageProps> = memo(props => {
   const { displayMessageFloatingMenu } = useChat()

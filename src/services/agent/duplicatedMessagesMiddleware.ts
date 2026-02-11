@@ -1,8 +1,8 @@
 import { AgentContext, CacheModuleConfig } from '@credo-ts/core'
 import { DidCommInboundMessageContext, DidCommMessage } from '@credo-ts/didcomm'
 
-import { logWarn } from '@2060/utils'
-import { areLogsEnabled } from '@2060/utils/developer'
+import { logWarn } from '@src/utils'
+import { areLogsEnabled } from '@src/utils/developer'
 
 export const duplicatedMessagesMiddleware = async (
   inboundMessageContext: DidCommInboundMessageContext,

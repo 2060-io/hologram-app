@@ -5,9 +5,9 @@ import { View } from 'react-native'
 
 import CanNotConnect from './CanNotConnect'
 
-import { ServiceInformation } from '@2060/components/common'
-import { useValidateKidAgeRestrictions } from '@2060/hooks/useValidateKidAgeRestrictions'
-import { ServiceInfo, ServiceStatus } from '@2060/model'
+import { ServiceInformation } from '@src/components/common'
+import { useValidateKidAgeRestrictions } from '@src/hooks/useValidateKidAgeRestrictions'
+import { ServiceInfo, ServiceStatus } from '@src/model'
 
 type Props = {
   did: string

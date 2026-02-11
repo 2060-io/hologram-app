@@ -12,14 +12,14 @@ import { getMinutesAndSeconds } from '../utils'
 
 import getStyles from './styles'
 
-import { Text, Icon } from '@2060/components/common'
-import { useMedia } from '@2060/hooks'
-import { useChat } from '@2060/hooks/agent'
-import { useMediaPlayer } from '@2060/hooks/providers/MediaPlayerProvider'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { ChatEntryRole, MediaUploadState, VoiceNoteMetadata } from '@2060/model'
-import { getFileSize, logWarn } from '@2060/utils'
-import { getFullLocalFilePath } from '@2060/utils/RNFS'
+import { Text, Icon } from '@src/components/common'
+import { useMedia } from '@src/hooks'
+import { useChat } from '@src/hooks/agent'
+import { useMediaPlayer } from '@src/hooks/providers/MediaPlayerProvider'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { ChatEntryRole, MediaUploadState, VoiceNoteMetadata } from '@src/model'
+import { getFileSize, logWarn } from '@src/utils'
+import { getFullLocalFilePath } from '@src/utils/RNFS'
 
 type VoiceNoteChatViewProps = {
   mediaRecordId: string

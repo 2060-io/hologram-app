@@ -4,9 +4,9 @@ import { View, TouchableOpacity } from 'react-native'
 import { Props } from './OptionsListProps'
 import getStyles from './styles'
 
-import SvgIcon from '@2060/components/common/SvgIcon'
-import Text from '@2060/components/common/Text'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
+import SvgIcon from '@src/components/common/SvgIcon'
+import Text from '@src/components/common/Text'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
 
 const OptionsList = ({ options }: Props) => {
   const theme = useTheme()

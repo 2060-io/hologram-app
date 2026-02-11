@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native'
 
-import { AppTheme } from '@2060/styles'
+import { AppTheme } from '@src/styles'
 
 export const REACTIONS_MARGIN_BOTTOM = 20
 export default (theme: AppTheme) =>

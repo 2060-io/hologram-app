@@ -5,9 +5,9 @@ import { useScreenLock } from '../providers/ScreenLockProvider'
 
 import { ChatThreadWithParticipants } from './useChatThreads'
 
-import { ChatEntryRole, ChatEntryState, ChatEntryType, RelatedEntryProps, isMediaType } from '@2060/model'
-import { ChatEntryMessage } from '@2060/pages/Chat/ChatMessage/Props'
-import { MessageAction } from '@2060/pages/Chat/ChatProps'
+import { ChatEntryRole, ChatEntryState, ChatEntryType, RelatedEntryProps, isMediaType } from '@src/model'
+import { ChatEntryMessage } from '@src/pages/Chat/ChatMessage/Props'
+import { MessageAction } from '@src/pages/Chat/ChatProps'
 
 export type RepliedMessage = RelatedEntryProps
 

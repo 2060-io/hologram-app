@@ -2,9 +2,9 @@ import { StackScreenProps } from '@react-navigation/stack'
 import React, { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { ConnectionsSelection } from '@2060/components'
-import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
-import { usePresentCredential } from '@2060/hooks'
+import { ConnectionsSelection } from '@src/components'
+import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
+import { usePresentCredential } from '@src/hooks'
 
 interface Props extends StackScreenProps<NavigationStackParams, 'PresentCredential'> {}
 

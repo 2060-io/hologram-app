@@ -5,10 +5,10 @@ import { View, Linking } from 'react-native'
 import { ServiceSecuritySystemMessageProps } from './Props'
 import getStyles from './styles'
 
-import { SvgIcon, Text } from '@2060/components/common'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { getFlagEmoji } from '@2060/utils'
-import { toast } from '@2060/utils/toast'
+import { SvgIcon, Text } from '@src/components/common'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { getFlagEmoji } from '@src/utils'
+import { toast } from '@src/utils/toast'
 
 const ServiceSecuritySystemMessage = ({ serviceInfo }: ServiceSecuritySystemMessageProps) => {
   const { t } = useTranslation()

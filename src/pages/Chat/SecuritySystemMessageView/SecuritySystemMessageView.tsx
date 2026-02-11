@@ -4,7 +4,7 @@ import PeerSecuritySystemMessage from './PeerSecuritySystemMessage'
 import { Props, WithConnectionValidateProps } from './Props'
 import ServiceSecuritySystemMessage from './ServiceSecuritySystemMessage'
 
-import { useChat } from '@2060/hooks/agent'
+import { useChat } from '@src/hooks/agent'
 
 const withConnectionValidate = () => (props: WithConnectionValidateProps) => {
   if (!props.connection) {

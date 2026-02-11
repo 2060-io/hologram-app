@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native'
 
-import { heightPercentageToDP, widthPercentageToDP } from '@2060/utils/responsiveUtils'
+import { heightPercentageToDP, widthPercentageToDP } from '@src/utils/responsiveUtils'
 
 export default StyleSheet.create({
   switch: {

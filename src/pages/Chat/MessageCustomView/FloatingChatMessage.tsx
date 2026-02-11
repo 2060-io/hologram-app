@@ -6,9 +6,9 @@ import Reactions from './Reactions'
 import getStyles, { REACTIONS_MARGIN_BOTTOM } from './styles'
 import { ROUND_BORDER } from './utils'
 
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { ChatEntryRole, ChatEntryState } from '@2060/model'
-import { FloatingChatMessageProps } from '@2060/pages/Chat/ChatMessage/Props'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { ChatEntryRole, ChatEntryState } from '@src/model'
+import { FloatingChatMessageProps } from '@src/pages/Chat/ChatMessage/Props'
 
 const FloatingChatMessage: React.FC<FloatingChatMessageProps> = memo(props => {
   const theme = useTheme()

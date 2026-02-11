@@ -3,7 +3,7 @@ import { FlatList, FlatListProps, StyleSheet } from 'react-native'
 
 import { ChatMessage } from '../ChatMessage'
 
-import { CommonMessageProps, ChatEntryMessage } from '@2060/pages/Chat/ChatMessage/Props'
+import { CommonMessageProps, ChatEntryMessage } from '@src/pages/Chat/ChatMessage/Props'
 
 type ListViewProps<TMessage> = FlatListProps<TMessage> & {
   ref?: Ref<FlatList<TMessage>>

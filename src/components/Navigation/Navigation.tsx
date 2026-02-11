@@ -20,10 +20,10 @@ import { NavigationStackParams } from './NavigationProps'
 import deepLinking from './deepLinking'
 import getStyles from './styles'
 
-import { IS_ANDROID } from '@2060/constants'
-import { useNetwork } from '@2060/hooks'
-import { useMessagePickup } from '@2060/hooks/agent/useMessagePickup'
-import { useConfig } from '@2060/hooks/providers/ConfigProvider'
+import { IS_ANDROID } from '@src/constants'
+import { useNetwork } from '@src/hooks'
+import { useMessagePickup } from '@src/hooks/agent/useMessagePickup'
+import { useConfig } from '@src/hooks/providers/ConfigProvider'
 import {
   HomeMain,
   SignUpMain,
@@ -52,10 +52,10 @@ import {
   PresentCredentialsFromChat,
   PresentCredentialAsQR,
   EphemeralCredentialPresentation,
-} from '@2060/pages'
-import { MobileAgent } from '@2060/services/agent'
-import { AppTheme, getGlobalStyles } from '@2060/styles'
-import { log, logError } from '@2060/utils'
+} from '@src/pages'
+import { MobileAgent } from '@src/services/agent'
+import { AppTheme, getGlobalStyles } from '@src/styles'
+import { log, logError } from '@src/utils'
 
 const Stack = createStackNavigator<NavigationStackParams>()
 type NavigationProps = {

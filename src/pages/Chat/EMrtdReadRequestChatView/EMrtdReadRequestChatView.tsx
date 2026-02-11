@@ -10,14 +10,14 @@ import EMrtdInstructions from './EMrtdInstructions'
 import { Props } from './EMrtdReadRequestChatViewProps'
 import getStyles from './styles'
 
-import { Modal, SvgIcon, Text } from '@2060/components/common'
-import { useChat, useMobileAgent } from '@2060/hooks/agent'
-import { useScreenLock } from '@2060/hooks/providers/ScreenLockProvider'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { MrzInfo, EmrtdReadRequestState } from '@2060/model'
-import { log, logError } from '@2060/utils'
-import { widthPercentageToDP } from '@2060/utils/responsiveUtils'
-import { toast } from '@2060/utils/toast'
+import { Modal, SvgIcon, Text } from '@src/components/common'
+import { useChat, useMobileAgent } from '@src/hooks/agent'
+import { useScreenLock } from '@src/hooks/providers/ScreenLockProvider'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { MrzInfo, EmrtdReadRequestState } from '@src/model'
+import { log, logError } from '@src/utils'
+import { widthPercentageToDP } from '@src/utils/responsiveUtils'
+import { toast } from '@src/utils/toast'
 
 const EMrtdReadRequestChatView = (props: Props) => {
   const theme = useTheme()

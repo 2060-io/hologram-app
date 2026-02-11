@@ -13,8 +13,8 @@ import {
   updateRecord,
 } from './recordUtils'
 
-import { ConnectionType } from '@2060/model'
-import { getConnectionType } from '@2060/utils/connectionUtils'
+import { ConnectionType } from '@src/model'
+import { getConnectionType } from '@src/utils/connectionUtils'
 
 interface ConnectionContextInterface {
   loading: boolean

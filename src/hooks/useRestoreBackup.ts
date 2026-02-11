@@ -4,16 +4,16 @@ import { useTranslation } from 'react-i18next'
 
 import { RestoreProgress, restoreProgressInitialValues } from './backup'
 
-import { AgentActionType, useAgentActionQueue } from '@2060/hooks/agent'
-import { useMobileAgent } from '@2060/hooks/agent/MobileAgentProvider'
-import { SavePushNotificationDeviceInfoParameters } from '@2060/hooks/agent/actions/types'
-import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
-import { useWallet } from '@2060/hooks/useWallet'
-import { KeyChainService, createAndStoreEncryptedKey } from '@2060/services/keys'
-import { logError } from '@2060/utils'
-import { deleteDir, makeDirectory, walletDirectoryPath } from '@2060/utils/RNFS'
-import { getFcmDeviceToken, requestNotificationsPermission } from '@2060/utils/pushNotificationsUtils'
-import * as BackupUtils from '@2060/utils/walletBackUpUtils'
+import { AgentActionType, useAgentActionQueue } from '@src/hooks/agent'
+import { useMobileAgent } from '@src/hooks/agent/MobileAgentProvider'
+import { SavePushNotificationDeviceInfoParameters } from '@src/hooks/agent/actions/types'
+import { useLocalRealm } from '@src/hooks/providers/RealmProvider'
+import { useWallet } from '@src/hooks/useWallet'
+import { KeyChainService, createAndStoreEncryptedKey } from '@src/services/keys'
+import { logError } from '@src/utils'
+import { deleteDir, makeDirectory, walletDirectoryPath } from '@src/utils/RNFS'
+import { getFcmDeviceToken, requestNotificationsPermission } from '@src/utils/pushNotificationsUtils'
+import * as BackupUtils from '@src/utils/walletBackUpUtils'
 
 type Props = {
   restoreProgress: RestoreProgress

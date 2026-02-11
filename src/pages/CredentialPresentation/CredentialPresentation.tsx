@@ -4,10 +4,10 @@ import React, { useEffect, useState } from 'react'
 
 import BaseCredentialPresentation from './BaseCredentialPresentation'
 
-import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
-import { findAllByAssociatedRecordId, updateChatEntryMetadata } from '@2060/hooks/agent/chat/services'
-import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
-import { ChatEntry, ChatEntryType, VPResponseMetadata, VPResponsePresentedCredential } from '@2060/model'
+import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
+import { findAllByAssociatedRecordId, updateChatEntryMetadata } from '@src/hooks/agent/chat/services'
+import { useLocalRealm } from '@src/hooks/providers/RealmProvider'
+import { ChatEntry, ChatEntryType, VPResponseMetadata, VPResponsePresentedCredential } from '@src/model'
 
 interface Props extends StackScreenProps<NavigationStackParams, 'CredentialPresentation'> {}
 

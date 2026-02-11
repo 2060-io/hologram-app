@@ -4,8 +4,8 @@ import { TouchableOpacity, View, Image } from 'react-native'
 import { ContextualMenuProps } from './ContextualMenuProps'
 import getStyles from './styles'
 
-import { Text } from '@2060/components/common'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
+import { Text } from '@src/components/common'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
 
 const ContextualMenu = ({ onSelectOption, connectionIconUrl, menu }: ContextualMenuProps) => {
   const theme = useTheme()

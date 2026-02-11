@@ -4,11 +4,11 @@ import { View, TouchableOpacity, ImageBackground, ViewStyle } from 'react-native
 
 import getStyles from './styles'
 
-import imagePlaceholder from '@2060/assets/images/placeholderImg.png'
-import { SvgIcon, Text } from '@2060/components/common'
-import { RepliedMessage, useChat } from '@2060/hooks/agent'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { ChatEntryRole, ChatEntryType } from '@2060/model'
+import imagePlaceholder from '@src/assets/images/placeholderImg.png'
+import { SvgIcon, Text } from '@src/components/common'
+import { RepliedMessage, useChat } from '@src/hooks/agent'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { ChatEntryRole, ChatEntryType } from '@src/model'
 
 type Props = {
   isInputToolbarView?: boolean

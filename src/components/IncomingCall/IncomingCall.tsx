@@ -7,9 +7,9 @@ import { CallButton, AnswerButton, HangupButton, Avatar, Text } from '../common'
 
 import getStyles from './styles'
 
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { useVideoCallContext } from '@2060/hooks/providers/useVideoCallContext'
-import { getConnectionDisplayName, getConnectionDisplayPicture } from '@2060/utils/connectionUtils'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { useVideoCallContext } from '@src/hooks/providers/useVideoCallContext'
+import { getConnectionDisplayName, getConnectionDisplayPicture } from '@src/utils/connectionUtils'
 
 const IncomingCall = () => {
   const theme = useTheme()

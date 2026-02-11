@@ -1,13 +1,13 @@
 import { PlayerState } from '@simform_solutions/react-native-audio-waveform'
+import { MediaInfo } from '@src/pages/Chat/PersonalChatProps'
 import React, { createContext, useContext, useState, useCallback, useRef, useEffect } from 'react'
 
 import { useScreenLock } from './ScreenLockProvider'
 import { useVideoCallContext } from './useVideoCallContext'
 
-import { LightboxModal, VideoPlayer } from '@2060/components'
-import { ChatEntryMessage } from '@2060/pages/Chat/ChatMessage/Props'
-import { MediaInfo } from '@2060/pages/Chat/ChatProps'
-import LightboxHeader from '@2060/pages/Chat/ImageChatView/LightboxHeader'
+import { LightboxModal, VideoPlayer } from '@src/components'
+import { ChatEntryMessage } from '@src/pages/Chat/ChatMessage/Props'
+import LightboxHeader from '@src/pages/Chat/ImageChatView/LightboxHeader'
 
 type Callback = () => Promise<void>
 

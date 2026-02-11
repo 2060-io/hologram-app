@@ -9,14 +9,14 @@ import { getMinutesAndSeconds } from '../utils'
 
 import getStyles from './styles'
 
-import placeHolderVideo from '@2060/assets/images/placeholderVideo.png'
-import { Text, SvgIcon, Progress } from '@2060/components/common'
-import { useMedia } from '@2060/hooks'
-import { useMediaPlayer } from '@2060/hooks/providers/MediaPlayerProvider'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { MediaDownloadState, MediaUploadState, VideoMetadata } from '@2060/model'
-import { getFileSize } from '@2060/utils'
-import { getLocalFileUri } from '@2060/utils/RNFS'
+import placeHolderVideo from '@src/assets/images/placeholderVideo.png'
+import { Text, SvgIcon, Progress } from '@src/components/common'
+import { useMedia } from '@src/hooks'
+import { useMediaPlayer } from '@src/hooks/providers/MediaPlayerProvider'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { MediaDownloadState, MediaUploadState, VideoMetadata } from '@src/model'
+import { getFileSize } from '@src/utils'
+import { getLocalFileUri } from '@src/utils/RNFS'
 
 const VideoChatView = memo((props: MediaProps) => {
   const theme = useTheme()

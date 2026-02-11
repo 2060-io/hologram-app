@@ -1,4 +1,4 @@
-import { MrzRequestMetadata } from '@2060/model'
+import { MrzRequestMetadata } from '@src/model'
 
 export type Props = {
   didcommThreadId: string

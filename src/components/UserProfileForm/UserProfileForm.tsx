@@ -5,11 +5,11 @@ import { View, TouchableOpacity, Image } from 'react-native'
 
 import getStyles from './styles'
 
-import defaultAvatar from '@2060/assets/images/defaultUser.png'
-import { Text, TextInput, SvgIcon, Avatar } from '@2060/components/common'
-import { useImageCropPicker, ImageOrVideo } from '@2060/hooks'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { dataUrl } from '@2060/utils'
+import defaultAvatar from '@src/assets/images/defaultUser.png'
+import { Text, TextInput, SvgIcon, Avatar } from '@src/components/common'
+import { useImageCropPicker, ImageOrVideo } from '@src/hooks'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { dataUrl } from '@src/utils'
 
 type Props = {
   displayPicture: UserProfileData['displayPicture']
