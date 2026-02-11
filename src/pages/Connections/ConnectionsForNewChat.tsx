@@ -29,9 +29,7 @@ const ConnectionsForNewChat = ({ navigation }: Props) => {
   }, [])
 
   const goToChatScreen = (chatThreadId: string) => {
-    navigation.dispatch(
-      StackActions.push('ChatConversationStack', { screen: 'ChatConversation', params: { chatThreadId } }),
-    )
+    navigation.dispatch(StackActions.push('ChatStack', { screen: 'Chat', params: { chatThreadId } }))
   }
 
   return (

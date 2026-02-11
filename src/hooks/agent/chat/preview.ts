@@ -19,7 +19,7 @@ import {
  * @returns
  */
 export function getLocalizedPreview(chatEntry: ChatEntryData) {
-  if (chatEntry.state === ChatEntryState.Deleted) return t('chatConversation.messageDeleted')
+  if (chatEntry.state === ChatEntryState.Deleted) return t('chat.messageDeleted')
   const chatEntryTypePreviewMapping: Record<ChatEntryType, string> = {
     [ChatEntryType.ActionMenuSelection]: t('preview.menuSelection'),
     [ChatEntryType.Answer]: t('preview.answer'),

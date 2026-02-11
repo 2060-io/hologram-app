@@ -8,7 +8,7 @@ import getStyles from './styles'
 import { Icon } from '@2060/components/common'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { ChatEntryRole } from '@2060/model'
-import { ChatEntryMessage } from '@2060/pages/ChatConversation/ChatMessage/Props'
+import { ChatEntryMessage } from '@2060/pages/Chat/ChatMessage/Props'
 
 const mainEmojis = [
   { emoji: '😂', name: 'laugh' },

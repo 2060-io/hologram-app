@@ -24,28 +24,28 @@ export const useHomeMain = ({ navigation }: { navigation: StackNavigationProp<Pa
             }),
           )
         }
-        if (pushNotification.screen === 'ChatConversation') {
+        if (pushNotification.screen === 'Chat') {
           markNotificationsOfChatAsViewed(pushNotification.params?.connectionId as string)
           const currentScreenParams = navigation.getState().routes.at(-1)?.params as {
             screen?: string
             params?: Record<string, unknown>
           }
-          const isChatCurrentScreen = currentScreenParams?.screen === 'ChatConversation'
+          const isChatCurrentScreen = currentScreenParams?.screen === 'Chat'
           if (isChatCurrentScreen) {
             const isUserInTheChatOfTheNotification =
               currentScreenParams?.params?.chatThreadId === pushNotification.params?.chatThreadId
             if (!isUserInTheChatOfTheNotification) {
               navigation.dispatch(
-                StackActions.replace('ChatConversationStack', {
-                  screen: 'ChatConversation',
+                StackActions.replace('ChatStack', {
+                  screen: 'Chat',
                   params: { chatThreadId: pushNotification.params?.chatThreadId },
                 }),
               )
             }
           } else {
             navigation.dispatch(
-              StackActions.push('ChatConversationStack', {
-                screen: 'ChatConversation',
+              StackActions.push('ChatStack', {
+                screen: 'Chat',
                 params: { chatThreadId: pushNotification.params?.chatThreadId },
               }),
             )
@@ -60,7 +60,7 @@ export const useHomeMain = ({ navigation }: { navigation: StackNavigationProp<Pa
 
   useEffect(() => {
     if (displayShareMessagesScreen) {
-      navigation.dispatch(StackActions.push('ChatConversationStack', { screen: 'ShareMessages' }))
+      navigation.dispatch(StackActions.push('ChatStack', { screen: 'ShareMessages' }))
     }
   }, [displayShareMessagesScreen])
 }

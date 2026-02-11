@@ -98,7 +98,7 @@ export const displayNewChatMessageNotification = async (
   chatEntry: ChatEntry,
 ) => {
   const data = {
-    screen: 'ChatConversation',
+    screen: 'Chat',
     params: { chatThreadId: chatEntry.chatThreadId, connectionId: connection.id },
   }
   const channelId = await createChannel()

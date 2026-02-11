@@ -59,7 +59,7 @@ const ChatThread = ({
           </Text>
         ) : (
           <Text fontFamily="EuclidCircularA-Medium" style={styles.textPreview}>
-            {t('chatConversation.connectionDeleted')}
+            {t('chat.connectionDeleted')}
           </Text>
         )}
       </View>

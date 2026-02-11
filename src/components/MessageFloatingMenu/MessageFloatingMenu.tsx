@@ -4,7 +4,7 @@ import React, { memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, TouchableOpacity } from 'react-native'
 
-import { ChatConversationStackParams } from '../Navigation/NavigationProps'
+import { ChatStackParams } from '../Navigation/NavigationProps'
 import ReactionMenu from '../ReactionMenu'
 
 import MenuItem from './MenuItem'
@@ -14,13 +14,13 @@ import { useChatActions } from '@2060/hooks'
 import { RepliedMessage } from '@2060/hooks/agent'
 import { useTheme } from '@2060/hooks/providers/ThemeProvider'
 import { ChatEntryState, TextMessageMetadata } from '@2060/model'
-import { MessageAction } from '@2060/pages/ChatConversation/ChatConversationProps'
-import { ChatEntryMessage } from '@2060/pages/ChatConversation/ChatMessage/Props'
-import FloatingChatMessage from '@2060/pages/ChatConversation/MessageCustomView/FloatingChatMessage'
+import { ChatEntryMessage } from '@2060/pages/Chat/ChatMessage/Props'
+import { MessageAction } from '@2060/pages/Chat/ChatProps'
+import FloatingChatMessage from '@2060/pages/Chat/MessageCustomView/FloatingChatMessage'
 import { MobileAgent } from '@2060/services/agent'
 
 type Props = {
-  navigation: StackNavigationProp<ChatConversationStackParams>
+  navigation: StackNavigationProp<ChatStackParams>
   agent: MobileAgent | undefined
   messageActions: MessageAction[]
   selectedMessage?: ChatEntryMessage

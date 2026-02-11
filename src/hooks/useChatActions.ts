@@ -53,8 +53,8 @@ import {
   TextMessageMetadata,
   isMediaType,
 } from '@2060/model'
-import { ChatEntryMessage } from '@2060/pages/ChatConversation/ChatMessage/Props'
-import { checkIfDeleteFilesFromMedia } from '@2060/pages/ChatConversation/utils'
+import { ChatEntryMessage } from '@2060/pages/Chat/ChatMessage/Props'
+import { checkIfDeleteFilesFromMedia } from '@2060/pages/Chat/utils'
 import { log, logError } from '@2060/utils'
 import { getLocalFileUri } from '@2060/utils/RNFS'
 import { compressVideo, getMediaFileSharingData } from '@2060/utils/mediaFileUtils'
@@ -106,9 +106,9 @@ export const useChatActions = () => {
       const { localFilePath } = extractDataFromMessage(message)
       const path = getLocalFileUri(localFilePath)
       await CameraRoll.saveAsset(path)
-      toast({ type: 'success', message: t('chatConversation.saveSucceededFileMedia') })
+      toast({ type: 'success', message: t('chat.saveSucceededFileMedia') })
     } catch (error) {
-      toast({ type: 'error', message: t('chatConversation.saveFailedFileMedia') })
+      toast({ type: 'error', message: t('chat.saveFailedFileMedia') })
       logError('Error saving file to gallery', error)
       throw new Error(`${error}`)
     }
@@ -142,12 +142,12 @@ export const useChatActions = () => {
           updateThread(realm, chatThreadId, { lastChatEntry: lastEntryInChatThread })
           toast({
             type: 'success',
-            message: t('chatConversation.messageDeletedSuccessfully', { count: messages.length }),
+            message: t('chat.messageDeletedSuccessfully', { count: messages.length }),
           })
           resolve()
         } catch (error) {
           logError('Error deleting messages', error)
-          toast({ type: 'error', message: t('chatConversation.messageUnsuccessfulDeletion') })
+          toast({ type: 'error', message: t('chat.messageUnsuccessfulDeletion') })
           reject(`${error}`)
         }
       })
@@ -186,12 +186,12 @@ export const useChatActions = () => {
           })
           toast({
             type: 'success',
-            message: t('chatConversation.messageDeletedSuccessfully', { count: messages.length }),
+            message: t('chat.messageDeletedSuccessfully', { count: messages.length }),
           })
           resolve()
         } catch (error) {
           logError('Error deleting messages', error)
-          toast({ type: 'error', message: t('chatConversation.messageUnsuccessfulDeletion') })
+          toast({ type: 'error', message: t('chat.messageUnsuccessfulDeletion') })
           reject(`${error}`)
         }
       })
@@ -254,7 +254,7 @@ export const useChatActions = () => {
         }
       } catch (error) {
         logError((error as Error).message)
-        toast({ type: 'error', message: t('chatConversation.messageUnsuccessfulReaction') })
+        toast({ type: 'error', message: t('chat.messageUnsuccessfulReaction') })
       }
     },
     [agent, connectionId],
@@ -379,7 +379,7 @@ export const useChatActions = () => {
       }
       toast({
         type: 'success',
-        message: t('chatConversation.messageForwarded', { count: selectedMessages.length }),
+        message: t('chat.messageForwarded', { count: selectedMessages.length }),
       })
     },
     [agent, realm, selectedMessages],
@@ -554,20 +554,20 @@ const getSharedMessagesToastOptions = (
   if (excludedLongVideosCount === messagesSharedCount) {
     return {
       type: 'error',
-      message: t('chatConversation.messagesNotShared', { count: messagesSharedCount }),
+      message: t('chat.messagesNotShared', { count: messagesSharedCount }),
       duration: 5000,
     }
   }
   if (excludedLongVideosCount) {
     return {
       type: 'warning',
-      message: t('chatConversation.messagesSharedExcept'),
+      message: t('chat.messagesSharedExcept'),
       duration: 5000,
     }
   }
   return {
     type: 'success',
-    message: t('chatConversation.messageShared', { count: messagesSharedCount }),
+    message: t('chat.messageShared', { count: messagesSharedCount }),
   }
 }
 

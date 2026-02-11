@@ -1,0 +1,276 @@
+import React, { memo, useCallback, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
+import { View, TouchableOpacity, ViewStyle } from 'react-native'
+
+import CallOfferChatView from '../CallOfferChatView'
+import DeletedMessageView from '../DeletedMessageView'
+import EMrtdReadRequestChatView from '../EMrtdReadRequestChatView'
+import HtmlChatView from '../HtmlChatView'
+import ImageChatView from '../ImageChatView'
+import InvitationChatView from '../InvitationChatView'
+import MessageTextView from '../MessageTextView'
+import MrzRequestChatView from '../MrzRequestChatView'
+import QuestionChatView from '../QuestionChatView'
+import RepliedMessageView from '../RepliedMessageView'
+import TicksView from '../TicksView'
+import UserActionChatView from '../UserActionChatView'
+import VCOfferChatView from '../VCOfferChatView'
+import VPChatView from '../VPChatView'
+import VPRequestChatView from '../VPRequestChatView'
+import VideoChatView from '../VideoChatView'
+import VoiceNoteChatView from '../VoiceNoteChatView'
+
+import getStyles from './styles'
+import { mustDisplayAckAndTime } from './utils'
+
+import { Text } from '@2060/components/common'
+import { useChat } from '@2060/hooks/agent'
+import { useTheme } from '@2060/hooks/providers/ThemeProvider'
+import {
+  CallOfferMetadata,
+  ChatEntryState,
+  ChatEntryType,
+  EMrtdReadRequestMetadata,
+  InvitationMetadata,
+  LinkMetadata,
+  MrzRequestMetadata,
+  QuestionMetadata,
+  TextMessageMetadata,
+  VCOfferMetadata,
+  VoiceNoteMetadata,
+  VPRequestMetadata,
+  VPResponseMetadata,
+} from '@2060/model'
+import { BaseCustomMessageViewProps } from '@2060/pages/Chat/ChatMessage/Props'
+import { dateToString } from '@2060/utils/dateUtils'
+
+const BaseCustomView: React.FC<BaseCustomMessageViewProps> = memo(props => {
+  const {
+    onTouchRepliedMessage,
+    supportsMessageReceipts,
+    currentMessage,
+    agent,
+    renderCustomHeader,
+    using24HourFormat,
+    nextMessage,
+    previousMessage,
+    borders,
+  } = props
+  const { t } = useTranslation()
+  const theme = useTheme()
+  const styles = getStyles(theme)
+  const chatEntry = currentMessage
+  const timeFormat = using24HourFormat ? 'HH:mm' : 'h:mm a'
+  const nextMessageChatEntry = nextMessage
+  const relatedEntryProps = chatEntry.relatedEntryProps
+  const { chatThread } = useChat()
+  const sender = chatThread?.participants.find(p => p.id === chatEntry.role)
+  const messageTime = dateToString(new Date(currentMessage?.createdAt), timeFormat)
+  const displayTimeAndTicks = mustDisplayAckAndTime({
+    messageTime,
+    chatEntry,
+    nextMessageChatEntry,
+    timeFormat,
+  })
+  const hasRelatedMessage = relatedEntryProps ? Boolean(Object.keys(relatedEntryProps).length) : false
+  const repliedMessage = relatedEntryProps
+
+  const renderMessageByType = useMemo(() => {
+    const renderComponentByType = (messageType: ChatEntryType): React.JSX.Element => {
+      switch (messageType) {
+        case ChatEntryType.Question:
+          return (
+            <QuestionChatView
+              question={chatEntry.metadata as QuestionMetadata}
+              associatedRecordId={chatEntry.associatedRecordId}
+            />
+          )
+        case ChatEntryType.Answer:
+          return (
+            <UserActionChatView
+              message={chatEntry.metadata?.response as string}
+              title={t('chat.response')}
+              iconName="question"
+            />
+          )
+        case ChatEntryType.ActionMenuSelection:
+          return (
+            <UserActionChatView
+              message={(chatEntry.metadata?.selectedItemName as string) ?? ''}
+              title={t('chat.menuActionSelected')}
+              iconName="menuOutline"
+            />
+          )
+        case ChatEntryType.Image:
+          return (
+            <ImageChatView
+              {...{
+                mediaRecordId: chatEntry.associatedRecordId,
+                fileMediaInfo: { sender, createdAt: new Date(chatEntry.createdAt) },
+                chatEntry,
+                displayTimeAndTicks,
+              }}
+            />
+          )
+        case ChatEntryType.Video:
+          return (
+            <VideoChatView
+              {...{
+                mediaRecordId: chatEntry.associatedRecordId,
+                fileMediaInfo: { sender, createdAt: new Date(chatEntry.createdAt) },
+                chatEntry,
+                displayTimeAndTicks,
+              }}
+            />
+          )
+        case ChatEntryType.Link:
+          return (
+            <HtmlChatView
+              {...{
+                ...chatEntry,
+                metadata: chatEntry.metadata as LinkMetadata,
+                renderCustomHeader,
+              }}
+            />
+          )
+        case ChatEntryType.VPRequest:
+          return (
+            <VPRequestChatView
+              proofRecordId={chatEntry.associatedRecordId}
+              metadata={chatEntry.metadata as VPRequestMetadata}
+              agent={agent}
+              sender={sender}
+              chatEntryId={chatEntry.id}
+            />
+          )
+        case ChatEntryType.VPResponse:
+          return (
+            <VPChatView
+              metadata={chatEntry.metadata as VPResponseMetadata}
+              role={chatEntry.role}
+              agent={agent}
+              proofRecordId={chatEntry.associatedRecordId}
+              chatEntryId={chatEntry.id}
+            />
+          )
+        case ChatEntryType.VCOffer:
+          return (
+            <VCOfferChatView
+              associatedRecordId={chatEntry.associatedRecordId}
+              metadata={chatEntry.metadata as VCOfferMetadata}
+              agent={agent}
+              sender={sender}
+              chatEntryId={chatEntry.id}
+            />
+          )
+        case ChatEntryType.Invitation:
+          return (
+            <InvitationChatView
+              associatedRecordId={chatEntry.associatedRecordId}
+              metadata={chatEntry.metadata as InvitationMetadata}
+              agent={agent}
+              role={currentMessage.role}
+            />
+          )
+        case ChatEntryType.CallOffer:
+          return (
+            <CallOfferChatView
+              metadata={chatEntry.metadata as CallOfferMetadata}
+              didcommThreadId={chatEntry.didcommThreadId as string}
+              role={currentMessage.role}
+            />
+          )
+        case ChatEntryType.MrzRequest:
+          return (
+            <MrzRequestChatView
+              didcommThreadId={chatEntry.didcommThreadId as string}
+              metadata={chatEntry.metadata as MrzRequestMetadata}
+            />
+          )
+        case ChatEntryType.EMrtdReadRequest:
+          return (
+            <EMrtdReadRequestChatView
+              didcommThreadId={chatEntry.didcommThreadId as string}
+              metadata={chatEntry.metadata as EMrtdReadRequestMetadata}
+            />
+          )
+        default:
+          return <></>
+      }
+    }
+    const Component = renderComponentByType(chatEntry.type)
+    return Component
+  }, [chatEntry, chatThread?.participants])
+
+  const renderTimeAndTicks = useCallback(
+    (containerStyle: ViewStyle) => {
+      return (
+        displayTimeAndTicks && (
+          <View style={containerStyle}>
+            <Text style={styles.timeText}>{messageTime}</Text>
+            {supportsMessageReceipts ? (
+              <TicksView role={currentMessage.role} state={currentMessage.state} />
+            ) : null}
+          </View>
+        )
+      )
+    },
+    [displayTimeAndTicks, messageTime, currentMessage, theme],
+  )
+
+  const renderMessage = useMemo(() => {
+    if (chatEntry.type === ChatEntryType.TextMessage) {
+      return (
+        <MessageTextView
+          text={(chatEntry.metadata as TextMessageMetadata).content}
+          renderTimeAndTicks={renderTimeAndTicks}
+        />
+      )
+    }
+    if (chatEntry.type === ChatEntryType.VoiceNote) {
+      return (
+        <VoiceNoteChatView
+          mediaRecordId={chatEntry.associatedRecordId}
+          metadata={chatEntry.metadata as VoiceNoteMetadata}
+          renderTimeAndTicks={renderTimeAndTicks}
+          role={currentMessage.role}
+          chatEntryId={chatEntry.id}
+          previousMessageId={previousMessage?.id}
+          isLastMessage={!nextMessage?.id}
+        />
+      )
+    }
+    return (
+      <>
+        {renderMessageByType}
+        {renderTimeAndTicks(styles.containerAckAndTime)}
+      </>
+    )
+  }, [chatEntry, theme])
+
+  return (
+    <View>
+      {chatEntry.state === ChatEntryState.Deleted ? (
+        <DeletedMessageView displayTimeAndTicks={displayTimeAndTicks} messageTime={messageTime} />
+      ) : (
+        <>
+          {hasRelatedMessage && repliedMessage && (
+            <TouchableOpacity onPress={() => onTouchRepliedMessage(relatedEntryProps?.chatEntryId ?? '')}>
+              <RepliedMessageView
+                isInputToolbarView={false}
+                repliedMessage={repliedMessage}
+                style={{
+                  borderTopLeftRadius: borders.borderTopLeftRadius,
+                  borderTopRightRadius: borders.borderTopRightRadius,
+                }}
+              />
+            </TouchableOpacity>
+          )}
+          {renderMessage}
+        </>
+      )}
+    </View>
+  )
+})
+
+export default BaseCustomView

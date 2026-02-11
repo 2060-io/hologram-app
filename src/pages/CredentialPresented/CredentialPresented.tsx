@@ -41,8 +41,8 @@ const CredentialPresentedPage = ({ navigation, route }: Props) => {
       const [connection] = connections
       const chatThreadId = findOrCreateThread({ connection }).id
       navigation.dispatch(
-        StackActions.replace('ChatConversationStack', {
-          screen: 'ChatConversation',
+        StackActions.replace('ChatStack', {
+          screen: 'Chat',
           params: { chatThreadId },
         }),
       )

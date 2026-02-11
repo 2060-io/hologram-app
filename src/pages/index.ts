@@ -1,4 +1,4 @@
-import ChatConversation from './ChatConversation'
+import Chat from './Chat'
 import ConnectionDetails from './ConnectionDetails'
 import { Connections, ConnectionsForNewChat } from './Connections'
 import CredentialDetails from './CredentialDetails'
@@ -34,7 +34,7 @@ export {
   DidcommPresentationRequest,
   HomeMain,
   ConnectionInvitation,
-  ChatConversation,
+  Chat,
   RelatedConnections,
   UserProfile,
   WalletBackup,

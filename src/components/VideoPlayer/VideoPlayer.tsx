@@ -103,7 +103,7 @@ const VideoPlayer = ({
         </View>
         {errorLoadingVideo && (
           <View style={styles.contentCenter}>
-            <Text style={styles.errorLoadingVideoText}>{t('chatConversation.errorLoadingVideo')}</Text>
+            <Text style={styles.errorLoadingVideoText}>{t('chat.errorLoadingVideo')}</Text>
           </View>
         )}
         {showControl && isReadyVideo && (
