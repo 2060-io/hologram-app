@@ -1,5 +1,6 @@
 /* eslint-disable import/no-named-as-default-member */
 import { SharedMediaItem } from '@2060.io/credo-ts-didcomm-media-sharing'
+import { UploadPartCommandOutput } from '@aws-sdk/client-s3'
 import { utils } from '@credo-ts/core'
 import { useAudioPlayer } from '@simform_solutions/react-native-audio-waveform'
 import axios from 'axios'
@@ -25,6 +26,11 @@ import {
   FileUploadDownloadContext,
 } from './useFileUploadDownload'
 
+import {
+  s3CompleteMultipartUploadCommand,
+  s3createMultipartUploadCommand,
+  s3UploadPartCommand,
+} from '@src/components/Navigation/fileService'
 import { IS_IOS } from '@src/constants'
 import { MediaDownloadState, MediaUploadState, UploadChunkTask, UploadTask } from '@src/model'
 import {
@@ -360,17 +366,79 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
       })
 
       try {
-        await createDataStoreResourceForTask(newTask)
+        // Uncomment this to use s3 multipart upload instead of Multipart
+        // await s3Upload({ Key: fileId, filePath: uploadFilePath })
+        const multipart = await s3createMultipartUploadCommand({ Key: fileId })
+        log(`Multipart upload created: ${JSON.stringify(multipart)}`)
+        await setMediaUploadState(newTask, Uploading)
+        const uploadResults: UploadPartCommandOutput[] = []
+        for (let index = 0; index < chunks.length; index++) {
+          const chunk = chunks[index]
+          const chunkUploadResult = await s3UploadPartCommand({
+            Key: fileId,
+            uploadId: multipart.UploadId!,
+            partNumber: index + 1,
+            chunkFilePath: chunk.filePath,
+          })
+          log(`Chunk upload done: ${JSON.stringify(chunkUploadResult)}`)
+          uploadResults.push(chunkUploadResult)
+          // upload chunk complete
+          const task = uploadTasks.current.find(item => item.fileId === fileId)
+          if (!task) {
+            logWarn(`Task not found with fileId ${fileId}`)
+            return
+          }
+          // Mark this chunk as finished
+          realm?.write(() => {
+            const newChunksState = [...task.chunks]
+            newChunksState[index].state = 'finished'
+            task.chunks = newChunksState
+          })
+          for (const mediaRecordId of task.mediaRecordIds) {
+            const relatedRecord = await agent.modules.media.findById(mediaRecordId)
+
+            // FIXME: Should we throw an error when no record is found?
+            if (!relatedRecord) continue
+
+            log(`Upload finished. Adding agent action to queue for record id: ${relatedRecord.id}`)
+            await agent.modules.media.setMetadata(
+              mediaRecordId,
+              'mediaUploadProgress',
+              (100 * (index + 1)) / task.chunks.length,
+            )
+          }
+        }
+        const completeMultipart = await s3CompleteMultipartUploadCommand({
+          Key: fileId,
+          UploadId: multipart.UploadId!,
+          uploadResults,
+        })
+        log(`Multipart upload completed: ${JSON.stringify(completeMultipart)}`)
+        const task = uploadTasks.current.find(item => item.fileId === fileId)
+        if (!task) {
+          logWarn(`Task not found with fileId ${fileId}`)
+          return
+        }
+        for (const mediaRecordId of task.mediaRecordIds) {
+          const relatedRecord = await agent.modules.media.findById(mediaRecordId)
+          if (!relatedRecord) continue
+          await agent.modules.media.setMetadata(mediaRecordId, 'mediaUploadState', Done)
+          const parameters: ShareMediaParameters = { recordId: relatedRecord.id }
+          addAgentActionToQueue({
+            type: AgentActionType.ShareMedia,
+            parameters,
+          })
+        }
       } catch (error) {
         await setMediaUploadState(newTask, ErrorCreating)
         throw error
       }
-
-      // File creation OK. Now start uploading chunks
-      await setMediaUploadState(newTask, Uploading)
+      /*
       const uploadId = await uploadChunk(dataStoreUrl, chunks[0].filePath, fileId, 0)
       log(`Upload started: uploadId: ${uploadId} mediaRecordIds: ${JSON.stringify(mediaRecordIds)}`)
       return uploadId
+      */
+      return fileId
     },
     [agent, dataStoreUrl, realm],
   )
