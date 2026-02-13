@@ -7,8 +7,7 @@ import com.facebook.react.uimanager.ViewManager
 
 class LocalNativeModulesPackage : ReactPackage {
    override fun createNativeModules(reactContext: ReactApplicationContext): List<NativeModule> {
-    return listOf(VideoProperties(reactContext), FileChunkGenerator(reactContext),
-        FileCiphering(reactContext), GoogleDrive(reactContext))
+    return listOf(VideoProperties(reactContext), FileCiphering(reactContext), GoogleDrive(reactContext))
   }
 
   override fun createViewManagers(reactContext: ReactApplicationContext): List<ViewManager<*, *>> {
