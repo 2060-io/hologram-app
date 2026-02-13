@@ -13,6 +13,7 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import { log } from '@src/utils/log'
 
 const BUCKET_NAME = 'public'
+const PART_SIZE = 5 * 1024 * 1024 // 5MB minimum required by S3
 
 // Set the credential of aws
 const s3Client = new S3Client({
@@ -54,7 +55,6 @@ export async function s3UploadFile({
   onError: (error: unknown) => void
   onUploadComplete: (result: { key: string }) => void
 }) {
-  const PART_SIZE = 5 * 1024 * 1024 // 5MB minimum required by S3
   let uploadId: string | null = null
   try {
     // Create multipart upload
@@ -70,7 +70,7 @@ export async function s3UploadFile({
     uploadId = createRes.UploadId!
 
     // Get file blob using fetch
-    const fileBlob = await fetch('file://' + filePath).then(r => r.blob())
+    const fileBlob = await fetch(`file://${filePath}`).then(r => r.blob())
 
     const fileSize = fileBlob.size
     const totalParts = Math.ceil(fileSize / PART_SIZE)
@@ -135,7 +135,7 @@ export async function s3UploadFile({
   }
 }
 
-export const s3AbortMultipartUploadCommand = async (params: { key: string; uploadId: string }) => {
+const s3AbortMultipartUploadCommand = async (params: { key: string; uploadId: string }) => {
   const result = await s3Client.send(
     new AbortMultipartUploadCommand({
       Bucket: BUCKET_NAME,
