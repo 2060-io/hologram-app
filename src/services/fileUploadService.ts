@@ -1,6 +1,5 @@
 import 'react-native-get-random-values'
 import 'react-native-url-polyfill/auto'
-import 'web-streams-polyfill/dist/polyfill'
 
 import {
   S3Client,
@@ -12,6 +11,8 @@ import {
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 
 import { log } from '@src/utils/log'
+
+const BUCKET_NAME = 'public'
 
 // Set the credential of aws
 const s3Client = new S3Client({
@@ -56,10 +57,10 @@ export async function s3UploadFile({
   const PART_SIZE = 5 * 1024 * 1024 // 5MB minimum required by S3
   let uploadId: string | null = null
   try {
-    // 1️⃣ Create multipart upload
+    // Create multipart upload
     const createRes = await s3Client.send(
       new CreateMultipartUploadCommand({
-        Bucket: 'public',
+        Bucket: BUCKET_NAME,
         Key: key,
         ContentType: 'application/octet-stream',
       }),
@@ -68,7 +69,7 @@ export async function s3UploadFile({
     onMultipartCreated()
     uploadId = createRes.UploadId!
 
-    // 2️⃣ Get file blob using fetch (RN-safe)
+    // Get file blob using fetch
     const fileBlob = await fetch('file://' + filePath).then(r => r.blob())
 
     const fileSize = fileBlob.size
@@ -76,19 +77,19 @@ export async function s3UploadFile({
 
     const parts: { ETag: string; PartNumber: number }[] = []
     for (let partNumber = 1; partNumber <= totalParts; partNumber++) {
-      // 3️⃣ Generate presigned URL for this part
+      // Generate presigned URL for this part
       const presignedUrl = await getSignedUrl(
         s3Client,
         new UploadPartCommand({
-          Bucket: 'public',
+          Bucket: BUCKET_NAME,
           Key: key,
           UploadId: uploadId,
           PartNumber: partNumber,
         }),
-        { expiresIn: 3600 },
+        { expiresIn: 3_600 },
       )
 
-      // 4️⃣ Upload using fetch (fully controlled HTTP layer)
+      // Upload using fetch (fully controlled HTTP layer)
       const start = (partNumber - 1) * PART_SIZE
       const end = Math.min(start + PART_SIZE, fileSize)
       const chunkBlob = fileBlob.slice(start, end)
@@ -111,10 +112,10 @@ export async function s3UploadFile({
       onProgress((partNumber / totalParts) * 100)
     }
 
-    // 5️⃣ Complete multipart upload
+    // Complete multipart upload
     const completeMultipartUploadResult = await s3Client.send(
       new CompleteMultipartUploadCommand({
-        Bucket: 'public',
+        Bucket: BUCKET_NAME,
         Key: key,
         UploadId: uploadId,
         MultipartUpload: {
@@ -127,19 +128,19 @@ export async function s3UploadFile({
   } catch (err) {
     onError(err)
     if (uploadId) {
-      const abortResult = await s3AbortMultipartUploadCommand({ Key: key, UploadId: uploadId })
+      const abortResult = await s3AbortMultipartUploadCommand({ key, uploadId: uploadId })
       log('Abort multipart upload result', abortResult)
     }
     throw err
   }
 }
 
-export const s3AbortMultipartUploadCommand = async (params: { Key: string; UploadId: string }) => {
+export const s3AbortMultipartUploadCommand = async (params: { key: string; uploadId: string }) => {
   const result = await s3Client.send(
     new AbortMultipartUploadCommand({
-      Bucket: 'public',
-      Key: params.Key, // Path where you want to abort the file
-      UploadId: params.UploadId,
+      Bucket: BUCKET_NAME,
+      Key: params.key,
+      UploadId: params.uploadId,
     }),
   )
   return result
