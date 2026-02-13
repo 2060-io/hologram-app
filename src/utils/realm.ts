@@ -20,7 +20,7 @@ import {
 import { InvitationState } from '@src/model/InvitationState'
 import { CredentialMainInfo } from '@src/services/agent/display'
 
-const CURRENT_REALM_SCHEMA_VERSION = 18
+const CURRENT_REALM_SCHEMA_VERSION = 19
 
 export const getRealmConfig = (encryptionKey: string): Realm.Configuration => {
   const realmConfig: Realm.Configuration = {
@@ -211,6 +211,16 @@ const onMigration = (oldRealm: Realm, newRealm: Realm) => {
           newChatEntries[i].metadata!.presentedCredentials = JSON.stringify(newPresentedCredentialsStruct)
         }
       }
+    }
+  }
+  if (oldRealm.schemaVersion < 18) {
+    const oldUploadTask = oldRealm.objects<UploadTask>('UploadTask')
+    const newUploadTasks = newRealm.objects<UploadTask>('UploadTask')
+    for (let i = 0; i < oldUploadTask.length; i++) {
+      newUploadTasks[i].fileId = oldUploadTask[i].fileId
+      newUploadTasks[i].mediaRecordIds = oldUploadTask[i].mediaRecordIds
+      newUploadTasks[i].state = oldUploadTask[i].state
+      newUploadTasks[i].uploadFilePath = ''
     }
   }
 }

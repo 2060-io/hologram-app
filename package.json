@@ -44,7 +44,7 @@
     "@2060.io/credo-ts-didcomm-shorten-url": "^0.0.12",
     "@2060.io/credo-ts-didcomm-user-profile": "^0.0.8",
     "@aws-sdk/client-s3": "3.986.0",
-    "@aws-sdk/lib-storage": "^3.988.0",
+    "@aws-sdk/s3-request-presigner": "3.989.0",
     "@bam.tech/react-native-image-resizer": "3.0.11",
     "@credo-ts/action-menu": "^0.6.1",
     "@credo-ts/anoncreds": "^0.6.1",

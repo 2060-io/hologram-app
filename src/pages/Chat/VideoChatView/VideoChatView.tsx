@@ -46,9 +46,7 @@ const VideoChatView = memo((props: MediaProps) => {
   })
 
   const textDuration = getMinutesAndSeconds(duration as number)
-  const isMediaUploadError =
-    mediaUploadState === MediaUploadState.ErrorCreating ||
-    mediaUploadState === MediaUploadState.ErrorUploading
+  const isMediaUploadError = mediaUploadState === MediaUploadState.ErrorUploading
 
   const videoFileUri = localFilePath ? getLocalFileUri(localFilePath) : undefined
   const localPreviewSource = localPreviewFilePath
