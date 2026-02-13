@@ -131,7 +131,6 @@ export async function s3UploadFile({
       const abortResult = await s3AbortMultipartUploadCommand({ key, uploadId: uploadId })
       log('Abort multipart upload result', abortResult)
     }
-    throw err
   }
 }
 

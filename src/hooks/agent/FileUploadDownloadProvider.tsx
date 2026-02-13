@@ -292,46 +292,42 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
         return createdTask
       })
 
-      try {
-        s3UploadFile({
-          key: fileId,
-          filePath: uploadFilePath,
-          onMultipartCreated: async () => {
-            await setMediaUploadState(newTask, Uploading)
-          },
-          onProgress: async progress => {
-            log(`Uploading file with key ${fileId} progress: ${progress}%`)
-            for (const mediaRecordId of newTask.mediaRecordIds) {
-              const relatedRecord = await agent.modules.media.findById(mediaRecordId)
-              if (!relatedRecord) continue
-              await agent.modules.media.setMetadata(mediaRecordId, 'mediaUploadProgress', progress)
-            }
-          },
-          onError: async error => {
-            log(`Error uploading file with key ${fileId}: ${error}`)
-            await setMediaUploadState(newTask, ErrorUploading)
-          },
-          onUploadComplete: async result => {
-            log(`Upload complete for file with key ${fileId}`, result)
-            deleteFile(uploadFilePath)
-            for (const mediaRecordId of newTask.mediaRecordIds) {
-              const relatedRecord = await agent.modules.media.findById(mediaRecordId)
-              if (!relatedRecord) continue
-              await agent.modules.media.setMetadata(mediaRecordId, 'mediaUploadState', Done)
-              const parameters: ShareMediaParameters = { recordId: relatedRecord.id }
-              addAgentActionToQueue({
-                type: AgentActionType.ShareMedia,
-                parameters,
-              })
-            }
-            realm?.write(() => {
-              realm.delete(newTask)
+      s3UploadFile({
+        key: fileId,
+        filePath: uploadFilePath,
+        onMultipartCreated: async () => {
+          await setMediaUploadState(newTask, Uploading)
+        },
+        onProgress: async progress => {
+          log(`Uploading file with key ${fileId} progress: ${progress}%`)
+          for (const mediaRecordId of newTask.mediaRecordIds) {
+            const relatedRecord = await agent.modules.media.findById(mediaRecordId)
+            if (!relatedRecord) continue
+            await agent.modules.media.setMetadata(mediaRecordId, 'mediaUploadProgress', progress)
+          }
+        },
+        onError: async error => {
+          logError(`Error uploading file with key ${fileId}: ${error}`)
+          await setMediaUploadState(newTask, ErrorUploading)
+        },
+        onUploadComplete: async result => {
+          log(`Upload complete for file with key ${fileId}`, result)
+          deleteFile(uploadFilePath)
+          for (const mediaRecordId of newTask.mediaRecordIds) {
+            const relatedRecord = await agent.modules.media.findById(mediaRecordId)
+            if (!relatedRecord) continue
+            await agent.modules.media.setMetadata(mediaRecordId, 'mediaUploadState', Done)
+            const parameters: ShareMediaParameters = { recordId: relatedRecord.id }
+            addAgentActionToQueue({
+              type: AgentActionType.ShareMedia,
+              parameters,
             })
-          },
-        })
-      } catch (error) {
-        throw error
-      }
+          }
+          realm?.write(() => {
+            realm.delete(newTask)
+          })
+        },
+      })
     },
     [agent, realm],
   )
@@ -345,46 +341,42 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
         // Find the corresponding task
         const task = uploadTasks.current.find(item => item.fileId === fileId)
         if (!task) throw new Error(`Cannot find ongoing upload with id ${fileId}`)
-        try {
-          s3UploadFile({
-            key: task.fileId,
-            filePath: task.uploadFilePath,
-            onMultipartCreated: async () => {
-              await setMediaUploadState(task, Uploading)
-            },
-            onProgress: async progress => {
-              log(`Retrying upload file with key ${task.fileId} progress: ${progress}%`)
-              for (const taskMediaRecordId of task.mediaRecordIds) {
-                const relatedRecord = await agent.modules.media.findById(taskMediaRecordId)
-                if (!relatedRecord) continue
-                await agent.modules.media.setMetadata(taskMediaRecordId, 'mediaUploadProgress', progress)
-              }
-            },
-            onError: async error => {
-              log(`Error retrying upload file with key ${task.fileId}: ${error}`)
-              await setMediaUploadState(task, ErrorUploading)
-            },
-            onUploadComplete: async result => {
-              log(`Retry upload file with key ${task.fileId} complete`, result)
-              deleteFile(task.uploadFilePath)
-              for (const taskMediaRecordId of task.mediaRecordIds) {
-                const relatedRecord = await agent.modules.media.findById(taskMediaRecordId)
-                if (!relatedRecord) continue
-                await agent.modules.media.setMetadata(taskMediaRecordId, 'mediaUploadState', Done)
-                const parameters: ShareMediaParameters = { recordId: relatedRecord.id }
-                addAgentActionToQueue({
-                  type: AgentActionType.ShareMedia,
-                  parameters,
-                })
-              }
-              realm?.write(() => {
-                realm.delete(task)
+        s3UploadFile({
+          key: task.fileId,
+          filePath: task.uploadFilePath,
+          onMultipartCreated: async () => {
+            await setMediaUploadState(task, Uploading)
+          },
+          onProgress: async progress => {
+            log(`Retrying upload file with key ${task.fileId} progress: ${progress}%`)
+            for (const taskMediaRecordId of task.mediaRecordIds) {
+              const relatedRecord = await agent.modules.media.findById(taskMediaRecordId)
+              if (!relatedRecord) continue
+              await agent.modules.media.setMetadata(taskMediaRecordId, 'mediaUploadProgress', progress)
+            }
+          },
+          onError: async error => {
+            logError(`Error retrying upload file with key ${task.fileId}: ${error}`)
+            await setMediaUploadState(task, ErrorUploading)
+          },
+          onUploadComplete: async result => {
+            log(`Retry upload file with key ${task.fileId} complete`, result)
+            deleteFile(task.uploadFilePath)
+            for (const taskMediaRecordId of task.mediaRecordIds) {
+              const relatedRecord = await agent.modules.media.findById(taskMediaRecordId)
+              if (!relatedRecord) continue
+              await agent.modules.media.setMetadata(taskMediaRecordId, 'mediaUploadState', Done)
+              const parameters: ShareMediaParameters = { recordId: relatedRecord.id }
+              addAgentActionToQueue({
+                type: AgentActionType.ShareMedia,
+                parameters,
               })
-            },
-          })
-        } catch (error) {
-          throw error
-        }
+            }
+            realm?.write(() => {
+              realm.delete(task)
+            })
+          },
+        })
       } else throw new Error(`media record not found with id: ${mediaRecordId}`)
     },
     [agent, realm],
