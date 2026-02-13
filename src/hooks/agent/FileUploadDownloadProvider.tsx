@@ -262,7 +262,7 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
           items: [
             new SharedMediaItem({
               id: fileId,
-              uri: `${dataStoreUrl}/r/${fileId}`,
+              uri: `https://s3.minio.dev.2060.io/public/${fileId}`,
               mimeType,
               fileName,
               byteCount: size,
