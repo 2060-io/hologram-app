@@ -6,7 +6,6 @@ import { copyFile, downloadFile } from 'react-native-fs'
 
 import { generateFileName } from '../media/files'
 import { createLocalPreview } from '../media/preview'
-import { useConfig } from '../providers/ConfigProvider'
 import { useLocalRealm } from '../providers/RealmProvider'
 
 import { useAgentActionQueue } from './AgentActionQueueProvider'
@@ -51,12 +50,10 @@ interface Props {
 
 export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
   const { agent } = useMobileAgent()
-  const { devEnvs } = useConfig()
   const { extractWaveformData } = useAudioPlayer()
   const [automaticDownloadValues, setAutomaticDownloadValues] = useState<AutomaticDownloadTypes>(
     defaultAutomaticDownloadValues,
   )
-  const dataStoreUrl = devEnvs.DATA_STORE_URL
 
   const { realm } = useLocalRealm()
 
@@ -336,7 +333,7 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
         throw error
       }
     },
-    [agent, dataStoreUrl, realm],
+    [agent, realm],
   )
 
   const retryMediaUpload = useCallback(
@@ -390,7 +387,7 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
         }
       } else throw new Error(`media record not found with id: ${mediaRecordId}`)
     },
-    [agent, dataStoreUrl, realm],
+    [agent, realm],
   )
 
   const setMediaUploadState = useCallback(

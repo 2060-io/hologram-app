@@ -1,7 +1,6 @@
 declare module 'react-native-config' {
   export interface NativeConfig {
     BASE_INVITATION_URL: string
-    DATA_STORE_URL: string
     CLOUD_AGENT_PUBLIC_DID: string
     DEFAULT_SERVICE_PUBLIC_DID: string
     DEFAULT_SERVICE_ALIAS: string
