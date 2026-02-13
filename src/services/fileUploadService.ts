@@ -9,25 +9,43 @@ import {
   UploadPartCommand,
 } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
+import { getApp } from '@react-native-firebase/app'
+import { getToken } from '@react-native-firebase/app-check'
+import { XMLParser } from 'fast-xml-parser'
 
 import { log } from '@src/utils/log'
 
-const BUCKET_NAME = 'public'
+export const BUCKET_NAME = 'public'
+export const HOST = 'https://p2800.ovpndev.mobiera.io'
 const PART_SIZE = 5 * 1024 * 1024 // 5MB minimum required by S3
 
-// Set the credential of aws
-const s3Client = new S3Client({
-  endpoint: 'https://s3.minio.dev.2060.io',
-  forcePathStyle: true,
-  region: 'us-east-1',
-  logger: console,
-  credentials: {
-    accessKeyId: 'G45LQG5QLMK3BT6EPAJM',
-    secretAccessKey: 'X47WujS61PDMkSPzS+VDvRmZMYrTf4W1fc7Wi2Dt',
-    sessionToken:
-      'eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NLZXkiOiJHNDVMUUc1UUxNSzNCVDZFUEFKTSIsImV4cCI6MTc3MTAzNTQ4NiwicGFyZW50IjoiYWRtaW4ifQ.yPsnFgNWKGOoUQDu76Wjq1lOVa-lrcOlHTiaWwWUWLpQhVoLM7kRPEHTOd79IlljxTfJWTbl3qer6WRTsjDXmQ',
-  },
-})
+type ServerCredentials = {
+  AccessKeyId: string
+  Expiration: string
+  SecretAccessKey: string
+  SessionToken: string
+}
+
+export const getServerCredentials = async (): Promise<ServerCredentials> => {
+  const token = (await getToken(getApp().appCheck())).token
+  const params = new URLSearchParams({
+    Action: 'AssumeRoleWithCustomToken',
+    Version: '2011-06-15',
+    Token: token,
+    DurationSeconds: '900',
+    RoleArn: 'arn:minio:iam:::role/idmp-mobile-app',
+  })
+  const url = `${HOST}?${params.toString()}`
+  const response = await fetch(url, { method: 'POST' })
+  const xml = await response.text()
+  if (!response.ok) {
+    throw new Error(`Error getting STS: ${JSON.stringify(response)}`)
+  }
+  const parser = new XMLParser()
+  const jsonObj = parser.parse(xml) //
+  return jsonObj.AssumeRoleWithCustomTokenResponse.AssumeRoleWithCustomTokenResult
+    .Credentials as ServerCredentials
+}
 
 /**
  * Uploads a file to S3 using multipart upload with progress tracking.
@@ -56,7 +74,22 @@ export async function s3UploadFile({
   onUploadComplete: (result: { key: string }) => void
 }) {
   let uploadId: string | null = null
+  let s3Client: S3Client | null = null
   try {
+    // create S3 client with temporary credentials from server
+    const credentials = await getServerCredentials()
+    s3Client = new S3Client({
+      endpoint: HOST,
+      forcePathStyle: true,
+      region: 'us-east-1',
+      logger: console,
+      credentials: {
+        accessKeyId: credentials.AccessKeyId,
+        secretAccessKey: credentials.SecretAccessKey,
+        sessionToken: credentials.SessionToken,
+      },
+    })
+
     // Create multipart upload
     const createRes = await s3Client.send(
       new CreateMultipartUploadCommand({
@@ -127,15 +160,19 @@ export async function s3UploadFile({
     onUploadComplete({ key })
   } catch (err) {
     onError(err)
-    if (uploadId) {
-      const abortResult = await s3AbortMultipartUploadCommand({ key, uploadId: uploadId })
+    if (uploadId && s3Client) {
+      const abortResult = await s3AbortMultipartUploadCommand({ s3Client, key, uploadId: uploadId })
       log('Abort multipart upload result', abortResult)
     }
   }
 }
 
-const s3AbortMultipartUploadCommand = async (params: { key: string; uploadId: string }) => {
-  const result = await s3Client.send(
+const s3AbortMultipartUploadCommand = async (params: {
+  s3Client: S3Client
+  key: string
+  uploadId: string
+}) => {
+  const result = await params.s3Client.send(
     new AbortMultipartUploadCommand({
       Bucket: BUCKET_NAME,
       Key: params.key,
