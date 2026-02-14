@@ -20,7 +20,7 @@ import {
 } from './useFileUploadDownload'
 
 import { MediaDownloadState, MediaUploadState, UploadTask } from '@src/model'
-import { s3UploadFile } from '@src/services/fileUploadService'
+import { BUCKET_NAME, HOST, s3UploadFile } from '@src/services/fileUploadService'
 import {
   AUTOMATIC_MEDIA_DOWNLOAD_VALUES_PERSIST_KEY,
   getStorageData,
@@ -259,7 +259,7 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
           items: [
             new SharedMediaItem({
               id: fileId,
-              uri: `https://s3.minio.dev.2060.io/public/${fileId}`,
+              uri: `${HOST}/${BUCKET_NAME}/${fileId}`,
               mimeType,
               fileName,
               byteCount: size,
@@ -300,11 +300,7 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
         },
         onProgress: async progress => {
           log(`Uploading file with key ${fileId} progress: ${progress}%`)
-          for (const mediaRecordId of newTask.mediaRecordIds) {
-            const relatedRecord = await agent.modules.media.findById(mediaRecordId)
-            if (!relatedRecord) continue
-            await agent.modules.media.setMetadata(mediaRecordId, 'mediaUploadProgress', progress)
-          }
+          onUploadProgress(newTask, progress)
         },
         onError: async error => {
           logError(`Error uploading file with key ${fileId}: ${error}`)
@@ -312,20 +308,7 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
         },
         onUploadComplete: async result => {
           log(`Upload complete for file with key ${fileId}`, result)
-          deleteFile(uploadFilePath)
-          for (const mediaRecordId of newTask.mediaRecordIds) {
-            const relatedRecord = await agent.modules.media.findById(mediaRecordId)
-            if (!relatedRecord) continue
-            await agent.modules.media.setMetadata(mediaRecordId, 'mediaUploadState', Done)
-            const parameters: ShareMediaParameters = { recordId: relatedRecord.id }
-            addAgentActionToQueue({
-              type: AgentActionType.ShareMedia,
-              parameters,
-            })
-          }
-          realm?.write(() => {
-            realm.delete(newTask)
-          })
+          onUploadComplete(newTask)
         },
       })
     },
@@ -349,11 +332,7 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
           },
           onProgress: async progress => {
             log(`Retrying upload file with key ${task.fileId} progress: ${progress}%`)
-            for (const taskMediaRecordId of task.mediaRecordIds) {
-              const relatedRecord = await agent.modules.media.findById(taskMediaRecordId)
-              if (!relatedRecord) continue
-              await agent.modules.media.setMetadata(taskMediaRecordId, 'mediaUploadProgress', progress)
-            }
+            onUploadProgress(task, progress)
           },
           onError: async error => {
             logError(`Error retrying upload file with key ${task.fileId}: ${error}`)
@@ -361,20 +340,7 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
           },
           onUploadComplete: async result => {
             log(`Retry upload file with key ${task.fileId} complete`, result)
-            deleteFile(task.uploadFilePath)
-            for (const taskMediaRecordId of task.mediaRecordIds) {
-              const relatedRecord = await agent.modules.media.findById(taskMediaRecordId)
-              if (!relatedRecord) continue
-              await agent.modules.media.setMetadata(taskMediaRecordId, 'mediaUploadState', Done)
-              const parameters: ShareMediaParameters = { recordId: relatedRecord.id }
-              addAgentActionToQueue({
-                type: AgentActionType.ShareMedia,
-                parameters,
-              })
-            }
-            realm?.write(() => {
-              realm.delete(task)
-            })
+            onUploadComplete(task)
           },
         })
       } else throw new Error(`media record not found with id: ${mediaRecordId}`)
@@ -395,6 +361,35 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
     [agent, realm],
   )
 
+  const onUploadProgress = useCallback(
+    async (task: UploadTask, progress: number) => {
+      if (!agent) return
+      for (const taskMediaRecordId of task.mediaRecordIds) {
+        const relatedRecord = await agent.modules.media.findById(taskMediaRecordId)
+        if (!relatedRecord) continue
+        await agent.modules.media.setMetadata(taskMediaRecordId, 'mediaUploadProgress', progress)
+      }
+    },
+    [agent],
+  )
+
+  const onUploadComplete = useCallback(
+    async (task: UploadTask) => {
+      if (!agent) return
+      deleteFile(task.uploadFilePath)
+      for (const mediaRecordId of task.mediaRecordIds) {
+        const relatedRecord = await agent.modules.media.findById(mediaRecordId)
+        if (!relatedRecord) continue
+        await agent.modules.media.setMetadata(mediaRecordId, 'mediaUploadState', Done)
+        const parameters: ShareMediaParameters = { recordId: relatedRecord.id }
+        addAgentActionToQueue({ type: AgentActionType.ShareMedia, parameters })
+      }
+      realm?.write(() => {
+        realm.delete(task)
+      })
+    },
+    [agent],
+  )
   return (
     <FileUploadDownloadContext
       value={{
