@@ -220,7 +220,7 @@ const onMigration = (oldRealm: Realm, newRealm: Realm) => {
       newUploadTasks[i].fileId = oldUploadTask[i].fileId
       newUploadTasks[i].mediaRecordIds = oldUploadTask[i].mediaRecordIds
       newUploadTasks[i].state = oldUploadTask[i].state
-      newUploadTasks[i].uploadFilePath = ''
+      newUploadTasks[i].chunks = []
     }
   }
 }

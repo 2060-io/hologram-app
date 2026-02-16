@@ -17,8 +17,7 @@ import { XMLParser } from 'fast-xml-parser'
 import { log } from '@src/utils/log'
 
 export const BUCKET_NAME = 'public'
-export const HOST = 'https://p2800.ovpndev.mobiera.io'
-const PART_SIZE = 5 * 1024 * 1024 // 5MB minimum required by S3
+export const HOST = 'https://s3.minio.dev.2060.io'
 
 type ServerCredentials = {
   AccessKeyId: string
@@ -60,14 +59,14 @@ export const getServerCredentials = async (): Promise<ServerCredentials> => {
  * @throws {Error} If file upload fails, part upload fails, ETag is missing, or multipart completion fails
  */
 export async function s3UploadFile({
-  filePath,
+  chunks,
   key,
   onMultipartCreated,
   onProgress,
   onError,
   onUploadComplete,
 }: {
-  filePath: string
+  chunks: string[]
   key: string
   onMultipartCreated: () => void
   onProgress: (progress: number) => void
@@ -102,15 +101,10 @@ export async function s3UploadFile({
 
     onMultipartCreated()
     uploadId = createRes.UploadId!
-
-    // Get file blob using fetch
-    const fileBlob = await fetch(`file://${filePath}`).then(r => r.blob())
-
-    const fileSize = fileBlob.size
-    const totalParts = Math.ceil(fileSize / PART_SIZE)
+    log(`Upload file id ${uploadId} start`)
 
     const parts: { ETag: string; PartNumber: number }[] = []
-    for (let partNumber = 1; partNumber <= totalParts; partNumber++) {
+    for (let partNumber = 1; partNumber <= chunks.length; partNumber++) {
       // Generate presigned URL for this part
       const presignedUrl = await getSignedUrl(
         s3Client,
@@ -124,9 +118,8 @@ export async function s3UploadFile({
       )
 
       // Upload using fetch (fully controlled HTTP layer)
-      const start = (partNumber - 1) * PART_SIZE
-      const end = Math.min(start + PART_SIZE, fileSize)
-      const chunkBlob = fileBlob.slice(start, end)
+      const chunkFilePath = chunks[partNumber - 1]
+      const chunkBlob = await fetch(`file://${chunkFilePath}`).then(r => r.blob())
       const uploadResponse = await fetch(presignedUrl, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/octet-stream' },
@@ -143,7 +136,7 @@ export async function s3UploadFile({
       }
 
       parts.push({ ETag: etag.replace(/"/g, ''), PartNumber: partNumber })
-      onProgress((partNumber / totalParts) * 100)
+      onProgress((partNumber / chunks.length) * 100)
     }
 
     // Complete multipart upload

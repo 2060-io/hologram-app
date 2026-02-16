@@ -3,6 +3,7 @@ import { utils } from '@credo-ts/core'
 import { useAudioPlayer } from '@simform_solutions/react-native-audio-waveform'
 import React, { useEffect, useCallback, useRef, useState } from 'react'
 import { copyFile, downloadFile } from 'react-native-fs'
+import { createChunks } from 'react-native-local-native-modules'
 
 import { generateFileName } from '../media/files'
 import { createLocalPreview } from '../media/preview'
@@ -27,7 +28,13 @@ import {
   setStorageData,
 } from '@src/services/localStorage'
 import { log, logError } from '@src/utils'
-import { deleteFile, getFileExtension, getLocalMediaFilePath, moveFile } from '@src/utils/RNFS'
+import {
+  deleteFile,
+  getFileExtension,
+  getLocalMediaFilePath,
+  mediaDirectoryPath,
+  moveFile,
+} from '@src/utils/RNFS'
 import { decryptFile, encryptFile } from '@src/utils/ciphering'
 
 const AUDIO_WAVEFORM_NUMBER_OF_CANDLES = 30
@@ -43,6 +50,8 @@ const defaultAutomaticDownloadValues: AutomaticDownloadTypes = {
   images: DownloadOptions.WifiAndMobileData,
   videos: DownloadOptions.WifiAndMobileData,
 }
+
+const CHUNK_SIZE = 5 * 1024 * 1024 //5MB chunk size
 
 interface Props {
   children?: React.ReactNode
@@ -282,19 +291,22 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
         mediaRecordIds.push(mediaRecord.id)
       }
 
+      const chunkFilePaths = await createChunks(uploadFilePath, `${mediaDirectoryPath}/${fileId}`, CHUNK_SIZE)
+      // Now we are safe to delete encrypted file
+      await deleteFile(uploadFilePath)
       const newTask = realm.write(() => {
         const createdTask = realm!.create(UploadTask, {
           fileId,
           mediaRecordIds,
           state: Pending,
-          uploadFilePath,
+          chunks: chunkFilePaths,
         })
         return createdTask
       })
 
       s3UploadFile({
         key: fileId,
-        filePath: uploadFilePath,
+        chunks: newTask.chunks,
         onMultipartCreated: async () => {
           await setMediaUploadState(newTask, Uploading)
         },
@@ -326,7 +338,7 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
         if (!task) throw new Error(`Cannot find ongoing upload with id ${fileId}`)
         s3UploadFile({
           key: task.fileId,
-          filePath: task.uploadFilePath,
+          chunks: task.chunks,
           onMultipartCreated: async () => {
             await setMediaUploadState(task, Uploading)
           },
@@ -376,7 +388,7 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
   const onUploadComplete = useCallback(
     async (task: UploadTask) => {
       if (!agent) return
-      deleteFile(task.uploadFilePath)
+      task.chunks.forEach(chunk => deleteFile(chunk))
       for (const mediaRecordId of task.mediaRecordIds) {
         const relatedRecord = await agent.modules.media.findById(mediaRecordId)
         if (!relatedRecord) continue
