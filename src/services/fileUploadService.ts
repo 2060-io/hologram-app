@@ -1,5 +1,6 @@
 import 'react-native-get-random-values'
 import 'react-native-url-polyfill/auto'
+import 'web-streams-polyfill/dist/polyfill'
 
 import {
   S3Client,
