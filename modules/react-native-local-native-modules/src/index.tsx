@@ -1,9 +1,18 @@
+import FileChunkGenerator from './NativeFileChunkGenerator'
 import NativeFileCiphering from './NativeFileCiphering'
 import NativeGoogleDrive from './NativeGoogleDrive'
 import VideoProperties, { MediaInfo } from './NativeVideoProperties'
 
 export function getVideoProperties(videoPath: string): Promise<MediaInfo> {
   return VideoProperties.getVideoProperties(videoPath)
+}
+
+export function createChunks(
+  filePath: string,
+  outputFilePathPrefix: string,
+  chunkSize: number,
+): Promise<string[]> {
+  return FileChunkGenerator.createChunks(filePath, outputFilePathPrefix, chunkSize)
 }
 
 export function randomKey(length: number): Promise<string> {
