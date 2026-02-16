@@ -10,28 +10,47 @@ import {
   UploadPartCommand,
 } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
+import { CacheModuleConfig } from '@credo-ts/core'
 import { getApp } from '@react-native-firebase/app'
 import { getToken } from '@react-native-firebase/app-check'
 import { XMLParser } from 'fast-xml-parser'
 
+import AgentSingleton from './AgentSingleton'
+import { MobileAgent } from './agent'
+
 import { log } from '@src/utils/log'
 
-export const BUCKET_NAME = 'public'
+export const BUCKET_NAME = 'hologram-media-sharing'
 export const HOST = 'https://s3.minio.dev.2060.io'
 
-type ServerCredentials = {
+type S3ServerCredentials = {
   AccessKeyId: string
   Expiration: string
   SecretAccessKey: string
   SessionToken: string
 }
 
-export const getServerCredentials = async (): Promise<ServerCredentials> => {
-  const token = (await getToken(getApp().appCheck())).token
+async function storeS3Credentials(agent: MobileAgent, s3ServerCredentials: S3ServerCredentials) {
+  const cache = agent.dependencyManager.resolve(CacheModuleConfig).cache
+  await cache.set<S3ServerCredentials>(agent.context, 'S3ServerCredentials', s3ServerCredentials)
+}
+
+async function getStoredS3Credentials(agent: MobileAgent) {
+  const cache = agent.dependencyManager.resolve(CacheModuleConfig).cache
+  return await cache.get<S3ServerCredentials>(agent.context, 'S3ServerCredentials')
+}
+
+export const getS3ServerCredentials = async (): Promise<S3ServerCredentials> => {
+  const mobileAgent = AgentSingleton.instance.getMobileAgent()!
+  const storedCredentials = await getStoredS3Credentials(mobileAgent)
+  const isTokenValid = storedCredentials && new Date(storedCredentials.Expiration) > new Date(Date.now())
+  if (isTokenValid) return storedCredentials
+
+  const firebaseToken = (await getToken(getApp().appCheck())).token
   const params = new URLSearchParams({
     Action: 'AssumeRoleWithCustomToken',
     Version: '2011-06-15',
-    Token: token,
+    Token: firebaseToken,
     DurationSeconds: '900',
     RoleArn: 'arn:minio:iam:::role/idmp-mobile-app',
   })
@@ -42,9 +61,11 @@ export const getServerCredentials = async (): Promise<ServerCredentials> => {
     throw new Error(`Error getting STS: ${JSON.stringify(response)}`)
   }
   const parser = new XMLParser()
-  const jsonObj = parser.parse(xml) //
-  return jsonObj.AssumeRoleWithCustomTokenResponse.AssumeRoleWithCustomTokenResult
-    .Credentials as ServerCredentials
+  const jsonObj = parser.parse(xml)
+  const newS3Credentials = jsonObj.AssumeRoleWithCustomTokenResponse.AssumeRoleWithCustomTokenResult
+    .Credentials as S3ServerCredentials
+  await storeS3Credentials(mobileAgent, newS3Credentials)
+  return newS3Credentials
 }
 
 /**
@@ -77,19 +98,18 @@ export async function s3UploadFile({
   let s3Client: S3Client | null = null
   try {
     // create S3 client with temporary credentials from server
-    const credentials = await getServerCredentials()
+    const s3Credentials = await getS3ServerCredentials()
     s3Client = new S3Client({
       endpoint: HOST,
       forcePathStyle: true,
       region: 'us-east-1',
       logger: console,
       credentials: {
-        accessKeyId: credentials.AccessKeyId,
-        secretAccessKey: credentials.SecretAccessKey,
-        sessionToken: credentials.SessionToken,
+        accessKeyId: s3Credentials.AccessKeyId,
+        secretAccessKey: s3Credentials.SecretAccessKey,
+        sessionToken: s3Credentials.SessionToken,
       },
     })
-
     // Create multipart upload
     const createRes = await s3Client.send(
       new CreateMultipartUploadCommand({
