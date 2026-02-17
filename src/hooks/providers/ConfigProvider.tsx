@@ -17,6 +17,21 @@ const defaultDevEnvs: DevEnvsObject = {
   INDY_VDR_PROXY_BASE_URL: Config.INDY_VDR_PROXY_BASE_URL as string,
 }
 
+const fillNewDevEnvsIfNecessary = (
+  persistedDevEnvs: DevEnvsObject,
+): { devEnvs: DevEnvsObject; needsToRestore: boolean } => {
+  const areMissingPersistedDevEnvs = Object.keys(defaultDevEnvs).some(key => !(key in persistedDevEnvs))
+  if (!areMissingPersistedDevEnvs) return { devEnvs: persistedDevEnvs, needsToRestore: false }
+  const newPersistedDevEnvs: DevEnvsObject = { ...persistedDevEnvs }
+  Object.keys(defaultDevEnvs).forEach(key => {
+    const thisKeyIsNotInPersistedEnvs = !(key in persistedDevEnvs)
+    if (thisKeyIsNotInPersistedEnvs) {
+      newPersistedDevEnvs[key as keyof DevEnvsObject] = defaultDevEnvs[key as keyof DevEnvsObject]
+    }
+  })
+  return { devEnvs: newPersistedDevEnvs, needsToRestore: true }
+}
+
 type ConfigProps = {
   devEnvs: DevEnvsObject
   updateDevEnvs(newDevEnvs: DevEnvsObject): Promise<void>
@@ -49,9 +64,11 @@ export const ConfigProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
   useEffect(() => {
     const setupDevEnvs = async () => {
-      const persistedDevEnvs = await getStorageData(DEV_ENVS_PERSIST_KEY)
+      const persistedDevEnvs = (await getStorageData(DEV_ENVS_PERSIST_KEY)) as DevEnvsObject
       if (persistedDevEnvs) {
-        setDevEnvs(persistedDevEnvs as DevEnvsObject)
+        const { devEnvs: newDevEnvs, needsToRestore } = fillNewDevEnvsIfNecessary(persistedDevEnvs)
+        setDevEnvs(newDevEnvs)
+        if (needsToRestore) await setStorageData(DEV_ENVS_PERSIST_KEY, newDevEnvs)
       } else {
         await setStorageData(DEV_ENVS_PERSIST_KEY, defaultDevEnvs)
       }
