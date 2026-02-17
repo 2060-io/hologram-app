@@ -21,7 +21,6 @@ import { MobileAgent } from './agent'
 import { log } from '@src/utils/log'
 
 export const BUCKET_NAME = 'hologram-media-sharing'
-export const HOST = 'https://s3.minio.dev.2060.io'
 
 type S3ServerCredentials = {
   AccessKeyId: string
@@ -40,7 +39,7 @@ async function getStoredS3Credentials(agent: MobileAgent) {
   return await cache.get<S3ServerCredentials>(agent.context, 'S3ServerCredentials')
 }
 
-export const getS3ServerCredentials = async (): Promise<S3ServerCredentials> => {
+export const getS3ServerCredentials = async (s3ServerUrl: string): Promise<S3ServerCredentials> => {
   const mobileAgent = AgentSingleton.instance.getMobileAgent()!
   const storedCredentials = await getStoredS3Credentials(mobileAgent)
   const isTokenValid = storedCredentials && new Date(storedCredentials.Expiration) > new Date(Date.now())
@@ -54,7 +53,7 @@ export const getS3ServerCredentials = async (): Promise<S3ServerCredentials> => 
     DurationSeconds: '900',
     RoleArn: 'arn:minio:iam:::role/idmp-mobile-app',
   })
-  const url = `${HOST}?${params.toString()}`
+  const url = `${s3ServerUrl}?${params.toString()}`
   const response = await fetch(url, { method: 'POST' })
   const xml = await response.text()
   if (!response.ok) {
@@ -71,7 +70,8 @@ export const getS3ServerCredentials = async (): Promise<S3ServerCredentials> => 
 /**
  * Uploads a file to S3 using multipart upload with progress tracking.
  * If an error occurs during upload, the multipart session is automatically aborted.
- * @param filePath - The local file path (file:// URI) to upload
+ * @param s3ServerUrl - The S3 server URL to upload to
+ * @param chunks - An array of file paths representing the chunks to upload
  * @param key - The S3 object key (path) where the file will be stored
  * @param onMultipartCreated - Callback invoked when the multipart upload session is created
  * @param onProgress - Callback invoked with upload progress as a percentage (0-100)
@@ -80,6 +80,7 @@ export const getS3ServerCredentials = async (): Promise<S3ServerCredentials> => 
  * @throws {Error} If file upload fails, part upload fails, ETag is missing, or multipart completion fails
  */
 export async function s3UploadFile({
+  s3ServerUrl,
   chunks,
   key,
   onMultipartCreated,
@@ -87,6 +88,7 @@ export async function s3UploadFile({
   onError,
   onUploadComplete,
 }: {
+  s3ServerUrl: string
   chunks: string[]
   key: string
   onMultipartCreated: () => void
@@ -98,9 +100,9 @@ export async function s3UploadFile({
   let s3Client: S3Client | null = null
   try {
     // create S3 client with temporary credentials from server
-    const s3Credentials = await getS3ServerCredentials()
+    const s3Credentials = await getS3ServerCredentials(s3ServerUrl)
     s3Client = new S3Client({
-      endpoint: HOST,
+      endpoint: s3ServerUrl,
       forcePathStyle: true,
       region: 'us-east-1',
       logger: console,

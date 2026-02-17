@@ -7,6 +7,7 @@ import { createChunks } from 'react-native-local-native-modules'
 
 import { generateFileName } from '../media/files'
 import { createLocalPreview } from '../media/preview'
+import { useConfig } from '../providers/ConfigProvider'
 import { useLocalRealm } from '../providers/RealmProvider'
 
 import { useAgentActionQueue } from './AgentActionQueueProvider'
@@ -21,7 +22,7 @@ import {
 } from './useFileUploadDownload'
 
 import { MediaDownloadState, MediaUploadState, UploadTask } from '@src/model'
-import { BUCKET_NAME, HOST, s3UploadFile } from '@src/services/fileUploadService'
+import { BUCKET_NAME, s3UploadFile } from '@src/services/fileUploadService'
 import {
   AUTOMATIC_MEDIA_DOWNLOAD_VALUES_PERSIST_KEY,
   getStorageData,
@@ -59,12 +60,13 @@ interface Props {
 
 export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
   const { agent } = useMobileAgent()
+  const { realm } = useLocalRealm()
+  const { devEnvs } = useConfig()
   const { extractWaveformData } = useAudioPlayer()
   const [automaticDownloadValues, setAutomaticDownloadValues] = useState<AutomaticDownloadTypes>(
     defaultAutomaticDownloadValues,
   )
-
-  const { realm } = useLocalRealm()
+  const s3ServerUrl = devEnvs.S3_SERVER_URL
 
   // TODO: Make persistent using realm
   const uploadTasks = useRef<UploadTask[]>([])
@@ -268,7 +270,7 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
           items: [
             new SharedMediaItem({
               id: fileId,
-              uri: `${HOST}/${BUCKET_NAME}/${fileId}`,
+              uri: `${s3ServerUrl}/${BUCKET_NAME}/${fileId}`,
               mimeType,
               fileName,
               byteCount: size,
@@ -305,6 +307,7 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
       })
 
       s3UploadFile({
+        s3ServerUrl,
         key: fileId,
         chunks: newTask.chunks,
         onMultipartCreated: async () => {
@@ -324,7 +327,7 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
         },
       })
     },
-    [agent, realm],
+    [agent, s3ServerUrl, realm],
   )
 
   const retryMediaUpload = useCallback(
@@ -337,6 +340,7 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
         const task = uploadTasks.current.find(item => item.fileId === fileId)
         if (!task) throw new Error(`Cannot find ongoing upload with id ${fileId}`)
         s3UploadFile({
+          s3ServerUrl,
           key: task.fileId,
           chunks: task.chunks,
           onMultipartCreated: async () => {
@@ -357,7 +361,7 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
         })
       } else throw new Error(`media record not found with id: ${mediaRecordId}`)
     },
-    [agent, realm],
+    [agent, s3ServerUrl, realm],
   )
 
   const setMediaUploadState = useCallback(
