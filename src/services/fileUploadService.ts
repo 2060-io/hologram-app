@@ -14,6 +14,7 @@ import { CacheModuleConfig } from '@credo-ts/core'
 import { getApp } from '@react-native-firebase/app'
 import { getToken } from '@react-native-firebase/app-check'
 import { XMLParser } from 'fast-xml-parser'
+import { uploadFiles } from 'react-native-fs'
 
 import { MobileAgent } from './agent/MobileAgent'
 
@@ -140,20 +141,36 @@ export async function s3UploadFile({
         { expiresIn: 3_600 },
       )
 
-      // Upload using fetch (fully controlled HTTP layer)
+      // Upload using uploadFiles from react-native-fs to stream file directly from disk (no JS buffer)
       const chunkFilePath = chunks[partNumber - 1]
-      const chunkBlob = await fetch(`file://${chunkFilePath}`).then(r => r.blob())
-      const uploadResponse = await fetch(presignedUrl, {
+      const uploadResult = await uploadFiles({
+        toUrl: presignedUrl,
+        files: [
+          {
+            name: 'file',
+            filename: `part-${partNumber}`,
+            filepath: chunkFilePath.slice(1), // removes '/' from path, which is required by react-native-fs,
+            filetype: 'application/octet-stream',
+          },
+        ],
         method: 'PUT',
         headers: { 'Content-Type': 'application/octet-stream' },
-        body: chunkBlob,
-      })
+        binaryStreamOnly: true,
+      }).promise
 
-      if (!uploadResponse.ok) {
-        throw new Error(`Upload failed for part ${partNumber}: ${uploadResponse.status}`)
+      if (uploadResult.statusCode < 200 || uploadResult.statusCode >= 300) {
+        throw new Error(
+          'Upload failed for presignedUrl ' +
+            presignedUrl +
+            ' partNumber: ' +
+            partNumber +
+            ' With the next result: ' +
+            JSON.stringify(uploadResult),
+        )
       }
-
-      const etag = uploadResponse.headers.get('ETag')
+      // Parse ETag from response headers
+      const responseHeaders = uploadResult.headers as Record<string, string>
+      const etag = responseHeaders.ETag || responseHeaders.Etag
       if (!etag) {
         throw new Error('ETag missing from upload response')
       }
