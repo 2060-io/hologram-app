@@ -159,7 +159,7 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
           fromUrl: uri,
           toFile: downloadLocalFilePath,
           progressInterval: 2000,
-          begin: () => log('Download of file begin'),
+          begin: () => log(`Download of file ${uri} started`),
           progress: progress => {
             if (item.byteCount) {
               const currentProgress = Math.ceil((progress.bytesWritten / item.byteCount) * 100)
@@ -169,8 +169,8 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
           },
         })
         const result = await promise
-        if (result.statusCode !== 200) {
-          throw new Error(`code ${result.statusCode} / url ${uri}`)
+        if (result.statusCode !== 200 || result.bytesWritten === 0) {
+          throw new Error(`Download failed for file ${uri} with next result: ${JSON.stringify(result)}`)
         }
 
         if (ciphering) {
