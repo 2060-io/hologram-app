@@ -15,8 +15,7 @@ import { getApp } from '@react-native-firebase/app'
 import { getToken } from '@react-native-firebase/app-check'
 import { XMLParser } from 'fast-xml-parser'
 
-import AgentSingleton from './AgentSingleton'
-import { MobileAgent } from './agent'
+import { MobileAgent } from './agent/MobileAgent'
 
 import { log } from '@src/utils/log'
 
@@ -39,9 +38,8 @@ async function getStoredS3Credentials(agent: MobileAgent) {
   return await cache.get<S3ServerCredentials>(agent.context, 'S3ServerCredentials')
 }
 
-export const getS3ServerCredentials = async (s3ServerUrl: string): Promise<S3ServerCredentials> => {
-  const mobileAgent = AgentSingleton.instance.getMobileAgent()!
-  const storedCredentials = await getStoredS3Credentials(mobileAgent)
+async function getS3ServerCredentials(s3ServerUrl: string, agent: MobileAgent): Promise<S3ServerCredentials> {
+  const storedCredentials = await getStoredS3Credentials(agent)
   const isTokenValid = storedCredentials && new Date(storedCredentials.Expiration) > new Date(Date.now())
   if (isTokenValid) return storedCredentials
 
@@ -63,13 +61,14 @@ export const getS3ServerCredentials = async (s3ServerUrl: string): Promise<S3Ser
   const jsonObj = parser.parse(xml)
   const newS3Credentials = jsonObj.AssumeRoleWithCustomTokenResponse.AssumeRoleWithCustomTokenResult
     .Credentials as S3ServerCredentials
-  await storeS3Credentials(mobileAgent, newS3Credentials)
+  await storeS3Credentials(agent, newS3Credentials)
   return newS3Credentials
 }
 
 /**
  * Uploads a file to S3 using multipart upload with progress tracking.
  * If an error occurs during upload, the multipart session is automatically aborted.
+ * @param agent - The MobileAgent instance
  * @param s3ServerUrl - The S3 server URL to upload to
  * @param chunks - An array of file paths representing the chunks to upload
  * @param key - The S3 object key (path) where the file will be stored
@@ -80,6 +79,7 @@ export const getS3ServerCredentials = async (s3ServerUrl: string): Promise<S3Ser
  * @throws {Error} If file upload fails, part upload fails, ETag is missing, or multipart completion fails
  */
 export async function s3UploadFile({
+  agent,
   s3ServerUrl,
   chunks,
   key,
@@ -88,6 +88,7 @@ export async function s3UploadFile({
   onError,
   onUploadComplete,
 }: {
+  agent: MobileAgent
   s3ServerUrl: string
   chunks: string[]
   key: string
@@ -100,7 +101,7 @@ export async function s3UploadFile({
   let s3Client: S3Client | null = null
   try {
     // create S3 client with temporary credentials from server
-    const s3Credentials = await getS3ServerCredentials(s3ServerUrl)
+    const s3Credentials = await getS3ServerCredentials(s3ServerUrl, agent)
     s3Client = new S3Client({
       endpoint: s3ServerUrl,
       forcePathStyle: true,
@@ -177,17 +178,13 @@ export async function s3UploadFile({
   } catch (err) {
     onError(err)
     if (uploadId && s3Client) {
-      const abortResult = await s3AbortMultipartUploadCommand({ s3Client, key, uploadId: uploadId })
+      const abortResult = await s3AbortMultipartUploadCommand({ s3Client, key, uploadId })
       log('Abort multipart upload result', abortResult)
     }
   }
 }
 
-const s3AbortMultipartUploadCommand = async (params: {
-  s3Client: S3Client
-  key: string
-  uploadId: string
-}) => {
+async function s3AbortMultipartUploadCommand(params: { s3Client: S3Client; key: string; uploadId: string }) {
   const result = await params.s3Client.send(
     new AbortMultipartUploadCommand({
       Bucket: BUCKET_NAME,

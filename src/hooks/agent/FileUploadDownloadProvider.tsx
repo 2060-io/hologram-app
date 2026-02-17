@@ -307,6 +307,7 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
       })
 
       s3UploadFile({
+        agent,
         s3ServerUrl,
         key: fileId,
         chunks: newTask.chunks,
@@ -340,6 +341,7 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
         const task = uploadTasks.current.find(item => item.fileId === fileId)
         if (!task) throw new Error(`Cannot find ongoing upload with id ${fileId}`)
         s3UploadFile({
+          agent,
           s3ServerUrl,
           key: task.fileId,
           chunks: task.chunks,
