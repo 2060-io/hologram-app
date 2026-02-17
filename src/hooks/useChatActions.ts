@@ -335,6 +335,12 @@ export const useChatActions = () => {
               parameters,
             })
           } else if (isMediaType(message.type)) {
+            // NOTE: Here we assume that the file is persisted in the remote file store object
+            // This might not be always true, so a safer approach would be to re-upload
+            // the file (probably using different ciphering parameters) and then share
+            // with all requested connections. This will be left as a TODO along with other
+            // needed refactorings for media sharing.
+
             const originalRecord = await agent.modules.media.findById(message.associatedRecordId)
             if (!originalRecord || !originalRecord.items) continue
             const item = originalRecord.items[0]
