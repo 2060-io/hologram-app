@@ -1,4 +1,4 @@
-import { SharedMediaItem } from '@2060.io/credo-ts-didcomm-media-sharing'
+import { DidCommMediaSharingRepository, SharedMediaItem } from '@2060.io/credo-ts-didcomm-media-sharing'
 import { utils } from '@credo-ts/core'
 import { useAudioPlayer } from '@simform_solutions/react-native-audio-waveform'
 import React, { useEffect, useCallback, useRef, useState } from 'react'
@@ -263,7 +263,7 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
       }
       const mediaRecordIds: string[] = []
       for (const connectionId of didcommConnectionIds) {
-        const mediaRecord = await agent?.modules.media.create({
+        const mediaRecord = await agent.modules.media.create({
           connectionId,
           description,
           parentThreadId: didcommThreadId,
@@ -334,34 +334,42 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
   const retryMediaUpload = useCallback(
     async (mediaRecordId: string) => {
       if (!agent) return
-      const mediaRecord = await agent.modules.media.findById(mediaRecordId)
-      if (mediaRecord) {
-        const fileId = mediaRecord.items![0].id
-        // Find the corresponding task
-        const task = uploadTasks.current.find(item => item.fileId === fileId)
-        if (!task) throw new Error(`Cannot find ongoing upload with id ${fileId}`)
-        s3UploadFile({
-          agent,
-          s3ServerUrl,
-          key: task.fileId,
-          chunks: task.chunks,
-          onMultipartCreated: async () => {
-            await setMediaUploadState(task, Uploading)
-          },
-          onProgress: async progress => {
-            log(`Retrying upload file with key ${task.fileId} progress: ${progress}%`)
-            onUploadProgress(task, progress)
-          },
-          onError: async error => {
-            logError(`Error retrying upload file with key ${task.fileId}: ${error}`)
-            await setMediaUploadState(task, ErrorUploading)
-          },
-          onUploadComplete: async result => {
-            log(`Retry upload file with key ${task.fileId} complete`, result)
-            onUploadComplete(task)
-          },
-        })
-      } else throw new Error(`media record not found with id: ${mediaRecordId}`)
+      const mediaSharingRepository = agent.context.dependencyManager.resolve(DidCommMediaSharingRepository)
+      const mediaRecord = await mediaSharingRepository.getById(agent.context, mediaRecordId)
+      const fileId = mediaRecord.items![0].id
+      const lastUrlAttemptedToUpload = mediaRecord.items![0].uri
+      const currentUrlToUpload = `${s3ServerUrl}/${BUCKET_NAME}/${fileId}`
+      const urlHasChangedFromLastUploadAttempt = lastUrlAttemptedToUpload !== currentUrlToUpload
+      // Update mediaRecord uri with a possible new server url to upload file
+      // in case server url has changed since last upload attempt
+      if (urlHasChangedFromLastUploadAttempt) {
+        mediaRecord.items![0].uri = currentUrlToUpload
+        mediaSharingRepository.update(agent.context, mediaRecord)
+      }
+      // Find the corresponding task
+      const task = uploadTasks.current.find(item => item.fileId === fileId)
+      if (!task) throw new Error(`Cannot find ongoing upload with id ${fileId}`)
+      s3UploadFile({
+        agent,
+        s3ServerUrl,
+        key: task.fileId,
+        chunks: task.chunks,
+        onMultipartCreated: async () => {
+          await setMediaUploadState(task, Uploading)
+        },
+        onProgress: async progress => {
+          log(`Retrying upload file with key ${task.fileId} progress: ${progress}%`)
+          onUploadProgress(task, progress)
+        },
+        onError: async error => {
+          logError(`Error retrying upload file with key ${task.fileId}: ${error}`)
+          await setMediaUploadState(task, ErrorUploading)
+        },
+        onUploadComplete: async result => {
+          log(`Retry upload file with key ${task.fileId} complete`, result)
+          onUploadComplete(task)
+        },
+      })
     },
     [agent, s3ServerUrl, realm],
   )
