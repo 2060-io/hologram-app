@@ -13,6 +13,7 @@ import {
   ChatThread,
   isMediaType,
   MediaDownloadState,
+  MediaUploadState,
   SystemMessageMetadata,
   UploadTask,
   VPResponsePresentedCredential,
@@ -213,14 +214,20 @@ const onMigration = (oldRealm: Realm, newRealm: Realm) => {
       }
     }
   }
-  if (oldRealm.schemaVersion < 18) {
+  if (oldRealm.schemaVersion <= 18) {
     const oldUploadTask = oldRealm.objects<UploadTask>('UploadTask')
     const newUploadTasks = newRealm.objects<UploadTask>('UploadTask')
     for (let i = 0; i < oldUploadTask.length; i++) {
       newUploadTasks[i].fileId = oldUploadTask[i].fileId
       newUploadTasks[i].mediaRecordIds = oldUploadTask[i].mediaRecordIds
       newUploadTasks[i].state = oldUploadTask[i].state
-      newUploadTasks[i].chunks = []
+      if (oldUploadTask[i].chunks.length) {
+        const newChunks = oldUploadTask[i].chunks.map(item => {
+          const chunk = JSON.parse(item) as { id: string; filePath: string; state: 'pending' | 'finished' }
+          return chunk.filePath
+        })
+        newUploadTasks[i].chunks = newChunks
+      }
     }
   }
 }

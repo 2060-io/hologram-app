@@ -48,7 +48,9 @@ const VoiceNoteChatView = memo(
     const styles = getStyles(theme)
     const { localFilePath, byteCount, duration, mediaUploadState, mediaDownloadState, waveform } = metadata
     const durationTime = getMinutesAndSeconds(duration ?? 0)
-    const isMediaUploadError = mediaUploadState === MediaUploadState.ErrorUploading
+    const isMediaUploadError =
+      mediaUploadState === MediaUploadState.ErrorCreating ||
+      mediaUploadState === MediaUploadState.ErrorUploading
     const [playedTime, setPlayedTime] = useState('00:00')
     const ref = useRef<IWaveformRef>(null)
     const prevPlaterState = useRef<PlayerState>(undefined)

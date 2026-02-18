@@ -72,7 +72,9 @@ const ImageChatView = (props: ImageProps) => {
   const imagePreviewUri = localPreviewFilePath ? getLocalFileUri(localPreviewFilePath) : undefined
   const imageStyle = getImageStyle(metadata)
   const imagePreview = { uri: preview ?? Image.resolveAssetSource(imagePlaceholder).uri }
-  const isMediaUploadError = mediaUploadState === MediaUploadState.ErrorUploading
+  const isMediaUploadError =
+    mediaUploadState === MediaUploadState.ErrorCreating ||
+    mediaUploadState === MediaUploadState.ErrorUploading
 
   return (
     <View

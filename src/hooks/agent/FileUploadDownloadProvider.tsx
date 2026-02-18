@@ -301,8 +301,8 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
           fileId,
           mediaRecordIds,
           state: Pending,
-          chunks: chunkFilePaths,
         })
+        createdTask.chunks = chunkFilePaths
         return createdTask
       })
 
