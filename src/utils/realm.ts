@@ -13,7 +13,6 @@ import {
   ChatThread,
   isMediaType,
   MediaDownloadState,
-  MediaUploadState,
   SystemMessageMetadata,
   UploadTask,
   VPResponsePresentedCredential,
