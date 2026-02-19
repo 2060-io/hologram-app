@@ -8,7 +8,7 @@ on:
 
 jobs:
   build-android:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     env:
       UPLOAD_KEYSTORE_PASSWORD: ${{ secrets.UPLOAD_KEY_KEYSTORE_PASSWORD }}
       UPLOAD_KEY_PASSWORD: ${{ secrets.UPLOAD_KEY_PASSWORD }}
