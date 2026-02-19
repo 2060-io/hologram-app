@@ -100,6 +100,7 @@ jobs:
         run: |
           echo "New release published!"
           echo $RELEASE_VERSION
+          set -o pipefail
           cd ios
-          xcodebuild clean archive -workspace  hologram.xcworkspace -scheme 2060Dev -allowProvisioningUpdates -sdk iphoneos -archivePath builds/hologram.xcarchive -destination "generic/platform=iOS" | xcpretty
+          xcodebuild clean archive -workspace  hologram.xcworkspace -scheme 2060Dev -allowProvisioningUpdates -sdk iphoneos -archivePath builds/hologram.xcarchive -destination "generic/platform=iOS"
           xcodebuild -exportArchive -archivePath "builds/hologram.xcarchive" -exportPath "builds" -exportOptionsPlist hologram/ExportOptions.plist | xcpretty
