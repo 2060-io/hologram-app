@@ -37,7 +37,7 @@ jobs:
           ./gradlew assembleDevRelease
 
   build-ios:
-    runs-on: self-hosted
+    runs-on: macos-latest
     steps:
       - name: Checkout hologram-app
         uses: actions/checkout@v4
@@ -49,15 +49,57 @@ jobs:
           registry-url: 'https://registry.npmjs.org/'
           cache: yarn
 
+      - name: Set up Xcode version
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: '26.2 (17C52)'
+
+      - name: Cache CocoaPods
+        uses: actions/cache@v4
+        with:
+          path: ios/Pods
+          key: ${{ runner.os }}-pods-${{ hashFiles('ios/Podfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pods-
+
       - name: Install dependencies
         run: |
           yarn install --immutable
+
+      - name: Decode and install iOS certificate
+        env:
+          IOS_CERTIFICATE_P12: ${{ secrets.IOS_CERTIFICATE_P12 }}
+          IOS_CERTIFICATE_PASSWORD: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
+        run: |
+          echo "$IOS_CERTIFICATE_P12" | base64 --decode > certificate.p12
+          security create-keychain -p "" build.keychain
+          security default-keychain -s build.keychain
+          security unlock-keychain -p "" build.keychain
+          security import certificate.p12 -k build.keychain -P "$IOS_CERTIFICATE_PASSWORD" -T /usr/bin/codesign
+          security set-key-partition-list -S apple-tool:,apple: -s -k "" build.keychain
+
+      - name: Decode and install provisioning profiles
+        env:
+          IOS_DEV_PROVISIONING_PROFILE: ${{ secrets.IOS_DEV_PROVISIONING_PROFILE }}
+          IOS_SHARE_EXT_DEV_PROVISIONING_PROFILE: ${{ secrets.IOS_SHARE_EXT_DEV_PROVISIONING_PROFILE }}
+        run: |
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+
+          echo "$IOS_DEV_PROVISIONING_PROFILE" | base64 --decode > app.mobileprovision
+          echo "$IOS_SHARE_EXT_DEV_PROVISIONING_PROFILE" | base64 --decode > share.mobileprovision
+
+          cp app.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
+          cp share.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
+
+      - name: Install CocoaPods
+        run: |
+          cd ios
+          pod install --repo-update
 
       - name: Build IOS
         run: |
           echo "New release published!"
           echo $RELEASE_VERSION
           cd ios
-          pod install --repo-update
           xcodebuild clean archive -workspace  hologram.xcworkspace -scheme 2060Dev -allowProvisioningUpdates -sdk iphoneos -archivePath builds/hologram.xcarchive -destination "generic/platform=iOS" | xcpretty
           xcodebuild -exportArchive -archivePath "builds/hologram.xcarchive" -exportPath "builds" -exportOptionsPlist hologram/ExportOptions.plist | xcpretty
