@@ -90,7 +90,9 @@ jobs:
 
           cp app.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
           cp share.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
-
+      - name: List code signing identities
+        run: |
+          security find-identity -v -p codesigning
       - name: Install CocoaPods
         run: |
           cd ios
