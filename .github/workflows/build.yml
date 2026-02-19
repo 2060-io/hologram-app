@@ -102,12 +102,12 @@ jobs:
       - name: Install provisioning profiles
         env:
           IOS_DEV_PROVISIONING_PROFILE: ${{ secrets.IOS_DEV_PROVISIONING_PROFILE }}
-          IOS_SHARE_DEV_PROVISIONING_PROFILE: ${{ secrets.IOS_SHARE_DEV_PROVISIONING_PROFILE }}
+          IOS_SHARE_EXT_DEV_PROVISIONING_PROFILE: ${{ secrets.IOS_SHARE_EXT_DEV_PROVISIONING_PROFILE }}
         run: |
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
 
           echo "$IOS_DEV_PROVISIONING_PROFILE" | base64 --decode > app.mobileprovision
-          echo "$IOS_SHARE_DEV_PROVISIONING_PROFILE" | base64 --decode > share.mobileprovision
+          echo "$IOS_SHARE_EXT_DEV_PROVISIONING_PROFILE" | base64 --decode > share.mobileprovision
 
           cp app.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
           cp share.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
