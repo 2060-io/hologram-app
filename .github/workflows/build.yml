@@ -30,7 +30,7 @@ jobs:
 
       - name: Clean And Build Android
         run: |
-          echo $UPLOAD_KEY_KEYSTORE_B64 | base64 --decode > ./android/app/upload-key.keystore
+          echo "$UPLOAD_KEY_KEYSTORE_B64" | base64 --decode > ./android/app/upload-key.keystore
           cd android
           rm -rf .gradle build app/build app/.cxx
           ./gradlew generateCodegenSchemaFromJavaScript generateCodegenArtifactsFromSchema
