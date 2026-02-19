@@ -102,5 +102,5 @@ jobs:
           echo $RELEASE_VERSION
           set -o pipefail
           cd ios
-          xcodebuild clean archive -workspace  hologram.xcworkspace -scheme 2060Dev -sdk iphoneos -archivePath builds/hologram.xcarchive -destination "generic/platform=iOS"
+          xcodebuild clean archive -workspace  hologram.xcworkspace -scheme 2060Dev -sdk iphoneos -archivePath builds/hologram.xcarchive -destination "generic/platform=iOS" CODE_SIGN_STYLE=Manual
           xcodebuild -exportArchive -archivePath "builds/hologram.xcarchive" -exportPath "builds" -exportOptionsPlist hologram/ExportOptions.plist
