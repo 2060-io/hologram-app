@@ -109,8 +109,11 @@ jobs:
           echo "$IOS_DEV_PROVISIONING_PROFILE" | base64 --decode > app.mobileprovision
           echo "$IOS_SHARE_EXT_DEV_PROVISIONING_PROFILE" | base64 --decode > share.mobileprovision
 
-          cp app.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
-          cp share.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
+          APP_UUID=$(security cms -D -i app.mobileprovision | /usr/libexec/PlistBuddy -c "Print UUID" /dev/stdin)
+          SHARE_UUID=$(security cms -D -i share.mobileprovision | /usr/libexec/PlistBuddy -c "Print UUID" /dev/stdin)
+
+          mv app.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/$APP_UUID.mobileprovision
+          mv share.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/$SHARE_UUID.mobileprovision
 
           ls ~/Library/MobileDevice/Provisioning\ Profiles/
 
@@ -122,6 +125,10 @@ jobs:
           cd ios
           pod install --repo-update
 
+      - name: Debug profiles
+        run: |
+          grep -R "io.2060.mobileagent.dev" ~/Library/MobileDevice/Provisioning\ Profiles/
+          grep -R "io.2060.mobileagent.dev.share" ~/Library/MobileDevice/Provisioning\ Profiles/
       # -----------------------------
       # 🏗 Archive
       # -----------------------------
