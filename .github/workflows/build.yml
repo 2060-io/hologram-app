@@ -17,22 +17,21 @@ jobs:
       - name: Checkout hologram-app
         uses: actions/checkout@v4
 
-      - name: Setup node v22
+      - name: Setup Node.js v22
         uses: actions/setup-node@v4
         with:
           node-version: 22
           registry-url: 'https://registry.npmjs.org/'
           cache: yarn
 
-      - name: Install dependencies
+      - name: Install Dependencies
         run: |
           yarn install --immutable
 
       - name: Clean And Build Android
-        if: ${{ false }}
+        working-directory: android
         run: |
-          echo "$UPLOAD_KEY_KEYSTORE_B64" | base64 --decode > ./android/app/upload-key.keystore
-          cd android
+          echo "$UPLOAD_KEY_KEYSTORE_B64" | base64 --decode > ./app/upload-key.keystore
           rm -rf .gradle build app/build app/.cxx
           ./gradlew generateCodegenSchemaFromJavaScript generateCodegenArtifactsFromSchema
           ./gradlew assembleDevRelease
@@ -43,15 +42,17 @@ jobs:
     env:
       KEYCHAIN_NAME: build.keychain
       KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+      CERT_P12_PATH: cert.p12
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node
+      - name: Setup Node.js v22
         uses: actions/setup-node@v4
         with:
           node-version: 22
+          registry-url: 'https://registry.npmjs.org/'
           cache: yarn
 
       - name: Setup Xcode
@@ -59,13 +60,10 @@ jobs:
         with:
           xcode-version: '26.2.0'
 
-      - name: Install JS deps
+      - name: Install Dependencies
         run: yarn install --immutable
 
-      # -----------------------------
-      # 🔐 Create and configure keychain
-      # -----------------------------
-      - name: Configure keychain
+      - name: Configure Keychain
         run: |
           security create-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_NAME
           security set-keychain-settings -lut 21600 $KEYCHAIN_NAME
@@ -73,17 +71,14 @@ jobs:
           security default-keychain -s $KEYCHAIN_NAME
           security list-keychains -d user -s $KEYCHAIN_NAME
 
-      # -----------------------------
-      # 📜 Install signing certificate (.p12)
-      # -----------------------------
-      - name: Install certificate
+      - name: Install Signing Certificate
         env:
           IOS_CERTIFICATE_P12: ${{ secrets.IOS_CERTIFICATE_P12 }}
           IOS_CERTIFICATE_PASSWORD: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
         run: |
-          echo "$IOS_CERTIFICATE_P12" | base64 --decode > cert.p12
+          echo "$IOS_CERTIFICATE_P12" | base64 --decode > "$CERT_P12_PATH"
 
-          security import cert.p12 \
+          security import "$CERT_P12_PATH" \
             -k $KEYCHAIN_NAME \
             -P "$IOS_CERTIFICATE_PASSWORD" \
             -T /usr/bin/codesign \
@@ -97,18 +92,12 @@ jobs:
 
           security find-identity -v -p codesigning $KEYCHAIN_NAME
 
-      # -----------------------------
-      # 📦 Install provisioning profiles
-      # -----------------------------
-      - name: Install provisioning profiles
+      - name: Install Provisioning Profiles
         env:
           IOS_DEV_PROVISIONING_PROFILE: ${{ secrets.IOS_DEV_PROVISIONING_PROFILE }}
           IOS_SHARE_EXT_DEV_PROVISIONING_PROFILE: ${{ secrets.IOS_SHARE_EXT_DEV_PROVISIONING_PROFILE }}
         run: |
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-          echo "$IOS_DEV_PROVISIONING_PROFILE" | wc -c
-          echo "$IOS_SHARE_EXT_DEV_PROVISIONING_PROFILE" | wc -c
-
           echo "$IOS_DEV_PROVISIONING_PROFILE" | base64 --decode > io.2060.mobileagent.dev.mobileprovision
           echo "$IOS_SHARE_EXT_DEV_PROVISIONING_PROFILE" | base64 --decode > io.2060.mobileagent.dev.share.mobileprovision
 
@@ -117,24 +106,19 @@ jobs:
 
           ls ~/Library/MobileDevice/Provisioning\ Profiles/
 
-      # -----------------------------
-      # 🧱 Install Pods
-      # -----------------------------
-      - name: Install CocoaPods
+      - name: Debug Provisioning Profiles
         run: |
-          cd ios
+          grep -R "io.2060.mobileagent.dev" ~/Library/MobileDevice/Provisioning\ Profiles/ || true
+          grep -R "io.2060.mobileagent.dev.share" ~/Library/MobileDevice/Provisioning\ Profiles/ || true
+
+      - name: Install Pods
+        working-directory: ios
+        run: |
           pod install --repo-update
 
-      - name: Debug profiles
+      - name: Build Archive
+        working-directory: ios
         run: |
-          grep -R "io.2060.mobileagent.dev" ~/Library/MobileDevice/Provisioning\ Profiles/
-          grep -R "io.2060.mobileagent.dev.share" ~/Library/MobileDevice/Provisioning\ Profiles/
-      # -----------------------------
-      # 🏗 Archive
-      # -----------------------------
-      - name: Archive
-        run: |
-          cd ios
           xcodebuild clean archive \
             -workspace hologram.xcworkspace \
             -scheme 2060Dev \
@@ -142,23 +126,18 @@ jobs:
             -archivePath builds/hologram.xcarchive \
             -destination "generic/platform=iOS"
 
-      # -----------------------------
-      # 📤 Export IPA
-      # -----------------------------
       - name: Export IPA
+        working-directory: ios
         run: |
-          cd ios
           xcodebuild -exportArchive \
             -archivePath builds/hologram.xcarchive \
             -exportPath builds \
             -exportOptionsPlist hologram/ExportOptions.plist
 
-      # -----------------------------
-      # 🧹 Clean up keychain and provisioning profile
-      # -----------------------------
-      - name: Clean up keychain and provisioning profile
+      - name: Clean up Keychain, Certificate and Provisioning Profiles
         if: ${{ always() }}
         run: |
-          security delete-keychain build.keychain
-          rm cert.p12
-          rm -rf ~/Library/MobileDevice/Provisioning\ Profiles
+          security delete-keychain $KEYCHAIN_NAME
+          rm "$CERT_P12_PATH"
+          rm -f ~/Library/MobileDevice/Provisioning\ Profiles/io.2060.mobileagent.dev.mobileprovision
+          rm -f ~/Library/MobileDevice/Provisioning\ Profiles/io.2060.mobileagent.dev.share.mobileprovision
