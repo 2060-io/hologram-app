@@ -139,7 +139,8 @@ jobs:
             -scheme 2060Dev \
             -sdk iphoneos \
             -archivePath builds/hologram.xcarchive \
-            -destination "generic/platform=iOS"
+            -destination "generic/platform=iOS" \
+            CODE_SIGN_STYLE=Manual \
 
       # -----------------------------
       # 📤 Export IPA
