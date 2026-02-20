@@ -14,6 +14,7 @@ export async function getServiceInfo(options: {
   const trustResolution = await resolveDID(did, {
     agentContext: agent.context,
     skipDigestSRICheck: true,
+    logger: agent.config.logger,
     verifiablePublicRegistries: [
       {
         id: 'vpr:verana:vna-testnet-1',
@@ -27,7 +28,7 @@ export async function getServiceInfo(options: {
       },
     ],
   })
-
+  
   if (!trustResolution.service || !trustResolution.didDocument) {
     logError(`trustResolution: ${JSON.stringify(trustResolution)}`)
     return null
