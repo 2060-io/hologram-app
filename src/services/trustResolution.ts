@@ -13,10 +13,16 @@ export async function getServiceInfo(options: {
 
   const trustResolution = await resolveDID(did, {
     agentContext: agent.context,
+    skipDigestSRICheck: false,
     verifiablePublicRegistries: [
       {
         id: 'vpr:verana:vna-testnet-1',
-        baseUrls: ['https://api.testnet.verana.network/verana'],
+        baseUrls: ['https://idx.testnet.verana.network/verana'],
+        production: true, // FIXME: set to false once we have mainnet ready
+      },
+      {
+        id: 'vpr:verana:vna-devnet-1',
+        baseUrls: ['https://idx.devnet.verana.network/verana'],
         production: true, // FIXME: set to false once we have mainnet ready
       },
     ],

@@ -57,14 +57,14 @@ const Avatar: React.FC<Props> = ({
   const onSmartImageContent = (imageContent: string) => {
     imageUri.current = imageContent
   }
-
+  
   const renderAvatar = () => (
     <TouchableOpacity
       style={[styles.containerAvatar, avatarDimensions, borderStyle]}
       disabled={!onImagePressed}
       onPress={() => onImagePressed?.(imageUri.current ?? '')}
     >
-      {uri?.endsWith('.svg') ? (
+      {uri?.endsWith('.svg') || uri?.includes('data:image/svg+xml') ? (
         <SvgUri
           uri={uri}
           style={styles.avatar}
