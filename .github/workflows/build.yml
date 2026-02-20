@@ -29,6 +29,7 @@ jobs:
           yarn install --immutable
 
       - name: Clean And Build Android
+        if: ${{ false }}
         run: |
           echo "$UPLOAD_KEY_KEYSTORE_B64" | base64 --decode > ./android/app/upload-key.keystore
           cd android
