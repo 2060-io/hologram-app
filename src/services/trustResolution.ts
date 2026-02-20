@@ -28,7 +28,7 @@ export async function getServiceInfo(options: {
       },
     ],
   })
-  
+
   if (!trustResolution.service || !trustResolution.didDocument) {
     logError(`trustResolution: ${JSON.stringify(trustResolution)}`)
     return null
