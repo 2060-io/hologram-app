@@ -139,8 +139,7 @@ jobs:
             -scheme 2060Dev \
             -sdk iphoneos \
             -archivePath builds/hologram.xcarchive \
-            -destination "generic/platform=iOS" \
-            CODE_SIGN_STYLE=Manual \
+            -destination "generic/platform=iOS"
 
       # -----------------------------
       # 📤 Export IPA
@@ -152,3 +151,13 @@ jobs:
             -archivePath builds/hologram.xcarchive \
             -exportPath builds \
             -exportOptionsPlist hologram/ExportOptions.plist
+
+      # -----------------------------
+      # 🧹 Clean up keychain and provisioning profile
+      # -----------------------------
+      - name: Clean up keychain and provisioning profile
+        if: ${{ always() }}
+        run: |
+          security delete-keychain build.keychain
+          rm cert.p12
+          rm -rf ~/Library/MobileDevice/Provisioning\ Profiles
