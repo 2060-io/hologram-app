@@ -105,15 +105,14 @@ jobs:
           IOS_SHARE_EXT_DEV_PROVISIONING_PROFILE: ${{ secrets.IOS_SHARE_EXT_DEV_PROVISIONING_PROFILE }}
         run: |
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          echo "$IOS_DEV_PROVISIONING_PROFILE" | wc -c
+          echo "$IOS_SHARE_EXT_DEV_PROVISIONING_PROFILE" | wc -c
 
-          echo "$IOS_DEV_PROVISIONING_PROFILE" | base64 --decode > app.mobileprovision
-          echo "$IOS_SHARE_EXT_DEV_PROVISIONING_PROFILE" | base64 --decode > share.mobileprovision
+          echo "$IOS_DEV_PROVISIONING_PROFILE" | base64 --decode > io.2060.mobileagent.dev.mobileprovision
+          echo "$IOS_SHARE_EXT_DEV_PROVISIONING_PROFILE" | base64 --decode > io.2060.mobileagent.dev.share.mobileprovision
 
-          APP_UUID=$(security cms -D -i app.mobileprovision | /usr/libexec/PlistBuddy -c "Print UUID" /dev/stdin)
-          SHARE_UUID=$(security cms -D -i share.mobileprovision | /usr/libexec/PlistBuddy -c "Print UUID" /dev/stdin)
-
-          mv app.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/$APP_UUID.mobileprovision
-          mv share.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/$SHARE_UUID.mobileprovision
+          cp io.2060.mobileagent.dev.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
+          cp io.2060.mobileagent.dev.share.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
 
           ls ~/Library/MobileDevice/Provisioning\ Profiles/
 
