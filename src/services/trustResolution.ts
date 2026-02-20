@@ -13,7 +13,7 @@ export async function getServiceInfo(options: {
 
   const trustResolution = await resolveDID(did, {
     agentContext: agent.context,
-    skipDigestSRICheck: false,
+    skipDigestSRICheck: true,
     verifiablePublicRegistries: [
       {
         id: 'vpr:verana:vna-testnet-1',

@@ -57,7 +57,7 @@ const Avatar: React.FC<Props> = ({
   const onSmartImageContent = (imageContent: string) => {
     imageUri.current = imageContent
   }
-  
+
   const renderAvatar = () => (
     <TouchableOpacity
       style={[styles.containerAvatar, avatarDimensions, borderStyle]}
