@@ -46,7 +46,7 @@ export const useFetchServiceInfo = (did?: string, forceFetch: boolean = true) =>
       const firstConditionToFetch = forceFetch
       const secondConditionToFetch =
         !cachedServiceInfo?.lastTimeUpdated || isOlderThan24Hours(cachedServiceInfo.lastTimeUpdated)
-      const mustTriggerFetch = firstConditionToFetch || secondConditionToFetch
+      const mustTriggerFetch = firstConditionToFetch && secondConditionToFetch
       if (!mustTriggerFetch) return
 
       const isNetworkConnected = Boolean((await NetInfo()).isConnected)
@@ -64,6 +64,8 @@ export const useFetchServiceInfo = (did?: string, forceFetch: boolean = true) =>
           setServiceInfo(serviceInfoResponse)
           await storeServiceInfo(did, agent, serviceInfoResponse)
           if (realm) updateChatThread({ did, serviceInfoResponse, realm, agent })
+        } else if (cachedServiceInfo) {
+          await storeServiceInfo(did, agent, cachedServiceInfo)
         }
       } catch (error) {
         logError(`Error getting service ${did} info API`, error)
