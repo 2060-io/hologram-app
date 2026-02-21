@@ -64,7 +64,7 @@ const Avatar: React.FC<Props> = ({
       disabled={!onImagePressed}
       onPress={() => onImagePressed?.(imageUri.current ?? '')}
     >
-      {uri?.endsWith('.svg') ? (
+      {uri?.endsWith('.svg') || uri?.includes('data:image/svg+xml') ? (
         <SvgUri
           uri={uri}
           style={styles.avatar}

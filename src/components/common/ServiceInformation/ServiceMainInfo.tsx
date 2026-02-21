@@ -104,7 +104,7 @@ const ServiceMainInfo = ({ serviceInfo, isFetchingInfo, failedFetchInfo, contain
       </View>
       <Did did={serviceInfo.did} serviceInfoStatus={serviceInfo.status} isFetchingInfo={isFetchingInfo} />
       {failedFetchInfo && <Text style={styles.failedToFetchInfoText}>{t('credential.failedFetchInfo')}</Text>}
-      {serviceProvider && (
+      {!isFetchingInfo && serviceProvider && (
         <View style={styles.serviceProviderInfoContainer}>
           <Text style={styles.text}>{t('invitation.serviceProvider')}</Text>
           <View style={styles.serviceProviderName}>
