@@ -7,7 +7,7 @@ import { TouchableOpacity, View, ScrollView } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 import AlreadyConnected from './AlreadyConnected'
-import PublicService from './PublicService'
+import Service from './Service'
 import getStyles from './styles'
 
 import { CommunicationChannels } from '@src/components'
@@ -144,7 +144,7 @@ const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => 
             />
           )}
           {invitationType === 'public' ? (
-            <PublicService
+            <Service
               did={invitationDid}
               invitation={invitation}
               setAgeRestricted={setAgeRestricted}
