@@ -1,7 +1,7 @@
 import { CacheModuleConfig } from '@credo-ts/core'
 import { fetch as NetInfo } from '@react-native-community/netinfo'
 import { TrustResolutionOutcome } from '@verana-labs/verre'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState, useTransition } from 'react'
 import { useTranslation } from 'react-i18next'
 import Realm from 'realm'
 
@@ -18,69 +18,78 @@ import { getConnectionDisplayName, getConnectionDisplayPicture } from '@src/util
 import { toast } from '@src/utils/toast'
 
 /**
- * This hook will attempt to retrieve a given Verifiable Service information from Trust Registry. This
- * information will be stored in a cache for some time, and for performance reasons by default it will
- * try only to take info from there. But it is possible to force to refresh,
- * useful in cases where it is important to be up to date.
+ * Retrieve and cache Verifiable Service information from the Trust Registry.
  *
- * @param did decentralized identifier of the service
- * @param forceFetch attempt to refresh service info, even if it is already cached
+ * Behavior:
+ * - On mount if `forceFetch` is true and the cached value is missing or older than 24 hours,
+ *   it will trigger a background fetch from the Trust Registry.
+ * - When fresh info is obtained, stored cache info is updated and chat thread for the
+ *   corresponding connection is updated with the latest name and logo.
  *
- * @returns ServiceInfo object if found, undefined otherwise
+ * @param did decentralized identifier of the service.
+ * @param forceFetch whether to attempt a refresh on mount when the cached value is stale or missing.
+ *
+ * @returns Object with the latest known ServiceInfo or undefined, loading and error state flags,
+ * and `getServiceInfo` function to trigger a manual refresh.
  */
 export const useFetchServiceInfo = (did?: string, forceFetch: boolean = true) => {
   const { t } = useTranslation()
   const { agent } = useMobileAgent()
   const { realm } = useLocalRealm()
   const [serviceInfo, setServiceInfo] = useState<ServiceInfo | undefined>()
-  const [isFetchingInfo, setIsFetching] = useState(false)
+  const [isFetchingInfo, startFetchServiceInfoTransition] = useTransition()
   const [failedFetchInfo, setFailed] = useState<boolean>(false)
+  const cachedServiceInfo = useRef<ServiceInfo | undefined>(undefined)
 
   useEffect(() => {
-    const getServiceInfo = async () => {
+    const verifyHasToFetchInfo = async () => {
       if (!did || !agent) return
-
-      const cachedServiceInfo = await getStoredServiceInfo(did, agent)
-      if (cachedServiceInfo) setServiceInfo(cachedServiceInfo)
+      cachedServiceInfo.current = await getStoredServiceInfo(did, agent)
+      if (cachedServiceInfo.current) setServiceInfo(cachedServiceInfo.current)
 
       const firstConditionToFetch = forceFetch
       const secondConditionToFetch =
-        !cachedServiceInfo?.lastTimeUpdated || isOlderThan24Hours(cachedServiceInfo.lastTimeUpdated)
+        !cachedServiceInfo.current?.lastTimeUpdated ||
+        isOlderThan24Hours(cachedServiceInfo.current.lastTimeUpdated)
       const mustTriggerFetch = firstConditionToFetch && secondConditionToFetch
-      if (!mustTriggerFetch) return
+      if (mustTriggerFetch) getServiceInfo()
+    }
+    verifyHasToFetchInfo()
+  }, [realm, did])
 
-      const isNetworkConnected = Boolean((await NetInfo()).isConnected)
-      if (!isNetworkConnected) {
-        setFailed(true)
-        toast({ type: 'error', message: t('invitation.unableToGetServiceInfo') })
-        return
-      }
+  const getServiceInfo = async () => {
+    if (!did || !agent) return
+    setFailed(false)
 
+    const isNetworkConnected = Boolean((await NetInfo()).isConnected)
+    if (!isNetworkConnected) {
+      setFailed(true)
+      toast({ type: 'error', message: t('invitation.unableToGetServiceInfo') })
+      return
+    }
+    startFetchServiceInfoTransition(async () => {
       try {
-        setIsFetching(true)
         const serviceInfoResponse = await getServiceInfoApi({ agent, did })
         // if service exists in trust registry, store it in cache otherwise keep the cached one (if any)
         if (serviceInfoResponse) {
           setServiceInfo(serviceInfoResponse)
           await storeServiceInfo(did, agent, serviceInfoResponse)
           if (realm) updateChatThread({ did, serviceInfoResponse, realm, agent })
-        } else if (cachedServiceInfo) {
-          await storeServiceInfo(did, agent, cachedServiceInfo)
+        } else if (cachedServiceInfo.current) {
+          await storeServiceInfo(did, agent, cachedServiceInfo.current)
         }
       } catch (error) {
         logError(`Error getting service ${did} info API`, error)
         toast({ type: 'error', message: t('invitation.errorGettingServiceInfoAPI') })
-      } finally {
-        setIsFetching(false)
       }
-    }
-    getServiceInfo()
-  }, [realm, did])
+    })
+  }
 
   return {
     serviceInfo,
     isFetchingInfo,
     failedFetchInfo,
+    getServiceInfo,
   }
 }
 

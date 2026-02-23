@@ -1,8 +1,8 @@
 import { StackScreenProps } from '@react-navigation/stack'
 import { TrustResolutionOutcome } from '@verana-labs/verre'
-import React, { useRef, useState } from 'react'
+import React, { useCallback, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ScrollView, View } from 'react-native'
+import { RefreshControl, ScrollView, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 import getStyles from './styles'
@@ -30,7 +30,7 @@ const CredentialDetails = ({ route, navigation }: Props) => {
   const credentialRecord = getCredentialById(credentialRecordId)
   const credentialDetails = credentialRecord ? getCredentialDetailsForDisplay(credentialRecord) : undefined
   const did = credentialRecord?.firstCredential.issuerId ?? ''
-  const { isFetchingInfo, serviceInfo, failedFetchInfo } = useFetchServiceInfo(did)
+  const { isFetchingInfo, serviceInfo, failedFetchInfo, getServiceInfo } = useFetchServiceInfo(did)
   const initialServiceInfo = useRef<ServiceInfo>({
     did,
     id: did,
@@ -39,6 +39,10 @@ const CredentialDetails = ({ route, navigation }: Props) => {
     minimumAgeRequired: 0,
     status: TrustResolutionOutcome.INVALID,
   })
+
+  const refreshServiceInfo = useCallback(() => {
+    getServiceInfo()
+  }, [])
 
   const hideConfirmationDeleteModal = () => setShowConfirmationDeleteModal(false)
 
@@ -70,7 +74,10 @@ const CredentialDetails = ({ route, navigation }: Props) => {
   return (
     <>
       <SafeAreaView style={styles.container} edges={['bottom']}>
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          refreshControl={<RefreshControl refreshing={isFetchingInfo} onRefresh={refreshServiceInfo} />}
+        >
           <View style={styles.subContainer}>
             <CredentialDetailsComponent
               credentialDetails={credentialDetails}
