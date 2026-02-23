@@ -17,7 +17,7 @@ type Props = {
   userName: string | undefined
 }
 
-const Service = ({ did, invitation, setAgeRestricted, userName }: Props) => {
+const PublicService = ({ did, invitation, setAgeRestricted, userName }: Props) => {
   const { isFetchingInfo, serviceInfo, failedFetchInfo } = useFetchServiceInfo(did)
   const initialServiceInfo = useRef<ServiceInfo>({
     did,
@@ -56,4 +56,4 @@ const Service = ({ did, invitation, setAgeRestricted, userName }: Props) => {
   )
 }
 
-export default Service
+export default PublicService
