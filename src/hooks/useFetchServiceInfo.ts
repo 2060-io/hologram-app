@@ -1,7 +1,7 @@
 import { CacheModuleConfig } from '@credo-ts/core'
 import { fetch as NetInfo } from '@react-native-community/netinfo'
 import { TrustResolutionOutcome } from '@verana-labs/verre'
-import { useEffect, useRef, useState, useTransition } from 'react'
+import { useEffect, useState, useTransition } from 'react'
 import { useTranslation } from 'react-i18next'
 import Realm from 'realm'
 
@@ -39,18 +39,15 @@ export const useFetchServiceInfo = (did?: string, forceFetch: boolean = true) =>
   const [serviceInfo, setServiceInfo] = useState<ServiceInfo | undefined>()
   const [isFetchingInfo, startFetchServiceInfoTransition] = useTransition()
   const [failedFetchInfo, setFailed] = useState<boolean>(false)
-  const cachedServiceInfo = useRef<ServiceInfo | undefined>(undefined)
 
   useEffect(() => {
     const verifyHasToFetchInfo = async () => {
       if (!did || !agent) return
-      cachedServiceInfo.current = await getStoredServiceInfo(did, agent)
-      if (cachedServiceInfo.current) setServiceInfo(cachedServiceInfo.current)
-
+      const cachedServiceInfo = await getStoredServiceInfo(did, agent)
+      if (cachedServiceInfo) setServiceInfo(cachedServiceInfo)
       const firstConditionToFetch = forceFetch
       const secondConditionToFetch =
-        !cachedServiceInfo.current?.lastTimeUpdated ||
-        isOlderThan24Hours(cachedServiceInfo.current.lastTimeUpdated)
+        !cachedServiceInfo?.lastTimeUpdated || isOlderThan24Hours(cachedServiceInfo.lastTimeUpdated)
       const mustTriggerFetch = firstConditionToFetch && secondConditionToFetch
       if (mustTriggerFetch) getServiceInfo()
     }
@@ -73,10 +70,8 @@ export const useFetchServiceInfo = (did?: string, forceFetch: boolean = true) =>
         // if service exists in trust registry, store it in cache otherwise keep the cached one (if any)
         if (serviceInfoResponse) {
           setServiceInfo(serviceInfoResponse)
-          await storeServiceInfo(did, agent, serviceInfoResponse)
+          await setStoreServiceInfo(did, agent, serviceInfoResponse)
           if (realm) updateChatThread({ did, serviceInfoResponse, realm, agent })
-        } else if (cachedServiceInfo.current) {
-          await storeServiceInfo(did, agent, cachedServiceInfo.current)
         }
       } catch (error) {
         logError(`Error getting service ${did} info API`, error)
@@ -120,7 +115,7 @@ export async function getStoredServiceInfo(
   return undefined
 }
 
-async function storeServiceInfo(did: string, agent: MobileAgent, serviceInfo: ServiceInfo) {
+async function setStoreServiceInfo(did: string, agent: MobileAgent, serviceInfo: ServiceInfo) {
   const cache = agent.dependencyManager.resolve(CacheModuleConfig).cache
   await cache.set<ServiceInfo>(agent.context, `serviceInfo:${did}`, {
     ...serviceInfo,
