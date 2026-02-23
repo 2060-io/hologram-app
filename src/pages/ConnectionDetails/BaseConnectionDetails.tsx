@@ -3,7 +3,7 @@ import { DidCommConnectionRecord } from '@credo-ts/didcomm'
 import { StackScreenProps } from '@react-navigation/stack'
 import React, { ReactElement, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, ScrollView, TouchableOpacity, Platform } from 'react-native'
+import { View, ScrollView, TouchableOpacity, Platform, RefreshControlProps } from 'react-native'
 import Config from 'react-native-config'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Share, { ShareOptions } from 'react-native-share'
@@ -41,6 +41,8 @@ export interface ConnectionDetailsProps extends WrapperProps {
 interface BaseConnectionDetailsProps extends ConnectionDetailsProps {
   mainInfo: ReactElement | null
   footerInfo?: ReactElement | null
+  refreshControl?: // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  React.ReactElement<RefreshControlProps, string | React.JSXElementConstructor<any>> | undefined
 }
 
 const BaseConnectionDetails = ({
@@ -48,6 +50,7 @@ const BaseConnectionDetails = ({
   connection,
   mainInfo,
   footerInfo,
+  refreshControl,
 }: BaseConnectionDetailsProps) => {
   const { t } = useTranslation()
   const theme = useTheme()
@@ -216,7 +219,7 @@ const BaseConnectionDetails = ({
 
   return (
     <SafeAreaView style={styles.container} edges={['bottom']}>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView showsVerticalScrollIndicator={false} refreshControl={refreshControl}>
         <View style={styles.subContainer}>
           <ModalLoading
             visible={blockingConnection}
