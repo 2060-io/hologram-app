@@ -6,6 +6,7 @@ import { View } from 'react-native'
 import CanNotConnect from './CanNotConnect'
 
 import { ServiceInformation } from '@src/components/common'
+import { useFetchServiceInfo } from '@src/hooks/useFetchServiceInfo'
 import { useValidateKidAgeRestrictions } from '@src/hooks/useValidateKidAgeRestrictions'
 import { ServiceInfo, ServiceStatus } from '@src/model'
 
@@ -17,6 +18,7 @@ type Props = {
 }
 
 const PublicService = ({ did, invitation, setAgeRestricted, userName }: Props) => {
+  const { isFetchingInfo, serviceInfo, failedFetchInfo } = useFetchServiceInfo(did)
   const initialServiceInfo = useRef<ServiceInfo>({
     did,
     description: invitation.label,
@@ -31,6 +33,13 @@ const PublicService = ({ did, invitation, setAgeRestricted, userName }: Props) =
   const { kidAge, ageRestricted } = useValidateKidAgeRestrictions({ minimumAgeRequired, serviceStatus })
 
   useEffect(() => {
+    if (serviceInfo) {
+      setMinimumAgeRequired(serviceInfo.minimumAgeRequired)
+      setServiceStatus(serviceInfo.status)
+    }
+  }, [serviceInfo])
+
+  useEffect(() => {
     setAgeRestricted(ageRestricted)
   }, [ageRestricted])
 
@@ -38,12 +47,10 @@ const PublicService = ({ did, invitation, setAgeRestricted, userName }: Props) =
     <View>
       {ageRestricted && <CanNotConnect kidAge={kidAge} userName={userName} />}
       <ServiceInformation
-        did={did}
         initialServiceInfo={initialServiceInfo}
-        onServiceInfoUpdated={serviceInfo => {
-          setMinimumAgeRequired(serviceInfo.minimumAgeRequired)
-          setServiceStatus(serviceInfo.status)
-        }}
+        isFetchingInfo={isFetchingInfo}
+        serviceInfo={serviceInfo}
+        failedFetchInfo={failedFetchInfo}
       />
     </View>
   )
