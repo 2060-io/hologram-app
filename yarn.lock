@@ -1861,7 +1861,7 @@
     rxjs "^7.8.2"
     tsyringe "^4.10.0"
 
-"@credo-ts/core@0.6.1", "@credo-ts/core@^0.5.17", "@credo-ts/core@^0.6.1":
+"@credo-ts/core@0.6.1", "@credo-ts/core@^0.6.1":
   version "0.6.1"
   resolved "https://registry.yarnpkg.com/@credo-ts/core/-/core-0.6.1.tgz#4fe8c484e6ad12e9700c4c9757da8205ee908278"
   integrity sha512-KAl9c2tNWn8c6R3o1fJRkkalyjP0wsdKjHc/xEoxb2w3i1q+4nsqe9f0sWelDjbCtQ/lwxH82TCZPhfGfHHk3g==
@@ -5580,12 +5580,11 @@
     "@urql/core" "^5.1.1"
     wonka "^6.3.2"
 
-"@verana-labs/verre@0.0.16":
-  version "0.0.16"
-  resolved "https://registry.yarnpkg.com/@verana-labs/verre/-/verre-0.0.16.tgz#c49e90380ac23b1c7582e4a7fbd2b81088629a80"
-  integrity sha512-Mc7/0u1AzY2cIoZ7TWTWkq/jjDzCso5uqnEoXvVHQVyI0D2oz4hz/ZevLYP7wv+fvN3dXiCBhG5Ugi7AdhaJ7Q==
+"@verana-labs/verre@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@verana-labs/verre/-/verre-0.1.0.tgz#cd4d269d639225f090a53151b1f54b4bf93b7108"
+  integrity sha512-zXfUjWuq1+3E4PH6apYHh/BTNLkP0CYqkvca6CB5kDY6vVSAplcABsbW1HXXzzPBoT44QyobcxUrPITnwSDbfA==
   dependencies:
-    "@credo-ts/core" "^0.5.17"
     "@digitalcredentials/jsonld-signatures" "^12.0.1"
     "@noble/hashes" "^1.8.0"
     ajv "^8.17.1"
@@ -5593,6 +5592,7 @@
     buffer "^6.0.3"
     did-resolver "^4.1.0"
     jsonld "^8.3.3"
+    tslog "^4.10.2"
     web-did-resolver "^2.0.29"
 
 "@vscode/sudo-prompt@^9.0.0":
@@ -15346,6 +15346,11 @@ tslib@^2.0.0, tslib@^2.0.1, tslib@^2.1.0, tslib@^2.3.1, tslib@^2.4.0, tslib@^2.6
   version "2.8.1"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.8.1.tgz#612efe4ed235d567e8aba5f2a5fab70280ade83f"
   integrity sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==
+
+tslog@^4.10.2:
+  version "4.10.2"
+  resolved "https://registry.yarnpkg.com/tslog/-/tslog-4.10.2.tgz#45c870d7fe9558d59ce288eeb86ba49eaaf25e1e"
+  integrity sha512-XuELoRpMR+sq8fuWwX7P0bcj+PRNiicOKDEb3fGNURhxWVyykCi9BNq7c4uVz7h7P0sj8qgBsr5SWS6yBClq3g==
 
 tsutils@^3.21.0:
   version "3.21.0"
