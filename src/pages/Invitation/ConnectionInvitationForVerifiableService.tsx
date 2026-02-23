@@ -4,7 +4,7 @@ import { View } from 'react-native'
 import { RefreshControl } from 'react-native-gesture-handler'
 
 import BaseConnectionInvitation, { ConnectionInvitationProps } from './BaseConnectionInvitation'
-import CanNotConnect from './PublicService/CanNotConnect'
+import CanNotConnect from './CanNotConnect'
 
 import { ServiceInformation } from '@src/components/common'
 import { useUserProfile } from '@src/hooks/agent'
