@@ -3,7 +3,7 @@ import { StackActions } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
 import React, { ReactElement, useLayoutEffect, useTransition } from 'react'
 import { useTranslation } from 'react-i18next'
-import { TouchableOpacity, View, ScrollView } from 'react-native'
+import { TouchableOpacity, View, ScrollView, RefreshControlProps } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 import AlreadyConnected from './AlreadyConnected'
@@ -37,6 +37,8 @@ export interface ConnectionInvitationProps
 interface BaseConnectionInvitationProps extends ConnectionInvitationProps {
   mainInfo: ReactElement
   ageRestricted?: boolean
+  refreshControl?: // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  React.ReactElement<RefreshControlProps, string | React.JSXElementConstructor<any>> | undefined
 }
 
 const BaseConnectionInvitation = ({
@@ -44,6 +46,7 @@ const BaseConnectionInvitation = ({
   route,
   mainInfo,
   ageRestricted = false,
+  refreshControl,
 }: BaseConnectionInvitationProps) => {
   const { t } = useTranslation()
   const theme = useTheme()
@@ -133,7 +136,7 @@ const BaseConnectionInvitation = ({
 
   return (
     <SafeAreaView style={styles.container} edges={['bottom']}>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView showsVerticalScrollIndicator={false} refreshControl={refreshControl}>
         <ModalLoading visible={isAcceptingInvitation} />
         <View style={styles.subContainer}>
           {isAlreadyConnected && (
