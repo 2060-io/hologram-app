@@ -21,18 +21,19 @@ import { toast } from '@src/utils/toast'
  * Retrieve and cache Verifiable Service information from the Trust Registry.
  *
  * Behavior:
- * - On mount if `forceFetch` is true and the cached value is missing or older than 24 hours,
+ * - On mount if `forceFetchIfNotInCache` is true and the cached value is missing or older than 24 hours,
  *   it will trigger a background fetch from the Trust Registry.
  * - When fresh info is obtained, stored cache info is updated and chat thread for the
  *   corresponding connection is updated with the latest name and logo.
  *
  * @param did decentralized identifier of the service.
- * @param forceFetch whether to attempt a refresh on mount when the cached value is stale or missing.
+ * @param forceFetchIfNotInCache whether to attempt a refresh on mount
+ * when the cached value is stale or missing.
  *
  * @returns Object with the latest known ServiceInfo or undefined, loading and error state flags,
  * and `getServiceInfo` function to trigger a manual refresh.
  */
-export const useFetchServiceInfo = (did?: string, forceFetch: boolean = true) => {
+export const useFetchServiceInfo = (did?: string, forceFetchIfNotInCache: boolean = true) => {
   const { t } = useTranslation()
   const { agent } = useMobileAgent()
   const { realm } = useLocalRealm()
@@ -45,7 +46,7 @@ export const useFetchServiceInfo = (did?: string, forceFetch: boolean = true) =>
       if (!did || !agent) return
       const cachedServiceInfo = await getStoredServiceInfo(did, agent)
       if (cachedServiceInfo) setServiceInfo(cachedServiceInfo)
-      const firstConditionToFetch = forceFetch
+      const firstConditionToFetch = forceFetchIfNotInCache
       const secondConditionToFetch =
         !cachedServiceInfo?.lastTimeUpdated || isOlderThan24Hours(cachedServiceInfo.lastTimeUpdated)
       const mustTriggerFetch = firstConditionToFetch && secondConditionToFetch
