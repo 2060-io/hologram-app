@@ -13,6 +13,8 @@ import OptionsList from './OptionsList'
 import Progress from './Progress'
 import ProofOfTrust from './ProofOfTrust'
 import RadioButton from './RadioButton'
+import ServiceMainInfo from './ServiceMainInfo'
+import ServiceMainInfoAndProofOfTrust from './ServiceMainInfoAndProofOfTrust'
 import SvgIcon from './SvgIcon'
 import Switch from './Switch'
 import Text from './Text'
@@ -20,7 +22,6 @@ import TextInput from './TextInput'
 import TextInputPassword from './TextInputPassword'
 import VerifiedIcon from './VerifiedIcon'
 
-export * from './ServiceMainInfoAndProofOfTrust'
 export * from './Buttons'
 export {
   Avatar,
@@ -45,4 +46,6 @@ export {
   RadioButton,
   FullScreenImage,
   ConnectionRefusedByAge,
+  ServiceMainInfo,
+  ServiceMainInfoAndProofOfTrust,
 }
