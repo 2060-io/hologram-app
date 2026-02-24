@@ -68,9 +68,7 @@ export const useRestoreBackup = ({ restoreProgress, setRestoreProgress, download
   }
 
   const importWalletAndRealm = async () => {
-    if (!agent) {
-      throw new Error('Agent not defined in BaseRestoreWalletBackup')
-    }
+    if (!agent) return
 
     // A new wallet is created as soon as user presses "Skip, I want a new wallet" button, so
     // there is a possibility that a wallet is created without finishing sign-up process
@@ -92,7 +90,7 @@ export const useRestoreBackup = ({ restoreProgress, setRestoreProgress, download
 
   const importWallet = async (backupKey: string) => {
     try {
-      if (!agent) throw new Error('Agent')
+      if (!agent) return
       const key = await createAndStoreEncryptedKey(KeyChainService.AfjWallet)
 
       // make sure wallet directories exist (TODO: centralize this process somewhere...)
@@ -102,7 +100,6 @@ export const useRestoreBackup = ({ restoreProgress, setRestoreProgress, download
       agent.modules.askar.config.store.key = key
 
       // Create empty store and import data
-      await agent.modules.askar.provisionStore()
       await agent.modules.askar.importStore({
         importFromStore: {
           id: 'afj',

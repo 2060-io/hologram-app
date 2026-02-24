@@ -16,7 +16,7 @@ import { AgentActionType, useMobileAgent, useAgentActionQueue } from '@src/hooks
 import { SavePushNotificationDeviceInfoParameters } from '@src/hooks/agent/actions/types'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { createAndStoreEncryptedKey, KeyChainService } from '@src/services/keys'
-import { logError } from '@src/utils'
+import { logError, logWarn } from '@src/utils'
 import { deleteDir, makeDirectory, mediaDirectoryPath, walletDirectoryPath } from '@src/utils/RNFS'
 import { getFcmDeviceToken, requestNotificationsPermission } from '@src/utils/pushNotificationsUtils'
 import { toast } from '@src/utils/toast'
@@ -42,23 +42,23 @@ const ProfileCreation = ({ navigation }: Props) => {
 
   const createNewWallet = useCallback(async () => {
     if (!agent) throw new Error('Agent not defined')
-    if (!agent.isInitialized) {
-      // Make sure wallet and media directories are clean
-      await deleteDir(walletDirectoryPath)
-      await deleteDir(mediaDirectoryPath)
-
-      await makeDirectory(walletDirectoryPath)
-      await makeDirectory(mediaDirectoryPath)
-
-      const key = await createAndStoreEncryptedKey(KeyChainService.AfjWallet)
-
-      // Reconfigure askar store config with this new key
-      agent.modules.askar.config.store.key = key
-
-      await agent.modules.askar.provisionStore()
-    } else {
-      logError('createNewWallet: Agent already initialized!')
+    if (agent.isInitialized) {
+      logWarn('createNewWallet: Agent already initialized!')
+      await agent.shutdown()
     }
+    // Make sure wallet and media directories are clean
+    await deleteDir(walletDirectoryPath)
+    await deleteDir(mediaDirectoryPath)
+
+    await makeDirectory(walletDirectoryPath)
+    await makeDirectory(mediaDirectoryPath)
+
+    const key = await createAndStoreEncryptedKey(KeyChainService.AfjWallet)
+
+    // Reconfigure askar store config with this new key
+    agent.modules.askar.config.store.key = key
+
+    await agent.modules.askar.provisionStore()
   }, [agent])
 
   const updateNotificationInfo = useCallback(async () => {
