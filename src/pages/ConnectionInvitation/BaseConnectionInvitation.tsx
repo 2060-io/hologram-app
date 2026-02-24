@@ -3,7 +3,7 @@ import { StackActions } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
 import React, { ReactElement, useLayoutEffect, useTransition } from 'react'
 import { useTranslation } from 'react-i18next'
-import { TouchableOpacity, View, ScrollView, RefreshControlProps } from 'react-native'
+import { TouchableOpacity, View, ScrollView } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 import AlreadyConnected from './AlreadyConnected'
@@ -11,6 +11,7 @@ import getStyles from './styles'
 
 import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
 import { HeaderTitle, ModalLoading, Text } from '@src/components/common'
+import { useScrollSwipeDown } from '@src/hooks'
 import { useChats, useMobileAgent, useUserProfile } from '@src/hooks/agent'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { acceptInvitation } from '@src/services/agent/oob'
@@ -37,8 +38,8 @@ export interface ConnectionInvitationProps
 interface BaseConnectionInvitationProps extends ConnectionInvitationProps {
   mainInfo: ReactElement
   ageRestricted?: boolean
-  refreshControl?: // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  React.ReactElement<RefreshControlProps, string | React.JSXElementConstructor<any>> | undefined
+  onSwipeDown?: () => void
+  disabledSwipeDown?: boolean
 }
 
 const BaseConnectionInvitation = ({
@@ -46,7 +47,8 @@ const BaseConnectionInvitation = ({
   route,
   mainInfo,
   ageRestricted = false,
-  refreshControl,
+  onSwipeDown,
+  disabledSwipeDown = true,
 }: BaseConnectionInvitationProps) => {
   const { t } = useTranslation()
   const theme = useTheme()
@@ -55,6 +57,10 @@ const BaseConnectionInvitation = ({
   const { findOrCreateThread } = useChats()
   const { userProfileData } = useUserProfile()
   const [isAcceptingInvitation, startAcceptInvitationTransition] = useTransition()
+  const { handleScrollBeginDrag, handleScrollEndDrag } = useScrollSwipeDown({
+    disabledSwipeDown,
+    onSwipeDown,
+  })
   const { outOfBandRecord, existingConnectionId } = route.params
   const invitation = outOfBandRecord?.outOfBandInvitation
   const invitationDid = invitation.invitationDids[0]
@@ -136,7 +142,12 @@ const BaseConnectionInvitation = ({
 
   return (
     <SafeAreaView style={styles.container} edges={['bottom']}>
-      <ScrollView showsVerticalScrollIndicator={false} refreshControl={refreshControl}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        scrollEventThrottle={16}
+        onScrollBeginDrag={handleScrollBeginDrag}
+        onScrollEndDrag={handleScrollEndDrag}
+      >
         <ModalLoading visible={isAcceptingInvitation} />
         <View style={styles.subContainer}>
           {isAlreadyConnected && (
