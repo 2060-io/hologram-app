@@ -100,7 +100,6 @@ export const useRestoreBackup = ({ restoreProgress, setRestoreProgress, download
       agent.modules.askar.config.store.key = key
 
       // Create empty store and import data
-      await agent.modules.askar.provisionStore()
       await agent.modules.askar.importStore({
         importFromStore: {
           id: 'afj',
