@@ -16,7 +16,7 @@ import { AgentActionType, useMobileAgent, useAgentActionQueue } from '@src/hooks
 import { SavePushNotificationDeviceInfoParameters } from '@src/hooks/agent/actions/types'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { createAndStoreEncryptedKey, KeyChainService } from '@src/services/keys'
-import { logError, logWarn } from '@src/utils'
+import { logError } from '@src/utils'
 import { deleteDir, makeDirectory, mediaDirectoryPath, walletDirectoryPath } from '@src/utils/RNFS'
 import { getFcmDeviceToken, requestNotificationsPermission } from '@src/utils/pushNotificationsUtils'
 import { toast } from '@src/utils/toast'
@@ -43,8 +43,8 @@ const ProfileCreation = ({ navigation }: Props) => {
   const createNewWallet = useCallback(async () => {
     if (!agent) throw new Error('Agent not defined')
     if (agent.isInitialized) {
-      logWarn('createNewWallet: Agent already initialized!')
-      await agent.shutdown()
+      logError('createNewWallet: Agent already initialized!')
+      return
     }
     // Make sure wallet and media directories are clean
     await deleteDir(walletDirectoryPath)
