@@ -29,13 +29,7 @@ const ConnectionDetailsForService = (props: ConnectionDetailsProps) => {
           />
         ) : null
       }
-      footerInfo={
-        <ProofOfTrust
-          serviceInfo={serviceInfo}
-          isFetchingInfo={isFetchingInfo}
-          failedFetchInfo={failedFetchInfo}
-        />
-      }
+      footerInfo={<ProofOfTrust serviceInfo={serviceInfo} isFetchingInfo={isFetchingInfo} />}
     />
   )
 }

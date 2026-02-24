@@ -14,22 +14,21 @@ import { ServiceInfo } from '@src/model'
 type Props = {
   serviceInfo: ServiceInfo | undefined
   isFetchingInfo: boolean
-  failedFetchInfo: boolean
 }
 
-const ProofOfTrust = ({ serviceInfo, isFetchingInfo, failedFetchInfo }: Props) => {
+const ProofOfTrust = ({ serviceInfo, isFetchingInfo }: Props) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
+  const displayLoadingSkeleton = isFetchingInfo && !serviceInfo?.serviceProvider
 
-  if (failedFetchInfo) return null
   if (!isFetchingInfo && !serviceInfo?.serviceProvider) return null
   return (
     <View style={styles.container}>
       <Text fontFamily="EuclidCircularA-Bold" style={styles.title}>
         {t('connection.proofOfTrust')}
       </Text>
-      {isFetchingInfo ? (
+      {displayLoadingSkeleton ? (
         <ProofOfTrustLoadingSkeleton />
       ) : (
         serviceInfo?.serviceProvider && <RenderProof serviceInfo={serviceInfo as ServiceInfoForRenderProof} />
