@@ -9,7 +9,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import getStyles from './styles'
 
 import { CredentialDetails, ModalConfirmAction } from '@src/components'
-import { Text, ServiceInformation } from '@src/components/common'
+import { Text, ServiceMainInfoAndProofOfTrust } from '@src/components/common'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { useFetchServiceInfo } from '@src/hooks/useFetchServiceInfo'
 import { CredentialDetailsForDisplay } from '@src/services/agent/display'
@@ -102,7 +102,7 @@ const BaseCredentialOffer: React.FC<Props> = ({
               <Text fontFamily="EuclidCircularA-Medium" style={styles.titleIssuerInfo}>
                 {t('credentialOffer.issuerInformation')}
               </Text>
-              <ServiceInformation
+              <ServiceMainInfoAndProofOfTrust
                 isFetchingInfo={isFetchingInfo}
                 serviceInfo={serviceInfo}
                 failedFetchInfo={failedFetchInfo}

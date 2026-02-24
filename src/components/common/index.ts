@@ -20,7 +20,7 @@ import TextInput from './TextInput'
 import TextInputPassword from './TextInputPassword'
 import VerifiedIcon from './VerifiedIcon'
 
-export * from './ServiceInformation'
+export * from './ServiceMainInfoAndProofOfTrust'
 export * from './Buttons'
 export {
   Avatar,

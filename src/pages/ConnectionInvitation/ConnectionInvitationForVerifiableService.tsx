@@ -6,7 +6,7 @@ import { RefreshControl } from 'react-native-gesture-handler'
 import BaseConnectionInvitation, { ConnectionInvitationProps } from './BaseConnectionInvitation'
 import CanNotConnect from './CanNotConnect'
 
-import { ServiceInformation } from '@src/components/common'
+import { ServiceMainInfoAndProofOfTrust } from '@src/components/common'
 import { useUserProfile } from '@src/hooks/agent'
 import { useFetchServiceInfo } from '@src/hooks/useFetchServiceInfo'
 import { useValidateKidAgeRestrictions } from '@src/hooks/useValidateKidAgeRestrictions'
@@ -42,7 +42,7 @@ const ConnectionInvitationForVerifiableService = (props: ConnectionInvitationPro
       mainInfo={
         <View>
           {ageRestricted && <CanNotConnect kidAge={kidAge} userName={userName} />}
-          <ServiceInformation
+          <ServiceMainInfoAndProofOfTrust
             isFetchingInfo={isFetchingInfo}
             serviceInfo={serviceInfo}
             failedFetchInfo={failedFetchInfo}

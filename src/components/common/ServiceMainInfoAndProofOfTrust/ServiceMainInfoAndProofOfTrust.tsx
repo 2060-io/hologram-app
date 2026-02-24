@@ -13,7 +13,12 @@ type Props = {
   withLoadingSkeleton: boolean
 }
 
-const ServiceInformation = ({ isFetchingInfo, serviceInfo, failedFetchInfo, withLoadingSkeleton }: Props) => {
+const ServiceMainInfoAndProofOfTrust = ({
+  isFetchingInfo,
+  serviceInfo,
+  failedFetchInfo,
+  withLoadingSkeleton,
+}: Props) => {
   return (
     <View>
       <ServiceMainInfo
@@ -27,4 +32,4 @@ const ServiceInformation = ({ isFetchingInfo, serviceInfo, failedFetchInfo, with
   )
 }
 
-export default memo(ServiceInformation)
+export default memo(ServiceMainInfoAndProofOfTrust)

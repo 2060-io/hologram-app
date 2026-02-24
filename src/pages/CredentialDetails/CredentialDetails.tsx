@@ -8,7 +8,7 @@ import getStyles from './styles'
 
 import { CredentialDetails as CredentialDetailsComponent, ModalConfirmAction } from '@src/components'
 import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
-import { Text, ServiceInformation, OptionsList } from '@src/components/common'
+import { Text, ServiceMainInfoAndProofOfTrust, OptionsList } from '@src/components/common'
 import { Option } from '@src/components/common/OptionsList'
 import { useCredentials, useMobileAgent } from '@src/hooks/agent'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
@@ -83,7 +83,7 @@ const CredentialDetails = ({ route, navigation }: Props) => {
             <Text fontFamily="EuclidCircularA-SemiBold" style={styles.titleIssuerInfo}>
               {t('credentialOffer.issuerInformation')}
             </Text>
-            <ServiceInformation
+            <ServiceMainInfoAndProofOfTrust
               isFetchingInfo={isFetchingInfo}
               serviceInfo={serviceInfo}
               failedFetchInfo={failedFetchInfo}
