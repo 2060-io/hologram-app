@@ -44,7 +44,7 @@ const ProfileCreation = ({ navigation }: Props) => {
     if (!agent) throw new Error('Agent not defined')
     if (agent.isInitialized) {
       logWarn('createNewWallet: Agent already initialized!')
-      await agent.shutdown()      
+      await agent.shutdown()
     }
     // Make sure wallet and media directories are clean
     await deleteDir(walletDirectoryPath)
@@ -57,7 +57,7 @@ const ProfileCreation = ({ navigation }: Props) => {
 
     // Reconfigure askar store config with this new key
     agent.modules.askar.config.store.key = key
-    
+
     await agent.modules.askar.provisionStore()
   }, [agent])
 
