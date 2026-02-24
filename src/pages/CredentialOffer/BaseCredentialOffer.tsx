@@ -1,8 +1,7 @@
 import { HeaderBackButton } from '@react-navigation/elements'
 import { ParamListBase } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
-import { TrustResolutionOutcome } from '@verana-labs/verre'
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, TouchableOpacity, ScrollView } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -13,7 +12,6 @@ import { CredentialDetails, ModalConfirmAction } from '@src/components'
 import { Text, ServiceInformation } from '@src/components/common'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { useFetchServiceInfo } from '@src/hooks/useFetchServiceInfo'
-import { ServiceInfo } from '@src/model'
 import { CredentialDetailsForDisplay } from '@src/services/agent/display'
 
 type Props = {
@@ -37,14 +35,6 @@ const BaseCredentialOffer: React.FC<Props> = ({
   const did = credentialDetails.mainInfo.issuer.id
   const { isFetchingInfo, serviceInfo, failedFetchInfo } = useFetchServiceInfo(did)
   const [showModalRefuseConfirmation, setShowModalRefuseConfirmation] = useState(false)
-  const initialServiceInfo = useRef<ServiceInfo>({
-    did,
-    id: did,
-    name: credentialDetails.mainInfo.issuer.name,
-    logoUrl: credentialDetails.mainInfo.issuer.logoUrl,
-    minimumAgeRequired: 0,
-    status: TrustResolutionOutcome.INVALID,
-  })
 
   const displayModalRefuseConfirmation = () => setShowModalRefuseConfirmation(true)
   const hideModalRefuseConfirmation = () => setShowModalRefuseConfirmation(false)
@@ -106,16 +96,17 @@ const BaseCredentialOffer: React.FC<Props> = ({
               isFetchingInfo={isFetchingInfo}
               serviceInfo={serviceInfo}
               failedFetchInfo={failedFetchInfo}
+              withLoadingSkeleton={true}
             />
             <View style={styles.containerSectionIssuerInfo}>
               <Text fontFamily="EuclidCircularA-Medium" style={styles.titleIssuerInfo}>
                 {t('credentialOffer.issuerInformation')}
               </Text>
               <ServiceInformation
-                initialServiceInfo={initialServiceInfo.current}
                 isFetchingInfo={isFetchingInfo}
                 serviceInfo={serviceInfo}
                 failedFetchInfo={failedFetchInfo}
+                withLoadingSkeleton={true}
               />
             </View>
           </View>

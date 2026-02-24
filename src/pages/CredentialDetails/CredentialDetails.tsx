@@ -1,6 +1,5 @@
 import { StackScreenProps } from '@react-navigation/stack'
-import { TrustResolutionOutcome } from '@verana-labs/verre'
-import React, { useCallback, useRef, useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { RefreshControl, ScrollView, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -14,9 +13,7 @@ import { Option } from '@src/components/common/OptionsList'
 import { useCredentials, useMobileAgent } from '@src/hooks/agent'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { useFetchServiceInfo } from '@src/hooks/useFetchServiceInfo'
-import { ServiceInfo } from '@src/model'
 import { getCredentialDetailsForDisplay } from '@src/services/agent/display'
-import { trimText } from '@src/utils'
 
 interface Props extends StackScreenProps<NavigationStackParams, 'CredentialDetails'> {}
 const CredentialDetails = ({ route, navigation }: Props) => {
@@ -31,14 +28,6 @@ const CredentialDetails = ({ route, navigation }: Props) => {
   const credentialDetails = credentialRecord ? getCredentialDetailsForDisplay(credentialRecord) : undefined
   const did = credentialRecord?.firstCredential.issuerId ?? ''
   const { isFetchingInfo, serviceInfo, failedFetchInfo, getServiceInfo } = useFetchServiceInfo(did)
-  const initialServiceInfo = useRef<ServiceInfo>({
-    did,
-    id: did,
-    name: credentialDetails?.mainInfo.issuer.name ?? trimText(did),
-    logoUrl: credentialDetails?.mainInfo.issuer.logoUrl,
-    minimumAgeRequired: 0,
-    status: TrustResolutionOutcome.INVALID,
-  })
 
   const refreshServiceInfo = useCallback(() => {
     getServiceInfo()
@@ -89,15 +78,16 @@ const CredentialDetails = ({ route, navigation }: Props) => {
               isFetchingInfo={isFetchingInfo}
               serviceInfo={serviceInfo}
               failedFetchInfo={failedFetchInfo}
+              withLoadingSkeleton={false}
             />
             <Text fontFamily="EuclidCircularA-SemiBold" style={styles.titleIssuerInfo}>
               {t('credentialOffer.issuerInformation')}
             </Text>
             <ServiceInformation
-              initialServiceInfo={initialServiceInfo.current}
               isFetchingInfo={isFetchingInfo}
               serviceInfo={serviceInfo}
               failedFetchInfo={failedFetchInfo}
+              withLoadingSkeleton={false}
             />
           </View>
         </ScrollView>

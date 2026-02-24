@@ -1,5 +1,5 @@
 import { TrustResolutionOutcome } from '@verana-labs/verre'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { View } from 'react-native'
 import { RefreshControl } from 'react-native-gesture-handler'
 
@@ -10,7 +10,7 @@ import { ServiceInformation } from '@src/components/common'
 import { useUserProfile } from '@src/hooks/agent'
 import { useFetchServiceInfo } from '@src/hooks/useFetchServiceInfo'
 import { useValidateKidAgeRestrictions } from '@src/hooks/useValidateKidAgeRestrictions'
-import { ServiceInfo, ServiceStatus } from '@src/model'
+import { ServiceStatus } from '@src/model'
 
 const ConnectionInvitationForVerifiableService = (props: ConnectionInvitationProps) => {
   const { route } = props
@@ -19,17 +19,8 @@ const ConnectionInvitationForVerifiableService = (props: ConnectionInvitationPro
   const did = invitation.invitationDids[0]
   const { userProfileData } = useUserProfile()
   const { isFetchingInfo, serviceInfo, failedFetchInfo, getServiceInfo } = useFetchServiceInfo(did)
-  const initialServiceInfo = useRef<ServiceInfo>({
-    did,
-    description: invitation.label,
-    id: invitation.id,
-    logoUrl: invitation.imageUrl,
-    name: invitation.label ?? '',
-    minimumAgeRequired: 0,
-    status: TrustResolutionOutcome.INVALID,
-  }).current
-  const [minimumAgeRequired, setMinimumAgeRequired] = useState(initialServiceInfo.minimumAgeRequired)
-  const [serviceStatus, setServiceStatus] = useState<ServiceStatus>(initialServiceInfo.status)
+  const [minimumAgeRequired, setMinimumAgeRequired] = useState(0)
+  const [serviceStatus, setServiceStatus] = useState<ServiceStatus>(TrustResolutionOutcome.INVALID)
   const { kidAge, ageRestricted } = useValidateKidAgeRestrictions({ minimumAgeRequired, serviceStatus })
   const userName = userProfileData?.displayName
 
@@ -52,10 +43,10 @@ const ConnectionInvitationForVerifiableService = (props: ConnectionInvitationPro
         <View>
           {ageRestricted && <CanNotConnect kidAge={kidAge} userName={userName} />}
           <ServiceInformation
-            initialServiceInfo={initialServiceInfo}
             isFetchingInfo={isFetchingInfo}
             serviceInfo={serviceInfo}
             failedFetchInfo={failedFetchInfo}
+            withLoadingSkeleton={false}
           />
         </View>
       }

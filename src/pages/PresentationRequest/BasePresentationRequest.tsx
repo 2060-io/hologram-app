@@ -130,6 +130,7 @@ const BasePresentationRequest: React.FC<Props> = ({
               isFetchingInfo={isFetchingInfo}
               serviceInfo={serviceInfo}
               failedFetchInfo={failedFetchInfo}
+              withLoadingSkeleton
             />
           )}
           {hasCompatibleCredentials ? (

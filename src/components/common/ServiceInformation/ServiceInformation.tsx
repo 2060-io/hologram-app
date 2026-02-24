@@ -7,23 +7,22 @@ import ProofOfTrust from '@src/components/common/ProofOfTrust'
 import { ServiceInfo } from '@src/model'
 
 type Props = {
-  initialServiceInfo: ServiceInfo
   isFetchingInfo: boolean
   serviceInfo: ServiceInfo | undefined
   failedFetchInfo: boolean
+  withLoadingSkeleton: boolean
 }
 
-const ServiceInformation = ({ initialServiceInfo, isFetchingInfo, serviceInfo, failedFetchInfo }: Props) => {
-  const serviceInfoToDisplay = serviceInfo ?? initialServiceInfo
-
+const ServiceInformation = ({ isFetchingInfo, serviceInfo, failedFetchInfo, withLoadingSkeleton }: Props) => {
   return (
     <View>
       <ServiceMainInfo
-        serviceInfo={serviceInfoToDisplay}
+        serviceInfo={serviceInfo}
         isFetchingInfo={isFetchingInfo}
         failedFetchInfo={failedFetchInfo}
+        withLoadingSkeleton={withLoadingSkeleton}
       />
-      <ProofOfTrust serviceInfo={serviceInfoToDisplay} isFetchingInfo={isFetchingInfo} />
+      <ProofOfTrust serviceInfo={serviceInfo} isFetchingInfo={isFetchingInfo} />
     </View>
   )
 }

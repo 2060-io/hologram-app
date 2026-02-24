@@ -20,14 +20,13 @@ const ConnectionDetailsForService = (props: ConnectionDetailsProps) => {
       {...props}
       refreshControl={<RefreshControl refreshing={isFetchingInfo} onRefresh={refreshServiceInfo} />}
       mainInfo={
-        serviceInfo ? (
-          <ServiceMainInfo
-            isFetchingInfo={isFetchingInfo}
-            serviceInfo={serviceInfo}
-            failedFetchInfo={failedFetchInfo}
-            containerStyle={styles.mainInfoContainer}
-          />
-        ) : null
+        <ServiceMainInfo
+          isFetchingInfo={isFetchingInfo}
+          serviceInfo={serviceInfo}
+          failedFetchInfo={failedFetchInfo}
+          containerStyle={styles.mainInfoContainer}
+          withLoadingSkeleton={false}
+        />
       }
       footerInfo={<ProofOfTrust serviceInfo={serviceInfo} isFetchingInfo={isFetchingInfo} />}
     />

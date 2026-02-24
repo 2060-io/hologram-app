@@ -24,9 +24,14 @@ type Props = {
   isFetchingInfo: boolean
   failedFetchInfo: boolean
   containerStyle?: ViewStyle
+  withLoadingSkeleton: boolean
 }
 
-const ServiceMainInfo = ({ serviceInfo, isFetchingInfo, failedFetchInfo, containerStyle }: Props) => {
+type PropsSelectedWhatToRender = Omit<Props, 'serviceInfo'> & {
+  serviceInfo?: ServiceInfo
+}
+
+const ServiceMainInfo = ({ serviceInfo, failedFetchInfo, containerStyle }: Props) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
@@ -62,22 +67,14 @@ const ServiceMainInfo = ({ serviceInfo, isFetchingInfo, failedFetchInfo, contain
       )
     }
     return (
-      <Skeleton
-        height={widthPercentageToDP('25%')}
-        width={widthPercentageToDP('25%')}
-        colorMode={theme.isDarkMode ? 'dark' : 'light'}
-        radius="round"
-        show={isFetchingInfo}
-      >
-        <Avatar
-          uri={serviceInfo?.logoUrl}
-          label={serviceInfo?.name}
-          size="25%"
-          onImagePressed={onAvatarImagePressed}
-        />
-      </Skeleton>
+      <Avatar
+        uri={serviceInfo?.logoUrl}
+        label={serviceInfo?.name}
+        size="25%"
+        onImagePressed={onAvatarImagePressed}
+      />
     )
-  }, [isFetchingInfo, failedFetchInfo, serviceInfo])
+  }, [failedFetchInfo, serviceInfo])
 
   return (
     <View style={[styles.containerCardIssuerInfo, containerStyle]}>
@@ -92,19 +89,11 @@ const ServiceMainInfo = ({ serviceInfo, isFetchingInfo, failedFetchInfo, contain
       </Text>
       {serviceInfo.description && <Text style={[styles.text]}>{serviceInfo.description}</Text>}
       <View style={styles.containerIconValidity}>
-        <Skeleton
-          height={styles.iconValidity.height}
-          width={styles.iconValidity.width}
-          colorMode={theme.isDarkMode ? 'dark' : 'light'}
-          radius="round"
-          show={isFetchingInfo}
-        >
-          <VerifiedIcon style={styles.iconValidity} status={serviceInfo.status} />
-        </Skeleton>
+        <VerifiedIcon style={styles.iconValidity} status={serviceInfo.status} />
       </View>
-      <Did did={serviceInfo.did} serviceInfoStatus={serviceInfo.status} isFetchingInfo={isFetchingInfo} />
+      <Did did={serviceInfo.did} serviceInfoStatus={serviceInfo.status} />
       {failedFetchInfo && <Text style={styles.failedToFetchInfoText}>{t('credential.failedFetchInfo')}</Text>}
-      {!isFetchingInfo && serviceProvider && (
+      {serviceProvider && (
         <View style={styles.serviceProviderInfoContainer}>
           <Text style={styles.text}>{t('invitation.serviceProvider')}</Text>
           <View style={styles.serviceProviderName}>
@@ -141,4 +130,43 @@ const ServiceMainInfo = ({ serviceInfo, isFetchingInfo, failedFetchInfo, contain
   )
 }
 
-export default memo(ServiceMainInfo)
+const LoadingMainInfoSkeleton = ({ containerStyle }: PropsSelectedWhatToRender) => {
+  const theme = useTheme()
+  const styles = getStyles(theme)
+  return (
+    <View style={[styles.containerCardIssuerInfo, containerStyle]}>
+      <Skeleton
+        height={widthPercentageToDP('25%')}
+        width={widthPercentageToDP('25%')}
+        colorMode={theme.isDarkMode ? 'dark' : 'light'}
+        radius="round"
+        show
+      />
+      <View style={styles.containerIconValidity}>
+        <Skeleton
+          height={styles.iconValidity.height}
+          width={styles.iconValidity.width}
+          colorMode={theme.isDarkMode ? 'dark' : 'light'}
+          radius="round"
+          show
+        />
+      </View>
+      <Skeleton
+        height={styles.text.fontSize * 3 + 6}
+        width={'100%'}
+        colorMode={theme.isDarkMode ? 'dark' : 'light'}
+        radius="round"
+        show
+      />
+    </View>
+  )
+}
+
+const SelectWhatToRender = (props: PropsSelectedWhatToRender) => {
+  const { serviceInfo } = props
+  const isFetchingAndWithLoadingSkeleton = props.isFetchingInfo && props.withLoadingSkeleton
+  if (!serviceInfo || isFetchingAndWithLoadingSkeleton) return <LoadingMainInfoSkeleton {...props} />
+  return <ServiceMainInfo serviceInfo={serviceInfo} {...props} />
+}
+
+export default memo(SelectWhatToRender)

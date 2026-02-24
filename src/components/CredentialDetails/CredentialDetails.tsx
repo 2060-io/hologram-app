@@ -15,6 +15,7 @@ type Props = {
   isFetchingInfo: boolean
   serviceInfo: ServiceInfo | undefined
   failedFetchInfo: boolean
+  withLoadingSkeleton: boolean
 }
 
 const CredentialDetails = ({
@@ -23,13 +24,14 @@ const CredentialDetails = ({
   isFetchingInfo,
   serviceInfo,
   failedFetchInfo,
+  withLoadingSkeleton,
 }: Props) => {
   return (
     <View style={styles.container}>
       <DumbCredentialMainInformation
         credentialMainInfo={credentialDetails.mainInfo}
         containerStyle={styles.credentialMainInfoContainer}
-        isFetchingInfo={isFetchingInfo}
+        isFetchingInfo={isFetchingInfo && withLoadingSkeleton}
         serviceInfo={serviceInfo}
         failedFetchInfo={failedFetchInfo}
       />
