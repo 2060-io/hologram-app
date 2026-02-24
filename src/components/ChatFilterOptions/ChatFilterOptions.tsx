@@ -6,8 +6,8 @@ import { IconsNames } from '../common/SvgIcon'
 
 import getStyles from './styles'
 
-import { Text, SvgIcon } from '@2060/components/common'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
+import { Text, SvgIcon } from '@src/components/common'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
 
 const defaultOptions = [
   { id: '1', name: 'allChats', value: 'all' },

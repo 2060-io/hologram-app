@@ -5,9 +5,9 @@ import { SvgUri } from 'react-native-svg'
 import SmartImage from './SmartImage'
 import getStyles from './styles'
 
-import Text from '@2060/components/common/Text'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { widthPercentageToDP } from '@2060/utils/responsiveUtils'
+import Text from '@src/components/common/Text'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { widthPercentageToDP } from '@src/utils/responsiveUtils'
 
 const getNameInitials = (fullName: string) => {
   const nameParts = fullName.trim().split(' ')
@@ -64,7 +64,7 @@ const Avatar: React.FC<Props> = ({
       disabled={!onImagePressed}
       onPress={() => onImagePressed?.(imageUri.current ?? '')}
     >
-      {uri?.endsWith('.svg') ? (
+      {uri?.endsWith('.svg') || uri?.includes('data:image/svg+xml') ? (
         <SvgUri
           uri={uri}
           style={styles.avatar}

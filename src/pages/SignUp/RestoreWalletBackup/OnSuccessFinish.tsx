@@ -4,9 +4,9 @@ import { View } from 'react-native'
 
 import getStyles from './styles'
 
-import { Text, MainButton, Progress } from '@2060/components/common'
-import { useUserProfile } from '@2060/hooks/agent'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
+import { Text, MainButton, Progress } from '@src/components/common'
+import { useUserProfile } from '@src/hooks/agent'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
 
 type Props = {
   goToHomeScreen: () => void

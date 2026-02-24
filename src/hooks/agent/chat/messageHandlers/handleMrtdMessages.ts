@@ -29,8 +29,8 @@ import {
   ChatEntryType,
   EMrtdReadRequestMetadata,
   MrzRequestMetadata,
-} from '@2060/model'
-import { log } from '@2060/utils'
+} from '@src/model'
+import { log } from '@src/utils'
 
 export const handleMrtdMessages = (options: {
   realm: Realm

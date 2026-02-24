@@ -1,8 +1,8 @@
 import React from 'react'
 import { SvgProps } from 'react-native-svg'
 
-import Icons from '@2060/assets/icons'
-import Default from '@2060/assets/icons/Default'
+import Icons from '@src/assets/icons'
+import Default from '@src/assets/icons/Default'
 
 export type IconsNames = typeof Icons
 

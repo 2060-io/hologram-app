@@ -6,17 +6,17 @@ import { TouchableOpacity, View } from 'react-native'
 
 import getStyles from './styles'
 
-import { Connections } from '@2060/components'
-import { ConnectionItem } from '@2060/components/Connections/ConnectionList'
-import { PersonalChatStackParams } from '@2060/components/Navigation/NavigationProps'
-import { SvgIcon, Text } from '@2060/components/common'
-import { useChatActions } from '@2060/hooks'
-import { useConnections } from '@2060/hooks/agent'
-import { useSharedDataFromOtherApps } from '@2060/hooks/providers/SharedDataFromOtherAppsProvider'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { notAllowedConnectionsIdsToSendMessages } from '@2060/utils/connectionUtils'
+import { Connections } from '@src/components'
+import { ConnectionItem } from '@src/components/Connections/ConnectionList'
+import { ChatStackParams } from '@src/components/Navigation/NavigationProps'
+import { SvgIcon, Text } from '@src/components/common'
+import { useChatActions } from '@src/hooks'
+import { useConnections } from '@src/hooks/agent'
+import { useSharedDataFromOtherApps } from '@src/hooks/providers/SharedDataFromOtherAppsProvider'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { notAllowedConnectionsIdsToSendMessages } from '@src/utils/connectionUtils'
 
-interface Props extends StackScreenProps<PersonalChatStackParams, 'ShareMessages'> {}
+interface Props extends StackScreenProps<ChatStackParams, 'ShareMessages'> {}
 
 type SelectedConnection = {
   id: string

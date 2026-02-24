@@ -6,7 +6,7 @@ import { useNetwork } from '../useNetwork'
 import { useMobileAgent } from './MobileAgentProvider'
 import { AgentActionOptions } from './actions/AgentAction'
 
-import { AgentActionQueueSingleton } from '@2060/services/AgentActionQueueSingleton'
+import { AgentActionQueueSingleton } from '@src/services/AgentActionQueueSingleton'
 
 type AgentActionQueueContextProps = {
   addAgentActionToQueue: (action: AgentActionOptions) => void

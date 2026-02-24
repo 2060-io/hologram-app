@@ -4,7 +4,7 @@ import { check, request, PERMISSIONS, RESULTS, Permission } from 'react-native-p
 
 import { logError } from './log'
 
-import { IS_IOS } from '@2060/constants'
+import { IS_IOS } from '@src/constants'
 
 const MICROPHONE_PERMISSION = IS_IOS ? PERMISSIONS.IOS.MICROPHONE : PERMISSIONS.ANDROID.RECORD_AUDIO
 const CAMERA_PERMISSION = IS_IOS ? PERMISSIONS.IOS.CAMERA : PERMISSIONS.ANDROID.CAMERA

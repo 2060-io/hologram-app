@@ -6,15 +6,15 @@ import Config from 'react-native-config'
 
 import { HomeTabProps } from './HomeMainProps'
 
-import { Loader } from '@2060/components/common'
-import { useMobileAgent } from '@2060/hooks/agent'
+import { Loader } from '@src/components/common'
+import { useMobileAgent } from '@src/hooks/agent'
 import {
   DidcommInvitationType,
   processInvitation as agentProcessInvitation,
   getOutOfBandRecordById,
-} from '@2060/services/agent'
-import { log, logError } from '@2060/utils'
-import { toast } from '@2060/utils/toast'
+} from '@src/services/agent'
+import { log, logError } from '@src/utils'
+import { toast } from '@src/utils/toast'
 
 const HomeMainContainer = (HomeMainComponent: ElementType) => {
   const WrapperHomeMain = (props: HomeTabProps) => {

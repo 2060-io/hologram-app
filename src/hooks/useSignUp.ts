@@ -3,9 +3,9 @@ import { CommonActions, useNavigation } from '@react-navigation/native'
 import { useCallback, useState } from 'react'
 import Config from 'react-native-config'
 
-import { useMobileAgent, useUserProfile } from '@2060/hooks/agent'
-import { isRegistered } from '@2060/services/agent'
-import { log, logError } from '@2060/utils'
+import { useMobileAgent, useUserProfile } from '@src/hooks/agent'
+import { isRegistered } from '@src/services/agent'
+import { log, logError } from '@src/utils'
 
 const defaultServicePublicDid = Config.DEFAULT_SERVICE_PUBLIC_DID as string
 const defaultServiceAlias = Config.DEFAULT_SERVICE_ALIAS as string

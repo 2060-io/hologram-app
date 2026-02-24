@@ -7,17 +7,13 @@ import { version } from '../../package.json'
 
 import { BackupProgressProps, OnBackupFinish } from './backup'
 
-import { useMobileAgent } from '@2060/hooks/agent/MobileAgentProvider'
-import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
-import { ChatEntry, ChatThread, CacheRecord } from '@2060/model'
-import {
-  setStorageData,
-  getStorageData,
-  BACKUP_INCLUDES_MEDIA_PERSIST_KEY,
-} from '@2060/services/localStorage'
-import { logError } from '@2060/utils'
-import { writeFile } from '@2060/utils/RNFS'
-import * as BackupUtils from '@2060/utils/walletBackUpUtils'
+import { useMobileAgent } from '@src/hooks/agent/MobileAgentProvider'
+import { useLocalRealm } from '@src/hooks/providers/RealmProvider'
+import { ChatEntry, ChatThread, CacheRecord } from '@src/model'
+import { setStorageData, getStorageData, BACKUP_INCLUDES_MEDIA_PERSIST_KEY } from '@src/services/localStorage'
+import { logError } from '@src/utils'
+import { writeFile } from '@src/utils/RNFS'
+import * as BackupUtils from '@src/utils/walletBackUpUtils'
 
 type Props = {
   backupProgressInitialValues: BackupProgressProps

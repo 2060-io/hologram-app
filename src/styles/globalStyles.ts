@@ -2,9 +2,9 @@ import { StyleSheet } from 'react-native'
 
 import { AppTheme, AppColors } from './types'
 
-import { IS_IOS } from '@2060/constants'
-import { hexTransparency } from '@2060/utils/colorUtils'
-import { heightPercentageToDP } from '@2060/utils/responsiveUtils'
+import { IS_IOS } from '@src/constants'
+import { hexTransparency } from '@src/utils/colorUtils'
+import { heightPercentageToDP } from '@src/utils/responsiveUtils'
 
 export const headerHeight = heightPercentageToDP('7%')
 

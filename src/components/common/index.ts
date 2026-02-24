@@ -1,7 +1,7 @@
 import Avatar from './Avatar'
 import ConnectionMainActions from './ConnectionMainActions'
 import ConnectionRefusedByAge from './ConnectionRefusedByAge'
-import CredentialMainInformation from './CredentialMainInformation'
+import { CredentialMainInformation, DumbCredentialMainInformation } from './CredentialMainInformation'
 import Icon from './CustomIcon'
 import FullScreenImage from './FullScreenImage'
 import HeaderTitle from './HeaderTitle'
@@ -36,6 +36,7 @@ export {
   SvgIcon,
   MessageStateIcon,
   CredentialMainInformation,
+  DumbCredentialMainInformation,
   OptionsList,
   VerifiedIcon,
   Progress,

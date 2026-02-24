@@ -18,9 +18,11 @@ import {
   AgentActionOptions,
   OutboundMessageContextData,
   RetryAgentAction,
-} from '@2060/hooks/agent/actions/AgentAction'
-import { AgentActionExecuter } from '@2060/hooks/agent/actions/AgentActionExecuter'
-import { log, logError } from '@2060/utils'
+} from '@src/hooks/agent/actions/AgentAction'
+import { AgentActionExecuter } from '@src/hooks/agent/actions/AgentActionExecuter'
+import { updateChatEntry } from '@src/hooks/agent/chat/services'
+import { ChatEntry, ChatEntryState } from '@src/model'
+import { log, logError } from '@src/utils'
 
 class ActionExecutionError extends Error {
   public outboundMessageContextData?: OutboundMessageContextData
@@ -131,6 +133,14 @@ export class AgentActionQueueSingleton {
                 connectionRecord,
               }),
             )
+            const associatedChatEntryId = payload.outboundMessageContextData.associatedChatEntryId
+            const chatEntry = associatedChatEntryId
+              ? realm.objectForPrimaryKey(ChatEntry, associatedChatEntryId)
+              : undefined
+            // Message is submitted: update the associated chat entry to the corresponding state
+            if (chatEntry && chatEntry.state === ChatEntryState.Created) {
+              updateChatEntry(realm, { recordId: chatEntry.id, state: ChatEntryState.Submitted })
+            }
           } catch (error) {
             logError(`error trying resending message: ${error}`)
             throw new ActionExecutionError('Execution error', payload.outboundMessageContextData)

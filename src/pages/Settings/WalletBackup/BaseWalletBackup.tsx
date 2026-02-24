@@ -8,13 +8,13 @@ import PasswordDoesNotExists from './PasswordDoesNotExists'
 import { WalletBackupProps } from './WalletBackupProps'
 import getStyles from './styles'
 
-import { WalletBackupInfo, ModalConfirmAction } from '@2060/components'
-import { Text, Switch, SvgIcon, MainButton } from '@2060/components/common'
-import { Option } from '@2060/components/common/OptionsList'
-import { IS_ANDROID, IS_IOS } from '@2060/constants'
-import { useBuildBackup } from '@2060/hooks'
-import { BackupProgressProps } from '@2060/hooks/backup'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
+import { WalletBackupInfo, ModalConfirmAction } from '@src/components'
+import { Text, Switch, SvgIcon, MainButton } from '@src/components/common'
+import { Option } from '@src/components/common/OptionsList'
+import { IS_ANDROID, IS_IOS } from '@src/constants'
+import { useBuildBackup } from '@src/hooks'
+import { BackupProgressProps } from '@src/hooks/backup'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
 
 export const backupProgressInitialValues: BackupProgressProps = {
   progress: 0,

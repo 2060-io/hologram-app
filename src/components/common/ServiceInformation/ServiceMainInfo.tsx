@@ -8,16 +8,16 @@ import FullScreenImage from '../FullScreenImage'
 import Did from './Did'
 import getStyles from './styles'
 
-import Avatar from '@2060/components/common/Avatar'
-import SvgIcon from '@2060/components/common/SvgIcon'
-import Text from '@2060/components/common/Text'
-import VerifiedIcon from '@2060/components/common/VerifiedIcon'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { useValidateKidAgeRestrictions } from '@2060/hooks/useValidateKidAgeRestrictions'
-import { ServiceInfo } from '@2060/model'
-import { getFlagEmoji } from '@2060/utils'
-import { widthPercentageToDP } from '@2060/utils/responsiveUtils'
-import { toast } from '@2060/utils/toast'
+import Avatar from '@src/components/common/Avatar'
+import SvgIcon from '@src/components/common/SvgIcon'
+import Text from '@src/components/common/Text'
+import VerifiedIcon from '@src/components/common/VerifiedIcon'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { useValidateKidAgeRestrictions } from '@src/hooks/useValidateKidAgeRestrictions'
+import { ServiceInfo } from '@src/model'
+import { getFlagEmoji } from '@src/utils'
+import { widthPercentageToDP } from '@src/utils/responsiveUtils'
+import { toast } from '@src/utils/toast'
 
 type Props = {
   serviceInfo: ServiceInfo
@@ -104,7 +104,7 @@ const ServiceMainInfo = ({ serviceInfo, isFetchingInfo, failedFetchInfo, contain
       </View>
       <Did did={serviceInfo.did} serviceInfoStatus={serviceInfo.status} isFetchingInfo={isFetchingInfo} />
       {failedFetchInfo && <Text style={styles.failedToFetchInfoText}>{t('credential.failedFetchInfo')}</Text>}
-      {serviceProvider && (
+      {!isFetchingInfo && serviceProvider && (
         <View style={styles.serviceProviderInfoContainer}>
           <Text style={styles.text}>{t('invitation.serviceProvider')}</Text>
           <View style={styles.serviceProviderName}>
