@@ -12,6 +12,7 @@ import getStyles from './styles'
 import { CredentialDetails, ModalConfirmAction } from '@src/components'
 import { Text, ServiceInformation } from '@src/components/common'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { useFetchServiceInfo } from '@src/hooks/useFetchServiceInfo'
 import { ServiceInfo } from '@src/model'
 import { CredentialDetailsForDisplay } from '@src/services/agent/display'
 
@@ -33,11 +34,12 @@ const BaseCredentialOffer: React.FC<Props> = ({
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
+  const did = credentialDetails.mainInfo.issuer.id
+  const { isFetchingInfo, serviceInfo, failedFetchInfo } = useFetchServiceInfo(did)
   const [showModalRefuseConfirmation, setShowModalRefuseConfirmation] = useState(false)
-
-  const serviceInfo = useRef<ServiceInfo>({
-    did: credentialDetails.mainInfo.issuer.id,
-    id: credentialDetails.mainInfo.issuer.id,
+  const initialServiceInfo = useRef<ServiceInfo>({
+    did,
+    id: did,
     name: credentialDetails.mainInfo.issuer.name,
     logoUrl: credentialDetails.mainInfo.issuer.logoUrl,
     minimumAgeRequired: 0,
@@ -99,14 +101,21 @@ const BaseCredentialOffer: React.FC<Props> = ({
             >
               {t('credentialOffer.verifiableCredential')}
             </Text>
-            <CredentialDetails credentialDetails={credentialDetails} />
+            <CredentialDetails
+              credentialDetails={credentialDetails}
+              isFetchingInfo={isFetchingInfo}
+              serviceInfo={serviceInfo}
+              failedFetchInfo={failedFetchInfo}
+            />
             <View style={styles.containerSectionIssuerInfo}>
               <Text fontFamily="EuclidCircularA-Medium" style={styles.titleIssuerInfo}>
                 {t('credentialOffer.issuerInformation')}
               </Text>
               <ServiceInformation
-                did={credentialDetails.mainInfo.issuer.id}
-                initialServiceInfo={serviceInfo.current}
+                initialServiceInfo={initialServiceInfo.current}
+                isFetchingInfo={isFetchingInfo}
+                serviceInfo={serviceInfo}
+                failedFetchInfo={failedFetchInfo}
               />
             </View>
           </View>

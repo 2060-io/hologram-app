@@ -1,8 +1,8 @@
 import { StackScreenProps } from '@react-navigation/stack'
 import { TrustResolutionOutcome } from '@verana-labs/verre'
-import React, { useRef, useState } from 'react'
+import React, { useCallback, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ScrollView, View } from 'react-native'
+import { RefreshControl, ScrollView, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 import getStyles from './styles'
@@ -13,6 +13,7 @@ import { Text, ServiceInformation, OptionsList } from '@src/components/common'
 import { Option } from '@src/components/common/OptionsList'
 import { useCredentials, useMobileAgent } from '@src/hooks/agent'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { useFetchServiceInfo } from '@src/hooks/useFetchServiceInfo'
 import { ServiceInfo } from '@src/model'
 import { getCredentialDetailsForDisplay } from '@src/services/agent/display'
 import { trimText } from '@src/utils'
@@ -28,9 +29,9 @@ const CredentialDetails = ({ route, navigation }: Props) => {
   const [showConfirmationDeleteModal, setShowConfirmationDeleteModal] = useState(false)
   const credentialRecord = getCredentialById(credentialRecordId)
   const credentialDetails = credentialRecord ? getCredentialDetailsForDisplay(credentialRecord) : undefined
-
   const did = credentialRecord?.firstCredential.issuerId ?? ''
-  const serviceInfo = useRef<ServiceInfo>({
+  const { isFetchingInfo, serviceInfo, failedFetchInfo, getServiceInfo } = useFetchServiceInfo(did)
+  const initialServiceInfo = useRef<ServiceInfo>({
     did,
     id: did,
     name: credentialDetails?.mainInfo.issuer.name ?? trimText(did),
@@ -38,6 +39,10 @@ const CredentialDetails = ({ route, navigation }: Props) => {
     minimumAgeRequired: 0,
     status: TrustResolutionOutcome.INVALID,
   })
+
+  const refreshServiceInfo = useCallback(() => {
+    getServiceInfo()
+  }, [])
 
   const hideConfirmationDeleteModal = () => setShowConfirmationDeleteModal(false)
 
@@ -69,7 +74,10 @@ const CredentialDetails = ({ route, navigation }: Props) => {
   return (
     <>
       <SafeAreaView style={styles.container} edges={['bottom']}>
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          refreshControl={<RefreshControl refreshing={isFetchingInfo} onRefresh={refreshServiceInfo} />}
+        >
           <View style={styles.subContainer}>
             <CredentialDetailsComponent
               credentialDetails={credentialDetails}
@@ -78,11 +86,19 @@ const CredentialDetails = ({ route, navigation }: Props) => {
                   <OptionsList options={options} />
                 </View>
               }
+              isFetchingInfo={isFetchingInfo}
+              serviceInfo={serviceInfo}
+              failedFetchInfo={failedFetchInfo}
             />
             <Text fontFamily="EuclidCircularA-SemiBold" style={styles.titleIssuerInfo}>
               {t('credentialOffer.issuerInformation')}
             </Text>
-            <ServiceInformation did={did} initialServiceInfo={serviceInfo.current} />
+            <ServiceInformation
+              initialServiceInfo={initialServiceInfo.current}
+              isFetchingInfo={isFetchingInfo}
+              serviceInfo={serviceInfo}
+              failedFetchInfo={failedFetchInfo}
+            />
           </View>
         </ScrollView>
       </SafeAreaView>
