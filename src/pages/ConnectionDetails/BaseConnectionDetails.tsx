@@ -3,7 +3,7 @@ import { DidCommConnectionRecord } from '@credo-ts/didcomm'
 import { StackScreenProps } from '@react-navigation/stack'
 import React, { ReactElement, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, ScrollView, TouchableOpacity, Platform, RefreshControlProps } from 'react-native'
+import { View, ScrollView, TouchableOpacity, Platform } from 'react-native'
 import Config from 'react-native-config'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Share, { ShareOptions } from 'react-native-share'
@@ -18,6 +18,7 @@ import { IS_IOS } from '@src/constants'
 import { useMobileAgent, useChats, useConnectionByParentConnectionId, useUserProfile } from '@src/hooks/agent'
 import { deleteConnection } from '@src/hooks/agent/connections'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { useScrollSwipeDown } from '@src/hooks/useScrollSwipeDown'
 import { createOobInvitation, MobileAgent } from '@src/services/agent'
 import { capitalizeFirstLetter, logError } from '@src/utils'
 import {
@@ -29,6 +30,7 @@ import {
   unblockConnection,
 } from '@src/utils/connectionUtils'
 import { markNewConnectionNotificationAsViewed } from '@src/utils/pushNotificationsUtils'
+import { screenHeight } from '@src/utils/responsiveUtils'
 import { toast } from '@src/utils/toast'
 
 type confirmationTypes = 'deleteChat' | 'block' | 'unblock' | 'deleteConnection'
@@ -41,8 +43,8 @@ export interface ConnectionDetailsProps extends WrapperProps {
 interface BaseConnectionDetailsProps extends ConnectionDetailsProps {
   mainInfo: ReactElement | null
   footerInfo?: ReactElement | null
-  refreshControl?: // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  React.ReactElement<RefreshControlProps, string | React.JSXElementConstructor<any>> | undefined
+  onSwipeDown?: () => void
+  disabledSwipeDown?: boolean
 }
 
 const BaseConnectionDetails = ({
@@ -50,7 +52,8 @@ const BaseConnectionDetails = ({
   connection,
   mainInfo,
   footerInfo,
-  refreshControl,
+  onSwipeDown,
+  disabledSwipeDown = true,
 }: BaseConnectionDetailsProps) => {
   const { t } = useTranslation()
   const theme = useTheme()
@@ -58,6 +61,10 @@ const BaseConnectionDetails = ({
   const { agent } = useMobileAgent()
   const { userProfileData } = useUserProfile()
   const { clearChat, findOrCreateThread } = useChats()
+  const { handleScrollBeginDrag, handleScrollEndDrag } = useScrollSwipeDown({
+    disabledSwipeDown,
+    onSwipeDown,
+  })
   const relatedConnections = useConnectionByParentConnectionId(connection.id)
   const [showConfirmationModal, setShowConfirmationModal] = useState(false)
   const [blockingConnection, setBlockingConnection] = useState(false)
@@ -219,7 +226,12 @@ const BaseConnectionDetails = ({
 
   return (
     <SafeAreaView style={styles.container} edges={['bottom']}>
-      <ScrollView showsVerticalScrollIndicator={false} refreshControl={refreshControl}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ minHeight: screenHeight + 1 }}
+        onScrollBeginDrag={handleScrollBeginDrag}
+        onScrollEndDrag={handleScrollEndDrag}
+      >
         <View style={styles.subContainer}>
           <ModalLoading
             visible={blockingConnection}

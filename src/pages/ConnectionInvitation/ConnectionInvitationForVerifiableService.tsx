@@ -1,7 +1,6 @@
 import { TrustResolutionOutcome } from '@verana-labs/verre'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { View } from 'react-native'
-import { RefreshControl } from 'react-native-gesture-handler'
 
 import BaseConnectionInvitation, { ConnectionInvitationProps } from './BaseConnectionInvitation'
 import CanNotConnect from './CanNotConnect'
@@ -47,7 +46,8 @@ const ConnectionInvitationForVerifiableService = (props: ConnectionInvitationPro
   return (
     <BaseConnectionInvitation
       {...props}
-      refreshControl={<RefreshControl refreshing={isFetchingInfo} onRefresh={refreshServiceInfo} />}
+      onSwipeDown={refreshServiceInfo}
+      disabledSwipeDown={isFetchingInfo}
       mainInfo={
         <View>
           {ageRestricted && <CanNotConnect kidAge={kidAge} userName={userName} />}
