@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react'
-import { RefreshControl, StyleSheet } from 'react-native'
+import { StyleSheet } from 'react-native'
 
 import BaseConnectionDetails, { ConnectionDetailsProps } from './BaseConnectionDetails'
 
@@ -18,7 +18,8 @@ const ConnectionDetailsForService = (props: ConnectionDetailsProps) => {
   return (
     <BaseConnectionDetails
       {...props}
-      refreshControl={<RefreshControl refreshing={isFetchingInfo} onRefresh={refreshServiceInfo} />}
+      onSwipeDown={refreshServiceInfo}
+      disabledSwipeDown={isFetchingInfo}
       mainInfo={
         serviceInfo ? (
           <ServiceMainInfo

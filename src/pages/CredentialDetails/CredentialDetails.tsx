@@ -1,8 +1,8 @@
 import { StackScreenProps } from '@react-navigation/stack'
 import { TrustResolutionOutcome } from '@verana-labs/verre'
-import React, { useCallback, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { RefreshControl, ScrollView, View } from 'react-native'
+import { ScrollView, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 import getStyles from './styles'
@@ -14,9 +14,11 @@ import { Option } from '@src/components/common/OptionsList'
 import { useCredentials, useMobileAgent } from '@src/hooks/agent'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { useFetchServiceInfo } from '@src/hooks/useFetchServiceInfo'
+import { useScrollSwipeDown } from '@src/hooks/useScrollSwipeDown'
 import { ServiceInfo } from '@src/model'
 import { getCredentialDetailsForDisplay } from '@src/services/agent/display'
 import { trimText } from '@src/utils'
+import { screenHeight } from '@src/utils/responsiveUtils'
 
 interface Props extends StackScreenProps<NavigationStackParams, 'CredentialDetails'> {}
 const CredentialDetails = ({ route, navigation }: Props) => {
@@ -31,6 +33,10 @@ const CredentialDetails = ({ route, navigation }: Props) => {
   const credentialDetails = credentialRecord ? getCredentialDetailsForDisplay(credentialRecord) : undefined
   const did = credentialRecord?.firstCredential.issuerId ?? ''
   const { isFetchingInfo, serviceInfo, failedFetchInfo, getServiceInfo } = useFetchServiceInfo(did)
+  const { handleScrollBeginDrag, handleScrollEndDrag } = useScrollSwipeDown({
+    disabledSwipeDown: isFetchingInfo,
+    onSwipeDown: () => getServiceInfo(),
+  })
   const initialServiceInfo = useRef<ServiceInfo>({
     did,
     id: did,
@@ -39,10 +45,6 @@ const CredentialDetails = ({ route, navigation }: Props) => {
     minimumAgeRequired: 0,
     status: TrustResolutionOutcome.INVALID,
   })
-
-  const refreshServiceInfo = useCallback(() => {
-    getServiceInfo()
-  }, [])
 
   const hideConfirmationDeleteModal = () => setShowConfirmationDeleteModal(false)
 
@@ -76,7 +78,9 @@ const CredentialDetails = ({ route, navigation }: Props) => {
       <SafeAreaView style={styles.container} edges={['bottom']}>
         <ScrollView
           showsVerticalScrollIndicator={false}
-          refreshControl={<RefreshControl refreshing={isFetchingInfo} onRefresh={refreshServiceInfo} />}
+          contentContainerStyle={{ minHeight: screenHeight + 1 }}
+          onScrollBeginDrag={handleScrollBeginDrag}
+          onScrollEndDrag={handleScrollEndDrag}
         >
           <View style={styles.subContainer}>
             <CredentialDetailsComponent
