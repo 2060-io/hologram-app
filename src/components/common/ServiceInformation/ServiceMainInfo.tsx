@@ -90,7 +90,14 @@ const ServiceMainInfo = ({ serviceInfo, isFetchingInfo, failedFetchInfo, contain
       <Text fontFamily="EuclidCircularA-Medium" style={styles.issuerName}>
         {serviceInfo.name}
       </Text>
-      {serviceInfo.description && <Text style={[styles.text]}>{serviceInfo.description}</Text>}
+      <Skeleton
+        width={'100%'}
+        colorMode={theme.isDarkMode ? 'dark' : 'light'}
+        radius="round"
+        show={isFetchingInfo}
+      >
+        {isFetchingInfo ? null : <Text style={styles.text}>{serviceInfo.description}</Text>}
+      </Skeleton>
       <View style={styles.containerIconValidity}>
         <Skeleton
           height={styles.iconValidity.height}
