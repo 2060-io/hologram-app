@@ -18,6 +18,7 @@ import { useScrollSwipeDown } from '@src/hooks/useScrollSwipeDown'
 import { ServiceInfo } from '@src/model'
 import { getCredentialDetailsForDisplay } from '@src/services/agent/display'
 import { trimText } from '@src/utils'
+import { screenHeight } from '@src/utils/responsiveUtils'
 
 interface Props extends StackScreenProps<NavigationStackParams, 'CredentialDetails'> {}
 const CredentialDetails = ({ route, navigation }: Props) => {
@@ -77,7 +78,7 @@ const CredentialDetails = ({ route, navigation }: Props) => {
       <SafeAreaView style={styles.container} edges={['bottom']}>
         <ScrollView
           showsVerticalScrollIndicator={false}
-          scrollEventThrottle={16}
+          contentContainerStyle={{ minHeight: screenHeight + 1 }}
           onScrollBeginDrag={handleScrollBeginDrag}
           onScrollEndDrag={handleScrollEndDrag}
         >

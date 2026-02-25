@@ -16,6 +16,7 @@ import { useChats, useMobileAgent, useUserProfile } from '@src/hooks/agent'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { acceptInvitation } from '@src/services/agent/oob'
 import { logError } from '@src/utils'
+import { screenHeight } from '@src/utils/responsiveUtils'
 import { toast } from '@src/utils/toast'
 
 type InvitationType = 'peer' | 'public' | 'subInvitation'
@@ -144,7 +145,7 @@ const BaseConnectionInvitation = ({
     <SafeAreaView style={styles.container} edges={['bottom']}>
       <ScrollView
         showsVerticalScrollIndicator={false}
-        scrollEventThrottle={16}
+        contentContainerStyle={{ minHeight: screenHeight + 1 }}
         onScrollBeginDrag={handleScrollBeginDrag}
         onScrollEndDrag={handleScrollEndDrag}
       >

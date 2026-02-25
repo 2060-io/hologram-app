@@ -30,6 +30,7 @@ import {
   unblockConnection,
 } from '@src/utils/connectionUtils'
 import { markNewConnectionNotificationAsViewed } from '@src/utils/pushNotificationsUtils'
+import { screenHeight } from '@src/utils/responsiveUtils'
 import { toast } from '@src/utils/toast'
 
 type confirmationTypes = 'deleteChat' | 'block' | 'unblock' | 'deleteConnection'
@@ -227,7 +228,7 @@ const BaseConnectionDetails = ({
     <SafeAreaView style={styles.container} edges={['bottom']}>
       <ScrollView
         showsVerticalScrollIndicator={false}
-        scrollEventThrottle={16}
+        contentContainerStyle={{ minHeight: screenHeight + 1 }}
         onScrollBeginDrag={handleScrollBeginDrag}
         onScrollEndDrag={handleScrollEndDrag}
       >
