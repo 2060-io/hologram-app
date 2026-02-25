@@ -1,5 +1,4 @@
 import { fetch as NetInfo } from '@react-native-community/netinfo'
-import { TrustResolutionOutcome } from '@verana-labs/verre'
 import { useEffect, useState, useTransition } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -10,10 +9,8 @@ import { updateThreadFromServiceInfo } from './agent/chat/services'
 import { useLocalRealm } from './providers/RealmProvider'
 
 import { ServiceInfo } from '@src/model'
-import { MobileAgent } from '@src/services/agent'
 import { getInCacheServiceInfo, saveInCacheServiceInfo } from '@src/services/agent/cache'
 import { logError } from '@src/utils'
-import { getConnectionDisplayName, getConnectionDisplayPicture } from '@src/utils/connectionUtils'
 import { isOlderThan24Hours } from '@src/utils/dateUtils'
 import { toast } from '@src/utils/toast'
 
@@ -44,7 +41,7 @@ export const useFetchServiceInfo = (did?: string, forceFetchIfNotInCache: boolea
   useEffect(() => {
     const verifyHasToFetchInfo = async () => {
       if (!did || !agent) return
-      const cachedServiceInfo = await getStoredServiceInfo(did, agent)
+      const cachedServiceInfo = await getInCacheServiceInfo(did, agent)
       if (cachedServiceInfo) setServiceInfo(cachedServiceInfo)
       const firstConditionToFetch = forceFetchIfNotInCache
       const secondConditionToFetch =
@@ -87,23 +84,4 @@ export const useFetchServiceInfo = (did?: string, forceFetchIfNotInCache: boolea
     failedFetchInfo,
     getServiceInfo,
   }
-}
-
-async function getStoredServiceInfo(did: string, agent: MobileAgent): Promise<ServiceInfo | null> {
-  const cachedServiceInfo = await getInCacheServiceInfo(did, agent)
-  if (cachedServiceInfo) return cachedServiceInfo
-
-  // If info is not in cache, attempt to find it from an existing connection
-  const [connection] = await agent.didcomm.connections.findByInvitationDid(did)
-  if (connection) {
-    return {
-      did,
-      id: did,
-      minimumAgeRequired: 0,
-      name: getConnectionDisplayName(connection),
-      logoUrl: getConnectionDisplayPicture(connection),
-      status: TrustResolutionOutcome.INVALID,
-    }
-  }
-  return null
 }
