@@ -33,7 +33,7 @@ import { MobileAgent } from '../MobileAgent'
 import { OutOfBandInvitationEvent, OutOfBandInvitationEventTypes } from './OutOfBandEvents'
 
 import { log, logError } from '@src/utils'
-import { deletePendingConnection, findExistingConnection } from '@src/utils/connectionUtils'
+import { deletePendingConnection, findExistingConnection, isService } from '@src/utils/connectionUtils'
 import { toast } from '@src/utils/toast'
 
 export enum DidcommInvitationType {
@@ -207,7 +207,10 @@ export const processInvitation = async (
     )
     const { connectionRecord } = await acceptInvitation(agent.context, { outOfBandId: outOfBandRecord.id })
     connectionId = connectionRecord?.id
-    if (connectionRecord?.id) agent.didcomm.connections.addConnectionType(connectionRecord.id, 'Ephemeral')
+    const isConnectionService = connectionRecord ? isService(connectionRecord) : false
+    if (!isConnectionService && connectionRecord?.id) {
+      agent.didcomm.connections.addConnectionType(connectionRecord.id, 'Ephemeral')
+    }
     try {
       const event = await eventPromise
       if (event.type === DidCommCredentialEventTypes.DidCommCredentialStateChanged) {
