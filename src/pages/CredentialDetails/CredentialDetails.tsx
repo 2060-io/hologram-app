@@ -35,7 +35,7 @@ const CredentialDetails = ({ route, navigation }: Props) => {
   const { isFetchingInfo, serviceInfo, failedFetchInfo, getServiceInfo } = useFetchServiceInfo(did)
   const { handleScrollBeginDrag, handleScrollEndDrag } = useScrollSwipeDown({
     disabledSwipeDown: isFetchingInfo,
-    onSwipeDown: () => getServiceInfo(),
+    onSwipeDown: getServiceInfo,
   })
   const initialServiceInfo = useRef<ServiceInfo>({
     did,

@@ -11,7 +11,6 @@ function getCredoTsDidResolver(agent: MobileAgent): Resolver {
     new Proxy(
       {},
       {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         get: (_target, _method: string) => {
           return async (did: string) => agent.dids.resolve(did)
         },
