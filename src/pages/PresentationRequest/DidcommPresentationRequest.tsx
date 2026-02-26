@@ -39,7 +39,7 @@ const DidcommPresentationRequest: React.FC<Props> = ({ navigation, route }: Prop
   const { isFetchingInfo, serviceInfo, failedFetchInfo, getServiceInfo } = useFetchServiceInfo(did)
   const { handleScrollBeginDrag, handleScrollEndDrag } = useScrollSwipeDown({
     disabledSwipeDown: isFetchingInfo,
-    onSwipeDown: () => getServiceInfo(),
+    onSwipeDown: getServiceInfo,
   })
   const [submission, setSubmission] = useState<FormattedSubmission | undefined>(undefined)
   const [isAccepting, startAcceptTransition] = useTransition()
