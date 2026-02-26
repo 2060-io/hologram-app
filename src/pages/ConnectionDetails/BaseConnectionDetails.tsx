@@ -18,6 +18,7 @@ import { IS_IOS } from '@src/constants'
 import { useMobileAgent, useChats, useConnectionByParentConnectionId, useUserProfile } from '@src/hooks/agent'
 import { deleteConnection } from '@src/hooks/agent/connections'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { useScrollSwipeDown } from '@src/hooks/useScrollSwipeDown'
 import { createOobInvitation, MobileAgent } from '@src/services/agent'
 import { capitalizeFirstLetter, logError } from '@src/utils'
 import {
@@ -29,6 +30,7 @@ import {
   unblockConnection,
 } from '@src/utils/connectionUtils'
 import { markNewConnectionNotificationAsViewed } from '@src/utils/pushNotificationsUtils'
+import { screenHeight } from '@src/utils/responsiveUtils'
 import { toast } from '@src/utils/toast'
 
 type confirmationTypes = 'deleteChat' | 'block' | 'unblock' | 'deleteConnection'
@@ -41,6 +43,8 @@ export interface ConnectionDetailsProps extends WrapperProps {
 interface BaseConnectionDetailsProps extends ConnectionDetailsProps {
   mainInfo: ReactElement | null
   footerInfo?: ReactElement | null
+  onSwipeDown?: () => void
+  disabledSwipeDown?: boolean
 }
 
 const BaseConnectionDetails = ({
@@ -48,6 +52,8 @@ const BaseConnectionDetails = ({
   connection,
   mainInfo,
   footerInfo,
+  onSwipeDown,
+  disabledSwipeDown = true,
 }: BaseConnectionDetailsProps) => {
   const { t } = useTranslation()
   const theme = useTheme()
@@ -55,6 +61,10 @@ const BaseConnectionDetails = ({
   const { agent } = useMobileAgent()
   const { userProfileData } = useUserProfile()
   const { clearChat, findOrCreateThread } = useChats()
+  const { handleScrollBeginDrag, handleScrollEndDrag } = useScrollSwipeDown({
+    disabledSwipeDown,
+    onSwipeDown,
+  })
   const relatedConnections = useConnectionByParentConnectionId(connection.id)
   const [showConfirmationModal, setShowConfirmationModal] = useState(false)
   const [blockingConnection, setBlockingConnection] = useState(false)
@@ -216,7 +226,12 @@ const BaseConnectionDetails = ({
 
   return (
     <SafeAreaView style={styles.container} edges={['bottom']}>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ minHeight: screenHeight + 1 }}
+        onScrollBeginDrag={handleScrollBeginDrag}
+        onScrollEndDrag={handleScrollEndDrag}
+      >
         <View style={styles.subContainer}>
           <ModalLoading
             visible={blockingConnection}

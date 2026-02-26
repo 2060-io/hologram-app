@@ -1,106 +1,22 @@
-import { Skeleton } from 'moti/skeleton'
-import React, { memo, useMemo } from 'react'
-import { useTranslation } from 'react-i18next'
-import { View, Image, StyleProp, ViewStyle, TouchableOpacity, ActivityIndicator } from 'react-native'
-import { uses24HourClock } from 'react-native-localize'
-import { SvgUri } from 'react-native-svg'
+import React, { memo } from 'react'
 
-import SvgIcon from '../SvgIcon'
-import Text from '../Text'
-import VerifiedIcon from '../VerifiedIcon'
+import DumbCredentialMainInformation from './DumbCredentialMainInformation'
+import { CredentialMainInformationProps } from './Pros'
 
-import getStyles from './styles'
-
-import imagePlaceholder from '@src/assets/images/placeholderImg.png'
-import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { useFetchServiceInfo } from '@src/hooks/useFetchServiceInfo'
-import { CredentialMainInfo } from '@src/services/agent/display'
-import { dateToString } from '@src/utils/dateUtils'
 
-type Props = {
-  credentialMainInfo: CredentialMainInfo | null
-  containerStyle?: StyleProp<ViewStyle>
-  onPress?: () => void
-  size?: 'big' | 'medium'
-}
-
-const CredentialMainInformation = ({ credentialMainInfo, containerStyle, onPress, size = 'big' }: Props) => {
-  const { t } = useTranslation()
-  const theme = useTheme()
-  const styles = getStyles(theme, size)
-  const { isFetchingInfo, serviceInfo, failedFetchInfo } = useFetchServiceInfo(credentialMainInfo?.issuer.id)
-  const using24HourFormat = uses24HourClock()
-  const uri = serviceInfo?.logoUrl ?? credentialMainInfo?.issuer.logoUrl
-  const issuedDate = credentialMainInfo?.createdAt
-    ? dateToString(credentialMainInfo.createdAt, `DD-MM-YYYY ${using24HourFormat ? 'HH:mm' : 'h:mm A'}`)
-    : null
-  const issuedOn = issuedDate ? `${t('credential.issuedOn')}: ${issuedDate}` : null
-  const colorMode = theme.isDarkMode ? 'dark' : 'light'
-
-  const badge = useMemo(() => {
-    if (isFetchingInfo) return <ActivityIndicator size="large" color={theme.colors.green} />
-    if (failedFetchInfo) {
-      return (
-        <SvgIcon
-          name="warning"
-          width={styles.image.width}
-          height={styles.image.height}
-          fill={theme.colors.lightGrey}
-        />
-      )
-    }
-    return (
-      <>
-        {uri?.endsWith('.svg') ? (
-          <SvgUri uri={uri} width={styles.image.width} height={styles.image.height} />
-        ) : (
-          <Image
-            style={styles.image}
-            resizeMode="contain"
-            source={uri?.length ? { uri } : imagePlaceholder}
-          />
-        )}
-      </>
-    )
-  }, [isFetchingInfo, failedFetchInfo, uri])
+const CredentialMainInformation = (props: CredentialMainInformationProps) => {
+  const { isFetchingInfo, serviceInfo, failedFetchInfo } = useFetchServiceInfo(
+    props.credentialMainInfo?.issuer.id,
+  )
 
   return (
-    <Skeleton.Group show={!credentialMainInfo}>
-      <TouchableOpacity style={[styles.container, containerStyle]} activeOpacity={1} onPress={onPress}>
-        <View style={styles.subContainer}>
-          <Skeleton
-            height={styles.image.height}
-            width={styles.image.width}
-            colorMode={colorMode}
-            radius="square"
-          >
-            <View style={styles.imageContainer}>{badge}</View>
-          </Skeleton>
-          <View style={styles.nameContainer}>
-            <Skeleton height={styles.name.fontSize + 2} width="50%" colorMode={colorMode} radius="round">
-              <Text style={styles.name} fontFamily="EuclidCircularA-Medium">
-                {credentialMainInfo?.schemaName}
-              </Text>
-            </Skeleton>
-          </View>
-        </View>
-        <View>
-          <View style={styles.issuedOnContainer}>
-            <Skeleton width="40%" height={15} colorMode={colorMode} radius="round">
-              {issuedOn ? <Text style={styles.issuedOn}>{issuedOn}</Text> : null}
-            </Skeleton>
-          </View>
-          <Skeleton width="100%" height={20} colorMode={colorMode} radius="round">
-            <View style={styles.bottomContainer}>
-              <Text style={styles.bottomText} fontFamily="EuclidCircularA-Medium" numberOfLines={1}>
-                {serviceInfo?.name ?? credentialMainInfo?.issuer.name}
-              </Text>
-              {serviceInfo?.status && <VerifiedIcon status={serviceInfo.status} />}
-            </View>
-          </Skeleton>
-        </View>
-      </TouchableOpacity>
-    </Skeleton.Group>
+    <DumbCredentialMainInformation
+      {...props}
+      isFetchingInfo={isFetchingInfo}
+      serviceInfo={serviceInfo}
+      failedFetchInfo={failedFetchInfo}
+    />
   )
 }
 

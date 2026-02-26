@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import { StyleSheet } from 'react-native'
 
 import BaseConnectionDetails, { ConnectionDetailsProps } from './BaseConnectionDetails'
@@ -8,11 +8,18 @@ import { useFetchServiceInfo } from '@src/hooks'
 
 const ConnectionDetailsForService = (props: ConnectionDetailsProps) => {
   const { connection } = props
-  const { isFetchingInfo, serviceInfo, failedFetchInfo } = useFetchServiceInfo(connection.invitationDid)
+  const { invitationDid } = connection
+  const { isFetchingInfo, serviceInfo, failedFetchInfo, getServiceInfo } = useFetchServiceInfo(invitationDid)
+
+  const refreshServiceInfo = useCallback(() => {
+    getServiceInfo()
+  }, [])
 
   return (
     <BaseConnectionDetails
       {...props}
+      onSwipeDown={refreshServiceInfo}
+      disabledSwipeDown={isFetchingInfo}
       mainInfo={
         serviceInfo ? (
           <ServiceMainInfo

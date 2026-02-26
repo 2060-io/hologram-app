@@ -61,21 +61,21 @@ const ServiceMainInfo = ({ serviceInfo, isFetchingInfo, failedFetchInfo, contain
         />
       )
     }
-    return (
+    return isFetchingInfo ? (
       <Skeleton
         height={widthPercentageToDP('25%')}
         width={widthPercentageToDP('25%')}
         colorMode={theme.isDarkMode ? 'dark' : 'light'}
         radius="round"
         show={isFetchingInfo}
-      >
-        <Avatar
-          uri={serviceInfo?.logoUrl}
-          label={serviceInfo?.name}
-          size="25%"
-          onImagePressed={onAvatarImagePressed}
-        />
-      </Skeleton>
+      />
+    ) : (
+      <Avatar
+        uri={serviceInfo?.logoUrl}
+        label={serviceInfo?.name}
+        size="25%"
+        onImagePressed={onAvatarImagePressed}
+      />
     )
   }, [isFetchingInfo, failedFetchInfo, serviceInfo])
 
@@ -90,21 +90,27 @@ const ServiceMainInfo = ({ serviceInfo, isFetchingInfo, failedFetchInfo, contain
       <Text fontFamily="EuclidCircularA-Medium" style={styles.issuerName}>
         {serviceInfo.name}
       </Text>
-      {serviceInfo.description && <Text style={[styles.text]}>{serviceInfo.description}</Text>}
+      {isFetchingInfo ? (
+        <Skeleton width={'100%'} colorMode={theme.isDarkMode ? 'dark' : 'light'} radius="round" show />
+      ) : (
+        <Text style={styles.text}>{serviceInfo.description}</Text>
+      )}
       <View style={styles.containerIconValidity}>
-        <Skeleton
-          height={styles.iconValidity.height}
-          width={styles.iconValidity.width}
-          colorMode={theme.isDarkMode ? 'dark' : 'light'}
-          radius="round"
-          show={isFetchingInfo}
-        >
+        {isFetchingInfo ? (
+          <Skeleton
+            height={styles.iconValidity.height}
+            width={styles.iconValidity.width}
+            colorMode={theme.isDarkMode ? 'dark' : 'light'}
+            radius="round"
+            show
+          />
+        ) : (
           <VerifiedIcon style={styles.iconValidity} status={serviceInfo.status} />
-        </Skeleton>
+        )}
       </View>
       <Did did={serviceInfo.did} serviceInfoStatus={serviceInfo.status} isFetchingInfo={isFetchingInfo} />
       {failedFetchInfo && <Text style={styles.failedToFetchInfoText}>{t('credential.failedFetchInfo')}</Text>}
-      {serviceProvider && (
+      {!isFetchingInfo && serviceProvider && (
         <View style={styles.serviceProviderInfoContainer}>
           <Text style={styles.text}>{t('invitation.serviceProvider')}</Text>
           <View style={styles.serviceProviderName}>

@@ -122,7 +122,7 @@ export const useBuildBackup = ({
 
   const createWalletFile = async (backupKey: string) => {
     try {
-      agent?.modules.askar.exportStore({
+      await agent?.modules.askar.exportStore({
         exportToStore: {
           id: 'afj',
           key: backupKey,
