@@ -18,6 +18,7 @@ import {
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { ServiceInfo } from '@src/model'
 import { FormattedSubmission } from '@src/services/agent/formatPresentation'
+import { screenHeight } from '@src/utils/responsiveUtils'
 
 type Props = {
   navigation: StackNavigationProp<ParamListBase>
@@ -32,6 +33,7 @@ type Props = {
   failedFetchInfo?: boolean
   isAccepting: boolean
   notifyNoCompatibleCredentials?: () => void
+  scrollViewProps?: ScrollView['props']
 }
 
 const BasePresentationRequest: React.FC<Props> = ({
@@ -47,6 +49,7 @@ const BasePresentationRequest: React.FC<Props> = ({
   failedFetchInfo,
   isAccepting,
   notifyNoCompatibleCredentials = () => {},
+  scrollViewProps,
 }) => {
   const { t } = useTranslation()
   const theme = useTheme()
@@ -123,7 +126,11 @@ const BasePresentationRequest: React.FC<Props> = ({
         onConfirm={onRefuse}
         onCancel={hideModalRefuseConfirmation}
       />
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ minHeight: screenHeight + 1 }}
+        {...scrollViewProps}
+      >
         <View style={styles.subContainer}>
           {serviceInfo && isFetchingInfo !== undefined && failedFetchInfo !== undefined && (
             <ServiceMainInfo
