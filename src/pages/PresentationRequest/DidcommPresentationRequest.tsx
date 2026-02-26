@@ -134,7 +134,7 @@ const DidcommPresentationRequest: React.FC<Props> = ({ navigation, route }: Prop
     <BasePresentationRequest
       navigation={navigation}
       submission={submission}
-      onSelectDidcommCredential={onSelectCredential}
+      onSelectCredential={onSelectCredential}
       accept={accept}
       refuse={refuse}
       isFetchingInfo={isFetchingInfo}
