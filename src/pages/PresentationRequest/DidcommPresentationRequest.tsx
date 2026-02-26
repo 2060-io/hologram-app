@@ -6,7 +6,7 @@ import React, { useRef, useCallback, useState, useTransition } from 'react'
 import BasePresentationRequest from './BasePresentationRequest'
 
 import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
-import { useFetchServiceInfo } from '@src/hooks'
+import { useFetchServiceInfo, useScrollSwipeDown } from '@src/hooks'
 import { AgentActionType, useMobileAgent, useAgentActionQueue } from '@src/hooks/agent'
 import {
   DeclineProofRequestParameters,
@@ -36,7 +36,11 @@ const DidcommPresentationRequest: React.FC<Props> = ({ navigation, route }: Prop
   const { addAgentActionToQueue } = useAgentActionQueue()
   const selectedCredentials = useRef({})
   const { proofRecordId, did } = route.params
-  const { isFetchingInfo, serviceInfo, failedFetchInfo } = useFetchServiceInfo(did)
+  const { isFetchingInfo, serviceInfo, failedFetchInfo, getServiceInfo } = useFetchServiceInfo(did)
+  const { handleScrollBeginDrag, handleScrollEndDrag } = useScrollSwipeDown({
+    disabledSwipeDown: isFetchingInfo,
+    onSwipeDown: getServiceInfo,
+  })
   const [submission, setSubmission] = useState<FormattedSubmission | undefined>(undefined)
   const [isAccepting, startAcceptTransition] = useTransition()
 
@@ -130,7 +134,7 @@ const DidcommPresentationRequest: React.FC<Props> = ({ navigation, route }: Prop
     <BasePresentationRequest
       navigation={navigation}
       submission={submission}
-      onSelectDidcommCredential={onSelectCredential}
+      onSelectCredential={onSelectCredential}
       accept={accept}
       refuse={refuse}
       isFetchingInfo={isFetchingInfo}
@@ -138,6 +142,7 @@ const DidcommPresentationRequest: React.FC<Props> = ({ navigation, route }: Prop
       failedFetchInfo={failedFetchInfo}
       isAccepting={isAccepting}
       notifyNoCompatibleCredentials={notify}
+      scrollViewProps={{ onScrollBeginDrag: handleScrollBeginDrag, onScrollEndDrag: handleScrollEndDrag }}
     />
   ) : null
 }
