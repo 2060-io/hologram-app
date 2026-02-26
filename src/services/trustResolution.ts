@@ -1,9 +1,24 @@
 import { IOrg, resolveDID } from '@verana-labs/verre'
+import { Resolver } from 'did-resolver'
 
 import { MobileAgent } from './agent'
 
 import { ServiceInfo } from '@src/model'
 import { log, logError } from '@src/utils'
+
+function getCredoTsDidResolver(agent: MobileAgent): Resolver {
+  return new Resolver(
+    new Proxy(
+      {},
+      {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        get: (_target, _method: string) => {
+          return async (did: string) => agent.dids.resolve(did)
+        },
+      },
+    ),
+  )
+}
 
 export async function getServiceInfo(options: {
   agent: MobileAgent
@@ -12,9 +27,9 @@ export async function getServiceInfo(options: {
   const { agent, did } = options
 
   const trustResolution = await resolveDID(did, {
-    agentContext: agent.context,
     skipDigestSRICheck: true,
     logger: agent.config.logger,
+    didResolver: getCredoTsDidResolver(agent),
     verifiablePublicRegistries: [
       {
         id: 'vpr:verana:vna-testnet-1',
