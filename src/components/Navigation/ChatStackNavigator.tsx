@@ -53,10 +53,7 @@ const ChatStackNavigator = () => {
             <ChatStack.Screen
               name="Camera"
               component={Camera}
-              options={{
-                headerShown: false,
-                animation: 'reveal_from_bottom',
-              }}
+              options={{ headerShown: false, animation: 'reveal_from_bottom' }}
             />
           </ChatStack.Group>
         </ChatStack.Navigator>
