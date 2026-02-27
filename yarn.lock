@@ -6676,10 +6676,10 @@
     "@urql/core" "^5.1.1"
     wonka "^6.3.2"
 
-"@verana-labs/verre@^0.2.0":
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/@verana-labs/verre/-/verre-0.2.0.tgz#a5f9f64f1cfac3cce387e0fdd31d9d26d7af1427"
-  integrity sha512-3xufr+ct//Yo0Q6BYdbYRf08HXGSVqPceyebDJZKxCDahGktydAHmmo3hX4G+DSXoXXAmlXVIAQmValXa1tuqw==
+"@verana-labs/verre@^0.2.1":
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/@verana-labs/verre/-/verre-0.2.1.tgz#bef7ac979c28b63f530aad439389c998f208ea10"
+  integrity sha512-Ib4KtpFUGczHp8q8pvW4hbioC3Rh7KtBrB+hJH786QDrmhVFgW8NxE8xzkdIR+I1YbHgPlXYoalACPR5FUk5Gg==
   dependencies:
     "@digitalcredentials/jsonld" "^9.0.0"
     "@noble/curves" "^2.0.1"
