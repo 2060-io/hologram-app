@@ -1,23 +1,22 @@
 import { DidCommConnectionRecord } from '@credo-ts/didcomm'
 import { StackActions } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
-import React, { useLayoutEffect, useState, useTransition } from 'react'
+import React, { ReactElement, useLayoutEffect, useTransition } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TouchableOpacity, View, ScrollView } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 import AlreadyConnected from './AlreadyConnected'
-import PublicService from './PublicService'
 import getStyles from './styles'
 
-import { CommunicationChannels } from '@src/components'
 import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
-import { Avatar, HeaderTitle, ModalLoading, Text } from '@src/components/common'
-import { useChats, useConnectionById, useMobileAgent, useUserProfile } from '@src/hooks/agent'
+import { HeaderTitle, ModalLoading, Text } from '@src/components/common'
+import { useScrollSwipeDown } from '@src/hooks'
+import { useChats, useMobileAgent, useUserProfile } from '@src/hooks/agent'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { acceptInvitation } from '@src/services/agent/oob'
 import { logError } from '@src/utils'
-import { getConnectionDisplayName } from '@src/utils/connectionUtils'
+import { screenHeight } from '@src/utils/responsiveUtils'
 import { toast } from '@src/utils/toast'
 
 type InvitationType = 'peer' | 'public' | 'subInvitation'
@@ -34,9 +33,24 @@ const getInvitationType = (
   return 'subInvitation'
 }
 
-interface Props extends StackScreenProps<NavigationStackParams, 'ConnectionInvitation'> {}
+export interface ConnectionInvitationProps
+  extends StackScreenProps<NavigationStackParams, 'ConnectionInvitation'> {}
 
-const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => {
+interface BaseConnectionInvitationProps extends ConnectionInvitationProps {
+  mainInfo: ReactElement
+  ageRestricted?: boolean
+  onSwipeDown?: () => void
+  disabledSwipeDown?: boolean
+}
+
+const BaseConnectionInvitation = ({
+  navigation,
+  route,
+  mainInfo,
+  ageRestricted = false,
+  onSwipeDown,
+  disabledSwipeDown = true,
+}: BaseConnectionInvitationProps) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
@@ -44,20 +58,16 @@ const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => 
   const { findOrCreateThread } = useChats()
   const { userProfileData } = useUserProfile()
   const [isAcceptingInvitation, startAcceptInvitationTransition] = useTransition()
-  const [communicationChannels, setCommunicationChannels] = useState({
-    allowChats: true,
-    allowAudioCalls: false,
-    allowVideoCalls: false,
+  const { handleScrollBeginDrag, handleScrollEndDrag } = useScrollSwipeDown({
+    disabledSwipeDown,
+    onSwipeDown,
   })
-  const [ageRestricted, setAgeRestricted] = useState(false)
   const { outOfBandRecord, existingConnectionId } = route.params
   const invitation = outOfBandRecord?.outOfBandInvitation
   const invitationDid = invitation.invitationDids[0]
   const outOfBandId = outOfBandRecord.id
   const parentConnectionId = outOfBandRecord.getTag('parentConnectionId') as string | undefined
   const invitationType = getInvitationType(invitationDid, parentConnectionId)
-  const connectionParent = useConnectionById(parentConnectionId)
-  const parentConnectionName = connectionParent ? getConnectionDisplayName(connectionParent) : ''
   const isAlreadyConnected = !!existingConnectionId
   const canConnect = !isAlreadyConnected && !ageRestricted
 
@@ -133,7 +143,12 @@ const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => 
 
   return (
     <SafeAreaView style={styles.container} edges={['bottom']}>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ minHeight: screenHeight + 1 }}
+        onScrollBeginDrag={handleScrollBeginDrag}
+        onScrollEndDrag={handleScrollEndDrag}
+      >
         <ModalLoading visible={isAcceptingInvitation} />
         <View style={styles.subContainer}>
           {isAlreadyConnected && (
@@ -143,56 +158,11 @@ const ConnectionInvitation: React.FC<Props> = ({ navigation, route }: Props) => 
               includeDefaultActions={true}
             />
           )}
-          {invitationType === 'public' ? (
-            <PublicService
-              did={invitationDid}
-              invitation={invitation}
-              setAgeRestricted={setAgeRestricted}
-              userName={userProfileData?.displayName}
-            />
-          ) : (
-            <View>
-              <View style={styles.card}>
-                <Avatar uri={invitation?.imageUrl} label={invitation?.label} size="25%" withBorder={true} />
-                <Text fontFamily="EuclidCircularA-Medium" style={styles.invitationLabel}>
-                  {invitation?.label}
-                </Text>
-                {invitationType === 'peer' && (
-                  <Text style={styles.content}>
-                    {t('invitation.peerInvitationDescription', { label: invitation?.label })}
-                  </Text>
-                )}
-                {invitationType === 'subInvitation' && (
-                  <Text style={styles.content}>
-                    {t('invitation.subConnectionInvitationDescription')}{' '}
-                    <Text fontFamily="EuclidCircularA-Bold" style={styles.fontFamilyBold}>
-                      {`${invitation?.label} `}{' '}
-                    </Text>
-                    {t('invitation.subConnectionInvitationDescriptionAs')}{' '}
-                    <Text fontFamily="EuclidCircularA-Bold" style={styles.fontFamilyBold}>
-                      {parentConnectionName}
-                    </Text>
-                  </Text>
-                )}
-              </View>
-              {!isAlreadyConnected && invitationType === 'peer' && (
-                <View style={styles.card}>
-                  <Text style={styles.enabledChannelsText}>
-                    {`${invitation?.label} ${t('invitation.enabledCommunicationChannelsDescription')}`}
-                  </Text>
-                  <View style={styles.separator} />
-                  <CommunicationChannels
-                    channels={communicationChannels}
-                    setChannels={setCommunicationChannels}
-                  />
-                </View>
-              )}
-            </View>
-          )}
+          {mainInfo}
         </View>
       </ScrollView>
     </SafeAreaView>
   )
 }
 
-export default ConnectionInvitation
+export default BaseConnectionInvitation

@@ -42,23 +42,23 @@ const ProfileCreation = ({ navigation }: Props) => {
 
   const createNewWallet = useCallback(async () => {
     if (!agent) throw new Error('Agent not defined')
-    if (!agent.isInitialized) {
-      // Make sure wallet and media directories are clean
-      await deleteDir(walletDirectoryPath)
-      await deleteDir(mediaDirectoryPath)
-
-      await makeDirectory(walletDirectoryPath)
-      await makeDirectory(mediaDirectoryPath)
-
-      const key = await createAndStoreEncryptedKey(KeyChainService.AfjWallet)
-
-      // Reconfigure askar store config with this new key
-      agent.modules.askar.config.store.key = key
-
-      await agent.modules.askar.provisionStore()
-    } else {
+    if (agent.isInitialized) {
       logError('createNewWallet: Agent already initialized!')
+      return
     }
+    // Make sure wallet and media directories are clean
+    await deleteDir(walletDirectoryPath)
+    await deleteDir(mediaDirectoryPath)
+
+    await makeDirectory(walletDirectoryPath)
+    await makeDirectory(mediaDirectoryPath)
+
+    const key = await createAndStoreEncryptedKey(KeyChainService.AfjWallet)
+
+    // Reconfigure askar store config with this new key
+    agent.modules.askar.config.store.key = key
+
+    await agent.modules.askar.provisionStore()
   }, [agent])
 
   const updateNotificationInfo = useCallback(async () => {
