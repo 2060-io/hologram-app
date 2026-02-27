@@ -3,8 +3,8 @@ import { View, TouchableOpacity } from 'react-native'
 
 import getStyles, { DIAL_SIZE } from './dialStyles'
 
-import { Icon, Text } from '@2060/components/common'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
+import { Icon, Text } from '@src/components/common'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
 
 type Props = {
   dial: number | string

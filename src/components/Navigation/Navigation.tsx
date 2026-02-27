@@ -14,16 +14,16 @@ import 'isomorphic-webcrypto'
 
 import { SvgIcon, HeaderTitle } from '../common'
 
+import ChatStackNavigator from './ChatStackNavigator'
 import Container from './NavigationContainer'
 import { NavigationStackParams } from './NavigationProps'
-import PersonalChatStackNavigator from './PersonalChatStackNavigator'
 import deepLinking from './deepLinking'
 import getStyles from './styles'
 
-import { IS_ANDROID } from '@2060/constants'
-import { useNetwork } from '@2060/hooks'
-import { useMessagePickup } from '@2060/hooks/agent/useMessagePickup'
-import { useConfig } from '@2060/hooks/providers/ConfigProvider'
+import { IS_ANDROID } from '@src/constants'
+import { useNetwork } from '@src/hooks'
+import { useMessagePickup } from '@src/hooks/agent/useMessagePickup'
+import { useConfig } from '@src/hooks/providers/ConfigProvider'
 import {
   HomeMain,
   SignUpMain,
@@ -53,10 +53,10 @@ import {
   PresentCredentialAsQR,
   EphemeralCredentialPresentation,
   IdentityCredentialIssuers,
-} from '@2060/pages'
-import { MobileAgent } from '@2060/services/agent'
-import { AppTheme, getGlobalStyles } from '@2060/styles'
-import { log, logError } from '@2060/utils'
+} from '@src/pages'
+import { MobileAgent } from '@src/services/agent'
+import { AppTheme, getGlobalStyles } from '@src/styles'
+import { log, logError } from '@src/utils'
 
 const Stack = createStackNavigator<NavigationStackParams>()
 type NavigationProps = {
@@ -135,11 +135,7 @@ const Navigation = ({ isSignedUp, agent, theme }: NavigationProps) => {
           })}
         >
           <Stack.Screen name="Home" component={InitialComponent} options={{ headerShown: false }} />
-          <Stack.Screen
-            name="PersonalChatStack"
-            component={PersonalChatStackNavigator}
-            options={{ headerShown: false }}
-          />
+          <Stack.Screen name="ChatStack" component={ChatStackNavigator} options={{ headerShown: false }} />
           <Stack.Screen name="ProfileCreation" component={ProfileCreation} />
           <Stack.Screen
             name="RestoreWalletBackup"

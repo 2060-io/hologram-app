@@ -14,13 +14,13 @@ import Realm from 'realm'
 import { createChatEntry, findAllByAssociatedRecordId, updateChatEntry } from '../services/ChatEntryService'
 import { addUnread, findOrCreateChatThread } from '../services/ChatThreadService'
 
-import { ChatEntryRole, ChatEntryState, ChatEntryType } from '@2060/model'
-import { MobileAgent } from '@2060/services/agent'
+import { ChatEntryRole, ChatEntryState, ChatEntryType } from '@src/model'
+import { MobileAgent } from '@src/services/agent'
 import {
   getDidCommCredentialDisplayMetadata,
   setDidCommCredentialMetadata,
-} from '@2060/services/agent/RecordMetadata'
-import { getConnectionDisplayName, getConnectionDisplayPicture } from '@2060/utils/connectionUtils'
+} from '@src/services/agent/RecordMetadata'
+import { getConnectionDisplayName, getConnectionDisplayPicture } from '@src/utils/connectionUtils'
 
 export const handleCredentialExchangeRecordChanges = async (options: {
   agent: MobileAgent

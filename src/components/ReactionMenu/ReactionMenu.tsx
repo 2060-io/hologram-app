@@ -5,10 +5,10 @@ import EmojiPicker from 'rn-emoji-keyboard'
 import EmojiItem from './EmojiItem'
 import getStyles from './styles'
 
-import { Icon } from '@2060/components/common'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { ChatEntryRole } from '@2060/model'
-import { ChatEntryMessage } from '@2060/pages/PersonalChat/ChatMessage/Props'
+import { Icon } from '@src/components/common'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { ChatEntryRole } from '@src/model'
+import { ChatEntryMessage } from '@src/pages/Chat/ChatMessage/Props'
 
 const mainEmojis = [
   { emoji: '😂', name: 'laugh' },

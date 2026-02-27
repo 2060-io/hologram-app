@@ -133,3 +133,15 @@ export const isDateGreaterThan = (date1: DateType, date2: DateType) => {
   const secondDate = dayjs(date2)
   return firstDate.isAfter(secondDate)
 }
+
+/**
+ * Determines whether a given timestamp is older than 24 hours from the current time.
+ *
+ * @param timestamp - A timestamp in milliseconds representing a past date and time.
+ * @returns `true` if the difference between now and the provided timestamp is greater than or
+ * equal to 24 hours (in milliseconds), otherwise `false`.
+ */
+const TWENTY_FOUR_HOURS_MS = 24 * 60 * 60 * 1000 // 86400000 ms
+export const isOlderThan24Hours = (timestamp: number): boolean => {
+  return new Date().getTime() - timestamp >= TWENTY_FOUR_HOURS_MS
+}

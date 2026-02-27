@@ -17,7 +17,7 @@ import { TrustResolutionOutcome } from '@verana-labs/verre'
 import { MobileAgent } from './MobileAgent'
 import { getDidCommCredentialDisplayMetadata } from './RecordMetadata'
 
-import { IssuerInfo, VerifierInfo } from '@2060/model/ServiceInfo'
+import { IssuerInfo, VerifierInfo } from '@src/model/ServiceInfo'
 
 export type CredentialMainInfo = {
   id: string

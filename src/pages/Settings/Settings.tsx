@@ -11,20 +11,21 @@ import { HomeMainTabParams } from '../HomeMain/HomeMainProps'
 
 import getStyles from './styles'
 
-import defaultAvatar from '@2060/assets/images/defaultUser.png'
-import { ModalConfirmAction } from '@2060/components'
-import { Avatar, Text, SvgIcon, OptionsList, FullScreenImage } from '@2060/components/common'
-import { Option } from '@2060/components/common/OptionsList/OptionsListProps'
-import { useMobileAgent, useUserProfile } from '@2060/hooks/agent'
-import { useConfig } from '@2060/hooks/providers/ConfigProvider'
-import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { AgentActionQueueSingleton } from '@2060/services/AgentActionQueueSingleton'
-import { AgentSingleton } from '@2060/services/AgentSingleton'
-import { deleteAllKeys } from '@2060/services/keys'
-import { logError, dataUrl } from '@2060/utils'
-import { deleteDir, walletDirectoryPath } from '@2060/utils/RNFS'
-import { toast } from '@2060/utils/toast'
+import defaultAvatar from '@src/assets/images/defaultUser.png'
+import { ModalConfirmAction } from '@src/components'
+import { Avatar, Text, SvgIcon, OptionsList, FullScreenImage } from '@src/components/common'
+import { Option } from '@src/components/common/OptionsList/OptionsListProps'
+import { useMobileAgent, useUserProfile } from '@src/hooks/agent'
+import { useConfig } from '@src/hooks/providers/ConfigProvider'
+import { useLocalRealm } from '@src/hooks/providers/RealmProvider'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { AgentActionQueueSingleton } from '@src/services/AgentActionQueueSingleton'
+import { AgentSingleton } from '@src/services/AgentSingleton'
+import { deleteAllKeys } from '@src/services/keys'
+import { removeStorageData, USER_INVITATION_OUT_OF_BAND_RECORD_ID } from '@src/services/localStorage'
+import { logError, dataUrl } from '@src/utils'
+import { deleteDir, walletDirectoryPath } from '@src/utils/RNFS'
+import { toast } from '@src/utils/toast'
 
 interface Props extends StackScreenProps<HomeMainTabParams, 'Settings'> {}
 
@@ -86,6 +87,7 @@ const Settings = ({ navigation }: Props) => {
       await agent.modules.askar.deleteStore()
       await deleteDir(walletDirectoryPath)
       await deleteAllKeys()
+      await removeStorageData(USER_INVITATION_OUT_OF_BAND_RECORD_ID)
       closeRealm()
       AgentSingleton.instance.setAppIsSubscribedChatToEvents(false)
       AgentSingleton.instance.setIsAppSubscribedToConnectionEvents(false)

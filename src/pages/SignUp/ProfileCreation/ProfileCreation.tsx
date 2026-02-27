@@ -7,19 +7,19 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 
 import getStyles from './styles'
 
-import AppLogo from '@2060/assets/icons/AppLogo'
-import { UserProfileForm } from '@2060/components'
-import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
-import { ModalLoading, MainButton, Text } from '@2060/components/common'
-import { useSignUp, useWallet } from '@2060/hooks'
-import { AgentActionType, useMobileAgent, useAgentActionQueue } from '@2060/hooks/agent'
-import { SavePushNotificationDeviceInfoParameters } from '@2060/hooks/agent/actions/types'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { createAndStoreEncryptedKey, KeyChainService } from '@2060/services/keys'
-import { logError } from '@2060/utils'
-import { deleteDir, makeDirectory, mediaDirectoryPath, walletDirectoryPath } from '@2060/utils/RNFS'
-import { getFcmDeviceToken, requestNotificationsPermission } from '@2060/utils/pushNotificationsUtils'
-import { toast } from '@2060/utils/toast'
+import AppLogo from '@src/assets/icons/AppLogo'
+import { UserProfileForm } from '@src/components'
+import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
+import { ModalLoading, MainButton, Text } from '@src/components/common'
+import { useSignUp, useWallet } from '@src/hooks'
+import { AgentActionType, useMobileAgent, useAgentActionQueue } from '@src/hooks/agent'
+import { SavePushNotificationDeviceInfoParameters } from '@src/hooks/agent/actions/types'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { createAndStoreEncryptedKey, KeyChainService } from '@src/services/keys'
+import { logError } from '@src/utils'
+import { deleteDir, makeDirectory, mediaDirectoryPath, walletDirectoryPath } from '@src/utils/RNFS'
+import { getFcmDeviceToken, requestNotificationsPermission } from '@src/utils/pushNotificationsUtils'
+import { toast } from '@src/utils/toast'
 
 type Props = {
   navigation: StackNavigationProp<NavigationStackParams, 'ProfileCreation'>
@@ -33,7 +33,15 @@ const ProfileCreation = ({ navigation }: Props) => {
   const { openWallet } = useWallet()
   const { addAgentActionToQueue } = useAgentActionQueue()
   const [isRegistering, startRegisterTransition] = useTransition()
-  const { startSignUp, displayName, setDisplayName, displayPicture, setDisplayPicture } = useSignUp()
+  const {
+    startSignUp,
+    tryToConnectToDefaultService,
+    fetchDefaultConnectedServiceInfo,
+    displayName,
+    setDisplayName,
+    displayPicture,
+    setDisplayPicture,
+  } = useSignUp()
   const disableGetStartedBtn = displayName.trim() === ''
 
   useEffect(() => {
@@ -42,23 +50,23 @@ const ProfileCreation = ({ navigation }: Props) => {
 
   const createNewWallet = useCallback(async () => {
     if (!agent) throw new Error('Agent not defined')
-    if (!agent.isInitialized) {
-      // Make sure wallet and media directories are clean
-      await deleteDir(walletDirectoryPath)
-      await deleteDir(mediaDirectoryPath)
-
-      await makeDirectory(walletDirectoryPath)
-      await makeDirectory(mediaDirectoryPath)
-
-      const key = await createAndStoreEncryptedKey(KeyChainService.AfjWallet)
-
-      // Reconfigure askar store config with this new key
-      agent.modules.askar.config.store.key = key
-
-      await agent.modules.askar.provisionStore()
-    } else {
+    if (agent.isInitialized) {
       logError('createNewWallet: Agent already initialized!')
+      return
     }
+    // Make sure wallet and media directories are clean
+    await deleteDir(walletDirectoryPath)
+    await deleteDir(mediaDirectoryPath)
+
+    await makeDirectory(walletDirectoryPath)
+    await makeDirectory(mediaDirectoryPath)
+
+    const key = await createAndStoreEncryptedKey(KeyChainService.AfjWallet)
+
+    // Reconfigure askar store config with this new key
+    agent.modules.askar.config.store.key = key
+
+    await agent.modules.askar.provisionStore()
   }, [agent])
 
   const updateNotificationInfo = useCallback(async () => {
@@ -85,6 +93,8 @@ const ProfileCreation = ({ navigation }: Props) => {
         await createNewWallet()
         await openWallet()
         await startSignUp()
+        const connectedToDefaultService = await tryToConnectToDefaultService()
+        if (connectedToDefaultService) fetchDefaultConnectedServiceInfo()
         await handleNotificationsPermission()
       } catch (error) {
         toast({ type: 'error', message: t('signUp.anErrorHasOccurred'), duration: 5000 })

@@ -3,7 +3,7 @@ import { DifPexCredentialsForRequest, DifPexCredentialsForRequestSubmissionEntry
 import { MobileAgent } from './MobileAgent'
 import { getCredentialMainInfo, getPresentationRequestForDisplay } from './display'
 
-import { VerifierInfo } from '@2060/model'
+import { VerifierInfo } from '@src/model'
 
 export interface FormattedSubmission {
   name: string

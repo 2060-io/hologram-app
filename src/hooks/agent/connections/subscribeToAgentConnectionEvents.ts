@@ -23,12 +23,12 @@ import {
 } from '../actions/types'
 import { findOrCreateChatThread } from '../chat/services'
 
-import { AgentActionQueueSingleton } from '@2060/services/AgentActionQueueSingleton'
-import AgentSingleton from '@2060/services/AgentSingleton'
-import RealmSingleton from '@2060/services/RealmSingleton'
-import { supportsUserProfile } from '@2060/utils/connectionUtils'
-import { language } from '@2060/utils/language'
-import { log } from '@2060/utils/log'
+import { AgentActionQueueSingleton } from '@src/services/AgentActionQueueSingleton'
+import AgentSingleton from '@src/services/AgentSingleton'
+import RealmSingleton from '@src/services/RealmSingleton'
+import { supportsUserProfile } from '@src/utils/connectionUtils'
+import { language } from '@src/utils/language'
+import { log } from '@src/utils/log'
 
 export function subscribeToAgentConnectionEvents(context: AgentContext) {
   const mobileAgentInstance = AgentSingleton.instance

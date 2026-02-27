@@ -15,7 +15,7 @@ import { Modal } from '../common'
 
 import getStyles from './styles'
 
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
 
 type ModalBottomHalfProps = {
   visible: boolean

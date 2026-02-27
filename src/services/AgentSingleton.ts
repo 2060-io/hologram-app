@@ -2,7 +2,7 @@ import { MobileAgent } from './agent/MobileAgent'
 import { KeyChainService, retrieveEncryptedKey } from './keys'
 import { setupMobileAgent } from './setupMobileAgent'
 
-import { logError, log } from '@2060/utils'
+import { logError, log } from '@src/utils'
 
 export class AgentSingleton {
   private static agentInstance: AgentSingleton

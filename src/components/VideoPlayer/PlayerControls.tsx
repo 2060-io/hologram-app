@@ -1,7 +1,7 @@
 import React from 'react'
 import { TouchableOpacity, View, StyleSheet } from 'react-native'
 
-import { Icon } from '@2060/components/common'
+import { Icon } from '@src/components/common'
 
 type Props = {
   playing: boolean

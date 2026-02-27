@@ -1,8 +1,8 @@
 import { StyleSheet } from 'react-native'
 
-import { IS_IOS } from '@2060/constants'
-import { AppTheme } from '@2060/styles'
-import { widthPercentageToDP } from '@2060/utils/responsiveUtils'
+import { IS_IOS } from '@src/constants'
+import { AppTheme } from '@src/styles'
+import { widthPercentageToDP } from '@src/utils/responsiveUtils'
 
 const SHARE_BUTTON_WIDTH = widthPercentageToDP(IS_IOS ? '10%' : '12%')
 

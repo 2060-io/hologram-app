@@ -4,16 +4,16 @@ import { useTranslation } from 'react-i18next'
 
 import { RestoreProgress, restoreProgressInitialValues } from './backup'
 
-import { AgentActionType, useAgentActionQueue } from '@2060/hooks/agent'
-import { useMobileAgent } from '@2060/hooks/agent/MobileAgentProvider'
-import { SavePushNotificationDeviceInfoParameters } from '@2060/hooks/agent/actions/types'
-import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
-import { useWallet } from '@2060/hooks/useWallet'
-import { KeyChainService, createAndStoreEncryptedKey } from '@2060/services/keys'
-import { logError } from '@2060/utils'
-import { deleteDir, makeDirectory, walletDirectoryPath } from '@2060/utils/RNFS'
-import { getFcmDeviceToken, requestNotificationsPermission } from '@2060/utils/pushNotificationsUtils'
-import * as BackupUtils from '@2060/utils/walletBackUpUtils'
+import { AgentActionType, useAgentActionQueue } from '@src/hooks/agent'
+import { useMobileAgent } from '@src/hooks/agent/MobileAgentProvider'
+import { SavePushNotificationDeviceInfoParameters } from '@src/hooks/agent/actions/types'
+import { useLocalRealm } from '@src/hooks/providers/RealmProvider'
+import { useWallet } from '@src/hooks/useWallet'
+import { KeyChainService, createAndStoreEncryptedKey } from '@src/services/keys'
+import { logError } from '@src/utils'
+import { deleteDir, makeDirectory, walletDirectoryPath } from '@src/utils/RNFS'
+import { getFcmDeviceToken, requestNotificationsPermission } from '@src/utils/pushNotificationsUtils'
+import * as BackupUtils from '@src/utils/walletBackUpUtils'
 
 type Props = {
   restoreProgress: RestoreProgress
@@ -68,9 +68,7 @@ export const useRestoreBackup = ({ restoreProgress, setRestoreProgress, download
   }
 
   const importWalletAndRealm = async () => {
-    if (!agent) {
-      throw new Error('Agent not defined in BaseRestoreWalletBackup')
-    }
+    if (!agent) return
 
     // A new wallet is created as soon as user presses "Skip, I want a new wallet" button, so
     // there is a possibility that a wallet is created without finishing sign-up process
@@ -92,7 +90,7 @@ export const useRestoreBackup = ({ restoreProgress, setRestoreProgress, download
 
   const importWallet = async (backupKey: string) => {
     try {
-      if (!agent) throw new Error('Agent')
+      if (!agent) return
       const key = await createAndStoreEncryptedKey(KeyChainService.AfjWallet)
 
       // make sure wallet directories exist (TODO: centralize this process somewhere...)
@@ -102,7 +100,6 @@ export const useRestoreBackup = ({ restoreProgress, setRestoreProgress, download
       agent.modules.askar.config.store.key = key
 
       // Create empty store and import data
-      await agent.modules.askar.provisionStore()
       await agent.modules.askar.importStore({
         importFromStore: {
           id: 'afj',

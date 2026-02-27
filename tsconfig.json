@@ -11,7 +11,7 @@
     "jsx": "react",
     "baseUrl": ".",
     "paths": {
-      "@2060/*": ["src/*"],
+      "@src/*": ["src/*"],
     },
   },
   "include": ["**/*.ts", "**/*.tsx", "src/**/*"],

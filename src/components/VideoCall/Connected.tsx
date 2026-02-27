@@ -8,7 +8,7 @@ import { CallButton, HangupButton } from '../common'
 
 import getStyles from './styles'
 
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
 
 const BUTTONS_TIME_FOR_DISAPPEAR = 5000
 

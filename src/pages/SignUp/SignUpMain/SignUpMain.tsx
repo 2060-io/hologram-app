@@ -8,10 +8,10 @@ import { version } from '../../../../package.json'
 
 import getStyles from './styles'
 
-import AppLogo from '@2060/assets/icons/AppLogo'
-import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
-import { Text, SvgIcon } from '@2060/components/common'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
+import AppLogo from '@src/assets/icons/AppLogo'
+import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
+import { Text, SvgIcon } from '@src/components/common'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
 
 interface Props extends StackScreenProps<NavigationStackParams, 'Home'> {}
 

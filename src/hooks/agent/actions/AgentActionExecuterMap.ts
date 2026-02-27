@@ -28,6 +28,7 @@ import {
   DidCommHangupMessage,
   DidCommOutOfBandRole,
   DidCommFeaturesQueriesMessage,
+  DidCommConnectionService,
 } from '@credo-ts/didcomm'
 import { DidCommPushNotificationsFcmSetDeviceInfoMessage } from '@credo-ts/didcomm-push-notifications'
 import { AnswerMessage } from '@credo-ts/question-answer'
@@ -61,7 +62,7 @@ import {
   ShareMediaParameters,
 } from './types'
 
-import { createOobInvitation, MobileAgent } from '@2060/services/agent'
+import { createOobInvitation, MobileAgent } from '@src/services/agent'
 
 type AgentCallbackReturnType<T extends BaseRecord = BaseRecord> = {
   associatedRecord?: T
@@ -339,6 +340,10 @@ export const AgentActionExecuterMap: Record<AgentActionType, ActionFactory> = {
           devicePlatform: Platform.OS,
         },
       })
+      const didCommConnectionService = options.agent.dependencyManager.resolve(DidCommConnectionService)
+      const connection = await didCommConnectionService.getById(options.agent.context, connectionId)
+      connection.setTag('deviceToken', deviceToken)
+      await didCommConnectionService.update(options.agent.context, connection)
       return { outgoingMessageType: DidCommPushNotificationsFcmSetDeviceInfoMessage.type.messageTypeUri }
     }
   },

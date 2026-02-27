@@ -4,8 +4,8 @@ import Realm from 'realm'
 import { createChatEntry } from '../services/ChatEntryService'
 import { addUnread, findOrCreateChatThread } from '../services/ChatThreadService'
 
-import { AnswerMetadata, ChatEntryRole, ChatEntryState, ChatEntryType, QuestionMetadata } from '@2060/model'
-import { MobileAgent } from '@2060/services/agent'
+import { AnswerMetadata, ChatEntryRole, ChatEntryState, ChatEntryType, QuestionMetadata } from '@src/model'
+import { MobileAgent } from '@src/services/agent'
 
 export const handleQuestionAnswerRecordChanges = async (options: {
   agent: MobileAgent

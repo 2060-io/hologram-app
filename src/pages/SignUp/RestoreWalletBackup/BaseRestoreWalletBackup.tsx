@@ -8,12 +8,12 @@ import OnSuccessFinish from './OnSuccessFinish'
 import { RestoreProps, BaseRestoreWalletBackupProps } from './RestoreWalletBackupProps'
 import getStyles from './styles'
 
-import AppLogo from '@2060/assets/icons/AppLogo'
-import { WalletBackupInfo, ModalConfirmAction } from '@2060/components'
-import { Text, TextInputPassword, MainButton, SvgIcon, Progress } from '@2060/components/common'
-import { IS_ANDROID, IS_IOS } from '@2060/constants'
-import { useRestoreBackup } from '@2060/hooks'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
+import AppLogo from '@src/assets/icons/AppLogo'
+import { WalletBackupInfo, ModalConfirmAction } from '@src/components'
+import { Text, TextInputPassword, MainButton, SvgIcon, Progress } from '@src/components/common'
+import { IS_ANDROID, IS_IOS } from '@src/constants'
+import { useRestoreBackup } from '@src/hooks'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
 
 const Restore = ({
   restoreProgress,

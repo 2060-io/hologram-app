@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { parse } from 'mrz'
 
-import { logWarn } from '@2060/utils'
+import { logWarn } from '@src/utils'
 
 const TD1_LINE_LONG = 30
 const TD2_LINE_LONG = 36
