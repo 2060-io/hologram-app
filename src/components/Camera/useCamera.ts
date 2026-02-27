@@ -19,11 +19,11 @@ import {
 
 import { MediaCaptured } from './Props'
 
-import { IS_ANDROID, IS_IOS, MAX_VIDEO_DURATION } from '@2060/constants'
-import { ImageOrVideo, useImageCropPicker } from '@2060/hooks'
-import { getMinutesAndSeconds, logError } from '@2060/utils'
-import { deleteFile } from '@2060/utils/RNFS'
-import { screenHeight, screenWidth } from '@2060/utils/responsiveUtils'
+import { IS_ANDROID, IS_IOS, MAX_VIDEO_DURATION } from '@src/constants'
+import { ImageOrVideo, useImageCropPicker } from '@src/hooks'
+import { getMinutesAndSeconds, logError } from '@src/utils'
+import { deleteFile } from '@src/utils/RNFS'
+import { screenHeight, screenWidth } from '@src/utils/responsiveUtils'
 
 const START_RECORDING_DELAY = 200
 const MAX_ZOOM_FACTOR = 10

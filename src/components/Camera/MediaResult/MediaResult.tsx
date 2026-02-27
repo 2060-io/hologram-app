@@ -6,7 +6,7 @@ import { MediaCaptured } from '../Props'
 import VideoRecorded from './VideoRecorded'
 import getStyles from './styles'
 
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
 
 type Props = {
   visible: boolean

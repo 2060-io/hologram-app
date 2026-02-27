@@ -12,9 +12,9 @@ import { useAnimatedStyles } from './useAnimatedStyles'
 import { useCamera } from './useCamera'
 import { useCameraPanGesture } from './useCameraPanGesture'
 
-import { Icon, SvgIcon, Text } from '@2060/components/common'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { log, logError } from '@2060/utils'
+import { Icon, SvgIcon, Text } from '@src/components/common'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { log, logError } from '@src/utils'
 
 const ReanimatedCamera = Reanimated.createAnimatedComponent(VisionCamera)
 Reanimated.addWhitelistedNativeProps({

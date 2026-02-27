@@ -1,8 +1,8 @@
 import { StyleSheet, ViewStyle } from 'react-native'
 import { EdgeInsets } from 'react-native-safe-area-context'
 
-import { IS_ANDROID } from '@2060/constants'
-import { AppTheme } from '@2060/styles'
+import { IS_ANDROID } from '@src/constants'
+import { AppTheme } from '@src/styles'
 
 const BASE_MARGIN_TOP = 10
 const ANDROID_BASE_MARGIN_BOTTOM = 10

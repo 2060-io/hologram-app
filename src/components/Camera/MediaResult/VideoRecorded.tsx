@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-import VideoPlayer from '@2060/components/VideoPlayer'
+import VideoPlayer from '@src/components/VideoPlayer'
 
 type Props = {
   path: string
