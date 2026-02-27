@@ -4,8 +4,8 @@ import Realm from 'realm'
 
 import { findAllByAssociatedRecordId } from '../services/ChatEntryService'
 
-import { ChatEntryType } from '@2060/model'
-import { MobileAgent } from '@2060/services/agent'
+import { ChatEntryType } from '@src/model'
+import { MobileAgent } from '@src/services/agent'
 
 // FIXME: This first tries in BasicMessage repo and then in MediaSharing repo. It sould be actually a tag in
 // ChatEntryRecord, as we only need the record itself and its didcommThreadId

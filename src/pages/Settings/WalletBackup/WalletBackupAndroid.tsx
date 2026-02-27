@@ -3,7 +3,7 @@ import React from 'react'
 import BaseWalletBackup from './BaseWalletBackup'
 import { WalletBackupPageProps } from './WalletBackupProps'
 
-import { useGoogleDrive } from '@2060/hooks'
+import { useGoogleDrive } from '@src/hooks'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const WalletBackupAndroid = (props: WalletBackupPageProps) => {

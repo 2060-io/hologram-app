@@ -2,8 +2,8 @@ import { StackScreenProps } from '@react-navigation/stack'
 import React from 'react'
 import { StyleProp, ViewStyle } from 'react-native'
 
-import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
-import { BackupInfoHandler, BackupInfo } from '@2060/hooks/backup'
+import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
+import { BackupInfoHandler, BackupInfo } from '@src/hooks/backup'
 
 export interface WalletBackupPageProps extends StackScreenProps<NavigationStackParams, 'WalletBackup'> {}
 

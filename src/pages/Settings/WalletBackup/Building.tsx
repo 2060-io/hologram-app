@@ -4,9 +4,9 @@ import { View } from 'react-native'
 
 import getStyles from './styles'
 
-import { SvgIcon, Text, MainButton, OutlinedButton, Progress } from '@2060/components/common'
-import { BackupState } from '@2060/hooks/backup'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
+import { SvgIcon, Text, MainButton, OutlinedButton, Progress } from '@src/components/common'
+import { BackupState } from '@src/hooks/backup'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
 
 type Props = {
   backupState: BackupState

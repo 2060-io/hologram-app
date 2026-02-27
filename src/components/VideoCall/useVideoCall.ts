@@ -11,20 +11,20 @@ import { useTranslation } from 'react-i18next'
 import InCallManager from 'react-native-incall-manager'
 import { MediaStream, mediaDevices, registerGlobals } from 'react-native-webrtc'
 
-import { AgentActionType, useAgentActionQueue, useMobileAgent } from '@2060/hooks/agent'
-import { CreateCallOfferParameters, HangupCallParameters } from '@2060/hooks/agent/actions/types'
-import { findAllDidcommThreadId, updateChatEntryMetadata } from '@2060/hooks/agent/chat/services'
-import { useConfig } from '@2060/hooks/providers/ConfigProvider'
-import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
+import { AgentActionType, useAgentActionQueue, useMobileAgent } from '@src/hooks/agent'
+import { CreateCallOfferParameters, HangupCallParameters } from '@src/hooks/agent/actions/types'
+import { findAllDidcommThreadId, updateChatEntryMetadata } from '@src/hooks/agent/chat/services'
+import { useConfig } from '@src/hooks/providers/ConfigProvider'
+import { useLocalRealm } from '@src/hooks/providers/RealmProvider'
 import {
   ConnectionStatus,
   CallStatus,
   useVideoCallContext,
   isIncomingCallInfo,
-} from '@2060/hooks/providers/useVideoCallContext'
-import { CallOfferMetadata, CallOfferState, ChatEntryType } from '@2060/model'
-import { log, logError } from '@2060/utils'
-import { getAppCheckHeaders } from '@2060/utils/firebaseUtils'
+} from '@src/hooks/providers/useVideoCallContext'
+import { CallOfferMetadata, CallOfferState, ChatEntryType } from '@src/model'
+import { log, logError } from '@src/utils'
+import { getAppCheckHeaders } from '@src/utils/firebaseUtils'
 
 function generatePeerId(length = 8) {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'

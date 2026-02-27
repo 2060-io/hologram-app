@@ -5,16 +5,16 @@ import React from 'react'
 
 import BaseCredentialOffer from './BaseCredentialOffer'
 
-import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
-import { AgentActionType, useAgentActionQueue, useChats, useMobileAgent } from '@2060/hooks/agent'
+import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
+import { AgentActionType, useAgentActionQueue, useChats, useMobileAgent } from '@src/hooks/agent'
 import {
   AcceptCredentialOfferParameters,
   DeclineCredentialOfferParameters,
-} from '@2060/hooks/agent/actions/types'
-import { findAllByAssociatedRecordId, updateChatEntryMetadata } from '@2060/hooks/agent/chat/services'
-import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
-import { useCredentialExchangeForDisplay } from '@2060/hooks/useCredentialExchangeForDisplay'
-import { ChatEntryType } from '@2060/model'
+} from '@src/hooks/agent/actions/types'
+import { findAllByAssociatedRecordId, updateChatEntryMetadata } from '@src/hooks/agent/chat/services'
+import { useLocalRealm } from '@src/hooks/providers/RealmProvider'
+import { useCredentialExchangeForDisplay } from '@src/hooks/useCredentialExchangeForDisplay'
+import { ChatEntryType } from '@src/model'
 
 interface Props extends StackScreenProps<NavigationStackParams, 'DidcommCredentialOffer'> {}
 
@@ -37,15 +37,15 @@ const DidcommCredentialOffer: React.FC<Props> = ({ route, navigation }) => {
     }
   }
 
-  const goToChatScreen = async () => {
+  const goToChatScreen = async (invitationDid: string) => {
     if (!agent) return
-    const connections = await agent.didcomm.connections.findByInvitationDid(did)
+    const connections = await agent.didcomm.connections.findByInvitationDid(invitationDid)
     if (connections.length) {
       const [connection] = connections
       const chatThreadId = findOrCreateThread({ connection }).id
       navigation.dispatch(
-        StackActions.replace('PersonalChatStack', {
-          screen: 'PersonalChat',
+        StackActions.replace('ChatStack', {
+          screen: 'Chat',
           params: { chatThreadId, redirectToHomeOnBack: true },
         }),
       )
@@ -59,7 +59,7 @@ const DidcommCredentialOffer: React.FC<Props> = ({ route, navigation }) => {
       type: AgentActionType.AcceptCredentialOffer,
       parameters,
     })
-    goToChatScreen()
+    did ? goToChatScreen(did) : navigation.goBack()
   }
 
   const refuse = () => {
@@ -69,7 +69,7 @@ const DidcommCredentialOffer: React.FC<Props> = ({ route, navigation }) => {
       type: AgentActionType.DeclineCredentialOffer,
       parameters,
     })
-    goToChatScreen()
+    did ? goToChatScreen(did) : navigation.goBack()
   }
 
   if (!credentialDetails) return null

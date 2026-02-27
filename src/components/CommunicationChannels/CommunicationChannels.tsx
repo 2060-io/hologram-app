@@ -8,7 +8,7 @@ import { IconsNames } from '../common/SvgIcon'
 import { CommunicationChannelsProps, Channels } from './CommunicationChannelsProps'
 import getStyles from './styles'
 
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
 
 const channelIcons: Record<keyof Channels, string> = {
   allowChats: 'chat',

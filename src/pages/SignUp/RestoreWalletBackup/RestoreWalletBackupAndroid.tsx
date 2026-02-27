@@ -3,8 +3,8 @@ import React, { useState } from 'react'
 import BaseRestoreWalletBackup from './BaseRestoreWalletBackup'
 import { RestoreProgressProps } from './RestoreWalletBackupProps'
 
-import { useGoogleDrive } from '@2060/hooks'
-import { restoreProgressInitialValues } from '@2060/hooks/backup'
+import { useGoogleDrive } from '@src/hooks'
+import { restoreProgressInitialValues } from '@src/hooks/backup'
 
 const RestoreWalletBackupAndroid = () => {
   const { isCloudAvailable, backupInfoHandler, downloadBackup, selectAccount, selectedGoogleAccount } =

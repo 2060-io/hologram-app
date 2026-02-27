@@ -3,7 +3,7 @@ import { DidCommMessageReactionOptions } from '@2060.io/credo-ts-didcomm-reactio
 import { DidCommMessageReceiptOptions } from '@2060.io/credo-ts-didcomm-receipts'
 import { UserProfileData } from '@2060.io/credo-ts-didcomm-user-profile'
 
-import { CallInfo } from '@2060/hooks/providers/useVideoCallContext'
+import { CallInfo } from '@src/hooks/providers/useVideoCallContext'
 
 export type AnoncredsAttribute = {
   name: string

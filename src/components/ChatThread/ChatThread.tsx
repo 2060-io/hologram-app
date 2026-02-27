@@ -6,11 +6,11 @@ import Avatar from '../common/Avatar'
 
 import getStyles from './styles'
 
-import { Text, MessageStateIcon, SvgIcon } from '@2060/components/common'
-import { useConnectionById } from '@2060/hooks/agent'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { ChatEntryState, ChatThreadData } from '@2060/model'
-import { chatDateFormat } from '@2060/utils/dateUtils'
+import { Text, MessageStateIcon, SvgIcon } from '@src/components/common'
+import { useConnectionById } from '@src/hooks/agent'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { ChatEntryState, ChatThreadData } from '@src/model'
+import { chatDateFormat } from '@src/utils/dateUtils'
 
 interface Props extends ChatThreadData {
   using24HourFormat: boolean
@@ -34,7 +34,7 @@ const ChatThread = ({
   const theme = useTheme()
   const styles = getStyles(theme)
   const { t } = useTranslation()
-  const connectionExists = useConnectionById(connectionId)
+  const connection = useConnectionById(connectionId)
   const hasChildren = childCount && childCount > 0
   const lastActivityDate = hasChildren ? lastChildActivityAt : lastActivityAt
 
@@ -53,13 +53,13 @@ const ChatThread = ({
         </Text>
         {hasChildren ? (
           <Text style={styles.numberConversationText}>{`${childCount}  ${t('chat.conversations')}`}</Text>
-        ) : connectionExists ? (
+        ) : connection ? (
           <Text numberOfLines={2} style={styles.textPreview}>
             {preview}
           </Text>
         ) : (
           <Text fontFamily="EuclidCircularA-Medium" style={styles.textPreview}>
-            {t('personalChat.connectionDeleted')}
+            {t('chat.connectionDeleted')}
           </Text>
         )}
       </View>

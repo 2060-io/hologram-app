@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native'
 
-import { AppTheme, cardStyles, cardShadowStyles } from '@2060/styles'
-import { screenWidth, widthPercentageToDP } from '@2060/utils/responsiveUtils'
+import { AppTheme, cardStyles, cardShadowStyles } from '@src/styles'
+import { screenWidth, widthPercentageToDP } from '@src/utils/responsiveUtils'
 
 const styles = (theme: AppTheme, size: string) => {
   const [width, height] = size === 'big' ? ['84%', '48%'] : ['72%', '43%']
@@ -20,6 +20,8 @@ const styles = (theme: AppTheme, size: string) => {
     },
     imageContainer: {
       flex: 3,
+      justifyContent: 'center',
+      alignItems: 'center',
     },
     image: {
       width: screenWidth * 0.15,

@@ -5,9 +5,9 @@ import { View } from 'react-native'
 import { SearchInputProps } from './SearchInputProps'
 import getStyles from './styles'
 
-import { TextInput } from '@2060/components/common'
-import { useDebouncedValue } from '@2060/hooks'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
+import { TextInput } from '@src/components/common'
+import { useDebouncedValue } from '@src/hooks'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
 
 const SearchInput = ({
   placeholder,

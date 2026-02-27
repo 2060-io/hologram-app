@@ -2,12 +2,12 @@ import { TypedArrayEncoder } from '@credo-ts/core'
 import React, { createContext, useCallback, useContext, useRef, useState } from 'react'
 import Realm from 'realm'
 
-import { UploadTask } from '@2060/model'
-import RealmSingleton from '@2060/services/RealmSingleton'
-import { createAndStoreEncryptedKey, KeyChainService } from '@2060/services/keys'
-import { logError } from '@2060/utils'
-import { deleteFile } from '@2060/utils/RNFS'
-import { getRealmConfig } from '@2060/utils/realm'
+import { UploadTask } from '@src/model'
+import RealmSingleton from '@src/services/RealmSingleton'
+import { createAndStoreEncryptedKey, KeyChainService } from '@src/services/keys'
+import { logError } from '@src/utils'
+import { deleteFile } from '@src/utils/RNFS'
+import { getRealmConfig } from '@src/utils/realm'
 
 interface Props {
   children?: React.ReactNode

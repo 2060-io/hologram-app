@@ -3,7 +3,7 @@ import React from 'react'
 import BaseWalletBackup from './BaseWalletBackup'
 import { WalletBackupPageProps } from './WalletBackupProps'
 
-import { useICloud } from '@2060/hooks'
+import { useICloud } from '@src/hooks'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const WalletBackupiOS = (props: WalletBackupPageProps) => {
