@@ -4,7 +4,7 @@ import {
   CallRejectMessage,
   DidCommCallType,
 } from '@2060.io/credo-ts-didcomm-calls'
-import { AgentMessage, ConnectionRecord, parseMessageType } from '@credo-ts/core'
+import { DidCommConnectionRecord, DidCommMessage, parseMessageType } from '@credo-ts/didcomm'
 import Realm from 'realm'
 
 import { DidCommMessageDirection } from '../DidCommMessageDirection'
@@ -15,16 +15,16 @@ import {
 } from '../services/ChatEntryService'
 import { addUnread, findOrCreateChatThread } from '../services/ChatThreadService'
 
-import { CallInfo } from '@2060/hooks/providers/useVideoCallContext'
-import { CallOfferMetadata, CallOfferState, ChatEntryRole, ChatEntryState, ChatEntryType } from '@2060/model'
-import { logError } from '@2060/utils'
+import { CallInfo } from '@src/hooks/providers/useVideoCallContext'
+import { CallOfferMetadata, CallOfferState, ChatEntryRole, ChatEntryState, ChatEntryType } from '@src/model'
+import { logError } from '@src/utils'
 
 export const handleCallMessages = (options: {
   realm: Realm
-  connection?: ConnectionRecord
+  connection?: DidCommConnectionRecord
   activeChatThreadId?: string
   receivedAt?: Date
-  message: AgentMessage
+  message: DidCommMessage
   direction: DidCommMessageDirection
 }) => {
   const { realm, connection, activeChatThreadId, receivedAt, message, direction } = options

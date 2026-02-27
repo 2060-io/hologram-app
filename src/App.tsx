@@ -1,3 +1,6 @@
+import 'reflect-metadata'
+// Workaround for issue in Askar wrapper register method (to be fixed in 0.5)
+import '@openwallet-foundation/askar-react-native'
 import { locale, extend } from 'dayjs'
 import localizedFormat from 'dayjs/plugin/localizedFormat'
 import 'dayjs/locale/es'
@@ -7,16 +10,17 @@ import SplashScreen from 'react-native-splash-screen'
 
 import Toast from './components/Toast'
 
-import Navigation from '@2060/components/Navigation'
+import Navigation from '@src/components/Navigation'
 import {
   MobileAgentProvider,
   NavigationProvider,
   UserProfileProvider,
-  ConnectionProvider,
-  ChatProvider,
-  CredentialProvider,
+  ConnectionsProvider,
+  ChatsProvider,
+  CredentialsProvider,
   FileUploadDownloadProvider,
-} from '@2060/hooks/agent'
+  AgentActionQueueProvider,
+} from '@src/hooks/agent'
 import {
   ConfigProvider,
   PushNotificationsProvider,
@@ -26,8 +30,8 @@ import {
   ThemeProvider,
   VideoCallProvider,
   RefreshedAvatarsUrlsProvider,
-} from '@2060/hooks/providers'
-import { initializeI18n, language } from '@2060/utils/language'
+} from '@src/hooks/providers'
+import { initializeI18n, language } from '@src/utils/language'
 
 locale(language)
 extend(localizedFormat)
@@ -50,9 +54,10 @@ const ProvidersTree = buildProvidersTree([
   [ThemeProvider],
   [RealmProvider],
   [MobileAgentProvider],
-  [ConnectionProvider],
-  [CredentialProvider],
-  [ChatProvider],
+  [AgentActionQueueProvider],
+  [ConnectionsProvider],
+  [CredentialsProvider],
+  [ChatsProvider],
   [UserProfileProvider],
   [NavigationProvider],
   [PushNotificationsProvider],

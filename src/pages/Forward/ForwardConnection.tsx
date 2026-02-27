@@ -1,18 +1,17 @@
-import { MessageSender } from '@credo-ts/core'
+import { DidCommMessageSender } from '@credo-ts/didcomm'
 import { StackScreenProps } from '@react-navigation/stack'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { ConnectionsSelection } from '@2060/components'
-import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
-import { AgentActionType, useChats, useMobileAgent } from '@2060/hooks/agent'
-import { ForwardConnectionParameters } from '@2060/hooks/agent/actions/types'
-import { createChatEntry } from '@2060/hooks/agent/chat/services'
-import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
-import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
-import { ChatEntryRole, ChatEntryState, ChatEntryType } from '@2060/model'
-import { InvitationState } from '@2060/model/InvitationState'
-import { toast } from '@2060/utils/toast'
+import { ConnectionsSelection } from '@src/components'
+import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
+import { AgentActionType, useAgentActionQueue, useChats, useMobileAgent } from '@src/hooks/agent'
+import { ForwardConnectionParameters } from '@src/hooks/agent/actions/types'
+import { createChatEntry } from '@src/hooks/agent/chat/services'
+import { useLocalRealm } from '@src/hooks/providers/RealmProvider'
+import { ChatEntryRole, ChatEntryState, ChatEntryType } from '@src/model'
+import { InvitationState } from '@src/model/InvitationState'
+import { toast } from '@src/utils/toast'
 
 interface Props extends StackScreenProps<NavigationStackParams, 'ForwardConnection'> {}
 
@@ -20,7 +19,7 @@ const ForwardConnection = ({ navigation, route }: Props) => {
   const { t } = useTranslation()
   const { connection } = route.params
   const { agent } = useMobileAgent()
-  const messageSender = agent?.context.dependencyManager.resolve(MessageSender)
+  const messageSender = agent?.context.dependencyManager.resolve(DidCommMessageSender)
   const { addAgentActionToQueue } = useAgentActionQueue()
   const { realm } = useLocalRealm()
   const { findOrCreateThread } = useChats()
@@ -28,7 +27,7 @@ const ForwardConnection = ({ navigation, route }: Props) => {
   const forwardConnection = async (connectionsId: string[]) => {
     if (!agent || !messageSender || !realm) return
     connectionsId.forEach(async connectionId => {
-      const didcommConnection = await agent.connections.getById(connectionId)
+      const didcommConnection = await agent.didcomm.connections.getById(connectionId)
       const chatThreadId = findOrCreateThread({ connection: didcommConnection }).id
       const metadata = {
         state: InvitationState.AlreadyConnected,

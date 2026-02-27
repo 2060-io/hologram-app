@@ -4,12 +4,12 @@ import React, { useLayoutEffect } from 'react'
 
 import getStyles from './styles'
 
-import { useUnreadChatThreads } from '@2060/hooks/agent'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import Chats from '@2060/pages/Chats'
-import { HomeMainTabParams } from '@2060/pages/HomeMain/HomeMainProps'
-import SubChats from '@2060/pages/SubChats'
-import { getGlobalStyles } from '@2060/styles'
+import { useUnreadChatThreads } from '@src/hooks/agent'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import Chats from '@src/pages/Chats'
+import { HomeMainTabParams } from '@src/pages/HomeMain/HomeMainProps'
+import SubChats from '@src/pages/SubChats'
+import { getGlobalStyles } from '@src/styles'
 
 type ChatsStackParams = {
   ChatsMain: undefined

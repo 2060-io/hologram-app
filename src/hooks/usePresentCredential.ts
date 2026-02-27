@@ -1,17 +1,17 @@
-import { ProofState, W3cCredentialRepository } from '@credo-ts/core'
+import { W3cCredentialRepository } from '@credo-ts/core'
+import { DidCommProofState } from '@credo-ts/didcomm'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
-import { AgentActionType, useChats, useMobileAgent } from '@2060/hooks/agent'
-import { AnoncredsAttribute, PresentCredentialParameters } from '@2060/hooks/agent/actions/types'
-import { createChatEntry } from '@2060/hooks/agent/chat/services'
-import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
-import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
-import { ChatEntryRole, ChatEntryState, ChatEntryType, VPResponseMetadata } from '@2060/model'
-import { getCredentialMainInfo } from '@2060/services/agent/display'
-import { toast } from '@2060/utils/toast'
+import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
+import { AgentActionType, useChats, useMobileAgent, useAgentActionQueue } from '@src/hooks/agent'
+import { AnoncredsAttribute, PresentCredentialParameters } from '@src/hooks/agent/actions/types'
+import { createChatEntry } from '@src/hooks/agent/chat/services'
+import { useLocalRealm } from '@src/hooks/providers/RealmProvider'
+import { ChatEntryRole, ChatEntryState, ChatEntryType, VPResponseMetadata } from '@src/model'
+import { getCredentialMainInfo } from '@src/services/agent/display'
+import { toast } from '@src/utils/toast'
 
 export const usePresentCredential = () => {
   const { t } = useTranslation()
@@ -40,10 +40,10 @@ export const usePresentCredential = () => {
         anoncredsAttributes.push({ name: attribute, credentialDefinitionId })
       })
       connectionsId.forEach(async connectionId => {
-        const didcommConnection = await agent.connections.getById(connectionId)
+        const didcommConnection = await agent.didcomm.connections.getById(connectionId)
         const chatThreadId = findOrCreateThread({ connection: didcommConnection }).id
         const metadata: VPResponseMetadata = {
-          proofState: ProofState.ProposalSent,
+          proofState: DidCommProofState.ProposalSent,
           presentedCredentials: JSON.stringify([{ mainInfo }]),
         }
         const chatEntry = createChatEntry(realm, {

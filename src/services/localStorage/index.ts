@@ -1,7 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
 
-import { logError } from '@2060/utils'
-
 // This storage key saves the value that indicates if user has enable display logs as toast message
 export const LOGS_ENABLED_PERSIST_KEY = 'logsEnabled'
 
@@ -45,22 +43,31 @@ export const SCREEN_LOCK_ENABLED_PERSIST_KEY = 'screenLockEnabled'
 // This storage key saves the id of the OutOfBandRecord when user creates his invitation to share it
 export const USER_INVITATION_OUT_OF_BAND_RECORD_ID = 'userInvitationOutOfBandRecordId'
 
-export const setStorageData = async (key: string, value: unknown) => {
+export async function setStorageData(key: string, value: unknown) {
   try {
     const jsonValue = JSON.stringify(value)
     await AsyncStorage.setItem(key, jsonValue)
+    return true
   } catch (error) {
-    logError(JSON.stringify(error))
+    return false
   }
 }
 
-export const getStorageData = async (key: string): Promise<unknown | null | undefined> => {
+export async function getStorageData(key: string): Promise<unknown | null | undefined> {
   try {
     const value = await AsyncStorage.getItem(key)
     if (value) return JSON.parse(value)
-
     return null
   } catch (error) {
-    logError(JSON.stringify(error))
+    return null
+  }
+}
+
+export async function removeStorageData(key: string): Promise<boolean> {
+  try {
+    await AsyncStorage.removeItem(key)
+    return true
+  } catch (error) {
+    return false
   }
 }

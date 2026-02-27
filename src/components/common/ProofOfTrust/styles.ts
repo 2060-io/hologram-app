@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native'
 
-import { AppTheme, cardShadowStyles, cardStyles } from '@2060/styles'
+import { AppTheme, cardShadowStyles, cardStyles } from '@src/styles'
 
 export default (theme: AppTheme) =>
   StyleSheet.create({
@@ -48,5 +48,8 @@ export default (theme: AppTheme) =>
     },
     separator: {
       color: theme.colors.green,
+    },
+    loadingSkeletonSeparator: {
+      marginBottom: 10,
     },
   })

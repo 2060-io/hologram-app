@@ -1,296 +1,247 @@
-import { MessageReceipt, MessageReceiptOptions, MessageState } from '@2060.io/credo-ts-didcomm-receipts'
-import { ConnectionRecord, utils } from '@credo-ts/core'
-import React, { createContext, useCallback, useState, useEffect, useContext, useRef } from 'react'
+import React, { createContext, useContext, useState, useCallback, useRef } from 'react'
+import { Keyboard, Vibration } from 'react-native'
 
-import { useMobileAgent } from './MobileAgentProvider'
-import { AgentActionType } from './actions/AgentAction'
-import { SendReceiptsParameters } from './actions/types'
-import { addReceiptToRelatedEntries } from './chat/services/ChatEntryService'
-import {
-  findOrCreateChatThread,
-  archiveThreads as chatTSArchiveThreads,
-  unarchiveThreads as chatTSUnarchiveThreads,
-  markThreadAsRead as chatTSMarkThreadAsRead,
-  deleteThread as chatTSDeleteThread,
-  updateThread,
-} from './chat/services/ChatThreadService'
-import { subscribeToAgentChatEvents } from './chat/subscribeToAgentChatEvents'
-import { useAgentActionQueue } from './useAgentActionQueue'
+import { useScreenLock } from '../providers/ScreenLockProvider'
 
-import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
-import {
-  ChatThread,
-  ChatThreadData,
-  ChatEntry,
-  getChatThreadData,
-  ChatEntryType,
-  ChatEntryRole,
-  SystemMessageMetadata,
-  ChatEntryState,
-  MediaSharingMetadata,
-} from '@2060/model'
-import { checkIfDeleteFilesFromMedia } from '@2060/pages/PersonalChat/utils'
-import { supportsMessageReceipts } from '@2060/utils/connectionUtils'
-import {
-  getLastEntryInChatThread,
-  getMediaChatEntriesExcludingThread,
-  queryOfTypeMedia,
-} from '@2060/utils/realmQueries'
+import { ChatThreadWithParticipants } from './useChatThreads'
 
-export type ChatCategory = 'all' | 'people' | 'services'
-type ChatFilters = { topic: string; archived: boolean; category: ChatCategory; parentId?: string }
+import { ChatEntryRole, ChatEntryState, ChatEntryType, RelatedEntryProps, isMediaType } from '@src/model'
+import { ChatEntryMessage } from '@src/pages/Chat/ChatMessage/Props'
+import { MessageAction } from '@src/pages/Chat/ChatProps'
 
-interface CreateThreadOptions {
-  connection: ConnectionRecord
-}
-
-interface MarkThreadAsReadOptions {
-  id: string
-  lastReadAt: Date
-}
+export type RepliedMessage = RelatedEntryProps
 
 interface ChatState {
-  loading: boolean
-  filters: ChatFilters
-  activeChatThreadId: string | undefined
-  threads: ChatThreadData[]
+  isRecordingVoiceNote: boolean
+  repliedMessage?: RepliedMessage
+  selectedMessage?: ChatEntryMessage
+  chatThread?: ChatThreadWithParticipants
+  showMessageFloatingMenu: boolean
+  displayReportMessageConfirmation: boolean
+  modalConfirmMessageDeletion: boolean
+  isSelectingMessagesMode: boolean
+  selectedMessages: ChatEntryMessage[]
+  tappedRepliedMessageChatEntryId: string | null
+}
+
+const getMessageActions = (currentMessage: ChatEntryMessage) => {
+  const { type, state } = currentMessage
+  const isMedia = isMediaType(type)
+  const isText = type === ChatEntryType.TextMessage
+
+  const actionInfoMessage: MessageAction = {
+    id: 'action-info',
+    icon: 'information-circle',
+    label: 'chat.info',
+  }
+  const actionSelectMessage: MessageAction = {
+    id: 'action-select',
+    icon: 'check-circle-outline',
+    label: 'chat.select',
+    asIcon: 'MaterialCommunityIcons',
+  }
+  const actionReportMessage: MessageAction = {
+    id: 'action-report',
+    icon: 'warning-outline',
+    label: 'chat.report',
+  }
+  const actionSaveMessage: MessageAction = {
+    id: 'action-save',
+    icon: 'save-outline',
+    label: 'chat.save',
+  }
+  const actionShareMessage: MessageAction = {
+    id: 'action-share',
+    icon: 'share-outline',
+    label: 'chat.shareMessage',
+  }
+  const actionReplyMessage: MessageAction = {
+    id: 'action-reply',
+    icon: 'arrow-undo-outline',
+    label: 'chat.reply',
+  }
+  const actionForwardMessage: MessageAction = {
+    id: 'action-forward',
+    icon: 'arrow-up-bold-box-outline',
+    label: 'chat.forward',
+    asIcon: 'MaterialCommunityIcons',
+  }
+  const actionDeleteMessageForMe: MessageAction = {
+    id: 'action-delete',
+    icon: 'trash-outline',
+    label: 'chat.delete',
+  }
+  const actionCopyText: MessageAction = {
+    id: 'action-copy',
+    icon: 'copy',
+    label: 'chat.copy',
+  }
+
+  const messageActions: MessageAction[] = []
+
+  if (state === ChatEntryState.Deleted) {
+    return [actionSelectMessage, actionInfoMessage, actionDeleteMessageForMe]
+  }
+
+  if (isMedia || isText) messageActions.push(actionReplyMessage, actionForwardMessage)
+  if ([ChatEntryType.Video, ChatEntryType.Image, ChatEntryType.VoiceNote].includes(type)) {
+    if (type !== ChatEntryType.VoiceNote) {
+      messageActions.push(actionSaveMessage)
+    }
+    messageActions.push(actionShareMessage)
+  }
+  const isReported = currentMessage.metadata?.isReported === true
+
+  if (isText) messageActions.push(actionCopyText)
+
+  messageActions.push(actionSelectMessage, actionInfoMessage)
+  if (currentMessage.role === ChatEntryRole.Receiver && !isReported) {
+    messageActions.push(actionReportMessage)
+  }
+  messageActions.push(actionDeleteMessageForMe)
+  return messageActions
 }
 
 interface ChatContextInterface extends ChatState {
-  findOrCreateThread(options: CreateThreadOptions): ChatThreadData
-  archiveThreads(chatThreadIds: string[]): void
-  unarchiveThreads(chatThreadIds: string[]): void
-  markThreadAsRead(options: MarkThreadAsReadOptions): void
-  deleteThread(chatThreadId: string): void
-  clearChat(threadId: string): void
-  setFilters(filters: Partial<ChatFilters>): void
-  setActiveChatThreadId(id: string | undefined): void
+  setIsRecordingVoiceNote(isRecording?: boolean): void
+  setRepliedMessage(message?: RepliedMessage): void
+  setChatThread(chatThread?: ChatThreadWithParticipants): void
+  chatThread?: ChatThreadWithParticipants
+  displayMessageFloatingMenu(selectedMessage: ChatEntryMessage): void
+  displayReportMessageConfirmation: boolean
+  setDisplayReportMessageConfirmation(displayReportMessageConfirmation: boolean): void
+  modalConfirmMessageDeletion: boolean
+  showDeleteMessageConfirmation(): void
+  closeModalConfirmMessageDeletion(): void
+  closeMessageFloatingMenu(): void
+  showReportMessageConfirmation(): void
+  messageActions: React.MutableRefObject<MessageAction[]>
+  stopSelectingMessagesMode(): void
+  setIsSelectingMessagesMode(isSelectingMessagesMode: boolean): void
+  updateSelectedMessages(selectedMessage: ChatEntryMessage): void
+  setTappedRepliedMessageChatEntryId(id: string | null): void
+}
+
+interface Props {
+  children: React.ReactNode
 }
 
 const ChatContext = createContext<ChatContextInterface | undefined>(undefined)
 
-export const useChats = () => {
+export const useChat = () => {
   const chatContext = useContext(ChatContext)
-  if (!chatContext) throw new Error('useChats must be used within a ChatContextProvider')
-
+  if (!chatContext) {
+    throw new Error('useChat must be used within a ChatContextProvider')
+  }
   return chatContext
 }
 
-interface Props {
-  children?: React.ReactNode
-}
-
-export const ChatProvider: React.FC<Props> = ({ children }) => {
-  const { realm } = useLocalRealm()
-  const { agent } = useMobileAgent()
-  const { addAgentActionToQueue } = useAgentActionQueue()
-  const [chatState, setChatState] = useState<ChatState>({
-    loading: true,
-    filters: { topic: '', category: 'all', archived: false },
-    activeChatThreadId: undefined,
-    threads: [],
+export const ChatProvider: React.FC<React.PropsWithChildren<Props>> = ({ children }) => {
+  const { forceDisableScreenLock } = useScreenLock()
+  const [state, setState] = useState<ChatState>({
+    isRecordingVoiceNote: false,
+    showMessageFloatingMenu: false,
+    displayReportMessageConfirmation: false,
+    modalConfirmMessageDeletion: false,
+    isSelectingMessagesMode: false,
+    selectedMessages: [],
+    tappedRepliedMessageChatEntryId: null,
   })
-  const activeChatThreadId = useRef<undefined | string>(undefined)
+  const messageActions = useRef<MessageAction[]>([])
 
-  useEffect(() => {
-    if (agent && realm) {
-      const getActiveChatThreadId = () => {
-        return activeChatThreadId.current
-      }
-      subscribeToAgentChatEvents(agent, realm, true, getActiveChatThreadId)
-    }
-  }, [agent, realm])
-
-  useEffect(() => {
-    return setInitialState()
-  }, [agent, realm, chatState.filters])
-
-  useEffect(() => {
-    activeChatThreadId.current = chatState.activeChatThreadId
-  }, [chatState.activeChatThreadId])
-
-  const setInitialState = () => {
-    if (!agent || !realm) return
-    const { parentId, category, topic, archived } = chatState.filters
-
-    const categoryFilterMapping: Record<ChatCategory, string> = {
-      all: '',
-      people: '&& isService == false',
-      services: '&& isService == true',
-    }
-
-    const parentFilter = 'parentId == ' + (parentId ? `'${parentId}'` : 'null')
-
-    // TODO: implement pagination
-    const query = `topic CONTAINS[c] '${topic}' 
-    ${categoryFilterMapping[category]} 
-    && ${parentFilter} 
-    SORT(lastChildActivityAt DESC)`
-    const chatThreads = realm.objects(ChatThread).filtered(query).sorted('lastChildActivityAt', true)
-
-    // TODO: implement pagination
-    const threads = getFilteredEntries(chatThreads, archived)
-    setChatState(prevState => ({ ...prevState, threads, loading: false }))
-
-    const onChatThreadChange: Realm.CollectionChangeCallback<ChatThread> = newChatThreads => {
-      const newThreads = getFilteredEntries(newChatThreads as Realm.Results<ChatThread>, archived)
-      setChatState(prevState => ({ ...prevState, threads: newThreads }))
-    }
-
-    chatThreads.addListener(onChatThreadChange)
-
-    return () => {
-      chatThreads.removeListener(onChatThreadChange)
-    }
-  }
-
-  const getFilteredEntries = (entries: Realm.Results<ChatThread>, archived: boolean) => {
-    return entries.length > 0
-      ? entries
-          // If thread has not any children, check its own archived status. Otherwise, consider not only its
-          // own status but also of its children (if any of them matches, accept it)
-          .filter(item =>
-            item.subthreads.length === 0
-              ? archived === item.archived
-              : archived === item.archived ||
-                item.subthreads.find(subthread => archived === subthread.archived),
-          )
-          .map((item: ChatThread) => {
-            const threadData = getChatThreadData(item)
-            // Expand archived/unarchived status filtering to subthreads
-            return {
-              ...threadData,
-              subthreads: threadData.subthreads.filter(subthread => archived === subthread.archived),
-            }
-          })
-      : []
-  }
-
-  const setFilters = useCallback((filters: Partial<ChatFilters>) => {
-    setChatState(prevState => ({ ...prevState, filters: { ...prevState.filters, ...filters } }))
+  const setIsRecordingVoiceNote = useCallback((isRecording: boolean = false) => {
+    forceDisableScreenLock(isRecording)
+    setState(prevState => ({ ...prevState, isRecordingVoiceNote: isRecording }))
   }, [])
 
-  const setActiveChatThreadId = useCallback((id: string | undefined) => {
-    setChatState(prevState => ({ ...prevState, activeChatThreadId: id }))
+  const setRepliedMessage = useCallback((message?: RepliedMessage) => {
+    setState(prevState => ({ ...prevState, repliedMessage: message }))
   }, [])
 
-  const findOrCreateThread = useCallback(
-    (options: CreateThreadOptions): ChatThreadData => {
-      if (!realm) throw new Error('Realm Unavailable')
-      const record = findOrCreateChatThread(realm, options.connection)
+  const setTappedRepliedMessageChatEntryId = useCallback((id: string | null) => {
+    setState(prevState => ({ ...prevState, tappedRepliedMessageChatEntryId: id }))
+  }, [])
 
-      return getChatThreadData(record)
-    },
-    [realm],
-  )
+  const setSelectedMessage = useCallback((selectedMessage: ChatEntryMessage) => {
+    setState(prevState => ({ ...prevState, selectedMessage }))
+  }, [])
 
-  const archiveThreads = useCallback(
-    (chatThreadIds: string[]) => {
-      if (!realm) throw new Error('Realm Unavailable')
-      chatTSArchiveThreads(realm, chatThreadIds)
-    },
-    [realm],
-  )
+  const resetSelectedMessages = useCallback(() => {
+    setState(prevState => ({ ...prevState, selectedMessages: [] }))
+  }, [])
 
-  const unarchiveThreads = useCallback(
-    (chatThreadIds: string[]) => {
-      if (!realm) throw new Error('Realm Unavailable')
-      chatTSUnarchiveThreads(realm, chatThreadIds)
-    },
-    [realm],
-  )
+  const setIsSelectingMessagesMode = useCallback((isSelectingMessagesMode: boolean) => {
+    if (!isSelectingMessagesMode) resetSelectedMessages()
+    setState(prevState => ({ ...prevState, isSelectingMessagesMode }))
+  }, [])
 
-  const markThreadAsRead = useCallback(
-    async (options: MarkThreadAsReadOptions) => {
-      if (!realm) throw new Error('Realm Unavailable')
-      const { id, lastReadAt } = options
+  const stopSelectingMessagesMode = () => setIsSelectingMessagesMode(false)
 
-      const { messageIds, connectionId } = chatTSMarkThreadAsRead(realm, id, lastReadAt)
-      const connection = await agent?.connections.findById(connectionId)
+  const updateSelectedMessages = useCallback((selectedMessage: ChatEntryMessage) => {
+    setState(prevState => {
+      const { selectedMessages } = prevState
+      const messageIsAlreadySelected = selectedMessages.some(({ id }) => id === selectedMessage.id)
+      const newSelectedMessages = messageIsAlreadySelected
+        ? selectedMessages.filter(chatEntry => chatEntry.id !== selectedMessage.id)
+        : [...selectedMessages, selectedMessage]
+      return { ...prevState, selectedMessages: newSelectedMessages }
+    })
+  }, [])
 
-      // No receipts to send
-      if (!connection || !supportsMessageReceipts(connection) || messageIds.length === 0) return
+  const setChatThread = useCallback((chatThread: ChatThreadWithParticipants) => {
+    setState(prevState => ({ ...prevState, chatThread }))
+  }, [])
 
-      const receipts: MessageReceiptOptions[] = messageIds.map(messageId => ({
-        messageId,
-        state: MessageState.Viewed,
-        timestamp: lastReadAt,
-      }))
+  const setShowMessageFloatingMenu = useCallback((showMessageFloatingMenu: boolean) => {
+    setState(prevState => ({ ...prevState, showMessageFloatingMenu }))
+  }, [])
 
-      for (const receipt of receipts) {
-        addReceiptToRelatedEntries(realm, receipt as MessageReceipt)
-      }
-      const parameters: SendReceiptsParameters = { connectionId, receipts }
-      addAgentActionToQueue({
-        type: AgentActionType.SendReceipts,
-        parameters,
-      })
-    },
-    [realm],
-  )
+  const setDisplayReportMessageConfirmation = useCallback((displayReportMessageConfirmation: boolean) => {
+    setState(prevState => ({ ...prevState, displayReportMessageConfirmation }))
+  }, [])
 
-  const deleteThread = useCallback(
-    (chatThreadId: string) => {
-      if (!realm) return
-      clearChat(chatThreadId)
-      chatTSDeleteThread(realm, chatThreadId)
-    },
-    [realm],
-  )
+  const setModalConfirmMessageDeletion = useCallback((modalConfirmMessageDeletion: boolean) => {
+    setState(prevState => ({ ...prevState, modalConfirmMessageDeletion }))
+  }, [])
 
-  const clearChat = useCallback(
-    (threadId: string) => {
-      if (!realm) return
-      const chatEntriesToDelete = realm.objects(ChatEntry).filtered(`chatThreadId == '${threadId}'`)
-      // Create metadata deep copy of entries type media before delete them
-      const metadataOfEntriesTypeMedia: MediaSharingMetadata[] = chatEntriesToDelete
-        .filtered(queryOfTypeMedia)
-        .map((chatEntry: ChatEntry) => ({ ...(chatEntry.metadata as MediaSharingMetadata) }))
-      const thread = realm.objects(ChatThread).find(item => item.id === threadId)
-      realm.write(() => {
-        realm.delete(chatEntriesToDelete)
-        // Create security message
-        if (!thread) return
-        thread.preview = ''
-        realm.create<ChatEntry>('ChatEntry', {
-          id: utils.uuid(),
-          chatThreadId: thread.id,
-          didcommThreadId: '',
-          associatedMessageId: '',
-          associatedRecordId: '',
-          type: ChatEntryType.System,
-          role: ChatEntryRole.None,
-          state: ChatEntryState.Viewed,
-          metadata: { kind: 'security' } as SystemMessageMetadata,
-          createdAt: thread.createdAt.getTime(),
-          unread: false,
-        })
-      })
-      const lastEntryInChatThread = getLastEntryInChatThread(realm, threadId)
-      updateThread(realm, threadId, { lastChatEntry: lastEntryInChatThread })
-      if (metadataOfEntriesTypeMedia.length) {
-        const mediaChatEntriesExcludingThread = getMediaChatEntriesExcludingThread(realm, threadId)
-        // iterates all chat entries of type media and check if can delete media files
-        for (const metadataOfEntryTypeMedia of metadataOfEntriesTypeMedia) {
-          checkIfDeleteFilesFromMedia(metadataOfEntryTypeMedia, mediaChatEntriesExcludingThread)
-        }
-      }
-    },
-    [realm],
-  )
+  const closeMessageFloatingMenu = useCallback(() => {
+    setShowMessageFloatingMenu(false)
+  }, [])
+
+  const showReportMessageConfirmation = useCallback(() => {
+    setDisplayReportMessageConfirmation(true)
+  }, [])
+
+  const displayMessageFloatingMenu = (selectedMessage: ChatEntryMessage) => {
+    if (Keyboard.isVisible()) Keyboard.dismiss()
+    Vibration.vibrate(50, false)
+    setSelectedMessage(selectedMessage)
+    const actions = getMessageActions(selectedMessage)
+    messageActions.current = actions
+    setShowMessageFloatingMenu(true)
+  }
+
+  const showDeleteMessageConfirmation = () => setModalConfirmMessageDeletion(true)
+  const closeModalConfirmMessageDeletion = () => setModalConfirmMessageDeletion(false)
 
   return (
     <ChatContext
       value={{
-        ...chatState,
-        setFilters,
-        setActiveChatThreadId,
-        findOrCreateThread,
-        archiveThreads,
-        unarchiveThreads,
-        markThreadAsRead,
-        deleteThread,
-        clearChat,
+        ...state,
+        setIsRecordingVoiceNote,
+        setRepliedMessage,
+        setChatThread,
+        messageActions,
+        displayMessageFloatingMenu,
+        setDisplayReportMessageConfirmation,
+        showDeleteMessageConfirmation,
+        closeModalConfirmMessageDeletion,
+        closeMessageFloatingMenu,
+        showReportMessageConfirmation,
+        setIsSelectingMessagesMode,
+        stopSelectingMessagesMode,
+        updateSelectedMessages,
+        setTappedRepliedMessageChatEntryId,
       }}
     >
       {children}

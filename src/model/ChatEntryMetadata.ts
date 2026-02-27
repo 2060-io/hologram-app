@@ -1,11 +1,11 @@
 import { DidCommCallType } from '@2060.io/credo-ts-didcomm-calls'
-import { CredentialState, ProofState } from '@credo-ts/core'
+import { DidCommCredentialState, DidCommProofState } from '@credo-ts/didcomm'
 
 import { InvitationState } from './InvitationState'
 import { MediaDownloadState } from './MediaDownloadState'
 import { MediaUploadState } from './MediaUploadState'
 
-import { CredentialMainInfo } from '@2060/services/agent/display'
+import { CredentialMainInfo } from '@src/services/agent/display'
 
 export type TextMessageMetadata = {
   content: string
@@ -79,7 +79,7 @@ export type LinkMetadata = MediaSharingMetadata & {
 
 export type VPRequestMetadata = {
   requestedAttributes: string // FIXME! RequestedAttributes;
-  proofState: ProofState
+  proofState: DidCommProofState
   replied: boolean
 }
 
@@ -89,12 +89,12 @@ export type VPResponsePresentedCredential = {
 }
 
 export type VPResponseMetadata = {
-  proofState: ProofState
+  proofState: DidCommProofState
   presentedCredentials: string //deserialize it (JSON.parse) and castes to VPResponsePresentedCredential[]
 }
 
 export type VCOfferMetadata = {
-  credentialState: CredentialState
+  credentialState: DidCommCredentialState
   issuedAt: number
   schemaId?: string
   schemaName?: string

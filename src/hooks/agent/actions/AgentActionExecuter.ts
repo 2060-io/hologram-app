@@ -1,14 +1,14 @@
-import { AgentMessageSentEvent, AgentEventTypes, MessageSendingError } from '@credo-ts/core'
+import { DidCommMessageSentEvent, DidCommEventTypes, MessageSendingError } from '@credo-ts/didcomm'
 import { Realm } from 'realm'
 import { ReplaySubject, firstValueFrom, filter, first, timeout, catchError, map } from 'rxjs'
 
 import { ActionExecutionStatus, AgentAction, OutboundMessageContextData } from './AgentAction'
 import { AgentActionExecuterMap } from './AgentActionExecuterMap'
 
-import { updateChatEntry } from '@2060/hooks/agent/chat/services/ChatEntryService'
-import { ChatEntry, ChatEntryState } from '@2060/model'
-import { MobileAgent } from '@2060/services/agent'
-import { log, logError } from '@2060/utils'
+import { updateChatEntry } from '@src/hooks/agent/chat/services/ChatEntryService'
+import { ChatEntry, ChatEntryState } from '@src/model'
+import { MobileAgent } from '@src/services/agent'
+import { log, logError } from '@src/utils'
 
 export class AgentActionExecuter {
   /**
@@ -22,7 +22,7 @@ export class AgentActionExecuter {
     action: AgentAction
   }): Promise<{ status: ActionExecutionStatus; outboundMessageContextData?: OutboundMessageContextData }> {
     const { agent, realm, action } = options
-    const replaySubject = new ReplaySubject<AgentMessageSentEvent>()
+    const replaySubject = new ReplaySubject<DidCommMessageSentEvent>()
     log('Execute Agent Action', JSON.stringify(action))
 
     const chatEntry = action.chatEntryId
@@ -31,7 +31,7 @@ export class AgentActionExecuter {
 
     // Start looking at AgentMessageSent events
     const subscription = agent.events
-      .observable<AgentMessageSentEvent>(AgentEventTypes.AgentMessageSent)
+      .observable<DidCommMessageSentEvent>(DidCommEventTypes.DidCommMessageSent)
       .subscribe(replaySubject)
 
     try {
@@ -96,7 +96,7 @@ export class AgentActionExecuter {
           },
         }
       } else {
-        logError('Agent Action Executer Error', error)
+        logError(`Agent Action Executer Error: ${JSON.stringify(error)}`)
         throw error
       }
     } finally {

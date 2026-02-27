@@ -1,4 +1,5 @@
-import { ConnectionRecord, TypedArrayEncoder, Buffer } from '@credo-ts/core'
+import { TypedArrayEncoder, Buffer } from '@credo-ts/core'
+import { DidCommConnectionRecord } from '@credo-ts/didcomm'
 import { StackScreenProps } from '@react-navigation/stack'
 import React, { ReactElement, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -9,35 +10,41 @@ import Share, { ShareOptions } from 'react-native-share'
 
 import getStyles from './styles'
 
-import { ModalConfirmAction } from '@2060/components'
-import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
-import { Text, ConnectionMainActions, SvgIcon, ModalLoading, OptionsList } from '@2060/components/common'
-import { Option } from '@2060/components/common/OptionsList'
-import { IS_IOS } from '@2060/constants'
+import { ModalConfirmAction } from '@src/components'
+import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
+import { Text, ConnectionMainActions, SvgIcon, ModalLoading, OptionsList } from '@src/components/common'
+import { Option } from '@src/components/common/OptionsList'
+import { IS_IOS } from '@src/constants'
+import { useMobileAgent, useChats, useConnectionByParentConnectionId, useUserProfile } from '@src/hooks/agent'
+import { deleteConnection } from '@src/hooks/agent/connections'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { useScrollSwipeDown } from '@src/hooks/useScrollSwipeDown'
+import { createOobInvitation, MobileAgent } from '@src/services/agent'
+import { capitalizeFirstLetter, logError } from '@src/utils'
 import {
-  useMobileAgent,
-  useChats,
-  useConnectionByParentConnectionId,
-  useUserProfile,
-} from '@2060/hooks/agent'
-import { deleteConnection, blockConnection, unblockConnection } from '@2060/hooks/agent/connections'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { createOobInvitation, MobileAgent } from '@2060/services/agent'
-import { capitalizeFirstLetter, logError } from '@2060/utils'
-import { getConnectionDisplayName, isBlocked, isService, isTerminated } from '@2060/utils/connectionUtils'
-import { markNewConnectionNotificationAsViewed } from '@2060/utils/pushNotificationsUtils'
-import { toast } from '@2060/utils/toast'
+  blockConnection,
+  getConnectionDisplayName,
+  isBlocked,
+  isService,
+  isTerminated,
+  unblockConnection,
+} from '@src/utils/connectionUtils'
+import { markNewConnectionNotificationAsViewed } from '@src/utils/pushNotificationsUtils'
+import { screenHeight } from '@src/utils/responsiveUtils'
+import { toast } from '@src/utils/toast'
 
 type confirmationTypes = 'deleteChat' | 'block' | 'unblock' | 'deleteConnection'
 export interface WrapperProps extends StackScreenProps<NavigationStackParams, 'ConnectionDetails'> {}
 
 export interface ConnectionDetailsProps extends WrapperProps {
-  connection: ConnectionRecord
+  connection: DidCommConnectionRecord
 }
 
 interface BaseConnectionDetailsProps extends ConnectionDetailsProps {
   mainInfo: ReactElement | null
   footerInfo?: ReactElement | null
+  onSwipeDown?: () => void
+  disabledSwipeDown?: boolean
 }
 
 const BaseConnectionDetails = ({
@@ -45,25 +52,28 @@ const BaseConnectionDetails = ({
   connection,
   mainInfo,
   footerInfo,
+  onSwipeDown,
+  disabledSwipeDown = true,
 }: BaseConnectionDetailsProps) => {
+  const { t } = useTranslation()
+  const theme = useTheme()
+  const styles = getStyles(theme)
+  const { agent } = useMobileAgent()
+  const { userProfileData } = useUserProfile()
+  const { clearChat, findOrCreateThread } = useChats()
+  const { handleScrollBeginDrag, handleScrollEndDrag } = useScrollSwipeDown({
+    disabledSwipeDown,
+    onSwipeDown,
+  })
+  const relatedConnections = useConnectionByParentConnectionId(connection.id)
   const [showConfirmationModal, setShowConfirmationModal] = useState(false)
   const [blockingConnection, setBlockingConnection] = useState(false)
   const modalConfirmationTypeRef = useRef<confirmationTypes>('deleteChat')
-  const theme = useTheme()
-  const styles = getStyles(theme)
-
-  const { agent } = useMobileAgent()
-  const { t } = useTranslation()
   const connectionName = getConnectionDisplayName(connection)
-  const relatedConnections = useConnectionByParentConnectionId(connection.id)
-  const { userProfileData } = useUserProfile()
-
   const isConnectionCompleted = connection.isReady
   const isConnectionBlocked = isBlocked(connection)
   const isConnectionTerminated = isTerminated(connection)
   const isConnectionService = isService(connection)
-
-  const { clearChat, findOrCreateThread } = useChats()
 
   const setHeaderOptions = () => {
     navigation.setOptions({
@@ -105,7 +115,9 @@ const BaseConnectionDetails = ({
     }
   }
 
-  const toggleBlock = async (action: (agent: MobileAgent, record: ConnectionRecord) => Promise<void>) => {
+  const toggleBlock = async (
+    action: (agent: MobileAgent, record: DidCommConnectionRecord) => Promise<void>,
+  ) => {
     if (!agent) return
     setTimeout(
       async () => {
@@ -175,7 +187,7 @@ const BaseConnectionDetails = ({
   if (isConnectionService) {
     connectionOptions.push({
       iconName: 'forward',
-      text: t('personalChat.forward'),
+      text: t('chat.forward'),
       onPress: () => navigation.navigate('ForwardConnection', { connection }),
     })
     connectionOptions.push({
@@ -214,7 +226,12 @@ const BaseConnectionDetails = ({
 
   return (
     <SafeAreaView style={styles.container} edges={['bottom']}>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ minHeight: screenHeight + 1 }}
+        onScrollBeginDrag={handleScrollBeginDrag}
+        onScrollEndDrag={handleScrollEndDrag}
+      >
         <View style={styles.subContainer}>
           <ModalLoading
             visible={blockingConnection}

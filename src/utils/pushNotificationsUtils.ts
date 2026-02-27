@@ -1,4 +1,4 @@
-import { ConnectionRecord } from '@credo-ts/core'
+import { DidCommConnectionRecord } from '@credo-ts/didcomm'
 import notifee, {
   AndroidBadgeIconType,
   AndroidColor,
@@ -21,9 +21,9 @@ import { requestNotifications, RESULTS } from 'react-native-permissions'
 
 import { getConnectionDisplayName } from './connectionUtils'
 
-import { IS_ANDROID, IS_IOS, isAndroid13OrHigher } from '@2060/constants'
-import { getLocalizedPreview } from '@2060/hooks/agent/chat/preview'
-import { ChatEntry } from '@2060/model'
+import { IS_ANDROID, IS_IOS, isAndroid13OrHigher } from '@src/constants'
+import { getLocalizedPreview } from '@src/hooks/agent/chat/preview'
+import { ChatEntry } from '@src/model'
 
 const LOCAL_NOTIFICATION_ID_PREFIX = 'local-notification'
 const optionsNotificationAndroid = (options?: NotificationAndroid): NotificationAndroid => ({
@@ -94,11 +94,11 @@ export const arePushNotificationsAllowed = async () => {
 }
 
 export const displayNewChatMessageNotification = async (
-  connection: ConnectionRecord,
+  connection: DidCommConnectionRecord,
   chatEntry: ChatEntry,
 ) => {
   const data = {
-    screen: 'PersonalChat',
+    screen: 'Chat',
     params: { chatThreadId: chatEntry.chatThreadId, connectionId: connection.id },
   }
   const channelId = await createChannel()
@@ -133,7 +133,7 @@ export const displayNewChatMessageNotification = async (
   notifee.incrementBadgeCount()
 }
 
-export const displayNewConnectionNotification = async (connection: ConnectionRecord) => {
+export const displayNewConnectionNotification = async (connection: DidCommConnectionRecord) => {
   const channelId = await createChannel()
   const newNotification = {
     id: `${LOCAL_NOTIFICATION_ID_PREFIX}-connection-${connection.id}`,

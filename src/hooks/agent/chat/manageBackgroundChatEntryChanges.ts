@@ -1,8 +1,8 @@
 import Realm from 'realm'
 
-import { ChatEntry, ChatEntryRole, ChatThread } from '@2060/model'
-import { MobileAgent } from '@2060/services/agent'
-import { displayNewChatMessageNotification } from '@2060/utils/pushNotificationsUtils'
+import { ChatEntry, ChatEntryRole, ChatThread } from '@src/model'
+import { MobileAgent } from '@src/services/agent'
+import { displayNewChatMessageNotification } from '@src/utils/pushNotificationsUtils'
 
 export const manageBackgroundChatEntryChanges = (realm: Realm, agent: MobileAgent) => {
   const entries = realm.objects(ChatEntry)
@@ -16,7 +16,7 @@ export const manageBackgroundChatEntryChanges = (realm: Realm, agent: MobileAgen
       const [thread] = realm.objects(ChatThread).filtered(`id == '${entry.chatThreadId}'`)
       if (!thread) return
 
-      const connection = await agent.connections.findById(thread.connectionId)
+      const connection = await agent.didcomm.connections.findById(thread.connectionId)
       if (!connection) return
       displayNewChatMessageNotification(connection, entry)
     }

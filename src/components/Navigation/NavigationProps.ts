@@ -1,15 +1,15 @@
-import { ConnectionRecord, OutOfBandRecord, ProofState } from '@credo-ts/core'
+import { DidCommConnectionRecord, DidCommOutOfBandRecord, DidCommProofState } from '@credo-ts/didcomm'
 
-import { ChatEntryData, ServiceInfo } from '@2060/model'
-import { CredentialMainInfo } from '@2060/services/agent/display'
+import { ChatEntryData, ServiceInfo } from '@src/model'
+import { CredentialMainInfo } from '@src/services/agent/display'
 
 type TypeParameters = 'oob' | 'd_m' | 'c_i'
 type HomeParams = {
   [K in TypeParameters]: string | undefined
 }
 
-export type PersonalChatStackParams = {
-  PersonalChat: { chatThreadId: string }
+export type ChatStackParams = {
+  Chat: { chatThreadId: string; redirectToHomeOnBack?: boolean }
   MessageDetails: { selectedMessage: ChatEntryData }
   ConnectionDetails: { connectionId: string }
   ForwardMessages: undefined
@@ -25,12 +25,12 @@ export type NavigationStackParams = {
   Connections: undefined
   ConnectionsForNewChat: undefined
   Privacy: undefined
-  PersonalChatStack: undefined
+  ChatStack: undefined
   OpenIdCredentialOffer: { url: string }
   OpenIdPresentationRequest: { url: string }
-  DidcommCredentialOffer: { credentialRecordId: string }
+  DidcommCredentialOffer: { credentialRecordId: string; did?: string }
   DidcommPresentationRequest: { did: string; proofRecordId: string }
-  ConnectionInvitation: { outOfBandRecord: OutOfBandRecord; existingConnectionId?: string }
+  ConnectionInvitation: { outOfBandRecord: DidCommOutOfBandRecord; existingConnectionId?: string }
   ConnectionDetails: { connectionId: string }
   RelatedConnections: { parentConnectionId: string }
   UserInvitation: undefined
@@ -48,16 +48,17 @@ export type NavigationStackParams = {
     credentials: CredentialMainInfo[]
   }
   ForwardConnection: {
-    connection: ConnectionRecord
+    connection: DidCommConnectionRecord
   }
   PresentCredential: {
     credentialRecordId: string
     attributesToPresent: string[]
   }
   CredentialPresentation: {
+    chatEntryId: string
     credentialMainInfo: CredentialMainInfo
     credentialAttributes: Record<string, unknown>
-    proofState: ProofState
+    proofState: DidCommProofState
     proofRecordId: string
   }
   EphemeralCredentialPresentation: {

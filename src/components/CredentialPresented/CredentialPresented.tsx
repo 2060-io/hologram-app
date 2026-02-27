@@ -6,11 +6,11 @@ import { uses24HourClock } from 'react-native-localize'
 
 import getStyles from './styles'
 
-import { Avatar, CredentialMainInformation, SvgIcon, Text } from '@2060/components/common'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { CredentialMainInfo } from '@2060/services/agent/display'
-import { dateToString } from '@2060/utils/dateUtils'
-import { widthPercentageToDP } from '@2060/utils/responsiveUtils'
+import { Avatar, CredentialMainInformation, SvgIcon, Text } from '@src/components/common'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { CredentialMainInfo } from '@src/services/agent/display'
+import { dateToString } from '@src/utils/dateUtils'
+import { widthPercentageToDP } from '@src/utils/responsiveUtils'
 
 type Props = {
   credentials: CredentialMainInfo[]
@@ -52,9 +52,12 @@ const CredentialPresented = ({
           {header[type]}
           <Text style={[styles.title, styles.mainTitle]}>
             {title[type]}
-            <Text style={styles.title} fontFamily="EuclidCircularA-SemiBold">
-              {verifierName}
-            </Text>
+            {verifierName.length > 0 && t('general.by')}
+            {verifierName.length > 0 && (
+              <Text style={styles.title} fontFamily="EuclidCircularA-SemiBold">
+                {verifierName}
+              </Text>
+            )}
           </Text>
           {credentials.map(credential => (
             <CredentialMainInformation key={credential.id} credentialMainInfo={credential} />

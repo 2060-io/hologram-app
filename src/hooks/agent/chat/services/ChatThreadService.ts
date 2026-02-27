@@ -1,4 +1,5 @@
-import { ConnectionRecord, utils } from '@credo-ts/core'
+import { utils } from '@credo-ts/core'
+import { DidCommConnectionRecord } from '@credo-ts/didcomm'
 import Realm from 'realm'
 
 import { getLocalizedPreview } from '../preview'
@@ -11,20 +12,20 @@ import {
   ChatThread,
   SystemMessageMetadata,
   getChatThreadData,
-} from '@2060/model'
+} from '@src/model'
 import {
   getConnectionDisplayName,
   getConnectionDisplayPicture,
   getConnectionParentId,
   isService,
-} from '@2060/utils/connectionUtils'
-import { getLastEntryInChatThread } from '@2060/utils/realmQueries'
+} from '@src/utils/connectionUtils'
+import { getLastEntryInChatThread } from '@src/utils/realmQueries'
 
-export function findChatThread(realm: Realm, connection: ConnectionRecord) {
+export function findChatThread(realm: Realm, connection: DidCommConnectionRecord) {
   const [thread] = realm.objects(ChatThread).filtered(`connectionId == '${connection.id}'`)
   return thread
 }
-export function findOrCreateChatThread(realm: Realm, connection: ConnectionRecord) {
+export function findOrCreateChatThread(realm: Realm, connection: DidCommConnectionRecord) {
   const thread = findChatThread(realm, connection)
   if (thread) {
     // In case it was marked for deletion, re-active it
@@ -45,10 +46,12 @@ export function findOrCreateChatThread(realm: Realm, connection: ConnectionRecor
   }
 
   const chatThreadRecord = realm.write(() => {
+    const createdAt = new Date()
     const newThread = new ChatThread(realm, {
       id: utils.uuid(),
       archived: false,
-      createdAt: new Date(),
+      createdAt,
+      lastActivityAt: createdAt,
       connectionId: connection.id,
       picture: getConnectionDisplayPicture(connection),
       topic: getConnectionDisplayName(connection),

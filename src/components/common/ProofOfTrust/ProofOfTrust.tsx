@@ -3,36 +3,36 @@ import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
 
 import Text from '../Text'
-import VerifiedIcon from '../VerifiedIcon'
 
+import ProofOfTrustLoadingSkeleton from './ProofOfTrustLoadingSkeleton'
 import RenderProof, { ServiceInfoForRenderProof } from './RenderProof'
 import getStyles from './styles'
 
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { ServiceInfo } from '@2060/model'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { ServiceInfo } from '@src/model'
 
 type Props = {
-  serviceInfo: ServiceInfo
+  serviceInfo: ServiceInfo | undefined
+  isFetchingInfo: boolean
+  failedFetchInfo: boolean
 }
 
-const ProofOfTrust = ({ serviceInfo }: Props) => {
+const ProofOfTrust = ({ serviceInfo, isFetchingInfo, failedFetchInfo }: Props) => {
+  const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
-  const { t } = useTranslation()
-  const { serviceProvider } = serviceInfo
 
+  if (failedFetchInfo) return null
+  if (!isFetchingInfo && !serviceInfo?.serviceProvider) return null
   return (
     <View style={styles.container}>
       <Text fontFamily="EuclidCircularA-Bold" style={styles.title}>
         {t('connection.proofOfTrust')}
       </Text>
-      {serviceProvider ? (
-        <RenderProof serviceInfo={serviceInfo as ServiceInfoForRenderProof} />
+      {isFetchingInfo ? (
+        <ProofOfTrustLoadingSkeleton />
       ) : (
-        <>
-          <VerifiedIcon style={styles.notVerifiableIcon} status={serviceInfo.status} />
-          <Text style={styles.notVerifiable}>{t('invitation.serviceNotVerifiable')}</Text>
-        </>
+        serviceInfo?.serviceProvider && <RenderProof serviceInfo={serviceInfo as ServiceInfoForRenderProof} />
       )}
     </View>
   )

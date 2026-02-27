@@ -1,9 +1,9 @@
 import { DidCommCallType } from '@2060.io/credo-ts-didcomm-calls'
-import { MessageReactionOptions } from '@2060.io/credo-ts-didcomm-reactions/build/messages/MessageReactionsMessage'
-import { MessageReceiptOptions } from '@2060.io/credo-ts-didcomm-receipts'
+import { DidCommMessageReactionOptions } from '@2060.io/credo-ts-didcomm-reactions'
+import { DidCommMessageReceiptOptions } from '@2060.io/credo-ts-didcomm-receipts'
 import { UserProfileData } from '@2060.io/credo-ts-didcomm-user-profile'
 
-import { CallInfo } from '@2060/hooks/providers/useVideoCallContext'
+import { CallInfo } from '@src/hooks/providers/useVideoCallContext'
 
 export type AnoncredsAttribute = {
   name: string
@@ -20,11 +20,11 @@ type SendTextMessageParameters = ConnectionIdParameter & {
 }
 
 type SendReactionParameters = ConnectionIdParameter & {
-  reactions: MessageReactionOptions[]
+  reactions: DidCommMessageReactionOptions[]
 }
 
 type SendReceiptsParameters = ConnectionIdParameter & {
-  receipts: MessageReceiptOptions[]
+  receipts: DidCommMessageReceiptOptions[]
 }
 
 type ShareMediaParameters = {
@@ -107,6 +107,10 @@ type SavePushNotificationDeviceInfoParameters = {
   deviceToken: string
 }
 
+type DeleteConnectionParameters = ConnectionIdParameter & {
+  outOfBandRecordId?: string
+}
+
 export type {
   SendTextMessageParameters,
   SendReactionParameters,
@@ -131,4 +135,5 @@ export type {
   AcceptProofProposalParameters,
   ProofSendProblemReportParameters,
   SavePushNotificationDeviceInfoParameters,
+  DeleteConnectionParameters,
 }

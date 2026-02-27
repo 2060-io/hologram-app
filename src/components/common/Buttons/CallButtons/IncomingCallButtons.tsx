@@ -1,8 +1,8 @@
 import React from 'react'
 import { StyleSheet, TouchableOpacity, TouchableOpacityProps } from 'react-native'
 
-import SvgIcon, { IconsNames } from '@2060/components/common/SvgIcon'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
+import SvgIcon, { IconsNames } from '@src/components/common/SvgIcon'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
 
 interface BaseButtonProps extends TouchableOpacityProps {
   isAnswerCall?: boolean

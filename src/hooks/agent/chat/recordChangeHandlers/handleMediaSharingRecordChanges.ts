@@ -1,7 +1,7 @@
 import {
-  MediaSharingRecord,
-  MediaSharingRole,
-  MediaSharingState,
+  DidCommMediaSharingRecord,
+  DidCommMediaSharingRole,
+  DidCommMediaSharingState,
 } from '@2060.io/credo-ts-didcomm-media-sharing'
 import Realm from 'realm'
 
@@ -23,19 +23,19 @@ import {
   RelatedEntryProps,
   VideoMetadata,
   VoiceNoteMetadata,
-} from '@2060/model'
-import { MobileAgent } from '@2060/services/agent'
+} from '@src/model'
+import { MobileAgent } from '@src/services/agent'
 
 export const handleMediaSharingRecordChanges = async (options: {
   agent: MobileAgent
   realm: Realm
-  record: MediaSharingRecord
+  record: DidCommMediaSharingRecord
   activeChatThreadId?: string
   receivedAt?: Date
 }) => {
   const { agent, realm, record, activeChatThreadId } = options
   // find associated thread according to the connection id. If not found, create it
-  const connection = await agent.connections.getById(record.connectionId)
+  const connection = await agent.didcomm.connections.getById(record.connectionId)
   const thread = findOrCreateChatThread(realm, connection)
 
   const data = getChatEntrySpecificData(record)
@@ -71,22 +71,24 @@ export const handleMediaSharingRecordChanges = async (options: {
       didcommThreadId: record.threadId,
       chatThreadId: thread.id,
       type,
-      role: record.role === MediaSharingRole.Receiver ? ChatEntryRole.Receiver : ChatEntryRole.Sender,
+      role: record.role === DidCommMediaSharingRole.Receiver ? ChatEntryRole.Receiver : ChatEntryRole.Sender,
       state:
-        record.state === MediaSharingState.MediaShared ? ChatEntryState.Received : ChatEntryState.Created,
+        record.state === DidCommMediaSharingState.MediaShared
+          ? ChatEntryState.Received
+          : ChatEntryState.Created,
       createdAt: (options.receivedAt ?? new Date()).getTime(),
       metadata,
       relatedEntryProps,
     })
-    if (record.role === MediaSharingRole.Receiver && thread.id !== activeChatThreadId) {
+    if (record.role === DidCommMediaSharingRole.Receiver && thread.id !== activeChatThreadId) {
       addUnread(realm, thread.id, 1)
     }
   } else {
     updateChatEntry(realm, {
       recordId: chatEntry.id,
       state:
-        record.state === MediaSharingState.MediaShared
-          ? record.role === MediaSharingRole.Sender
+        record.state === DidCommMediaSharingState.MediaShared
+          ? record.role === DidCommMediaSharingRole.Sender
             ? ChatEntryState.Submitted
             : ChatEntryState.Received
           : ChatEntryState.Created,
@@ -102,7 +104,7 @@ export const handleMediaSharingRecordChanges = async (options: {
  * support a single item)
  * @param record
  */
-function getChatEntrySpecificData(record: MediaSharingRecord) {
+function getChatEntrySpecificData(record: DidCommMediaSharingRecord) {
   const mediaSharingItem = record.items ? record.items[0] : undefined
 
   // TODO: Log/handle error?

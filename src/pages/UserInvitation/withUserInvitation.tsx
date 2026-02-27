@@ -4,18 +4,17 @@ import Config from 'react-native-config'
 
 import { Invitation, UserInvitationProps, WrapperUserInvitationProps } from './UserInvitationProps'
 
-import { ModalLoading } from '@2060/components/common'
-import { AgentActionType, useMobileAgent, useUserProfile } from '@2060/hooks/agent'
-import { RemoveOutOfBandRecordParameters } from '@2060/hooks/agent/actions/types'
-import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
-import { createInvitation, getOutOfBandRecordById } from '@2060/services/agent/oob'
+import { ModalLoading } from '@src/components/common'
+import { AgentActionType, useAgentActionQueue, useMobileAgent, useUserProfile } from '@src/hooks/agent'
+import { RemoveOutOfBandRecordParameters } from '@src/hooks/agent/actions/types'
+import { createInvitation, getOutOfBandRecordById } from '@src/services/agent/oob'
 import {
   getStorageData,
   setStorageData,
   USER_INVITATION_OUT_OF_BAND_RECORD_ID,
-} from '@2060/services/localStorage'
-import { logError } from '@2060/utils'
-import { toast } from '@2060/utils/toast'
+} from '@src/services/localStorage'
+import { logError, logWarn } from '@src/utils'
+import { toast } from '@src/utils/toast'
 
 const withUserInvitation = (UserInvitationComponent: ElementType<UserInvitationProps>) => {
   const WrapperUserInvitation = (props: WrapperUserInvitationProps) => {
@@ -29,31 +28,30 @@ const withUserInvitation = (UserInvitationComponent: ElementType<UserInvitationP
 
     useEffect(() => {
       const setupInvitation = async () => {
-        const persistedOutOfBandRecordId = (await getStorageData(
-          USER_INVITATION_OUT_OF_BAND_RECORD_ID,
-        )) as string
-        if (persistedOutOfBandRecordId) {
-          getCurrentInvitation(persistedOutOfBandRecordId)
-        } else {
-          createNewInvitation()
-        }
+        const currentInvitation = await getCurrentInvitation()
+        if (!currentInvitation) createNewInvitation()
       }
       setupInvitation()
     }, [])
 
-    const getCurrentInvitation = async (outOfBandRecordId: string) => {
+    const getCurrentInvitation = async () => {
       if (!agent) return
       try {
-        currentInvitationOutOfBandRecordId.current = outOfBandRecordId
-        const { outOfBandInvitation } = await getOutOfBandRecordById(agent, outOfBandRecordId)
+        const persistedOutOfBandRecordId = (await getStorageData(USER_INVITATION_OUT_OF_BAND_RECORD_ID)) as
+          | string
+          | null
+        if (!persistedOutOfBandRecordId) return
+
+        currentInvitationOutOfBandRecordId.current = persistedOutOfBandRecordId
+        const { outOfBandInvitation } = await getOutOfBandRecordById(agent, persistedOutOfBandRecordId)
         setInvitation({
           displayName: outOfBandInvitation.label ?? 'Unlabeled',
           url: outOfBandInvitation.toUrl({ domain: Config.BASE_INVITATION_URL as string }),
         })
+        return outOfBandInvitation
       } catch (error) {
-        props.navigation.goBack()
-        toast({ type: 'error', message: t('invitation.errorGettingInvitation') })
-        logError(`Error getting current invitation ${error}`)
+        toast({ type: 'warning', message: t('invitation.errorGettingInvitation') })
+        logWarn(`Couldn't get current invitation: ${error}`)
       }
     }
 

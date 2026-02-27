@@ -11,17 +11,21 @@ import { HomeMainTabParams } from '../HomeMain/HomeMainProps'
 
 import getStyles from './styles'
 
-import defaultAvatar from '@2060/assets/images/defaultUser.png'
-import { ModalConfirmAction } from '@2060/components'
-import { Avatar, Text, SvgIcon, OptionsList, FullScreenImage } from '@2060/components/common'
-import { Option } from '@2060/components/common/OptionsList/OptionsListProps'
-import { useMobileAgent, useUserProfile } from '@2060/hooks/agent'
-import { useConfig } from '@2060/hooks/providers/ConfigProvider'
-import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { deleteAllKeys } from '@2060/services/keys'
-import { logError, dataUrl } from '@2060/utils'
-import { toast } from '@2060/utils/toast'
+import defaultAvatar from '@src/assets/images/defaultUser.png'
+import { ModalConfirmAction } from '@src/components'
+import { Avatar, Text, SvgIcon, OptionsList, FullScreenImage } from '@src/components/common'
+import { Option } from '@src/components/common/OptionsList/OptionsListProps'
+import { useMobileAgent, useUserProfile } from '@src/hooks/agent'
+import { useConfig } from '@src/hooks/providers/ConfigProvider'
+import { useLocalRealm } from '@src/hooks/providers/RealmProvider'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { AgentActionQueueSingleton } from '@src/services/AgentActionQueueSingleton'
+import { AgentSingleton } from '@src/services/AgentSingleton'
+import { deleteAllKeys } from '@src/services/keys'
+import { removeStorageData, USER_INVITATION_OUT_OF_BAND_RECORD_ID } from '@src/services/localStorage'
+import { logError, dataUrl } from '@src/utils'
+import { deleteDir, walletDirectoryPath } from '@src/utils/RNFS'
+import { toast } from '@src/utils/toast'
 
 interface Props extends StackScreenProps<HomeMainTabParams, 'Settings'> {}
 
@@ -65,11 +69,10 @@ const Settings = ({ navigation }: Props) => {
       if (!isConnectedToCloudAgent) throw new Error('Not connected to Cloud Agent')
       // It will only proceed in case it is possible to send hang-up signal to mediator, in order to
       // let it delete all connection data (recipient keys, FCM token, etc.)
-      const mediatorConnection = await agent.mediationRecipient.findDefaultMediatorConnection()
-      if (mediatorConnection) await agent.connections.hangup({ connectionId: mediatorConnection.id })
+      const mediatorConnection = await agent.didcomm.mediationRecipient.findDefaultMediatorConnection()
+      if (mediatorConnection) await agent.didcomm.connections.hangup({ connectionId: mediatorConnection.id })
 
       realm?.write(() => realm?.deleteAll())
-      await agent.wallet.delete()
 
       // FIXME: Workaround to make sure cache is unloaded from memory
       const cache = agent.dependencyManager.resolve(CacheModuleConfig).cache
@@ -79,8 +82,16 @@ const Settings = ({ navigation }: Props) => {
       cache._cache = undefined
 
       await shutdownAgent()
+
+      // Delete store and wallet directory
+      await agent.modules.askar.deleteStore()
+      await deleteDir(walletDirectoryPath)
       await deleteAllKeys()
+      await removeStorageData(USER_INVITATION_OUT_OF_BAND_RECORD_ID)
       closeRealm()
+      AgentSingleton.instance.setAppIsSubscribedChatToEvents(false)
+      AgentSingleton.instance.setIsAppSubscribedToConnectionEvents(false)
+      AgentActionQueueSingleton.instance.setIsConfigured(false)
     } catch (error) {
       logError(`Error deleting wallet: ${error}`)
       toast({ type: 'error', message: t('settings.deleteWalletError') })
@@ -185,10 +196,10 @@ const Settings = ({ navigation }: Props) => {
     if (isValidTouch) {
       developerModeCounter.current++
       if (developerModeCounter.current === TIMES_TO_ENABLE_DEV_MODE) {
-        const newMessage = isDeveloperMode ? t('settings.devModeDisabled') : t('settings.devModeEnabled')
+        const title = isDeveloperMode ? t('settings.devModeDisabled') : t('settings.devModeEnabled')
         initializeDevModeVariables()
         changeDeveloperModeStatus()
-        Alert.alert(newMessage, t('settings.closeAppAfterChange'))
+        Alert.alert(title, t('settings.closeAppAfterChange'))
       }
     } else {
       developerModeCounter.current = 1

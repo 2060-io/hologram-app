@@ -6,14 +6,14 @@ import { useTranslation } from 'react-i18next'
 import { TouchableOpacity, View } from 'react-native'
 
 import Connections from '../Connections'
-import { ConnectionItem } from '../Connections/ConnectionsList'
+import { ConnectionItem } from '../Connections/ConnectionList'
 
 import getStyles from './styles'
 
-import { SvgIcon, Text } from '@2060/components/common'
-import { useConnections } from '@2060/hooks/agent'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { notAllowedConnectionsIdsToSendMessages } from '@2060/utils/connectionUtils'
+import { SvgIcon, Text } from '@src/components/common'
+import { useConnections } from '@src/hooks/agent'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { notAllowedConnectionsIdsToSendMessages } from '@src/utils/connectionUtils'
 
 interface Props {
   navigation: StackNavigationProp<ParamListBase>

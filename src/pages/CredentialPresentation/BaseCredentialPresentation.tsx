@@ -1,4 +1,4 @@
-import { ProofState } from '@credo-ts/core'
+import { DidCommProofState } from '@credo-ts/didcomm'
 import { HeaderBackButton } from '@react-navigation/elements'
 import { StackNavigationProp } from '@react-navigation/stack'
 import React, { useEffect, useState } from 'react'
@@ -8,19 +8,18 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 
 import getStyles from './styles'
 
-import { CredentialAttributes, ModalConfirmAction } from '@2060/components'
-import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
-import { CredentialMainInformation, HeaderTitle, Text } from '@2060/components/common'
-import { AgentActionType } from '@2060/hooks/agent'
+import { CredentialAttributes, ModalConfirmAction } from '@src/components'
+import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
+import { CredentialMainInformation, HeaderTitle, Text } from '@src/components/common'
+import { AgentActionType, useAgentActionQueue } from '@src/hooks/agent'
 import {
   AcceptProofProposalParameters,
   ProofSendProblemReportDescription,
   ProofSendProblemReportParameters,
-} from '@2060/hooks/agent/actions/types'
-import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { CredentialMainInfo } from '@2060/services/agent/display'
-import { toast } from '@2060/utils/toast'
+} from '@src/hooks/agent/actions/types'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { CredentialMainInfo } from '@src/services/agent/display'
+import { toast } from '@src/utils/toast'
 
 type Props = {
   navigation: StackNavigationProp<
@@ -30,7 +29,7 @@ type Props = {
   >
   credentialMainInfo: CredentialMainInfo | null
   credentialAttributes: Record<string, unknown>
-  proofState: ProofState
+  proofState: DidCommProofState
   proofRecordId: string
   onAcceptCallback?: () => void
   onRefuseCallback?: () => void
@@ -50,7 +49,7 @@ const BaseCredentialPresentation = ({
   const styles = getStyles(theme)
   const { addAgentActionToQueue } = useAgentActionQueue()
   const [showModalRefuseConfirmation, setShowModalRefuseConfirmation] = useState(false)
-  const enableMainButtons = proofState === ProofState.ProposalReceived
+  const enableMainButtons = proofState === DidCommProofState.ProposalReceived
 
   useEffect(() => {
     navigation.setOptions({
@@ -102,7 +101,7 @@ const BaseCredentialPresentation = ({
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.subContainer}>
             <CredentialMainInformation credentialMainInfo={credentialMainInfo} />
-            {![ProofState.PresentationReceived, ProofState.Done].includes(proofState) && (
+            {![DidCommProofState.PresentationReceived, DidCommProofState.Done].includes(proofState) && (
               <Text fontFamily="EuclidCircularA-Medium" style={styles.valuesNoRevealedYet}>
                 {t('presentationRequest.valuesNoRevealedYet')}
               </Text>
@@ -113,7 +112,7 @@ const BaseCredentialPresentation = ({
       </SafeAreaView>
       <ModalConfirmAction
         visible={showModalRefuseConfirmation}
-        title={t('personalChat.confirmRefuseVerifiablePresentation')}
+        title={t('chat.confirmRefuseVerifiablePresentation')}
         confirmText={t('general.confirm')}
         cancelText="No"
         onClose={hideModalRefuseConfirmation}

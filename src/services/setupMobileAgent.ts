@@ -1,14 +1,11 @@
+import { AgentDependencies, Logger, LogLevel } from '@credo-ts/core'
 import {
-  AgentDependencies,
-  AgentEventTypes,
-  AgentMessageProcessedEvent,
-  AgentMessageSentEvent,
-  HttpOutboundTransport,
-  Logger,
-  MediatorPickupStrategy,
-  AgentMessageReceivedEvent,
-  LogLevel,
-} from '@credo-ts/core'
+  DidCommEventTypes,
+  DidCommMediatorPickupStrategy,
+  DidCommMessageProcessedEvent,
+  DidCommMessageReceivedEvent,
+  DidCommMessageSentEvent,
+} from '@credo-ts/didcomm'
 import { agentDependencies } from '@credo-ts/react-native'
 import Config from 'react-native-config'
 
@@ -16,19 +13,18 @@ import { HologramCustomLogger } from './HologramCustomLoggers'
 import { MobileAgent } from './agent/MobileAgent'
 import { createMobileAgent } from './agent/createMobileAgent'
 import { duplicatedMessagesMiddleware } from './agent/duplicatedMessagesMiddleware'
-import { DEV_ENVS_PERSIST_KEY, DEVELOPER_MODE_ENABLED_PERSIST_KEY, getStorageData } from './localStorage'
-import { TunedMobileWsOutboundTransport } from './transport/TunedMobileWsOutboundTransport'
+import { DEV_ENVS_PERSIST_KEY, getStorageData } from './localStorage'
 
-import { DevEnvsObject } from '@2060/utils/developer'
+import { DevEnvsObject, areLogsEnabled } from '@src/utils/developer'
 
 interface MobileAgentConfig {
   agentDependencies: AgentDependencies
-  mediatorPickupStrategy: MediatorPickupStrategy
+  mediatorPickupStrategy: DidCommMediatorPickupStrategy
 }
 
 const baseAgentConfig: MobileAgentConfig = {
   agentDependencies,
-  mediatorPickupStrategy: MediatorPickupStrategy.None,
+  mediatorPickupStrategy: DidCommMediatorPickupStrategy.None,
 }
 
 const getIndyVDRProxyBaseUrl = async () => {
@@ -39,23 +35,17 @@ const getIndyVDRProxyBaseUrl = async () => {
   return Config.INDY_VDR_PROXY_BASE_URL
 }
 
-const getIsDeveloperMode = async () => {
-  const persistedDeveloperMode = await getStorageData(DEVELOPER_MODE_ENABLED_PERSIST_KEY)
-  return (persistedDeveloperMode as boolean) ?? false
-}
-
 let logger: Logger
 export const setupMobileAgent = async (): Promise<MobileAgent> => {
   const indyVDRProxyBaseUrl = await getIndyVDRProxyBaseUrl()
-  const isDeveloperMode = await getIsDeveloperMode()
   if (__DEV__) {
     logger = new HologramCustomLogger(LogLevel.debug)
   } else {
-    logger = new HologramCustomLogger(isDeveloperMode ? LogLevel.debug : LogLevel.warn)
+    const logsEnabled = await areLogsEnabled()
+    logger = new HologramCustomLogger(logsEnabled ? LogLevel.debug : LogLevel.warn)
   }
   const agent = createMobileAgent({
     config: {
-      label: 'Hologram',
       logger,
       autoUpdateStorageOnStartup: true,
     },
@@ -66,26 +56,19 @@ export const setupMobileAgent = async (): Promise<MobileAgent> => {
     dependencies: baseAgentConfig.agentDependencies,
   })
 
-  agent.events.on<AgentMessageReceivedEvent>(AgentEventTypes.AgentMessageReceived, async data => {
+  agent.events.on<DidCommMessageReceivedEvent>(DidCommEventTypes.DidCommMessageReceived, async data => {
     logger.info('Message received', data.payload.message ?? undefined)
   })
 
-  agent.events.on<AgentMessageProcessedEvent>(AgentEventTypes.AgentMessageProcessed, async data => {
+  agent.events.on<DidCommMessageProcessedEvent>(DidCommEventTypes.DidCommMessageProcessed, async data => {
     logger.info(`Message received with type: ${data.payload.message.type}`)
   })
 
-  agent.events.on<AgentMessageSentEvent>(AgentEventTypes.AgentMessageSent, async data => {
+  agent.events.on<DidCommMessageSentEvent>(DidCommEventTypes.DidCommMessageSent, async data => {
     logger.info(`Message sent (${data.payload.status})`, data.payload.message.message)
   })
 
-  const httpOutboundTransporter = new HttpOutboundTransport()
-  //const wsOutboundTransporter = new MobileWsOutboundTransport();
-  const wsOutboundTransporter = new TunedMobileWsOutboundTransport()
-
-  agent.registerOutboundTransport(httpOutboundTransporter)
-  agent.registerOutboundTransport(wsOutboundTransporter)
-
-  agent.dependencyManager.registerMessageHandlerMiddleware(duplicatedMessagesMiddleware)
+  agent.didcomm.registerMessageHandlerMiddleware(duplicatedMessagesMiddleware)
 
   return agent
 }

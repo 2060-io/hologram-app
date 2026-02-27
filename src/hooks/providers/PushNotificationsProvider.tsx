@@ -1,11 +1,12 @@
 import notifee, { Notification, EventType } from '@notifee/react-native'
+import { fetch as NetInfo } from '@react-native-community/netinfo'
 import { getMessaging, onTokenRefresh } from '@react-native-firebase/messaging'
 import React, { createContext, useCallback, useContext, useEffect, useState } from 'react'
 
-import { AgentActionType, useMobileAgent } from '@2060/hooks/agent'
-import { SavePushNotificationDeviceInfoParameters } from '@2060/hooks/agent/actions/types'
-import { useAgentActionQueue } from '@2060/hooks/agent/useAgentActionQueue'
-import { log, logWarn } from '@2060/utils'
+import { AgentActionType, useMobileAgent, useAgentActionQueue } from '@src/hooks/agent'
+import { SavePushNotificationDeviceInfoParameters } from '@src/hooks/agent/actions/types'
+import { log, logWarn } from '@src/utils'
+import { arePushNotificationsAllowed, getFcmDeviceToken } from '@src/utils/pushNotificationsUtils'
 
 interface Props {
   children?: React.ReactNode
@@ -35,12 +36,13 @@ export const usePushNotifications = () => {
 export const PushNotificationsProvider: React.FC<React.PropsWithChildren<Props>> = ({ children }) => {
   const [pushNotification, setPushNotification] = useState<PushNotification>()
   const { addAgentActionToQueue } = useAgentActionQueue()
-  const { agent } = useMobileAgent()
+  const { agent, isSignedUp } = useMobileAgent()
 
   useEffect(() => {
     const messaging = getMessaging()
     const unsubscribe = onTokenRefresh(messaging, (deviceToken: string) => {
-      agent?.mediationRecipient.findDefaultMediatorConnection().then(mediatorConnection => {
+      if (!isSignedUp) return
+      agent?.didcomm.mediationRecipient.findDefaultMediatorConnection().then(mediatorConnection => {
         if (mediatorConnection) {
           const parameters: SavePushNotificationDeviceInfoParameters = {
             connectionId: mediatorConnection.id,
@@ -52,7 +54,29 @@ export const PushNotificationsProvider: React.FC<React.PropsWithChildren<Props>>
       })
     })
     return () => unsubscribe()
-  }, [])
+  }, [agent?.isInitialized, isSignedUp])
+
+  useEffect(() => {
+    const verifyPushNotificationTokenIsRegistered = async () => {
+      const defaultMediatorConnection =
+        await agent?.didcomm.mediationRecipient.findDefaultMediatorConnection()
+      if (!defaultMediatorConnection) return
+      const storedDeviceToken = defaultMediatorConnection.getTag('deviceToken')
+      if (storedDeviceToken) return
+      const areNotificationsAllowed = await arePushNotificationsAllowed()
+      if (areNotificationsAllowed) {
+        const isNetworkConnected = Boolean((await NetInfo()).isConnected)
+        if (!isNetworkConnected) return
+        const deviceToken = await getFcmDeviceToken()
+        const parameters: SavePushNotificationDeviceInfoParameters = {
+          connectionId: defaultMediatorConnection.id,
+          deviceToken,
+        }
+        addAgentActionToQueue({ type: AgentActionType.SavePushNotificationDeviceInfo, parameters })
+      }
+    }
+    if (agent?.isInitialized && isSignedUp) verifyPushNotificationTokenIsRegistered()
+  }, [agent?.isInitialized, isSignedUp])
 
   const onNotificationPressed = useCallback((notification?: Notification) => {
     const data = notification?.data
@@ -106,12 +130,7 @@ export const PushNotificationsProvider: React.FC<React.PropsWithChildren<Props>>
   }, [])
 
   return (
-    <PushNotificationsContext
-      value={{
-        pushNotification,
-        setPushNotification,
-      }}
-    >
+    <PushNotificationsContext value={{ pushNotification, setPushNotification }}>
       {children}
     </PushNotificationsContext>
   )

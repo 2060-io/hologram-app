@@ -1,21 +1,21 @@
+import Chat from './Chat'
 import ConnectionDetails from './ConnectionDetails'
+import ConnectionInvitation from './ConnectionInvitation'
 import { Connections, ConnectionsForNewChat } from './Connections'
 import CredentialDetails from './CredentialDetails'
-import { DidcommCredentialOffer, OpenIdCredentialOffer } from './CredentialOffer'
+import { DidcommCredentialOffer } from './CredentialOffer'
 import { CredentialPresentation, EphemeralCredentialPresentation } from './CredentialPresentation'
 import CredentialPresented from './CredentialPresented'
 import Developer from './Developer'
 import { ForwardMessages, ForwardConnection } from './Forward'
 import HomeMain from './HomeMain'
-import ConnectionInvitation from './Invitation'
 import MRZScanner from './MRZScanner'
 import MessageDetails from './MessageDetails'
 import ParentalControl from './ParentalControl'
-import PersonalChat from './PersonalChat'
 import PresentCredential from './PresentCredential'
 import PresentCredentialAsQR from './PresentCredentialAsQR'
 import PresentCredentialsFromChat from './PresentCredentialsFromChat'
-import { DidcommPresentationRequest, OpenIdPresentationRequest } from './PresentationRequest'
+import { DidcommPresentationRequest } from './PresentationRequest'
 import Privacy from './Privacy'
 import RelatedConnections from './RelatedConnections'
 import SelectCredentialAttributes from './SelectCredentialAttributes'
@@ -31,12 +31,10 @@ export {
   Connections,
   Privacy,
   DidcommCredentialOffer,
-  OpenIdCredentialOffer,
   DidcommPresentationRequest,
-  OpenIdPresentationRequest,
   HomeMain,
   ConnectionInvitation,
-  PersonalChat,
+  Chat,
   RelatedConnections,
   UserProfile,
   WalletBackup,

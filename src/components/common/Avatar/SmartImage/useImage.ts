@@ -5,12 +5,12 @@ import {
   createResizedImage,
   LOCAL_PREVIEW_IMAGE_QUALITY,
   LOCAL_PREVIEW_IMAGE_WIDTH,
-} from '@2060/hooks/media/preview'
-import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
-import { useRefreshedAvatarsUrls } from '@2060/hooks/providers/RefreshedAvatarsUrlsProvider'
-import { CacheRecord } from '@2060/model'
-import { logError } from '@2060/utils'
-import { deleteFile } from '@2060/utils/RNFS'
+} from '@src/hooks/media/preview'
+import { useLocalRealm } from '@src/hooks/providers/RealmProvider'
+import { useRefreshedAvatarsUrls } from '@src/hooks/providers/RefreshedAvatarsUrlsProvider'
+import { CacheRecord } from '@src/model'
+import { logError } from '@src/utils'
+import { deleteFile } from '@src/utils/RNFS'
 
 const downloadImage = async (url: string) => {
   try {

@@ -3,7 +3,7 @@ import Realm, { List } from 'realm'
 
 import { walletDirectoryPath } from './RNFS'
 
-import { getChatEntryTypeFromMimeType } from '@2060/hooks/agent/chat/recordChangeHandlers/utils'
+import { getChatEntryTypeFromMimeType } from '@src/hooks/agent/chat/recordChangeHandlers/utils'
 import {
   CacheRecord,
   ChatEntry,
@@ -16,11 +16,11 @@ import {
   SystemMessageMetadata,
   UploadTask,
   VPResponsePresentedCredential,
-} from '@2060/model'
-import { InvitationState } from '@2060/model/InvitationState'
-import { CredentialMainInfo } from '@2060/services/agent/display'
+} from '@src/model'
+import { InvitationState } from '@src/model/InvitationState'
+import { CredentialMainInfo } from '@src/services/agent/display'
 
-const CURRENT_REALM_SCHEMA_VERSION = 17
+const CURRENT_REALM_SCHEMA_VERSION = 18
 
 export const getRealmConfig = (encryptionKey: string): Realm.Configuration => {
   const realmConfig: Realm.Configuration = {
@@ -64,6 +64,9 @@ const onMigration = (oldRealm: Realm, newRealm: Realm) => {
     }
     if (oldRealm.schemaVersion < 7) {
       newThreads[i].active = true
+    }
+    if (oldRealm.schemaVersion < 18) {
+      newThreads[i].lastActivityAt = oldThreads[i].lastActivityAt ?? oldThreads[i].createdAt
     }
   }
 

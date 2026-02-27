@@ -1,10 +1,10 @@
 import {
   AnonCredsPresentationPreviewAttribute,
-  AnonCredsProofFormat,
   AnonCredsSelectedCredentials,
-  LegacyIndyProofFormat,
+  LegacyIndyDidCommProofFormat,
+  AnonCredsDidCommProofFormat,
 } from '@credo-ts/anoncreds'
-import { AgentMessage, ProofExchangeRecord, ProofFormatPayload } from '@credo-ts/core'
+import { DidCommMessage, DidCommProofExchangeRecord, DidCommProofFormatPayload } from '@credo-ts/didcomm'
 import { TrustResolutionOutcome } from '@verana-labs/verre'
 
 import { getServiceInfo } from '../trustResolution'
@@ -13,7 +13,7 @@ import { MobileAgent } from './MobileAgent'
 import { DidCommPresentationDisplayMetadata, setDidCommPresentationMetadata } from './RecordMetadata'
 import { CredentialMainInfo, sanitizeString } from './display'
 
-import { logError } from '@2060/utils'
+import { logError } from '@src/utils'
 
 type SelectedCredentials = {
   [referent: string]: string
@@ -29,7 +29,9 @@ export async function presentProof(options: PresentProofOptions) {
   const { agent, proofRecordId, selectedCredentials } = options
 
   // get format data to know where to populate the selection
-  const { proofFormats } = await agent.proofs.getCredentialsForRequest({ proofRecordId })
+  const { proofFormats } = await agent.didcomm.proofs.getCredentialsForRequest({
+    proofExchangeRecordId: proofRecordId,
+  })
 
   let anoncreds: AnonCredsSelectedCredentials | undefined, indy: AnonCredsSelectedCredentials | undefined
 
@@ -89,20 +91,23 @@ export async function presentProof(options: PresentProofOptions) {
     }
   }
 
-  const proofFormatPayload: ProofFormatPayload<
-    (LegacyIndyProofFormat | AnonCredsProofFormat)[],
+  const proofFormatPayload: DidCommProofFormatPayload<
+    (LegacyIndyDidCommProofFormat | AnonCredsDidCommProofFormat)[],
     'acceptRequest'
   > = {}
   if (anoncreds) proofFormatPayload.anoncreds = anoncreds
   if (indy) proofFormatPayload.indy = indy
 
   // Update record metadata
-  const proofRecord = await agent.proofs.getById(proofRecordId)
+  const proofRecord = await agent.didcomm.proofs.getById(proofRecordId)
   setDidCommPresentationMetadata(proofRecord, metadata)
 
-  await agent.proofs.update(proofRecord)
+  await agent.didcomm.proofs.update(proofRecord)
 
-  await agent.proofs.acceptRequest({ proofRecordId, proofFormats: proofFormatPayload })
+  await agent.didcomm.proofs.acceptRequest({
+    proofExchangeRecordId: proofRecordId,
+    proofFormats: proofFormatPayload,
+  })
 }
 
 /**
@@ -115,12 +120,12 @@ export async function createProofProposal(options: {
   agent: MobileAgent
   attributes: AnonCredsPresentationPreviewAttribute[]
 }): Promise<{
-  message: AgentMessage
-  proofRecord: ProofExchangeRecord
+  message: DidCommMessage
+  proofRecord: DidCommProofExchangeRecord
 }> {
   const { attributes, agent } = options
 
-  return await agent.proofs.createProofProposal({
+  return await agent.didcomm.proofs.createProofProposal({
     proofFormats: { anoncreds: { attributes } },
     protocolVersion: 'v2',
   })
@@ -130,7 +135,7 @@ export const proposalGetCredentialInfo = async (options: { agent: MobileAgent; p
   let credentialMainInfo: CredentialMainInfo | null = null
   try {
     const { agent, proofRecordId } = options
-    const formatData = await agent.proofs.getFormatData(proofRecordId)
+    const formatData = await agent.didcomm.proofs.getFormatData(proofRecordId)
     const requestedAttributes = formatData.proposal?.anoncreds?.requested_attributes
     if (requestedAttributes && Object.keys(requestedAttributes).length) {
       const firstAttribute = Object.values(requestedAttributes)[0]
@@ -177,7 +182,7 @@ export const proposalGetCredentialAttributes = async (options: {
 }) => {
   const { agent, proofRecordId } = options
   const attributes: Record<string, string> = {}
-  const formatData = await agent.proofs.getFormatData(proofRecordId)
+  const formatData = await agent.didcomm.proofs.getFormatData(proofRecordId)
   const requestedAttributes = formatData.proposal?.anoncreds?.requested_attributes
   if (requestedAttributes && Object.keys(requestedAttributes).length) {
     for (const attributeId in requestedAttributes) {
@@ -193,7 +198,7 @@ export const getCredentialRevealedAttributes = async (options: {
   proofRecordId: string
 }) => {
   const { agent, proofRecordId } = options
-  const formatData = await agent.proofs.getFormatData(proofRecordId)
+  const formatData = await agent.didcomm.proofs.getFormatData(proofRecordId)
   const revealedAttributes = formatData.presentation?.anoncreds?.requested_proof.revealed_attrs
   const attributesIds = formatData.proposal?.anoncreds?.requested_attributes
   const attributes: Record<string, string> = {}

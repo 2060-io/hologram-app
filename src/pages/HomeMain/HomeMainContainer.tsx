@@ -1,19 +1,20 @@
-import { OutOfBandInvitation, Buffer } from '@credo-ts/core'
+import { Buffer } from '@credo-ts/core'
+import { DidCommOutOfBandInvitation } from '@credo-ts/didcomm'
 import React, { ElementType, useEffect, useMemo, useTransition } from 'react'
 import { useTranslation } from 'react-i18next'
 import Config from 'react-native-config'
 
 import { HomeTabProps } from './HomeMainProps'
 
-import { Loader } from '@2060/components/common'
-import { useMobileAgent } from '@2060/hooks/agent'
+import { Loader } from '@src/components/common'
+import { useMobileAgent } from '@src/hooks/agent'
 import {
   DidcommInvitationType,
   processInvitation as agentProcessInvitation,
   getOutOfBandRecordById,
-} from '@2060/services/agent'
-import { log, logError } from '@2060/utils'
-import { toast } from '@2060/utils/toast'
+} from '@src/services/agent'
+import { log, logError } from '@src/utils'
+import { toast } from '@src/utils/toast'
 
 const HomeMainContainer = (HomeMainComponent: ElementType) => {
   const WrapperHomeMain = (props: HomeTabProps) => {
@@ -43,7 +44,7 @@ const HomeMainContainer = (HomeMainComponent: ElementType) => {
             invitationUrl = urlValue ? Buffer.from(urlValue, 'base64').toString('ascii') : undefined
           } else invitationUrl = `${Config.BASE_INVITATION_URL}?${parameterType}=${urlValue}`
           if (!invitationUrl) throw new Error('Invalid invitation URL')
-          const invitation = await agent.oob.parseInvitation(invitationUrl)
+          const invitation = await agent.didcomm.oob.parseInvitation(invitationUrl)
           processInvitation(invitation)
         } catch (error) {
           toast({ type: 'error', message: `${error}` })
@@ -52,7 +53,7 @@ const HomeMainContainer = (HomeMainComponent: ElementType) => {
       })
     }
 
-    const processInvitation = async (invitation: OutOfBandInvitation) => {
+    const processInvitation = async (invitation: DidCommOutOfBandInvitation) => {
       if (!agent) return
       try {
         const processInvitationResult = await agentProcessInvitation(agent, invitation)
@@ -68,6 +69,7 @@ const HomeMainContainer = (HomeMainComponent: ElementType) => {
         } else if (invitationType === DidcommInvitationType.CredentialOffer) {
           navigation.navigate('DidcommCredentialOffer', {
             credentialRecordId: recordId,
+            did: invitation.invitationDids[0],
           })
         } else if (invitationType === DidcommInvitationType.PresentationRequest) {
           navigation.navigate('DidcommPresentationRequest', {

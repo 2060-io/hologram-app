@@ -3,8 +3,8 @@ import { useCallback, useState } from 'react'
 import { useMobileAgent } from './agent'
 import { useLocalRealm } from './providers/RealmProvider'
 
-import { KeyChainService, retrieveEncryptedKey } from '@2060/services/keys'
-import { logWarn } from '@2060/utils'
+import { KeyChainService, retrieveEncryptedKey } from '@src/services/keys'
+import { logWarn } from '@src/utils'
 
 export const useWallet = (isOpeningWalletDefaultValue = false) => {
   const [openingWallet, setOpeningWallet] = useState(isOpeningWalletDefaultValue)

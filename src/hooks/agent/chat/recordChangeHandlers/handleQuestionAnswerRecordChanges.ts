@@ -4,8 +4,8 @@ import Realm from 'realm'
 import { createChatEntry } from '../services/ChatEntryService'
 import { addUnread, findOrCreateChatThread } from '../services/ChatThreadService'
 
-import { AnswerMetadata, ChatEntryRole, ChatEntryState, ChatEntryType, QuestionMetadata } from '@2060/model'
-import { MobileAgent } from '@2060/services/agent'
+import { AnswerMetadata, ChatEntryRole, ChatEntryState, ChatEntryType, QuestionMetadata } from '@src/model'
+import { MobileAgent } from '@src/services/agent'
 
 export const handleQuestionAnswerRecordChanges = async (options: {
   agent: MobileAgent
@@ -16,7 +16,7 @@ export const handleQuestionAnswerRecordChanges = async (options: {
 }) => {
   const { agent, realm, record: questionAnswerRecord, activeChatThreadId } = options
   // Find associated thread according to the connection id. If not found, create it
-  const connection = await agent.connections.getById(questionAnswerRecord.connectionId)
+  const connection = await agent.didcomm.connections.getById(questionAnswerRecord.connectionId)
   const thread = findOrCreateChatThread(realm, connection)
 
   const recordState = questionAnswerRecord.state

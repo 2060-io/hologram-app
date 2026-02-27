@@ -10,17 +10,21 @@ import Share from 'react-native-share'
 import AppDependencies from './AppDependencies'
 import getStyles from './styles'
 
-import { ModalBottomHalf } from '@2060/components'
-import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
-import { ModalLoading, OptionsList, Text, TextInput, Switch } from '@2060/components/common'
-import { Option } from '@2060/components/common/OptionsList'
-import { TextInputForwardRefProps } from '@2060/components/common/TextInput'
-import { IS_ANDROID, IS_IOS } from '@2060/constants'
-import { useMobileAgent } from '@2060/hooks/agent'
-import { useConfig } from '@2060/hooks/providers/ConfigProvider'
-import { useLocalRealm } from '@2060/hooks/providers/RealmProvider'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { deleteAllKeys } from '@2060/services/keys'
+import { ModalBottomHalf } from '@src/components'
+import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
+import { ModalLoading, OptionsList, Text, TextInput, Switch } from '@src/components/common'
+import { Option } from '@src/components/common/OptionsList'
+import { TextInputForwardRefProps } from '@src/components/common/TextInput'
+import { IS_ANDROID, IS_IOS } from '@src/constants'
+import { useMobileAgent } from '@src/hooks/agent'
+import { useConfig } from '@src/hooks/providers/ConfigProvider'
+import { useLocalRealm } from '@src/hooks/providers/RealmProvider'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { AgentActionQueueSingleton } from '@src/services/AgentActionQueueSingleton'
+import AgentSingleton from '@src/services/AgentSingleton'
+import { deleteAllKeys } from '@src/services/keys'
+import { removeStorageData, USER_INVITATION_OUT_OF_BAND_RECORD_ID } from '@src/services/localStorage'
+import { deleteDir, walletDirectoryPath } from '@src/utils/RNFS'
 import {
   allDevEnvs,
   DevEnv,
@@ -29,8 +33,9 @@ import {
   DevEnvObject,
   saveLogsEnabled,
   areLogsEnabled,
-} from '@2060/utils/developer'
-import { logError, LOGS_DIRECTORY } from '@2060/utils/log'
+} from '@src/utils/developer'
+import { logError, LOGS_DIRECTORY } from '@src/utils/log'
+import { toast } from '@src/utils/toast'
 
 interface Props extends StackScreenProps<NavigationStackParams, 'Developer'> {}
 
@@ -112,7 +117,7 @@ const Developer = ({ navigation }: Props) => {
     setIsDeletingWallet(true)
     try {
       realm?.write(() => realm?.deleteAll())
-      await agent.wallet.delete()
+
       // FIXME: Workaround to make sure cache is unloaded from memory
       const cache = agent.dependencyManager.resolve(CacheModuleConfig).cache
 
@@ -120,11 +125,19 @@ const Developer = ({ navigation }: Props) => {
       // eslint-disable-next-line no-underscore-dangle
       cache._cache = undefined
       await shutdownAgent()
+
+      // Delete store and wallet directory
+      await agent.modules.askar.deleteStore()
+      await deleteDir(walletDirectoryPath)
       await deleteAllKeys()
+      await removeStorageData(USER_INVITATION_OUT_OF_BAND_RECORD_ID)
       closeRealm()
+      AgentSingleton.instance.setAppIsSubscribedChatToEvents(false)
+      AgentSingleton.instance.setIsAppSubscribedToConnectionEvents(false)
+      AgentActionQueueSingleton.instance.setIsConfigured(false)
       navigation.navigate('Home')
     } catch (error) {
-      Alert.alert('Error', `${error}`)
+      toast({ type: 'error', message: t('settings.deleteWalletError') })
       logError(`Error deleting wallet from developer screen: ${error}`)
     } finally {
       setIsDeletingWallet(false)
@@ -144,6 +157,7 @@ const Developer = ({ navigation }: Props) => {
     const newAreEnabled = !logsEnabled
     setAreLogsEnabled(newAreEnabled)
     await saveLogsEnabled(newAreEnabled)
+    Alert.alert('¡INFO!', t('settings.closeAppAfterChange'))
   }
 
   const exportLogs = async () => {

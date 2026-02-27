@@ -3,9 +3,10 @@ import { openPicker, openCamera, Options, Image, Video, CommonOptions } from 're
 
 import { createDidCommPreview } from './media/preview'
 
-import { MAX_VIDEO_DURATION } from '@2060/constants'
-import { logError } from '@2060/utils'
-import { toast } from '@2060/utils/toast'
+import { MAX_VIDEO_DURATION } from '@src/constants'
+import { logError } from '@src/utils'
+import { handleCameraPermission } from '@src/utils/permissions'
+import { toast } from '@src/utils/toast'
 
 const MAX_VIDEO_SECONDS_DURATION = 60
 const optionsCommon: CommonOptions = {
@@ -67,6 +68,8 @@ export const useImageCropPicker = () => {
   const takePhotoOrVideo = async (onSuccess: (values: ImageOrVideo) => void, options?: Options) => {
     const mediaType = options?.mediaType || 'photo'
     try {
+      const cameraPermission = await handleCameraPermission()
+      if (!cameraPermission) return
       const fileInfo = (await openCamera({ ...optionsDefault[mediaType], ...options })) as ImageOrVideo
       const infoMedia = await createPreview(fileInfo, mediaType)
       onSuccess(infoMedia)
@@ -85,7 +88,7 @@ export const useImageCropPicker = () => {
       const { mime, duration } = fileInfo
       const isVideoAndExceedsDuration = mime.startsWith('video') && duration && duration > MAX_VIDEO_DURATION
       if (isVideoAndExceedsDuration) {
-        toast({ message: t('personalChat.videoExceedsDuration'), type: 'error', position: 'center' })
+        toast({ message: t('chat.videoExceedsDuration'), type: 'error', position: 'center' })
         return
       }
       const infoMedia = await createPreview(fileInfo, mediaType)

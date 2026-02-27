@@ -1,4 +1,4 @@
-import { ConnectionRecord } from '@credo-ts/core'
+import { DidCommConnectionRecord } from '@credo-ts/didcomm'
 import { StackScreenProps } from '@react-navigation/stack'
 import React, { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -7,12 +7,12 @@ import { AlphabetList, IData } from 'react-native-section-alphabet-list'
 
 import getStyles from './styles'
 
-import { SearchInput } from '@2060/components'
-import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
-import { Avatar, SvgIcon, Text } from '@2060/components/common'
-import { useConnectionById, useConnectionByParentConnectionId } from '@2060/hooks/agent'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { getConnectionDisplayName, getConnectionDisplayPicture } from '@2060/utils/connectionUtils'
+import { SearchInput } from '@src/components'
+import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
+import { Avatar, SvgIcon, Text } from '@src/components/common'
+import { useConnectionById, useConnectionByParentConnectionId } from '@src/hooks/agent'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { getConnectionDisplayName, getConnectionDisplayPicture } from '@src/utils/connectionUtils'
 
 interface SubConnectionData extends IData {
   avatar: string
@@ -23,7 +23,7 @@ const RelatedConnections: React.FC<Props> = ({ navigation, route }) => {
   const [showSearchInput, setShowSearchInput] = useState(false)
   const [search, setSearch] = useState('')
   const parentConnectionId = route.params.parentConnectionId as string
-  const connectionParent = useConnectionById(parentConnectionId) as ConnectionRecord
+  const connectionParent = useConnectionById(parentConnectionId) as DidCommConnectionRecord
   const haveParentDisplayImage = getConnectionDisplayPicture(connectionParent)
   const parentConnectionName = getConnectionDisplayName(connectionParent)
   const { t } = useTranslation()
