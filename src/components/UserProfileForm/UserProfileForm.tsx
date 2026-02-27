@@ -1,15 +1,24 @@
 import { UserProfileData } from '@2060.io/credo-ts-didcomm-user-profile'
-import React, { memo } from 'react'
+import React, { memo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, TouchableOpacity, Image } from 'react-native'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
+import Modal from 'react-native-modal'
+import { SafeAreaView } from 'react-native-safe-area-context'
+
+import Camera from '../Camera'
+import { MediaCaptured } from '../Camera/Props'
 
 import getStyles from './styles'
 
 import defaultAvatar from '@src/assets/images/defaultUser.png'
 import { Text, TextInput, SvgIcon, Avatar } from '@src/components/common'
-import { useImageCropPicker, ImageOrVideo } from '@src/hooks'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
-import { dataUrl } from '@src/utils'
+import { getGlobalStyles } from '@src/styles'
+import { dataUrl, log } from '@src/utils'
+import { deleteFile, readFile } from '@src/utils/RNFS'
+import { getMediaInfo } from '@src/utils/mediaFileUtils'
+import { handleCameraPermission } from '@src/utils/permissions'
 
 type Props = {
   displayPicture: UserProfileData['displayPicture']
@@ -22,24 +31,46 @@ const UserProfileForm: React.FC<Props> = props => {
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
-  const { takePhotoOrVideo, takePhotoOrVideoFromGallery } = useImageCropPicker()
+  const globalStyles = getGlobalStyles(theme)
   const { displayPicture, displayName, onHandleChangePicture, onHandleChangeName } = props
+  const [isCameraOpen, setIsCameraOpen] = useState(false)
   const imgUrl = displayPicture ? dataUrl(displayPicture.mimeType, displayPicture.base64) : null
-  const avatarUri = imgUrl ?? Image.resolveAssetSource(defaultAvatar).uri
+  const avatarUri = imgUrl || Image.resolveAssetSource(defaultAvatar).uri
 
-  const onChangeAvatarInfo = (info: ImageOrVideo) => {
-    if (info.data) onHandleChangePicture({ mimeType: info.mime, base64: info.data })
+  const handleOpenCamera = async () => {
+    const cameraPermission = await handleCameraPermission()
+    if (!cameraPermission) return
+    setIsCameraOpen(true)
   }
 
-  const onTakePhotoOrGallery = (type: 'Gallery' | 'Camera') => {
-    return {
-      Camera: async () => await takePhotoOrVideo(onChangeAvatarInfo),
-      Gallery: async () => await takePhotoOrVideoFromGallery(onChangeAvatarInfo),
-    }[type]()
+  const closeCamera = () => {
+    setIsCameraOpen(false)
+  }
+
+  const onPhoto = async (media: MediaCaptured) => {
+    try {
+      closeCamera()
+      const base64 = await readFile(media.path, 'base64')
+      const { mimeType } = await getMediaInfo(media.path)
+      onHandleChangePicture({ mimeType, base64 })
+    } catch (e) {
+      log('Error uploading user profile photo', e)
+    } finally {
+      deleteFile(media.path)
+    }
   }
 
   return (
     <View>
+      <Modal isVisible={isCameraOpen} statusBarTranslucent style={styles.modalCamera}>
+        <SafeAreaView
+          style={[styles.container, { backgroundColor: globalStyles.headerStyle.backgroundColor }]}
+        >
+          <GestureHandlerRootView style={styles.container}>
+            <Camera isActive onMedia={onPhoto} closeCamera={closeCamera} isVideoMode={false} />
+          </GestureHandlerRootView>
+        </SafeAreaView>
+      </Modal>
       <Text style={styles.textInputDescription}>{t('signUp.textInputNicknameDescription')}</Text>
       <View style={styles.containerRootAvatar}>
         {imgUrl?.length && (
@@ -53,31 +84,13 @@ const UserProfileForm: React.FC<Props> = props => {
         )}
         <Avatar uri={avatarUri} label={displayName} size="46%" />
       </View>
-      <View style={styles.containerOptions}>
-        <View style={styles.containerOption}>
-          <TouchableOpacity
-            onPress={() => onTakePhotoOrGallery('Camera')}
-            style={styles.containerOptionIcon}
-            activeOpacity={0.7}
-          >
-            <SvgIcon name="camera" width={30} height={30} fill={theme.colors.primaryText} />
-          </TouchableOpacity>
-          <Text fontFamily="EuclidCircularA-Medium" style={styles.optionText}>
-            {t('signUp.camera')}
-          </Text>
-        </View>
-        <View style={styles.containerOption}>
-          <TouchableOpacity
-            onPress={() => onTakePhotoOrGallery('Gallery')}
-            style={styles.containerOptionIcon}
-            activeOpacity={0.7}
-          >
-            <SvgIcon name="image" width={30} height={30} fill={theme.colors.primaryText} />
-          </TouchableOpacity>
-          <Text fontFamily="EuclidCircularA-Medium" style={styles.optionText}>
-            {t('signUp.photo')}
-          </Text>
-        </View>
+      <View style={styles.containerOption}>
+        <TouchableOpacity onPress={handleOpenCamera} style={styles.containerOptionIcon} activeOpacity={0.7}>
+          <SvgIcon name="camera" width={30} height={30} fill={theme.colors.primaryText} />
+        </TouchableOpacity>
+        <Text fontFamily="EuclidCircularA-Medium" style={styles.optionText}>
+          {t('signUp.camera')}
+        </Text>
       </View>
       <TextInput
         value={displayName}

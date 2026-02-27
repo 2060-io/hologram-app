@@ -1,3 +1,4 @@
+import Camera from './Camera'
 import Chat from './Chat'
 import ConnectionDetails from './ConnectionDetails'
 import ConnectionInvitation from './ConnectionInvitation'
@@ -59,4 +60,5 @@ export {
   SelectCredentialAttributes,
   PresentCredentialAsQR,
   EphemeralCredentialPresentation,
+  Camera,
 }

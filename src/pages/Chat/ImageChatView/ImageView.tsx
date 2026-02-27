@@ -51,7 +51,7 @@ const ImageView = memo((props: ImageView) => {
         }
       >
         <TouchableOpacity onPress={handleControls} activeOpacity={1}>
-          <Image source={{ uri: imageUri }} style={styles.imageLightbox} />
+          <Image source={{ uri: imageUri }} style={styles.imageLightbox} resizeMode="contain" />
         </TouchableOpacity>
       </LightboxModal>
       <TouchableOpacity onPress={onToggleModalLightbox} onLongPress={onLongPress}>

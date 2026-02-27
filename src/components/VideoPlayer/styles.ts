@@ -6,13 +6,6 @@ export default (theme: AppTheme) =>
   StyleSheet.create({
     container: {
       height: '100%',
-      justifyContent: 'center',
-    },
-    videoWrapper: {
-      ...StyleSheet.absoluteFillObject,
-    },
-    video: {
-      height: '100%',
       width: '100%',
     },
     controlOverlay: {

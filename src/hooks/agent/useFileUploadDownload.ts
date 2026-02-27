@@ -13,14 +13,13 @@ export type AutomaticDownloadTypes = {
 }
 
 export interface DidCommMediaFileSharingData {
-  fileName?: string
   path: string
   mime: string
   size: number
   preview?: string
   width?: number
   height?: number
-  duration?: number
+  duration?: number | null
   description?: string
 }
 

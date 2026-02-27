@@ -19,7 +19,7 @@ const SendButton = memo((props: Props) => {
 
   return (
     <TouchableOpacity
-      style={[styles.iconContainer, { backgroundColor: buttonColor }]}
+      style={[styles.button, { backgroundColor: buttonColor }]}
       accessible
       accessibilityLabel="send"
       activeOpacity={0.6}

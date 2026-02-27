@@ -1,3 +1,4 @@
+import Camera from './Camera'
 import ChatFilterOptions from './ChatFilterOptions'
 import ChatSwipeOptions from './ChatSwipeOptions'
 import ChatThread from './ChatThread'
@@ -44,4 +45,5 @@ export {
   Connections,
   CredentialAttributes,
   CredentialPresented,
+  Camera,
 }

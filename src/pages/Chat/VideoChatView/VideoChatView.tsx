@@ -5,7 +5,6 @@ import { View, TouchableOpacity, ImageBackground, ActivityIndicator, Image } fro
 import { MediaProps } from '../ChatProps'
 import RetryMediaUploadView from '../RetryMediaUploadView'
 import { ParsedText } from '../components'
-import { getMinutesAndSeconds } from '../utils'
 
 import getStyles from './styles'
 
@@ -15,7 +14,7 @@ import { useMedia } from '@src/hooks'
 import { useMediaPlayer } from '@src/hooks/providers/MediaPlayerProvider'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { MediaDownloadState, MediaUploadState, VideoMetadata } from '@src/model'
-import { getFileSize } from '@src/utils'
+import { getFileSize, getMinutesAndSeconds } from '@src/utils'
 import { getLocalFileUri } from '@src/utils/RNFS'
 
 const VideoChatView = memo((props: MediaProps) => {

@@ -14,7 +14,6 @@ export default (theme: AppTheme) =>
     imageLightbox: {
       width: '100%',
       height: '100%',
-      resizeMode: 'contain',
     },
     containerSpinner: {
       display: 'flex',

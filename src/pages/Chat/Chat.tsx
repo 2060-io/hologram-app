@@ -17,7 +17,6 @@ import InputToolbarView from './InputToolbarView'
 import ScrollToBottom from './ScrollToBottomView'
 import SelectingMessagesBottomMenu from './SelectingMessagesBottomMenu'
 import SystemMessage from './SystemMessage'
-import { CompressingVideo } from './components'
 import getStyles from './styles'
 import { getSystemMessage, chatEntryEqual } from './utils'
 
@@ -58,7 +57,6 @@ import {
   supportsUserProfile,
 } from '@src/utils/connectionUtils'
 import { getFormattedDateRange, isDateGreaterThan, timeFromNow } from '@src/utils/dateUtils'
-import { cancelVideoCompression } from '@src/utils/mediaFileUtils'
 import { markNotificationsOfChatAsViewed } from '@src/utils/pushNotificationsUtils'
 import { toast } from '@src/utils/toast'
 
@@ -135,12 +133,10 @@ const Chat = ({ chatEntries, chatThread, navigation, loadMoreMessages, redirectT
   const [showAttachmentOptions, setShowAttachmentOptions] = useState(false)
   const [showStickyDate, setShowStickyDate] = useState(false)
   const [showContextualMenu, setShowContextualMenu] = useState(false)
-  const [compressingVideoProgress, setCompressingVideoProgress] = useState(0)
   const showScrollBottomRef = useRef(false)
   const isScrolling = useRef(false)
   const listViewRef = useRef<FlatList<ChatEntryMessage> | null>(null)
   const timerStickyDate = useRef<ReturnType<typeof setTimeout>>(undefined)
-  const videoCompressionCancellationId = useRef<string>('')
   const isAlreadyMounted = useRef(false)
 
   useFocusEffect(
@@ -376,14 +372,6 @@ const Chat = ({ chatEntries, chatThread, navigation, loadMoreMessages, redirectT
 
   const goToForwardMessages = () => navigation.navigate('ForwardMessages')
 
-  const getVideoCompressionCancellationId = (cancellationId: string) => {
-    videoCompressionCancellationId.current = cancellationId
-  }
-
-  const cancelCompression = () => {
-    cancelVideoCompression(videoCompressionCancellationId.current)
-  }
-
   return (
     <>
       <SafeAreaView style={styles.container}>
@@ -445,9 +433,6 @@ const Chat = ({ chatEntries, chatThread, navigation, loadMoreMessages, redirectT
           )}
         </KeyboardAvoidingView>
       </SafeAreaView>
-      {compressingVideoProgress > 0 && (
-        <CompressingVideo progress={compressingVideoProgress} cancelCompression={cancelCompression} />
-      )}
       <ModalBottomHalf visible={showContextualMenu} onClose={() => setShowContextualMenu(false)}>
         {menu ? (
           <ContextualMenu
@@ -460,8 +445,6 @@ const Chat = ({ chatEntries, chatThread, navigation, loadMoreMessages, redirectT
       <ModalBottomHalf visible={showAttachmentOptions} onClose={() => setShowAttachmentOptions(false)}>
         <AttachmentOptions
           closeAttachmentOptions={() => setShowAttachmentOptions(false)}
-          onCompressingVideoProgress={setCompressingVideoProgress}
-          getVideoCompressionCancellationId={getVideoCompressionCancellationId}
           navigation={navigation}
           connectionId={chatThreadData.connectionId}
         />

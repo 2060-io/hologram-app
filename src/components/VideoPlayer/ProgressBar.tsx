@@ -58,7 +58,7 @@ const getStyles = (theme: AppTheme) =>
   StyleSheet.create({
     container: {
       position: 'absolute',
-      bottom: 50,
+      bottom: 60,
       paddingHorizontal: 15,
     },
     timeWrapper: {

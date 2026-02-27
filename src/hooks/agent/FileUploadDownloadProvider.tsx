@@ -263,7 +263,6 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
       const { didcommConnectionIds, didcommMediaFileSharingData, didcommThreadId, deleteOriginalFile } =
         options
       const {
-        fileName: originalFileName,
         mime: mimeType,
         path,
         size,
@@ -280,7 +279,7 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
 
       // 1. Assign unique id to the file upload and
       const fileId = utils.uuid()
-      const fileExtension = originalFileName ? getFileExtension(originalFileName) : undefined
+      const fileExtension = getFileExtension(path)
 
       const fileName = generateFileName(mimeType, fileExtension)
       const localFilePath = getLocalMediaFilePath(fileName)

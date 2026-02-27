@@ -1,0 +1,16 @@
+diff --git a/node_modules/react-native-video/ios/Video/AudioSessionManager.swift b/node_modules/react-native-video/ios/Video/AudioSessionManager.swift
+index 2f11860..da04782 100644
+--- a/node_modules/react-native-video/ios/Video/AudioSessionManager.swift
++++ b/node_modules/react-native-video/ios/Video/AudioSessionManager.swift
+@@ -9,6 +9,11 @@ class AudioSessionManager {
+     private var remoteControlEventsActive = false
+ 
+     private var isAudioSessionManagementDisabled: Bool {
++        // If no views are registered, disable audio session management
++        if videoViews.allObjects.isEmpty {
++            return true
++        }
++
+         return videoViews.allObjects.contains { view in
+             return view._disableAudioSessionManagement == true
+         }

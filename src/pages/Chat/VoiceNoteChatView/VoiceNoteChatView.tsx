@@ -8,8 +8,6 @@ import React, { memo, useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, TouchableOpacity, ActivityIndicator, ViewStyle } from 'react-native'
 
-import { getMinutesAndSeconds } from '../utils'
-
 import getStyles from './styles'
 
 import { Text, Icon } from '@src/components/common'
@@ -18,7 +16,7 @@ import { useChat } from '@src/hooks/agent'
 import { useMediaPlayer } from '@src/hooks/providers/MediaPlayerProvider'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { ChatEntryRole, MediaUploadState, VoiceNoteMetadata } from '@src/model'
-import { getFileSize, logWarn } from '@src/utils'
+import { getFileSize, getMinutesAndSeconds, logWarn } from '@src/utils'
 import { getFullLocalFilePath } from '@src/utils/RNFS'
 
 type VoiceNoteChatViewProps = {

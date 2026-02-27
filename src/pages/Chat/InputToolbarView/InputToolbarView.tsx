@@ -6,18 +6,16 @@ import { stat } from 'react-native-fs'
 
 import ComposerInput from '../ComposerInput'
 import RepliedMessageView from '../RepliedMessageView/RepliedMessageView'
-import { getMinutesAndSeconds } from '../utils'
 
-import { SendButton, AudioButton } from './components'
+import { SendButton, AudioButton, CameraButton } from './components'
 import getStyles from './styles'
 
 import { Icon, SvgIcon, Text } from '@src/components/common'
 import { TextInputForwardRefProps } from '@src/components/common/TextInput'
 import { useChatActions } from '@src/hooks'
 import { useChat } from '@src/hooks/agent'
-import { generateFileName } from '@src/hooks/media/files'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
-import { logWarn } from '@src/utils'
+import { getMinutesAndSeconds, logWarn } from '@src/utils'
 import { deleteFile } from '@src/utils/RNFS'
 import {
   handleMicrophonePermission,
@@ -27,14 +25,15 @@ import {
 import { toast } from '@src/utils/toast'
 
 interface Props {
-  onShowMediaOptions(): void
   showMediaOptions: boolean
+  onShowMediaOptions(): void
 }
 
 const MINIMUM_AUDIO_DURATION = 1000
 const INITIAL_TIME_RECORDED = '00:00'
 
 const InputToolbarView = (props: Props) => {
+  const { showMediaOptions, onShowMediaOptions } = props
   const { startRecording, stopRecording } = useAudioRecorder()
   const { onCurrentRecordingWaveformData } = useAudioPlayer()
   const { t } = useTranslation()
@@ -47,7 +46,6 @@ const InputToolbarView = (props: Props) => {
   const { setRepliedMessage, isRecordingVoiceNote, setIsRecordingVoiceNote, repliedMessage } = useChat()
   const isRecordingVoiceNoteAux = useRef(isRecordingVoiceNote)
   const { sendTextMessage, shareMediaToDidComm } = useChatActions()
-  const { showMediaOptions, onShowMediaOptions } = props
   const isRepliedMessage = repliedMessage !== undefined
   const hasContentTextInput = valueTextInput.trim().length !== 0
   const theme = useTheme()
@@ -83,14 +81,11 @@ const InputToolbarView = (props: Props) => {
       return
     }
     const { size } = await stat(recordedAudioFilePath.current)
-    const subType = 'm4a'
-    const mime = `audio/${subType}`
-    const filename = generateFileName(mime, subType)
+    const mime = 'audio/m4a'
     await shareMediaToDidComm({
       mime,
       size,
       path: recordedAudioFilePath.current,
-      fileName: filename,
       duration: millisecondsRecorded.current,
     })
   }
@@ -153,7 +148,7 @@ const InputToolbarView = (props: Props) => {
       <View style={styles.subContainer}>
         <View style={styles.leftAndCenterContainer}>
           {showMediaOptions && (
-            <TouchableOpacity style={styles.iconContainer} onPress={onShowMediaOptions} activeOpacity={0.7}>
+            <TouchableOpacity style={[styles.button, styles.buttonMarginRight]} onPress={onShowMediaOptions}>
               <SvgIcon name="add" fill={theme.colors.primaryText} />
             </TouchableOpacity>
           )}
@@ -178,21 +173,20 @@ const InputToolbarView = (props: Props) => {
             )}
           </View>
         </View>
-        <View style={styles.rightContainer}>
-          {!showMediaOptions || hasContentTextInput ? (
-            <SendButton hasContentTextInput={hasContentTextInput} sendMessage={sendMessage} />
-          ) : (
-            <AudioButton
-              onPress={isRecordingVoiceNote ? sendVoiceMessage : handleMicrophonePermission}
-              onLongPress={startRecordVoice}
-              onTouchEnd={isRecordingVoiceNote && !isAutomaticRecording ? sendVoiceMessage : undefined}
-              isRecording={isRecordingVoiceNote}
-              isAutomaticRecording={isAutomaticRecording}
-              setAutomaticRecording={setAutomaticRecording}
-              cancelAudioRecording={cancelAudioRecording}
-            />
-          )}
-        </View>
+        {showMediaOptions && !hasContentTextInput && !isRecordingVoiceNote && <CameraButton />}
+        {!showMediaOptions || hasContentTextInput ? (
+          <SendButton hasContentTextInput={hasContentTextInput} sendMessage={sendMessage} />
+        ) : (
+          <AudioButton
+            onPress={isRecordingVoiceNote ? sendVoiceMessage : handleMicrophonePermission}
+            onLongPress={startRecordVoice}
+            onTouchEnd={isRecordingVoiceNote && !isAutomaticRecording ? sendVoiceMessage : undefined}
+            isRecording={isRecordingVoiceNote}
+            isAutomaticRecording={isAutomaticRecording}
+            setAutomaticRecording={setAutomaticRecording}
+            cancelAudioRecording={cancelAudioRecording}
+          />
+        )}
         {isRecordingVoiceNote && !isAutomaticRecording && (
           <View style={styles.containerRecordingSwipeUp}>
             <SvgIcon name="lock" fill={theme.colors.tertiaryText} />

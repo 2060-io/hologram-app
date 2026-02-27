@@ -11,7 +11,7 @@ export default (theme: AppTheme, isRecording?: boolean) =>
   StyleSheet.create({
     container: {
       width: '100%',
-      paddingHorizontal: 17.12,
+      paddingHorizontal: theme.edges.messageMargin,
       paddingVertical: 5,
     },
     subContainer: {
@@ -26,10 +26,6 @@ export default (theme: AppTheme, isRecording?: boolean) =>
       flexDirection: 'row',
       flex: 1,
       marginRight: 4,
-    },
-    messageInputContainer: {
-      flex: 1,
-      marginLeft: 4,
     },
     rightContainer: {
       width: MESSAGE_INPUT_INITIAL_HEIGHT,
@@ -76,13 +72,16 @@ export default (theme: AppTheme, isRecording?: boolean) =>
       fontSize: theme.fontSize.md2,
       marginLeft: 8,
     },
-    iconContainer: {
+    button: {
       backgroundColor: theme.isDarkMode ? theme.colors.primary : theme.colors.secondary,
       width: MESSAGE_INPUT_INITIAL_HEIGHT,
       height: MESSAGE_INPUT_INITIAL_HEIGHT,
       borderRadius: MESSAGE_INPUT_INITIAL_HEIGHT / 2,
       justifyContent: 'center',
       alignItems: 'center',
+    },
+    buttonMarginRight: {
+      marginRight: 4,
     },
     microphoneIconContainerWhileRecording: {
       backgroundColor: theme.colors.green,

@@ -11,7 +11,7 @@ import getStyles from './styles'
 import { ChatProvider } from '@src/hooks/agent'
 import { MediaPlayerProvider } from '@src/hooks/providers'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
-import { Chat, MessageDetails, ForwardMessages, ShareMessages, MRZScanner } from '@src/pages'
+import { Chat, MessageDetails, ForwardMessages, ShareMessages, MRZScanner, Camera } from '@src/pages'
 import { getGlobalStyles } from '@src/styles'
 
 const ChatStack = createStackNavigator<ChatStackParams>()
@@ -49,6 +49,11 @@ const ChatStackNavigator = () => {
               name="MRZScanner"
               component={MRZScanner}
               options={{ presentation: 'modal', headerShown: false }}
+            />
+            <ChatStack.Screen
+              name="Camera"
+              component={Camera}
+              options={{ headerShown: false, animation: 'reveal_from_bottom' }}
             />
           </ChatStack.Group>
         </ChatStack.Navigator>
