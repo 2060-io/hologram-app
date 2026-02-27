@@ -52,6 +52,7 @@ import {
   PresentCredentialsFromChat,
   PresentCredentialAsQR,
   EphemeralCredentialPresentation,
+  IdentityCredentialIssuers,
 } from '@src/pages'
 import { MobileAgent } from '@src/services/agent'
 import { AppTheme, getGlobalStyles } from '@src/styles'
@@ -168,6 +169,7 @@ const Navigation = ({ isSignedUp, agent, theme }: NavigationProps) => {
             options={{ gestureEnabled: false }}
           />
           <Stack.Screen name="EphemeralCredentialPresentation" component={EphemeralCredentialPresentation} />
+          <Stack.Screen name="IdentityCredentialIssuers" component={IdentityCredentialIssuers} />
         </Stack.Navigator>
       </View>
     </NavigationContainer>

@@ -76,7 +76,8 @@
       "dismiss": "Dismiss",
       "selected": "1 selected",
       "selected_other": "{{ count }} selected",
-      "by": "by "
+      "by": "by ",
+      "skip": "Skip"
     },
     "navigation": {
       "back": "Back",
@@ -110,6 +111,7 @@
       "ParentalControl": "Parental Control",
       "PresentCredentialsFromChat": "Present Credential",
       "SelectCredentialAttributes": "Present Credential",
+      "IdentityCredentialIssuers": "Identity Credential Issuers",
       "PresentCredentialAsQR": "Credential Presentation",
       "EphemeralCredentialPresentation": "Credential Presentation"
     },
@@ -200,7 +202,14 @@
       "youRefusedPresentation": "You refused credential presentation",
       "noResponseFromVerifier": "No response from verifier within the limit time. Presentation is finished.",
       "youDidNotResponseWithinTime": "You did not respond within the time limit. Presentation is finished.",
-      "failedFetchInfo": "Error while trying to resolve this service"
+      "failedFetchInfo": "Error while trying to resolve this service",
+      "citizenship": "Select a country of citizenship",
+      "availableIssuers": "Available Identity Credential Issuers",
+      "serviceProvider": "Service provider:",
+      "reputation": "Reputation:",
+      "issuedCredentials": "Issued credentials:",
+      "unknown": "Unknown",
+      "verifiedCredentials": "Verified credentials:"
     },
     "credentialOffer": {
       "title": "Credential Offer",
@@ -286,8 +295,11 @@
       "serviceNotVerifiable": "This service is not verifiable.",
       "noLiabilityDisclaimerDesc": "<bold>No-liability disclaimer: </bold> Please be aware that <bold>Hologram</bold> acts solely as a connection provider for <bold>{{serviceName}}</bold>. <bold>Hologram</bold> does not control this service and therefore cannot be held liable for any issues, damages, or disputes arising from the use of <bold>{{serviceName}}</bold>. Any concerns should be addressed directly to <bold>{{serviceName}}</bold>. \n\n<bold>THIS SERVICE IS NOT VERIFIABLE.</bold> USE IT AT YOUR OWN RISK",
       "newConnection": "New connection",
-      "youAreNowConnectedTo": "You are now connected to",
+      "youAreNowConnectedTo": "You are now connected to {{ name }}",
+      "youAreAlreadyConnectedTo": "You are already connected to {{ name }}",
       "forwarded": "Connection has been forwarded",
+      "goToConnection": "Go to service",
+      "errorConnecting": "Error connecting to {{ name }}",
       "youAreAlreadyConnected": "You are already connected to {{ connectionName }}",
       "goToChat": "Go to chat",
       "call": "Call",

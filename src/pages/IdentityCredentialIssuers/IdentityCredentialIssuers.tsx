@@ -1,0 +1,154 @@
+import { HeaderBackButton } from '@react-navigation/elements'
+import { CommonActions } from '@react-navigation/native'
+import { StackScreenProps } from '@react-navigation/stack'
+import React, { useCallback, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { Linking, SafeAreaView, ScrollView, TouchableOpacity } from 'react-native'
+import { getCountry } from 'react-native-localize'
+import RNPickerSelect from 'react-native-picker-select'
+
+import countries from './countries.json'
+import getStyles from './styles'
+import unicIDService from './unicIDInfo.json'
+
+import { CredentialIssuer } from '@src/components'
+import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
+import { HeaderTitle, Icon, Text } from '@src/components/common'
+import { useChats, useMobileAgent } from '@src/hooks/agent'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { ServiceInfo } from '@src/model'
+import { getGlobalStyles } from '@src/styles'
+import { getFlagEmoji, logError } from '@src/utils'
+import { toast } from '@src/utils/toast'
+
+interface Props extends StackScreenProps<NavigationStackParams, 'IdentityCredentialIssuers'> {}
+
+const IdentityCredentialIssuers = ({ navigation }: Props) => {
+  const routes = navigation.getState()?.routes
+  const comesFromOnboarding = routes.length === 1
+  const { t } = useTranslation()
+  const theme = useTheme()
+  const styles = getStyles(theme)
+  const globalStyles = getGlobalStyles(theme)
+  const [selectedCountry, setSelectedCountry] = useState(getCountry())
+  const [userMadeSomeAction, setUserMadeSomeAction] = useState(false)
+  const { agent } = useMobileAgent()
+  const { findOrCreateThread } = useChats()
+
+  const goToChats = () => {
+    navigation.dispatch(CommonActions.reset({ index: 0, routes: [{ name: 'Home' }] }))
+  }
+
+  useEffect(() => {
+    navigation.setOptions({
+      gestureEnabled: !comesFromOnboarding,
+      headerStyle: { ...globalStyles.headerStyle },
+      headerLeft: props => (comesFromOnboarding ? null : <HeaderBackButton {...props} />),
+      headerTitleContainerStyle: styles.headerTitleContainerStyle,
+      headerTitle: () => <HeaderTitle title={t('navigation.IdentityCredentialIssuers')} theme={theme} />,
+      headerTitleAlign: 'center',
+      headerRight: () =>
+        comesFromOnboarding ? (
+          <TouchableOpacity style={styles.headerRight} onPress={goToChats}>
+            <Text fontFamily="EuclidCircularA-Medium" style={styles.headerText}>
+              {userMadeSomeAction ? t('chat.close') : t('general.skip')}
+            </Text>
+          </TouchableOpacity>
+        ) : null,
+    })
+  }, [theme, userMadeSomeAction])
+
+  const connect = async (service: ServiceInfo) => {
+    if (!agent) return null
+    try {
+      setUserMadeSomeAction(true)
+      let { connectionRecord } = await agent.didcomm.oob.receiveImplicitInvitation({
+        did: service.did,
+        label: service.name,
+        imageUrl: service.logoUrl,
+        autoAcceptConnection: true,
+      })
+      if (!connectionRecord) throw new Error('Error connecting')
+
+      connectionRecord = await agent.didcomm.connections.returnWhenIsConnected(connectionRecord.id, {
+        timeoutMs: 5000,
+      })
+      findOrCreateThread({ connection: connectionRecord })
+      return connectionRecord
+    } catch (error) {
+      toast({
+        type: 'error',
+        message: t('connection.errorConnecting', { name: service.name }),
+        duration: 5000,
+      })
+      logError(`error connecting to service: ${error}`)
+      return null
+    }
+  }
+
+  const tryToOpenURL = useCallback(async (url: string) => {
+    const supported = await Linking.canOpenURL(url)
+    if (supported) {
+      await Linking.openURL(url)
+    } else {
+      toast({ type: 'error', message: `${t('general.canNotOpenURL')} ${url}` })
+    }
+  }, [])
+
+  const goToConnectionDetails = useCallback((connectionId: string) => {
+    navigation.navigate('ConnectionDetails', { connectionId })
+  }, [])
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.subContainer}>
+        <Text fontFamily="EuclidCircularA-SemiBold" style={styles.text}>
+          {t('credential.citizenship')}
+        </Text>
+        <RNPickerSelect
+          placeholder={{
+            label: t('credential.citizenship'),
+            value: null,
+            color: theme.colors.tertiaryText,
+          }}
+          value={selectedCountry}
+          onValueChange={setSelectedCountry}
+          items={countries.map(country => ({
+            label: `${country.name} ${getFlagEmoji(country.code)}`,
+            value: country.code,
+            color: theme.colors.tertiaryText,
+          }))}
+          darkTheme={theme.isDarkMode}
+          useNativeAndroidPickerStyle={false}
+          style={{
+            inputIOS: styles.inputPickerContainer,
+            inputAndroid: styles.inputPickerContainer,
+            iconContainer: styles.pickerIconContainer,
+          }}
+          Icon={() => {
+            return (
+              <Icon
+                as="MaterialIcons"
+                name="keyboard-arrow-down"
+                size={30}
+                color={theme.colors.tertiaryText}
+              />
+            )
+          }}
+        />
+        <Text fontFamily="EuclidCircularA-SemiBold" style={[styles.text, styles.mb12]}>
+          {t('credential.availableIssuers')}
+        </Text>
+        <CredentialIssuer
+          connect={connect}
+          service={unicIDService as ServiceInfo}
+          tryToOpenURL={tryToOpenURL}
+          goToConnectionDetails={goToConnectionDetails}
+          agent={agent}
+        />
+      </ScrollView>
+    </SafeAreaView>
+  )
+}
+
+export default IdentityCredentialIssuers

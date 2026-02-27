@@ -1,0 +1,11 @@
+{
+  "did": "did:web:unic-id-issuer.demos.dev.2060.io",
+  "id": "did:web:unic-id-issuer.demos.dev.2060.io",
+  "description": "A demo service for verifying identity credentials",
+  "logoUrl": "https://i.unic-id-issuer.demos.dev.2060.io/avatar.png",
+  "minimumAgeRequired": 18,
+  "name": "Unic ID",
+  "status": "trusted",
+  "termsAndConditionsUrl": "https://unic-id-issuer.demos.dev.2060.io/terms-and-conditions",
+  "dataPrivacyUrl": "https://unic-id-issuer.demos.dev.2060.io/data-privacy"
+}

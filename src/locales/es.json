@@ -76,7 +76,8 @@
       "dismiss": "Cerrar",
       "selected": "1 seleccionado",
       "selected_other": "{{ count }} seleccionados",
-      "by": "por "
+      "by": "por ",
+      "skip": "Omitir"
     },
     "navigation": {
       "back": "Atras",
@@ -110,6 +111,7 @@
       "ParentalControl": "Control parental",
       "PresentCredentialsFromChat": "Presentar Credencial",
       "SelectCredentialAttributes": "Presentar Credencial",
+      "IdentityCredentialIssuers": "Emisores de credenciales de identidad",
       "PresentCredentialAsQR": "Presentación de Credencial",
       "EphemeralCredentialPresentation": "Presentación de Credencial"
     },
@@ -200,7 +202,14 @@
       "youRefusedPresentation": "Rechazaste la presentación de la credencial",
       "noResponseFromVerifier": "No hubo respuesta de parte del verificador dentro del tiempo limite. La presentación es finalizada.",
       "youDidNotResponseWithinTime": "No respondiste dentro del tiempo limite. La presentación es finalizada.",
-      "failedFetchInfo": "Error obteniendo información del este servicio"
+      "failedFetchInfo": "Error obteniendo información del este servicio",
+      "citizenship": "Selecciona el país de ciudadanía",
+      "availableIssuers": "Emisores de credenciales de identidad disponibles",
+      "serviceProvider": "Proveedor del servicio:",
+      "reputation": "Reputación:",
+      "issuedCredentials": "Credenciales emitidas:",
+      "unknown": "Desconocido",
+      "verifiedCredentials": "Credenciales verificadas:"
     },
     "credentialOffer": {
       "title": "Credencial ofrecida",
@@ -286,12 +295,15 @@
       "serviceNotVerifiable": "Este servicio no es verificable.",
       "noLiabilityDisclaimerDesc": "<bold>Descargo de responsabilidad: </bold>Ten en cuenta que <bold>Hologram</bold> actúa únicamente como un proveedor de conexión para <bold>{{serviceName}}</bold>. <bold>Hologram</bold> no controla este servicio y por lo tanto no puede ser considerado responsable de cualquier problema, daños o disputas que surjan del uso de <bold>{{serviceName}}</bold>. Cualquier inquietud debe dirigirse directamente a <bold>{{serviceName}}</bold>. \n\n<bold>ESTE SERVICIO NO ES VERIFICABLE.</bold> ÚSALO BAJO TU PROPIO RIESGO.",
       "newConnection": "New Connection",
-      "youAreNowConnectedTo": "Conexión establecida con",
       "forwarded": "La conexión ha sido reenviada",
       "youAreAlreadyConnected": "Ya estás conectando con {{ connectionName }}",
       "goToChat": "Ir al chat",
       "call": "Llamar",
-      "videoCall": "Video llamada"
+      "videoCall": "Video llamada",
+      "youAreNowConnectedTo": "Ahora estás conectando con {{ name }}",
+      "youAreAlreadyConnectedTo": "Ya estás conectando con {{ name }}",
+      "goToConnection": "Ir al servicio",
+      "errorConnecting": "Error conectándose a {{ name }}"
     },
     "scanned": {
       "scanConnectContacts": "Usa este código para conectarte con otros",

@@ -9,6 +9,7 @@ import ConnectionsSelection from './ConnectionsSelection'
 import CredentialAttribute from './CredentialAttribute'
 import CredentialAttributes from './CredentialAttributes'
 import CredentialDetails from './CredentialDetails'
+import CredentialIssuer from './CredentialIssuer'
 import CredentialPresented from './CredentialPresented'
 import Credentials from './Credentials'
 import IncomingCall from './IncomingCall'
@@ -44,4 +45,5 @@ export {
   Connections,
   CredentialAttributes,
   CredentialPresented,
+  CredentialIssuer,
 }

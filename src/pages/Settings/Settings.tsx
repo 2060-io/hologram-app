@@ -103,6 +103,12 @@ const Settings = ({ navigation }: Props) => {
   useEffect(() => {
     const developerModeOptions: Option[] = [
       {
+        iconName: 'id',
+        text: t('navigation.IdentityCredentialIssuers'),
+        onPress: () => navigateTo('IdentityCredentialIssuers'),
+        rightContent: () => optionRightContent(),
+      },
+      {
         iconName: 'cloudDownload',
         text: t('settings.backup'),
         onPress: () => navigateTo('WalletBackup'),

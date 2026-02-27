@@ -75,4 +75,5 @@ export type NavigationStackParams = {
     credentialRecordId: string
     attributesToPresent: string[]
   }
+  IdentityCredentialIssuers: undefined
 }

@@ -9,10 +9,10 @@ import { useUserProfile } from '@src/hooks/agent'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 
 type Props = {
-  goToHomeScreen: () => void
+  goToOnboardingScreen: () => void
 }
 
-const OnSuccessFinish = ({ goToHomeScreen }: Props) => {
+const OnSuccessFinish = ({ goToOnboardingScreen }: Props) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
@@ -30,7 +30,7 @@ const OnSuccessFinish = ({ goToHomeScreen }: Props) => {
       <Text style={styles.text}>
         {t('signUp.successfullyRestored', { name: userProfileData?.displayName })}
       </Text>
-      <MainButton onPress={goToHomeScreen} text={t('getStarted')} style={styles.continueButton} />
+      <MainButton onPress={goToOnboardingScreen} text={t('getStarted')} style={styles.continueButton} />
     </>
   )
 }

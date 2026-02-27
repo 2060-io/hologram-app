@@ -6,6 +6,7 @@ import Config from 'react-native-config'
 import { updateThreadFromServiceInfo } from './agent/chat/services'
 
 import { useMobileAgent, useUserProfile } from '@src/hooks/agent'
+import { useConfig } from '@src/hooks/providers/ConfigProvider'
 import RealmSingleton from '@src/services/RealmSingleton'
 import { isRegistered } from '@src/services/agent'
 import { saveInCacheServiceInfo } from '@src/services/agent/cache'
@@ -18,6 +19,7 @@ const cloudAgentPublicDid = Config.CLOUD_AGENT_PUBLIC_DID as string
 
 export const useSignUp = () => {
   const navigation = useNavigation()
+  const { isDeveloperMode } = useConfig()
   const { agent, handleChangeAgentState } = useMobileAgent()
   const { updateUserProfileData } = useUserProfile()
   const [displayName, setDisplayName] = useState('')
@@ -27,9 +29,9 @@ export const useSignUp = () => {
     if (!agent || !agent?.isInitialized) throw new Error('Agent not initialized')
 
     let { connectionRecord: cloudAgentConnection } = await agent.didcomm.oob.receiveImplicitInvitation({
-      label: 'Hologram',
       did: cloudAgentPublicDid,
-      alias: 'Cloud Agent',
+      label: defaultServiceAlias,
+      imageUrl: 'https://i.welcome.hologram.2060.io/avatar.png',
       autoAcceptConnection: true,
     })
     if (!cloudAgentConnection) throw new Error('Agency connection not created')
@@ -45,7 +47,8 @@ export const useSignUp = () => {
     await agent.didcomm.mediationRecipient.setDefaultMediator(mediationRecord)
     await agent.didcomm.mediationRecipient.initiateMessagePickup()
     updateUserProfileData({ displayName: displayName.trim(), displayPicture })
-    navigation.dispatch(CommonActions.reset({ index: 0, routes: [{ name: 'Home' }] }))
+    const screenToNavigate = isDeveloperMode ? 'IdentityCredentialIssuers' : 'Home'
+    navigation.dispatch(CommonActions.reset({ index: 0, routes: [{ name: screenToNavigate }] }))
     const isSignedUp = await isRegistered(agent)
     handleChangeAgentState({ isSignedUp })
   }, [agent, displayName, displayPicture])
