@@ -5,11 +5,11 @@ import { ActivityIndicator, TouchableOpacity, View } from 'react-native'
 
 import getStyles from './styles'
 
-import { Avatar, Icon, MainButton, SvgIcon, Text, VerifiedIcon } from '@2060/components/common'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { ServiceInfo, ServiceStatus } from '@2060/model'
-import { MobileAgent } from '@2060/services/agent'
-import { getFlagEmoji, trimText } from '@2060/utils'
+import { Avatar, Icon, MainButton, SvgIcon, Text, VerifiedIcon } from '@src/components/common'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { ServiceInfo, ServiceStatus } from '@src/model'
+import { MobileAgent } from '@src/services/agent'
+import { getFlagEmoji, trimText } from '@src/utils'
 
 type Props = {
   service: ServiceInfo
