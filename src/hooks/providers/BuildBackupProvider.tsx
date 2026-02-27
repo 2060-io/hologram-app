@@ -12,17 +12,13 @@ import { BackupState } from '../backup'
 
 import { useLocalRealm } from './RealmProvider'
 
-import { CacheRecord, ChatEntry, ChatThread } from '@2060/model'
-import {
-  BACKUP_INCLUDES_MEDIA_PERSIST_KEY,
-  getStorageData,
-  setStorageData,
-} from '@2060/services/localStorage'
-import { log, logError } from '@2060/utils'
-import { writeFile } from '@2060/utils/RNFS'
-import { toast } from '@2060/utils/toast'
-import { BACKUP_NAME, deleteBackupDirectory } from '@2060/utils/walletBackUpUtils'
-import * as BackupUtils from '@2060/utils/walletBackUpUtils'
+import { CacheRecord, ChatEntry, ChatThread } from '@src/model'
+import { BACKUP_INCLUDES_MEDIA_PERSIST_KEY, getStorageData, setStorageData } from '@src/services/localStorage'
+import { log, logError } from '@src/utils'
+import { writeFile } from '@src/utils/RNFS'
+import { toast } from '@src/utils/toast'
+import * as BackupUtils from '@src/utils/walletBackUpUtils'
+import { BACKUP_NAME, deleteBackupDirectory } from '@src/utils/walletBackUpUtils'
 
 export interface ICloudBackupInfo {
   exists: boolean
