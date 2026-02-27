@@ -51,7 +51,7 @@ const IdentityCredentialIssuers = ({ navigation }: Props) => {
         comesFromOnboarding ? (
           <TouchableOpacity style={styles.headerRight} onPress={goToChats}>
             <Text fontFamily="EuclidCircularA-Medium" style={styles.headerText}>
-              {userMadeSomeAction ? t('personalChat.close') : t('general.skip')}
+              {userMadeSomeAction ? t('chat.close') : t('general.skip')}
             </Text>
           </TouchableOpacity>
         ) : null,
