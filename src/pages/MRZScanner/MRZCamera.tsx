@@ -9,10 +9,10 @@ import { Worklets } from 'react-native-worklets-core'
 import { MRZCameraProps } from './MRZScannerProps'
 import getStyles from './styles'
 
-import { HeaderTitle, SvgIcon, Text } from '@2060/components/common'
-import { IS_IOS } from '@2060/constants'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { widthPercentageToDP } from '@2060/utils/responsiveUtils'
+import { HeaderTitle, SvgIcon, Text } from '@src/components/common'
+import { IS_IOS } from '@src/constants'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { widthPercentageToDP } from '@src/utils/responsiveUtils'
 
 const SCREEN_WIDTH = Dimensions.get('window').width
 const SCREEN_HEIGHT = Platform.select<number>({

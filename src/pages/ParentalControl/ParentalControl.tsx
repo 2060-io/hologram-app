@@ -7,12 +7,12 @@ import SetPIN from './SetPIN'
 import { OnCloseSetPINCallback } from './SetPIN/SetPIN'
 import getStyles from './styles'
 
-import { OptionsList, Switch, Text } from '@2060/components/common'
-import { IS_ANDROID, KID_BIRTHDATE_DATE_FORMAT } from '@2060/constants'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { storeKeyInConfigFile, retrieveKeyInConfigFile, ParentalControlEnum } from '@2060/services/config'
-import { createAndStoreEncryptedKey, deleteEncryptedKey, KeyChainService } from '@2060/services/keys'
-import { dateToString, stringToDate } from '@2060/utils/dateUtils'
+import { OptionsList, Switch, Text } from '@src/components/common'
+import { IS_ANDROID, KID_BIRTHDATE_DATE_FORMAT } from '@src/constants'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { storeKeyInConfigFile, retrieveKeyInConfigFile, ParentalControlEnum } from '@src/services/config'
+import { createAndStoreEncryptedKey, deleteEncryptedKey, KeyChainService } from '@src/services/keys'
+import { dateToString, stringToDate } from '@src/utils/dateUtils'
 
 const ParentalControl = () => {
   const { t } = useTranslation()

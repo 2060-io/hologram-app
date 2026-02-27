@@ -6,9 +6,9 @@ import CredentialAttribute from '../CredentialAttribute'
 
 import getStyles from './styles'
 
-import { FullScreenImage, Text } from '@2060/components/common'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { formatCredentialSubject } from '@2060/services/agent/formatCredentialSubject'
+import { FullScreenImage, Text } from '@src/components/common'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { formatCredentialSubject } from '@src/services/agent/formatCredentialSubject'
 
 type Props = {
   attributes: Record<string, unknown>

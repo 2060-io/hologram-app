@@ -5,8 +5,8 @@ import { getLocalizedPreview, getThumbnail } from '../preview'
 import { createChatEntry, findAllDidcommThreadId } from '../services/ChatEntryService'
 import { addUnread, findOrCreateChatThread } from '../services/ChatThreadService'
 
-import { ChatEntryRole, ChatEntryState, ChatEntryType, RelatedEntryProps } from '@2060/model'
-import { MobileAgent } from '@2060/services/agent'
+import { ChatEntryRole, ChatEntryState, ChatEntryType, RelatedEntryProps } from '@src/model'
+import { MobileAgent } from '@src/services/agent'
 
 export const handleBasicMessageRecordChanges = async (options: {
   agent: MobileAgent

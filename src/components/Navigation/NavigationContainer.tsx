@@ -5,11 +5,11 @@ import { KeyboardProvider } from 'react-native-keyboard-controller'
 
 import getStyles from './styles'
 
-import { Loader } from '@2060/components/common'
-import { useWallet } from '@2060/hooks'
-import { useNavigation, useMobileAgent } from '@2060/hooks/agent'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { language } from '@2060/utils/language'
+import { Loader } from '@src/components/common'
+import { useWallet } from '@src/hooks'
+import { useNavigation, useMobileAgent } from '@src/hooks/agent'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { language } from '@src/utils/language'
 
 const NavigationContainer = (Navigation: ElementType) => {
   const WrapperNavigation = () => {

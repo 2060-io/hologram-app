@@ -1,3 +1,4 @@
+import { IS_IOS } from '@2060/constants'
 import { useHeaderHeight } from '@react-navigation/elements'
 import { StackActions } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
@@ -5,14 +6,13 @@ import React, { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { StyleSheet, TouchableOpacity } from 'react-native'
 
-import { Connections } from '@2060/components'
-import { ConnectionItem } from '@2060/components/Connections/ConnectionList'
-import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
-import { Text } from '@2060/components/common'
-import { IS_IOS } from '@2060/constants'
-import { useChats, useConnections } from '@2060/hooks/agent'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { AppTheme } from '@2060/styles'
+import { Connections } from '@src/components'
+import { ConnectionItem } from '@src/components/Connections/ConnectionList'
+import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
+import { Text } from '@src/components/common'
+import { useChats, useConnections } from '@src/hooks/agent'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { AppTheme } from '@src/styles'
 
 interface Props extends StackScreenProps<NavigationStackParams, 'ConnectionsForNewChat'> {}
 
@@ -32,9 +32,7 @@ const ConnectionsForNewChat = ({ navigation }: Props) => {
   }, [])
 
   const goToChatScreen = (chatThreadId: string) => {
-    navigation.dispatch(
-      StackActions.push('PersonalChatStack', { screen: 'PersonalChat', params: { chatThreadId } }),
-    )
+    navigation.dispatch(StackActions.push('ChatStack', { screen: 'Chat', params: { chatThreadId } }))
   }
 
   return (

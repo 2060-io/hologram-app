@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native'
 
-import { AppTheme, cardShadowStyles } from '@2060/styles'
+import { AppTheme, cardShadowStyles } from '@src/styles'
 
 export default (theme: AppTheme) =>
   StyleSheet.create({

@@ -2,7 +2,7 @@ import React from 'react'
 
 import Text from '../Text'
 
-import { getGlobalStyles, AppTheme } from '@2060/styles'
+import { getGlobalStyles, AppTheme } from '@src/styles'
 
 type Props = {
   title: string

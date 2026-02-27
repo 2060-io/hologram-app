@@ -4,17 +4,13 @@ import { TouchableOpacity, View } from 'react-native'
 
 import getStyles from './styles'
 
-import { ModalBottomHalf } from '@2060/components'
-import { Switch, SvgIcon, OptionsList, Text } from '@2060/components/common'
-import { Option } from '@2060/components/common/OptionsList'
-import { IconsNames } from '@2060/components/common/SvgIcon'
-import { AutomaticDownloadTypes, DownloadOptions, useFileUploadDownload } from '@2060/hooks/agent'
-import {
-  useScreenLock,
-  INSTANT_TIMEOUT,
-  FIVE_MINUTES_TIMEOUT,
-} from '@2060/hooks/providers/ScreenLockProvider'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
+import { ModalBottomHalf } from '@src/components'
+import { Switch, SvgIcon, OptionsList, Text } from '@src/components/common'
+import { Option } from '@src/components/common/OptionsList'
+import { IconsNames } from '@src/components/common/SvgIcon'
+import { AutomaticDownloadTypes, DownloadOptions, useFileUploadDownload } from '@src/hooks/agent'
+import { useScreenLock, INSTANT_TIMEOUT, FIVE_MINUTES_TIMEOUT } from '@src/hooks/providers/ScreenLockProvider'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
 
 const mediaIconName: Record<keyof AutomaticDownloadTypes, keyof IconsNames> = {
   audio: 'microphone',

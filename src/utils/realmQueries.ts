@@ -1,6 +1,6 @@
 import Realm from 'realm'
 
-import { ChatEntry, ChatEntryState, ChatEntryType } from '@2060/model'
+import { ChatEntry, ChatEntryState, ChatEntryType } from '@src/model'
 
 export const queryOfTypeMedia = `type == '${ChatEntryType.Image}' 
 OR type == '${ChatEntryType.Video}' 

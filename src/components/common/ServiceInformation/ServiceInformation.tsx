@@ -1,25 +1,20 @@
-import React, { useEffect, memo } from 'react'
+import React, { memo } from 'react'
 import { View } from 'react-native'
 
 import ServiceMainInfo from './ServiceMainInfo'
 
-import ProofOfTrust from '@2060/components/common/ProofOfTrust'
-import { useFetchServiceInfo } from '@2060/hooks/useFetchServiceInfo'
-import { ServiceInfo } from '@2060/model'
+import ProofOfTrust from '@src/components/common/ProofOfTrust'
+import { ServiceInfo } from '@src/model'
 
 type Props = {
-  did: string
   initialServiceInfo: ServiceInfo
-  onServiceInfoUpdated?: (serviceInfo: ServiceInfo) => void
+  isFetchingInfo: boolean
+  serviceInfo: ServiceInfo | undefined
+  failedFetchInfo: boolean
 }
 
-const ServiceInformation = ({ did, initialServiceInfo, onServiceInfoUpdated }: Props) => {
-  const { isFetchingInfo, serviceInfo, failedFetchInfo } = useFetchServiceInfo(did)
+const ServiceInformation = ({ initialServiceInfo, isFetchingInfo, serviceInfo, failedFetchInfo }: Props) => {
   const serviceInfoToDisplay = serviceInfo ?? initialServiceInfo
-
-  useEffect(() => {
-    if (serviceInfo) onServiceInfoUpdated?.(serviceInfo)
-  }, [serviceInfo])
 
   return (
     <View>

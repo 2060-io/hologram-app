@@ -8,10 +8,10 @@ import SearchInput from '../SearchInput'
 
 import getStyles from './styles'
 
-import { CredentialMainInformation, HeaderTitle, SvgIcon, Text } from '@2060/components/common'
-import { useCredentials } from '@2060/hooks/agent/CredentialProvider'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { getCredentialMainInfo } from '@2060/services/agent/display'
+import { CredentialMainInformation, HeaderTitle, SvgIcon, Text } from '@src/components/common'
+import { useCredentials } from '@src/hooks/agent/CredentialsProvider'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { getCredentialMainInfo } from '@src/services/agent/display'
 
 type Props = {
   navigation: StackNavigationProp<ParamListBase>

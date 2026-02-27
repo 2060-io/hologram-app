@@ -25,8 +25,8 @@ import {
 } from './backup'
 import { useAppState } from './useAppState'
 
-import { logError } from '@2060/utils'
-import { copyFile } from '@2060/utils/RNFS'
+import { logError } from '@src/utils'
+import { copyFile } from '@src/utils/RNFS'
 
 export const useICloud = () => {
   const iCloudBackupFolderPath = PathUtils.join(defaultICloudContainerPath ?? '', 'Documents')

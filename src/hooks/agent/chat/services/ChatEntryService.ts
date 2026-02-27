@@ -11,7 +11,7 @@ import {
   ChatThread,
   ChatEntryType,
   ChatEntryRole,
-} from '@2060/model'
+} from '@src/model'
 
 interface ChatEntryBaseProps {
   chatThreadId: string
