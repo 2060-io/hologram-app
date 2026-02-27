@@ -1,51 +1,35 @@
-import React, { useEffect, memo } from 'react'
-import { ActivityIndicator, View } from 'react-native'
+import React, { memo } from 'react'
+import { View } from 'react-native'
 
 import ServiceMainInfo from './ServiceMainInfo'
 
-import ProofOfTrust from '@2060/components/common/ProofOfTrust'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { useFetchServiceInfo } from '@2060/hooks/useFetchServiceInfo'
-import { ServiceInfo } from '@2060/model'
+import ProofOfTrust from '@src/components/common/ProofOfTrust'
+import { ServiceInfo } from '@src/model'
 
 type Props = {
-  did: string
   initialServiceInfo: ServiceInfo
-  onServiceInfoUpdated?: (serviceInfo: ServiceInfo) => void
-}
-
-const getServiceInfoToDisplay = ({
-  serviceInfo,
-  initialServiceInfo,
-  isFetching,
-}: {
+  isFetchingInfo: boolean
   serviceInfo: ServiceInfo | undefined
-  initialServiceInfo: ServiceInfo
-  isFetching: boolean
-}): ServiceInfo | undefined => {
-  if (serviceInfo) return serviceInfo
-  if (isFetching) return undefined
-  return initialServiceInfo
+  failedFetchInfo: boolean
 }
 
-const ServiceInformation = ({ did, initialServiceInfo, onServiceInfoUpdated }: Props) => {
-  const theme = useTheme()
-  const { isFetching, serviceInfo } = useFetchServiceInfo(did, true)
-  const serviceInfoToDisplay = getServiceInfoToDisplay({ serviceInfo, initialServiceInfo, isFetching })
+const ServiceInformation = ({ initialServiceInfo, isFetchingInfo, serviceInfo, failedFetchInfo }: Props) => {
+  const serviceInfoToDisplay = serviceInfo ?? initialServiceInfo
 
-  useEffect(() => {
-    if (serviceInfo) onServiceInfoUpdated?.(serviceInfo)
-  }, [serviceInfo])
-
-  if (isFetching) {
-    return <ActivityIndicator size="large" color={theme.colors.green} />
-  }
-  return serviceInfoToDisplay ? (
+  return (
     <View>
-      <ServiceMainInfo serviceInfo={serviceInfoToDisplay} />
-      <ProofOfTrust serviceInfo={serviceInfoToDisplay} />
+      <ServiceMainInfo
+        serviceInfo={serviceInfoToDisplay}
+        isFetchingInfo={isFetchingInfo}
+        failedFetchInfo={failedFetchInfo}
+      />
+      <ProofOfTrust
+        serviceInfo={serviceInfoToDisplay}
+        isFetchingInfo={isFetchingInfo}
+        failedFetchInfo={failedFetchInfo}
+      />
     </View>
-  ) : null
+  )
 }
 
 export default memo(ServiceInformation)

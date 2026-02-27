@@ -4,8 +4,8 @@ import { Switch } from 'react-native'
 import { CustomSwitchProps } from './SwitchProps'
 import styles from './styles'
 
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { hexTransparency } from '@2060/utils/colorUtils'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { hexTransparency } from '@src/utils/colorUtils'
 
 const CustomSwitch = ({ ...props }: CustomSwitchProps) => {
   const theme = useTheme()

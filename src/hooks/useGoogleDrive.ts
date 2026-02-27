@@ -16,13 +16,9 @@ import {
   RestoreProgress,
 } from './backup'
 
-import {
-  GOOGLE_ACCOUNT_BACKUP_PERSIST_KEY,
-  getStorageData,
-  setStorageData,
-} from '@2060/services/localStorage'
-import { log, logError } from '@2060/utils'
-import { BACKUP_NAME, BACKUP_ZIP_FILE_PATH } from '@2060/utils/walletBackUpUtils'
+import { GOOGLE_ACCOUNT_BACKUP_PERSIST_KEY, getStorageData, setStorageData } from '@src/services/localStorage'
+import { log, logError } from '@src/utils'
+import { BACKUP_NAME, BACKUP_ZIP_FILE_PATH } from '@src/utils/walletBackUpUtils'
 
 type FilesProps = {
   id: string

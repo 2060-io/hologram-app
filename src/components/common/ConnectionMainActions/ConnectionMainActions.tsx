@@ -6,9 +6,9 @@ import SvgIcon, { IconsNames } from '../SvgIcon'
 import { ConnectionMainActionsProps, ActionIconsNames } from './Props'
 import styles from './styles'
 
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { useConnectionMainActions } from '@2060/hooks/useConnectionMainActions'
-import { withRenderConnectionMainActions } from '@2060/pages/ConnectionDetails/withRenderConnectionMainActions'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { useConnectionMainActions } from '@src/hooks/useConnectionMainActions'
+import { withRenderConnectionMainActions } from '@src/pages/ConnectionDetails/withRenderConnectionMainActions'
 
 const ConnectionMainActions = ({
   navigation,

@@ -1,3 +1,4 @@
 import CredentialMainInformation from './CredentialMainInformation'
+import DumbCredentialMainInformation from './DumbCredentialMainInformation'
 
-export default CredentialMainInformation
+export { CredentialMainInformation, DumbCredentialMainInformation }

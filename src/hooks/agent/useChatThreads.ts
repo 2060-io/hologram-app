@@ -4,13 +4,12 @@ import { useState, useEffect, useMemo } from 'react'
 import { useLocalRealm } from '../providers/RealmProvider'
 import { useFetchServiceInfo } from '../useFetchServiceInfo'
 
-import { useConnectionById } from './ConnectionProvider'
+import { useConnectionById } from './ConnectionsProvider'
 import { useUserProfile } from './UserProfileProvider'
 
-import { ChatThreadData, ChatThread, getChatThreadData, ChatEntryRole } from '@2060/model'
-import { ChatParticipant } from '@2060/pages/PersonalChat/ChatMessage/Props'
+import { ChatThreadData, ChatThread, getChatThreadData, ChatEntryRole } from '@src/model'
+import { ChatParticipant } from '@src/pages/Chat/ChatMessage/Props'
 import {
-  getConnectionDisplayIcon,
   getConnectionDisplayName,
   getConnectionDisplayPicture,
   getPictureDataUrl,
@@ -22,7 +21,7 @@ import {
   supportsMediaSharing,
   supportsMessageReactions,
   supportsMessageReceipts,
-} from '@2060/utils/connectionUtils'
+} from '@src/utils/connectionUtils'
 
 export const useUnreadChatThreads = () => {
   return useChatThreadsHook('unreadCount > 0')
@@ -43,7 +42,7 @@ export const useChatThreadWithParticipants = (chatThreadId: string) => {
     () => [
       {
         id: ChatEntryRole.Sender,
-        name: t('personalChat.you'),
+        name: t('chat.you'),
         avatar: displayPicture ? getPictureDataUrl(displayPicture) : undefined,
       },
       {
@@ -57,11 +56,8 @@ export const useChatThreadWithParticipants = (chatThreadId: string) => {
 
   const flags = useMemo(
     () => ({
-      did: connection?.invitationDid,
-      isService: connection ? isService(connection) : false,
       serviceInfo,
       isConnectionDeleted: connection === undefined,
-      connectionIconUrl: connection ? getConnectionDisplayIcon(connection) : undefined,
       isConnectionBlocked: connection ? isBlocked(connection) : false,
       isConnectionTerminated: connection ? isTerminated(connection) : false,
       isConnectionCompleted: connection ? connection.isReady : false,
@@ -78,7 +74,11 @@ export const useChatThreadWithParticipants = (chatThreadId: string) => {
   return {
     participants,
     flags,
-    data: chatThread,
+    data: {
+      ...chatThread,
+      topic: serviceInfo?.name ?? chatThread?.topic,
+      picture: serviceInfo?.logoUrl ?? chatThread?.picture,
+    },
   }
 }
 

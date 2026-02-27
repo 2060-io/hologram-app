@@ -8,12 +8,12 @@ import { UserInvitationProps } from './UserInvitationProps'
 import getStyles from './styles'
 import withUserInvitation from './withUserInvitation'
 
-import { Avatar, Text, MainButton } from '@2060/components/common'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { getGlobalStyles } from '@2060/styles'
-import { logError } from '@2060/utils'
-import { getPictureDataUrl } from '@2060/utils/connectionUtils'
-import { widthPercentageToDP } from '@2060/utils/responsiveUtils'
+import { Avatar, Text, MainButton } from '@src/components/common'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { getGlobalStyles } from '@src/styles'
+import { logError } from '@src/utils'
+import { getPictureDataUrl } from '@src/utils/connectionUtils'
+import { widthPercentageToDP } from '@src/utils/responsiveUtils'
 
 const UserInvitation = ({
   navigation,

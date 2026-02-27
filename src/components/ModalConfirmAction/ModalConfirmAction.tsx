@@ -3,9 +3,9 @@ import { View } from 'react-native'
 
 import getStyles from './styles'
 
-import ModalBottomHalf from '@2060/components/ModalBottomHalf'
-import { MainButton, Text, OutlinedButton, OutlinedGreenButton } from '@2060/components/common'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
+import ModalBottomHalf from '@src/components/ModalBottomHalf'
+import { MainButton, Text, OutlinedButton, OutlinedGreenButton } from '@src/components/common'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
 
 type Props = {
   visible: boolean

@@ -31,6 +31,7 @@ export type ServiceInfo = {
   name: string
   serviceProvider?: ServiceProvider
   status: ServiceStatus
+  lastTimeUpdated?: number
 }
 
 export type IssuerInfo = {

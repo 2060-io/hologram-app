@@ -3,11 +3,11 @@ import { ViewStyle, View, Image, StyleSheet } from 'react-native'
 
 import { appName } from '../../../app.json'
 
-import smallAppIcon from '@2060/assets/images/smallAppIcon.png'
-import { Text } from '@2060/components/common'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { AppTheme } from '@2060/styles'
-import { widthPercentageToDP } from '@2060/utils/responsiveUtils'
+import smallAppIcon from '@src/assets/images/smallAppIcon.png'
+import { Text } from '@src/components/common'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { AppTheme } from '@src/styles'
+import { widthPercentageToDP } from '@src/utils/responsiveUtils'
 
 const AppLogo = ({ style }: { style?: ViewStyle }) => {
   const theme = useTheme()

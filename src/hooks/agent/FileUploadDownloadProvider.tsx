@@ -26,23 +26,23 @@ import {
   FileUploadDownloadContext,
 } from './useFileUploadDownload'
 
-import { IS_IOS } from '@2060/constants'
-import { MediaDownloadState, MediaUploadState, UploadChunkTask, UploadTask } from '@2060/model'
+import { IS_IOS } from '@src/constants'
+import { MediaDownloadState, MediaUploadState, UploadChunkTask, UploadTask } from '@src/model'
 import {
   AUTOMATIC_MEDIA_DOWNLOAD_VALUES_PERSIST_KEY,
   getStorageData,
   setStorageData,
-} from '@2060/services/localStorage'
-import { log, logError, logWarn } from '@2060/utils'
+} from '@src/services/localStorage'
+import { log, logError, logWarn } from '@src/utils'
 import {
   deleteFile,
   getFileExtension,
   getLocalMediaFilePath,
   mediaDirectoryPath,
   moveFile,
-} from '@2060/utils/RNFS'
-import { decryptFile, encryptFile } from '@2060/utils/ciphering'
-import { getAppCheckHeaders } from '@2060/utils/firebaseUtils'
+} from '@src/utils/RNFS'
+import { decryptFile, encryptFile } from '@src/utils/ciphering'
+import { getAppCheckHeaders } from '@src/utils/firebaseUtils'
 
 const AUDIO_WAVEFORM_NUMBER_OF_CANDLES = 30
 const { Pending, Uploading, Done, Canceled, ErrorCreating, ErrorUploading } = MediaUploadState
@@ -88,7 +88,7 @@ const uploadChunk = async (dataStoreUrl: string, filePath: string, fileId: strin
     headers,
     notification: {
       autoClear: true,
-      onProgressMessage: t('personalChat.uploadingMedia'),
+      onProgressMessage: t('chat.uploadingMedia'),
       onProgressTitle: appName,
     },
   }

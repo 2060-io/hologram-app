@@ -8,9 +8,9 @@ import Connected from './Connected'
 import getStyles from './styles'
 import { useVideoCall } from './useVideoCall'
 
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { CallStatus } from '@2060/hooks/providers/useVideoCallContext'
-import { getConnectionDisplayPicture, getConnectionDisplayName } from '@2060/utils/connectionUtils'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { CallStatus } from '@src/hooks/providers/useVideoCallContext'
+import { getConnectionDisplayPicture, getConnectionDisplayName } from '@src/utils/connectionUtils'
 
 const VideoCall = () => {
   const theme = useTheme()

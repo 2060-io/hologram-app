@@ -12,10 +12,10 @@ import {
 
 import getStyles from './styles'
 
-import { Text } from '@2060/components/common'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { handleCameraPermission } from '@2060/utils/permissions'
-import { toast } from '@2060/utils/toast'
+import { Text } from '@src/components/common'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { handleCameraPermission } from '@src/utils/permissions'
+import { toast } from '@src/utils/toast'
 
 const SCREEN_WIDTH = Dimensions.get('window').width
 const SCREEN_HEIGHT = Platform.select<number>({

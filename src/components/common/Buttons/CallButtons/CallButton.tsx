@@ -3,11 +3,11 @@ import { View, TouchableOpacity, StyleSheet } from 'react-native'
 
 import { Props } from '../Props'
 
-import Text from '@2060/components/common//Text'
-import SvgIcon, { IconsNames } from '@2060/components/common/SvgIcon'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { AppTheme } from '@2060/styles'
-import { hexTransparency } from '@2060/utils/colorUtils'
+import Text from '@src/components/common//Text'
+import SvgIcon, { IconsNames } from '@src/components/common/SvgIcon'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { AppTheme } from '@src/styles'
+import { hexTransparency } from '@src/utils/colorUtils'
 
 const CallButton = ({ iconName, text, ...buttonProps }: Props) => {
   const theme = useTheme()

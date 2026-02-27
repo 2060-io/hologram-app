@@ -1,7 +1,7 @@
 import { UserProfileData } from '@2060.io/credo-ts-didcomm-user-profile'
 import { StackScreenProps } from '@react-navigation/stack'
 
-import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
+import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
 
 export type Invitation = {
   url: string
