@@ -1,4 +1,4 @@
-import { palette } from '@2060/styles'
+import { palette } from '@src/styles'
 
 export const SHOW_TOAST_MESSAGE = 'SHOW_TOAST_MESSAGE'
 

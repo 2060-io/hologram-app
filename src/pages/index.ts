@@ -1,5 +1,7 @@
 import Camera from './Camera'
+import Chat from './Chat'
 import ConnectionDetails from './ConnectionDetails'
+import ConnectionInvitation from './ConnectionInvitation'
 import { Connections, ConnectionsForNewChat } from './Connections'
 import CredentialDetails from './CredentialDetails'
 import { DidcommCredentialOffer } from './CredentialOffer'
@@ -8,11 +10,9 @@ import CredentialPresented from './CredentialPresented'
 import Developer from './Developer'
 import { ForwardMessages, ForwardConnection } from './Forward'
 import HomeMain from './HomeMain'
-import ConnectionInvitation from './Invitation'
 import MRZScanner from './MRZScanner'
 import MessageDetails from './MessageDetails'
 import ParentalControl from './ParentalControl'
-import PersonalChat from './PersonalChat'
 import PresentCredential from './PresentCredential'
 import PresentCredentialAsQR from './PresentCredentialAsQR'
 import PresentCredentialsFromChat from './PresentCredentialsFromChat'
@@ -35,7 +35,7 @@ export {
   DidcommPresentationRequest,
   HomeMain,
   ConnectionInvitation,
-  PersonalChat,
+  Chat,
   RelatedConnections,
   UserProfile,
   WalletBackup,

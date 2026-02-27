@@ -10,16 +10,18 @@ import {
   ChatEntryState,
   ChatEntryType,
   ChatThread,
+  ServiceInfo,
   SystemMessageMetadata,
   getChatThreadData,
-} from '@2060/model'
+} from '@src/model'
+import { MobileAgent } from '@src/services/agent'
 import {
   getConnectionDisplayName,
   getConnectionDisplayPicture,
   getConnectionParentId,
   isService,
-} from '@2060/utils/connectionUtils'
-import { getLastEntryInChatThread } from '@2060/utils/realmQueries'
+} from '@src/utils/connectionUtils'
+import { getLastEntryInChatThread } from '@src/utils/realmQueries'
 
 export function findChatThread(realm: Realm, connection: DidCommConnectionRecord) {
   const [thread] = realm.objects(ChatThread).filtered(`connectionId == '${connection.id}'`)
@@ -217,4 +219,25 @@ export function updateThreadIfNeeded(realm: Realm, updatedChatEntry: ChatEntry) 
       updateThread(realm, updatedChatEntry.chatThreadId, { lastChatEntry: lastEntryInChatThread })
     }
   }
+}
+
+export async function updateThreadFromServiceInfo({
+  did,
+  serviceInfoResponse,
+  realm,
+  agent,
+}: {
+  did: string
+  serviceInfoResponse: ServiceInfo
+  realm: Realm
+  agent: MobileAgent
+}) {
+  const [connection] = await agent.didcomm.connections.findByInvitationDid(did)
+  if (!connection) return
+  const thread = findOrCreateChatThread(realm, connection)
+  if (!thread) return
+  updateThread(realm, thread.id, {
+    topic: serviceInfoResponse.name,
+    picture: serviceInfoResponse.logoUrl,
+  })
 }

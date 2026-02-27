@@ -5,7 +5,7 @@ import Text from '../Text'
 
 import getStyles from './styles'
 
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
 
 type LoaderProps = {
   message?: string

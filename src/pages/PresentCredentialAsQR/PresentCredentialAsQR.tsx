@@ -8,13 +8,13 @@ import Share, { ShareOptions } from 'react-native-share'
 import getStyles from './styles'
 import { State, usePresentCredentialAsQR } from './usePresentCredentialAsQR'
 
-import { CredentialPresented } from '@2060/components'
-import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
-import { MainButton, ModalLoading, SvgIcon, Text } from '@2060/components/common'
-import { IS_IOS } from '@2060/constants'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { logError } from '@2060/utils'
-import { widthPercentageToDP } from '@2060/utils/responsiveUtils'
+import { CredentialPresented } from '@src/components'
+import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
+import { MainButton, ModalLoading, SvgIcon, Text } from '@src/components/common'
+import { IS_IOS } from '@src/constants'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { logError } from '@src/utils'
+import { widthPercentageToDP } from '@src/utils/responsiveUtils'
 
 interface Props extends StackScreenProps<NavigationStackParams, 'PresentCredentialAsQR'> {}
 

@@ -11,14 +11,14 @@ import { MediaCaptured } from '../Camera/Props'
 
 import getStyles from './styles'
 
-import defaultAvatar from '@2060/assets/images/defaultUser.png'
-import { Text, TextInput, SvgIcon, Avatar } from '@2060/components/common'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { getGlobalStyles } from '@2060/styles'
-import { dataUrl, log } from '@2060/utils'
-import { deleteFile, readFile } from '@2060/utils/RNFS'
-import { getMediaInfo } from '@2060/utils/mediaFileUtils'
-import { handleCameraPermission } from '@2060/utils/permissions'
+import defaultAvatar from '@src/assets/images/defaultUser.png'
+import { Text, TextInput, SvgIcon, Avatar } from '@src/components/common'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { getGlobalStyles } from '@src/styles'
+import { dataUrl, log } from '@src/utils'
+import { deleteFile, readFile } from '@src/utils/RNFS'
+import { getMediaInfo } from '@src/utils/mediaFileUtils'
+import { handleCameraPermission } from '@src/utils/permissions'
 
 type Props = {
   displayPicture: UserProfileData['displayPicture']

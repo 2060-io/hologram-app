@@ -12,12 +12,12 @@ import { HomeMainTabParams, HomeTabProps } from './HomeMainProps'
 import getStyles from './styles'
 import { useHomeMain } from './useHomeMain'
 
-import { HeaderTitle, SvgIcon } from '@2060/components/common'
-import { IconsNames } from '@2060/components/common/SvgIcon'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { ChatsStack } from '@2060/navigators/ChatsStack'
-import { AppTheme, getGlobalStyles } from '@2060/styles'
-import { hexTransparency } from '@2060/utils/colorUtils'
+import { HeaderTitle, SvgIcon } from '@src/components/common'
+import { IconsNames } from '@src/components/common/SvgIcon'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { ChatsStack } from '@src/navigators/ChatsStack'
+import { AppTheme, getGlobalStyles } from '@src/styles'
+import { hexTransparency } from '@src/utils/colorUtils'
 
 type TabBarIconProps = {
   routeName: keyof HomeMainTabParams

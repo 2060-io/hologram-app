@@ -4,11 +4,11 @@ import EIdReader from 'react-native-eid-reader'
 
 import { useNetwork } from '../useNetwork'
 
-import AgentSingleton from '@2060/services/AgentSingleton'
-import { isRegistered, MobileAgent } from '@2060/services/agent/MobileAgent'
-import { MediatorEventTypes } from '@2060/services/transport/MediatorEventTypes'
-import { TunedMobileWsOutboundTransport } from '@2060/services/transport/TunedMobileWsOutboundTransport'
-import { logError, logWarn } from '@2060/utils'
+import AgentSingleton from '@src/services/AgentSingleton'
+import { isRegistered, MobileAgent } from '@src/services/agent/MobileAgent'
+import { MediatorEventTypes } from '@src/services/transport/MediatorEventTypes'
+import { TunedMobileWsOutboundTransport } from '@src/services/transport/TunedMobileWsOutboundTransport'
+import { logError, logWarn } from '@src/utils'
 
 interface MobileAgentState {
   agent?: MobileAgent

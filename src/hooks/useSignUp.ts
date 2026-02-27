@@ -3,9 +3,14 @@ import { CommonActions, useNavigation } from '@react-navigation/native'
 import { useCallback, useState } from 'react'
 import Config from 'react-native-config'
 
-import { useMobileAgent, useUserProfile } from '@2060/hooks/agent'
-import { isRegistered } from '@2060/services/agent'
-import { log, logError } from '@2060/utils'
+import { updateThreadFromServiceInfo } from './agent/chat/services'
+
+import { useMobileAgent, useUserProfile } from '@src/hooks/agent'
+import RealmSingleton from '@src/services/RealmSingleton'
+import { isRegistered } from '@src/services/agent'
+import { saveInCacheServiceInfo } from '@src/services/agent/cache'
+import { getServiceInfo } from '@src/services/trustResolution'
+import { log, logError } from '@src/utils'
 
 const defaultServicePublicDid = Config.DEFAULT_SERVICE_PUBLIC_DID as string
 const defaultServiceAlias = Config.DEFAULT_SERVICE_ALIAS as string
@@ -43,7 +48,10 @@ export const useSignUp = () => {
     navigation.dispatch(CommonActions.reset({ index: 0, routes: [{ name: 'Home' }] }))
     const isSignedUp = await isRegistered(agent)
     handleChangeAgentState({ isSignedUp })
+  }, [agent, displayName, displayPicture])
 
+  const tryToConnectToDefaultService = useCallback(async () => {
+    if (!agent) return
     try {
       let { connectionRecord: defaultServiceConnection } = await agent.didcomm.oob.receiveImplicitInvitation({
         label: 'Hologram',
@@ -55,16 +63,39 @@ export const useSignUp = () => {
 
       defaultServiceConnection = await agent.didcomm.connections.returnWhenIsConnected(
         defaultServiceConnection.id,
-        {
-          timeoutMs: 5000,
-        },
+        { timeoutMs: 5000 },
       )
-
-      log('connected with default service')
+      log(`connected with default service ${defaultServicePublicDid}`)
+      return true
     } catch (error) {
-      logError(`cannot connect to default service: ${error}`)
+      logError(`Could not connect to default service: ${defaultServicePublicDid}`, error)
+      return false
     }
-  }, [agent, displayName, displayPicture])
+  }, [agent])
 
-  return { startSignUp, displayName, setDisplayName, displayPicture, setDisplayPicture }
+  const fetchDefaultConnectedServiceInfo = useCallback(async () => {
+    if (!agent) return
+    try {
+      const did = defaultServicePublicDid
+      const serviceInfoResponse = await getServiceInfo({ agent, did })
+      if (serviceInfoResponse) {
+        await saveInCacheServiceInfo(did, agent, serviceInfoResponse)
+        const realmInstance = RealmSingleton.instance
+        const realm = realmInstance.getRealm()
+        if (realm) updateThreadFromServiceInfo({ did, serviceInfoResponse, realm, agent })
+      }
+    } catch (error) {
+      logError(`Error getting service info after connect with ${defaultServicePublicDid} info API`, error)
+    }
+  }, [agent])
+
+  return {
+    startSignUp,
+    tryToConnectToDefaultService,
+    fetchDefaultConnectedServiceInfo,
+    displayName,
+    setDisplayName,
+    displayPicture,
+    setDisplayPicture,
+  }
 }

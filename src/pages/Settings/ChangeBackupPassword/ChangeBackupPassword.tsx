@@ -12,12 +12,12 @@ import {
 
 import getStyles from './styles'
 
-import { NavigationStackParams } from '@2060/components/Navigation/NavigationProps'
-import { SvgIcon, Text, TextInputPassword, MainButton, VerifiedIcon } from '@2060/components/common'
-import { IS_IOS } from '@2060/constants'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { toast } from '@2060/utils/toast'
-import { setBackupKey } from '@2060/utils/walletBackUpUtils'
+import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
+import { SvgIcon, Text, TextInputPassword, MainButton, VerifiedIcon } from '@src/components/common'
+import { IS_IOS } from '@src/constants'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { toast } from '@src/utils/toast'
+import { setBackupKey } from '@src/utils/walletBackUpUtils'
 
 enum PasswordSteps {
   TypePass = 'typePass',

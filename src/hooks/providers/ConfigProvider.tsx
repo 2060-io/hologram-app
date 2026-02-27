@@ -7,8 +7,8 @@ import {
   getStorageData,
   DEVELOPER_MODE_ENABLED_PERSIST_KEY,
   setStorageData,
-} from '@2060/services/localStorage'
-import { DevEnvsObject, DevEnvObject, getIsDeveloperMode } from '@2060/utils/developer'
+} from '@src/services/localStorage'
+import { DevEnvsObject, DevEnvObject, getIsDeveloperMode } from '@src/utils/developer'
 
 const defaultDevEnvs: DevEnvsObject = {
   CLOUD_AGENT_PUBLIC_DID: Config.CLOUD_AGENT_PUBLIC_DID as string,

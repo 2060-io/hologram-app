@@ -5,10 +5,10 @@ import EIdReader from 'react-native-eid-reader'
 
 import getStyles from './styles'
 
-import { Text } from '@2060/components/common'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { sanitizeString } from '@2060/services/agent/display'
-import { CredentialAttributeRow } from '@2060/services/agent/formatCredentialSubject'
+import { Text } from '@src/components/common'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { sanitizeString } from '@src/services/agent/display'
+import { CredentialAttributeRow } from '@src/services/agent/formatCredentialSubject'
 
 type ImageSectionProps = {
   image: string

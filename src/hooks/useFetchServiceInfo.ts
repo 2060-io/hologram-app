@@ -1,115 +1,87 @@
-import { CacheModuleConfig } from '@credo-ts/core'
-import { TrustResolutionOutcome } from '@verana-labs/verre'
-import { useEffect, useState } from 'react'
+import { fetch as NetInfo } from '@react-native-community/netinfo'
+import { useEffect, useState, useTransition } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { getServiceInfo as getServiceInfoApi } from '../services/trustResolution'
 
 import { useMobileAgent } from './agent/MobileAgentProvider'
+import { updateThreadFromServiceInfo } from './agent/chat/services'
+import { useLocalRealm } from './providers/RealmProvider'
 
-import { useNetwork } from '@2060/hooks/useNetwork'
-import { isServiceInfo, ServiceInfo } from '@2060/model'
-import { MobileAgent } from '@2060/services/agent'
-import { logError } from '@2060/utils'
-import { getConnectionDisplayName, getConnectionDisplayPicture } from '@2060/utils/connectionUtils'
-import { toast } from '@2060/utils/toast'
+import { ServiceInfo } from '@src/model'
+import { getInCacheServiceInfo, saveInCacheServiceInfo } from '@src/services/agent/cache'
+import { logError } from '@src/utils'
+import { isOlderThan24Hours } from '@src/utils/dateUtils'
+import { toast } from '@src/utils/toast'
 
 /**
- * This hook will attempt to retrieve a given Verifiable Service information from Trust Registry. This
- * information will be stored in a cache for some time, and for performance reasons by default it will
- * try only to take info from there. But it is possible to force to refresh,
- * useful in cases where it is important to be up to date.
+ * Retrieve and cache Verifiable Service information from the Trust Registry.
  *
- * @param did decentralised identifier of the service
- * @param forceFetch attempt to refresh service info, even if it is already cached
+ * Behavior:
+ * - On mount if `forceFetchIfNotInCache` is true and the cached value is missing or older than 24 hours,
+ *   it will trigger a background fetch from the Trust Registry.
+ * - When fresh info is obtained, stored cache info is updated and chat thread for the
+ *   corresponding connection is updated with the latest name and logo.
  *
- * @returns ServiceInfo object if found, undefined otherwise
+ * @param did decentralized identifier of the service.
+ * @param forceFetchIfNotInCache whether to attempt a refresh on mount
+ * when the cached value is stale or missing.
+ *
+ * @returns Object with the latest known ServiceInfo or undefined, loading and error state flags,
+ * and `getServiceInfo` function to trigger a manual refresh.
  */
-export const useFetchServiceInfo = (did?: string, forceFetch?: boolean) => {
-  const [serviceInfo, setServiceInfo] = useState<ServiceInfo | undefined>()
-  const [isFetching, setIsFetching] = useState(true)
-  const { assertConnectedNetwork } = useNetwork()
-  const isNetworkConnected = assertConnectedNetwork()
+export const useFetchServiceInfo = (did?: string, forceFetchIfNotInCache: boolean = true) => {
   const { t } = useTranslation()
   const { agent } = useMobileAgent()
+  const { realm } = useLocalRealm()
+  const [serviceInfo, setServiceInfo] = useState<ServiceInfo | undefined>()
+  const [isFetchingInfo, startFetchServiceInfoTransition] = useTransition()
+  const [failedFetchInfo, setFailed] = useState<boolean>(false)
 
   useEffect(() => {
-    const getServiceInfo = async () => {
-      if (!did) {
-        setServiceInfo(undefined)
-        setIsFetching(false)
-        return
-      }
-
-      const cachedServiceInfo = agent ? await getStoredServiceInfo(did, agent) : undefined
+    const verifyHasToFetchInfo = async () => {
+      if (!did || !agent) return
+      const cachedServiceInfo = await getInCacheServiceInfo(did, agent)
       if (cachedServiceInfo) setServiceInfo(cachedServiceInfo)
+      const firstConditionToFetch = forceFetchIfNotInCache
+      const secondConditionToFetch =
+        !cachedServiceInfo?.lastTimeUpdated || isOlderThan24Hours(cachedServiceInfo.lastTimeUpdated)
+      const mustTriggerFetch = firstConditionToFetch && secondConditionToFetch
+      if (mustTriggerFetch) getServiceInfo()
+    }
+    verifyHasToFetchInfo()
+  }, [realm, did])
 
-      if (cachedServiceInfo && !forceFetch) {
-        setIsFetching(false)
-        return
-      }
+  const getServiceInfo = async () => {
+    if (!did || !agent) return
+    setFailed(false)
 
-      if (!isNetworkConnected) {
-        toast({ type: 'error', message: t('invitation.unableToGetServiceInfo') })
-        return
-      }
-
+    const isNetworkConnected = Boolean((await NetInfo()).isConnected)
+    if (!isNetworkConnected) {
+      setFailed(true)
+      toast({ type: 'error', message: t('invitation.unableToGetServiceInfo') })
+      return
+    }
+    startFetchServiceInfoTransition(async () => {
       try {
-        if (!agent) return
-        const serviceInfoResponse = await getServiceInfoApi({
-          agent,
-          did,
-        })
-
+        const serviceInfoResponse = await getServiceInfoApi({ agent, did })
+        // if service exists in trust registry, store it in cache otherwise keep the cached one (if any)
         if (serviceInfoResponse) {
-          if (agent) await storeServiceInfo(did, agent, serviceInfoResponse)
           setServiceInfo(serviceInfoResponse)
+          await saveInCacheServiceInfo(did, agent, serviceInfoResponse)
+          if (realm) updateThreadFromServiceInfo({ did, serviceInfoResponse, realm, agent })
         }
       } catch (error) {
-        logError(`Error getting service ${did} info API: ${error}`)
-        toast({ type: 'error', message: `${t('invitation.errorGettingServiceInfoAPI')} ${error}` })
-      } finally {
-        setIsFetching(false)
+        logError(`Error getting service ${did} info API`, error)
+        toast({ type: 'error', message: t('invitation.errorGettingServiceInfoAPI') })
       }
-    }
-    getServiceInfo()
-  }, [did, forceFetch])
+    })
+  }
 
   return {
     serviceInfo,
-    isFetching,
+    isFetchingInfo,
+    failedFetchInfo,
+    getServiceInfo,
   }
-}
-
-export async function getStoredServiceInfo(
-  did: string,
-  agent: MobileAgent,
-): Promise<ServiceInfo | undefined> {
-  const cache = agent.dependencyManager.resolve(CacheModuleConfig).cache
-
-  const cachedServiceInfo = await cache.get<ServiceInfo>(agent.context, `serviceInfo:${did}`)
-
-  if (cachedServiceInfo && isServiceInfo(cachedServiceInfo)) return cachedServiceInfo as ServiceInfo
-
-  // If info is not in cache, attempt to find it from an existing connection
-  const [connection] = await agent.didcomm.connections.findByInvitationDid(did)
-
-  if (connection) {
-    return {
-      did,
-      id: did,
-      minimumAgeRequired: 0,
-      name: getConnectionDisplayName(connection),
-      logoUrl: getConnectionDisplayPicture(connection),
-      status: TrustResolutionOutcome.INVALID,
-    }
-  }
-
-  return undefined
-}
-
-async function storeServiceInfo(did: string, agent: MobileAgent, serviceInfo: ServiceInfo) {
-  const cache = agent.dependencyManager.resolve(CacheModuleConfig).cache
-
-  await cache.set<ServiceInfo>(agent.context, `serviceInfo:${did}`, serviceInfo)
 }

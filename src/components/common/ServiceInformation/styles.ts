@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native'
 
-import { AppTheme, cardShadowStyles, cardStyles } from '@2060/styles'
+import { AppTheme, cardShadowStyles, cardStyles } from '@src/styles'
 
 const styles = (theme: AppTheme) =>
   StyleSheet.create({
@@ -17,10 +17,12 @@ const styles = (theme: AppTheme) =>
       marginBottom: 14,
     },
     containerIconValidity: {
+      marginVertical: 14,
+    },
+    iconValidity: {
       width: 30,
       height: 30,
       borderRadius: 15,
-      marginVertical: 14,
     },
     text: {
       fontSize: theme.fontSize.md,
@@ -58,6 +60,12 @@ const styles = (theme: AppTheme) =>
       flexDirection: 'row',
       alignItems: 'center',
       marginBottom: 14,
+    },
+    failedToFetchInfoText: {
+      color: theme.colors.red,
+      marginTop: 10,
+      fontSize: theme.fontSize.md,
+      textAlign: 'center',
     },
   })
 

@@ -25,8 +25,8 @@ import { log, logError, logWarn } from './log'
 
 import { dataUrl } from './index'
 
-import { ConnectionType } from '@2060/model'
-import { MobileAgent } from '@2060/services/agent/MobileAgent'
+import { ConnectionType } from '@src/model'
+import { MobileAgent } from '@src/services/agent/MobileAgent'
 
 export const getConnectionDisplayName = (connection: DidCommConnectionRecord) => {
   const profile = getConnectionProfile(connection)
@@ -51,17 +51,6 @@ export const getConnectionDisplayPicture = (connection: DidCommConnectionRecord)
     logError('Error in getConnectionDisplayPicture', error)
   }
   return displayPicture
-}
-
-export const getConnectionDisplayIcon = (connection: DidCommConnectionRecord) => {
-  let displayIcon = ''
-  try {
-    const profile = getConnectionProfile(connection)
-    if (profile?.displayIcon) displayIcon = getPictureDataUrl(profile.displayIcon)
-  } catch (error) {
-    logError('Error in getConnectionDisplayIcon', error)
-  }
-  return displayIcon
 }
 
 export const getPictureDataUrl = (displayPictureData: PictureData) => {

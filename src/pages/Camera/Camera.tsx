@@ -5,17 +5,17 @@ import { useTranslation } from 'react-i18next'
 
 import CompressingVideo from './CompressingVideo'
 
-import { Camera as BaseCamera } from '@2060/components'
-import { MediaCaptured } from '@2060/components/Camera/Props'
-import { PersonalChatStackParams } from '@2060/components/Navigation/NavigationProps'
-import { IS_ANDROID, IS_IOS } from '@2060/constants'
-import { useAppState, useChatActions } from '@2060/hooks'
-import { DidCommMediaFileSharingData } from '@2060/hooks/agent'
-import { createDidCommPreview, createResizedImage } from '@2060/hooks/media/preview'
-import { logError } from '@2060/utils'
-import { deleteFile } from '@2060/utils/RNFS'
-import { cancelVideoCompression, compressVideo, getMediaInfo } from '@2060/utils/mediaFileUtils'
-import { toast } from '@2060/utils/toast'
+import { Camera as BaseCamera } from '@src/components'
+import { MediaCaptured } from '@src/components/Camera/Props'
+import { ChatStackParams } from '@src/components/Navigation/NavigationProps'
+import { IS_ANDROID, IS_IOS } from '@src/constants'
+import { useAppState, useChatActions } from '@src/hooks'
+import { DidCommMediaFileSharingData } from '@src/hooks/agent'
+import { createDidCommPreview, createResizedImage } from '@src/hooks/media/preview'
+import { logError } from '@src/utils'
+import { deleteFile } from '@src/utils/RNFS'
+import { cancelVideoCompression, compressVideo, getMediaInfo } from '@src/utils/mediaFileUtils'
+import { toast } from '@src/utils/toast'
 
 const resizeImageOptions = {
   maxWidth: 1280,
@@ -23,7 +23,7 @@ const resizeImageOptions = {
   quality: 100,
 }
 
-export interface Props extends StackScreenProps<PersonalChatStackParams, 'Camera'> {}
+export interface Props extends StackScreenProps<ChatStackParams, 'Camera'> {}
 const Camera = ({ navigation }: Props) => {
   const { t } = useTranslation()
   const [isActive, setIsActive] = useState(false)

@@ -3,10 +3,10 @@ import { TouchableOpacity, DeviceEventEmitter, Animated, ViewStyle, View } from 
 
 import getStyles from './styles'
 
-import { SvgIcon, Text } from '@2060/components/common'
-import { SHOW_TOAST_MESSAGE, COLORS } from '@2060/constants/toast'
-import { useTheme } from '@2060/hooks/providers/ThemeProvider'
-import { ToastOptions } from '@2060/utils/toast'
+import { SvgIcon, Text } from '@src/components/common'
+import { SHOW_TOAST_MESSAGE, COLORS } from '@src/constants/toast'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { ToastOptions } from '@src/utils/toast'
 
 const Toast = () => {
   const theme = useTheme()

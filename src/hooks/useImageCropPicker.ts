@@ -1,9 +1,9 @@
 import { useTranslation } from 'react-i18next'
 import { openPicker, Options, Image, Video, CommonOptions } from 'react-native-image-crop-picker'
 
-import { MAX_VIDEO_DURATION } from '@2060/constants'
-import { logError } from '@2060/utils'
-import { toast } from '@2060/utils/toast'
+import { MAX_VIDEO_DURATION } from '@src/constants'
+import { logError } from '@src/utils'
+import { toast } from '@src/utils/toast'
 
 const MAX_VIDEO_SECONDS_DURATION = 60
 const optionsCommon: CommonOptions = {
@@ -52,7 +52,7 @@ export const useImageCropPicker = () => {
       const { mime, duration } = fileInfo
       const isVideoAndExceedsDuration = mime.startsWith('video') && duration && duration > MAX_VIDEO_DURATION
       if (isVideoAndExceedsDuration) {
-        toast({ message: t('personalChat.videoExceedsDuration'), type: 'error' })
+        toast({ message: t('chat.videoExceedsDuration'), type: 'error' })
         return
       }
       onSuccess(fileInfo)

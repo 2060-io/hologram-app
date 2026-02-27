@@ -1,12 +1,12 @@
 import { StackActions } from '@react-navigation/native'
 import { useMemo } from 'react'
 
-import { useChats } from './agent/ChatProvider'
+import { useChats } from './agent/ChatsProvider'
 import { useConfig } from './providers/ConfigProvider'
 import { useVideoCallContext } from './providers/useVideoCallContext'
 
-import { ActionProps, ConnectionMainActionsProps } from '@2060/components/common/ConnectionMainActions/Props'
-import { isBlocked, isService, supportsAudioCalls, supportsVideoCalls } from '@2060/utils/connectionUtils'
+import { ActionProps, ConnectionMainActionsProps } from '@src/components/common/ConnectionMainActions/Props'
+import { isBlocked, isService, supportsAudioCalls, supportsVideoCalls } from '@src/utils/connectionUtils'
 
 type Props = Omit<ConnectionMainActionsProps, 'connectionId'>
 
@@ -19,9 +19,7 @@ export const useConnectionMainActions = ({ connection, navigation, includeDefaul
 
   const goToChat = () => {
     const chatThreadId = findOrCreateThread({ connection }).id
-    navigation.dispatch(
-      StackActions.push('PersonalChatStack', { screen: 'PersonalChat', params: { chatThreadId } }),
-    )
+    navigation.dispatch(StackActions.push('ChatStack', { screen: 'Chat', params: { chatThreadId } }))
   }
   const defaultActions: ActionProps[] = includeDefaultActions ? [{ value: 'text', onPress: goToChat }] : []
 

@@ -5,20 +5,33 @@ import CredentialAttributes from '../CredentialAttributes'
 
 import styles from './styles'
 
-import { CredentialMainInformation } from '@2060/components/common'
-import { CredentialDetailsForDisplay } from '@2060/services/agent/display'
+import { DumbCredentialMainInformation } from '@src/components/common'
+import { ServiceInfo } from '@src/model'
+import { CredentialDetailsForDisplay } from '@src/services/agent/display'
 
 type Props = {
   credentialDetails: CredentialDetailsForDisplay
   middleInfo?: React.JSX.Element
+  isFetchingInfo: boolean
+  serviceInfo: ServiceInfo | undefined
+  failedFetchInfo: boolean
 }
 
-const CredentialDetails = ({ credentialDetails, middleInfo }: Props) => {
+const CredentialDetails = ({
+  credentialDetails,
+  middleInfo,
+  isFetchingInfo,
+  serviceInfo,
+  failedFetchInfo,
+}: Props) => {
   return (
     <View style={styles.container}>
-      <CredentialMainInformation
+      <DumbCredentialMainInformation
         credentialMainInfo={credentialDetails.mainInfo}
         containerStyle={styles.credentialMainInfoContainer}
+        isFetchingInfo={isFetchingInfo}
+        serviceInfo={serviceInfo}
+        failedFetchInfo={failedFetchInfo}
       />
       {middleInfo}
       <CredentialAttributes attributes={credentialDetails.attributes} />

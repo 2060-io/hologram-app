@@ -1,5 +1,4 @@
-import { logError } from '@2060/utils'
-import { CONFIG_FILE_PATH, readFile, writeFile } from '@2060/utils/RNFS'
+import { CONFIG_FILE_PATH, readFile, writeFile } from '@src/utils/RNFS'
 
 export enum ParentalControlEnum {
   Enabled = 'enabled',
@@ -22,7 +21,6 @@ export async function storeKeyInConfigFile(key: ParentalControlEnum, value: stri
       configJson[PARENTAL_CONTROL] = {}
     }
   } catch (error) {
-    logError(`error reading config file: ${error}. Creating new config object`)
     configJson = { keys: {}, [PARENTAL_CONTROL]: {} }
   }
 
@@ -39,7 +37,6 @@ export async function retrieveKeyInConfigFile(key: ParentalControlEnum) {
     if (!configJson[PARENTAL_CONTROL]) return undefined
     return (configJson[PARENTAL_CONTROL][key] as string) ?? undefined
   } catch (error) {
-    logError(`error reading config file: ${error}`)
     return undefined
   }
 }

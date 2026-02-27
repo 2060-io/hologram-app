@@ -1,0 +1,52 @@
+import { ParamListBase } from '@react-navigation/native'
+import { StackNavigationProp } from '@react-navigation/stack'
+import React from 'react'
+import { useTranslation } from 'react-i18next'
+import { View, TouchableOpacity } from 'react-native'
+
+import getStyles from './styles'
+
+import { SvgIcon, Text } from '@src/components/common'
+import { IconsNames } from '@src/components/common/SvgIcon'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+
+type Props = {
+  closeAttachmentOptions(): void
+  navigation: StackNavigationProp<ParamListBase>
+  connectionId: string
+}
+type OptionId = 'present-credentials'
+type Option = { id: OptionId; icon: keyof IconsNames }
+
+const options: Option[] = [{ id: 'present-credentials', icon: 'id' }]
+
+const AttachmentOptions: React.FC<Props> = ({ closeAttachmentOptions, navigation, connectionId }) => {
+  const { t } = useTranslation()
+  const theme = useTheme()
+  const styles = getStyles(theme)
+
+  const onSelectedOption: Record<OptionId, () => Promise<void> | void> = {
+    'present-credentials': () => {
+      closeAttachmentOptions()
+      navigation.navigate('PresentCredentialsFromChat', { connectionId })
+    },
+  }
+  const label: Record<OptionId, string> = {
+    'present-credentials': t('credential.present'),
+  }
+
+  return (
+    <View style={styles.container}>
+      {options.map(option => (
+        <View style={styles.containerOptionCard} key={option.id}>
+          <TouchableOpacity style={styles.containerOption} onPress={onSelectedOption[option.id]}>
+            <SvgIcon name={option.icon} fill={theme.colors.primaryText} />
+            <Text style={styles.optionText}>{label[option.id]}</Text>
+          </TouchableOpacity>
+        </View>
+      ))}
+    </View>
+  )
+}
+
+export default AttachmentOptions

@@ -10,7 +10,7 @@ import {
   createAndStoreEncryptedKey,
   retrieveEncryptedKey,
   deleteEncryptedKey,
-} from '@2060/services/keys'
+} from '@src/services/keys'
 
 const BACKUP_NAME = Config.BACKUP_NAME
 const ROOT_TEMP_FILES_DIRECTORY = `${TemporaryDirectoryPath}/.Hologram`
