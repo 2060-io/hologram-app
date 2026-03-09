@@ -1,11 +1,7 @@
-/* eslint-disable import/no-named-as-default-member */
-import { SharedMediaItem } from '@2060.io/credo-ts-didcomm-media-sharing'
+import { DidCommMediaSharingRepository, SharedMediaItem } from '@2060.io/credo-ts-didcomm-media-sharing'
 import { utils } from '@credo-ts/core'
 import { useAudioPlayer } from '@simform_solutions/react-native-audio-waveform'
-import axios from 'axios'
-import { t } from 'i18next'
 import React, { useEffect, useCallback, useRef, useState } from 'react'
-import Upload, { CompletedData, UploadOptions } from 'react-native-background-upload'
 import { copyFile, downloadFile } from 'react-native-fs'
 import { createChunks } from 'react-native-local-native-modules'
 
@@ -25,14 +21,14 @@ import {
   FileUploadDownloadContext,
 } from './useFileUploadDownload'
 
-import { IS_IOS } from '@src/constants'
-import { MediaDownloadState, MediaUploadState, UploadChunkTask, UploadTask } from '@src/model'
+import { MediaDownloadState, MediaUploadState, UploadTask } from '@src/model'
+import { BUCKET_NAME, s3UploadFile } from '@src/services/fileUploadService'
 import {
   AUTOMATIC_MEDIA_DOWNLOAD_VALUES_PERSIST_KEY,
   getStorageData,
   setStorageData,
 } from '@src/services/localStorage'
-import { log, logError, logWarn } from '@src/utils'
+import { log, logError } from '@src/utils'
 import {
   deleteFile,
   getFileExtension,
@@ -41,10 +37,9 @@ import {
   moveFile,
 } from '@src/utils/RNFS'
 import { decryptFile, encryptFile } from '@src/utils/ciphering'
-import { getAppCheckHeaders } from '@src/utils/firebaseUtils'
 
 const AUDIO_WAVEFORM_NUMBER_OF_CANDLES = 30
-const { Pending, Uploading, Done, Canceled, ErrorCreating, ErrorUploading } = MediaUploadState
+const { Pending, Uploading, Done, ErrorUploading } = MediaUploadState
 
 const matchAutomaticDownloadTypes = (value: AutomaticDownloadTypes): value is AutomaticDownloadTypes =>
   Object.values(DownloadOptions).includes(value.audio) &&
@@ -57,54 +52,21 @@ const defaultAutomaticDownloadValues: AutomaticDownloadTypes = {
   videos: DownloadOptions.WifiAndMobileData,
 }
 
-const CHUNK_SIZE = 2_000_000
+const CHUNK_SIZE = 5 * 1024 * 1024 //5MB chunk size
 
 interface Props {
   children?: React.ReactNode
 }
 
-/**
- * @description Method that allows the creation of a file by chunks
- * @param uuid unique file id
- * @param numberChunks Number of chunks in which the file is divided
- */
-const fileCreate = async (dataStoreUrl: string, uuid: string, numberChunks: number) => {
-  const headers = await getAppCheckHeaders()
-  return await axios.create({ baseURL: dataStoreUrl }).post(`/c/${uuid}/${numberChunks}`, undefined, {
-    headers,
-  })
-}
-
-const uploadChunk = async (dataStoreUrl: string, filePath: string, fileId: string, chunkNumber: number) => {
-  const headers = { ...(await getAppCheckHeaders()), 'content-type': 'multipart/form-data' }
-  const options: UploadOptions = {
-    customUploadId: `${fileId}/${chunkNumber}`,
-    url: `${dataStoreUrl}/u/${fileId}/${chunkNumber}`,
-    path: IS_IOS ? `file://${filePath}` : filePath,
-    method: 'PUT',
-    field: 'chunk',
-    type: 'multipart',
-    headers,
-    notification: {
-      autoClear: true,
-      onProgressMessage: t('chat.uploadingMedia'),
-      onProgressTitle: 'Hologram',
-    },
-  }
-  log(`uploading chunk with options: ${JSON.stringify(options)}`)
-  return await Upload.startUpload(options)
-}
-
 export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
   const { agent } = useMobileAgent()
+  const { realm } = useLocalRealm()
   const { devEnvs } = useConfig()
   const { extractWaveformData } = useAudioPlayer()
   const [automaticDownloadValues, setAutomaticDownloadValues] = useState<AutomaticDownloadTypes>(
     defaultAutomaticDownloadValues,
   )
-  const dataStoreUrl = devEnvs.DATA_STORE_URL
-
-  const { realm } = useLocalRealm()
+  const s3ServerUrl = devEnvs.S3_SERVER_URL
 
   // TODO: Make persistent using realm
   const uploadTasks = useRef<UploadTask[]>([])
@@ -197,7 +159,7 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
           fromUrl: uri,
           toFile: downloadLocalFilePath,
           progressInterval: 2000,
-          begin: () => log('Download of file begin'),
+          begin: () => log(`Download of file ${uri} started`),
           progress: progress => {
             if (item.byteCount) {
               const currentProgress = Math.ceil((progress.bytesWritten / item.byteCount) * 100)
@@ -207,8 +169,8 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
           },
         })
         const result = await promise
-        if (result.statusCode !== 200) {
-          throw new Error(`code ${result.statusCode} / url ${uri}`)
+        if (result.statusCode !== 200 || result.bytesWritten === 0) {
+          throw new Error(`Download failed for file ${uri} with next result: ${JSON.stringify(result)}`)
         }
 
         if (ciphering) {
@@ -259,7 +221,7 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
       didcommMediaFileSharingData: DidCommMediaFileSharingData
       deleteOriginalFile?: boolean
     }) => {
-      if (!realm) throw new Error('Realm undefined')
+      if (!realm) return
       const { didcommConnectionIds, didcommMediaFileSharingData, didcommThreadId, deleteOriginalFile } =
         options
       const {
@@ -273,10 +235,7 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
         preview,
         duration,
       } = didcommMediaFileSharingData
-      if (!agent) {
-        logError('Agent undefined')
-        throw Error('Agent undefined')
-      }
+      if (!agent) return
 
       // 1. Assign unique id to the file upload and
       const fileId = utils.uuid()
@@ -295,11 +254,6 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
         destinationFilePath: uploadFilePath,
       })
 
-      const chunkFilePaths = await createChunks(uploadFilePath, `${mediaDirectoryPath}/${fileId}`, CHUNK_SIZE)
-
-      // Now we are safe to delete encrypted file
-      await deleteFile(uploadFilePath)
-
       // In case of images and videos, create a local preview for it to show in conversations
       const localPreviewFilePath = await createLocalPreview({ mimeType, localFilePath })
       let waveform: string | undefined
@@ -309,14 +263,14 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
       }
       const mediaRecordIds: string[] = []
       for (const connectionId of didcommConnectionIds) {
-        const mediaRecord = await agent?.modules.media.create({
+        const mediaRecord = await agent.modules.media.create({
           connectionId,
           description,
           parentThreadId: didcommThreadId,
           items: [
             new SharedMediaItem({
               id: fileId,
-              uri: `${dataStoreUrl}/r/${fileId}`,
+              uri: `${s3ServerUrl}/${BUCKET_NAME}/${fileId}`,
               mimeType,
               fileName,
               byteCount: size,
@@ -339,81 +293,90 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
         mediaRecordIds.push(mediaRecord.id)
       }
 
-      // Create upload task
-      const chunks: UploadChunkTask[] = []
-      for (let i = 0; i < chunkFilePaths.length; i++) {
-        chunks.push({
-          id: `${fileId}/${i}`,
-          filePath: chunkFilePaths[i],
-          state: 'pending',
-        })
-      }
-
+      const chunkFilePaths = await createChunks(uploadFilePath, `${mediaDirectoryPath}/${fileId}`, CHUNK_SIZE)
+      // Now we are safe to delete encrypted file
+      await deleteFile(uploadFilePath)
       const newTask = realm.write(() => {
         const createdTask = realm!.create(UploadTask, {
           fileId,
           mediaRecordIds,
           state: Pending,
         })
-        createdTask.chunks = chunks
+        createdTask.chunks = chunkFilePaths
         return createdTask
       })
 
-      try {
-        await createDataStoreResourceForTask(newTask)
-      } catch (error) {
-        await setMediaUploadState(newTask, ErrorCreating)
-        throw error
-      }
-
-      // File creation OK. Now start uploading chunks
-      await setMediaUploadState(newTask, Uploading)
-      const uploadId = await uploadChunk(dataStoreUrl, chunks[0].filePath, fileId, 0)
-      log(`Upload started: uploadId: ${uploadId} mediaRecordIds: ${JSON.stringify(mediaRecordIds)}`)
-      return uploadId
+      s3UploadFile({
+        agent,
+        s3ServerUrl,
+        key: fileId,
+        chunks: newTask.chunks,
+        onMultipartCreated: async () => {
+          await setMediaUploadState(newTask, Uploading)
+        },
+        onProgress: async progress => {
+          log(`Uploading file with key ${fileId} progress: ${progress}%`)
+          onUploadProgress(newTask, progress)
+        },
+        onError: async error => {
+          logError(`Error uploading file with key ${fileId}: ${error}`)
+          await setMediaUploadState(newTask, ErrorUploading)
+        },
+        onUploadComplete: async result => {
+          log(`Upload complete for file with key ${fileId}`, result)
+          onUploadComplete(newTask)
+        },
+      })
     },
-    [agent, dataStoreUrl, realm],
+    [agent, s3ServerUrl, realm],
   )
 
   const retryMediaUpload = useCallback(
     async (mediaRecordId: string) => {
       if (!agent) return
-      try {
-        const mediaRecord = await agent.modules.media.findById(mediaRecordId)
-        if (mediaRecord) {
-          const fileId = mediaRecord.items![0].id
-          // Find the corresponding task
-          const task = uploadTasks.current.find(item => item.fileId === fileId)
-
-          if (!task) throw new Error(`Cannot find ongoing upload with id ${fileId}`)
-
-          if ([Pending, ErrorCreating, ErrorUploading].includes(task.state)) {
-            if (task.state !== ErrorUploading) await createDataStoreResourceForTask(task)
-            await setMediaUploadState(task, Uploading)
-          }
-
-          if (task.state !== Uploading) {
-            throw new Error(`Cannot retry media: wrong state: ${task.state}`)
-          }
-          // Find the next chunk looking at the current state of each
-          const nextChunkIndex = task.chunks.findIndex(chunk => chunk.state === 'pending')
-          if (nextChunkIndex !== -1) {
-            const nextChunk = task.chunks[nextChunkIndex]
-            const uploadId = await uploadChunk(dataStoreUrl, nextChunk.filePath, task.fileId, nextChunkIndex)
-            log(`Resume upload started: uploadId: ${uploadId} fileId: ${task.fileId}`)
-          }
-        } else throw new Error(`media record not found with id: ${mediaRecordId}`)
-      } catch (error) {
-        logError(`Error retrying upload file: ${error}`)
+      const mediaSharingRepository = agent.context.dependencyManager.resolve(DidCommMediaSharingRepository)
+      const mediaRecord = await mediaSharingRepository.getById(agent.context, mediaRecordId)
+      const fileId = mediaRecord.items![0].id
+      const lastUrlAttemptedToUpload = mediaRecord.items![0].uri
+      const currentUrlToUpload = `${s3ServerUrl}/${BUCKET_NAME}/${fileId}`
+      const urlHasChangedFromLastUploadAttempt = lastUrlAttemptedToUpload !== currentUrlToUpload
+      // Update mediaRecord uri with a possible new server url to upload file
+      // in case server url has changed since last upload attempt
+      if (urlHasChangedFromLastUploadAttempt) {
+        mediaRecord.items![0].uri = currentUrlToUpload
+        mediaSharingRepository.update(agent.context, mediaRecord)
       }
+      // Find the corresponding task
+      const task = uploadTasks.current.find(item => item.fileId === fileId)
+      if (!task) throw new Error(`Cannot find ongoing upload with id ${fileId}`)
+      s3UploadFile({
+        agent,
+        s3ServerUrl,
+        key: task.fileId,
+        chunks: task.chunks,
+        onMultipartCreated: async () => {
+          await setMediaUploadState(task, Uploading)
+        },
+        onProgress: async progress => {
+          log(`Retrying upload file with key ${task.fileId} progress: ${progress}%`)
+          onUploadProgress(task, progress)
+        },
+        onError: async error => {
+          logError(`Error retrying upload file with key ${task.fileId}: ${error}`)
+          await setMediaUploadState(task, ErrorUploading)
+        },
+        onUploadComplete: async result => {
+          log(`Retry upload file with key ${task.fileId} complete`, result)
+          onUploadComplete(task)
+        },
+      })
     },
-    [agent, dataStoreUrl, realm],
+    [agent, s3ServerUrl, realm],
   )
 
   const setMediaUploadState = useCallback(
     async (task: UploadTask, mediaUploadState: MediaUploadState) => {
       if (!agent) return
-
       realm?.write(() => {
         task.state = mediaUploadState
       })
@@ -424,131 +387,35 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
     [agent, realm],
   )
 
-  const createDataStoreResourceForTask = useCallback(
-    async (task: UploadTask) => {
-      // File creation
-      try {
-        await fileCreate(dataStoreUrl, task.fileId, task.chunks.length)
-      } catch (error) {
-        await setMediaUploadState(task, ErrorCreating)
-        throw Error(`fileCreate error: ${error}`)
+  const onUploadProgress = useCallback(
+    async (task: UploadTask, progress: number) => {
+      if (!agent) return
+      for (const taskMediaRecordId of task.mediaRecordIds) {
+        const relatedRecord = await agent.modules.media.findById(taskMediaRecordId)
+        if (!relatedRecord) continue
+        await agent.modules.media.setMetadata(taskMediaRecordId, 'mediaUploadProgress', progress)
       }
     },
-    [agent, dataStoreUrl],
+    [agent],
   )
-  useEffect(() => {
-    if (!agent) return
 
-    const onChunkUploadComplete = async (data: CompletedData) => {
-      log(`Completed: uploadId: ${data.id}`)
-
-      if (!agent) {
-        logError('Agent undefined')
-        return
-      }
-      const task = uploadTasks.current.find(item => item.chunks.find(chunk => chunk.id === data.id))
-
-      if (!task) {
-        logWarn(`Task not found for ${data.id}`)
-        return
-      }
-
-      // Mark this chunk as finished
-      const chunkIndex = task.chunks.findIndex(chunk => chunk.id === data.id)
-      realm?.write(() => {
-        const newChunksState = [...task.chunks]
-        newChunksState[chunkIndex].state = 'finished'
-        task.chunks = newChunksState
-      })
-
-      const isTaskFinished = task.chunks.every(chunk => chunk.state === 'finished')
-
+  const onUploadComplete = useCallback(
+    async (task: UploadTask) => {
+      if (!agent) return
+      task.chunks.forEach(chunk => deleteFile(chunk))
       for (const mediaRecordId of task.mediaRecordIds) {
         const relatedRecord = await agent.modules.media.findById(mediaRecordId)
-
-        // FIXME: Should we throw an error when no record is found?
         if (!relatedRecord) continue
-
-        log(`Upload finished. Adding agent action to queue for record id: ${relatedRecord.id}`)
-        await agent.modules.media.setMetadata(
-          mediaRecordId,
-          'mediaUploadProgress',
-          (100 * (chunkIndex + 1)) / task.chunks.length,
-        )
-
-        if (isTaskFinished) {
-          await agent.modules.media.setMetadata(mediaRecordId, 'mediaUploadState', Done)
-          // TODO: ShareMedia should not receive recordId,
-          // but all parameters needed to create/share through DIDComm
-          const parameters: ShareMediaParameters = { recordId: relatedRecord.id }
-          addAgentActionToQueue({
-            type: AgentActionType.ShareMedia,
-            parameters,
-          })
-        }
+        await agent.modules.media.setMetadata(mediaRecordId, 'mediaUploadState', Done)
+        const parameters: ShareMediaParameters = { recordId: relatedRecord.id }
+        addAgentActionToQueue({ type: AgentActionType.ShareMedia, parameters })
       }
-
-      if (isTaskFinished) {
-        // Delete all chunk files
-        for (const chunk of task.chunks) {
-          deleteFile(chunk.filePath)
-        }
-
-        realm?.write(() => {
-          realm.delete(task)
-        })
-      } else {
-        const nextChunkIndex = chunkIndex + 1
-        if (nextChunkIndex >= task.chunks.length) {
-          logError('Cannot get the next chunk')
-          return
-        }
-
-        // Upload next chunk
-        const nextChunk = task.chunks[nextChunkIndex]
-        const uploadId = await uploadChunk(dataStoreUrl, nextChunk.filePath, task.fileId, nextChunkIndex)
-        log(`Upload started: uploadId: ${uploadId} fileId: ${task.fileId}`)
-      }
-    }
-
-    const uploadSubscription = Upload.addListener('progress', null, async data => {
-      log(`Progress: ${data.progress}%`) // TODO
-    })
-
-    const errorSubscription = Upload.addListener('error', null, data => {
-      log(`Upload job error: ${JSON.stringify(data)}`)
-      const task = uploadTasks.current.find(item => item.chunks.find(chunk => chunk.id === data.id))
-      if (task) {
-        realm?.write(() => {
-          task.state = ErrorUploading
-        })
-        for (const mediaRecordId of task.mediaRecordIds) {
-          agent.modules.media.setMetadata(mediaRecordId, 'mediaUploadState', ErrorUploading)
-        }
-      }
-    })
-    const cancelSubscription = Upload.addListener('cancelled', null, data => {
-      log(`Upload job cancelled: ${data.id}`)
-      const task = uploadTasks.current.find(item => item.chunks.find(chunk => chunk.id === data.id))
-      if (task) {
-        realm?.write(() => {
-          task.state = Canceled
-        })
-        for (const mediaRecordId of task.mediaRecordIds) {
-          agent.modules.media.setMetadata(mediaRecordId, 'mediaUploadState', Canceled)
-        }
-      }
-    })
-    const completeSubscription = Upload.addListener('completed', null, onChunkUploadComplete)
-
-    return () => {
-      uploadSubscription.remove()
-      errorSubscription.remove()
-      cancelSubscription.remove()
-      completeSubscription.remove()
-    }
-  }, [agent, dataStoreUrl, realm])
-
+      realm?.write(() => {
+        realm.delete(task)
+      })
+    },
+    [agent],
+  )
   return (
     <FileUploadDownloadContext
       value={{

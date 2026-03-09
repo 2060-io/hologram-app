@@ -6,7 +6,7 @@ import {
 } from '@src/services/localStorage'
 
 export interface DevEnvsKeys {
-  DATA_STORE_URL: string
+  S3_SERVER_URL: string
   CLOUD_AGENT_PUBLIC_DID: string
   INDY_VDR_PROXY_BASE_URL: string
   WEBRTC_SERVER_BASE_URL: string
@@ -22,7 +22,7 @@ export type DevEnv = {
 
 export const devEnvPlaceholder: DevEnvsObject = {
   CLOUD_AGENT_PUBLIC_DID: 'Cloud Agent Public DID',
-  DATA_STORE_URL: 'DataStore base URL',
+  S3_SERVER_URL: 'S3 server URL',
   WEBRTC_SERVER_BASE_URL: 'WebRTC server base URL',
   INDY_VDR_PROXY_BASE_URL: 'Indy VDR Proxy base URL',
 }
@@ -33,8 +33,8 @@ export const allDevEnvs: DevEnv[] = [
     values: ['did:web:ca.dev.2060.io', 'did:web:ca.2060.io'],
   },
   {
-    key: 'DATA_STORE_URL',
-    values: ['https://ds.dev.2060.io', 'https://ds.2060.io'],
+    key: 'S3_SERVER_URL',
+    values: ['https://s3.minio.dev.2060.io', 'https://s3.minio.2060.io'],
   },
   {
     key: 'WEBRTC_SERVER_BASE_URL',

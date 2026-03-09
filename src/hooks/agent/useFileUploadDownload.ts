@@ -30,8 +30,8 @@ interface FileUploadDownloadInterface {
     didcommThreadId?: string
     didcommMediaFileSharingData: DidCommMediaFileSharingData
     deleteOriginalFile?: boolean
-  }) => Promise<string>
-  retryMediaUpload: (mediaRecordId: string) => Promise<void>
+  }) => void
+  retryMediaUpload: (mediaRecordId: string) => void
   downloadMediaFile: (mediaRecordId: string) => Promise<void>
   automaticDownloadValues: AutomaticDownloadTypes
   changeAutomaticDownloadOption: (

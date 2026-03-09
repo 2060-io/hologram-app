@@ -9,13 +9,13 @@ Hologram supports three basic types of media files:
 
 ### Media sharing procedure
 
-These files are shared to other parties by using DIDComm [Media Sharing](https://didcomm.org/media-sharing/1.0/) protocol, with the help of [2060 Data Store API](https://github.com/2060-io/2060-datastore) (TODO: Ref needed).
+These files are shared to other parties by using DIDComm [Media Sharing](https://didcomm.org/media-sharing/1.0/) protocol, with the help of [S3-compatible object storage solution like minio](https://github.com/minio/minio)
 
 The procedure to share a media file consists of the following steps:
 
 1. **File creation**: this depends on the nature of the file. For instance, an image can be created from the camera or the gallery. A voice note is recorded from microphone. Each kind of file is adapted (e.g. resized, compressed, etc.) in order for it to be optimized for sharing in a chat session
 2. **File encryption**: before being uploaded, files are encrypted using a symmetric key
-3. **File upload**: Hologram uploads files to a Data Store instance hosted by 2060. If they are too large, they are split into chunks in order to be  easily resumable in case of network unstabilities
+3. **File upload**: Hologram uploads files to a S3-compatible object storage solution instance. They are split into chunks in order to be easily resumable in case of network instabilities
 4. **File sharing**: once the file has a public URI that let other parties to access its contents, its retrieval details are shared through DIDComm
 
 Let's see these steps in more details.
@@ -52,9 +52,9 @@ Each uploaded file has its own key/IV pair.
 
 #### File upload
 
-Once the file is encrypted, it is split into chunks up to 2 MB long.
+Once the file is encrypted, it is split into chunks of 5MB long.
 
-Then, Data Store resource is created (using `c` endpoint) and each chunk is uploaded (using `u` endpoint).
+Then, starts process of upload file to object storage using multipart upload strategy.
 
 #### File sharing
 
@@ -68,7 +68,7 @@ In this case, `startMediaUpload` is called, providing the following options:
 
 - `didcommConnectionIds`: an array containing all the target DIDComm connection IDs for this media share
 - `didcommThreadId`: optional DIDComm parent thread ID for this share. This will be used to determine the message it is replying to (if any)
-- `didcommMediaFileSharingData`: information about the input file, adding metadata to share with the other party 
+- `didcommMediaFileSharingData`: information about the input file, adding metadata to share with the other party
 
 This method will do several things, such as:
 
@@ -80,16 +80,17 @@ This method will do several things, such as:
 6. Create an Agent's media record per each target DIDComm connection
 7. Create a new `UploadTask` that will be associated to:
     - The unique id for the file upload
-    - All created file chunks, each with an individual 'chunk upload task'
+    - All created file chunk paths
     - All created media records
-8. Create the resource in Data Store (endpoint `c`)
-9. Start the first chunk upload (endpoint `u`).
+8. Start the process of upload to storage object using multipart strategy
 
 
-Once this process is launched, FileUploadDownloadProvider will listen to events from `react-native-background-upload`'s `Upload` object in order to continue the flow. When a chunk is completed (`onUploadComplete`), we check two situations: 
+Once this process of upload is launched, the function s3UploadFile exposes callbacks to listen to events of current upload progress in order to continue the flow or update data in app. It exposes 4 callbacks: onMultipartCreated, onProgress, onError and onUploadComplete. Let's give a brief explanation about each one:
 
-- If not every chunk has been uploaded, overall media progress is increased (uploaded number of chunks / total number of chunks)
-- If all chunks have been uploaded, we consider the task as finished and therefore create an `AgentAction` to effectively share the media through DIDComm. At this point, the `UploadTask` is deleted and if any issue appears while sharing the info with any of the recipients, a separate retry mechanism will be triggered (as it happens with other DIDComm messages)
+- onMultipartCreated: it is fired when initial Multipart command was successful and now is going to start to upload parts.
+- onProgress: it is fired when a chunk or part upload is successful. It is useful to set upload progress.
+- onError: is is fired when any error during upload process is thrown. In this case abortMultipartUploadCommand is called if at least initial Multipart was created and also to update related UploadTask realm record state to Error in app.
+- onUploadComplete: it is fired when whole upload process has finished successfully. Here we consider the task as finished and therefore create an `AgentAction` to effectively share the media through DIDComm. Also we delete upload chunk files. And At this point, the `UploadTask` is deleted and if any issue appears while sharing the info with any of the recipients, a separate retry mechanism will be triggered (as it happens with other DIDComm messages)
 
 Let's see some more details about each step, including some comments regarding the implementation.
 
@@ -114,4 +115,3 @@ As stated above, `FileUploadDownloadProvider` also provides methods for file dow
 3. Decrypts the file using the ciphering metadata. Now the encrypted file can be deleted
 4. Creates a local preview (in case of images and videos)
 5. Updates the associated Agent's media sharing record with the local file and preview paths, so the corresponding Chat Entry is updated
- 
