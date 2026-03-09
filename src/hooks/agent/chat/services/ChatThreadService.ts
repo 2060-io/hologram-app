@@ -10,9 +10,11 @@ import {
   ChatEntryState,
   ChatEntryType,
   ChatThread,
+  ServiceInfo,
   SystemMessageMetadata,
   getChatThreadData,
 } from '@src/model'
+import { MobileAgent } from '@src/services/agent'
 import {
   getConnectionDisplayName,
   getConnectionDisplayPicture,
@@ -217,4 +219,25 @@ export function updateThreadIfNeeded(realm: Realm, updatedChatEntry: ChatEntry) 
       updateThread(realm, updatedChatEntry.chatThreadId, { lastChatEntry: lastEntryInChatThread })
     }
   }
+}
+
+export async function updateThreadFromServiceInfo({
+  did,
+  serviceInfoResponse,
+  realm,
+  agent,
+}: {
+  did: string
+  serviceInfoResponse: ServiceInfo
+  realm: Realm
+  agent: MobileAgent
+}) {
+  const [connection] = await agent.didcomm.connections.findByInvitationDid(did)
+  if (!connection) return
+  const thread = findOrCreateChatThread(realm, connection)
+  if (!thread) return
+  updateThread(realm, thread.id, {
+    topic: serviceInfoResponse.name,
+    picture: serviceInfoResponse.logoUrl,
+  })
 }
