@@ -2101,8 +2101,6 @@ PODS:
     - ReactCommon/turbomodule/core
     - SocketRocket
     - Yoga
-  - react-native-background-upload (6.6.0):
-    - React
   - react-native-cameraroll (7.10.2):
     - boost
     - DoubleConversion
@@ -3723,7 +3721,6 @@ DEPENDENCIES:
   - React-Mapbuffer (from `../node_modules/react-native/ReactCommon`)
   - React-microtasksnativemodule (from `../node_modules/react-native/ReactCommon/react/nativemodule/microtasks`)
   - "react-native-audio-waveform (from `../node_modules/@simform_solutions/react-native-audio-waveform`)"
-  - react-native-background-upload (from `../node_modules/react-native-background-upload`)
   - "react-native-cameraroll (from `../node_modules/@react-native-camera-roll/camera-roll`)"
   - react-native-cloud-store (from `../node_modules/react-native-cloud-store`)
   - react-native-compressor (from `../node_modules/react-native-compressor`)
@@ -3941,8 +3938,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/react/nativemodule/microtasks"
   react-native-audio-waveform:
     :path: "../node_modules/@simform_solutions/react-native-audio-waveform"
-  react-native-background-upload:
-    :path: "../node_modules/react-native-background-upload"
   react-native-cameraroll:
     :path: "../node_modules/@react-native-camera-roll/camera-roll"
   react-native-cloud-store:
@@ -4175,7 +4170,6 @@ SPEC CHECKSUMS:
   React-Mapbuffer: 94f4264de2cb156960cd82b338a403f4653f2fd9
   React-microtasksnativemodule: 6c4ee39a36958c39c97b074d28f360246a335e84
   react-native-audio-waveform: cc5a8da40861d785be0f02b1aee0557e1aaa9371
-  react-native-background-upload: 627de1e663b94336abed4a84e88fbfa2d1b6ed7f
   react-native-cameraroll: bb98380ee21115d5fe1ae0f8b80c86e044613746
   react-native-cloud-store: cc96ca8d9a4400a1a7d8ceb33d2605bccc4986cf
   react-native-compressor: 3e04a6c707791c9731cda048c45d4ee343d7296e

@@ -335,7 +335,7 @@ export const useChatActions = () => {
               parameters,
             })
           } else if (isMediaType(message.type)) {
-            // NOTE: Here we assume that the file is persisted in the remote data store
+            // NOTE: Here we assume that the file is persisted in the remote file store object
             // This might not be always true, so a safer approach would be to re-upload
             // the file (probably using different ciphering parameters) and then share
             // with all requested connections. This will be left as a TODO along with other
@@ -511,21 +511,14 @@ export const useChatActions = () => {
   )
 
   const shareMediaToDidComm = useCallback(
-    async (didcommMediaFileSharingData: DidCommMediaFileSharingData) => {
+    (didcommMediaFileSharingData: DidCommMediaFileSharingData) => {
       onClearRepliedMessageState()
-
-      if (!agent || !connectionId) throw new Error('Agent is undefined')
-
-      try {
-        // Upload file to Data Store
-        await startMediaUpload({
-          didcommConnectionIds: [connectionId],
-          didcommMediaFileSharingData,
-          deleteOriginalFile: true,
-        })
-      } catch (error) {
-        logError(`Error uploading file: ${error}`)
-      }
+      if (!agent || !connectionId) return
+      startMediaUpload({
+        didcommConnectionIds: [connectionId],
+        didcommMediaFileSharingData,
+        deleteOriginalFile: true,
+      })
     },
     [agent, connectionId],
   )
