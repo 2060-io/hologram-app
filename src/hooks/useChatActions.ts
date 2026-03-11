@@ -456,7 +456,6 @@ export const useChatActions = () => {
           role: ActionMenuRole.Requester,
         })
 
-        if (actionMenuRecord?.state !== ActionMenuState.PreparingSelection) return
         const chatEntry = createChatEntry(realm, {
           chatThreadId: chatThread.data.id,
           type: ChatEntryType.ActionMenuSelection,
