@@ -4,7 +4,10 @@ import { DidCommMrtdModule } from '@2060.io/credo-ts-didcomm-mrtd'
 import { DidCommReactionsModule } from '@2060.io/credo-ts-didcomm-reactions'
 import { DidCommReceiptsModule } from '@2060.io/credo-ts-didcomm-receipts'
 import { DidCommShortenUrlModule } from '@2060.io/credo-ts-didcomm-shorten-url'
-import { DidCommUserProfileModule, UserProfileModuleConfig } from '@2060.io/credo-ts-didcomm-user-profile'
+import {
+  DidCommUserProfileModule,
+  DidCommUserProfileModuleConfig,
+} from '@2060.io/credo-ts-didcomm-user-profile'
 import { ActionMenuModule } from '@credo-ts/action-menu'
 import {
   AnonCredsDidCommCredentialFormatService,
@@ -83,7 +86,6 @@ export const getMobileAgentModules = (config: {
       ],
       anoncreds,
     }),
-    actionMenu: new ActionMenuModule(),
     dids: new DidsModule({
       registrars: [new KeyDidRegistrar(), new PeerDidRegistrar(), new JwkDidRegistrar()],
       resolvers: [
@@ -134,11 +136,12 @@ export const getMobileAgentModules = (config: {
         ],
       },
     }),
+    actionMenu: new ActionMenuModule(),
     calls: new DidCommCallsModule(),
     reactions: new DidCommReactionsModule(),
     media: new DidCommMediaSharingModule(),
     mrtd: new DidCommMrtdModule(),
-    profile: new DidCommUserProfileModule(new UserProfileModuleConfig({ autoSendProfile: false })),
+    profile: new DidCommUserProfileModule(new DidCommUserProfileModuleConfig({ autoSendProfile: false })),
     pushNotifications: new DidCommPushNotificationsFcmModule(),
     questionAnswer: new QuestionAnswerModule(),
     receipts: new DidCommReceiptsModule(),

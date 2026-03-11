@@ -1,4 +1,4 @@
-import { UserProfileData } from '@2060.io/credo-ts-didcomm-user-profile'
+import { DidCommUserProfileData } from '@2060.io/credo-ts-didcomm-user-profile'
 import { StackScreenProps } from '@react-navigation/stack'
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -22,7 +22,7 @@ const UserProfile = ({ navigation }: Props) => {
   const styles = getStyles(theme)
   const { userProfileData, updateUserProfileData } = useUserProfile()
   const [displayName, setDisplayName] = useState(userProfileData?.displayName)
-  const [displayPicture, setDisplayPicture] = useState<UserProfileData['displayPicture']>(
+  const [displayPicture, setDisplayPicture] = useState<DidCommUserProfileData['displayPicture']>(
     userProfileData?.displayPicture,
   )
   const hasChangedPicture =

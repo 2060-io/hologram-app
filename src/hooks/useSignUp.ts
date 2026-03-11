@@ -1,4 +1,4 @@
-import { UserProfileData } from '@2060.io/credo-ts-didcomm-user-profile'
+import { DidCommUserProfileData } from '@2060.io/credo-ts-didcomm-user-profile'
 import { CommonActions, useNavigation } from '@react-navigation/native'
 import { useCallback, useState } from 'react'
 import Config from 'react-native-config'
@@ -21,7 +21,7 @@ export const useSignUp = () => {
   const { agent, handleChangeAgentState } = useMobileAgent()
   const { updateUserProfileData } = useUserProfile()
   const [displayName, setDisplayName] = useState('')
-  const [displayPicture, setDisplayPicture] = useState<UserProfileData['displayPicture']>()
+  const [displayPicture, setDisplayPicture] = useState<DidCommUserProfileData['displayPicture']>()
 
   const startSignUp = useCallback(async () => {
     if (!agent || !agent?.isInitialized) throw new Error('Agent not initialized')

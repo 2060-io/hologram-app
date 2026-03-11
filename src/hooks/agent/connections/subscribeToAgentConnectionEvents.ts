@@ -1,8 +1,8 @@
 import {
-  ConnectionProfileUpdatedEvent,
-  ProfileEventTypes,
+  DidCommConnectionProfileUpdatedEvent,
+  DidCommProfileEventTypes,
   DidCommUserProfileApi,
-  UserProfileRequestedEvent,
+  DidCommUserProfileRequestedEvent,
 } from '@2060.io/credo-ts-didcomm-user-profile'
 import { AgentContext, EventEmitter } from '@credo-ts/core'
 import {
@@ -67,7 +67,7 @@ export function subscribeToAgentConnectionEvents(context: AgentContext) {
     }
   }
 
-  const profileRequestListener = async (event: UserProfileRequestedEvent) => {
+  const profileRequestListener = async (event: DidCommUserProfileRequestedEvent) => {
     const userProfileApi = context.dependencyManager.resolve(DidCommUserProfileApi)
     agentActionQueueSingleton.addJob({
       type: AgentActionType.SendUserProfile,
@@ -83,7 +83,7 @@ export function subscribeToAgentConnectionEvents(context: AgentContext) {
     })
   }
 
-  const profileUpdatedListener = async (event: ConnectionProfileUpdatedEvent) => {
+  const profileUpdatedListener = async (event: DidCommConnectionProfileUpdatedEvent) => {
     const userProfileApi = context.dependencyManager.resolve(DidCommUserProfileApi)
     if (event.payload.sendBackYoursRequested) {
       agentActionQueueSingleton.addJob({
@@ -136,13 +136,13 @@ export function subscribeToAgentConnectionEvents(context: AgentContext) {
 
   eventEmitter.on(DidCommConnectionEventTypes.DidCommConnectionStateChanged, connectionListener)
   eventEmitter.on(DidCommDiscoverFeaturesEventTypes.DisclosureReceived, disclosureListener)
-  eventEmitter.on(ProfileEventTypes.UserProfileRequested, profileRequestListener)
-  eventEmitter.on(ProfileEventTypes.ConnectionProfileUpdated, profileUpdatedListener)
+  eventEmitter.on(DidCommProfileEventTypes.UserProfileRequested, profileRequestListener)
+  eventEmitter.on(DidCommProfileEventTypes.ConnectionProfileUpdated, profileUpdatedListener)
 
   return () => {
     eventEmitter.off(DidCommConnectionEventTypes.DidCommConnectionStateChanged, connectionListener)
     eventEmitter.off(DidCommDiscoverFeaturesEventTypes.DisclosureReceived, disclosureListener)
-    eventEmitter.off(ProfileEventTypes.UserProfileRequested, profileRequestListener)
-    eventEmitter.off(ProfileEventTypes.ConnectionProfileUpdated, profileUpdatedListener)
+    eventEmitter.off(DidCommProfileEventTypes.UserProfileRequested, profileRequestListener)
+    eventEmitter.off(DidCommProfileEventTypes.ConnectionProfileUpdated, profileUpdatedListener)
   }
 }

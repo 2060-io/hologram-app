@@ -18,7 +18,10 @@ import {
   DidCommMessageReceiptOptions,
   DidCommMessageReceipt,
 } from '@2060.io/credo-ts-didcomm-receipts'
-import { ConnectionProfileUpdatedEvent, ProfileEventTypes } from '@2060.io/credo-ts-didcomm-user-profile'
+import {
+  DidCommConnectionProfileUpdatedEvent,
+  DidCommProfileEventTypes,
+} from '@2060.io/credo-ts-didcomm-user-profile'
 import { DidCommProposeCredentialV1Message } from '@credo-ts/anoncreds'
 import { RecordUpdatedEvent, RepositoryEventTypes, tryParseDid } from '@credo-ts/core'
 import {
@@ -107,7 +110,7 @@ export function subscribeToAgentChatEvents(
   }
   mobileAgentInstance.setAppIsSubscribedChatToEvents(true)
 
-  const connectionProfileListener = async (event: ConnectionProfileUpdatedEvent) => {
+  const connectionProfileListener = async (event: DidCommConnectionProfileUpdatedEvent) => {
     const { connection } = event.payload
     setLastTimeProfileReceived(connection, agent.context)
     const thread = findChatThread(realm, connection)
@@ -429,7 +432,7 @@ export function subscribeToAgentChatEvents(
   )
   agent.events.on(DidCommEventTypes.DidCommMessageProcessed, agentMessageProcessedListener)
   agent.events.on(OutOfBandInvitationEventTypes.OutOfBandInvitationEvent, oobListener)
-  agent.events.on(ProfileEventTypes.ConnectionProfileUpdated, connectionProfileListener)
+  agent.events.on(DidCommProfileEventTypes.ConnectionProfileUpdated, connectionProfileListener)
 
   return () => {
     agent.events.off(RepositoryEventTypes.RecordUpdated, mediaSharingMetadataUpdateListener)
@@ -442,6 +445,6 @@ export function subscribeToAgentChatEvents(
     )
     agent.events.off(DidCommEventTypes.DidCommMessageProcessed, agentMessageProcessedListener)
     agent.events.off(OutOfBandInvitationEventTypes.OutOfBandInvitationEvent, oobListener)
-    agent.events.off(ProfileEventTypes.ConnectionProfileUpdated, connectionProfileListener)
+    agent.events.off(DidCommProfileEventTypes.ConnectionProfileUpdated, connectionProfileListener)
   }
 }
