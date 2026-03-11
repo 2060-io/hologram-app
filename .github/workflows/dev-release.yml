@@ -165,7 +165,7 @@ jobs:
   
   build-ios:
     if: ${{needs.semantic-release.outputs.new-release-published == 'true'}}
-    runs-on: macos-14
+    runs-on: macos-latest
     needs: [semantic-release]
     env:
       NEW_RELEASE_VERSION: ${{needs.semantic-release.outputs.new-release-version}}

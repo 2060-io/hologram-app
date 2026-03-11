@@ -52,7 +52,7 @@ jobs:
           ./gradlew assembleDevRelease -PreactNativeArchitectures=arm64-v8a
 
   build-ios:
-    runs-on: macos-14
+    runs-on: macos-latest
 
     env:
       KEYCHAIN_NAME: build.keychain
