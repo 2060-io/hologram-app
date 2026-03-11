@@ -129,13 +129,17 @@ jobs:
           name: version-files
 
       - name: Clean And Build Android
+        working-directory: android
         run: |
           echo "$UPLOAD_KEY_KEYSTORE_B64" | base64 --decode > ./app/upload-key.keystore
           rm -rf .gradle build app/build app/.cxx
           ./gradlew generateCodegenSchemaFromJavaScript generateCodegenArtifactsFromSchema
           ./gradlew assembleDevRelease
 
-      - name: Setup MinIO Client and Upload app.apk to MinIO
+      - name: Setup MinIO client
+        uses: yakubique/setup-minio-cli@v1
+
+      - name: Upload app.apk to MinIO
         run: |
           echo "$PWD" >> $GITHUB_PATH
           mc alias set myminio https://$MINIO_HOST $MINIO_USERNAME $MINIO_PASSWORD
