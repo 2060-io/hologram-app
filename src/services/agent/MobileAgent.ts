@@ -4,7 +4,10 @@ import { DidCommMrtdModule } from '@2060.io/credo-ts-didcomm-mrtd'
 import { DidCommReactionsModule } from '@2060.io/credo-ts-didcomm-reactions'
 import { DidCommReceiptsModule } from '@2060.io/credo-ts-didcomm-receipts'
 import { DidCommShortenUrlModule } from '@2060.io/credo-ts-didcomm-shorten-url'
-import { DidCommUserProfileModule, DidCommUserProfileModuleConfig } from '@2060.io/credo-ts-didcomm-user-profile'
+import {
+  DidCommUserProfileModule,
+  DidCommUserProfileModuleConfig,
+} from '@2060.io/credo-ts-didcomm-user-profile'
 import { ActionMenuModule } from '@credo-ts/action-menu'
 import {
   AnonCredsDidCommCredentialFormatService,
@@ -133,7 +136,7 @@ export const getMobileAgentModules = (config: {
         ],
       },
     }),
-    actionMenu: new ActionMenuModule(),    
+    actionMenu: new ActionMenuModule(),
     calls: new DidCommCallsModule(),
     reactions: new DidCommReactionsModule(),
     media: new DidCommMediaSharingModule(),

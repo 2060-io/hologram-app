@@ -18,7 +18,10 @@ import {
   DidCommMessageReceiptOptions,
   DidCommMessageReceipt,
 } from '@2060.io/credo-ts-didcomm-receipts'
-import { DidCommConnectionProfileUpdatedEvent, DidCommProfileEventTypes } from '@2060.io/credo-ts-didcomm-user-profile'
+import {
+  DidCommConnectionProfileUpdatedEvent,
+  DidCommProfileEventTypes,
+} from '@2060.io/credo-ts-didcomm-user-profile'
 import { DidCommProposeCredentialV1Message } from '@credo-ts/anoncreds'
 import { RecordUpdatedEvent, RepositoryEventTypes, tryParseDid } from '@credo-ts/core'
 import {
