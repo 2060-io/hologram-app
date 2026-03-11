@@ -136,7 +136,7 @@ export const getMobileAgentModules = (config: {
         ],
       },
     }),
-    actionMenu: new ActionMenuModule( { strictStateChecking: false }),
+    actionMenu: new ActionMenuModule({ strictStateChecking: false }),
     calls: new DidCommCallsModule(),
     reactions: new DidCommReactionsModule(),
     media: new DidCommMediaSharingModule(),

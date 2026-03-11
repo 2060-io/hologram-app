@@ -312,13 +312,13 @@ jobs:
 
           echo "install.html created successfully."
 
-      - name: Setup MinIO Client
-        run: |
-          echo "$PWD" >> $GITHUB_PATH
-          mc alias set myminio https://$MINIO_HOST $MINIO_USERNAME $MINIO_PASSWORD
+      - name: Setup MinIO client
+        uses: yakubique/setup-minio-cli@v1
 
       - name: Upload manifest.plist to MinIO
         run: |
+          echo "$PWD" >> $GITHUB_PATH
+          mc alias set myminio https://$MINIO_HOST $MINIO_USERNAME $MINIO_PASSWORD
           # Upload the manifest.plist to the MinIO repository
           mc mb --ignore-existing myminio/repository/dev/hologram-app/$NEW_RELEASE_VERSION
           mc cp manifest.plist myminio/repository/dev/hologram-app/$NEW_RELEASE_VERSION/manifest.plist          
