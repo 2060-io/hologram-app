@@ -120,6 +120,12 @@ jobs:
           registry-url: 'https://registry.npmjs.org/'
           cache: yarn
 
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: node-modules-${{ hashFiles('yarn.lock') }}
+
       - name: Install dependencies
         run: |
           yarn install --immutable
@@ -128,13 +134,22 @@ jobs:
         with:
           name: version-files
 
-      - name: Clean And Build Android
+      - name: Cache Gradle
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            android/.gradle
+          key: gradle-${{ hashFiles('android/**/*.gradle*', 'android/gradle.properties', 'yarn.lock') }}
+          restore-keys: gradle-
+
+      - name: Build Android
         working-directory: android
         run: |
           echo "$UPLOAD_KEY_KEYSTORE_B64" | base64 --decode > ./app/upload-key.keystore
-          rm -rf .gradle build app/build app/.cxx
           ./gradlew generateCodegenSchemaFromJavaScript generateCodegenArtifactsFromSchema
-          ./gradlew assembleDevRelease
+          ./gradlew assembleDevRelease -PreactNativeArchitectures=arm64-v8a
 
       - name: Setup MinIO client
         uses: yakubique/setup-minio-cli@v1
@@ -150,7 +165,7 @@ jobs:
   
   build-ios:
     if: ${{needs.semantic-release.outputs.new-release-published == 'true'}}
-    runs-on: macos-latest
+    runs-on: macos-14
     needs: [semantic-release]
     env:
       NEW_RELEASE_VERSION: ${{needs.semantic-release.outputs.new-release-version}}
@@ -168,6 +183,12 @@ jobs:
           registry-url: 'https://registry.npmjs.org/'
           cache: yarn
 
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: node-modules-${{ hashFiles('yarn.lock') }}
+
       - name: Install dependencies
         run: |
           yarn install --immutable
@@ -175,6 +196,16 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: version-files
+
+      - name: Install ccache
+        run: brew install ccache
+
+      - name: Cache ccache
+        uses: actions/cache@v4
+        with:
+          path: ~/Library/Caches/ccache
+          key: ccache-ios-${{ hashFiles('ios/Podfile.lock') }}
+          restore-keys: ccache-ios-
 
       - name: Configure Keychain
         run: |
@@ -217,15 +248,31 @@ jobs:
           cp io.2060.mobileagent.dev.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
           cp io.2060.mobileagent.dev.share.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
 
+      - name: Cache CocoaPods
+        uses: actions/cache@v4
+        with:
+          path: |
+            ios/Pods
+            ~/Library/Caches/CocoaPods
+          key: pods-${{ hashFiles('ios/Podfile.lock') }}
+          restore-keys: pods-
+
       - name: Install Pods
         working-directory: ios
         run: |
-          pod install --repo-update
+          pod install
+
+      - name: Cache DerivedData
+        uses: actions/cache@v4
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData
+          key: derived-data-${{ hashFiles('ios/Podfile.lock', 'yarn.lock') }}
+          restore-keys: derived-data-
 
       - name: Build Archive
         working-directory: ios
         run: |
-          xcodebuild clean archive \
+          xcodebuild archive \
             -workspace hologram.xcworkspace \
             -scheme 2060Dev \
             -sdk iphoneos \
