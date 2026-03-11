@@ -41,6 +41,7 @@ export const MobileAgentProvider: React.FC<Props> = ({ children }) => {
     isInitialized: false,
     isSignedUp: false,
   })
+  
   const { agent } = agentState
   const { assertConnectedNetwork } = useNetwork()
   const isNetworkConnected = assertConnectedNetwork()

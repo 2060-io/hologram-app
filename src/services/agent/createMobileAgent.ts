@@ -15,6 +15,7 @@ export const createMobileAgent = (
   },
   dependencyManager?: DependencyManager,
 ) => {
+    console.log('creando mobile agent)')
   const agent = new MobileAgent(
     {
       config: options.config,
@@ -26,6 +27,8 @@ export const createMobileAgent = (
     },
     dependencyManager,
   )
+
+  console.log('creado')
 
   agent.didcomm.registerMessageHandlers([new DidCommOutOfBandInvitationHandler()])
 

@@ -28,6 +28,7 @@ export class AgentSingleton {
 
   async openAndInitMobileAgent() {
     try {
+      console.log('openAndInitMobileAgent')
       const key = await retrieveEncryptedKey(KeyChainService.AfjWallet)
       if (!this.mobileAgent) return
       if (!key) throw new Error('No wallet key stored')
