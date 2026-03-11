@@ -103,7 +103,7 @@ jobs:
 
   build-android:
     if: ${{needs.semantic-release.outputs.new-release-published == 'true'}}
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     needs: [semantic-release]
     env:
       UPLOAD_KEYSTORE_PASSWORD: ${{ secrets.UPLOAD_KEY_KEYSTORE_PASSWORD }}
@@ -121,6 +121,12 @@ jobs:
           registry-url: 'https://registry.npmjs.org/'
           cache: yarn
 
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: node-modules-${{ hashFiles('yarn.lock') }}
+
       - name: Install dependencies
         run: |
           yarn install --immutable
@@ -129,13 +135,22 @@ jobs:
         with:
           name: version-files
 
-      - name: Clean And Build Android
+      - name: Cache Gradle
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            android/.gradle
+          key: gradle-${{ hashFiles('android/**/*.gradle*', 'android/gradle.properties', 'yarn.lock') }}
+          restore-keys: gradle-
+
+      - name: Build Android
+        working-directory: android
         run: |
-          echo $UPLOAD_KEY_KEYSTORE_B64 | base64 --decode > ./android/app/upload-key.keystore
-          cd android
-          rm -rf .gradle build app/build app/.cxx
+          echo "$UPLOAD_KEY_KEYSTORE_B64" | base64 --decode > ./app/upload-key.keystore
           ./gradlew generateCodegenSchemaFromJavaScript generateCodegenArtifactsFromSchema
-          ./gradlew assembleStagingRelease
+          ./gradlew assembleStagingRelease -PreactNativeArchitectures=arm64-v8a
 
       - name: Setup MinIO Client and Upload app.apk to MinIO
         run: |
@@ -148,7 +163,7 @@ jobs:
 
   build-ios:
     if: ${{needs.semantic-release.outputs.new-release-published == 'true'}}
-    runs-on: self-hosted
+    runs-on: macos-latest
     needs: [semantic-release]
     env:
       NEW_RELEASE_VERSION: ${{needs.semantic-release.outputs.new-release-version}}
@@ -163,6 +178,12 @@ jobs:
           registry-url: 'https://registry.npmjs.org/'
           cache: yarn
 
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: node-modules-${{ hashFiles('yarn.lock') }}
+
       - name: Install dependencies
         run: |
           yarn install --immutable
@@ -171,13 +192,41 @@ jobs:
         with:
           name: version-files
 
-      - name: Build IOS
+      - name: Install ccache
+        run: brew install ccache
+
+      - name: Cache ccache
+        uses: actions/cache@v4
+        with:
+          path: ~/Library/Caches/ccache
+          key: ccache-ios-${{ hashFiles('ios/Podfile.lock') }}
+          restore-keys: ccache-ios-
+
+      - name: Cache CocoaPods
+        uses: actions/cache@v4
+        with:
+          path: |
+            ios/Pods
+            ~/Library/Caches/CocoaPods
+          key: pods-${{ hashFiles('ios/Podfile.lock') }}
+          restore-keys: pods-
+
+      - name: Install Pods
+        working-directory: ios
         run: |
-          echo "New release published!"
-          echo $RELEASE_VERSION
-          cd ios
-          pod install --repo-update
-          xcodebuild clean archive -workspace  hologram.xcworkspace -scheme 2060Staging -allowProvisioningUpdates -sdk iphoneos -archivePath builds/hologram.xcarchive -destination "generic/platform=iOS" | xcpretty
+          pod install
+
+      - name: Cache DerivedData
+        uses: actions/cache@v4
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData
+          key: derived-data-${{ hashFiles('ios/Podfile.lock', 'yarn.lock') }}
+          restore-keys: derived-data-
+
+      - name: Build IOS
+        working-directory: ios
+        run: |
+          xcodebuild archive -workspace hologram.xcworkspace -scheme 2060Staging -allowProvisioningUpdates -sdk iphoneos -archivePath builds/hologram.xcarchive -destination "generic/platform=iOS" | xcpretty
           xcodebuild -exportArchive -archivePath "builds/hologram.xcarchive" -exportPath "builds" -exportOptionsPlist hologram/ExportOptions.plist | xcpretty
 
       - name: Create manifest.plist
@@ -266,7 +315,7 @@ jobs:
 
   notify-subscribers:
     if: ${{needs.semantic-release.outputs.new-release-published == 'true'}}
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     needs: [semantic-release, build-android, build-ios]
     env:
       NEW_RELEASE_VERSION: ${{needs.semantic-release.outputs.new-release-version}}
