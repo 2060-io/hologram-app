@@ -16,13 +16,11 @@
     class-validator "0.14.1"
     tsyringe "^4.10.0"
 
-"@2060.io/credo-ts-didcomm-media-sharing@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@2060.io/credo-ts-didcomm-media-sharing/-/credo-ts-didcomm-media-sharing-0.1.0.tgz#257ce5beafbe34b5eafec79906d71873e65557b6"
-  integrity sha512-QAe77aDpwPFc5wG+IduRcvr19fgl11zZL3bmpf+yFHp8kmTnl3/ID9uJZqjat29z55PvzclgS5jPCEmX+NYrdg==
+"@2060.io/credo-ts-didcomm-media-sharing@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@2060.io/credo-ts-didcomm-media-sharing/-/credo-ts-didcomm-media-sharing-0.1.1.tgz#61f1038f08ea56d58f9e36d48f69bb3269e2c286"
+  integrity sha512-BLaK8FkBPObVm9vfmofJWaSzwWPbPUs5Si9ELtFUbgcei6UxGLHCbSVZcvelimosyFPmCtKPukZ4yO7zkVnDxQ==
   dependencies:
-    "@credo-ts/core" "^0.6.1"
-    "@credo-ts/didcomm" "^0.6.1"
     class-transformer "^0.5.1"
     class-validator "^0.14.1"
     reflect-metadata "^0.1.13"
@@ -30,10 +28,10 @@
     tsyringe "^4.10.0"
     uuid "^9.0.0"
 
-"@2060.io/credo-ts-didcomm-mrtd@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@2060.io/credo-ts-didcomm-mrtd/-/credo-ts-didcomm-mrtd-0.1.0.tgz#3556a27f0fb985cb5622fec0de955687dc7c8a7d"
-  integrity sha512-udfZOV7AQyZi6cmrMtkd5W3+3DEttyx4Xj/UsCaAHii+XNPrDmHhZhApMD1wSPiovpGvNR7zD/6FKNPjJ2a8Yg==
+"@2060.io/credo-ts-didcomm-mrtd@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@2060.io/credo-ts-didcomm-mrtd/-/credo-ts-didcomm-mrtd-0.1.1.tgz#9baf4bddaa696a33a29663e2a1dd1c9a67152562"
+  integrity sha512-5/Ts9iyGQpzCFSl9XsLwDVftpXwSw6tCcglIr9L0WRR3bPvs2Bim/xZVirjsq3EHbZ7C4gaw0oZx2N6Fd+LrJw==
   dependencies:
     "@li0ard/tsemrtd" "^0.3.4"
     "@peculiar/asn1-x509" "^2.6.0"
@@ -49,26 +47,22 @@
     rxjs "^7.2.0"
     tsyringe "^4.10.0"
 
-"@2060.io/credo-ts-didcomm-reactions@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@2060.io/credo-ts-didcomm-reactions/-/credo-ts-didcomm-reactions-0.1.0.tgz#d9abda5b6417eae9a688731a956801e327303564"
-  integrity sha512-gVccg5TAeW4DWHIVSBy7GYI5ueAs2rAQYizewMOKCgatww59JPuU7Yg60A3H13TNY1jQBB9laExM8/FOZDGNhQ==
+"@2060.io/credo-ts-didcomm-reactions@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@2060.io/credo-ts-didcomm-reactions/-/credo-ts-didcomm-reactions-0.1.1.tgz#194f1d455c7bd106bc7a0082f86e2a45beb87d7a"
+  integrity sha512-E8BtqfOBiXDQcW26JDmm4YB7cf/RwJJSjnZ88bDeTJ9dhYqrGk74iuls+p7ujO8FPkOImmYgUp4E49J0sqi1ew==
   dependencies:
-    "@credo-ts/core" "^0.6.1"
-    "@credo-ts/didcomm" "^0.6.1"
     class-transformer "^0.5.1"
     class-validator "^0.14.1"
     reflect-metadata "^0.1.13"
     rxjs "^7.2.0"
     uuid "^9.0.0"
 
-"@2060.io/credo-ts-didcomm-receipts@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@2060.io/credo-ts-didcomm-receipts/-/credo-ts-didcomm-receipts-0.1.0.tgz#e96301b415e270e10f21541e72aa2a4ab7164bd0"
-  integrity sha512-od0iApN2msfPEVCqG+OxYRKFRCrI5Dmwlp0AMXm7hHCZevIKE6XfXMLzNVX3TbbZorHZiyZnGlo3pOYcskyNMw==
+"@2060.io/credo-ts-didcomm-receipts@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@2060.io/credo-ts-didcomm-receipts/-/credo-ts-didcomm-receipts-0.1.1.tgz#b4f7cea76138427858b5decc01900ec731ee1e46"
+  integrity sha512-91oSmGpY9F1YWwAnNBLT4aCLN4Phbt6PavjNy82gXBMCfC1HodQraAdiUjG6MeCPmacQjihv8rPNVWNFENtXIw==
   dependencies:
-    "@credo-ts/core" "^0.6.1"
-    "@credo-ts/didcomm" "^0.6.1"
     class-transformer "^0.5.1"
     class-validator "^0.14.1"
     reflect-metadata "^0.1.13"
@@ -76,12 +70,11 @@
     tsyringe "^4.10.0"
     uuid "^9.0.0"
 
-"@2060.io/credo-ts-didcomm-shorten-url@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@2060.io/credo-ts-didcomm-shorten-url/-/credo-ts-didcomm-shorten-url-0.1.0.tgz#597fdbc20aad82cc79d371239cf41e4efd183e5e"
-  integrity sha512-ECgWZBZHLbMTH4I5qV3b58p6/7RDtZ3lml6SkSzrWvKMIkQM8/k23KQg6DrHBvuK42Stf84wc+fvvHAj5j7pVw==
+"@2060.io/credo-ts-didcomm-shorten-url@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@2060.io/credo-ts-didcomm-shorten-url/-/credo-ts-didcomm-shorten-url-0.1.1.tgz#356c468adf25b207cbf23fd5c1e11ae304afb1bb"
+  integrity sha512-hk09aPaHokUbhzaHQQkSCtbl7EcDU+Sno0/SmwSJGowrA/SVobSVyryK9ReyfzdnMSmI7z9nNzkO9/MUeAhfUg==
   dependencies:
-    "@credo-ts/didcomm" "^0.6.1"
     class-transformer "0.5.1"
     class-validator "0.14.1"
     reflect-metadata "^0.1.13"
@@ -2554,7 +2547,7 @@
     class-transformer "^0.5.1"
     class-validator "^0.14.2"
 
-"@credo-ts/didcomm@0.6.3", "@credo-ts/didcomm@^0.6.1", "@credo-ts/didcomm@^0.6.3":
+"@credo-ts/didcomm@0.6.3", "@credo-ts/didcomm@^0.6.3":
   version "0.6.3"
   resolved "https://registry.yarnpkg.com/@credo-ts/didcomm/-/didcomm-0.6.3.tgz#dd7b963be7e9bff2928006f2c0aab630b02cccf1"
   integrity sha512-uffH1yuApHrdCvvXJvHaZToJvgH9c/k7WJ66kVpSwU/vVfQZbFIYgNKuSrierzGCV/fapVG8IOxly/5ylP7UUQ==

@@ -3,7 +3,7 @@ import {
   DidCommMessageReactionOptions,
 } from '@2060.io/credo-ts-didcomm-reactions'
 import { DidCommMessageReceiptOptions, MessageState } from '@2060.io/credo-ts-didcomm-receipts'
-import { ActionMenuRole, ActionMenuState } from '@credo-ts/action-menu'
+import { ActionMenuRole } from '@credo-ts/action-menu'
 import { CameraRoll } from '@react-native-camera-roll/camera-roll'
 import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'

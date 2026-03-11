@@ -334,7 +334,7 @@ jobs:
 
   notify-subscribers:
     if: ${{needs.semantic-release.outputs.new-release-published == 'true'}}
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     needs: [semantic-release, build-android, build-ios]
     env:
       NEW_RELEASE_VERSION: ${{needs.semantic-release.outputs.new-release-version}}
