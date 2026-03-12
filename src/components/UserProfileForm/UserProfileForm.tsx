@@ -1,4 +1,4 @@
-import { UserProfileData } from '@2060.io/credo-ts-didcomm-user-profile'
+import { DidCommUserProfileData } from '@2060.io/credo-ts-didcomm-user-profile'
 import React, { memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, TouchableOpacity, Image } from 'react-native'
@@ -12,9 +12,9 @@ import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { dataUrl } from '@src/utils'
 
 type Props = {
-  displayPicture: UserProfileData['displayPicture']
+  displayPicture: DidCommUserProfileData['displayPicture']
   displayName: string | undefined
-  onHandleChangePicture(pictureData: UserProfileData['displayPicture']): void
+  onHandleChangePicture(pictureData: DidCommUserProfileData['displayPicture']): void
   onHandleChangeName(value: string): void
 }
 

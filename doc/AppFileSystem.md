@@ -18,7 +18,7 @@ Description: As you can see in image there are 9 Chats. Technically speaking the
 
 ![](./images/ChatEntryExample.jpg)
 
-**UploadTask**: This entity is responsible for storage an upload task and its chunks for each media item (voice note, image or video) to be upload to [2060 Data Store API](https://github.com/2060-io/2060-datastore) and then share it using DIDComm [Media Sharing](https://didcomm.org/media-sharing/1.0/) protocol. Main purpose of this entity is to storage current media item upload status and allow to app to resume uploading file if something is wrong (internet connection is lost, user closes app)
+**UploadTask**: This entity is responsible for storage an upload task and its chunks file paths for each media item (voice note, image or video) to be upload to [S3-compatible object storage solution like minio](https://github.com/minio/minio) and then share it using DIDComm [Media Sharing](https://didcomm.org/media-sharing/1.0/) protocol. Main purpose of this entity is to storage current media item upload status and allow to app to restart uploading file if something is wrong (internet connection is lost, user closes app before upload finishes)
 
 **CacheRecord**: This entity is responsible for storage base64 string format of every avatar image of a connection (Mainly for services connections). Its main purpose is to allow to set image of avatar quickly and only update it if last-modified from server where is located this image is greater than current last-modified of cache record object
 

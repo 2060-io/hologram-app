@@ -12,9 +12,24 @@ import { DevEnvsObject, DevEnvObject, getIsDeveloperMode } from '@src/utils/deve
 
 const defaultDevEnvs: DevEnvsObject = {
   CLOUD_AGENT_PUBLIC_DID: Config.CLOUD_AGENT_PUBLIC_DID as string,
-  DATA_STORE_URL: Config.DATA_STORE_URL as string,
+  S3_SERVER_URL: Config.S3_SERVER_URL as string,
   WEBRTC_SERVER_BASE_URL: Config.WEBRTC_SERVER_BASE_URL as string,
   INDY_VDR_PROXY_BASE_URL: Config.INDY_VDR_PROXY_BASE_URL as string,
+}
+
+const restoreMissingDevEnvs = (
+  persistedDevEnvs: DevEnvsObject,
+): { devEnvs: DevEnvsObject; needsToRestore: boolean } => {
+  const areMissingPersistedDevEnvs = Object.keys(defaultDevEnvs).some(key => !(key in persistedDevEnvs))
+  if (!areMissingPersistedDevEnvs) return { devEnvs: persistedDevEnvs, needsToRestore: false }
+  const newPersistedDevEnvs: DevEnvsObject = { ...persistedDevEnvs }
+  Object.keys(defaultDevEnvs).forEach(key => {
+    const thisKeyIsNotInPersistedEnvs = !(key in persistedDevEnvs)
+    if (thisKeyIsNotInPersistedEnvs) {
+      newPersistedDevEnvs[key as keyof DevEnvsObject] = defaultDevEnvs[key as keyof DevEnvsObject]
+    }
+  })
+  return { devEnvs: newPersistedDevEnvs, needsToRestore: true }
 }
 
 type ConfigProps = {
@@ -49,17 +64,19 @@ export const ConfigProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
   useEffect(() => {
     const setupDevEnvs = async () => {
-      const persistedDevEnvs = await getStorageData(DEV_ENVS_PERSIST_KEY)
+      const persistedDevEnvs = (await getStorageData(DEV_ENVS_PERSIST_KEY)) as DevEnvsObject
       if (persistedDevEnvs) {
-        setDevEnvs(persistedDevEnvs as DevEnvsObject)
+        const { devEnvs: newDevEnvs, needsToRestore } = restoreMissingDevEnvs(persistedDevEnvs)
+        setDevEnvs(newDevEnvs)
+        if (needsToRestore) await setStorageData(DEV_ENVS_PERSIST_KEY, newDevEnvs)
       } else {
         await setStorageData(DEV_ENVS_PERSIST_KEY, defaultDevEnvs)
       }
     }
     const setupCustomDevEnvs = async () => {
-      const persistedCustomDevEnvs = await getStorageData(CUSTOM_DEV_ENVS_PERSIST_KEY)
+      const persistedCustomDevEnvs = (await getStorageData(CUSTOM_DEV_ENVS_PERSIST_KEY)) as DevEnvsObject
       if (persistedCustomDevEnvs) {
-        setStoredCustomDevEnvs(persistedCustomDevEnvs as DevEnvsObject)
+        setStoredCustomDevEnvs(persistedCustomDevEnvs)
       }
     }
     setupDevEnvs()

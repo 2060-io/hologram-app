@@ -1,4 +1,4 @@
-import { UserProfileData } from '@2060.io/credo-ts-didcomm-user-profile'
+import { DidCommUserProfileData } from '@2060.io/credo-ts-didcomm-user-profile'
 import { StackScreenProps } from '@react-navigation/stack'
 
 import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
@@ -14,6 +14,6 @@ export interface WrapperUserInvitationProps
 
 export interface UserInvitationProps extends StackScreenProps<NavigationStackParams> {
   invitation: Invitation
-  userProfileData?: UserProfileData
+  userProfileData?: DidCommUserProfileData
   createNewInvitation: () => Promise<void>
 }
