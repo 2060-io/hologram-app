@@ -39,6 +39,10 @@ jobs:
         id: mode
         run: |
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+              echo "ERROR: Experimental builds cannot be triggered on 'main'. Select a feature or dev branch."
+              exit 1
+            fi
             echo "experimental=true" >> $GITHUB_OUTPUT
           else
             echo "experimental=false" >> $GITHUB_OUTPUT
@@ -112,8 +116,12 @@ jobs:
             # Create and push the tag so it's traceable in git
             git config user.name "github-actions[bot]"
             git config user.email "github-actions[bot]@users.noreply.github.com"
-            git tag "v${VERSION}"
-            git push origin "v${VERSION}"
+            if git rev-parse "v${VERSION}" >/dev/null 2>&1; then
+              echo "Tag v${VERSION} already exists, reusing."
+            else
+              git tag "v${VERSION}"
+              git push origin "v${VERSION}"
+            fi
             echo "release-version=${VERSION}" >> $GITHUB_OUTPUT
             echo "new-release-published=true" >> $GITHUB_OUTPUT
             echo "experimental=true" >> $GITHUB_OUTPUT
