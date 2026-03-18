@@ -14,11 +14,14 @@ jobs:
   semantic-release:
     runs-on: ubuntu-latest
     outputs:
-      new-release-version: ${{ steps.semantic.outputs.release-version }}
-      new-release-published: ${{ steps.semantic.outputs.new-release-published }}
+      new-release-version: ${{ steps.release.outputs.release-version }}
+      new-release-published: ${{ steps.release.outputs.new-release-published }}
+      experimental: ${{ steps.release.outputs.experimental }}
     steps:
       - name: Checkout hologram-app
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup node v22
         uses: actions/setup-node@v4
@@ -31,7 +34,22 @@ jobs:
         run: |
           yarn install --immutable
 
+      # Detect if this is an experimental build (manual workflow_dispatch)
+      - name: Detect build mode
+        id: mode
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+              echo "ERROR: Experimental builds cannot be triggered on 'main'. Select a feature or dev branch."
+              exit 1
+            fi
+            echo "experimental=true" >> $GITHUB_OUTPUT
+          else
+            echo "experimental=false" >> $GITHUB_OUTPUT
+          fi
+
       - uses: codfish/semantic-release-action@v3
+        if: steps.mode.outputs.experimental == 'false'
         id: semantic
         with:
           branches: |
@@ -87,8 +105,34 @@ jobs:
               "@semantic-release/release-notes-generator",
             ]
 
+      # Consolidate outputs regardless of which path was taken
+      - name: Consolidate release outputs
+        id: release
+        run: |
+          if [[ "${{ steps.mode.outputs.experimental }}" == "true" ]]; then
+            # Base version: last stable tag (no prerelease suffix), e.g. 0.9.4
+            BASE_VERSION=$(git tag -l 'v*' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -1 | sed 's/^v//')
+            VERSION="${BASE_VERSION}-exp.${{ github.run_number }}"
+            # Create and push the tag so it's traceable in git
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            if git rev-parse "v${VERSION}" >/dev/null 2>&1; then
+              echo "Tag v${VERSION} already exists, reusing."
+            else
+              git tag "v${VERSION}"
+              git push origin "v${VERSION}"
+            fi
+            echo "release-version=${VERSION}" >> $GITHUB_OUTPUT
+            echo "new-release-published=true" >> $GITHUB_OUTPUT
+            echo "experimental=true" >> $GITHUB_OUTPUT
+          else
+            echo "release-version=${{ steps.semantic.outputs.release-version }}" >> $GITHUB_OUTPUT
+            echo "new-release-published=${{ steps.semantic.outputs.new-release-published }}" >> $GITHUB_OUTPUT
+            echo "experimental=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Upload Version files
-        if: steps.semantic.outputs.new-release-published == 'true'
+        if: steps.release.outputs.new-release-published == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: version-files
@@ -171,7 +215,7 @@ jobs:
       NEW_RELEASE_VERSION: ${{needs.semantic-release.outputs.new-release-version}}
       KEYCHAIN_NAME: build.keychain
       KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
-      CERT_P12_PATH: cert.p12      
+      CERT_P12_PATH: cert.p12
     steps:
       - name: Checkout hologram-app
         uses: actions/checkout@v4
@@ -380,7 +424,7 @@ jobs:
           echo "app.ipa uploaded to MinIO successfully."
 
   notify-subscribers:
-    if: ${{needs.semantic-release.outputs.new-release-published == 'true'}}
+    if: ${{needs.semantic-release.outputs.new-release-published == 'true' && needs.semantic-release.outputs.experimental != 'true'}}
     runs-on: ubuntu-latest
     needs: [semantic-release, build-android, build-ios]
     env:
