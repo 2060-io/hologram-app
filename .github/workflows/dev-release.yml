@@ -318,7 +318,7 @@ jobs:
         run: |
           xcodebuild archive \
             -workspace hologram.xcworkspace \
-            -scheme 2060Dev \
+            -scheme Dev \
             -sdk iphoneos \
             -archivePath builds/hologram.xcarchive \
             -destination "generic/platform=iOS"
@@ -420,7 +420,7 @@ jobs:
 
       - name: Upload app.ipa to MinIO
         run: |
-          mc cp ./ios/builds/2060Dev.ipa myminio/repository/dev/hologram-app/$NEW_RELEASE_VERSION/app.ipa
+          mc cp ./ios/builds/Dev.ipa myminio/repository/dev/hologram-app/$NEW_RELEASE_VERSION/app.ipa
           echo "app.ipa uploaded to MinIO successfully."
 
   notify-subscribers:

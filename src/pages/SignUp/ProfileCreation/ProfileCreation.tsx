@@ -112,7 +112,7 @@ const ProfileCreation = ({ navigation }: Props) => {
           extraScrollHeight={70}
         >
           <View style={styles.container}>
-            <AppLogo style={styles.appLogoContainer} />
+            <AppLogo />
             <Text fontFamily="EuclidCircularA-Bold" style={styles.title}>
               {t('signUp.welcomeTitle')}
             </Text>

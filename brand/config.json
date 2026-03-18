@@ -1,0 +1,35 @@
+{
+  "appName": "Hologram",
+  "android": {
+    "applicationId": "io.twentysixty.mobileagent",
+    "namespace": "io.twentysixty.mobileagent",
+    "splashColor": "#767bec",
+    "splashColorDev": "#2497F3",
+    "splashColorStaging": "#06988b"
+  },
+  "ios": {
+    "bundleIdDev": "io.2060.mobileagent.dev",
+    "bundleIdStaging": "io.2060.mobileagent.st",
+    "bundleIdProd": "io.2060.mobileagent.m",
+    "displayNameDev": "Hologram dev",
+    "displayNameStaging": "Hologram staging",
+    "displayNameProd": "Hologram"
+  },
+  "env": {
+    "common": {
+      "BASE_INVITATION_URL": "https://hologram.zone"
+    },
+    "dev": {
+      "DEFAULT_SERVICE_ALIAS": "Welcome to Hologram! (dev)",
+      "BACKUP_NAME": "Hologram-wallet-backup-dev.zip"
+    },
+    "staging": {
+      "DEFAULT_SERVICE_ALIAS": "Welcome to Hologram!",
+      "BACKUP_NAME": "Hologram-wallet-backup-staging.zip"
+    },
+    "prod": {
+      "DEFAULT_SERVICE_ALIAS": "Welcome to Hologram!",
+      "BACKUP_NAME": "Hologram-wallet-backup.zip"
+    }
+  }
+}

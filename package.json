@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "android": "react-native run-android --active-arch-only --mode=devdebug --appId=io.twentysixty.mobileagent.dev",
-    "ios": "react-native run-ios --scheme 2060Dev",
+    "ios": "react-native run-ios --scheme Dev",
     "start": "react-native start",
     "build": "tsc",
     "lint": "eslint .",
@@ -20,9 +20,12 @@
     "android:dev-release": "react-native run-android --active-arch-only --mode=devrelease --appId=io.twentysixty.mobileagent.dev",
     "android:prod": "react-native run-android --active-arch-only --mode=proddebug --appId=io.twentysixty.mobileagent.m",
     "android:prod-release": "react-native run-android --active-arch-only --mode=prodrelease --appId=io.twentysixty.mobileagent.m",
-    "ios:dev": "react-native run-ios --scheme 2060Dev",
-    "ios:staging": "react-native run-ios --scheme 2060Staging",
-    "ios:prod": "react-native run-ios --scheme 2060Prod"
+    "ios:dev": "react-native run-ios --scheme Dev",
+    "ios:staging": "react-native run-ios --scheme Staging",
+    "ios:prod": "react-native run-ios --scheme Prod",
+    "white-label:android": "WHITE_LABEL_DIR=verana bash ./scripts/white_label_for_android.sh",
+    "white-label:ios": "WHITE_LABEL_DIR=verana bash ./scripts/white_label_for_ios.sh",
+    "white-label:react-native": "WHITE_LABEL_DIR=verana bash ./scripts/white_label_for_react_native.sh"
   },
   "expo": {
     "autolinking": {

@@ -59,7 +59,7 @@
 	<string>Hologram accesses gallery to let you pick pictures and videos to share with your connections. This data will be end-to-end encrypted</string>
 	<key>NSUbiquitousContainers</key>
 	<dict>
-		<key>iCloud.io.2060.mobileagent.m</key>
+		<key>iCloud.io.2060.mobileagent.st</key>
 		<dict>
 			<key>NSUbiquitousContainerIsDocumentScopePublic</key>
 			<true/>

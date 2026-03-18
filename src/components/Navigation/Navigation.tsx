@@ -85,11 +85,11 @@ const Navigation = ({ isSignedUp, agent, theme }: NavigationProps) => {
       provider.configure({
         android: {
           provider: Config.APP_CHECK_DEBUG_MODE ? 'debug' : 'playIntegrity',
-          debugToken: '8305FD57-71EF-476A-AC15-32482CAECC44',
+          debugToken: Config.ANDROID_FIREBASE_DEBUG_TOKEN,
         },
         apple: {
           provider: Config.APP_CHECK_DEBUG_MODE ? 'debug' : 'appAttestWithDeviceCheckFallback',
-          debugToken: 'CED23F53-F6B4-4D58-AEB3-EDBADC2BDAE3',
+          debugToken: Config.IOS_FIREBASE_DEBUG_TOKEN,
         },
       })
       const appCheck = await initializeAppCheck(getApp(), {
