@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* eslint-disable no-console, @typescript-eslint/no-var-requires */
 
 /**
  * apply-brand.js
@@ -249,7 +250,7 @@ function updateIosPlist(filePath, displayName) {
 }
 
 console.log('Updating iOS Info plists:')
-for (const [env, { path: plistPath, displayName }] of Object.entries(IOS_PLISTS)) {
+for (const [, { path: plistPath, displayName }] of Object.entries(IOS_PLISTS)) {
   updateIosPlist(plistPath, displayName)
 }
 
