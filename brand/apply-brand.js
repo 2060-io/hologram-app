@@ -163,10 +163,7 @@ function updateAndroidBuildGradle() {
   let changed = false
 
   if (brand.android.applicationId) {
-    content = content.replace(
-      /applicationId\s+"[^"]+"/,
-      `applicationId "${brand.android.applicationId}"`,
-    )
+    content = content.replace(/applicationId\s+"[^"]+"/, `applicationId "${brand.android.applicationId}"`)
     // Also update resValue build_config_package in each flavor
     content = content.replace(
       /resValue\s+"string",\s*"build_config_package",\s*"[^"]+"/g,
@@ -176,16 +173,15 @@ function updateAndroidBuildGradle() {
   }
 
   if (brand.android.namespace) {
-    content = content.replace(
-      /namespace\s+"[^"]+"/,
-      `namespace "${brand.android.namespace}"`,
-    )
+    content = content.replace(/namespace\s+"[^"]+"/, `namespace "${brand.android.namespace}"`)
     changed = true
   }
 
   if (changed) {
     fs.writeFileSync(buildGradle, content)
-    console.log(`  Updated build.gradle (applicationId: ${brand.android.applicationId || 'unchanged'}, namespace: ${brand.android.namespace || 'unchanged'})`)
+    console.log(
+      `  Updated build.gradle (applicationId: ${brand.android.applicationId || 'unchanged'}, namespace: ${brand.android.namespace || 'unchanged'})`,
+    )
   }
 }
 
@@ -224,11 +220,15 @@ function updateIosPlist(filePath, displayName) {
 
   // Update permission strings using templates (idempotent — always writes full value)
   const permissionTemplates = {
-    NSCameraUsageDescription: '{appName} uses your camera to scan invitations and take pictures to share with your connections.',
+    NSCameraUsageDescription:
+      '{appName} uses your camera to scan invitations and take pictures to share with your connections.',
     NSFaceIDUsageDescription: '{appName} uses Face ID to protect your wallet.',
-    NSMicrophoneUsageDescription: '{appName} uses your microphone to record voice notes you can share with your connections. These notes are end-to-end encrypted.',
-    NSPhotoLibraryAddUsageDescription: '{appName} accesses gallery to save photos and videos you have received.',
-    NSPhotoLibraryUsageDescription: '{appName} accesses gallery to let you pick pictures and videos to share with your connections. This data will be end-to-end encrypted',
+    NSMicrophoneUsageDescription:
+      '{appName} uses your microphone to record voice notes you can share with your connections. These notes are end-to-end encrypted.',
+    NSPhotoLibraryAddUsageDescription:
+      '{appName} accesses gallery to save photos and videos you have received.',
+    NSPhotoLibraryUsageDescription:
+      '{appName} accesses gallery to let you pick pictures and videos to share with your connections. This data will be end-to-end encrypted',
   }
   // Allow brand config to override permission strings via ios.permissionStrings
   const brandPermissions = brand.ios?.permissionStrings || {}
@@ -308,21 +308,12 @@ function updateIosPlistBundleRefs() {
     let content = fs.readFileSync(filePath, 'utf8')
 
     // Update CFBundleURLName
-    content = content.replace(
-      /(<key>CFBundleURLName<\/key>\s*<string>).*?(<\/string>)/,
-      `$1${newBundleId}$2`,
-    )
+    content = content.replace(/(<key>CFBundleURLName<\/key>\s*<string>).*?(<\/string>)/, `$1${newBundleId}$2`)
 
     // Update iCloud container key (iCloud.<bundleId>)
-    content = content.replace(
-      /(<key>)iCloud\.[^<]+(< \/key>)/g,
-      `$1iCloud.${newBundleId}$2`,
-    )
+    content = content.replace(/(<key>)iCloud\.[^<]+(< \/key>)/g, `$1iCloud.${newBundleId}$2`)
     // Also handle the format without space before /key
-    content = content.replace(
-      /(<key>)iCloud\.[^<]+(<\/key>)/g,
-      `$1iCloud.${newBundleId}$2`,
-    )
+    content = content.replace(/(<key>)iCloud\.[^<]+(<\/key>)/g, `$1iCloud.${newBundleId}$2`)
 
     fs.writeFileSync(filePath, content)
   }
