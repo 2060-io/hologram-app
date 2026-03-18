@@ -4,7 +4,7 @@ import { FileLogger } from 'react-native-file-logger'
 
 import 'react-native-reanimated'
 import 'react-native-gesture-handler'
-import { name as appName } from './app.json'
+import { appName } from './app.json'
 import App from './src/App'
 import AppHeadless from './src/AppHeadless'
 import { IS_IOS } from './src/constants'
@@ -20,10 +20,10 @@ const TEN_MB = 1024 * 1024 * 10
 // Register handler for FCM notifications when app is in quit state
 const messaging = getMessaging()
 setBackgroundMessageHandler(messaging, backgroundPushNotificationHandler)
-AppRegistry.registerComponent(appName, () => (IS_IOS ? AppHeadless : App))
+AppRegistry.registerComponent('hologram', () => (IS_IOS ? AppHeadless : App))
 FileLogger.configure({
   logsDirectory: LOGS_DIRECTORY,
-  logPrefix: 'hologram',
+  logPrefix: appName,
   maximumFileSize: TEN_MB,
   formatter,
 })

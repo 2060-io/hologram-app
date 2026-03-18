@@ -226,7 +226,7 @@ jobs:
       - name: Build IOS
         working-directory: ios
         run: |
-          xcodebuild archive -workspace hologram.xcworkspace -scheme 2060Staging -allowProvisioningUpdates -sdk iphoneos -archivePath builds/hologram.xcarchive -destination "generic/platform=iOS" | xcpretty
+          xcodebuild archive -workspace hologram.xcworkspace -scheme Staging -allowProvisioningUpdates -sdk iphoneos -archivePath builds/hologram.xcarchive -destination "generic/platform=iOS" | xcpretty
           xcodebuild -exportArchive -archivePath "builds/hologram.xcarchive" -exportPath "builds" -exportOptionsPlist hologram/ExportOptions.plist | xcpretty
 
       - name: Create manifest.plist
@@ -310,7 +310,7 @@ jobs:
 
       - name: Upload app.ipa to MinIO
         run: |
-          mc cp ./ios/builds/2060Staging.ipa myminio/repository/staging/hologram-app/$NEW_RELEASE_VERSION/app.ipa
+          mc cp ./ios/builds/Staging.ipa myminio/repository/staging/hologram-app/$NEW_RELEASE_VERSION/app.ipa
           echo "app.ipa uploaded to MinIO successfully."
 
   notify-subscribers:

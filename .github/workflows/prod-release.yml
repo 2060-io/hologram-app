@@ -172,10 +172,10 @@ jobs:
       - name: Build IOS
         working-directory: ios
         run: |
-          xcodebuild archive -workspace hologram.xcworkspace -scheme 2060Prod -allowProvisioningUpdates -sdk iphoneos -archivePath builds/hologram.xcarchive -destination "generic/platform=iOS" | xcpretty
+          xcodebuild archive -workspace hologram.xcworkspace -scheme Prod -allowProvisioningUpdates -sdk iphoneos -archivePath builds/hologram.xcarchive -destination "generic/platform=iOS" | xcpretty
           xcodebuild -exportArchive -archivePath "builds/hologram.xcarchive" -exportPath "builds" -exportOptionsPlist hologram/ExportOptionsProd.plist | xcpretty
 
       - name: Upload to AppStoreConnect
         run: |
-          xcrun altool --upload-app -f ./ios/builds/2060Prod.ipa -t ios -u ${{ secrets.APPSTORECONNECT_USERNAME }} -p ${{ secrets.APPSTORECONNECT_PASSWORD }}
+          xcrun altool --upload-app -f ./ios/builds/Prod.ipa -t ios -u ${{ secrets.APPSTORECONNECT_USERNAME }} -p ${{ secrets.APPSTORECONNECT_PASSWORD }}
 

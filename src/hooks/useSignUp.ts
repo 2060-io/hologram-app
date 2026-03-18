@@ -27,7 +27,7 @@ export const useSignUp = () => {
     if (!agent || !agent?.isInitialized) throw new Error('Agent not initialized')
 
     let { connectionRecord: cloudAgentConnection } = await agent.didcomm.oob.receiveImplicitInvitation({
-      label: 'Hologram',
+      label: Config.APP_NAME || 'Hologram',
       did: cloudAgentPublicDid,
       alias: 'Cloud Agent',
       autoAcceptConnection: true,
@@ -54,7 +54,7 @@ export const useSignUp = () => {
     if (!agent) return
     try {
       let { connectionRecord: defaultServiceConnection } = await agent.didcomm.oob.receiveImplicitInvitation({
-        label: 'Hologram',
+        label: Config.APP_NAME || 'Hologram',
         did: defaultServicePublicDid,
         alias: defaultServiceAlias,
         autoAcceptConnection: true,
