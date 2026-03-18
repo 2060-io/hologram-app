@@ -1,5 +1,6 @@
 declare module 'react-native-config' {
   export interface NativeConfig {
+    APP_NAME: string
     BASE_INVITATION_URL: string
     S3_SERVER_URL: string
     CLOUD_AGENT_PUBLIC_DID: string

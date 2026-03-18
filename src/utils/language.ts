@@ -1,6 +1,7 @@
 import { use } from 'i18next'
 import { initReactI18next } from 'react-i18next'
 import { getLocales } from 'react-native-localize'
+import Config from 'react-native-config'
 
 import en from '../locales/en.json'
 import es from '../locales/es.json'
@@ -15,7 +16,10 @@ export const initializeI18n = new Promise(resolve => {
       fallbackLng: 'en',
       lng: 'en',
       compatibilityJSON: 'v4',
-      interpolation: { escapeValue: false },
+      interpolation: {
+        escapeValue: false,
+        defaultVariables: { appName: Config.APP_NAME || 'Hologram' },
+      },
       resources: { en, es },
       debug: __DEV__,
     },
