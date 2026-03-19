@@ -11,10 +11,10 @@ import { isRegistered } from '@src/services/agent'
 import { saveInCacheServiceInfo } from '@src/services/agent/cache'
 import { getServiceInfo } from '@src/services/trustResolution'
 import { log, logError } from '@src/utils'
+import { useConfig } from './providers/ConfigProvider'
 
 const defaultServicePublicDid = Config.DEFAULT_SERVICE_PUBLIC_DID as string
 const defaultServiceAlias = Config.DEFAULT_SERVICE_ALIAS as string
-const cloudAgentPublicDid = Config.CLOUD_AGENT_PUBLIC_DID as string
 
 export const useSignUp = () => {
   const navigation = useNavigation()
@@ -23,8 +23,12 @@ export const useSignUp = () => {
   const [displayName, setDisplayName] = useState('')
   const [displayPicture, setDisplayPicture] = useState<DidCommUserProfileData['displayPicture']>()
 
+  const { devEnvs } = useConfig()
+
   const startSignUp = useCallback(async () => {
     if (!agent || !agent?.isInitialized) throw new Error('Agent not initialized')
+
+    const cloudAgentPublicDid = devEnvs.CLOUD_AGENT_PUBLIC_DID as string
 
     let { connectionRecord: cloudAgentConnection } = await agent.didcomm.oob.receiveImplicitInvitation({
       label: Config.APP_NAME || 'Hologram',

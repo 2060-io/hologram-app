@@ -39,6 +39,7 @@ import {
   DidCommCredentialV2Protocol,
   DidCommProofV2Protocol,
   DidCommHttpOutboundTransport,
+  DidCommMimeType,
 } from '@credo-ts/didcomm'
 import { DidCommPushNotificationsFcmModule } from '@credo-ts/didcomm-push-notifications'
 import { QuestionAnswerModule } from '@credo-ts/question-answer'
@@ -98,6 +99,8 @@ export const getMobileAgentModules = (config: {
       ],
     }),
     didcomm: new DidCommModule({
+      didCommMimeType: DidCommMimeType.V1,
+      didcommVersions: ['v2'],
       transports: {
         outbound: [new DidCommHttpOutboundTransport(), new TunedMobileWsOutboundTransport()],
       },
