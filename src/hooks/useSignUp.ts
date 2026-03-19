@@ -4,6 +4,7 @@ import { useCallback, useState } from 'react'
 import Config from 'react-native-config'
 
 import { updateThreadFromServiceInfo } from './agent/chat/services'
+import { useConfig } from './providers/ConfigProvider'
 
 import { useMobileAgent, useUserProfile } from '@src/hooks/agent'
 import RealmSingleton from '@src/services/RealmSingleton'
@@ -11,7 +12,6 @@ import { isRegistered } from '@src/services/agent'
 import { saveInCacheServiceInfo } from '@src/services/agent/cache'
 import { getServiceInfo } from '@src/services/trustResolution'
 import { log, logError } from '@src/utils'
-import { useConfig } from './providers/ConfigProvider'
 
 const defaultServicePublicDid = Config.DEFAULT_SERVICE_PUBLIC_DID as string
 const defaultServiceAlias = Config.DEFAULT_SERVICE_ALIAS as string
