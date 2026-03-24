@@ -47,14 +47,14 @@ setup_permissions([
    'Microphone',
 ])
 
-abstract_target '2060CommonPods' do
-  target '2060Dev' do
+abstract_target 'CommonPods' do
+  target 'Dev' do
    end
 
-   target '2060Staging' do
+   target 'Staging' do
    end
 
-   target '2060Prod' do
+   target 'Prod' do
    end
   config = use_native_modules!
   configure_react_native(config)
@@ -76,7 +76,7 @@ abstract_target '2060CommonPods' do
       installer,
       config[:reactNativePath],
       :mac_catalyst_enabled => false,
-      # :ccache_enabled => true
+      :ccache_enabled => true
     )
     installer.pods_project.targets.each do |target|
       target.build_configurations.each do |config|

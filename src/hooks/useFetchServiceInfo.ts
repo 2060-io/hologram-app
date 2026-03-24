@@ -1,20 +1,17 @@
-import { CacheModuleConfig } from '@credo-ts/core'
 import { fetch as NetInfo } from '@react-native-community/netinfo'
-import { TrustResolutionOutcome } from '@verana-labs/verre'
 import { useEffect, useState, useTransition } from 'react'
 import { useTranslation } from 'react-i18next'
-import Realm from 'realm'
 
 import { getServiceInfo as getServiceInfoApi } from '../services/trustResolution'
 
 import { useMobileAgent } from './agent/MobileAgentProvider'
-import { findChatThread, updateThread } from './agent/chat/services'
+import { updateThreadFromServiceInfo } from './agent/chat/services'
 import { useLocalRealm } from './providers/RealmProvider'
 
-import { isServiceInfo, ServiceInfo } from '@src/model'
-import { MobileAgent } from '@src/services/agent'
+import { ServiceInfo } from '@src/model'
+import { getInCacheServiceInfo, saveInCacheServiceInfo } from '@src/services/agent/cache'
 import { logError } from '@src/utils'
-import { getConnectionDisplayName, getConnectionDisplayPicture } from '@src/utils/connectionUtils'
+import { isOlderThan24Hours } from '@src/utils/dateUtils'
 import { toast } from '@src/utils/toast'
 
 /**
@@ -44,7 +41,7 @@ export const useFetchServiceInfo = (did?: string, forceFetchIfNotInCache: boolea
   useEffect(() => {
     const verifyHasToFetchInfo = async () => {
       if (!did || !agent) return
-      const cachedServiceInfo = await getStoredServiceInfo(did, agent)
+      const cachedServiceInfo = await getInCacheServiceInfo(did, agent)
       if (cachedServiceInfo) setServiceInfo(cachedServiceInfo)
       const firstConditionToFetch = forceFetchIfNotInCache
       const secondConditionToFetch =
@@ -71,8 +68,8 @@ export const useFetchServiceInfo = (did?: string, forceFetchIfNotInCache: boolea
         // if service exists in trust registry, store it in cache otherwise keep the cached one (if any)
         if (serviceInfoResponse) {
           setServiceInfo(serviceInfoResponse)
-          await setStoreServiceInfo(did, agent, serviceInfoResponse)
-          if (realm) updateChatThread({ did, serviceInfoResponse, realm, agent })
+          await saveInCacheServiceInfo(did, agent, serviceInfoResponse)
+          if (realm) updateThreadFromServiceInfo({ did, serviceInfoResponse, realm, agent })
         }
       } catch (error) {
         logError(`Error getting service ${did} info API`, error)
@@ -87,65 +84,4 @@ export const useFetchServiceInfo = (did?: string, forceFetchIfNotInCache: boolea
     failedFetchInfo,
     getServiceInfo,
   }
-}
-
-export async function getStoredServiceInfo(
-  did: string,
-  agent: MobileAgent,
-): Promise<ServiceInfo | undefined> {
-  const cache = agent.dependencyManager.resolve(CacheModuleConfig).cache
-
-  const cachedServiceInfo = await cache.get<ServiceInfo>(agent.context, `serviceInfo:${did}`)
-
-  if (cachedServiceInfo && isServiceInfo(cachedServiceInfo)) return cachedServiceInfo as ServiceInfo
-
-  // If info is not in cache, attempt to find it from an existing connection
-  const [connection] = await agent.didcomm.connections.findByInvitationDid(did)
-
-  if (connection) {
-    return {
-      did,
-      id: did,
-      minimumAgeRequired: 0,
-      name: getConnectionDisplayName(connection),
-      logoUrl: getConnectionDisplayPicture(connection),
-      status: TrustResolutionOutcome.INVALID,
-    }
-  }
-
-  return undefined
-}
-
-async function setStoreServiceInfo(did: string, agent: MobileAgent, serviceInfo: ServiceInfo) {
-  const cache = agent.dependencyManager.resolve(CacheModuleConfig).cache
-  await cache.set<ServiceInfo>(agent.context, `serviceInfo:${did}`, {
-    ...serviceInfo,
-    lastTimeUpdated: new Date().getTime(),
-  })
-}
-
-async function updateChatThread({
-  did,
-  serviceInfoResponse,
-  realm,
-  agent,
-}: {
-  did: string
-  serviceInfoResponse: ServiceInfo
-  realm: Realm
-  agent: MobileAgent
-}) {
-  const [connection] = await agent.didcomm.connections.findByInvitationDid(did)
-  if (!connection) return
-  const thread = findChatThread(realm, connection)
-  if (!thread) return
-  updateThread(realm, thread.id, {
-    topic: serviceInfoResponse.name,
-    picture: serviceInfoResponse.logoUrl,
-  })
-}
-
-const TWENTY_FOUR_HOURS_MS = 24 * 60 * 60 * 1000 // 86400000 ms
-function isOlderThan24Hours(lastTimeUpdated: number): boolean {
-  return new Date().getTime() - lastTimeUpdated >= TWENTY_FOUR_HOURS_MS
 }

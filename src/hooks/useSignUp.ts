@@ -1,10 +1,15 @@
-import { UserProfileData } from '@2060.io/credo-ts-didcomm-user-profile'
+import { DidCommUserProfileData } from '@2060.io/credo-ts-didcomm-user-profile'
 import { CommonActions, useNavigation } from '@react-navigation/native'
 import { useCallback, useState } from 'react'
 import Config from 'react-native-config'
 
+import { updateThreadFromServiceInfo } from './agent/chat/services'
+
 import { useMobileAgent, useUserProfile } from '@src/hooks/agent'
+import RealmSingleton from '@src/services/RealmSingleton'
 import { isRegistered } from '@src/services/agent'
+import { saveInCacheServiceInfo } from '@src/services/agent/cache'
+import { getServiceInfo } from '@src/services/trustResolution'
 import { log, logError } from '@src/utils'
 
 const defaultServicePublicDid = Config.DEFAULT_SERVICE_PUBLIC_DID as string
@@ -16,13 +21,13 @@ export const useSignUp = () => {
   const { agent, handleChangeAgentState } = useMobileAgent()
   const { updateUserProfileData } = useUserProfile()
   const [displayName, setDisplayName] = useState('')
-  const [displayPicture, setDisplayPicture] = useState<UserProfileData['displayPicture']>()
+  const [displayPicture, setDisplayPicture] = useState<DidCommUserProfileData['displayPicture']>()
 
   const startSignUp = useCallback(async () => {
     if (!agent || !agent?.isInitialized) throw new Error('Agent not initialized')
 
     let { connectionRecord: cloudAgentConnection } = await agent.didcomm.oob.receiveImplicitInvitation({
-      label: 'Hologram',
+      label: Config.APP_NAME || 'Hologram',
       did: cloudAgentPublicDid,
       alias: 'Cloud Agent',
       autoAcceptConnection: true,
@@ -43,10 +48,13 @@ export const useSignUp = () => {
     navigation.dispatch(CommonActions.reset({ index: 0, routes: [{ name: 'Home' }] }))
     const isSignedUp = await isRegistered(agent)
     handleChangeAgentState({ isSignedUp })
+  }, [agent, displayName, displayPicture])
 
+  const tryToConnectToDefaultService = useCallback(async () => {
+    if (!agent) return
     try {
       let { connectionRecord: defaultServiceConnection } = await agent.didcomm.oob.receiveImplicitInvitation({
-        label: 'Hologram',
+        label: Config.APP_NAME || 'Hologram',
         did: defaultServicePublicDid,
         alias: defaultServiceAlias,
         autoAcceptConnection: true,
@@ -55,16 +63,39 @@ export const useSignUp = () => {
 
       defaultServiceConnection = await agent.didcomm.connections.returnWhenIsConnected(
         defaultServiceConnection.id,
-        {
-          timeoutMs: 5000,
-        },
+        { timeoutMs: 5000 },
       )
-
-      log('connected with default service')
+      log(`connected with default service ${defaultServicePublicDid}`)
+      return true
     } catch (error) {
       logError(`Could not connect to default service: ${defaultServicePublicDid}`, error)
+      return false
     }
-  }, [agent, displayName, displayPicture])
+  }, [agent])
 
-  return { startSignUp, displayName, setDisplayName, displayPicture, setDisplayPicture }
+  const fetchDefaultConnectedServiceInfo = useCallback(async () => {
+    if (!agent) return
+    try {
+      const did = defaultServicePublicDid
+      const serviceInfoResponse = await getServiceInfo({ agent, did })
+      if (serviceInfoResponse) {
+        await saveInCacheServiceInfo(did, agent, serviceInfoResponse)
+        const realmInstance = RealmSingleton.instance
+        const realm = realmInstance.getRealm()
+        if (realm) updateThreadFromServiceInfo({ did, serviceInfoResponse, realm, agent })
+      }
+    } catch (error) {
+      logError(`Error getting service info after connect with ${defaultServicePublicDid} info API`, error)
+    }
+  }, [agent])
+
+  return {
+    startSignUp,
+    tryToConnectToDefaultService,
+    fetchDefaultConnectedServiceInfo,
+    displayName,
+    setDisplayName,
+    displayPicture,
+    setDisplayPicture,
+  }
 }

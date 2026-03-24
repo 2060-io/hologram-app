@@ -6,16 +6,13 @@ export default (theme: AppTheme) =>
   StyleSheet.create({
     container: {
       flex: 1,
+      marginTop: 20,
     },
     containerBtn: {
       marginTop: 20,
     },
     btnDisabled: {
       backgroundColor: theme.colors.grey,
-    },
-    appLogoContainer: {
-      alignItems: 'center',
-      marginTop: 20,
     },
     title: {
       fontSize: theme.fontSize.xl + 3,

@@ -2,10 +2,10 @@ import { DidCommConnectionRecord } from '@credo-ts/didcomm'
 import { useEffect, useState } from 'react'
 
 import { ConnectionItem, ConnectionsBySections } from '@src/components/Connections/ConnectionList'
-import { getStoredServiceInfo } from '@src/hooks'
 import { useConnections, useParentConnections } from '@src/hooks/agent'
 import { useMobileAgent } from '@src/hooks/agent/MobileAgentProvider'
 import { MobileAgent } from '@src/services/agent'
+import { getInCacheServiceInfo } from '@src/services/agent/cache'
 import {
   getConnectionDisplayName,
   getConnectionDisplayPicture,
@@ -35,7 +35,7 @@ const getConnectionItem = async (
   if (isConnectionService && did) {
     connectionItem = {
       ...connectionItem,
-      status: (await getStoredServiceInfo(did, agent))?.status,
+      status: (await getInCacheServiceInfo(did, agent))?.status,
     }
   }
   return connectionItem

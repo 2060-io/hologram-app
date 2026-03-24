@@ -24,8 +24,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "375723222A86CF0D00ECF0CE"
-               BuildableName = "2060Staging.app"
-               BlueprintName = "2060Staging"
+               BuildableName = "Staging.app"
+               BlueprintName = "Staging"
                ReferencedContainer = "container:hologram.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -62,8 +62,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "375723222A86CF0D00ECF0CE"
-            BuildableName = "2060Staging.app"
-            BlueprintName = "2060Staging"
+            BuildableName = "Staging.app"
+            BlueprintName = "Staging"
             ReferencedContainer = "container:hologram.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -79,8 +79,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "375723222A86CF0D00ECF0CE"
-            BuildableName = "2060Staging.app"
-            BlueprintName = "2060Staging"
+            BuildableName = "Staging.app"
+            BlueprintName = "Staging"
             ReferencedContainer = "container:hologram.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

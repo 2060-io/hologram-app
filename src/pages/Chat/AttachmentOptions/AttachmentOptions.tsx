@@ -11,7 +11,6 @@ import { IconsNames } from '@src/components/common/SvgIcon'
 import { IS_ANDROID } from '@src/constants'
 import { useImageCropPicker, ImageOrVideo, useChatActions } from '@src/hooks'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
-import { logError } from '@src/utils'
 import { compressVideo } from '@src/utils/mediaFileUtils'
 
 type Props = {
@@ -62,7 +61,7 @@ const AttachmentOptions: React.FC<Props> = ({
         duration: mediaFileInfo.duration ?? undefined,
         width: mediaFileInfo.width ?? undefined,
         height: mediaFileInfo.height ?? undefined,
-      }).catch(logError)
+      })
     }
   }
 

@@ -33,7 +33,15 @@ const ProfileCreation = ({ navigation }: Props) => {
   const { openWallet } = useWallet()
   const { addAgentActionToQueue } = useAgentActionQueue()
   const [isRegistering, startRegisterTransition] = useTransition()
-  const { startSignUp, displayName, setDisplayName, displayPicture, setDisplayPicture } = useSignUp()
+  const {
+    startSignUp,
+    tryToConnectToDefaultService,
+    fetchDefaultConnectedServiceInfo,
+    displayName,
+    setDisplayName,
+    displayPicture,
+    setDisplayPicture,
+  } = useSignUp()
   const disableGetStartedBtn = displayName.trim() === ''
 
   useEffect(() => {
@@ -85,6 +93,8 @@ const ProfileCreation = ({ navigation }: Props) => {
         await createNewWallet()
         await openWallet()
         await startSignUp()
+        const connectedToDefaultService = await tryToConnectToDefaultService()
+        if (connectedToDefaultService) fetchDefaultConnectedServiceInfo()
         await handleNotificationsPermission()
       } catch (error) {
         toast({ type: 'error', message: t('signUp.anErrorHasOccurred'), duration: 5000 })
@@ -102,7 +112,7 @@ const ProfileCreation = ({ navigation }: Props) => {
           extraScrollHeight={70}
         >
           <View style={styles.container}>
-            <AppLogo style={styles.appLogoContainer} />
+            <AppLogo />
             <Text fontFamily="EuclidCircularA-Bold" style={styles.title}>
               {t('signUp.welcomeTitle')}
             </Text>
