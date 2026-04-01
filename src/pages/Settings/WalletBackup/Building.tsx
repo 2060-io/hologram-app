@@ -5,20 +5,20 @@ import { View } from 'react-native'
 import getStyles from './styles'
 
 import { SvgIcon, Text, MainButton, OutlinedButton, Progress } from '@src/components/common'
-import { BackupProgressProps } from '@src/hooks/backup'
+import { BackupState } from '@src/hooks/backup'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 
 type Props = {
-  uploadProgress: BackupProgressProps
-  startBackupProcess: () => Promise<void>
+  backupState: BackupState
+  startBackupProcess: () => void
   abortRetryBackup: () => void
 }
 
-const Building = ({ uploadProgress, startBackupProcess, abortRetryBackup }: Props) => {
+const Building = ({ backupState, startBackupProcess, abortRetryBackup }: Props) => {
   const theme = useTheme()
   const styles = getStyles(theme)
   const { t } = useTranslation()
-  const progressColor = uploadProgress.isUploadingBackup ? theme.colors.green : theme.colors.secondaryGrey
+  const progressColor = backupState.isBuildingBackup ? theme.colors.green : theme.colors.secondaryGrey
   const color = theme.colors.secondaryGrey
   return (
     <>
@@ -26,10 +26,10 @@ const Building = ({ uploadProgress, startBackupProcess, abortRetryBackup }: Prop
         <View style={[styles.rowContainer, styles.makingBackupButton]}>
           <SvgIcon name="cloudOff" fill={color} width={26} height={26} />
           <Text style={[styles.mediumText, styles.buildBackupText]}>{t('settings.buildBackup')}</Text>
-          <Text style={[styles.mediumText, { color }]}>{`${uploadProgress.progress}%`}</Text>
+          <Text style={[styles.mediumText, { color }]}>{`${backupState.progress}%`}</Text>
         </View>
-        <Progress progress={uploadProgress.progress} progressColor={progressColor} />
-        {uploadProgress.error && (
+        <Progress progress={backupState.progress} progressColor={progressColor} />
+        {backupState.error && (
           <View style={styles.errorContainer}>
             <View style={[styles.rowContainer, styles.errorSubContainer]}>
               <View style={styles.errorIconContainer}>
@@ -38,12 +38,12 @@ const Building = ({ uploadProgress, startBackupProcess, abortRetryBackup }: Prop
               <Text style={styles.errorTitle}>{t('settings.buildBackupError')}</Text>
             </View>
             <Text fontFamily="EuclidCircularA-Medium" style={styles.mediumText}>
-              {uploadProgress.error}
+              {backupState.error}
             </Text>
           </View>
         )}
       </View>
-      {uploadProgress.error && (
+      {backupState.error && (
         <>
           <MainButton text={t('general.retry')} onPress={startBackupProcess} style={styles.retryButton} />
           <OutlinedButton text={t('general.abort')} onPress={abortRetryBackup} />

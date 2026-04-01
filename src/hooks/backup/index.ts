@@ -1,4 +1,4 @@
-export interface BackupHandler {
+export interface BackupInfoHandler {
   isFetching: boolean
   error?: boolean
   backup?: BackupInfo
@@ -11,9 +11,9 @@ export interface BackupInfo {
   downloadUrl?: string
 }
 
-export interface BackupProgressProps {
+export interface BackupState {
   progress: number
-  isUploadingBackup: boolean
+  isBuildingBackup: boolean
   error: string
 }
 

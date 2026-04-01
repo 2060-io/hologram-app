@@ -3,34 +3,29 @@ import React from 'react'
 import { StyleProp, ViewStyle } from 'react-native'
 
 import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
-import { OnBackupFinish, BackupHandler, BackupProgressProps, BackupInfo } from '@src/hooks/backup'
+import { BackupInfoHandler, BackupInfo } from '@src/hooks/backup'
 
 export interface WalletBackupPageProps extends StackScreenProps<NavigationStackParams, 'WalletBackup'> {}
 
 export interface WalletBackupProps {
   isCloudAvailable: boolean
-  makeBackup: (
-    fileToUploadLocation: string,
-    onBackupUploadSuccess: OnBackupFinish,
-    onBackupUploadFailure: (error: string) => void,
-  ) => Promise<void>
-  backupHandler?: BackupHandler
-  uploadProgress: BackupProgressProps
-  setUploadProgress: React.Dispatch<React.SetStateAction<BackupProgressProps>>
+  uploadBackupToCloud: () => void
+  backupInfoHandler?: BackupInfoHandler
   selectAccount?: () => void
   selectedGoogleAccount?: string
 }
 
 export type WalletBackupInfoProps = {
-  backupHandler: BackupHandler | undefined
+  backupInfoHandler: BackupInfoHandler | undefined
   withSuggestionMessage?: boolean
   selectAccount?: () => void
   selectedGoogleAccount?: string
+  isBuildingBackup: boolean
 }
 
 export type WalletBackupHandlerProps = {
   containerStyle: StyleProp<ViewStyle>
-  backupHandler: BackupHandler | undefined
+  backupInfoHandler: BackupInfoHandler | undefined
   onLoading: () => React.ReactNode
   onInfo: (backupInfo: BackupInfo) => React.ReactNode
   onNotExist: () => React.ReactNode

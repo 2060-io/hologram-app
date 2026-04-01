@@ -7,13 +7,13 @@ import { useICloud } from '@src/hooks'
 import { restoreProgressInitialValues } from '@src/hooks/backup'
 
 const RestoreWalletBackupiOS = () => {
-  const { isCloudAvailable, backupHandler, downloadBackup } = useICloud()
+  const { isCloudAvailable, backupInfoHandler, downloadBackup } = useICloud()
   const [restoreProgress, setRestoreProgress] = useState<RestoreProgressProps>(restoreProgressInitialValues)
 
   return (
     <BaseRestoreWalletBackup
       isCloudAvailable={isCloudAvailable}
-      backupHandler={backupHandler}
+      backupInfoHandler={backupInfoHandler}
       downloadBackup={downloadBackup(setRestoreProgress)}
       restoreProgress={restoreProgress}
       setRestoreProgress={setRestoreProgress}

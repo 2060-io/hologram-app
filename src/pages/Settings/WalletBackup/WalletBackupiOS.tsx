@@ -1,23 +1,19 @@
-import React, { useState } from 'react'
+import React from 'react'
 
-import BaseWalletBackup, { backupProgressInitialValues } from './BaseWalletBackup'
+import BaseWalletBackup from './BaseWalletBackup'
 import { WalletBackupPageProps } from './WalletBackupProps'
 
 import { useICloud } from '@src/hooks'
-import { BackupProgressProps } from '@src/hooks/backup'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const WalletBackupiOS = (props: WalletBackupPageProps) => {
-  const [uploadProgress, setUploadProgress] = useState<BackupProgressProps>(backupProgressInitialValues)
-  const { isCloudAvailable, backupHandler, uploadFileToIcloud } = useICloud()
+  const { isCloudAvailable, backupInfoHandler, uploadFileToIcloud } = useICloud()
 
   return (
     <BaseWalletBackup
       isCloudAvailable={isCloudAvailable}
-      makeBackup={uploadFileToIcloud(setUploadProgress)}
-      backupHandler={backupHandler}
-      uploadProgress={uploadProgress}
-      setUploadProgress={setUploadProgress}
+      uploadBackupToCloud={uploadFileToIcloud}
+      backupInfoHandler={backupInfoHandler}
     />
   )
 }

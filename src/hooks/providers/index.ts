@@ -7,3 +7,4 @@ export { SharedDataFromOtherAppsProvider } from './SharedDataFromOtherAppsProvid
 export { VideoCallProvider } from './VideoCallProvider'
 export { MediaPlayerProvider } from './MediaPlayerProvider'
 export { RefreshedAvatarsUrlsProvider } from './RefreshedAvatarsUrlsProvider'
+export { BuildBackupProvider } from './BuildBackupProvider'

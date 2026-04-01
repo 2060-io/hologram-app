@@ -30,6 +30,7 @@ import {
   ThemeProvider,
   VideoCallProvider,
   RefreshedAvatarsUrlsProvider,
+  BuildBackupProvider,
 } from '@src/hooks/providers'
 import { initializeI18n, language } from '@src/utils/language'
 
@@ -66,6 +67,7 @@ const ProvidersTree = buildProvidersTree([
   [VideoCallProvider],
   [ScreenLockProvider],
   [SharedDataFromOtherAppsProvider],
+  [BuildBackupProvider],
 ])
 
 const App = () => {

@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, ActivityIndicator, TouchableOpacity } from 'react-native'
 
@@ -14,51 +14,55 @@ import {
 import { getFileSize } from '@src/utils'
 import { dateToString } from '@src/utils/dateUtils'
 
-const WalletBackupHandler = ({
+const WalletBackupInfoHandler = ({
   containerStyle,
-  backupHandler,
+  backupInfoHandler,
   onLoading,
   onInfo,
   onNotExist,
   onError,
 }: WalletBackupHandlerProps) => (
   <View style={containerStyle}>
-    {backupHandler?.isFetching && onLoading()}
-    {backupHandler?.backup && onInfo(backupHandler.backup)}
-    {backupHandler?.error && onError()}
-    {!backupHandler?.isFetching && !backupHandler?.backup && !backupHandler?.error && onNotExist()}
+    {backupInfoHandler?.isFetching && onLoading()}
+    {backupInfoHandler?.backup && onInfo(backupInfoHandler.backup)}
+    {backupInfoHandler?.error && onError()}
+    {!backupInfoHandler?.isFetching &&
+      !backupInfoHandler?.backup &&
+      !backupInfoHandler?.error &&
+      onNotExist()}
   </View>
 )
 
 const WalletBackupInfo = ({
-  backupHandler,
+  backupInfoHandler,
   withSuggestionMessage = true,
   selectAccount = () => {},
   selectedGoogleAccount,
+  isBuildingBackup,
 }: WalletBackupInfoProps) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
 
-  const renderGoogleSelectedAccount = useMemo(() => {
+  const renderGoogleSelectedAccount = () => {
     if (IS_IOS || !selectedGoogleAccount) return null
     return (
-      <TouchableOpacity onPress={selectAccount}>
+      <TouchableOpacity onPress={selectAccount} disabled={isBuildingBackup}>
         <Text fontFamily="EuclidCircularA-Medium" style={[styles.smallText, styles.suggestionText]}>
           {t('settings.googleAccount')}
         </Text>
         <Text style={[styles.smallText]}>{selectedGoogleAccount}</Text>
       </TouchableOpacity>
     )
-  }, [selectedGoogleAccount])
+  }
 
   return (
     <View style={styles.backupInfoContainer}>
       <View style={styles.iconContainer}>
         <SvgIcon name="cloudDownload" width={'60%'} height={'60%'} fill={'#A1B0B5'} />
       </View>
-      <WalletBackupHandler
-        backupHandler={backupHandler}
+      <WalletBackupInfoHandler
+        backupInfoHandler={backupInfoHandler}
         containerStyle={styles.subContainer}
         onLoading={() => <ActivityIndicator size="large" color={theme.colors.green} />}
         onInfo={backupInfo => (
@@ -69,7 +73,7 @@ const WalletBackupInfo = ({
             <Text fontFamily="EuclidCircularA-Medium" style={styles.mediumText}>
               {`${t('settings.backupSize')}: ${getFileSize(Number(backupInfo.size))}`}
             </Text>
-            {renderGoogleSelectedAccount}
+            {renderGoogleSelectedAccount()}
             {withSuggestionMessage && (
               <Text style={[styles.smallText, styles.suggestionText]}>
                 {t('settings.backupSuggestion', { cloud: IS_IOS ? 'iCloud Drive' : 'Google Drive' })}
@@ -87,7 +91,7 @@ const WalletBackupInfo = ({
                 {t('settings.cloudNotSync')}
               </Text>
             )}
-            {renderGoogleSelectedAccount}
+            {renderGoogleSelectedAccount()}
           </>
         )}
         onError={() => (

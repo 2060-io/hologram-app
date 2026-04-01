@@ -1,4 +1,6 @@
-import React from 'react'
+import { ParamListBase, useIsFocused, useNavigation } from '@react-navigation/native'
+import { StackNavigationProp } from '@react-navigation/stack'
+import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ScrollView, View } from 'react-native'
 
@@ -8,49 +10,38 @@ import PasswordDoesNotExists from './PasswordDoesNotExists'
 import { WalletBackupProps } from './WalletBackupProps'
 import getStyles from './styles'
 
-import { WalletBackupInfo, ModalConfirmAction } from '@src/components'
+import { WalletBackupInfo } from '@src/components'
 import { Text, Switch, SvgIcon, MainButton } from '@src/components/common'
 import { Option } from '@src/components/common/OptionsList'
 import { IS_ANDROID, IS_IOS } from '@src/constants'
-import { useBuildBackup } from '@src/hooks'
-import { BackupProgressProps } from '@src/hooks/backup'
+import { useGlobalBuildBackup } from '@src/hooks/providers/BuildBackupProvider'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
-
-export const backupProgressInitialValues: BackupProgressProps = {
-  progress: 0,
-  isUploadingBackup: false,
-  error: '',
-}
+import { getBackupKey } from '@src/utils/walletBackUpUtils'
 
 const BaseWalletBackup = ({
   isCloudAvailable,
-  makeBackup,
-  backupHandler,
-  uploadProgress,
-  setUploadProgress,
+  uploadBackupToCloud,
+  backupInfoHandler,
   selectAccount = () => {},
   selectedGoogleAccount,
 }: WalletBackupProps) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
+  const { backupState, includeVideos, onToggleIncludeVideos, abortRetryBackup } = useGlobalBuildBackup()
+  const [backupPassword, setBackupPassword] = useState<string | undefined>('')
+  const navigation: StackNavigationProp<ParamListBase> = useNavigation()
+  const isFocused = useIsFocused()
 
-  const {
-    backupPassword,
-    startBackupProcess,
-    abortRetryBackup,
-    goToChangePassword,
-    includeVideos,
-    onToggleIncludeVideos,
-    showConfirmLeaveScreen,
-    closeConfirmLeaveScreen,
-    leaveScreen,
-  } = useBuildBackup({
-    backupProgressInitialValues,
-    uploadBackup: makeBackup,
-    uploadProgress,
-    setUploadProgress,
-  })
+  useEffect(() => {
+    const getStoredBackupPassword = async () => {
+      const storedBackup = await getBackupKey()
+      setBackupPassword(storedBackup)
+    }
+    isFocused && getStoredBackupPassword()
+  }, [isFocused])
+
+  const goToChangePassword = () => navigation.navigate('ChangeBackupPassword')
 
   const options: Option[] = [
     {
@@ -74,15 +65,16 @@ const BaseWalletBackup = ({
         <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
           <View style={styles.subContainer}>
             <WalletBackupInfo
-              backupHandler={backupHandler}
+              backupInfoHandler={backupInfoHandler}
               selectAccount={selectAccount}
               selectedGoogleAccount={selectedGoogleAccount}
+              isBuildingBackup={backupState.isBuildingBackup}
             />
             {backupPassword ? (
-              uploadProgress.isUploadingBackup || uploadProgress.error ? (
+              backupState.isBuildingBackup || backupState.error ? (
                 <Building
-                  uploadProgress={uploadProgress}
-                  startBackupProcess={startBackupProcess}
+                  backupState={backupState}
+                  startBackupProcess={uploadBackupToCloud}
                   abortRetryBackup={abortRetryBackup}
                 />
               ) : (
@@ -94,12 +86,12 @@ const BaseWalletBackup = ({
                     mediumText: styles.mediumText,
                   }}
                   tertiaryText={theme.colors.tertiaryText}
-                  startBackupProcess={startBackupProcess}
+                  startBackupProcess={uploadBackupToCloud}
                 />
               )
             ) : (
-              !backupHandler?.error &&
-              !backupHandler?.isFetching && (
+              !backupInfoHandler?.error &&
+              !backupInfoHandler?.isFetching && (
                 <PasswordDoesNotExists
                   styles={{
                     container: [styles.card, styles.passwordDoesNotExistsContainer],
@@ -121,16 +113,6 @@ const BaseWalletBackup = ({
           {IS_ANDROID && <MainButton text={t('general.retry')} onPress={selectAccount} />}
         </View>
       )}
-      <ModalConfirmAction
-        visible={showConfirmLeaveScreen}
-        title={t('settings.abortBackupBuild')}
-        subTitle={''}
-        confirmText={t('settings.yesAbort')}
-        cancelText={'No'}
-        onClose={closeConfirmLeaveScreen}
-        onConfirm={leaveScreen}
-        onCancel={closeConfirmLeaveScreen}
-      />
     </View>
   )
 }

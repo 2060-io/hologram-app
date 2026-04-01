@@ -9,20 +9,14 @@ import {
   query,
   unlink,
   createDir,
-  upload,
   download,
   exist,
 } from 'react-native-cloud-store'
 
 import { BACKUP_NAME, BACKUP_ZIP_FILE_PATH, existsBackupFile } from '../utils/walletBackUpUtils'
 
-import {
-  BackupHandler,
-  BackupProgressProps,
-  OnBackupFinish,
-  RestoreProgress,
-  restoreProgressInitialValues,
-} from './backup'
+import { BackupInfoHandler, RestoreProgress, restoreProgressInitialValues } from './backup'
+import { useGlobalBuildBackup } from './providers/BuildBackupProvider'
 import { useAppState } from './useAppState'
 
 import { logError } from '@src/utils'
@@ -32,8 +26,9 @@ export const useICloud = () => {
   const iCloudBackupFolderPath = PathUtils.join(defaultICloudContainerPath ?? '', 'Documents')
   const backupICloudPath = `${iCloudBackupFolderPath}/${BACKUP_NAME}`
   const [isCloudAvailable, setIsCloudAvailable] = useState(false)
-  const [backupHandler, setBackupHandler] = useState<BackupHandler>({ isFetching: false })
+  const [backupInfoHandler, setBackupInfoHandler] = useState<BackupInfoHandler>({ isFetching: false })
   const { isAppActive } = useAppState()
+  const { globalUploadFileToIcloud } = useGlobalBuildBackup()
 
   useEffect(() => {
     const iCloudIdentityChangeEvent = registerICloudIdentityDidChangeEvent()
@@ -59,10 +54,7 @@ export const useICloud = () => {
   }, [isAppActive])
 
   useEffect(() => {
-    const checkBackup = async () => {
-      await getBackupInfo()
-    }
-    if (isCloudAvailable && !backupHandler.backup) checkBackup()
+    if (isCloudAvailable && !backupInfoHandler.backup) getBackupInfo()
   }, [isCloudAvailable, isAppActive])
 
   const existsBackup = async (): Promise<boolean> => {
@@ -71,10 +63,10 @@ export const useICloud = () => {
   }
 
   const getBackupInfo = async () => {
-    setBackupHandler({ isFetching: true })
+    setBackupInfoHandler({ isFetching: true })
     try {
       const info = await query(backupICloudPath)
-      setBackupHandler({
+      setBackupInfoHandler({
         isFetching: false,
         backup:
           info.fileSize && info.modifyTimestamp
@@ -85,41 +77,16 @@ export const useICloud = () => {
             : undefined,
       })
     } catch (error) {
-      setBackupHandler({ isFetching: false, error: true })
+      setBackupInfoHandler({ isFetching: false, error: true })
       logError('Error getting file info', error)
-      return { exists: false }
     }
   }
 
-  const uploadFileToIcloud =
-    (setUploadProgress: React.Dispatch<React.SetStateAction<BackupProgressProps>>) =>
-    async (
-      fileToUploadLocation: string,
-      onBackupUploadSuccess: OnBackupFinish,
-      onBackupUploadFailure: (error: string) => void,
-    ) => {
-      try {
-        if (await existsBackup()) await unlink(backupICloudPath)
-        else createDir(iCloudBackupFolderPath)
-
-        upload(fileToUploadLocation, backupICloudPath, {
-          onProgress(data) {
-            setUploadProgress(prev => ({ ...prev, progress: data?.progress }))
-            if (data?.progress === 100) {
-              onBackupUploadSuccess()
-              // Timeout is set because after finish backup upload process to icloud drive it takes
-              // a while to have metadata of file updated to fetch info of it again
-              setTimeout(() => {
-                getBackupInfo()
-              }, 1000)
-            }
-          },
-        })
-      } catch (error) {
-        onBackupUploadFailure(`${error}`)
-        logError('Error uploading file to iCloud', error)
-      }
-    }
+  const uploadFileToIcloud = async () => {
+    if (await existsBackup()) await unlink(backupICloudPath)
+    else createDir(iCloudBackupFolderPath)
+    globalUploadFileToIcloud({ backupICloudPath, getBackupInfo })
+  }
 
   const downloadBackup = (setRestoreProgress: React.Dispatch<React.SetStateAction<RestoreProgress>>) => () =>
     new Promise(async resolve => {
@@ -151,7 +118,7 @@ export const useICloud = () => {
 
   return {
     isCloudAvailable,
-    backupHandler,
+    backupInfoHandler,
     uploadFileToIcloud,
     downloadBackup,
   }

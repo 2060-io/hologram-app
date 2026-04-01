@@ -1,12 +1,12 @@
 import { StyleProp, ViewStyle } from 'react-native'
 
-import { BackupHandler, RestoreProgress } from '@src/hooks/backup'
+import { BackupInfoHandler, RestoreProgress } from '@src/hooks/backup'
 
 export interface RestoreProgressProps extends RestoreProgress {}
 
 export type BaseRestoreWalletBackupProps = {
   isCloudAvailable: boolean
-  backupHandler: BackupHandler | undefined
+  backupInfoHandler: BackupInfoHandler | undefined
   downloadBackup: () => Promise<boolean | unknown>
   restoreProgress: RestoreProgressProps
   setRestoreProgress: React.Dispatch<React.SetStateAction<RestoreProgressProps>>

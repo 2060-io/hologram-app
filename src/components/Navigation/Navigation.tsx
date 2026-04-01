@@ -152,7 +152,7 @@ const Navigation = ({ isSignedUp, agent, theme }: NavigationProps) => {
           <Stack.Screen name="ConnectionsForNewChat" component={ConnectionsForNewChat} />
           <Stack.Screen name="Privacy" component={Privacy} />
           <Stack.Screen name="Developer" component={Developer} />
-          <Stack.Screen name="WalletBackup" component={WalletBackup} options={{ gestureEnabled: false }} />
+          <Stack.Screen name="WalletBackup" component={WalletBackup} />
           <Stack.Screen name="ChangeBackupPassword" component={ChangeBackupPassword} />
           <Stack.Screen name="CredentialDetails" component={CredentialDetails} />
           <Stack.Screen name="CredentialPresented" component={CredentialPresented} />
