@@ -42,11 +42,7 @@ export const useSignUp = () => {
       timeoutMs: 5000,
     })
 
-    const mediationRecord = await agent.didcomm.mediationRecipient.requestAndAwaitGrant(
-      cloudAgentConnection,
-      5000,
-    )
-    await agent.didcomm.mediationRecipient.setDefaultMediator(mediationRecord)
+    const mediationRecord = await agent.didcomm.mediationRecipient.provisionV2(cloudAgentConnection)
     await agent.didcomm.mediationRecipient.initiateMessagePickup()
     updateUserProfileData({ displayName: displayName.trim(), displayPicture })
     navigation.dispatch(CommonActions.reset({ index: 0, routes: [{ name: 'Home' }] }))

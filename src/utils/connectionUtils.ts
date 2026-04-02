@@ -7,7 +7,7 @@ import {
   PictureData,
   getConnectionProfile,
 } from '@2060.io/credo-ts-didcomm-user-profile'
-import { AgentContext, JsonTransformer, tryParseDid } from '@credo-ts/core'
+import { AgentContext, DidKey, JsonTransformer, tryParseDid } from '@credo-ts/core'
 import {
   DidCommConnectionRecord,
   DidCommConnectionRepository,
@@ -19,6 +19,7 @@ import {
   DidCommMediationRecipientService,
   DidCommOutOfBandInvitation,
   DidCommOutOfBandRole,
+  KeylistUpdateActionV2,
 } from '@credo-ts/didcomm'
 
 import { log, logError, logWarn } from './log'
@@ -182,16 +183,31 @@ const updateConnectionMediationKeylist = async (
     if (did.didDocument) {
       const mediationRecipientService = agent.dependencyManager.resolve(DidCommMediationRecipientService)
       const mediationRecord = await mediationRecipientService.getById(agent.context, record.mediatorId)
-      await mediationRecipientService.keylistUpdateAndAwait(
-        agent.context,
-        mediationRecord,
-        did.didDocument.getRecipientKeysWithVerificationMethod({ mapX25519ToEd25519: true }).map(item => {
-          return {
+
+      if (mediationRecord.mediationProtocolVersion === '2.0') {
+        // CM 2.0: keylist stores recipient DIDs (did:key), not raw keys
+        const v2Action =
+          action === DidCommKeylistUpdateAction.add ? KeylistUpdateActionV2.add : KeylistUpdateActionV2.remove
+        const recipientDids = did.didDocument
+          .getRecipientKeysWithVerificationMethod({ mapX25519ToEd25519: true })
+          .map(item => new DidKey(item.publicJwk).did)
+
+        await mediationRecipientService.keylistUpdateAndAwaitV2(
+          agent.context,
+          mediationRecord,
+          recipientDids.map(recipientDid => ({ recipientDid, action: v2Action })),
+        )
+      } else {
+        // CM 1.0: keylist stores recipient keys
+        await mediationRecipientService.keylistUpdateAndAwait(
+          agent.context,
+          mediationRecord,
+          did.didDocument.getRecipientKeysWithVerificationMethod({ mapX25519ToEd25519: true }).map(item => ({
             recipientKey: item.publicJwk,
             action,
-          }
-        }),
-      )
+          })),
+        )
+      }
     }
   }
 }

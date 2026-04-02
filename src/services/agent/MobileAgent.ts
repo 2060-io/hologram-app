@@ -122,6 +122,7 @@ export const getMobileAgentModules = (config: {
       },
       mediationRecipient: {
         mediatorPickupStrategy: config.mediatorPickupStrategy,
+        mediationProtocolVersions: ['2.0'],
         maximumMessagePickup: 100,
         baseMediatorReconnectionIntervalMs: 1000,
         maximumMediatorReconnectionIntervalMs: 8000,
