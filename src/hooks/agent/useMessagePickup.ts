@@ -56,7 +56,7 @@ export async function initiateMessagePickup(agent: MobileAgent) {
   // Initiate message pickup from the mediator. Passing no mediator, will use default mediator
   await agent.didcomm.mediationRecipient.initiateMessagePickup(
     undefined,
-    DidCommMediatorPickupStrategy.PickUpV2LiveMode,
+    DidCommMediatorPickupStrategy.PickUpV3LiveMode,
   )
 }
 

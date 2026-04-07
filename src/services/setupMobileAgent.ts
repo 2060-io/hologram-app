@@ -24,7 +24,7 @@ interface MobileAgentConfig {
 
 const baseAgentConfig: MobileAgentConfig = {
   agentDependencies,
-  mediatorPickupStrategy: DidCommMediatorPickupStrategy.None,
+  mediatorPickupStrategy: DidCommMediatorPickupStrategy.PickUpV3LiveMode,
 }
 
 const getIndyVDRProxyBaseUrl = async () => {
@@ -39,10 +39,10 @@ let logger: Logger
 export const setupMobileAgent = async (): Promise<MobileAgent> => {
   const indyVDRProxyBaseUrl = await getIndyVDRProxyBaseUrl()
   if (__DEV__) {
-    logger = new HologramCustomLogger(LogLevel.debug)
+    logger = new HologramCustomLogger(LogLevel.Debug)
   } else {
     const logsEnabled = await areLogsEnabled()
-    logger = new HologramCustomLogger(logsEnabled ? LogLevel.debug : LogLevel.warn)
+    logger = new HologramCustomLogger(logsEnabled ? LogLevel.Debug : LogLevel.Warn)
   }
   const agent = createMobileAgent({
     config: {

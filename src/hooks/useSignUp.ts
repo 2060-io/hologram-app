@@ -41,20 +41,15 @@ export const useSignUp = () => {
     cloudAgentConnection = await agent.didcomm.connections.returnWhenIsConnected(cloudAgentConnection.id, {
       timeoutMs: 5000,
     })
-
     // CM 2.0: individual steps instead of all-in-one provisionV2
-    const mediationRecord = await agent.didcomm.mediationRecipient.requestAndAwaitGrantV2(cloudAgentConnection)
+    const mediationRecord =
+      await agent.didcomm.mediationRecipient.requestAndAwaitGrantV2(cloudAgentConnection)
     await agent.didcomm.mediationRecipient.setDefaultMediator(mediationRecord)
-
     // Register our connection DID in the mediator's keylist
     const connectionRecord = await agent.didcomm.connections.getById(cloudAgentConnection.id)
     if (connectionRecord.did) {
-      await agent.didcomm.mediationRecipient.notifyKeylistUpdateV2(
-        mediationRecord,
-        connectionRecord.did,
-      )
+      await agent.didcomm.mediationRecipient.notifyKeylistUpdateV2(mediationRecord, connectionRecord.did)
     }
-
     await agent.didcomm.mediationRecipient.initiateMessagePickup()
     updateUserProfileData({ displayName: displayName.trim(), displayPicture })
     navigation.dispatch(CommonActions.reset({ index: 0, routes: [{ name: 'Home' }] }))
