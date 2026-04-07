@@ -57,7 +57,7 @@ export class TunedMobileWsOutboundTransport implements DidCommOutboundTransport 
       const didDoc = await this.agentContext
         .resolve(DidsApi)
         .resolveDidDocument(this.defaultMediatorConnection.theirDid)
-      this.mediatorEndpoints = didDoc.didCommServices.map(service => service.serviceEndpoint)
+      this.mediatorEndpoints = didDoc.didCommServices.map(service => service.serviceEndpoint as string)
     }
 
     this.startIdleSocketTimer()

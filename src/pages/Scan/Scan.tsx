@@ -1,5 +1,5 @@
 /* eslint-disable no-underscore-dangle */
-import { Buffer } from '@credo-ts/core'
+import { TypedArrayEncoder } from '@credo-ts/core'
 import { DidCommOutOfBandInvitation } from '@credo-ts/didcomm'
 import { useIsFocused } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
@@ -93,7 +93,7 @@ const Scan = ({ navigation }: Props) => {
       const parsedUrl = queryString.parseUrl(url)
       const shortUrl =
         ((parsedUrl.query.oobUrl as string | undefined) ?? (parsedUrl.query._url as string | undefined))
-          ? Buffer.from(parsedUrl.query._url as string, 'base64').toString('ascii')
+          ? TypedArrayEncoder.toUtf8String(TypedArrayEncoder.fromBase64(parsedUrl.query._url as string))
           : undefined
       const invitation = await agent.didcomm.oob.parseInvitation(shortUrl ?? url)
       await processDidcommInvitation(invitation)

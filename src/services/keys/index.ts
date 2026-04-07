@@ -67,6 +67,6 @@ export async function deleteAllKeys() {
 export function aes256KeyFromSeed(seed: string) {
   return Key.fromSeed({
     algorithm: KeyAlgorithm.AesA256CbcHs512,
-    seed: TypedArrayEncoder.fromString(seed),
+    seed: TypedArrayEncoder.fromUtf8String(seed),
   }).secretBytes
 }
