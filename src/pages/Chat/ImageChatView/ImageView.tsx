@@ -1,5 +1,5 @@
 import React, { memo, useState } from 'react'
-import { Image, StyleProp, ImageStyle, TouchableOpacity } from 'react-native'
+import { StyleProp, ImageStyle, TouchableOpacity } from 'react-native'
 
 import { MediaInfo } from '../ChatProps'
 
@@ -7,6 +7,7 @@ import LightboxHeader from './LightboxHeader'
 import getStyles from './styles'
 
 import { LightboxModal } from '@src/components'
+import { UniversalImage } from '@src/components/common'
 import { useChat } from '@src/hooks/agent'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { ChatEntryMessage } from '@src/pages/Chat/ChatMessage/Props'
@@ -51,11 +52,11 @@ const ImageView = memo((props: ImageView) => {
         }
       >
         <TouchableOpacity onPress={handleControls} activeOpacity={1}>
-          <Image source={{ uri: imageUri }} style={styles.imageLightbox} />
+          <UniversalImage source={{ uri: imageUri }} style={styles.imageLightbox} />
         </TouchableOpacity>
       </LightboxModal>
       <TouchableOpacity onPress={onToggleModalLightbox} onLongPress={onLongPress}>
-        <Image style={props.style} source={{ uri: imagePreviewUri }} />
+        <UniversalImage style={props.style} source={{ uri: imagePreviewUri }} />
       </TouchableOpacity>
     </>
   )
