@@ -1,11 +1,11 @@
 import { Skeleton } from 'moti/skeleton'
 import React from 'react'
-import { View, Image, TouchableOpacity, StyleProp, ImageStyle, ViewStyle } from 'react-native'
+import { View, TouchableOpacity, StyleProp, ImageStyle, ViewStyle } from 'react-native'
 import EIdReader from 'react-native-eid-reader'
 
 import getStyles from './styles'
 
-import { Text } from '@src/components/common'
+import { Text, UniversalImage } from '@src/components/common'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { sanitizeString } from '@src/services/agent/display'
 import { CredentialAttributeRow } from '@src/services/agent/formatCredentialSubject'
@@ -16,12 +16,15 @@ type ImageSectionProps = {
   imageStyle: StyleProp<ImageStyle>
 }
 
-const ImageAttribute = ({ image, onPressDetailImage, imageStyle }: ImageSectionProps) => {
-  const jpegImage = EIdReader.imageDataUrlToJpegDataUrl(image)
+const isJpeg2000DataUrl = (uri: string) =>
+  uri.includes('data:image/jp2') || uri.includes('data:image/jpeg2000')
 
-  return jpegImage ? (
-    <TouchableOpacity onPress={() => onPressDetailImage?.(jpegImage)}>
-      <Image style={imageStyle} resizeMode="contain" source={{ uri: jpegImage }} />
+const ImageAttribute = ({ image, onPressDetailImage, imageStyle }: ImageSectionProps) => {
+  const imageUri = isJpeg2000DataUrl(image) ? EIdReader.imageDataUrlToJpegDataUrl(image) : image
+
+  return imageUri ? (
+    <TouchableOpacity onPress={() => onPressDetailImage?.(imageUri)}>
+      <UniversalImage style={imageStyle} resizeMode="contain" source={{ uri: imageUri }} />
     </TouchableOpacity>
   ) : null
 }

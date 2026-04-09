@@ -1,10 +1,10 @@
 import React, { memo } from 'react'
-import { TouchableOpacity, View, Image } from 'react-native'
+import { TouchableOpacity, View } from 'react-native'
 
 import { ContextualMenuProps } from './ContextualMenuProps'
 import getStyles from './styles'
 
-import { Text } from '@src/components/common'
+import { Text, UniversalImage } from '@src/components/common'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 
 const ContextualMenu = ({ onSelectOption, connectionIconUrl, menu }: ContextualMenuProps) => {
@@ -15,7 +15,7 @@ const ContextualMenu = ({ onSelectOption, connectionIconUrl, menu }: ContextualM
     <View style={styles.containerActionsMenu}>
       <View style={styles.containerMenuHeader}>
         {connectionIconUrl && (
-          <Image source={{ uri: connectionIconUrl }} resizeMethod="resize" style={styles.image} />
+          <UniversalImage source={{ uri: connectionIconUrl }} resizeMethod="resize" style={styles.image} />
         )}
         <View style={styles.containerActionHeader}>
           {menu.title && (

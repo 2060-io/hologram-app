@@ -1,8 +1,9 @@
 import React from 'react'
-import { Image, View, TouchableWithoutFeedback } from 'react-native'
+import { View, TouchableWithoutFeedback } from 'react-native'
 
 import Modal from '../Modal'
 import SvgIcon from '../SvgIcon'
+import UniversalImage from '../UniversalImage'
 
 import styles from './styles'
 
@@ -18,7 +19,7 @@ const FullScreenImage = ({ showFullScreenImage, closeFullScreenImage, imageUri }
       <TouchableWithoutFeedback onPress={closeFullScreenImage}>
         <View style={styles.container}>
           <SvgIcon name="close" width={30} height={30} fill="white" style={styles.closeIcon} />
-          <Image style={styles.image} resizeMode="contain" source={{ uri: imageUri }} />
+          <UniversalImage style={styles.image} resizeMode="contain" source={{ uri: imageUri }} />
         </View>
       </TouchableWithoutFeedback>
     </Modal>

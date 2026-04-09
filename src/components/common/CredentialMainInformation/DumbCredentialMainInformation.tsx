@@ -1,12 +1,12 @@
 import { Skeleton } from 'moti/skeleton'
 import React, { memo, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, Image, TouchableOpacity, ActivityIndicator } from 'react-native'
+import { View, TouchableOpacity, ActivityIndicator } from 'react-native'
 import { uses24HourClock } from 'react-native-localize'
-import { SvgUri } from 'react-native-svg'
 
 import SvgIcon from '../SvgIcon'
 import Text from '../Text'
+import UniversalImage from '../UniversalImage'
 import VerifiedIcon from '../VerifiedIcon'
 
 import { DumbCredentialMainInformationProps } from './Pros'
@@ -49,17 +49,11 @@ const DumbCredentialMainInformation = ({
       )
     }
     return (
-      <>
-        {uri?.endsWith('.svg') ? (
-          <SvgUri uri={uri} width={styles.image.width} height={styles.image.height} />
-        ) : (
-          <Image
-            style={styles.image}
-            resizeMode="contain"
-            source={uri?.length ? { uri } : imagePlaceholder}
-          />
-        )}
-      </>
+      <UniversalImage
+        style={styles.image}
+        resizeMode="contain"
+        source={uri?.length ? { uri } : imagePlaceholder}
+      />
     )
   }, [isFetchingInfo, failedFetchInfo, uri])
 

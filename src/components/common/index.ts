@@ -18,6 +18,7 @@ import Switch from './Switch'
 import Text from './Text'
 import TextInput from './TextInput'
 import TextInputPassword from './TextInputPassword'
+import UniversalImage from './UniversalImage'
 import VerifiedIcon from './VerifiedIcon'
 
 export * from './ServiceInformation'
@@ -45,4 +46,5 @@ export {
   RadioButton,
   FullScreenImage,
   ConnectionRefusedByAge,
+  UniversalImage,
 }

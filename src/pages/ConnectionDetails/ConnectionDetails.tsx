@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, Image } from 'react-native'
+import { View } from 'react-native'
 import { uses24HourClock } from 'react-native-localize'
 
 import BaseConnectionDetails, { ConnectionDetailsProps, WrapperProps } from './BaseConnectionDetails'
@@ -8,6 +8,7 @@ import ConnectionDetailsForService from './ConnectionDetailsForService'
 import getStyles from './styles'
 
 import { Avatar, FullScreenImage, Text } from '@src/components/common'
+import UniversalImage from '@src/components/common/UniversalImage'
 import { useConnectionById } from '@src/hooks/agent'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import {
@@ -81,7 +82,10 @@ const ConnectionDetails = (props: ConnectionDetailsProps) => {
                 <View style={styles.relatedConnectionContainer}>
                   <Text style={styles.connectionRelatedToText}>{t('connection.connectionManagedBy')}</Text>
                   {parentConnectionPicture.length > 0 && (
-                    <Image source={{ uri: parentConnectionPicture }} style={styles.connectionRelatedToImg} />
+                    <UniversalImage
+                      source={{ uri: parentConnectionPicture }}
+                      style={styles.connectionRelatedToImg}
+                    />
                   )}
                   <Text style={styles.connectionRelatedToText}>{parentConnectionName}</Text>
                 </View>
