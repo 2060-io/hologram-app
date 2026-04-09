@@ -1,8 +1,12 @@
 import React from 'react'
 import { Image, ImageProps, ImageStyle, StyleProp } from 'react-native'
+import EIdReader from 'react-native-eid-reader'
 import { NumberProp, SvgUri } from 'react-native-svg'
 
 const isSvgUri = (uri?: string) => uri?.endsWith('.svg') || uri?.includes('data:image/svg+xml')
+
+const isJpeg2000DataUrl = (uri?: string) =>
+  uri?.includes('data:image/jp2') || uri?.includes('data:image/jpeg2000')
 
 type Props = ImageProps & {
   svgWidth?: NumberProp
@@ -35,7 +39,10 @@ const UniversalImage = ({ svgWidth, svgHeight, onImageError, ...imageProps }: Pr
     )
   }
 
-  return <Image {...imageProps} />
+  const resolvedSource =
+    uri && isJpeg2000DataUrl(uri) ? { uri: EIdReader.imageDataUrlToJpegDataUrl(uri) } : imageProps.source
+
+  return <Image {...imageProps} source={resolvedSource} />
 }
 
 export { isSvgUri }

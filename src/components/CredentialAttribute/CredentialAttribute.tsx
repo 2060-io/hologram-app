@@ -1,7 +1,6 @@
 import { Skeleton } from 'moti/skeleton'
 import React from 'react'
 import { View, TouchableOpacity, StyleProp, ImageStyle, ViewStyle } from 'react-native'
-import EIdReader from 'react-native-eid-reader'
 
 import getStyles from './styles'
 
@@ -16,15 +15,10 @@ type ImageSectionProps = {
   imageStyle: StyleProp<ImageStyle>
 }
 
-const isJpeg2000DataUrl = (uri: string) =>
-  uri.includes('data:image/jp2') || uri.includes('data:image/jpeg2000')
-
 const ImageAttribute = ({ image, onPressDetailImage, imageStyle }: ImageSectionProps) => {
-  const imageUri = isJpeg2000DataUrl(image) ? EIdReader.imageDataUrlToJpegDataUrl(image) : image
-
-  return imageUri ? (
-    <TouchableOpacity onPress={() => onPressDetailImage?.(imageUri)}>
-      <UniversalImage style={imageStyle} resizeMode="contain" source={{ uri: imageUri }} />
+  return image ? (
+    <TouchableOpacity onPress={() => onPressDetailImage?.(image)}>
+      <UniversalImage style={imageStyle} resizeMode="contain" source={{ uri: image }} />
     </TouchableOpacity>
   ) : null
 }
