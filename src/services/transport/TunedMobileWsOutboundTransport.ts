@@ -42,6 +42,18 @@ export class TunedMobileWsOutboundTransport implements DidCommOutboundTransport 
     return record ? record[1].opened : false
   }
 
+  public closeSocketByConnectionId(connectionId: string) {
+    for (const [, item] of this.transportTable) {
+      if (item.connectionIds.has(connectionId)) {
+        item.ws.removeEventListener('message', this.handleMessageEvent)
+        item.ws.close()
+        this.logger.debug(`Socket closed for connectionId '${connectionId}'`)
+        return true
+      }
+    }
+    return false
+  }
+
   public async start(agentContext: AgentContext): Promise<void> {
     this.agentContext = agentContext
     const agentConfig = agentContext.config
@@ -122,7 +134,7 @@ export class TunedMobileWsOutboundTransport implements DidCommOutboundTransport 
   }) {
     // If we already have a socket connection use it
     let socket = this.transportTable.get(socketId)
-    if (!socket || socket.ws.readyState === this.WebSocketClass.CLOSING) {
+    if (!socket || socket.ws.readyState === this.WebSocketClass.CLOSING || socket.ws.readyState === this.WebSocketClass.CLOSED) {
       if (!endpoint) {
         throw new CredoError("Missing endpoint. I don't know how and where to send the message.")
       }
