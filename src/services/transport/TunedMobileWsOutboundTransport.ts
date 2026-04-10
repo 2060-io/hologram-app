@@ -134,7 +134,11 @@ export class TunedMobileWsOutboundTransport implements DidCommOutboundTransport 
   }) {
     // If we already have a socket connection use it
     let socket = this.transportTable.get(socketId)
-    if (!socket || socket.ws.readyState === this.WebSocketClass.CLOSING || socket.ws.readyState === this.WebSocketClass.CLOSED) {
+    if (
+      !socket ||
+      socket.ws.readyState === this.WebSocketClass.CLOSING ||
+      socket.ws.readyState === this.WebSocketClass.CLOSED
+    ) {
       if (!endpoint) {
         throw new CredoError("Missing endpoint. I don't know how and where to send the message.")
       }
