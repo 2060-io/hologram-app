@@ -168,7 +168,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: node_modules
-          key: node-modules-${{ hashFiles('yarn.lock') }}
+          key: node-modules-${{ hashFiles('yarn.lock', 'patches/**') }}
 
       - name: Install dependencies
         run: |
@@ -231,7 +231,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: node_modules
-          key: node-modules-${{ hashFiles('yarn.lock') }}
+          key: node-modules-${{ hashFiles('yarn.lock', 'patches/**') }}
 
       - name: Install dependencies
         run: |
