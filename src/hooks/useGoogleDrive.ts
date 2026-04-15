@@ -1,7 +1,7 @@
 import { GDrive, ListQueryBuilder } from '@robinbobin/react-native-google-drive-api-wrapper'
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
-import { downloadFile, read, stat } from 'react-native-fs'
+import { downloadFile, read, stat } from '@dr.pogodin/react-native-fs'
 import {
   googleDriveAuthorize,
   googleDriveGetAccessToken,

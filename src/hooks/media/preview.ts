@@ -1,6 +1,6 @@
 import ImageResizer from '@bam.tech/react-native-image-resizer'
 import { createThumbnail } from 'react-native-create-thumbnail'
-import { moveFile } from 'react-native-fs'
+import { moveFile } from '@dr.pogodin/react-native-fs'
 
 import { IS_ANDROID } from '@src/constants'
 import { dataUrl, logError } from '@src/utils'

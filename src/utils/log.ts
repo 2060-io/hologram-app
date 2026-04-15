@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { DocumentDirectoryPath } from 'react-native-fs'
+import { DocumentDirectoryPath } from '@dr.pogodin/react-native-fs'
 
 import { areLogsEnabled } from './developer'
 import { toast } from './toast'

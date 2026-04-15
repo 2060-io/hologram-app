@@ -221,7 +221,6 @@ dependencies {
     // When using the BoM, don't specify versions in Firebase dependencies
     implementation 'com.google.firebase:firebase-analytics'
 
-    implementation project(':react-native-fs')
     implementation project(':react-native-splash-screen')
     implementation 'androidx.core:core-ktx:1.15.0'
     implementation project(':react-native-compressor')
