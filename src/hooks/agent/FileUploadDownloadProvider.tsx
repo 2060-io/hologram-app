@@ -155,6 +155,25 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
           'mediaDownloadState',
           MediaDownloadState.Downloading,
         )
+
+        if (!uri) {
+          throw new Error('No URI found in media sharing item')
+        }
+
+        try {
+          const url = new URL(uri)
+          if (url.hostname === 'localhost' || url.hostname === '127.0.0.1') {
+            throw new Error(
+              `Cannot download media from localhost URI: ${uri}. The server may have provided an incorrect URL.`,
+            )
+          }
+        } catch (e) {
+          if (e instanceof TypeError) {
+            throw new Error(`Invalid media download URI: ${uri}`)
+          }
+          throw e
+        }
+
         const { promise } = downloadFile({
           fromUrl: uri,
           toFile: downloadLocalFilePath,
