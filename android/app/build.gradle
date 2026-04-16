@@ -108,9 +108,10 @@ def reactNativeArchitectures() {
 }
 
 android {
-    packagingOptions {
-        pickFirst '**/libc++_shared.so'
-        pickFirst '**/libfbjni.so'
+    packaging {
+        jniLibs {
+            pickFirsts += ['**/libc++_shared.so', '**/libfbjni.so']
+        }
     }
     ndkVersion rootProject.ext.ndkVersion
     compileSdk rootProject.ext.compileSdkVersion
@@ -178,10 +179,6 @@ android {
             applicationIdSuffix ".m"
             resValue "string", "build_config_package", "io.twentysixty.mobileagent"
         }
-    }
-
-    configurations {
-        all*.exclude group: "com.facebook.react", module: "react-native"
     }
 
     // applicationVariants are e.g. debug, release

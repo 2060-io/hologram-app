@@ -1,0 +1,20 @@
+diff --git a/node_modules/@react-native-community/async-storage/android/build.gradle b/node_modules/@react-native-community/async-storage/android/build.gradle
+index 4dc43dc..591eb34 100644
+--- a/node_modules/@react-native-community/async-storage/android/build.gradle
++++ b/node_modules/@react-native-community/async-storage/android/build.gradle
+@@ -9,7 +9,6 @@ buildscript {
+     if (project == rootProject) {
+         repositories {
+             google()
+-            jcenter()
+         }
+         dependencies {
+             classpath 'com.android.tools.build:gradle:3.5.0'
+@@ -56,7 +55,6 @@ repositories {
+         url "$rootDir/../node_modules/react-native/android"
+     }
+     google()
+-    jcenter()
+ }
+ 
+ dependencies {
