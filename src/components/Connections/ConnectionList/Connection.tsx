@@ -7,6 +7,7 @@ import getStyles from './styles'
 import { Avatar, SvgIcon, Text, VerifiedIcon } from '@src/components/common'
 import { useFetchServiceInfo } from '@src/hooks'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { log } from '@src/utils'
 
 type Props = {
   onPress: () => void
@@ -27,10 +28,11 @@ const Connection = ({
 }: Props) => {
   const theme = useTheme()
   const styles = getStyles(theme)
-  const { serviceInfo } = useFetchServiceInfo(
-    connection.invitationDid && connection.isService ? connection.invitationDid : undefined,
-    false,
-  )
+  log('connection.invitationDid', connection.invitationDid, ' isService: ', connection.isService)
+  const { serviceInfo } = useFetchServiceInfo({
+    did: connection.invitationDid && connection.isService ? connection.invitationDid : undefined,
+    forceFetchIfNotInCache: false,
+  })
   const name = serviceInfo?.name ?? connection.name
   const avatarUrl = serviceInfo?.logoUrl ?? connection.avatarUrl
 

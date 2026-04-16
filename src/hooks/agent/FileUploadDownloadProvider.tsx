@@ -164,7 +164,8 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
           const url = new URL(uri)
           if (url.hostname === 'localhost' || url.hostname === '127.0.0.1') {
             throw new Error(
-              `Cannot download media from localhost URI: ${uri}. The server may have provided an incorrect URL.`,
+              `Cannot download media from localhost URI: ${uri}. The server may have provided 
+              an incorrect URL.`,
             )
           }
         } catch (e) {

@@ -6,9 +6,9 @@ import { CredentialMainInformationProps } from './Pros'
 import { useFetchServiceInfo } from '@src/hooks/useFetchServiceInfo'
 
 const CredentialMainInformation = (props: CredentialMainInformationProps) => {
-  const { isFetchingInfo, serviceInfo, failedFetchInfo } = useFetchServiceInfo(
-    props.credentialMainInfo?.issuer.id,
-  )
+  const { isFetchingInfo, serviceInfo, failedFetchInfo } = useFetchServiceInfo({
+    did: props.credentialMainInfo?.issuer.id,
+  })
 
   return (
     <DumbCredentialMainInformation

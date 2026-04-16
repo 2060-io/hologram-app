@@ -45,7 +45,7 @@ const InvitationChatView = ({ associatedRecordId: outOfBandId, metadata, role, a
   const invitationType = t(
     isService(did) ? 'chat.invitationRequestService' : 'chat.invitationRequestSubConnection',
   )
-  const { serviceInfo } = useFetchServiceInfo(did)
+  const { serviceInfo } = useFetchServiceInfo({ did })
   const minimumAgeRequired = serviceInfo?.minimumAgeRequired ?? 0
   const serviceStatus = serviceInfo?.status ?? TrustResolutionOutcome.INVALID
   const { kidAge, ageRestricted } = useValidateKidAgeRestrictions({ minimumAgeRequired, serviceStatus })

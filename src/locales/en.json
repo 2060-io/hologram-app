@@ -460,7 +460,7 @@
       "useCamera": "Use camera",
       "useLink": "Use link",
       "textDescriptionScanner": "Use your camera to scan contacts, services and compatible actions",
-      "textDescriptionLink": "Input link below and tap Open",
+      "textDescriptionLink": "Input link or DID below and tap Open",
       "scanner": "Scanner"
     },
     "settings": {

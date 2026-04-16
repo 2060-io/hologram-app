@@ -15,6 +15,9 @@ const compat = new FlatCompat({
 
 module.exports = defineConfig([
   {
+    ignores: ['node_modules', 'dist', 'build', '.expo'],
+  },
+  {
     languageOptions: {
       parser: tsParser,
       sourceType: 'module',
@@ -41,7 +44,7 @@ module.exports = defineConfig([
       ),
     ),
     settings: {
-      'import/ignore': ['node_modules/react-native/index\\.js$'],
+      'import/ignore': ['node_modules/'],
       'import/resolver': {
         typescript: {
           alwaysTryTypes: true,
@@ -65,7 +68,7 @@ module.exports = defineConfig([
         },
       ],
       'import/no-named-as-default': 0,
-      'import/no-cycle': 'error',
+      'import/no-cycle': ['error', { ignoreExternal: true }],
       'import/newline-after-import': [
         'error',
         {
@@ -140,7 +143,7 @@ module.exports = defineConfig([
     },
   },
   {
-    files: ['scripts/**'],
+    files: ['scripts/**/*.{ts,js}', 'brand/**/*.js'],
     rules: {
       'no-console': 'off',
     },

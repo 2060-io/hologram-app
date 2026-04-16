@@ -32,7 +32,7 @@ const CredentialDetails = ({ route, navigation }: Props) => {
   const credentialRecord = getCredentialById(credentialRecordId)
   const credentialDetails = credentialRecord ? getCredentialDetailsForDisplay(credentialRecord) : undefined
   const did = credentialRecord?.firstCredential.issuerId ?? ''
-  const { isFetchingInfo, serviceInfo, failedFetchInfo, getServiceInfo } = useFetchServiceInfo(did)
+  const { isFetchingInfo, serviceInfo, failedFetchInfo, getServiceInfo } = useFetchServiceInfo({ did })
   const { handleScrollBeginDrag, handleScrollEndDrag } = useScrollSwipeDown({
     disabledSwipeDown: isFetchingInfo,
     onSwipeDown: getServiceInfo,

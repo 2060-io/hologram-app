@@ -17,7 +17,7 @@ const ConnectionInvitationForVerifiableService = (props: ConnectionInvitationPro
   const invitation = outOfBandRecord?.outOfBandInvitation
   const did = invitation.invitationDids[0]
   const { userProfileData } = useUserProfile()
-  const { isFetchingInfo, serviceInfo, failedFetchInfo, getServiceInfo } = useFetchServiceInfo(did)
+  const { isFetchingInfo, serviceInfo, failedFetchInfo, getServiceInfo } = useFetchServiceInfo({ did })
   const initialServiceInfo = useRef<ServiceInfo>({
     did,
     description: invitation.label,
