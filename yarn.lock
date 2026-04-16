@@ -14502,6 +14502,14 @@ react-native-file-logger@0.7.1:
   dependencies:
     util "^0.12.5"
 
+"react-native-fs@npm:@dr.pogodin/react-native-fs@2.36.2", "react-native-fs@npm:@dr.pogodin/react-native-fs@~2.36.2":
+  version "2.36.2"
+  resolved "https://registry.yarnpkg.com/@dr.pogodin/react-native-fs/-/react-native-fs-2.36.2.tgz#c6ae3dae1da9e73bb7f7b64ff513426ec2a140cc"
+  integrity sha512-n3V3G7L7BNbKC2bUfRLIdT0H283Q8SxsKhly+5BrCdVDtdgem2XJxYOBjClUuJSpDN6zivjTkHIrj/LUMJ4WDQ==
+  dependencies:
+    buffer "^6.0.3"
+    http-status-codes "^2.3.0"
+
 react-native-gesture-handler@2.28.0:
   version "2.28.0"
   resolved "https://registry.yarnpkg.com/react-native-gesture-handler/-/react-native-gesture-handler-2.28.0.tgz#07fb4f5eae72f810aac3019b060d26c1835bfd0c"
