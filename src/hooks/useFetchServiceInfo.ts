@@ -13,6 +13,12 @@ import { getInCacheServiceInfo, saveInCacheServiceInfo } from '@src/services/age
 import { logError } from '@src/utils'
 import { isOlderThan24Hours } from '@src/utils/dateUtils'
 import { toast } from '@src/utils/toast'
+import { DidCommConnectionService } from '@credo-ts/didcomm'
+
+interface UseFetchServiceInfoOptions {
+  did?: string
+  forceFetchIfNotInCache?: boolean
+}
 
 /**
  * Retrieve and cache Verifiable Service information from the Trust Registry.
@@ -23,14 +29,18 @@ import { toast } from '@src/utils/toast'
  * - When fresh info is obtained, stored cache info is updated and chat thread for the
  *   corresponding connection is updated with the latest name and logo.
  *
- * @param did decentralized identifier of the service.
- * @param forceFetchIfNotInCache whether to attempt a refresh on mount
- * when the cached value is stale or missing.
+ * @param options - Configuration options
+ * @param options.did - Decentralized identifier of the service.
+ * @param options.forceFetchIfNotInCache - Whether to attempt a refresh on mount
+ * when the cached value is stale or missing. Defaults to true.
  *
  * @returns Object with the latest known ServiceInfo or undefined, loading and error state flags,
  * and `getServiceInfo` function to trigger a manual refresh.
  */
-export const useFetchServiceInfo = (did?: string, forceFetchIfNotInCache: boolean = true) => {
+export const useFetchServiceInfo = ({
+  did,
+  forceFetchIfNotInCache = true,
+}: UseFetchServiceInfoOptions = {}) => {
   const { t } = useTranslation()
   const { agent } = useMobileAgent()
   const { realm } = useLocalRealm()
@@ -41,7 +51,7 @@ export const useFetchServiceInfo = (did?: string, forceFetchIfNotInCache: boolea
   useEffect(() => {
     const verifyHasToFetchInfo = async () => {
       if (!did || !agent) return
-      const cachedServiceInfo = await getInCacheServiceInfo(did, agent)
+      const cachedServiceInfo = await getInCacheServiceInfo(did, agent.context)
       if (cachedServiceInfo) setServiceInfo(cachedServiceInfo)
       const firstConditionToFetch = forceFetchIfNotInCache
       const secondConditionToFetch =
@@ -68,7 +78,15 @@ export const useFetchServiceInfo = (did?: string, forceFetchIfNotInCache: boolea
         // if service exists in trust registry, store it in cache otherwise keep the cached one (if any)
         if (serviceInfoResponse) {
           setServiceInfo(serviceInfoResponse)
-          await saveInCacheServiceInfo(did, agent, serviceInfoResponse)
+          await saveInCacheServiceInfo(did, agent.context, serviceInfoResponse)
+          // Update any connection record associated with this DID
+          const [connection] = await agent.didcomm.connections.findByInvitationDid(did)
+          if (connection) {
+            connection.alias = serviceInfoResponse.name
+            connection.imageUrl = serviceInfoResponse.logoUrl
+            await agent.dependencyManager.resolve(DidCommConnectionService).update(agent.context, connection)
+          }
+
           if (realm) updateThreadFromServiceInfo({ did, serviceInfoResponse, realm, agent })
         }
       } catch (error) {

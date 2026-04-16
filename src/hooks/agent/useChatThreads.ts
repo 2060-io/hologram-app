@@ -32,9 +32,9 @@ export type ChatThreadWithParticipants = ReturnType<typeof useChatThreadWithPart
 export const useChatThreadWithParticipants = (chatThreadId: string) => {
   const chatThread = useChatThreadById(chatThreadId)
   const connection = useConnectionById(chatThread?.connectionId)
-  const { serviceInfo } = useFetchServiceInfo(
-    connection && isService(connection) ? connection.invitationDid : undefined,
-  )
+  const { serviceInfo } = useFetchServiceInfo({
+    did: connection && isService(connection) ? connection.invitationDid : undefined,
+  })
   const { userProfileData } = useUserProfile()
   const displayPicture = userProfileData?.displayPicture
 

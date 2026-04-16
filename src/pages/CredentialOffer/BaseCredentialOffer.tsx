@@ -35,7 +35,7 @@ const BaseCredentialOffer: React.FC<Props> = ({
   const theme = useTheme()
   const styles = getStyles(theme)
   const did = credentialDetails.mainInfo.issuer.id
-  const { isFetchingInfo, serviceInfo, failedFetchInfo } = useFetchServiceInfo(did)
+  const { isFetchingInfo, serviceInfo, failedFetchInfo } = useFetchServiceInfo({ did })
   const [showModalRefuseConfirmation, setShowModalRefuseConfirmation] = useState(false)
   const initialServiceInfo = useRef<ServiceInfo>({
     did,

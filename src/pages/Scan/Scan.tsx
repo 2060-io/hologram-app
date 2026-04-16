@@ -94,7 +94,7 @@ const Scan = ({ navigation }: Props) => {
       let invitation: DidCommOutOfBandInvitation | undefined
       if (url.startsWith('did:')) {
         log('1.1: DID invitation')
-        // FIXME: this should be based on both Hologram and other party supported protocols 
+        // FIXME: this should be based on both Hologram and other party supported protocols
         invitation = new DidCommOutOfBandInvitation({
           id: url,
           label: 'DID Invitation',

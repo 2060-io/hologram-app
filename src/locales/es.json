@@ -460,7 +460,7 @@
       "useCamera": "Usar camara",
       "useLink": "Usar enlace",
       "textDescriptionScanner": "Usa la cámara para escanear contactos, servicios y acciones compatibles",
-      "textDescriptionLink": "Ingresa un enlace y toca en Abrir",
+      "textDescriptionLink": "Ingresa un enlace o DID y toca en Abrir",
       "scanner": "Escáner"
     },
     "settings": {

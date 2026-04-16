@@ -32,6 +32,7 @@ import {
 import { markNewConnectionNotificationAsViewed } from '@src/utils/pushNotificationsUtils'
 import { screenHeight } from '@src/utils/responsiveUtils'
 import { toast } from '@src/utils/toast'
+import { log } from '@src/utils/log'
 
 type confirmationTypes = 'deleteChat' | 'block' | 'unblock' | 'deleteConnection'
 export interface WrapperProps extends StackScreenProps<NavigationStackParams, 'ConnectionDetails'> {}
@@ -70,6 +71,7 @@ const BaseConnectionDetails = ({
   const [blockingConnection, setBlockingConnection] = useState(false)
   const modalConfirmationTypeRef = useRef<confirmationTypes>('deleteChat')
   const connectionName = getConnectionDisplayName(connection)
+  log(`connectionName: ${connectionName}`)
   const isConnectionCompleted = connection.isReady
   const isConnectionBlocked = isBlocked(connection)
   const isConnectionTerminated = isTerminated(connection)

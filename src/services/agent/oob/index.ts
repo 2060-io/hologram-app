@@ -24,6 +24,7 @@ import {
   CreateOutOfBandInvitationConfig,
   DidCommProposePresentationV2Message,
   supportsIncomingMessageType,
+  DidCommConnectionService,
 } from '@credo-ts/didcomm'
 import { t } from 'i18next'
 import { filter, firstValueFrom, merge, first, timeout } from 'rxjs'
@@ -35,6 +36,7 @@ import { OutOfBandInvitationEvent, OutOfBandInvitationEventTypes } from './OutOf
 import { log, logError } from '@src/utils'
 import { deletePendingConnection, findExistingConnection, isService } from '@src/utils/connectionUtils'
 import { toast } from '@src/utils/toast'
+import { getInCacheServiceInfo } from '../cache'
 
 export enum DidcommInvitationType {
   ConnectionRequest = 'connection-request',
@@ -314,6 +316,14 @@ export async function acceptInvitation(
     routing,
     reuseConnection: true,
   })
+
+  // Associate any service info related to the new connection that we have may cached
+  if (newConnection?.invitationDid) {
+    const serviceInfo = await getInCacheServiceInfo(newConnection?.invitationDid, agentContext)
+    newConnection.alias = serviceInfo?.name ?? newConnection.alias
+    newConnection.imageUrl = serviceInfo?.logoUrl ?? newConnection.imageUrl
+    await agentContext.dependencyManager.resolve(DidCommConnectionService).update(agentContext, newConnection)
+  }
 
   // Tag connection with its parent unless it is a connection to a public id
   // Invitations to public DIDs will always create standalone connections
