@@ -1857,45 +1857,45 @@
   resolved "https://registry.yarnpkg.com/@colors/colors/-/colors-1.5.0.tgz#bb504579c1cae923e6576a4f5da43d25f97bdbd9"
   integrity sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ==
 
-"@credo-ts/action-menu@0.7.0-pr-2704-20260407185637", "@credo-ts/action-menu@^0.7.0-pr-2704-20260407185637":
-  version "0.7.0-pr-2704-20260407185637"
-  resolved "https://registry.yarnpkg.com/@credo-ts/action-menu/-/action-menu-0.7.0-pr-2704-20260407185637.tgz#1baf96d7b6b3fca0fc48e45cc93a8c7ca65c1271"
-  integrity sha512-F0bZp7ed4WSsc2OZzz8Sm0VLl0kVfreHDJhJrF1Ub9oSJMSb1of16OOxmfB3jJ51GwvwbJupNRxPo6URRmufgQ==
+"@credo-ts/action-menu@0.7.0-pr-2704-20260415120819", "@credo-ts/action-menu@^0.7.0-pr-2704-20260415120819":
+  version "0.7.0-pr-2704-20260415120819"
+  resolved "https://registry.yarnpkg.com/@credo-ts/action-menu/-/action-menu-0.7.0-pr-2704-20260415120819.tgz#7e3c4eb73644c604be912b049531cd515461ce70"
+  integrity sha512-YFSPSekCT3ANEVBGTQDcRN5yIDO9zfnDv92TnMdhIDptFwBYhyZ1jlKeHvGF3DWF0tXUgyov4AHiSMmRzKGsYQ==
   dependencies:
-    "@credo-ts/core" "0.7.0-pr-2704-20260407185637"
-    "@credo-ts/didcomm" "0.7.0-pr-2704-20260407185637"
+    "@credo-ts/core" "0.7.0-pr-2704-20260415120819"
+    "@credo-ts/didcomm" "0.7.0-pr-2704-20260415120819"
     class-transformer "0.5.1"
     class-validator "^0.14.3"
     rxjs "^7.8.2"
 
-"@credo-ts/anoncreds@0.7.0-pr-2704-20260407185637", "@credo-ts/anoncreds@^0.6.1", "@credo-ts/anoncreds@^0.7.0-pr-2704-20260407185637":
-  version "0.7.0-pr-2704-20260407185637"
-  resolved "https://registry.yarnpkg.com/@credo-ts/anoncreds/-/anoncreds-0.7.0-pr-2704-20260407185637.tgz#7d1e339364e0447236f0872e1ac9c6b44799dc8b"
-  integrity sha512-uf44QGkQrmpfF7hibZOVXhzhS2Sn4N/0yfHoH0fOY7CtLKiqnIH4jwM06+V3AmxBRpNvAzADk1Q9mosXCQ/jxA==
+"@credo-ts/anoncreds@0.7.0-pr-2704-20260415120819", "@credo-ts/anoncreds@^0.6.1", "@credo-ts/anoncreds@^0.7.0-pr-2704-20260415120819":
+  version "0.7.0-pr-2704-20260415120819"
+  resolved "https://registry.yarnpkg.com/@credo-ts/anoncreds/-/anoncreds-0.7.0-pr-2704-20260415120819.tgz#922ac3b02ea4f3cf543200fa3931b6b394a51cda"
+  integrity sha512-DLgdUVUzCs+daRULEaar+UPECvzKR5GFCJarDKyuQ707EA8/bAh4PdmqRBZ0d9dGKZAYkmsl+xlUnQ0yO5yUlQ==
   dependencies:
     "@astronautlabs/jsonpath" "^1.1.2"
-    "@credo-ts/core" "0.7.0-pr-2704-20260407185637"
-    "@credo-ts/didcomm" "0.7.0-pr-2704-20260407185637"
+    "@credo-ts/core" "0.7.0-pr-2704-20260415120819"
+    "@credo-ts/didcomm" "0.7.0-pr-2704-20260415120819"
     "@sphereon/pex-models" "^2.3.2"
     class-transformer "0.5.1"
     class-validator "^0.14.3"
     reflect-metadata "0.2.2"
 
-"@credo-ts/askar@0.7.0-pr-2704-20260407185637", "@credo-ts/askar@^0.7.0-pr-2704-20260407185637":
-  version "0.7.0-pr-2704-20260407185637"
-  resolved "https://registry.yarnpkg.com/@credo-ts/askar/-/askar-0.7.0-pr-2704-20260407185637.tgz#49ea6ee7a6c8aedb6a79613eee393652ac309e8e"
-  integrity sha512-I6ILLKyBcxlXAHMq0Qh+b5a7V1R/qE01oMdUKydEt7LEpiSBFd7DEnk6tLKYp5cHiY3rsGwY1MGIhO//TNsvRQ==
+"@credo-ts/askar@0.7.0-pr-2704-20260415120819", "@credo-ts/askar@^0.7.0-pr-2704-20260415120819":
+  version "0.7.0-pr-2704-20260415120819"
+  resolved "https://registry.yarnpkg.com/@credo-ts/askar/-/askar-0.7.0-pr-2704-20260415120819.tgz#c49905dd6fc9c32b2404977f69780926ed70ca54"
+  integrity sha512-XsYe2jxdtW2syiWYg135/0w+Sl88bbSWFFg7kR/8EkXS2nskz07sssuJzCuQy43PGwoT7J7003oLEOG1IwhfHg==
   dependencies:
-    "@credo-ts/core" "0.7.0-pr-2704-20260407185637"
+    "@credo-ts/core" "0.7.0-pr-2704-20260415120819"
     class-transformer "0.5.1"
     class-validator "^0.14.3"
     rxjs "^7.8.2"
     tsyringe "^4.10.0"
 
-"@credo-ts/core@0.7.0-pr-2704-20260407185637", "@credo-ts/core@^0.6.1", "@credo-ts/core@^0.7.0-pr-2704-20260407185637":
-  version "0.7.0-pr-2704-20260407185637"
-  resolved "https://registry.yarnpkg.com/@credo-ts/core/-/core-0.7.0-pr-2704-20260407185637.tgz#fa65823b63a580fa60de7f2077c50c61f0f9e317"
-  integrity sha512-NodKS0mm8L2OD5a1IY3ZFjo8Wu8f4MWTm4XW4vsKFgVepUHLWBdyfdXNm5oWLxXctRC40UR2rjGD7azguPCwYA==
+"@credo-ts/core@0.7.0-pr-2704-20260415120819", "@credo-ts/core@^0.6.1", "@credo-ts/core@^0.7.0-pr-2704-20260415120819":
+  version "0.7.0-pr-2704-20260415120819"
+  resolved "https://registry.yarnpkg.com/@credo-ts/core/-/core-0.7.0-pr-2704-20260415120819.tgz#ef319e099d965176a7440967087bd7d0baa9f07c"
+  integrity sha512-mXY04Mn4YpdbWmbeyG4Zg6wYTRgy0oanalmKv/VOSFnIFDsvkjiWAsTNYCuErdW7s4plvNsKRow5j5OX+27HIg==
   dependencies:
     "@animo-id/pex" "^6.1.1"
     "@astronautlabs/jsonpath" "^1.1.2"
@@ -1949,12 +1949,12 @@
     class-transformer "^0.5.1"
     class-validator "^0.14.2"
 
-"@credo-ts/didcomm@0.7.0-pr-2704-20260407185637", "@credo-ts/didcomm@^0.7.0-pr-2704-20260407185637":
-  version "0.7.0-pr-2704-20260407185637"
-  resolved "https://registry.yarnpkg.com/@credo-ts/didcomm/-/didcomm-0.7.0-pr-2704-20260407185637.tgz#967ff057185a03449cbd0f73da163abcc81624bb"
-  integrity sha512-9DjJ6jF/DQJaO4i+/BFzhS+bdVx0F9xHUv1wUuNqKRMbK+AysxWt6tbm4HfYqWmlVU/kJxmM30445xe2XIRI2g==
+"@credo-ts/didcomm@0.7.0-pr-2704-20260415120819", "@credo-ts/didcomm@^0.7.0-pr-2704-20260415120819":
+  version "0.7.0-pr-2704-20260415120819"
+  resolved "https://registry.yarnpkg.com/@credo-ts/didcomm/-/didcomm-0.7.0-pr-2704-20260415120819.tgz#47326c929cc3370dce11af460eba036512ff36fb"
+  integrity sha512-l1f/mk8ing0bypX3onEDcnGTwxJIrfMVCQfY/4puw1GnNTdzIRdm+dqOQqdKe0628oF1eXLLX5pvNYxwOelZoQ==
   dependencies:
-    "@credo-ts/core" "0.7.0-pr-2704-20260407185637"
+    "@credo-ts/core" "0.7.0-pr-2704-20260415120819"
     "@stablelib/ed25519" "^2.0.2"
     class-transformer "0.5.1"
     class-validator "^0.14.3"
@@ -1962,12 +1962,12 @@
     query-string "^9.3.1"
     rxjs "^7.8.2"
 
-"@credo-ts/openid4vc@0.7.0-pr-2704-20260407185637", "@credo-ts/openid4vc@^0.7.0-pr-2704-20260407185637":
-  version "0.7.0-pr-2704-20260407185637"
-  resolved "https://registry.yarnpkg.com/@credo-ts/openid4vc/-/openid4vc-0.7.0-pr-2704-20260407185637.tgz#06ef0a529341f3c118e5ec015ee992aaae0f76ca"
-  integrity sha512-BUiFEUuEeQDzUx3NstRm2aAKlwM0R3UC9SHqiDCwsMBpu8Ut8CpHpjGNcCeb9QxlyU+/gvBch1xFaZQXnxrULQ==
+"@credo-ts/openid4vc@0.7.0-pr-2704-20260415120819", "@credo-ts/openid4vc@^0.7.0-pr-2704-20260415120819":
+  version "0.7.0-pr-2704-20260415120819"
+  resolved "https://registry.yarnpkg.com/@credo-ts/openid4vc/-/openid4vc-0.7.0-pr-2704-20260415120819.tgz#c2fd9f1f86628a152224757f5234433256d88e1b"
+  integrity sha512-vsAn6/QPwI/+drbJTUFhmqoy7w7b2t0xW8xDqSsdSqrncNjTPCLQ4s01VKjg1/vVRvsyj8LteveIRUBO5QXilg==
   dependencies:
-    "@credo-ts/core" "0.7.0-pr-2704-20260407185637"
+    "@credo-ts/core" "0.7.0-pr-2704-20260415120819"
     "@openid4vc/oauth2" "^0.4.6"
     "@openid4vc/openid4vci" "^0.4.6"
     "@openid4vc/openid4vp" "^0.4.6"
@@ -1978,32 +1978,32 @@
     rxjs "^7.8.2"
     zod "^4.3.6"
 
-"@credo-ts/question-answer@0.7.0-pr-2704-20260407185637", "@credo-ts/question-answer@^0.7.0-pr-2704-20260407185637":
-  version "0.7.0-pr-2704-20260407185637"
-  resolved "https://registry.yarnpkg.com/@credo-ts/question-answer/-/question-answer-0.7.0-pr-2704-20260407185637.tgz#dce4a3c1a428c1ddba9bf690f4a697531f90c7da"
-  integrity sha512-rjVU0fYSL8BqKsb6uz31HDImF4C/a1/fvORBw1lh9EKW/DKGJr68T3R+wzetc6D98vdYl4cna+VecMSd2VM86w==
+"@credo-ts/question-answer@0.7.0-pr-2704-20260415120819", "@credo-ts/question-answer@^0.7.0-pr-2704-20260415120819":
+  version "0.7.0-pr-2704-20260415120819"
+  resolved "https://registry.yarnpkg.com/@credo-ts/question-answer/-/question-answer-0.7.0-pr-2704-20260415120819.tgz#4dcbd20e4bf59f061b2dccf43a959a06f5992b7e"
+  integrity sha512-33uwkOhdI5xrRVOZXG5UBjgkAJ6079QJW0OzOWwIb/LtX17DNHGvQnEARwVlgIoh2NWdCS8YcydOWJze48Hn1Q==
   dependencies:
-    "@credo-ts/core" "0.7.0-pr-2704-20260407185637"
-    "@credo-ts/didcomm" "0.7.0-pr-2704-20260407185637"
+    "@credo-ts/core" "0.7.0-pr-2704-20260415120819"
+    "@credo-ts/didcomm" "0.7.0-pr-2704-20260415120819"
     class-transformer "0.5.1"
     class-validator "^0.14.3"
     rxjs "^7.8.2"
 
-"@credo-ts/react-native@0.7.0-pr-2704-20260407185637", "@credo-ts/react-native@^0.7.0-pr-2704-20260407185637":
-  version "0.7.0-pr-2704-20260407185637"
-  resolved "https://registry.yarnpkg.com/@credo-ts/react-native/-/react-native-0.7.0-pr-2704-20260407185637.tgz#2c0d1b250a092138776264f3986f8968e4defbd6"
-  integrity sha512-w1EK453y1ZczGde53qM7RhCm5I/3HzZKAMkgjNhYEIoTMRG/RC9SRvaliH97b4ZD+gYobGYnHSq6cid/hEWEUQ==
+"@credo-ts/react-native@0.7.0-pr-2704-20260415120819", "@credo-ts/react-native@^0.7.0-pr-2704-20260415120819":
+  version "0.7.0-pr-2704-20260415120819"
+  resolved "https://registry.yarnpkg.com/@credo-ts/react-native/-/react-native-0.7.0-pr-2704-20260415120819.tgz#1913cadc0e6129b58fa71f7b8496773c50c44283"
+  integrity sha512-Zn7r6Ekf0MnxXR/x3Zjtuplb/Lrcq+y8r3wRqMnuAHM5Dvn6kKznWzX+/BqxH7hFkE6dTesYepEsPa/1pnG92Q==
   dependencies:
-    "@credo-ts/core" "0.7.0-pr-2704-20260407185637"
+    "@credo-ts/core" "0.7.0-pr-2704-20260415120819"
     events "^3.3.0"
 
-"@credo-ts/webvh@^0.7.0-pr-2704-20260407185637":
-  version "0.7.0-pr-2704-20260407185637"
-  resolved "https://registry.yarnpkg.com/@credo-ts/webvh/-/webvh-0.7.0-pr-2704-20260407185637.tgz#699c1dfe6a3b411ddaaeab85d72a050b6558332b"
-  integrity sha512-ttczIQC8bHUID9MomIN/8FdnIjpx2cTQADnQUnxEmlGgtU0TTzKZkShTLX9jetlL0nwmxRyCa0h1PKzKZlIn6w==
+"@credo-ts/webvh@^0.7.0-pr-2704-20260415120819":
+  version "0.7.0-pr-2704-20260415120819"
+  resolved "https://registry.yarnpkg.com/@credo-ts/webvh/-/webvh-0.7.0-pr-2704-20260415120819.tgz#3985efbe0e7fce81bf721d0a882a0a85f3eafde9"
+  integrity sha512-q+OsrUHsfbhK7CPy614cmifrw6nONVu2xYj/9cLbMwSy/L1JatHvKXkwpMNTYpAMYih5rSchLQNBcS+u5Rp22A==
   dependencies:
-    "@credo-ts/anoncreds" "0.7.0-pr-2704-20260407185637"
-    "@credo-ts/core" "0.7.0-pr-2704-20260407185637"
+    "@credo-ts/anoncreds" "0.7.0-pr-2704-20260415120819"
+    "@credo-ts/core" "0.7.0-pr-2704-20260415120819"
     class-transformer "0.5.1"
     class-validator "^0.14.3"
     didwebvh-ts "^2.7.2"
@@ -2665,9 +2665,9 @@
   integrity sha512-nDRbLmSrJar7abvUjp3smDwH8HcbZcoOEa5jVPUv9/9CajgmWw20JNRwTuBRzWIWIkEJDkz20GoNA+tSwUqk0Q==
 
 "@expo/xcpretty@^4.3.0":
-  version "4.4.1"
-  resolved "https://registry.yarnpkg.com/@expo/xcpretty/-/xcpretty-4.4.1.tgz#dcd41f886f8a0474c217adaef84f4733e44625c9"
-  integrity sha512-KZNxZvnGCtiM2aYYZ6Wz0Ix5r47dAvpNLApFtZWnSoERzAdOMzVBOPysBoM0JlF6FKWZ8GPqgn6qt3dV/8Zlpg==
+  version "4.4.2"
+  resolved "https://registry.yarnpkg.com/@expo/xcpretty/-/xcpretty-4.4.2.tgz#7430231bbf8b8f2e9e8455bea6c7214680efd6d9"
+  integrity sha512-ni4WJrmmY43GB1d++iTB7OD7JQlwGarrdhS7pb/ibJKrRIf/HOeuTZndPalXM2QOD7JpfZ/51QprRU9UOjTROw==
   dependencies:
     "@babel/code-frame" "^7.20.0"
     chalk "^4.1.0"
@@ -6907,9 +6907,9 @@ camelcase@^6.2.0:
   integrity sha512-Gmy6FhYlCY7uOElZUSbxo2UCDH8owEk996gkbrpsgGtrJLM3J7jGxl9Ic7Qwwj4ivOE5AWZWRMecDdF7hqGjFA==
 
 caniuse-lite@^1.0.30001782:
-  version "1.0.30001786"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001786.tgz#586120fc73f3c7ee82152f76acd0c37e04acefbb"
-  integrity sha512-4oxTZEvqmLLrERwxO76yfKM7acZo310U+v4kqexI2TL1DkkUEMT8UijrxxcnVdxR3qkVf5awGRX+4Z6aPHVKrA==
+  version "1.0.30001787"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001787.tgz#fd25c5e42e2d35df5c75eddda00d15d9c0c68f81"
+  integrity sha512-mNcrMN9KeI68u7muanUpEejSLghOKlVhRqS/Za2IeyGllJ9I9otGpR9g3nsw7n4W378TE/LyIteA0+/FOZm4Kg==
 
 canonicalize@^1.0.1:
   version "1.0.8"
@@ -7320,9 +7320,9 @@ connect@^3.6.5, connect@^3.7.0:
     utils-merge "1.0.1"
 
 content-disposition@^1.0.0:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/content-disposition/-/content-disposition-1.0.1.tgz#a8b7bbeb2904befdfb6787e5c0c086959f605f9b"
-  integrity sha512-oIXISMynqSqm241k6kcQ5UwttDILMK4BiurCfGEREw6+X9jkkpEe5T9FZaApyLGGOnFuyMWZpdolTXMtvEJ08Q==
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/content-disposition/-/content-disposition-1.1.0.tgz#f3db789c752d45564cc7e9e1e0b31790d4a38e17"
+  integrity sha512-5jRCH9Z/+DRP7rkvY83B+yGIGX96OYdJmzngqnw2SBSxqCFPd0w2km3s5iawpGX8krnwSGmF0FW5Nhr0Hfai3g==
 
 content-type@^1.0.5, content-type@~1.0.5:
   version "1.0.5"
@@ -7857,9 +7857,9 @@ ee-first@1.1.1:
   integrity sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==
 
 electron-to-chromium@^1.5.328:
-  version "1.5.332"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.5.332.tgz#72e3a3e2ce4447ebea8ae2b38b59895f571f59a2"
-  integrity sha512-7OOtytmh/rINMLwaFTbcMVvYXO3AUm029X0LcyfYk0B557RlPkdpTpnH9+htMlfu5dKwOmT0+Zs2Aw+lnn6TeQ==
+  version "1.5.334"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.5.334.tgz#1e3fdd8d014852104eb8e632e760fb364db7dd0e"
+  integrity sha512-mgjZAz7Jyx1SRCwEpy9wefDS7GvNPazLthHg8eQMJ76wBdGQQDW33TCrUTvQ4wzpmOrv2zrFoD3oNufMdyMpog==
 
 emoji-regex@^8.0.0:
   version "8.0.0"
@@ -7961,9 +7961,9 @@ errorhandler@^1.5.1:
     escape-html "~1.0.3"
 
 es-abstract@^1.17.5, es-abstract@^1.23.2, es-abstract@^1.23.3, es-abstract@^1.23.5, es-abstract@^1.23.6, es-abstract@^1.23.9, es-abstract@^1.24.0, es-abstract@^1.24.1:
-  version "1.24.1"
-  resolved "https://registry.yarnpkg.com/es-abstract/-/es-abstract-1.24.1.tgz#f0c131ed5ea1bb2411134a8dd94def09c46c7899"
-  integrity sha512-zHXBLhP+QehSSbsS9Pt23Gg964240DPd6QCf8WpkqEXxQ7fhdZzYsocOr5u7apWonsS5EjZDmTF+/slGMyasvw==
+  version "1.24.2"
+  resolved "https://registry.yarnpkg.com/es-abstract/-/es-abstract-1.24.2.tgz#2dbd38c180735ee983f77585140a2706a963ed9a"
+  integrity sha512-2FpH9Q5i2RRwyEP1AylXe6nYLR5OhaJTZwmlcP0dL/+JCbgg7yyEo/sEK6HeGZRf3dFpWwThaRHVApXSkW3xeg==
   dependencies:
     array-buffer-byte-length "^1.0.2"
     arraybuffer.prototype.slice "^1.0.4"
@@ -10930,9 +10930,9 @@ lru-cache@^10.0.1, lru-cache@^10.2.0, lru-cache@^10.2.2:
   integrity sha512-JNAzZcXrCt42VGLuYz0zfAzDfAvJWW6AfYlDBQyDV5DClI2m5sAmK+OIO7s59XfsRsWHp02jAJrRadPRGTt6SQ==
 
 lru-cache@^11.0.0:
-  version "11.3.2"
-  resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-11.3.2.tgz#349669d2a9eeb10cc706a9edb10d93bc7080a892"
-  integrity sha512-wgWa6FWQ3QRRJbIjbsldRJZxdxYngT/dO0I5Ynmlnin8qy7tC6xYzbcJjtN4wHLXtkbVwHzk0C+OejVw1XM+DQ==
+  version "11.3.3"
+  resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-11.3.3.tgz#d6c633c2a9657760fd30594d8d98da65330d9d78"
+  integrity sha512-JvNw9Y81y33E+BEYPr0U7omo+U9AySnsMsEiXgwT6yqd31VQWTLNQqmT4ou5eqPFUrTfIDFta2wKhB1hyohtAQ==
 
 lru-cache@^5.1.1:
   version "5.1.1"
@@ -13095,7 +13095,7 @@ picomatch@^3.0.1:
   resolved "https://registry.yarnpkg.com/picomatch/-/picomatch-3.0.2.tgz#8f543c114ddc037eab6b10fbd5a66cc8a51a02bc"
   integrity sha512-cfDHL6LStTEKlNilboNtobT/kEa30PtAf2Q1OgszfrG/rpVl1xaFWT9ktfkS306GmHgmnad1Sw4wabhlvFtsTw==
 
-picomatch@^4.0.3:
+picomatch@^4.0.4:
   version "4.0.4"
   resolved "https://registry.yarnpkg.com/picomatch/-/picomatch-4.0.4.tgz#fd6f5e00a143086e074dffe4c924b8fb293b0589"
   integrity sha512-QP88BAKvMam/3NxH6vj2o21R6MjxZUAd6nlwAS/pnGvN9IVLocLHxGYIzFhg6fUQ+5th6P4dv4eW9jX3DSIj7A==
@@ -13432,9 +13432,9 @@ qrcode@^1.5.4:
     yargs "^15.3.1"
 
 qs@^6.14.0, qs@^6.14.1:
-  version "6.15.0"
-  resolved "https://registry.yarnpkg.com/qs/-/qs-6.15.0.tgz#db8fd5d1b1d2d6b5b33adaf87429805f1909e7b3"
-  integrity sha512-mAZTtNCeetKMH+pSjrb76NAM8V9a05I9aBZOHztWy/UqcJdQYNsf59vrRKWnojAT9Y+GbIvoTBC++CPHqpDBhQ==
+  version "6.15.1"
+  resolved "https://registry.yarnpkg.com/qs/-/qs-6.15.1.tgz#bdb55aed06bfac257a90c44a446a73fba5575c8f"
+  integrity sha512-6YHEFRL9mfgcAvql/XhwTvf5jKcOiiupt2FiJxHkiX1z4j7WL8J/jRHYLluORvc1XxB5rV20KoeK00gVJamspg==
   dependencies:
     side-channel "^1.1.0"
 
@@ -13572,9 +13572,9 @@ react-is@^18.0.0:
   integrity sha512-/LLMVyas0ljjAtoYiPqYiL8VWXzUUdThrmU5+n20DZv+a+ClRoevUzw5JxU+Ieh5/c87ytoTBV9G1FiKfNJdmg==
 
 react-is@^19.1.0:
-  version "19.2.4"
-  resolved "https://registry.yarnpkg.com/react-is/-/react-is-19.2.4.tgz#a080758243c572ccd4a63386537654298c99d135"
-  integrity sha512-W+EWGn2v0ApPKgKKCy/7s7WHXkboGcsrXE+2joLyVxkbyVQfO3MUEaUQDHoSmb8TFFrSKYa9mw64WZHNHSDzYA==
+  version "19.2.5"
+  resolved "https://registry.yarnpkg.com/react-is/-/react-is-19.2.5.tgz#7e7b54143e9313fed787b23fd4295d5a23872ad9"
+  integrity sha512-Dn0t8IQhCmeIT3wu+Apm1/YVsJXsGWi6k4sPdnBIdqMVtHtv0IGi6dcpNpNkNac0zB2uUAqNX3MHzN8c+z2rwQ==
 
 react-native-clean-project@4.0.3:
   version "4.0.3"
@@ -14611,12 +14611,12 @@ shell-quote@^1.6.1, shell-quote@^1.8.3:
   integrity sha512-ObmnIF4hXNg1BqhnHmgbDETF8dLPCggZWBjkQfhZpbszZnYur5DUljTcCHii5LC3J5E0yeO/1LIMyH+UvHQgyw==
 
 side-channel-list@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/side-channel-list/-/side-channel-list-1.0.0.tgz#10cb5984263115d3b7a0e336591e290a830af8ad"
-  integrity sha512-FCLHtRD/gnpCiCHEiJLOwdmFP+wzCmDEkc9y7NsYxeF4u7Btsn1ZuwgwJGxImImHicJArLP4R0yX4c2KCrMrTA==
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/side-channel-list/-/side-channel-list-1.0.1.tgz#c2e0b5a14a540aebee3bbc6c3f8666cc9b509127"
+  integrity sha512-mjn/0bi/oUURjc5Xl7IaWi/OJJJumuoJFQJfDDyO46+hBWsfaVM65TBHq2eoZBhzl9EchxOijpkbRC8SVBQU0w==
   dependencies:
     es-errors "^1.3.0"
-    object-inspect "^1.13.3"
+    object-inspect "^1.13.4"
 
 side-channel-map@^1.0.1:
   version "1.0.1"
@@ -15363,12 +15363,12 @@ tiny-relative-date@^1.3.0:
   integrity sha512-MOQHpzllWxDCHHaDno30hhLfbouoYlOI8YlMNtvKe1zXbjEVhbcEovQxvZrPvtiYW630GQDoMMarCnjfyfHA+A==
 
 tinyglobby@^0.2.11, tinyglobby@^0.2.12, tinyglobby@^0.2.14, tinyglobby@^0.2.15:
-  version "0.2.15"
-  resolved "https://registry.yarnpkg.com/tinyglobby/-/tinyglobby-0.2.15.tgz#e228dd1e638cea993d2fdb4fcd2d4602a79951c2"
-  integrity sha512-j2Zq4NyQYG5XMST4cbs02Ak8iJUdxRM0XI5QyxXuZOzKOINmWurp3smXu3y5wDcJrptwpSjgXHzIQxR0omXljQ==
+  version "0.2.16"
+  resolved "https://registry.yarnpkg.com/tinyglobby/-/tinyglobby-0.2.16.tgz#1c3b7eb953fce42b226bc5a1ee06428281aff3d6"
+  integrity sha512-pn99VhoACYR8nFHhxqix+uvsbXineAasWm5ojXoN8xEwK5Kd3/TrhNn1wByuD52UxWRLy8pu+kRMniEi6Eq9Zg==
   dependencies:
     fdir "^6.5.0"
-    picomatch "^4.0.3"
+    picomatch "^4.0.4"
 
 tmp@^0.0.33:
   version "0.0.33"

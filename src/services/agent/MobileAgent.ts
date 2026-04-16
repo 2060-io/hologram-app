@@ -102,7 +102,7 @@ export const getMobileAgentModules = (config: {
       didCommMimeType: DidCommMimeType.V1,
       didcommVersions: ['v1', 'v2'],
       basicMessages: {
-        protocols: ['1.0', '2.0'],
+        protocols: ['v1', 'v2'],
       },
       transports: {
         outbound: [new DidCommHttpOutboundTransport(), new TunedMobileWsOutboundTransport()],
@@ -125,7 +125,7 @@ export const getMobileAgentModules = (config: {
       },
       mediationRecipient: {
         mediatorPickupStrategy: config.mediatorPickupStrategy,
-        mediationProtocolVersions: ['1.0', '2.0'],
+        mediationProtocolVersions: ['v1', 'v2'],
         maximumMessagePickup: 100,
         baseMediatorReconnectionIntervalMs: 1000,
         maximumMediatorReconnectionIntervalMs: 8000,
