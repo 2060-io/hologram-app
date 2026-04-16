@@ -79,7 +79,7 @@ export const useSignUp = () => {
       const did = defaultServicePublicDid
       const serviceInfoResponse = await getServiceInfo({ agent, did })
       if (serviceInfoResponse) {
-        await saveInCacheServiceInfo(did, agent, serviceInfoResponse)
+        await saveInCacheServiceInfo(did, agent.context, serviceInfoResponse)
         const realmInstance = RealmSingleton.instance
         const realm = realmInstance.getRealm()
         if (realm) updateThreadFromServiceInfo({ did, serviceInfoResponse, realm, agent })

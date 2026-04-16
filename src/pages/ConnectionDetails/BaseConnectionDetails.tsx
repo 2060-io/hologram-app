@@ -29,6 +29,7 @@ import {
   isTerminated,
   unblockConnection,
 } from '@src/utils/connectionUtils'
+import { log } from '@src/utils/log'
 import { markNewConnectionNotificationAsViewed } from '@src/utils/pushNotificationsUtils'
 import { screenHeight } from '@src/utils/responsiveUtils'
 import { toast } from '@src/utils/toast'
@@ -70,6 +71,7 @@ const BaseConnectionDetails = ({
   const [blockingConnection, setBlockingConnection] = useState(false)
   const modalConfirmationTypeRef = useRef<confirmationTypes>('deleteChat')
   const connectionName = getConnectionDisplayName(connection)
+  log(`connectionName: ${connectionName}`)
   const isConnectionCompleted = connection.isReady
   const isConnectionBlocked = isBlocked(connection)
   const isConnectionTerminated = isTerminated(connection)
