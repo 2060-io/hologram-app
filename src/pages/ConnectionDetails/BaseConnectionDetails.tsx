@@ -29,10 +29,10 @@ import {
   isTerminated,
   unblockConnection,
 } from '@src/utils/connectionUtils'
+import { log } from '@src/utils/log'
 import { markNewConnectionNotificationAsViewed } from '@src/utils/pushNotificationsUtils'
 import { screenHeight } from '@src/utils/responsiveUtils'
 import { toast } from '@src/utils/toast'
-import { log } from '@src/utils/log'
 
 type confirmationTypes = 'deleteChat' | 'block' | 'unblock' | 'deleteConnection'
 export interface WrapperProps extends StackScreenProps<NavigationStackParams, 'ConnectionDetails'> {}

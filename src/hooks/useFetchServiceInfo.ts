@@ -1,3 +1,4 @@
+import { DidCommConnectionService } from '@credo-ts/didcomm'
 import { fetch as NetInfo } from '@react-native-community/netinfo'
 import { useEffect, useState, useTransition } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -13,7 +14,6 @@ import { getInCacheServiceInfo, saveInCacheServiceInfo } from '@src/services/age
 import { logError } from '@src/utils'
 import { isOlderThan24Hours } from '@src/utils/dateUtils'
 import { toast } from '@src/utils/toast'
-import { DidCommConnectionService } from '@credo-ts/didcomm'
 
 interface UseFetchServiceInfoOptions {
   did?: string

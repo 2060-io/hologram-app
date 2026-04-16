@@ -30,13 +30,13 @@ import { t } from 'i18next'
 import { filter, firstValueFrom, merge, first, timeout } from 'rxjs'
 
 import { MobileAgent } from '../MobileAgent'
+import { getInCacheServiceInfo } from '../cache'
 
 import { OutOfBandInvitationEvent, OutOfBandInvitationEventTypes } from './OutOfBandEvents'
 
 import { log, logError } from '@src/utils'
 import { deletePendingConnection, findExistingConnection, isService } from '@src/utils/connectionUtils'
 import { toast } from '@src/utils/toast'
-import { getInCacheServiceInfo } from '../cache'
 
 export enum DidcommInvitationType {
   ConnectionRequest = 'connection-request',
