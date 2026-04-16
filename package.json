@@ -190,6 +190,7 @@
     "@credo-ts/openid4vc": "0.6.3",
     "@credo-ts/question-answer": "0.6.3",
     "@credo-ts/react-native": "0.6.3",
+    "react-native-file-system": "npm:@dr.pogodin/react-native-fs@2.36.2",
     "isomorphic-webcrypto": "npm:@sphereon/isomorphic-webcrypto@2.5.0-rn-crypto.2",
     "react": "19.1.0",
     "react-dom": "19.1.0",

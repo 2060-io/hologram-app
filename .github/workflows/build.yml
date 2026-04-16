@@ -168,7 +168,7 @@ jobs:
         run: |
           xcodebuild archive \
             -workspace hologram.xcworkspace \
-            -scheme 2060Dev \
+            -scheme Dev \
             -sdk iphoneos \
             -archivePath builds/hologram.xcarchive \
             -destination "generic/platform=iOS"
