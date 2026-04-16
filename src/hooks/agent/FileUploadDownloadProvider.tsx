@@ -1,8 +1,8 @@
 import { DidCommMediaSharingRepository, SharedMediaItem } from '@2060.io/credo-ts-didcomm-media-sharing'
 import { utils } from '@credo-ts/core'
+import { copyFile, downloadFile } from '@dr.pogodin/react-native-fs'
 import { useAudioPlayer } from '@simform_solutions/react-native-audio-waveform'
 import React, { useEffect, useCallback, useRef, useState } from 'react'
-import { copyFile, downloadFile } from 'react-native-fs'
 import { createChunks } from 'react-native-local-native-modules'
 
 import { generateFileName } from '../media/files'

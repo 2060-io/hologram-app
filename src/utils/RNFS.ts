@@ -7,7 +7,7 @@ import {
   copyFile as RNFSCopyFile,
   exists as RNFSExists,
   moveFile as RNFSMoveFile,
-} from 'react-native-fs'
+} from '@dr.pogodin/react-native-fs'
 
 import { logError } from './log'
 
