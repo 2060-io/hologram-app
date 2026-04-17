@@ -200,11 +200,11 @@ jobs:
             ios/Pods
             ~/Library/Caches/CocoaPods
           key: pods-${{ hashFiles('ios/Podfile.lock') }}
-          restore-keys: pods-
 
       - name: Install Pods
         working-directory: ios
         run: |
+          pod update hermes-engine --no-repo-update
           pod install
 
       - name: Cache DerivedData
