@@ -11,7 +11,7 @@
     "prepare": "husky install",
     "prettier": "prettier --ignore-path .gitignore '**/*.{js,jsx,ts,tsx}'",
     "clean": "react-native-clean-project",
-    "postinstall": "patch-package",
+    "postinstall": "patch-package && mkdir -p node_modules/@dr.pogodin && ln -sf $(pwd)/node_modules/react-native-fs node_modules/@dr.pogodin/react-native-fs",
     "postversion": "react-native-version --never-amend --generate-build",
     "release": "semantic-release",
     "android:staging": "react-native run-android --active-arch-only --mode=stagingdebug --appId=io.twentysixty.mobileagent.st",
