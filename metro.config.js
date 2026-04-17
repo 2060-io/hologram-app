@@ -20,6 +20,7 @@ const config = {
     extraNodeModules: {
       stream: require.resolve('readable-stream'),
       crypto: require.resolve('isomorphic-webcrypto'),
+      '@dr.pogodin/react-native-fs': require('path').dirname(require.resolve('react-native-fs/package.json')),
     },
   },
 }

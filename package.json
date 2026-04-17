@@ -97,7 +97,7 @@
     "protoo-client": "4.0.7",
     "react": "19.1.1",
     "react-i18next": "15.6.1",
-    "react-native": "0.82.1",
+    "react-native": "0.83.6",
     "react-native-cloud-store": "0.11.0",
     "react-native-compressor": "1.13.0",
     "react-native-config": "1.5.10",
@@ -138,7 +138,8 @@
     "react-native-zip-archive": "7.0.1",
     "readable-stream": "^4.7.0",
     "realm": "20.2.0",
-    "rn-emoji-keyboard": "1.7.0"
+    "rn-emoji-keyboard": "1.7.0",
+    "string-width": "4.2.3"
   },
   "devDependencies": {
     "@babel/helper-get-function-arity": "7.16.7",
@@ -148,9 +149,9 @@
     "@react-native-community/cli": "20.0.0",
     "@react-native-community/cli-platform-android": "20.0.0",
     "@react-native-community/cli-platform-ios": "20.0.0",
-    "@react-native/eslint-config": "0.82.1",
-    "@react-native/metro-config": "0.82.1",
-    "@react-native/typescript-config": "0.82.1",
+    "@react-native/eslint-config": "0.83.6",
+    "@react-native/metro-config": "0.83.6",
+    "@react-native/typescript-config": "0.83.6",
     "@semantic-release/commit-analyzer": "^11.1.0",
     "@semantic-release/npm": "^11.0.2",
     "@tsconfig/react-native": "3.0.6",
@@ -195,7 +196,8 @@
     "isomorphic-webcrypto": "npm:@sphereon/isomorphic-webcrypto@2.5.0-rn-crypto.2",
     "react": "19.1.1",
     "react-dom": "19.1.1",
-    "tsyringe": "4.10.0"
+    "tsyringe": "4.10.0",
+    "string-width": "4.2.3"
   },
   "engines": {
     "node": ">=22"
