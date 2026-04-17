@@ -265,7 +265,6 @@ jobs:
         with:
           path: ~/Library/Developer/Xcode/DerivedData
           key: derived-data-${{ hashFiles('ios/Podfile.lock', 'yarn.lock') }}
-          restore-keys: derived-data-
 
       - name: Build Archive
         working-directory: ios
