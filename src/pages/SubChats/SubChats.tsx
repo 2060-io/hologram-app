@@ -27,7 +27,7 @@ import { ChatsStackParams } from '@src/navigators/ChatStackParams'
 import { widthPercentageToDP } from '@src/utils/responsiveUtils'
 
 type SubChatCategory = 'all' | 'archived'
-interface Props extends StackScreenProps<ChatsStackParams, 'SubChats'> {}
+type Props = StackScreenProps<ChatsStackParams, 'SubChats'>
 
 const SubChats: React.FC<Props> = ({ route, navigation }) => {
   const { t } = useTranslation()
@@ -179,7 +179,11 @@ const SubChats: React.FC<Props> = ({ route, navigation }) => {
                   onDeleteChat={() => onDeleteChat(chat.id, chat.connectionId)}
                   onArchiveChat={() => {
                     swipeRowReferences.current[Number(chat.id)].closeRow()
-                    chat.archived ? unarchiveThreads([chat.id]) : archiveThreads([chat.id])
+                    if (chat.archived) {
+                      unarchiveThreads([chat.id])
+                    } else {
+                      archiveThreads([chat.id])
+                    }
                   }}
                 />
                 <View style={isSwiped ? styles.bgSelectedChat : styles.bgContainerChat}>

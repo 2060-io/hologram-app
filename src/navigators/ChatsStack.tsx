@@ -17,7 +17,7 @@ type ChatsStackParams = {
 }
 
 const Stack = createStackNavigator<ChatsStackParams>()
-interface Props extends BottomTabScreenProps<HomeMainTabParams, 'Chats'> {}
+type Props = BottomTabScreenProps<HomeMainTabParams, 'Chats'>
 
 export const ChatsStack = ({ navigation }: Props) => {
   const unreadThreads = useUnreadChatThreads()

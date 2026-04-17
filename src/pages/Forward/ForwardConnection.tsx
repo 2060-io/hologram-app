@@ -13,7 +13,7 @@ import { ChatEntryRole, ChatEntryState, ChatEntryType } from '@src/model'
 import { InvitationState } from '@src/model/InvitationState'
 import { toast } from '@src/utils/toast'
 
-interface Props extends StackScreenProps<NavigationStackParams, 'ForwardConnection'> {}
+type Props = StackScreenProps<NavigationStackParams, 'ForwardConnection'>
 
 const ForwardConnection = ({ navigation, route }: Props) => {
   const { t } = useTranslation()

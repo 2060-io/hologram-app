@@ -81,7 +81,7 @@ const VPRequestChatView = ({
       })
       setFormattedPresentationRequest(newFormattedPresentationRequest)
     }
-    metadata.proofState === DidCommProofState.RequestReceived && getFormattedPresentation()
+    if (metadata.proofState === DidCommProofState.RequestReceived) getFormattedPresentation()
   }, [])
 
   const hideModalRefuseConfirmation = () => setShowModalRefuseConfirmation(false)

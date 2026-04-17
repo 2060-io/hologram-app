@@ -6,7 +6,7 @@ import { ConnectionsSelection } from '@src/components'
 import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
 import { usePresentCredential } from '@src/hooks'
 
-interface Props extends StackScreenProps<NavigationStackParams, 'PresentCredential'> {}
+type Props = StackScreenProps<NavigationStackParams, 'PresentCredential'>
 
 const PresentCredential = ({ navigation, route }: Props) => {
   const { credentialRecordId, attributesToPresent } = route.params

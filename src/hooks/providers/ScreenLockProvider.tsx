@@ -72,7 +72,11 @@ export const ScreenLockProvider: React.FC<PropsWithChildren> = ({ children }) =>
    */
   useEffect(() => {
     if (screenLockTimeout === INSTANT_TIMEOUT) return
-    isScreenLockForceDisabled ? clearInactivityTimeout() : clearAndRestartInactivityTimeout()
+    if (isScreenLockForceDisabled) {
+      clearInactivityTimeout()
+    } else {
+      clearAndRestartInactivityTimeout()
+    }
   }, [isScreenLockForceDisabled])
 
   /**

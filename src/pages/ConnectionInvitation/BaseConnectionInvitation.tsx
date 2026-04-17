@@ -33,8 +33,7 @@ const getInvitationType = (
   return 'subInvitation'
 }
 
-export interface ConnectionInvitationProps
-  extends StackScreenProps<NavigationStackParams, 'ConnectionInvitation'> {}
+export type ConnectionInvitationProps = StackScreenProps<NavigationStackParams, 'ConnectionInvitation'>
 
 interface BaseConnectionInvitationProps extends ConnectionInvitationProps {
   mainInfo: ReactElement

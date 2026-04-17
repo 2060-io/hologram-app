@@ -15,7 +15,7 @@ import { findAndParseMrz } from './findAndParseMrz'
 import { ChatStackParams } from '@src/components/Navigation/NavigationProps'
 import { useChat, useMobileAgent } from '@src/hooks/agent'
 
-interface Props extends StackScreenProps<ChatStackParams, 'MRZScanner'> {}
+type Props = StackScreenProps<ChatStackParams, 'MRZScanner'>
 
 const MRZScanner = ({ navigation, route }: Props) => {
   const devices = useCameraDevices()

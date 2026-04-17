@@ -35,7 +35,7 @@ import { screenHeight } from '@src/utils/responsiveUtils'
 import { toast } from '@src/utils/toast'
 
 type confirmationTypes = 'deleteChat' | 'block' | 'unblock' | 'deleteConnection'
-export interface WrapperProps extends StackScreenProps<NavigationStackParams, 'ConnectionDetails'> {}
+export type WrapperProps = StackScreenProps<NavigationStackParams, 'ConnectionDetails'>
 
 export interface ConnectionDetailsProps extends WrapperProps {
   connection: DidCommConnectionRecord

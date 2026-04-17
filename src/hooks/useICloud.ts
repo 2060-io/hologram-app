@@ -55,7 +55,7 @@ export const useICloud = () => {
         logError('Error getting if iCloud is available', error)
       }
     }
-    isAppActive && isIcloudAvailable()
+    if (isAppActive) isIcloudAvailable()
   }, [isAppActive])
 
   useEffect(() => {

@@ -16,7 +16,7 @@ import { getCredentialAttributes } from '@src/services/agent/display'
 import { formatCredentialSubject } from '@src/services/agent/formatCredentialSubject'
 import { toast } from '@src/utils/toast'
 
-interface Props extends StackScreenProps<NavigationStackParams, 'SelectCredentialAttributes'> {}
+type Props = StackScreenProps<NavigationStackParams, 'SelectCredentialAttributes'>
 
 const SelectCredentialAttributes = ({ navigation, route }: Props) => {
   const { presentDirectly, credentialRecordId, connectionToPresent } = route.params
@@ -49,7 +49,11 @@ const SelectCredentialAttributes = ({ navigation, route }: Props) => {
 
   const handleSelectAll = () => {
     const newAreAllSelected = !areAllSelected
-    newAreAllSelected ? setAttributesToPresent(allAttributes) : setAttributesToPresent([])
+    if (newAreAllSelected) {
+      setAttributesToPresent(allAttributes)
+    } else {
+      setAttributesToPresent([])
+    }
     setAreAllSelected(newAreAllSelected)
   }
 

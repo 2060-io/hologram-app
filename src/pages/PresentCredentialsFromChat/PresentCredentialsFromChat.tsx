@@ -10,7 +10,7 @@ import { NavigationStackParams } from '@src/components/Navigation/NavigationProp
 import { Text } from '@src/components/common'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 
-interface Props extends StackScreenProps<NavigationStackParams, 'PresentCredentialsFromChat'> {}
+type Props = StackScreenProps<NavigationStackParams, 'PresentCredentialsFromChat'>
 
 const PresentCredentialsFromChat = ({ navigation, route }: Props) => {
   const { connectionId } = route.params

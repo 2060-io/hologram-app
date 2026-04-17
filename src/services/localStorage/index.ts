@@ -48,7 +48,7 @@ export async function setStorageData(key: string, value: unknown) {
     const jsonValue = JSON.stringify(value)
     await AsyncStorage.setItem(key, jsonValue)
     return true
-  } catch (error) {
+  } catch {
     return false
   }
 }
@@ -58,7 +58,7 @@ export async function getStorageData(key: string): Promise<unknown | null | unde
     const value = await AsyncStorage.getItem(key)
     if (value) return JSON.parse(value)
     return null
-  } catch (error) {
+  } catch {
     return null
   }
 }
@@ -67,7 +67,7 @@ export async function removeStorageData(key: string): Promise<boolean> {
   try {
     await AsyncStorage.removeItem(key)
     return true
-  } catch (error) {
+  } catch {
     return false
   }
 }

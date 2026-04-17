@@ -27,7 +27,7 @@ import { DidcommInvitationType, getOutOfBandRecordById, processInvitation } from
 import { log, logError } from '@src/utils'
 import { toast } from '@src/utils/toast'
 
-interface Props extends StackScreenProps<NavigationStackParams, 'Scan'> {}
+type Props = StackScreenProps<NavigationStackParams, 'Scan'>
 
 const Scan = ({ navigation }: Props) => {
   const { t } = useTranslation()

@@ -18,7 +18,7 @@ export async function retrieveEncryptedKey(service: KeyChainService) {
     const config = await readFile(CONFIG_FILE_PATH)
     const configJson = JSON.parse(config)
     return (configJson.keys[service] as string) ?? undefined
-  } catch (error) {
+  } catch {
     return undefined
   }
 }
@@ -30,7 +30,7 @@ export async function createAndStoreEncryptedKey(service: KeyChainService, seed?
   try {
     const config = await readFile(CONFIG_FILE_PATH)
     configJson = JSON.parse(config)
-  } catch (error) {
+  } catch {
     configJson = { keys: {}, [PARENTAL_CONTROL]: {} }
   }
 

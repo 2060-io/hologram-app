@@ -53,7 +53,7 @@ export const useBuildBackup = ({
       const storedBackup = await BackupUtils.getBackupKey()
       setBackupPassword(storedBackup)
     }
-    isFocused && getStoredBackupPassword()
+    if (isFocused) getStoredBackupPassword()
   }, [isFocused])
 
   useEffect(

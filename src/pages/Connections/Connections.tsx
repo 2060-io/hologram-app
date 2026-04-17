@@ -7,7 +7,7 @@ import { Connections } from '@src/components'
 import { ConnectionItem } from '@src/components/Connections/ConnectionList'
 import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
 
-interface Props extends StackScreenProps<NavigationStackParams, 'Connections'> {}
+type Props = StackScreenProps<NavigationStackParams, 'Connections'>
 
 const ConnectionsPage = ({ navigation }: Props) => {
   const { t } = useTranslation()

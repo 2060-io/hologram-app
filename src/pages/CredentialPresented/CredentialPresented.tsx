@@ -12,7 +12,7 @@ import { Text } from '@src/components/common'
 import { useChats, useMobileAgent } from '@src/hooks/agent'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 
-interface Props extends StackScreenProps<NavigationStackParams, 'CredentialPresented'> {}
+type Props = StackScreenProps<NavigationStackParams, 'CredentialPresented'>
 
 const CredentialPresentedPage = ({ navigation, route }: Props) => {
   const { verifier, credentials } = route.params

@@ -13,7 +13,7 @@ import { useUserProfile } from '@src/hooks/agent'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { getGlobalStyles } from '@src/styles'
 
-interface Props extends StackScreenProps<NavigationStackParams, 'UserProfile'> {}
+type Props = StackScreenProps<NavigationStackParams, 'UserProfile'>
 
 const UserProfile = ({ navigation }: Props) => {
   const { t } = useTranslation()

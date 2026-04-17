@@ -15,7 +15,7 @@ import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { ChatEntryState } from '@src/model'
 import { getFormattedDateRangeWithTime } from '@src/utils/dateUtils'
 
-interface Props extends StackScreenProps<ChatStackParams, 'MessageDetails'> {}
+type Props = StackScreenProps<ChatStackParams, 'MessageDetails'>
 
 const MessageDetails = ({ route }: Props) => {
   const { selectedMessage } = route.params

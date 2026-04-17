@@ -99,7 +99,7 @@ const InputToolbarView = (props: Props) => {
     let canRecord = await checkMicrophonePermission()
     if (!canRecord) {
       canRecord = await askMicrophonePermission()
-      canRecord && setAutomaticRecording()
+      if (canRecord) setAutomaticRecording()
     }
     if (canRecord) {
       setRecordTime(INITIAL_TIME_RECORDED)

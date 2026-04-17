@@ -34,7 +34,7 @@ const ComposerInput: React.FC<Props> = ({
 
   const onLayout = (e: LayoutChangeEvent) => {
     const newPadding = e.nativeEvent.layout.height > MESSAGE_INPUT_INITIAL_HEIGHT ? 4 : 0
-    newPadding !== paddingVertical && setPadding(newPadding)
+    if (newPadding !== paddingVertical) setPadding(newPadding)
   }
 
   return (

@@ -9,7 +9,7 @@ import { findAllByAssociatedRecordId, updateChatEntryMetadata } from '@src/hooks
 import { useLocalRealm } from '@src/hooks/providers/RealmProvider'
 import { ChatEntry, ChatEntryType, VPResponseMetadata, VPResponsePresentedCredential } from '@src/model'
 
-interface Props extends StackScreenProps<NavigationStackParams, 'CredentialPresentation'> {}
+type Props = StackScreenProps<NavigationStackParams, 'CredentialPresentation'>
 
 const CredentialPresentation = ({ navigation, route }: Props) => {
   const {
