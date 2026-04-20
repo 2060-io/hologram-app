@@ -4,6 +4,7 @@ import { useCallback, useState } from 'react'
 import Config from 'react-native-config'
 
 import { updateThreadFromServiceInfo } from './agent/chat/services'
+import { useConfig } from './providers/ConfigProvider'
 
 import { useMobileAgent, useUserProfile } from '@src/hooks/agent'
 import RealmSingleton from '@src/services/RealmSingleton'
@@ -12,16 +13,17 @@ import { saveInCacheServiceInfo } from '@src/services/agent/cache'
 import { getServiceInfo } from '@src/services/trustResolution'
 import { log, logError } from '@src/utils'
 
-const defaultServicePublicDid = Config.DEFAULT_SERVICE_PUBLIC_DID as string
-const defaultServiceAlias = Config.DEFAULT_SERVICE_ALIAS as string
-const cloudAgentPublicDid = Config.CLOUD_AGENT_PUBLIC_DID as string
-
 export const useSignUp = () => {
   const navigation = useNavigation()
   const { agent, handleChangeAgentState } = useMobileAgent()
   const { updateUserProfileData } = useUserProfile()
   const [displayName, setDisplayName] = useState('')
   const [displayPicture, setDisplayPicture] = useState<DidCommUserProfileData['displayPicture']>()
+
+  const { devEnvs } = useConfig()
+  const defaultServicePublicDid = Config.DEFAULT_SERVICE_PUBLIC_DID
+  const defaultServiceAlias = Config.DEFAULT_SERVICE_ALIAS
+  const cloudAgentPublicDid = devEnvs.CLOUD_AGENT_PUBLIC_DID
 
   const startSignUp = useCallback(async () => {
     if (!agent || !agent?.isInitialized) throw new Error('Agent not initialized')
