@@ -1,5 +1,27 @@
+diff --git a/node_modules/react-native-reanimated/Common/cpp/reanimated/LayoutAnimations/LayoutAnimationsProxy.h b/node_modules/react-native-reanimated/Common/cpp/reanimated/LayoutAnimations/LayoutAnimationsProxy.h
+index 8e970cb..7992d3a 100644
+--- a/node_modules/react-native-reanimated/Common/cpp/reanimated/LayoutAnimations/LayoutAnimationsProxy.h
++++ b/node_modules/react-native-reanimated/Common/cpp/reanimated/LayoutAnimations/LayoutAnimationsProxy.h
+@@ -57,7 +57,7 @@ struct LayoutAnimationsProxy
+   mutable std::unordered_set<SurfaceId> surfacesToRemove_;
+   mutable std::vector<Tag> finishedAnimationTags_;
+   std::shared_ptr<LayoutAnimationsManager> layoutAnimationsManager_;
+-  ContextContainer::Shared contextContainer_;
++  std::shared_ptr<const ContextContainer> contextContainer_;
+   SharedComponentDescriptorRegistry componentDescriptorRegistry_;
+   jsi::Runtime &uiRuntime_;
+   const std::shared_ptr<UIScheduler> uiScheduler_;
+@@ -70,7 +70,7 @@ struct LayoutAnimationsProxy
+   LayoutAnimationsProxy(
+       std::shared_ptr<LayoutAnimationsManager> layoutAnimationsManager,
+       SharedComponentDescriptorRegistry componentDescriptorRegistry,
+-      ContextContainer::Shared contextContainer,
++      std::shared_ptr<const ContextContainer> contextContainer,
+       jsi::Runtime &uiRuntime,
+       const std::shared_ptr<UIScheduler> uiScheduler
+ #ifdef ANDROID
 diff --git a/node_modules/react-native-reanimated/android/src/main/cpp/worklets/CMakeLists.txt b/node_modules/react-native-reanimated/android/src/main/cpp/worklets/CMakeLists.txt
-index bb61ff7..dce0a55 100644
+index bb61ff7..1f2bfe5 100644
 --- a/node_modules/react-native-reanimated/android/src/main/cpp/worklets/CMakeLists.txt
 +++ b/node_modules/react-native-reanimated/android/src/main/cpp/worklets/CMakeLists.txt
 @@ -57,7 +57,7 @@ else()
@@ -7,99 +29,67 @@ index bb61ff7..dce0a55 100644
  
  if(${JS_RUNTIME} STREQUAL "hermes")
 -  target_link_libraries(worklets hermes-engine::libhermes)
-+  target_link_libraries(worklets hermes-engine)
++  target_link_libraries(worklets hermes-engine::hermesvm)
  
    if(${HERMES_ENABLE_DEBUGGER})
      string(APPEND CMAKE_CXX_FLAGS " -DHERMES_ENABLE_DEBUGGER=1")
-diff --git a/node_modules/react-native-reanimated/android/src/main/cpp/worklets/CMakeLists.txt.bak b/node_modules/react-native-reanimated/android/src/main/cpp/worklets/CMakeLists.txt.bak
-new file mode 100644
-index 0000000..bb61ff7
---- /dev/null
-+++ b/node_modules/react-native-reanimated/android/src/main/cpp/worklets/CMakeLists.txt.bak
-@@ -0,0 +1,86 @@
-+cmake_minimum_required(VERSION 3.8)
-+
-+file(GLOB_RECURSE WORKLETS_COMMON_CPP_SOURCES CONFIGURE_DEPENDS
-+     "${COMMON_CPP_DIR}/worklets/*.cpp")
-+file(GLOB_RECURSE WORKLETS_ANDROID_CPP_SOURCES CONFIGURE_DEPENDS
-+     "${ANDROID_CPP_DIR}/worklets/*.cpp")
-+
-+# Consume shared libraries and headers from prefabs
-+find_package(fbjni REQUIRED CONFIG)
-+find_package(ReactAndroid REQUIRED CONFIG)
-+
-+if(${JS_RUNTIME} STREQUAL "hermes")
-+  find_package(hermes-engine REQUIRED CONFIG)
-+endif()
-+
-+add_library(worklets SHARED ${WORKLETS_COMMON_CPP_SOURCES}
-+                            ${WORKLETS_ANDROID_CPP_SOURCES})
-+
-+# includes
-+target_include_directories(worklets PUBLIC "${COMMON_CPP_DIR}"
-+                                           "${ANDROID_CPP_DIR}")
-+
-+target_include_directories(
-+  worklets
-+  PRIVATE "${REACT_NATIVE_DIR}/ReactCommon"
-+          "${REACT_NATIVE_DIR}/ReactAndroid/src/main/jni/react/turbomodule"
-+          "${REACT_NATIVE_DIR}/ReactCommon/react/nativemodule/core/ReactCommon"
-+          "${REACT_NATIVE_DIR}/ReactCommon/callinvoker"
-+          "${REACT_NATIVE_DIR}/ReactCommon/runtimeexecutor")
-+
-+if(${IS_NEW_ARCHITECTURE_ENABLED})
-+  target_include_directories(
-+    worklets
-+    PRIVATE
-+      "${REACT_NATIVE_DIR}/ReactCommon/yoga"
-+      "${REACT_NATIVE_DIR}/ReactCommon/react/renderer/graphics/platform/cxx")
-+
-+  if(ReactAndroid_VERSION_MINOR LESS 76)
-+    target_link_libraries(
-+      worklets ReactAndroid::fabricjni ReactAndroid::react_debug
-+      ReactAndroid::react_render_core
-+      ReactAndroid::react_render_componentregistry ReactAndroid::rrc_view)
-+  endif()
-+endif()
-+
-+# build shared lib
-+set_target_properties(worklets PROPERTIES LINKER_LANGUAGE CXX)
-+
-+target_link_libraries(worklets log ReactAndroid::jsi fbjni::fbjni)
-+
-+if(ReactAndroid_VERSION_MINOR GREATER_EQUAL 76)
-+  target_link_libraries(worklets ReactAndroid::reactnative)
-+else()
-+  target_link_libraries(
-+    worklets ReactAndroid::react_nativemodule_core ReactAndroid::folly_runtime
-+    ReactAndroid::glog ReactAndroid::reactnativejni)
-+endif()
-+
-+if(${JS_RUNTIME} STREQUAL "hermes")
-+  target_link_libraries(worklets hermes-engine::libhermes)
-+
-+  if(${HERMES_ENABLE_DEBUGGER})
-+    string(APPEND CMAKE_CXX_FLAGS " -DHERMES_ENABLE_DEBUGGER=1")
-+    if(ReactAndroid_VERSION_MINOR GREATER_EQUAL 76)
-+      target_link_libraries(worklets ReactAndroid::hermestooling)
-+    else()
-+      target_link_libraries(worklets ReactAndroid::hermes_executor)
-+    endif()
-+  endif()
-+elseif(${JS_RUNTIME} STREQUAL "jsc")
-+  if(ReactAndroid_VERSION_MINOR GREATER_EQUAL 76)
-+    target_link_libraries(worklets ReactAndroid::jsctooling)
-+  else()
-+    target_link_libraries(worklets ReactAndroid::jscexecutor)
-+  endif()
-+elseif(${JS_RUNTIME} STREQUAL "v8")
-+  # TODO: Refactor this when adding support for newest V8
-+  target_include_directories(worklets PRIVATE "${JS_RUNTIME_DIR}/src")
-+  file(GLOB V8_SO_DIR "${JS_RUNTIME_DIR}/android/build/intermediates/\
-+    library_jni/**/jni/${ANDROID_ABI}")
-+  find_library(
-+    V8EXECUTOR_LIB v8executor
-+    PATHS ${V8_SO_DIR}
-+    NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH)
-+  target_link_libraries(worklets ${V8EXECUTOR_LIB})
-+endif()
+diff --git a/node_modules/react-native-reanimated/android/src/main/java/com/swmansion/reanimated/ReanimatedModule.java b/node_modules/react-native-reanimated/android/src/main/java/com/swmansion/reanimated/ReanimatedModule.java
+index 14d252c..56aae80 100644
+--- a/node_modules/react-native-reanimated/android/src/main/java/com/swmansion/reanimated/ReanimatedModule.java
++++ b/node_modules/react-native-reanimated/android/src/main/java/com/swmansion/reanimated/ReanimatedModule.java
+@@ -10,7 +10,6 @@ import com.facebook.react.bridge.UIManagerListener;
+ import com.facebook.react.fabric.FabricUIManager;
+ import com.facebook.react.module.annotations.ReactModule;
+ import com.facebook.react.uimanager.UIManagerModule;
+-import com.facebook.react.uimanager.UIManagerModuleListener;
+ import com.swmansion.worklets.WorkletsModule;
+ import java.util.ArrayList;
+ import java.util.Objects;
+@@ -18,7 +17,7 @@ import javax.annotation.Nullable;
+ 
+ @ReactModule(name = ReanimatedModule.NAME)
+ public class ReanimatedModule extends NativeReanimatedModuleSpec
+-    implements LifecycleEventListener, UIManagerModuleListener, UIManagerListener {
++    implements LifecycleEventListener, UIManagerListener {
+ 
+   public void didDispatchMountItems(@NonNull UIManager uiManager) {
+     // Keep: Required for UIManagerListener
+@@ -90,11 +89,8 @@ public class ReanimatedModule extends NativeReanimatedModuleSpec
+         throw new RuntimeException("[Reanimated] Failed to obtain instance of FabricUIManager.");
+       }
+     } else {
+-      UIManagerModule uiManager =
+-          Objects.requireNonNull(reactCtx.getNativeModule(UIManagerModule.class));
+-      uiManager.addUIManagerListener(this);
+-      mUnsubscribe =
+-          Utils.combineRunnables(mUnsubscribe, () -> uiManager.removeUIManagerListener(this));
++      throw new RuntimeException(
++          "[Reanimated] Paper renderer is no longer supported on Android (RN 0.83+).");
+     }
+     reactCtx.addLifecycleEventListener(this);
+     mUnsubscribe =
+@@ -120,24 +116,6 @@ public class ReanimatedModule extends NativeReanimatedModuleSpec
+     // do nothing
+   }
+ 
+-  @Override
+-  public void willDispatchViewUpdates(final UIManagerModule uiManager) {
+-    // This method is called for the interface of UIManagerModuleListener on
+-    // Paper. The below function with the same name won't be called.
+-    if (mOperations.isEmpty()) {
+-      return;
+-    }
+-    final ArrayList<UIThreadOperation> operations = mOperations;
+-    mOperations = new ArrayList<>();
+-    uiManager.addUIBlock(
+-        nativeViewHierarchyManager -> {
+-          NodesManager nodesManager = getNodesManager();
+-          for (UIThreadOperation operation : operations) {
+-            operation.execute(nodesManager);
+-          }
+-        });
+-  }
+-
+   /*package*/
+   public NodesManager getNodesManager() {
+     if (mNodesManager == null) {
