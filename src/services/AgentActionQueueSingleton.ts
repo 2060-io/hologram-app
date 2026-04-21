@@ -88,10 +88,6 @@ export class AgentActionQueueSingleton {
 
     queue.configure({
       concurrency: 1,
-      // 5ms was far too aggressive: the queue polled the JS bridge 200x/s even
-      // while idle, contending with other work on low-end Android devices. A
-      // 500ms interval is still responsive for user-initiated sends while
-      // dramatically reducing background CPU/bridge traffic.
       updateInterval: 500,
     })
     const runner = new AgentActionExecuter()
