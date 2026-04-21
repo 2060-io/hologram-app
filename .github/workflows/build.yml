@@ -28,7 +28,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: node_modules
-          key: node-modules-${{ hashFiles('yarn.lock') }}
+          key: node-modules-${{ hashFiles('yarn.lock', 'patches/**') }}
 
       - name: Install Dependencies
         run: |
@@ -79,7 +79,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: node_modules
-          key: node-modules-${{ hashFiles('yarn.lock') }}
+          key: node-modules-${{ hashFiles('yarn.lock', 'patches/**') }}
 
       - name: Install Dependencies
         run: yarn install --immutable
@@ -161,14 +161,13 @@ jobs:
         with:
           path: ~/Library/Developer/Xcode/DerivedData
           key: derived-data-${{ hashFiles('ios/Podfile.lock', 'yarn.lock') }}
-          restore-keys: derived-data-
 
       - name: Build Archive
         working-directory: ios
         run: |
           xcodebuild archive \
             -workspace hologram.xcworkspace \
-            -scheme 2060Dev \
+            -scheme Dev \
             -sdk iphoneos \
             -archivePath builds/hologram.xcarchive \
             -destination "generic/platform=iOS"

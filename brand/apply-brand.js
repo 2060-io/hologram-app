@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* eslint-disable no-console, @typescript-eslint/no-var-requires */
+/* eslint-disable @typescript-eslint/no-var-requires */
 
 /**
  * apply-brand.js

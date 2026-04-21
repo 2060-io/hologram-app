@@ -2,7 +2,7 @@ import { DidCommConnectionRecord } from '@credo-ts/didcomm'
 import { StackScreenProps } from '@react-navigation/stack'
 import React, { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, Image, TouchableOpacity } from 'react-native'
+import { View, TouchableOpacity } from 'react-native'
 import { AlphabetList, IData } from 'react-native-section-alphabet-list'
 
 import getStyles from './styles'
@@ -10,6 +10,7 @@ import getStyles from './styles'
 import { SearchInput } from '@src/components'
 import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
 import { Avatar, SvgIcon, Text } from '@src/components/common'
+import UniversalImage from '@src/components/common/UniversalImage'
 import { useConnectionById, useConnectionByParentConnectionId } from '@src/hooks/agent'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { getConnectionDisplayName, getConnectionDisplayPicture } from '@src/utils/connectionUtils'
@@ -57,7 +58,7 @@ const RelatedConnections: React.FC<Props> = ({ navigation, route }) => {
     <View style={styles.containerHeaderTitle}>
       {haveParentDisplayImage && (
         <View style={styles.containerImage}>
-          <Image source={{ uri: haveParentDisplayImage }} style={styles.avatarHeader} />
+          <UniversalImage source={{ uri: haveParentDisplayImage }} style={styles.avatarHeader} />
         </View>
       )}
       <Text style={styles.titleHeader} fontFamily="EuclidCircularA-Medium" numberOfLines={1}>

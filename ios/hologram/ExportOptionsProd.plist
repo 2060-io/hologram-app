@@ -9,9 +9,9 @@
 	<key>provisioningProfiles</key>
 	<dict>
 		<key>io.2060.mobileagent.m</key>
-		<string>2060 - prod</string>
+		<string>Hologram app - GH CI/CD</string>
 		<key>io.2060.mobileagent.m.share</key>
-		<string>2060 share extension - prod</string>
+		<string>Hologram app share extension - GH CI/CD</string>
 	</dict>
 	<key>compileBitcode</key>
 	<false/>

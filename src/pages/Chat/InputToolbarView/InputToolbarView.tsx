@@ -1,8 +1,8 @@
+import { stat } from '@dr.pogodin/react-native-fs'
 import { useAudioRecorder, useAudioPlayer } from '@simform_solutions/react-native-audio-waveform/lib/hooks'
 import React, { useRef, useEffect, useState, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, TouchableOpacity } from 'react-native'
-import { stat } from 'react-native-fs'
 
 import ComposerInput from '../ComposerInput'
 import RepliedMessageView from '../RepliedMessageView/RepliedMessageView'

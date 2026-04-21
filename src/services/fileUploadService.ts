@@ -11,10 +11,10 @@ import {
 } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import { CacheModuleConfig } from '@credo-ts/core'
+import { uploadFiles } from '@dr.pogodin/react-native-fs'
 import { getApp } from '@react-native-firebase/app'
 import { getToken } from '@react-native-firebase/app-check'
 import { XMLParser } from 'fast-xml-parser'
-import { uploadFiles } from 'react-native-fs'
 
 import { MobileAgent } from './agent/MobileAgent'
 

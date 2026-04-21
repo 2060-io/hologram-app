@@ -9,7 +9,9 @@ import { useFetchServiceInfo } from '@src/hooks'
 const ConnectionDetailsForService = (props: ConnectionDetailsProps) => {
   const { connection } = props
   const { invitationDid } = connection
-  const { isFetchingInfo, serviceInfo, failedFetchInfo, getServiceInfo } = useFetchServiceInfo(invitationDid)
+  const { isFetchingInfo, serviceInfo, failedFetchInfo, getServiceInfo } = useFetchServiceInfo({
+    did: invitationDid,
+  })
 
   const refreshServiceInfo = useCallback(() => {
     getServiceInfo()

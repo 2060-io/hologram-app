@@ -230,6 +230,7 @@ export function getCredentialMainInfo(
 
     const issuerDisplay = getIssuerDisplay(credential)
     const credentialDisplay = getW3cCredentialDisplay(credential)
+    const issuerId = typeof credential.issuer === 'string' ? credential.issuer : credential.issuer?.id
 
     return {
       id: credentialRecord.id,
@@ -237,7 +238,7 @@ export function getCredentialMainInfo(
       createdAt: credentialRecord.createdAt,
       schemaName: credentialDisplay.name,
       issuer: {
-        id: credential.issuer.id,
+        id: issuerId ?? '',
         name: issuerDisplay.name,
         logoUrl: issuerDisplay.logo?.url,
         status: TrustResolutionOutcome.INVALID,

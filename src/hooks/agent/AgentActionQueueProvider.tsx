@@ -1,4 +1,12 @@
-import React, { createContext, PropsWithChildren, useCallback, useContext, useEffect, useState } from 'react'
+import React, {
+  createContext,
+  PropsWithChildren,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 
 import { useLocalRealm } from '../providers/RealmProvider'
 import { useNetwork } from '../useNetwork'
@@ -26,18 +34,29 @@ export const AgentActionQueueProvider: React.FC<PropsWithChildren> = ({ children
   const { realm } = useLocalRealm()
   const { agent } = useMobileAgent()
   const [isReady, setIsReady] = useState<boolean>(false)
-  const { assertConnectedNetwork } = useNetwork()
-  const isNetworkConnected = assertConnectedNetwork()
+  const { netInfo } = useNetwork()
   const agentActionQueueSingleton = AgentActionQueueSingleton.instance
   const queue = agentActionQueueSingleton.getQueue()
 
+  // Track the last known connectivity state so we only stop the queue on a
+  // genuine `true -> false` transition. NetInfo's initial state is
+  // `isConnected: null` which previously caused a spurious `queue.stop()`
+  // during boot and, combined with start/stop races in the underlying
+  // library, could leave the queue paused indefinitely.
+  const lastConnectedRef = useRef<boolean | null>(null)
+
   useEffect(() => {
-    if (isNetworkConnected) {
-      if (isReady) queue.start()
+    if (!isReady) return
+    const isConnected = netInfo.isConnected
+    if (isConnected === null) return
+    if (isConnected === lastConnectedRef.current) return
+    lastConnectedRef.current = isConnected
+    if (isConnected) {
+      queue.start()
     } else {
       queue.stop()
     }
-  }, [isNetworkConnected, isReady])
+  }, [netInfo.isConnected, isReady])
 
   useEffect(() => {
     if (agent?.isInitialized && realm) {
@@ -46,12 +65,12 @@ export const AgentActionQueueProvider: React.FC<PropsWithChildren> = ({ children
     }
   }, [agent?.isInitialized, realm])
 
-  const addAgentActionToQueue = useCallback(
-    (action: AgentActionOptions) => {
-      agentActionQueueSingleton.addJob(action, isNetworkConnected)
-    },
-    [queue, isNetworkConnected],
-  )
+  // Always pass `startQueue: true`. `configureQueue()` already issues a
+  // start() and `start()` is idempotent, so this guarantees the job is picked
+  // up even if a previous `stop()` left the queue paused.
+  const addAgentActionToQueue = useCallback((action: AgentActionOptions) => {
+    agentActionQueueSingleton.addJob(action, true)
+  }, [])
 
   return <AgentActionQueueContext value={{ addAgentActionToQueue }}>{children}</AgentActionQueueContext>
 }
