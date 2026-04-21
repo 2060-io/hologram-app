@@ -88,7 +88,7 @@ export class AgentActionQueueSingleton {
 
     queue.configure({
       concurrency: 1,
-      updateInterval: 500,
+      updateInterval: 200,
     })
     const runner = new AgentActionExecuter()
 
