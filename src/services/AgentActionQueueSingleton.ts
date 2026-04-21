@@ -88,7 +88,11 @@ export class AgentActionQueueSingleton {
 
     queue.configure({
       concurrency: 1,
-      updateInterval: 5,
+      // 5ms was far too aggressive: the queue polled the JS bridge 200x/s even
+      // while idle, contending with other work on low-end Android devices. A
+      // 500ms interval is still responsive for user-initiated sends while
+      // dramatically reducing background CPU/bridge traffic.
+      updateInterval: 500,
     })
     const runner = new AgentActionExecuter()
 
@@ -219,14 +223,42 @@ export class AgentActionQueueSingleton {
       ),
     )
     this.isConfigured = true
+    // Kick the queue as soon as it is configured. `start()` is idempotent (it
+    // no-ops if already active), so this protects against the provider's
+    // network-gated effect racing with `setIsReady(true)` and never issuing a
+    // `start()`.
+    queue.start()
   }
 
   getQueue() {
     return queue
   }
 
+  /**
+   * Drop the current configuration after agent/realm teardown (e.g. wallet
+   * deletion). Stops the queue and removes workers so no stale closure keeps
+   * references to the old agent/realm. Pending jobs are kept in the persistent
+   * store: a subsequent `configureQueue()` will resume them against the new
+   * agent instance.
+   */
+  reset() {
+    queue.stop()
+    for (const worker of Object.keys(queue.registeredWorkers)) {
+      queue.removeWorker(worker)
+    }
+    this.isConfigured = false
+  }
+
   setIsConfigured(isConfigured: boolean) {
     this.isConfigured = isConfigured
+  }
+
+  /**
+   * Diagnostic helper: returns the persisted job list. Useful from the
+   * Developer panel to inspect stuck queues in production builds.
+   */
+  async getPendingJobs() {
+    return queue.getJobs()
   }
 
   addJob(payload: AgentActionOptions, startQueue: boolean = true) {

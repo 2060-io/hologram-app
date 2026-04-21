@@ -21,6 +21,13 @@ const ACTION_CALLBACK_TIMEOUT_MS = 45_000
 // that on mobile.
 const MESSAGE_SENT_EVENT_TIMEOUT_MS = 30_000
 
+// Maximum serialized size of the outbound message we are willing to persist in
+// the job store for retry. Beyond this, repeated failures would bloat the
+// SQLite-backed job queue and, historically, could leave users with a queue
+// they could only recover from by wiping all app data. Dropping retries for
+// oversized payloads is safer than risking a permanent stall.
+const MAX_RETRY_MESSAGE_JSON_BYTES = 256 * 1024
+
 const withTimeout = <T>(promise: Promise<T>, ms: number, label: string): Promise<T> =>
   new Promise<T>((resolve, reject) => {
     const timer = setTimeout(() => reject(new Error(`${label} timed out after ${ms}ms`)), ms)
@@ -120,10 +127,22 @@ export class AgentActionExecuter {
           })
         }
 
+        const messageJson = message.toJSON()
+        const serializedSize = JSON.stringify(messageJson).length
+        if (serializedSize > MAX_RETRY_MESSAGE_JSON_BYTES) {
+          logError(
+            `Outbound message for ${action.type} is ${serializedSize} bytes, ` +
+              `above the ${MAX_RETRY_MESSAGE_JSON_BYTES}-byte retry cap; dropping retries.`,
+          )
+          // Return OK so no retry is enqueued. The chat entry stays in `Created`
+          // and the caller can surface it as an unsent message in the UI.
+          return { status: ActionExecutionStatus.OK }
+        }
+
         return {
           status: ActionExecutionStatus.Failed,
           outboundMessageContextData: {
-            message: message.toJSON(),
+            message: messageJson,
             associatedChatEntryId: chatEntry?.id,
             associatedRecord: associatedRecord
               ? { type: associatedRecord.type, id: associatedRecord.id }
