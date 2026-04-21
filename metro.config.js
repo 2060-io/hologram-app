@@ -19,7 +19,7 @@ const config = {
     sourceExts: ['jsx', 'js', 'ts', 'tsx', 'cjs', 'mjs', 'json'],
     extraNodeModules: {
       stream: require.resolve('readable-stream'),
-      crypto: require.resolve('isomorphic-webcrypto')
+      crypto: require.resolve('isomorphic-webcrypto'),
     },
   },
 }
