@@ -24,6 +24,34 @@ import { updateChatEntry } from '@src/hooks/agent/chat/services'
 import { ChatEntry, ChatEntryState } from '@src/model'
 import { log, logError } from '@src/utils'
 
+// Hard ceilings enforced by `react-native-job-queue`. If the executer promise
+// doesn't settle within these, the library rejects the job via Promise.race,
+// preventing a stuck job from halting the (concurrency=1) queue indefinitely.
+// The values are larger than the internal timeouts in `AgentActionExecuter` so
+// those can fire first and produce cleaner errors.
+const AGENT_ACTION_JOB_TIMEOUT_MS = 90_000
+const RETRY_ACTION_JOB_TIMEOUT_MS = 60_000
+
+// Per-retry hard ceiling around `DidCommMessageSender.sendMessage`. Without
+// this, a hung outbound transport would block the queue until the process is
+// killed (the library timeout above is the last-resort safety net).
+const RETRY_SEND_MESSAGE_TIMEOUT_MS = 45_000
+
+const withTimeout = <T>(promise: Promise<T>, ms: number, label: string): Promise<T> =>
+  new Promise<T>((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error(`${label} timed out after ${ms}ms`)), ms)
+    promise.then(
+      value => {
+        clearTimeout(timer)
+        resolve(value)
+      },
+      err => {
+        clearTimeout(timer)
+        reject(err)
+      },
+    )
+  })
+
 class ActionExecutionError extends Error {
   public outboundMessageContextData?: OutboundMessageContextData
   constructor(message: string, outboundMessageContextData?: OutboundMessageContextData) {
@@ -60,7 +88,7 @@ export class AgentActionQueueSingleton {
 
     queue.configure({
       concurrency: 1,
-      updateInterval: 5,
+      updateInterval: 200,
     })
     const runner = new AgentActionExecuter()
 
@@ -84,9 +112,16 @@ export class AgentActionQueueSingleton {
                 remainingAttempts,
               } as RetryAgentAction
 
-              setTimeout(() => {
-                queue.addJob<RetryAgentAction>('RetryAgentAction', retryAction, undefined, false)
-              }, 2_000)
+              // Synchronous enqueue: if we delay via setTimeout, the retry is
+              // lost when the OS suspends/kills the process before it fires.
+              queue.addJob<RetryAgentAction>(
+                'RetryAgentAction',
+                retryAction,
+                { attempts: 0, timeout: RETRY_ACTION_JOB_TIMEOUT_MS, priority: 0 },
+                false,
+              )
+            } else {
+              logError(`AgentAction ${job.payload.type} failed unrecoverably: ${error}`)
             }
           },
         },
@@ -126,12 +161,19 @@ export class AgentActionQueueSingleton {
               associatedRecord = await getAssociatedRecord({ recordId, recordType })
             }
 
-            await messageSender.sendMessage(
-              await getOutboundDidCommMessageContext(agent.context, {
-                message: JsonTransformer.fromJSON(payload.outboundMessageContextData.message, DidCommMessage),
-                associatedRecord: associatedRecord ?? undefined,
-                connectionRecord,
-              }),
+            await withTimeout(
+              messageSender.sendMessage(
+                await getOutboundDidCommMessageContext(agent.context, {
+                  message: JsonTransformer.fromJSON(
+                    payload.outboundMessageContextData.message,
+                    DidCommMessage,
+                  ),
+                  associatedRecord: associatedRecord ?? undefined,
+                  connectionRecord,
+                }),
+              ),
+              RETRY_SEND_MESSAGE_TIMEOUT_MS,
+              'RetryAgentAction sendMessage',
             )
             const associatedChatEntryId = payload.outboundMessageContextData.associatedChatEntryId
             const chatEntry = associatedChatEntryId
@@ -161,26 +203,66 @@ export class AgentActionQueueSingleton {
                 remainingAttempts,
               } as RetryAgentAction
 
-              setTimeout(() => {
-                queue.addJob<RetryAgentAction>('RetryAgentAction', newRetryAction, undefined, false)
-              }, 2_000)
+              // Synchronous enqueue so the retry survives the app being killed
+              // before a setTimeout could fire.
+              queue.addJob<RetryAgentAction>(
+                'RetryAgentAction',
+                newRetryAction,
+                { attempts: 0, timeout: RETRY_ACTION_JOB_TIMEOUT_MS, priority: 0 },
+                false,
+              )
+            } else {
+              logError(`RetryAgentAction failed unrecoverably: ${error}`)
             }
           },
         },
       ),
     )
     this.isConfigured = true
+    // Kick the queue as soon as it is configured. `start()` is idempotent (it
+    // no-ops if already active), so this protects against the provider's
+    // network-gated effect racing with `setIsReady(true)` and never issuing a
+    // `start()`.
+    queue.start()
   }
 
   getQueue() {
     return queue
   }
 
+  /**
+   * Drop the current configuration after agent/realm teardown (e.g. wallet
+   * deletion). Stops the queue and removes workers so no stale closure keeps
+   * references to the old agent/realm. Pending jobs are kept in the persistent
+   * store: a subsequent `configureQueue()` will resume them against the new
+   * agent instance.
+   */
+  reset() {
+    queue.stop()
+    for (const worker of Object.keys(queue.registeredWorkers)) {
+      queue.removeWorker(worker)
+    }
+    this.isConfigured = false
+  }
+
   setIsConfigured(isConfigured: boolean) {
     this.isConfigured = isConfigured
   }
 
+  /**
+   * Diagnostic helper: returns the persisted job list. Useful from the
+   * Developer panel to inspect stuck queues in production builds.
+   */
+  async getPendingJobs() {
+    return queue.getJobs()
+  }
+
   addJob(payload: AgentActionOptions, startQueue: boolean = true) {
-    queue.addJob('AgentAction', { ...payload, attempts: 4 }, undefined, startQueue)
+    queue.addJob(
+      'AgentAction',
+      { ...payload, attempts: 4 },
+      { attempts: 0, timeout: AGENT_ACTION_JOB_TIMEOUT_MS, priority: 0 },
+      startQueue,
+    )
   }
 }

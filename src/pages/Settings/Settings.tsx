@@ -91,7 +91,7 @@ const Settings = ({ navigation }: Props) => {
       closeRealm()
       AgentSingleton.instance.setAppIsSubscribedChatToEvents(false)
       AgentSingleton.instance.setIsAppSubscribedToConnectionEvents(false)
-      AgentActionQueueSingleton.instance.setIsConfigured(false)
+      AgentActionQueueSingleton.instance.reset()
     } catch (error) {
       logError(`Error deleting wallet: ${error}`)
       toast({ type: 'error', message: t('settings.deleteWalletError') })
