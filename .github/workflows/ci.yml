@@ -30,14 +30,14 @@ jobs:
         run: |
           pnpm install --frozen-lockfile
 
-      - name: Check Format
+      - name: Check Style
         run: |
-          pnpm prettier -c
+          pnpm style:check
+
+      - name: Check Lint
+        run: |
+          pnpm lint:check
 
       - name: Check Types
         run: |
-          pnpm lint
-
-      - name: Build
-        run: |
-          pnpm build
+          pnpm types:check
