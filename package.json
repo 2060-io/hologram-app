@@ -178,27 +178,43 @@
     "semantic-release-react-native": "1.9.0",
     "typescript": "~5.9.2"
   },
-  "resolutions": {
-    "@hyperledger/anoncreds-shared": "0.4.0",
-    "@hyperledger/anoncreds-react-native": "0.4.0",
-    "@openwallet-foundation/askar-shared": "0.6.0",
-    "@openwallet-foundation/askar-react-native": "0.6.0",
-    "@credo-ts/action-menu": "0.7.0-alpha-20260421112950",
-    "@credo-ts/anoncreds": "0.7.0-alpha-20260421112950",
-    "@credo-ts/askar": "0.7.0-alpha-20260421112950",
-    "@credo-ts/core": "0.7.0-alpha-20260421112950",
-    "@credo-ts/didcomm": "0.7.0-alpha-20260421112950",
-    "@credo-ts/openid4vc": "0.7.0-alpha-20260421112950",
-    "@credo-ts/question-answer": "0.7.0-alpha-20260421112950",
-    "@credo-ts/react-native": "0.7.0-alpha-20260421112950",
-    "isomorphic-webcrypto": "npm:@sphereon/isomorphic-webcrypto@2.5.0-rn-crypto.2",
-    "react": "19.1.1",
-    "react-dom": "19.1.1",
-    "tsyringe": "4.10.0",
-    "string-width": "4.2.3"
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@firebase/util",
+      "@hyperledger/anoncreds-react-native",
+      "@openwallet-foundation/askar-react-native",
+      "bufferutil",
+      "cbor-extract",
+      "es5-ext",
+      "esbuild",
+      "postinstall-postinstall",
+      "protobufjs",
+      "realm",
+      "unrs-resolver",
+      "utf-8-validate"
+    ],
+    "overrides": {
+      "@hyperledger/anoncreds-shared": "0.4.0",
+      "@hyperledger/anoncreds-react-native": "0.4.0",
+      "@openwallet-foundation/askar-shared": "0.6.0",
+      "@openwallet-foundation/askar-react-native": "0.6.0",
+      "@credo-ts/action-menu": "0.7.0-alpha-20260421112950",
+      "@credo-ts/anoncreds": "0.7.0-alpha-20260421112950",
+      "@credo-ts/askar": "0.7.0-alpha-20260421112950",
+      "@credo-ts/core": "0.7.0-alpha-20260421112950",
+      "@credo-ts/didcomm": "0.7.0-alpha-20260421112950",
+      "@credo-ts/openid4vc": "0.7.0-alpha-20260421112950",
+      "@credo-ts/question-answer": "0.7.0-alpha-20260421112950",
+      "@credo-ts/react-native": "0.7.0-alpha-20260421112950",
+      "isomorphic-webcrypto": "npm:@sphereon/isomorphic-webcrypto@2.5.0-rn-crypto.2",
+      "react": "19.1.1",
+      "react-dom": "19.1.1",
+      "tsyringe": "4.10.0",
+      "string-width": "4.2.3"
+    }
   },
   "engines": {
     "node": ">=22"
   },
-  "packageManager": "yarn@1.22.22+sha1.ac34549e6aa8e7ead463a7407e1c7390f61a6610"
+  "packageManager": "pnpm@10.33.0"
 }

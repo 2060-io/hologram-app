@@ -4,7 +4,7 @@ This repository contains Hologram Mobile Agent, a React Native application used 
 
 ## Environment setup
 
-Currently we are using [node 22.18.0](https://nodejs.org/dist/v22.18.0/). [Yarn 1.22.22](https://classic.yarnpkg.com/lang/en/) is used to manage packages and scripts.
+Currently we are using [node 22.18.0](https://nodejs.org/dist/v22.18.0/). [pnpm](https://pnpm.io/) (pinned via the `packageManager` field in `package.json`) is used to manage packages and scripts. If you have [Corepack](https://nodejs.org/api/corepack.html) enabled, the correct pnpm version is activated automatically; otherwise run `corepack enable` once.
 
 For Android, we are currently using the following toolchain:
 
@@ -23,7 +23,7 @@ For iOS:
 Import all dependencies by running:
 
 ```
-yarn install
+pnpm install
 ```
 
 For iOS, pods need to be installed:
@@ -38,19 +38,19 @@ pod install
 The app can be run in both emulators/simulators and real devices. In parallel, a terminal running Metro server must be running:
 
 ```
-yarn start
+pnpm start
 ```
 
 For Android:
 
 ```
-yarn run android
+pnpm android
 ```
 
 For iOS:
 
 ```
-yarn run ios
+pnpm ios
 ```
 
 Make sure to properly set-up your simulators in case of using them. You should probably open [XCode workspace](ios/hologram.xcworkspace/) to select a target matching the one in your system.
