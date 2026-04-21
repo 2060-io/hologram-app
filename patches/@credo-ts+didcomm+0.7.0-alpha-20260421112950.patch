@@ -35,29 +35,6 @@ index e1a0c77..804363d 100644
  	}
  };
  DidCommDispatcher = __decorate([
-diff --git a/node_modules/@credo-ts/didcomm/build/DidCommMessageSender.mjs b/node_modules/@credo-ts/didcomm/build/DidCommMessageSender.mjs
-index aedda59..6d1f81a 100644
---- a/node_modules/@credo-ts/didcomm/build/DidCommMessageSender.mjs
-+++ b/node_modules/@credo-ts/didcomm/build/DidCommMessageSender.mjs
-@@ -296,11 +296,13 @@ let DidCommMessageSender = class DidCommMessageSender {
- 			const serviceSchema = utils.getProtocolScheme(service.serviceEndpoint);
- 			return transportPriority.schemes.includes(serviceSchema);
- 		});
--		if (transportPriority?.schemes) services = services.sort((a, b) => {
--			const aScheme = utils.getProtocolScheme(a.serviceEndpoint);
--			const bScheme = utils.getProtocolScheme(b.serviceEndpoint);
--			return transportPriority?.schemes.indexOf(aScheme) - transportPriority?.schemes.indexOf(bScheme);
--		});
-+		if (transportPriority?.schemes) {
-+			const schemePriority = (endpoint) => {
-+				const index = transportPriority.schemes.indexOf(utils.getProtocolScheme(endpoint));
-+				return index === -1 ? Number.MAX_SAFE_INTEGER : index;
-+			};
-+			services = services.sort((a, b) => schemePriority(a.serviceEndpoint) - schemePriority(b.serviceEndpoint));
-+		}
- 		agentContext.config.logger.debug(`Retrieved ${services.length} services for message to connection '${connection.id}'(${connection.theirLabel})'`, {
- 			hasQueueService: queueService !== void 0,
- 			transportPriority
 diff --git a/node_modules/@credo-ts/didcomm/build/modules/routing/DidCommMediationRecipientApi.mjs b/node_modules/@credo-ts/didcomm/build/modules/routing/DidCommMediationRecipientApi.mjs
 index 1f4452a..0b981c1 100644
 --- a/node_modules/@credo-ts/didcomm/build/modules/routing/DidCommMediationRecipientApi.mjs

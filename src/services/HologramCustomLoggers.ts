@@ -21,37 +21,37 @@ export class HologramCustomLogger implements Logger {
   }
 
   test(message: string, data?: Record<string, unknown>) {
-    if (LogLevel.test >= this.logLevel) {
+    if (LogLevel.Test >= this.logLevel) {
       console.debug(`TEST: ${message}`, data ? this.getOutput(data) : '')
     }
   }
   trace(message: string, data?: Record<string, unknown>) {
-    if (LogLevel.trace >= this.logLevel) {
+    if (LogLevel.Trace >= this.logLevel) {
       console.trace(`TRACE: ${message}`, data ? this.getOutput(data) : '')
     }
   }
   debug(message: string, data?: Record<string, unknown>) {
-    if (LogLevel.debug >= this.logLevel) {
+    if (LogLevel.Debug >= this.logLevel) {
       console.debug(`DEBUG: ${message}`, data ? this.getOutput(data) : '')
     }
   }
   info(message: string, data?: Record<string, unknown>) {
-    if (LogLevel.info >= this.logLevel) {
+    if (LogLevel.Info >= this.logLevel) {
       console.info(`INFO: ${message}`, data ? this.getOutput(data) : '')
     }
   }
   warn(message: string, data?: Record<string, unknown>) {
-    if (LogLevel.warn >= this.logLevel) {
+    if (LogLevel.Warn >= this.logLevel) {
       console.warn(`WARN: ${message}`, data)
     }
   }
   error(message: string, data?: Record<string, unknown>) {
-    if (LogLevel.error >= this.logLevel) {
+    if (LogLevel.Error >= this.logLevel) {
       console.error(`ERROR: ${message}`, data)
     }
   }
   fatal(message: string, data?: Record<string, unknown>) {
-    if (LogLevel.fatal >= this.logLevel) {
+    if (LogLevel.Fatal >= this.logLevel) {
       console.error(`FATAL: ${message}`, data)
     }
   }
