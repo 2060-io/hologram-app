@@ -31,8 +31,9 @@ const Did = ({ did, serviceInfoStatus, isFetchingInfo }: Props) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
-  const initialDid = did.length > DID_MAX_DISPLAY_CHARS ? truncateDid(did) : did
-  const [truncated, setTruncated] = useState<boolean>(did.length > DID_MAX_DISPLAY_CHARS)
+  const safeDid = did ?? ''
+  const initialDid = safeDid.length > DID_MAX_DISPLAY_CHARS ? truncateDid(safeDid) : safeDid
+  const [truncated, setTruncated] = useState<boolean>(safeDid.length > DID_MAX_DISPLAY_CHARS)
 
   const serviceIs: Record<ServiceStatus, string> = {
     verified: t('invitation.isATrustedService'),
@@ -52,12 +53,16 @@ const Did = ({ did, serviceInfoStatus, isFetchingInfo }: Props) => {
       show={isFetchingInfo}
     />
   ) : (
-    <TouchableOpacity onPress={onPressDid} activeOpacity={0} disabled={did.length <= DID_MAX_DISPLAY_CHARS}>
+    <TouchableOpacity
+      onPress={onPressDid}
+      activeOpacity={0}
+      disabled={safeDid.length <= DID_MAX_DISPLAY_CHARS}
+    >
       <Text style={styles.text}>
         <Text
           fontFamily="EuclidCircularA-Bold"
           style={styles.text}
-        >{`${truncated ? initialDid : did} `}</Text>
+        >{`${truncated ? initialDid : safeDid} `}</Text>
         {serviceIs[serviceInfoStatus]}
       </Text>
     </TouchableOpacity>

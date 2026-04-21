@@ -134,7 +134,7 @@ const Developer = ({ navigation }: Props) => {
       closeRealm()
       AgentSingleton.instance.setAppIsSubscribedChatToEvents(false)
       AgentSingleton.instance.setIsAppSubscribedToConnectionEvents(false)
-      AgentActionQueueSingleton.instance.setIsConfigured(false)
+      AgentActionQueueSingleton.instance.reset()
       navigation.navigate('Home')
     } catch (error) {
       toast({ type: 'error', message: t('settings.deleteWalletError') })
