@@ -10,6 +10,32 @@ import { ChatEntry, ChatEntryState } from '@src/model'
 import { MobileAgent } from '@src/services/agent'
 import { log, logError } from '@src/utils'
 
+// Hard ceiling for the action callback itself (i.e. the underlying `sendMessage`
+// dispatching logic). If the outbound transport hangs (dead socket, stalled
+// upload, mediator WS half-open), this timeout ensures the worker resolves so
+// that `react-native-job-queue` can move on instead of leaving the queue stuck.
+const ACTION_CALLBACK_TIMEOUT_MS = 45_000
+
+// Time we wait for the `DidCommMessageSent` event after the callback resolves.
+// Bumped from 5s because large media uploads and slow networks commonly exceed
+// that on mobile.
+const MESSAGE_SENT_EVENT_TIMEOUT_MS = 30_000
+
+const withTimeout = <T>(promise: Promise<T>, ms: number, label: string): Promise<T> =>
+  new Promise<T>((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error(`${label} timed out after ${ms}ms`)), ms)
+    promise.then(
+      value => {
+        clearTimeout(timer)
+        resolve(value)
+      },
+      err => {
+        clearTimeout(timer)
+        reject(err)
+      },
+    )
+  })
+
 export class AgentActionExecuter {
   /**
    * @param callback action to be executed. Might return a record id to associate an outgoing message
@@ -36,7 +62,11 @@ export class AgentActionExecuter {
 
     try {
       const callback = AgentActionExecuterMap[action.type](action)
-      const { associatedRecord, outgoingMessageType } = await callback({ agent })
+      const { associatedRecord, outgoingMessageType } = await withTimeout(
+        callback({ agent }),
+        ACTION_CALLBACK_TIMEOUT_MS,
+        `Agent action ${action.type} callback`,
+      )
 
       // Wait until the outgoing message has been submitted and update the chat entry accordingly
       const message = await firstValueFrom(
@@ -50,10 +80,16 @@ export class AgentActionExecuter {
               e.payload.message.associatedRecord?.id === associatedRecord.id,
           ),
           first(),
-          timeout(5000),
+          timeout(MESSAGE_SENT_EVENT_TIMEOUT_MS),
           catchError(() => {
-            // TODO: Catch timeout error and add to queue
-            throw new Error('AgentMessageSent event not emitted within timeout')
+            // The callback resolved without throwing `MessageSendingError`, so the
+            // message most likely has been (or is being) sent. Retrying would risk
+            // duplicate sends, so we surface a non-retryable error and let the
+            // queue move on. The chat entry will stay in `Created` until further
+            // reconciliation.
+            throw new Error(
+              `DidCommMessageSent not emitted in ${MESSAGE_SENT_EVENT_TIMEOUT_MS}ms (${action.type})`,
+            )
           }),
           map(e => e.payload.message),
         ),
