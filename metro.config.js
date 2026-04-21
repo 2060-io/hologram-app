@@ -19,8 +19,7 @@ const config = {
     sourceExts: ['jsx', 'js', 'ts', 'tsx', 'cjs', 'mjs', 'json'],
     extraNodeModules: {
       stream: require.resolve('readable-stream'),
-      crypto: require.resolve('isomorphic-webcrypto'),
-      '@dr.pogodin/react-native-fs': require('path').dirname(require.resolve('react-native-fs/package.json')),
+      crypto: require.resolve('isomorphic-webcrypto')
     },
   },
 }
