@@ -214,8 +214,8 @@ importers:
         specifier: 1.5.10
         version: 1.5.10
       react-native-create-thumbnail:
-        specifier: 2.1.1
-        version: 2.1.1(react-native@0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.1)(utf-8-validate@5.0.10))
+        specifier: 2.2.0
+        version: 2.2.0
       react-native-date-picker:
         specifier: 5.0.12
         version: 5.0.12(react-native@0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.1)(utf-8-validate@5.0.10))(react@19.1.1)
@@ -7013,10 +7013,8 @@ packages:
       react-native-windows:
         optional: true
 
-  react-native-create-thumbnail@2.1.1:
-    resolution: {integrity: sha512-3rawLi0mZiKfPh53C3mbrI9EVVzLWLYiDynUdpAe/I36XbSSFupxP9+g10/rrhhTNX8NSg/4zAC8Z7P9epnt+g==}
-    peerDependencies:
-      react-native: '>=0.59.0'
+  react-native-create-thumbnail@2.2.0:
+    resolution: {integrity: sha512-zrwVYWMpeMEGIYO1jgwUMBpSpIzMR7Z2gkSANVlf9BFZLRw017k7CfjttvDhCHjsxNNDb7+V8uJaNwIGdTpz/g==}
 
   react-native-date-picker@5.0.12:
     resolution: {integrity: sha512-R/mUnCKhcuxbhKPFwYdBQCxQt9HHLqpM4ruRUqlcBjiUZ3N2wdnwOMyc888Ps8qp8e7v29PrDHtUlG8LPuFn9w==}
@@ -17033,9 +17031,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  react-native-create-thumbnail@2.1.1(react-native@0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.1)(utf-8-validate@5.0.10)):
-    dependencies:
-      react-native: 0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.1)(utf-8-validate@5.0.10)
+  react-native-create-thumbnail@2.2.0: {}
 
   react-native-date-picker@5.0.12(react-native@0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.1)(utf-8-validate@5.0.10))(react@19.1.1):
     dependencies:

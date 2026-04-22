@@ -104,7 +104,7 @@
     "react-native-cloud-store": "0.11.0",
     "react-native-compressor": "1.13.0",
     "react-native-config": "1.5.10",
-    "react-native-create-thumbnail": "2.1.1",
+    "react-native-create-thumbnail": "2.2.0",
     "react-native-date-picker": "5.0.12",
     "react-native-eid-reader": "npm:@2060.io/react-native-eid-reader@0.1.2",
     "react-native-file-logger": "0.7.2",
