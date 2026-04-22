@@ -10,6 +10,7 @@ import { Text, TextInput, SvgIcon, Avatar } from '@src/components/common'
 import { useImageCropPicker, ImageOrVideo } from '@src/hooks'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { dataUrl } from '@src/utils'
+import { widthPercentageToDP } from '@src/utils/responsiveUtils'
 
 type Props = {
   displayPicture: DidCommUserProfileData['displayPicture']
@@ -25,7 +26,12 @@ const UserProfileForm: React.FC<Props> = props => {
   const { takePhotoOrVideo, takePhotoOrVideoFromGallery } = useImageCropPicker()
   const { displayPicture, displayName, onHandleChangePicture, onHandleChangeName } = props
   const imgUrl = displayPicture ? dataUrl(displayPicture.mimeType, displayPicture.base64) : null
-  const avatarUri = imgUrl ?? Image.resolveAssetSource(defaultAvatar).uri
+  const avatarSize = widthPercentageToDP('46%')
+  const defaultAvatarStyle = {
+    width: avatarSize,
+    height: avatarSize,
+    borderRadius: avatarSize / 2,
+  }
 
   const onChangeAvatarInfo = (info: ImageOrVideo) => {
     if (info.data) onHandleChangePicture({ mimeType: info.mime, base64: info.data })
@@ -51,7 +57,11 @@ const UserProfileForm: React.FC<Props> = props => {
             <SvgIcon name="close" fill={theme.colors.lightGrey} />
           </TouchableOpacity>
         )}
-        <Avatar uri={avatarUri} label={displayName} size="46%" />
+        {imgUrl ? (
+          <Avatar uri={imgUrl} label={displayName} size="46%" />
+        ) : (
+          <Image source={defaultAvatar} style={defaultAvatarStyle} />
+        )}
       </View>
       <View style={styles.containerOptions}>
         <View style={styles.containerOption}>
