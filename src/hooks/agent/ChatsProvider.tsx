@@ -23,7 +23,6 @@ import {
 import { subscribeToAgentChatEvents } from './chat/subscribeToAgentChatEvents'
 
 import { useLocalRealm } from '@src/hooks/providers/RealmProvider'
-import AgentSingleton from '@src/services/AgentSingleton'
 import {
   ChatThread,
   ChatThreadData,
@@ -36,6 +35,7 @@ import {
   MediaSharingMetadata,
 } from '@src/model'
 import { checkIfDeleteFilesFromMedia } from '@src/pages/Chat/utils'
+import AgentSingleton from '@src/services/AgentSingleton'
 import { supportsMessageReceipts } from '@src/utils/connectionUtils'
 import {
   getLastEntryInChatThread,
