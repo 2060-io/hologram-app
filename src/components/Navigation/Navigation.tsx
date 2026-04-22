@@ -1,9 +1,8 @@
+import type { ReactNativeFirebaseAppCheckProvider as ReactNativeFirebaseAppCheckProviderType } from '@react-native-firebase/app-check'
+
 import { getApp } from '@react-native-firebase/app'
-import {
-  ReactNativeFirebaseAppCheckProvider,
-  getToken,
-  initializeAppCheck,
-} from '@react-native-firebase/app-check'
+import * as appCheckModule from '@react-native-firebase/app-check'
+import { getToken, initializeAppCheck } from '@react-native-firebase/app-check'
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import React, { useEffect } from 'react'
@@ -56,6 +55,16 @@ import {
 import { MobileAgent } from '@src/services/agent'
 import { AppTheme, getGlobalStyles } from '@src/styles'
 import { log, logError } from '@src/utils'
+
+// Workaround for @react-native-firebase/app-check v23.8.x bug: the root
+// `index.ts` re-exports `ReactNativeFirebaseAppCheckProvider` as a type
+// before `export * from './modular'`, which shadows the value side of the
+// class in TypeScript. The class still exists at runtime.
+const ReactNativeFirebaseAppCheckProvider = (
+  appCheckModule as unknown as {
+    ReactNativeFirebaseAppCheckProvider: new () => ReactNativeFirebaseAppCheckProviderType
+  }
+).ReactNativeFirebaseAppCheckProvider
 
 const Stack = createStackNavigator<NavigationStackParams>()
 type NavigationProps = {
