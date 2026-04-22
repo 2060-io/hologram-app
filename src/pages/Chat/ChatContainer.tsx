@@ -4,7 +4,7 @@ import React, { ElementType } from 'react'
 import { ChatStackParams } from '@src/components/Navigation/NavigationProps'
 import { useChatEntries, useChatThreadWithParticipants } from '@src/hooks/agent'
 
-export interface WrapperChatProps extends StackScreenProps<ChatStackParams, 'Chat', 'stack_navigator_main'> {}
+export type WrapperChatProps = StackScreenProps<ChatStackParams, 'Chat', 'stack_navigator_main'>
 
 const ChatContainer = (ChatComponent: ElementType) => {
   const WrapperChat = (props: WrapperChatProps) => {

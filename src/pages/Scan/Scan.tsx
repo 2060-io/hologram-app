@@ -1,5 +1,5 @@
 /* eslint-disable no-underscore-dangle */
-import { Buffer } from '@credo-ts/core'
+import { TypedArrayEncoder } from '@credo-ts/core'
 import { DidCommOutOfBandInvitation } from '@credo-ts/didcomm'
 import { useIsFocused } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
@@ -27,7 +27,7 @@ import { DidcommInvitationType, getOutOfBandRecordById, processInvitation } from
 import { log, logError } from '@src/utils'
 import { toast } from '@src/utils/toast'
 
-interface Props extends StackScreenProps<NavigationStackParams, 'Scan'> {}
+type Props = StackScreenProps<NavigationStackParams, 'Scan'>
 
 const Scan = ({ navigation }: Props) => {
   const { t } = useTranslation()
@@ -93,7 +93,6 @@ const Scan = ({ navigation }: Props) => {
       const url = rawUrl.trim()
       let invitation: DidCommOutOfBandInvitation | undefined
       if (url.startsWith('did:')) {
-        log('1.1: DID invitation')
         // FIXME: this should be based on both Hologram and other party supported protocols
         invitation = new DidCommOutOfBandInvitation({
           id: url,
@@ -106,7 +105,7 @@ const Scan = ({ navigation }: Props) => {
         const parsedUrl = queryString.parseUrl(url)
         const shortUrl =
           ((parsedUrl.query.oobUrl as string | undefined) ?? (parsedUrl.query._url as string | undefined))
-            ? Buffer.from(parsedUrl.query._url as string, 'base64').toString('ascii')
+            ? TypedArrayEncoder.toUtf8String(TypedArrayEncoder.fromBase64(parsedUrl.query._url as string))
             : undefined
         invitation = await agent.didcomm.oob.parseInvitation(shortUrl ?? url)
       }

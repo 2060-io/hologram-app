@@ -35,29 +35,6 @@ index e1a0c77..804363d 100644
  	}
  };
  DidCommDispatcher = __decorate([
-diff --git a/node_modules/@credo-ts/didcomm/build/DidCommMessageSender.mjs b/node_modules/@credo-ts/didcomm/build/DidCommMessageSender.mjs
-index aedda59..6d1f81a 100644
---- a/node_modules/@credo-ts/didcomm/build/DidCommMessageSender.mjs
-+++ b/node_modules/@credo-ts/didcomm/build/DidCommMessageSender.mjs
-@@ -296,11 +296,13 @@ let DidCommMessageSender = class DidCommMessageSender {
- 			const serviceSchema = utils.getProtocolScheme(service.serviceEndpoint);
- 			return transportPriority.schemes.includes(serviceSchema);
- 		});
--		if (transportPriority?.schemes) services = services.sort((a, b) => {
--			const aScheme = utils.getProtocolScheme(a.serviceEndpoint);
--			const bScheme = utils.getProtocolScheme(b.serviceEndpoint);
--			return transportPriority?.schemes.indexOf(aScheme) - transportPriority?.schemes.indexOf(bScheme);
--		});
-+		if (transportPriority?.schemes) {
-+			const schemePriority = (endpoint) => {
-+				const index = transportPriority.schemes.indexOf(utils.getProtocolScheme(endpoint));
-+				return index === -1 ? Number.MAX_SAFE_INTEGER : index;
-+			};
-+			services = services.sort((a, b) => schemePriority(a.serviceEndpoint) - schemePriority(b.serviceEndpoint));
-+		}
- 		agentContext.config.logger.debug(`Retrieved ${services.length} services for message to connection '${connection.id}'(${connection.theirLabel})'`, {
- 			hasQueueService: queueService !== void 0,
- 			transportPriority
 diff --git a/node_modules/@credo-ts/didcomm/build/modules/routing/DidCommMediationRecipientApi.mjs b/node_modules/@credo-ts/didcomm/build/modules/routing/DidCommMediationRecipientApi.mjs
 index 1f4452a..0b981c1 100644
 --- a/node_modules/@credo-ts/didcomm/build/modules/routing/DidCommMediationRecipientApi.mjs
@@ -102,3 +79,68 @@ index 1f4452a..0b981c1 100644
  				break;
  			case DidCommMediatorPickupStrategy.Implicit:
  				this.logger.info(`Starting implicit pickup of messages from mediator '${mediatorRecord.id}'`);
+diff --git a/node_modules/@credo-ts/didcomm/build/decorators/attachment/DidCommAttachment.mjs b/node_modules/@credo-ts/didcomm/build/decorators/attachment/DidCommAttachment.mjs
+index 0000000..0000001 100644
+--- a/node_modules/@credo-ts/didcomm/build/decorators/attachment/DidCommAttachment.mjs
++++ b/node_modules/@credo-ts/didcomm/build/decorators/attachment/DidCommAttachment.mjs
+@@ -1,6 +1,6 @@
+ import { __decorate } from "../../_virtual/_@oxc-project_runtime@0.112.0/helpers/decorate.mjs";
+ import { __decorateMetadata } from "../../_virtual/_@oxc-project_runtime@0.112.0/helpers/decorateMetadata.mjs";
+-import { CredoError, JsonEncoder, utils } from "@credo-ts/core";
++import { CredoError, JsonEncoder, TypedArrayEncoder, utils } from "@credo-ts/core";
+ import { IsDate, IsHash, IsInstance, IsInt, IsMimeType, IsOptional, IsString, ValidateNested } from "class-validator";
+ import { Expose, Type } from "class-transformer";
+ 
+@@ -53,8 +53,20 @@
+ 			this.data = new DidCommAttachmentData(options.data);
+ 		}
+ 	}
++	getDataAsUint8Array() {
++		if (typeof this.data.base64 !== "string") throw new CredoError("No base64 attachment data found.");
++		try {
++			return TypedArrayEncoder.fromBase64(this.data.base64);
++		} catch (strictError) {
++			try {
++				return TypedArrayEncoder.fromBase64Url(this.data.base64.replace(/=+$/, ""));
++			} catch {
++				throw new CredoError("Could not decode attachment data as base64 or base64url string.", { cause: strictError });
++			}
++		}
++	}
+ 	getDataAsJson() {
+-		if (typeof this.data.base64 === "string") return JsonEncoder.fromBase64(this.data.base64);
++		if (typeof this.data.base64 === "string") return JsonEncoder.fromUint8Array(this.getDataAsUint8Array());
+ 		if (this.data.json) return this.data.json;
+ 		throw new CredoError("No attachment data found in `json` or `base64` data fields.");
+ 	}
+diff --git a/node_modules/@credo-ts/didcomm/build/modules/connections/DidExchangeProtocol.mjs b/node_modules/@credo-ts/didcomm/build/modules/connections/DidExchangeProtocol.mjs
+index 0000000..0000001 100644
+--- a/node_modules/@credo-ts/didcomm/build/modules/connections/DidExchangeProtocol.mjs
++++ b/node_modules/@credo-ts/didcomm/build/modules/connections/DidExchangeProtocol.mjs
+@@ -284,7 +284,7 @@
+ 			const jws = didRotateAttachment.data.jws;
+ 			if (!jws) throw new DidExchangeProblemReportError("DID Rotate signature is missing.", { problemCode: DidExchangeProblemReportReason.ResponseNotAccepted });
+ 			if (!didRotateAttachment.data.base64) throw new CredoError("DID Rotate attachment is missing base64 property for signed did.");
+-			const payload = TypedArrayEncoder.fromBase64(didRotateAttachment.data.base64);
++			const payload = didRotateAttachment.getDataAsUint8Array();
+ 			if (TypedArrayEncoder.toUtf8String(payload) !== message.did) throw new CredoError(`DID Rotate attachment's did ${message.did} does not correspond to message did ${message.did}`);
+ 			const { isValid, jwsSigners } = await this.jwsService.verifyJws(agentContext, {
+ 				jws: {
+@@ -328,7 +328,7 @@
+ 		const { isValid, jwsSigners } = await this.jwsService.verifyJws(agentContext, {
+ 			jws: {
+ 				...jws,
+-				payload: TypedArrayEncoder.toBase64Url(TypedArrayEncoder.fromBase64(didDocumentAttachment.data.base64))
++				payload: TypedArrayEncoder.toBase64Url(didDocumentAttachment.getDataAsUint8Array())
+ 			},
+ 			allowedJwsSignerMethods: ["did"],
+ 			resolveJwsSigner: ({ jws: { header } }) => {
+@@ -341,7 +341,7 @@
+ 				};
+ 			}
+ 		});
+-		const json = JsonEncoder.fromBase64(didDocumentAttachment.data.base64);
++		const json = didDocumentAttachment.getDataAsJson();
+ 		const didDocument = JsonTransformer.fromJSON(json, DidDocument);
+ 		const didDocumentKeys = didDocument.authentication?.map((authentication) => {
+ 			return getPublicJwkFromVerificationMethod(typeof authentication === "string" ? didDocument.dereferenceVerificationMethod(authentication) : authentication);

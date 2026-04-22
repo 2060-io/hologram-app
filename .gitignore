@@ -39,7 +39,7 @@ ios/tmp.xcconfig
 #
 node_modules/
 npm-debug.log
-yarn-error.log
+.pnpm-debug.log
 
 # fastlane
 #
@@ -65,13 +65,11 @@ coverage
 # Local files
 .npm
 .yalc
-.npmrc
 package-lock.json
 .env
 test/volumes
 android/app/upload-key.keystore
 **/.xcode.env.local
 
-# Yarn
-.yarn/cache
-.yarn/install-state.gz
+# pnpm
+.pnpm-store/

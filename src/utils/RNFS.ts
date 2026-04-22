@@ -73,7 +73,7 @@ const copyFile = async (filePath: string, destPath: string) => {
 const existsFile = async (filePath: string) => {
   try {
     return await RNFSExists(filePath)
-  } catch (error) {
+  } catch {
     return false
   }
 }

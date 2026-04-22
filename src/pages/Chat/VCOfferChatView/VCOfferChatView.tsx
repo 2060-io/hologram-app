@@ -116,7 +116,7 @@ const VCOfferChatView = ({
       const credentialRecordId = (await agent.didcomm.credentials.getById(associatedRecordId)).credentials[0]
         .credentialRecordId
       goToCredentialDetails(credentialRecordId)
-    } catch (error) {
+    } catch {
       toast({ type: 'error', message: t('chat.noCredentialFound') })
     }
   }

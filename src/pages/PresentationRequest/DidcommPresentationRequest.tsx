@@ -25,7 +25,7 @@ import { presentProof } from '@src/services/agent/proofs'
 import { logError } from '@src/utils'
 import { toast } from '@src/utils/toast'
 
-interface Props extends StackScreenProps<NavigationStackParams, 'DidcommPresentationRequest'> {}
+type Props = StackScreenProps<NavigationStackParams, 'DidcommPresentationRequest'>
 
 const DidcommPresentationRequest: React.FC<Props> = ({ navigation, route }: Props) => {
   const routes = navigation.getState()?.routes
@@ -77,7 +77,11 @@ const DidcommPresentationRequest: React.FC<Props> = ({ navigation, route }: Prop
   }
 
   const afterPresented = () => {
-    comesFromChat ? navigation.goBack() : goToCredentialPresented()
+    if (comesFromChat) {
+      navigation.goBack()
+    } else {
+      goToCredentialPresented()
+    }
   }
 
   const updateChatEntryMetadataIfNecessary = () => {
@@ -115,7 +119,7 @@ const DidcommPresentationRequest: React.FC<Props> = ({ navigation, route }: Prop
     Object.entries(selectedCredentials.current).map(([entryId, credentialId]) => {
       const currentEntry = submission?.entries.find(entry => entry.id === entryId)
       const credentialSelected = currentEntry?.credentials.find(credential => credential.id === credentialId)
-      credentialSelected && selectedCredentialsMainInfo.push(credentialSelected)
+      if (credentialSelected) selectedCredentialsMainInfo.push(credentialSelected)
     })
     navigation.replace('CredentialPresented', {
       credentials: selectedCredentialsMainInfo,

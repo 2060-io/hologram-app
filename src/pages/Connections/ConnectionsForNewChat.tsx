@@ -12,7 +12,7 @@ import { useChats, useConnections } from '@src/hooks/agent'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { AppTheme } from '@src/styles'
 
-interface Props extends StackScreenProps<NavigationStackParams, 'ConnectionsForNewChat'> {}
+type Props = StackScreenProps<NavigationStackParams, 'ConnectionsForNewChat'>
 
 const ConnectionsForNewChat = ({ navigation }: Props) => {
   const { t } = useTranslation()

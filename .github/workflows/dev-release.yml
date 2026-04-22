@@ -23,16 +23,19 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
       - name: Setup node v22
         uses: actions/setup-node@v4
         with:
           node-version: 22
           registry-url: 'https://registry.npmjs.org/'
-          cache: yarn
+          cache: pnpm
 
       - name: Install dependencies
         run: |
-          yarn install --immutable
+          pnpm install --frozen-lockfile
 
       # Detect if this is an experimental build (manual workflow_dispatch)
       - name: Detect build mode
@@ -157,22 +160,25 @@ jobs:
       - name: Checkout hologram-app
         uses: actions/checkout@v4
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
       - name: Setup node v22
         uses: actions/setup-node@v4
         with:
           node-version: 22
           registry-url: 'https://registry.npmjs.org/'
-          cache: yarn
+          cache: pnpm
 
       - name: Cache node_modules
         uses: actions/cache@v4
         with:
           path: node_modules
-          key: node-modules-${{ hashFiles('yarn.lock', 'patches/**') }}
+          key: node-modules-${{ hashFiles('pnpm-lock.yaml', 'patches/**') }}
 
       - name: Install dependencies
         run: |
-          yarn install --immutable
+          pnpm install --frozen-lockfile
 
       - uses: actions/download-artifact@v4
         with:
@@ -185,7 +191,7 @@ jobs:
             ~/.gradle/caches
             ~/.gradle/wrapper
             android/.gradle
-          key: gradle-${{ hashFiles('android/**/*.gradle*', 'android/gradle.properties', 'yarn.lock') }}
+          key: gradle-${{ hashFiles('android/**/*.gradle*', 'android/gradle.properties', 'pnpm-lock.yaml') }}
           restore-keys: gradle-
 
       - name: Build Android
@@ -220,22 +226,25 @@ jobs:
       - name: Checkout hologram-app
         uses: actions/checkout@v4
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
       - name: Setup node v22
         uses: actions/setup-node@v4
         with:
           node-version: 22
           registry-url: 'https://registry.npmjs.org/'
-          cache: yarn
+          cache: pnpm
 
       - name: Cache node_modules
         uses: actions/cache@v4
         with:
           path: node_modules
-          key: node-modules-${{ hashFiles('yarn.lock', 'patches/**') }}
+          key: node-modules-${{ hashFiles('pnpm-lock.yaml', 'patches/**') }}
 
       - name: Install dependencies
         run: |
-          yarn install --immutable
+          pnpm install --frozen-lockfile
 
       - uses: actions/download-artifact@v4
         with:
@@ -299,18 +308,18 @@ jobs:
             ios/Pods
             ~/Library/Caches/CocoaPods
           key: pods-${{ hashFiles('ios/Podfile.lock') }}
-          restore-keys: pods-
 
       - name: Install Pods
         working-directory: ios
         run: |
+          pod update hermes-engine --no-repo-update
           pod install
 
       - name: Cache DerivedData
         uses: actions/cache@v4
         with:
           path: ~/Library/Developer/Xcode/DerivedData
-          key: derived-data-${{ hashFiles('ios/Podfile.lock', 'yarn.lock') }}
+          key: derived-data-${{ hashFiles('ios/Podfile.lock', 'pnpm-lock.yaml') }}
 
       - name: Build Archive
         working-directory: ios

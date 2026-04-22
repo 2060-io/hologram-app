@@ -35,6 +35,7 @@ import {
   MediaSharingMetadata,
 } from '@src/model'
 import { checkIfDeleteFilesFromMedia } from '@src/pages/Chat/utils'
+import AgentSingleton from '@src/services/AgentSingleton'
 import { supportsMessageReceipts } from '@src/utils/connectionUtils'
 import {
   getLastEntryInChatThread,
@@ -101,7 +102,12 @@ export const ChatsProvider: React.FC<Props> = ({ children }) => {
       const getActiveChatThreadId = () => {
         return activeChatThreadId.current
       }
-      subscribeToAgentChatEvents(agent, realm, true, getActiveChatThreadId)
+      const unsubscribe = subscribeToAgentChatEvents(agent, realm, true, getActiveChatThreadId)
+      return () => {
+        unsubscribe?.()
+        // Allow re-subscription (e.g. after wallet deletion and sign-up again)
+        AgentSingleton.instance.setAppIsSubscribedChatToEvents(false)
+      }
     }
   }, [agent, realm])
 

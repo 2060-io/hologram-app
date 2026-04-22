@@ -1,4 +1,12 @@
-import { CredoError, EventEmitter, Logger, Buffer, JsonEncoder, AgentContext, DidsApi } from '@credo-ts/core'
+import {
+  CredoError,
+  EventEmitter,
+  Logger,
+  TypedArrayEncoder,
+  JsonEncoder,
+  AgentContext,
+  DidsApi,
+} from '@credo-ts/core'
 import {
   DidCommEventTypes,
   DidCommMessageReceivedEvent,
@@ -23,7 +31,7 @@ interface MobileOutboundWs {
   connectionIds: Set<string>
 }
 
-export class TunedMobileWsOutboundTransport implements DidCommOutboundTransport {
+export class MobileWsOutboundTransport implements DidCommOutboundTransport {
   private transportTable: Map<string, MobileOutboundWs> = new Map<string, MobileOutboundWs>()
   private agentContext!: AgentContext
   private logger!: Logger
@@ -117,7 +125,7 @@ export class TunedMobileWsOutboundTransport implements DidCommOutboundTransport 
     // In that case, do not close socket
     const isMediatorEndpoint = this.mediatorEndpoints.some(value => value === endpoint)
 
-    socket.ws.send(Buffer.from(JSON.stringify(payload)))
+    socket.ws.send(TypedArrayEncoder.fromUtf8String(JSON.stringify(payload)))
 
     socket.lastActivity = new Date()
     socket.shallKeepOpened = isMediatorEndpoint
@@ -186,7 +194,7 @@ export class TunedMobileWsOutboundTransport implements DidCommOutboundTransport 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private handleMessageEvent = (event: any) => {
     this.logger.trace('WebSocket message event received.', { url: event.target.url, data: event.data })
-    const payload = JsonEncoder.fromBuffer(event.data)
+    const payload = JsonEncoder.fromUtf8String(event.data)
     if (!isValidJweStructure(payload)) {
       throw new Error(
         `Received a response from the other agent but the structure of the

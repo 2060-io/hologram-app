@@ -13,7 +13,7 @@ import { NavigationStackParams } from '@src/components/Navigation/NavigationProp
 import { Text, SvgIcon } from '@src/components/common'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 
-interface Props extends StackScreenProps<NavigationStackParams, 'Home'> {}
+type Props = StackScreenProps<NavigationStackParams, 'Home'>
 
 const SignUpMain = ({ navigation }: Props) => {
   const { t } = useTranslation()

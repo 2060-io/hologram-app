@@ -20,7 +20,7 @@ import { getCredentialDetailsForDisplay } from '@src/services/agent/display'
 import { trimText } from '@src/utils'
 import { screenHeight } from '@src/utils/responsiveUtils'
 
-interface Props extends StackScreenProps<NavigationStackParams, 'CredentialDetails'> {}
+type Props = StackScreenProps<NavigationStackParams, 'CredentialDetails'>
 const CredentialDetails = ({ route, navigation }: Props) => {
   const { credentialRecordId } = route.params
   const { t } = useTranslation()

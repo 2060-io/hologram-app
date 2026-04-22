@@ -40,7 +40,7 @@ export const useRestoreBackup = ({ restoreProgress, setRestoreProgress, download
         if (canLeave) {
           return
         }
-        restoreProgress.isDownloadingBackUp && setShowConfirmLeaveScreen(true)
+        if (restoreProgress.isDownloadingBackUp) setShowConfirmLeaveScreen(true)
         e.preventDefault()
       }),
     [navigation, restoreProgress],

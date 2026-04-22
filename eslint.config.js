@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 const { fixupPluginRules, fixupConfigRules } = require('@eslint/compat')
 const { FlatCompat } = require('@eslint/eslintrc')
 const js = require('@eslint/js')
@@ -146,6 +145,13 @@ module.exports = defineConfig([
     files: ['scripts/**/*.{ts,js}', 'brand/**/*.js'],
     rules: {
       'no-console': 'off',
+      '@typescript-eslint/no-require-imports': 'off',
+    },
+  },
+  {
+    files: ['*.config.js', 'metro.config.js', 'eslint.config.js'],
+    rules: {
+      '@typescript-eslint/no-require-imports': 'off',
     },
   },
 ])

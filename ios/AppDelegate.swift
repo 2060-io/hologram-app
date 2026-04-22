@@ -1,16 +1,15 @@
 import UIKit
 import FirebaseCore
 import React
-import React_RCTAppDelegate
 import ReactAppDependencyProvider
 import Firebase
-import Expo
+internal import Expo
 
 @main
 class AppDelegate: ExpoAppDelegate {
   var window: UIWindow?
  
-  var reactNativeDelegate: ReactNativeDelegate?
+  var reactNativeDelegate: ExpoReactNativeFactoryDelegate?
   var reactNativeFactory: RCTReactNativeFactory?
  
   override func application(
@@ -25,7 +24,6 @@ class AppDelegate: ExpoAppDelegate {
  
     reactNativeDelegate = delegate
     reactNativeFactory = factory
-    bindReactNativeFactory(factory)
     window = UIWindow(frame: UIScreen.main.bounds)
  
     factory.startReactNative(

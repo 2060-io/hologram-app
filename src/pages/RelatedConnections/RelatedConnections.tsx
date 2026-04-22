@@ -19,7 +19,7 @@ interface SubConnectionData extends IData {
   avatar: string
 }
 
-interface Props extends StackScreenProps<NavigationStackParams, 'RelatedConnections'> {}
+type Props = StackScreenProps<NavigationStackParams, 'RelatedConnections'>
 const RelatedConnections: React.FC<Props> = ({ navigation, route }) => {
   const [showSearchInput, setShowSearchInput] = useState(false)
   const [search, setSearch] = useState('')

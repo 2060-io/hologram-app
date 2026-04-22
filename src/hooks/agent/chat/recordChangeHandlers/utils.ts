@@ -13,7 +13,7 @@ export async function getChatEntryByDidcommThreadId(agent: MobileAgent, realm: R
   let originMessage: DidCommBasicMessageRecord | DidCommMediaSharingRecord
   try {
     originMessage = await agent.didcomm.basicMessages.getByThreadId(threadId)
-  } catch (error) {
+  } catch {
     // TODO: Use findByThreadId (update to media sharing is required)
     ;[originMessage] = (await agent.modules.media.getAll()).filter(item => item.threadId === threadId)
   }

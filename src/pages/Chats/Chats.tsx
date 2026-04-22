@@ -25,7 +25,7 @@ import { ChatThreadData } from '@src/model'
 import { ChatsStackParams } from '@src/navigators/ChatStackParams'
 import { widthPercentageToDP } from '@src/utils/responsiveUtils'
 
-interface Props extends StackScreenProps<ChatsStackParams, 'ChatsMain'> {}
+type Props = StackScreenProps<ChatsStackParams, 'ChatsMain'>
 
 const Chats = ({ navigation }: Props) => {
   const { t } = useTranslation()
@@ -75,7 +75,7 @@ const Chats = ({ navigation }: Props) => {
     try {
       await agent?.didcomm.connections.getById(connectionId)
       setChatThreadToDelete({ id: chatId, connectionId })
-    } catch (error) {
+    } catch {
       setChatThreadToDelete({ id: chatId })
     }
   }
@@ -201,7 +201,11 @@ const Chats = ({ navigation }: Props) => {
                   onDeleteChat={() => onDeleteChat(chat.id, chat.connectionId)}
                   onArchiveChat={() => {
                     swipeRowReferences.current?.[chat.id]?.closeRow()
-                    chat.archived ? unarchiveThreads([chat.id]) : archiveThreads([chat.id])
+                    if (chat.archived) {
+                      unarchiveThreads([chat.id])
+                    } else {
+                      archiveThreads([chat.id])
+                    }
                   }}
                 />
                 <View style={isSwiped ? styles.bgSelectedChat : styles.bgContainerChat}>

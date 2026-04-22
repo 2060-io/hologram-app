@@ -1,4 +1,4 @@
-import { Buffer } from '@credo-ts/core'
+import { TypedArrayEncoder } from '@credo-ts/core'
 import { DidCommOutOfBandInvitation } from '@credo-ts/didcomm'
 import React, { ElementType, useEffect, useMemo, useTransition } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -41,7 +41,9 @@ const HomeMainContainer = (HomeMainComponent: ElementType) => {
           let invitationUrl: string | undefined
           if (parameterType === 'oobUrl') invitationUrl = urlValue
           else if (parameterType === '_url') {
-            invitationUrl = urlValue ? Buffer.from(urlValue, 'base64').toString('ascii') : undefined
+            invitationUrl = urlValue
+              ? TypedArrayEncoder.toUtf8String(TypedArrayEncoder.fromBase64(urlValue))
+              : undefined
           } else invitationUrl = `${Config.BASE_INVITATION_URL}?${parameterType}=${urlValue}`
           if (!invitationUrl) throw new Error('Invalid invitation URL')
           const invitation = await agent.didcomm.oob.parseInvitation(invitationUrl)

@@ -66,7 +66,11 @@ abstract_target 'CommonPods' do
     end
   end
   add_common_dependencies()
-  pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec', :modular_headers => false
+  # Match modular-header settings that use_expo_modules! enables in the share
+  # extension abstract target, to avoid CocoaPods "Unable to determine whether
+  # to build ... as a module" warnings.
+  pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec', :modular_headers => true
+  pod 'React-RCTAppDelegate', :path => "#{config[:reactNativePath]}/Libraries/AppDelegate", :modular_headers => true
   pre_install do |installer|
     Pod::Installer::Xcode::TargetValidator.send(:define_method, :verify_no_static_framework_transitive_dependencies) {}
   end
@@ -82,6 +86,17 @@ abstract_target 'CommonPods' do
       target.build_configurations.each do |config|
         config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)', '_LIBCPP_ENABLE_CXX17_REMOVED_UNARY_BINARY_FUNCTION']
         config.build_settings['APPLICATION_EXTENSION_API_ONLY'] = 'NO'
+      end
+      if target.name == 'fmt'
+        target.build_configurations.each do |config|
+          config.build_settings['CLANG_CXX_LANGUAGE_STANDARD'] = 'c++17'
+        end
+      end
+      if ['Expo', 'ExpoModulesCore'].include?(target.name)
+        target.build_configurations.each do |config|
+          config.build_settings['GCC_WARN_INHIBIT_ALL_WARNINGS'] = 'YES'
+          config.build_settings['SWIFT_ENABLE_EXPLICIT_MODULES'] = 'NO'
+        end
       end
     end
   end

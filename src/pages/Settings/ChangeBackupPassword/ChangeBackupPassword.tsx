@@ -25,7 +25,7 @@ enum PasswordSteps {
   Updated = 'updated',
 }
 
-interface Props extends StackScreenProps<NavigationStackParams, 'ChangeBackupPassword'> {}
+type Props = StackScreenProps<NavigationStackParams, 'ChangeBackupPassword'>
 
 const ChangeBackupPassword = ({ navigation }: Props) => {
   const { t } = useTranslation()

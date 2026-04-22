@@ -18,7 +18,7 @@ export async function retrieveEncryptedKey(service: KeyChainService) {
     const config = await readFile(CONFIG_FILE_PATH)
     const configJson = JSON.parse(config)
     return (configJson.keys[service] as string) ?? undefined
-  } catch (error) {
+  } catch {
     return undefined
   }
 }
@@ -30,7 +30,7 @@ export async function createAndStoreEncryptedKey(service: KeyChainService, seed?
   try {
     const config = await readFile(CONFIG_FILE_PATH)
     configJson = JSON.parse(config)
-  } catch (error) {
+  } catch {
     configJson = { keys: {}, [PARENTAL_CONTROL]: {} }
   }
 
@@ -67,6 +67,6 @@ export async function deleteAllKeys() {
 export function aes256KeyFromSeed(seed: string) {
   return Key.fromSeed({
     algorithm: KeyAlgorithm.AesA256CbcHs512,
-    seed: TypedArrayEncoder.fromString(seed),
+    seed: TypedArrayEncoder.fromUtf8String(seed),
   }).secretBytes
 }

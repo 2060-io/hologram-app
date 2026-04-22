@@ -7,7 +7,7 @@ import { useNetwork } from '../useNetwork'
 import AgentSingleton from '@src/services/AgentSingleton'
 import { isRegistered, MobileAgent } from '@src/services/agent/MobileAgent'
 import { MediatorEventTypes } from '@src/services/transport/MediatorEventTypes'
-import { TunedMobileWsOutboundTransport } from '@src/services/transport/TunedMobileWsOutboundTransport'
+import { MobileWsOutboundTransport } from '@src/services/transport/MobileWsOutboundTransport'
 import { logError, logWarn } from '@src/utils'
 
 interface MobileAgentState {
@@ -114,7 +114,7 @@ export const MobileAgentProvider: React.FC<Props> = ({ children }) => {
       if (defaultMediatorConnection) {
         for (const transport of agent.didcomm.outboundTransports) {
           if (transport.supportedSchemes.includes('ws')) {
-            isConnectedToCloudAgent = (transport as TunedMobileWsOutboundTransport).isConnectedTo(
+            isConnectedToCloudAgent = (transport as MobileWsOutboundTransport).isConnectedTo(
               defaultMediatorConnection.id,
             )
           }

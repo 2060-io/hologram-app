@@ -9,7 +9,7 @@ import {
   DidCommProfileEventTypes,
 } from '@2060.io/credo-ts-didcomm-user-profile'
 import { AnonCredsPresentationPreviewAttribute } from '@credo-ts/anoncreds'
-import { TypedArrayEncoder, Buffer, W3cCredentialRecord } from '@credo-ts/core'
+import { TypedArrayEncoder, W3cCredentialRecord } from '@credo-ts/core'
 import {
   DidCommProofStateChangedEvent,
   DidCommProofEventTypes,
@@ -155,7 +155,9 @@ export const usePresentCredentialAsQR = ({
   function onDidCommShortenedUrlReceived(event: DidCommShortenedUrlReceivedEvent) {
     log('DidCommShortenedUrlReceivedEvent received', event)
     const { shortenUrlRecord } = event.payload
-    const shortenedUrlToBase64 = TypedArrayEncoder.toBase64URL(Buffer.from(shortenUrlRecord.shortenedUrl!))
+    const shortenedUrlToBase64 = TypedArrayEncoder.toBase64Url(
+      TypedArrayEncoder.fromUtf8String(shortenUrlRecord.shortenedUrl!),
+    )
     shortenedUrl.current = shortenUrlRecord.shortenedUrl
     urlForQr.current = `${Config.BASE_INVITATION_URL}?_url=${shortenedUrlToBase64}`
     setState('created')
