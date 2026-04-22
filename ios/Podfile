@@ -48,6 +48,7 @@ setup_permissions([
 ])
 
 abstract_target 'CommonPods' do
+  use_modular_headers!
   target 'Dev' do
    end
 
@@ -66,7 +67,7 @@ abstract_target 'CommonPods' do
     end
   end
   add_common_dependencies()
-  pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec', :modular_headers => false
+  pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pre_install do |installer|
     Pod::Installer::Xcode::TargetValidator.send(:define_method, :verify_no_static_framework_transitive_dependencies) {}
   end
@@ -99,6 +100,7 @@ abstract_target 'CommonPods' do
 end
 
 abstract_target 'CommonShareExtensionPods' do
+  use_modular_headers!
   use_expo_modules!
   use_react_native!
   pod 'RNShareMenu', :path => '../node_modules/react-native-share-menu'
