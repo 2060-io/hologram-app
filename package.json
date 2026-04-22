@@ -71,7 +71,7 @@
     "@openwallet-foundation/askar-shared": "^0.6.0",
     "@react-native-camera-roll/camera-roll": "7.10.2",
     "@react-native-clipboard/clipboard": "1.16.3",
-    "@react-native-community/async-storage": "1.12.1",
+    "@react-native-async-storage/async-storage": "~2.1.2",
     "@react-native-community/netinfo": "11.4.1",
     "@react-native-firebase/app": "23.5.0",
     "@react-native-firebase/app-check": "23.5.0",

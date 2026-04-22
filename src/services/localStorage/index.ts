@@ -1,4 +1,4 @@
-import AsyncStorage from '@react-native-community/async-storage'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 // This storage key saves the value that indicates if user has enable display logs as toast message
 export const LOGS_ENABLED_PERSIST_KEY = 'logsEnabled'

@@ -108,27 +108,27 @@ importers:
       '@openwallet-foundation/askar-shared':
         specifier: 0.6.0
         version: 0.6.0
+      '@react-native-async-storage/async-storage':
+        specifier: ~2.1.2
+        version: 2.1.2(react-native@0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.1)(utf-8-validate@5.0.10))
       '@react-native-camera-roll/camera-roll':
         specifier: 7.10.2
         version: 7.10.2(react-native@0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.1)(utf-8-validate@5.0.10))
       '@react-native-clipboard/clipboard':
         specifier: 1.16.3
         version: 1.16.3(react-native@0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.1)(utf-8-validate@5.0.10))(react@19.1.1)
-      '@react-native-community/async-storage':
-        specifier: 1.12.1
-        version: 1.12.1(react-native@0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.1)(utf-8-validate@5.0.10))(react@19.1.1)
       '@react-native-community/netinfo':
         specifier: 11.4.1
         version: 11.4.1(react-native@0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.1)(utf-8-validate@5.0.10))
       '@react-native-firebase/app':
         specifier: 23.5.0
-        version: 23.5.0(expo@55.0.15)(react-native@0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.1)(utf-8-validate@5.0.10))(react@19.1.1)
+        version: 23.5.0(@react-native-async-storage/async-storage@2.1.2(react-native@0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.1)(utf-8-validate@5.0.10)))(expo@55.0.15)(react-native@0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.1)(utf-8-validate@5.0.10))(react@19.1.1)
       '@react-native-firebase/app-check':
         specifier: 23.5.0
-        version: 23.5.0(@react-native-firebase/app@23.5.0(expo@55.0.15)(react-native@0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.1)(utf-8-validate@5.0.10))(react@19.1.1))(expo@55.0.15)
+        version: 23.5.0(@react-native-firebase/app@23.5.0(@react-native-async-storage/async-storage@2.1.2(react-native@0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.1)(utf-8-validate@5.0.10)))(expo@55.0.15)(react-native@0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.1)(utf-8-validate@5.0.10))(react@19.1.1))(expo@55.0.15)
       '@react-native-firebase/messaging':
         specifier: 23.5.0
-        version: 23.5.0(@react-native-firebase/app@23.5.0(expo@55.0.15)(react-native@0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.1)(utf-8-validate@5.0.10))(react@19.1.1))(expo@55.0.15)
+        version: 23.5.0(@react-native-firebase/app@23.5.0(@react-native-async-storage/async-storage@2.1.2(react-native@0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.1)(utf-8-validate@5.0.10)))(expo@55.0.15)(react-native@0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.1)(utf-8-validate@5.0.10))(react@19.1.1))(expo@55.0.15)
       '@react-navigation/bottom-tabs':
         specifier: 7.8.7
         version: 7.8.7(84d2367ebe7109fe6a377bffeea991c8)
@@ -2446,6 +2446,11 @@ packages:
   '@protobufjs/utf8@1.1.0':
     resolution: {integrity: sha512-Vvn3zZrhQZkkBE8LSuW3em98c0FwgO4nxzv6OdSxPKJIEKY2bGbHn+mhGIPerzI4twdxaP8/0+06HBpwf345Lw==}
 
+  '@react-native-async-storage/async-storage@2.1.2':
+    resolution: {integrity: sha512-dvlNq4AlGWC+ehtH12p65+17V0Dx7IecOWl6WanF2ja38O1Dcjjvn7jVzkUHJ5oWkQBlyASurTPlTHgKXyYiow==}
+    peerDependencies:
+      react-native: ^0.0.0-0 || >=0.65 <1.0
+
   '@react-native-camera-roll/camera-roll@7.10.2':
     resolution: {integrity: sha512-XgJQJDFUycmqSX+MH7vTcRigQwEIQNLIu1GvOngCZRwlSV2mF61UzeruSmmHwkBcGnHZFXkKg9fil0FQVfyglw==}
     engines: {node: '>= 18.17.0'}
@@ -2464,13 +2469,6 @@ packages:
         optional: true
       react-native-windows:
         optional: true
-
-  '@react-native-community/async-storage@1.12.1':
-    resolution: {integrity: sha512-70WGaH3PKYASi4BThuEEKMkyAgE9k7VytBqmgPRx3MzJx9/MkspwqJGmn3QLCgHLIFUgF1pit2mWICbRJ3T3lg==}
-    deprecated: 'Async Storage has moved to new organization: https://github.com/react-native-async-storage/async-storage'
-    peerDependencies:
-      react: 19.1.1
-      react-native: '>=0.59'
 
   '@react-native-community/cli-clean@20.0.0':
     resolution: {integrity: sha512-YmdNRcT+Dp8lC7CfxSDIfPMbVPEXVFzBH62VZNbYGxjyakqAvoQUFTYPgM2AyFusAr4wDFbDOsEv88gCDwR3ig==}
@@ -4247,11 +4245,6 @@ packages:
     resolution: {integrity: sha512-aW35yZM6Bb/4oJlZncMH2LCoZtJXTRxES17vE3hoRiowU2kWHaJKFkSBDnDR+cm9J+9QhXmREyIfv0pji9ejCQ==}
     engines: {node: '>=10'}
 
-  deep-assign@3.0.0:
-    resolution: {integrity: sha512-YX2i9XjJ7h5q/aQ/IM9PEwEnDqETAIYbggmdDB3HLTlSgo1CxPsj6pvhPG68rq6SVE0+p+6Ywsm5fTYNrYtBWw==}
-    engines: {node: '>=0.10.0'}
-    deprecated: Check out `lodash.merge` or `merge-options` instead.
-
   deep-extend@0.6.0:
     resolution: {integrity: sha512-LOHxIOaPYdHlJRtCQfDIVZtfw/ufM8+rVj649RIHzcm/vGwQRXFt6OPqIFWsm2XEMrNIEtWR64sY1LEKD2vAOA==}
     engines: {node: '>=4.0.0'}
@@ -5486,12 +5479,12 @@ packages:
     resolution: {integrity: sha512-41Cifkg6e8TylSpdtTpeLVMqvSBEVzTttHvERD741+pnZ8ANv0004MRL43QKPDlK9cGvNp6NZWZUBlbGXYxxng==}
     engines: {node: '>=0.12.0'}
 
-  is-obj@1.0.1:
-    resolution: {integrity: sha512-l4RyHgRqGN4Y3+9JHVrNqO+tN0rV5My76uW5/nuO4K1b6vw5G8d/cmFjP9tRfEsdhZNt0IFdZuK/c2Vr4Nb+Qg==}
-    engines: {node: '>=0.10.0'}
-
   is-obj@2.0.0:
     resolution: {integrity: sha512-drqDG3cbczxxEJRoOXcOjtdp1J/lyp1mNn0xaznRs8+muBhgQcrnbspox5X5fOw0HnMnbfDzvnEMEtqDEJEo8w==}
+    engines: {node: '>=8'}
+
+  is-plain-obj@2.1.0:
+    resolution: {integrity: sha512-YWnfyRwxL/+SsrWYfOpUtz5b3YD+nyfkHvjbcanzk8zgyO4ASD67uVMRt8k5bM4lLMDnXfriRhOpemw+NfT1eA==}
     engines: {node: '>=8'}
 
   is-plain-obj@4.1.0:
@@ -6032,6 +6025,10 @@ packages:
   merge-descriptors@2.0.0:
     resolution: {integrity: sha512-Snk314V5ayFLhp3fkUREub6WtjBfPdCPY1Ln8/8munuLuiYhsABgBVWsozAG+MWMbVEvcdcpbi9R7ww22l9Q3g==}
     engines: {node: '>=18'}
+
+  merge-options@3.0.4:
+    resolution: {integrity: sha512-2Sug1+knBjkaMsMgf1ctR1Ujx+Ayku4EdJN4Z+C2+JzoeF7A3OZ9KM2GY0CpQS51NR61LTurMJrRKPhSs3ZRTQ==}
+    engines: {node: '>=10'}
 
   merge-stream@2.0.0:
     resolution: {integrity: sha512-abv/qOcuPfk3URPfDzmZU1LKmuw8kT+0nIHvKrKgFrwifol/doWcdA4ZqsWQ8ENrFKkd67Mfpo/LovbIUsbt3w==}
@@ -10737,10 +10734,10 @@ snapshots:
       idb: 7.1.1
       tslib: 2.8.1
 
-  '@firebase/auth-compat@0.6.0(@firebase/app-compat@0.5.4)(@firebase/app-types@0.9.3)(@firebase/app@0.14.4)':
+  '@firebase/auth-compat@0.6.0(@firebase/app-compat@0.5.4)(@firebase/app-types@0.9.3)(@firebase/app@0.14.4)(@react-native-async-storage/async-storage@2.1.2(react-native@0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.1)(utf-8-validate@5.0.10)))':
     dependencies:
       '@firebase/app-compat': 0.5.4
-      '@firebase/auth': 1.11.0(@firebase/app@0.14.4)
+      '@firebase/auth': 1.11.0(@firebase/app@0.14.4)(@react-native-async-storage/async-storage@2.1.2(react-native@0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.1)(utf-8-validate@5.0.10)))
       '@firebase/auth-types': 0.13.0(@firebase/app-types@0.9.3)(@firebase/util@1.13.0)
       '@firebase/component': 0.7.0
       '@firebase/util': 1.13.0
@@ -10757,13 +10754,15 @@ snapshots:
       '@firebase/app-types': 0.9.3
       '@firebase/util': 1.13.0
 
-  '@firebase/auth@1.11.0(@firebase/app@0.14.4)':
+  '@firebase/auth@1.11.0(@firebase/app@0.14.4)(@react-native-async-storage/async-storage@2.1.2(react-native@0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.1)(utf-8-validate@5.0.10)))':
     dependencies:
       '@firebase/app': 0.14.4
       '@firebase/component': 0.7.0
       '@firebase/logger': 0.5.0
       '@firebase/util': 1.13.0
       tslib: 2.8.1
+    optionalDependencies:
+      '@react-native-async-storage/async-storage': 2.1.2(react-native@0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.1)(utf-8-validate@5.0.10))
 
   '@firebase/component@0.7.0':
     dependencies:
@@ -11467,18 +11466,17 @@ snapshots:
 
   '@protobufjs/utf8@1.1.0': {}
 
+  '@react-native-async-storage/async-storage@2.1.2(react-native@0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.1)(utf-8-validate@5.0.10))':
+    dependencies:
+      merge-options: 3.0.4
+      react-native: 0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.1)(utf-8-validate@5.0.10)
+
   '@react-native-camera-roll/camera-roll@7.10.2(react-native@0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.1)(utf-8-validate@5.0.10))':
     dependencies:
       react-native: 0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.1)(utf-8-validate@5.0.10)
 
   '@react-native-clipboard/clipboard@1.16.3(react-native@0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.1)(utf-8-validate@5.0.10))(react@19.1.1)':
     dependencies:
-      react: 19.1.1
-      react-native: 0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.1)(utf-8-validate@5.0.10)
-
-  '@react-native-community/async-storage@1.12.1(react-native@0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.1)(utf-8-validate@5.0.10))(react@19.1.1)':
-    dependencies:
-      deep-assign: 3.0.0
       react: 19.1.1
       react-native: 0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.1)(utf-8-validate@5.0.10)
 
@@ -11615,15 +11613,15 @@ snapshots:
     dependencies:
       react-native: 0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.1)(utf-8-validate@5.0.10)
 
-  '@react-native-firebase/app-check@23.5.0(@react-native-firebase/app@23.5.0(expo@55.0.15)(react-native@0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.1)(utf-8-validate@5.0.10))(react@19.1.1))(expo@55.0.15)':
+  '@react-native-firebase/app-check@23.5.0(@react-native-firebase/app@23.5.0(@react-native-async-storage/async-storage@2.1.2(react-native@0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.1)(utf-8-validate@5.0.10)))(expo@55.0.15)(react-native@0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.1)(utf-8-validate@5.0.10))(react@19.1.1))(expo@55.0.15)':
     dependencies:
-      '@react-native-firebase/app': 23.5.0(expo@55.0.15)(react-native@0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.1)(utf-8-validate@5.0.10))(react@19.1.1)
+      '@react-native-firebase/app': 23.5.0(@react-native-async-storage/async-storage@2.1.2(react-native@0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.1)(utf-8-validate@5.0.10)))(expo@55.0.15)(react-native@0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.1)(utf-8-validate@5.0.10))(react@19.1.1)
     optionalDependencies:
       expo: 55.0.15(@babel/core@7.29.0)(@expo/dom-webview@55.0.5)(bufferutil@4.0.9)(react-dom@19.1.1(react@19.1.1))(react-native-webview@13.15.0(react-native@0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.1)(utf-8-validate@5.0.10))(react@19.1.1))(react-native@0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.1)(utf-8-validate@5.0.10))(react@19.1.1)(typescript@5.9.3)(utf-8-validate@5.0.10)
 
-  '@react-native-firebase/app@23.5.0(expo@55.0.15)(react-native@0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.1)(utf-8-validate@5.0.10))(react@19.1.1)':
+  '@react-native-firebase/app@23.5.0(@react-native-async-storage/async-storage@2.1.2(react-native@0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.1)(utf-8-validate@5.0.10)))(expo@55.0.15)(react-native@0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.1)(utf-8-validate@5.0.10))(react@19.1.1)':
     dependencies:
-      firebase: 12.4.0
+      firebase: 12.4.0(@react-native-async-storage/async-storage@2.1.2(react-native@0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.1)(utf-8-validate@5.0.10)))
       react: 19.1.1
       react-native: 0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.1)(utf-8-validate@5.0.10)
     optionalDependencies:
@@ -11631,9 +11629,9 @@ snapshots:
     transitivePeerDependencies:
       - '@react-native-async-storage/async-storage'
 
-  '@react-native-firebase/messaging@23.5.0(@react-native-firebase/app@23.5.0(expo@55.0.15)(react-native@0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.1)(utf-8-validate@5.0.10))(react@19.1.1))(expo@55.0.15)':
+  '@react-native-firebase/messaging@23.5.0(@react-native-firebase/app@23.5.0(@react-native-async-storage/async-storage@2.1.2(react-native@0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.1)(utf-8-validate@5.0.10)))(expo@55.0.15)(react-native@0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.1)(utf-8-validate@5.0.10))(react@19.1.1))(expo@55.0.15)':
     dependencies:
-      '@react-native-firebase/app': 23.5.0(expo@55.0.15)(react-native@0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.1)(utf-8-validate@5.0.10))(react@19.1.1)
+      '@react-native-firebase/app': 23.5.0(@react-native-async-storage/async-storage@2.1.2(react-native@0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.1)(utf-8-validate@5.0.10)))(expo@55.0.15)(react-native@0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.1)(utf-8-validate@5.0.10))(react@19.1.1)
     optionalDependencies:
       expo: 55.0.15(@babel/core@7.29.0)(@expo/dom-webview@55.0.5)(bufferutil@4.0.9)(react-dom@19.1.1(react@19.1.1))(react-native-webview@13.15.0(react-native@0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.1)(utf-8-validate@5.0.10))(react@19.1.1))(react-native@0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.1)(utf-8-validate@5.0.10))(react@19.1.1)(typescript@5.9.3)(utf-8-validate@5.0.10)
 
@@ -13885,10 +13883,6 @@ snapshots:
     dependencies:
       mimic-response: 3.1.0
 
-  deep-assign@3.0.0:
-    dependencies:
-      is-obj: 1.0.1
-
   deep-extend@0.6.0: {}
 
   deep-is@0.1.4: {}
@@ -14805,7 +14799,7 @@ snapshots:
     dependencies:
       micromatch: 4.0.8
 
-  firebase@12.4.0:
+  firebase@12.4.0(@react-native-async-storage/async-storage@2.1.2(react-native@0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.1)(utf-8-validate@5.0.10))):
     dependencies:
       '@firebase/ai': 2.4.0(@firebase/app-types@0.9.3)(@firebase/app@0.14.4)
       '@firebase/analytics': 0.10.19(@firebase/app@0.14.4)
@@ -14815,8 +14809,8 @@ snapshots:
       '@firebase/app-check-compat': 0.4.0(@firebase/app-compat@0.5.4)(@firebase/app@0.14.4)
       '@firebase/app-compat': 0.5.4
       '@firebase/app-types': 0.9.3
-      '@firebase/auth': 1.11.0(@firebase/app@0.14.4)
-      '@firebase/auth-compat': 0.6.0(@firebase/app-compat@0.5.4)(@firebase/app-types@0.9.3)(@firebase/app@0.14.4)
+      '@firebase/auth': 1.11.0(@firebase/app@0.14.4)(@react-native-async-storage/async-storage@2.1.2(react-native@0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.1)(utf-8-validate@5.0.10)))
+      '@firebase/auth-compat': 0.6.0(@firebase/app-compat@0.5.4)(@firebase/app-types@0.9.3)(@firebase/app@0.14.4)(@react-native-async-storage/async-storage@2.1.2(react-native@0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.1)(utf-8-validate@5.0.10)))
       '@firebase/data-connect': 0.3.11(@firebase/app@0.14.4)
       '@firebase/database': 1.1.0
       '@firebase/database-compat': 2.1.0
@@ -15372,9 +15366,9 @@ snapshots:
 
   is-number@7.0.0: {}
 
-  is-obj@1.0.1: {}
-
   is-obj@2.0.0: {}
+
+  is-plain-obj@2.1.0: {}
 
   is-plain-obj@4.1.0: {}
 
@@ -15906,6 +15900,10 @@ snapshots:
   meow@12.1.1: {}
 
   merge-descriptors@2.0.0: {}
+
+  merge-options@3.0.4:
+    dependencies:
+      is-plain-obj: 2.1.0
 
   merge-stream@2.0.0: {}
 
