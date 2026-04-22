@@ -151,6 +151,14 @@ class ShareMenuModule(reactContext: ReactApplicationContext?) : NativeShareMenuS
     currentActivity.intent = intent
   }
 
+  override fun addListener(eventName: String?) {
+    // No-op: event registration managed by JS NativeEventEmitter
+  }
+
+  override fun removeListeners(count: Double) {
+    // No-op
+  }
+
   companion object {
     const val NAME: String = "ShareMenu"
   }
