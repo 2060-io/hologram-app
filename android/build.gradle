@@ -31,6 +31,14 @@ allprojects {
         resolutionStrategy {
             force "com.facebook.react:hermes-android:" + REACT_NATIVE_VERSION
             force "com.facebook.react:react-android:" + REACT_NATIVE_VERSION
+            // Keep slf4j on the 1.7.x line so logback-android:2.0.0 (used by
+            // react-native-file-logger) can still locate its StaticLoggerBinder.
+            // Otherwise mp4parser/isoparser (via react-native-compressor) drags in
+            // 1.8.0-beta4, which switched to ServiceLoader bindings and is not
+            // compatible with logback-android 2.x, causing NOPLoggerFactory at
+            // runtime and the "cannot be cast to ch.qos.logback.classic.LoggerContext"
+            // crash when configuring the file logger.
+            force "org.slf4j:slf4j-api:1.7.36"
         }
     }
     repositories {

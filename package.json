@@ -171,7 +171,7 @@
     "eslint-plugin-prettier": "5.5.4",
     "eslint-plugin-react-hooks": "5.2.0",
     "husky": "^7.0.0",
-    "patch-package": "^6.4.7",
+    "patch-package": "^8.0.1",
     "prettier": "3.6.2",
     "react-dom": "19.1.1",
     "react-native-clean-project": "4.0.3",

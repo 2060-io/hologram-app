@@ -48,7 +48,7 @@ import { askar } from '@openwallet-foundation/askar-react-native'
 import { DidWebAnonCredsRegistry } from 'credo-ts-didweb-anoncreds'
 import { IndyVdrProxyDidResolver, IndyVdrProxyAnonCredsRegistry } from 'credo-ts-indy-vdr-proxy-client'
 
-import { TunedMobileWsOutboundTransport } from '../transport/TunedMobileWsOutboundTransport'
+import { MobileWsOutboundTransport } from '../transport/MobileWsOutboundTransport'
 
 import { walletDirectoryPath } from '@src/utils/RNFS'
 import { getAppCheckHeaders } from '@src/utils/firebaseUtils'
@@ -99,7 +99,7 @@ export const getMobileAgentModules = (config: {
     }),
     didcomm: new DidCommModule({
       transports: {
-        outbound: [new DidCommHttpOutboundTransport(), new TunedMobileWsOutboundTransport()],
+        outbound: [new DidCommHttpOutboundTransport(), new MobileWsOutboundTransport()],
       },
       connections: { autoAcceptConnections: false },
       credentials: {

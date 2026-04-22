@@ -31,7 +31,7 @@ interface MobileOutboundWs {
   connectionIds: Set<string>
 }
 
-export class TunedMobileWsOutboundTransport implements DidCommOutboundTransport {
+export class MobileWsOutboundTransport implements DidCommOutboundTransport {
   private transportTable: Map<string, MobileOutboundWs> = new Map<string, MobileOutboundWs>()
   private agentContext!: AgentContext
   private logger!: Logger
@@ -194,7 +194,7 @@ export class TunedMobileWsOutboundTransport implements DidCommOutboundTransport 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private handleMessageEvent = (event: any) => {
     this.logger.trace('WebSocket message event received.', { url: event.target.url, data: event.data })
-    const payload = JsonEncoder.fromUint8Array(event.data)
+    const payload = JsonEncoder.fromUtf8String(event.data)
     if (!isValidJweStructure(payload)) {
       throw new Error(
         `Received a response from the other agent but the structure of the

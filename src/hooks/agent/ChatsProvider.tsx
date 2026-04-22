@@ -23,6 +23,7 @@ import {
 import { subscribeToAgentChatEvents } from './chat/subscribeToAgentChatEvents'
 
 import { useLocalRealm } from '@src/hooks/providers/RealmProvider'
+import AgentSingleton from '@src/services/AgentSingleton'
 import {
   ChatThread,
   ChatThreadData,
@@ -101,7 +102,12 @@ export const ChatsProvider: React.FC<Props> = ({ children }) => {
       const getActiveChatThreadId = () => {
         return activeChatThreadId.current
       }
-      subscribeToAgentChatEvents(agent, realm, true, getActiveChatThreadId)
+      const unsubscribe = subscribeToAgentChatEvents(agent, realm, true, getActiveChatThreadId)
+      return () => {
+        unsubscribe?.()
+        // Allow re-subscription (e.g. after wallet deletion and sign-up again)
+        AgentSingleton.instance.setAppIsSubscribedChatToEvents(false)
+      }
     }
   }, [agent, realm])
 
