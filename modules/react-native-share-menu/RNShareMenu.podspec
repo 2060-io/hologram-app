@@ -14,9 +14,11 @@ Pod::Spec.new do |s|
   s.source       = { :git => ".git", :tag => "#{s.version}" }
 
   s.source_files = "ios/**/*.{h,m,mm,swift,cpp}"
+  # ShareViewController is embedded directly into the host app's Share Extension
+  # target (not into this pod), so it must be excluded from the library build.
   s.exclude_files = [
-    "ios/ShareViewController.swift",
-    "ios/ReactShareViewController.swift"
+    "ios/ShareViewController.swift"
   ]
-  s.dependency "React"
+
+  install_modules_dependencies(s)
 end
