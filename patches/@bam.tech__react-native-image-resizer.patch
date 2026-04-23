@@ -1,0 +1,50 @@
+diff --git a/android/src/main/java/com/reactnativeimageresizer/ImageResizer.java b/android/src/main/java/com/reactnativeimageresizer/ImageResizer.java
+index d1482655dfda9bc3483cd083141d0ab3693480f2..d39bbf85c7c6950acd3960b17e123d95486771a4 100644
+--- a/android/src/main/java/com/reactnativeimageresizer/ImageResizer.java
++++ b/android/src/main/java/com/reactnativeimageresizer/ImageResizer.java
+@@ -21,6 +21,7 @@ import java.io.IOException;
+ import java.net.HttpURLConnection;
+ import java.net.URL;
+ import java.util.Date;
++import java.util.Objects;
+ 
+ /**
+  * Provide methods to resize and rotate an image file.
+@@ -319,8 +320,7 @@ public class ImageResizer {
+     try {
+       // ExifInterface(InputStream) only exists since Android N (r24)
+       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+-        InputStream input = context.getContentResolver().openInputStream(uri);
+-        ExifInterface ei = new ExifInterface(input);
++        ExifInterface ei = new ExifInterface(Objects.requireNonNull(uri.getPath()));
+         return getOrientationMatrix(ei);
+       }
+       File file = getFileFromUri(context, uri);
+diff --git a/react-native-image-resizer.podspec b/react-native-image-resizer.podspec
+index 1848ae8bf8e743e969d40628994b0282bb552790..b86b700c948cfca8f9ff828ab66bdfac36efc5c6 100644
+--- a/react-native-image-resizer.podspec
++++ b/react-native-image-resizer.podspec
+@@ -18,22 +18,6 @@ Pod::Spec.new do |s|
+ 
+   s.ios.framework = 'AssetsLibrary', 'MobileCoreServices'
+ 
+-  # Don't install the dependencies when we run `pod install` in the old architecture.
+-  if ENV['RCT_NEW_ARCH_ENABLED'] == '1' then
+-    s.compiler_flags = folly_compiler_flags + " -DRCT_NEW_ARCH_ENABLED=1"
+-    s.pod_target_xcconfig    = {
+-        "HEADER_SEARCH_PATHS" => "\"$(PODS_ROOT)/boost\"",
+-        "OTHER_CPLUSPLUSFLAGS" => "-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1",
+-        "CLANG_CXX_LANGUAGE_STANDARD" => "c++17"
+-    }
+-    s.dependency "React-Codegen"
+-    s.dependency "RCT-Folly"
+-    s.dependency "RCTRequired"
+-    s.dependency "RCTTypeSafety"
+-    s.dependency "ReactCommon/turbomodule/core"
+-    install_modules_dependencies(s)
+-  else
+-    s.dependency "React-Core"
+-  end
++  install_modules_dependencies(s)
+ end
+ 
