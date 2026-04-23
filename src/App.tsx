@@ -6,7 +6,7 @@ import localizedFormat from 'dayjs/plugin/localizedFormat'
 import 'dayjs/locale/es'
 import 'dayjs/locale/fr'
 import React, { PropsWithChildren, ReactNode, useEffect, useState } from 'react'
-import SplashScreen from 'react-native-splash-screen'
+import BootSplash from 'react-native-bootsplash'
 
 import Toast from './components/Toast'
 
@@ -73,7 +73,7 @@ const App = () => {
   initializeI18n.then(() => setTranslationsLoaded(true))
 
   useEffect(() => {
-    SplashScreen.hide()
+    BootSplash.hide({ fade: true })
   }, [])
 
   return (

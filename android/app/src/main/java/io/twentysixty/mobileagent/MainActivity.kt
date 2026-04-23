@@ -7,7 +7,7 @@ import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.concurrentRe
 import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.fabricEnabled
 import com.facebook.react.defaults.DefaultReactActivityDelegate
 import expo.modules.ReactActivityDelegateWrapper
-import org.devio.rn.splashscreen.SplashScreen
+import com.zoontek.rnbootsplash.RNBootSplash
 
 class MainActivity : ReactActivity() {
     /**
@@ -19,8 +19,7 @@ class MainActivity : ReactActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // Handle the splash screen transition.
-        SplashScreen.show(this)
+        RNBootSplash.init(this, R.style.BootTheme)
         super.onCreate(null)
     }
 
