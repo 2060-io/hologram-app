@@ -60,7 +60,11 @@ const VPChatView = ({ metadata, role, agent, proofRecordId, chatEntryId }: Props
   const displayModalRefuseConfirmation = () => setShowModalRefuseConfirmation(true)
 
   const chooseWhereToGo = (credential: VPResponsePresentedCredential) => {
-    isSender ? verifyCanGoToCredentialDetails(credential.mainInfo.recordId) : goToPresentation(credential)
+    if (isSender) {
+      verifyCanGoToCredentialDetails(credential.mainInfo.recordId)
+    } else {
+      goToPresentation(credential)
+    }
   }
 
   const goToPresentation = (credential: VPResponsePresentedCredential) => {
@@ -78,7 +82,7 @@ const VPChatView = ({ metadata, role, agent, proofRecordId, chatEntryId }: Props
     try {
       await agent.w3cCredentials.getById(credentialRecordId)
       navigation.navigate('CredentialDetails', { credentialRecordId })
-    } catch (error) {
+    } catch {
       toast({ type: 'error', message: t('chat.noCredentialFound') })
     }
   }

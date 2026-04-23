@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 const { fixupPluginRules, fixupConfigRules } = require('@eslint/compat')
 const { FlatCompat } = require('@eslint/eslintrc')
 const js = require('@eslint/js')
@@ -14,6 +13,9 @@ const compat = new FlatCompat({
 })
 
 module.exports = defineConfig([
+  {
+    ignores: ['node_modules', 'dist', 'build', '.expo'],
+  },
   {
     languageOptions: {
       parser: tsParser,
@@ -41,7 +43,7 @@ module.exports = defineConfig([
       ),
     ),
     settings: {
-      'import/ignore': ['node_modules/react-native/index\\.js$'],
+      'import/ignore': ['node_modules/'],
       'import/resolver': {
         typescript: {
           alwaysTryTypes: true,
@@ -65,7 +67,7 @@ module.exports = defineConfig([
         },
       ],
       'import/no-named-as-default': 0,
-      'import/no-cycle': 'error',
+      'import/no-cycle': ['error', { ignoreExternal: true }],
       'import/newline-after-import': [
         'error',
         {
@@ -140,9 +142,16 @@ module.exports = defineConfig([
     },
   },
   {
-    files: ['scripts/**'],
+    files: ['scripts/**/*.{ts,js}', 'brand/**/*.js'],
     rules: {
       'no-console': 'off',
+      '@typescript-eslint/no-require-imports': 'off',
+    },
+  },
+  {
+    files: ['*.config.js', 'metro.config.js', 'eslint.config.js'],
+    rules: {
+      '@typescript-eslint/no-require-imports': 'off',
     },
   },
 ])

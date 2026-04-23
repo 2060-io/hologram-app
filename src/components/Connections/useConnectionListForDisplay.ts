@@ -35,7 +35,7 @@ const getConnectionItem = async (
   if (isConnectionService && did) {
     connectionItem = {
       ...connectionItem,
-      status: (await getInCacheServiceInfo(did, agent))?.status,
+      status: (await getInCacheServiceInfo(did, agent.context))?.status,
     }
   }
   return connectionItem

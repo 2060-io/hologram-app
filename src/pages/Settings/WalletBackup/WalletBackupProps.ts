@@ -5,7 +5,7 @@ import { StyleProp, ViewStyle } from 'react-native'
 import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
 import { OnBackupFinish, BackupHandler, BackupProgressProps, BackupInfo } from '@src/hooks/backup'
 
-export interface WalletBackupPageProps extends StackScreenProps<NavigationStackParams, 'WalletBackup'> {}
+export type WalletBackupPageProps = StackScreenProps<NavigationStackParams, 'WalletBackup'>
 
 export interface WalletBackupProps {
   isCloudAvailable: boolean

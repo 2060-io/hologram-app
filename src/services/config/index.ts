@@ -20,7 +20,7 @@ export async function storeKeyInConfigFile(key: ParentalControlEnum, value: stri
     if (!configJson[PARENTAL_CONTROL]) {
       configJson[PARENTAL_CONTROL] = {}
     }
-  } catch (error) {
+  } catch {
     configJson = { keys: {}, [PARENTAL_CONTROL]: {} }
   }
 
@@ -36,7 +36,7 @@ export async function retrieveKeyInConfigFile(key: ParentalControlEnum) {
     const configJson = JSON.parse(config)
     if (!configJson[PARENTAL_CONTROL]) return undefined
     return (configJson[PARENTAL_CONTROL][key] as string) ?? undefined
-  } catch (error) {
+  } catch {
     return undefined
   }
 }

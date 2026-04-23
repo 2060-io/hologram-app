@@ -23,7 +23,7 @@ import {
 import { log } from '@src/utils'
 import { toast } from '@src/utils/toast'
 
-interface Props extends StackScreenProps<NavigationStackParams, 'EphemeralCredentialPresentation'> {}
+type Props = StackScreenProps<NavigationStackParams, 'EphemeralCredentialPresentation'>
 
 const EphemeralCredentialPresentation = ({ navigation, route }: Props) => {
   const { proofRecordId } = route.params

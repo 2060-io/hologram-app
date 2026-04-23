@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Image, TouchableOpacity, View } from 'react-native'
-import { SvgUri } from 'react-native-svg'
+import { TouchableOpacity, View } from 'react-native'
 
 import SmartImage from './SmartImage'
 import getStyles from './styles'
@@ -14,10 +13,6 @@ const getNameInitials = (fullName: string) => {
   const firstName = nameParts[0]?.[0] || ''
   const lastName = nameParts[1]?.[0] || ''
   return (firstName + lastName).toUpperCase()
-}
-
-const isHttpUrl = (uri: string) => {
-  return uri.startsWith('https://') || uri.startsWith('http://')
 }
 
 const isUri = (value: string) => /\w+:(\/?\/?)[^\s]+/.test(value)
@@ -64,15 +59,7 @@ const Avatar: React.FC<Props> = ({
       disabled={!onImagePressed}
       onPress={() => onImagePressed?.(imageUri.current ?? '')}
     >
-      {uri?.endsWith('.svg') || uri?.includes('data:image/svg+xml') ? (
-        <SvgUri
-          uri={uri}
-          style={styles.avatar}
-          width={styles.avatar.width}
-          height={styles.avatar.height}
-          onError={() => setIsValidImageUrl(false)}
-        />
-      ) : uri && isHttpUrl(uri) ? (
+      {uri && (
         <SmartImage
           uri={uri}
           setIsValidImageUrl={setIsValidImageUrl}
@@ -80,8 +67,6 @@ const Avatar: React.FC<Props> = ({
           style={styles.avatar}
           enableImageRefresh={enableImageRefresh}
         />
-      ) : (
-        <Image source={{ uri }} style={styles.avatar} onError={() => setIsValidImageUrl(false)} />
       )}
     </TouchableOpacity>
   )

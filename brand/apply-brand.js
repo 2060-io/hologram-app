@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-/* eslint-disable no-console, @typescript-eslint/no-var-requires */
 
 /**
  * apply-brand.js
@@ -383,6 +382,7 @@ if (fs.existsSync(iosSrc)) {
   // Splash icons
   for (const variant of ['SplashScreenIcon', 'SplashScreenIconDev', 'SplashScreenIconStaging']) {
     const splashSrc = path.join(iosSrc, `${variant}.imageset`)
+    // Assets remain under original names (referenced by storyboards)
     const splashDest = path.join(ROOT, `ios/hologram/Images.xcassets/${variant}.imageset`)
     const splashCount = copyDirRecursive(splashSrc, splashDest)
     if (splashCount > 0) console.log(`  iOS ${variant}: ${splashCount} files copied`)

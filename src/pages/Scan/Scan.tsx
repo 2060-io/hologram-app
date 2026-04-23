@@ -27,7 +27,7 @@ import { DidcommInvitationType, getOutOfBandRecordById, processInvitation } from
 import { log, logError } from '@src/utils'
 import { toast } from '@src/utils/toast'
 
-interface Props extends StackScreenProps<NavigationStackParams, 'Scan'> {}
+type Props = StackScreenProps<NavigationStackParams, 'Scan'>
 
 const Scan = ({ navigation }: Props) => {
   const { t } = useTranslation()
@@ -85,17 +85,31 @@ const Scan = ({ navigation }: Props) => {
     }
   }
 
-  const onCodeScanned = async (url: string) => {
+  const onCodeScanned = async (rawUrl: string) => {
     if (!agent) return
     try {
       setIsActiveCamera(false)
 
-      const parsedUrl = queryString.parseUrl(url)
-      const shortUrl =
-        ((parsedUrl.query.oobUrl as string | undefined) ?? (parsedUrl.query._url as string | undefined))
-          ? TypedArrayEncoder.toUtf8String(TypedArrayEncoder.fromBase64(parsedUrl.query._url as string))
-          : undefined
-      const invitation = await agent.didcomm.oob.parseInvitation(shortUrl ?? url)
+      const url = rawUrl.trim()
+      let invitation: DidCommOutOfBandInvitation | undefined
+      if (url.startsWith('did:')) {
+        // FIXME: this should be based on both Hologram and other party supported protocols
+        invitation = new DidCommOutOfBandInvitation({
+          id: url,
+          label: 'DID Invitation',
+          services: [url],
+          handshakeProtocols: ['https://didcomm.org/didexchange/1.1'],
+        })
+        invitation.setThread({ parentThreadId: url })
+      } else {
+        const parsedUrl = queryString.parseUrl(url)
+        const shortUrl =
+          ((parsedUrl.query.oobUrl as string | undefined) ?? (parsedUrl.query._url as string | undefined))
+            ? TypedArrayEncoder.toUtf8String(TypedArrayEncoder.fromBase64(parsedUrl.query._url as string))
+            : undefined
+        invitation = await agent.didcomm.oob.parseInvitation(shortUrl ?? url)
+      }
+
       await processDidcommInvitation(invitation)
       setScannedCode('')
     } catch (error) {

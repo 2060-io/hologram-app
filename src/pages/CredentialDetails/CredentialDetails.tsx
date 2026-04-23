@@ -20,7 +20,7 @@ import { getCredentialDetailsForDisplay } from '@src/services/agent/display'
 import { trimText } from '@src/utils'
 import { screenHeight } from '@src/utils/responsiveUtils'
 
-interface Props extends StackScreenProps<NavigationStackParams, 'CredentialDetails'> {}
+type Props = StackScreenProps<NavigationStackParams, 'CredentialDetails'>
 const CredentialDetails = ({ route, navigation }: Props) => {
   const { credentialRecordId } = route.params
   const { t } = useTranslation()
@@ -32,7 +32,7 @@ const CredentialDetails = ({ route, navigation }: Props) => {
   const credentialRecord = getCredentialById(credentialRecordId)
   const credentialDetails = credentialRecord ? getCredentialDetailsForDisplay(credentialRecord) : undefined
   const did = credentialRecord?.firstCredential.issuerId ?? ''
-  const { isFetchingInfo, serviceInfo, failedFetchInfo, getServiceInfo } = useFetchServiceInfo(did)
+  const { isFetchingInfo, serviceInfo, failedFetchInfo, getServiceInfo } = useFetchServiceInfo({ did })
   const { handleScrollBeginDrag, handleScrollEndDrag } = useScrollSwipeDown({
     disabledSwipeDown: isFetchingInfo,
     onSwipeDown: getServiceInfo,

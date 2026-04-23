@@ -1,7 +1,7 @@
+import { downloadFile, read, stat } from '@dr.pogodin/react-native-fs'
 import { GDrive, ListQueryBuilder } from '@robinbobin/react-native-google-drive-api-wrapper'
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
-import { downloadFile, read, stat } from 'react-native-fs'
 import {
   googleDriveAuthorize,
   googleDriveGetAccessToken,
@@ -45,7 +45,11 @@ export const useGoogleDrive = () => {
     const setup = async () => {
       const storedGoogleAccount = await getStorageData(GOOGLE_ACCOUNT_BACKUP_PERSIST_KEY)
       setSelectedGoogleAccount(String(storedGoogleAccount))
-      storedGoogleAccount ? authorize(String(storedGoogleAccount)) : selectAccount()
+      if (storedGoogleAccount) {
+        authorize(String(storedGoogleAccount))
+      } else {
+        selectAccount()
+      }
     }
     setup()
   }, [])
@@ -55,7 +59,7 @@ export const useGoogleDrive = () => {
       const { exists, backup } = await existsBackup()
       if (exists) getBackupInfo(backup.id)
     }
-    isCloudAvailable && checkBackup()
+    if (isCloudAvailable) checkBackup()
   }, [isCloudAvailable])
 
   const initializeGoogleDrive = async () => {

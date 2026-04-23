@@ -7,7 +7,7 @@ import {
   copyFile as RNFSCopyFile,
   exists as RNFSExists,
   moveFile as RNFSMoveFile,
-} from 'react-native-fs'
+} from '@dr.pogodin/react-native-fs'
 
 import { logError } from './log'
 
@@ -73,7 +73,7 @@ const copyFile = async (filePath: string, destPath: string) => {
 const existsFile = async (filePath: string) => {
   try {
     return await RNFSExists(filePath)
-  } catch (error) {
+  } catch {
     return false
   }
 }

@@ -27,7 +27,7 @@ import { logError, dataUrl } from '@src/utils'
 import { deleteDir, walletDirectoryPath } from '@src/utils/RNFS'
 import { toast } from '@src/utils/toast'
 
-interface Props extends StackScreenProps<HomeMainTabParams, 'Settings'> {}
+type Props = StackScreenProps<HomeMainTabParams, 'Settings'>
 
 const MAX_DELAY_BETWEEN_TOUCHES = 3000
 const TIMES_TO_ENABLE_DEV_MODE = 7
@@ -91,7 +91,7 @@ const Settings = ({ navigation }: Props) => {
       closeRealm()
       AgentSingleton.instance.setAppIsSubscribedChatToEvents(false)
       AgentSingleton.instance.setIsAppSubscribedToConnectionEvents(false)
-      AgentActionQueueSingleton.instance.setIsConfigured(false)
+      AgentActionQueueSingleton.instance.reset()
     } catch (error) {
       logError(`Error deleting wallet: ${error}`)
       toast({ type: 'error', message: t('settings.deleteWalletError') })

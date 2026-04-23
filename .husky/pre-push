@@ -7,7 +7,7 @@ do
   # If we are pushing a branch (refs/heads/*), we want the hook to run
   if echo "$local_ref" | grep -q "refs/heads/"; then
     echo "Pushing branch: running checks..."
-    yarn prettier -c && yarn lint && yarn build
+    pnpm style:check && pnpm lint:check && pnpm types:check
     exit 0
   fi
 done

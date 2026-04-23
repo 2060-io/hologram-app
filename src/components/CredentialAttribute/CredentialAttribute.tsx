@@ -1,11 +1,10 @@
 import { Skeleton } from 'moti/skeleton'
 import React from 'react'
-import { View, Image, TouchableOpacity, StyleProp, ImageStyle, ViewStyle } from 'react-native'
-import EIdReader from 'react-native-eid-reader'
+import { View, TouchableOpacity, StyleProp, ImageStyle, ViewStyle } from 'react-native'
 
 import getStyles from './styles'
 
-import { Text } from '@src/components/common'
+import { Text, UniversalImage } from '@src/components/common'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { sanitizeString } from '@src/services/agent/display'
 import { CredentialAttributeRow } from '@src/services/agent/formatCredentialSubject'
@@ -17,11 +16,9 @@ type ImageSectionProps = {
 }
 
 const ImageAttribute = ({ image, onPressDetailImage, imageStyle }: ImageSectionProps) => {
-  const jpegImage = EIdReader.imageDataUrlToJpegDataUrl(image)
-
-  return jpegImage ? (
-    <TouchableOpacity onPress={() => onPressDetailImage?.(jpegImage)}>
-      <Image style={imageStyle} resizeMode="contain" source={{ uri: jpegImage }} />
+  return image ? (
+    <TouchableOpacity onPress={() => onPressDetailImage?.(image)}>
+      <UniversalImage style={imageStyle} resizeMode="contain" source={{ uri: image }} />
     </TouchableOpacity>
   ) : null
 }

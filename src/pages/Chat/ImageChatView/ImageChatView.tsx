@@ -10,7 +10,7 @@ import ImageView from './ImageView'
 import getStyles from './styles'
 
 import imagePlaceholder from '@src/assets/images/placeholderImg.png'
-import { Icon, Text, Progress } from '@src/components/common'
+import { Icon, Text, Progress, UniversalImage } from '@src/components/common'
 import { useMedia } from '@src/hooks'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { ImageMetadata, MediaDownloadState, MediaUploadState } from '@src/model'
@@ -113,7 +113,7 @@ const ImageChatView = (props: ImageProps) => {
         </>
       ) : (
         <>
-          <Image source={imagePreview} style={imageStyle} />
+          <UniversalImage source={imagePreview} style={imageStyle} />
           <View style={styles.containerSpinner}>
             {isDownloading ? (
               <React.Fragment>

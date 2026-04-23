@@ -2,7 +2,7 @@ import { StackActions } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
 import React, { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, Image, TouchableOpacity, FlatList } from 'react-native'
+import { View, TouchableOpacity, FlatList } from 'react-native'
 import { uses24HourClock } from 'react-native-localize'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { SwipeRow } from 'react-native-swipe-list-view'
@@ -18,6 +18,7 @@ import {
   ChatFilterOptions,
 } from '@src/components'
 import { Text, SvgIcon, HeaderTitle } from '@src/components/common'
+import UniversalImage from '@src/components/common/UniversalImage'
 import { useChatThreadById, useChatThreadsbyParentId, useChats, useMobileAgent } from '@src/hooks/agent'
 import { deleteConnection } from '@src/hooks/agent/connections'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
@@ -26,7 +27,7 @@ import { ChatsStackParams } from '@src/navigators/ChatStackParams'
 import { widthPercentageToDP } from '@src/utils/responsiveUtils'
 
 type SubChatCategory = 'all' | 'archived'
-interface Props extends StackScreenProps<ChatsStackParams, 'SubChats'> {}
+type Props = StackScreenProps<ChatsStackParams, 'SubChats'>
 
 const SubChats: React.FC<Props> = ({ route, navigation }) => {
   const { t } = useTranslation()
@@ -110,7 +111,7 @@ const SubChats: React.FC<Props> = ({ route, navigation }) => {
       <View style={styles.containerHeaderTitle}>
         {parentChatThread?.picture && (
           <View style={styles.containerImage}>
-            <Image source={{ uri: parentChatThread.picture }} style={styles.avatarHeader} />
+            <UniversalImage source={{ uri: parentChatThread.picture }} style={styles.avatarHeader} />
           </View>
         )}
         <HeaderTitle title={parentChatThread?.topic ?? ''} theme={theme} />
@@ -178,7 +179,11 @@ const SubChats: React.FC<Props> = ({ route, navigation }) => {
                   onDeleteChat={() => onDeleteChat(chat.id, chat.connectionId)}
                   onArchiveChat={() => {
                     swipeRowReferences.current[Number(chat.id)].closeRow()
-                    chat.archived ? unarchiveThreads([chat.id]) : archiveThreads([chat.id])
+                    if (chat.archived) {
+                      unarchiveThreads([chat.id])
+                    } else {
+                      archiveThreads([chat.id])
+                    }
                   }}
                 />
                 <View style={isSwiped ? styles.bgSelectedChat : styles.bgContainerChat}>

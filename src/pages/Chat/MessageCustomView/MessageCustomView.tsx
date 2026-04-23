@@ -50,7 +50,11 @@ const MessageCustomView: React.FC<MessageProps> = memo(props => {
   return (
     <TouchableOpacity
       onPress={() => {
-        isSelectingMessagesMode ? updateSelectedMessages(currentMessage) : handleDismissKeyboard()
+        if (isSelectingMessagesMode) {
+          updateSelectedMessages(currentMessage)
+        } else {
+          handleDismissKeyboard()
+        }
       }}
       style={styles.container}
       activeOpacity={1}

@@ -16,7 +16,7 @@ import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { logError } from '@src/utils'
 import { widthPercentageToDP } from '@src/utils/responsiveUtils'
 
-interface Props extends StackScreenProps<NavigationStackParams, 'PresentCredentialAsQR'> {}
+type Props = StackScreenProps<NavigationStackParams, 'PresentCredentialAsQR'>
 
 const PresentCredentialAsQR = ({ navigation, route }: Props) => {
   const { credentialRecordId, attributesToPresent } = route.params

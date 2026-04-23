@@ -37,7 +37,7 @@ import {
 import { logError, LOGS_DIRECTORY } from '@src/utils/log'
 import { toast } from '@src/utils/toast'
 
-interface Props extends StackScreenProps<NavigationStackParams, 'Developer'> {}
+type Props = StackScreenProps<NavigationStackParams, 'Developer'>
 
 const Developer = ({ navigation }: Props) => {
   const theme = useTheme()
@@ -134,7 +134,7 @@ const Developer = ({ navigation }: Props) => {
       closeRealm()
       AgentSingleton.instance.setAppIsSubscribedChatToEvents(false)
       AgentSingleton.instance.setIsAppSubscribedToConnectionEvents(false)
-      AgentActionQueueSingleton.instance.setIsConfigured(false)
+      AgentActionQueueSingleton.instance.reset()
       navigation.navigate('Home')
     } catch (error) {
       toast({ type: 'error', message: t('settings.deleteWalletError') })

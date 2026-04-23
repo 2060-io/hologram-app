@@ -1,7 +1,7 @@
 import { OrientationLock, lockAsync, unlockAsync } from 'expo-screen-orientation'
 import React, { memo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Image, TouchableOpacity, View } from 'react-native'
+import { TouchableOpacity, View } from 'react-native'
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
 import { SvgUri } from 'react-native-svg'
 import WebView from 'react-native-webview'
@@ -11,7 +11,7 @@ import { Header, BlueButton } from '../components'
 import { HtmlChatViewProps } from './HtmlChatViewProps'
 import getStyles from './styles'
 
-import { Modal, SvgIcon, Text } from '@src/components/common'
+import { Modal, SvgIcon, Text, UniversalImage } from '@src/components/common'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { log, logError } from '@src/utils'
 
@@ -70,7 +70,7 @@ const HtmlChatView = (props: HtmlChatViewProps) => {
               onError={handleImageError}
             />
           ) : (
-            <Image style={styles.image} source={{ uri: metadata.icon }} onError={handleImageError} />
+            <UniversalImage style={styles.image} source={{ uri: metadata.icon }} onError={handleImageError} />
           ))}
         <View style={styles.detailsContainer}>
           <Text style={styles.title}>{metadata.title}</Text>

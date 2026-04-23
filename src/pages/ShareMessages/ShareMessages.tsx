@@ -16,7 +16,7 @@ import { useSharedDataFromOtherApps } from '@src/hooks/providers/SharedDataFromO
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { notAllowedConnectionsIdsToSendMessages } from '@src/utils/connectionUtils'
 
-interface Props extends StackScreenProps<ChatStackParams, 'ShareMessages'> {}
+type Props = StackScreenProps<ChatStackParams, 'ShareMessages'>
 
 type SelectedConnection = {
   id: string

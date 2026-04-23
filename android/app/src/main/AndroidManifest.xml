@@ -30,7 +30,7 @@
       android:icon="@mipmap/ic_launcher"
       android:allowBackup="false"
       tools:replace="android:theme"
-      android:theme="@style/Theme.App.Starting"
+      android:theme="@style/BootTheme"
       android:supportsRtl="true"
       android:requestLegacyExternalStorage="true"
       android:extractNativeLibs="true"

@@ -20,8 +20,8 @@
 		0D665CA62C237B240038F106 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D665CA32C237B240038F106 /* ShareViewController.swift */; };
 		0D66D8FB2C236695004F9B35 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 0D66D8FA2C236695004F9B35 /* Base */; };
 		0D66D8FF2C236695004F9B35 /* ShareExtensionStaging.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 0D66D8F52C236695004F9B35 /* ShareExtensionStaging.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		0DC0A09A2C139F0300B45E18 /* SplashScreenDev.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0DC0A0992C139F0300B45E18 /* SplashScreenDev.storyboard */; };
-		0DC0A09C2C139F2100B45E18 /* SplashScreenStaging.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0DC0A09B2C139F2100B45E18 /* SplashScreenStaging.storyboard */; };
+		0DC0A09A2C139F0300B45E18 /* BootSplashDev.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0DC0A0992C139F0300B45E18 /* BootSplashDev.storyboard */; };
+		0DC0A09C2C139F2100B45E18 /* BootSplashStaging.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0DC0A09B2C139F2100B45E18 /* BootSplashStaging.storyboard */; };
 		0DEC5D302E4D18B5006053B3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DEC5D2F2E4D18B5006053B3 /* AppDelegate.swift */; };
 		0DEC5D312E4D18B5006053B3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DEC5D2F2E4D18B5006053B3 /* AppDelegate.swift */; };
 		0DEC5D322E4D18B5006053B3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DEC5D2F2E4D18B5006053B3 /* AppDelegate.swift */; };
@@ -33,9 +33,9 @@
 		2A3DFB7A14763904FC064921 /* libPods-CommonPods-Dev.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2351A0A568296DC03266B571 /* libPods-CommonPods-Dev.a */; };
 		2BBE094411444140B1F06FC6 /* EuclidCircularA-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3297C2FBDFD14E0A804AE09D /* EuclidCircularA-Regular.ttf */; };
 		375723152A86CEF500ECF0CE /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
-		375723162A86CEF500ECF0CE /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EBDBDCAE269EB89000E74BEF /* SplashScreen.storyboard */; };
+		375723162A86CEF500ECF0CE /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EBDBDCAE269EB89000E74BEF /* BootSplash.storyboard */; };
 		375723342A86CF0D00ECF0CE /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
-		375723352A86CF0D00ECF0CE /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EBDBDCAE269EB89000E74BEF /* SplashScreen.storyboard */; };
+		375723352A86CF0D00ECF0CE /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EBDBDCAE269EB89000E74BEF /* BootSplash.storyboard */; };
 		375723422A87EB9700ECF0CE /* Firebase in Resources */ = {isa = PBXBuildFile; fileRef = 375723412A87EB9700ECF0CE /* Firebase */; };
 		375723432A87EB9700ECF0CE /* Firebase in Resources */ = {isa = PBXBuildFile; fileRef = 375723412A87EB9700ECF0CE /* Firebase */; };
 		375723442A87EB9700ECF0CE /* Firebase in Resources */ = {isa = PBXBuildFile; fileRef = 375723412A87EB9700ECF0CE /* Firebase */; };
@@ -78,7 +78,7 @@
 		E06800A02ABCB481002EC287 /* EuclidCircularA-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0B98F0DF202F4FA8A4D7314D /* EuclidCircularA-SemiBold.ttf */; };
 		E06800A12ABCB483002EC287 /* EuclidCircularA-SemiBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A032201FCBBE4B3EBE932677 /* EuclidCircularA-SemiBoldItalic.ttf */; };
 		E06800A22ABCB484002EC287 /* EuclidCircularA-SemiBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A032201FCBBE4B3EBE932677 /* EuclidCircularA-SemiBoldItalic.ttf */; };
-		EBDBDCAF269EB89000E74BEF /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EBDBDCAE269EB89000E74BEF /* SplashScreen.storyboard */; };
+		EBDBDCAF269EB89000E74BEF /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EBDBDCAE269EB89000E74BEF /* BootSplash.storyboard */; };
 		ED0BB59E314017EAFCCD9D32 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55DA4D9DBA5046CFDEF196DA /* ExpoModulesProvider.swift */; };
 		F6D501CB2FC84300AC244AB7 /* EuclidCircularA-SemiBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A032201FCBBE4B3EBE932677 /* EuclidCircularA-SemiBoldItalic.ttf */; };
 /* End PBXBuildFile section */
@@ -193,8 +193,8 @@
 		0D66D8FA2C236695004F9B35 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
 		0D66D8FC2C236695004F9B35 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0D66D9072C23677F004F9B35 /* ShareExtensionStaging.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ShareExtensionStaging.entitlements; sourceTree = "<group>"; };
-		0DC0A0992C139F0300B45E18 /* SplashScreenDev.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SplashScreenDev.storyboard; sourceTree = "<group>"; };
-		0DC0A09B2C139F2100B45E18 /* SplashScreenStaging.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SplashScreenStaging.storyboard; sourceTree = "<group>"; };
+		0DC0A0992C139F0300B45E18 /* BootSplashDev.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = BootSplashDev.storyboard; sourceTree = "<group>"; };
+		0DC0A09B2C139F2100B45E18 /* BootSplashStaging.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = BootSplashStaging.storyboard; sourceTree = "<group>"; };
 		0DEC5D2F2E4D18B5006053B3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* Prod.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Prod.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = hologram/Images.xcassets; sourceTree = "<group>"; };
@@ -260,7 +260,7 @@
 		E57E7DF6E7549528F2180D0B /* Pods-ShareExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ShareExtension.debug.xcconfig"; path = "Target Support Files/Pods-ShareExtension/Pods-ShareExtension.debug.xcconfig"; sourceTree = "<group>"; };
 		E7AA30C9900B08196358B7F0 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-CommonPods-Staging/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		E89B45A7C8FD4800A0E0390C /* Ionicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Ionicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
-		EBDBDCAE269EB89000E74BEF /* SplashScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SplashScreen.storyboard; sourceTree = "<group>"; };
+		EBDBDCAE269EB89000E74BEF /* BootSplash.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = BootSplash.storyboard; sourceTree = "<group>"; };
 		EBF5FA8F26E712E0000D09F0 /* hologram-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "hologram-Bridging-Header.h"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F70B8F11703598B242E3BA09 /* Pods-CommonShareExtensionPods-ShareExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CommonShareExtensionPods-ShareExtension.release.xcconfig"; path = "Target Support Files/Pods-CommonShareExtensionPods-ShareExtension/Pods-CommonShareExtensionPods-ShareExtension.release.xcconfig"; sourceTree = "<group>"; };
@@ -368,9 +368,9 @@
 				50B834172A4DDA74000609F0 /* hologramRelease.entitlements */,
 				75319D53285A846A0010C2AA /* hologram.entitlements */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
-				EBDBDCAE269EB89000E74BEF /* SplashScreen.storyboard */,
-				0DC0A0992C139F0300B45E18 /* SplashScreenDev.storyboard */,
-				0DC0A09B2C139F2100B45E18 /* SplashScreenStaging.storyboard */,
+				EBDBDCAE269EB89000E74BEF /* BootSplash.storyboard */,
+				0DC0A0992C139F0300B45E18 /* BootSplashDev.storyboard */,
+				0DC0A09B2C139F2100B45E18 /* BootSplashStaging.storyboard */,
 				0DEC5D2F2E4D18B5006053B3 /* AppDelegate.swift */,
 			);
 			name = hologram;
@@ -772,7 +772,7 @@
 				375723422A87EB9700ECF0CE /* Firebase in Resources */,
 				37D01B7D2AA4048D00015826 /* ExportOptions.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
-				EBDBDCAF269EB89000E74BEF /* SplashScreen.storyboard in Resources */,
+				EBDBDCAF269EB89000E74BEF /* BootSplash.storyboard in Resources */,
 				7F09BC2CA9F74641B6FADDA8 /* EuclidCircularA-Bold.ttf in Resources */,
 				85733EBC853A401384E01005 /* EuclidCircularA-BoldItalic.ttf in Resources */,
 				C36A10283A124387AD849E0F /* EuclidCircularA-Italic.ttf in Resources */,
@@ -801,13 +801,13 @@
 				E068009B2ABCB47A002EC287 /* EuclidCircularA-MediumItalic.ttf in Resources */,
 				E068009F2ABCB480002EC287 /* EuclidCircularA-SemiBold.ttf in Resources */,
 				E06800992ABCB477002EC287 /* EuclidCircularA-Medium.ttf in Resources */,
-				0DC0A09A2C139F0300B45E18 /* SplashScreenDev.storyboard in Resources */,
+				0DC0A09A2C139F0300B45E18 /* BootSplashDev.storyboard in Resources */,
 				E06800A12ABCB483002EC287 /* EuclidCircularA-SemiBoldItalic.ttf in Resources */,
 				E06800952ABCB470002EC287 /* EuclidCircularA-Light.ttf in Resources */,
 				37D01B7E2AA4048D00015826 /* ExportOptions.plist in Resources */,
 				375723152A86CEF500ECF0CE /* Images.xcassets in Resources */,
 				0D133B6C2BFE7DC800B2AAFF /* PrivacyInfo.xcprivacy in Resources */,
-				375723162A86CEF500ECF0CE /* SplashScreen.storyboard in Resources */,
+				375723162A86CEF500ECF0CE /* BootSplash.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -828,10 +828,10 @@
 				E06800A22ABCB484002EC287 /* EuclidCircularA-SemiBoldItalic.ttf in Resources */,
 				E06800962ABCB470002EC287 /* EuclidCircularA-Light.ttf in Resources */,
 				37D01B7F2AA4048D00015826 /* ExportOptions.plist in Resources */,
-				0DC0A09C2C139F2100B45E18 /* SplashScreenStaging.storyboard in Resources */,
+				0DC0A09C2C139F2100B45E18 /* BootSplashStaging.storyboard in Resources */,
 				375723342A86CF0D00ECF0CE /* Images.xcassets in Resources */,
 				0D133B6D2BFE7DC800B2AAFF /* PrivacyInfo.xcprivacy in Resources */,
-				375723352A86CF0D00ECF0CE /* SplashScreen.storyboard in Resources */,
+				375723352A86CF0D00ECF0CE /* BootSplash.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -963,13 +963,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-CommonPods-Dev/Pods-CommonPods-Dev-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-CommonPods-Dev/Pods-CommonPods-Dev-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -984,13 +980,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-CommonPods-Dev/Pods-CommonPods-Dev-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-CommonPods-Dev/Pods-CommonPods-Dev-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1060,13 +1052,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-CommonPods-Staging/Pods-CommonPods-Staging-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-CommonPods-Staging/Pods-CommonPods-Staging-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1081,13 +1069,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-CommonPods-Staging/Pods-CommonPods-Staging-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-CommonPods-Staging/Pods-CommonPods-Staging-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1156,13 +1140,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-CommonPods-Prod/Pods-CommonPods-Prod-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-CommonPods-Prod/Pods-CommonPods-Prod-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1177,13 +1157,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-CommonShareExtensionPods-ShareExtensionDev/Pods-CommonShareExtensionPods-ShareExtensionDev-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-CommonShareExtensionPods-ShareExtensionDev/Pods-CommonShareExtensionPods-ShareExtensionDev-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1224,13 +1200,13 @@
 				"$(SRCROOT)/.xcode.env",
 				"$(SRCROOT)/.xcode.env.local",
 				"$(SRCROOT)/hologram/hologram.entitlements",
-				"$(SRCROOT)/Pods/Target Support Files/Pods-2060CommonPods-2060Prod/expo-configure-project.sh",
+				"$(SRCROOT)/Pods/Target Support Files/Pods-CommonPods-Prod/expo-configure-project.sh",
 			);
 			name = "[Expo] Configure project";
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(SRCROOT)/Pods/Target Support Files/Pods-2060CommonPods-2060Prod/ExpoModulesProvider.swift",
+				"$(SRCROOT)/Pods/Target Support Files/Pods-CommonPods-Prod/ExpoModulesProvider.swift",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1266,13 +1242,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-CommonPods-Prod/Pods-CommonPods-Prod-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-CommonPods-Prod/Pods-CommonPods-Prod-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1291,13 +1263,13 @@
 				"$(SRCROOT)/.xcode.env",
 				"$(SRCROOT)/.xcode.env.local",
 				"$(SRCROOT)/hologram/hologram.entitlements",
-				"$(SRCROOT)/Pods/Target Support Files/Pods-2060CommonPods-2060Dev/expo-configure-project.sh",
+				"$(SRCROOT)/Pods/Target Support Files/Pods-CommonPods-Dev/expo-configure-project.sh",
 			);
 			name = "[Expo] Configure project";
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(SRCROOT)/Pods/Target Support Files/Pods-2060CommonPods-2060Dev/ExpoModulesProvider.swift",
+				"$(SRCROOT)/Pods/Target Support Files/Pods-CommonPods-Dev/ExpoModulesProvider.swift",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1315,13 +1287,13 @@
 				"$(SRCROOT)/.xcode.env",
 				"$(SRCROOT)/.xcode.env.local",
 				"$(SRCROOT)/hologram/hologram.entitlements",
-				"$(SRCROOT)/Pods/Target Support Files/Pods-2060CommonPods-2060Staging/expo-configure-project.sh",
+				"$(SRCROOT)/Pods/Target Support Files/Pods-CommonPods-Staging/expo-configure-project.sh",
 			);
 			name = "[Expo] Configure project";
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(SRCROOT)/Pods/Target Support Files/Pods-2060CommonPods-2060Staging/ExpoModulesProvider.swift",
+				"$(SRCROOT)/Pods/Target Support Files/Pods-CommonPods-Staging/ExpoModulesProvider.swift",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1335,13 +1307,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-CommonShareExtensionPods-ShareExtensionStaging/Pods-CommonShareExtensionPods-ShareExtensionStaging-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-CommonShareExtensionPods-ShareExtensionStaging/Pods-CommonShareExtensionPods-ShareExtensionStaging-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1380,13 +1348,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-CommonShareExtensionPods-ShareExtensionProd/Pods-CommonShareExtensionPods-ShareExtensionProd-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-CommonShareExtensionPods-ShareExtensionProd/Pods-CommonShareExtensionPods-ShareExtensionProd-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -2173,7 +2137,8 @@
 			baseConfigurationReference = 75319D4E285A19E20010C2AA /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CC = "";
+				CC = "$(REACT_NATIVE_PATH)/scripts/xcode/ccache-clang.sh";
+				CCACHE_BINARY = /opt/homebrew/bin/ccache;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -2201,7 +2166,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
-				CXX = "";
+				CXX = "$(REACT_NATIVE_PATH)/scripts/xcode/ccache-clang++.sh";
 				DEVELOPMENT_TEAM = RB75N5246J;
 				ENABLE_BITCODE = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -2225,8 +2190,8 @@
 				INFOPLIST_FILE = "";
 				"INFOPLIST_FILE[sdk=*]" = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
-				LD = "";
-				LDPLUSPLUS = "";
+				LD = "$(REACT_NATIVE_PATH)/scripts/xcode/ccache-clang.sh";
+				LDPLUSPLUS = "$(REACT_NATIVE_PATH)/scripts/xcode/ccache-clang++.sh";
 				LD_RUNPATH_SEARCH_PATHS = (
 					/usr/lib/swift,
 					"$(inherited)",
@@ -2240,7 +2205,10 @@
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = "$(inherited)";
 				OTHER_CPLUSPLUSFLAGS = "$(inherited)";
-				OTHER_LDFLAGS = "$(inherited)  ";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					" ",
+				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
@@ -2253,7 +2221,8 @@
 			baseConfigurationReference = 75319D4E285A19E20010C2AA /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CC = "";
+				CC = "$(REACT_NATIVE_PATH)/scripts/xcode/ccache-clang.sh";
+				CCACHE_BINARY = /opt/homebrew/bin/ccache;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -2281,7 +2250,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
-				CXX = "";
+				CXX = "$(REACT_NATIVE_PATH)/scripts/xcode/ccache-clang++.sh";
 				DEVELOPMENT_TEAM = RB75N5246J;
 				ENABLE_BITCODE = NO;
 				ENABLE_NS_ASSERTIONS = NO;
@@ -2296,8 +2265,8 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
-				LD = "";
-				LDPLUSPLUS = "";
+				LD = "$(REACT_NATIVE_PATH)/scripts/xcode/ccache-clang.sh";
+				LDPLUSPLUS = "$(REACT_NATIVE_PATH)/scripts/xcode/ccache-clang++.sh";
 				LD_RUNPATH_SEARCH_PATHS = (
 					/usr/lib/swift,
 					"$(inherited)",
@@ -2310,7 +2279,10 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_CFLAGS = "$(inherited)";
 				OTHER_CPLUSPLUSFLAGS = "$(inherited)";
-				OTHER_LDFLAGS = "$(inherited)  ";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					" ",
+				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;

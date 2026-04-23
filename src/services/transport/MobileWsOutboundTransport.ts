@@ -1,4 +1,12 @@
-import { CredoError, EventEmitter, Logger, JsonEncoder, AgentContext, DidsApi } from '@credo-ts/core'
+import {
+  CredoError,
+  EventEmitter,
+  Logger,
+  TypedArrayEncoder,
+  JsonEncoder,
+  AgentContext,
+  DidsApi,
+} from '@credo-ts/core'
 import {
   DidCommEventTypes,
   DidCommMessageReceivedEvent,
@@ -23,7 +31,7 @@ interface MobileOutboundWs {
   connectionIds: Set<string>
 }
 
-export class TunedMobileWsOutboundTransport implements DidCommOutboundTransport {
+export class MobileWsOutboundTransport implements DidCommOutboundTransport {
   private transportTable: Map<string, MobileOutboundWs> = new Map<string, MobileOutboundWs>()
   private agentContext!: AgentContext
   private logger!: Logger
@@ -40,6 +48,18 @@ export class TunedMobileWsOutboundTransport implements DidCommOutboundTransport 
   public isConnectedTo(connectionId: string) {
     const record = [...this.transportTable].find(([, item]) => item.connectionIds.has(connectionId))
     return record ? record[1].opened : false
+  }
+
+  public closeSocketByConnectionId(connectionId: string) {
+    for (const [, item] of this.transportTable) {
+      if (item.connectionIds.has(connectionId)) {
+        item.ws.removeEventListener('message', this.handleMessageEvent)
+        item.ws.close()
+        this.logger.debug(`Socket closed for connectionId '${connectionId}'`)
+        return true
+      }
+    }
+    return false
   }
 
   public async start(agentContext: AgentContext): Promise<void> {
@@ -105,7 +125,7 @@ export class TunedMobileWsOutboundTransport implements DidCommOutboundTransport 
     // In that case, do not close socket
     const isMediatorEndpoint = this.mediatorEndpoints.some(value => value === endpoint)
 
-    socket.ws.send(new TextEncoder().encode(JSON.stringify(payload)))
+    socket.ws.send(TypedArrayEncoder.fromUtf8String(JSON.stringify(payload)))
 
     socket.lastActivity = new Date()
     socket.shallKeepOpened = isMediatorEndpoint
@@ -122,7 +142,11 @@ export class TunedMobileWsOutboundTransport implements DidCommOutboundTransport 
   }) {
     // If we already have a socket connection use it
     let socket = this.transportTable.get(socketId)
-    if (!socket || socket.ws.readyState === this.WebSocketClass.CLOSING) {
+    if (
+      !socket ||
+      socket.ws.readyState === this.WebSocketClass.CLOSING ||
+      socket.ws.readyState === this.WebSocketClass.CLOSED
+    ) {
       if (!endpoint) {
         throw new CredoError("Missing endpoint. I don't know how and where to send the message.")
       }
@@ -170,10 +194,7 @@ export class TunedMobileWsOutboundTransport implements DidCommOutboundTransport 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private handleMessageEvent = (event: any) => {
     this.logger.trace('WebSocket message event received.', { url: event.target.url, data: event.data })
-    const payload =
-      typeof event.data === 'string'
-        ? JSON.parse(event.data)
-        : JsonEncoder.fromUint8Array(new Uint8Array(event.data))
+    const payload = JsonEncoder.fromUtf8String(event.data)
     if (!isValidJweStructure(payload)) {
       throw new Error(
         `Received a response from the other agent but the structure of the

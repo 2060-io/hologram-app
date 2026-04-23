@@ -25,7 +25,6 @@ import {
   DidCommProofStateChangedEvent,
   DidCommProofEventTypes,
   DidCommAutoAcceptProof,
-  DidCommHangupMessage,
   DidCommOutOfBandRole,
   DidCommFeaturesQueriesMessage,
   DidCommConnectionService,
@@ -63,6 +62,7 @@ import {
 } from './types'
 
 import { createOobInvitation, MobileAgent } from '@src/services/agent'
+import { logWarn } from '@src/utils'
 
 type AgentCallbackReturnType<T extends BaseRecord = BaseRecord> = {
   associatedRecord?: T
@@ -351,7 +351,32 @@ export const AgentActionExecuterMap: Record<AgentActionType, ActionFactory> = {
     return async (options: { agent: MobileAgent }) => {
       const parameters = action.parameters as DeleteConnectionParameters
       const { connectionId, outOfBandRecordId } = parameters
-      await options.agent.didcomm.connections.hangup({ connectionId, deleteAfterHangup: true })
+
+      try {
+        await options.agent.didcomm.connections.hangup({ connectionId, deleteAfterHangup: false })
+      } catch (error) {
+        logWarn(
+          `Error hanging up connection: ${error}. It will be deleted directly. No HangUp retry will be
+           performed.`,
+        )
+      }
+
+      let errorWhileDeleting: Error | undefined
+      try {
+        await options.agent.didcomm.connections.deleteById(connectionId)
+      } catch (error) {
+        logWarn(
+          `Error deleting connection ${connectionId} directly. Forcing deletion before throwing 
+          for KeylistUpdate retry process`,
+        )
+        const didCommConnectionService = options.agent.dependencyManager.resolve(DidCommConnectionService)
+        const connection = await didCommConnectionService.findById(options.agent.context, connectionId)
+        if (connection) {
+          await didCommConnectionService.deleteById(options.agent.context, connectionId)
+        }
+        errorWhileDeleting = error as Error
+      }
+
       // Once the connection has been eliminated, delete its associated OOB record (only if we were invited
       // as the OOB record can be still valid for invitations we have created)
       if (outOfBandRecordId) {
@@ -360,7 +385,12 @@ export const AgentActionExecuterMap: Record<AgentActionType, ActionFactory> = {
           await options.agent.didcomm.oob.deleteById(outOfBandRecordId)
         }
       }
-      return { outgoingMessageType: DidCommHangupMessage.type.messageTypeUri }
+
+      if (errorWhileDeleting) {
+        throw errorWhileDeleting
+      }
+
+      return { outgoingMessageType: DidCommKeylistUpdateMessage.type.messageTypeUri }
     }
   },
 }

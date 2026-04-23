@@ -1,5 +1,5 @@
+import { readdir, TemporaryDirectoryPath } from '@dr.pogodin/react-native-fs'
 import Config from 'react-native-config'
-import { readdir, TemporaryDirectoryPath } from 'react-native-fs'
 import { zip, unzip } from 'react-native-zip-archive'
 
 import { existsFile as exists, deleteDir, makeDirectory, mediaDirectoryPath } from './RNFS'

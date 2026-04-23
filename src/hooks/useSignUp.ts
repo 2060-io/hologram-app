@@ -13,9 +13,6 @@ import { saveInCacheServiceInfo } from '@src/services/agent/cache'
 import { getServiceInfo } from '@src/services/trustResolution'
 import { log, logError } from '@src/utils'
 
-const defaultServicePublicDid = Config.DEFAULT_SERVICE_PUBLIC_DID as string
-const defaultServiceAlias = Config.DEFAULT_SERVICE_ALIAS as string
-
 export const useSignUp = () => {
   const navigation = useNavigation()
   const { agent, handleChangeAgentState } = useMobileAgent()
@@ -24,11 +21,12 @@ export const useSignUp = () => {
   const [displayPicture, setDisplayPicture] = useState<DidCommUserProfileData['displayPicture']>()
 
   const { devEnvs } = useConfig()
+  const defaultServicePublicDid = Config.DEFAULT_SERVICE_PUBLIC_DID
+  const defaultServiceAlias = Config.DEFAULT_SERVICE_ALIAS
+  const cloudAgentPublicDid = devEnvs.CLOUD_AGENT_PUBLIC_DID
 
   const startSignUp = useCallback(async () => {
     if (!agent || !agent?.isInitialized) throw new Error('Agent not initialized')
-
-    const cloudAgentPublicDid = devEnvs.CLOUD_AGENT_PUBLIC_DID as string
 
     let { connectionRecord: cloudAgentConnection } = await agent.didcomm.oob.receiveImplicitInvitation({
       label: Config.APP_NAME || 'Hologram',
@@ -85,7 +83,7 @@ export const useSignUp = () => {
       const did = defaultServicePublicDid
       const serviceInfoResponse = await getServiceInfo({ agent, did })
       if (serviceInfoResponse) {
-        await saveInCacheServiceInfo(did, agent, serviceInfoResponse)
+        await saveInCacheServiceInfo(did, agent.context, serviceInfoResponse)
         const realmInstance = RealmSingleton.instance
         const realm = realmInstance.getRealm()
         if (realm) updateThreadFromServiceInfo({ did, serviceInfoResponse, realm, agent })

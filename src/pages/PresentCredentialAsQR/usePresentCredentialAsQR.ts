@@ -156,7 +156,7 @@ export const usePresentCredentialAsQR = ({
     log('DidCommShortenedUrlReceivedEvent received', event)
     const { shortenUrlRecord } = event.payload
     const shortenedUrlToBase64 = TypedArrayEncoder.toBase64Url(
-      new TextEncoder().encode(shortenUrlRecord.shortenedUrl!),
+      TypedArrayEncoder.fromUtf8String(shortenUrlRecord.shortenedUrl!),
     )
     shortenedUrl.current = shortenUrlRecord.shortenedUrl
     urlForQr.current = `${Config.BASE_INVITATION_URL}?_url=${shortenedUrlToBase64}`

@@ -34,7 +34,7 @@ import { screenHeight } from '@src/utils/responsiveUtils'
 import { toast } from '@src/utils/toast'
 
 type confirmationTypes = 'deleteChat' | 'block' | 'unblock' | 'deleteConnection'
-export interface WrapperProps extends StackScreenProps<NavigationStackParams, 'ConnectionDetails'> {}
+export type WrapperProps = StackScreenProps<NavigationStackParams, 'ConnectionDetails'>
 
 export interface ConnectionDetailsProps extends WrapperProps {
   connection: DidCommConnectionRecord
@@ -201,7 +201,7 @@ const BaseConnectionDetails = ({
     try {
       const outOfBandInvitation = createOobInvitation(connection)
       const invitationStr = JSON.stringify(outOfBandInvitation)
-      const invitationBase64 = TypedArrayEncoder.toBase64Url(new TextEncoder().encode(invitationStr))
+      const invitationBase64 = TypedArrayEncoder.toBase64Url(TypedArrayEncoder.fromUtf8String(invitationStr))
       const invitationUrl = `${Config.BASE_INVITATION_URL}?oob=${invitationBase64}`
       const title = t('scanned.titleShare', { displayName: userProfileData?.displayName })
       await Share.open(
