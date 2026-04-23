@@ -1,2 +1,7 @@
+allowBuilds:
+  '@hyperledger/anoncreds-react-native': true
+  '@openwallet-foundation/askar-react-native': true
+  realm: true
+  sharp: true
 patchedDependencies:
   '@credo-ts/didcomm': patches/@credo-ts__didcomm.patch
