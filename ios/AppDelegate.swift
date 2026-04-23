@@ -2,7 +2,7 @@ import UIKit
 import FirebaseCore
 import React
 import ReactAppDependencyProvider
-import Firebase
+import RNBootSplash
 internal import Expo
 
 @main
@@ -63,6 +63,12 @@ class ReactNativeDelegate: ExpoReactNativeFactoryDelegate {
   override func sourceURL(for bridge: RCTBridge) -> URL? {
     // needed to return the correct URL for expo-dev-client.
     bridge.bundleURL ?? bundleURL()
+  }
+
+  override func customize(_ rootView: RCTRootView) {
+    super.customize(rootView)
+    let storyboardName = Bundle.main.infoDictionary?["UILaunchStoryboardName"] as? String ?? "BootSplash"
+    RNBootSplash.initWithStoryboard(storyboardName, rootView: rootView)
   }
  
   override func bundleURL() -> URL? {
