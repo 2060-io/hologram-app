@@ -1,12 +1,12 @@
 //
-//  ShareMenuManager.m
+//  ShareMenuManager.mm
 //  react-native-share-menu
 //
-//  Created by Gustavo Parreira on 26/07/2020.
+//  Bridges UIApplication open URL callbacks into the ShareMenu TurboModule.
 //
 
 #import "ShareMenuManager.h"
-#import "RNShareMenu-Swift.h"
+#import "Modules/ShareMenu.h"
 
 #import <React/RCTLinkingManager.h>
 
@@ -14,9 +14,9 @@
 
 + (BOOL)application:(UIApplication *)app
             openURL:(NSURL *)url
-            options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options
+            options:(NSDictionary<UIApplicationOpenURLOptionsKey, id> *)options
 {
-    [ShareMenuMessenger shareWithApplication:app openUrl:url options:options];
+    [ShareMenu messageShareWithApplication:app openURL:url options:options];
     return [RCTLinkingManager application:app openURL:url options:options];
 }
 
