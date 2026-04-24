@@ -12,6 +12,7 @@ import { isRegistered } from '@src/services/agent'
 import { saveInCacheServiceInfo } from '@src/services/agent/cache'
 import { getServiceInfo } from '@src/services/trustResolution'
 import { log, logError } from '@src/utils'
+import { DidCommMediatorPickupStrategy } from '@credo-ts/didcomm'
 
 export const useSignUp = () => {
   const navigation = useNavigation()
@@ -42,12 +43,12 @@ export const useSignUp = () => {
 
     const mediationRecord = await agent.didcomm.mediationRecipient.requestAndAwaitGrant(cloudAgentConnection)
     await agent.didcomm.mediationRecipient.setDefaultMediator(mediationRecord)
-    // Register our connection DID in the mediator's keylist
-    const connectionRecord = await agent.didcomm.connections.getById(cloudAgentConnection.id)
-    if (connectionRecord.did) {
-      await agent.didcomm.mediationRecipient.notifyKeylistUpdate(mediationRecord, connectionRecord.did)
-    }
-    await agent.didcomm.mediationRecipient.initiateMessagePickup()
+    
+    await agent.didcomm.mediationRecipient.initiateMessagePickup(mediationRecord,
+      mediationRecord.mediationProtocolVersion === 'v2'
+        ? DidCommMediatorPickupStrategy.PickUpV3LiveMode
+        : DidCommMediatorPickupStrategy.PickUpV2LiveMode,
+    )
     updateUserProfileData({ displayName: displayName.trim(), displayPicture })
     navigation.dispatch(CommonActions.reset({ index: 0, routes: [{ name: 'Home' }] }))
     const isSignedUp = await isRegistered(agent)

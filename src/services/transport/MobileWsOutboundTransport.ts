@@ -45,6 +45,13 @@ export class MobileWsOutboundTransport implements DidCommOutboundTransport {
     this.mediatorEndpoints = []
   }
 
+  private addMediatorEndpoint(endpoint: string) {
+    if (!this.mediatorEndpoints.includes(endpoint)) {
+      this.mediatorEndpoints.push(endpoint)
+      this.logger.debug(`Added mediator endpoint '${endpoint}'`)
+    }
+  }
+
   public isConnectedTo(connectionId: string) {
     const record = [...this.transportTable].find(([, item]) => item.connectionIds.has(connectionId))
     return record ? record[1].opened : false
@@ -172,6 +179,7 @@ export class MobileWsOutboundTransport implements DidCommOutboundTransport {
         .resolve(DidCommMediationRecipientApi)
         .findByConnectionId(connectionId)
       if (mediationRecord) {
+        this.addMediatorEndpoint(endpoint ?? socketId)
         this.agentContext.resolve(EventEmitter).emit<MediatorConnectedEvent>(this.agentContext, {
           type: MediatorEventTypes.MediatorConnected,
           payload: {
@@ -249,6 +257,7 @@ export class MobileWsOutboundTransport implements DidCommOutboundTransport {
             .findByConnectionId(connectionId)
             .then(mediationRecord => {
               if (mediationRecord) {
+                this.addMediatorEndpoint(endpoint)
                 this.eventEmitter.emit<MediatorConnectedEvent>(this.agentContext, {
                   type: MediatorEventTypes.MediatorConnected,
                   payload: {
@@ -264,7 +273,7 @@ export class MobileWsOutboundTransport implements DidCommOutboundTransport {
       ws.onmessage = event => this.handleMessageEvent(event)
 
       ws.onerror = error => {
-        this.logger.debug(`Error while connecting to WebSocket ${endpoint}`, {
+        this.logger.debug(`WebSocket error for ${endpoint}`, {
           error,
         })
         reject(error)
