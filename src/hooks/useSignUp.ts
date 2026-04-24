@@ -1,4 +1,5 @@
 import { DidCommUserProfileData } from '@2060.io/credo-ts-didcomm-user-profile'
+import { DidCommMediatorPickupStrategy } from '@credo-ts/didcomm'
 import { CommonActions, useNavigation } from '@react-navigation/native'
 import { useCallback, useState } from 'react'
 import Config from 'react-native-config'
@@ -12,7 +13,6 @@ import { isRegistered } from '@src/services/agent'
 import { saveInCacheServiceInfo } from '@src/services/agent/cache'
 import { getServiceInfo } from '@src/services/trustResolution'
 import { log, logError } from '@src/utils'
-import { DidCommMediatorPickupStrategy } from '@credo-ts/didcomm'
 
 export const useSignUp = () => {
   const navigation = useNavigation()
@@ -43,8 +43,9 @@ export const useSignUp = () => {
 
     const mediationRecord = await agent.didcomm.mediationRecipient.requestAndAwaitGrant(cloudAgentConnection)
     await agent.didcomm.mediationRecipient.setDefaultMediator(mediationRecord)
-    
-    await agent.didcomm.mediationRecipient.initiateMessagePickup(mediationRecord,
+
+    await agent.didcomm.mediationRecipient.initiateMessagePickup(
+      mediationRecord,
       mediationRecord.mediationProtocolVersion === 'v2'
         ? DidCommMediatorPickupStrategy.PickUpV3LiveMode
         : DidCommMediatorPickupStrategy.PickUpV2LiveMode,
