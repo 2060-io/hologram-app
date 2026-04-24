@@ -2374,7 +2374,7 @@ PODS:
     - ReactCommon/turbomodule/core
     - SocketRocket
     - Yoga
-  - react-native-eid-reader (0.2.0):
+  - react-native-eid-reader (0.3.0):
     - boost
     - DoubleConversion
     - fast_float
@@ -4650,7 +4650,7 @@ SPEC CHECKSUMS:
   react-native-config: 2249b7e68644c86ea68358f5a0d746d1c648f900
   react-native-create-thumbnail: c15cedc37f3822777d44e6035be041f7961341ea
   react-native-date-picker: 9e761de1a6b100b2f61669de1f2c3e5717e2b525
-  react-native-eid-reader: 5add1bee43af9bdf14f050b61bc927406ab63572
+  react-native-eid-reader: ae26fb01de847d4fbed503c49608a7004f31480c
   react-native-get-random-values: e2acf4070fe4b7325705a05af047449637a27a21
   react-native-image-resizer: 290b045c34c69db7574e4d08aadfc4abe1ff5a99
   react-native-job-queue: cfd8b0a4e23743b702efedf109f64692250c1dc3
@@ -4724,6 +4724,6 @@ SPEC CHECKSUMS:
   VisionCamera: 0044a94f7489f19e19d5938e97dfc36f4784af3c
   Yoga: cf2a67aa1c8a225f0cb98a5f531d6f305d3f12e5
 
-PODFILE CHECKSUM: 33b1bdf40ac5d36c6dfdd0f9a0f5a8f3ed2dbc03
+PODFILE CHECKSUM: 68ada27e04592dfe1963faa9d953030c2f0a1ab7
 
 COCOAPODS: 1.16.2
