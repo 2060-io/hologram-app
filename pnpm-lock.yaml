@@ -223,8 +223,8 @@ importers:
         specifier: 5.0.12
         version: 5.0.12(react-native@0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.1)(utf-8-validate@5.0.10))(react@19.1.1)
       react-native-eid-reader:
-        specifier: npm:@2060.io/react-native-eid-reader@0.2.0
-        version: '@2060.io/react-native-eid-reader@0.2.0(react-native@0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.1)(utf-8-validate@5.0.10))(react@19.1.1)'
+        specifier: npm:@2060.io/react-native-eid-reader@0.3.0
+        version: '@2060.io/react-native-eid-reader@0.3.0(react-native@0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.1)(utf-8-validate@5.0.10))(react@19.1.1)'
       react-native-file-logger:
         specifier: 0.7.2
         version: 0.7.2(react-native@0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.1)(utf-8-validate@5.0.10))(react@19.1.1)
@@ -478,8 +478,8 @@ packages:
       '@credo-ts/core': 0.7.0-alpha-20260423133702
       '@credo-ts/didcomm': 0.7.0-alpha-20260423133702
 
-  '@2060.io/react-native-eid-reader@0.2.0':
-    resolution: {integrity: sha512-8ql1OWuhBW3Cs3SDppYQ3JFzYlTKiFVHFlVZicl9BXrncg7TqC/pBprglQ/+s4MUzPdgrBVkVLsEf3zKtgCrhA==}
+  '@2060.io/react-native-eid-reader@0.3.0':
+    resolution: {integrity: sha512-L+/+7gxsaBdqWpphInK3RW16TQ2AFxu5lFusSKgB7wQgU59lOPwaD527Ty0KnEx5vv+O3y9TCZ9zCd9C22K1Wg==}
     peerDependencies:
       react: 19.1.1
       react-native: '*'
@@ -8515,7 +8515,7 @@ snapshots:
       rxjs: 7.8.2
       tsyringe: 4.10.0
 
-  '@2060.io/react-native-eid-reader@0.2.0(react-native@0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.1)(utf-8-validate@5.0.10))(react@19.1.1)':
+  '@2060.io/react-native-eid-reader@0.3.0(react-native@0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.1)(utf-8-validate@5.0.10))(react@19.1.1)':
     dependencies:
       react: 19.1.1
       react-native: 0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.0.9)(react@19.1.1)(utf-8-validate@5.0.10)
