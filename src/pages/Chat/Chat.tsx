@@ -387,7 +387,7 @@ const Chat = ({ chatEntries, chatThread, navigation, loadMoreMessages, redirectT
   return (
     <>
       <SafeAreaView style={styles.container}>
-        <KeyboardAvoidingView behavior={IS_IOS ? 'padding' : 'height'} style={styles.subContainer}>
+        <KeyboardAvoidingView behavior={IS_IOS ? 'padding' : undefined} style={styles.subContainer}>
           {header}
           {showStickyDate && (
             <View style={{ ...styles.containerStickyDate, top: headerHeight }}>
