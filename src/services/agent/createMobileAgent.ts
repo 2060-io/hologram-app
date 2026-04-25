@@ -4,12 +4,15 @@ import { DidCommMediatorPickupStrategy } from '@credo-ts/didcomm'
 import { MobileAgent, getMobileAgentModules } from './MobileAgent'
 import { DidCommOutOfBandInvitationHandler } from './oob/OutOfBandInvitationHandler'
 
+import { DidCommVersion } from '@src/utils/developer'
+
 export const createMobileAgent = (
   options: {
     config: InitConfig
     indyVDRProxyBaseUrl: string
     modulesConfig: {
       mediatorPickupStrategy?: DidCommMediatorPickupStrategy
+      didcommVersions: DidCommVersion[]
     }
     dependencies: AgentDependencies
   },
@@ -21,6 +24,7 @@ export const createMobileAgent = (
       dependencies: options.dependencies,
       modules: getMobileAgentModules({
         mediatorPickupStrategy: options.modulesConfig.mediatorPickupStrategy,
+        didcommVersions: options.modulesConfig.didcommVersions,
         indyVDRProxyBaseUrl: options.indyVDRProxyBaseUrl,
       }),
     },

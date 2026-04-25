@@ -1,3 +1,4 @@
+import 'text-encoding'
 import { setBackgroundMessageHandler, getMessaging } from '@react-native-firebase/messaging'
 import { AppRegistry } from 'react-native'
 import { FileLogger } from 'react-native-file-logger'

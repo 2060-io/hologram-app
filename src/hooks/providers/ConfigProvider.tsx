@@ -11,10 +11,11 @@ import {
 import { DevEnvsObject, DevEnvObject, getIsDeveloperMode } from '@src/utils/developer'
 
 const defaultDevEnvs: DevEnvsObject = {
-  CLOUD_AGENT_PUBLIC_DID: Config.CLOUD_AGENT_PUBLIC_DID as string,
+  MEDIATOR_PUBLIC_DID: Config.MEDIATOR_PUBLIC_DID as string,
   S3_SERVER_URL: Config.S3_SERVER_URL as string,
   WEBRTC_SERVER_BASE_URL: Config.WEBRTC_SERVER_BASE_URL as string,
   INDY_VDR_PROXY_BASE_URL: Config.INDY_VDR_PROXY_BASE_URL as string,
+  SUPPORTED_DIDCOMM_VERSIONS: (Config.SUPPORTED_DIDCOMM_VERSIONS as string) ?? 'v1',
 }
 
 const restoreMissingDevEnvs = (
