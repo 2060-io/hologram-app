@@ -63,8 +63,8 @@ export const MobileAgentProvider: React.FC<Props> = ({ children }) => {
 
   useEffect(() => {
     if (agent) {
-      const connectedListener = () => handleCloudAgentConnectionUpdate(true)
-      const disconnectedListener = () => handleCloudAgentConnectionUpdate(false)
+      const connectedListener = () => handleMediatorConnectionUpdate(true)
+      const disconnectedListener = () => handleMediatorConnectionUpdate(false)
 
       agent.events.on(MediatorEventTypes.MediatorConnected, connectedListener)
       agent.events.on(MediatorEventTypes.MediatorDisconnected, disconnectedListener)
@@ -77,10 +77,10 @@ export const MobileAgentProvider: React.FC<Props> = ({ children }) => {
   }, [agent])
 
   useEffect(() => {
-    if (!isNetworkConnected) handleCloudAgentConnectionUpdate(false)
+    if (!isNetworkConnected) handleMediatorConnectionUpdate(false)
   }, [isNetworkConnected])
 
-  const handleCloudAgentConnectionUpdate = useCallback(
+  const handleMediatorConnectionUpdate = useCallback(
     (isConnectedToCloudAgent: boolean) => {
       handleChangeAgentState({ isConnectedToCloudAgent: isConnectedToCloudAgent && isNetworkConnected })
     },

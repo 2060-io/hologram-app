@@ -51,6 +51,7 @@ import { IndyVdrProxyDidResolver, IndyVdrProxyAnonCredsRegistry } from 'credo-ts
 
 import { MobileWsOutboundTransport } from '../transport/MobileWsOutboundTransport'
 
+import { DidCommVersion } from '@src/utils/developer'
 import { walletDirectoryPath } from '@src/utils/RNFS'
 import { getAppCheckHeaders } from '@src/utils/firebaseUtils'
 
@@ -59,8 +60,10 @@ const SECONDS_PER_DAY = 60 * 60 * 24
 export const getMobileAgentModules = (config: {
   mediatorPickupStrategy?: DidCommMediatorPickupStrategy
   indyVDRProxyBaseUrl: string
+  didcommVersions: DidCommVersion[]
 }) => {
   const proxyBaseUrl = config.indyVDRProxyBaseUrl
+  const { didcommVersions } = config
   return {
     askar: new AskarModule({
       askar,
@@ -100,9 +103,9 @@ export const getMobileAgentModules = (config: {
     }),
     didcomm: new DidCommModule({
       didCommMimeType: DidCommMimeType.V1,
-      didcommVersions: ['v1', 'v2'],
+      didcommVersions,
       basicMessages: {
-        protocols: ['v1', 'v2'],
+        protocols: didcommVersions,
       },
       transports: {
         outbound: [new DidCommHttpOutboundTransport(), new MobileWsOutboundTransport()],
@@ -125,7 +128,7 @@ export const getMobileAgentModules = (config: {
       },
       mediationRecipient: {
         mediatorPickupStrategy: config.mediatorPickupStrategy,
-        mediationProtocolVersions: ['v1', 'v2'],
+        mediationProtocolVersions: didcommVersions,
         maximumMessagePickup: 100,
         baseMediatorReconnectionIntervalMs: 1000,
         maximumMediatorReconnectionIntervalMs: 8000,

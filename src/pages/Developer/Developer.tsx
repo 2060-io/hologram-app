@@ -27,10 +27,14 @@ import { removeStorageData, USER_INVITATION_OUT_OF_BAND_RECORD_ID } from '@src/s
 import { deleteDir, walletDirectoryPath } from '@src/utils/RNFS'
 import {
   allDevEnvs,
+  ALL_DIDCOMM_VERSIONS,
   DevEnv,
   devEnvPlaceholder,
   DevEnvsKeys,
   DevEnvObject,
+  DidCommVersion,
+  isMultiSelectDevEnv,
+  parseDidcommVersions,
   saveLogsEnabled,
   areLogsEnabled,
 } from '@src/utils/developer'
@@ -63,10 +67,14 @@ const Developer = ({ navigation }: Props) => {
   }, [])
 
   const devEnvsForRender = useMemo(() => {
-    return Object.entries(devEnvs ?? {}).map(([key, value]) => ({
-      text: `${devEnvPlaceholder[key as keyof DevEnvsKeys]}:\n${value}`,
-      onPress: () => onPressDevEnv(key as keyof DevEnvsKeys),
-    }))
+    const knownKeys = new Set(allDevEnvs.map(e => e.key))
+    return Object.entries(devEnvs ?? {})
+      .filter(([key]) => knownKeys.has(key as keyof DevEnvsKeys))
+      .filter(([key]) => !isMultiSelectDevEnv(key as keyof DevEnvsKeys))
+      .map(([key, value]) => ({
+        text: `${devEnvPlaceholder[key as keyof DevEnvsKeys]}:\n${value}`,
+        onPress: () => onPressDevEnv(key as keyof DevEnvsKeys),
+      }))
   }, [devEnvs])
 
   const changeDevEnvOptionsVisibility = () => setDisplayDevEnvOptions(prev => !prev)
@@ -89,6 +97,21 @@ const Developer = ({ navigation }: Props) => {
     const newDevEnvsToPersist = { ...devEnvs, [key]: value }
     await updateDevEnvs(newDevEnvsToPersist)
     if (key === 'INDY_VDR_PROXY_BASE_URL') displayAlertAfterChange()
+  }
+
+  const onToggleDidcommVersion = async (version: DidCommVersion) => {
+    const current = parseDidcommVersions(devEnvs.SUPPORTED_DIDCOMM_VERSIONS)
+    const isSelected = current.includes(version)
+    let next: DidCommVersion[]
+    if (isSelected) {
+      if (current.length === 1) return
+      next = current.filter(v => v !== version)
+    } else {
+      next = ALL_DIDCOMM_VERSIONS.filter(v => current.includes(v) || v === version)
+    }
+    const newDevEnvsToPersist = { ...devEnvs, SUPPORTED_DIDCOMM_VERSIONS: next.join(',') }
+    await updateDevEnvs(newDevEnvsToPersist)
+    displayAlertAfterChange()
   }
 
   const currentCustomDevEnvValue = currentDevEnv?.key ? storedCustomDevEnvs?.[currentDevEnv.key] : ''
@@ -193,6 +216,13 @@ const Developer = ({ navigation }: Props) => {
       text: t('settings.exportLogs'),
       onPress: exportLogs,
     },
+    {
+      iconName: 'link',
+      text: `${devEnvPlaceholder.SUPPORTED_DIDCOMM_VERSIONS}: ${parseDidcommVersions(
+        devEnvs?.SUPPORTED_DIDCOMM_VERSIONS,
+      ).join(', ')}`,
+      onPress: () => onPressDevEnv('SUPPORTED_DIDCOMM_VERSIONS'),
+    },
   ]
 
   const renderCustomDevEnv = () => {
@@ -278,20 +308,37 @@ const Developer = ({ navigation }: Props) => {
             <Text fontFamily="EuclidCircularA-SemiBold" style={styles.title}>
               {devEnvPlaceholder[currentDevEnv.key]}
             </Text>
-            {currentDevEnv.values.map(option => {
-              const currentDevEnvSelected = devEnvs?.[currentDevEnv.key]
-              const isSelected = option === currentDevEnvSelected
-              return (
-                <TouchableOpacity
-                  key={option}
-                  style={{ ...styles.optionContainer, ...(isSelected && styles.optionSelected) }}
-                  onPress={() => onSelectDevEnvOption(currentDevEnv.key, option)}
-                >
-                  <Text style={styles.devEnvText}>{option}</Text>
-                </TouchableOpacity>
-              )
-            })}
-            {renderCustomDevEnv()}
+            {isMultiSelectDevEnv(currentDevEnv.key)
+              ? ALL_DIDCOMM_VERSIONS.map(option => {
+                  const selectedVersions = parseDidcommVersions(devEnvs.SUPPORTED_DIDCOMM_VERSIONS)
+                  const isSelected = selectedVersions.includes(option)
+                  return (
+                    <TouchableOpacity
+                      key={option}
+                      style={{
+                        ...styles.optionContainer,
+                        ...(isSelected && styles.optionSelected),
+                      }}
+                      onPress={() => onToggleDidcommVersion(option)}
+                    >
+                      <Text style={styles.devEnvText}>{isSelected ? `🔌 ${option}` : `⚪ ${option}`}</Text>
+                    </TouchableOpacity>
+                  )
+                })
+              : currentDevEnv.values.map(option => {
+                  const currentDevEnvSelected = devEnvs?.[currentDevEnv.key]
+                  const isSelected = option === currentDevEnvSelected
+                  return (
+                    <TouchableOpacity
+                      key={option}
+                      style={{ ...styles.optionContainer, ...(isSelected && styles.optionSelected) }}
+                      onPress={() => onSelectDevEnvOption(currentDevEnv.key, option)}
+                    >
+                      <Text style={styles.devEnvText}>{option}</Text>
+                    </TouchableOpacity>
+                  )
+                })}
+            {!isMultiSelectDevEnv(currentDevEnv.key) && renderCustomDevEnv()}
           </View>
         )}
       </ModalBottomHalf>

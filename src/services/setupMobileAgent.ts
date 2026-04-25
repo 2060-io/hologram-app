@@ -15,7 +15,7 @@ import { createMobileAgent } from './agent/createMobileAgent'
 import { duplicatedMessagesMiddleware } from './agent/duplicatedMessagesMiddleware'
 import { DEV_ENVS_PERSIST_KEY, getStorageData } from './localStorage'
 
-import { DevEnvsObject, areLogsEnabled } from '@src/utils/developer'
+import { DevEnvsObject, areLogsEnabled, parseDidcommVersions } from '@src/utils/developer'
 
 interface MobileAgentConfig {
   agentDependencies: AgentDependencies
@@ -27,17 +27,27 @@ const baseAgentConfig: MobileAgentConfig = {
   mediatorPickupStrategy: DidCommMediatorPickupStrategy.PickUpV3LiveMode,
 }
 
-const getIndyVDRProxyBaseUrl = async () => {
+const getDevEnvValue = async (key: keyof DevEnvsObject): Promise<string | undefined> => {
   const persistedDevEnvs = await getStorageData(DEV_ENVS_PERSIST_KEY)
   if (persistedDevEnvs) {
-    return (persistedDevEnvs as DevEnvsObject).INDY_VDR_PROXY_BASE_URL
+    return (persistedDevEnvs as DevEnvsObject)[key]
   }
-  return Config.INDY_VDR_PROXY_BASE_URL
+  return undefined
+}
+
+const getIndyVDRProxyBaseUrl = async () => {
+  return (await getDevEnvValue('INDY_VDR_PROXY_BASE_URL')) ?? Config.INDY_VDR_PROXY_BASE_URL
+}
+
+const getDidcommVersions = async () => {
+  const persisted = await getDevEnvValue('SUPPORTED_DIDCOMM_VERSIONS')
+  return parseDidcommVersions(persisted ?? Config.SUPPORTED_DIDCOMM_VERSIONS)
 }
 
 let logger: Logger
 export const setupMobileAgent = async (): Promise<MobileAgent> => {
   const indyVDRProxyBaseUrl = await getIndyVDRProxyBaseUrl()
+  const didcommVersions = await getDidcommVersions()
   if (__DEV__) {
     logger = new HologramCustomLogger(LogLevel.Debug)
   } else {
@@ -52,6 +62,7 @@ export const setupMobileAgent = async (): Promise<MobileAgent> => {
     indyVDRProxyBaseUrl,
     modulesConfig: {
       mediatorPickupStrategy: baseAgentConfig.mediatorPickupStrategy,
+      didcommVersions,
     },
     dependencies: baseAgentConfig.agentDependencies,
   })
