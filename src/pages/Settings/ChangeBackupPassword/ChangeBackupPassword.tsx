@@ -94,7 +94,7 @@ const ChangeBackupPassword = ({ navigation }: Props) => {
   }
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior={IS_IOS ? 'padding' : undefined}>
+    <KeyboardAvoidingView style={styles.container} behavior={IS_IOS ? 'padding' : 'height'}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.subContainer}>
           {currentStep === PasswordSteps.TypePass && (

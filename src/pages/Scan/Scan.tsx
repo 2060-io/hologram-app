@@ -45,7 +45,7 @@ const Scan = ({ navigation }: Props) => {
     setIsActiveCamera(isFocused && isAppActive)
   }, [isFocused, isAppActive])
 
-  const behavior = Platform.OS === 'ios' ? 'padding' : undefined
+  const behavior = Platform.OS === 'ios' ? 'padding' : 'height'
 
   const isTabSelected = (tab: string) => tab === tabType
 
