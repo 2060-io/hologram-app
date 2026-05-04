@@ -41,4 +41,19 @@ const config = {
   },
 }
 
-module.exports = mergeConfig(getDefaultConfig(__dirname), config)
+const merged = mergeConfig(getDefaultConfig(__dirname), config)
+
+// Bypass Expo's automatic `react-native-vector-icons` -> `@expo/vector-icons`
+// alias, to prevent ExpoAsset native module not found error.
+const rnviRoot = path.dirname(require.resolve('react-native-vector-icons/package.json'))
+merged.resolver.resolveRequest = (context, moduleName, platform) => {
+  const match = /^react-native-vector-icons(?:\/(.+))?$/.exec(moduleName)
+  if (match) {
+    const sub = match[1]
+    const target = sub ? path.join(rnviRoot, sub) : rnviRoot
+    return { type: 'sourceFile', filePath: require.resolve(target) }
+  }
+  return context.resolveRequest(context, moduleName, platform)
+}
+
+module.exports = merged
