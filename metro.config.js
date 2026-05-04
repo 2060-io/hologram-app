@@ -44,19 +44,7 @@ const config = {
 const merged = mergeConfig(getDefaultConfig(__dirname), config)
 
 // Bypass Expo's automatic `react-native-vector-icons` -> `@expo/vector-icons`
-// alias. The alias is installed by `@expo/cli` inside
-// `withMetroMultiPlatform.js` AFTER our metro.config.js is loaded (see
-// `instantiateMetro.js#loadMetroConfigAsync`), wrapping our `resolveRequest`
-// in expo's chain. The aliased `@expo/vector-icons` pulls in `expo-font` ->
-// `expo-asset`, whose native module is excluded from autolinking. In release
-// builds this leads to:
-//   "Cannot find native module 'ExpoAsset'"
-// when any <Icon /> mounts (e.g. in ReactionMenu) because
-// `Asset.downloadAsync` only short-circuits for HTTP-served (dev) assets.
-//
-// To bypass the alias we intercept the request and return a `sourceFile`
-// resolution directly. Delegating via `context.resolveRequest` would re-enter
-// expo's chain which would still rewrite the request.
+// alias, to prevent ExpoAsset native module not found error.
 const rnviRoot = path.dirname(require.resolve('react-native-vector-icons/package.json'))
 merged.resolver.resolveRequest = (context, moduleName, platform) => {
   const match = /^react-native-vector-icons(?:\/(.+))?$/.exec(moduleName)
