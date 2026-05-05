@@ -1,3 +1,4 @@
+import { useHeaderHeight } from '@react-navigation/elements'
 import { StackActions } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
 import React, { useCallback } from 'react'
@@ -8,6 +9,7 @@ import { Connections } from '@src/components'
 import { ConnectionItem } from '@src/components/Connections/ConnectionList'
 import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
 import { Text } from '@src/components/common'
+import { IS_IOS } from '@src/constants'
 import { useChats, useConnections } from '@src/hooks/agent'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { AppTheme } from '@src/styles'
@@ -20,6 +22,7 @@ const ConnectionsForNewChat = ({ navigation }: Props) => {
   const styles = getStyles(theme)
   const { findOrCreateThread } = useChats()
   const { connections } = useConnections()
+  const headerHeight = useHeaderHeight()
 
   const tryGoToChatScreen = useCallback((connectionItem: ConnectionItem) => {
     const connection = connections.find(conn => conn.id === connectionItem.id)
@@ -38,7 +41,7 @@ const ConnectionsForNewChat = ({ navigation }: Props) => {
       onPressConnection={tryGoToChatScreen}
       headerProps={{
         presentation: 'modal',
-        height: 60,
+        height: IS_IOS ? 60 : headerHeight,
         title: t('chat.newMessage'),
         titleForSubConnections: t('chat.newMessage'),
         defaultBackButton: (
