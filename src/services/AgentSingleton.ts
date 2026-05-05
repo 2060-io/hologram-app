@@ -69,6 +69,14 @@ export class AgentSingleton {
   getIsAppSubscribedToConnectionEvents() {
     return this.isAppSubscribedToConnectionEvents
   }
+
+  reset() {
+    this.isSetup = false
+    this.isOpening = false
+    this.mobileAgent = null
+    this.isAppSubscribedToChatEvents = false
+    this.isAppSubscribedToConnectionEvents = false
+  }
 }
 
 export default AgentSingleton

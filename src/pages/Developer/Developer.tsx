@@ -53,7 +53,7 @@ const Developer = ({ navigation }: Props) => {
   const [isEditionCustomDevEnvMode, setIsEditionCustomDevEnvMode] = useState(false)
   const [logsEnabled, setAreLogsEnabled] = useState(false)
   const customDevInputRef = useRef<TextInputForwardRefProps>(null)
-  const { agent, shutdownAgent } = useMobileAgent()
+  const { agent, shutdownAgent, handleChangeAgentState } = useMobileAgent()
   const { realm, closeRealm } = useLocalRealm()
   const { devEnvs, updateDevEnvs, storedCustomDevEnvs, saveCustomDevEnv } = useConfig()
   const { t } = useTranslation()
@@ -155,9 +155,14 @@ const Developer = ({ navigation }: Props) => {
       await deleteAllKeys()
       await removeStorageData(USER_INVITATION_OUT_OF_BAND_RECORD_ID)
       closeRealm()
-      AgentSingleton.instance.setAppIsSubscribedChatToEvents(false)
-      AgentSingleton.instance.setIsAppSubscribedToConnectionEvents(false)
       AgentActionQueueSingleton.instance.reset()
+      AgentSingleton.instance.reset()
+      handleChangeAgentState({
+        agent: undefined,
+        isInitialized: false,
+        isSignedUp: false,
+        isConnectedToCloudAgent: false,
+      })
       navigation.navigate('Home')
     } catch (error) {
       toast({ type: 'error', message: t('settings.deleteWalletError') })

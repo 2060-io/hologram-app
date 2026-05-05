@@ -48,18 +48,15 @@ export const MobileAgentProvider: React.FC<Props> = ({ children }) => {
   const mobileAgentInstance = useRef(AgentSingleton.instance)
 
   useEffect(() => {
+    if (agent) return
     const setAgentInitialState = async () => {
       await mobileAgentInstance.current.setupMobileAgent()
       const newAgent = mobileAgentInstance.current.getMobileAgent()
       if (!newAgent) return
       handleChangeAgentState({ agent: newAgent })
-      return () => {
-        newAgent.shutdown()
-        handleChangeAgentState({ agent: undefined })
-      }
     }
     setAgentInitialState()
-  }, [])
+  }, [agent])
 
   useEffect(() => {
     if (agent) {

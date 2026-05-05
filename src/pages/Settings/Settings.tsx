@@ -39,7 +39,7 @@ const Settings = ({ navigation }: Props) => {
   const [options, setOptions] = useState<Array<Option>>([])
   const [showFullScreenImage, setShowFullScreenImage] = useState<boolean>(false)
   const { t } = useTranslation()
-  const { agent, shutdownAgent, isConnectedToCloudAgent } = useMobileAgent()
+  const { agent, shutdownAgent, isConnectedToCloudAgent, handleChangeAgentState } = useMobileAgent()
   const { realm, closeRealm } = useLocalRealm()
   const { userProfileData } = useUserProfile()
   const { isDeveloperMode, changeDeveloperModeStatus } = useConfig()
@@ -89,9 +89,14 @@ const Settings = ({ navigation }: Props) => {
       await deleteAllKeys()
       await removeStorageData(USER_INVITATION_OUT_OF_BAND_RECORD_ID)
       closeRealm()
-      AgentSingleton.instance.setAppIsSubscribedChatToEvents(false)
-      AgentSingleton.instance.setIsAppSubscribedToConnectionEvents(false)
       AgentActionQueueSingleton.instance.reset()
+      AgentSingleton.instance.reset()
+      handleChangeAgentState({
+        agent: undefined,
+        isInitialized: false,
+        isSignedUp: false,
+        isConnectedToCloudAgent: false,
+      })
     } catch (error) {
       logError(`Error deleting wallet: ${error}`)
       toast({ type: 'error', message: t('settings.deleteWalletError') })
