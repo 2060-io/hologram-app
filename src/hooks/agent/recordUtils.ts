@@ -9,7 +9,7 @@ import type {
 } from '@credo-ts/core'
 
 import { RepositoryEventTypes } from '@credo-ts/core'
-import { map, filter, pipe } from 'rxjs'
+import { EMPTY, map, filter, pipe } from 'rxjs'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type BaseRecordAny = BaseRecord<any, any, any>
@@ -58,7 +58,7 @@ export const recordsAddedByType = <R extends BaseRecordAny>(
   agent: Agent | undefined,
   recordClass: RecordClass<R>,
 ) => {
-  if (!agent) throw new Error('Agent is required to subscribe to events')
+  if (!agent) return EMPTY
 
   return agent?.events
     .observable<RecordSavedEvent<R>>(RepositoryEventTypes.RecordSaved)
@@ -69,7 +69,7 @@ export const recordsUpdatedByType = <R extends BaseRecordAny>(
   agent: Agent | undefined,
   recordClass: RecordClass<R>,
 ) => {
-  if (!agent) throw new Error('Agent is required to subscribe to events')
+  if (!agent) return EMPTY
 
   return agent?.events
     .observable<RecordUpdatedEvent<R>>(RepositoryEventTypes.RecordUpdated)
@@ -80,7 +80,7 @@ export const recordsRemovedByType = <R extends BaseRecordAny>(
   agent: Agent | undefined,
   recordClass: RecordClass<R>,
 ) => {
-  if (!agent) throw new Error('Agent is required to subscribe to events')
+  if (!agent) return EMPTY
 
   return agent?.events
     .observable<RecordDeletedEvent<R>>(RepositoryEventTypes.RecordDeleted)
