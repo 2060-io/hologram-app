@@ -344,6 +344,15 @@ export async function acceptInvitation(
     },
   })
 
+  // V2 OOB has no handshake; trust-ping forces the inviter to create the connection on their side.
+  if (newConnection?.didcommVersion === 'v2') {
+    try {
+      await connectionsApi.sendPing(newConnection.id, {})
+    } catch (error) {
+      logError(`Error sending trust ping over v2 connection ${newConnection.id}`, error)
+    }
+  }
+
   return { connectionRecord: newConnection }
 }
 
