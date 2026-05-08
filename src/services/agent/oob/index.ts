@@ -34,7 +34,7 @@ import { getInCacheServiceInfo } from '../cache'
 
 import { OutOfBandInvitationEvent, OutOfBandInvitationEventTypes } from './OutOfBandEvents'
 
-import { log, logError } from '@src/utils'
+import { log, logError, logWarn } from '@src/utils'
 import { deletePendingConnection, findExistingConnection, isService } from '@src/utils/connectionUtils'
 import { toast } from '@src/utils/toast'
 
@@ -119,6 +119,57 @@ type ProcessInvitationResult =
       success: false
       error: string
     }
+/**
+ * Process an implicit OOB invitation expressed as a public DID. Delegates to Credo's
+ * receiveImplicitInvitation, which resolves the DID Doc and picks the highest mutually
+ * supported DIDComm version (v2 if both sides support it, otherwise v1). Used when the
+ * scanned input is a bare `did:` URI rather than a full OOB invitation.
+ */
+export const processImplicitInvitation = async (
+  agent: MobileAgent,
+  did: string,
+): Promise<ProcessInvitationResult> => {
+  try {
+    const connectionsApi = agent.context.dependencyManager.resolve(DidCommConnectionsApi)
+    const existingConnections = await connectionsApi.findByInvitationDid(did)
+    if (existingConnections.length > 1) {
+      logWarn(`Multiple connections found related to invitation DID ${did}`)
+    }
+    const existingConnection = existingConnections[0]
+
+    if (existingConnection?.outOfBandId) {
+      const existingOobRecord = await agent.didcomm.oob.findById(existingConnection.outOfBandId)
+      if (existingOobRecord) {
+        return {
+          success: true,
+          invitationType: DidcommInvitationType.ConnectionRequest,
+          existingConnectionId: existingConnection.id,
+          recordId: existingOobRecord.id,
+        }
+      }
+    }
+
+    const { outOfBandRecord } = await agent.didcomm.oob.receiveImplicitInvitation({
+      did,
+      label: 'DID Invitation',
+      autoAcceptInvitation: false,
+      autoAcceptConnection: false,
+    })
+
+    return {
+      success: true,
+      invitationType: DidcommInvitationType.ConnectionRequest,
+      existingConnectionId: existingConnection?.id,
+      recordId: outOfBandRecord.id,
+    }
+  } catch (error) {
+    return {
+      success: false,
+      error: (error as Error).message,
+    }
+  }
+}
+
 /**
  * Process a DIDComm invitation by assigning an out of band record to it. In case of regular connection
  * invitations, it will return specifying if there was already a connection associated to it.
