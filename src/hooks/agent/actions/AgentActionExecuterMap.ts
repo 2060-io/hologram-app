@@ -28,6 +28,7 @@ import {
   DidCommOutOfBandRole,
   DidCommFeaturesQueriesMessage,
   DidCommConnectionService,
+  DidCommHangupMessage,
 } from '@credo-ts/didcomm'
 import { DidCommPushNotificationsFcmSetDeviceInfoMessage } from '@credo-ts/didcomm-push-notifications'
 import { AnswerMessage } from '@credo-ts/question-answer'
@@ -390,7 +391,7 @@ export const AgentActionExecuterMap: Record<AgentActionType, ActionFactory> = {
         throw errorWhileDeleting
       }
 
-      return { outgoingMessageType: DidCommKeylistUpdateMessage.type.messageTypeUri }
+      return { outgoingMessageType: DidCommHangupMessage.type.messageTypeUri }
     }
   },
 }

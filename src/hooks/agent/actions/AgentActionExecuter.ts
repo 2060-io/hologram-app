@@ -75,6 +75,10 @@ export class AgentActionExecuter {
         `Agent action ${action.type} callback`,
       )
 
+      if (!chatEntry) {
+        return { status: ActionExecutionStatus.OK }
+      }
+
       // Wait until the outgoing message has been submitted and update the chat entry accordingly
       const message = await firstValueFrom(
         replaySubject.asObservable().pipe(
