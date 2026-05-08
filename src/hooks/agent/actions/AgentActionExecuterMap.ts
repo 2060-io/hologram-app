@@ -7,6 +7,7 @@ import { PerformMessage } from '@credo-ts/action-menu'
 import { BaseRecord } from '@credo-ts/core'
 import {
   DidCommBasicMessage,
+  DidCommBasicMessageV2,
   DidCommMessageSender,
   DidCommOutboundMessageContext,
   DidCommOutOfBandInvitation,
@@ -66,7 +67,7 @@ import { logWarn } from '@src/utils'
 
 type AgentCallbackReturnType<T extends BaseRecord = BaseRecord> = {
   associatedRecord?: T
-  outgoingMessageType: string
+  outgoingMessageTypes?: string[]
 }
 type ActionCallback = (options: { agent: MobileAgent }) => Promise<AgentCallbackReturnType<BaseRecord>>
 type ActionFactory = (action: AgentAction) => ActionCallback
@@ -81,9 +82,14 @@ export const AgentActionExecuterMap: Record<AgentActionType, ActionFactory> = {
         message,
         parentThreadId,
       )
+      const outgoingMessageTypes = [
+        DidCommBasicMessage.type.messageTypeUri,
+        DidCommBasicMessageV2.type.messageTypeUri,
+      ]
+
       return {
         associatedRecord: record,
-        outgoingMessageType: DidCommBasicMessage.type.messageTypeUri,
+        outgoingMessageTypes,
       }
     }
   },
@@ -91,7 +97,7 @@ export const AgentActionExecuterMap: Record<AgentActionType, ActionFactory> = {
     return async (options: { agent: MobileAgent }) => {
       const parameters = action.parameters as SendReactionParameters
       await options.agent.modules.reactions.send(parameters)
-      return { outgoingMessageType: MessageReactionsMessage.type.messageTypeUri }
+      return { outgoingMessageTypes: [MessageReactionsMessage.type.messageTypeUri] }
     }
   },
   [AgentActionType.SendReceipts]: action => {
@@ -106,7 +112,7 @@ export const AgentActionExecuterMap: Record<AgentActionType, ActionFactory> = {
           timestamp: item.timestamp ? new Date(item.timestamp) : new Date(),
         })),
       })
-      return { outgoingMessageType: DidCommMessageReceiptsMessage.type.messageTypeUri }
+      return { outgoingMessageTypes: [DidCommMessageReceiptsMessage.type.messageTypeUri] }
     }
   },
   [AgentActionType.ShareMedia]: action => {
@@ -114,7 +120,7 @@ export const AgentActionExecuterMap: Record<AgentActionType, ActionFactory> = {
       const parameters = action.parameters as ShareMediaParameters
       const { recordId } = parameters
       await options.agent.modules.media.share({ recordId })
-      return { outgoingMessageType: DidCommShareMediaMessage.type.messageTypeUri }
+      return { outgoingMessageTypes: [DidCommShareMediaMessage.type.messageTypeUri] }
     }
   },
   [AgentActionType.MenuSelection]: action => {
@@ -125,7 +131,7 @@ export const AgentActionExecuterMap: Record<AgentActionType, ActionFactory> = {
         connectionId,
         performedAction: { name: selectedItemName },
       })
-      return { outgoingMessageType: PerformMessage.type.messageTypeUri }
+      return { outgoingMessageTypes: [PerformMessage.type.messageTypeUri] }
     }
   },
   [AgentActionType.ForwardConnection]: action => {
@@ -142,7 +148,7 @@ export const AgentActionExecuterMap: Record<AgentActionType, ActionFactory> = {
           connection,
         }),
       )
-      return { outgoingMessageType: DidCommOutOfBandInvitation.type.messageTypeUri }
+      return { outgoingMessageTypes: [DidCommOutOfBandInvitation.type.messageTypeUri] }
     }
   },
   [AgentActionType.PresentCredential]: action => {
@@ -155,7 +161,7 @@ export const AgentActionExecuterMap: Record<AgentActionType, ActionFactory> = {
         protocolVersion: 'v2',
       })
       return {
-        outgoingMessageType: DidCommProposePresentationV2Message.type.messageTypeUri,
+        outgoingMessageTypes: [DidCommProposePresentationV2Message.type.messageTypeUri],
         associatedRecord: proofExchangeRecord,
       }
     }
@@ -169,7 +175,7 @@ export const AgentActionExecuterMap: Record<AgentActionType, ActionFactory> = {
         response,
       )
       return {
-        outgoingMessageType: AnswerMessage.type.messageTypeUri,
+        outgoingMessageTypes: [AnswerMessage.type.messageTypeUri],
         associatedRecord,
       }
     }
@@ -179,7 +185,7 @@ export const AgentActionExecuterMap: Record<AgentActionType, ActionFactory> = {
       const parameters = action.parameters as AcceptConnectionRequestParameters
       const { connectionId } = parameters
       await options.agent.didcomm.connections.acceptRequest(connectionId)
-      return { outgoingMessageType: DidCommDidExchangeResponseMessage.type.messageTypeUri }
+      return { outgoingMessageTypes: [DidCommDidExchangeResponseMessage.type.messageTypeUri] }
     }
   },
   [AgentActionType.AcceptConnectionResponse]: action => {
@@ -187,7 +193,7 @@ export const AgentActionExecuterMap: Record<AgentActionType, ActionFactory> = {
       const parameters = action.parameters as AcceptConnectionResponseParameters
       const { connectionId } = parameters
       await options.agent.didcomm.connections.acceptResponse(connectionId)
-      return { outgoingMessageType: DidCommDidExchangeCompleteMessage.type.messageTypeUri }
+      return { outgoingMessageTypes: [DidCommDidExchangeCompleteMessage.type.messageTypeUri] }
     }
   },
   [AgentActionType.QueryServiceFeatures]: action => {
@@ -206,7 +212,7 @@ export const AgentActionExecuterMap: Record<AgentActionType, ActionFactory> = {
         ],
         connectionId,
       })
-      return { outgoingMessageType: DidCommFeaturesQueriesMessage.type.messageTypeUri }
+      return { outgoingMessageTypes: [DidCommFeaturesQueriesMessage.type.messageTypeUri] }
     }
   },
   [AgentActionType.CreateCallOffer]: action => {
@@ -218,21 +224,21 @@ export const AgentActionExecuterMap: Record<AgentActionType, ActionFactory> = {
         callType,
         parameters: { ...callInfo },
       })
-      return { outgoingMessageType: CallOfferMessage.type.messageTypeUri }
+      return { outgoingMessageTypes: [CallOfferMessage.type.messageTypeUri] }
     }
   },
   [AgentActionType.HangupCall]: action => {
     return async (options: { agent: MobileAgent }) => {
       const parameters = action.parameters as HangupCallParameters
       await options.agent.modules.calls.hangup(parameters)
-      return { outgoingMessageType: CallEndMessage.type.messageTypeUri }
+      return { outgoingMessageTypes: [CallEndMessage.type.messageTypeUri] }
     }
   },
   [AgentActionType.RemoveOutOfBandRecord]: action => {
     return async (options: { agent: MobileAgent }) => {
       const parameters = action.parameters as RemoveOutOfBandRecordParameters
       await options.agent.didcomm.oob.deleteById(parameters.outOfBandId)
-      return { outgoingMessageType: DidCommKeylistUpdateMessage.type.messageTypeUri }
+      return { outgoingMessageTypes: [DidCommKeylistUpdateMessage.type.messageTypeUri] }
     }
   },
   [AgentActionType.AcceptCredentialOffer]: action => {
@@ -243,7 +249,7 @@ export const AgentActionExecuterMap: Record<AgentActionType, ActionFactory> = {
         credentialExchangeRecordId: credentialRecordId,
         autoAcceptCredential: DidCommAutoAcceptCredential.ContentApproved,
       })
-      return { outgoingMessageType: DidCommRequestCredentialV2Message.type.messageTypeUri }
+      return { outgoingMessageTypes: [DidCommRequestCredentialV2Message.type.messageTypeUri] }
     }
   },
   [AgentActionType.DeclineCredentialOffer]: action => {
@@ -254,7 +260,7 @@ export const AgentActionExecuterMap: Record<AgentActionType, ActionFactory> = {
         sendProblemReport: true,
         problemReportDescription: 'e.msg.refused',
       })
-      return { outgoingMessageType: DidCommCredentialV2ProblemReportMessage.type.messageTypeUri }
+      return { outgoingMessageTypes: [DidCommCredentialV2ProblemReportMessage.type.messageTypeUri] }
     }
   },
   [AgentActionType.DeclineProofRequest]: action => {
@@ -265,14 +271,14 @@ export const AgentActionExecuterMap: Record<AgentActionType, ActionFactory> = {
         proofExchangeRecordId: proofRecordId,
         sendProblemReport: true,
       })
-      return { outgoingMessageType: DidCommPresentationV2ProblemReportMessage.type.messageTypeUri }
+      return { outgoingMessageTypes: [DidCommPresentationV2ProblemReportMessage.type.messageTypeUri] }
     }
   },
   [AgentActionType.SendUserProfile]: action => {
     return async (options: { agent: MobileAgent }) => {
       const parameters = action.parameters as SendUserProfileParameters
       await options.agent.modules.profile.sendUserProfile(parameters)
-      return { outgoingMessageType: DidCommProfileMessage.type.messageTypeUri }
+      return { outgoingMessageTypes: [DidCommProfileMessage.type.messageTypeUri] }
     }
   },
   [AgentActionType.RequestUserProfile]: action => {
@@ -280,7 +286,7 @@ export const AgentActionExecuterMap: Record<AgentActionType, ActionFactory> = {
       const parameters = action.parameters as RequestUserProfileParameters
       const { connectionId } = parameters
       await options.agent.modules.profile.requestUserProfile({ connectionId })
-      return { outgoingMessageType: DidCommRequestProfileMessage.type.messageTypeUri }
+      return { outgoingMessageTypes: [DidCommRequestProfileMessage.type.messageTypeUri] }
     }
   },
   [AgentActionType.AcceptProofRequest]: action => {
@@ -294,7 +300,7 @@ export const AgentActionExecuterMap: Record<AgentActionType, ActionFactory> = {
         proofExchangeRecordId: proofRecordId,
         proofFormats: { anoncreds: requestedCredentials?.proofFormats.anoncreds },
       })
-      return { outgoingMessageType: DidCommPresentationV2Message.type.messageTypeUri }
+      return { outgoingMessageTypes: [DidCommPresentationV2Message.type.messageTypeUri] }
     }
   },
   [AgentActionType.AcceptProofProposal]: action => {
@@ -305,7 +311,7 @@ export const AgentActionExecuterMap: Record<AgentActionType, ActionFactory> = {
         proofExchangeRecordId: proofRecordId,
         autoAcceptProof: DidCommAutoAcceptProof.ContentApproved,
       })
-      return { outgoingMessageType: DidCommRequestPresentationV2Message.type.messageTypeUri }
+      return { outgoingMessageTypes: [DidCommRequestPresentationV2Message.type.messageTypeUri] }
     }
   },
   [AgentActionType.ProofSendProblemReport]: action => {
@@ -326,7 +332,7 @@ export const AgentActionExecuterMap: Record<AgentActionType, ActionFactory> = {
           previousState: null,
         },
       })
-      return { outgoingMessageType: DidCommPresentationV2ProblemReportMessage.type.messageTypeUri }
+      return { outgoingMessageTypes: [DidCommPresentationV2ProblemReportMessage.type.messageTypeUri] }
     }
   },
   [AgentActionType.SavePushNotificationDeviceInfo]: action => {
@@ -344,7 +350,7 @@ export const AgentActionExecuterMap: Record<AgentActionType, ActionFactory> = {
       const connection = await didCommConnectionService.getById(options.agent.context, connectionId)
       connection.setTag('deviceToken', deviceToken)
       await didCommConnectionService.update(options.agent.context, connection)
-      return { outgoingMessageType: DidCommPushNotificationsFcmSetDeviceInfoMessage.type.messageTypeUri }
+      return { outgoingMessageTypes: [DidCommPushNotificationsFcmSetDeviceInfoMessage.type.messageTypeUri] }
     }
   },
   [AgentActionType.DeleteConnection]: action => {
@@ -390,7 +396,7 @@ export const AgentActionExecuterMap: Record<AgentActionType, ActionFactory> = {
         throw errorWhileDeleting
       }
 
-      return { outgoingMessageType: DidCommKeylistUpdateMessage.type.messageTypeUri }
+      return { outgoingMessageTypes: [DidCommKeylistUpdateMessage.type.messageTypeUri] }
     }
   },
 }

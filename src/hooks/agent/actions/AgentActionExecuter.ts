@@ -69,7 +69,7 @@ export class AgentActionExecuter {
 
     try {
       const callback = AgentActionExecuterMap[action.type](action)
-      const { associatedRecord, outgoingMessageType } = await withTimeout(
+      const { associatedRecord, outgoingMessageTypes } = await withTimeout(
         callback({ agent }),
         ACTION_CALLBACK_TIMEOUT_MS,
         `Agent action ${action.type} callback`,
@@ -79,7 +79,8 @@ export class AgentActionExecuter {
       const message = await firstValueFrom(
         replaySubject.asObservable().pipe(
           filter(
-            e => outgoingMessageType === undefined || e.payload.message.message.type === outgoingMessageType,
+            e =>
+              !outgoingMessageTypes?.length || outgoingMessageTypes.includes(e.payload.message.message.type),
           ),
           filter(
             e =>
