@@ -335,11 +335,21 @@ export const getOutOfBandRecordById = async (agent: MobileAgent, outOfBandId: st
 }
 
 export const createOobInvitation = (connection: DidCommConnectionRecord) => {
+  if (connection.didcommVersion === 'v2') {
+    if (!connection.invitationDid) {
+      throw new Error('Cannot create v2 OOB invitation: connection has no invitationDid')
+    }
+    return new DidCommOutOfBandInvitationV2({
+      from: connection.invitationDid,
+      body: { accept: ['didcomm/v2'] },
+    })
+  }
+  const imageUrl = connection.imageUrl?.match(/^https?:\/\//) ? connection.imageUrl : undefined
   const jsonInvitation = {
     '@type': DidCommOutOfBandInvitation.type.messageTypeUri,
     '@id': utils.uuid(),
     label: connection.theirLabel,
-    imageUrl: connection.imageUrl,
+    imageUrl,
     services: [connection.invitationDid],
     handshake_protocols: [connection.protocol ?? 'https://didcomm.org/didexchange/1.0'],
     accept: ['didcomm/aip1', 'didcomm/aip2;env=rfc19'],
@@ -347,16 +357,6 @@ export const createOobInvitation = (connection: DidCommConnectionRecord) => {
   const outOfBandInvitation = DidCommOutOfBandInvitation.fromJson(jsonInvitation)
   outOfBandInvitation.setThread({ parentThreadId: connection.invitationDid })
   return outOfBandInvitation
-}
-
-export const createOobInvitationV2 = (connection: DidCommConnectionRecord) => {
-  if (!connection.invitationDid) {
-    throw new Error('Cannot create v2 OOB invitation: connection has no invitationDid')
-  }
-  return new DidCommOutOfBandInvitationV2({
-    from: connection.invitationDid,
-    body: { accept: ['didcomm/v2'] },
-  })
 }
 
 export async function acceptInvitation(

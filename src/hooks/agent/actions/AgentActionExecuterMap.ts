@@ -134,6 +134,10 @@ export const AgentActionExecuterMap: Record<AgentActionType, ActionFactory> = {
       const { forwarderConnectionId, connectionId } = parameters
       const originDidcommConnection = await options.agent?.didcomm.connections.getById(forwarderConnectionId)
       const outOfBandInvitation = createOobInvitation(originDidcommConnection)
+      // Forward wraps the invitation in a DIDComm v1 message envelope and is therefore v1-only.
+      if (!(outOfBandInvitation instanceof DidCommOutOfBandInvitation)) {
+        throw new Error('Forwarding is only supported for v1 connections')
+      }
       const connection = await options.agent?.didcomm.connections.getById(connectionId)
       const messageSender = options.agent?.context.dependencyManager.resolve(DidCommMessageSender)
       await messageSender.sendMessage(

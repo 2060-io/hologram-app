@@ -19,7 +19,7 @@ import { useMobileAgent, useChats, useConnectionByParentConnectionId, useUserPro
 import { deleteConnection } from '@src/hooks/agent/connections'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { useScrollSwipeDown } from '@src/hooks/useScrollSwipeDown'
-import { createOobInvitation, createOobInvitationV2, MobileAgent } from '@src/services/agent'
+import { createOobInvitation, MobileAgent } from '@src/services/agent'
 import { capitalizeFirstLetter, logError } from '@src/utils'
 import {
   blockConnection,
@@ -199,10 +199,7 @@ const BaseConnectionDetails = ({
 
   const shareConnection = async () => {
     try {
-      const outOfBandInvitation =
-        connection.didcommVersion === 'v2'
-          ? createOobInvitationV2(connection)
-          : createOobInvitation(connection)
+      const outOfBandInvitation = createOobInvitation(connection)
       const invitationStr = JSON.stringify(outOfBandInvitation)
       const invitationBase64 = TypedArrayEncoder.toBase64Url(TypedArrayEncoder.fromUtf8String(invitationStr))
       const invitationUrl = `${Config.BASE_INVITATION_URL}?oob=${invitationBase64}`
