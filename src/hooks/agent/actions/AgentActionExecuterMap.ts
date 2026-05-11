@@ -29,6 +29,7 @@ import {
   DidCommOutOfBandRole,
   DidCommFeaturesQueriesMessage,
   DidCommConnectionService,
+  DidCommKeylistUpdateV2Message,
 } from '@credo-ts/didcomm'
 import { DidCommPushNotificationsFcmSetDeviceInfoMessage } from '@credo-ts/didcomm-push-notifications'
 import { AnswerMessage } from '@credo-ts/question-answer'
@@ -238,7 +239,12 @@ export const AgentActionExecuterMap: Record<AgentActionType, ActionFactory> = {
     return async (options: { agent: MobileAgent }) => {
       const parameters = action.parameters as RemoveOutOfBandRecordParameters
       await options.agent.didcomm.oob.deleteById(parameters.outOfBandId)
-      return { outgoingMessageTypes: [DidCommKeylistUpdateMessage.type.messageTypeUri] }
+      return {
+        outgoingMessageTypes: [
+          DidCommKeylistUpdateMessage.type.messageTypeUri,
+          DidCommKeylistUpdateV2Message.type.messageTypeUri,
+        ],
+      }
     }
   },
   [AgentActionType.AcceptCredentialOffer]: action => {
@@ -396,7 +402,12 @@ export const AgentActionExecuterMap: Record<AgentActionType, ActionFactory> = {
         throw errorWhileDeleting
       }
 
-      return { outgoingMessageTypes: [DidCommKeylistUpdateMessage.type.messageTypeUri] }
+      return {
+        outgoingMessageTypes: [
+          DidCommKeylistUpdateMessage.type.messageTypeUri,
+          DidCommKeylistUpdateV2Message.type.messageTypeUri,
+        ],
+      }
     }
   },
 }
