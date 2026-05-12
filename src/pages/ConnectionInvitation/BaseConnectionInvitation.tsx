@@ -18,7 +18,6 @@ import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { AgentActionQueueSingleton } from '@src/services/AgentActionQueueSingleton'
 import { acceptInvitation } from '@src/services/agent/oob'
 import { logError } from '@src/utils'
-import { isService as isServiceConnection } from '@src/utils/connectionUtils'
 import { screenHeight } from '@src/utils/responsiveUtils'
 import { toast } from '@src/utils/toast'
 

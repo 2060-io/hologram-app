@@ -22,7 +22,6 @@ import { AgentActionQueueSingleton } from '@src/services/AgentActionQueueSinglet
 import { MobileAgent } from '@src/services/agent/MobileAgent'
 import { acceptInvitation } from '@src/services/agent/oob'
 import { logError } from '@src/utils'
-import { isService as isServiceConnection } from '@src/utils/connectionUtils'
 import { toast } from '@src/utils/toast'
 
 interface Props {
