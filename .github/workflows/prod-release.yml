@@ -210,7 +210,10 @@ jobs:
       - name: Install Pods
         working-directory: ios
         run: |
-          pod install
+          pod install --repo-update || {
+            pod update hermes-engine --no-repo-update
+            pod install
+          }
 
       - name: Cache DerivedData
         uses: actions/cache@v4
