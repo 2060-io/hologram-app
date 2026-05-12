@@ -13,13 +13,16 @@ import { ConnectionRefusedByAge, SvgIcon, Text, VerifiedIcon } from '@src/compon
 import Avatar from '@src/components/common/Avatar/Avatar'
 import { useFetchServiceInfo } from '@src/hooks'
 import { useChatThreadById, useChats, useUserProfile } from '@src/hooks/agent'
+import { AgentActionType } from '@src/hooks/agent/actions/AgentAction'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { useValidateKidAgeRestrictions } from '@src/hooks/useValidateKidAgeRestrictions'
 import { ChatEntryRole, InvitationMetadata } from '@src/model'
 import { InvitationState } from '@src/model/InvitationState'
+import { AgentActionQueueSingleton } from '@src/services/AgentActionQueueSingleton'
 import { MobileAgent } from '@src/services/agent/MobileAgent'
 import { acceptInvitation } from '@src/services/agent/oob'
 import { logError } from '@src/utils'
+import { isService as isServiceConnection } from '@src/utils/connectionUtils'
 import { toast } from '@src/utils/toast'
 
 interface Props {
@@ -62,6 +65,12 @@ const InvitationChatView = ({ associatedRecordId: outOfBandId, metadata, role, a
           outOfBandId,
           label: userProfileData?.displayName,
         })
+        if (connectionRecord?.didcommVersion === 'v2' && isServiceConnection(connectionRecord)) {
+          AgentActionQueueSingleton.instance.addJob({
+            type: AgentActionType.SendTrustPing,
+            parameters: { connectionId: connectionRecord.id },
+          })
+        }
         const chatThreadId = findOrCreateThread({ connection: connectionRecord! }).id
         navigation.dispatch(
           StackActions.replace('ChatStack', {

@@ -34,8 +34,6 @@ import { getInCacheServiceInfo } from '../cache'
 
 import { OutOfBandInvitationEvent, OutOfBandInvitationEventTypes } from './OutOfBandEvents'
 
-import { AgentActionType } from '@src/hooks/agent/actions/AgentAction'
-import { AgentActionQueueSingleton } from '@src/services/AgentActionQueueSingleton'
 import { log, logError } from '@src/utils'
 import { deletePendingConnection, findExistingConnection, isService } from '@src/utils/connectionUtils'
 import { toast } from '@src/utils/toast'
@@ -337,13 +335,6 @@ export async function acceptInvitation(
   }
 
   // V2 OOB has no handshake; queue a trust-ping so the inviter creates the connection on their side
-  if (newConnection?.didcommVersion === 'v2' && isService(newConnection)) {
-    AgentActionQueueSingleton.instance.addJob({
-      type: AgentActionType.SendTrustPing,
-      parameters: { connectionId: newConnection.id },
-    })
-  }
-
   // Emit event: OOB Invitation accepted
   agentContext.dependencyManager.resolve(EventEmitter).emit<OutOfBandInvitationEvent>(agentContext, {
     type: OutOfBandInvitationEventTypes.OutOfBandInvitationEvent,

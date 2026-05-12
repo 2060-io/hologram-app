@@ -13,9 +13,12 @@ import { NavigationStackParams } from '@src/components/Navigation/NavigationProp
 import { HeaderTitle, ModalLoading, Text } from '@src/components/common'
 import { useScrollSwipeDown } from '@src/hooks'
 import { useChats, useMobileAgent, useUserProfile } from '@src/hooks/agent'
+import { AgentActionType } from '@src/hooks/agent/actions/AgentAction'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { AgentActionQueueSingleton } from '@src/services/AgentActionQueueSingleton'
 import { acceptInvitation } from '@src/services/agent/oob'
 import { logError } from '@src/utils'
+import { isService as isServiceConnection } from '@src/utils/connectionUtils'
 import { screenHeight } from '@src/utils/responsiveUtils'
 import { toast } from '@src/utils/toast'
 
@@ -105,7 +108,17 @@ const BaseConnectionInvitation = ({
           connectionId: parentConnectionId,
         }
         const { connectionRecord } = await acceptInvitation(agent.context, invitationOptions)
-        if (connectionRecord) goToChat(connectionRecord)
+        if (connectionRecord) {
+          // V2 OOB has no handshake; queue a trust-ping so the inviter creates the
+          // connection on its side. Only meaningful for services.
+          if (connectionRecord.didcommVersion === 'v2' && isServiceConnection(connectionRecord)) {
+            AgentActionQueueSingleton.instance.addJob({
+              type: AgentActionType.SendTrustPing,
+              parameters: { connectionId: connectionRecord.id },
+            })
+          }
+          goToChat(connectionRecord)
+        }
       } catch (error) {
         toast({ type: 'error', message: `Failed to add connection ${error}` })
         logError('Error accepting connection invitation', error)
