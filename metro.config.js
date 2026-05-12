@@ -21,6 +21,10 @@ const config = {
     extraNodeModules: {
       stream: require.resolve('readable-stream'),
       crypto: require.resolve('isomorphic-webcrypto'),
+      https: require.resolve('./shims/empty.js'),
+      http: require.resolve('./shims/empty.js'),
+      url: require.resolve('./shims/empty.js'),
+      util: require.resolve('./shims/empty.js'),
     },
   },
 }

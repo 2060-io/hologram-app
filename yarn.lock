@@ -6696,10 +6696,10 @@
     "@urql/core" "^5.1.1"
     wonka "^6.3.2"
 
-"@verana-labs/verre@^0.2.1":
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/@verana-labs/verre/-/verre-0.2.1.tgz#bef7ac979c28b63f530aad439389c998f208ea10"
-  integrity sha512-Ib4KtpFUGczHp8q8pvW4hbioC3Rh7KtBrB+hJH786QDrmhVFgW8NxE8xzkdIR+I1YbHgPlXYoalACPR5FUk5Gg==
+"@verana-labs/verre@^0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@verana-labs/verre/-/verre-0.3.0.tgz#f2166be320edade2feea7b6dafd1a83d17ac74dd"
+  integrity sha512-WD7HKBfBqvwah73chktnE0BOOS3Ih5PCrhvdFHuX2Yw7e0toqxQzv7ke4UEwb2i562uxQm1W2kkko7oukEag6A==
   dependencies:
     "@digitalcredentials/jsonld" "^9.0.0"
     "@noble/curves" "^2.0.1"
@@ -6707,8 +6707,9 @@
     "@scure/base" "^2.0.0"
     ajv "^8.17.1"
     ajv-formats "^3.0.1"
+    canonicalize "^2.1.0"
     did-resolver "^4.1.0"
-    didwebvh-ts "^2.7.1"
+    didwebvh-ts "^2.7.3"
     jsonld "^8.3.3"
     tslog "^4.10.2"
     web-did-resolver "^2.0.29"
@@ -8528,10 +8529,10 @@ did-resolver@^4.1.0:
   resolved "https://registry.yarnpkg.com/did-resolver/-/did-resolver-4.1.0.tgz#740852083c4fd5bf9729d528eca5d105aff45eb6"
   integrity sha512-S6fWHvCXkZg2IhS4RcVHxwuyVejPR7c+a4Go0xbQ9ps5kILa8viiYQgrM4gfTyeTjJ0ekgJH9gk/BawTpmkbZA==
 
-didwebvh-ts@^2.7.1:
-  version "2.7.1"
-  resolved "https://registry.yarnpkg.com/didwebvh-ts/-/didwebvh-ts-2.7.1.tgz#fa9703f0a4359d58da890dfdaff28f4dc2eabd74"
-  integrity sha512-wsii4M8cQdPuIgc8wV1kg4fqWZD52pwp6asXqpUhAbYTjxE78jOUzKtmV2Xpc4NXyqyfZyGR6xDoUhj3BKmFaA==
+didwebvh-ts@^2.7.2:
+  version "2.7.2"
+  resolved "https://registry.yarnpkg.com/didwebvh-ts/-/didwebvh-ts-2.7.2.tgz#cd69f42e985de40162203b000fa6c7c890e08f26"
+  integrity sha512-aCv+VhsXvczn5qZ235Q6nvnEzwDxrPYTYC1pTioYM7LAit/RcQp6rtpI7H/MOAGwwTM/udxen2NYzgOVEd3rWg==
   dependencies:
     "@noble/hashes" "^1.8.0"
     cookie "^1.1.1"
@@ -8539,10 +8540,10 @@ didwebvh-ts@^2.7.1:
     js-yaml "^4.1.1"
     json-canonicalize "^1.0.6"
 
-didwebvh-ts@^2.7.2:
-  version "2.7.2"
-  resolved "https://registry.yarnpkg.com/didwebvh-ts/-/didwebvh-ts-2.7.2.tgz#cd69f42e985de40162203b000fa6c7c890e08f26"
-  integrity sha512-aCv+VhsXvczn5qZ235Q6nvnEzwDxrPYTYC1pTioYM7LAit/RcQp6rtpI7H/MOAGwwTM/udxen2NYzgOVEd3rWg==
+didwebvh-ts@^2.7.3:
+  version "2.7.4"
+  resolved "https://registry.yarnpkg.com/didwebvh-ts/-/didwebvh-ts-2.7.4.tgz#f68cf76b0ef3178519c7e5829bbfd67b78cfe55e"
+  integrity sha512-4AH4xITOgEQ7EfqGDm3ZgtzD8Rt44xj1z1mZ0YrWZnr5RUaNt30BSMn46HrOt58Ydd03EETNF+jCT4c9qNCy7g==
   dependencies:
     "@noble/hashes" "^1.8.0"
     cookie "^1.1.1"
