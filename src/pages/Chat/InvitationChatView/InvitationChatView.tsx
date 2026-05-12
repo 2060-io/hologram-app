@@ -65,7 +65,7 @@ const InvitationChatView = ({ associatedRecordId: outOfBandId, metadata, role, a
           outOfBandId,
           label: userProfileData?.displayName,
         })
-        if (connectionRecord?.didcommVersion === 'v2' && isServiceConnection(connectionRecord)) {
+        if (connectionRecord?.didcommVersion === 'v2') {
           AgentActionQueueSingleton.instance.addJob({
             type: AgentActionType.SendTrustPing,
             parameters: { connectionId: connectionRecord.id },
