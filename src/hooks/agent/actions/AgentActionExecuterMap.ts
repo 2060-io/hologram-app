@@ -66,7 +66,7 @@ import {
 } from './types'
 
 import { createOobInvitation, MobileAgent } from '@src/services/agent'
-import { log, logWarn } from '@src/utils'
+import { logWarn } from '@src/utils'
 
 type AgentCallbackReturnType<T extends BaseRecord = BaseRecord> = {
   associatedRecord?: T
