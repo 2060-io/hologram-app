@@ -110,8 +110,8 @@ const BaseConnectionInvitation = ({
         const { connectionRecord } = await acceptInvitation(agent.context, invitationOptions)
         if (connectionRecord) {
           // V2 OOB has no handshake; queue a trust-ping so the inviter creates the
-          // connection on its side. Only meaningful for services.
-          if (connectionRecord.didcommVersion === 'v2' && isServiceConnection(connectionRecord)) {
+          // connection on its side.
+          if (connectionRecord.didcommVersion === 'v2') {
             AgentActionQueueSingleton.instance.addJob({
               type: AgentActionType.SendTrustPing,
               parameters: { connectionId: connectionRecord.id },
