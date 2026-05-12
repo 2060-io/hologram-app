@@ -25,17 +25,17 @@ import {
   DidCommProposePresentationV2Message,
   supportsIncomingMessageType,
   DidCommConnectionService,
-  DidCommTrustPingEventTypes,
-  TrustPingResponseReceivedEvent,
 } from '@credo-ts/didcomm'
 import { t } from 'i18next'
-import { catchError, filter, firstValueFrom, map, merge, first, timeout } from 'rxjs'
+import { filter, firstValueFrom, merge, first, timeout } from 'rxjs'
 
 import { MobileAgent } from '../MobileAgent'
 import { getInCacheServiceInfo } from '../cache'
 
 import { OutOfBandInvitationEvent, OutOfBandInvitationEventTypes } from './OutOfBandEvents'
 
+import { AgentActionType } from '@src/hooks/agent/actions/AgentAction'
+import { AgentActionQueueSingleton } from '@src/services/AgentActionQueueSingleton'
 import { log, logError } from '@src/utils'
 import { deletePendingConnection, findExistingConnection, isService } from '@src/utils/connectionUtils'
 import { toast } from '@src/utils/toast'
@@ -45,35 +45,6 @@ export enum DidcommInvitationType {
   PresentationRequest = 'presentation-request',
   CredentialOffer = 'credential-offer',
   CredentialPresentation = 'credential-presentation',
-}
-
-const TRUST_PING_RESPONSE_TIMEOUT_MS = 30_000
-
-export async function waitForTrustPingResponseReceivedEvent(
-  agentContext: AgentContext,
-  options: {
-    threadId?: string
-    timeoutMs?: number
-  },
-) {
-  const { threadId, timeoutMs = TRUST_PING_RESPONSE_TIMEOUT_MS } = options
-  const eventEmitter = agentContext.dependencyManager.resolve(EventEmitter)
-  return firstValueFrom(
-    eventEmitter
-      .observable<TrustPingResponseReceivedEvent>(
-        DidCommTrustPingEventTypes.DidCommTrustPingResponseReceivedEvent,
-      )
-      .pipe(
-        filter(event => threadId === undefined || event.payload.message.threadId === threadId),
-        timeout(timeoutMs),
-        catchError(() => {
-          throw new Error(
-            `TrustPingResponseReceivedEvent not emitted within ${timeoutMs}ms (threadId: ${threadId})`,
-          )
-        }),
-        map(event => event.payload.message),
-      ),
-  )
 }
 
 /**
@@ -365,19 +336,12 @@ export async function acceptInvitation(
       .update(agentContext, newConnection)
   }
 
-  // V2 OOB has no handshake; ping the inviter so they create the connection on their side
-  // and confirm they're reachable. Drop the connection if no response within the timeout.
-  if (newConnection?.didcommVersion === 'v2') {
-    try {
-      const ping = await connectionsApi.sendPing(newConnection.id, {})
-      await waitForTrustPingResponseReceivedEvent(agentContext, { threadId: ping.threadId })
-    } catch (error) {
-      logError(`Trust ping failed for v2 connection ${newConnection.id}`, error)
-      await connectionsApi
-        .deleteById(newConnection.id)
-        .catch(err => logError(`Could not delete connection ${newConnection.id}`, err))
-      throw new Error('Peer did not respond to trust ping')
-    }
+  // V2 OOB has no handshake; queue a trust-ping so the inviter creates the connection on their side
+  if (newConnection?.didcommVersion === 'v2' && isService(newConnection)) {
+    AgentActionQueueSingleton.instance.addJob({
+      type: AgentActionType.SendTrustPing,
+      parameters: { connectionId: newConnection.id },
+    })
   }
 
   // Emit event: OOB Invitation accepted

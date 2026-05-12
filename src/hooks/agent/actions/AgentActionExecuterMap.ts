@@ -30,6 +30,7 @@ import {
   DidCommFeaturesQueriesMessage,
   DidCommConnectionService,
   DidCommKeylistUpdateV2Message,
+  DidCommTrustPingMessage,
 } from '@credo-ts/didcomm'
 import { DidCommPushNotificationsFcmSetDeviceInfoMessage } from '@credo-ts/didcomm-push-notifications'
 import { AnswerMessage } from '@credo-ts/question-answer'
@@ -59,12 +60,13 @@ import {
   SendReactionParameters,
   SendReceiptsParameters,
   SendTextMessageParameters,
+  SendTrustPingParameters,
   SendUserProfileParameters,
   ShareMediaParameters,
 } from './types'
 
 import { createOobInvitation, MobileAgent } from '@src/services/agent'
-import { logWarn } from '@src/utils'
+import { log, logWarn } from '@src/utils'
 
 type AgentCallbackReturnType<T extends BaseRecord = BaseRecord> = {
   associatedRecord?: T
@@ -214,6 +216,14 @@ export const AgentActionExecuterMap: Record<AgentActionType, ActionFactory> = {
         connectionId,
       })
       return { outgoingMessageTypes: [DidCommFeaturesQueriesMessage.type.messageTypeUri] }
+    }
+  },
+  [AgentActionType.SendTrustPing]: action => {
+    return async (options: { agent: MobileAgent }) => {
+      const parameters = action.parameters as SendTrustPingParameters
+      const { connectionId } = parameters
+      await options.agent.didcomm.connections.sendPing(connectionId, {})
+      return { outgoingMessageTypes: [DidCommTrustPingMessage.type.messageTypeUri] }
     }
   },
   [AgentActionType.CreateCallOffer]: action => {
