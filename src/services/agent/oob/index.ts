@@ -344,12 +344,11 @@ export const createOobInvitation = (connection: DidCommConnectionRecord) => {
       body: { accept: ['didcomm/v2'] },
     })
   }
-  const imageUrl = connection.imageUrl?.match(/^https?:\/\//) ? connection.imageUrl : undefined
+
   const jsonInvitation = {
     '@type': DidCommOutOfBandInvitation.type.messageTypeUri,
     '@id': utils.uuid(),
     label: connection.theirLabel,
-    imageUrl,
     services: [connection.invitationDid],
     handshake_protocols: [connection.protocol ?? 'https://didcomm.org/didexchange/1.0'],
     accept: ['didcomm/aip1', 'didcomm/aip2;env=rfc19'],
