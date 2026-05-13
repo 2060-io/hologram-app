@@ -155,8 +155,9 @@ jobs:
         working-directory: ios
         run: |
           pod install --repo-update || {
-            pod update hermes-engine --no-repo-update
-            pod install
+            echo "pod install failed due to Podfile.lock drift; regenerating lockfile"
+            rm -f Podfile.lock
+            pod install --repo-update
           }
 
       - name: Cache DerivedData
