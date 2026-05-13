@@ -334,6 +334,7 @@ export async function acceptInvitation(
       .update(agentContext, newConnection)
   }
 
+  // V2 OOB has no handshake; queue a trust-ping so the inviter creates the connection on their side
   // Emit event: OOB Invitation accepted
   agentContext.dependencyManager.resolve(EventEmitter).emit<OutOfBandInvitationEvent>(agentContext, {
     type: OutOfBandInvitationEventTypes.OutOfBandInvitationEvent,

@@ -35,6 +35,7 @@ export enum AgentActionType {
   ProofSendProblemReport = 'ProofSendProblemReport',
   SavePushNotificationDeviceInfo = 'SavePushNotificationDeviceInfo',
   DeleteConnection = 'DeleteConnection',
+  SendTrustPing = 'SendTrustPing',
 }
 
 export type AgentAction = {

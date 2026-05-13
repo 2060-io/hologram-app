@@ -111,6 +111,8 @@ type DeleteConnectionParameters = ConnectionIdParameter & {
   outOfBandRecordId?: string
 }
 
+type SendTrustPingParameters = ConnectionIdParameter
+
 export type {
   SendTextMessageParameters,
   SendReactionParameters,
@@ -136,4 +138,5 @@ export type {
   ProofSendProblemReportParameters,
   SavePushNotificationDeviceInfoParameters,
   DeleteConnectionParameters,
+  SendTrustPingParameters,
 }
