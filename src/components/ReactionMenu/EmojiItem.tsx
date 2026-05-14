@@ -1,5 +1,5 @@
 import React from 'react'
-import { TouchableOpacity, TouchableOpacityProps, StyleSheet, Text } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, TouchableOpacityProps } from 'react-native'
 
 interface Props extends TouchableOpacityProps {
   data: { emoji: string }

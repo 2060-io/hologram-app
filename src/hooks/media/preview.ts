@@ -1,7 +1,5 @@
 import ImageResizer from '@bam.tech/react-native-image-resizer'
 import { moveFile } from '@dr.pogodin/react-native-fs'
-import { createThumbnail } from 'react-native-create-thumbnail'
-
 import { IS_ANDROID } from '@src/constants'
 import { dataUrl, logError } from '@src/utils'
 import {
@@ -12,6 +10,7 @@ import {
   mediaPreviewsDirectoryPath,
   readFile,
 } from '@src/utils/RNFS'
+import { createThumbnail } from 'react-native-create-thumbnail'
 
 export const LOCAL_PREVIEW_IMAGE_WIDTH = 512
 const LOCAL_PREVIEW_IMAGE_HEIGHT = 512
@@ -125,7 +124,7 @@ export async function createResizedImage(options: {
       maxWidth ?? DIDCOMM_PREVIEW_IMAGE_WIDTH,
       maxHeight ?? DIDCOMM_PREVIEW_IMAGE_HEIGHT,
       'JPEG',
-      quality ?? DIDCOMM_PREVIEW_IMAGE_QUALITY,
+      quality ?? DIDCOMM_PREVIEW_IMAGE_QUALITY
     )
     const data = await readFile(resizedImage.path, 'base64')
     return { path: resizedImage.path, base64: dataUrl('image/jpeg', data) }

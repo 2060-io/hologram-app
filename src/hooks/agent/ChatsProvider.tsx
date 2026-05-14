@@ -1,47 +1,37 @@
-import {
-  DidCommMessageReceipt,
-  DidCommMessageReceiptOptions,
-  MessageState,
-} from '@2060.io/credo-ts-didcomm-receipts'
+import { DidCommMessageReceipt, DidCommMessageReceiptOptions, MessageState } from '@2060.io/credo-ts-didcomm-receipts'
 import { utils } from '@credo-ts/core'
 import { DidCommConnectionRecord } from '@credo-ts/didcomm'
-import React, { createContext, useCallback, useState, useEffect, useContext, useRef } from 'react'
-
-import { useAgentActionQueue } from './AgentActionQueueProvider'
-import { useMobileAgent } from './MobileAgentProvider'
-import { AgentActionType } from './actions/AgentAction'
-import { SendReceiptsParameters } from './actions/types'
-import { addReceiptToRelatedEntries } from './chat/services/ChatEntryService'
-import {
-  findOrCreateChatThread,
-  archiveThreads as chatTSArchiveThreads,
-  unarchiveThreads as chatTSUnarchiveThreads,
-  markThreadAsRead as chatTSMarkThreadAsRead,
-  deleteThread as chatTSDeleteThread,
-  updateThread,
-} from './chat/services/ChatThreadService'
-import { subscribeToAgentChatEvents } from './chat/subscribeToAgentChatEvents'
-
 import { useLocalRealm } from '@src/hooks/providers/RealmProvider'
 import {
+  ChatEntry,
+  ChatEntryRole,
+  ChatEntryState,
+  ChatEntryType,
   ChatThread,
   ChatThreadData,
-  ChatEntry,
   getChatThreadData,
-  ChatEntryType,
-  ChatEntryRole,
-  SystemMessageMetadata,
-  ChatEntryState,
   MediaSharingMetadata,
+  SystemMessageMetadata,
 } from '@src/model'
 import { checkIfDeleteFilesFromMedia } from '@src/pages/Chat/utils'
 import AgentSingleton from '@src/services/AgentSingleton'
 import { supportsMessageReceipts } from '@src/utils/connectionUtils'
+import { getLastEntryInChatThread, getMediaChatEntriesExcludingThread, queryOfTypeMedia } from '@src/utils/realmQueries'
+import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
+import { useAgentActionQueue } from './AgentActionQueueProvider'
+import { AgentActionType } from './actions/AgentAction'
+import { SendReceiptsParameters } from './actions/types'
+import { addReceiptToRelatedEntries } from './chat/services/ChatEntryService'
 import {
-  getLastEntryInChatThread,
-  getMediaChatEntriesExcludingThread,
-  queryOfTypeMedia,
-} from '@src/utils/realmQueries'
+  archiveThreads as chatTSArchiveThreads,
+  deleteThread as chatTSDeleteThread,
+  markThreadAsRead as chatTSMarkThreadAsRead,
+  unarchiveThreads as chatTSUnarchiveThreads,
+  findOrCreateChatThread,
+  updateThread,
+} from './chat/services/ChatThreadService'
+import { subscribeToAgentChatEvents } from './chat/subscribeToAgentChatEvents'
+import { useMobileAgent } from './MobileAgentProvider'
 
 export type ChatCategory = 'all' | 'people' | 'services'
 type ChatsFilters = { topic: string; archived: boolean; category: ChatCategory; parentId?: string }
@@ -139,11 +129,11 @@ export const ChatsProvider: React.FC<Props> = ({ children }) => {
     const chatThreads = realm.objects(ChatThread).filtered(query).sorted('lastActivityAt', true)
     // TODO: implement pagination
     const threads = getFilteredEntries(chatThreads, archived)
-    setChatsState(prevState => ({ ...prevState, threads, loading: false }))
+    setChatsState((prevState) => ({ ...prevState, threads, loading: false }))
 
-    const onChatThreadChange: Realm.CollectionChangeCallback<ChatThread> = newChatThreads => {
+    const onChatThreadChange: Realm.CollectionChangeCallback<ChatThread> = (newChatThreads) => {
       const newThreads = getFilteredEntries(newChatThreads as Realm.Results<ChatThread>, archived)
-      setChatsState(prevState => ({ ...prevState, threads: newThreads }))
+      setChatsState((prevState) => ({ ...prevState, threads: newThreads }))
     }
 
     chatThreads.addListener(onChatThreadChange)
@@ -158,29 +148,28 @@ export const ChatsProvider: React.FC<Props> = ({ children }) => {
       ? entries
           // If thread has not any children, check its own archived status. Otherwise, consider not only its
           // own status but also of its children (if any of them matches, accept it)
-          .filter(item =>
+          .filter((item) =>
             item.subthreads.length === 0
               ? archived === item.archived
-              : archived === item.archived ||
-                item.subthreads.find(subthread => archived === subthread.archived),
+              : archived === item.archived || item.subthreads.find((subthread) => archived === subthread.archived)
           )
           .map((item: ChatThread) => {
             const threadData = getChatThreadData(item)
             // Expand archived/unarchived status filtering to subthreads
             return {
               ...threadData,
-              subthreads: threadData.subthreads.filter(subthread => archived === subthread.archived),
+              subthreads: threadData.subthreads.filter((subthread) => archived === subthread.archived),
             }
           })
       : []
   }
 
   const setFilters = useCallback((filters: Partial<ChatsFilters>) => {
-    setChatsState(prevState => ({ ...prevState, filters: { ...prevState.filters, ...filters } }))
+    setChatsState((prevState) => ({ ...prevState, filters: { ...prevState.filters, ...filters } }))
   }, [])
 
   const setActiveChatThreadId = useCallback((id: string | undefined) => {
-    setChatsState(prevState => ({ ...prevState, activeChatThreadId: id }))
+    setChatsState((prevState) => ({ ...prevState, activeChatThreadId: id }))
   }, [])
 
   const findOrCreateThread = useCallback(
@@ -190,7 +179,7 @@ export const ChatsProvider: React.FC<Props> = ({ children }) => {
 
       return getChatThreadData(record)
     },
-    [realm],
+    [realm]
   )
 
   const archiveThreads = useCallback(
@@ -198,7 +187,7 @@ export const ChatsProvider: React.FC<Props> = ({ children }) => {
       if (!realm) throw new Error('Realm Unavailable')
       chatTSArchiveThreads(realm, chatThreadIds)
     },
-    [realm],
+    [realm]
   )
 
   const unarchiveThreads = useCallback(
@@ -206,7 +195,7 @@ export const ChatsProvider: React.FC<Props> = ({ children }) => {
       if (!realm) throw new Error('Realm Unavailable')
       chatTSUnarchiveThreads(realm, chatThreadIds)
     },
-    [realm],
+    [realm]
   )
 
   const markThreadAsRead = useCallback(
@@ -220,7 +209,7 @@ export const ChatsProvider: React.FC<Props> = ({ children }) => {
       // No receipts to send
       if (!connection || !supportsMessageReceipts(connection) || messageIds.length === 0) return
 
-      const receipts: DidCommMessageReceiptOptions[] = messageIds.map(messageId => ({
+      const receipts: DidCommMessageReceiptOptions[] = messageIds.map((messageId) => ({
         messageId,
         state: MessageState.Viewed,
         timestamp: lastReadAt,
@@ -235,7 +224,7 @@ export const ChatsProvider: React.FC<Props> = ({ children }) => {
         parameters,
       })
     },
-    [realm],
+    [realm]
   )
 
   const deleteThread = useCallback(
@@ -244,7 +233,7 @@ export const ChatsProvider: React.FC<Props> = ({ children }) => {
       clearChat(chatThreadId)
       chatTSDeleteThread(realm, chatThreadId)
     },
-    [realm],
+    [realm]
   )
 
   const clearChat = useCallback(
@@ -255,7 +244,7 @@ export const ChatsProvider: React.FC<Props> = ({ children }) => {
       const metadataOfEntriesTypeMedia: MediaSharingMetadata[] = chatEntriesToDelete
         .filtered(queryOfTypeMedia)
         .map((chatEntry: ChatEntry) => ({ ...(chatEntry.metadata as MediaSharingMetadata) }))
-      const thread = realm.objects(ChatThread).find(item => item.id === threadId)
+      const thread = realm.objects(ChatThread).find((item) => item.id === threadId)
       realm.write(() => {
         realm.delete(chatEntriesToDelete)
         // Create security message
@@ -285,7 +274,7 @@ export const ChatsProvider: React.FC<Props> = ({ children }) => {
         }
       }
     },
-    [realm],
+    [realm]
   )
 
   return (

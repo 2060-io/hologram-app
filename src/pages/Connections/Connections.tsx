@@ -1,11 +1,10 @@
 import { useHeaderHeight } from '@react-navigation/elements'
 import { StackScreenProps } from '@react-navigation/stack'
-import React, { useCallback } from 'react'
-import { useTranslation } from 'react-i18next'
-
 import { Connections } from '@src/components'
 import { ConnectionItem } from '@src/components/Connections/ConnectionList'
 import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
+import React, { useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 
 type Props = StackScreenProps<NavigationStackParams, 'Connections'>
 

@@ -1,40 +1,19 @@
 import { useFocusEffect } from '@react-navigation/native'
 import { useAudioPlayer } from '@simform_solutions/react-native-audio-waveform'
-import React, { useState, useRef, useCallback, memo, useMemo, useEffect } from 'react'
-import { useTranslation } from 'react-i18next'
-import { View, NativeSyntheticEvent, NativeScrollEvent, ViewToken, FlatList } from 'react-native'
-import { KeyboardAvoidingView } from 'react-native-keyboard-controller'
-import { uses24HourClock } from 'react-native-localize'
-import { SafeAreaView } from 'react-native-safe-area-context'
-import Realm from 'realm'
-
-import AttachmentOptions from './AttachmentOptions'
-import ChatContainer, { WrapperChatProps } from './ChatContainer'
-import { CustomHeaderProps, ChatEntryMessage } from './ChatMessage/Props'
-import ContextualMenu from './ContextualMenu'
-import { CustomChatHeader, SelectingMessagesHeader } from './Header'
-import InputToolbarView from './InputToolbarView'
-import ScrollToBottom from './ScrollToBottomView'
-import SelectingMessagesBottomMenu from './SelectingMessagesBottomMenu'
-import SystemMessage from './SystemMessage'
-import { CompressingVideo } from './components'
-import getStyles from './styles'
-import { getSystemMessage, chatEntryEqual } from './utils'
-
 import { ModalBottomHalf, ModalConfirmAction } from '@src/components'
-import MessageFloatingMenu from '@src/components/MessageFloatingMenu'
 import { Text } from '@src/components/common'
+import MessageFloatingMenu from '@src/components/MessageFloatingMenu'
 import { IS_IOS } from '@src/constants'
 import { useAppState, useChatActions } from '@src/hooks'
 import {
-  useMobileAgent,
-  useChat,
-  useActionMenu,
-  useChats,
-  ChatThreadWithParticipants,
   AgentActionType,
-  useConnectionById,
+  ChatThreadWithParticipants,
+  useActionMenu,
   useAgentActionQueue,
+  useChat,
+  useChats,
+  useConnectionById,
+  useMobileAgent,
 } from '@src/hooks/agent'
 import { RequestUserProfileParameters, SendUserProfileParameters } from '@src/hooks/agent/actions/types'
 import { createChatEntry, updateChatEntryMetadata } from '@src/hooks/agent/chat/services/ChatEntryService'
@@ -51,16 +30,30 @@ import {
 import { ChatMessageList } from '@src/pages/Chat/ChatMessageList'
 import { headerHeight } from '@src/styles'
 import { logWarn } from '@src/utils'
-import {
-  blockConnection,
-  isService,
-  setLastTimeProfileSent,
-  supportsUserProfile,
-} from '@src/utils/connectionUtils'
+import { blockConnection, isService, setLastTimeProfileSent, supportsUserProfile } from '@src/utils/connectionUtils'
 import { getFormattedDateRange, isDateGreaterThan, timeFromNow } from '@src/utils/dateUtils'
 import { cancelVideoCompression } from '@src/utils/mediaFileUtils'
 import { markNotificationsOfChatAsViewed } from '@src/utils/pushNotificationsUtils'
 import { toast } from '@src/utils/toast'
+import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { FlatList, NativeScrollEvent, NativeSyntheticEvent, View, ViewToken } from 'react-native'
+import { KeyboardAvoidingView } from 'react-native-keyboard-controller'
+import { uses24HourClock } from 'react-native-localize'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import Realm from 'realm'
+import AttachmentOptions from './AttachmentOptions'
+import ChatContainer, { WrapperChatProps } from './ChatContainer'
+import { ChatEntryMessage, CustomHeaderProps } from './ChatMessage/Props'
+import ContextualMenu from './ContextualMenu'
+import { CompressingVideo } from './components'
+import { CustomChatHeader, SelectingMessagesHeader } from './Header'
+import InputToolbarView from './InputToolbarView'
+import ScrollToBottom from './ScrollToBottomView'
+import SelectingMessagesBottomMenu from './SelectingMessagesBottomMenu'
+import SystemMessage from './SystemMessage'
+import getStyles from './styles'
+import { chatEntryEqual, getSystemMessage } from './utils'
 
 interface ChatProps extends WrapperChatProps {
   chatEntries: ChatEntryData[]
@@ -153,7 +146,7 @@ const Chat = ({ chatEntries, chatThread, navigation, loadMoreMessages, redirectT
         clearTimeout(timerStickyDate.current)
         setActiveChatThreadId(undefined)
       }
-    }, []),
+    }, [])
   )
 
   // listener to stop all players and extractors of audios
@@ -185,10 +178,7 @@ const Chat = ({ chatEntries, chatThread, navigation, loadMoreMessages, redirectT
   useEffect(() => {
     const checkIfMustSendProfile = () => {
       if (flags.myProfileUpdatedAt && flags.lastTimeProfileSent && agent && connection) {
-        const mustSendProfile = isDateGreaterThan(
-          flags.myProfileUpdatedAt,
-          new Date(flags.lastTimeProfileSent),
-        )
+        const mustSendProfile = isDateGreaterThan(flags.myProfileUpdatedAt, new Date(flags.lastTimeProfileSent))
         if (mustSendProfile) {
           setLastTimeProfileSent(connection, agent.context)
           const parameters: SendUserProfileParameters = { connectionId: connection.id }
@@ -274,7 +264,7 @@ const Chat = ({ chatEntries, chatThread, navigation, loadMoreMessages, redirectT
   const scrollToMessage = useCallback(
     (chatEntryId: string) => {
       const dataList = listViewRef.current?.props.data as Array<ChatEntryMessage>
-      const messageIndex = dataList.findIndex(value => value.id === chatEntryId)
+      const messageIndex = dataList.findIndex((value) => value.id === chatEntryId)
       setTappedRepliedMessageChatEntryId(chatEntryId)
       if (messageIndex === -1) return loadMoreMessages()
       const mustScrollToIndex =
@@ -286,10 +276,10 @@ const Chat = ({ chatEntries, chatThread, navigation, loadMoreMessages, redirectT
         }, 1000)
       }
     },
-    [listViewRef.current, tappedRepliedMessageChatEntryId],
+    [listViewRef.current, tappedRepliedMessageChatEntryId]
   )
   const onScrollToIndexFailed = ({ index }: { index: number }) => {
-    const wait = new Promise<void>(resolve => setTimeout(() => resolve(), 500))
+    const wait = new Promise<void>((resolve) => setTimeout(() => resolve(), 500))
     wait.then(() => {
       listViewRef.current?.scrollToIndex({ index, animated: true, viewPosition: 0.5 })
     })
@@ -391,9 +381,7 @@ const Chat = ({ chatEntries, chatThread, navigation, loadMoreMessages, redirectT
           {header}
           {showStickyDate && (
             <View style={{ ...styles.containerStickyDate, top: headerHeight }}>
-              <Text style={styles.stickyDateText}>
-                {currentStickyDate && getFormattedDateRange(currentStickyDate)}
-              </Text>
+              <Text style={styles.stickyDateText}>{currentStickyDate && getFormattedDateRange(currentStickyDate)}</Text>
             </View>
           )}
           <ChatMessageList
@@ -431,9 +419,7 @@ const Chat = ({ chatEntries, chatThread, navigation, loadMoreMessages, redirectT
                 showMediaOptions={flags.supportsMediaSharing}
               />
             )}
-          {showScrollBottomRef.current && (
-            <ScrollToBottom numberNewMessages={0} scrollToBottom={scrollToBottom} />
-          )}
+          {showScrollBottomRef.current && <ScrollToBottom numberNewMessages={0} scrollToBottom={scrollToBottom} />}
           {isSelectingMessagesMode && (
             <SelectingMessagesBottomMenu
               selectedMessages={selectedMessages}
@@ -517,7 +503,7 @@ const ChatMemo = memo(Chat, (prevProps, nextProps) => {
     prevProps.chatThread.data.topic === nextProps.chatThread.data.topic &&
     prevProps.chatThread.data.picture === nextProps.chatThread.data.picture &&
     prevProps.chatThread.flags === nextProps.chatThread.flags &&
-    prevProps.chatEntries.every(obj1 => nextProps.chatEntries.some(obj2 => chatEntryEqual(obj1, obj2)))
+    prevProps.chatEntries.every((obj1) => nextProps.chatEntries.some((obj2) => chatEntryEqual(obj1, obj2)))
   )
 })
 

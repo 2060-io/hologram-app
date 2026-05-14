@@ -1,7 +1,6 @@
-import React, { useContext, useMemo, createContext, PropsWithChildren } from 'react'
+import { AppTheme, fontSizesForMediumPhones, getThemeColors } from '@src/styles'
+import React, { createContext, PropsWithChildren, useContext, useMemo } from 'react'
 import { useColorScheme } from 'react-native'
-
-import { fontSizesForMediumPhones, getThemeColors, AppTheme } from '@src/styles'
 
 const themeContextInitialValues = {
   isDarkMode: false,

@@ -1,8 +1,7 @@
-import { ReactElement } from 'react'
-import { ViewStyle } from 'react-native'
-
 import { ChatEntryData } from '@src/model'
 import { MobileAgent } from '@src/services/agent'
+import { ReactElement } from 'react'
+import { ViewStyle } from 'react-native'
 
 export interface CustomHeaderProps {
   onSomeActionDispatched?(): void

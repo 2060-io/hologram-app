@@ -1,7 +1,7 @@
 import React from 'react'
 import Svg, { Path, SvgProps } from 'react-native-svg'
 
-const Upload: React.FC<SvgProps> = props => (
+const Upload: React.FC<SvgProps> = (props) => (
   <Svg
     width={44}
     height={44}

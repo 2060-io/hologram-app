@@ -1,8 +1,8 @@
 import { CipheringInfo } from '@2060.io/credo-ts-didcomm-media-sharing'
 import {
-  randomKey,
-  encryptFile as nativeEncryptFile,
   decryptFile as nativeDecryptFile,
+  encryptFile as nativeEncryptFile,
+  randomKey,
 } from 'react-native-local-native-modules'
 
 import { logError } from './log'

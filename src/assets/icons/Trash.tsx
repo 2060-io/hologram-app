@@ -1,7 +1,7 @@
 import React from 'react'
 import Svg, { Path, SvgProps } from 'react-native-svg'
 
-const Trash: React.FC<SvgProps> = props => (
+const Trash: React.FC<SvgProps> = (props) => (
   <Svg viewBox="0 0 22 22" {...props}>
     <Path data-name="Trazado 599" d="M0 0h24v24H0z" fill="none" />
     <Path

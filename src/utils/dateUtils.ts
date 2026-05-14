@@ -5,9 +5,9 @@ import { t } from 'i18next'
 
 extend(isYesterday)
 extend(customParseFormat)
-import { language } from './language'
 
 import { capitalizeFirstLetter } from './index'
+import { language } from './language'
 
 type DateType = string | number | Date | dayjs.Dayjs
 

@@ -1,6 +1,6 @@
 import { DidCommCallType } from '@2060.io/credo-ts-didcomm-calls'
 import { DidCommConnectionRecord } from '@credo-ts/didcomm'
-import { createContext, useContext, MutableRefObject } from 'react'
+import { createContext, MutableRefObject, useContext } from 'react'
 
 export enum CallStatus {
   Connecting = 'Connecting',
@@ -51,7 +51,7 @@ interface VideoCallProps extends StateProps {
     connectionId: string,
     callType: DidCommCallType,
     incomingCallInfo: CallInfo,
-    didcommThreadId: string,
+    didcommThreadId: string
   ) => void
 }
 

@@ -1,6 +1,5 @@
-import { StyleProp, ViewStyle } from 'react-native'
-
 import { BackupHandler, RestoreProgress } from '@src/hooks/backup'
+import { StyleProp, ViewStyle } from 'react-native'
 
 export type RestoreProgressProps = RestoreProgress
 

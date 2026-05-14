@@ -1,18 +1,14 @@
 import { utils } from '@credo-ts/core'
 import { DidCommConnectionRecord } from '@credo-ts/didcomm'
-import Realm from 'realm'
-
-import { getLocalizedPreview } from '../preview'
-
 import {
   ChatEntry,
   ChatEntryRole,
   ChatEntryState,
   ChatEntryType,
   ChatThread,
+  getChatThreadData,
   ServiceInfo,
   SystemMessageMetadata,
-  getChatThreadData,
 } from '@src/model'
 import { MobileAgent } from '@src/services/agent'
 import {
@@ -22,6 +18,8 @@ import {
   isService,
 } from '@src/utils/connectionUtils'
 import { getLastEntryInChatThread } from '@src/utils/realmQueries'
+import Realm from 'realm'
+import { getLocalizedPreview } from '../preview'
 
 export function findChatThread(realm: Realm, connection: DidCommConnectionRecord) {
   const [thread] = realm.objects(ChatThread).filtered(`connectionId == '${connection.id}'`)
@@ -41,9 +39,7 @@ export function findOrCreateChatThread(realm: Realm, connection: DidCommConnecti
   // Find chat thread for parent connection
   let parentThread: ChatThread, parentId: string | undefined
   if (getConnectionParentId(connection)) {
-    ;[parentThread] = realm
-      .objects(ChatThread)
-      .filtered(`connectionId == '${getConnectionParentId(connection)}'`)
+    ;[parentThread] = realm.objects(ChatThread).filtered(`connectionId == '${getConnectionParentId(connection)}'`)
     parentId = parentThread?.id
   }
 
@@ -111,7 +107,7 @@ export function markThreadAsRead(realm: Realm, threadId: string, lastReadAt: Dat
     // Find all unread entries for the given thread
     const unreadEntries = realm.objects(ChatEntry).filtered(`chatThreadId == '${threadId}' && unread == true`)
 
-    unreadEntries.forEach(entry => {
+    unreadEntries.forEach((entry) => {
       if (entry.associatedMessageId) messageIds.push(entry.associatedMessageId)
       entry.unread = false
     })
@@ -148,7 +144,7 @@ export function unarchiveThreads(realm: Realm, threadIds: string[]) {
 export function updateThread(
   realm: Realm,
   threadId: string,
-  options: { lastChatEntry?: ChatEntry; topic?: string; picture?: string },
+  options: { lastChatEntry?: ChatEntry; topic?: string; picture?: string }
 ) {
   const thread = realm.objectForPrimaryKey(ChatThread, threadId)
   if (!thread) throw new Error(`Cannot find chat element with id ${threadId}`)
@@ -191,7 +187,7 @@ export function deleteThread(realm: Realm, threadId: string) {
       const parentThread = realm.objectForPrimaryKey(ChatThread, parentThreadId)
       // Update parent thread subthreads
       if (parentThread) {
-        const index = parentThread.subthreads.findIndex(item => item.id === thread.id)
+        const index = parentThread.subthreads.findIndex((item) => item.id === thread.id)
         if (index > 0) parentThread.subthreads.splice(index, 1)
 
         // In case this was the only child and the parent was marked for deletion, delete it as well

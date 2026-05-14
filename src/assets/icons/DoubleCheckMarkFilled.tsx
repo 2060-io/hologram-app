@@ -1,7 +1,7 @@
 import React from 'react'
 import Svg, { Path, SvgProps } from 'react-native-svg'
 
-const DoubleCheckMarkFilled: React.FC<SvgProps> = props => (
+const DoubleCheckMarkFilled: React.FC<SvgProps> = (props) => (
   <Svg width={12.84} height={9.51} viewBox="0 0 12.84 9.51" {...props}>
     <Path data-name="Path 425" d="M3.446 0h9.394v9.51H3.446Z" fill="none" />
     <Path

@@ -1,14 +1,12 @@
 import { TypedArrayEncoder } from '@credo-ts/core'
-import React, { useRef, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { View, FlatList, TouchableOpacity } from 'react-native'
-
-import Dial from './Dial'
-import getStyles from './styles'
-
 import { Modal, Text } from '@src/components/common'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
-import { retrieveEncryptedKey, KeyChainService, aes256KeyFromSeed } from '@src/services/keys'
+import { aes256KeyFromSeed, KeyChainService, retrieveEncryptedKey } from '@src/services/keys'
+import React, { useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { FlatList, TouchableOpacity, View } from 'react-native'
+import Dial from './Dial'
+import getStyles from './styles'
 
 type OnSuccessCallback = { action: ActionToTake; pinCode?: string }
 
@@ -103,7 +101,7 @@ const SetPIN = ({ visible, onRequestClose, mode, oniOSDismiss }: Props) => {
   const onDialPressed = (pin: number | string) => {
     const isDeletePressed = typeof pin === 'string'
     if (isDeletePressed) {
-      setCurrentPinCode(prev => prev.slice(0, prev.length - 1))
+      setCurrentPinCode((prev) => prev.slice(0, prev.length - 1))
     } else if (currentPinCode.length < PIN_LENGTH) {
       const newPinCode = [...currentPinCode, pin]
       setCurrentPinCode(newPinCode)

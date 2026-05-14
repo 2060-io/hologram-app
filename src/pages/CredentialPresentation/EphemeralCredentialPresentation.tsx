@@ -1,15 +1,7 @@
 import { DidCommProofEventTypes, DidCommProofState, DidCommProofStateChangedEvent } from '@credo-ts/didcomm'
 import { StackScreenProps } from '@react-navigation/stack'
-import React, { useEffect, useRef, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { TouchableOpacity } from 'react-native'
-import { filter, Subscription } from 'rxjs'
-
-import BaseCredentialPresentation from './BaseCredentialPresentation'
-import getStyles from './styles'
-
-import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
 import { Text } from '@src/components/common'
+import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
 import { useMobileAgent } from '@src/hooks/agent'
 import { ProofSendProblemReportDescription } from '@src/hooks/agent/actions/types'
 import { deleteConnection } from '@src/hooks/agent/connections'
@@ -22,6 +14,12 @@ import {
 } from '@src/services/agent/proofs'
 import { log } from '@src/utils'
 import { toast } from '@src/utils/toast'
+import React, { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { TouchableOpacity } from 'react-native'
+import { filter, Subscription } from 'rxjs'
+import BaseCredentialPresentation from './BaseCredentialPresentation'
+import getStyles from './styles'
 
 type Props = StackScreenProps<NavigationStackParams, 'EphemeralCredentialPresentation'>
 
@@ -61,17 +59,17 @@ const EphemeralCredentialPresentation = ({ navigation, route }: Props) => {
         .observable<DidCommProofStateChangedEvent>(DidCommProofEventTypes.ProofStateChanged)
         .pipe(
           filter(
-            event =>
+            (event) =>
               event.payload.proofRecord.id === proofRecordId &&
               [
                 DidCommProofState.RequestSent,
                 DidCommProofState.PresentationReceived,
                 DidCommProofState.Done,
                 DidCommProofState.Abandoned,
-              ].includes(event.payload.proofRecord.state),
-          ),
+              ].includes(event.payload.proofRecord.state)
+          )
         )
-      observableOfProofStateChangedEvent.current = observableOfProofStateChanged?.subscribe(async event => {
+      observableOfProofStateChangedEvent.current = observableOfProofStateChanged?.subscribe(async (event) => {
         const { proofRecord } = event.payload
         setProofState(proofRecord.state)
         connectionId.current = proofRecord.connectionId
@@ -79,14 +77,11 @@ const EphemeralCredentialPresentation = ({ navigation, route }: Props) => {
           const revealedAttributes = await getCredentialRevealedAttributes({ agent, proofRecordId })
           setCredentialAttributes(revealedAttributes)
         }
-        if (
-          proofRecord.state === DidCommProofState.Done ||
-          proofRecord.state === DidCommProofState.Abandoned
-        ) {
+        if (proofRecord.state === DidCommProofState.Done || proofRecord.state === DidCommProofState.Abandoned) {
           removeObservableOfProofStateChangedEvent()
           if (proofRecord.state === DidCommProofState.Abandoned) {
             const isAbandonedDueNoResponse = proofRecord.errorMessage?.includes(
-              ProofSendProblemReportDescription.TimeoutWaitingForResponse,
+              ProofSendProblemReportDescription.TimeoutWaitingForResponse
             )
             if (isAbandonedDueNoResponse) {
               toast({ type: 'error', message: t('credential.youDidNotResponseWithinTime'), duration: 5000 })

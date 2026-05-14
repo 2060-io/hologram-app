@@ -1,14 +1,12 @@
-import React, { useState, memo } from 'react'
-import { View, TouchableOpacity } from 'react-native'
-import EmojiPicker from 'rn-emoji-keyboard'
-
-import EmojiItem from './EmojiItem'
-import getStyles from './styles'
-
 import { Icon } from '@src/components/common'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { ChatEntryRole } from '@src/model'
 import { ChatEntryMessage } from '@src/pages/Chat/ChatMessage/Props'
+import React, { memo, useState } from 'react'
+import { TouchableOpacity, View } from 'react-native'
+import EmojiPicker from 'rn-emoji-keyboard'
+import EmojiItem from './EmojiItem'
+import getStyles from './styles'
 
 const mainEmojis = [
   { emoji: '😂', name: 'laugh' },
@@ -47,7 +45,7 @@ const ReactionMenu = ({ message, onClose, onReaction }: Props) => {
 
   const getIsEmojiSelected = (emoji: string) => {
     const exists = message.reactions.find(
-      reaction => reaction.emoji === emoji && reaction.role === ChatEntryRole.Sender,
+      (reaction) => reaction.emoji === emoji && reaction.role === ChatEntryRole.Sender
     )
     return Boolean(exists)
   }
@@ -63,7 +61,7 @@ const ReactionMenu = ({ message, onClose, onReaction }: Props) => {
         categoryPosition="top"
       />
       <View style={styles.emojiBox}>
-        {mainEmojis.map(emoji => (
+        {mainEmojis.map((emoji) => (
           <EmojiItem
             onPress={() => handleOnEmojiSelected(emoji)}
             key={emoji.name}

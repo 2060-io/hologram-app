@@ -1,11 +1,9 @@
 import { QuestionAnswerRecord, QuestionAnswerState } from '@credo-ts/question-answer'
-import Realm from 'realm'
-
-import { createChatEntry } from '../services/ChatEntryService'
-import { addUnread, findOrCreateChatThread } from '../services/ChatThreadService'
-
 import { AnswerMetadata, ChatEntryRole, ChatEntryState, ChatEntryType, QuestionMetadata } from '@src/model'
 import { MobileAgent } from '@src/services/agent'
+import Realm from 'realm'
+import { createChatEntry } from '../services/ChatEntryService'
+import { addUnread, findOrCreateChatThread } from '../services/ChatThreadService'
 
 export const handleQuestionAnswerRecordChanges = async (options: {
   agent: MobileAgent

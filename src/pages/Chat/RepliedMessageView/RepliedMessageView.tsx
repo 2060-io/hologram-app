@@ -1,14 +1,12 @@
-import { t } from 'i18next'
-import React, { memo } from 'react'
-import { View, TouchableOpacity, ImageBackground, ViewStyle } from 'react-native'
-
-import getStyles from './styles'
-
 import imagePlaceholder from '@src/assets/images/placeholderImg.png'
 import { SvgIcon, Text } from '@src/components/common'
 import { RepliedMessage, useChat } from '@src/hooks/agent'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { ChatEntryRole, ChatEntryType } from '@src/model'
+import { t } from 'i18next'
+import React, { memo } from 'react'
+import { ImageBackground, TouchableOpacity, View, ViewStyle } from 'react-native'
+import getStyles from './styles'
 
 type Props = {
   isInputToolbarView?: boolean
@@ -17,13 +15,13 @@ type Props = {
   style?: ViewStyle
 }
 
-const RepliedMessageView: React.FC<Props> = memo(props => {
+const RepliedMessageView: React.FC<Props> = memo((props) => {
   const theme = useTheme()
   const styles = getStyles(theme)
   const { chatThread } = useChat()
   const { repliedMessage, onDismiss, isInputToolbarView = true, style } = props
 
-  const participantName = chatThread?.participants.find(p => p.id === repliedMessage.role)?.name
+  const participantName = chatThread?.participants.find((p) => p.id === repliedMessage.role)?.name
   const repliedTo = repliedMessage.role === ChatEntryRole.Sender ? t('chat.you') : participantName
   const thumbnailSource = repliedMessage.thumbnail ? { uri: repliedMessage.thumbnail } : imagePlaceholder
   const isAudioOrVideo = [ChatEntryType.Video, ChatEntryType.Image].includes(repliedMessage.type)
@@ -52,12 +50,7 @@ const RepliedMessageView: React.FC<Props> = memo(props => {
       )}
       {isInputToolbarView && (
         <TouchableOpacity onPress={onDismiss} style={styles.btnDismiss} activeOpacity={0.7}>
-          <SvgIcon
-            name="close"
-            fill={theme.isDarkMode ? '#9CB1B7' : '#6A8994'}
-            width={15.76}
-            height={15.76}
-          />
+          <SvgIcon name="close" fill={theme.isDarkMode ? '#9CB1B7' : '#6A8994'} width={15.76} height={15.76} />
         </TouchableOpacity>
       )}
     </View>

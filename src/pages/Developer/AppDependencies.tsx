@@ -1,12 +1,10 @@
-import React, { useEffect, useState } from 'react'
-import { View, FlatList, StyleSheet } from 'react-native'
-
-import packageJson from '../../../package.json'
-
 import { Text } from '@src/components/common'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { AppTheme } from '@src/styles'
 import { hexTransparency } from '@src/utils/colorUtils'
+import React, { useEffect, useState } from 'react'
+import { FlatList, StyleSheet, View } from 'react-native'
+import packageJson from '../../../package.json'
 
 interface Dependency {
   name: string
@@ -54,7 +52,7 @@ const AppDependencies = () => {
         <FlatList
           data={dependencies}
           renderItem={renderItem}
-          keyExtractor={item => item.name}
+          keyExtractor={(item) => item.name}
           scrollEnabled={false}
         />
       </View>
@@ -65,7 +63,7 @@ const AppDependencies = () => {
         <FlatList
           data={devDependencies}
           renderItem={renderItem}
-          keyExtractor={item => item.name}
+          keyExtractor={(item) => item.name}
           scrollEnabled={false}
         />
       </View>

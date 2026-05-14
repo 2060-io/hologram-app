@@ -1,7 +1,7 @@
 import React from 'react'
-import Svg, { Path, G, SvgProps } from 'react-native-svg'
+import Svg, { G, Path, SvgProps } from 'react-native-svg'
 
-const Chat: React.FC<SvgProps> = props => (
+const Chat: React.FC<SvgProps> = (props) => (
   <Svg viewBox="0 0 19.599 19.599" {...props}>
     <G data-name="Group 1483">
       <Path

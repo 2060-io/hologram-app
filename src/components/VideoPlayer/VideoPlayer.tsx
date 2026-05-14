@@ -1,14 +1,12 @@
-import React, { useState, createRef, Fragment } from 'react'
+import { Text } from '@src/components/common'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import React, { createRef, Fragment, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, Pressable } from 'react-native'
+import { Pressable, View } from 'react-native'
 import Video, { OnLoadData, OnProgressData, VideoRef } from 'react-native-video'
-
 import PlayerControls from './PlayerControls'
 import ProgressBar from './ProgressBar'
 import getStyles from './styles'
-
-import { Text } from '@src/components/common'
-import { useTheme } from '@src/hooks/providers/ThemeProvider'
 
 type Props = {
   uri: string
@@ -18,13 +16,7 @@ type Props = {
   showProgressBar?: boolean
 }
 
-const VideoPlayer = ({
-  uri,
-  showControl,
-  setShowControl,
-  initialPlay = true,
-  showProgressBar = true,
-}: Props) => {
+const VideoPlayer = ({ uri, showControl, setShowControl, initialPlay = true, showProgressBar = true }: Props) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)

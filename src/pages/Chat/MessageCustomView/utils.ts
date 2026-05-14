@@ -8,12 +8,7 @@ type MustDisplayProps = {
   timeFormat: string
 }
 
-const mustDisplayAckAndTime = ({
-  messageTime,
-  chatEntry,
-  nextMessageChatEntry,
-  timeFormat,
-}: MustDisplayProps) => {
+const mustDisplayAckAndTime = ({ messageTime, chatEntry, nextMessageChatEntry, timeFormat }: MustDisplayProps) => {
   const nextMessageHasDifferentRole = chatEntry.role !== nextMessageChatEntry?.role
   if (nextMessageHasDifferentRole) return true
   const nextMessageTime = dateToString(nextMessageChatEntry?.createdAt, timeFormat)
@@ -138,4 +133,4 @@ const getBordersForReceivedMessage = ({
   }
 }
 
-export { mustDisplayAckAndTime, getMessageBorders }
+export { getMessageBorders, mustDisplayAckAndTime }

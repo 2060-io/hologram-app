@@ -1,16 +1,13 @@
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { CallStatus } from '@src/hooks/providers/useVideoCallContext'
+import { getConnectionDisplayName, getConnectionDisplayPicture } from '@src/utils/connectionUtils'
 import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
-
-import { CallButton, Text, Avatar } from '../common'
-
+import { Avatar, CallButton, Text } from '../common'
 import Connected from './Connected'
 import getStyles from './styles'
 import { useVideoCall } from './useVideoCall'
-
-import { useTheme } from '@src/hooks/providers/ThemeProvider'
-import { CallStatus } from '@src/hooks/providers/useVideoCallContext'
-import { getConnectionDisplayPicture, getConnectionDisplayName } from '@src/utils/connectionUtils'
 
 const VideoCall = () => {
   const theme = useTheme()
@@ -52,11 +49,7 @@ const VideoCall = () => {
             <Text style={styles.text}>{t('call.reconnecting')}</Text>
           </View>
           <View style={styles.buttonsContainer}>
-            <CallButton
-              text={t('call.endCall')}
-              iconName="phoneEnd"
-              onPress={() => stateValues.finishCall()}
-            />
+            <CallButton text={t('call.endCall')} iconName="phoneEnd" onPress={() => stateValues.finishCall()} />
           </View>
         </>
       )}

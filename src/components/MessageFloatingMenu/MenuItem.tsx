@@ -1,11 +1,9 @@
-import React from 'react'
-import { TouchableOpacity, View } from 'react-native'
-
-import getStyles from './styles'
-
-import { Text, Icon } from '@src/components/common'
+import { Icon, Text } from '@src/components/common'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { MessageAction } from '@src/pages/Chat/ChatProps'
+import React from 'react'
+import { TouchableOpacity, View } from 'react-native'
+import getStyles from './styles'
 
 interface Props extends MessageAction {
   onActionSelected(actionId: string): void

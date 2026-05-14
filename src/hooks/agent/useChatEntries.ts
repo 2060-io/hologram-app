@@ -1,9 +1,7 @@
+import { ChatEntry, ChatEntryData, getChatEntryData } from '@src/model'
 import { useEffect, useRef, useState } from 'react'
 import { Results } from 'realm'
-
 import { useLocalRealm } from '../providers/RealmProvider'
-
-import { ChatEntry, ChatEntryData, getChatEntryData } from '@src/model'
 
 const LIMIT_STEP_SIZE = 50
 

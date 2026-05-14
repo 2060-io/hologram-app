@@ -1,9 +1,8 @@
 import { StackScreenProps } from '@react-navigation/stack'
-import React from 'react'
-import { useTranslation } from 'react-i18next'
-
 import { Credentials } from '@src/components'
 import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
+import React from 'react'
+import { useTranslation } from 'react-i18next'
 
 type Props = StackScreenProps<NavigationStackParams, 'Wallet'>
 const Wallet = ({ navigation }: Props) => {
@@ -13,13 +12,7 @@ const Wallet = ({ navigation }: Props) => {
     navigation.navigate('CredentialDetails', { credentialRecordId })
   }
 
-  return (
-    <Credentials
-      navigation={navigation}
-      headerTitle={t('general.credentials')}
-      onPressCredential={goToDetails}
-    />
-  )
+  return <Credentials navigation={navigation} headerTitle={t('general.credentials')} onPressCredential={goToDetails} />
 }
 
 export default Wallet

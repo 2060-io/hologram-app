@@ -1,13 +1,11 @@
+import Text from '@src/components/common/Text'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import React, { memo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, FlatList } from 'react-native'
-
+import { FlatList, View } from 'react-native'
 import Connection from './Connection'
 import { Props } from './ConnectionListProps'
 import getStyles from './styles'
-
-import Text from '@src/components/common/Text'
-import { useTheme } from '@src/hooks/providers/ThemeProvider'
 
 const ConnectionList = ({
   onPress,
@@ -44,12 +42,12 @@ const ConnectionList = ({
                 isLastInSection={index === section.connections.length - 1}
               />
             )}
-            keyExtractor={item => item.id}
+            keyExtractor={(item) => item.id}
           />
         </View>
       )}
       ListEmptyComponent={<Text style={styles.textEmpty}>{t('connection.noConnectionsFound')}</Text>}
-      keyExtractor={item => item.title}
+      keyExtractor={(item) => item.title}
     />
   )
 }

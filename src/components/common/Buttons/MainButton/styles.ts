@@ -1,8 +1,6 @@
-import { StyleSheet } from 'react-native'
-
-import getCommonStyles from '../commonStyles'
-
 import { AppTheme } from '@src/styles'
+import { StyleSheet } from 'react-native'
+import getCommonStyles from '../commonStyles'
 
 export default (theme: AppTheme) => {
   const commonStyles = getCommonStyles(theme)

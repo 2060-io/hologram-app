@@ -1,15 +1,12 @@
-import React, { useTransition } from 'react'
-import { useTranslation } from 'react-i18next'
-
-import BaseSystemMessageView from '../BaseSystemMessageView'
-
-import { BlockedConnectionMessageProps } from './Props'
-
 import { useMobileAgent } from '@src/hooks/agent'
 import { unblockConnection } from '@src/utils/connectionUtils'
 import { toast } from '@src/utils/toast'
+import React, { useTransition } from 'react'
+import { useTranslation } from 'react-i18next'
+import BaseSystemMessageView from '../BaseSystemMessageView'
+import { BlockedConnectionMessageProps } from './Props'
 
-const BlockedConnectionMessageView: React.FC<BlockedConnectionMessageProps> = props => {
+const BlockedConnectionMessageView: React.FC<BlockedConnectionMessageProps> = (props) => {
   const { connectionId, text } = props
   const [unlocking, startUnlockTransition] = useTransition()
   const { t } = useTranslation()

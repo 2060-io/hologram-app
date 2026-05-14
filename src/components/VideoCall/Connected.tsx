@@ -1,14 +1,11 @@
 import { DidCommCallType } from '@2060.io/credo-ts-didcomm-calls'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, PanResponder, FlexStyle, Animated } from 'react-native'
-import { RTCView, MediaStream } from 'react-native-webrtc'
-
+import { Animated, FlexStyle, PanResponder, View } from 'react-native'
+import { MediaStream, RTCView } from 'react-native-webrtc'
 import { CallButton, HangupButton } from '../common'
-
 import getStyles from './styles'
-
-import { useTheme } from '@src/hooks/providers/ThemeProvider'
 
 const BUTTONS_TIME_FOR_DISAPPEAR = 5000
 
@@ -51,10 +48,9 @@ const Connected = ({
   const buttonsTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined)
   const panForLocalStream = useRef(new Animated.ValueXY()).current
   const [buttonsVisibility, setButtonsVisibility] = useState<FlexStyle['display']>('flex')
-  const displayLocalStreaming =
-    isCameraOn && !!localVideoStream && localVideoStream.getVideoTracks().length > 0
+  const displayLocalStreaming = isCameraOn && !!localVideoStream && localVideoStream.getVideoTracks().length > 0
 
-  remoteStream?.getAudioTracks().forEach(track => {
+  remoteStream?.getAudioTracks().forEach((track) => {
     // eslint-disable-next-line no-underscore-dangle
     track._setVolume(10)
   })
@@ -91,18 +87,13 @@ const Connected = ({
       onPanResponderRelease: () => {
         panForLocalStream.extractOffset()
       },
-    }),
+    })
   ).current
 
   const renderMainContentForVideoCall = () => {
     if (isRemoteVideoOn) {
       return (
-        <RTCView
-          streamURL={remoteStream?.toURL()}
-          objectFit="cover"
-          style={styles.remoteStreamContainer}
-          zOrder={0}
-        />
+        <RTCView streamURL={remoteStream?.toURL()} objectFit="cover" style={styles.remoteStreamContainer} zOrder={0} />
       )
     }
     if (displayLocalStreaming && !remoteStream) {
@@ -121,12 +112,7 @@ const Connected = ({
   const renderMainContentForServiceCall = () => {
     if (isRemoteVideoOn) {
       return (
-        <RTCView
-          streamURL={remoteStream?.toURL()}
-          objectFit="cover"
-          style={styles.remoteStreamContainer}
-          zOrder={0}
-        />
+        <RTCView streamURL={remoteStream?.toURL()} objectFit="cover" style={styles.remoteStreamContainer} zOrder={0} />
       )
     }
     return <View style={styles.callingAvatar}>{renderAvatar}</View>
@@ -149,12 +135,7 @@ const Connected = ({
           }}
           {...panResponderForLocalStreaming.panHandlers}
         >
-          <RTCView
-            streamURL={localVideoStream.toURL()}
-            objectFit="cover"
-            style={styles.localStream}
-            zOrder={1}
-          />
+          <RTCView streamURL={localVideoStream.toURL()} objectFit="cover" style={styles.localStream} zOrder={1} />
         </Animated.View>
       )}
       <View style={[styles.buttonsContainer, { display: buttonsVisibility }]}>
@@ -171,9 +152,7 @@ const Connected = ({
           />
           {isVideoCall && (
             <>
-              {isCameraOn && (
-                <CallButton text={t('call.flip')} iconName="flipCamera" onPress={handleSwitchCamera} />
-              )}
+              {isCameraOn && <CallButton text={t('call.flip')} iconName="flipCamera" onPress={handleSwitchCamera} />}
               <CallButton
                 text={t('call.video')}
                 iconName={isCameraOn ? 'video' : 'videoOff'}
@@ -184,7 +163,7 @@ const Connected = ({
           <CallButton
             text={t('call.mute')}
             iconName={isMicrophoneOn ? 'microphone' : 'microphoneOff'}
-            onPress={() => setIsMicrophoneOn(prevState => !prevState)}
+            onPress={() => setIsMicrophoneOn((prevState) => !prevState)}
           />
         </View>
         <HangupButton onPress={hangup} />

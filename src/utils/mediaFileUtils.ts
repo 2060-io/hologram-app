@@ -1,15 +1,13 @@
 import { stat, TemporaryDirectoryPath } from '@dr.pogodin/react-native-fs'
+import { IS_IOS } from '@src/constants'
+import { DidCommMediaFileSharingData } from '@src/hooks/agent'
+import { createDidCommPreview } from '@src/hooks/media/preview'
 import { Image } from 'react-native'
 import { Video as VideoCompressor } from 'react-native-compressor'
 import { ImageOrVideo } from 'react-native-image-crop-picker'
 import { getVideoProperties } from 'react-native-local-native-modules'
-
-import { copyFile, deleteFile } from './RNFS'
 import { logError } from './log'
-
-import { IS_IOS } from '@src/constants'
-import { DidCommMediaFileSharingData } from '@src/hooks/agent'
-import { createDidCommPreview } from '@src/hooks/media/preview'
+import { copyFile, deleteFile } from './RNFS'
 
 export const getMediaFileSharingData = async (fileOriginalPath: string, mimeType: string) => {
   const filePath = await fromContentUriToFileUri(fileOriginalPath)
@@ -83,9 +81,9 @@ const getImageDimensions = (filePath: string) => {
     Image.getSize(
       filePath,
       (width, height) => resolve({ width, height }),
-      error => {
+      (error) => {
         reject(`error getting filePath dimensions: ${error}`)
-      },
+      }
     )
   })
 }
@@ -95,7 +93,7 @@ const COMPRESSION_BITRATE = 2_000_000
 export const compressVideo = async (
   fileInfo: ImageOrVideo | DidCommMediaFileSharingData,
   onProgress: (progress: number) => void,
-  getCancellationId?: (cancellationId: string) => void,
+  getCancellationId?: (cancellationId: string) => void
 ): Promise<ImageOrVideo | DidCommMediaFileSharingData | null> => {
   try {
     const compressedVideoPath = await VideoCompressor.compress(
@@ -106,7 +104,7 @@ export const compressVideo = async (
         progressDivider: 5,
         getCancellationId,
       },
-      progress => onProgress(Math.ceil(progress * 100)),
+      (progress) => onProgress(Math.ceil(progress * 100))
     )
     await deleteFile(fileInfo.path)
     fileInfo.path = compressedVideoPath

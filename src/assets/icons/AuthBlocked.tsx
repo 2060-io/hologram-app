@@ -1,7 +1,7 @@
 import React from 'react'
 import Svg, { G, Path, SvgProps } from 'react-native-svg'
 
-const AuthBlocked: React.FC<SvgProps> = props => (
+const AuthBlocked: React.FC<SvgProps> = (props) => (
   <Svg width={19} height={22} viewBox="0 0 19 22" {...props}>
     <G data-name="Group 1844">
       <G data-name="Group 1843" fill={props.fill}>

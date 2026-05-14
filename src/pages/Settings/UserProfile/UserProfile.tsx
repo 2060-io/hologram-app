@@ -1,17 +1,15 @@
 import { DidCommUserProfileData } from '@2060.io/credo-ts-didcomm-user-profile'
 import { StackScreenProps } from '@react-navigation/stack'
-import React, { useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { ScrollView, TouchableOpacity } from 'react-native'
-
-import getStyles from './styles'
-
 import { UserProfileForm } from '@src/components'
-import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
 import { Text } from '@src/components/common'
+import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
 import { useUserProfile } from '@src/hooks/agent'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { getGlobalStyles } from '@src/styles'
+import React, { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { ScrollView, TouchableOpacity } from 'react-native'
+import getStyles from './styles'
 
 type Props = StackScreenProps<NavigationStackParams, 'UserProfile'>
 
@@ -23,7 +21,7 @@ const UserProfile = ({ navigation }: Props) => {
   const { userProfileData, updateUserProfileData } = useUserProfile()
   const [displayName, setDisplayName] = useState(userProfileData?.displayName)
   const [displayPicture, setDisplayPicture] = useState<DidCommUserProfileData['displayPicture']>(
-    userProfileData?.displayPicture,
+    userProfileData?.displayPicture
   )
   const hasChangedPicture =
     displayPicture && userProfileData?.displayPicture

@@ -1,7 +1,7 @@
 import React from 'react'
 import Svg, { Defs, G, Path, SvgProps } from 'react-native-svg'
 
-const PlayCircle: React.FC<SvgProps> = props => (
+const PlayCircle: React.FC<SvgProps> = (props) => (
   <Svg width={70} height={70} viewBox="0 0 70 70" {...props}>
     <Defs />
     <G filter="url(#a)">

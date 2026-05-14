@@ -4,19 +4,16 @@ import { DidCommMrtdModule } from '@2060.io/credo-ts-didcomm-mrtd'
 import { DidCommReactionsModule } from '@2060.io/credo-ts-didcomm-reactions'
 import { DidCommReceiptsModule } from '@2060.io/credo-ts-didcomm-receipts'
 import { DidCommShortenUrlModule } from '@2060.io/credo-ts-didcomm-shorten-url'
-import {
-  DidCommUserProfileModule,
-  DidCommUserProfileModuleConfig,
-} from '@2060.io/credo-ts-didcomm-user-profile'
+import { DidCommUserProfileModule, DidCommUserProfileModuleConfig } from '@2060.io/credo-ts-didcomm-user-profile'
 import { ActionMenuModule } from '@credo-ts/action-menu'
 import {
   AnonCredsDidCommCredentialFormatService,
-  AnonCredsModule,
   AnonCredsDidCommProofFormatService,
-  LegacyIndyDidCommCredentialFormatService,
-  LegacyIndyDidCommProofFormatService,
+  AnonCredsModule,
   DidCommCredentialV1Protocol,
   DidCommProofV1Protocol,
+  LegacyIndyDidCommCredentialFormatService,
+  LegacyIndyDidCommProofFormatService,
 } from '@credo-ts/anoncreds'
 import { AskarModule } from '@credo-ts/askar'
 import {
@@ -31,29 +28,27 @@ import {
   WebDidResolver,
 } from '@credo-ts/core'
 import {
-  DidCommModule,
   DidCommAutoAcceptCredential,
   DidCommAutoAcceptProof,
+  DidCommCredentialV2Protocol,
+  DidCommHttpOutboundTransport,
   DidCommJsonLdCredentialFormatService,
   DidCommMediatorPickupStrategy,
-  DidCommCredentialV2Protocol,
-  DidCommProofV2Protocol,
-  DidCommHttpOutboundTransport,
   DidCommMimeType,
+  DidCommModule,
+  DidCommProofV2Protocol,
 } from '@credo-ts/didcomm'
 import { DidCommPushNotificationsFcmModule } from '@credo-ts/didcomm-push-notifications'
 import { QuestionAnswerModule } from '@credo-ts/question-answer'
 import { WebVhAnonCredsRegistry, WebVhDidResolver } from '@credo-ts/webvh'
 import { anoncreds } from '@hyperledger/anoncreds-react-native'
 import { askar } from '@openwallet-foundation/askar-react-native'
-import { DidWebAnonCredsRegistry } from 'credo-ts-didweb-anoncreds'
-import { IndyVdrProxyDidResolver, IndyVdrProxyAnonCredsRegistry } from 'credo-ts-indy-vdr-proxy-client'
-
-import { MobileWsOutboundTransport } from '../transport/MobileWsOutboundTransport'
-
-import { walletDirectoryPath } from '@src/utils/RNFS'
 import { DidCommVersion } from '@src/utils/developer'
 import { getAppCheckHeaders } from '@src/utils/firebaseUtils'
+import { walletDirectoryPath } from '@src/utils/RNFS'
+import { DidWebAnonCredsRegistry } from 'credo-ts-didweb-anoncreds'
+import { IndyVdrProxyAnonCredsRegistry, IndyVdrProxyDidResolver } from 'credo-ts-indy-vdr-proxy-client'
+import { MobileWsOutboundTransport } from '../transport/MobileWsOutboundTransport'
 
 const SECONDS_PER_DAY = 60 * 60 * 24
 
@@ -138,10 +133,7 @@ export const getMobileAgentModules = (config: {
         proofProtocols: [
           new DidCommProofV1Protocol({ indyProofFormat: new LegacyIndyDidCommProofFormatService() }),
           new DidCommProofV2Protocol({
-            proofFormats: [
-              new AnonCredsDidCommProofFormatService(),
-              new LegacyIndyDidCommProofFormatService(),
-            ],
+            proofFormats: [new AnonCredsDidCommProofFormatService(), new LegacyIndyDidCommProofFormatService()],
           }),
         ],
       },

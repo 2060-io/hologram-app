@@ -1,8 +1,8 @@
 import {
-  getStorageData,
-  setStorageData,
-  LOGS_ENABLED_PERSIST_KEY,
   DEVELOPER_MODE_ENABLED_PERSIST_KEY,
+  getStorageData,
+  LOGS_ENABLED_PERSIST_KEY,
+  setStorageData,
 } from '@src/services/localStorage'
 
 export interface DevEnvsKeys {
@@ -20,9 +20,9 @@ export const ALL_DIDCOMM_VERSIONS: DidCommVersion[] = ['v1', 'v2']
 export const parseDidcommVersions = (value: string | undefined | null): DidCommVersion[] => {
   const parsed = (value ?? '')
     .split(',')
-    .map(v => v.trim().toLowerCase())
+    .map((v) => v.trim().toLowerCase())
     .filter((v): v is DidCommVersion => v === 'v1' || v === 'v2')
-  const deduped = ALL_DIDCOMM_VERSIONS.filter(v => parsed.includes(v))
+  const deduped = ALL_DIDCOMM_VERSIONS.filter((v) => parsed.includes(v))
   return deduped.length > 0 ? deduped : ['v1']
 }
 

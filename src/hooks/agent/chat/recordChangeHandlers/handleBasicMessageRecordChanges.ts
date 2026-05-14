@@ -1,12 +1,10 @@
 import { DidCommBasicMessageRecord, DidCommBasicMessageRole } from '@credo-ts/didcomm'
+import { ChatEntryRole, ChatEntryState, ChatEntryType, RelatedEntryProps } from '@src/model'
+import { MobileAgent } from '@src/services/agent'
 import Realm from 'realm'
-
 import { getLocalizedPreview, getThumbnail } from '../preview'
 import { createChatEntry, findAllDidcommThreadId } from '../services/ChatEntryService'
 import { addUnread, findOrCreateChatThread } from '../services/ChatThreadService'
-
-import { ChatEntryRole, ChatEntryState, ChatEntryType, RelatedEntryProps } from '@src/model'
-import { MobileAgent } from '@src/services/agent'
 
 export const handleBasicMessageRecordChanges = async (options: {
   agent: MobileAgent
@@ -29,9 +27,7 @@ export const handleBasicMessageRecordChanges = async (options: {
       chatThreadId: thread.id,
       didcommThreadId: basicMessageRecord.threadId,
       role:
-        basicMessageRecord.role === DidCommBasicMessageRole.Receiver
-          ? ChatEntryRole.Receiver
-          : ChatEntryRole.Sender,
+        basicMessageRecord.role === DidCommBasicMessageRole.Receiver ? ChatEntryRole.Receiver : ChatEntryRole.Sender,
       createdAt: (options.receivedAt ?? new Date(basicMessageRecord.sentTime)).getTime(),
       content: basicMessageRecord.content,
       parentThreadId: basicMessageRecord.parentThreadId,

@@ -1,16 +1,14 @@
 import { readdir, TemporaryDirectoryPath } from '@dr.pogodin/react-native-fs'
-import Config from 'react-native-config'
-import { zip, unzip } from 'react-native-zip-archive'
-
-import { existsFile as exists, deleteDir, makeDirectory, mediaDirectoryPath } from './RNFS'
-import { logError } from './log'
-
 import {
-  KeyChainService,
   createAndStoreEncryptedKey,
-  retrieveEncryptedKey,
   deleteEncryptedKey,
+  KeyChainService,
+  retrieveEncryptedKey,
 } from '@src/services/keys'
+import Config from 'react-native-config'
+import { unzip, zip } from 'react-native-zip-archive'
+import { logError } from './log'
+import { deleteDir, existsFile as exists, makeDirectory, mediaDirectoryPath } from './RNFS'
 
 const BACKUP_NAME = Config.BACKUP_NAME
 const ROOT_TEMP_FILES_DIRECTORY = `${TemporaryDirectoryPath}/.Hologram`
@@ -38,8 +36,7 @@ const existsBackupFile = async () => exists(BACKUP_ZIP_FILE_PATH)
 const createBackupDirectory = async () => await makeDirectory(TEMP_BACKUP_FILES_DIRECTORY)
 
 const zipBackup = async (includeMedia: boolean) => {
-  const existsMediaDirectory =
-    (await exists(mediaDirectoryPath)) && (await readdir(mediaDirectoryPath)).length
+  const existsMediaDirectory = (await exists(mediaDirectoryPath)) && (await readdir(mediaDirectoryPath)).length
   if (includeMedia && existsMediaDirectory) await zipMediaFiles()
   try {
     const zipPath = await zip(TEMP_BACKUP_FILES_DIRECTORY, BACKUP_ZIP_FILE_PATH)
@@ -90,18 +87,18 @@ const setBackupKey = (seed: string) => createAndStoreEncryptedKey(KeyChainServic
 const deleteBackupKey = async () => deleteEncryptedKey(KeyChainService.Backup)
 
 export {
-  BACKUP_NAME,
-  BACKUP_ZIP_FILE_PATH,
-  REALM_BACKUP_FILE_PATH,
   AFJ_BACKUP_FILE_PATH,
   BACKUP_MANIFEST_FILE_PATH,
-  existsBackupFile,
-  deleteBackupDirectory,
+  BACKUP_NAME,
+  BACKUP_ZIP_FILE_PATH,
   createBackupDirectory,
-  zipBackup,
-  unzipMediaFiles,
-  unzipBackup,
-  getBackupKey,
-  setBackupKey,
+  deleteBackupDirectory,
   deleteBackupKey,
+  existsBackupFile,
+  getBackupKey,
+  REALM_BACKUP_FILE_PATH,
+  setBackupKey,
+  unzipBackup,
+  unzipMediaFiles,
+  zipBackup,
 }

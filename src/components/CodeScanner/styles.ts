@@ -1,7 +1,6 @@
-import { StyleSheet } from 'react-native'
-
 import { AppTheme } from '@src/styles'
 import { screenHeight } from '@src/utils/responsiveUtils'
+import { StyleSheet } from 'react-native'
 
 export default (theme: AppTheme) =>
   StyleSheet.create({

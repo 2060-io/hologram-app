@@ -7,43 +7,48 @@ import {
   DidCommShareMediaMessage,
 } from '@2060.io/credo-ts-didcomm-media-sharing'
 import { MrzDataRequestMessage } from '@2060.io/credo-ts-didcomm-mrtd'
+import { DidCommMessageReactionsReceivedEvent, DidCommReactionsEventTypes } from '@2060.io/credo-ts-didcomm-reactions'
 import {
-  DidCommMessageReactionsReceivedEvent,
-  DidCommReactionsEventTypes,
-} from '@2060.io/credo-ts-didcomm-reactions'
-import {
-  ReceiptsEventTypes,
+  DidCommMessageReceipt,
+  DidCommMessageReceiptOptions,
   MessageReceiptsReceivedEvent,
   MessageState,
-  DidCommMessageReceiptOptions,
-  DidCommMessageReceipt,
+  ReceiptsEventTypes,
 } from '@2060.io/credo-ts-didcomm-receipts'
-import {
-  DidCommConnectionProfileUpdatedEvent,
-  DidCommProfileEventTypes,
-} from '@2060.io/credo-ts-didcomm-user-profile'
+import { DidCommConnectionProfileUpdatedEvent, DidCommProfileEventTypes } from '@2060.io/credo-ts-didcomm-user-profile'
 import { DidCommProposeCredentialV1Message } from '@credo-ts/anoncreds'
 import { RecordUpdatedEvent, RepositoryEventTypes, tryParseDid } from '@credo-ts/core'
 import {
+  DidCommBasicMessage,
+  DidCommConnectionRecord,
+  DidCommConnectionType,
   DidCommEventTypes,
   DidCommMessage,
   DidCommMessageProcessedEvent,
   DidCommMessageSentEvent,
-  DidCommBasicMessage,
-  DidCommConnectionRecord,
-  DidCommConnectionType,
   DidCommOutOfBandInvitation,
   DidCommOutOfBandState,
   DidCommProposePresentationV2Message,
-  parseMessageType,
   OutboundMessageSendStatus,
+  parseMessageType,
 } from '@credo-ts/didcomm'
-import { QuestionMessage, AnswerMessage } from '@credo-ts/question-answer'
+import { AnswerMessage, QuestionMessage } from '@credo-ts/question-answer'
+import { ChatEntryRole, ChatEntryState, ChatEntryType, InvitationMetadata } from '@src/model'
+import { InvitationState } from '@src/model/InvitationState'
+import { AgentActionQueueSingleton } from '@src/services/AgentActionQueueSingleton'
+import AgentSingleton from '@src/services/AgentSingleton'
+import { MobileAgent } from '@src/services/agent'
+import { OutOfBandInvitationEvent, OutOfBandInvitationEventTypes } from '@src/services/agent/oob/OutOfBandEvents'
+import { log } from '@src/utils'
+import {
+  getConnectionDisplayName,
+  getConnectionDisplayPicture,
+  setLastTimeProfileReceived,
+  supportsMessageReceipts,
+} from '@src/utils/connectionUtils'
 import Realm from 'realm'
-
 import { AgentActionType } from '../actions/AgentAction'
 import { SendReceiptsParameters } from '../actions/types'
-
 import { DidCommMessageDirection } from './DidCommMessageDirection'
 import { handleCallMessages, handleMrtdMessages } from './messageHandlers'
 import {
@@ -61,23 +66,6 @@ import {
   updateChatEntry,
 } from './services/ChatEntryService'
 import { addUnread, findChatThread, findOrCreateChatThread, updateThread } from './services/ChatThreadService'
-
-import { ChatEntryType, ChatEntryRole, ChatEntryState, InvitationMetadata } from '@src/model'
-import { InvitationState } from '@src/model/InvitationState'
-import { AgentActionQueueSingleton } from '@src/services/AgentActionQueueSingleton'
-import AgentSingleton from '@src/services/AgentSingleton'
-import { MobileAgent } from '@src/services/agent'
-import {
-  OutOfBandInvitationEvent,
-  OutOfBandInvitationEventTypes,
-} from '@src/services/agent/oob/OutOfBandEvents'
-import { log } from '@src/utils'
-import {
-  getConnectionDisplayName,
-  getConnectionDisplayPicture,
-  setLastTimeProfileReceived,
-  supportsMessageReceipts,
-} from '@src/utils/connectionUtils'
 
 let getActiveChatThreadId: () => string | undefined
 
@@ -100,7 +88,7 @@ export function subscribeToAgentChatEvents(
   agent: MobileAgent,
   realm: Realm,
   forceRefreshFunctionReference: boolean,
-  receivedGetActiveChatThreadId: () => string | undefined,
+  receivedGetActiveChatThreadId: () => string | undefined
 ) {
   getActiveChatThreadId = forceRefreshFunctionReference ? receivedGetActiveChatThreadId : () => undefined
   const mobileAgentInstance = AgentSingleton.instance
@@ -217,9 +205,7 @@ export function subscribeToAgentChatEvents(
     const status = data.payload.status
     const associatedRecord = outboundMessage.associatedRecord
 
-    if (
-      [OutboundMessageSendStatus.SentToSession, OutboundMessageSendStatus.SentToTransport].includes(status)
-    ) {
+    if ([OutboundMessageSendStatus.SentToSession, OutboundMessageSendStatus.SentToTransport].includes(status)) {
       await messageEventsListener({
         message: outboundMessage.message,
         direction: 'outbound',
@@ -261,7 +247,7 @@ export function subscribeToAgentChatEvents(
           const entryReactions = entry.reactions ? entry.reactions : []
 
           const reactionIndex = entryReactions.findIndex(
-            item => item.role === ChatEntryRole.Receiver && item.emoji === reaction.emoji,
+            (item) => item.role === ChatEntryRole.Receiver && item.emoji === reaction.emoji
           )
 
           if (reaction.action === 'react' && reactionIndex === -1) {
@@ -331,11 +317,7 @@ export function subscribeToAgentChatEvents(
     // of the chat thread it belongs to
     if (action === 'Accepted' || action === 'Refused') {
       // Find Invitation entry associated to this record and mark it as replied
-      const invitationEntries = findAllByAssociatedRecordId(
-        realm,
-        outOfBandRecord.id,
-        ChatEntryType.Invitation,
-      )
+      const invitationEntries = findAllByAssociatedRecordId(realm, outOfBandRecord.id, ChatEntryType.Invitation)
 
       for (const invitationEntry of invitationEntries) {
         // only update those entries that are not already marked as "replied"
@@ -368,9 +350,7 @@ export function subscribeToAgentChatEvents(
         outOfBandRecord.state === DidCommOutOfBandState.Done
           ? {
               state: InvitationState.AlreadyConnected,
-              label: existingConnection
-                ? getConnectionDisplayName(existingConnection)
-                : (label ?? 'Unlabeled'),
+              label: existingConnection ? getConnectionDisplayName(existingConnection) : (label ?? 'Unlabeled'),
               imageUrl: existingConnection ? getConnectionDisplayPicture(existingConnection) : imageUrl,
               did,
             }
@@ -426,10 +406,7 @@ export function subscribeToAgentChatEvents(
   agent.events.on(DidCommMediaSharingEventTypes.StateChanged, mediaSharingCreationEventListener)
   agent.events.on(DidCommEventTypes.DidCommMessageSent, agentMessageSentEventListener)
   agent.events.on(ReceiptsEventTypes.MessageReceiptsReceived, messageReceiptsReceivedListener)
-  agent.events.on(
-    DidCommReactionsEventTypes.DidCommMessageReactionsReceived,
-    messageReactionsReceivedListener,
-  )
+  agent.events.on(DidCommReactionsEventTypes.DidCommMessageReactionsReceived, messageReactionsReceivedListener)
   agent.events.on(DidCommEventTypes.DidCommMessageProcessed, agentMessageProcessedListener)
   agent.events.on(OutOfBandInvitationEventTypes.OutOfBandInvitationEvent, oobListener)
   agent.events.on(DidCommProfileEventTypes.ConnectionProfileUpdated, connectionProfileListener)
@@ -439,10 +416,7 @@ export function subscribeToAgentChatEvents(
     agent.events.off(DidCommMediaSharingEventTypes.StateChanged, mediaSharingCreationEventListener)
     agent.events.off(DidCommEventTypes.DidCommMessageSent, agentMessageSentEventListener)
     agent.events.off(ReceiptsEventTypes.MessageReceiptsReceived, messageReceiptsReceivedListener)
-    agent.events.off(
-      DidCommReactionsEventTypes.DidCommMessageReactionsReceived,
-      messageReactionsReceivedListener,
-    )
+    agent.events.off(DidCommReactionsEventTypes.DidCommMessageReactionsReceived, messageReactionsReceivedListener)
     agent.events.off(DidCommEventTypes.DidCommMessageProcessed, agentMessageProcessedListener)
     agent.events.off(OutOfBandInvitationEventTypes.OutOfBandInvitationEvent, oobListener)
     agent.events.off(DidCommProfileEventTypes.ConnectionProfileUpdated, connectionProfileListener)

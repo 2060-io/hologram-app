@@ -1,18 +1,13 @@
-import React, { useMemo } from 'react'
-import { useTranslation } from 'react-i18next'
-import { View, ActivityIndicator, TouchableOpacity } from 'react-native'
-
-import getStyles from './styles'
-
-import { Text, SvgIcon, MainButton } from '@src/components/common'
+import { MainButton, SvgIcon, Text } from '@src/components/common'
 import { IS_ANDROID, IS_IOS } from '@src/constants'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
-import {
-  WalletBackupInfoProps,
-  WalletBackupHandlerProps,
-} from '@src/pages/Settings/WalletBackup/WalletBackupProps'
+import { WalletBackupHandlerProps, WalletBackupInfoProps } from '@src/pages/Settings/WalletBackup/WalletBackupProps'
 import { getFileSize } from '@src/utils'
 import { dateToString } from '@src/utils/dateUtils'
+import React, { useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
+import { ActivityIndicator, TouchableOpacity, View } from 'react-native'
+import getStyles from './styles'
 
 const WalletBackupHandler = ({
   containerStyle,
@@ -61,7 +56,7 @@ const WalletBackupInfo = ({
         backupHandler={backupHandler}
         containerStyle={styles.subContainer}
         onLoading={() => <ActivityIndicator size="large" color={theme.colors.green} />}
-        onInfo={backupInfo => (
+        onInfo={(backupInfo) => (
           <>
             <Text fontFamily="EuclidCircularA-Medium" style={styles.mediumText}>
               {`${t('settings.lastBackup')}: ${dateToString(backupInfo.modifyDate, 'DD/MM/YYYY h:mm a')}`}

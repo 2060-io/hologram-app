@@ -1,10 +1,9 @@
-import React from 'react'
-import { StyleSheet, View } from 'react-native'
-
 import { Text } from '@src/components/common'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { AppTheme } from '@src/styles'
 import { hexTransparency } from '@src/utils/colorUtils'
+import React from 'react'
+import { StyleSheet, View } from 'react-native'
 
 type Props = {
   text: string

@@ -1,13 +1,3 @@
-import { Skeleton } from 'moti/skeleton'
-import React, { memo, useCallback, useMemo, useRef, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { View, Linking, TouchableOpacity, ViewStyle } from 'react-native'
-
-import FullScreenImage from '../FullScreenImage'
-
-import Did from './Did'
-import getStyles from './styles'
-
 import Avatar from '@src/components/common/Avatar'
 import SvgIcon from '@src/components/common/SvgIcon'
 import Text from '@src/components/common/Text'
@@ -18,6 +8,13 @@ import { ServiceInfo } from '@src/model'
 import { getFlagEmoji } from '@src/utils'
 import { widthPercentageToDP } from '@src/utils/responsiveUtils'
 import { toast } from '@src/utils/toast'
+import { Skeleton } from 'moti/skeleton'
+import React, { memo, useCallback, useMemo, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { Linking, TouchableOpacity, View, ViewStyle } from 'react-native'
+import FullScreenImage from '../FullScreenImage'
+import Did from './Did'
+import getStyles from './styles'
 
 type Props = {
   serviceInfo: ServiceInfo
@@ -70,12 +67,7 @@ const ServiceMainInfo = ({ serviceInfo, isFetchingInfo, failedFetchInfo, contain
         show={isFetchingInfo}
       />
     ) : (
-      <Avatar
-        uri={serviceInfo?.logoUrl}
-        label={serviceInfo?.name}
-        size="25%"
-        onImagePressed={onAvatarImagePressed}
-      />
+      <Avatar uri={serviceInfo?.logoUrl} label={serviceInfo?.name} size="25%" onImagePressed={onAvatarImagePressed} />
     )
   }, [isFetchingInfo, failedFetchInfo, serviceInfo])
 
@@ -128,10 +120,7 @@ const ServiceMainInfo = ({ serviceInfo, isFetchingInfo, failedFetchInfo, contain
             </TouchableOpacity>
           )}
           {dataPrivacyUrl && (
-            <TouchableOpacity
-              style={styles.privacyPolicyContainer}
-              onPress={() => tryToOpenURL(dataPrivacyUrl)}
-            >
+            <TouchableOpacity style={styles.privacyPolicyContainer} onPress={() => tryToOpenURL(dataPrivacyUrl)}>
               <Text style={[styles.text, styles.underLineText]}>{t('invitation.privacyPolicy')}</Text>
               <SvgIcon name="arrowUpRightFromSquare" fill={theme.colors.primaryText} width={15} height={15} />
             </TouchableOpacity>

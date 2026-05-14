@@ -1,11 +1,8 @@
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import React, { memo } from 'react'
 import { View, ViewStyle } from 'react-native'
-
 import { ParsedText } from '../components'
-
 import getStyles from './styles'
-
-import { useTheme } from '@src/hooks/providers/ThemeProvider'
 
 type Props = {
   text: string

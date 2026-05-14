@@ -1,7 +1,7 @@
 import React from 'react'
 import Svg, { Path, SvgProps } from 'react-native-svg'
 
-const TrashOutlined: React.FC<SvgProps> = props => (
+const TrashOutlined: React.FC<SvgProps> = (props) => (
   <Svg width={12.84} height={17.12} viewBox="0 0 12.84 17.12" {...props}>
     <Path
       data-name="Trazado 480"

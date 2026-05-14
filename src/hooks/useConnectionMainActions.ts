@@ -1,12 +1,10 @@
 import { StackActions } from '@react-navigation/native'
+import { ActionProps, ConnectionMainActionsProps } from '@src/components/common/ConnectionMainActions/Props'
+import { isBlocked, isService, supportsAudioCalls, supportsVideoCalls } from '@src/utils/connectionUtils'
 import { useMemo } from 'react'
-
 import { useChats } from './agent/ChatsProvider'
 import { useConfig } from './providers/ConfigProvider'
 import { useVideoCallContext } from './providers/useVideoCallContext'
-
-import { ActionProps, ConnectionMainActionsProps } from '@src/components/common/ConnectionMainActions/Props'
-import { isBlocked, isService, supportsAudioCalls, supportsVideoCalls } from '@src/utils/connectionUtils'
 
 type Props = Omit<ConnectionMainActionsProps, 'connectionId'>
 

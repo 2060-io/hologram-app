@@ -1,11 +1,9 @@
-import React from 'react'
-import { View } from 'react-native'
-
-import getStyles from './styles'
-
 import { ConnectionRefusedByAge, SvgIcon } from '@src/components/common'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { widthPercentageToDP } from '@src/utils/responsiveUtils'
+import React from 'react'
+import { View } from 'react-native'
+import getStyles from './styles'
 
 type Props = {
   kidAge: number

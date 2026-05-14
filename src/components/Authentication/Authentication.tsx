@@ -1,14 +1,12 @@
-import { authenticateAsync, getEnrolledLevelAsync, SecurityLevel } from 'expo-local-authentication'
-import React, { useEffect, useState, useRef } from 'react'
-import { useTranslation } from 'react-i18next'
-import { View, TouchableOpacity } from 'react-native'
-
-import getStyles from './styles'
-
 import AppIcon from '@src/assets/icons/AppIcon'
 import { SvgIcon, Text } from '@src/components/common'
 import { useNavigation } from '@src/hooks/agent/NavigationProvider'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { authenticateAsync, getEnrolledLevelAsync, SecurityLevel } from 'expo-local-authentication'
+import React, { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { TouchableOpacity, View } from 'react-native'
+import getStyles from './styles'
 
 type Props = {
   isAppActive: boolean
@@ -59,11 +57,7 @@ const Authentication = ({ isAppActive, makeAutomaticAuth }: Props) => {
             {userHasBiometricAuthEnable ? (
               <>
                 <Text style={styles.enableText}>{t(`authentication.${promptMessage.current}`)}</Text>
-                <TouchableOpacity
-                  onPress={makeBiometricAuth}
-                  activeOpacity={0.5}
-                  style={styles.containerBtnAuth}
-                >
+                <TouchableOpacity onPress={makeBiometricAuth} activeOpacity={0.5} style={styles.containerBtnAuth}>
                   <SvgIcon name="authBlocked" fill={theme.colors.white} />
                   <Text fontFamily="EuclidCircularA-Medium" style={styles.btnAuthText}>
                     {t('authentication.auth')}
@@ -78,11 +72,7 @@ const Authentication = ({ isAppActive, makeAutomaticAuth }: Props) => {
                   </View>
                   <Text style={styles.enableErrorText}>{t(`authentication.${promptMessage.current}`)}</Text>
                 </View>
-                <TouchableOpacity
-                  onPress={makeBiometricAuth}
-                  activeOpacity={0.5}
-                  style={styles.containerBtnRetry}
-                >
+                <TouchableOpacity onPress={makeBiometricAuth} activeOpacity={0.5} style={styles.containerBtnRetry}>
                   <Text fontFamily="EuclidCircularA-Medium" style={styles.btnRetryText}>
                     {t('authentication.retry')}
                   </Text>

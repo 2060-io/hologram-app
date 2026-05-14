@@ -7,11 +7,7 @@ export function getVideoProperties(videoPath: string): Promise<MediaInfo> {
   return VideoProperties.getVideoProperties(videoPath)
 }
 
-export function createChunks(
-  filePath: string,
-  outputFilePathPrefix: string,
-  chunkSize: number,
-): Promise<string[]> {
+export function createChunks(filePath: string, outputFilePathPrefix: string, chunkSize: number): Promise<string[]> {
   return FileChunkGenerator.createChunks(filePath, outputFilePathPrefix, chunkSize)
 }
 
@@ -24,7 +20,7 @@ export function encryptFile(
   outputPath: string,
   key: string,
   iv: string,
-  algorithm: string,
+  algorithm: string
 ): Promise<boolean> {
   return NativeFileCiphering.encryptFile(filePath, outputPath, key, iv, algorithm)
 }
@@ -33,7 +29,7 @@ export function decryptFile(
   outputPath: string,
   key: string,
   iv: string,
-  algorithm: string,
+  algorithm: string
 ): Promise<boolean> {
   return NativeFileCiphering.decryptFile(filePath, outputPath, key, iv, algorithm)
 }

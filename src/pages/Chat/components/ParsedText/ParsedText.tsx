@@ -1,9 +1,8 @@
-import React from 'react'
-import { Linking, StyleSheet, TextProps } from 'react-native'
-
 import { Text } from '@src/components/common'
 import { AppTheme } from '@src/styles'
 import { logError } from '@src/utils'
+import React from 'react'
+import { Linking, StyleSheet, TextProps } from 'react-native'
 
 type ParsedTextProps = {
   theme: AppTheme
@@ -26,7 +25,7 @@ const ParsedText: React.FC<ParsedTextProps> = ({ theme, text, textProps }) => {
   return (
     <Text style={styles.textStyle} {...textProps}>
       {textIncludesHttp
-        ? text?.split?.(' ')?.map(value => {
+        ? text?.split?.(' ')?.map((value) => {
             if (value.startsWith('http')) {
               const isSecureUrl = value.startsWith('https')
               return (

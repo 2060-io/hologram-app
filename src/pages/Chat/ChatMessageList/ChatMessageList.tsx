@@ -1,9 +1,7 @@
+import { ChatEntryMessage, CommonMessageProps } from '@src/pages/Chat/ChatMessage/Props'
 import React, { memo, Ref } from 'react'
 import { FlatList, FlatListProps, StyleSheet } from 'react-native'
-
 import { ChatMessage } from '../ChatMessage'
-
-import { CommonMessageProps, ChatEntryMessage } from '@src/pages/Chat/ChatMessage/Props'
 
 type ListViewProps<TMessage> = FlatListProps<TMessage> & {
   ref?: Ref<FlatList<TMessage>>
@@ -38,7 +36,7 @@ export const ChatMessageList = memo((props: ChatMessageListProps) => {
     <FlatList
       data={messages}
       inverted
-      keyExtractor={item => item.id}
+      keyExtractor={(item) => item.id}
       renderItem={({ item: currentMessage, index }) =>
         renderItem({
           currentMessage,

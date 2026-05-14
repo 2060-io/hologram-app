@@ -1,20 +1,13 @@
-import React from 'react'
-import { View, TouchableOpacity } from 'react-native'
-
-import SvgIcon, { IconsNames } from '../SvgIcon'
-
-import { ConnectionMainActionsProps, ActionIconsNames } from './Props'
-import styles from './styles'
-
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { useConnectionMainActions } from '@src/hooks/useConnectionMainActions'
 import { withRenderConnectionMainActions } from '@src/pages/ConnectionDetails/withRenderConnectionMainActions'
+import React from 'react'
+import { TouchableOpacity, View } from 'react-native'
+import SvgIcon, { IconsNames } from '../SvgIcon'
+import { ActionIconsNames, ConnectionMainActionsProps } from './Props'
+import styles from './styles'
 
-const ConnectionMainActions = ({
-  navigation,
-  connection,
-  includeDefaultActions,
-}: ConnectionMainActionsProps) => {
+const ConnectionMainActions = ({ navigation, connection, includeDefaultActions }: ConnectionMainActionsProps) => {
   const theme = useTheme()
   const { actions } = useConnectionMainActions({ navigation, connection, includeDefaultActions })
 

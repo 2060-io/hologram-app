@@ -1,23 +1,20 @@
 import { MrtdProblemReportReason } from '@2060.io/credo-ts-didcomm-mrtd'
-import React, { useState } from 'react'
-import { Trans, useTranslation } from 'react-i18next'
-import { Alert, View } from 'react-native'
-import EIdReader from 'react-native-eid-reader'
-
-import { BlueButton, Header, OutlinedBlueButton, State } from '../components'
-
-import EMrtdInstructions from './EMrtdInstructions'
-import { Props } from './EMrtdReadRequestChatViewProps'
-import getStyles from './styles'
-
 import { Modal, SvgIcon, Text } from '@src/components/common'
 import { useChat, useMobileAgent } from '@src/hooks/agent'
 import { useScreenLock } from '@src/hooks/providers/ScreenLockProvider'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
-import { MrzInfo, EmrtdReadRequestState } from '@src/model'
+import { EmrtdReadRequestState, MrzInfo } from '@src/model'
 import { log, logError } from '@src/utils'
 import { widthPercentageToDP } from '@src/utils/responsiveUtils'
 import { toast } from '@src/utils/toast'
+import React, { useState } from 'react'
+import { Trans, useTranslation } from 'react-i18next'
+import { Alert, View } from 'react-native'
+import EIdReader from 'react-native-eid-reader'
+import { BlueButton, Header, OutlinedBlueButton, State } from '../components'
+import EMrtdInstructions from './EMrtdInstructions'
+import { Props } from './EMrtdReadRequestChatViewProps'
+import getStyles from './styles'
 
 const EMrtdReadRequestChatView = (props: Props) => {
   const theme = useTheme()

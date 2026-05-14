@@ -1,15 +1,13 @@
-import { DidCommMessageProcessedEvent, DidCommStatusV2Message, DidCommEventTypes } from '@credo-ts/didcomm'
+import { DidCommEventTypes, DidCommMessageProcessedEvent, DidCommStatusV2Message } from '@credo-ts/didcomm'
 import { FirebaseMessagingTypes } from '@react-native-firebase/messaging'
-
-import { AgentActionQueueSingleton } from './AgentActionQueueSingleton'
-import AgentSingleton from './AgentSingleton'
-import RealmSingleton from './RealmSingleton'
-
 import { manageBackgroundChatEntryChanges, subscribeToAgentChatEvents } from '@src/hooks/agent/chat'
 import { manageConnectionStateChangedEvent } from '@src/hooks/agent/connections/manageConnectionStateChangedEvent'
 import { subscribeToAgentConnectionEvents } from '@src/hooks/agent/connections/subscribeToAgentConnectionEvents'
 import { log, logWarn } from '@src/utils'
 import { arePushNotificationsAllowed, deleteRemoteNotifications } from '@src/utils/pushNotificationsUtils'
+import { AgentActionQueueSingleton } from './AgentActionQueueSingleton'
+import AgentSingleton from './AgentSingleton'
+import RealmSingleton from './RealmSingleton'
 
 const makeRequestToLocalServer = (payload: Record<string, string>) => {
   if (__DEV__) {
@@ -49,12 +47,8 @@ export async function backgroundPushNotificationHandler(remoteMessage: FirebaseM
     await mobileAgentInstance.setupMobileAgent()
     const agent = mobileAgentInstance.getMobileAgent()
     if (!agent) return
-    const { addChatEntryChangeListener, removeChatEntryChangeListener } = manageBackgroundChatEntryChanges(
-      realm,
-      agent,
-    )
-    const { addConnectionChangeListener, removeConnectionChangeListener } =
-      manageConnectionStateChangedEvent(agent)
+    const { addChatEntryChangeListener, removeChatEntryChangeListener } = manageBackgroundChatEntryChanges(realm, agent)
+    const { addConnectionChangeListener, removeConnectionChangeListener } = manageConnectionStateChangedEvent(agent)
     addChatEntryChangeListener()
     addConnectionChangeListener()
     if (!mobileAgentInstance.getMobileAgent()?.isInitialized) {
@@ -76,7 +70,7 @@ export async function backgroundPushNotificationHandler(remoteMessage: FirebaseM
     })
 
     // this events is yet calling when app awakes and receives more because agent is still alive and the same
-    agent.events.on<DidCommMessageProcessedEvent>(DidCommEventTypes.DidCommMessageProcessed, async data => {
+    agent.events.on<DidCommMessageProcessedEvent>(DidCommEventTypes.DidCommMessageProcessed, async (data) => {
       const message = data.payload.message
       log(`Message processed for connection id ${data.payload.connection?.id} Type: ${message.type}`)
       makeRequestToLocalServer({

@@ -1,16 +1,11 @@
-import axios from 'axios'
-import { useCallback, useEffect, useRef, useState } from 'react'
-
-import {
-  createResizedImage,
-  LOCAL_PREVIEW_IMAGE_QUALITY,
-  LOCAL_PREVIEW_IMAGE_WIDTH,
-} from '@src/hooks/media/preview'
+import { createResizedImage, LOCAL_PREVIEW_IMAGE_QUALITY, LOCAL_PREVIEW_IMAGE_WIDTH } from '@src/hooks/media/preview'
 import { useLocalRealm } from '@src/hooks/providers/RealmProvider'
 import { useRefreshedAvatarsUrls } from '@src/hooks/providers/RefreshedAvatarsUrlsProvider'
 import { CacheRecord } from '@src/model'
 import { logError } from '@src/utils'
 import { deleteFile } from '@src/utils/RNFS'
+import axios from 'axios'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 const downloadImage = async (url: string) => {
   try {
@@ -118,9 +113,9 @@ export const useImage = ({ uri, onError, onImageContent, enableImageRefresh }: P
 
   const findImageRecord = useCallback(
     (url: string) => {
-      return realm ? realm.objects(CacheRecord).find(item => item.url === url) : undefined
+      return realm ? realm.objects(CacheRecord).find((item) => item.url === url) : undefined
     },
-    [realm],
+    [realm]
   )
 
   const saveImageRecord = useCallback(
@@ -134,7 +129,7 @@ export const useImage = ({ uri, onError, onImageContent, enableImageRefresh }: P
         })
       })
     },
-    [realm],
+    [realm]
   )
 
   const updateImageRecord = useCallback(
@@ -146,7 +141,7 @@ export const useImage = ({ uri, onError, onImageContent, enableImageRefresh }: P
         imageRecord.lastModified = lastModified
       })
     },
-    [realm],
+    [realm]
   )
 
   return {

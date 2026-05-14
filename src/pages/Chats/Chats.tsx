@@ -1,29 +1,27 @@
 import { StackActions } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
-import React, { useEffect, useRef, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { View, TouchableOpacity, FlatList } from 'react-native'
-import { uses24HourClock } from 'react-native-localize'
-import { SafeAreaView } from 'react-native-safe-area-context'
-import { SwipeRow } from 'react-native-swipe-list-view'
-
-import getStyles from './styles'
-
 import {
-  ChatThread,
-  SearchInput,
-  ChatSwipeOptions,
-  ModalBottomHalf,
-  ConfirmChatDeletion,
   ChatFilterOptions,
+  ChatSwipeOptions,
+  ChatThread,
+  ConfirmChatDeletion,
+  ModalBottomHalf,
+  SearchInput,
 } from '@src/components'
-import { Text, SvgIcon, HeaderTitle } from '@src/components/common'
+import { HeaderTitle, SvgIcon, Text } from '@src/components/common'
 import { ChatCategory, useChats, useMobileAgent } from '@src/hooks/agent'
 import { deleteConnection } from '@src/hooks/agent/connections'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { ChatThreadData } from '@src/model'
 import { ChatsStackParams } from '@src/navigators/ChatStackParams'
 import { widthPercentageToDP } from '@src/utils/responsiveUtils'
+import React, { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { FlatList, TouchableOpacity, View } from 'react-native'
+import { uses24HourClock } from 'react-native-localize'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import { SwipeRow } from 'react-native-swipe-list-view'
+import getStyles from './styles'
 
 type Props = StackScreenProps<ChatsStackParams, 'ChatsMain'>
 
@@ -40,9 +38,7 @@ const Chats = ({ navigation }: Props) => {
   const [showSearchInput, setShowSearchInput] = useState(false)
   const [selectedChatIds, setSelectedChatIds] = useState<string[]>([])
   const swipeRowReferences = useRef<Record<string, SwipeRow<unknown>>>({})
-  const [chatThreadToDelete, setChatThreadToDelete] = useState<{ id: string; connectionId?: string } | null>(
-    null,
-  )
+  const [chatThreadToDelete, setChatThreadToDelete] = useState<{ id: string; connectionId?: string } | null>(null)
   const isCategoryAll = filters.category === 'all'
   const isCategoryArchived = isCategoryAll && filters.archived
   const selectedCategory = isCategoryArchived ? 'archived' : filters.category
@@ -127,10 +123,7 @@ const Chats = ({ navigation }: Props) => {
     )
     const renderHeaderTitle = () => (
       <HeaderTitle
-        title={
-          t('chat.chats') +
-          ` ${isCategoryAll && !filters.archived ? '' : '- ' + t(`chat.${selectedCategory}`)}`
-        }
+        title={t('chat.chats') + ` ${isCategoryAll && !filters.archived ? '' : '- ' + t(`chat.${selectedCategory}`)}`}
         theme={theme}
       />
     )
@@ -175,7 +168,7 @@ const Chats = ({ navigation }: Props) => {
                   childCount={(isMainChatIncluded(chat) ? 1 : 0) + chat.subthreads.length}
                   unreadCount={chat.subthreads.reduce(
                     unreadThreadsCount,
-                    isMainChatIncluded(chat) ? chat.unreadCount : 0,
+                    isMainChatIncluded(chat) ? chat.unreadCount : 0
                   )}
                   using24HourFormat={using24HourFormat}
                   onPressChatThread={() => goToSubChats(chat.id)}
@@ -185,14 +178,14 @@ const Chats = ({ navigation }: Props) => {
             const isSwiped = selectedChatIds.includes(chat.id)
             return (
               <SwipeRow
-                ref={ref => {
+                ref={(ref) => {
                   if (ref) swipeRowReferences.current[chat.id] = ref
                 }}
                 key={chat.id}
                 disableRightSwipe
                 rightOpenValue={-widthPercentageToDP('36.20%')}
-                swipeGestureBegan={() => setSelectedChatIds(prev => [...prev, chat.id])}
-                onRowClose={() => setSelectedChatIds(prev => prev.filter(id => id !== chat.id))}
+                swipeGestureBegan={() => setSelectedChatIds((prev) => [...prev, chat.id])}
+                onRowClose={() => setSelectedChatIds((prev) => prev.filter((id) => id !== chat.id))}
                 disableHiddenLayoutCalculation
               >
                 <ChatSwipeOptions
@@ -218,7 +211,7 @@ const Chats = ({ navigation }: Props) => {
               </SwipeRow>
             )
           }}
-          keyExtractor={item => item.id}
+          keyExtractor={(item) => item.id}
           ListEmptyComponent={
             !loading ? (
               <View style={styles.containerListEmpty}>

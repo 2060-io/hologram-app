@@ -1,12 +1,10 @@
 import { DidCommConnectionRecord } from '@credo-ts/didcomm'
 import { fetch as NetInfo } from '@react-native-community/netinfo'
-
-import { AgentActionType } from '../actions/AgentAction'
-import { DeleteConnectionParameters } from '../actions/types'
-
 import { AgentActionQueueSingleton } from '@src/services/AgentActionQueueSingleton'
 import { MobileAgent } from '@src/services/agent/MobileAgent'
-import { isTerminated, deletePendingConnection } from '@src/utils/connectionUtils'
+import { deletePendingConnection, isTerminated } from '@src/utils/connectionUtils'
+import { AgentActionType } from '../actions/AgentAction'
+import { DeleteConnectionParameters } from '../actions/types'
 
 export const deleteConnection = async (agent: MobileAgent, connection: DidCommConnectionRecord) => {
   if (connection.isReady && !isTerminated(connection)) {
@@ -20,7 +18,7 @@ export const deleteConnection = async (agent: MobileAgent, connection: DidCommCo
         type: AgentActionType.DeleteConnection,
         parameters,
       },
-      isNetworkConnected,
+      isNetworkConnected
     )
   } else {
     await deletePendingConnection(agent, connection)

@@ -1,15 +1,13 @@
-import { TrustResolutionOutcome } from '@verana-labs/verre'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { View } from 'react-native'
-
-import BaseConnectionInvitation, { ConnectionInvitationProps } from './BaseConnectionInvitation'
-import CanNotConnect from './CanNotConnect'
-
 import { ServiceInformation } from '@src/components/common'
 import { useUserProfile } from '@src/hooks/agent'
 import { useFetchServiceInfo } from '@src/hooks/useFetchServiceInfo'
 import { useValidateKidAgeRestrictions } from '@src/hooks/useValidateKidAgeRestrictions'
 import { ServiceInfo, ServiceStatus } from '@src/model'
+import { TrustResolutionOutcome } from '@verana-labs/verre'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { View } from 'react-native'
+import BaseConnectionInvitation, { ConnectionInvitationProps } from './BaseConnectionInvitation'
+import CanNotConnect from './CanNotConnect'
 
 const ConnectionInvitationForVerifiableService = (props: ConnectionInvitationProps) => {
   const { route } = props

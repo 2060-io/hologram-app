@@ -1,7 +1,7 @@
 import React from 'react'
-import Svg, { Defs, G, Rect, Circle, Text, TSpan, SvgProps } from 'react-native-svg'
+import Svg, { Circle, Defs, G, Rect, SvgProps, Text, TSpan } from 'react-native-svg'
 
-const DarkCredentialCardSkeleton: React.FC<SvgProps> = props => (
+const DarkCredentialCardSkeleton: React.FC<SvgProps> = (props) => (
   <Svg viewBox="0 0 394 245" {...props}>
     <Defs />
     <G data-name="Grupo 1992" transform="translate(-7138 -4270)">

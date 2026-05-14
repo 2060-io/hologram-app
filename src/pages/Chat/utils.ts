@@ -1,20 +1,19 @@
 import { utils } from '@credo-ts/core'
-import { t } from 'i18next'
-import { Results } from 'realm'
-
 import {
-  isMediaType,
-  MediaSharingMetadata,
+  ChatEntry,
   ChatEntryData,
-  SystemMessageKind,
-  ChatEntryType,
   ChatEntryRole,
   ChatEntryState,
+  ChatEntryType,
+  isMediaType,
+  MediaSharingMetadata,
+  SystemMessageKind,
   SystemMessageMetadata,
-  ChatEntry,
 } from '@src/model'
 import { ChatEntryMessage } from '@src/pages/Chat/ChatMessage/Props'
 import { deleteFile, getLocalFileUri } from '@src/utils/RNFS'
+import { t } from 'i18next'
+import { Results } from 'realm'
 
 const buildSystemMessage = (options: {
   kind: SystemMessageKind
@@ -47,13 +46,8 @@ export const getSystemMessage = (options: {
   isConnectionDeleted: boolean
   displayName?: string
 }): ChatEntryMessage | null => {
-  const {
-    isConnectionCompleted,
-    isConnectionBlocked,
-    isConnectionTerminated,
-    isConnectionDeleted,
-    displayName,
-  } = options
+  const { isConnectionCompleted, isConnectionBlocked, isConnectionTerminated, isConnectionDeleted, displayName } =
+    options
 
   if (isConnectionDeleted) {
     return buildSystemMessage({ kind: 'deleted', text: t('chat.connectionDeleted') })
@@ -138,12 +132,12 @@ export const getMinutesAndSeconds = (milliseconds: number) => {
  */
 export const checkIfDeleteFilesFromMedia = async (
   metadata: MediaSharingMetadata | undefined,
-  otherChatEntriesTypeMedia: never[] | Results<ChatEntry>,
+  otherChatEntriesTypeMedia: never[] | Results<ChatEntry>
 ) => {
   if (metadata?.localFilePath) {
     const isLocalFilePathReferencedInOtherChatEntry = otherChatEntriesTypeMedia.some(
-      otherEntryTypeMedia =>
-        (otherEntryTypeMedia.metadata as MediaSharingMetadata).localFilePath === metadata.localFilePath,
+      (otherEntryTypeMedia) =>
+        (otherEntryTypeMedia.metadata as MediaSharingMetadata).localFilePath === metadata.localFilePath
     )
     if (!isLocalFilePathReferencedInOtherChatEntry) {
       await deleteFile(getLocalFileUri(metadata.localFilePath))

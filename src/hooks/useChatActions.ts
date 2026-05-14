@@ -1,25 +1,40 @@
-import {
-  DidCommMessageReactionAction,
-  DidCommMessageReactionOptions,
-} from '@2060.io/credo-ts-didcomm-reactions'
+import { DidCommMessageReactionAction, DidCommMessageReactionOptions } from '@2060.io/credo-ts-didcomm-reactions'
 import { DidCommMessageReceiptOptions, MessageState } from '@2060.io/credo-ts-didcomm-receipts'
 import { ActionMenuRole } from '@credo-ts/action-menu'
 import { CameraRoll } from '@react-native-camera-roll/camera-roll'
+import { MAX_VIDEO_DURATION } from '@src/constants'
+import {
+  ActionMenuSelectionMetadata,
+  AnswerMetadata,
+  ChatEntry,
+  ChatEntryRole,
+  ChatEntryState,
+  ChatEntryType,
+  isMediaType,
+  MediaSharingMetadata,
+  TextMessageMetadata,
+} from '@src/model'
+import { ChatEntryMessage } from '@src/pages/Chat/ChatMessage/Props'
+import { checkIfDeleteFilesFromMedia } from '@src/pages/Chat/utils'
+import { log, logError } from '@src/utils'
+import { compressVideo, getMediaFileSharingData } from '@src/utils/mediaFileUtils'
+import { getLocalFileUri } from '@src/utils/RNFS'
+import { getLastEntryInChatThread, getMediaChatEntriesExcludingThread } from '@src/utils/realmQueries'
+import { ToastOptions, toast } from '@src/utils/toast'
 import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Platform } from 'react-native'
 import Share, { ShareOptions } from 'react-native-share'
 import { SharedData } from 'react-native-share-menu'
-
 import {
-  useMobileAgent,
-  useUserProfile,
-  useChat,
-  useFileUploadDownload,
-  RepliedMessage,
   AgentActionType,
   DidCommMediaFileSharingData,
+  RepliedMessage,
   useAgentActionQueue,
+  useChat,
+  useFileUploadDownload,
+  useMobileAgent,
+  useUserProfile,
 } from './agent'
 import {
   MenuSelectionParameters,
@@ -40,26 +55,6 @@ import {
   updateThread,
 } from './agent/chat/services'
 import { useLocalRealm } from './providers/RealmProvider'
-
-import { MAX_VIDEO_DURATION } from '@src/constants'
-import {
-  ActionMenuSelectionMetadata,
-  AnswerMetadata,
-  ChatEntry,
-  ChatEntryRole,
-  ChatEntryState,
-  ChatEntryType,
-  MediaSharingMetadata,
-  TextMessageMetadata,
-  isMediaType,
-} from '@src/model'
-import { ChatEntryMessage } from '@src/pages/Chat/ChatMessage/Props'
-import { checkIfDeleteFilesFromMedia } from '@src/pages/Chat/utils'
-import { log, logError } from '@src/utils'
-import { getLocalFileUri } from '@src/utils/RNFS'
-import { compressVideo, getMediaFileSharingData } from '@src/utils/mediaFileUtils'
-import { getLastEntryInChatThread, getMediaChatEntriesExcludingThread } from '@src/utils/realmQueries'
-import { toast, ToastOptions } from '@src/utils/toast'
 
 export const useChatActions = () => {
   const { t } = useTranslation()
@@ -119,12 +114,12 @@ export const useChatActions = () => {
       return new Promise<void>((resolve, reject) => {
         if (!realm) return
         try {
-          const isSomeMessageTypeMedia = messages.some(message => isMediaType(message.type))
+          const isSomeMessageTypeMedia = messages.some((message) => isMediaType(message.type))
           const { chatThreadId } = messages[0]
           const mediaChatEntriesExcludingThread = isSomeMessageTypeMedia
             ? getMediaChatEntriesExcludingThread(realm, chatThreadId)
             : []
-          messages.forEach(message => {
+          messages.forEach((message) => {
             const { id } = message
             realm.write(() => {
               const object = realm.objectForPrimaryKey(ChatEntry, id)
@@ -132,10 +127,7 @@ export const useChatActions = () => {
               realm.delete(object)
             })
             if (isMediaType(message.type)) {
-              checkIfDeleteFilesFromMedia(
-                message.metadata as MediaSharingMetadata,
-                mediaChatEntriesExcludingThread,
-              )
+              checkIfDeleteFilesFromMedia(message.metadata as MediaSharingMetadata, mediaChatEntriesExcludingThread)
             }
           })
           const lastEntryInChatThread = getLastEntryInChatThread(realm, chatThreadId)
@@ -152,7 +144,7 @@ export const useChatActions = () => {
         }
       })
     },
-    [realm],
+    [realm]
   )
 
   const deleteMessagesForEveryone = useCallback(
@@ -161,21 +153,18 @@ export const useChatActions = () => {
         try {
           if (!agent || !connectionId || !realm) return
           const receipts: DidCommMessageReceiptOptions[] = []
-          const isSomeMessageTypeMedia = messages.some(message => isMediaType(message.type))
+          const isSomeMessageTypeMedia = messages.some((message) => isMediaType(message.type))
           const mediaChatEntriesExcludingThread = isSomeMessageTypeMedia
             ? getMediaChatEntriesExcludingThread(realm, messages[0].chatThreadId)
             : []
-          messages.forEach(message => {
+          messages.forEach((message) => {
             const { id: entryId, associatedMessageId } = message
             updateChatEntry(realm, {
               recordId: entryId,
               state: ChatEntryState.Deleted,
             })
             if (isMediaType(message.type)) {
-              checkIfDeleteFilesFromMedia(
-                message.metadata as MediaSharingMetadata,
-                mediaChatEntriesExcludingThread,
-              )
+              checkIfDeleteFilesFromMedia(message.metadata as MediaSharingMetadata, mediaChatEntriesExcludingThread)
             }
             receipts.push({ messageId: associatedMessageId ?? '', state: MessageState.Deleted })
           })
@@ -196,7 +185,7 @@ export const useChatActions = () => {
         }
       })
     },
-    [agent, connectionId],
+    [agent, connectionId]
   )
 
   const reactToMessage = useCallback(
@@ -218,7 +207,7 @@ export const useChatActions = () => {
           const objectReactions = object.reactions ?? []
 
           // Find our current reaction to this message
-          const reactionIndex = objectReactions.findIndex(item => item.role === ChatEntryRole.Sender)
+          const reactionIndex = objectReactions.findIndex((item) => item.role === ChatEntryRole.Sender)
 
           // Case 1: add reaction, no previous reaction from our side => just add it
           if (action === 'react' && reactionIndex === -1) {
@@ -257,7 +246,7 @@ export const useChatActions = () => {
         toast({ type: 'error', message: t('chat.messageUnsuccessfulReaction') })
       }
     },
-    [agent, connectionId],
+    [agent, connectionId]
   )
 
   const onRepliedMessage = useCallback((currentMessage: ChatEntryMessage): RepliedMessage => {
@@ -303,7 +292,7 @@ export const useChatActions = () => {
         logError('Error sendTextMessage', error)
       }
     },
-    [agent, realm, repliedMessage, chatThread, connectionId],
+    [agent, realm, repliedMessage, chatThread, connectionId]
   )
 
   const forwardSelectedMessages = useCallback(
@@ -355,18 +344,18 @@ export const useChatActions = () => {
             await agent.modules.media.setMetadata(
               newRecord.id,
               'localFilePath',
-              originalRecord.metadata.get('localFilePath') as string,
+              originalRecord.metadata.get('localFilePath') as string
             )
             await agent.modules.media.setMetadata(
               newRecord.id,
               'localPreviewFilePath',
-              originalRecord.metadata.get('localPreviewFilePath') as string,
+              originalRecord.metadata.get('localPreviewFilePath') as string
             )
             if (message.type === ChatEntryType.VoiceNote) {
               await agent.modules.media.setMetadata(
                 newRecord.id,
                 'waveform',
-                originalRecord.metadata.get('waveform') as string,
+                originalRecord.metadata.get('waveform') as string
               )
             }
             const parameters: ShareMediaParameters = { recordId: newRecord.id }
@@ -382,7 +371,7 @@ export const useChatActions = () => {
         message: t('chat.messageForwarded', { count: selectedMessages.length }),
       })
     },
-    [agent, realm, selectedMessages],
+    [agent, realm, selectedMessages]
   )
 
   const shareMessages = useCallback(
@@ -417,7 +406,7 @@ export const useChatActions = () => {
         } else if (mimeType.startsWith('image') || mimeType.startsWith('video')) {
           let didcommMediaFileSharingData: DidCommMediaFileSharingData | null = await getMediaFileSharingData(
             message.data,
-            mimeType,
+            mimeType
           )
           const { duration, mime } = didcommMediaFileSharingData
           const isVideo = mime.startsWith('video')
@@ -426,7 +415,7 @@ export const useChatActions = () => {
             excludedLongVideosCount++
           } else {
             if (isVideo) {
-              didcommMediaFileSharingData = (await compressVideo(didcommMediaFileSharingData, progress => {
+              didcommMediaFileSharingData = (await compressVideo(didcommMediaFileSharingData, (progress) => {
                 log('compressing progress', progress)
               })) as DidCommMediaFileSharingData | null
             }
@@ -443,7 +432,7 @@ export const useChatActions = () => {
       const toastOptions = getSharedMessagesToastOptions(excludedLongVideosCount, sharedData.data.length, t)
       toast(toastOptions)
     },
-    [agent, realm],
+    [agent, realm]
   )
 
   const onActionMenuSelection = useCallback(
@@ -474,7 +463,7 @@ export const useChatActions = () => {
         logError('Error onActionMenuSelection', error)
       }
     },
-    [agent, realm, repliedMessage, chatThread, connectionId],
+    [agent, realm, repliedMessage, chatThread, connectionId]
   )
 
   const sendAnswer = useCallback(
@@ -506,7 +495,7 @@ export const useChatActions = () => {
         parameters,
       })
     },
-    [realm, chatThread],
+    [realm, chatThread]
   )
 
   const shareMediaToDidComm = useCallback(
@@ -519,7 +508,7 @@ export const useChatActions = () => {
         deleteOriginalFile: true,
       })
     },
-    [agent, connectionId],
+    [agent, connectionId]
   )
 
   return {
@@ -541,7 +530,7 @@ export const useChatActions = () => {
 const getSharedMessagesToastOptions = (
   excludedLongVideosCount: number,
   messagesSharedCount: number,
-  t: (key: string, options?: Record<string, unknown>) => string,
+  t: (key: string, options?: Record<string, unknown>) => string
 ): ToastOptions => {
   if (excludedLongVideosCount === messagesSharedCount) {
     return {

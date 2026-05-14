@@ -1,10 +1,8 @@
+import { IS_IOS } from '@src/constants'
 import { t } from 'i18next'
 import { Alert, Linking } from 'react-native'
-import { check, request, PERMISSIONS, RESULTS, Permission } from 'react-native-permissions'
-
+import { check, PERMISSIONS, Permission, RESULTS, request } from 'react-native-permissions'
 import { logError } from './log'
-
-import { IS_IOS } from '@src/constants'
 
 const MICROPHONE_PERMISSION = IS_IOS ? PERMISSIONS.IOS.MICROPHONE : PERMISSIONS.ANDROID.RECORD_AUDIO
 const CAMERA_PERMISSION = IS_IOS ? PERMISSIONS.IOS.CAMERA : PERMISSIONS.ANDROID.CAMERA
@@ -68,9 +66,4 @@ const handleCameraPermission = async () => {
   }
 }
 
-export {
-  checkMicrophonePermission,
-  askMicrophonePermission,
-  handleMicrophonePermission,
-  handleCameraPermission,
-}
+export { askMicrophonePermission, checkMicrophonePermission, handleCameraPermission, handleMicrophonePermission }
