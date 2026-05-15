@@ -3053,7 +3053,7 @@ PODS:
     - React-perflogger (= 0.81.5)
     - React-utils (= 0.81.5)
     - SocketRocket
-  - ReactNativeFs (2.38.2):
+  - ReactNativeFs (2.36.2):
     - boost
     - DoubleConversion
     - fast_float
@@ -4244,7 +4244,7 @@ SPEC CHECKSUMS:
   ReactAppDependencyProvider: 1bcd3527ac0390a1c898c114f81ff954be35ed79
   ReactCodegen: 6c26f8c25d0b5ae66f86a1cce1777076ac8bcbd8
   ReactCommon: 5f0e5c09a64a2717215dd84380e1a747810406f2
-  ReactNativeFs: 8ee52268099f843309fac2d0e291d254116d1df2
+  ReactNativeFs: ea318a485289f8019ed02e62f5deefc2507a7440
   ReactNativeIncallManager: dccd3e7499caa3bb73d3acfedf4fb0360f1a87d5
   RealmJS: 1c37c6bdfe060f4caa0f9175aa0eedb962622ee1
   RNCAsyncStorage: 87d0d3d6193e79bd435e955f8998d2040aa60d67
@@ -4273,6 +4273,6 @@ SPEC CHECKSUMS:
   VisionCamera: 0044a94f7489f19e19d5938e97dfc36f4784af3c
   Yoga: 728df40394d49f3f471688747cf558158b3a3bd1
 
-PODFILE CHECKSUM: d132577b6cd7abd51c352bb4fce4f84093933f9f
+PODFILE CHECKSUM: e23c0f4583d46b1f944aa991c4d80fc6db911fe0
 
 COCOAPODS: 1.16.2
