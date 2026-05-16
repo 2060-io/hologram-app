@@ -1,7 +1,7 @@
 import React from 'react'
 import Svg, { Path, SvgProps } from 'react-native-svg'
 
-const ChevronForward: React.FC<SvgProps> = props => (
+const ChevronForward: React.FC<SvgProps> = (props) => (
   <Svg width={23.54} height={23.54} viewBox="0 0 23.54 23.54" {...props}>
     <Path data-name="Trazado 438" d="M23.54 23.54H0V0h23.54z" fill="none" opacity={0.87} />
     <Path

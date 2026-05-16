@@ -1,16 +1,14 @@
-import { Skeleton } from 'moti/skeleton'
-import React from 'react'
-import { useTranslation } from 'react-i18next'
-import { View, ScrollView, TouchableOpacity } from 'react-native'
-import { uses24HourClock } from 'react-native-localize'
-
-import getStyles from './styles'
-
 import { Avatar, CredentialMainInformation, SvgIcon, Text } from '@src/components/common'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { CredentialMainInfo } from '@src/services/agent/display'
 import { dateToString } from '@src/utils/dateUtils'
 import { widthPercentageToDP } from '@src/utils/responsiveUtils'
+import { Skeleton } from 'moti/skeleton'
+import React from 'react'
+import { useTranslation } from 'react-i18next'
+import { ScrollView, TouchableOpacity, View } from 'react-native'
+import { uses24HourClock } from 'react-native-localize'
+import getStyles from './styles'
 
 type Props = {
   credentials: CredentialMainInfo[]
@@ -20,13 +18,7 @@ type Props = {
   viewInChatButton?: () => void
 }
 
-const CredentialPresented = ({
-  credentials,
-  verifierName,
-  verifierPicture,
-  type,
-  viewInChatButton,
-}: Props) => {
+const CredentialPresented = ({ credentials, verifierName, verifierPicture, type, viewInChatButton }: Props) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
@@ -59,7 +51,7 @@ const CredentialPresented = ({
               </Text>
             )}
           </Text>
-          {credentials.map(credential => (
+          {credentials.map((credential) => (
             <CredentialMainInformation key={credential.id} credentialMainInfo={credential} />
           ))}
           <View style={styles.card}>

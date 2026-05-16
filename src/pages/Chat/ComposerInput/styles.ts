@@ -1,9 +1,7 @@
-import { StyleSheet } from 'react-native'
-
-import { MESSAGE_INPUT_INITIAL_HEIGHT } from '../InputToolbarView/styles'
-
 import { AppTheme } from '@src/styles'
 import { widthPercentageToDP } from '@src/utils/responsiveUtils'
+import { StyleSheet } from 'react-native'
+import { MESSAGE_INPUT_INITIAL_HEIGHT } from '../InputToolbarView/styles'
 
 export default (theme: AppTheme) =>
   StyleSheet.create({

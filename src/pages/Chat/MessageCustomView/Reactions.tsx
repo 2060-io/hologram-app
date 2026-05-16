@@ -1,11 +1,9 @@
-import React, { memo } from 'react'
-import { View, Text as NativeText } from 'react-native'
-
-import getStyles from './styles'
-
 import { Text } from '@src/components/common'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { ChatEntryRole, Reaction } from '@src/model'
+import React, { memo } from 'react'
+import { Text as NativeText, View } from 'react-native'
+import getStyles from './styles'
 
 type Props = {
   role: ChatEntryRole
@@ -18,9 +16,9 @@ interface GroupedReaction extends Reaction {
 
 const getReactionsGrouped = (reactions: Reaction[]) => {
   const groupedReactions: GroupedReaction[] = []
-  reactions.forEach(reaction => {
+  reactions.forEach((reaction) => {
     const reactionAlreadyIsAddedIndex = groupedReactions.findIndex(
-      groupedReaction => groupedReaction.emoji === reaction.emoji,
+      (groupedReaction) => groupedReaction.emoji === reaction.emoji
     )
     if (reactionAlreadyIsAddedIndex >= 0) {
       const currentReaction = groupedReactions[reactionAlreadyIsAddedIndex]
@@ -35,19 +33,17 @@ const getReactionsGrouped = (reactions: Reaction[]) => {
   return groupedReactions
 }
 
-const Reactions = ({ role: role, reactions }: Props) => {
+const Reactions = ({ role, reactions }: Props) => {
   const theme = useTheme()
   const styles = getStyles(theme)
 
   const reactionsGrouped = getReactionsGrouped(reactions)
   const containerStyle =
-    role === ChatEntryRole.Sender
-      ? styles.reactionsContainerStyleForSender
-      : styles.reactionsContainerStyleForReceiver
+    role === ChatEntryRole.Sender ? styles.reactionsContainerStyleForSender : styles.reactionsContainerStyleForReceiver
 
   return (
     <View style={[styles.reactionsContainer, containerStyle]}>
-      {reactionsGrouped.map(reaction => (
+      {reactionsGrouped.map((reaction) => (
         <View style={styles.reactionContainer} key={reaction.emoji}>
           <NativeText key={reaction.emoji} style={styles.reactionEmoji}>
             {reaction.emoji}

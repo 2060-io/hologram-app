@@ -1,20 +1,18 @@
 import { HeaderBackButton } from '@react-navigation/elements'
 import { ParamListBase } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
-import { TrustResolutionOutcome } from '@verana-labs/verre'
-import React, { useState, useEffect, useRef } from 'react'
-import { useTranslation } from 'react-i18next'
-import { View, TouchableOpacity, ScrollView } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
-
-import getStyles from './styles'
-
 import { CredentialDetails, ModalConfirmAction } from '@src/components'
-import { Text, ServiceInformation } from '@src/components/common'
+import { ServiceInformation, Text } from '@src/components/common'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { useFetchServiceInfo } from '@src/hooks/useFetchServiceInfo'
 import { ServiceInfo } from '@src/model'
 import { CredentialDetailsForDisplay } from '@src/services/agent/display'
+import { TrustResolutionOutcome } from '@verana-labs/verre'
+import React, { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { ScrollView, TouchableOpacity, View } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import getStyles from './styles'
 
 type Props = {
   navigation: StackNavigationProp<ParamListBase>
@@ -24,13 +22,7 @@ type Props = {
   enableMainButtons: boolean
 }
 
-const BaseCredentialOffer: React.FC<Props> = ({
-  navigation,
-  credentialDetails,
-  accept,
-  refuse,
-  enableMainButtons,
-}) => {
+const BaseCredentialOffer: React.FC<Props> = ({ navigation, credentialDetails, accept, refuse, enableMainButtons }) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
@@ -56,7 +48,7 @@ const BaseCredentialOffer: React.FC<Props> = ({
 
   useEffect(() => {
     navigation.setOptions({
-      headerLeft: props =>
+      headerLeft: (props) =>
         enableMainButtons ? (
           <TouchableOpacity style={styles.headerLeft} onPress={displayModalRefuseConfirmation}>
             <Text fontFamily="EuclidCircularA-Medium" style={styles.headerBtnText}>
@@ -95,10 +87,7 @@ const BaseCredentialOffer: React.FC<Props> = ({
             <Text style={styles.credentialTitle}>
               {credentialDetails.mainInfo.issuer.name} {t('credentialOffer.offeringYou')}
             </Text>
-            <Text
-              fontFamily="EuclidCircularA-Bold"
-              style={[styles.credentialTitle, styles.verifiableCredentialText]}
-            >
+            <Text fontFamily="EuclidCircularA-Bold" style={[styles.credentialTitle, styles.verifiableCredentialText]}>
               {t('credentialOffer.verifiableCredential')}
             </Text>
             <CredentialDetails

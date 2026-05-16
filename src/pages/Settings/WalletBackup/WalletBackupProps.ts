@@ -1,9 +1,8 @@
 import { StackScreenProps } from '@react-navigation/stack'
+import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
+import { BackupHandler, BackupInfo, BackupProgressProps, OnBackupFinish } from '@src/hooks/backup'
 import React from 'react'
 import { StyleProp, ViewStyle } from 'react-native'
-
-import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
-import { OnBackupFinish, BackupHandler, BackupProgressProps, BackupInfo } from '@src/hooks/backup'
 
 export type WalletBackupPageProps = StackScreenProps<NavigationStackParams, 'WalletBackup'>
 
@@ -12,7 +11,7 @@ export interface WalletBackupProps {
   makeBackup: (
     fileToUploadLocation: string,
     onBackupUploadSuccess: OnBackupFinish,
-    onBackupUploadFailure: (error: string) => void,
+    onBackupUploadFailure: (error: string) => void
   ) => Promise<void>
   backupHandler?: BackupHandler
   uploadProgress: BackupProgressProps

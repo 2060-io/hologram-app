@@ -1,33 +1,21 @@
-import React, { useEffect } from 'react'
-import { useTranslation } from 'react-i18next'
-import { View, Keyboard, TouchableWithoutFeedback, TouchableOpacity } from 'react-native'
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import { SafeAreaView } from 'react-native-safe-area-context'
-
-import OnSuccessFinish from './OnSuccessFinish'
-import { RestoreProps, BaseRestoreWalletBackupProps } from './RestoreWalletBackupProps'
-import getStyles from './styles'
-
 import AppLogo from '@src/assets/icons/AppLogo'
-import { WalletBackupInfo, ModalConfirmAction } from '@src/components'
-import { Text, TextInputPassword, MainButton, SvgIcon, Progress } from '@src/components/common'
+import { ModalConfirmAction, WalletBackupInfo } from '@src/components'
+import { MainButton, Progress, SvgIcon, Text, TextInputPassword } from '@src/components/common'
 import { IS_ANDROID, IS_IOS } from '@src/constants'
 import { useRestoreBackup } from '@src/hooks'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import React, { useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
+import { Keyboard, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import OnSuccessFinish from './OnSuccessFinish'
+import { BaseRestoreWalletBackupProps, RestoreProps } from './RestoreWalletBackupProps'
+import getStyles from './styles'
 
-const Restore = ({
-  restoreProgress,
-  onInitialState,
-  onDownloading,
-  onError,
-  onSuccessFinish,
-  style,
-}: RestoreProps) => (
+const Restore = ({ restoreProgress, onInitialState, onDownloading, onError, onSuccessFinish, style }: RestoreProps) => (
   <View style={style}>
-    {!restoreProgress.isDownloadingBackUp &&
-      !restoreProgress.done &&
-      !restoreProgress.error &&
-      onInitialState()}
+    {!restoreProgress.isDownloadingBackUp && !restoreProgress.done && !restoreProgress.error && onInitialState()}
     {restoreProgress.isDownloadingBackUp && onDownloading()}
     {restoreProgress.error && onError()}
     {restoreProgress.done && onSuccessFinish()}
@@ -77,11 +65,7 @@ const BaseRestoreWalletBackup = ({
 
   return (
     <SafeAreaView style={styles.container} edges={['bottom']}>
-      <KeyboardAwareScrollView
-        showsVerticalScrollIndicator={false}
-        enableOnAndroid={true}
-        extraScrollHeight={70}
-      >
+      <KeyboardAwareScrollView showsVerticalScrollIndicator={false} enableOnAndroid={true} extraScrollHeight={70}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           {isCloudAvailable ? (
             <View style={styles.subContainer}>
@@ -99,10 +83,7 @@ const BaseRestoreWalletBackup = ({
                     />
                     {!!backupHandler?.backup && isCloudAvailable && (
                       <>
-                        <Text
-                          style={[styles.title, styles.recoveryPassText]}
-                          fontFamily="EuclidCircularA-Medium"
-                        >
+                        <Text style={[styles.title, styles.recoveryPassText]} fontFamily="EuclidCircularA-Medium">
                           {t('signUp.enterRecoveryPassword')}
                         </Text>
                         <TextInputPassword onChangeText={setRecoveryPassword} value={recoveryPassword} />
@@ -136,9 +117,7 @@ const BaseRestoreWalletBackup = ({
                       {t('signUp.restoringWalletFromBackup')}
                     </Text>
                     <View style={styles.card}>
-                      <Text style={styles.downloadProgress}>
-                        {`${t('signUp.restoringWallet')}... 0% ${t('done')}`}
-                      </Text>
+                      <Text style={styles.downloadProgress}>{`${t('signUp.restoringWallet')}... 0% ${t('done')}`}</Text>
                       <View style={styles.errorSubContainer}>
                         <View style={styles.errorIconContainer}>
                           <SvgIcon name="warning" fill={theme.colors.white} width={20} height={20} />

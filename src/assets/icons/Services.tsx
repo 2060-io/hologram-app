@@ -1,7 +1,7 @@
 import React from 'react'
 import Svg, { G, Path, SvgProps } from 'react-native-svg'
 
-const Services: React.FC<SvgProps> = props => (
+const Services: React.FC<SvgProps> = (props) => (
   <Svg width={23.54} height={23.54} viewBox="0 0 23.54 23.54" {...props}>
     <G data-name="Grupo 1377">
       <Path data-name="Rect\xE1ngulo 825" fill="none" d="M0 0H23.54V23.54H0z" />

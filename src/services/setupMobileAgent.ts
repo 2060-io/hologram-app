@@ -7,15 +7,13 @@ import {
   DidCommMessageSentEvent,
 } from '@credo-ts/didcomm'
 import { agentDependencies } from '@credo-ts/react-native'
+import { areLogsEnabled, DevEnvsObject, parseDidcommVersions } from '@src/utils/developer'
 import Config from 'react-native-config'
-
-import { HologramCustomLogger } from './HologramCustomLoggers'
-import { MobileAgent } from './agent/MobileAgent'
 import { createMobileAgent } from './agent/createMobileAgent'
 import { duplicatedMessagesMiddleware } from './agent/duplicatedMessagesMiddleware'
+import { MobileAgent } from './agent/MobileAgent'
+import { HologramCustomLogger } from './HologramCustomLoggers'
 import { DEV_ENVS_PERSIST_KEY, getStorageData } from './localStorage'
-
-import { DevEnvsObject, areLogsEnabled, parseDidcommVersions } from '@src/utils/developer'
 
 interface MobileAgentConfig {
   agentDependencies: AgentDependencies
@@ -67,15 +65,15 @@ export const setupMobileAgent = async (): Promise<MobileAgent> => {
     dependencies: baseAgentConfig.agentDependencies,
   })
 
-  agent.events.on<DidCommMessageReceivedEvent>(DidCommEventTypes.DidCommMessageReceived, async data => {
+  agent.events.on<DidCommMessageReceivedEvent>(DidCommEventTypes.DidCommMessageReceived, async (data) => {
     logger.info('Message received', data.payload.message ?? undefined)
   })
 
-  agent.events.on<DidCommMessageProcessedEvent>(DidCommEventTypes.DidCommMessageProcessed, async data => {
+  agent.events.on<DidCommMessageProcessedEvent>(DidCommEventTypes.DidCommMessageProcessed, async (data) => {
     logger.info(`Message received with type: ${data.payload.message.type}`)
   })
 
-  agent.events.on<DidCommMessageSentEvent>(DidCommEventTypes.DidCommMessageSent, async data => {
+  agent.events.on<DidCommMessageSentEvent>(DidCommEventTypes.DidCommMessageSent, async (data) => {
     logger.info(`Message sent (${data.payload.status})`, data.payload.message.message)
   })
 

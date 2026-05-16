@@ -1,20 +1,18 @@
 import { DidCommConnectionRecord } from '@credo-ts/didcomm'
-import React, { createContext, useState, useEffect, useContext, useMemo } from 'react'
-
-import { useMobileAgent } from './MobileAgentProvider'
+import { ConnectionType } from '@src/model'
+import { getConnectionType } from '@src/utils/connectionUtils'
+import React, { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import { subscribeToAgentConnectionEvents } from './connections/subscribeToAgentConnectionEvents'
+import { useMobileAgent } from './MobileAgentProvider'
 import {
   addRecord,
+  RecordsState,
   recordsAddedByType,
   recordsRemovedByType,
-  RecordsState,
   recordsUpdatedByType,
   removeRecord,
   updateRecord,
 } from './recordUtils'
-
-import { ConnectionType } from '@src/model'
-import { getConnectionType } from '@src/utils/connectionUtils'
 
 interface ConnectionContextInterface {
   loading: boolean
@@ -44,9 +42,9 @@ export const useParentConnections = (): DidCommConnectionRecord[] => {
       connections.filter(
         (c: DidCommConnectionRecord) =>
           c.getTag('parentConnectionId') === undefined &&
-          [ConnectionType.Peer, ConnectionType.Service].includes(getConnectionType(c) as ConnectionType),
+          [ConnectionType.Peer, ConnectionType.Service].includes(getConnectionType(c) as ConnectionType)
       ),
-    [connections],
+    [connections]
   )
   return filteredConnections
 }
@@ -54,11 +52,8 @@ export const useParentConnections = (): DidCommConnectionRecord[] => {
 export const useConnectionByParentConnectionId = (parentConnectionId: string): DidCommConnectionRecord[] => {
   const { connections } = useConnections()
   const filteredConnections = useMemo(
-    () =>
-      connections.filter(
-        (c: DidCommConnectionRecord) => c.getTag('parentConnectionId') === parentConnectionId,
-      ),
-    [connections, parentConnectionId],
+    () => connections.filter((c: DidCommConnectionRecord) => c.getTag('parentConnectionId') === parentConnectionId),
+    [connections, parentConnectionId]
   )
   return filteredConnections
 }
@@ -90,16 +85,16 @@ export const ConnectionsProvider: React.FC<React.PropsWithChildren<Props>> = ({ 
 
   useEffect(() => {
     if (!state.loading) {
-      const connectionAdded$ = recordsAddedByType(agent, DidCommConnectionRecord).subscribe(record =>
-        setState(addRecord(record, state)),
+      const connectionAdded$ = recordsAddedByType(agent, DidCommConnectionRecord).subscribe((record) =>
+        setState(addRecord(record, state))
       )
 
-      const connectionUpdated$ = recordsUpdatedByType(agent, DidCommConnectionRecord).subscribe(record =>
-        setState(updateRecord(record, state)),
+      const connectionUpdated$ = recordsUpdatedByType(agent, DidCommConnectionRecord).subscribe((record) =>
+        setState(updateRecord(record, state))
       )
 
-      const connectionRemoved$ = recordsRemovedByType(agent, DidCommConnectionRecord).subscribe(record =>
-        setState(removeRecord(record, state)),
+      const connectionRemoved$ = recordsRemovedByType(agent, DidCommConnectionRecord).subscribe((record) =>
+        setState(removeRecord(record, state))
       )
 
       return () => {
@@ -111,8 +106,6 @@ export const ConnectionsProvider: React.FC<React.PropsWithChildren<Props>> = ({ 
   }, [state, agent])
 
   return (
-    <ConnectionContext value={{ connections: state.records, loading: state.loading }}>
-      {children}
-    </ConnectionContext>
+    <ConnectionContext value={{ connections: state.records, loading: state.loading }}>{children}</ConnectionContext>
   )
 }

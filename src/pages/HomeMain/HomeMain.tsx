@@ -1,23 +1,20 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { PlatformPressable } from '@react-navigation/elements'
-import React from 'react'
-import { useTranslation } from 'react-i18next'
-
-import Scan from '../Scan'
-import { Settings } from '../Settings'
-import Wallet from '../Wallet'
-
-import HomeMainContainer from './HomeMainContainer'
-import { HomeMainTabParams, HomeTabProps } from './HomeMainProps'
-import getStyles from './styles'
-import { useHomeMain } from './useHomeMain'
-
 import { HeaderTitle, SvgIcon } from '@src/components/common'
 import { IconsNames } from '@src/components/common/SvgIcon'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { ChatsStack } from '@src/navigators/ChatsStack'
 import { AppTheme, getGlobalStyles } from '@src/styles'
 import { hexTransparency } from '@src/utils/colorUtils'
+import React from 'react'
+import { useTranslation } from 'react-i18next'
+import Scan from '../Scan'
+import { Settings } from '../Settings'
+import Wallet from '../Wallet'
+import HomeMainContainer from './HomeMainContainer'
+import { HomeMainTabParams, HomeTabProps } from './HomeMainProps'
+import getStyles from './styles'
+import { useHomeMain } from './useHomeMain'
 
 type TabBarIconProps = {
   routeName: keyof HomeMainTabParams
@@ -71,10 +68,8 @@ const HomeMain = (props: HomeTabProps) => {
         headerTitle: () => (
           <HeaderTitle title={t(headerTitles[route.name] ?? `navigation.${route.name}`)} theme={theme} />
         ),
-        tabBarIcon: iconProps => <TabBarIcon {...iconProps} routeName={route.name} theme={theme} />,
-        tabBarButton: buttonProps => (
-          <PlatformPressable {...buttonProps} android_ripple={{ color: 'transparent' }} />
-        ),
+        tabBarIcon: (iconProps) => <TabBarIcon {...iconProps} routeName={route.name} theme={theme} />,
+        tabBarButton: (buttonProps) => <PlatformPressable {...buttonProps} android_ripple={{ color: 'transparent' }} />,
       })}
     >
       <Tab.Screen name="Chats" component={ChatsStack} options={{ headerShown: false }} />

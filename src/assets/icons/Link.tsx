@@ -2,7 +2,7 @@ import React from 'react'
 import { StyleSheet, View } from 'react-native'
 import Svg, { Path, SvgProps } from 'react-native-svg'
 
-const Link: React.FC<SvgProps> = props => (
+const Link: React.FC<SvgProps> = (props) => (
   <View style={styles.container}>
     <Svg viewBox="0 0 17.444 8.722" {...props}>
       <Path

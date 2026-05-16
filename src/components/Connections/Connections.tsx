@@ -1,20 +1,17 @@
 import { HeaderBackButton } from '@react-navigation/elements'
 import { ParamListBase } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
-import React, { ReactElement, useEffect, memo } from 'react'
-import { useTranslation } from 'react-i18next'
-import { TouchableOpacity, View } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
-
-import SearchInput from '../SearchInput'
-
-import ConnectionList, { ConnectionItem } from './ConnectionList'
-import getStyles from './styles'
-import { useConnectionsBySections } from './useConnectionsBySections'
-
 import { Avatar, HeaderTitle, SvgIcon, Text } from '@src/components/common'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { getGlobalStyles } from '@src/styles'
+import React, { memo, ReactElement, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
+import { TouchableOpacity, View } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import SearchInput from '../SearchInput'
+import ConnectionList, { ConnectionItem } from './ConnectionList'
+import getStyles from './styles'
+import { useConnectionsBySections } from './useConnectionsBySections'
 
 type HeaderProps = {
   presentation?: 'card' | 'modal' | 'transparentModal'
@@ -79,21 +76,19 @@ const Connections = ({
     navigation.setOptions({
       headerStyle: { ...globalStyles.headerStyle, height: headerProps.height },
       presentation: headerProps.presentation,
-      headerLeft: props =>
+      headerLeft: (props) =>
         headerProps.defaultBackButton && !currentConnectionToFilter ? (
           headerProps.defaultBackButton
         ) : (
           <HeaderBackButton
             {...props}
-            onPress={() =>
-              currentConnectionToFilter ? setCurrentConnectionToFilter(undefined) : props.onPress?.()
-            }
+            onPress={() => (currentConnectionToFilter ? setCurrentConnectionToFilter(undefined) : props.onPress?.())}
           />
         ),
       headerTitle: currentConnectionToFilter ? renderHeaderTitleForSubConnections : renderHeaderTitle,
       headerTitleAlign: currentConnectionToFilter ? 'left' : 'center',
       headerRight: () => (
-        <TouchableOpacity style={styles.headerRight} onPress={() => setShowSearchInput(prev => !prev)}>
+        <TouchableOpacity style={styles.headerRight} onPress={() => setShowSearchInput((prev) => !prev)}>
           <SvgIcon name="search" fill={theme.colors.primaryText} />
         </TouchableOpacity>
       ),

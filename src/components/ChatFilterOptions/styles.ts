@@ -1,9 +1,8 @@
-import { StyleSheet } from 'react-native'
-
 import { cardShadowStyles, cardStyles } from '@src/styles'
 import { AppTheme } from '@src/styles/types'
 import { waterColor } from '@src/utils/colorUtils'
 import { heightPercentageToDP } from '@src/utils/responsiveUtils'
+import { StyleSheet } from 'react-native'
 
 const styles = (theme: AppTheme) =>
   StyleSheet.create({

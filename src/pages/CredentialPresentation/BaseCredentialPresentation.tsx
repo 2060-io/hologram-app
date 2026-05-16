@@ -1,16 +1,9 @@
 import { DidCommProofState } from '@credo-ts/didcomm'
 import { HeaderBackButton } from '@react-navigation/elements'
 import { StackNavigationProp } from '@react-navigation/stack'
-import React, { useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { ScrollView, TouchableOpacity, View } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
-
-import getStyles from './styles'
-
 import { CredentialAttributes, ModalConfirmAction } from '@src/components'
-import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
 import { CredentialMainInformation, HeaderTitle, Text } from '@src/components/common'
+import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
 import { AgentActionType, useAgentActionQueue } from '@src/hooks/agent'
 import {
   AcceptProofProposalParameters,
@@ -20,6 +13,11 @@ import {
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { CredentialMainInfo } from '@src/services/agent/display'
 import { toast } from '@src/utils/toast'
+import React, { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { ScrollView, TouchableOpacity, View } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import getStyles from './styles'
 
 type Props = {
   navigation: StackNavigationProp<
@@ -53,7 +51,7 @@ const BaseCredentialPresentation = ({
 
   useEffect(() => {
     navigation.setOptions({
-      headerLeft: props =>
+      headerLeft: (props) =>
         enableMainButtons ? (
           <TouchableOpacity style={styles.headerLeft} onPress={displayModalRefuseConfirmation}>
             <Text fontFamily="EuclidCircularA-Medium" style={styles.headerBtnText}>

@@ -1,12 +1,10 @@
-import React, { useEffect, useState, useRef, useCallback, memo } from 'react'
-import { TouchableOpacity, DeviceEventEmitter, Animated, ViewStyle, View } from 'react-native'
-
-import getStyles from './styles'
-
 import { SvgIcon, Text } from '@src/components/common'
-import { SHOW_TOAST_MESSAGE, COLORS } from '@src/constants/toast'
+import { COLORS, SHOW_TOAST_MESSAGE } from '@src/constants/toast'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { ToastOptions } from '@src/utils/toast'
+import React, { memo, useCallback, useEffect, useRef, useState } from 'react'
+import { Animated, DeviceEventEmitter, TouchableOpacity, View, ViewStyle } from 'react-native'
+import getStyles from './styles'
 
 const Toast = () => {
   const theme = useTheme()
@@ -49,7 +47,7 @@ const Toast = () => {
       if (message) {
         timeOutRef.current = setInterval(() => {
           if (timeOutDuration === 0) closeToast()
-          else setTimeOutDuration(prev => prev - 1000)
+          else setTimeOutDuration((prev) => prev - 1000)
         }, 1000)
       }
     }

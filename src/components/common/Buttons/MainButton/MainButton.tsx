@@ -1,13 +1,10 @@
-import React from 'react'
-import { View, TouchableOpacity } from 'react-native'
-
-import { Props } from '../Props'
-
-import getStyles from './styles'
-
 import Text from '@src/components/common//Text'
 import SvgIcon, { IconsNames } from '@src/components/common/SvgIcon'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import React from 'react'
+import { TouchableOpacity, View } from 'react-native'
+import { Props } from '../Props'
+import getStyles from './styles'
 
 const MainButton = ({ iconName, text, ...buttonProps }: Props) => {
   const theme = useTheme()

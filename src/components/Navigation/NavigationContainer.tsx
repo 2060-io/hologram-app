@@ -1,15 +1,13 @@
+import { Loader } from '@src/components/common'
+import { useWallet } from '@src/hooks'
+import { useMobileAgent, useNavigation } from '@src/hooks/agent'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { language } from '@src/utils/language'
 import React, { ElementType, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
 import { KeyboardProvider } from 'react-native-keyboard-controller'
-
 import getStyles from './styles'
-
-import { Loader } from '@src/components/common'
-import { useWallet } from '@src/hooks'
-import { useNavigation, useMobileAgent } from '@src/hooks/agent'
-import { useTheme } from '@src/hooks/providers/ThemeProvider'
-import { language } from '@src/utils/language'
 
 const NavigationContainer = (Navigation: ElementType) => {
   const WrapperNavigation = () => {

@@ -30,7 +30,7 @@ export const NavigationProvider: React.FC<React.PropsWithChildren<Props>> = ({ c
   })
 
   const setLocalAuth = (localAuth: boolean) => {
-    setState(prevState => ({ ...prevState, localAuth }))
+    setState((prevState) => ({ ...prevState, localAuth }))
   }
 
   const getLocalAuth = () => state.localAuth

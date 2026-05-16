@@ -1,21 +1,19 @@
-import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react'
-import { useTranslation } from 'react-i18next'
-import { Dimensions, Platform, View } from 'react-native'
-import {
-  CameraRuntimeError,
-  useCameraDevices,
-  Camera,
-  Code,
-  useCodeScanner,
-  useCameraFormat,
-} from 'react-native-vision-camera'
-
-import getStyles from './styles'
-
 import { Text } from '@src/components/common'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { handleCameraPermission } from '@src/utils/permissions'
 import { toast } from '@src/utils/toast'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { Dimensions, Platform, View } from 'react-native'
+import {
+  Camera,
+  CameraRuntimeError,
+  Code,
+  useCameraDevices,
+  useCameraFormat,
+  useCodeScanner,
+} from 'react-native-vision-camera'
+import getStyles from './styles'
 
 const SCREEN_WIDTH = Dimensions.get('window').width
 const SCREEN_HEIGHT = Platform.select<number>({
@@ -35,7 +33,7 @@ const CodeScanner: React.FC<Props> = ({ isActive, onCodeScanned }) => {
   const [hasCameraPermission, setHasCameraPermission] = useState<boolean>()
   const scannedCodes = useRef<string[]>([])
   const devices = useCameraDevices()
-  const device = devices.find(dev => dev.position === 'back')
+  const device = devices.find((dev) => dev.position === 'back')
 
   useEffect(() => {
     const requestCameraPermission = async () => {
@@ -63,7 +61,7 @@ const CodeScanner: React.FC<Props> = ({ isActive, onCodeScanned }) => {
 
   const screenAspectRatio = SCREEN_HEIGHT / SCREEN_WIDTH
 
-  const supports60Fps = useMemo(() => device?.formats.some(f => f.maxFps >= 60), [device?.formats])
+  const supports60Fps = useMemo(() => device?.formats.some((f) => f.maxFps >= 60), [device?.formats])
   const format = useCameraFormat(device, [
     { fps: supports60Fps ? 60 : 30 },
     { videoAspectRatio: screenAspectRatio },

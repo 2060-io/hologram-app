@@ -1,14 +1,11 @@
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
-
 import { SvgIcon, Switch, Text } from '../common'
 import { IconsNames } from '../common/SvgIcon'
-
-import { CommunicationChannelsProps, Channels } from './CommunicationChannelsProps'
+import { Channels, CommunicationChannelsProps } from './CommunicationChannelsProps'
 import getStyles from './styles'
-
-import { useTheme } from '@src/hooks/providers/ThemeProvider'
 
 const channelIcons: Record<keyof Channels, string> = {
   allowChats: 'chat',
@@ -16,17 +13,13 @@ const channelIcons: Record<keyof Channels, string> = {
   allowVideoCalls: 'video',
 }
 
-const CommunicationChannels = ({
-  channels,
-  setChannels,
-  containerChannelsStyle,
-}: CommunicationChannelsProps) => {
+const CommunicationChannels = ({ channels, setChannels, containerChannelsStyle }: CommunicationChannelsProps) => {
   const theme = useTheme()
   const styles = getStyles(theme)
   const { t } = useTranslation()
 
   const onToggleCommunicationChannels = (value: boolean, key: string) => {
-    setChannels(prevState => ({ ...prevState, [key]: !value }))
+    setChannels((prevState) => ({ ...prevState, [key]: !value }))
   }
 
   const renderChannel = (channel: keyof Channels) => {
@@ -43,7 +36,7 @@ const CommunicationChannels = ({
 
   return (
     <View style={containerChannelsStyle}>
-      {Object.keys(channels).map(channel => renderChannel(channel as keyof Channels))}
+      {Object.keys(channels).map((channel) => renderChannel(channel as keyof Channels))}
     </View>
   )
 }

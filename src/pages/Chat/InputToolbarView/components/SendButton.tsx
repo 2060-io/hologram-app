@@ -1,10 +1,8 @@
-import React, { memo } from 'react'
-import { TouchableOpacity } from 'react-native'
-
-import getStyles from '../styles'
-
 import { SvgIcon } from '@src/components/common'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import React, { memo } from 'react'
+import { TouchableOpacity } from 'react-native'
+import getStyles from '../styles'
 
 interface Props {
   hasContentTextInput: boolean

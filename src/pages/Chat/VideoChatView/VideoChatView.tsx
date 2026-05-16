@@ -1,22 +1,19 @@
-import React, { memo, Fragment } from 'react'
-import { useTranslation } from 'react-i18next'
-import { View, TouchableOpacity, ImageBackground, ActivityIndicator, Image } from 'react-native'
-
-import { MediaProps } from '../ChatProps'
-import RetryMediaUploadView from '../RetryMediaUploadView'
-import { ParsedText } from '../components'
-import { getMinutesAndSeconds } from '../utils'
-
-import getStyles from './styles'
-
 import placeHolderVideo from '@src/assets/images/placeholderVideo.png'
-import { Text, SvgIcon, Progress } from '@src/components/common'
+import { Progress, SvgIcon, Text } from '@src/components/common'
 import { useMedia } from '@src/hooks'
 import { useMediaPlayer } from '@src/hooks/providers/MediaPlayerProvider'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { MediaDownloadState, MediaUploadState, VideoMetadata } from '@src/model'
 import { getFileSize } from '@src/utils'
 import { getLocalFileUri } from '@src/utils/RNFS'
+import React, { Fragment, memo } from 'react'
+import { useTranslation } from 'react-i18next'
+import { ActivityIndicator, Image, ImageBackground, TouchableOpacity, View } from 'react-native'
+import { MediaProps } from '../ChatProps'
+import { ParsedText } from '../components'
+import RetryMediaUploadView from '../RetryMediaUploadView'
+import { getMinutesAndSeconds } from '../utils'
+import getStyles from './styles'
 
 const VideoChatView = memo((props: MediaProps) => {
   const theme = useTheme()
@@ -47,8 +44,7 @@ const VideoChatView = memo((props: MediaProps) => {
 
   const textDuration = getMinutesAndSeconds(duration as number)
   const isMediaUploadError =
-    mediaUploadState === MediaUploadState.ErrorCreating ||
-    mediaUploadState === MediaUploadState.ErrorUploading
+    mediaUploadState === MediaUploadState.ErrorCreating || mediaUploadState === MediaUploadState.ErrorUploading
 
   const videoFileUri = localFilePath ? getLocalFileUri(localFilePath) : undefined
   const localPreviewSource = localPreviewFilePath
@@ -128,9 +124,7 @@ const VideoChatView = memo((props: MediaProps) => {
   )
 
   return (
-    <View
-      style={displayTimeAndTicks ? styles.withTimeAndTicksContainer : styles.withoutTimeAndTicksContainer}
-    >
+    <View style={displayTimeAndTicks ? styles.withTimeAndTicksContainer : styles.withoutTimeAndTicksContainer}>
       <View style={styles.containerRootVideo}>
         {isDownloaded ? (
           <Fragment>

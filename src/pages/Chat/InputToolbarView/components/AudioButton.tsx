@@ -1,10 +1,8 @@
-import React, { memo, useRef } from 'react'
-import { Pressable, GestureResponderEvent } from 'react-native'
-
-import getStyles from '../styles'
-
 import { SvgIcon } from '@src/components/common'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import React, { memo, useRef } from 'react'
+import { GestureResponderEvent, Pressable } from 'react-native'
+import getStyles from '../styles'
 
 type Props = {
   onPress: () => void

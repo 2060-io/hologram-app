@@ -1,20 +1,17 @@
+import imagePlaceholder from '@src/assets/images/placeholderImg.png'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { dateToString } from '@src/utils/dateUtils'
 import { Skeleton } from 'moti/skeleton'
 import React, { memo, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, TouchableOpacity, ActivityIndicator } from 'react-native'
+import { ActivityIndicator, TouchableOpacity, View } from 'react-native'
 import { uses24HourClock } from 'react-native-localize'
-
 import SvgIcon from '../SvgIcon'
 import Text from '../Text'
 import UniversalImage from '../UniversalImage'
 import VerifiedIcon from '../VerifiedIcon'
-
 import { DumbCredentialMainInformationProps } from './Pros'
 import getStyles from './styles'
-
-import imagePlaceholder from '@src/assets/images/placeholderImg.png'
-import { useTheme } from '@src/hooks/providers/ThemeProvider'
-import { dateToString } from '@src/utils/dateUtils'
 
 const DumbCredentialMainInformation = ({
   credentialMainInfo,
@@ -40,20 +37,11 @@ const DumbCredentialMainInformation = ({
     if (isFetchingInfo) return <ActivityIndicator size="large" color={theme.colors.green} />
     if (failedFetchInfo) {
       return (
-        <SvgIcon
-          name="warning"
-          width={styles.image.width}
-          height={styles.image.height}
-          fill={theme.colors.lightGrey}
-        />
+        <SvgIcon name="warning" width={styles.image.width} height={styles.image.height} fill={theme.colors.lightGrey} />
       )
     }
     return (
-      <UniversalImage
-        style={styles.image}
-        resizeMode="contain"
-        source={uri?.length ? { uri } : imagePlaceholder}
-      />
+      <UniversalImage style={styles.image} resizeMode="contain" source={uri?.length ? { uri } : imagePlaceholder} />
     )
   }, [isFetchingInfo, failedFetchInfo, uri])
 
@@ -61,12 +49,7 @@ const DumbCredentialMainInformation = ({
     <Skeleton.Group show={!credentialMainInfo}>
       <TouchableOpacity style={[styles.container, containerStyle]} activeOpacity={1} onPress={onPress}>
         <View style={styles.subContainer}>
-          <Skeleton
-            height={styles.image.height}
-            width={styles.image.width}
-            colorMode={colorMode}
-            radius="square"
-          >
+          <Skeleton height={styles.image.height} width={styles.image.width} colorMode={colorMode} radius="square">
             <View style={styles.imageContainer}>{badge}</View>
           </Skeleton>
           <View style={styles.nameContainer}>

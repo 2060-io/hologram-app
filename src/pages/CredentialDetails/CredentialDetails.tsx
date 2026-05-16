@@ -1,16 +1,8 @@
 import { StackScreenProps } from '@react-navigation/stack'
-import { TrustResolutionOutcome } from '@verana-labs/verre'
-import React, { useRef, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { ScrollView, View } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
-
-import getStyles from './styles'
-
 import { CredentialDetails as CredentialDetailsComponent, ModalConfirmAction } from '@src/components'
-import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
-import { Text, ServiceInformation, OptionsList } from '@src/components/common'
+import { OptionsList, ServiceInformation, Text } from '@src/components/common'
 import { Option } from '@src/components/common/OptionsList'
+import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
 import { useCredentials, useMobileAgent } from '@src/hooks/agent'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { useFetchServiceInfo } from '@src/hooks/useFetchServiceInfo'
@@ -19,6 +11,12 @@ import { ServiceInfo } from '@src/model'
 import { getCredentialDetailsForDisplay } from '@src/services/agent/display'
 import { trimText } from '@src/utils'
 import { screenHeight } from '@src/utils/responsiveUtils'
+import { TrustResolutionOutcome } from '@verana-labs/verre'
+import React, { useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { ScrollView, View } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import getStyles from './styles'
 
 type Props = StackScreenProps<NavigationStackParams, 'CredentialDetails'>
 const CredentialDetails = ({ route, navigation }: Props) => {

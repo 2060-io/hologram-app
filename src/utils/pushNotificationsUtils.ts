@@ -16,14 +16,12 @@ import {
   registerDeviceForRemoteMessages,
   requestPermission,
 } from '@react-native-firebase/messaging'
-import { t } from 'i18next'
-import { requestNotifications, RESULTS } from 'react-native-permissions'
-
-import { getConnectionDisplayName } from './connectionUtils'
-
 import { IS_ANDROID, IS_IOS, isAndroid13OrHigher } from '@src/constants'
 import { getLocalizedPreview } from '@src/hooks/agent/chat/preview'
 import { ChatEntry } from '@src/model'
+import { t } from 'i18next'
+import { RESULTS, requestNotifications } from 'react-native-permissions'
+import { getConnectionDisplayName } from './connectionUtils'
 
 const LOCAL_NOTIFICATION_ID_PREFIX = 'local-notification'
 const optionsNotificationAndroid = (options?: NotificationAndroid): NotificationAndroid => ({
@@ -93,10 +91,7 @@ export const arePushNotificationsAllowed = async () => {
   return authorizationStatus === AUTHORIZED
 }
 
-export const displayNewChatMessageNotification = async (
-  connection: DidCommConnectionRecord,
-  chatEntry: ChatEntry,
-) => {
+export const displayNewChatMessageNotification = async (connection: DidCommConnectionRecord, chatEntry: ChatEntry) => {
   const data = {
     screen: 'Chat',
     params: { chatThreadId: chatEntry.chatThreadId, connectionId: connection.id },
@@ -160,7 +155,7 @@ export const deleteRemoteNotifications = async () => {
 
 export const markNewConnectionNotificationAsViewed = async (connectionId: string) => {
   const localNotifications = (await notifee.getDisplayedNotifications()).filter(({ id }) =>
-    id?.includes(LOCAL_NOTIFICATION_ID_PREFIX),
+    id?.includes(LOCAL_NOTIFICATION_ID_PREFIX)
   )
   const objectiveNotifications = localNotifications
     .filter(({ id }) => id === `${LOCAL_NOTIFICATION_ID_PREFIX}-connection-${connectionId}`)
@@ -172,7 +167,7 @@ export const markNewConnectionNotificationAsViewed = async (connectionId: string
 
 export const markNotificationsOfChatAsViewed = async (connectionId: string) => {
   const localNotifications = (await notifee.getDisplayedNotifications()).filter(({ id }) =>
-    id?.includes(LOCAL_NOTIFICATION_ID_PREFIX),
+    id?.includes(LOCAL_NOTIFICATION_ID_PREFIX)
   )
   const localChatNotificationsOfConnection = localNotifications
     .filter(({ id }) => id?.includes(`${LOCAL_NOTIFICATION_ID_PREFIX}-chat-${connectionId}`))

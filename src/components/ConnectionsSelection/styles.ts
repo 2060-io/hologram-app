@@ -1,8 +1,7 @@
-import { StyleSheet } from 'react-native'
-
 import { IS_IOS } from '@src/constants'
 import { AppTheme } from '@src/styles'
 import { widthPercentageToDP } from '@src/utils/responsiveUtils'
+import { StyleSheet } from 'react-native'
 
 const SEND_BUTTON_WIDTH = widthPercentageToDP(IS_IOS ? '10%' : '12%')
 

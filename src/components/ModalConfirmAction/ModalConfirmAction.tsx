@@ -1,11 +1,9 @@
+import { MainButton, OutlinedButton, OutlinedGreenButton, Text } from '@src/components/common'
+import ModalBottomHalf from '@src/components/ModalBottomHalf'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import React from 'react'
 import { View } from 'react-native'
-
 import getStyles from './styles'
-
-import ModalBottomHalf from '@src/components/ModalBottomHalf'
-import { MainButton, Text, OutlinedButton, OutlinedGreenButton } from '@src/components/common'
-import { useTheme } from '@src/hooks/providers/ThemeProvider'
 
 type Props = {
   visible: boolean
@@ -43,11 +41,7 @@ const ModalConfirmAction = ({
         {subTitle && <Text style={styles.descriptionDelete}>{subTitle}</Text>}
         <MainButton text={confirmText} style={styles.button} onPress={onConfirm} />
         {confirmTextSecondary && onConfirmSecondary && (
-          <OutlinedGreenButton
-            text={confirmTextSecondary}
-            style={styles.button}
-            onPress={onConfirmSecondary}
-          />
+          <OutlinedGreenButton text={confirmTextSecondary} style={styles.button} onPress={onConfirmSecondary} />
         )}
         <OutlinedButton text={cancelText} onPress={onCancel} />
       </View>

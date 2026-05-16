@@ -12,25 +12,13 @@ import {
   DidCommProblemReportMessage,
   parseMessageType,
 } from '@credo-ts/didcomm'
+import { ChatEntryRole, ChatEntryState, ChatEntryType, EMrtdReadRequestMetadata, MrzRequestMetadata } from '@src/model'
+import { log } from '@src/utils'
 import { parse } from 'mrz'
 import Realm from 'realm'
-
 import { DidCommMessageDirection } from '../DidCommMessageDirection'
-import {
-  createChatEntry,
-  findAllDidcommThreadId,
-  updateChatEntryMetadata,
-} from '../services/ChatEntryService'
+import { createChatEntry, findAllDidcommThreadId, updateChatEntryMetadata } from '../services/ChatEntryService'
 import { addUnread, findOrCreateChatThread } from '../services/ChatThreadService'
-
-import {
-  ChatEntryRole,
-  ChatEntryState,
-  ChatEntryType,
-  EMrtdReadRequestMetadata,
-  MrzRequestMetadata,
-} from '@src/model'
-import { log } from '@src/utils'
 
 export const handleMrtdMessages = (options: {
   realm: Realm

@@ -34,10 +34,6 @@ jobs:
         run: |
           pnpm style:check
 
-      - name: Check Lint
-        run: |
-          pnpm lint:check
-
       - name: Check Types
         run: |
           pnpm types:check

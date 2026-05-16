@@ -1,7 +1,7 @@
 import React from 'react'
 import Svg, { Image, SvgProps } from 'react-native-svg'
 
-const Kid: React.FC<SvgProps> = props => (
+const Kid: React.FC<SvgProps> = (props) => (
   <Svg {...props}>
     <Image
       width={props.width}

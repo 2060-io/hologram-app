@@ -1,12 +1,11 @@
-import notifee, { Notification, EventType } from '@notifee/react-native'
+import notifee, { EventType, Notification } from '@notifee/react-native'
 import { fetch as NetInfo } from '@react-native-community/netinfo'
 import { getMessaging, onTokenRefresh } from '@react-native-firebase/messaging'
-import React, { createContext, useCallback, useContext, useEffect, useState } from 'react'
-
-import { AgentActionType, useMobileAgent, useAgentActionQueue } from '@src/hooks/agent'
+import { AgentActionType, useAgentActionQueue, useMobileAgent } from '@src/hooks/agent'
 import { SavePushNotificationDeviceInfoParameters } from '@src/hooks/agent/actions/types'
 import { log, logWarn } from '@src/utils'
 import { arePushNotificationsAllowed, getFcmDeviceToken } from '@src/utils/pushNotificationsUtils'
+import React, { createContext, useCallback, useContext, useEffect, useState } from 'react'
 
 interface Props {
   children?: React.ReactNode
@@ -42,7 +41,7 @@ export const PushNotificationsProvider: React.FC<React.PropsWithChildren<Props>>
     const messaging = getMessaging()
     const unsubscribe = onTokenRefresh(messaging, (deviceToken: string) => {
       if (!isSignedUp) return
-      agent?.didcomm.mediationRecipient.findDefaultMediatorConnection().then(mediatorConnection => {
+      agent?.didcomm.mediationRecipient.findDefaultMediatorConnection().then((mediatorConnection) => {
         if (mediatorConnection) {
           const parameters: SavePushNotificationDeviceInfoParameters = {
             connectionId: mediatorConnection.id,
@@ -58,8 +57,7 @@ export const PushNotificationsProvider: React.FC<React.PropsWithChildren<Props>>
 
   useEffect(() => {
     const verifyPushNotificationTokenIsRegistered = async () => {
-      const defaultMediatorConnection =
-        await agent?.didcomm.mediationRecipient.findDefaultMediatorConnection()
+      const defaultMediatorConnection = await agent?.didcomm.mediationRecipient.findDefaultMediatorConnection()
       if (!defaultMediatorConnection) return
       const storedDeviceToken = defaultMediatorConnection.getTag('deviceToken')
       if (storedDeviceToken) return
@@ -130,8 +128,6 @@ export const PushNotificationsProvider: React.FC<React.PropsWithChildren<Props>>
   }, [])
 
   return (
-    <PushNotificationsContext value={{ pushNotification, setPushNotification }}>
-      {children}
-    </PushNotificationsContext>
+    <PushNotificationsContext value={{ pushNotification, setPushNotification }}>{children}</PushNotificationsContext>
   )
 }

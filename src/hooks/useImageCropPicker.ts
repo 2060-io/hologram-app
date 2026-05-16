@@ -1,12 +1,10 @@
-import { useTranslation } from 'react-i18next'
-import { openPicker, openCamera, Options, Image, Video, CommonOptions } from 'react-native-image-crop-picker'
-
-import { createDidCommPreview } from './media/preview'
-
 import { MAX_VIDEO_DURATION } from '@src/constants'
 import { logError } from '@src/utils'
 import { handleCameraPermission } from '@src/utils/permissions'
 import { toast } from '@src/utils/toast'
+import { useTranslation } from 'react-i18next'
+import { CommonOptions, Image, Options, openCamera, openPicker, Video } from 'react-native-image-crop-picker'
+import { createDidCommPreview } from './media/preview'
 
 const MAX_VIDEO_SECONDS_DURATION = 60
 const optionsCommon: CommonOptions = {
@@ -78,10 +76,7 @@ export const useImageCropPicker = () => {
     }
   }
 
-  const takePhotoOrVideoFromGallery = async (
-    onSuccess: (values: ImageOrVideo) => void,
-    options?: Options,
-  ) => {
+  const takePhotoOrVideoFromGallery = async (onSuccess: (values: ImageOrVideo) => void, options?: Options) => {
     const mediaType = options?.mediaType || 'photo'
     try {
       const fileInfo = (await openPicker({ ...optionsDefault[mediaType], ...options })) as ImageOrVideo

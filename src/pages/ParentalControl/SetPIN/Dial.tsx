@@ -1,10 +1,8 @@
-import React from 'react'
-import { View, TouchableOpacity } from 'react-native'
-
-import getStyles, { DIAL_SIZE } from './dialStyles'
-
 import { Icon, Text } from '@src/components/common'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import React from 'react'
+import { TouchableOpacity, View } from 'react-native'
+import getStyles, { DIAL_SIZE } from './dialStyles'
 
 type Props = {
   dial: number | string

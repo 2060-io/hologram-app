@@ -1,18 +1,16 @@
 import { DidCommUserProfileData } from '@2060.io/credo-ts-didcomm-user-profile'
 import { DidCommMediatorPickupStrategy } from '@credo-ts/didcomm'
 import { CommonActions, useNavigation } from '@react-navigation/native'
-import { useCallback, useState } from 'react'
-import Config from 'react-native-config'
-
-import { updateThreadFromServiceInfo } from './agent/chat/services'
-import { useConfig } from './providers/ConfigProvider'
-
 import { useMobileAgent, useUserProfile } from '@src/hooks/agent'
-import RealmSingleton from '@src/services/RealmSingleton'
 import { isRegistered } from '@src/services/agent'
 import { saveInCacheServiceInfo } from '@src/services/agent/cache'
+import RealmSingleton from '@src/services/RealmSingleton'
 import { getServiceInfo } from '@src/services/trustResolution'
 import { log, logError } from '@src/utils'
+import { useCallback, useState } from 'react'
+import Config from 'react-native-config'
+import { updateThreadFromServiceInfo } from './agent/chat/services'
+import { useConfig } from './providers/ConfigProvider'
 
 export const useSignUp = () => {
   const navigation = useNavigation()
@@ -48,7 +46,7 @@ export const useSignUp = () => {
       mediationRecord,
       mediationRecord.mediationProtocolVersion === 'v2'
         ? DidCommMediatorPickupStrategy.PickUpV3LiveMode
-        : DidCommMediatorPickupStrategy.PickUpV2LiveMode,
+        : DidCommMediatorPickupStrategy.PickUpV2LiveMode
     )
     updateUserProfileData({ displayName: displayName.trim(), displayPicture })
     navigation.dispatch(CommonActions.reset({ index: 0, routes: [{ name: 'Home' }] }))
@@ -67,10 +65,9 @@ export const useSignUp = () => {
       })
       if (!defaultServiceConnection) throw new Error('Default service connection not created')
 
-      defaultServiceConnection = await agent.didcomm.connections.returnWhenIsConnected(
-        defaultServiceConnection.id,
-        { timeoutMs: 5000 },
-      )
+      defaultServiceConnection = await agent.didcomm.connections.returnWhenIsConnected(defaultServiceConnection.id, {
+        timeoutMs: 5000,
+      })
       log(`connected with default service ${defaultServicePublicDid}`)
       return true
     } catch (error) {

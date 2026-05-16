@@ -1,7 +1,7 @@
 import React from 'react'
 import Svg, { Path, SvgProps } from 'react-native-svg'
 
-const ArrowBack: React.FC<SvgProps> = props => (
+const ArrowBack: React.FC<SvgProps> = (props) => (
   <Svg id="arrow_back_black_24dp_1_" data-name="arrow_back_black_24dp (1)" viewBox="0 0 24 24" {...props}>
     <Path id="Path_429" data-name="Path 429" d="M0,0H24V24H0Z" fill="none" />
     <Path

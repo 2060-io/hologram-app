@@ -1,15 +1,12 @@
-import React, { useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { TouchableOpacity, View } from 'react-native'
-
-import { ChatEntryMessage } from '../ChatMessage/Props'
-
-import getStyles from './styles'
-
 import { ModalConfirmAction } from '@src/components'
 import { SvgIcon, Text } from '@src/components/common'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { ChatEntryRole, ChatEntryState, ChatEntryType } from '@src/model'
+import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { TouchableOpacity, View } from 'react-native'
+import { ChatEntryMessage } from '../ChatMessage/Props'
+import getStyles from './styles'
 
 type Props = {
   selectedMessages: ChatEntryMessage[]
@@ -39,7 +36,7 @@ const SelectingMessagesBottomMenu = ({
   const [modalConfirmMessagesDeletion, setModalConfirmMessagesDeletion] = useState(false)
   const isDeleteButtonEnabled = !!selectedMessages.length
   const isForwardButtonEnabled = selectedMessages.length
-    ? selectedMessages.every(selectedMessage => {
+    ? selectedMessages.every((selectedMessage) => {
         const isAllowedForForward =
           MESSAGES_ALLOWED_FOR_FORWARD.includes(selectedMessage.type) &&
           selectedMessage.state !== ChatEntryState.Deleted
@@ -51,7 +48,7 @@ const SelectingMessagesBottomMenu = ({
   const closeModalConfirmMessagesDeletion = () => setModalConfirmMessagesDeletion(false)
 
   const confirmDeleteForEveryone = () => {
-    const canDeleteForEveryone = selectedMessages.every(chatEntry => {
+    const canDeleteForEveryone = selectedMessages.every((chatEntry) => {
       const isSender = chatEntry.role === ChatEntryRole.Sender
       const isNotDeleted = chatEntry.state !== ChatEntryState.Deleted
       return isSender && isNotDeleted
@@ -59,9 +56,7 @@ const SelectingMessagesBottomMenu = ({
     return canDeleteForEveryone ? t('chat.deleteForEveryone') : undefined
   }
 
-  const commonDeleteMessagesFlow = async (
-    deleteCallback: (selectedMessages: ChatEntryMessage[]) => Promise<void>,
-  ) => {
+  const commonDeleteMessagesFlow = async (deleteCallback: (selectedMessages: ChatEntryMessage[]) => Promise<void>) => {
     closeModalConfirmMessagesDeletion()
     await deleteCallback(selectedMessages)
     stopSelectingMessagesMode()
@@ -80,10 +75,7 @@ const SelectingMessagesBottomMenu = ({
       <TouchableOpacity
         disabled={!isDeleteButtonEnabled}
         onPress={showModalConfirmMessagesDeletion}
-        style={[
-          styles.deleteButtonContainer,
-          isDeleteButtonEnabled ? styles.enabledButton : styles.disabledButton,
-        ]}
+        style={[styles.deleteButtonContainer, isDeleteButtonEnabled ? styles.enabledButton : styles.disabledButton]}
       >
         <SvgIcon name="trash" fill={theme.colors.blue} width={20} height={20} />
       </TouchableOpacity>
@@ -92,10 +84,7 @@ const SelectingMessagesBottomMenu = ({
       </Text>
       <TouchableOpacity
         disabled={!isForwardButtonEnabled}
-        style={[
-          styles.forwardButtonContainer,
-          isForwardButtonEnabled ? styles.enabledButton : styles.disabledButton,
-        ]}
+        style={[styles.forwardButtonContainer, isForwardButtonEnabled ? styles.enabledButton : styles.disabledButton]}
         onPress={goToForwardMessages}
       >
         <SvgIcon name="forward" fill={theme.colors.blue} width={20} height={20} />

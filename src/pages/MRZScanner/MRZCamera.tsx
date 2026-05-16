@@ -1,18 +1,16 @@
-import React, { useCallback, useMemo, useRef, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { Dimensions, LayoutChangeEvent, Platform, StyleSheet, TouchableOpacity, View } from 'react-native'
-import { Svg, Rect } from 'react-native-svg'
-import { Camera, runAtTargetFps, useCameraFormat, useFrameProcessor } from 'react-native-vision-camera'
-import { useTextRecognition, Text as ResolvedText, ScanRegion } from 'react-native-vision-camera-ocr-plus'
-import { Worklets } from 'react-native-worklets-core'
-
-import { MRZCameraProps } from './MRZScannerProps'
-import getStyles from './styles'
-
 import { HeaderTitle, SvgIcon, Text } from '@src/components/common'
 import { IS_IOS } from '@src/constants'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { widthPercentageToDP } from '@src/utils/responsiveUtils'
+import React, { useCallback, useMemo, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { Dimensions, LayoutChangeEvent, Platform, StyleSheet, TouchableOpacity, View } from 'react-native'
+import { Rect, Svg } from 'react-native-svg'
+import { Camera, runAtTargetFps, useCameraFormat, useFrameProcessor } from 'react-native-vision-camera'
+import { Text as ResolvedText, ScanRegion, useTextRecognition } from 'react-native-vision-camera-ocr-plus'
+import { Worklets } from 'react-native-worklets-core'
+import { MRZCameraProps } from './MRZScannerProps'
+import getStyles from './styles'
 
 const SCREEN_WIDTH = Dimensions.get('window').width
 const SCREEN_HEIGHT = Platform.select<number>({
@@ -41,7 +39,7 @@ const MRZCamera = ({ skipScan, cameraProps, onData, scanSuccess, refuse }: MRZCa
     scanRegion,
   })
   const [containerHeight, setContainerHeight] = useState(0)
-  const supports60Fps = useMemo(() => device?.formats.some(f => f.maxFps >= 60), [device?.formats])
+  const supports60Fps = useMemo(() => device?.formats.some((f) => f.maxFps >= 60), [device?.formats])
   const format = useCameraFormat(device, [
     { fps: supports60Fps ? 60 : 30 },
     { videoAspectRatio: screenAspectRatio },
@@ -59,20 +57,20 @@ const MRZCamera = ({ skipScan, cameraProps, onData, scanSuccess, refuse }: MRZCa
       /* Scanning the text from the image and then setting the state of the component. */
       if (data && data.blocks.length > 0) {
         const lines: string[] = []
-        data.blocks.forEach(block => {
+        data.blocks.forEach((block) => {
           lines.push(block.blockText)
         })
         if (lines.length > 0 && isActive) onData(lines)
       }
     },
-    [isActive, onData],
+    [isActive, onData]
   )
 
   const handleScanRunOnJS = Worklets.createRunOnJS(handleScan)
 
   /* Using the useFrameProcessor hook to process the video frames. */
   const frameProcessor = useFrameProcessor(
-    frame => {
+    (frame) => {
       'worklet'
       if (!scanSuccess) {
         runAtTargetFps(RUN_TARGET_FPS, () => {
@@ -82,7 +80,7 @@ const MRZCamera = ({ skipScan, cameraProps, onData, scanSuccess, refuse }: MRZCa
         })
       }
     },
-    [handleScanRunOnJS],
+    [handleScanRunOnJS]
   )
 
   const onLayout = (event: LayoutChangeEvent) => {

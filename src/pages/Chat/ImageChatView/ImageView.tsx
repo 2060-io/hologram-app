@@ -1,16 +1,13 @@
-import React, { memo, useState } from 'react'
-import { StyleProp, ImageStyle, TouchableOpacity } from 'react-native'
-
-import { MediaInfo } from '../ChatProps'
-
-import LightboxHeader from './LightboxHeader'
-import getStyles from './styles'
-
 import { LightboxModal } from '@src/components'
 import { UniversalImage } from '@src/components/common'
 import { useChat } from '@src/hooks/agent'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { ChatEntryMessage } from '@src/pages/Chat/ChatMessage/Props'
+import React, { memo, useState } from 'react'
+import { ImageStyle, StyleProp, TouchableOpacity } from 'react-native'
+import { MediaInfo } from '../ChatProps'
+import LightboxHeader from './LightboxHeader'
+import getStyles from './styles'
 
 type ImageView = {
   imagePreviewUri: string
@@ -43,11 +40,7 @@ const ImageView = memo((props: ImageView) => {
         closeModal={onToggleModalLightbox}
         renderHeader={() =>
           showControl && (
-            <LightboxHeader
-              fileMediaInfo={fileMediaInfo}
-              onBack={onToggleModalLightbox}
-              chatEntry={chatEntry}
-            />
+            <LightboxHeader fileMediaInfo={fileMediaInfo} onBack={onToggleModalLightbox} chatEntry={chatEntry} />
           )
         }
       >

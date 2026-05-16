@@ -1,9 +1,7 @@
 import { DifPexCredentialsForRequest, DifPexCredentialsForRequestSubmissionEntry } from '@credo-ts/core'
-
-import { MobileAgent } from './MobileAgent'
-import { getCredentialMainInfo, getPresentationRequestForDisplay } from './display'
-
 import { VerifierInfo } from '@src/model'
+import { getCredentialMainInfo, getPresentationRequestForDisplay } from './display'
+import { MobileAgent } from './MobileAgent'
 
 export interface FormattedSubmission {
   name: string
@@ -24,16 +22,16 @@ interface FormattedSubmissionEntry {
 
 export function formatW3cPresentationSubmission(
   presentationSubmission: DifPexCredentialsForRequest,
-  verifier: VerifierInfo,
+  verifier: VerifierInfo
 ): FormattedSubmission {
-  const entries = presentationSubmission.requirements.flatMap(requirement => {
+  const entries = presentationSubmission.requirements.flatMap((requirement) => {
     return requirement.submissionEntry.map((submission: DifPexCredentialsForRequestSubmissionEntry) => {
       const entry = {
         id: submission.name ?? '',
         name: submission.name ?? '',
         description: submission.purpose,
         isSatisfied: submission.verifiableCredentials.length >= 1,
-        credentials: submission.verifiableCredentials.map(c => getCredentialMainInfo(c.credentialRecord)),
+        credentials: submission.verifiableCredentials.map((c) => getCredentialMainInfo(c.credentialRecord)),
       }
 
       entry.name = entry.name ?? entry.credentials[0]?.schemaName ?? 'N/A'
@@ -42,7 +40,7 @@ export function formatW3cPresentationSubmission(
   })
 
   return {
-    areAllSatisfied: entries.every(entry => entry.isSatisfied),
+    areAllSatisfied: entries.every((entry) => entry.isSatisfied),
     name: presentationSubmission.name ?? 'N/A',
     purpose: presentationSubmission.purpose,
     entries,
@@ -60,12 +58,12 @@ export async function formatDidcommPresentationSubmission(options: {
     includeMatches: true,
   })
 
-  const entries = requestedCredentials.map(requirement => {
+  const entries = requestedCredentials.map((requirement) => {
     const entry = {
       id: requirement.id ?? '',
       name: requirement.schemaName ?? '',
       isSatisfied: requirement.matches ? requirement.matches?.length >= 1 : false,
-      credentials: requirement.matches?.map(match => match.credentialMainInfo) ?? [],
+      credentials: requirement.matches?.map((match) => match.credentialMainInfo) ?? [],
       requestedAttributes: requirement.attributes,
     }
     return entry
@@ -73,7 +71,7 @@ export async function formatDidcommPresentationSubmission(options: {
 
   return {
     name: '',
-    areAllSatisfied: entries.every(entry => entry.isSatisfied),
+    areAllSatisfied: entries.every((entry) => entry.isSatisfied),
     entries,
     verifier,
   }

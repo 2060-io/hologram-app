@@ -1,7 +1,7 @@
 import React from 'react'
 import Svg, { G, Path, SvgProps } from 'react-native-svg'
 
-const BackupRestore: React.FC<SvgProps> = props => (
+const BackupRestore: React.FC<SvgProps> = (props) => (
   <Svg width={24} height={24} viewBox="0 0 24 24" {...props}>
     <G data-name="Group 1849">
       <Path data-name="Rectangle 4034" fill="none" d="M0 0h24v24H0z" />

@@ -1,13 +1,10 @@
-import { TrustResolutionOutcome } from '@verana-labs/verre'
-import React from 'react'
-import { View, StyleProp, ViewStyle } from 'react-native'
-
-import SvgIcon, { IconsNames } from '../SvgIcon'
-
-import styles from './styles'
-
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { ServiceStatus } from '@src/model'
+import { TrustResolutionOutcome } from '@verana-labs/verre'
+import React from 'react'
+import { StyleProp, View, ViewStyle } from 'react-native'
+import SvgIcon, { IconsNames } from '../SvgIcon'
+import styles from './styles'
 
 type Props = {
   style?: StyleProp<ViewStyle>

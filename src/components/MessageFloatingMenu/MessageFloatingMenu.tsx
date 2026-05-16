@@ -1,15 +1,5 @@
 import Clipboard from '@react-native-clipboard/clipboard'
 import { StackNavigationProp } from '@react-navigation/stack'
-import React, { memo } from 'react'
-import { useTranslation } from 'react-i18next'
-import { View, TouchableOpacity } from 'react-native'
-
-import { ChatStackParams } from '../Navigation/NavigationProps'
-import ReactionMenu from '../ReactionMenu'
-
-import MenuItem from './MenuItem'
-import getStyles from './styles'
-
 import { useChatActions } from '@src/hooks'
 import { RepliedMessage } from '@src/hooks/agent'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
@@ -18,6 +8,13 @@ import { ChatEntryMessage } from '@src/pages/Chat/ChatMessage/Props'
 import { MessageAction } from '@src/pages/Chat/ChatProps'
 import FloatingChatMessage from '@src/pages/Chat/MessageCustomView/FloatingChatMessage'
 import { MobileAgent } from '@src/services/agent'
+import React, { memo } from 'react'
+import { useTranslation } from 'react-i18next'
+import { TouchableOpacity, View } from 'react-native'
+import { ChatStackParams } from '../Navigation/NavigationProps'
+import ReactionMenu from '../ReactionMenu'
+import MenuItem from './MenuItem'
+import getStyles from './styles'
 
 type Props = {
   navigation: StackNavigationProp<ChatStackParams>

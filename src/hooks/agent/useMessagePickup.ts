@@ -1,12 +1,10 @@
 import { DidCommMediatorPickupStrategy } from '@credo-ts/didcomm'
+import { MobileAgent } from '@src/services/agent'
+import { log, logWarn } from '@src/utils'
 import { useEffect } from 'react'
-
 import { useLocalRealm } from '../providers/RealmProvider'
 import { useScreenLock } from '../providers/ScreenLockProvider'
 import { useAppState } from '../useAppState'
-
-import { MobileAgent } from '@src/services/agent'
-import { log, logWarn } from '@src/utils'
 
 /**
  * Hook to manage message pickup initialization and stopping
@@ -66,7 +64,7 @@ export async function initiateMessagePickup(agent: MobileAgent) {
     mediatorRecord,
     mediatorRecord.mediationProtocolVersion === 'v2'
       ? DidCommMediatorPickupStrategy.PickUpV3LiveMode
-      : DidCommMediatorPickupStrategy.PickUpV2LiveMode,
+      : DidCommMediatorPickupStrategy.PickUpV2LiveMode
   )
 }
 

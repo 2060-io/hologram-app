@@ -1,18 +1,5 @@
-import {
-  FinishMode,
-  IWaveformRef,
-  PlayerState,
-  Waveform,
-} from '@simform_solutions/react-native-audio-waveform'
-import React, { memo, useState, useEffect, useRef } from 'react'
-import { useTranslation } from 'react-i18next'
-import { View, TouchableOpacity, ActivityIndicator, ViewStyle } from 'react-native'
-
-import { getMinutesAndSeconds } from '../utils'
-
-import getStyles from './styles'
-
-import { Text, Icon } from '@src/components/common'
+import { FinishMode, IWaveformRef, PlayerState, Waveform } from '@simform_solutions/react-native-audio-waveform'
+import { Icon, Text } from '@src/components/common'
 import { useMedia } from '@src/hooks'
 import { useChat } from '@src/hooks/agent'
 import { useMediaPlayer } from '@src/hooks/providers/MediaPlayerProvider'
@@ -20,6 +7,11 @@ import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { ChatEntryRole, MediaUploadState, VoiceNoteMetadata } from '@src/model'
 import { getFileSize, logWarn } from '@src/utils'
 import { getFullLocalFilePath } from '@src/utils/RNFS'
+import React, { memo, useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { ActivityIndicator, TouchableOpacity, View, ViewStyle } from 'react-native'
+import { getMinutesAndSeconds } from '../utils'
+import getStyles from './styles'
 
 type VoiceNoteChatViewProps = {
   mediaRecordId: string
@@ -49,8 +41,7 @@ const VoiceNoteChatView = memo(
     const { localFilePath, byteCount, duration, mediaUploadState, mediaDownloadState, waveform } = metadata
     const durationTime = getMinutesAndSeconds(duration ?? 0)
     const isMediaUploadError =
-      mediaUploadState === MediaUploadState.ErrorCreating ||
-      mediaUploadState === MediaUploadState.ErrorUploading
+      mediaUploadState === MediaUploadState.ErrorCreating || mediaUploadState === MediaUploadState.ErrorUploading
     const [playedTime, setPlayedTime] = useState('00:00')
     const ref = useRef<IWaveformRef>(null)
     const prevPlaterState = useRef<PlayerState>(undefined)
@@ -96,7 +87,7 @@ const VoiceNoteChatView = memo(
     }, [playerState])
 
     const onPlayerStateChange = (newState: PlayerState) => {
-      setPlayerState(prevState => {
+      setPlayerState((prevState) => {
         prevPlaterState.current = prevState
         return newState
       })
@@ -133,9 +124,7 @@ const VoiceNoteChatView = memo(
       // If no player or if current player is stopped just start the new player!
       if (
         currentPlayingRef == null ||
-        [PlayerState.stopped, PlayerState.paused].includes(
-          currentPlayingRef?.current?.currentState as PlayerState,
-        )
+        [PlayerState.stopped, PlayerState.paused].includes(currentPlayingRef?.current?.currentState as PlayerState)
       ) {
         await startNewPlayer()
       } else {
@@ -193,7 +182,7 @@ const VoiceNoteChatView = memo(
               waveColor={theme.isDarkMode ? '#B8D2D9' : '#6A8994'}
               onPlayerStateChange={onPlayerStateChange}
               onCurrentProgressChange={onCurrentProgressChange}
-              onError={error => {
+              onError={(error) => {
                 logWarn(`Error playing or loading voice note: ${error}`)
               }}
             />
@@ -229,7 +218,7 @@ const VoiceNoteChatView = memo(
         </View>
       </View>
     )
-  },
+  }
 )
 
 export default VoiceNoteChatView

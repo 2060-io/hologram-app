@@ -1,13 +1,11 @@
 import { PlayerState } from '@simform_solutions/react-native-audio-waveform'
-import React, { createContext, useContext, useState, useCallback, useRef, useEffect } from 'react'
-
-import { useScreenLock } from './ScreenLockProvider'
-import { useVideoCallContext } from './useVideoCallContext'
-
 import { LightboxModal, VideoPlayer } from '@src/components'
 import { ChatEntryMessage } from '@src/pages/Chat/ChatMessage/Props'
 import { MediaInfo } from '@src/pages/Chat/ChatProps'
 import LightboxHeader from '@src/pages/Chat/ImageChatView/LightboxHeader'
+import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
+import { useScreenLock } from './ScreenLockProvider'
+import { useVideoCallContext } from './useVideoCallContext'
 
 type Callback = () => Promise<void>
 
@@ -84,18 +82,15 @@ export const MediaPlayerProvider: React.FC<React.PropsWithChildren<Props>> = ({ 
       setRenderVideoPlayer(true)
       setVideoState(newVideoProps)
     },
-    [playingAudioInfo],
+    [playingAudioInfo]
   )
 
-  const updatePlayingAudioInfo = useCallback(
-    (newState: PlayerState, voiceNoteFilePath: string, callback: Callback) => {
-      currentAudioCallback.current = callback
-      const newInfo = newState === PlayerState.stopped ? undefined : { state: newState, voiceNoteFilePath }
-      playingAudioInfo.current = newInfo
-      forceDisableScreenLock(newState === PlayerState.playing)
-    },
-    [],
-  )
+  const updatePlayingAudioInfo = useCallback((newState: PlayerState, voiceNoteFilePath: string, callback: Callback) => {
+    currentAudioCallback.current = callback
+    const newInfo = newState === PlayerState.stopped ? undefined : { state: newState, voiceNoteFilePath }
+    playingAudioInfo.current = newInfo
+    forceDisableScreenLock(newState === PlayerState.playing)
+  }, [])
 
   const updateAudioMessageIdFinished = useCallback((newAudioMessageId: string | undefined) => {
     setAudioMessageIdFinished(newAudioMessageId)
@@ -128,11 +123,7 @@ export const MediaPlayerProvider: React.FC<React.PropsWithChildren<Props>> = ({ 
         }
         closeModal={closeVideoPlayer}
       >
-        <VideoPlayer
-          uri={videoState?.videoFileUri ?? ''}
-          showControl={showControl}
-          setShowControl={setShowControl}
-        />
+        <VideoPlayer uri={videoState?.videoFileUri ?? ''} showControl={showControl} setShowControl={setShowControl} />
       </LightboxModal>
       {children}
     </MediaPlayerContext>

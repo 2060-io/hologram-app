@@ -1,13 +1,11 @@
-import React from 'react'
-import { ViewStyle, View, Image, StyleSheet } from 'react-native'
-
-import { appName } from '../../../app.json'
-
 import smallAppIcon from '@src/assets/images/smallAppIcon.png'
 import { Text } from '@src/components/common'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { AppTheme } from '@src/styles'
 import { widthPercentageToDP } from '@src/utils/responsiveUtils'
+import React from 'react'
+import { Image, StyleSheet, View, ViewStyle } from 'react-native'
+import { appName } from '../../../app.json'
 
 const AppLogo = ({ style }: { style?: ViewStyle }) => {
   const theme = useTheme()

@@ -1,19 +1,17 @@
 import { DidCommConnectionRecord } from '@credo-ts/didcomm'
 import { StackScreenProps } from '@react-navigation/stack'
-import React, { useEffect, useMemo, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { View, TouchableOpacity } from 'react-native'
-import { AlphabetList, IData } from 'react-native-section-alphabet-list'
-
-import getStyles from './styles'
-
 import { SearchInput } from '@src/components'
-import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
 import { Avatar, SvgIcon, Text } from '@src/components/common'
 import UniversalImage from '@src/components/common/UniversalImage'
+import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
 import { useConnectionById, useConnectionByParentConnectionId } from '@src/hooks/agent'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { getConnectionDisplayName, getConnectionDisplayPicture } from '@src/utils/connectionUtils'
+import React, { useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { TouchableOpacity, View } from 'react-native'
+import { AlphabetList, IData } from 'react-native-section-alphabet-list'
+import getStyles from './styles'
 
 interface SubConnectionData extends IData {
   avatar: string
@@ -35,20 +33,20 @@ const RelatedConnections: React.FC<Props> = ({ navigation, route }) => {
   const subConnectionList = useMemo(
     () =>
       subConnections.map(
-        subConnection =>
+        (subConnection) =>
           ({
             key: subConnection.id,
             value: getConnectionDisplayName(subConnection),
             avatar: getConnectionDisplayPicture(subConnection),
-          }) as SubConnectionData,
+          }) as SubConnectionData
       ),
-    [subConnections],
+    [subConnections]
   )
 
   const onGoToBack = () => navigation.canGoBack() && navigation.goBack()
 
   const handleSelectedSubConnection = (subconnectionId: string) => {
-    const connection = subConnections.find(record => record.id === subconnectionId)
+    const connection = subConnections.find((record) => record.id === subconnectionId)
     if (!connection) return
 
     navigation.navigate('ConnectionDetails', { connectionId: connection.id })
@@ -72,7 +70,7 @@ const RelatedConnections: React.FC<Props> = ({ navigation, route }) => {
       headerTitle,
       headerTitleAlign: 'left',
       headerRight: () => (
-        <TouchableOpacity style={styles.rightHeaderButton} onPress={() => setShowSearchInput(prev => !prev)}>
+        <TouchableOpacity style={styles.rightHeaderButton} onPress={() => setShowSearchInput((prev) => !prev)}>
           <SvgIcon name="search" fill={theme.colors.primaryText} />
         </TouchableOpacity>
       ),
@@ -102,7 +100,7 @@ const RelatedConnections: React.FC<Props> = ({ navigation, route }) => {
         style={styles.listContainer}
         data={subConnectionList}
         indexLetterStyle={styles.letterStyle}
-        renderCustomItem={item => (
+        renderCustomItem={(item) => (
           <TouchableOpacity
             style={[styles.containerConnectionItem]}
             onPress={() => handleSelectedSubConnection(item.key)}
@@ -113,7 +111,7 @@ const RelatedConnections: React.FC<Props> = ({ navigation, route }) => {
             </Text>
           </TouchableOpacity>
         )}
-        renderCustomSectionHeader={section => (
+        renderCustomSectionHeader={(section) => (
           <View style={styles.sectionHeaderContainer}>
             <Text style={styles.sectionHeaderLabel} fontFamily="EuclidCircularA-Medium">
               {section.title}

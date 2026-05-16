@@ -1,4 +1,4 @@
-import { ThemeColors, AppColors } from './types'
+import { AppColors, ThemeColors } from './types'
 
 const lightColors: ThemeColors = {
   primary: '#FFFFFF',

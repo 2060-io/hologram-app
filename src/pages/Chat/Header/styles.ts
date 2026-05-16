@@ -1,7 +1,6 @@
-import { StyleSheet } from 'react-native'
-
 import { AppTheme, headerHeight } from '@src/styles'
 import { widthPercentageToDP } from '@src/utils/responsiveUtils'
+import { StyleSheet } from 'react-native'
 
 export default (theme: AppTheme) =>
   StyleSheet.create({

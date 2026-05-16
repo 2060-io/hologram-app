@@ -1,7 +1,7 @@
 import React from 'react'
-import Svg, { G, Path, Circle, SvgProps } from 'react-native-svg'
+import Svg, { Circle, G, Path, SvgProps } from 'react-native-svg'
 
-const PersonSquare: React.FC<SvgProps> = props => (
+const PersonSquare: React.FC<SvgProps> = (props) => (
   <Svg viewBox="0 0 23.54 23.54" {...props}>
     <G data-name="Grupo 1885" fill="none">
       <Path data-name="Rect\xE1ngulo 4059" d="M0 0H23.54V23.54H0z" />

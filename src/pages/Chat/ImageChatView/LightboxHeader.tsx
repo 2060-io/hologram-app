@@ -1,17 +1,14 @@
-import React, { memo } from 'react'
-import { useTranslation } from 'react-i18next'
-import { View, TouchableOpacity, Alert } from 'react-native'
-import { uses24HourClock } from 'react-native-localize'
-
-import { MediaInfo } from '../ChatProps'
-
-import getStyles from './styles'
-
 import { Icon, Text } from '@src/components/common'
 import { useChatActions } from '@src/hooks'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { ChatEntryMessage } from '@src/pages/Chat/ChatMessage/Props'
 import { getFormattedDateRangeWithTime } from '@src/utils/dateUtils'
+import React, { memo } from 'react'
+import { useTranslation } from 'react-i18next'
+import { Alert, TouchableOpacity, View } from 'react-native'
+import { uses24HourClock } from 'react-native-localize'
+import { MediaInfo } from '../ChatProps'
+import getStyles from './styles'
 
 type LightboxHeaderProps = {
   fileMediaInfo: MediaInfo

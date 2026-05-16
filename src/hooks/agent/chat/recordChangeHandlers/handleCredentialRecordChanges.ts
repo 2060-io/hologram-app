@@ -8,19 +8,14 @@ import {
   DidCommProblemReportMessage,
   parseMessageType,
 } from '@credo-ts/didcomm'
-import { TrustResolutionOutcome } from '@verana-labs/verre'
-import Realm from 'realm'
-
-import { createChatEntry, findAllByAssociatedRecordId, updateChatEntry } from '../services/ChatEntryService'
-import { addUnread, findOrCreateChatThread } from '../services/ChatThreadService'
-
 import { ChatEntryRole, ChatEntryState, ChatEntryType } from '@src/model'
 import { MobileAgent } from '@src/services/agent'
-import {
-  getDidCommCredentialDisplayMetadata,
-  setDidCommCredentialMetadata,
-} from '@src/services/agent/RecordMetadata'
+import { getDidCommCredentialDisplayMetadata, setDidCommCredentialMetadata } from '@src/services/agent/RecordMetadata'
 import { getConnectionDisplayName, getConnectionDisplayPicture } from '@src/utils/connectionUtils'
+import { TrustResolutionOutcome } from '@verana-labs/verre'
+import Realm from 'realm'
+import { createChatEntry, findAllByAssociatedRecordId, updateChatEntry } from '../services/ChatEntryService'
+import { addUnread, findOrCreateChatThread } from '../services/ChatThreadService'
 
 export const handleCredentialExchangeRecordChanges = async (options: {
   agent: MobileAgent
@@ -35,21 +30,14 @@ export const handleCredentialExchangeRecordChanges = async (options: {
 
   const connection = await agent.didcomm.connections.getById(credentialExchangeRecord.connectionId)
   const thread = findOrCreateChatThread(realm, connection)
-  const associatedMessageId = (
-    await agent.didcomm.credentials.findRequestMessage(credentialExchangeRecord.id)
-  )?.id
+  const associatedMessageId = (await agent.didcomm.credentials.findRequestMessage(credentialExchangeRecord.id))?.id
 
   const formatData = await agent.didcomm.credentials.getFormatData(credentialExchangeRecord.id)
   const schemaId = formatData.offer?.anoncreds?.schema_id ?? formatData.offer?.indy?.schema_id
-  const credentialDefinitionId =
-    formatData.offer?.anoncreds?.cred_def_id ?? formatData.offer?.indy?.cred_def_id
+  const credentialDefinitionId = formatData.offer?.anoncreds?.cred_def_id ?? formatData.offer?.indy?.cred_def_id
 
   // Find any VC Offer entry associated to this credential record and update its state
-  const [vcOfferEntry] = findAllByAssociatedRecordId(
-    realm,
-    credentialExchangeRecord.id,
-    ChatEntryType.VCOffer,
-  )
+  const [vcOfferEntry] = findAllByAssociatedRecordId(realm, credentialExchangeRecord.id, ChatEntryType.VCOffer)
   if (vcOfferEntry) {
     const { messageTypeUri } = parseMessageType(message.type)
     let isRefused = false
@@ -78,7 +66,7 @@ export const handleCredentialExchangeRecordChanges = async (options: {
       const credentialRepository = agent.dependencyManager.resolve(W3cCredentialRepository)
       const issuedCredentialRecord = await credentialRepository.getById(
         agent.context,
-        credentialExchangeRecord.credentials[0].credentialRecordId,
+        credentialExchangeRecord.credentials[0].credentialRecordId
       )
       const metadata = getDidCommCredentialDisplayMetadata(credentialExchangeRecord)
       if (metadata) setDidCommCredentialMetadata(issuedCredentialRecord, metadata)
@@ -93,8 +81,7 @@ export const handleCredentialExchangeRecordChanges = async (options: {
   const issuerId =
     connection.invitationDid ??
     (credentialDefinitionId
-      ? (await agent.modules.anoncreds.getCredentialDefinition(credentialDefinitionId)).credentialDefinition
-          ?.issuerId
+      ? (await agent.modules.anoncreds.getCredentialDefinition(credentialDefinitionId)).credentialDefinition?.issuerId
       : undefined)
   const issuerName = getConnectionDisplayName(connection)
   const issuerStatus = TrustResolutionOutcome.INVALID

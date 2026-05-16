@@ -1,23 +1,22 @@
 /* eslint-disable max-len */
-import type { W3cCredentialJson, W3cIssuerJson } from './types'
 
 import { AnonCredsProofRequestRestriction } from '@credo-ts/anoncreds'
 import {
-  W3cCredentialRecord,
-  SdJwtVcRecord,
-  W3cCredentialRepository,
   ClaimFormat,
   JsonTransformer,
   MdocRecord,
+  SdJwtVcRecord,
+  W3cCredentialRecord,
+  W3cCredentialRepository,
 } from '@credo-ts/core'
 import { DidCommCredentialState } from '@credo-ts/didcomm'
 import { OpenId4VciResolvedCredentialOffer } from '@credo-ts/openid4vc'
+import { IssuerInfo, VerifierInfo } from '@src/model/ServiceInfo'
 import { TrustResolutionOutcome } from '@verana-labs/verre'
 
 import { MobileAgent } from './MobileAgent'
 import { getDidCommCredentialDisplayMetadata } from './RecordMetadata'
-
-import { IssuerInfo, VerifierInfo } from '@src/model/ServiceInfo'
+import type { W3cCredentialJson, W3cIssuerJson } from './types'
 
 export type CredentialMainInfo = {
   id: string
@@ -154,14 +153,14 @@ type CredentialDetailsFromExchange = {
 
 export async function getCredentialDetailsFromExchange(
   agent: MobileAgent,
-  credentialExchangeRecordId: string,
+  credentialExchangeRecordId: string
 ): Promise<CredentialDetailsFromExchange> {
   const credentialExchangeRecord = await agent.didcomm.credentials.getById(credentialExchangeRecordId)
 
   // Credential already issued: take info from it
   if (credentialExchangeRecord.credentials[0]) {
     const credentialRecord = await agent.w3cCredentials.getById(
-      credentialExchangeRecord.credentials[0].credentialRecordId,
+      credentialExchangeRecord.credentials[0].credentialRecordId
     )
     const details = getCredentialDetailsForDisplay(credentialRecord)
     return { details, state: credentialExchangeRecord.state }
@@ -201,14 +200,14 @@ export async function getCredentialDetailsFromExchange(
 }
 
 export function getCredentialMainInfo(
-  credentialRecord: W3cCredentialRecord | SdJwtVcRecord | MdocRecord,
+  credentialRecord: W3cCredentialRecord | SdJwtVcRecord | MdocRecord
   //@ts-expect-error It incorrectly complains about no return, when both cases are fully covered
 ): CredentialMainInfo {
   if (credentialRecord instanceof W3cCredentialRecord) {
     const credential = JsonTransformer.toJSON(
       credentialRecord.firstCredential.claimFormat === ClaimFormat.JwtVc
         ? credentialRecord.firstCredential.credential
-        : credentialRecord.firstCredential,
+        : credentialRecord.firstCredential
     ) as W3cCredentialJson
 
     // Give priority to any metadata created by a DIDComm credential exchange
@@ -248,7 +247,7 @@ export function getCredentialMainInfo(
 }
 
 export function getOfferedCredentialDetailsForDisplay(
-  data: OpenId4VciResolvedCredentialOffer,
+  data: OpenId4VciResolvedCredentialOffer
 ): CredentialDetailsForDisplay {
   const credential = data.offeredCredentialConfigurations[0]
 
@@ -273,7 +272,7 @@ export function getCredentialAttributes(credentialRecord: W3cCredentialRecord) {
     const credential = JsonTransformer.toJSON(
       credentialRecord.firstCredential.claimFormat === ClaimFormat.JwtVc
         ? credentialRecord.firstCredential.credential
-        : credentialRecord.firstCredential,
+        : credentialRecord.firstCredential
     ) as W3cCredentialJson
 
     // FIXME: support credential with multiple subjects
@@ -284,9 +283,7 @@ export function getCredentialAttributes(credentialRecord: W3cCredentialRecord) {
   return attributes
 }
 
-export function getCredentialDetailsForDisplay(
-  credentialRecord: W3cCredentialRecord,
-): CredentialDetailsForDisplay {
+export function getCredentialDetailsForDisplay(credentialRecord: W3cCredentialRecord): CredentialDetailsForDisplay {
   return {
     mainInfo: getCredentialMainInfo(credentialRecord),
     attributes: getCredentialAttributes(credentialRecord),
@@ -307,7 +304,7 @@ export type RequestedCredentialItem = {
 
 const getRequestedCredentialTypeFromRestrictions = async (
   agent: MobileAgent,
-  restrictions: AnonCredsProofRequestRestriction[],
+  restrictions: AnonCredsProofRequestRestriction[]
 ) => {
   // Find schemaId or credentialDefinitionId among the restrictions in order to determine the schema name
   let schemaName: string | undefined, issuerName: string | undefined
@@ -318,9 +315,7 @@ const getRequestedCredentialTypeFromRestrictions = async (
 
     let schemaId: string | undefined
     if (restriction.cred_def_id) {
-      const credentialDefinitionResult = await agent.modules.anoncreds.getCredentialDefinition(
-        restriction.cred_def_id,
-      )
+      const credentialDefinitionResult = await agent.modules.anoncreds.getCredentialDefinition(restriction.cred_def_id)
       schemaId = credentialDefinitionResult.credentialDefinition?.schemaId
     }
 
@@ -330,10 +325,7 @@ const getRequestedCredentialTypeFromRestrictions = async (
       schemaName = sanitizeString(schemaResult.schema?.name)
     }
     issuerName =
-      restriction.issuer_did ??
-      restriction.issuer_id ??
-      restriction.schema_issuer_did ??
-      restriction.schema_issuer_id
+      restriction.issuer_did ?? restriction.issuer_id ?? restriction.schema_issuer_did ?? restriction.schema_issuer_id
   }
 
   return {
@@ -367,8 +359,7 @@ export async function getPresentationRequestForDisplay(options: {
   const availableCredentials = await agent.didcomm.proofs.getCredentialsForRequest({
     proofExchangeRecordId: proofRecordId,
   })
-  const availableCredentialsData =
-    availableCredentials.proofFormats.anoncreds ?? availableCredentials.proofFormats.indy
+  const availableCredentialsData = availableCredentials.proofFormats.anoncreds ?? availableCredentials.proofFormats.indy
 
   const credentialRepository = agent.dependencyManager.resolve(W3cCredentialRepository)
 
@@ -396,10 +387,7 @@ export async function getPresentationRequestForDisplay(options: {
       }
     }
 
-    const { schemaName, issuerName } = await getRequestedCredentialTypeFromRestrictions(
-      agent,
-      item.restrictions ?? [],
-    )
+    const { schemaName, issuerName } = await getRequestedCredentialTypeFromRestrictions(agent, item.restrictions ?? [])
     requestedCredentials.push({
       id: attributeName,
       schemaName: schemaName ?? sanitizeString(attributeName),
@@ -431,10 +419,7 @@ export async function getPresentationRequestForDisplay(options: {
       }
     }
 
-    const { schemaName, issuerName } = await getRequestedCredentialTypeFromRestrictions(
-      agent,
-      item.restrictions ?? [],
-    )
+    const { schemaName, issuerName } = await getRequestedCredentialTypeFromRestrictions(agent, item.restrictions ?? [])
     requestedCredentials.push({
       id: predicateName,
       attributes,

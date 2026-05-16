@@ -1,11 +1,9 @@
+import { SvgIcon, Text } from '@src/components/common'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import React, { memo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, TouchableOpacity } from 'react-native'
-
+import { TouchableOpacity, View } from 'react-native'
 import getStyles from './styles'
-
-import { Text, SvgIcon } from '@src/components/common'
-import { useTheme } from '@src/hooks/providers/ThemeProvider'
 
 interface Props {
   isArchived: boolean
@@ -22,11 +20,7 @@ export const ChatSwipeOptions: React.FC<Props> = ({ isArchived, onDeleteChat, on
   const display = isSwiped ? 'flex' : 'none'
   return (
     <View style={[styles.container, { display }]}>
-      <TouchableOpacity
-        style={[styles.button, styles.deleteBackground]}
-        onPress={onDeleteChat}
-        activeOpacity={0.7}
-      >
+      <TouchableOpacity style={[styles.button, styles.deleteBackground]} onPress={onDeleteChat} activeOpacity={0.7}>
         <SvgIcon name="trashOutlined" fill={theme.colors.white} width={20} height={20} />
         <Text fontFamily="EuclidCircularA-Medium" style={styles.backText}>
           {t('chat.delete')}

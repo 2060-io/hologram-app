@@ -1,16 +1,14 @@
 import { StackActions } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
+import { CredentialPresented } from '@src/components'
+import { Text } from '@src/components/common'
+import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
+import { useChats, useMobileAgent } from '@src/hooks/agent'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TouchableOpacity } from 'react-native'
-
 import getStyles from './styles'
-
-import { CredentialPresented } from '@src/components'
-import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
-import { Text } from '@src/components/common'
-import { useChats, useMobileAgent } from '@src/hooks/agent'
-import { useTheme } from '@src/hooks/providers/ThemeProvider'
 
 type Props = StackScreenProps<NavigationStackParams, 'CredentialPresented'>
 
@@ -44,7 +42,7 @@ const CredentialPresentedPage = ({ navigation, route }: Props) => {
         StackActions.replace('ChatStack', {
           screen: 'Chat',
           params: { chatThreadId },
-        }),
+        })
       )
     }
   }

@@ -1,13 +1,10 @@
+import { SvgIcon, Text } from '@src/components/common'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { TouchableOpacity, View } from 'react-native'
-
 import { IconsNames } from '../common/SvgIcon'
-
 import getStyles from './styles'
-
-import { Text, SvgIcon } from '@src/components/common'
-import { useTheme } from '@src/hooks/providers/ThemeProvider'
 
 const defaultOptions = [
   { id: '1', name: 'allChats', value: 'all' },
@@ -32,13 +29,10 @@ const ChatFilterOptions: React.FC<Props> = ({ options = defaultOptions, selected
   const { t } = useTranslation()
   return (
     <View style={styles.container}>
-      {options.map(option => (
+      {options.map((option) => (
         <View
           key={option.id}
-          style={[
-            styles.containerOptionCard,
-            option.value === selectedOption && styles.btnTextFilterOptionSelected,
-          ]}
+          style={[styles.containerOptionCard, option.value === selectedOption && styles.btnTextFilterOptionSelected]}
         >
           <TouchableOpacity
             style={styles.containerOption}

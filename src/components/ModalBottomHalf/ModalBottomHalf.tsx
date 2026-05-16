@@ -1,21 +1,18 @@
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import React, { memo, useEffect, useRef, useState } from 'react'
 import {
-  Modal as NativeModal,
-  View,
   Animated,
   Dimensions,
+  Modal as NativeModal,
   PanResponder,
   StyleProp,
-  ViewStyle,
   TouchableWithoutFeedback,
+  View,
+  ViewStyle,
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-
 import { Modal } from '../common'
-
 import getStyles from './styles'
-
-import { useTheme } from '@src/hooks/providers/ThemeProvider'
 
 type ModalBottomHalfProps = {
   visible: boolean
@@ -61,7 +58,7 @@ const ModalBottomHalf = ({ visible, onClose, styleContainer, children }: ModalBo
 
         return resetPositionAnim.start()
       },
-    }),
+    })
   )[0]
 
   useEffect(() => {
@@ -74,13 +71,7 @@ const ModalBottomHalf = ({ visible, onClose, styleContainer, children }: ModalBo
       animationType="slide"
       visible={visible}
       transparent={true}
-      supportedOrientations={[
-        'portrait',
-        'portrait-upside-down',
-        'landscape',
-        'landscape-left',
-        'landscape-right',
-      ]}
+      supportedOrientations={['portrait', 'portrait-upside-down', 'landscape', 'landscape-left', 'landscape-right']}
       onRequestClose={handleDismiss}
     >
       <TouchableWithoutFeedback onPress={onClose}>

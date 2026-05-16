@@ -67,22 +67,22 @@ export class ChatEntry extends Realm.Object<ChatEntry> implements ChatEntryData 
 
   public get reactions(): Reaction[] {
     // eslint-disable-next-line no-underscore-dangle
-    return this._reactions.map(item => JSON.parse(item) as Reaction)
+    return this._reactions.map((item) => JSON.parse(item) as Reaction)
   }
 
   public set reactions(reactions: Reaction[]) {
     // eslint-disable-next-line no-underscore-dangle
-    this._reactions = reactions.map(item => JSON.stringify(item))
+    this._reactions = reactions.map((item) => JSON.stringify(item))
   }
 
   public get receipts(): Receipt[] {
     // eslint-disable-next-line no-underscore-dangle
-    return this._receipts.map(item => JSON.parse(item) as Receipt)
+    return this._receipts.map((item) => JSON.parse(item) as Receipt)
   }
 
   public set receipts(receipts: Receipt[]) {
     // eslint-disable-next-line no-underscore-dangle
-    this._receipts = receipts.map(item => JSON.stringify(item))
+    this._receipts = receipts.map((item) => JSON.stringify(item))
   }
 
   static schema: ObjectSchema = {
