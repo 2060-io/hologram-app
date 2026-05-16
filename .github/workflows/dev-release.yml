@@ -302,7 +302,6 @@ jobs:
             ios/Pods
             ~/Library/Caches/CocoaPods
           key: pods-${{ hashFiles('ios/Podfile.lock') }}
-          restore-keys: pods-
 
       - name: Install Pods
         working-directory: ios
@@ -328,6 +327,21 @@ jobs:
             -sdk iphoneos \
             -archivePath builds/hologram.xcarchive \
             -destination "generic/platform=iOS"
+
+      - name: Verify JS Bundle
+        working-directory: ios
+        run: |
+          BUNDLE_PATH="builds/hologram.xcarchive/Products/Applications/Dev.app/main.jsbundle"
+          if [ ! -f "$BUNDLE_PATH" ]; then
+            echo "error: main.jsbundle is missing from the archive!" >&2
+            exit 1
+          fi
+          SIZE=$(stat -f%z "$BUNDLE_PATH")
+          echo "main.jsbundle size: $SIZE bytes"
+          if [ "$SIZE" -lt 1000 ]; then
+            echo "error: main.jsbundle is suspiciously small ($SIZE bytes)!" >&2
+            exit 1
+          fi
 
       - name: Export IPA
         working-directory: ios
