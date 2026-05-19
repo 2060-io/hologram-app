@@ -26,9 +26,9 @@ patchedDependencies:
   '@bam.tech/react-native-image-resizer@3.0.11':
     hash: b29ef17696e0590f9bb1d4d937ba342164e20c48a854314418aebf23b070e0b7
     path: patches/@bam.tech__react-native-image-resizer@3.0.11.patch
-  '@credo-ts/didcomm@0.7.1-pr-2704-20260514215020':
+  '@credo-ts/didcomm@0.7.1-pr-2704-20260519192541':
     hash: e01eb1f8f251cfa8065be5f3c51c1999ba815e8d5069b928591b405269e3e008
-    path: patches/@credo-ts__didcomm@0.7.1-pr-2704-20260514215020.patch
+    path: patches/@credo-ts__didcomm@0.7.1-pr-2704-20260519192541.patch
   '@robinbobin/react-native-google-drive-api-wrapper@1.2.4':
     hash: b1a56c4240146a667be266b1a781e3c8a1253affca4f03472a1e0e3ea18c825e
     path: patches/@robinbobin__react-native-google-drive-api-wrapper@1.2.4.patch
@@ -102,7 +102,7 @@ importers:
         version: 0.7.1-pr-2704-20260519192541(typescript@5.9.3)
       '@credo-ts/anoncreds':
         specifier: 0.7.1-pr-2704-20260519192541
-        version: 0.7.1-pr-2704-20260519192541(@hyperledger/anoncreds-shared@0.4.0)(typescript@5.9.3)
+        version: 0.7.1-pr-2704-20260519192541(@hyperledger/anoncreds-shared@0.4.1-alpha-20260519194331)(typescript@5.9.3)
       '@credo-ts/askar':
         specifier: 0.7.1-pr-2704-20260519192541
         version: 0.7.1-pr-2704-20260519192541(@openwallet-foundation/askar-shared@0.6.0)(typescript@5.9.3)
@@ -126,7 +126,7 @@ importers:
         version: 0.7.1-pr-2704-20260519192541(7798b18a6831edc563a550fbbbf0d034)
       '@credo-ts/webvh':
         specifier: ^0.7.1-pr-2704-20260519192541
-        version: 0.7.1-pr-2704-20260519192541(@hyperledger/anoncreds-shared@0.4.0)(typescript@5.9.3)
+        version: 0.7.1-pr-2704-20260519192541(@hyperledger/anoncreds-shared@0.4.1-alpha-20260519194331)(typescript@5.9.3)
       '@dr.pogodin/react-native-fs':
         specifier: ^2.38.2
         version: 2.38.2(react-native@0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.1.0)(react@19.1.0)(utf-8-validate@5.0.10))(react@19.1.0)
@@ -195,7 +195,7 @@ importers:
         version: 0.25.0
       credo-ts-didweb-anoncreds:
         specifier: ^0.0.2-alpha.4
-        version: 0.0.2-alpha.6(@credo-ts/anoncreds@0.7.1-pr-2704-20260519192541(@hyperledger/anoncreds-shared@0.4.0)(typescript@5.9.3))(@credo-ts/core@0.7.1-pr-2704-20260519192541(typescript@5.9.3))
+        version: 0.0.2-alpha.6(@credo-ts/anoncreds@0.7.1-pr-2704-20260519192541(@hyperledger/anoncreds-shared@0.4.1-alpha-20260519194331)(typescript@5.9.3))(@credo-ts/core@0.7.1-pr-2704-20260519192541(typescript@5.9.3))
       credo-ts-indy-vdr-proxy-client:
         specifier: ^0.2.8
         version: 0.2.8(@hyperledger/anoncreds-shared@0.4.1-alpha-20260519194331)(typescript@5.9.3)
@@ -2983,6 +2983,7 @@ packages:
 
   '@sphereon/kmp-mdoc-core@0.2.0-SNAPSHOT.26':
     resolution: {integrity: sha512-QXJ6R8ENiZV2rPMbn06cw5JKwqUYN1kzVRbYfONqE1PEXx1noQ4md7uxr2zSczi0ubKkNcbyYDNtIMTZIhGzmQ==}
+    bundledDependencies: []
 
   '@sphereon/pex-models@2.3.2':
     resolution: {integrity: sha512-foFxfLkRwcn/MOp/eht46Q7wsvpQGlO7aowowIIb5Tz9u97kYZ2kz6K2h2ODxWuv5CRA7Q0MY8XUBGE2lfOhOQ==}
@@ -8816,12 +8817,12 @@ snapshots:
       - supports-color
       - typescript
 
-  '@credo-ts/anoncreds@0.7.1-pr-2704-20260519192541(@hyperledger/anoncreds-shared@0.4.0)(typescript@5.9.3)':
+  '@credo-ts/anoncreds@0.7.1-pr-2704-20260519192541(@hyperledger/anoncreds-shared@0.4.1-alpha-20260519194331)(typescript@5.9.3)':
     dependencies:
       '@astronautlabs/jsonpath': 1.1.2
       '@credo-ts/core': 0.7.1-pr-2704-20260519192541(typescript@5.9.3)
       '@credo-ts/didcomm': 0.7.1-pr-2704-20260519192541(patch_hash=e01eb1f8f251cfa8065be5f3c51c1999ba815e8d5069b928591b405269e3e008)(typescript@5.9.3)
-      '@hyperledger/anoncreds-shared': 0.4.0
+      '@hyperledger/anoncreds-shared': 0.4.1-alpha-20260519194331
       '@sphereon/pex-models': 2.3.2
       class-transformer: 0.5.1
       class-validator: 0.14.4
@@ -8958,9 +8959,9 @@ snapshots:
       - supports-color
       - typescript
 
-  '@credo-ts/webvh@0.7.1-pr-2704-20260519192541(@hyperledger/anoncreds-shared@0.4.0)(typescript@5.9.3)':
+  '@credo-ts/webvh@0.7.1-pr-2704-20260519192541(@hyperledger/anoncreds-shared@0.4.1-alpha-20260519194331)(typescript@5.9.3)':
     dependencies:
-      '@credo-ts/anoncreds': 0.7.1-pr-2704-20260519192541(@hyperledger/anoncreds-shared@0.4.0)(typescript@5.9.3)
+      '@credo-ts/anoncreds': 0.7.1-pr-2704-20260519192541(@hyperledger/anoncreds-shared@0.4.1-alpha-20260519194331)(typescript@5.9.3)
       '@credo-ts/core': 0.7.1-pr-2704-20260519192541(typescript@5.9.3)
       class-transformer: 0.5.1
       class-validator: 0.14.4
@@ -12156,16 +12157,16 @@ snapshots:
 
   credentials-context@2.0.0: {}
 
-  credo-ts-didweb-anoncreds@0.0.2-alpha.6(@credo-ts/anoncreds@0.7.1-pr-2704-20260519192541(@hyperledger/anoncreds-shared@0.4.0)(typescript@5.9.3))(@credo-ts/core@0.7.1-pr-2704-20260519192541(typescript@5.9.3)):
+  credo-ts-didweb-anoncreds@0.0.2-alpha.6(@credo-ts/anoncreds@0.7.1-pr-2704-20260519192541(@hyperledger/anoncreds-shared@0.4.1-alpha-20260519194331)(typescript@5.9.3))(@credo-ts/core@0.7.1-pr-2704-20260519192541(typescript@5.9.3)):
     dependencies:
-      '@credo-ts/anoncreds': 0.7.1-pr-2704-20260519192541(@hyperledger/anoncreds-shared@0.4.0)(typescript@5.9.3)
+      '@credo-ts/anoncreds': 0.7.1-pr-2704-20260519192541(@hyperledger/anoncreds-shared@0.4.1-alpha-20260519194331)(typescript@5.9.3)
       '@credo-ts/core': 0.7.1-pr-2704-20260519192541(typescript@5.9.3)
       canonicalize: 2.1.0
       query-string: 9.3.1
 
   credo-ts-indy-vdr-proxy-client@0.2.8(@hyperledger/anoncreds-shared@0.4.1-alpha-20260519194331)(typescript@5.9.3):
     dependencies:
-      '@credo-ts/anoncreds': 0.7.1-pr-2704-20260519192541(@hyperledger/anoncreds-shared@0.4.0)(typescript@5.9.3)
+      '@credo-ts/anoncreds': 0.7.1-pr-2704-20260519192541(@hyperledger/anoncreds-shared@0.4.1-alpha-20260519194331)(typescript@5.9.3)
       '@credo-ts/core': 0.7.1-pr-2704-20260519192541(typescript@5.9.3)
       uuid: 9.0.1
     transitivePeerDependencies:
