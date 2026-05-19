@@ -1,3 +1,7 @@
+import { Buffer } from 'buffer'
+
+global.Buffer = Buffer
+
 import 'text-encoding'
 import { getMessaging, setBackgroundMessageHandler } from '@react-native-firebase/messaging'
 import { AppRegistry } from 'react-native'
