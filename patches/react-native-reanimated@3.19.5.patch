@@ -1,7 +1,7 @@
-diff --git a/node_modules/react-native-reanimated/Common/cpp/reanimated/LayoutAnimations/LayoutAnimationsProxy.h b/node_modules/react-native-reanimated/Common/cpp/reanimated/LayoutAnimations/LayoutAnimationsProxy.h
+diff --git a/Common/cpp/reanimated/LayoutAnimations/LayoutAnimationsProxy.h b/Common/cpp/reanimated/LayoutAnimations/LayoutAnimationsProxy.h
 index 8e970cb..7992d3a 100644
---- a/node_modules/react-native-reanimated/Common/cpp/reanimated/LayoutAnimations/LayoutAnimationsProxy.h
-+++ b/node_modules/react-native-reanimated/Common/cpp/reanimated/LayoutAnimations/LayoutAnimationsProxy.h
+--- a/Common/cpp/reanimated/LayoutAnimations/LayoutAnimationsProxy.h
++++ b/Common/cpp/reanimated/LayoutAnimations/LayoutAnimationsProxy.h
 @@ -57,7 +57,7 @@ struct LayoutAnimationsProxy
    mutable std::unordered_set<SurfaceId> surfacesToRemove_;
    mutable std::vector<Tag> finishedAnimationTags_;
@@ -20,10 +20,10 @@ index 8e970cb..7992d3a 100644
        jsi::Runtime &uiRuntime,
        const std::shared_ptr<UIScheduler> uiScheduler
  #ifdef ANDROID
-diff --git a/node_modules/react-native-reanimated/android/src/main/cpp/worklets/CMakeLists.txt b/node_modules/react-native-reanimated/android/src/main/cpp/worklets/CMakeLists.txt
+diff --git a/android/src/main/cpp/worklets/CMakeLists.txt b/android/src/main/cpp/worklets/CMakeLists.txt
 index bb61ff7..1f2bfe5 100644
---- a/node_modules/react-native-reanimated/android/src/main/cpp/worklets/CMakeLists.txt
-+++ b/node_modules/react-native-reanimated/android/src/main/cpp/worklets/CMakeLists.txt
+--- a/android/src/main/cpp/worklets/CMakeLists.txt
++++ b/android/src/main/cpp/worklets/CMakeLists.txt
 @@ -57,7 +57,7 @@ else()
  endif()
  
@@ -33,10 +33,10 @@ index bb61ff7..1f2bfe5 100644
  
    if(${HERMES_ENABLE_DEBUGGER})
      string(APPEND CMAKE_CXX_FLAGS " -DHERMES_ENABLE_DEBUGGER=1")
-diff --git a/node_modules/react-native-reanimated/android/src/main/java/com/swmansion/reanimated/ReanimatedModule.java b/node_modules/react-native-reanimated/android/src/main/java/com/swmansion/reanimated/ReanimatedModule.java
+diff --git a/android/src/main/java/com/swmansion/reanimated/ReanimatedModule.java b/android/src/main/java/com/swmansion/reanimated/ReanimatedModule.java
 index 14d252c..56aae80 100644
---- a/node_modules/react-native-reanimated/android/src/main/java/com/swmansion/reanimated/ReanimatedModule.java
-+++ b/node_modules/react-native-reanimated/android/src/main/java/com/swmansion/reanimated/ReanimatedModule.java
+--- a/android/src/main/java/com/swmansion/reanimated/ReanimatedModule.java
++++ b/android/src/main/java/com/swmansion/reanimated/ReanimatedModule.java
 @@ -10,7 +10,6 @@ import com.facebook.react.bridge.UIManagerListener;
  import com.facebook.react.fabric.FabricUIManager;
  import com.facebook.react.module.annotations.ReactModule;
