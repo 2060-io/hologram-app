@@ -1,5 +1,6 @@
 import { W3cCredentialRepository } from '@credo-ts/core'
 import { DidCommProofExchangeRecord, DidCommProofState } from '@credo-ts/didcomm'
+import { ProofSendProblemReportDescription } from '@src/hooks/agent/actions/types'
 import {
   ChatEntryRole,
   ChatEntryState,
@@ -46,13 +47,22 @@ export const handleProofExchangeRecordChanges = async (options: {
       try {
         const requestedCredentials = await agent.didcomm.proofs.selectCredentialsForRequest({
           proofExchangeRecordId: proofRecord.id,
+          proofFormats: { anoncreds: { filterByNonRevocationRequirements: true } },
         })
-        agent.didcomm.proofs.acceptRequest({
+        await agent.didcomm.proofs.acceptRequest({
           proofExchangeRecordId: proofRecord.id,
           proofFormats: { anoncreds: requestedCredentials.proofFormats.anoncreds },
         })
       } catch (error) {
-        logError(`Error accepting proof request`, error)
+        logError(`Error accepting proof request ${proofRecord.id}, sending problem report`, error)
+        try {
+          await agent.didcomm.proofs.sendProblemReport({
+            proofExchangeRecordId: proofRecord.id,
+            description: ProofSendProblemReportDescription.NoCompatibleCredentials,
+          })
+        } catch (problemReportError) {
+          logError(`Failed to send problem report for proof ${proofRecord.id}`, problemReportError)
+        }
       }
     } else {
       const verifierInfo: VerifierInfo = {

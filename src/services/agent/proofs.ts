@@ -5,6 +5,7 @@ import {
   LegacyIndyDidCommProofFormat,
 } from '@credo-ts/anoncreds'
 import { DidCommMessage, DidCommProofExchangeRecord, DidCommProofFormatPayload } from '@credo-ts/didcomm'
+import { ProofSendProblemReportDescription } from '@src/hooks/agent/actions/types'
 import { logError } from '@src/utils'
 import { TrustResolutionOutcome } from '@verana-labs/verre'
 import { getServiceInfo } from '../trustResolution'
@@ -28,6 +29,7 @@ export async function presentProof(options: PresentProofOptions) {
   // get format data to know where to populate the selection
   const { proofFormats } = await agent.didcomm.proofs.getCredentialsForRequest({
     proofExchangeRecordId: proofRecordId,
+    proofFormats: { anoncreds: { filterByNonRevocationRequirements: true } },
   })
 
   let anoncreds: AnonCredsSelectedCredentials | undefined, indy: AnonCredsSelectedCredentials | undefined
@@ -101,10 +103,23 @@ export async function presentProof(options: PresentProofOptions) {
 
   await agent.didcomm.proofs.update(proofRecord)
 
-  await agent.didcomm.proofs.acceptRequest({
-    proofExchangeRecordId: proofRecordId,
-    proofFormats: proofFormatPayload,
-  })
+  try {
+    await agent.didcomm.proofs.acceptRequest({
+      proofExchangeRecordId: proofRecordId,
+      proofFormats: proofFormatPayload,
+    })
+  } catch (error) {
+    logError(`Failed to present proof ${proofRecordId}, sending problem report`, error)
+    try {
+      await agent.didcomm.proofs.sendProblemReport({
+        proofExchangeRecordId: proofRecordId,
+        description: ProofSendProblemReportDescription.NoCompatibleCredentials,
+      })
+    } catch (problemReportError) {
+      logError(`Failed to send problem report for proof ${proofRecordId}`, problemReportError)
+    }
+    throw error
+  }
 }
 
 /**

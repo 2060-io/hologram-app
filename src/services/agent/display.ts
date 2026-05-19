@@ -358,6 +358,7 @@ export async function getPresentationRequestForDisplay(options: {
 
   const availableCredentials = await agent.didcomm.proofs.getCredentialsForRequest({
     proofExchangeRecordId: proofRecordId,
+    proofFormats: { anoncreds: { filterByNonRevocationRequirements: true } },
   })
   const availableCredentialsData = availableCredentials.proofFormats.anoncreds ?? availableCredentials.proofFormats.indy
 
