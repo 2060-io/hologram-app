@@ -17,7 +17,7 @@ For Android, we are currently using the following toolchain:
 
 For iOS:
 
-- XCode 26.2 (17C52)
+- XCode 26.3 (17C529)
 - CocoaPods 1.16.2
 
 Import all dependencies by running:
