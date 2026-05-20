@@ -7,10 +7,11 @@ patchedDependencies:
   '@bam.tech/react-native-image-resizer@3.0.11': patches/@bam.tech__react-native-image-resizer@3.0.11.patch
   '@credo-ts/didcomm@0.7.1-pr-2704-20260519192541': patches/@credo-ts__didcomm@0.7.1-pr-2704-20260519192541.patch
   '@robinbobin/react-native-google-drive-api-wrapper@1.2.4': patches/@robinbobin__react-native-google-drive-api-wrapper@1.2.4.patch
+  '@scure/base': patches/@scure__base.patch
   '@simform_solutions/react-native-audio-waveform@2.1.6': patches/@simform_solutions__react-native-audio-waveform@2.1.6.patch
+  '@sphereon/isomorphic-webcrypto@2.5.0-rn-crypto.2': patches/isomorphic-webcrypto@2.5.0-rn-crypto.2.patch
   asmcrypto.js@2.3.2: patches/asmcrypto.js@2.3.2.patch
   didwebvh-ts@2.7.4: patches/didwebvh-ts@2.7.4.patch
-  '@sphereon/isomorphic-webcrypto@2.5.0-rn-crypto.2': patches/isomorphic-webcrypto@2.5.0-rn-crypto.2.patch
   pbxproj-dom@1.2.0: patches/pbxproj-dom@1.2.0.patch
   react-native-cloud-store@0.11.0: patches/react-native-cloud-store@0.11.0.patch
   react-native-create-thumbnail@2.2.0: patches/react-native-create-thumbnail@2.2.0.patch
