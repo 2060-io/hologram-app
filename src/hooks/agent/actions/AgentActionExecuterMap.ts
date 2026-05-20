@@ -35,7 +35,8 @@ import {
 import { DidCommPushNotificationsFcmSetDeviceInfoMessage } from '@credo-ts/didcomm-push-notifications'
 import { AnswerMessage } from '@credo-ts/question-answer'
 import { createOobInvitation, MobileAgent } from '@src/services/agent'
-import { logError, logWarn } from '@src/utils'
+import { acceptProofRequestOrReportNoCompatible } from '@src/services/agent/proofPresentation'
+import { logWarn } from '@src/utils'
 import { Platform } from 'react-native'
 import { AgentAction, AgentActionType } from './AgentAction'
 import {
@@ -52,7 +53,6 @@ import {
   HangupCallParameters,
   MenuSelectionParameters,
   PresentCredentialParameters,
-  ProofSendProblemReportDescription,
   ProofSendProblemReportParameters,
   QueryServiceFeaturesParameters,
   RemoveOutOfBandRecordParameters,
@@ -298,23 +298,13 @@ export const AgentActionExecuterMap: Record<AgentActionType, ActionFactory> = {
     return async (options: { agent: MobileAgent }) => {
       const parameters = action.parameters as AcceptProofRequestParameters
       const { proofRecordId } = parameters
-      try {
-        const requestedCredentials = await options.agent.didcomm.proofs.selectCredentialsForRequest({
-          proofExchangeRecordId: proofRecordId,
-          proofFormats: { anoncreds: { filterByNonRevocationRequirements: true } },
-        })
-        await options.agent.didcomm.proofs.acceptRequest({
-          proofExchangeRecordId: proofRecordId,
-          proofFormats: { anoncreds: requestedCredentials?.proofFormats.anoncreds },
-        })
-        return { outgoingMessageTypes: [DidCommPresentationV2Message.type.messageTypeUri] }
-      } catch (error) {
-        logError(`Failed to accept proof request ${proofRecordId}, sending problem report`, error)
+      const result = await acceptProofRequestOrReportNoCompatible({
+        agent: options.agent,
+        proofRecordId,
+      })
+
+      if (result === 'problem-report') {
         const proofRecord = await options.agent.didcomm.proofs.getById(proofRecordId)
-        await options.agent.didcomm.proofs.sendProblemReport({
-          proofExchangeRecordId: proofRecordId,
-          description: ProofSendProblemReportDescription.NoCompatibleCredentials,
-        })
         proofRecord.state = DidCommProofState.Abandoned
         await options.agent.didcomm.proofs.update(proofRecord)
         options.agent.events.emit<DidCommProofStateChangedEvent>(options.agent.context, {
@@ -326,6 +316,8 @@ export const AgentActionExecuterMap: Record<AgentActionType, ActionFactory> = {
         })
         return { outgoingMessageTypes: [DidCommPresentationV2ProblemReportMessage.type.messageTypeUri] }
       }
+
+      return { outgoingMessageTypes: [DidCommPresentationV2Message.type.messageTypeUri] }
     }
   },
   [AgentActionType.AcceptProofProposal]: (action) => {

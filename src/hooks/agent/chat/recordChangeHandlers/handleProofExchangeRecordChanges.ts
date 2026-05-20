@@ -1,6 +1,5 @@
 import { W3cCredentialRepository } from '@credo-ts/core'
 import { DidCommProofExchangeRecord, DidCommProofState } from '@credo-ts/didcomm'
-import { ProofSendProblemReportDescription } from '@src/hooks/agent/actions/types'
 import {
   ChatEntryRole,
   ChatEntryState,
@@ -16,8 +15,8 @@ import {
   proposalGetCredentialAttributes,
   proposalGetCredentialInfo,
 } from '@src/services/agent/proofs'
+import { acceptProofRequestOrReportNoCompatible } from '@src/services/agent/proofPresentation'
 import { getDidCommPresentationDisplayMetadata } from '@src/services/agent/RecordMetadata'
-import { logError } from '@src/utils'
 import { getConnectionDisplayName, getConnectionDisplayPicture } from '@src/utils/connectionUtils'
 import Realm from 'realm'
 import { createChatEntry, findAllByAssociatedRecordId, updateChatEntryMetadata } from '../services/ChatEntryService'
@@ -44,26 +43,10 @@ export const handleProofExchangeRecordChanges = async (options: {
         proofState: proofRecord.state,
       } as VPResponseMetadata
       updateChatEntryMetadata(realm, vpResponseChatEntry.id, newChatEntryMetadata)
-      try {
-        const requestedCredentials = await agent.didcomm.proofs.selectCredentialsForRequest({
-          proofExchangeRecordId: proofRecord.id,
-          proofFormats: { anoncreds: { filterByNonRevocationRequirements: true } },
-        })
-        await agent.didcomm.proofs.acceptRequest({
-          proofExchangeRecordId: proofRecord.id,
-          proofFormats: { anoncreds: requestedCredentials.proofFormats.anoncreds },
-        })
-      } catch (error) {
-        logError(`Error accepting proof request ${proofRecord.id}, sending problem report`, error)
-        try {
-          await agent.didcomm.proofs.sendProblemReport({
-            proofExchangeRecordId: proofRecord.id,
-            description: ProofSendProblemReportDescription.NoCompatibleCredentials,
-          })
-        } catch (problemReportError) {
-          logError(`Failed to send problem report for proof ${proofRecord.id}`, problemReportError)
-        }
-      }
+      await acceptProofRequestOrReportNoCompatible({
+        agent,
+        proofRecordId: proofRecord.id,
+      })
     } else {
       const verifierInfo: VerifierInfo = {
         id: connection.invitationDid ?? getConnectionDisplayName(connection),
