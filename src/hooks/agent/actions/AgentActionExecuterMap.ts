@@ -11,6 +11,7 @@ import {
   DidCommMessageSender,
   DidCommOutboundMessageContext,
   DidCommOutOfBandInvitation,
+  DidCommOutOfBandInvitationV2,
   DidCommProposePresentationV2Message,
   DidCommDidExchangeResponseMessage,
   DidCommDidExchangeCompleteMessage,
@@ -64,7 +65,7 @@ import {
 } from './types'
 
 import { createOobInvitation, MobileAgent } from '@src/services/agent'
-import { logWarn } from '@src/utils'
+import { log, logWarn } from '@src/utils'
 
 type AgentCallbackReturnType<T extends BaseRecord = BaseRecord> = {
   associatedRecord?: T
@@ -140,12 +141,25 @@ export const AgentActionExecuterMap: Record<AgentActionType, ActionFactory> = {
       const parameters = action.parameters as ForwardConnectionParameters
       const { forwarderConnectionId, connectionId } = parameters
       const originDidcommConnection = await options.agent?.didcomm.connections.getById(forwarderConnectionId)
-      const outOfBandInvitation = createOobInvitation(originDidcommConnection)
-      // Forward wraps the invitation in a DIDComm v1 message envelope and is therefore v1-only.
-      if (!(outOfBandInvitation instanceof DidCommOutOfBandInvitation)) {
-        throw new Error('Forwarding is only supported for v1 connections')
-      }
       const connection = await options.agent?.didcomm.connections.getById(connectionId)
+      const sourceVersion = originDidcommConnection.didcommVersion ?? 'v1'
+      const destVersion = connection.didcommVersion ?? 'v1'
+      log(
+        `Forward: source=${originDidcommConnection.id} (${sourceVersion}, ` +
+          `${originDidcommConnection.invitationDid}) ` +
+          `dest=${connection.id} (${destVersion}, ${connection.invitationDid})`,
+      )
+      if (sourceVersion !== destVersion) {
+        log(`Forward: version mismatch, throwing`)
+        throw new Error(
+          `Cannot forward across DIDComm versions: source is ${sourceVersion}, destination is ${destVersion}`,
+        )
+      }
+      const outOfBandInvitation = createOobInvitation(originDidcommConnection)
+      const isV2 = outOfBandInvitation instanceof DidCommOutOfBandInvitationV2
+      log(
+        `Forward: built ${isV2 ? 'V2' : 'V1'} OOB invitation id=${outOfBandInvitation.id}, sending through ${destVersion} connection`,
+      )
       const messageSender = options.agent?.context.dependencyManager.resolve(DidCommMessageSender)
       await messageSender.sendMessage(
         new DidCommOutboundMessageContext(outOfBandInvitation, {
@@ -153,7 +167,11 @@ export const AgentActionExecuterMap: Record<AgentActionType, ActionFactory> = {
           connection,
         }),
       )
-      return { outgoingMessageTypes: [DidCommOutOfBandInvitation.type.messageTypeUri] }
+      log(`Forward: messageSender.sendMessage completed`)
+      const outgoingType = isV2
+        ? DidCommOutOfBandInvitationV2.type.messageTypeUri
+        : DidCommOutOfBandInvitation.type.messageTypeUri
+      return { outgoingMessageTypes: [outgoingType] }
     }
   },
   [AgentActionType.PresentCredential]: action => {
