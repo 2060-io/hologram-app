@@ -32,6 +32,9 @@ patchedDependencies:
   '@robinbobin/react-native-google-drive-api-wrapper@1.2.4':
     hash: b1a56c4240146a667be266b1a781e3c8a1253affca4f03472a1e0e3ea18c825e
     path: patches/@robinbobin__react-native-google-drive-api-wrapper@1.2.4.patch
+  '@scure/base':
+    hash: ec03745112fc6c8efaa5f1927af3840d0d928bbf9ac6bfd1e3b3b66ceb4ed6dc
+    path: patches/@scure__base.patch
   '@simform_solutions/react-native-audio-waveform@2.1.6':
     hash: b9ce5b5fd171a7f4af675188c27d9b908e039e91f825c1ed156d625ceeb234dc
     path: patches/@simform_solutions__react-native-audio-waveform@2.1.6.patch
@@ -8861,7 +8864,7 @@ snapshots:
       '@peculiar/asn1-schema': 2.7.0
       '@peculiar/asn1-x509': 2.7.0
       '@peculiar/x509': 1.14.3
-      '@scure/base': 2.2.0
+      '@scure/base': 2.2.0(patch_hash=ec03745112fc6c8efaa5f1927af3840d0d928bbf9ac6bfd1e3b3b66ceb4ed6dc)
       '@sd-jwt/core': 0.19.0
       '@sd-jwt/decode': 0.19.0
       '@sd-jwt/jwt-status-list': 0.19.0
@@ -10753,7 +10756,7 @@ snapshots:
       simple-common-utils: 2.6.0
       utf8: 3.0.0
 
-  '@scure/base@2.2.0': {}
+  '@scure/base@2.2.0(patch_hash=ec03745112fc6c8efaa5f1927af3840d0d928bbf9ac6bfd1e3b3b66ceb4ed6dc)': {}
 
   '@sd-jwt/core@0.19.0':
     dependencies:
@@ -11403,7 +11406,7 @@ snapshots:
       '@digitalcredentials/jsonld': 9.0.0
       '@noble/curves': 2.2.0
       '@noble/hashes': 1.8.0
-      '@scure/base': 2.2.0
+      '@scure/base': 2.2.0(patch_hash=ec03745112fc6c8efaa5f1927af3840d0d928bbf9ac6bfd1e3b3b66ceb4ed6dc)
       ajv: 8.20.0
       ajv-formats: 3.0.1(ajv@8.20.0)
       canonicalize: 2.1.0
