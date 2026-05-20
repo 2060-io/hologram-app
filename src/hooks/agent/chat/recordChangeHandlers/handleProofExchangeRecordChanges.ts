@@ -10,12 +10,12 @@ import {
 } from '@src/model'
 import { MobileAgent } from '@src/services/agent'
 import { getCredentialMainInfo, getPresentationRequestForDisplay } from '@src/services/agent/display'
+import { acceptProofRequestOrReportNoCompatible } from '@src/services/agent/proofPresentation'
 import {
   getCredentialRevealedAttributes,
   proposalGetCredentialAttributes,
   proposalGetCredentialInfo,
 } from '@src/services/agent/proofs'
-import { acceptProofRequestOrReportNoCompatible } from '@src/services/agent/proofPresentation'
 import { getDidCommPresentationDisplayMetadata } from '@src/services/agent/RecordMetadata'
 import { getConnectionDisplayName, getConnectionDisplayPicture } from '@src/utils/connectionUtils'
 import Realm from 'realm'
