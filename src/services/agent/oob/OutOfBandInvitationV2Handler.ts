@@ -6,12 +6,10 @@ import {
   DidCommOutOfBandInvitation,
   DidCommOutOfBandInvitationV2,
 } from '@credo-ts/didcomm'
-
-import { OutOfBandInvitationEvent, OutOfBandInvitationEventTypes } from './OutOfBandEvents'
+import { log } from '@src/utils'
 
 import { getOutOfBandRecord } from './index'
-
-import { log } from '@src/utils'
+import { OutOfBandInvitationEvent, OutOfBandInvitationEventTypes } from './OutOfBandEvents'
 
 /**
  * Inbound handler for v2 OOB invitations arriving through an existing DIDComm v2 connection.
@@ -24,7 +22,7 @@ export class DidCommOutOfBandInvitationV2Handler implements DidCommMessageHandle
   public supportedMessages = [DidCommOutOfBandInvitationV2]
 
   public async handle(
-    messageContext: DidCommMessageHandlerInboundMessage<DidCommOutOfBandInvitationV2Handler>,
+    messageContext: DidCommMessageHandlerInboundMessage<DidCommOutOfBandInvitationV2Handler>
   ): Promise<undefined> {
     const agentContext = messageContext.agentContext
     messageContext.assertReadyConnection()
@@ -32,7 +30,7 @@ export class DidCommOutOfBandInvitationV2Handler implements DidCommMessageHandle
     const v2Invitation = messageContext.message
     log(
       `V2 OOB handler: received id=${v2Invitation.id} from=${v2Invitation.from} ` +
-        `(via connection=${messageContext.connection?.id ?? 'unknown'})`,
+        `(via connection=${messageContext.connection?.id ?? 'unknown'})`
     )
     const invitation = new DidCommOutOfBandInvitation({
       id: v2Invitation.id,

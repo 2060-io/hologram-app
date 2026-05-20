@@ -1,7 +1,7 @@
 import React from 'react'
 import Svg, { Path, SvgProps } from 'react-native-svg'
 
-const CloudOff: React.FC<SvgProps> = props => (
+const CloudOff: React.FC<SvgProps> = (props) => (
   <Svg viewBox="0 0 23.54 23.54" {...props}>
     <Path data-name="Trazado 674" d="M0 0h23.54v23.54H0z" fill="none" />
     <Path

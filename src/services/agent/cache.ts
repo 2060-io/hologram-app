@@ -1,21 +1,15 @@
 import { AgentContext, CacheModuleConfig } from '@credo-ts/core'
 import { DidCommConnectionsApi } from '@credo-ts/didcomm'
-import { TrustResolutionOutcome } from '@verana-labs/verre'
-
 import { isServiceInfo, ServiceInfo } from '@src/model'
 import { getConnectionDisplayName, getConnectionDisplayPicture } from '@src/utils/connectionUtils'
+import { TrustResolutionOutcome } from '@verana-labs/verre'
 
-export async function getInCacheServiceInfo(
-  did: string,
-  agentContext: AgentContext,
-): Promise<ServiceInfo | null> {
+export async function getInCacheServiceInfo(did: string, agentContext: AgentContext): Promise<ServiceInfo | null> {
   const cache = agentContext.dependencyManager.resolve(CacheModuleConfig).cache
   const cachedServiceInfo = await cache.get<ServiceInfo>(agentContext, `serviceInfo:${did}`)
   if (cachedServiceInfo && isServiceInfo(cachedServiceInfo)) return cachedServiceInfo
   // If info is not in cache, attempt to find it from an existing connection
-  const [connection] = await agentContext.dependencyManager
-    .resolve(DidCommConnectionsApi)
-    .findByInvitationDid(did)
+  const [connection] = await agentContext.dependencyManager.resolve(DidCommConnectionsApi).findByInvitationDid(did)
   if (connection) {
     return {
       did,
@@ -29,11 +23,7 @@ export async function getInCacheServiceInfo(
   return null
 }
 
-export async function saveInCacheServiceInfo(
-  did: string,
-  agentContext: AgentContext,
-  serviceInfo: ServiceInfo,
-) {
+export async function saveInCacheServiceInfo(did: string, agentContext: AgentContext, serviceInfo: ServiceInfo) {
   const cache = agentContext.dependencyManager.resolve(CacheModuleConfig).cache
   await cache.set<ServiceInfo>(agentContext, `serviceInfo:${did}`, {
     ...serviceInfo,

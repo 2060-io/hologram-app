@@ -3,23 +3,9 @@ import { TypedArrayEncoder } from '@credo-ts/core'
 import { DidCommOutOfBandInvitation } from '@credo-ts/didcomm'
 import { useIsFocused } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
-import queryString from 'query-string'
-import React, { useState, useEffect } from 'react'
-import { useTranslation } from 'react-i18next'
-import {
-  View,
-  KeyboardAvoidingView,
-  Keyboard,
-  TouchableWithoutFeedback,
-  Platform,
-  TouchableOpacity,
-} from 'react-native'
-
-import getStyles from './styles'
-
 import { CodeScanner } from '@src/components'
+import { MainButton, ModalLoading, Text, TextInput } from '@src/components/common'
 import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
-import { TextInput, Text, MainButton, ModalLoading } from '@src/components/common'
 import { useAppState } from '@src/hooks'
 import { useMobileAgent } from '@src/hooks/agent'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
@@ -31,6 +17,18 @@ import {
 } from '@src/services/agent/oob'
 import { log, logError } from '@src/utils'
 import { toast } from '@src/utils/toast'
+import queryString from 'query-string'
+import React, { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import {
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native'
+import getStyles from './styles'
 
 type Props = StackScreenProps<NavigationStackParams, 'Scan'>
 
@@ -144,18 +142,14 @@ const Scan = ({ navigation }: Props) => {
         onPress={() => setTabType('scanner')}
         style={[styles.containerTab, isTabSelected('scanner') && styles.containerSelectedTab]}
       >
-        <Text style={[styles.tabText, isTabSelected('scanner') && styles.selectedTabText]}>
-          {t('scan.useCamera')}
-        </Text>
+        <Text style={[styles.tabText, isTabSelected('scanner') && styles.selectedTabText]}>{t('scan.useCamera')}</Text>
       </TouchableOpacity>
       <TouchableOpacity
         activeOpacity={0.8}
         onPress={() => setTabType('link')}
         style={[styles.containerTab, isTabSelected('link') && styles.containerSelectedTab]}
       >
-        <Text style={[styles.tabText, isTabSelected('link') && styles.selectedTabText]}>
-          {t('scan.useLink')}
-        </Text>
+        <Text style={[styles.tabText, isTabSelected('link') && styles.selectedTabText]}>{t('scan.useLink')}</Text>
       </TouchableOpacity>
     </View>
   )
@@ -180,7 +174,7 @@ const Scan = ({ navigation }: Props) => {
               multiline={true}
               numberOfLines={6}
               underlineColorAndroid="transparent"
-              onChangeText={text => setScannedCode(text)}
+              onChangeText={(text) => setScannedCode(text)}
               style={styles.input}
             />
           </View>

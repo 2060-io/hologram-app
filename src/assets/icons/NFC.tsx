@@ -1,7 +1,7 @@
 import React from 'react'
-import Svg, { Defs, G, Rect, Circle, Path, Text, TSpan, SvgProps } from 'react-native-svg'
+import Svg, { Circle, Defs, G, Path, Rect, SvgProps, Text, TSpan } from 'react-native-svg'
 
-const NFC: React.FC<SvgProps> = props => (
+const NFC: React.FC<SvgProps> = (props) => (
   <Svg viewBox="0 0 314.16 190.04" {...props}>
     <Defs />
     <G data-name="Grupo 2135" transform="translate(-7192.06 -7936.039)">
@@ -73,11 +73,7 @@ const NFC: React.FC<SvgProps> = props => (
         />
       </G>
       <G data-name="Grupo 2131">
-        <G
-          data-name="Grupo 2128"
-          transform="translate(88.145 699.431) translate(7121.426 7374.878)"
-          fill="#273830"
-        >
+        <G data-name="Grupo 2128" transform="translate(88.145 699.431) translate(7121.426 7374.878)" fill="#273830">
           <Circle data-name="Elipse 188" cx={6.87} cy={6.87} r={6.87} transform="translate(12.368 4.581)" />
           <Path
             data-name="Trazado 897"
@@ -92,13 +88,7 @@ const NFC: React.FC<SvgProps> = props => (
           />
         </G>
       </G>
-      <G
-        data-name="Elipse 194"
-        transform="translate(7421.145 8070.027)"
-        fill="none"
-        stroke="#707070"
-        strokeWidth={1}
-      >
+      <G data-name="Elipse 194" transform="translate(7421.145 8070.027)" fill="none" stroke="#707070" strokeWidth={1}>
         <Circle cx={14.98} cy={14.98} r={14.98} stroke="none" />
         <Circle cx={14.98} cy={14.98} r={14.48} />
       </G>
@@ -347,13 +337,7 @@ const NFC: React.FC<SvgProps> = props => (
           </G>
         </G>
       </G>
-      <G
-        data-name="Elipse 193"
-        transform="translate(7211.145 7992.89)"
-        fill="none"
-        stroke="#707070"
-        strokeWidth={1}
-      >
+      <G data-name="Elipse 193" transform="translate(7211.145 7992.89)" fill="none" stroke="#707070" strokeWidth={1}>
         <Circle cx={9.63} cy={9.63} r={9.63} stroke="none" />
         <Circle cx={9.63} cy={9.63} r={9.13} />
       </G>

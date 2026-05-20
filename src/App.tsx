@@ -1,37 +1,36 @@
 import 'reflect-metadata'
 // Workaround for issue in Askar wrapper register method (to be fixed in 0.5)
 import '@openwallet-foundation/askar-react-native'
-import { locale, extend } from 'dayjs'
+import { extend, locale } from 'dayjs'
 import localizedFormat from 'dayjs/plugin/localizedFormat'
 import 'dayjs/locale/es'
 import 'dayjs/locale/fr'
-import React, { PropsWithChildren, ReactNode, useEffect, useState } from 'react'
-import BootSplash from 'react-native-bootsplash'
-
-import Toast from './components/Toast'
 
 import Navigation from '@src/components/Navigation'
 import {
+  AgentActionQueueProvider,
+  ChatsProvider,
+  ConnectionsProvider,
+  CredentialsProvider,
+  FileUploadDownloadProvider,
   MobileAgentProvider,
   NavigationProvider,
   UserProfileProvider,
-  ConnectionsProvider,
-  ChatsProvider,
-  CredentialsProvider,
-  FileUploadDownloadProvider,
-  AgentActionQueueProvider,
 } from '@src/hooks/agent'
 import {
   ConfigProvider,
   PushNotificationsProvider,
   RealmProvider,
+  RefreshedAvatarsUrlsProvider,
   ScreenLockProvider,
   SharedDataFromOtherAppsProvider,
   ThemeProvider,
   VideoCallProvider,
-  RefreshedAvatarsUrlsProvider,
 } from '@src/hooks/providers'
 import { initializeI18n, language } from '@src/utils/language'
+import React, { PropsWithChildren, ReactNode, useEffect, useState } from 'react'
+import BootSplash from 'react-native-bootsplash'
+import Toast from './components/Toast'
 
 locale(language)
 extend(localizedFormat)

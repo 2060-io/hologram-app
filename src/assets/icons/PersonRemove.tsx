@@ -1,7 +1,7 @@
 import React from 'react'
 import Svg, { G, Path, SvgProps } from 'react-native-svg'
 
-const PersonRemove: React.FC<SvgProps> = props => (
+const PersonRemove: React.FC<SvgProps> = (props) => (
   <Svg viewBox="0 0 24 24" {...props}>
     <G data-name="Group 1492" fill="none">
       <Path data-name="Rectangle 1019" d="M0 0H24V24H0z" />

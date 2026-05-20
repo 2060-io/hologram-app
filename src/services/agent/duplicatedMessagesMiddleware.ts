@@ -6,7 +6,7 @@ import { areLogsEnabled } from '@src/utils/developer'
 
 export const duplicatedMessagesMiddleware = async (
   inboundMessageContext: DidCommInboundMessageContext,
-  next: () => Promise<void>,
+  next: () => Promise<void>
 ) => {
   const { agentContext, message } = inboundMessageContext
 

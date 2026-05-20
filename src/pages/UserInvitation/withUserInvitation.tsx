@@ -1,20 +1,14 @@
-import React, { ElementType, useState, useEffect, useRef, useTransition } from 'react'
-import { useTranslation } from 'react-i18next'
-import Config from 'react-native-config'
-
-import { Invitation, UserInvitationProps, WrapperUserInvitationProps } from './UserInvitationProps'
-
 import { ModalLoading } from '@src/components/common'
 import { AgentActionType, useAgentActionQueue, useMobileAgent, useUserProfile } from '@src/hooks/agent'
 import { RemoveOutOfBandRecordParameters } from '@src/hooks/agent/actions/types'
 import { createInvitation, getOutOfBandRecordById } from '@src/services/agent/oob'
-import {
-  getStorageData,
-  setStorageData,
-  USER_INVITATION_OUT_OF_BAND_RECORD_ID,
-} from '@src/services/localStorage'
+import { getStorageData, setStorageData, USER_INVITATION_OUT_OF_BAND_RECORD_ID } from '@src/services/localStorage'
 import { logError, logWarn } from '@src/utils'
 import { toast } from '@src/utils/toast'
+import React, { ElementType, useEffect, useRef, useState, useTransition } from 'react'
+import { useTranslation } from 'react-i18next'
+import Config from 'react-native-config'
+import { Invitation, UserInvitationProps, WrapperUserInvitationProps } from './UserInvitationProps'
 
 const withUserInvitation = (UserInvitationComponent: ElementType<UserInvitationProps>) => {
   const WrapperUserInvitation = (props: WrapperUserInvitationProps) => {

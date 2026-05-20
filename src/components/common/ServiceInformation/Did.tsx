@@ -1,12 +1,11 @@
-import { Skeleton } from 'moti/skeleton'
-import React, { useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { StyleSheet, TouchableOpacity } from 'react-native'
-
 import Text from '@src/components/common/Text'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { ServiceStatus } from '@src/model'
 import { AppTheme } from '@src/styles'
+import { Skeleton } from 'moti/skeleton'
+import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { StyleSheet, TouchableOpacity } from 'react-native'
 
 const DID_MAX_DISPLAY_CHARS = 50
 
@@ -53,16 +52,9 @@ const Did = ({ did, serviceInfoStatus, isFetchingInfo }: Props) => {
       show={isFetchingInfo}
     />
   ) : (
-    <TouchableOpacity
-      onPress={onPressDid}
-      activeOpacity={0}
-      disabled={safeDid.length <= DID_MAX_DISPLAY_CHARS}
-    >
+    <TouchableOpacity onPress={onPressDid} activeOpacity={0} disabled={safeDid.length <= DID_MAX_DISPLAY_CHARS}>
       <Text style={styles.text}>
-        <Text
-          fontFamily="EuclidCircularA-Bold"
-          style={styles.text}
-        >{`${truncated ? initialDid : safeDid} `}</Text>
+        <Text fontFamily="EuclidCircularA-Bold" style={styles.text}>{`${truncated ? initialDid : safeDid} `}</Text>
         {serviceIs[serviceInfoStatus]}
       </Text>
     </TouchableOpacity>

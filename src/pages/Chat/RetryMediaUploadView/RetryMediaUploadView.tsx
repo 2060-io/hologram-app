@@ -1,18 +1,9 @@
+import { SvgIcon, Text } from '@src/components/common'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { t } from 'i18next'
 import React, { memo } from 'react'
-import {
-  ImageBackground,
-  TouchableOpacity,
-  ActivityIndicator,
-  ViewStyle,
-  StyleProp,
-  View,
-} from 'react-native'
-
+import { ActivityIndicator, ImageBackground, StyleProp, TouchableOpacity, View, ViewStyle } from 'react-native'
 import getStyles from './styles'
-
-import { Text, SvgIcon } from '@src/components/common'
-import { useTheme } from '@src/hooks/providers/ThemeProvider'
 
 type Props = {
   uri: string
@@ -21,12 +12,7 @@ type Props = {
   onRetryMediaUpload(): Promise<void>
 }
 
-const RetryMediaUploadView: React.FC<Props> = ({
-  uri,
-  isRetryingUpload,
-  containerStyle,
-  onRetryMediaUpload,
-}) => {
+const RetryMediaUploadView: React.FC<Props> = ({ uri, isRetryingUpload, containerStyle, onRetryMediaUpload }) => {
   const theme = useTheme()
   const styles = getStyles(theme)
   return (

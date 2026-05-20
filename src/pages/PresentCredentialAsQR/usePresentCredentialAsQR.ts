@@ -4,31 +4,23 @@ import {
   DidCommShortenUrlEventTypes,
   DidCommShortenUrlRepository,
 } from '@2060.io/credo-ts-didcomm-shorten-url'
-import {
-  DidCommConnectionProfileUpdatedEvent,
-  DidCommProfileEventTypes,
-} from '@2060.io/credo-ts-didcomm-user-profile'
+import { DidCommConnectionProfileUpdatedEvent, DidCommProfileEventTypes } from '@2060.io/credo-ts-didcomm-user-profile'
 import { AnonCredsPresentationPreviewAttribute } from '@credo-ts/anoncreds'
 import { TypedArrayEncoder, W3cCredentialRecord } from '@credo-ts/core'
 import {
-  DidCommProofStateChangedEvent,
-  DidCommProofEventTypes,
-  DidCommProofState,
   DidCommConnectionEventTypes,
+  DidCommConnectionRecord,
   DidCommConnectionStateChangedEvent,
+  DidCommConnectionsApi,
   DidCommDidExchangeState,
   DidCommOutOfBandRecord,
-  DidCommConnectionRecord,
-  DidCommConnectionsApi,
+  DidCommProofEventTypes,
+  DidCommProofState,
+  DidCommProofStateChangedEvent,
 } from '@credo-ts/didcomm'
 import { ParamListBase } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
-import { useEffect, useRef, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import Config from 'react-native-config'
-import { timeout, Subscription, catchError, filter, EMPTY } from 'rxjs'
-
-import { AgentActionType, useCredentials, useMobileAgent, useAgentActionQueue } from '@src/hooks/agent'
+import { AgentActionType, useAgentActionQueue, useCredentials, useMobileAgent } from '@src/hooks/agent'
 import {
   AcceptProofRequestParameters,
   ProofSendProblemReportDescription,
@@ -41,6 +33,10 @@ import { createProofProposal } from '@src/services/agent/proofs'
 import { log, logError } from '@src/utils'
 import { getConnectionDisplayName, getConnectionDisplayPicture } from '@src/utils/connectionUtils'
 import { toast } from '@src/utils/toast'
+import { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import Config from 'react-native-config'
+import { catchError, EMPTY, filter, Subscription, timeout } from 'rxjs'
 
 export type State =
   | 'creating'
@@ -108,15 +104,12 @@ export const usePresentCredentialAsQR = ({
   async function createQRCode() {
     try {
       if (!agent) return
-      defaultMediatorConnection.current =
-        await agent.didcomm.mediationRecipient.findDefaultMediatorConnection()
+      defaultMediatorConnection.current = await agent.didcomm.mediationRecipient.findDefaultMediatorConnection()
       credentialRecord.current = getCredentialById(credentialRecordId)
       if (!credentialRecord.current) return
-      const credentialDefinitionId = credentialRecord.current.getTag(
-        'anonCredsCredentialDefinitionId',
-      ) as string
+      const credentialDefinitionId = credentialRecord.current.getTag('anonCredsCredentialDefinitionId') as string
       if (!credentialDefinitionId) return
-      const attributes: AnonCredsPresentationPreviewAttribute[] = attributesToPresent.map(attribute => ({
+      const attributes: AnonCredsPresentationPreviewAttribute[] = attributesToPresent.map((attribute) => ({
         name: attribute,
         credentialDefinitionId,
       }))
@@ -148,7 +141,7 @@ export const usePresentCredentialAsQR = ({
     })
     agent?.events.on<DidCommShortenedUrlReceivedEvent>(
       DidCommShortenUrlEventTypes.DidCommShortenedUrlReceived,
-      onDidCommShortenedUrlReceived,
+      onDidCommShortenedUrlReceived
     )
   }
 
@@ -156,7 +149,7 @@ export const usePresentCredentialAsQR = ({
     log('DidCommShortenedUrlReceivedEvent received', event)
     const { shortenUrlRecord } = event.payload
     const shortenedUrlToBase64 = TypedArrayEncoder.toBase64Url(
-      TypedArrayEncoder.fromUtf8String(shortenUrlRecord.shortenedUrl!),
+      TypedArrayEncoder.fromUtf8String(shortenUrlRecord.shortenedUrl!)
     )
     shortenedUrl.current = shortenUrlRecord.shortenedUrl
     urlForQr.current = `${Config.BASE_INVITATION_URL}?_url=${shortenedUrlToBase64}`
@@ -171,7 +164,7 @@ export const usePresentCredentialAsQR = ({
     invalidateCurrentShortenedUrl()
     agent?.events.on<DidCommShortenedUrlInvalidatedEvent>(
       DidCommShortenUrlEventTypes.DidCommShortenedUrlInvalidated,
-      onDidCommShortenedUrlInvalidated,
+      onDidCommShortenedUrlInvalidated
     )
   }
 
@@ -209,54 +202,51 @@ export const usePresentCredentialAsQR = ({
 
   function subscribeToConnectionStateChangedEvent() {
     const observableOfConnectionStateChanged = agent?.events
-      .observable<DidCommConnectionStateChangedEvent>(
-        DidCommConnectionEventTypes.DidCommConnectionStateChanged,
-      )
+      .observable<DidCommConnectionStateChangedEvent>(DidCommConnectionEventTypes.DidCommConnectionStateChanged)
       .pipe(
         filter(
-          event =>
+          (event) =>
             event.payload.connectionRecord.outOfBandId === invitation.current?.id &&
-            event.payload.connectionRecord.state === DidCommDidExchangeState.RequestReceived,
-        ),
+            event.payload.connectionRecord.state === DidCommDidExchangeState.RequestReceived
+        )
       )
-    observableOfConnectionStateChangedEvent.current = observableOfConnectionStateChanged?.subscribe(
-      async event => {
-        const { connectionRecord } = event.payload
-        setState('scanned')
-        clearShortenedUrlStatusValidator()
-        invalidateCurrentShortenedUrl()
-        removeObservableOfConnectionStateChangedEvent()
-        subscribeToConnectionProfileUpdatedEvent(connectionRecord.id)
-        subscribeToProofStateChangedEvent(connectionRecord)
-        ephemeralConnection.current = connectionRecord
-        const connectionsApi = agent?.dependencyManager.resolve(DidCommConnectionsApi)
-        connectionsApi?.addConnectionType(connectionRecord.id, 'Ephemeral')
-        if (proofRecordId.current && agent) {
-          const proofRecord = await agent.didcomm.proofs.getById(proofRecordId.current)
-          proofRecord.connectionId = connectionRecord.id
-          await agent?.didcomm.proofs.update(proofRecord)
-        }
-      },
-    )
+    observableOfConnectionStateChangedEvent.current = observableOfConnectionStateChanged?.subscribe(async (event) => {
+      const { connectionRecord } = event.payload
+      setState('scanned')
+      clearShortenedUrlStatusValidator()
+      invalidateCurrentShortenedUrl()
+      removeObservableOfConnectionStateChangedEvent()
+      subscribeToConnectionProfileUpdatedEvent(connectionRecord.id)
+      subscribeToProofStateChangedEvent(connectionRecord)
+      ephemeralConnection.current = connectionRecord
+      const connectionsApi = agent?.dependencyManager.resolve(DidCommConnectionsApi)
+      connectionsApi?.addConnectionType(connectionRecord.id, 'Ephemeral')
+      if (proofRecordId.current && agent) {
+        const proofRecord = await agent.didcomm.proofs.getById(proofRecordId.current)
+        proofRecord.connectionId = connectionRecord.id
+        await agent?.didcomm.proofs.update(proofRecord)
+      }
+    })
   }
 
   function subscribeToConnectionProfileUpdatedEvent(connectionId: string) {
     const observableOfConnectionProfileUpdatedEvent = agent?.events
       .observable<DidCommConnectionProfileUpdatedEvent>(DidCommProfileEventTypes.ConnectionProfileUpdated)
-      .pipe(filter(event => event.payload.connection.id === connectionId))
+      .pipe(filter((event) => event.payload.connection.id === connectionId))
 
-    observableOfConnectionProfileUpdatedEventEvent.current =
-      observableOfConnectionProfileUpdatedEvent?.subscribe(event => {
+    observableOfConnectionProfileUpdatedEventEvent.current = observableOfConnectionProfileUpdatedEvent?.subscribe(
+      (event) => {
         const { connection } = event.payload
         const verifierName = getConnectionDisplayName(connection)
         const verifierPicture = getConnectionDisplayPicture(connection)
-        setPresentedCredentialInfo(prevState => ({
+        setPresentedCredentialInfo((prevState) => ({
           ...prevState,
           verifierName,
           verifierPicture,
         }))
         removeObservableOfConnectionProfileUpdatedEvent()
-      })
+      }
+    )
   }
 
   const onObservableOfProofStateChangedTimeout = () => {
@@ -279,17 +269,17 @@ export const usePresentCredentialAsQR = ({
       .observable<DidCommProofStateChangedEvent>(DidCommProofEventTypes.ProofStateChanged)
       .pipe(
         filter(
-          event =>
+          (event) =>
             event.payload.proofRecord.connectionId === connection.id &&
             [DidCommProofState.RequestReceived, DidCommProofState.Abandoned, DidCommProofState.Done].includes(
-              event.payload.proofRecord.state,
-            ),
+              event.payload.proofRecord.state
+            )
         ),
         timeout(MAX_TIME_TO_WAIT_VERIFIER_RESPONSE),
-        catchError(onObservableOfProofStateChangedTimeout),
+        catchError(onObservableOfProofStateChangedTimeout)
       )
 
-    observableOfProofStateChangedEvent.current = observableOfProofStateChanged?.subscribe(async event => {
+    observableOfProofStateChangedEvent.current = observableOfProofStateChanged?.subscribe(async (event) => {
       const { proofRecord } = event.payload
       switch (proofRecord.state) {
         case DidCommProofState.RequestReceived: {
@@ -297,7 +287,7 @@ export const usePresentCredentialAsQR = ({
           const parameters: AcceptProofRequestParameters = { proofRecordId: proofRecord.id }
           addAgentActionToQueue({ type: AgentActionType.AcceptProofRequest, parameters })
           const presentedCredential = getCredentialMainInfo(credentialRecord.current!)
-          setPresentedCredentialInfo(prevState => ({
+          setPresentedCredentialInfo((prevState) => ({
             ...prevState,
             credentials: [presentedCredential],
           }))
@@ -306,7 +296,7 @@ export const usePresentCredentialAsQR = ({
         case DidCommProofState.Abandoned: {
           setState('rejected')
           const presentedCredential = getCredentialMainInfo(credentialRecord.current!)
-          setPresentedCredentialInfo(prevState => ({
+          setPresentedCredentialInfo((prevState) => ({
             ...prevState,
             credentials: [presentedCredential],
           }))
@@ -343,7 +333,7 @@ export const usePresentCredentialAsQR = ({
     log('removing DidCommShortenedUrlReceivedEvent')
     agent?.events.off<DidCommShortenedUrlReceivedEvent>(
       DidCommShortenUrlEventTypes.DidCommShortenedUrlReceived,
-      onDidCommShortenedUrlReceived,
+      onDidCommShortenedUrlReceived
     )
   }
 
@@ -351,7 +341,7 @@ export const usePresentCredentialAsQR = ({
     log('removing DidCommShortenedUrlInvalidatedEvent')
     agent?.events.off<DidCommShortenedUrlInvalidatedEvent>(
       DidCommShortenUrlEventTypes.DidCommShortenedUrlInvalidated,
-      onDidCommShortenedUrlInvalidated,
+      onDidCommShortenedUrlInvalidated
     )
   }
 

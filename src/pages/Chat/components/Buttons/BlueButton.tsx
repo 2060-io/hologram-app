@@ -1,11 +1,9 @@
-import React from 'react'
-import { StyleSheet, TouchableOpacity } from 'react-native'
-
-import { Props } from './Props'
-
 import { Text } from '@src/components/common'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { AppTheme } from '@src/styles'
+import React from 'react'
+import { StyleSheet, TouchableOpacity } from 'react-native'
+import { Props } from './Props'
 
 const BlueButton = ({ text, ...buttonProps }: Props) => {
   const theme = useTheme()

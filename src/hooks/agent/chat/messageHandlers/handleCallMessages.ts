@@ -1,23 +1,12 @@
-import {
-  CallEndMessage,
-  CallOfferMessage,
-  CallRejectMessage,
-  DidCommCallType,
-} from '@2060.io/credo-ts-didcomm-calls'
+import { CallEndMessage, CallOfferMessage, CallRejectMessage, DidCommCallType } from '@2060.io/credo-ts-didcomm-calls'
 import { DidCommConnectionRecord, DidCommMessage, parseMessageType } from '@credo-ts/didcomm'
-import Realm from 'realm'
-
-import { DidCommMessageDirection } from '../DidCommMessageDirection'
-import {
-  createChatEntry,
-  findAllDidcommThreadId,
-  updateChatEntryMetadata,
-} from '../services/ChatEntryService'
-import { addUnread, findOrCreateChatThread } from '../services/ChatThreadService'
-
 import { CallInfo } from '@src/hooks/providers/useVideoCallContext'
 import { CallOfferMetadata, CallOfferState, ChatEntryRole, ChatEntryState, ChatEntryType } from '@src/model'
 import { logError } from '@src/utils'
+import Realm from 'realm'
+import { DidCommMessageDirection } from '../DidCommMessageDirection'
+import { createChatEntry, findAllDidcommThreadId, updateChatEntryMetadata } from '../services/ChatEntryService'
+import { addUnread, findOrCreateChatThread } from '../services/ChatThreadService'
 
 export const handleCallMessages = (options: {
   realm: Realm

@@ -1,14 +1,11 @@
-import React from 'react'
-import { View } from 'react-native'
-
-import { Header } from '../components'
-
-import getStyles from './styles'
-
 import { Text } from '@src/components/common'
 import { IconsNames } from '@src/components/common/SvgIcon'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { ChatEntryRole } from '@src/model'
+import React from 'react'
+import { View } from 'react-native'
+import { Header } from '../components'
+import getStyles from './styles'
 
 type Props = {
   message: string

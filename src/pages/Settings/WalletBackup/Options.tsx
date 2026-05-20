@@ -1,9 +1,8 @@
+import { OptionsList, SvgIcon, Text } from '@src/components/common'
+import { Option } from '@src/components/common/OptionsList'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, TouchableOpacity } from 'react-native'
-
-import { SvgIcon, Text, OptionsList } from '@src/components/common'
-import { Option } from '@src/components/common/OptionsList'
+import { TouchableOpacity, View } from 'react-native'
 
 interface StyleObject {
   [key: string]: object

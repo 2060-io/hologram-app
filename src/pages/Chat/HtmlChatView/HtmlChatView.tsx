@@ -1,19 +1,16 @@
-import { OrientationLock, lockAsync, unlockAsync } from 'expo-screen-orientation'
+import { Modal, SvgIcon, Text, UniversalImage } from '@src/components/common'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { log, logError } from '@src/utils'
+import { lockAsync, OrientationLock, unlockAsync } from 'expo-screen-orientation'
 import React, { memo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TouchableOpacity, View } from 'react-native'
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
 import { SvgUri } from 'react-native-svg'
 import WebView from 'react-native-webview'
-
-import { Header, BlueButton } from '../components'
-
+import { BlueButton, Header } from '../components'
 import { HtmlChatViewProps } from './HtmlChatViewProps'
 import getStyles from './styles'
-
-import { Modal, SvgIcon, Text, UniversalImage } from '@src/components/common'
-import { useTheme } from '@src/hooks/providers/ThemeProvider'
-import { log, logError } from '@src/utils'
 
 const extractDomainFromUrl = (url: string) => {
   const domainRegex = /^(?:https?:\/\/)?(?:www\.)?([^/]+)/
@@ -36,7 +33,7 @@ const HtmlChatView = (props: HtmlChatViewProps) => {
   const dimensions = isFullScreen ? styles.fullScreenDimensions : styles.normalScreenDimensions
   const iconNameMiniOrMaxi = isFullScreen ? 'minimize' : 'maximize'
 
-  const changeScreenMode = () => setFullScreen(prevState => !prevState)
+  const changeScreenMode = () => setFullScreen((prevState) => !prevState)
   const showWebView = () => setShowingWebView(true)
 
   const setScreenOrientation = async () => {
@@ -104,10 +101,10 @@ const HtmlChatView = (props: HtmlChatViewProps) => {
         allowsInlineMediaPlayback
         mediaPlaybackRequiresUserAction={false}
         mediaCapturePermissionGrantType="grantIfSameHostElsePrompt"
-        onError={event => logError('error loading web view', event)}
+        onError={(event) => logError('error loading web view', event)}
         source={{ uri: metadata.uri }}
         onLoadStart={setScreenOrientation}
-        onMessage={event => {
+        onMessage={(event) => {
           log('WebView onMessage event', event.nativeEvent)
           closeWebView()
         }}

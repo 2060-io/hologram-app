@@ -1,5 +1,5 @@
 import { BaseEvent } from '@credo-ts/core'
-import { DidCommOutOfBandRecord, DidCommConnectionRecord } from '@credo-ts/didcomm'
+import { DidCommConnectionRecord, DidCommOutOfBandRecord } from '@credo-ts/didcomm'
 
 export enum OutOfBandInvitationEventTypes {
   OutOfBandInvitationEvent = 'OutOfBandInvitationEvent',

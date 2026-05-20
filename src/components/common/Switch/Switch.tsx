@@ -1,11 +1,9 @@
-import React from 'react'
-import { Switch } from 'react-native'
-
-import { CustomSwitchProps } from './SwitchProps'
-import styles from './styles'
-
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { hexTransparency } from '@src/utils/colorUtils'
+import React from 'react'
+import { Switch } from 'react-native'
+import { CustomSwitchProps } from './SwitchProps'
+import styles from './styles'
 
 const CustomSwitch = ({ ...props }: CustomSwitchProps) => {
   const theme = useTheme()

@@ -1,7 +1,7 @@
 import React from 'react'
 import Svg, { G, Path, SvgProps } from 'react-native-svg'
 
-const Qrcode: React.FC<SvgProps> = props => (
+const Qrcode: React.FC<SvgProps> = (props) => (
   <Svg viewBox="0 0 23.54 23.54" {...props}>
     <G data-name="Group 1469">
       <Path data-name="Rectangle 990" fill="none" d="M0 0h23.54v23.54H0z" />

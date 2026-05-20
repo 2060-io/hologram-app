@@ -4,7 +4,7 @@ import { SvgProps } from 'react-native-svg'
 
 import Arrow from './Arrow'
 
-const LeftArrow: React.FC<SvgProps> = props => (
+const LeftArrow: React.FC<SvgProps> = (props) => (
   <View style={styles.container}>
     <Arrow {...props} />
   </View>

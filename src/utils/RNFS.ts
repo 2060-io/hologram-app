@@ -1,17 +1,15 @@
 import {
   DocumentDirectoryPath,
-  readFile as RNFSReadFile,
-  writeFile as RNFSWriteFile,
-  mkdir as RNFSMakeDirectory,
-  unlink as RNFSUnlink,
   copyFile as RNFSCopyFile,
   exists as RNFSExists,
+  mkdir as RNFSMakeDirectory,
   moveFile as RNFSMoveFile,
+  readFile as RNFSReadFile,
+  unlink as RNFSUnlink,
+  writeFile as RNFSWriteFile,
 } from '@dr.pogodin/react-native-fs'
-
-import { logError } from './log'
-
 import { IS_IOS } from '@src/constants'
+import { logError } from './log'
 
 type Encoding = 'utf8' | 'base64' | 'ascii'
 const CONFIG_FILE_PATH = `${DocumentDirectoryPath}/config.json`
@@ -89,21 +87,21 @@ const moveFile = async (filePath: string, destPath: string) => {
 }
 
 export {
-  readFile,
-  writeFile,
-  makeDirectory,
-  deleteFile,
-  deleteDir,
+  CONFIG_FILE_PATH,
   copyFile,
-  moveFile,
-  mediaDirectoryPath,
-  mediaPreviewsDirectoryPath,
-  walletDirectoryPath,
+  deleteDir,
+  deleteFile,
+  existsFile,
+  getFileExtension,
+  getFullLocalFilePath,
+  getLocalFileUri,
   getLocalMediaFilePath,
   getLocalMediaPreviewFilePath,
-  getFullLocalFilePath,
-  getFileExtension,
-  getLocalFileUri,
-  existsFile,
-  CONFIG_FILE_PATH,
+  makeDirectory,
+  mediaDirectoryPath,
+  mediaPreviewsDirectoryPath,
+  moveFile,
+  readFile,
+  walletDirectoryPath,
+  writeFile,
 }

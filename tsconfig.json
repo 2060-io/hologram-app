@@ -11,8 +11,8 @@
     "jsx": "react",
     "baseUrl": ".",
     "paths": {
-      "@src/*": ["src/*"],
-    },
+      "@src/*": ["src/*"]
+    }
   },
   "include": ["**/*.ts", "**/*.tsx", "src/**/*"],
   "exclude": ["**/node_modules", "**/Pods", "build"]

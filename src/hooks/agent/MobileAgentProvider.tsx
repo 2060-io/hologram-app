@@ -1,14 +1,12 @@
 import { CacheModuleConfig } from '@credo-ts/core'
-import React, { useState, createContext, useEffect, useContext, useCallback, useRef } from 'react'
-import EIdReader from 'react-native-eid-reader'
-
-import { useNetwork } from '../useNetwork'
-
 import AgentSingleton from '@src/services/AgentSingleton'
 import { isRegistered, MobileAgent } from '@src/services/agent/MobileAgent'
 import { MediatorEventTypes } from '@src/services/transport/MediatorEventTypes'
 import { MobileWsOutboundTransport } from '@src/services/transport/MobileWsOutboundTransport'
 import { logError, logWarn } from '@src/utils'
+import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
+import EIdReader from 'react-native-eid-reader'
+import { useNetwork } from '../useNetwork'
 
 interface MobileAgentState {
   agent?: MobileAgent
@@ -84,11 +82,11 @@ export const MobileAgentProvider: React.FC<Props> = ({ children }) => {
     (isConnectedToCloudAgent: boolean) => {
       handleChangeAgentState({ isConnectedToCloudAgent: isConnectedToCloudAgent && isNetworkConnected })
     },
-    [isNetworkConnected],
+    [isNetworkConnected]
   )
 
   const handleChangeAgentState = (state: Partial<MobileAgentState>) => {
-    setAgentState(prevState => ({ ...prevState, ...state }))
+    setAgentState((prevState) => ({ ...prevState, ...state }))
   }
 
   const openAndInitMobileAgent = useCallback(async () => {
@@ -115,7 +113,7 @@ export const MobileAgentProvider: React.FC<Props> = ({ children }) => {
         for (const transport of agent.didcomm.outboundTransports) {
           if (transport.supportedSchemes.includes('ws')) {
             isConnectedToCloudAgent = (transport as MobileWsOutboundTransport).isConnectedTo(
-              defaultMediatorConnection.id,
+              defaultMediatorConnection.id
             )
           }
         }

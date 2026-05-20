@@ -1,7 +1,6 @@
-import { StyleSheet } from 'react-native'
-
 import { AppTheme } from '@src/styles'
 import { widthPercentageToDP } from '@src/utils/responsiveUtils'
+import { StyleSheet } from 'react-native'
 
 const NORMAL_WIDTH = widthPercentageToDP('75')
 

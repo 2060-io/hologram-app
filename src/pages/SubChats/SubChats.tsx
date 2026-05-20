@@ -1,30 +1,28 @@
 import { StackActions } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
-import React, { useEffect, useRef, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { View, TouchableOpacity, FlatList } from 'react-native'
-import { uses24HourClock } from 'react-native-localize'
-import { SafeAreaView } from 'react-native-safe-area-context'
-import { SwipeRow } from 'react-native-swipe-list-view'
-
-import getStyles from './styles'
-
 import {
-  SearchInput,
+  ChatFilterOptions,
   ChatSwipeOptions,
   ChatThread,
-  ModalBottomHalf,
   ConfirmChatDeletion,
-  ChatFilterOptions,
+  ModalBottomHalf,
+  SearchInput,
 } from '@src/components'
-import { Text, SvgIcon, HeaderTitle } from '@src/components/common'
+import { HeaderTitle, SvgIcon, Text } from '@src/components/common'
 import UniversalImage from '@src/components/common/UniversalImage'
-import { useChatThreadById, useChatThreadsbyParentId, useChats, useMobileAgent } from '@src/hooks/agent'
+import { useChats, useChatThreadById, useChatThreadsbyParentId, useMobileAgent } from '@src/hooks/agent'
 import { deleteConnection } from '@src/hooks/agent/connections'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { ChatThreadData } from '@src/model'
 import { ChatsStackParams } from '@src/navigators/ChatStackParams'
 import { widthPercentageToDP } from '@src/utils/responsiveUtils'
+import React, { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { FlatList, TouchableOpacity, View } from 'react-native'
+import { uses24HourClock } from 'react-native-localize'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import { SwipeRow } from 'react-native-swipe-list-view'
+import getStyles from './styles'
 
 type SubChatCategory = 'all' | 'archived'
 type Props = StackScreenProps<ChatsStackParams, 'SubChats'>
@@ -38,9 +36,7 @@ const SubChats: React.FC<Props> = ({ route, navigation }) => {
   const [showFilterOptions, setShowFilterOptions] = useState(false)
   const [showSearchInput, setShowSearchInput] = useState(false)
   const [selectedChatIds, setSelectedChatIds] = useState<string[]>([])
-  const [chatThreadToDelete, setChatThreadToDelete] = useState<{ id: string; connectionId: string } | null>(
-    null,
-  )
+  const [chatThreadToDelete, setChatThreadToDelete] = useState<{ id: string; connectionId: string } | null>(null)
   const { deleteThread, archiveThreads, unarchiveThreads, filters, setFilters } = useChats()
   const isCategoryArchived = filters.category === 'all' && filters.archived
   const [category, setCategory] = useState<SubChatCategory>(isCategoryArchived ? 'archived' : 'all')
@@ -158,19 +154,19 @@ const SubChats: React.FC<Props> = ({ route, navigation }) => {
           showsVerticalScrollIndicator={false}
           data={subChatsList}
           extraData={[selectedChatIds, theme.isDarkMode]}
-          keyExtractor={item => item.id}
+          keyExtractor={(item) => item.id}
           renderItem={({ item: chat }) => {
             const isSwiped = selectedChatIds.includes(chat.id)
             return (
               <SwipeRow
-                ref={ref => {
+                ref={(ref) => {
                   if (ref) swipeRowReferences.current[Number(chat.id)] = ref
                 }}
                 key={chat.id}
                 disableRightSwipe
                 rightOpenValue={-widthPercentageToDP('36.20%')}
-                swipeGestureBegan={() => setSelectedChatIds(prev => [...prev, chat.id])}
-                onRowClose={() => setSelectedChatIds(prev => prev.filter(id => id !== chat.id))}
+                swipeGestureBegan={() => setSelectedChatIds((prev) => [...prev, chat.id])}
+                onRowClose={() => setSelectedChatIds((prev) => prev.filter((id) => id !== chat.id))}
                 disableHiddenLayoutCalculation
               >
                 <ChatSwipeOptions

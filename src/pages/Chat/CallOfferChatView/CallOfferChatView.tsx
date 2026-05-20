@@ -1,12 +1,3 @@
-import React, { useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { View } from 'react-native'
-
-import { BlueButton, Header, OutlinedBlueButton, State } from '../components'
-
-import { Props } from './CallOfferChatViewProps'
-import getStyles from './styles'
-
 import { Text } from '@src/components/common'
 import { useChat, useMobileAgent } from '@src/hooks/agent'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
@@ -14,6 +5,12 @@ import { useVideoCallContext } from '@src/hooks/providers/useVideoCallContext'
 import { CallOfferState, ChatEntryRole } from '@src/model'
 import { isNowAfterThanDate } from '@src/utils/dateUtils'
 import { toast } from '@src/utils/toast'
+import React, { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { View } from 'react-native'
+import { BlueButton, Header, OutlinedBlueButton, State } from '../components'
+import { Props } from './CallOfferChatViewProps'
+import getStyles from './styles'
 
 const CallOfferChatView = ({ metadata, didcommThreadId, role }: Props) => {
   const theme = useTheme()
@@ -25,8 +22,8 @@ const CallOfferChatView = ({ metadata, didcommThreadId, role }: Props) => {
   const { description, state, offerExpirationTime } = metadata
   const [callState, setCallState] = useState<CallOfferState>(state)
   const connectionId = chatThread?.data?.connectionId
-  const sender = chatThread?.participants.find(p => p.id === role)
-  const receiver = chatThread?.participants.find(p => p.id !== role)
+  const sender = chatThread?.participants.find((p) => p.id === role)
+  const receiver = chatThread?.participants.find((p) => p.id !== role)
 
   useEffect(() => {
     if (!offerExpirationTime || state !== CallOfferState.RECEIVED) {

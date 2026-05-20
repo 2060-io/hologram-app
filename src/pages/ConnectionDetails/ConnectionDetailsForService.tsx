@@ -1,10 +1,8 @@
-import React, { useCallback } from 'react'
-import { StyleSheet } from 'react-native'
-
-import BaseConnectionDetails, { ConnectionDetailsProps } from './BaseConnectionDetails'
-
 import { ProofOfTrust, ServiceMainInfo } from '@src/components/common'
 import { useFetchServiceInfo } from '@src/hooks'
+import React, { useCallback } from 'react'
+import { StyleSheet } from 'react-native'
+import BaseConnectionDetails, { ConnectionDetailsProps } from './BaseConnectionDetails'
 
 const ConnectionDetailsForService = (props: ConnectionDetailsProps) => {
   const { connection } = props
@@ -33,11 +31,7 @@ const ConnectionDetailsForService = (props: ConnectionDetailsProps) => {
         ) : null
       }
       footerInfo={
-        <ProofOfTrust
-          serviceInfo={serviceInfo}
-          isFetchingInfo={isFetchingInfo}
-          failedFetchInfo={failedFetchInfo}
-        />
+        <ProofOfTrust serviceInfo={serviceInfo} isFetchingInfo={isFetchingInfo} failedFetchInfo={failedFetchInfo} />
       }
     />
   )

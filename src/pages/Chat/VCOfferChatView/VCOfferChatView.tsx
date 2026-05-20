@@ -1,23 +1,10 @@
 import { DidCommCredentialState } from '@credo-ts/didcomm'
-import { useNavigation, ParamListBase } from '@react-navigation/native'
+import { ParamListBase, useNavigation } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
-import { TrustResolutionOutcome } from '@verana-labs/verre'
-import React, { useState, memo, useMemo } from 'react'
-import { useTranslation } from 'react-i18next'
-import { View } from 'react-native'
-
-import { ChatParticipant } from '../ChatMessage/Props'
-import { BlueButton, Header, OutlinedBlueButton, State } from '../components'
-
-import getStyles from './styles'
-
 import { ModalConfirmAction } from '@src/components'
 import { CredentialMainInformation, Text } from '@src/components/common'
 import { AgentActionType, useAgentActionQueue } from '@src/hooks/agent'
-import {
-  AcceptCredentialOfferParameters,
-  DeclineCredentialOfferParameters,
-} from '@src/hooks/agent/actions/types'
+import { AcceptCredentialOfferParameters, DeclineCredentialOfferParameters } from '@src/hooks/agent/actions/types'
 import { updateChatEntryMetadata } from '@src/hooks/agent/chat/services'
 import { useLocalRealm } from '@src/hooks/providers/RealmProvider'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
@@ -25,6 +12,13 @@ import { VCOfferMetadata } from '@src/model'
 import { MobileAgent } from '@src/services/agent'
 import { CredentialMainInfo, sanitizeString } from '@src/services/agent/display'
 import { toast } from '@src/utils/toast'
+import { TrustResolutionOutcome } from '@verana-labs/verre'
+import React, { memo, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { View } from 'react-native'
+import { ChatParticipant } from '../ChatMessage/Props'
+import { BlueButton, Header, OutlinedBlueButton, State } from '../components'
+import getStyles from './styles'
 
 interface Props {
   sender?: ChatParticipant
@@ -34,13 +28,7 @@ interface Props {
   chatEntryId: string
 }
 
-const VCOfferChatView = ({
-  sender,
-  associatedRecordId,
-  metadata,
-  agent,
-  chatEntryId,
-}: Props): React.ReactElement => {
+const VCOfferChatView = ({ sender, associatedRecordId, metadata, agent, chatEntryId }: Props): React.ReactElement => {
   const [showModalRefuseConfirmation, setShowModalRefuseConfirmation] = useState(false)
   const navigation: StackNavigationProp<ParamListBase> = useNavigation()
   const { t } = useTranslation()
@@ -64,7 +52,7 @@ const VCOfferChatView = ({
         status: TrustResolutionOutcome.INVALID,
       },
     }),
-    [metadata],
+    [metadata]
   )
 
   const updateMetadata = (newCredentialState: DidCommCredentialState) => {
@@ -100,9 +88,7 @@ const VCOfferChatView = ({
   const displayModalRefuseConfirmation = () => setShowModalRefuseConfirmation(true)
 
   const chooseScreenToGo = () => {
-    if (
-      [DidCommCredentialState.OfferReceived, DidCommCredentialState.RequestSent].includes(credentialState)
-    ) {
+    if ([DidCommCredentialState.OfferReceived, DidCommCredentialState.RequestSent].includes(credentialState)) {
       goToCredentialOffer()
     }
     if ([DidCommCredentialState.CredentialReceived, DidCommCredentialState.Done].includes(credentialState)) {

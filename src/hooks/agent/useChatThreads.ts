@@ -1,13 +1,4 @@
-import { t } from 'i18next'
-import { useState, useEffect, useMemo } from 'react'
-
-import { useLocalRealm } from '../providers/RealmProvider'
-import { useFetchServiceInfo } from '../useFetchServiceInfo'
-
-import { useConnectionById } from './ConnectionsProvider'
-import { useUserProfile } from './UserProfileProvider'
-
-import { ChatThreadData, ChatThread, getChatThreadData, ChatEntryRole } from '@src/model'
+import { ChatEntryRole, ChatThread, ChatThreadData, getChatThreadData } from '@src/model'
 import { ChatParticipant } from '@src/pages/Chat/ChatMessage/Props'
 import {
   getConnectionDisplayName,
@@ -22,6 +13,12 @@ import {
   supportsMessageReactions,
   supportsMessageReceipts,
 } from '@src/utils/connectionUtils'
+import { t } from 'i18next'
+import { useEffect, useMemo, useState } from 'react'
+import { useLocalRealm } from '../providers/RealmProvider'
+import { useFetchServiceInfo } from '../useFetchServiceInfo'
+import { useConnectionById } from './ConnectionsProvider'
+import { useUserProfile } from './UserProfileProvider'
 
 export const useUnreadChatThreads = () => {
   return useChatThreadsHook('unreadCount > 0')
@@ -51,7 +48,7 @@ export const useChatThreadWithParticipants = (chatThreadId: string) => {
         avatar: connection ? getConnectionDisplayPicture(connection) : undefined,
       },
     ],
-    [connection],
+    [connection]
   )
 
   const flags = useMemo(
@@ -68,7 +65,7 @@ export const useChatThreadWithParticipants = (chatThreadId: string) => {
       myProfileUpdatedAt: userProfileData?.updatedAt,
       lastTimeProfileReceived: connection ? lastTimeProfileReceived(connection) : undefined,
     }),
-    [connection, serviceInfo, userProfileData],
+    [connection, serviceInfo, userProfileData]
   )
 
   return {
@@ -106,7 +103,7 @@ export const useChatThreadsbyParentId = (parentId: string, category: string, top
     if (!chatThreads) return
     setChildChatThreads(chatThreads.length ? chatThreads.map(getChatThreadData) : [])
 
-    const handleChange: Realm.CollectionChangeCallback<ChatThread> = newChatThreads => {
+    const handleChange: Realm.CollectionChangeCallback<ChatThread> = (newChatThreads) => {
       setChildChatThreads(newChatThreads.length ? newChatThreads.map(getChatThreadData) : [])
     }
 
@@ -131,7 +128,7 @@ const useChatThreadsHook = (query: string) => {
 
       setData(collection.length > 0 ? collection.map(getChatThreadData) : [])
 
-      const handleChange: Realm.CollectionChangeCallback<ChatThread> = newChatThreads => {
+      const handleChange: Realm.CollectionChangeCallback<ChatThread> = (newChatThreads) => {
         setData(newChatThreads.length ? newChatThreads.map(getChatThreadData) : [])
       }
 

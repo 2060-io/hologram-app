@@ -1,16 +1,14 @@
 import { DidCommUserProfileData } from '@2060.io/credo-ts-didcomm-user-profile'
-import React, { memo } from 'react'
-import { useTranslation } from 'react-i18next'
-import { View, TouchableOpacity, Image } from 'react-native'
-
-import getStyles from './styles'
-
 import defaultAvatar from '@src/assets/images/defaultUser.png'
-import { Text, TextInput, SvgIcon, Avatar } from '@src/components/common'
-import { useImageCropPicker, ImageOrVideo } from '@src/hooks'
+import { Avatar, SvgIcon, Text, TextInput } from '@src/components/common'
+import { ImageOrVideo, useImageCropPicker } from '@src/hooks'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { dataUrl } from '@src/utils'
 import { widthPercentageToDP } from '@src/utils/responsiveUtils'
+import React, { memo } from 'react'
+import { useTranslation } from 'react-i18next'
+import { Image, TouchableOpacity, View } from 'react-native'
+import getStyles from './styles'
 
 type Props = {
   displayPicture: DidCommUserProfileData['displayPicture']
@@ -19,7 +17,7 @@ type Props = {
   onHandleChangeName(value: string): void
 }
 
-const UserProfileForm: React.FC<Props> = props => {
+const UserProfileForm: React.FC<Props> = (props) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
@@ -49,11 +47,7 @@ const UserProfileForm: React.FC<Props> = props => {
       <Text style={styles.textInputDescription}>{t('signUp.textInputNicknameDescription')}</Text>
       <View style={styles.containerRootAvatar}>
         {imgUrl?.length && (
-          <TouchableOpacity
-            style={styles.btnClose}
-            onPress={() => onHandleChangePicture(null)}
-            activeOpacity={0.6}
-          >
+          <TouchableOpacity style={styles.btnClose} onPress={() => onHandleChangePicture(null)} activeOpacity={0.6}>
             <SvgIcon name="close" fill={theme.colors.lightGrey} />
           </TouchableOpacity>
         )}

@@ -47,8 +47,6 @@ jobs:
               }
             ]
           tag-format: "v${version}"
-          additional-packages: |
-            ['@2060.io/semantic-release-react-native@1.11.0']
           plugins: |
             [
               [

@@ -1,7 +1,7 @@
-diff --git a/node_modules/asmcrypto.js/asmcrypto.all.js b/node_modules/asmcrypto.js/asmcrypto.all.js
+diff --git a/asmcrypto.all.js b/asmcrypto.all.js
 index 96bffea..56239d7 100755
---- a/node_modules/asmcrypto.js/asmcrypto.all.js
-+++ b/node_modules/asmcrypto.js/asmcrypto.all.js
+--- a/asmcrypto.all.js
++++ b/asmcrypto.all.js
 @@ -4245,12 +4245,6 @@ function BigNumber_extGCD(a, b) {
  }
  

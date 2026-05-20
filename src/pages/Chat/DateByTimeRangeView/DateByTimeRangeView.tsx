@@ -1,11 +1,9 @@
-import React from 'react'
-import { View } from 'react-native'
-
-import getStyles from './styles'
-
 import { Text } from '@src/components/common'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { getFormattedDateRange, getIsSameDay } from '@src/utils/dateUtils'
+import React from 'react'
+import { View } from 'react-native'
+import getStyles from './styles'
 
 type Props = {
   currentMessageCreatedAt: number

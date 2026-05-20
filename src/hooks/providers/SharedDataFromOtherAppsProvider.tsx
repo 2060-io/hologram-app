@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useContext, useEffect, PropsWithChildren, useState } from 'react'
+import React, { createContext, PropsWithChildren, useCallback, useContext, useEffect, useState } from 'react'
 import ShareMenu, { SharedData } from 'react-native-share-menu'
 
 import { useNavigation } from '../agent'
@@ -38,7 +38,7 @@ export const SharedDataFromOtherAppsProvider: React.FC<PropsWithChildren> = ({ c
         if (!isScreenLockEnabled) setDisplayShareMessagesScreen(true)
       }
     },
-    [isScreenLockEnabled],
+    [isScreenLockEnabled]
   )
 
   useEffect(() => {

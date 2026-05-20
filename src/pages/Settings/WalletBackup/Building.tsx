@@ -1,12 +1,10 @@
+import { MainButton, OutlinedButton, Progress, SvgIcon, Text } from '@src/components/common'
+import { BackupProgressProps } from '@src/hooks/backup'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
-
 import getStyles from './styles'
-
-import { SvgIcon, Text, MainButton, OutlinedButton, Progress } from '@src/components/common'
-import { BackupProgressProps } from '@src/hooks/backup'
-import { useTheme } from '@src/hooks/providers/ThemeProvider'
 
 type Props = {
   uploadProgress: BackupProgressProps

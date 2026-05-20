@@ -1,21 +1,12 @@
 import { TypedArrayEncoder } from '@credo-ts/core'
 import { DidCommConnectionRecord } from '@credo-ts/didcomm'
 import { StackScreenProps } from '@react-navigation/stack'
-import React, { ReactElement, useEffect, useRef, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { View, ScrollView, TouchableOpacity, Platform } from 'react-native'
-import Config from 'react-native-config'
-import { SafeAreaView } from 'react-native-safe-area-context'
-import Share, { ShareOptions } from 'react-native-share'
-
-import getStyles from './styles'
-
 import { ModalConfirmAction } from '@src/components'
-import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
-import { Text, ConnectionMainActions, SvgIcon, ModalLoading, OptionsList } from '@src/components/common'
+import { ConnectionMainActions, ModalLoading, OptionsList, SvgIcon, Text } from '@src/components/common'
 import { Option } from '@src/components/common/OptionsList'
+import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
 import { IS_IOS } from '@src/constants'
-import { useMobileAgent, useChats, useConnectionByParentConnectionId, useUserProfile } from '@src/hooks/agent'
+import { useChats, useConnectionByParentConnectionId, useMobileAgent, useUserProfile } from '@src/hooks/agent'
 import { deleteConnection } from '@src/hooks/agent/connections'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { useScrollSwipeDown } from '@src/hooks/useScrollSwipeDown'
@@ -32,6 +23,13 @@ import {
 import { markNewConnectionNotificationAsViewed } from '@src/utils/pushNotificationsUtils'
 import { screenHeight } from '@src/utils/responsiveUtils'
 import { toast } from '@src/utils/toast'
+import React, { ReactElement, useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { Platform, ScrollView, TouchableOpacity, View } from 'react-native'
+import Config from 'react-native-config'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import Share, { ShareOptions } from 'react-native-share'
+import getStyles from './styles'
 
 type confirmationTypes = 'deleteChat' | 'block' | 'unblock' | 'deleteConnection'
 export type WrapperProps = StackScreenProps<NavigationStackParams, 'ConnectionDetails'>
@@ -115,9 +113,7 @@ const BaseConnectionDetails = ({
     }
   }
 
-  const toggleBlock = async (
-    action: (agent: MobileAgent, record: DidCommConnectionRecord) => Promise<void>,
-  ) => {
+  const toggleBlock = async (action: (agent: MobileAgent, record: DidCommConnectionRecord) => Promise<void>) => {
     if (!agent) return
     setTimeout(
       async () => {
@@ -130,7 +126,7 @@ const BaseConnectionDetails = ({
           setBlockingConnection(false)
         }
       },
-      IS_IOS ? 600 : 0,
+      IS_IOS ? 600 : 0
     )
   }
 
@@ -217,7 +213,7 @@ const BaseConnectionDetails = ({
             ],
           },
           default: { title, url: invitationUrl, message: title, failOnCancel: false },
-        }),
+        })
       )
     } catch (error) {
       logError('Error sharing connection', error)
@@ -255,11 +251,7 @@ const BaseConnectionDetails = ({
           )}
           <View style={styles.nameContainer}>
             <Text style={styles.displayName}>{connectionName}</Text>
-            <ConnectionMainActions
-              navigation={navigation}
-              connectionId={connection.id}
-              includeDefaultActions={true}
-            />
+            <ConnectionMainActions navigation={navigation} connectionId={connection.id} includeDefaultActions={true} />
           </View>
           <OptionsList options={mainOptions} />
           {mainOptions.length > 0 && <View style={styles.divisor} />}

@@ -11,13 +11,7 @@ type Props = {
   onConfirmSecondary: (() => void) | undefined
 }
 
-const ConfirmChatDeletion: React.FC<Props> = ({
-  visible,
-  onClose,
-  onDeleteChat,
-  onConfirmSecondary,
-  onCancel,
-}) => {
+const ConfirmChatDeletion: React.FC<Props> = ({ visible, onClose, onDeleteChat, onConfirmSecondary, onCancel }) => {
   return (
     <ModalConfirmAction
       visible={visible}

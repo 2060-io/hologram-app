@@ -3,14 +3,6 @@ import {
   DidCommMediaSharingRole,
   DidCommMediaSharingState,
 } from '@2060.io/credo-ts-didcomm-media-sharing'
-import Realm from 'realm'
-
-import { getLocalizedPreview, getThumbnail } from '../preview'
-import { createChatEntry, findAllByAssociatedRecordId, updateChatEntry } from '../services/ChatEntryService'
-import { addUnread, findOrCreateChatThread } from '../services/ChatThreadService'
-
-import { getChatEntryByDidcommThreadId, getChatEntryTypeFromMimeType } from './utils'
-
 import {
   ChatEntryRole,
   ChatEntryState,
@@ -25,6 +17,11 @@ import {
   VoiceNoteMetadata,
 } from '@src/model'
 import { MobileAgent } from '@src/services/agent'
+import Realm from 'realm'
+import { getLocalizedPreview, getThumbnail } from '../preview'
+import { createChatEntry, findAllByAssociatedRecordId, updateChatEntry } from '../services/ChatEntryService'
+import { addUnread, findOrCreateChatThread } from '../services/ChatThreadService'
+import { getChatEntryByDidcommThreadId, getChatEntryTypeFromMimeType } from './utils'
 
 export const handleMediaSharingRecordChanges = async (options: {
   agent: MobileAgent
@@ -50,7 +47,7 @@ export const handleMediaSharingRecordChanges = async (options: {
       const { chatEntryRecord: relatedChatEntry, originMessage } = await getChatEntryByDidcommThreadId(
         agent,
         realm,
-        record.parentThreadId,
+        record.parentThreadId
       )
 
       relatedEntryProps = relatedChatEntry
@@ -72,10 +69,7 @@ export const handleMediaSharingRecordChanges = async (options: {
       chatThreadId: thread.id,
       type,
       role: record.role === DidCommMediaSharingRole.Receiver ? ChatEntryRole.Receiver : ChatEntryRole.Sender,
-      state:
-        record.state === DidCommMediaSharingState.MediaShared
-          ? ChatEntryState.Received
-          : ChatEntryState.Created,
+      state: record.state === DidCommMediaSharingState.MediaShared ? ChatEntryState.Received : ChatEntryState.Created,
       createdAt: (options.receivedAt ?? new Date()).getTime(),
       metadata,
       relatedEntryProps,
@@ -119,8 +113,7 @@ function getChatEntrySpecificData(record: DidCommMediaSharingRecord) {
     localPreviewFilePath: record.metadata.get('localPreviewFilePath') as string,
     mediaUploadState: record.metadata.get('mediaUploadState') as MediaUploadState,
     mediaUploadProgress: (record.metadata.get('mediaUploadProgress') as number) ?? 0,
-    mediaDownloadState:
-      (record.metadata.get('mediaDownloadState') as MediaDownloadState) ?? MediaDownloadState.Pending,
+    mediaDownloadState: (record.metadata.get('mediaDownloadState') as MediaDownloadState) ?? MediaDownloadState.Pending,
     mediaDownloadProgress: (record.metadata.get('mediaDownloadProgress') as number) ?? undefined,
   }
 

@@ -1,17 +1,14 @@
 import { ParamListBase } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
-import React, { useEffect, useMemo, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { View, FlatList, TouchableOpacity } from 'react-native'
-
-import SearchInput from '../SearchInput'
-
-import getStyles from './styles'
-
 import { CredentialMainInformation, HeaderTitle, SvgIcon, Text } from '@src/components/common'
 import { useCredentials } from '@src/hooks/agent/CredentialsProvider'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { getCredentialMainInfo } from '@src/services/agent/display'
+import React, { useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { FlatList, TouchableOpacity, View } from 'react-native'
+import SearchInput from '../SearchInput'
+import getStyles from './styles'
 
 type Props = {
   navigation: StackNavigationProp<ParamListBase>
@@ -59,7 +56,7 @@ const Credentials = ({ navigation, headerTitle, onPressCredential }: Props) => {
     return records
       .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
       .map(getCredentialMainInfo)
-      .filter(credential => {
+      .filter((credential) => {
         const credentialDisplayName = credential.schemaName ?? ''
         const credentialIssuerName = credential.issuer.name ?? ''
 

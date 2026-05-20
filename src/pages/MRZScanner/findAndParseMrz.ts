@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
-import { parse } from 'mrz'
 
 import { logWarn } from '@src/utils'
+import { parse } from 'mrz'
 
 const TD1_LINE_LONG = 30
 const TD2_LINE_LONG = 36
@@ -60,10 +60,8 @@ export const findAndParseMrz = (initialLines: string[]) => {
           } else {
             logWarn(
               `invalid passport: ${JSON.stringify(
-                parseResult.details
-                  .filter(item => item.valid === false)
-                  .map(item => `${item.label}: ${item.error}`),
-              )}`,
+                parseResult.details.filter((item) => item.valid === false).map((item) => `${item.label}: ${item.error}`)
+              )}`
             )
           }
         }
@@ -88,10 +86,8 @@ export const findAndParseMrz = (initialLines: string[]) => {
           } else {
             logWarn(
               `invalid passport: ${JSON.stringify(
-                parseResult.details
-                  .filter(item => item.valid === false)
-                  .map(item => `${item.label}: ${item.error}`),
-              )}`,
+                parseResult.details.filter((item) => item.valid === false).map((item) => `${item.label}: ${item.error}`)
+              )}`
             )
           }
         }

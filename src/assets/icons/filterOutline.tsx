@@ -1,7 +1,7 @@
 import React from 'react'
 import Svg, { Path, SvgProps } from 'react-native-svg'
 
-const FilterOutline: React.FC<SvgProps> = props => (
+const FilterOutline: React.FC<SvgProps> = (props) => (
   <Svg width={23.54} height={23.54} viewBox="0 0 23.54 23.54" {...props}>
     <Path data-name="Path 408" d="M0 0h23.54v23.54H0Z" fill="none" />
     <Path

@@ -1,14 +1,13 @@
-import React, { useContext, createContext, PropsWithChildren, useState, useEffect, useCallback } from 'react'
-import Config from 'react-native-config'
-
 import {
   CUSTOM_DEV_ENVS_PERSIST_KEY,
   DEV_ENVS_PERSIST_KEY,
-  getStorageData,
   DEVELOPER_MODE_ENABLED_PERSIST_KEY,
+  getStorageData,
   setStorageData,
 } from '@src/services/localStorage'
-import { DevEnvsObject, DevEnvObject, getIsDeveloperMode } from '@src/utils/developer'
+import { DevEnvObject, DevEnvsObject, getIsDeveloperMode } from '@src/utils/developer'
+import React, { createContext, PropsWithChildren, useCallback, useContext, useEffect, useState } from 'react'
+import Config from 'react-native-config'
 
 const defaultDevEnvs: DevEnvsObject = {
   MEDIATOR_PUBLIC_DID: Config.MEDIATOR_PUBLIC_DID as string,
@@ -19,12 +18,12 @@ const defaultDevEnvs: DevEnvsObject = {
 }
 
 const restoreMissingDevEnvs = (
-  persistedDevEnvs: DevEnvsObject,
+  persistedDevEnvs: DevEnvsObject
 ): { devEnvs: DevEnvsObject; needsToRestore: boolean } => {
-  const areMissingPersistedDevEnvs = Object.keys(defaultDevEnvs).some(key => !(key in persistedDevEnvs))
+  const areMissingPersistedDevEnvs = Object.keys(defaultDevEnvs).some((key) => !(key in persistedDevEnvs))
   if (!areMissingPersistedDevEnvs) return { devEnvs: persistedDevEnvs, needsToRestore: false }
   const newPersistedDevEnvs: DevEnvsObject = { ...persistedDevEnvs }
-  Object.keys(defaultDevEnvs).forEach(key => {
+  Object.keys(defaultDevEnvs).forEach((key) => {
     const thisKeyIsNotInPersistedEnvs = !(key in persistedDevEnvs)
     if (thisKeyIsNotInPersistedEnvs) {
       newPersistedDevEnvs[key as keyof DevEnvsObject] = defaultDevEnvs[key as keyof DevEnvsObject]

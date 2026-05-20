@@ -1,20 +1,18 @@
-import React from 'react'
-import { useTranslation } from 'react-i18next'
-import { ScrollView, View } from 'react-native'
-
-import Building from './Building'
-import Options from './Options'
-import PasswordDoesNotExists from './PasswordDoesNotExists'
-import { WalletBackupProps } from './WalletBackupProps'
-import getStyles from './styles'
-
-import { WalletBackupInfo, ModalConfirmAction } from '@src/components'
-import { Text, Switch, SvgIcon, MainButton } from '@src/components/common'
+import { ModalConfirmAction, WalletBackupInfo } from '@src/components'
+import { MainButton, SvgIcon, Switch, Text } from '@src/components/common'
 import { Option } from '@src/components/common/OptionsList'
 import { IS_ANDROID, IS_IOS } from '@src/constants'
 import { useBuildBackup } from '@src/hooks'
 import { BackupProgressProps } from '@src/hooks/backup'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import React from 'react'
+import { useTranslation } from 'react-i18next'
+import { ScrollView, View } from 'react-native'
+import Building from './Building'
+import Options from './Options'
+import PasswordDoesNotExists from './PasswordDoesNotExists'
+import getStyles from './styles'
+import { WalletBackupProps } from './WalletBackupProps'
 
 export const backupProgressInitialValues: BackupProgressProps = {
   progress: 0,
@@ -62,9 +60,7 @@ const BaseWalletBackup = ({
       iconName: 'password',
       text: t('settings.changePassword'),
       onPress: goToChangePassword,
-      rightContent: () => (
-        <SvgIcon name="chevronForward" width={18} height={18} fill={theme.colors.tertiaryText} />
-      ),
+      rightContent: () => <SvgIcon name="chevronForward" width={18} height={18} fill={theme.colors.tertiaryText} />,
     },
   ]
 

@@ -1,9 +1,7 @@
+import { useFetchServiceInfo } from '@src/hooks/useFetchServiceInfo'
 import React, { memo } from 'react'
-
 import DumbCredentialMainInformation from './DumbCredentialMainInformation'
 import { CredentialMainInformationProps } from './Pros'
-
-import { useFetchServiceInfo } from '@src/hooks/useFetchServiceInfo'
 
 const CredentialMainInformation = (props: CredentialMainInformationProps) => {
   const { isFetchingInfo, serviceInfo, failedFetchInfo } = useFetchServiceInfo({

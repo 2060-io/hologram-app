@@ -101,10 +101,7 @@ function updateAndroidStringsXml(filePath, appName) {
     return
   }
   let content = fs.readFileSync(filePath, 'utf8')
-  content = content.replace(
-    /<string name="app_name">.*<\/string>/,
-    `<string name="app_name">${appName}</string>`,
-  )
+  content = content.replace(/<string name="app_name">.*<\/string>/, `<string name="app_name">${appName}</string>`)
   fs.writeFileSync(filePath, content)
   console.log(`  Updated ${path.relative(ROOT, filePath)} → "${appName}"`)
 }
@@ -130,19 +127,19 @@ function updateAndroidColors() {
   if (brand.android.splashColor) {
     content = content.replace(
       /<color name="splashscreen_background">.*<\/color>/,
-      `<color name="splashscreen_background">${brand.android.splashColor}</color>`,
+      `<color name="splashscreen_background">${brand.android.splashColor}</color>`
     )
   }
   if (brand.android.splashColorDev) {
     content = content.replace(
       /<color name="splashscreen_background_dev">.*<\/color>/,
-      `<color name="splashscreen_background_dev">${brand.android.splashColorDev}</color>`,
+      `<color name="splashscreen_background_dev">${brand.android.splashColorDev}</color>`
     )
   }
   if (brand.android.splashColorStaging) {
     content = content.replace(
       /<color name="splashscreen_background_staging">.*<\/color>/,
-      `<color name="splashscreen_background_staging">${brand.android.splashColorStaging}</color>`,
+      `<color name="splashscreen_background_staging">${brand.android.splashColorStaging}</color>`
     )
   }
 
@@ -167,7 +164,7 @@ function updateAndroidBuildGradle() {
     // Also update resValue build_config_package in each flavor
     content = content.replace(
       /resValue\s+"string",\s*"build_config_package",\s*"[^"]+"/g,
-      `resValue "string", "build_config_package", "${brand.android.applicationId}"`,
+      `resValue "string", "build_config_package", "${brand.android.applicationId}"`
     )
     changed = true
   }
@@ -180,7 +177,7 @@ function updateAndroidBuildGradle() {
   if (changed) {
     fs.writeFileSync(buildGradle, content)
     console.log(
-      `  Updated build.gradle (applicationId: ${brand.android.applicationId || 'unchanged'}, namespace: ${brand.android.namespace || 'unchanged'})`,
+      `  Updated build.gradle (applicationId: ${brand.android.applicationId || 'unchanged'}, namespace: ${brand.android.namespace || 'unchanged'})`
     )
   }
 }
@@ -213,10 +210,7 @@ function updateIosPlist(filePath, displayName) {
   let content = fs.readFileSync(filePath, 'utf8')
 
   // Update CFBundleDisplayName
-  content = content.replace(
-    /(<key>CFBundleDisplayName<\/key>\s*<string>).*?(<\/string>)/,
-    `$1${displayName}$2`,
-  )
+  content = content.replace(/(<key>CFBundleDisplayName<\/key>\s*<string>).*?(<\/string>)/, `$1${displayName}$2`)
 
   // Update permission strings using templates (idempotent — always writes full value)
   const permissionTemplates = {
@@ -225,8 +219,7 @@ function updateIosPlist(filePath, displayName) {
     NSFaceIDUsageDescription: '{appName} uses Face ID to protect your wallet.',
     NSMicrophoneUsageDescription:
       '{appName} uses your microphone to record voice notes you can share with your connections. These notes are end-to-end encrypted.',
-    NSPhotoLibraryAddUsageDescription:
-      '{appName} accesses gallery to save photos and videos you have received.',
+    NSPhotoLibraryAddUsageDescription: '{appName} accesses gallery to save photos and videos you have received.',
     NSPhotoLibraryUsageDescription:
       '{appName} accesses gallery to let you pick pictures and videos to share with your connections. This data will be end-to-end encrypted',
   }
@@ -239,10 +232,7 @@ function updateIosPlist(filePath, displayName) {
   }
 
   // Update NSUbiquitousContainerName
-  content = content.replace(
-    /(<key>NSUbiquitousContainerName<\/key>\s*<string>).*?(<\/string>)/,
-    `$1${brand.appName}$2`,
-  )
+  content = content.replace(/(<key>NSUbiquitousContainerName<\/key>\s*<string>).*?(<\/string>)/, `$1${brand.appName}$2`)
 
   fs.writeFileSync(filePath, content)
   console.log(`  Updated ${path.relative(ROOT, filePath)} → "${displayName}"`)

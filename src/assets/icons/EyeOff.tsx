@@ -1,7 +1,7 @@
 import React from 'react'
 import Svg, { Path, SvgProps } from 'react-native-svg'
 
-const EyeOff: React.FC<SvgProps> = props => (
+const EyeOff: React.FC<SvgProps> = (props) => (
   <Svg viewBox="0 0 512 512" {...props}>
     <Path
       fill={props.fill}

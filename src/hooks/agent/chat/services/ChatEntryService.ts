@@ -1,17 +1,8 @@
 import { DidCommMessageReceipt, MessageState } from '@2060.io/credo-ts-didcomm-receipts'
 import { utils } from '@credo-ts/core'
+import { ChatEntry, ChatEntryRole, ChatEntryState, ChatEntryType, ChatThread, RelatedEntryProps } from '@src/model'
 import Realm from 'realm'
-
 import { updateThread, updateThreadIfNeeded } from './ChatThreadService'
-
-import {
-  ChatEntry,
-  ChatEntryState,
-  RelatedEntryProps,
-  ChatThread,
-  ChatEntryType,
-  ChatEntryRole,
-} from '@src/model'
 
 interface ChatEntryBaseProps {
   chatThreadId: string
@@ -85,7 +76,7 @@ export function updateChatEntry(
     associatedMessageId?: string
     associatedRecordId?: string
     metadata?: Record<string, unknown>
-  },
+  }
 ) {
   const { recordId, state, associatedMessageId, associatedRecordId, metadata } = options
   const chatEntryRecord = realm.objectForPrimaryKey(ChatEntry, recordId)
@@ -113,12 +104,7 @@ export function updateChatEntry(
 
 export function addReceiptToRelatedEntries(realm: Realm, receipt: DidCommMessageReceipt) {
   const validNewStatesForCurrentState: Record<ChatEntryState, ChatEntryState[]> = {
-    created: [
-      ChatEntryState.Deleted,
-      ChatEntryState.Received,
-      ChatEntryState.Submitted,
-      ChatEntryState.Viewed,
-    ],
+    created: [ChatEntryState.Deleted, ChatEntryState.Received, ChatEntryState.Submitted, ChatEntryState.Viewed],
     submitted: [ChatEntryState.Received, ChatEntryState.Viewed, ChatEntryState.Deleted],
     received: [ChatEntryState.Viewed, ChatEntryState.Deleted],
     viewed: [ChatEntryState.Deleted],
@@ -140,9 +126,7 @@ export function addReceiptToRelatedEntries(realm: Realm, receipt: DidCommMessage
       const entryReceipts = entry.receipts ? entry.receipts : []
 
       // Check if there is already a receipt for this state
-      const existingReceipt = entryReceipts.find(
-        item => item.state === receiptToChatEntryStateMap[receipt.state],
-      )
+      const existingReceipt = entryReceipts.find((item) => item.state === receiptToChatEntryStateMap[receipt.state])
       if (!existingReceipt) {
         entryReceipts.push({
           timestamp: receipt.timestamp.getTime(),
@@ -153,7 +137,7 @@ export function addReceiptToRelatedEntries(realm: Realm, receipt: DidCommMessage
         // received and viewed at the same time
         if (
           receipt.state === MessageState.Viewed &&
-          !entryReceipts.find(item => item.state === ChatEntryState.Received)
+          !entryReceipts.find((item) => item.state === ChatEntryState.Received)
         ) {
           entryReceipts.push({ timestamp: receipt.timestamp.getTime(), state: ChatEntryState.Received })
         }
@@ -184,32 +168,25 @@ export function updateChatEntryMetadata(realm: Realm, recordId: string, metadata
 
 // TODO: optimize query
 export function findAllByAssociatedMessageId(realm: Realm, associatedMessageId: string): ChatEntry[] {
-  return realm.objects(ChatEntry).filter(item => item.associatedMessageId === associatedMessageId)
+  return realm.objects(ChatEntry).filter((item) => item.associatedMessageId === associatedMessageId)
 }
 
 // TODO: optimize query
-export function findAllDidcommThreadId(
-  realm: Realm,
-  didcommThreadId: string,
-  type?: ChatEntryType,
-): ChatEntry[] {
+export function findAllDidcommThreadId(realm: Realm, didcommThreadId: string, type?: ChatEntryType): ChatEntry[] {
   return realm
     .objects(ChatEntry)
-    .filter(
-      item => item.didcommThreadId === didcommThreadId && (type !== undefined ? item.type === type : true),
-    )
+    .filter((item) => item.didcommThreadId === didcommThreadId && (type !== undefined ? item.type === type : true))
 }
 
 // TODO: optimize query
 export function findAllByAssociatedRecordId(
   realm: Realm,
   associatedRecordId: string,
-  type?: ChatEntryType,
+  type?: ChatEntryType
 ): ChatEntry[] {
   return realm
     .objects(ChatEntry)
     .filter(
-      item =>
-        item.associatedRecordId === associatedRecordId && (type !== undefined ? item.type === type : true),
+      (item) => item.associatedRecordId === associatedRecordId && (type !== undefined ? item.type === type : true)
     )
 }

@@ -1,14 +1,5 @@
 import { W3cCredentialRepository } from '@credo-ts/core'
 import { DidCommProofExchangeRecord, DidCommProofState } from '@credo-ts/didcomm'
-import Realm from 'realm'
-
-import {
-  createChatEntry,
-  findAllByAssociatedRecordId,
-  updateChatEntryMetadata,
-} from '../services/ChatEntryService'
-import { addUnread, findOrCreateChatThread } from '../services/ChatThreadService'
-
 import {
   ChatEntryRole,
   ChatEntryState,
@@ -18,15 +9,18 @@ import {
   VPResponsePresentedCredential,
 } from '@src/model'
 import { MobileAgent } from '@src/services/agent'
-import { getDidCommPresentationDisplayMetadata } from '@src/services/agent/RecordMetadata'
 import { getCredentialMainInfo, getPresentationRequestForDisplay } from '@src/services/agent/display'
 import {
   getCredentialRevealedAttributes,
   proposalGetCredentialAttributes,
   proposalGetCredentialInfo,
 } from '@src/services/agent/proofs'
+import { getDidCommPresentationDisplayMetadata } from '@src/services/agent/RecordMetadata'
 import { logError } from '@src/utils'
 import { getConnectionDisplayName, getConnectionDisplayPicture } from '@src/utils/connectionUtils'
+import Realm from 'realm'
+import { createChatEntry, findAllByAssociatedRecordId, updateChatEntryMetadata } from '../services/ChatEntryService'
+import { addUnread, findOrCreateChatThread } from '../services/ChatThreadService'
 
 export const handleProofExchangeRecordChanges = async (options: {
   agent: MobileAgent
@@ -184,9 +178,7 @@ export const handleProofExchangeRecordChanges = async (options: {
     const [vpResponseChatEntry] = findAllByAssociatedRecordId(realm, proofRecord.id, ChatEntryType.VPResponse)
     if (vpResponseChatEntry) {
       const currentMetadata = vpResponseChatEntry.metadata as VPResponseMetadata
-      const presentedCredentials = JSON.parse(
-        currentMetadata.presentedCredentials,
-      ) as VPResponsePresentedCredential[]
+      const presentedCredentials = JSON.parse(currentMetadata.presentedCredentials) as VPResponsePresentedCredential[]
       if (!presentedCredentials.length) return
       const attributes = await getCredentialRevealedAttributes({ agent, proofRecordId: proofRecord.id })
       const presentedCredentialInfoUpdated: VPResponsePresentedCredential = {

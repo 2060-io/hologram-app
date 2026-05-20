@@ -1,13 +1,11 @@
-import React, { memo } from 'react'
-import { View, TouchableOpacity } from 'react-native'
-
-import { ConnectionItem } from './ConnectionListProps'
-import getStyles from './styles'
-
 import { Avatar, SvgIcon, Text, VerifiedIcon } from '@src/components/common'
 import { useFetchServiceInfo } from '@src/hooks'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { log } from '@src/utils'
+import React, { memo } from 'react'
+import { TouchableOpacity, View } from 'react-native'
+import { ConnectionItem } from './ConnectionListProps'
+import getStyles from './styles'
 
 type Props = {
   onPress: () => void
@@ -18,14 +16,7 @@ type Props = {
   isLastInSection: boolean
 }
 
-const Connection = ({
-  onPress,
-  onPressRightSide,
-  connection,
-  isSearchingMode,
-  isSelected,
-  isLastInSection,
-}: Props) => {
+const Connection = ({ onPress, onPressRightSide, connection, isSearchingMode, isSelected, isLastInSection }: Props) => {
   const theme = useTheme()
   const styles = getStyles(theme)
   log('connection.invitationDid', connection.invitationDid, ' isService: ', connection.isService)

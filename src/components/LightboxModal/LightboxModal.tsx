@@ -1,12 +1,9 @@
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import React, { useRef } from 'react'
 import { GestureResponderEvent, Pressable, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-
 import { Modal } from '../common'
-
 import getStyles from './styles'
-
-import { useTheme } from '@src/hooks/providers/ThemeProvider'
 
 const DIFF_VALUE_TO_DETECT_SWIPE_DOWN = 60
 
@@ -39,13 +36,7 @@ const LightboxModal = ({ visible, children, closeModal, renderHeader }: Props) =
   }
 
   return (
-    <Modal
-      animationType="fade"
-      transparent
-      statusBarTranslucent={false}
-      visible={visible}
-      onRequestClose={closeModal}
-    >
+    <Modal animationType="fade" transparent statusBarTranslucent={false} visible={visible} onRequestClose={closeModal}>
       <Pressable style={styles.container} onTouchStart={onTouchStart} onTouchMove={detectSwipeDown}>
         <View style={{ ...styles.headerContainer, top: insets.top }}>{renderHeader()}</View>
         <View style={styles.contentContainer}>{children}</View>

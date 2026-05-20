@@ -1,19 +1,16 @@
 import { DidCommConnectionService } from '@credo-ts/didcomm'
 import { fetch as NetInfo } from '@react-native-community/netinfo'
-import { useEffect, useState, useTransition } from 'react'
-import { useTranslation } from 'react-i18next'
-
-import { getServiceInfo as getServiceInfoApi } from '../services/trustResolution'
-
-import { useMobileAgent } from './agent/MobileAgentProvider'
-import { updateThreadFromServiceInfo } from './agent/chat/services'
-import { useLocalRealm } from './providers/RealmProvider'
-
 import { ServiceInfo } from '@src/model'
 import { getInCacheServiceInfo, saveInCacheServiceInfo } from '@src/services/agent/cache'
 import { logError } from '@src/utils'
 import { isOlderThan24Hours } from '@src/utils/dateUtils'
 import { toast } from '@src/utils/toast'
+import { useEffect, useState, useTransition } from 'react'
+import { useTranslation } from 'react-i18next'
+import { getServiceInfo as getServiceInfoApi } from '../services/trustResolution'
+import { updateThreadFromServiceInfo } from './agent/chat/services'
+import { useMobileAgent } from './agent/MobileAgentProvider'
+import { useLocalRealm } from './providers/RealmProvider'
 
 interface UseFetchServiceInfoOptions {
   did?: string
@@ -37,10 +34,7 @@ interface UseFetchServiceInfoOptions {
  * @returns Object with the latest known ServiceInfo or undefined, loading and error state flags,
  * and `getServiceInfo` function to trigger a manual refresh.
  */
-export const useFetchServiceInfo = ({
-  did,
-  forceFetchIfNotInCache = true,
-}: UseFetchServiceInfoOptions = {}) => {
+export const useFetchServiceInfo = ({ did, forceFetchIfNotInCache = true }: UseFetchServiceInfoOptions = {}) => {
   const { t } = useTranslation()
   const { agent } = useMobileAgent()
   const { realm } = useLocalRealm()

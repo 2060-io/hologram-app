@@ -1,15 +1,13 @@
-import React from 'react'
-
 import {
   ConnectionMainActionsProps,
   InitialConnectionMainActionsProps,
 } from '@src/components/common/ConnectionMainActions/Props'
 import { useConnectionById } from '@src/hooks/agent/ConnectionsProvider'
 import { isTerminated } from '@src/utils/connectionUtils'
+import React from 'react'
 
 export const withRenderConnectionMainActions =
-  (Component: React.ComponentType<ConnectionMainActionsProps>) =>
-  (props: InitialConnectionMainActionsProps) => {
+  (Component: React.ComponentType<ConnectionMainActionsProps>) => (props: InitialConnectionMainActionsProps) => {
     const { connectionId } = props
     const connection = useConnectionById(connectionId)
     if (!connection) return null

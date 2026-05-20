@@ -1,8 +1,4 @@
 import { TypedArrayEncoder, utils } from '@credo-ts/core'
-import Realm, { List } from 'realm'
-
-import { walletDirectoryPath } from './RNFS'
-
 import { getChatEntryTypeFromMimeType } from '@src/hooks/agent/chat/recordChangeHandlers/utils'
 import {
   CacheRecord,
@@ -19,6 +15,8 @@ import {
 } from '@src/model'
 import { InvitationState } from '@src/model/InvitationState'
 import { CredentialMainInfo } from '@src/services/agent/display'
+import Realm, { List } from 'realm'
+import { walletDirectoryPath } from './RNFS'
 
 const CURRENT_REALM_SCHEMA_VERSION = 19
 
@@ -50,17 +48,14 @@ const onMigration = (oldRealm: Realm, newRealm: Realm) => {
 
     if (oldRealm.schemaVersion < 5) {
       newThreads[i].subthreads = new List()
-      oldThreads
-        .filtered(`parentId == '${newThreads[i].id}'`)
-        .forEach(item => newThreads[i].subthreads.push(item))
+      oldThreads.filtered(`parentId == '${newThreads[i].id}'`).forEach((item) => newThreads[i].subthreads.push(item))
     }
 
     if (oldRealm.schemaVersion < 6) {
       const entries = oldRealm
         .objects<ChatEntry>('ChatEntryRealmObject')
         .filtered(`chatThreadId == '${newThreads[i].id}' SORT(createdAt DESC)`)
-      newThreads[i].lastChatEntryState =
-        entries[0].role === ChatEntryRole.Sender ? entries[0].state : undefined
+      newThreads[i].lastChatEntryState = entries[0].role === ChatEntryRole.Sender ? entries[0].state : undefined
     }
     if (oldRealm.schemaVersion < 7) {
       newThreads[i].active = true
@@ -93,7 +88,7 @@ const onMigration = (oldRealm: Realm, newRealm: Realm) => {
   // Upgrade media type to the specific equivalent
   if (oldRealm.schemaVersion < 10) {
     const oldChatEntries = oldRealm.objects<ChatEntry>(
-      oldRealm.schemaVersion >= 9 ? 'ChatEntry' : 'ChatEntryRealmObject',
+      oldRealm.schemaVersion >= 9 ? 'ChatEntry' : 'ChatEntryRealmObject'
     )
     const newChatEntries = newRealm.objects<ChatEntry>('ChatEntry')
 
@@ -111,7 +106,7 @@ const onMigration = (oldRealm: Realm, newRealm: Realm) => {
   // Upgrade connection invitation states
   if (oldRealm.schemaVersion < 11) {
     const oldChatEntries = oldRealm.objects<ChatEntry>(
-      oldRealm.schemaVersion >= 9 ? 'ChatEntry' : 'ChatEntryRealmObject',
+      oldRealm.schemaVersion >= 9 ? 'ChatEntry' : 'ChatEntryRealmObject'
     )
     const newChatEntries = newRealm.objects<ChatEntry>('ChatEntry')
 
@@ -146,7 +141,7 @@ const onMigration = (oldRealm: Realm, newRealm: Realm) => {
 
   if (oldRealm.schemaVersion < 15) {
     const oldChatEntries = oldRealm.objects<ChatEntry>(
-      oldRealm.schemaVersion >= 9 ? 'ChatEntry' : 'ChatEntryRealmObject',
+      oldRealm.schemaVersion >= 9 ? 'ChatEntry' : 'ChatEntryRealmObject'
     )
     const newChatEntries = newRealm.objects<ChatEntry>('ChatEntry')
 
@@ -177,7 +172,7 @@ const onMigration = (oldRealm: Realm, newRealm: Realm) => {
 
   if (oldRealm.schemaVersion < 16) {
     const oldChatEntries = oldRealm.objects<ChatEntry>(
-      oldRealm.schemaVersion >= 9 ? 'ChatEntry' : 'ChatEntryRealmObject',
+      oldRealm.schemaVersion >= 9 ? 'ChatEntry' : 'ChatEntryRealmObject'
     )
     const newChatEntries = newRealm.objects<ChatEntry>('ChatEntry')
 
@@ -191,7 +186,7 @@ const onMigration = (oldRealm: Realm, newRealm: Realm) => {
   }
   if (oldRealm.schemaVersion < 17) {
     const oldChatEntries = oldRealm.objects<ChatEntry>(
-      oldRealm.schemaVersion >= 9 ? 'ChatEntry' : 'ChatEntryRealmObject',
+      oldRealm.schemaVersion >= 9 ? 'ChatEntry' : 'ChatEntryRealmObject'
     )
     const newChatEntries = newRealm.objects<ChatEntry>('ChatEntry')
     for (let i = 0; i < oldChatEntries.length; i++) {
@@ -221,7 +216,7 @@ const onMigration = (oldRealm: Realm, newRealm: Realm) => {
       newUploadTasks[i].mediaRecordIds = oldUploadTask[i].mediaRecordIds
       newUploadTasks[i].state = oldUploadTask[i].state
       if (oldUploadTask[i].chunks.length) {
-        const newChunks = oldUploadTask[i].chunks.map(item => {
+        const newChunks = oldUploadTask[i].chunks.map((item) => {
           const chunk = JSON.parse(item) as { id: string; filePath: string; state: 'pending' | 'finished' }
           return chunk.filePath
         })

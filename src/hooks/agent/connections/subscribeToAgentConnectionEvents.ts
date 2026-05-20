@@ -14,7 +14,12 @@ import {
   DidCommDiscoverFeaturesDisclosureReceivedEvent,
   DidCommDiscoverFeaturesEventTypes,
 } from '@credo-ts/didcomm'
-
+import { AgentActionQueueSingleton } from '@src/services/AgentActionQueueSingleton'
+import AgentSingleton from '@src/services/AgentSingleton'
+import RealmSingleton from '@src/services/RealmSingleton'
+import { supportsUserProfile } from '@src/utils/connectionUtils'
+import { language } from '@src/utils/language'
+import { log } from '@src/utils/log'
 import { AgentActionType } from '../actions/AgentAction'
 import {
   AcceptConnectionRequestParameters,
@@ -22,13 +27,6 @@ import {
   QueryServiceFeaturesParameters,
 } from '../actions/types'
 import { findOrCreateChatThread } from '../chat/services'
-
-import { AgentActionQueueSingleton } from '@src/services/AgentActionQueueSingleton'
-import AgentSingleton from '@src/services/AgentSingleton'
-import RealmSingleton from '@src/services/RealmSingleton'
-import { supportsUserProfile } from '@src/utils/connectionUtils'
-import { language } from '@src/utils/language'
-import { log } from '@src/utils/log'
 
 export function subscribeToAgentConnectionEvents(context: AgentContext) {
   const mobileAgentInstance = AgentSingleton.instance
@@ -46,7 +44,7 @@ export function subscribeToAgentConnectionEvents(context: AgentContext) {
     const userProfileApi = context.dependencyManager.resolve(DidCommUserProfileApi)
 
     const features = event.payload.disclosures
-    features.forEach(item => connection.metadata.add(`features-${item.type}`, { [item.id]: item.toJSON() }))
+    features.forEach((item) => connection.metadata.add(`features-${item.type}`, { [item.id]: item.toJSON() }))
 
     await connectionService.update(context, connection)
 

@@ -1,5 +1,9 @@
+import { Buffer } from 'buffer'
+
+global.Buffer = Buffer
+
 import 'text-encoding'
-import { setBackgroundMessageHandler, getMessaging } from '@react-native-firebase/messaging'
+import { getMessaging, setBackgroundMessageHandler } from '@react-native-firebase/messaging'
 import { AppRegistry } from 'react-native'
 import { FileLogger } from 'react-native-file-logger'
 
@@ -29,4 +33,4 @@ FileLogger.configure({
   formatter,
 })
   .then(() => log('react-native-file-logger setup!'))
-  .catch(error => logError(`An error has occurred configuring react-native-file-logger: ${error}`))
+  .catch((error) => logError(`An error has occurred configuring react-native-file-logger: ${error}`))

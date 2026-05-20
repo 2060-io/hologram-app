@@ -1,9 +1,7 @@
-import Realm from 'realm'
-
-import { createAndStoreEncryptedKey, KeyChainService, retrieveEncryptedKey } from './keys'
-
 import { log, logError } from '@src/utils'
 import { getRealmConfig } from '@src/utils/realm'
+import Realm from 'realm'
+import { createAndStoreEncryptedKey, KeyChainService, retrieveEncryptedKey } from './keys'
 
 export class RealmSingleton {
   private static realmInstance: RealmSingleton
@@ -11,10 +9,10 @@ export class RealmSingleton {
   private realm: Realm | null = null
 
   static get instance() {
-    if (!this.realmInstance) {
-      this.realmInstance = new RealmSingleton()
+    if (!RealmSingleton.realmInstance) {
+      RealmSingleton.realmInstance = new RealmSingleton()
     }
-    return this.realmInstance
+    return RealmSingleton.realmInstance
   }
 
   async openRealmIfIsClosed(realmConfig?: Realm.Configuration) {

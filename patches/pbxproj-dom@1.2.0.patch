@@ -1,7 +1,7 @@
-diff --git a/node_modules/pbxproj-dom/parser.js b/node_modules/pbxproj-dom/parser.js
+diff --git a/parser.js b/parser.js
 index 397475d..b458289 100644
---- a/node_modules/pbxproj-dom/parser.js
-+++ b/node_modules/pbxproj-dom/parser.js
+--- a/parser.js
++++ b/parser.js
 @@ -174,18 +174,20 @@ function peg$parse(input, options) {
        peg$c30 = peg$literalExpectation("\\'", false),
        peg$c31 = "\\n",
@@ -181,10 +181,10 @@ index 397475d..b458289 100644
            s0 = s1;
          } else {
            peg$currPos = s0;
-diff --git a/node_modules/pbxproj-dom/parser.pegjs b/node_modules/pbxproj-dom/parser.pegjs
+diff --git a/parser.pegjs b/parser.pegjs
 index a9c49b4..329921a 100644
---- a/node_modules/pbxproj-dom/parser.pegjs
-+++ b/node_modules/pbxproj-dom/parser.pegjs
+--- a/parser.pegjs
++++ b/parser.pegjs
 @@ -11,7 +11,7 @@ List = s1:Space "(" content:(Value Space ",")* s2:Space ")" { return new ast.Lis
  // Id used to be [a-zA-Z0-9\/\\_]* but characters such as '-', '.', '$' keep breaking the parser.
  Identifier = s1:Space id:$[^(){} \t\n\r=;,]* { return new ast.Identifier(s1, id); }

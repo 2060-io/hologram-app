@@ -1,4 +1,4 @@
-import { ActionMenu, ActionMenuRole, ActionMenuRecord } from '@credo-ts/action-menu'
+import { ActionMenu, ActionMenuRecord, ActionMenuRole } from '@credo-ts/action-menu'
 import { useEffect, useState } from 'react'
 
 import { useMobileAgent } from './MobileAgentProvider'
@@ -34,20 +34,20 @@ export const useActionMenu = (options: ActionMenuQueryOptions) => {
 
   useEffect(() => {
     if (!state.loading) {
-      const actionMenuAdded$ = recordsAddedByType(agent, ActionMenuRecord).subscribe(record => {
+      const actionMenuAdded$ = recordsAddedByType(agent, ActionMenuRecord).subscribe((record) => {
         if (record.connectionId === options.connectionId) {
           setState({ loading: state.loading, menu: record.menu })
         }
       })
 
-      const actionMenuUpdated$ = recordsUpdatedByType(agent, ActionMenuRecord).subscribe(record => {
+      const actionMenuUpdated$ = recordsUpdatedByType(agent, ActionMenuRecord).subscribe((record) => {
         if (record.connectionId === options.connectionId) {
           setState({ loading: state.loading, menu: record.menu })
         }
       })
 
       // This should not happen
-      const actionMenuRemoved$ = recordsRemovedByType(agent, ActionMenuRecord).subscribe(record => {
+      const actionMenuRemoved$ = recordsRemovedByType(agent, ActionMenuRecord).subscribe((record) => {
         if (record.connectionId === options.connectionId) {
           setState({ loading: state.loading, menu: undefined })
         }

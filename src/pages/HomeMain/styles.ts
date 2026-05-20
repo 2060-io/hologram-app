@@ -1,7 +1,6 @@
-import { StyleSheet } from 'react-native'
-
 import { AppTheme } from '@src/styles/types'
 import { heightPercentageToDP } from '@src/utils/responsiveUtils'
+import { StyleSheet } from 'react-native'
 
 const styles = (theme: AppTheme) =>
   StyleSheet.create({

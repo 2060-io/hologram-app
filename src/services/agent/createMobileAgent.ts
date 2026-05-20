@@ -1,11 +1,9 @@
-import { InitConfig, AgentDependencies, DependencyManager } from '@credo-ts/core'
+import { AgentDependencies, DependencyManager, InitConfig } from '@credo-ts/core'
 import { DidCommMediatorPickupStrategy } from '@credo-ts/didcomm'
-
-import { MobileAgent, getMobileAgentModules } from './MobileAgent'
+import { DidCommVersion } from '@src/utils/developer'
+import { getMobileAgentModules, MobileAgent } from './MobileAgent'
 import { DidCommOutOfBandInvitationHandler } from './oob/OutOfBandInvitationHandler'
 import { DidCommOutOfBandInvitationV2Handler } from './oob/OutOfBandInvitationV2Handler'
-
-import { DidCommVersion } from '@src/utils/developer'
 
 export const createMobileAgent = (
   options: {
@@ -17,7 +15,7 @@ export const createMobileAgent = (
     }
     dependencies: AgentDependencies
   },
-  dependencyManager?: DependencyManager,
+  dependencyManager?: DependencyManager
 ) => {
   const agent = new MobileAgent(
     {
@@ -29,7 +27,7 @@ export const createMobileAgent = (
         indyVDRProxyBaseUrl: options.indyVDRProxyBaseUrl,
       }),
     },
-    dependencyManager,
+    dependencyManager
   )
 
   agent.didcomm.registerMessageHandlers([

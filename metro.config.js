@@ -34,9 +34,7 @@ const config = {
       http: emptyShim,
       url: emptyShim,
       util: emptyShim,
-      '@digitalcredentials/open-badges-context': require.resolve(
-        '@digitalcredentials/open-badges-context/js/index.js',
-      ),
+      '@digitalcredentials/open-badges-context': require.resolve('@digitalcredentials/open-badges-context/js/index.js'),
     },
   },
 }

@@ -34,11 +34,7 @@ interface FileUploadDownloadInterface {
   retryMediaUpload: (mediaRecordId: string) => void
   downloadMediaFile: (mediaRecordId: string) => Promise<void>
   automaticDownloadValues: AutomaticDownloadTypes
-  changeAutomaticDownloadOption: (
-    key: keyof AutomaticDownloadTypes,
-    value: string,
-    callback: () => void,
-  ) => void
+  changeAutomaticDownloadOption: (key: keyof AutomaticDownloadTypes, value: string, callback: () => void) => void
 }
 
 export const FileUploadDownloadContext = createContext<FileUploadDownloadInterface | undefined>(undefined)

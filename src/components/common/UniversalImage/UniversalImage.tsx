@@ -5,8 +5,7 @@ import { NumberProp, SvgUri } from 'react-native-svg'
 
 const isSvgUri = (uri?: string) => uri?.endsWith('.svg') || uri?.includes('data:image/svg+xml')
 
-const isJpeg2000DataUrl = (uri?: string) =>
-  uri?.includes('data:image/jp2') || uri?.includes('data:image/jpeg2000')
+const isJpeg2000DataUrl = (uri?: string) => uri?.includes('data:image/jp2') || uri?.includes('data:image/jpeg2000')
 
 type Props = ImageProps & {
   svgWidth?: NumberProp

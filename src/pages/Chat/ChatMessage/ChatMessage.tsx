@@ -1,16 +1,14 @@
+import { ChatEntryType, SystemMessageMetadata } from '@src/model'
+import { MessageProps } from '@src/pages/Chat/ChatMessage/Props'
+import { dateToString } from '@src/utils/dateUtils'
 import React, { memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
-
 import BaseSystemMessageView from '../BaseSystemMessageView'
 import DateByTimeRangeView from '../DateByTimeRangeView'
 import { MessageCustomView } from '../MessageCustomView'
 import SystemMessage from '../SystemMessage'
 import { chatEntryEqual } from '../utils'
-
-import { ChatEntryType, SystemMessageMetadata } from '@src/model'
-import { MessageProps } from '@src/pages/Chat/ChatMessage/Props'
-import { dateToString } from '@src/utils/dateUtils'
 
 const ChatMessage = (props: MessageProps) => {
   const { t } = useTranslation()
@@ -49,8 +47,7 @@ export default memo(ChatMessage, (prevProps, nextProps) => {
   const nextMessageTime = dateToString(nextChatEntry?.createdAt, 'HH:mm')
   const nextMessageHasDifferentTime = currentMessageTime !== nextMessageTime
   const arePropsEqual =
-    chatEntryEqual(currentChatEntry, nextChatEntry) &&
-    prevProps.nextMessage?.role === nextProps.nextMessage?.role
+    chatEntryEqual(currentChatEntry, nextChatEntry) && prevProps.nextMessage?.role === nextProps.nextMessage?.role
   const staySame = arePropsEqual && nextMessageHasDifferentTime
   return staySame
 })
