@@ -32,6 +32,9 @@ patchedDependencies:
   '@robinbobin/react-native-google-drive-api-wrapper@1.2.4':
     hash: b1a56c4240146a667be266b1a781e3c8a1253affca4f03472a1e0e3ea18c825e
     path: patches/@robinbobin__react-native-google-drive-api-wrapper@1.2.4.patch
+  '@scure/base':
+    hash: ec03745112fc6c8efaa5f1927af3840d0d928bbf9ac6bfd1e3b3b66ceb4ed6dc
+    path: patches/@scure__base.patch
   '@simform_solutions/react-native-audio-waveform@2.1.6':
     hash: b9ce5b5fd171a7f4af675188c27d9b908e039e91f825c1ed156d625ceeb234dc
     path: patches/@simform_solutions__react-native-audio-waveform@2.1.6.patch
@@ -263,8 +266,8 @@ importers:
         specifier: 5.0.12
         version: 5.0.12(react-native@0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.1.0)(react@19.1.0)(utf-8-validate@5.0.10))(react@19.1.0)
       react-native-eid-reader:
-        specifier: npm:@2060.io/react-native-eid-reader@0.3.0
-        version: '@2060.io/react-native-eid-reader@0.3.0(react-native@0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.1.0)(react@19.1.0)(utf-8-validate@5.0.10))(react@19.1.0)'
+        specifier: npm:@2060.io/react-native-eid-reader@0.3.1
+        version: '@2060.io/react-native-eid-reader@0.3.1(react-native@0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.1.0)(react@19.1.0)(utf-8-validate@5.0.10))(react@19.1.0)'
       react-native-file-logger:
         specifier: 0.7.2
         version: 0.7.2(react-native@0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.1.0)(react@19.1.0)(utf-8-validate@5.0.10))(react@19.1.0)
@@ -494,8 +497,8 @@ packages:
       '@credo-ts/core': 0.7.1-pr-2704-20260520142741
       '@credo-ts/didcomm': 0.7.1-pr-2704-20260520142741
 
-  '@2060.io/react-native-eid-reader@0.3.0':
-    resolution: {integrity: sha512-L+/+7gxsaBdqWpphInK3RW16TQ2AFxu5lFusSKgB7wQgU59lOPwaD527Ty0KnEx5vv+O3y9TCZ9zCd9C22K1Wg==}
+  '@2060.io/react-native-eid-reader@0.3.1':
+    resolution: {integrity: sha512-umRbDFFpsgwbYcNGnrcSk367ZLXp7AhHV/FpXbWmU+ri/NzOsrw65XB1hM8Vfb278CQeeUZuVxS4u5im+zKlmA==}
     peerDependencies:
       react: 19.1.0
       react-native: '*'
@@ -7619,7 +7622,7 @@ snapshots:
       rxjs: 7.8.2
       tsyringe: 4.10.0
 
-  '@2060.io/react-native-eid-reader@0.3.0(react-native@0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.1.0)(react@19.1.0)(utf-8-validate@5.0.10))(react@19.1.0)':
+  '@2060.io/react-native-eid-reader@0.3.1(react-native@0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.1.0)(react@19.1.0)(utf-8-validate@5.0.10))(react@19.1.0)':
     dependencies:
       react: 19.1.0
       react-native: 0.83.6(@babel/core@7.29.0)(@react-native-community/cli@20.0.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.83.6(@babel/core@7.29.0)(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.1.0)(react@19.1.0)(utf-8-validate@5.0.10)
@@ -8860,7 +8863,7 @@ snapshots:
       '@peculiar/asn1-schema': 2.7.0
       '@peculiar/asn1-x509': 2.7.0
       '@peculiar/x509': 1.14.3
-      '@scure/base': 2.2.0
+      '@scure/base': 2.2.0(patch_hash=ec03745112fc6c8efaa5f1927af3840d0d928bbf9ac6bfd1e3b3b66ceb4ed6dc)
       '@sd-jwt/core': 0.19.0
       '@sd-jwt/decode': 0.19.0
       '@sd-jwt/jwt-status-list': 0.19.0
@@ -10752,7 +10755,7 @@ snapshots:
       simple-common-utils: 2.6.0
       utf8: 3.0.0
 
-  '@scure/base@2.2.0': {}
+  '@scure/base@2.2.0(patch_hash=ec03745112fc6c8efaa5f1927af3840d0d928bbf9ac6bfd1e3b3b66ceb4ed6dc)': {}
 
   '@sd-jwt/core@0.19.0':
     dependencies:
@@ -11402,7 +11405,7 @@ snapshots:
       '@digitalcredentials/jsonld': 9.0.0
       '@noble/curves': 2.2.0
       '@noble/hashes': 1.8.0
-      '@scure/base': 2.2.0
+      '@scure/base': 2.2.0(patch_hash=ec03745112fc6c8efaa5f1927af3840d0d928bbf9ac6bfd1e3b3b66ceb4ed6dc)
       ajv: 8.20.0
       ajv-formats: 3.0.1(ajv@8.20.0)
       canonicalize: 2.1.0
