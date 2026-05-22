@@ -48,11 +48,7 @@ export const handleProofExchangeRecordChanges = async (options: {
         proofRecordId: proofRecord.id,
       })
     } else {
-      const [existingVpRequestChatEntry] = findAllByAssociatedRecordId(
-        realm,
-        proofRecord.id,
-        ChatEntryType.VPRequest
-      )
+      const [existingVpRequestChatEntry] = findAllByAssociatedRecordId(realm, proofRecord.id, ChatEntryType.VPRequest)
       if (existingVpRequestChatEntry) return
 
       const verifierInfo: VerifierInfo = {
