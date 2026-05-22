@@ -75,16 +75,3 @@ index 43688a2708aef67d46faf518e448be9d0fe8cbf1..5142f19723d729ad37e4e5ce89293057
  					} else if (pickupStrategy === DidCommMediatorPickupStrategy.PickUpV3LiveMode) {
  						await this.messagePickupApi.pickupMessages({
  							connectionId: mediator.connectionId,
-diff --git a/build/v2/plaintextBuilder.mjs b/build/v2/plaintextBuilder.mjs
-index f411d01d1aa41c3db9c56333bcd0a3b682cf7d9d..6a881a5b8e60c40c6076d1b3b8c37edf863f1b10 100644
---- a/build/v2/plaintextBuilder.mjs
-+++ b/build/v2/plaintextBuilder.mjs
-@@ -50,7 +50,7 @@ function buildV2PlaintextFromMessage(message, config) {
- 	const v2Native = message;
- 	if (typeof v2Native.toV2Plaintext === "function") {
- 		const plaintext = v2Native.toV2Plaintext();
--		if (config?.from !== void 0) plaintext.from = config.from;
-+		if (plaintext.from === void 0 && config?.from !== void 0) plaintext.from = config.from;
- 		if (config?.to !== void 0) plaintext.to = Array.isArray(config.to) ? config.to : [config.to];
- 		if (config?.fromPrior !== void 0) plaintext.from_prior = config.fromPrior;
- 		return plaintext;
