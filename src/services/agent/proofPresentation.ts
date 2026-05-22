@@ -27,9 +27,10 @@ export async function acceptProofRequestOrReportNoCompatible(options: {
       })
       proofFormats = { anoncreds: selected.proofFormats.anoncreds }
     } catch {
-      await agent.didcomm.proofs.sendProblemReport({
+      await agent.didcomm.proofs.declineRequest({
         proofExchangeRecordId: proofRecordId,
-        description: ProofSendProblemReportDescription.NoCompatibleCredentials,
+        sendProblemReport: true,
+        problemReportDescription: ProofSendProblemReportDescription.NoCompatibleCredentials,
       })
       return 'problem-report'
     }

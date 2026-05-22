@@ -304,16 +304,6 @@ export const AgentActionExecuterMap: Record<AgentActionType, ActionFactory> = {
       })
 
       if (result === 'problem-report') {
-        const proofRecord = await options.agent.didcomm.proofs.getById(proofRecordId)
-        proofRecord.state = DidCommProofState.Abandoned
-        await options.agent.didcomm.proofs.update(proofRecord)
-        options.agent.events.emit<DidCommProofStateChangedEvent>(options.agent.context, {
-          type: DidCommProofEventTypes.ProofStateChanged,
-          payload: {
-            proofRecord: proofRecord.clone(),
-            previousState: null,
-          },
-        })
         return { outgoingMessageTypes: [DidCommPresentationV2ProblemReportMessage.type.messageTypeUri] }
       }
 

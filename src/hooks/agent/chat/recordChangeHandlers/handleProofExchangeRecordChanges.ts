@@ -48,6 +48,13 @@ export const handleProofExchangeRecordChanges = async (options: {
         proofRecordId: proofRecord.id,
       })
     } else {
+      const [existingVpRequestChatEntry] = findAllByAssociatedRecordId(
+        realm,
+        proofRecord.id,
+        ChatEntryType.VPRequest
+      )
+      if (existingVpRequestChatEntry) return
+
       const verifierInfo: VerifierInfo = {
         id: connection.invitationDid ?? getConnectionDisplayName(connection),
         logoUrl: getConnectionDisplayPicture(connection),
@@ -61,27 +68,22 @@ export const handleProofExchangeRecordChanges = async (options: {
         verifierInfo,
       })
 
-      let [vpRequestChatEntry] = findAllByAssociatedRecordId(realm, proofRecord.id, ChatEntryType.VPRequest)
-
-      if (!vpRequestChatEntry) {
-        // TODO: Define metadata and update when state changes
-        vpRequestChatEntry = createChatEntry(realm, {
-          associatedRecordId: proofRecord.id,
-          associatedMessageId: proofRecord.threadId,
-          chatThreadId: thread.id,
-          type: ChatEntryType.VPRequest,
-          role: ChatEntryRole.Receiver,
-          state: ChatEntryState.Created,
-          createdAt: (options.receivedAt ?? new Date()).getTime(),
-          metadata: {
-            proofState: proofRecord.state,
-            requestedAttributes: JSON.stringify(presentationRequestForDisplay),
-            replied: false,
-          },
-        })
-        if (thread.id !== activeChatThreadId) {
-          addUnread(realm, thread.id, 1)
-        }
+      createChatEntry(realm, {
+        associatedRecordId: proofRecord.id,
+        associatedMessageId: proofRecord.threadId,
+        chatThreadId: thread.id,
+        type: ChatEntryType.VPRequest,
+        role: ChatEntryRole.Receiver,
+        state: ChatEntryState.Created,
+        createdAt: (options.receivedAt ?? new Date()).getTime(),
+        metadata: {
+          proofState: proofRecord.state,
+          requestedAttributes: JSON.stringify(presentationRequestForDisplay),
+          replied: false,
+        },
+      })
+      if (thread.id !== activeChatThreadId) {
+        addUnread(realm, thread.id, 1)
       }
     }
   } else if (

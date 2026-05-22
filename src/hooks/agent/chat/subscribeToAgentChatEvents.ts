@@ -28,6 +28,9 @@ import {
   DidCommMessageSentEvent,
   DidCommOutOfBandInvitation,
   DidCommOutOfBandState,
+  DidCommProofEventTypes,
+  DidCommProofState,
+  DidCommProofStateChangedEvent,
   DidCommProposePresentationV2Message,
   OutboundMessageSendStatus,
   parseMessageType,
@@ -402,6 +405,17 @@ export function subscribeToAgentChatEvents(
     })
   }
 
+  const proofStateChangedListener = async (event: DidCommProofStateChangedEvent) => {
+    const record = event.payload.proofRecord
+    if (record.state !== DidCommProofState.Declined && record.state !== DidCommProofState.Abandoned) return
+    await handleProofExchangeRecordChanges({
+      agent,
+      realm,
+      record,
+      activeChatThreadId: getActiveChatThreadId(),
+    })
+  }
+
   agent.events.on(RepositoryEventTypes.RecordUpdated, mediaSharingMetadataUpdateListener)
   agent.events.on(DidCommMediaSharingEventTypes.StateChanged, mediaSharingCreationEventListener)
   agent.events.on(DidCommEventTypes.DidCommMessageSent, agentMessageSentEventListener)
@@ -410,6 +424,7 @@ export function subscribeToAgentChatEvents(
   agent.events.on(DidCommEventTypes.DidCommMessageProcessed, agentMessageProcessedListener)
   agent.events.on(OutOfBandInvitationEventTypes.OutOfBandInvitationEvent, oobListener)
   agent.events.on(DidCommProfileEventTypes.ConnectionProfileUpdated, connectionProfileListener)
+  agent.events.on(DidCommProofEventTypes.ProofStateChanged, proofStateChangedListener)
 
   return () => {
     agent.events.off(RepositoryEventTypes.RecordUpdated, mediaSharingMetadataUpdateListener)
@@ -420,5 +435,6 @@ export function subscribeToAgentChatEvents(
     agent.events.off(DidCommEventTypes.DidCommMessageProcessed, agentMessageProcessedListener)
     agent.events.off(OutOfBandInvitationEventTypes.OutOfBandInvitationEvent, oobListener)
     agent.events.off(DidCommProfileEventTypes.ConnectionProfileUpdated, connectionProfileListener)
+    agent.events.off(DidCommProofEventTypes.ProofStateChanged, proofStateChangedListener)
   }
 }
