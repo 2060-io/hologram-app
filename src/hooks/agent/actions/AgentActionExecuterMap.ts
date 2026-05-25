@@ -35,6 +35,7 @@ import {
 import { DidCommPushNotificationsFcmSetDeviceInfoMessage } from '@credo-ts/didcomm-push-notifications'
 import { AnswerMessage } from '@credo-ts/question-answer'
 import { createOobInvitation, MobileAgent } from '@src/services/agent'
+import { acceptProofRequestOrReportNoCompatible } from '@src/services/agent/proofPresentation'
 import { logWarn } from '@src/utils'
 import { Platform } from 'react-native'
 import { AgentAction, AgentActionType } from './AgentAction'
@@ -297,13 +298,15 @@ export const AgentActionExecuterMap: Record<AgentActionType, ActionFactory> = {
     return async (options: { agent: MobileAgent }) => {
       const parameters = action.parameters as AcceptProofRequestParameters
       const { proofRecordId } = parameters
-      const requestedCredentials = await options.agent.didcomm.proofs.selectCredentialsForRequest({
-        proofExchangeRecordId: proofRecordId,
+      const result = await acceptProofRequestOrReportNoCompatible({
+        agent: options.agent,
+        proofRecordId,
       })
-      await options.agent.didcomm.proofs.acceptRequest({
-        proofExchangeRecordId: proofRecordId,
-        proofFormats: { anoncreds: requestedCredentials?.proofFormats.anoncreds },
-      })
+
+      if (result === 'problem-report') {
+        return { outgoingMessageTypes: [DidCommPresentationV2ProblemReportMessage.type.messageTypeUri] }
+      }
+
       return { outgoingMessageTypes: [DidCommPresentationV2Message.type.messageTypeUri] }
     }
   },
