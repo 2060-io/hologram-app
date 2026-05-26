@@ -6,7 +6,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
 import { Camera, useCameraDevice } from 'react-native-vision-camera'
-import { useBarcodeScannerOutput, type Barcode } from 'react-native-vision-camera-barcode-scanner'
+import { type Barcode, useBarcodeScannerOutput } from 'react-native-vision-camera-barcode-scanner'
 import getStyles from './styles'
 
 interface Props {
