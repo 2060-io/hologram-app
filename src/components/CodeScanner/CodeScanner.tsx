@@ -2,24 +2,12 @@ import { Text } from '@src/components/common'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { handleCameraPermission } from '@src/utils/permissions'
 import { toast } from '@src/utils/toast'
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Dimensions, Platform, View } from 'react-native'
-import {
-  Camera,
-  CameraRuntimeError,
-  Code,
-  useCameraDevices,
-  useCameraFormat,
-  useCodeScanner,
-} from 'react-native-vision-camera'
+import { View } from 'react-native'
+import { Camera, useCameraDevice } from 'react-native-vision-camera'
+import { useBarcodeScannerOutput, type Barcode } from 'react-native-vision-camera-barcode-scanner'
 import getStyles from './styles'
-
-const SCREEN_WIDTH = Dimensions.get('window').width
-const SCREEN_HEIGHT = Platform.select<number>({
-  android: Dimensions.get('screen').height, // - StaticSafeAreaInsets.safeAreaInsetsBottom,
-  ios: Dimensions.get('window').height,
-}) as number
 
 interface Props {
   isActive: boolean
@@ -32,8 +20,7 @@ const CodeScanner: React.FC<Props> = ({ isActive, onCodeScanned }) => {
   const styles = getStyles(theme)
   const [hasCameraPermission, setHasCameraPermission] = useState<boolean>()
   const scannedCodes = useRef<string[]>([])
-  const devices = useCameraDevices()
-  const device = devices.find((dev) => dev.position === 'back')
+  const device = useCameraDevice('back')
 
   useEffect(() => {
     const requestCameraPermission = async () => {
@@ -47,35 +34,20 @@ const CodeScanner: React.FC<Props> = ({ isActive, onCodeScanned }) => {
     scannedCodes.current = []
   }, [isActive])
 
-  const codeScanner = useCodeScanner({
-    codeTypes: ['qr'],
-    onCodeScanned: (codes: Code[]) => {
-      const scannedCode = codes[0].value
+  const barcodeOutput = useBarcodeScannerOutput({
+    barcodeFormats: ['qr-code'],
+    onBarcodeScanned: (barcodes: Barcode[]) => {
+      const scannedCode = barcodes[0]?.displayValue
       if (scannedCode) {
         const hasNotBeenScanned = !scannedCodes.current.includes(scannedCode)
         if (hasNotBeenScanned) onCodeScanned(scannedCode)
         scannedCodes.current = [...scannedCodes.current, scannedCode]
       }
     },
+    onError: useCallback((error: unknown) => {
+      toast({ type: 'error', message: `${t('scan.errorReadingQRCode')}:${error}` })
+    }, []),
   })
-
-  const screenAspectRatio = SCREEN_HEIGHT / SCREEN_WIDTH
-
-  const supports60Fps = useMemo(() => device?.formats.some((f) => f.maxFps >= 60), [device?.formats])
-  const format = useCameraFormat(device, [
-    { fps: supports60Fps ? 60 : 30 },
-    { videoAspectRatio: screenAspectRatio },
-    { videoResolution: 'max' },
-    { photoAspectRatio: screenAspectRatio },
-    { photoResolution: 'max' },
-  ])
-
-  const fps = Math.min(format?.maxFps ?? 1, supports60Fps ? 60 : 30)
-
-  // Camera callbacks
-  const onError = useCallback((error: CameraRuntimeError) => {
-    toast({ type: 'error', message: `${t('scan.errorReadingQRCode')}:${error.message}` })
-  }, [])
 
   return (
     <React.Fragment>
@@ -83,12 +55,9 @@ const CodeScanner: React.FC<Props> = ({ isActive, onCodeScanned }) => {
         <Camera
           style={styles.camera}
           device={device}
-          format={format}
           isActive={isActive}
-          onError={onError}
-          fps={fps}
-          codeScanner={codeScanner}
-          enableZoomGesture={true}
+          outputs={[barcodeOutput]}
+          enableNativeZoomGesture={true}
         />
       ) : (
         <View style={styles.containerLoadingCamera}>

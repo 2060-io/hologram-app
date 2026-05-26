@@ -16,5 +16,5 @@ patchedDependencies:
   react-native-cloud-store@0.11.0: patches/react-native-cloud-store@0.11.0.patch
   react-native-create-thumbnail@2.2.0: patches/react-native-create-thumbnail@2.2.0.patch
   react-native-image-crop-picker@0.50.1: patches/react-native-image-crop-picker@0.50.1.patch
-  react-native-reanimated@3.19.5: patches/react-native-reanimated@3.19.5.patch
+  react-native-reanimated: patches/react-native-reanimated.patch
   semantic-release-react-native@1.9.0: patches/semantic-release-react-native@1.9.0.patch

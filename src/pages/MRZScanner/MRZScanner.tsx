@@ -9,15 +9,14 @@ import {
   lockAsync as setScreenOrientation,
 } from 'expo-screen-orientation'
 import React, { useEffect, useRef, useState } from 'react'
-import { useCameraDevices } from 'react-native-vision-camera'
+import { useCameraDevice } from 'react-native-vision-camera'
 import { findAndParseMrz } from './findAndParseMrz'
 import MRZCamera from './MRZCamera'
 
 type Props = StackScreenProps<ChatStackParams, 'MRZScanner'>
 
 const MRZScanner = ({ navigation, route }: Props) => {
-  const devices = useCameraDevices()
-  const device = devices.find((dev) => dev.position === 'back')
+  const device = useCameraDevice('back')
   const [isActive, setIsActive] = useState(true)
   const [scanSuccess, setScanSuccess] = useState(false)
   const scanSuccessAux = useRef(false)
