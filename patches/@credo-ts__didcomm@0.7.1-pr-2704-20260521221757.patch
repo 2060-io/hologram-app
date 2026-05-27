@@ -1,5 +1,5 @@
 diff --git a/build/DidCommDispatcher.mjs b/build/DidCommDispatcher.mjs
-index e1a0c77..804363d 100644
+index e1a0c77f11335f97082ac04c8cb55a47d43d80cd..804363d4429277e612da4837690048318d593274 100644
 --- a/build/DidCommDispatcher.mjs
 +++ b/build/DidCommDispatcher.mjs
 @@ -29,6 +29,16 @@ let DidCommDispatcher = class DidCommDispatcher {
@@ -36,7 +36,7 @@ index e1a0c77..804363d 100644
  };
  DidCommDispatcher = __decorate([
 diff --git a/build/modules/routing/DidCommMediationRecipientApi.mjs b/build/modules/routing/DidCommMediationRecipientApi.mjs
-index 287185f81e6916180cec54921350219f328ca646..f2f5ef21a62124561f9fe71ca1ffd6ff037b0088 100644
+index 43688a2708aef67d46faf518e448be9d0fe8cbf1..5142f19723d729ad37e4e5ce8929305739960bd2 100644
 --- a/build/modules/routing/DidCommMediationRecipientApi.mjs
 +++ b/build/modules/routing/DidCommMediationRecipientApi.mjs
 @@ -104,16 +104,25 @@ let DidCommMediationRecipientApi = class DidCommMediationRecipientApi {

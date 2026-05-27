@@ -9,7 +9,12 @@ import { NavigationStackParams } from '@src/components/Navigation/NavigationProp
 import { useAppState } from '@src/hooks'
 import { useMobileAgent } from '@src/hooks/agent'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
-import { DidcommInvitationType, getOutOfBandRecordById, processInvitation } from '@src/services/agent/oob'
+import {
+  DidcommInvitationType,
+  getOutOfBandRecordById,
+  processImplicitInvitation,
+  processInvitation,
+} from '@src/services/agent/oob'
 import { log, logError } from '@src/utils'
 import { toast } from '@src/utils/toast'
 import queryString from 'query-string'
@@ -83,32 +88,45 @@ const Scan = ({ navigation }: Props) => {
     }
   }
 
+  const processImplicitDidInvitation = async (did: string) => {
+    if (!agent) return
+    try {
+      setProcessing(true)
+      const result = await processImplicitInvitation(agent, did)
+      log('processImplicitInvitationResult:', result)
+      if (!result.success) throw new Error(result.error)
+      const outOfBandRecord = await getOutOfBandRecordById(agent, result.recordId)
+      navigation.navigate('ConnectionInvitation', {
+        outOfBandRecord,
+        existingConnectionId: result.existingConnectionId,
+      })
+    } catch (error) {
+      setIsActiveCamera(true)
+      toast({ type: 'error', message: t('invitation.errorProcessingInvitation'), duration: 5000 })
+      logError(`Error processing Didcomm Invitation: ${error}`)
+    } finally {
+      setProcessing(false)
+    }
+  }
+
   const onCodeScanned = async (rawUrl: string) => {
     if (!agent) return
     try {
       setIsActiveCamera(false)
 
       const url = rawUrl.trim()
-      let invitation: DidCommOutOfBandInvitation | undefined
       if (url.startsWith('did:')) {
-        // FIXME: this should be based on both Hologram and other party supported protocols
-        invitation = new DidCommOutOfBandInvitation({
-          id: url,
-          label: 'DID Invitation',
-          services: [url],
-          handshakeProtocols: ['https://didcomm.org/didexchange/1.1'],
-        })
-        invitation.setThread({ parentThreadId: url })
+        await processImplicitDidInvitation(url)
       } else {
         const parsedUrl = queryString.parseUrl(url)
         const shortUrl =
           ((parsedUrl.query.oobUrl as string | undefined) ?? (parsedUrl.query._url as string | undefined))
             ? TypedArrayEncoder.toUtf8String(TypedArrayEncoder.fromBase64(parsedUrl.query._url as string))
             : undefined
-        invitation = await agent.didcomm.oob.parseInvitation(shortUrl ?? url)
+        const invitation = await agent.didcomm.oob.parseInvitation(shortUrl ?? url)
+        await processDidcommInvitation(invitation)
       }
 
-      await processDidcommInvitation(invitation)
       setScannedCode('')
     } catch (error) {
       setIsActiveCamera(true)

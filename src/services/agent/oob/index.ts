@@ -14,6 +14,7 @@ import {
   DidCommOfferCredentialV2Message,
   DidCommOutOfBandApi,
   DidCommOutOfBandInvitation,
+  DidCommOutOfBandInvitationV2,
   DidCommOutOfBandRecord,
   DidCommOutOfBandRepository,
   DidCommOutOfBandState,
@@ -26,7 +27,7 @@ import {
   parseMessageType,
   supportsIncomingMessageType,
 } from '@credo-ts/didcomm'
-import { log, logError } from '@src/utils'
+import { log, logError, logWarn } from '@src/utils'
 import { deletePendingConnection, findExistingConnection, isService } from '@src/utils/connectionUtils'
 import { toast } from '@src/utils/toast'
 import { t } from 'i18next'
@@ -116,6 +117,53 @@ type ProcessInvitationResult =
       success: false
       error: string
     }
+/**
+ * Process an implicit OOB invitation expressed as a public DID. Delegates to Credo's
+ * receiveImplicitInvitation, which resolves the DID Doc and picks the highest mutually
+ * supported DIDComm version (v2 if both sides support it, otherwise v1). Used when the
+ * scanned input is a bare `did:` URI rather than a full OOB invitation.
+ */
+export const processImplicitInvitation = async (agent: MobileAgent, did: string): Promise<ProcessInvitationResult> => {
+  try {
+    const existingConnections = await agent.didcomm.connections.findByInvitationDid(did)
+    if (existingConnections.length > 1) {
+      logWarn(`Multiple connections found related to invitation DID ${did}`)
+    }
+    const existingConnection = existingConnections[0]
+
+    if (existingConnection?.outOfBandId) {
+      const existingOobRecord = await agent.didcomm.oob.findById(existingConnection.outOfBandId)
+      if (existingOobRecord) {
+        return {
+          success: true,
+          invitationType: DidcommInvitationType.ConnectionRequest,
+          existingConnectionId: existingConnection.id,
+          recordId: existingOobRecord.id,
+        }
+      }
+    }
+
+    const { outOfBandRecord } = await agent.didcomm.oob.receiveImplicitInvitation({
+      did,
+      label: 'DID Invitation',
+      autoAcceptInvitation: false,
+      autoAcceptConnection: false,
+    })
+
+    return {
+      success: true,
+      invitationType: DidcommInvitationType.ConnectionRequest,
+      existingConnectionId: existingConnection?.id,
+      recordId: outOfBandRecord.id,
+    }
+  } catch (error) {
+    return {
+      success: false,
+      error: (error as Error).message,
+    }
+  }
+}
+
 /**
  * Process a DIDComm invitation by assigning an out of band record to it. In case of regular connection
  * invitations, it will return specifying if there was already a connection associated to it.
@@ -276,11 +324,20 @@ export const getOutOfBandRecordById = async (agent: MobileAgent, outOfBandId: st
 }
 
 export const createOobInvitation = (connection: DidCommConnectionRecord) => {
+  if (connection.didcommVersion === 'v2') {
+    if (!connection.invitationDid) {
+      throw new Error('Cannot create v2 OOB invitation: connection has no invitationDid')
+    }
+    return new DidCommOutOfBandInvitationV2({
+      from: connection.invitationDid,
+      body: { accept: ['didcomm/v2'] },
+    })
+  }
+
   const jsonInvitation = {
     '@type': DidCommOutOfBandInvitation.type.messageTypeUri,
     '@id': utils.uuid(),
     label: connection.theirLabel,
-    imageUrl: connection.imageUrl,
     services: [connection.invitationDid],
     handshake_protocols: [connection.protocol ?? 'https://didcomm.org/didexchange/1.0'],
     accept: ['didcomm/aip1', 'didcomm/aip2;env=rfc19'],

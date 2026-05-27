@@ -3,6 +3,7 @@ import { DidCommMediatorPickupStrategy } from '@credo-ts/didcomm'
 import { DidCommVersion } from '@src/utils/developer'
 import { getMobileAgentModules, MobileAgent } from './MobileAgent'
 import { DidCommOutOfBandInvitationHandler } from './oob/OutOfBandInvitationHandler'
+import { DidCommOutOfBandInvitationV2Handler } from './oob/OutOfBandInvitationV2Handler'
 
 export const createMobileAgent = (
   options: {
@@ -29,7 +30,10 @@ export const createMobileAgent = (
     dependencyManager
   )
 
-  agent.didcomm.registerMessageHandlers([new DidCommOutOfBandInvitationHandler()])
+  agent.didcomm.registerMessageHandlers([
+    new DidCommOutOfBandInvitationHandler(),
+    new DidCommOutOfBandInvitationV2Handler(),
+  ])
 
   return agent
 }
