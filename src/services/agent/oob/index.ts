@@ -125,8 +125,7 @@ type ProcessInvitationResult =
  */
 export const processImplicitInvitation = async (agent: MobileAgent, did: string): Promise<ProcessInvitationResult> => {
   try {
-    const connectionsApi = agent.context.dependencyManager.resolve(DidCommConnectionsApi)
-    const existingConnections = await connectionsApi.findByInvitationDid(did)
+    const existingConnections = await agent.didcomm.connections.findByInvitationDid(did)
     if (existingConnections.length > 1) {
       logWarn(`Multiple connections found related to invitation DID ${did}`)
     }
