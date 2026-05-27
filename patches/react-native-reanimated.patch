@@ -1,0 +1,44 @@
+diff --git a/lib/module/core.js b/lib/module/core.js
+index 74d8dc5f7444907b5c41ca3aa1fe07d2498b2aa7..7a1d60ac49801e18e1f302176087c79c70b0d8e3 100644
+--- a/lib/module/core.js
++++ b/lib/module/core.js
+@@ -56,7 +56,7 @@ export function registerEventHandler(eventHandler, eventName, emitterReactTag =
+ 
+     eventHandler(event);
+     // We call mappers here to make sure view updates can be applied in the same frame after an event.
+-    global.__mapperRun();
++    global.__mapperRun?.();
+   }
+   return ReanimatedModule.registerEventHandler(createSerializable(handleEvent), eventName, emitterReactTag);
+ }
+@@ -71,7 +71,7 @@ export function subscribeForKeyboardEvents(eventHandler, options) {
+ 
+     eventHandler(state, height);
+     // We call mappers here to make sure view updates can be applied in the same frame after an event.
+-    global.__mapperRun();
++    global.__mapperRun?.();
+   }
+   if (__DEV__) {
+     controlEdgeToEdgeValues({
+diff --git a/src/core.ts b/src/core.ts
+index a18b1115ae69207b493df639d62d1fbfd7c9c121..ae69beb8baca8425d9c19ff65e81eccaa14382a9 100644
+--- a/src/core.ts
++++ b/src/core.ts
+@@ -91,7 +91,7 @@ export function registerEventHandler<TEvent>(
+     'worklet';
+     eventHandler(event);
+     // We call mappers here to make sure view updates can be applied in the same frame after an event.
+-    global.__mapperRun();
++    global.__mapperRun?.();
+   }
+   return ReanimatedModule.registerEventHandler(
+     createSerializable(handleEvent as WorkletFunction),
+@@ -114,7 +114,7 @@ export function subscribeForKeyboardEvents(
+     'worklet';
+     eventHandler(state, height);
+     // We call mappers here to make sure view updates can be applied in the same frame after an event.
+-    global.__mapperRun();
++    global.__mapperRun?.();
+   }
+ 
+   if (__DEV__) {
