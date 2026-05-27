@@ -10,6 +10,7 @@ import { TrustResolutionOutcome } from '@verana-labs/verre'
 import { getServiceInfo } from '../trustResolution'
 import { CredentialMainInfo, sanitizeString } from './display'
 import { MobileAgent } from './MobileAgent'
+import { acceptProofRequestOrReportNoCompatible } from './proofPresentation'
 import { DidCommPresentationDisplayMetadata, setDidCommPresentationMetadata } from './RecordMetadata'
 
 type SelectedCredentials = {
@@ -28,6 +29,7 @@ export async function presentProof(options: PresentProofOptions) {
   // get format data to know where to populate the selection
   const { proofFormats } = await agent.didcomm.proofs.getCredentialsForRequest({
     proofExchangeRecordId: proofRecordId,
+    proofFormats: { anoncreds: { filterByNonRevocationRequirements: true } },
   })
 
   let anoncreds: AnonCredsSelectedCredentials | undefined, indy: AnonCredsSelectedCredentials | undefined
@@ -101,8 +103,9 @@ export async function presentProof(options: PresentProofOptions) {
 
   await agent.didcomm.proofs.update(proofRecord)
 
-  await agent.didcomm.proofs.acceptRequest({
-    proofExchangeRecordId: proofRecordId,
+  await acceptProofRequestOrReportNoCompatible({
+    agent,
+    proofRecordId,
     proofFormats: proofFormatPayload,
   })
 }

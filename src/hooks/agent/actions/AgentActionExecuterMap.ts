@@ -319,13 +319,15 @@ export const AgentActionExecuterMap: Record<AgentActionType, ActionFactory> = {
     return async (options: { agent: MobileAgent }) => {
       const parameters = action.parameters as AcceptProofRequestParameters
       const { proofRecordId } = parameters
-      const requestedCredentials = await options.agent.didcomm.proofs.selectCredentialsForRequest({
-        proofExchangeRecordId: proofRecordId,
+      const result = await acceptProofRequestOrReportNoCompatible({
+        agent: options.agent,
+        proofRecordId,
       })
-      await options.agent.didcomm.proofs.acceptRequest({
-        proofExchangeRecordId: proofRecordId,
-        proofFormats: { anoncreds: requestedCredentials?.proofFormats.anoncreds },
-      })
+
+      if (result === 'problem-report') {
+        return { outgoingMessageTypes: [DidCommPresentationV2ProblemReportMessage.type.messageTypeUri] }
+      }
+
       return { outgoingMessageTypes: [DidCommPresentationV2Message.type.messageTypeUri] }
     }
   },
