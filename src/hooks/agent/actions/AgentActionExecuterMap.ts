@@ -36,6 +36,7 @@ import {
 import { DidCommPushNotificationsFcmSetDeviceInfoMessage } from '@credo-ts/didcomm-push-notifications'
 import { AnswerMessage } from '@credo-ts/question-answer'
 import { createOobInvitation, MobileAgent } from '@src/services/agent'
+import { acceptProofRequestOrReportNoCompatible } from '@src/services/agent/proofPresentation'
 import { log, logWarn } from '@src/utils'
 import { Platform } from 'react-native'
 import { AgentAction, AgentActionType } from './AgentAction'
