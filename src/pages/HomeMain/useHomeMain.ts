@@ -1,13 +1,12 @@
 import { ParamListBase, StackActions } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
-import { useEffect } from 'react'
-
 import { usePushNotifications } from '@src/hooks/providers/PushNotificationsProvider'
 import { useSharedDataFromOtherApps } from '@src/hooks/providers/SharedDataFromOtherAppsProvider'
 import {
   markNewConnectionNotificationAsViewed,
   markNotificationsOfChatAsViewed,
 } from '@src/utils/pushNotificationsUtils'
+import { useEffect } from 'react'
 
 export const useHomeMain = ({ navigation }: { navigation: StackNavigationProp<ParamListBase> }) => {
   const { pushNotification, setPushNotification } = usePushNotifications()
@@ -21,7 +20,7 @@ export const useHomeMain = ({ navigation }: { navigation: StackNavigationProp<Pa
           navigation.dispatch(
             StackActions.push('ConnectionDetails', {
               connectionId: pushNotification.params?.connectionId,
-            }),
+            })
           )
         }
         if (pushNotification.screen === 'Chat') {
@@ -39,7 +38,7 @@ export const useHomeMain = ({ navigation }: { navigation: StackNavigationProp<Pa
                 StackActions.replace('ChatStack', {
                   screen: 'Chat',
                   params: { chatThreadId: pushNotification.params?.chatThreadId },
-                }),
+                })
               )
             }
           } else {
@@ -47,7 +46,7 @@ export const useHomeMain = ({ navigation }: { navigation: StackNavigationProp<Pa
               StackActions.push('ChatStack', {
                 screen: 'Chat',
                 params: { chatThreadId: pushNotification.params?.chatThreadId },
-              }),
+              })
             )
           }
         }

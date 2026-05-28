@@ -1,20 +1,10 @@
 import { CacheModuleConfig } from '@credo-ts/core'
 import { StackScreenProps } from '@react-navigation/stack'
-import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { Alert, View, TouchableOpacity } from 'react-native'
-import { FileLogger } from 'react-native-file-logger'
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import Share from 'react-native-share'
-
-import AppDependencies from './AppDependencies'
-import getStyles from './styles'
-
 import { ModalBottomHalf } from '@src/components'
-import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
-import { ModalLoading, OptionsList, Text, TextInput, Switch } from '@src/components/common'
+import { ModalLoading, OptionsList, Switch, Text, TextInput } from '@src/components/common'
 import { Option } from '@src/components/common/OptionsList'
 import { TextInputForwardRefProps } from '@src/components/common/TextInput'
+import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
 import { IS_ANDROID, IS_IOS } from '@src/constants'
 import { useMobileAgent } from '@src/hooks/agent'
 import { useConfig } from '@src/hooks/providers/ConfigProvider'
@@ -24,18 +14,30 @@ import { AgentActionQueueSingleton } from '@src/services/AgentActionQueueSinglet
 import AgentSingleton from '@src/services/AgentSingleton'
 import { deleteAllKeys } from '@src/services/keys'
 import { removeStorageData, USER_INVITATION_OUT_OF_BAND_RECORD_ID } from '@src/services/localStorage'
-import { deleteDir, walletDirectoryPath } from '@src/utils/RNFS'
 import {
+  ALL_DIDCOMM_VERSIONS,
   allDevEnvs,
-  DevEnv,
-  devEnvPlaceholder,
-  DevEnvsKeys,
-  DevEnvObject,
-  saveLogsEnabled,
   areLogsEnabled,
+  DevEnv,
+  DevEnvObject,
+  DevEnvsKeys,
+  DidCommVersion,
+  devEnvPlaceholder,
+  isMultiSelectDevEnv,
+  parseDidcommVersions,
+  saveLogsEnabled,
 } from '@src/utils/developer'
-import { logError, LOGS_DIRECTORY } from '@src/utils/log'
+import { LOGS_DIRECTORY, logError } from '@src/utils/log'
+import { deleteDir, walletDirectoryPath } from '@src/utils/RNFS'
 import { toast } from '@src/utils/toast'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { Alert, TouchableOpacity, View } from 'react-native'
+import { FileLogger } from 'react-native-file-logger'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import Share from 'react-native-share'
+import AppDependencies from './AppDependencies'
+import getStyles from './styles'
 
 type Props = StackScreenProps<NavigationStackParams, 'Developer'>
 
@@ -63,25 +65,26 @@ const Developer = ({ navigation }: Props) => {
   }, [])
 
   const devEnvsForRender = useMemo(() => {
-    return Object.entries(devEnvs ?? {}).map(([key, value]) => ({
-      text: `${devEnvPlaceholder[key as keyof DevEnvsKeys]}:\n${value}`,
-      onPress: () => onPressDevEnv(key as keyof DevEnvsKeys),
-    }))
+    const knownKeys = new Set(allDevEnvs.map((e) => e.key))
+    return Object.entries(devEnvs ?? {})
+      .filter(([key]) => knownKeys.has(key as keyof DevEnvsKeys))
+      .filter(([key]) => !isMultiSelectDevEnv(key as keyof DevEnvsKeys))
+      .map(([key, value]) => ({
+        text: `${devEnvPlaceholder[key as keyof DevEnvsKeys]}:\n${value}`,
+        onPress: () => onPressDevEnv(key as keyof DevEnvsKeys),
+      }))
   }, [devEnvs])
 
-  const changeDevEnvOptionsVisibility = () => setDisplayDevEnvOptions(prev => !prev)
+  const changeDevEnvOptionsVisibility = () => setDisplayDevEnvOptions((prev) => !prev)
 
   const onPressDevEnv = (key: keyof DevEnvsKeys) => {
-    const newCurrentDevEnv = allDevEnvs.find(devEnv => devEnv.key === key)
+    const newCurrentDevEnv = allDevEnvs.find((devEnv) => devEnv.key === key)
     setCurrentDevEnv(newCurrentDevEnv)
     changeDevEnvOptionsVisibility()
   }
 
   const displayAlertAfterChange = () => {
-    Alert.alert(
-      IS_IOS ? t('settings.closeAppAfterChange') : '',
-      IS_ANDROID ? t('settings.closeAppAfterChange') : '',
-    )
+    Alert.alert(IS_IOS ? t('settings.closeAppAfterChange') : '', IS_ANDROID ? t('settings.closeAppAfterChange') : '')
   }
 
   const onSelectDevEnvOption = async (key: keyof DevEnvsKeys, value: string) => {
@@ -89,6 +92,21 @@ const Developer = ({ navigation }: Props) => {
     const newDevEnvsToPersist = { ...devEnvs, [key]: value }
     await updateDevEnvs(newDevEnvsToPersist)
     if (key === 'INDY_VDR_PROXY_BASE_URL') displayAlertAfterChange()
+  }
+
+  const onToggleDidcommVersion = async (version: DidCommVersion) => {
+    const current = parseDidcommVersions(devEnvs.SUPPORTED_DIDCOMM_VERSIONS)
+    const isSelected = current.includes(version)
+    let next: DidCommVersion[]
+    if (isSelected) {
+      if (current.length === 1) return
+      next = current.filter((v) => v !== version)
+    } else {
+      next = ALL_DIDCOMM_VERSIONS.filter((v) => current.includes(v) || v === version)
+    }
+    const newDevEnvsToPersist = { ...devEnvs, SUPPORTED_DIDCOMM_VERSIONS: next.join(',') }
+    await updateDevEnvs(newDevEnvsToPersist)
+    displayAlertAfterChange()
   }
 
   const currentCustomDevEnvValue = currentDevEnv?.key ? storedCustomDevEnvs?.[currentDevEnv.key] : ''
@@ -168,7 +186,7 @@ const Developer = ({ navigation }: Props) => {
         return
       }
       Share.open({
-        ...(IS_IOS ? { url: LOGS_DIRECTORY } : { urls: logFilesPaths.map(file => `file://${file}`) }),
+        ...(IS_IOS ? { url: LOGS_DIRECTORY } : { urls: logFilesPaths.map((file) => `file://${file}`) }),
         failOnCancel: false,
       })
     } catch (error) {
@@ -193,6 +211,13 @@ const Developer = ({ navigation }: Props) => {
       text: t('settings.exportLogs'),
       onPress: exportLogs,
     },
+    {
+      iconName: 'link',
+      text: `${devEnvPlaceholder.SUPPORTED_DIDCOMM_VERSIONS}: ${parseDidcommVersions(
+        devEnvs?.SUPPORTED_DIDCOMM_VERSIONS
+      ).join(', ')}`,
+      onPress: () => onPressDevEnv('SUPPORTED_DIDCOMM_VERSIONS'),
+    },
   ]
 
   const renderCustomDevEnv = () => {
@@ -214,11 +239,7 @@ const Developer = ({ navigation }: Props) => {
             >
               <Text style={styles.devEnvText}>{currentCustomDevEnvValue}</Text>
             </TouchableOpacity>
-            <Text
-              onPress={switchToEditionCustomDevEnv}
-              fontFamily="EuclidCircularA-SemiBold"
-              style={styles.textButton}
-            >
+            <Text onPress={switchToEditionCustomDevEnv} fontFamily="EuclidCircularA-SemiBold" style={styles.textButton}>
               {t('general.modify')}
             </Text>
           </View>
@@ -278,20 +299,37 @@ const Developer = ({ navigation }: Props) => {
             <Text fontFamily="EuclidCircularA-SemiBold" style={styles.title}>
               {devEnvPlaceholder[currentDevEnv.key]}
             </Text>
-            {currentDevEnv.values.map(option => {
-              const currentDevEnvSelected = devEnvs?.[currentDevEnv.key]
-              const isSelected = option === currentDevEnvSelected
-              return (
-                <TouchableOpacity
-                  key={option}
-                  style={{ ...styles.optionContainer, ...(isSelected && styles.optionSelected) }}
-                  onPress={() => onSelectDevEnvOption(currentDevEnv.key, option)}
-                >
-                  <Text style={styles.devEnvText}>{option}</Text>
-                </TouchableOpacity>
-              )
-            })}
-            {renderCustomDevEnv()}
+            {isMultiSelectDevEnv(currentDevEnv.key)
+              ? ALL_DIDCOMM_VERSIONS.map((option) => {
+                  const selectedVersions = parseDidcommVersions(devEnvs.SUPPORTED_DIDCOMM_VERSIONS)
+                  const isSelected = selectedVersions.includes(option)
+                  return (
+                    <TouchableOpacity
+                      key={option}
+                      style={{
+                        ...styles.optionContainer,
+                        ...(isSelected && styles.optionSelected),
+                      }}
+                      onPress={() => onToggleDidcommVersion(option)}
+                    >
+                      <Text style={styles.devEnvText}>{isSelected ? `🔌 ${option}` : `⚪ ${option}`}</Text>
+                    </TouchableOpacity>
+                  )
+                })
+              : currentDevEnv.values.map((option) => {
+                  const currentDevEnvSelected = devEnvs?.[currentDevEnv.key]
+                  const isSelected = option === currentDevEnvSelected
+                  return (
+                    <TouchableOpacity
+                      key={option}
+                      style={{ ...styles.optionContainer, ...(isSelected && styles.optionSelected) }}
+                      onPress={() => onSelectDevEnvOption(currentDevEnv.key, option)}
+                    >
+                      <Text style={styles.devEnvText}>{option}</Text>
+                    </TouchableOpacity>
+                  )
+                })}
+            {!isMultiSelectDevEnv(currentDevEnv.key) && renderCustomDevEnv()}
           </View>
         )}
       </ModalBottomHalf>

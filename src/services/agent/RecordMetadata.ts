@@ -20,27 +20,27 @@ const didCommCredentialDisplayMetadataKey = '_2060/credentialDisplayMetadata'
 const didCommPresentationDisplayMetadataKey = '_2060/presentationDisplayMetadata'
 
 export function getDidCommCredentialDisplayMetadata(
-  credentialExchangeRecord: DidCommCredentialExchangeRecord | W3cCredentialRecord,
+  credentialExchangeRecord: DidCommCredentialExchangeRecord | W3cCredentialRecord
 ): DidCommCredentialDisplayMetadata | null {
   return credentialExchangeRecord.metadata.get(didCommCredentialDisplayMetadataKey)
 }
 
 export function setDidCommCredentialMetadata(
   credentialExchangeRecord: DidCommCredentialExchangeRecord | W3cCredentialRecord,
-  metadata: DidCommCredentialDisplayMetadata,
+  metadata: DidCommCredentialDisplayMetadata
 ) {
   credentialExchangeRecord.metadata.set(didCommCredentialDisplayMetadataKey, metadata)
 }
 
 export function getDidCommPresentationDisplayMetadata(
-  proofExchangeRecord: DidCommProofExchangeRecord,
+  proofExchangeRecord: DidCommProofExchangeRecord
 ): DidCommPresentationDisplayMetadata | null {
   return proofExchangeRecord.metadata.get(didCommPresentationDisplayMetadataKey)
 }
 
 export function setDidCommPresentationMetadata(
   proofExchangeRecord: DidCommProofExchangeRecord,
-  metadata: DidCommPresentationDisplayMetadata,
+  metadata: DidCommPresentationDisplayMetadata
 ) {
   proofExchangeRecord.metadata.set(didCommPresentationDisplayMetadataKey, metadata)
 }

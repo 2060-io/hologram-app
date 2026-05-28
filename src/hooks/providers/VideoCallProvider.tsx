@@ -6,28 +6,25 @@ import {
   DidCommCallType,
 } from '@2060.io/credo-ts-didcomm-calls'
 import { DidCommEventTypes, DidCommMessageProcessedEvent, DidCommMessageSentEvent } from '@credo-ts/didcomm'
-import React, { PropsWithChildren, useState, useEffect, useRef, useCallback } from 'react'
-import { useTranslation } from 'react-i18next'
-import { StyleSheet, View } from 'react-native'
-import InCallManager from 'react-native-incall-manager'
-
-import { useChats, useMobileAgent } from '../agent'
-import { useNetwork } from '../useNetwork'
-
-import { useLocalRealm } from './RealmProvider'
-import {
-  VideoCallContext,
-  StateProps,
-  StartCallPros,
-  ConnectionStatus,
-  CallStatus,
-  CallInfo,
-} from './useVideoCallContext'
-
-import { VideoCall, IncomingCall } from '@src/components'
+import { IncomingCall, VideoCall } from '@src/components'
 import { Modal } from '@src/components/common'
 import { handleCameraPermission, handleMicrophonePermission } from '@src/utils/permissions'
 import { toast } from '@src/utils/toast'
+import React, { PropsWithChildren, useCallback, useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { StyleSheet, View } from 'react-native'
+import InCallManager from 'react-native-incall-manager'
+import { useChats, useMobileAgent } from '../agent'
+import { useNetwork } from '../useNetwork'
+import { useLocalRealm } from './RealmProvider'
+import {
+  CallInfo,
+  CallStatus,
+  ConnectionStatus,
+  StartCallPros,
+  StateProps,
+  VideoCallContext,
+} from './useVideoCallContext'
 
 const stateInitialValues: StateProps = {
   isCameraOn: false,
@@ -63,7 +60,7 @@ export const VideoCallProvider: React.FC<PropsWithChildren> = ({ children }) => 
   }, [isNetworkConnected])
 
   const updateState = (newStateValues: Partial<StateProps>) => {
-    setState(prevState => ({ ...prevState, ...newStateValues }))
+    setState((prevState) => ({ ...prevState, ...newStateValues }))
     stateRef.current = { ...stateRef.current, ...newStateValues }
   }
 
@@ -140,12 +137,7 @@ export const VideoCallProvider: React.FC<PropsWithChildren> = ({ children }) => 
   }
 
   const joinCall = useCallback(
-    async (
-      connectionId: string,
-      callType: DidCommCallType,
-      incomingCallInfo: CallInfo,
-      didcommThreadId: string,
-    ) => {
+    async (connectionId: string, callType: DidCommCallType, incomingCallInfo: CallInfo, didcommThreadId: string) => {
       if (!agent || !connectionId || !callType || !incomingCallInfo) return
       if (!isNetworkConnectedRef.current) {
         toast({ type: 'error', message: t('call.youNeedInternetConnection') })
@@ -167,7 +159,7 @@ export const VideoCallProvider: React.FC<PropsWithChildren> = ({ children }) => 
       })
       await agent.modules.calls.accept({ connectionId: connection.id, parameters: {} })
     },
-    [agent],
+    [agent]
   )
 
   useEffect(() => {
@@ -202,7 +194,7 @@ export const VideoCallProvider: React.FC<PropsWithChildren> = ({ children }) => 
       agent.events.on(DidCommEventTypes.DidCommMessageSent, agentMessageSentListener)
       agent.events.on<DidCommMessageProcessedEvent>(
         DidCommEventTypes.DidCommMessageProcessed,
-        agentMessageProcessedListener,
+        agentMessageProcessedListener
       )
 
       return () => {

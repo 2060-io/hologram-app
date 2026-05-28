@@ -1,11 +1,9 @@
+import { Text } from '@src/components/common'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import React, { memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
-
 import getStyles from './styles'
-
-import { Text } from '@src/components/common'
-import { useTheme } from '@src/hooks/providers/ThemeProvider'
 
 type Props = {
   displayTimeAndTicks: boolean

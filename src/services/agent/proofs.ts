@@ -1,19 +1,17 @@
 import {
+  AnonCredsDidCommProofFormat,
   AnonCredsPresentationPreviewAttribute,
   AnonCredsSelectedCredentials,
   LegacyIndyDidCommProofFormat,
-  AnonCredsDidCommProofFormat,
 } from '@credo-ts/anoncreds'
 import { DidCommMessage, DidCommProofExchangeRecord, DidCommProofFormatPayload } from '@credo-ts/didcomm'
-import { TrustResolutionOutcome } from '@verana-labs/verre'
-
-import { getServiceInfo } from '../trustResolution'
-
-import { MobileAgent } from './MobileAgent'
-import { DidCommPresentationDisplayMetadata, setDidCommPresentationMetadata } from './RecordMetadata'
-import { CredentialMainInfo, sanitizeString } from './display'
-
 import { logError } from '@src/utils'
+import { TrustResolutionOutcome } from '@verana-labs/verre'
+import { getServiceInfo } from '../trustResolution'
+import { CredentialMainInfo, sanitizeString } from './display'
+import { MobileAgent } from './MobileAgent'
+import { acceptProofRequestOrReportNoCompatible } from './proofPresentation'
+import { DidCommPresentationDisplayMetadata, setDidCommPresentationMetadata } from './RecordMetadata'
 
 type SelectedCredentials = {
   [referent: string]: string
@@ -31,6 +29,7 @@ export async function presentProof(options: PresentProofOptions) {
   // get format data to know where to populate the selection
   const { proofFormats } = await agent.didcomm.proofs.getCredentialsForRequest({
     proofExchangeRecordId: proofRecordId,
+    proofFormats: { anoncreds: { filterByNonRevocationRequirements: true } },
   })
 
   let anoncreds: AnonCredsSelectedCredentials | undefined, indy: AnonCredsSelectedCredentials | undefined
@@ -47,7 +46,7 @@ export async function presentProof(options: PresentProofOptions) {
         if (!anoncreds) anoncreds = { attributes: {}, predicates: {}, selfAttestedAttributes: {} }
         // @ts-expect-error Ignoring TS errors as we have just defined the object
         anoncreds.attributes[attributeName] = proofFormats.anoncreds.attributes[attributeName].find(
-          item => item.credentialId === credentialId,
+          (item) => item.credentialId === credentialId
         )
         metadata.credentials.push({ type: 'anoncreds', credentialId })
         break
@@ -59,7 +58,7 @@ export async function presentProof(options: PresentProofOptions) {
         if (!anoncreds) anoncreds = { attributes: {}, predicates: {}, selfAttestedAttributes: {} }
         // @ts-expect-error Ignoring TS errors as we have just defined the object
         anoncreds.predicates[predicateName] = proofFormats.anoncreds.predicates[predicateName].find(
-          item => item.credentialId === credentialId,
+          (item) => item.credentialId === credentialId
         )
         metadata.credentials.push({ type: 'anoncreds', credentialId })
         break
@@ -71,7 +70,7 @@ export async function presentProof(options: PresentProofOptions) {
         if (!indy) indy = { attributes: {}, predicates: {}, selfAttestedAttributes: {} }
         // @ts-expect-error Ignoring TS errors as we have just defined the object
         indy.attributes[attributeName] = proofFormats.indy.attributes[attributeName].find(
-          item => item.credentialId === credentialId,
+          (item) => item.credentialId === credentialId
         )
         metadata.credentials.push({ type: 'indy', credentialId })
         break
@@ -83,7 +82,7 @@ export async function presentProof(options: PresentProofOptions) {
         if (!indy) indy = { attributes: {}, predicates: {}, selfAttestedAttributes: {} }
         // @ts-expect-error Ignoring TS errors as we have just defined the object
         indy.predicates[predicateName] = proofFormats.indy.predicates[predicateName].find(
-          item => item.credentialId === credentialId,
+          (item) => item.credentialId === credentialId
         )
         metadata.credentials.push({ type: 'indy', credentialId })
         break
@@ -104,8 +103,9 @@ export async function presentProof(options: PresentProofOptions) {
 
   await agent.didcomm.proofs.update(proofRecord)
 
-  await agent.didcomm.proofs.acceptRequest({
-    proofExchangeRecordId: proofRecordId,
+  await acceptProofRequestOrReportNoCompatible({
+    agent,
+    proofRecordId,
     proofFormats: proofFormatPayload,
   })
 }
@@ -148,13 +148,10 @@ export const proposalGetCredentialInfo = async (options: { agent: MobileAgent; p
             agent: agent,
             did: credentialDefinitionId,
           })
-          const credentialDefinition = (
-            await agent.modules.anoncreds.getCredentialDefinition(credentialDefinitionId)
-          ).credentialDefinition
+          const credentialDefinition = (await agent.modules.anoncreds.getCredentialDefinition(credentialDefinitionId))
+            .credentialDefinition
           const schemaId = credentialDefinition?.schemaId
-          const schemaName = schemaId
-            ? ((await agent.modules.anoncreds.getSchema(schemaId)).schema?.name ?? '')
-            : ''
+          const schemaName = schemaId ? ((await agent.modules.anoncreds.getSchema(schemaId)).schema?.name ?? '') : ''
           credentialMainInfo = {
             id: '',
             recordId: '',
@@ -176,10 +173,7 @@ export const proposalGetCredentialInfo = async (options: { agent: MobileAgent; p
   }
 }
 
-export const proposalGetCredentialAttributes = async (options: {
-  agent: MobileAgent
-  proofRecordId: string
-}) => {
+export const proposalGetCredentialAttributes = async (options: { agent: MobileAgent; proofRecordId: string }) => {
   const { agent, proofRecordId } = options
   const attributes: Record<string, string> = {}
   const formatData = await agent.didcomm.proofs.getFormatData(proofRecordId)
@@ -193,10 +187,7 @@ export const proposalGetCredentialAttributes = async (options: {
   return attributes
 }
 
-export const getCredentialRevealedAttributes = async (options: {
-  agent: MobileAgent
-  proofRecordId: string
-}) => {
+export const getCredentialRevealedAttributes = async (options: { agent: MobileAgent; proofRecordId: string }) => {
   const { agent, proofRecordId } = options
   const formatData = await agent.didcomm.proofs.getFormatData(proofRecordId)
   const revealedAttributes = formatData.presentation?.anoncreds?.requested_proof.revealed_attrs

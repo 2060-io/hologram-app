@@ -1,11 +1,9 @@
 import { DidCommCredentialExchangeRecord, DidCommCredentialState } from '@credo-ts/didcomm'
-import { useEffect, useState, useTransition } from 'react'
-
-import { useMobileAgent } from './agent'
-import { recordsRemovedByType, recordsUpdatedByType } from './agent/recordUtils'
-
 import { CredentialDetailsForDisplay, getCredentialDetailsFromExchange } from '@src/services/agent/display'
 import { logError } from '@src/utils'
+import { useEffect, useState, useTransition } from 'react'
+import { useMobileAgent } from './agent'
+import { recordsRemovedByType, recordsUpdatedByType } from './agent/recordUtils'
 
 export const useCredentialExchangeForDisplay = (options: { credentialRecordId: string }) => {
   const credentialExchangeRecordId = options.credentialRecordId
@@ -35,11 +33,11 @@ export const useCredentialExchangeForDisplay = (options: { credentialRecordId: s
   useEffect(() => {
     if (!isGettingCredentialDetails) {
       const credentialUpdated$ = recordsUpdatedByType(agent, DidCommCredentialExchangeRecord).subscribe(() =>
-        getCredentialDetails(),
+        getCredentialDetails()
       )
 
       const credentialRemoved$ = recordsRemovedByType(agent, DidCommCredentialExchangeRecord).subscribe(() =>
-        getCredentialDetails(),
+        getCredentialDetails()
       )
 
       return () => {

@@ -1,10 +1,8 @@
-import React, { memo } from 'react'
-import { View } from 'react-native'
-
-import ServiceMainInfo from './ServiceMainInfo'
-
 import ProofOfTrust from '@src/components/common/ProofOfTrust'
 import { ServiceInfo } from '@src/model'
+import React, { memo } from 'react'
+import { View } from 'react-native'
+import ServiceMainInfo from './ServiceMainInfo'
 
 type Props = {
   initialServiceInfo: ServiceInfo

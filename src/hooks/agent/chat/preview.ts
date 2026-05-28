@@ -1,5 +1,3 @@
-import { t } from 'i18next'
-
 import {
   ChatEntryData,
   ChatEntryState,
@@ -9,6 +7,7 @@ import {
   TextMessageMetadata,
   VideoMetadata,
 } from '@src/model'
+import { t } from 'i18next'
 
 /**
  * Returns a string containing a localized preview for a given chat entry. It is mostly used

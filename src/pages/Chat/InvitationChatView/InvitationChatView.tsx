@@ -1,26 +1,25 @@
 import { StackActions, useNavigation } from '@react-navigation/native'
-import { TrustResolutionOutcome } from '@verana-labs/verre'
-import React, { memo, useMemo, useTransition } from 'react'
-import { useTranslation } from 'react-i18next'
-import { View, ActivityIndicator, Image, TouchableOpacity } from 'react-native'
-
-import { BlueButton, Header } from '../components'
-
-import getStyles from './styles'
-
 import defaultAvatar from '@src/assets/images/defaultUser.png'
 import { ConnectionRefusedByAge, SvgIcon, Text, VerifiedIcon } from '@src/components/common'
 import Avatar from '@src/components/common/Avatar/Avatar'
 import { useFetchServiceInfo } from '@src/hooks'
-import { useChatThreadById, useChats, useUserProfile } from '@src/hooks/agent'
+import { useChats, useChatThreadById, useUserProfile } from '@src/hooks/agent'
+import { AgentActionType } from '@src/hooks/agent/actions/AgentAction'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { useValidateKidAgeRestrictions } from '@src/hooks/useValidateKidAgeRestrictions'
 import { ChatEntryRole, InvitationMetadata } from '@src/model'
 import { InvitationState } from '@src/model/InvitationState'
+import { AgentActionQueueSingleton } from '@src/services/AgentActionQueueSingleton'
 import { MobileAgent } from '@src/services/agent/MobileAgent'
 import { acceptInvitation } from '@src/services/agent/oob'
 import { logError } from '@src/utils'
 import { toast } from '@src/utils/toast'
+import { TrustResolutionOutcome } from '@verana-labs/verre'
+import React, { memo, useMemo, useTransition } from 'react'
+import { useTranslation } from 'react-i18next'
+import { ActivityIndicator, Image, TouchableOpacity, View } from 'react-native'
+import { BlueButton, Header } from '../components'
+import getStyles from './styles'
 
 interface Props {
   associatedRecordId: string
@@ -42,9 +41,7 @@ const InvitationChatView = ({ associatedRecordId: outOfBandId, metadata, role, a
   const isReceiver = role === ChatEntryRole.Receiver
   const defaultUserImg = Image.resolveAssetSource(defaultAvatar).uri
   const { imageUrl, label, did, state } = metadata
-  const invitationType = t(
-    isService(did) ? 'chat.invitationRequestService' : 'chat.invitationRequestSubConnection',
-  )
+  const invitationType = t(isService(did) ? 'chat.invitationRequestService' : 'chat.invitationRequestSubConnection')
   const { serviceInfo } = useFetchServiceInfo({ did })
   const minimumAgeRequired = serviceInfo?.minimumAgeRequired ?? 0
   const serviceStatus = serviceInfo?.status ?? TrustResolutionOutcome.INVALID
@@ -62,12 +59,18 @@ const InvitationChatView = ({ associatedRecordId: outOfBandId, metadata, role, a
           outOfBandId,
           label: userProfileData?.displayName,
         })
+        if (connectionRecord?.didcommVersion === 'v2') {
+          AgentActionQueueSingleton.instance.addJob({
+            type: AgentActionType.SendTrustPing,
+            parameters: { connectionId: connectionRecord.id },
+          })
+        }
         const chatThreadId = findOrCreateThread({ connection: connectionRecord! }).id
         navigation.dispatch(
           StackActions.replace('ChatStack', {
             screen: 'Chat',
             params: { chatThreadId },
-          }),
+          })
         )
       } catch (error) {
         logError('Error accepting invitation', error)

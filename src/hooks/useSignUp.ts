@@ -1,17 +1,16 @@
 import { DidCommUserProfileData } from '@2060.io/credo-ts-didcomm-user-profile'
+import { DidCommMediatorPickupStrategy } from '@credo-ts/didcomm'
 import { CommonActions, useNavigation } from '@react-navigation/native'
-import { useCallback, useState } from 'react'
-import Config from 'react-native-config'
-
-import { updateThreadFromServiceInfo } from './agent/chat/services'
-import { useConfig } from './providers/ConfigProvider'
-
 import { useMobileAgent, useUserProfile } from '@src/hooks/agent'
-import RealmSingleton from '@src/services/RealmSingleton'
 import { isRegistered } from '@src/services/agent'
 import { saveInCacheServiceInfo } from '@src/services/agent/cache'
+import RealmSingleton from '@src/services/RealmSingleton'
 import { getServiceInfo } from '@src/services/trustResolution'
 import { log, logError } from '@src/utils'
+import { useCallback, useState } from 'react'
+import Config from 'react-native-config'
+import { updateThreadFromServiceInfo } from './agent/chat/services'
+import { useConfig } from './providers/ConfigProvider'
 
 export const useSignUp = () => {
   const navigation = useNavigation()
@@ -23,29 +22,32 @@ export const useSignUp = () => {
   const { devEnvs } = useConfig()
   const defaultServicePublicDid = Config.DEFAULT_SERVICE_PUBLIC_DID
   const defaultServiceAlias = Config.DEFAULT_SERVICE_ALIAS
-  const cloudAgentPublicDid = devEnvs.CLOUD_AGENT_PUBLIC_DID
+  const mediatorPublicDid = devEnvs.MEDIATOR_PUBLIC_DID
 
   const startSignUp = useCallback(async () => {
     if (!agent || !agent?.isInitialized) throw new Error('Agent not initialized')
 
-    let { connectionRecord: cloudAgentConnection } = await agent.didcomm.oob.receiveImplicitInvitation({
+    let { connectionRecord: mediatorConnection } = await agent.didcomm.oob.receiveImplicitInvitation({
       label: Config.APP_NAME || 'Hologram',
-      did: cloudAgentPublicDid,
-      alias: 'Cloud Agent',
+      did: mediatorPublicDid,
+      alias: 'Mediator',
       autoAcceptConnection: true,
     })
-    if (!cloudAgentConnection) throw new Error('Agency connection not created')
+    if (!mediatorConnection) throw new Error('Agency connection not created')
 
-    cloudAgentConnection = await agent.didcomm.connections.returnWhenIsConnected(cloudAgentConnection.id, {
+    mediatorConnection = await agent.didcomm.connections.returnWhenIsConnected(mediatorConnection.id, {
       timeoutMs: 5000,
     })
 
-    const mediationRecord = await agent.didcomm.mediationRecipient.requestAndAwaitGrant(
-      cloudAgentConnection,
-      5000,
-    )
+    const mediationRecord = await agent.didcomm.mediationRecipient.requestAndAwaitGrant(mediatorConnection)
     await agent.didcomm.mediationRecipient.setDefaultMediator(mediationRecord)
-    await agent.didcomm.mediationRecipient.initiateMessagePickup()
+
+    await agent.didcomm.mediationRecipient.initiateMessagePickup(
+      mediationRecord,
+      mediationRecord.mediationProtocolVersion === 'v2'
+        ? DidCommMediatorPickupStrategy.PickUpV3LiveMode
+        : DidCommMediatorPickupStrategy.PickUpV2LiveMode
+    )
     updateUserProfileData({ displayName: displayName.trim(), displayPicture })
     navigation.dispatch(CommonActions.reset({ index: 0, routes: [{ name: 'Home' }] }))
     const isSignedUp = await isRegistered(agent)
@@ -63,10 +65,9 @@ export const useSignUp = () => {
       })
       if (!defaultServiceConnection) throw new Error('Default service connection not created')
 
-      defaultServiceConnection = await agent.didcomm.connections.returnWhenIsConnected(
-        defaultServiceConnection.id,
-        { timeoutMs: 5000 },
-      )
+      defaultServiceConnection = await agent.didcomm.connections.returnWhenIsConnected(defaultServiceConnection.id, {
+        timeoutMs: 5000,
+      })
       log(`connected with default service ${defaultServicePublicDid}`)
       return true
     } catch (error) {

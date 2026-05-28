@@ -1,12 +1,3 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { View } from 'react-native'
-import { uses24HourClock } from 'react-native-localize'
-
-import BaseConnectionDetails, { ConnectionDetailsProps, WrapperProps } from './BaseConnectionDetails'
-import ConnectionDetailsForService from './ConnectionDetailsForService'
-import getStyles from './styles'
-
 import { Avatar, FullScreenImage, Text } from '@src/components/common'
 import UniversalImage from '@src/components/common/UniversalImage'
 import { useConnectionById } from '@src/hooks/agent'
@@ -18,6 +9,13 @@ import {
   isService,
 } from '@src/utils/connectionUtils'
 import { dateToString } from '@src/utils/dateUtils'
+import React, { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { View } from 'react-native'
+import { uses24HourClock } from 'react-native-localize'
+import BaseConnectionDetails, { ConnectionDetailsProps, WrapperProps } from './BaseConnectionDetails'
+import ConnectionDetailsForService from './ConnectionDetailsForService'
+import getStyles from './styles'
 
 const validateConnectionExists = () => {
   const Wrapper = (props: WrapperProps) => {
@@ -82,10 +80,7 @@ const ConnectionDetails = (props: ConnectionDetailsProps) => {
                 <View style={styles.relatedConnectionContainer}>
                   <Text style={styles.connectionRelatedToText}>{t('connection.connectionManagedBy')}</Text>
                   {parentConnectionPicture.length > 0 && (
-                    <UniversalImage
-                      source={{ uri: parentConnectionPicture }}
-                      style={styles.connectionRelatedToImg}
-                    />
+                    <UniversalImage source={{ uri: parentConnectionPicture }} style={styles.connectionRelatedToImg} />
                   )}
                   <Text style={styles.connectionRelatedToText}>{parentConnectionName}</Text>
                 </View>

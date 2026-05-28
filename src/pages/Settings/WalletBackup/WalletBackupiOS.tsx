@@ -1,10 +1,8 @@
-import React, { useState } from 'react'
-
-import BaseWalletBackup, { backupProgressInitialValues } from './BaseWalletBackup'
-import { WalletBackupPageProps } from './WalletBackupProps'
-
 import { useICloud } from '@src/hooks'
 import { BackupProgressProps } from '@src/hooks/backup'
+import React, { useState } from 'react'
+import BaseWalletBackup, { backupProgressInitialValues } from './BaseWalletBackup'
+import { WalletBackupPageProps } from './WalletBackupProps'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const WalletBackupiOS = (props: WalletBackupPageProps) => {

@@ -10,7 +10,7 @@ import { logError } from './log'
 
 const languageClient = getLocales() // get list of locales
 export const language = languageClient[0].languageCode
-export const initializeI18n = new Promise(resolve => {
+export const initializeI18n = new Promise((resolve) => {
   use(initReactI18next).init(
     {
       fallbackLng: 'en',
@@ -23,9 +23,9 @@ export const initializeI18n = new Promise(resolve => {
       resources: { en, es },
       debug: __DEV__,
     },
-    error => {
+    (error) => {
       resolve('')
       if (error) logError('something went wrong loading i18next', error)
-    },
+    }
   )
 })

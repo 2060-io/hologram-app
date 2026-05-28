@@ -14,14 +14,14 @@ export const manageConnectionStateChangedEvent = (agent: MobileAgent) => {
   const addConnectionChangeListener = () => {
     agent.events.on<DidCommConnectionStateChangedEvent>(
       DidCommConnectionEventTypes.DidCommConnectionStateChanged,
-      connectionsListener,
+      connectionsListener
     )
   }
 
   const removeConnectionChangeListener = () => {
     agent.events.off<DidCommConnectionStateChangedEvent>(
       DidCommConnectionEventTypes.DidCommConnectionStateChanged,
-      connectionsListener,
+      connectionsListener
     )
   }
 

@@ -1,17 +1,15 @@
 import { ParamListBase } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
-import React from 'react'
-import { useTranslation } from 'react-i18next'
-import { View, TouchableOpacity, Keyboard } from 'react-native'
-
-import getStyles from './styles'
-
 import { SvgIcon, Text } from '@src/components/common'
 import { IconsNames } from '@src/components/common/SvgIcon'
 import { IS_ANDROID } from '@src/constants'
-import { useImageCropPicker, ImageOrVideo, useChatActions } from '@src/hooks'
+import { ImageOrVideo, useChatActions, useImageCropPicker } from '@src/hooks'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { compressVideo } from '@src/utils/mediaFileUtils'
+import React from 'react'
+import { useTranslation } from 'react-i18next'
+import { Keyboard, TouchableOpacity, View } from 'react-native'
+import getStyles from './styles'
 
 type Props = {
   closeAttachmentOptions(): void
@@ -52,7 +50,7 @@ const AttachmentOptions: React.FC<Props> = ({
       mediaFileInfo = (await compressVideo(
         mediaFileInfo,
         onCompressingVideoProgress,
-        getVideoCompressionCancellationId,
+        getVideoCompressionCancellationId
       )) as ImageOrVideo | null
     }
     if (mediaFileInfo) {
@@ -84,7 +82,7 @@ const AttachmentOptions: React.FC<Props> = ({
 
   return (
     <View style={styles.container}>
-      {options.map(option => (
+      {options.map((option) => (
         <View style={styles.containerOptionCard} key={option.id}>
           <TouchableOpacity style={styles.containerOption} onPress={onSelectedOption[option.id]}>
             <SvgIcon name={option.icon} fill={theme.colors.primaryText} />

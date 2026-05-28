@@ -1,14 +1,12 @@
-import React, { useCallback } from 'react'
-import { useTranslation, Trans } from 'react-i18next'
-import { View, Linking } from 'react-native'
-
-import { ServiceSecuritySystemMessageProps } from './Props'
-import getStyles from './styles'
-
 import { SvgIcon, Text } from '@src/components/common'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { getFlagEmoji } from '@src/utils'
 import { toast } from '@src/utils/toast'
+import React, { useCallback } from 'react'
+import { Trans, useTranslation } from 'react-i18next'
+import { Linking, View } from 'react-native'
+import { ServiceSecuritySystemMessageProps } from './Props'
+import getStyles from './styles'
 
 const ServiceSecuritySystemMessage = ({ serviceInfo }: ServiceSecuritySystemMessageProps) => {
   const { t } = useTranslation()

@@ -1,20 +1,18 @@
 import { TypedArrayEncoder } from '@credo-ts/core'
 import { DidCommOutOfBandInvitation } from '@credo-ts/didcomm'
-import React, { ElementType, useEffect, useMemo, useTransition } from 'react'
-import { useTranslation } from 'react-i18next'
-import Config from 'react-native-config'
-
-import { HomeTabProps } from './HomeMainProps'
-
 import { Loader } from '@src/components/common'
 import { useMobileAgent } from '@src/hooks/agent'
 import {
-  DidcommInvitationType,
   processInvitation as agentProcessInvitation,
+  DidcommInvitationType,
   getOutOfBandRecordById,
 } from '@src/services/agent'
 import { log, logError } from '@src/utils'
 import { toast } from '@src/utils/toast'
+import React, { ElementType, useEffect, useMemo, useTransition } from 'react'
+import { useTranslation } from 'react-i18next'
+import Config from 'react-native-config'
+import { HomeTabProps } from './HomeMainProps'
 
 const HomeMainContainer = (HomeMainComponent: ElementType) => {
   const WrapperHomeMain = (props: HomeTabProps) => {

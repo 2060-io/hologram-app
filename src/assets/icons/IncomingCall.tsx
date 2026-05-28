@@ -1,7 +1,7 @@
 import React from 'react'
 import Svg, { G, Path, Rect, SvgProps } from 'react-native-svg'
 
-const IncomingCall: React.FC<SvgProps> = props => {
+const IncomingCall: React.FC<SvgProps> = (props) => {
   return (
     <Svg viewBox="0 0 25.68 19.26" {...props}>
       <G data-name="Grupo 2195">

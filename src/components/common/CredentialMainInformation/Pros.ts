@@ -1,7 +1,6 @@
-import { StyleProp, ViewStyle } from 'react-native'
-
 import { ServiceInfo } from '@src/model'
 import { CredentialMainInfo } from '@src/services/agent/display'
+import { StyleProp, ViewStyle } from 'react-native'
 
 export type CredentialMainInformationProps = {
   credentialMainInfo: CredentialMainInfo | null

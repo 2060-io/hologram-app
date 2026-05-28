@@ -1,12 +1,12 @@
 import { W3cCredentialRecord } from '@credo-ts/core'
-import React, { createContext, useState, useEffect, useContext, useCallback } from 'react'
+import React, { createContext, useCallback, useContext, useEffect, useState } from 'react'
 
 import { useMobileAgent } from './MobileAgentProvider'
 import {
   addRecord,
+  RecordsState,
   recordsAddedByType,
   recordsRemovedByType,
-  RecordsState,
   recordsUpdatedByType,
   removeRecord,
   updateRecord,
@@ -51,16 +51,16 @@ export const CredentialsProvider: React.FC<React.PropsWithChildren<Props>> = ({ 
 
   useEffect(() => {
     if (!w3cState.loading) {
-      const credentialAdded$ = recordsAddedByType(agent, W3cCredentialRecord).subscribe(record =>
-        setW3CState(addRecord(record, w3cState)),
+      const credentialAdded$ = recordsAddedByType(agent, W3cCredentialRecord).subscribe((record) =>
+        setW3CState(addRecord(record, w3cState))
       )
 
-      const credentialUpdated$ = recordsUpdatedByType(agent, W3cCredentialRecord).subscribe(record =>
-        setW3CState(updateRecord(record, w3cState)),
+      const credentialUpdated$ = recordsUpdatedByType(agent, W3cCredentialRecord).subscribe((record) =>
+        setW3CState(updateRecord(record, w3cState))
       )
 
-      const credentialRemoved$ = recordsRemovedByType(agent, W3cCredentialRecord).subscribe(record =>
-        setW3CState(removeRecord(record, w3cState)),
+      const credentialRemoved$ = recordsRemovedByType(agent, W3cCredentialRecord).subscribe((record) =>
+        setW3CState(removeRecord(record, w3cState))
       )
 
       return () => {
@@ -73,12 +73,10 @@ export const CredentialsProvider: React.FC<React.PropsWithChildren<Props>> = ({ 
 
   const getCredentialById = useCallback(
     (id: string) => {
-      return w3cState.records.find(credential => credential.id === id)
+      return w3cState.records.find((credential) => credential.id === id)
     },
-    [w3cState.records],
+    [w3cState.records]
   )
 
-  return (
-    <CredentialContext value={{ records: w3cState.records, getCredentialById }}>{children}</CredentialContext>
-  )
+  return <CredentialContext value={{ records: w3cState.records, getCredentialById }}>{children}</CredentialContext>
 }

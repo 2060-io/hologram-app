@@ -16,9 +16,7 @@ export const capitalizeFirstLetter = (word: string) => {
 }
 
 export const getFlagEmoji = (countryCode: string) => {
-  return countryCode
-    .toUpperCase()
-    .replace(/./g, (char: string) => String.fromCodePoint(127397 + char.charCodeAt(0)))
+  return countryCode.toUpperCase().replace(/./g, (char: string) => String.fromCodePoint(127397 + char.charCodeAt(0)))
 }
 
 export const trimText = (text: string, limit?: number) => {

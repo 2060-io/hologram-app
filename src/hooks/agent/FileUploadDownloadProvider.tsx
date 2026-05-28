@@ -2,41 +2,28 @@ import { DidCommMediaSharingRepository, SharedMediaItem } from '@2060.io/credo-t
 import { utils } from '@credo-ts/core'
 import { copyFile, downloadFile } from '@dr.pogodin/react-native-fs'
 import { useAudioPlayer } from '@simform_solutions/react-native-audio-waveform'
-import React, { useEffect, useCallback, useRef, useState } from 'react'
+import { MediaDownloadState, MediaUploadState, UploadTask } from '@src/model'
+import { BUCKET_NAME, s3UploadFile } from '@src/services/fileUploadService'
+import { AUTOMATIC_MEDIA_DOWNLOAD_VALUES_PERSIST_KEY, getStorageData, setStorageData } from '@src/services/localStorage'
+import { log, logError } from '@src/utils'
+import { decryptFile, encryptFile } from '@src/utils/ciphering'
+import { deleteFile, getFileExtension, getLocalMediaFilePath, mediaDirectoryPath, moveFile } from '@src/utils/RNFS'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { createChunks } from 'react-native-local-native-modules'
-
 import { generateFileName } from '../media/files'
 import { createLocalPreview } from '../media/preview'
 import { useConfig } from '../providers/ConfigProvider'
 import { useLocalRealm } from '../providers/RealmProvider'
-
 import { useAgentActionQueue } from './AgentActionQueueProvider'
-import { useMobileAgent } from './MobileAgentProvider'
 import { AgentActionType } from './actions/AgentAction'
 import { ShareMediaParameters } from './actions/types'
+import { useMobileAgent } from './MobileAgentProvider'
 import {
   AutomaticDownloadTypes,
-  DownloadOptions,
   DidCommMediaFileSharingData,
+  DownloadOptions,
   FileUploadDownloadContext,
 } from './useFileUploadDownload'
-
-import { MediaDownloadState, MediaUploadState, UploadTask } from '@src/model'
-import { BUCKET_NAME, s3UploadFile } from '@src/services/fileUploadService'
-import {
-  AUTOMATIC_MEDIA_DOWNLOAD_VALUES_PERSIST_KEY,
-  getStorageData,
-  setStorageData,
-} from '@src/services/localStorage'
-import { log, logError } from '@src/utils'
-import {
-  deleteFile,
-  getFileExtension,
-  getLocalMediaFilePath,
-  mediaDirectoryPath,
-  moveFile,
-} from '@src/utils/RNFS'
-import { decryptFile, encryptFile } from '@src/utils/ciphering'
 
 const AUDIO_WAVEFORM_NUMBER_OF_CANDLES = 30
 const { Pending, Uploading, Done, ErrorUploading } = MediaUploadState
@@ -63,9 +50,8 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
   const { realm } = useLocalRealm()
   const { devEnvs } = useConfig()
   const { extractWaveformData } = useAudioPlayer()
-  const [automaticDownloadValues, setAutomaticDownloadValues] = useState<AutomaticDownloadTypes>(
-    defaultAutomaticDownloadValues,
-  )
+  const [automaticDownloadValues, setAutomaticDownloadValues] =
+    useState<AutomaticDownloadTypes>(defaultAutomaticDownloadValues)
   const s3ServerUrl = devEnvs.S3_SERVER_URL
 
   // TODO: Make persistent using realm
@@ -75,7 +61,7 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
   useEffect(() => {
     const setupAutomaticDownloadValues = async () => {
       const persistedAutomaticDownloadValues = (await getStorageData(
-        AUTOMATIC_MEDIA_DOWNLOAD_VALUES_PERSIST_KEY,
+        AUTOMATIC_MEDIA_DOWNLOAD_VALUES_PERSIST_KEY
       )) as AutomaticDownloadTypes
       if (persistedAutomaticDownloadValues && matchAutomaticDownloadTypes(persistedAutomaticDownloadValues)) {
         setAutomaticDownloadValues(persistedAutomaticDownloadValues)
@@ -92,7 +78,7 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
     const realmUploadTasks = realm.objects(UploadTask)
     uploadTasks.current = Array.from(realmUploadTasks)
 
-    const onUploadTaskChange: Realm.CollectionChangeCallback<UploadTask> = newUploadTasks => {
+    const onUploadTaskChange: Realm.CollectionChangeCallback<UploadTask> = (newUploadTasks) => {
       uploadTasks.current = Array.from(newUploadTasks)
     }
     realmUploadTasks.addListener(onUploadTaskChange)
@@ -109,7 +95,7 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
       setAutomaticDownloadValues(newAutomaticDownloadValues)
       await setStorageData(AUTOMATIC_MEDIA_DOWNLOAD_VALUES_PERSIST_KEY, newAutomaticDownloadValues)
     },
-    [automaticDownloadValues],
+    [automaticDownloadValues]
   )
 
   const getAudioWaveform = useCallback(async (filePath: string) => {
@@ -150,11 +136,7 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
       const localFilePath = getLocalMediaFilePath(filename)
       const downloadLocalFilePath = ciphering ? `${localFilePath}.encrypted` : localFilePath
       try {
-        await agent.modules.media.setMetadata(
-          mediaRecord.id,
-          'mediaDownloadState',
-          MediaDownloadState.Downloading,
-        )
+        await agent.modules.media.setMetadata(mediaRecord.id, 'mediaDownloadState', MediaDownloadState.Downloading)
 
         if (!uri) {
           throw new Error('No URI found in media sharing item')
@@ -165,7 +147,7 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
           if (url.hostname === 'localhost' || url.hostname === '127.0.0.1') {
             throw new Error(
               `Cannot download media from localhost URI: ${uri}. The server may have provided 
-              an incorrect URL.`,
+              an incorrect URL.`
             )
           }
         } catch (e) {
@@ -180,7 +162,7 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
           toFile: downloadLocalFilePath,
           progressInterval: 2000,
           begin: () => log(`Download of file ${uri} started`),
-          progress: progress => {
+          progress: (progress) => {
             if (item.byteCount) {
               const currentProgress = Math.ceil((progress.bytesWritten / item.byteCount) * 100)
               agent.modules.media.setMetadata(mediaRecord.id, 'mediaDownloadProgress', currentProgress)
@@ -213,11 +195,7 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
           const localPreviewFilePath = await createLocalPreview({ mimeType, localFilePath })
           // Paths to media and preview are stored relative to app's documents directory
           if (localPreviewFilePath) {
-            await agent.modules.media.setMetadata(
-              mediaRecord.id,
-              'localPreviewFilePath',
-              localPreviewFilePath,
-            )
+            await agent.modules.media.setMetadata(mediaRecord.id, 'localPreviewFilePath', localPreviewFilePath)
           }
         }
 
@@ -231,7 +209,7 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
         await agent.modules.media.setMetadata(mediaRecord.id, 'mediaDownloadProgress', undefined)
       }
     },
-    [agent],
+    [agent]
   )
 
   const startMediaUpload = useCallback(
@@ -242,8 +220,7 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
       deleteOriginalFile?: boolean
     }) => {
       if (!realm) return
-      const { didcommConnectionIds, didcommMediaFileSharingData, didcommThreadId, deleteOriginalFile } =
-        options
+      const { didcommConnectionIds, didcommMediaFileSharingData, didcommThreadId, deleteOriginalFile } = options
       const {
         fileName: originalFileName,
         mime: mimeType,
@@ -334,21 +311,21 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
         onMultipartCreated: async () => {
           await setMediaUploadState(newTask, Uploading)
         },
-        onProgress: async progress => {
+        onProgress: async (progress) => {
           log(`Uploading file with key ${fileId} progress: ${progress}%`)
           onUploadProgress(newTask, progress)
         },
-        onError: async error => {
+        onError: async (error) => {
           logError(`Error uploading file with key ${fileId}: ${error}`)
           await setMediaUploadState(newTask, ErrorUploading)
         },
-        onUploadComplete: async result => {
+        onUploadComplete: async (result) => {
           log(`Upload complete for file with key ${fileId}`, result)
           onUploadComplete(newTask)
         },
       })
     },
-    [agent, s3ServerUrl, realm],
+    [agent, s3ServerUrl, realm]
   )
 
   const retryMediaUpload = useCallback(
@@ -367,7 +344,7 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
         mediaSharingRepository.update(agent.context, mediaRecord)
       }
       // Find the corresponding task
-      const task = uploadTasks.current.find(item => item.fileId === fileId)
+      const task = uploadTasks.current.find((item) => item.fileId === fileId)
       if (!task) throw new Error(`Cannot find ongoing upload with id ${fileId}`)
       s3UploadFile({
         agent,
@@ -377,21 +354,21 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
         onMultipartCreated: async () => {
           await setMediaUploadState(task, Uploading)
         },
-        onProgress: async progress => {
+        onProgress: async (progress) => {
           log(`Retrying upload file with key ${task.fileId} progress: ${progress}%`)
           onUploadProgress(task, progress)
         },
-        onError: async error => {
+        onError: async (error) => {
           logError(`Error retrying upload file with key ${task.fileId}: ${error}`)
           await setMediaUploadState(task, ErrorUploading)
         },
-        onUploadComplete: async result => {
+        onUploadComplete: async (result) => {
           log(`Retry upload file with key ${task.fileId} complete`, result)
           onUploadComplete(task)
         },
       })
     },
-    [agent, s3ServerUrl, realm],
+    [agent, s3ServerUrl, realm]
   )
 
   const setMediaUploadState = useCallback(
@@ -404,7 +381,7 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
         await agent.modules.media.setMetadata(mediaRecordId, 'mediaUploadState', mediaUploadState)
       }
     },
-    [agent, realm],
+    [agent, realm]
   )
 
   const onUploadProgress = useCallback(
@@ -416,13 +393,13 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
         await agent.modules.media.setMetadata(taskMediaRecordId, 'mediaUploadProgress', progress)
       }
     },
-    [agent],
+    [agent]
   )
 
   const onUploadComplete = useCallback(
     async (task: UploadTask) => {
       if (!agent) return
-      task.chunks.forEach(chunk => deleteFile(chunk))
+      task.chunks.forEach((chunk) => deleteFile(chunk))
       for (const mediaRecordId of task.mediaRecordIds) {
         const relatedRecord = await agent.modules.media.findById(mediaRecordId)
         if (!relatedRecord) continue
@@ -434,7 +411,7 @@ export const FileUploadDownloadProvider: React.FC<Props> = ({ children }) => {
         realm.delete(task)
       })
     },
-    [agent],
+    [agent]
   )
   return (
     <FileUploadDownloadContext

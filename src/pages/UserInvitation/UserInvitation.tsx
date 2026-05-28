@@ -1,26 +1,19 @@
-import React, { useEffect } from 'react'
-import { useTranslation } from 'react-i18next'
-import { View, TouchableOpacity, Platform } from 'react-native'
-import QRCode from 'react-native-qrcode-svg'
-import Share, { ShareOptions } from 'react-native-share'
-
-import { UserInvitationProps } from './UserInvitationProps'
-import getStyles from './styles'
-import withUserInvitation from './withUserInvitation'
-
-import { Avatar, Text, MainButton } from '@src/components/common'
+import { Avatar, MainButton, Text } from '@src/components/common'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { getGlobalStyles } from '@src/styles'
 import { logError } from '@src/utils'
 import { getPictureDataUrl } from '@src/utils/connectionUtils'
 import { widthPercentageToDP } from '@src/utils/responsiveUtils'
+import React, { useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
+import { Platform, TouchableOpacity, View } from 'react-native'
+import QRCode from 'react-native-qrcode-svg'
+import Share, { ShareOptions } from 'react-native-share'
+import getStyles from './styles'
+import { UserInvitationProps } from './UserInvitationProps'
+import withUserInvitation from './withUserInvitation'
 
-const UserInvitation = ({
-  navigation,
-  invitation,
-  userProfileData,
-  createNewInvitation,
-}: UserInvitationProps) => {
+const UserInvitation = ({ navigation, invitation, userProfileData, createNewInvitation }: UserInvitationProps) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
@@ -63,7 +56,7 @@ const UserInvitation = ({
             ],
           },
           default: { title, url, message: title, failOnCancel: false },
-        }),
+        })
       )
     } catch (error) {
       logError('Error sharing invitation', error)

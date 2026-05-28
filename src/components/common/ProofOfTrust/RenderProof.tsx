@@ -1,15 +1,13 @@
 /* eslint-disable react/no-unstable-nested-components */
-import React, { memo } from 'react'
-import { View } from 'react-native'
-
-import Text from '../Text'
-import VerifiedIcon from '../VerifiedIcon'
-
-import getStyles from './styles'
 
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
-import { ServiceInfo, ServiceProvider, ServiceStatus, BaseEntity } from '@src/model'
+import { BaseEntity, ServiceInfo, ServiceProvider, ServiceStatus } from '@src/model'
 import { getFlagEmoji } from '@src/utils'
+import React, { memo } from 'react'
+import { View } from 'react-native'
+import Text from '../Text'
+import VerifiedIcon from '../VerifiedIcon'
+import getStyles from './styles'
 
 export interface ServiceInfoForRenderProof extends ServiceInfo {
   serviceProvider: ServiceProvider

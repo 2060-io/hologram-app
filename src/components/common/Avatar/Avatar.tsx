@@ -1,12 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { TouchableOpacity, View } from 'react-native'
-
-import SmartImage from './SmartImage'
-import getStyles from './styles'
-
 import Text from '@src/components/common/Text'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { widthPercentageToDP } from '@src/utils/responsiveUtils'
+import React, { useEffect, useRef, useState } from 'react'
+import { TouchableOpacity, View } from 'react-native'
+import SmartImage from './SmartImage'
+import getStyles from './styles'
 
 const getNameInitials = (fullName: string) => {
   const nameParts = fullName.trim().split(' ')

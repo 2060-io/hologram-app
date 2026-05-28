@@ -1,13 +1,10 @@
-import React, { createContext, useContext, useState, useCallback, useRef } from 'react'
-import { Keyboard, Vibration } from 'react-native'
-
-import { useScreenLock } from '../providers/ScreenLockProvider'
-
-import { ChatThreadWithParticipants } from './useChatThreads'
-
-import { ChatEntryRole, ChatEntryState, ChatEntryType, RelatedEntryProps, isMediaType } from '@src/model'
+import { ChatEntryRole, ChatEntryState, ChatEntryType, isMediaType, RelatedEntryProps } from '@src/model'
 import { ChatEntryMessage } from '@src/pages/Chat/ChatMessage/Props'
 import { MessageAction } from '@src/pages/Chat/ChatProps'
+import React, { createContext, useCallback, useContext, useRef, useState } from 'react'
+import { Keyboard, Vibration } from 'react-native'
+import { useScreenLock } from '../providers/ScreenLockProvider'
+import { ChatThreadWithParticipants } from './useChatThreads'
 
 export type RepliedMessage = RelatedEntryProps
 
@@ -151,57 +148,57 @@ export const ChatProvider: React.FC<React.PropsWithChildren<Props>> = ({ childre
 
   const setIsRecordingVoiceNote = useCallback((isRecording: boolean = false) => {
     forceDisableScreenLock(isRecording)
-    setState(prevState => ({ ...prevState, isRecordingVoiceNote: isRecording }))
+    setState((prevState) => ({ ...prevState, isRecordingVoiceNote: isRecording }))
   }, [])
 
   const setRepliedMessage = useCallback((message?: RepliedMessage) => {
-    setState(prevState => ({ ...prevState, repliedMessage: message }))
+    setState((prevState) => ({ ...prevState, repliedMessage: message }))
   }, [])
 
   const setTappedRepliedMessageChatEntryId = useCallback((id: string | null) => {
-    setState(prevState => ({ ...prevState, tappedRepliedMessageChatEntryId: id }))
+    setState((prevState) => ({ ...prevState, tappedRepliedMessageChatEntryId: id }))
   }, [])
 
   const setSelectedMessage = useCallback((selectedMessage: ChatEntryMessage) => {
-    setState(prevState => ({ ...prevState, selectedMessage }))
+    setState((prevState) => ({ ...prevState, selectedMessage }))
   }, [])
 
   const resetSelectedMessages = useCallback(() => {
-    setState(prevState => ({ ...prevState, selectedMessages: [] }))
+    setState((prevState) => ({ ...prevState, selectedMessages: [] }))
   }, [])
 
   const setIsSelectingMessagesMode = useCallback((isSelectingMessagesMode: boolean) => {
     if (!isSelectingMessagesMode) resetSelectedMessages()
-    setState(prevState => ({ ...prevState, isSelectingMessagesMode }))
+    setState((prevState) => ({ ...prevState, isSelectingMessagesMode }))
   }, [])
 
   const stopSelectingMessagesMode = () => setIsSelectingMessagesMode(false)
 
   const updateSelectedMessages = useCallback((selectedMessage: ChatEntryMessage) => {
-    setState(prevState => {
+    setState((prevState) => {
       const { selectedMessages } = prevState
       const messageIsAlreadySelected = selectedMessages.some(({ id }) => id === selectedMessage.id)
       const newSelectedMessages = messageIsAlreadySelected
-        ? selectedMessages.filter(chatEntry => chatEntry.id !== selectedMessage.id)
+        ? selectedMessages.filter((chatEntry) => chatEntry.id !== selectedMessage.id)
         : [...selectedMessages, selectedMessage]
       return { ...prevState, selectedMessages: newSelectedMessages }
     })
   }, [])
 
   const setChatThread = useCallback((chatThread: ChatThreadWithParticipants) => {
-    setState(prevState => ({ ...prevState, chatThread }))
+    setState((prevState) => ({ ...prevState, chatThread }))
   }, [])
 
   const setShowMessageFloatingMenu = useCallback((showMessageFloatingMenu: boolean) => {
-    setState(prevState => ({ ...prevState, showMessageFloatingMenu }))
+    setState((prevState) => ({ ...prevState, showMessageFloatingMenu }))
   }, [])
 
   const setDisplayReportMessageConfirmation = useCallback((displayReportMessageConfirmation: boolean) => {
-    setState(prevState => ({ ...prevState, displayReportMessageConfirmation }))
+    setState((prevState) => ({ ...prevState, displayReportMessageConfirmation }))
   }, [])
 
   const setModalConfirmMessageDeletion = useCallback((modalConfirmMessageDeletion: boolean) => {
-    setState(prevState => ({ ...prevState, modalConfirmMessageDeletion }))
+    setState((prevState) => ({ ...prevState, modalConfirmMessageDeletion }))
   }, [])
 
   const closeMessageFloatingMenu = useCallback(() => {

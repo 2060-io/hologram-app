@@ -1,12 +1,10 @@
 import { DidCommMediatorPickupStrategy } from '@credo-ts/didcomm'
+import { MobileAgent } from '@src/services/agent'
+import { log, logWarn } from '@src/utils'
 import { useEffect } from 'react'
-
 import { useLocalRealm } from '../providers/RealmProvider'
 import { useScreenLock } from '../providers/ScreenLockProvider'
 import { useAppState } from '../useAppState'
-
-import { MobileAgent } from '@src/services/agent'
-import { log, logWarn } from '@src/utils'
 
 /**
  * Hook to manage message pickup initialization and stopping
@@ -53,10 +51,20 @@ export function useMessagePickup({ agent, isEnabled }: { agent?: MobileAgent; is
 export async function initiateMessagePickup(agent: MobileAgent) {
   agent.config.logger.info('Starting Message Pickup')
 
-  // Initiate message pickup from the mediator. Passing no mediator, will use default mediator
+  // Get mediator record to get the mediator connection ID
+  const mediatorRecord = await agent.didcomm.mediationRecipient.findDefaultMediator()
+  if (!mediatorRecord) {
+    agent.config.logger.warn('No mediator record found, skipping message pickup')
+    return
+  }
+
+  // Initiate message pickup from the mediator. We assume that if Coordinate Mediation v1 was used,
+  // we are under a DIDComm v1 context and we should use PickUpV2LiveMode, otherwise we use PickUpV3LiveMode
   await agent.didcomm.mediationRecipient.initiateMessagePickup(
-    undefined,
-    DidCommMediatorPickupStrategy.PickUpV2LiveMode,
+    mediatorRecord,
+    mediatorRecord.mediationProtocolVersion === 'v2'
+      ? DidCommMediatorPickupStrategy.PickUpV3LiveMode
+      : DidCommMediatorPickupStrategy.PickUpV2LiveMode
   )
 }
 

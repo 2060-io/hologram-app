@@ -2,31 +2,25 @@ import { CallOfferMessage, DidCommCallRole } from '@2060.io/credo-ts-didcomm-cal
 import { DidCommShareMediaMessage } from '@2060.io/credo-ts-didcomm-media-sharing'
 import { MessageReactionsMessage } from '@2060.io/credo-ts-didcomm-reactions'
 import { DidCommMessageReceiptsMessage } from '@2060.io/credo-ts-didcomm-receipts'
-import {
-  DidCommProfileMessage,
-  PictureData,
-  getConnectionProfile,
-} from '@2060.io/credo-ts-didcomm-user-profile'
-import { AgentContext, JsonTransformer, tryParseDid } from '@credo-ts/core'
+import { DidCommProfileMessage, getConnectionProfile, PictureData } from '@2060.io/credo-ts-didcomm-user-profile'
+import { AgentContext, DidKey, JsonTransformer, tryParseDid } from '@credo-ts/core'
 import {
   DidCommConnectionRecord,
   DidCommConnectionRepository,
-  DidCommDidExchangeState,
-  DidCommProtocol,
-  DidCommConnectionsApi,
   DidCommConnectionService,
+  DidCommConnectionsApi,
+  DidCommDidExchangeState,
   DidCommKeylistUpdateAction,
   DidCommMediationRecipientService,
   DidCommOutOfBandInvitation,
   DidCommOutOfBandRole,
+  DidCommProtocol,
+  KeylistUpdateActionV2,
 } from '@credo-ts/didcomm'
-
-import { log, logError, logWarn } from './log'
-
-import { dataUrl } from './index'
-
 import { ConnectionType } from '@src/model'
 import { MobileAgent } from '@src/services/agent/MobileAgent'
+import { dataUrl } from './index'
+import { log, logError, logWarn } from './log'
 
 export const getConnectionDisplayName = (connection: DidCommConnectionRecord) => {
   const profile = getConnectionProfile(connection)
@@ -67,10 +61,7 @@ export const isBlocked = (connection: DidCommConnectionRecord) => connection.get
 export const lastTimeProfileSent = (connection: DidCommConnectionRecord) =>
   connection.getTag('lastTimeProfileSent')?.toString() ?? connection.createdAt.toString()
 
-export const setLastTimeProfileSent = async (
-  connection: DidCommConnectionRecord,
-  agentContext: AgentContext,
-) => {
+export const setLastTimeProfileSent = async (connection: DidCommConnectionRecord, agentContext: AgentContext) => {
   connection.setTag('lastTimeProfileSent', `${new Date()}`)
   await agentContext.dependencyManager.resolve(DidCommConnectionRepository).update(agentContext, connection)
 }
@@ -78,10 +69,7 @@ export const setLastTimeProfileSent = async (
 export const lastTimeProfileReceived = (connection: DidCommConnectionRecord) =>
   connection.getTag('lastTimeProfileReceived')?.toString() ?? connection.createdAt.toString()
 
-export const setLastTimeProfileReceived = async (
-  connection: DidCommConnectionRecord,
-  agentContext: AgentContext,
-) => {
+export const setLastTimeProfileReceived = async (connection: DidCommConnectionRecord, agentContext: AgentContext) => {
   connection.setTag('lastTimeProfileReceived', `${new Date()}`)
   await agentContext.dependencyManager.resolve(DidCommConnectionRepository).update(agentContext, connection)
 }
@@ -128,20 +116,18 @@ export const getConnectionType = (connectionRecord: DidCommConnectionRecord) => 
 
 export const getConnectionParentId = (connectionRecord?: DidCommConnectionRecord) =>
   connectionRecord?.getTag('parentConnectionId') as string | undefined
-export const filterConnectionsByParentId = (
-  connections: DidCommConnectionRecord[],
-  parentConnectionId: string,
-) => connections.filter(connection => connection.getTag('parentConnectionId') === parentConnectionId)
+export const filterConnectionsByParentId = (connections: DidCommConnectionRecord[], parentConnectionId: string) =>
+  connections.filter((connection) => connection.getTag('parentConnectionId') === parentConnectionId)
 
 export const notAllowedConnectionsIdsToSendMessages = (connections: DidCommConnectionRecord[]) => {
   return connections
-    .filter(connection => connection.state !== DidCommDidExchangeState.Completed || isBlocked(connection))
+    .filter((connection) => connection.state !== DidCommDidExchangeState.Completed || isBlocked(connection))
     .map(({ id }) => id)
 }
 
 export const findExistingConnection = async (
   agentContext: AgentContext,
-  invitation: DidCommOutOfBandInvitation,
+  invitation: DidCommOutOfBandInvitation
 ): Promise<DidCommConnectionRecord | undefined> => {
   // If it is an invitation from a public DID, check if there is a connection established with it
   const existingConnections = await agentContext.dependencyManager
@@ -174,7 +160,7 @@ export const deletePendingConnection = async (agent: MobileAgent, connection: Di
 const updateConnectionMediationKeylist = async (
   agent: MobileAgent,
   record: DidCommConnectionRecord,
-  action: DidCommKeylistUpdateAction,
+  action: DidCommKeylistUpdateAction
 ) => {
   if (record.mediatorId && record.did) {
     const did = await agent.dids.resolve(record.did)
@@ -182,16 +168,31 @@ const updateConnectionMediationKeylist = async (
     if (did.didDocument) {
       const mediationRecipientService = agent.dependencyManager.resolve(DidCommMediationRecipientService)
       const mediationRecord = await mediationRecipientService.getById(agent.context, record.mediatorId)
-      await mediationRecipientService.keylistUpdateAndAwait(
-        agent.context,
-        mediationRecord,
-        did.didDocument.getRecipientKeysWithVerificationMethod({ mapX25519ToEd25519: true }).map(item => {
-          return {
+
+      if (mediationRecord.mediationProtocolVersion === 'v2') {
+        // CM 2.0: keylist stores recipient DIDs (did:key), not raw keys
+        const v2Action =
+          action === DidCommKeylistUpdateAction.add ? KeylistUpdateActionV2.add : KeylistUpdateActionV2.remove
+        const recipientDids = did.didDocument
+          .getRecipientKeysWithVerificationMethod({ mapX25519ToEd25519: true })
+          .map((item) => new DidKey(item.publicJwk).did)
+
+        await mediationRecipientService.keylistUpdateAndAwaitV2(
+          agent.context,
+          mediationRecord,
+          recipientDids.map((recipientDid) => ({ recipientDid, action: v2Action }))
+        )
+      } else {
+        // CM 1.0: keylist stores recipient keys
+        await mediationRecipientService.keylistUpdateAndAwait(
+          agent.context,
+          mediationRecord,
+          did.didDocument.getRecipientKeysWithVerificationMethod({ mapX25519ToEd25519: true }).map((item) => ({
             recipientKey: item.publicJwk,
             action,
-          }
-        }),
-      )
+          }))
+        )
+      }
     }
   }
 }

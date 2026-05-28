@@ -1,8 +1,7 @@
+import { log, logError } from '@src/utils'
 import { MobileAgent } from './agent/MobileAgent'
 import { KeyChainService, retrieveEncryptedKey } from './keys'
 import { setupMobileAgent } from './setupMobileAgent'
-
-import { logError, log } from '@src/utils'
 
 export class AgentSingleton {
   private static agentInstance: AgentSingleton
@@ -13,10 +12,10 @@ export class AgentSingleton {
   private isAppSubscribedToConnectionEvents = false
 
   static get instance() {
-    if (!this.agentInstance) {
-      this.agentInstance = new AgentSingleton()
+    if (!AgentSingleton.agentInstance) {
+      AgentSingleton.agentInstance = new AgentSingleton()
     }
-    return this.agentInstance
+    return AgentSingleton.agentInstance
   }
 
   async setupMobileAgent() {

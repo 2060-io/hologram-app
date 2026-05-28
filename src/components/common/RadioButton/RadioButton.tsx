@@ -1,9 +1,7 @@
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import React from 'react'
 import { View, ViewStyle } from 'react-native'
-
 import getStyles from './styles'
-
-import { useTheme } from '@src/hooks/providers/ThemeProvider'
 
 type Props = {
   style?: ViewStyle
@@ -14,9 +12,7 @@ const RadioButton = ({ style, isChecked }: Props) => {
   const theme = useTheme()
   const styles = getStyles(theme)
   return (
-    <View style={[styles.radioButtonOutside, style]}>
-      {isChecked && <View style={styles.radioButtonInside} />}
-    </View>
+    <View style={[styles.radioButtonOutside, style]}>{isChecked && <View style={styles.radioButtonInside} />}</View>
   )
 }
 

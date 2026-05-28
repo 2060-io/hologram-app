@@ -1,23 +1,15 @@
+import { AgentContext, CredoError, DidsApi, EventEmitter, JsonEncoder, Logger, TypedArrayEncoder } from '@credo-ts/core'
 import {
-  CredoError,
-  EventEmitter,
-  Logger,
-  TypedArrayEncoder,
-  JsonEncoder,
-  AgentContext,
-  DidsApi,
-} from '@credo-ts/core'
-import {
-  DidCommEventTypes,
-  DidCommMessageReceivedEvent,
   DidCommConnectionRecord,
+  DidCommEventTypes,
+  DidCommMediationRecipientApi,
+  DidCommMessageReceivedEvent,
   DidCommOutboundPackage,
   DidCommOutboundTransport,
-  DidCommOutboundWebSocketOpenedEvent,
   DidCommOutboundWebSocketClosedEvent,
+  DidCommOutboundWebSocketOpenedEvent,
   DidCommTransportEventTypes,
   isValidJweStructure,
-  DidCommMediationRecipientApi,
 } from '@credo-ts/didcomm'
 import WebSocket from 'ws'
 
@@ -43,6 +35,13 @@ export class MobileWsOutboundTransport implements DidCommOutboundTransport {
   private defaultMediatorConnection?: DidCommConnectionRecord | null
   public constructor() {
     this.mediatorEndpoints = []
+  }
+
+  private addMediatorEndpoint(endpoint: string) {
+    if (!this.mediatorEndpoints.includes(endpoint)) {
+      this.mediatorEndpoints.push(endpoint)
+      this.logger.debug(`Added mediator endpoint '${endpoint}'`)
+    }
   }
 
   public isConnectedTo(connectionId: string) {
@@ -77,7 +76,7 @@ export class MobileWsOutboundTransport implements DidCommOutboundTransport {
       const didDoc = await this.agentContext
         .resolve(DidsApi)
         .resolveDidDocument(this.defaultMediatorConnection.theirDid)
-      this.mediatorEndpoints = didDoc.didCommServices.map(service => service.serviceEndpoint)
+      this.mediatorEndpoints = didDoc.didCommServices.map((service) => service.serviceEndpoint as string)
     }
 
     this.startIdleSocketTimer()
@@ -88,7 +87,7 @@ export class MobileWsOutboundTransport implements DidCommOutboundTransport {
 
     setInterval(() => {
       const currentDate = new Date()
-      this.transportTable.forEach(item => {
+      this.transportTable.forEach((item) => {
         if (item.shallKeepOpened) return
 
         if (currentDate.valueOf() - item.lastActivity.valueOf() > checkInterval) {
@@ -102,7 +101,7 @@ export class MobileWsOutboundTransport implements DidCommOutboundTransport {
 
   public async stop() {
     this.logger.debug('Stopping WS outbound transport')
-    this.transportTable.forEach(item => {
+    this.transportTable.forEach((item) => {
       item.ws.removeEventListener('message', this.handleMessageEvent)
       item.ws.close()
       this.logger.debug('Socket closed!')
@@ -123,7 +122,7 @@ export class MobileWsOutboundTransport implements DidCommOutboundTransport {
 
     // Check if mediator endpoint is among services related to the outbound message.
     // In that case, do not close socket
-    const isMediatorEndpoint = this.mediatorEndpoints.some(value => value === endpoint)
+    const isMediatorEndpoint = this.mediatorEndpoints.some((value) => value === endpoint)
 
     socket.ws.send(TypedArrayEncoder.fromUtf8String(JSON.stringify(payload)))
 
@@ -172,6 +171,7 @@ export class MobileWsOutboundTransport implements DidCommOutboundTransport {
         .resolve(DidCommMediationRecipientApi)
         .findByConnectionId(connectionId)
       if (mediationRecord) {
+        this.addMediatorEndpoint(endpoint ?? socketId)
         this.agentContext.resolve(EventEmitter).emit<MediatorConnectedEvent>(this.agentContext, {
           type: MediatorEventTypes.MediatorConnected,
           payload: {
@@ -198,7 +198,7 @@ export class MobileWsOutboundTransport implements DidCommOutboundTransport {
     if (!isValidJweStructure(payload)) {
       throw new Error(
         `Received a response from the other agent but the structure of the
-         incoming message is not a DIDComm message: ${payload}`,
+         incoming message is not a DIDComm message: ${payload}`
       )
     }
 
@@ -247,8 +247,9 @@ export class MobileWsOutboundTransport implements DidCommOutboundTransport {
           this.agentContext
             .resolve(DidCommMediationRecipientApi)
             .findByConnectionId(connectionId)
-            .then(mediationRecord => {
+            .then((mediationRecord) => {
               if (mediationRecord) {
+                this.addMediatorEndpoint(endpoint)
                 this.eventEmitter.emit<MediatorConnectedEvent>(this.agentContext, {
                   type: MediatorEventTypes.MediatorConnected,
                   payload: {
@@ -261,10 +262,10 @@ export class MobileWsOutboundTransport implements DidCommOutboundTransport {
         }
       }
 
-      ws.onmessage = event => this.handleMessageEvent(event)
+      ws.onmessage = (event) => this.handleMessageEvent(event)
 
-      ws.onerror = error => {
-        this.logger.debug(`Error while connecting to WebSocket ${endpoint}`, {
+      ws.onerror = (error) => {
+        this.logger.debug(`WebSocket error for ${endpoint}`, {
           error,
         })
         reject(error)

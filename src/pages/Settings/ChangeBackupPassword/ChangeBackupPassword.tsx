@@ -1,23 +1,15 @@
 import { StackScreenProps } from '@react-navigation/stack'
-import { TrustResolutionOutcome } from '@verana-labs/verre'
-import React, { useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import {
-  View,
-  TouchableOpacity,
-  Keyboard,
-  KeyboardAvoidingView,
-  TouchableWithoutFeedback,
-} from 'react-native'
-
-import getStyles from './styles'
-
+import { MainButton, SvgIcon, Text, TextInputPassword, VerifiedIcon } from '@src/components/common'
 import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
-import { SvgIcon, Text, TextInputPassword, MainButton, VerifiedIcon } from '@src/components/common'
 import { IS_IOS } from '@src/constants'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { toast } from '@src/utils/toast'
 import { setBackupKey } from '@src/utils/walletBackUpUtils'
+import { TrustResolutionOutcome } from '@verana-labs/verre'
+import React, { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { Keyboard, KeyboardAvoidingView, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
+import getStyles from './styles'
 
 enum PasswordSteps {
   TypePass = 'typePass',

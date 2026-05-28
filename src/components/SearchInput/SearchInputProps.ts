@@ -1,5 +1,5 @@
 import { ReactElement } from 'react'
-import { StyleProp, ViewStyle, TextInputProps } from 'react-native'
+import { StyleProp, TextInputProps, ViewStyle } from 'react-native'
 
 export type SearchInputProps = {
   containerStyle?: StyleProp<ViewStyle>

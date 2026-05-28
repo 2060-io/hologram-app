@@ -1,22 +1,19 @@
 import { MrtdProblemReportReason } from '@2060.io/credo-ts-didcomm-mrtd'
 import { useNavigation } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
-import React from 'react'
-import { useTranslation } from 'react-i18next'
-import { View } from 'react-native'
-
-import { BlueButton, Header, OutlinedBlueButton, State } from '../components'
-
-import { Props } from './MrzRequestChatViewProps'
-import getStyles from './styles'
-
-import { ChatStackParams } from '@src/components/Navigation/NavigationProps'
 import { SvgIcon, Text } from '@src/components/common'
+import { ChatStackParams } from '@src/components/Navigation/NavigationProps'
 import { useChat, useMobileAgent } from '@src/hooks/agent'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { MrzRequestState } from '@src/model'
 import { handleCameraPermission } from '@src/utils/permissions'
 import { widthPercentageToDP } from '@src/utils/responsiveUtils'
+import React from 'react'
+import { useTranslation } from 'react-i18next'
+import { View } from 'react-native'
+import { BlueButton, Header, OutlinedBlueButton, State } from '../components'
+import { Props } from './MrzRequestChatViewProps'
+import getStyles from './styles'
 
 const MrzRequestChatView = (props: Props) => {
   const theme = useTheme()

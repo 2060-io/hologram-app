@@ -1,7 +1,7 @@
 import React from 'react'
 import Svg, { Path, SvgProps } from 'react-native-svg'
 
-const ShareSocial: React.FC<SvgProps> = props => (
+const ShareSocial: React.FC<SvgProps> = (props) => (
   <Svg width={18} height={19.92} viewBox="0 0 18 19.92" {...props}>
     <Path
       data-name="Path 570"

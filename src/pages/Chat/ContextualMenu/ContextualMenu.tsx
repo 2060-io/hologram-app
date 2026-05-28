@@ -1,11 +1,9 @@
-import React, { memo } from 'react'
-import { TouchableOpacity, View } from 'react-native'
-
-import { ContextualMenuProps } from './ContextualMenuProps'
-import getStyles from './styles'
-
 import { Text, UniversalImage } from '@src/components/common'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import React, { memo } from 'react'
+import { TouchableOpacity, View } from 'react-native'
+import { ContextualMenuProps } from './ContextualMenuProps'
+import getStyles from './styles'
 
 const ContextualMenu = ({ onSelectOption, connectionIconUrl, menu }: ContextualMenuProps) => {
   const theme = useTheme()

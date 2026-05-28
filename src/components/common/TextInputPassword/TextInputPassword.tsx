@@ -1,11 +1,9 @@
-import React, { useState } from 'react'
-import { View, TouchableOpacity, TextInputProps } from 'react-native'
-
-import getStyles from './styles'
-
 import SvgIcon from '@src/components/common/SvgIcon'
 import TextInput from '@src/components/common/TextInput'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import React, { useState } from 'react'
+import { TextInputProps, TouchableOpacity, View } from 'react-native'
+import getStyles from './styles'
 
 const TextInputPassword = (props: TextInputProps) => {
   const [showPassword, setShowPassword] = useState(false)

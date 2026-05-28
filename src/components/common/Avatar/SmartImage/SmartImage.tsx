@@ -1,9 +1,7 @@
-import React, { useEffect } from 'react'
-import { ImageStyle, Image, StyleProp } from 'react-native'
-
-import { useImage } from './useImage'
-
 import UniversalImage, { isSvgUri } from '@src/components/common/UniversalImage'
+import React, { useEffect } from 'react'
+import { Image, ImageStyle, StyleProp } from 'react-native'
+import { useImage } from './useImage'
 
 const isHttpUrl = (uri: string) => uri.startsWith('https://') || uri.startsWith('http://')
 
@@ -21,13 +19,7 @@ type Props = {
   enableImageRefresh?: boolean
 }
 
-const CachedImage = ({
-  uri,
-  setIsValidImageUrl,
-  onImageContent,
-  style,
-  enableImageRefresh = true,
-}: Props) => {
+const CachedImage = ({ uri, setIsValidImageUrl, onImageContent, style, enableImageRefresh = true }: Props) => {
   const onError = () => setIsValidImageUrl?.(false)
   const handleImageContent = onImageContent ?? (() => {})
   const { imageContent } = useImage({ uri, onError, onImageContent: handleImageContent, enableImageRefresh })

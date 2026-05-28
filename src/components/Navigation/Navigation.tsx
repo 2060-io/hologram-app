@@ -1,9 +1,8 @@
-import type { ReactNativeFirebaseAppCheckProvider as ReactNativeFirebaseAppCheckProviderType } from '@react-native-firebase/app-check'
-
 import { getApp } from '@react-native-firebase/app'
+import type { ReactNativeFirebaseAppCheckProvider as ReactNativeFirebaseAppCheckProviderType } from '@react-native-firebase/app-check'
 import * as appCheckModule from '@react-native-firebase/app-check'
 import { getToken, initializeAppCheck } from '@react-native-firebase/app-check'
-import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native'
+import { DarkTheme, DefaultTheme, NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -11,50 +10,48 @@ import { StatusBar, View } from 'react-native'
 import Config from 'react-native-config'
 import 'isomorphic-webcrypto'
 
-import { SvgIcon, HeaderTitle } from '../common'
-
-import ChatStackNavigator from './ChatStackNavigator'
-import Container from './NavigationContainer'
-import { NavigationStackParams } from './NavigationProps'
-import deepLinking from './deepLinking'
-import getStyles from './styles'
-
 import { IS_ANDROID } from '@src/constants'
 import { useNetwork } from '@src/hooks'
 import { useMessagePickup } from '@src/hooks/agent/useMessagePickup'
 import { useConfig } from '@src/hooks/providers/ConfigProvider'
 import {
-  HomeMain,
-  SignUpMain,
-  ProfileCreation,
-  RestoreWalletBackup,
+  ChangeBackupPassword,
   ConnectionDetails,
   ConnectionInvitation,
-  RelatedConnections,
-  UserProfile,
-  WalletBackup,
-  ChangeBackupPassword,
-  UserInvitation,
   Connections,
   ConnectionsForNewChat,
-  Privacy,
-  Developer,
   CredentialDetails,
+  CredentialPresentation,
+  CredentialPresented,
+  Developer,
   DidcommCredentialOffer,
   DidcommPresentationRequest,
-  CredentialPresented,
-  ForwardConnection,
-  PresentCredential,
-  CredentialPresentation,
-  ParentalControl,
-  SelectCredentialAttributes,
-  PresentCredentialsFromChat,
-  PresentCredentialAsQR,
   EphemeralCredentialPresentation,
+  ForwardConnection,
+  HomeMain,
+  ParentalControl,
+  PresentCredential,
+  PresentCredentialAsQR,
+  PresentCredentialsFromChat,
+  Privacy,
+  ProfileCreation,
+  RelatedConnections,
+  RestoreWalletBackup,
+  SelectCredentialAttributes,
+  SignUpMain,
+  UserInvitation,
+  UserProfile,
+  WalletBackup,
 } from '@src/pages'
 import { MobileAgent } from '@src/services/agent'
 import { AppTheme, getGlobalStyles } from '@src/styles'
 import { log, logError } from '@src/utils'
+import { HeaderTitle, SvgIcon } from '../common'
+import ChatStackNavigator from './ChatStackNavigator'
+import deepLinking from './deepLinking'
+import Container from './NavigationContainer'
+import { NavigationStackParams } from './NavigationProps'
+import getStyles from './styles'
 
 // Workaround for @react-native-firebase/app-check v23.8.x bug: the root
 // `index.ts` re-exports `ReactNativeFirebaseAppCheckProvider` as a type

@@ -1,7 +1,7 @@
 import React from 'react'
 import Svg, { Path, SvgProps } from 'react-native-svg'
 
-const Info: React.FC<SvgProps> = props => (
+const Info: React.FC<SvgProps> = (props) => (
   <Svg width={17.12} height={17.12} viewBox="0 0 17.12 17.12" {...props}>
     <Path
       data-name="Path 850"

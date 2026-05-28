@@ -1,13 +1,10 @@
-import React from 'react'
-import { View } from 'react-native'
-
-import CredentialAttributes from '../CredentialAttributes'
-
-import styles from './styles'
-
 import { DumbCredentialMainInformation } from '@src/components/common'
 import { ServiceInfo } from '@src/model'
 import { CredentialDetailsForDisplay } from '@src/services/agent/display'
+import React from 'react'
+import { View } from 'react-native'
+import CredentialAttributes from '../CredentialAttributes'
+import styles from './styles'
 
 type Props = {
   credentialDetails: CredentialDetailsForDisplay
@@ -17,13 +14,7 @@ type Props = {
   failedFetchInfo: boolean
 }
 
-const CredentialDetails = ({
-  credentialDetails,
-  middleInfo,
-  isFetchingInfo,
-  serviceInfo,
-  failedFetchInfo,
-}: Props) => {
+const CredentialDetails = ({ credentialDetails, middleInfo, isFetchingInfo, serviceInfo, failedFetchInfo }: Props) => {
   return (
     <View style={styles.container}>
       <DumbCredentialMainInformation

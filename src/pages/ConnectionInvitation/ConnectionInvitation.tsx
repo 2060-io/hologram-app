@@ -1,16 +1,14 @@
-import React, { useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { View } from 'react-native'
-
-import BaseConnectionInvitation, { ConnectionInvitationProps } from './BaseConnectionInvitation'
-import ConnectionInvitationForVerifiableService from './ConnectionInvitationForVerifiableService'
-import getStyles from './styles'
-
 import { CommunicationChannels } from '@src/components'
 import { Avatar, Text } from '@src/components/common'
 import { useConnectionById } from '@src/hooks/agent'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { getConnectionDisplayName } from '@src/utils/connectionUtils'
+import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { View } from 'react-native'
+import BaseConnectionInvitation, { ConnectionInvitationProps } from './BaseConnectionInvitation'
+import ConnectionInvitationForVerifiableService from './ConnectionInvitationForVerifiableService'
+import getStyles from './styles'
 
 const ConnectionInvitation = ({ navigation, route }: ConnectionInvitationProps) => {
   const { t } = useTranslation()
@@ -64,10 +62,7 @@ const ConnectionInvitation = ({ navigation, route }: ConnectionInvitationProps) 
                 {`${invitation?.label} ${t('invitation.enabledCommunicationChannelsDescription')}`}
               </Text>
               <View style={styles.separator} />
-              <CommunicationChannels
-                channels={communicationChannels}
-                setChannels={setCommunicationChannels}
-              />
+              <CommunicationChannels channels={communicationChannels} setChannels={setCommunicationChannels} />
             </View>
           )}
         </View>

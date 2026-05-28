@@ -1,4 +1,4 @@
-import { TurboModuleRegistry, TurboModule } from 'react-native'
+import { TurboModule, TurboModuleRegistry } from 'react-native'
 
 export type MediaInfo = {
   width: number

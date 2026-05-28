@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 
 import { ConnectionItem, ConnectionsBySections } from './ConnectionList'
 import { useConnectionListForDisplay } from './useConnectionListForDisplay'
@@ -11,14 +11,12 @@ type Props = {
 const getSubConnectionsFiltered = ({ search, connections }: Props) => {
   const connectionsThatMatchWithSearch =
     search.length >= 2
-      ? connections.filter(connection =>
-          connection.name.toLocaleLowerCase().includes(search.toLocaleLowerCase()),
-        )
+      ? connections.filter((connection) => connection.name.toLocaleLowerCase().includes(search.toLocaleLowerCase()))
       : connections
   const connectionsBySections: ConnectionsBySections[] = []
-  connectionsThatMatchWithSearch.forEach(connection => {
+  connectionsThatMatchWithSearch.forEach((connection) => {
     const firstLetter = connection.name.charAt(0).toLocaleLowerCase()
-    const sectionAlreadyExists = connectionsBySections.findIndex(item => item.title === firstLetter)
+    const sectionAlreadyExists = connectionsBySections.findIndex((item) => item.title === firstLetter)
     if (sectionAlreadyExists >= 0) {
       connectionsBySections[sectionAlreadyExists].connections.push(connection)
     } else {

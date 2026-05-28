@@ -21,30 +21,30 @@ import TextInputPassword from './TextInputPassword'
 import UniversalImage from './UniversalImage'
 import VerifiedIcon from './VerifiedIcon'
 
-export * from './ServiceInformation'
 export * from './Buttons'
+export * from './ServiceInformation'
 export {
   Avatar,
   ConnectionMainActions,
+  ConnectionRefusedByAge,
+  CredentialMainInformation,
+  DumbCredentialMainInformation,
+  FullScreenImage,
+  HeaderTitle,
   Icon,
   Loader,
+  MessageStateIcon,
   Modal,
   ModalLoading,
+  OptionsList,
+  Progress,
+  ProofOfTrust,
+  RadioButton,
+  SvgIcon,
   Switch,
   Text,
   TextInput,
   TextInputPassword,
-  SvgIcon,
-  MessageStateIcon,
-  CredentialMainInformation,
-  DumbCredentialMainInformation,
-  OptionsList,
-  VerifiedIcon,
-  Progress,
-  HeaderTitle,
-  ProofOfTrust,
-  RadioButton,
-  FullScreenImage,
-  ConnectionRefusedByAge,
   UniversalImage,
+  VerifiedIcon,
 }

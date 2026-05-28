@@ -1,0 +1,77 @@
+diff --git a/build/DidCommDispatcher.mjs b/build/DidCommDispatcher.mjs
+index e1a0c77f11335f97082ac04c8cb55a47d43d80cd..804363d4429277e612da4837690048318d593274 100644
+--- a/build/DidCommDispatcher.mjs
++++ b/build/DidCommDispatcher.mjs
+@@ -29,6 +29,16 @@ let DidCommDispatcher = class DidCommDispatcher {
+ 			if (!messageHandler) throw new DidCommProblemReportError(`Error handling message ${inboundMessageContext.message.id} with type ${inboundMessageContext.message.type}. The message type is not supported`, { problemCode: DidCommProblemReportReason.MessageParseFailure });
+ 			const outboundMessage = await messageHandler.handle(inboundMessageContext);
+ 			if (outboundMessage) inboundMessageContext.setResponseMessage(outboundMessage);
++
++			this.eventEmitter.emit(inboundMessageContext.agentContext, {
++			type: DidCommEventTypes.DidCommMessageProcessed,
++			payload: {
++				message: inboundMessageContext.message,
++				connection: inboundMessageContext.connection,
++				receivedAt: inboundMessageContext.receivedAt,
++				encryptedMessage: inboundMessageContext.encryptedMessage
++			}
++			});
+ 			await next();
+ 		};
+ 		this.messageSender = messageSender;
+@@ -73,15 +83,6 @@ let DidCommDispatcher = class DidCommDispatcher {
+ 			if (!outboundMessage.inboundMessageContext) outboundMessage.inboundMessageContext = messageContext;
+ 			await this.messageSender.sendMessage(outboundMessage);
+ 		}
+-		this.eventEmitter.emit(agentContext, {
+-			type: DidCommEventTypes.DidCommMessageProcessed,
+-			payload: {
+-				message,
+-				connection,
+-				receivedAt: messageContext.receivedAt,
+-				encryptedMessage
+-			}
+-		});
+ 	}
+ };
+ DidCommDispatcher = __decorate([
+diff --git a/build/modules/routing/DidCommMediationRecipientApi.mjs b/build/modules/routing/DidCommMediationRecipientApi.mjs
+index 43688a2708aef67d46faf518e448be9d0fe8cbf1..5142f19723d729ad37e4e5ce8929305739960bd2 100644
+--- a/build/modules/routing/DidCommMediationRecipientApi.mjs
++++ b/build/modules/routing/DidCommMediationRecipientApi.mjs
+@@ -104,16 +104,25 @@ let DidCommMediationRecipientApi = class DidCommMediationRecipientApi {
+ 				this.logger.debug(`Websocket connection to mediator with connectionId '${mediator.connectionId}' is closed, attempting to reconnect...`);
+ 				try {
+ 					if (pickupStrategy === DidCommMediatorPickupStrategy.PickUpV2LiveMode) {
+-						await this.messagePickupApi.pickupMessages({
+-							connectionId: mediator.connectionId,
+-							protocolVersion: "v2",
+-							awaitCompletion: true
+-						});
+-						await this.messagePickupApi.setLiveDeliveryMode({
+-							connectionId: mediator.connectionId,
+-							liveDelivery: true,
+-							protocolVersion: "v2"
+-						});
++						try {
++							await this.messagePickupApi.pickupMessages({
++								connectionId: mediator.connectionId,
++								protocolVersion: "v2",
++								awaitCompletion: true
++							});
++							await this.messagePickupApi.setLiveDeliveryMode({
++								connectionId: mediator.connectionId,
++								liveDelivery: true,
++								protocolVersion: "v2"
++							});
++						} catch (error) {
++							this.logger.warn('Unable to set live delivery mode for mediator', { error });
++							// Make sure the outbound WebSocket is closed, so the close event triggers reconnection
++							const wsTransport = this.agentContext.dependencyManager.resolve(DidCommModuleConfig).outboundTransports.find(t => t.supportedSchemes?.includes('ws'));
++							if (wsTransport && typeof wsTransport.closeSocketByConnectionId === 'function') {
++								wsTransport.closeSocketByConnectionId(mediator.connectionId);
++							}
++						}
+ 					} else if (pickupStrategy === DidCommMediatorPickupStrategy.PickUpV3LiveMode) {
+ 						await this.messagePickupApi.pickupMessages({
+ 							connectionId: mediator.connectionId,

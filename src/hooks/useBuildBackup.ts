@@ -1,26 +1,23 @@
 import { TypedArrayEncoder } from '@credo-ts/core'
-import { useNavigation, useIsFocused, ParamListBase } from '@react-navigation/native'
+import { ParamListBase, useIsFocused, useNavigation } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
-import { useEffect, useState } from 'react'
-
-import { version } from '../../package.json'
-
-import { BackupProgressProps, OnBackupFinish } from './backup'
-
 import { useMobileAgent } from '@src/hooks/agent/MobileAgentProvider'
 import { useLocalRealm } from '@src/hooks/providers/RealmProvider'
-import { ChatEntry, ChatThread, CacheRecord } from '@src/model'
-import { setStorageData, getStorageData, BACKUP_INCLUDES_MEDIA_PERSIST_KEY } from '@src/services/localStorage'
+import { CacheRecord, ChatEntry, ChatThread } from '@src/model'
+import { BACKUP_INCLUDES_MEDIA_PERSIST_KEY, getStorageData, setStorageData } from '@src/services/localStorage'
 import { logError } from '@src/utils'
 import { writeFile } from '@src/utils/RNFS'
 import * as BackupUtils from '@src/utils/walletBackUpUtils'
+import { useEffect, useState } from 'react'
+import { version } from '../../package.json'
+import { BackupProgressProps, OnBackupFinish } from './backup'
 
 type Props = {
   backupProgressInitialValues: BackupProgressProps
   uploadBackup: (
     fileToUploadLocation: string,
     onBackupUploadSuccess: OnBackupFinish,
-    onBackupUploadFailure: (error: string) => void,
+    onBackupUploadFailure: (error: string) => void
   ) => Promise<void>
   uploadProgress: BackupProgressProps
   setUploadProgress: React.Dispatch<React.SetStateAction<BackupProgressProps>>
@@ -58,7 +55,7 @@ export const useBuildBackup = ({
 
   useEffect(
     () =>
-      navigation.addListener('beforeRemove', e => {
+      navigation.addListener('beforeRemove', (e) => {
         const canLeave = !uploadProgress.isUploadingBackup || e.data.action.type === 'GO_BACK'
         if (canLeave) {
           return
@@ -66,7 +63,7 @@ export const useBuildBackup = ({
         setShowConfirmLeaveScreen(true)
         e.preventDefault()
       }),
-    [navigation, uploadProgress.isUploadingBackup],
+    [navigation, uploadProgress.isUploadingBackup]
   )
 
   const closeConfirmLeaveScreen = () => setShowConfirmLeaveScreen(false)
@@ -112,7 +109,7 @@ export const useBuildBackup = ({
     if (zipPath) {
       uploadBackup(zipPath, onBackupUploadSuccess, onBackupUploadFailure)
     } else {
-      setUploadProgress(prev => ({
+      setUploadProgress((prev) => ({
         ...backupProgressInitialValues,
         error: prev.error,
         isUploadingBackup: false,
@@ -130,7 +127,7 @@ export const useBuildBackup = ({
         },
       })
     } catch (error) {
-      setUploadProgress(prev => ({ ...prev, error: `${error}` }))
+      setUploadProgress((prev) => ({ ...prev, error: `${error}` }))
       logError('Error creating wallet file', error)
     }
   }
@@ -144,7 +141,7 @@ export const useBuildBackup = ({
         schema: [ChatEntry, ChatThread, CacheRecord],
       })
     } catch (error) {
-      setUploadProgress(prev => ({ ...prev, error: `${error}` }))
+      setUploadProgress((prev) => ({ ...prev, error: `${error}` }))
       logError('Error creating realm chats file', error)
     }
   }

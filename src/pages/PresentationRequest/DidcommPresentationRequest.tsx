@@ -1,13 +1,9 @@
 import { DidCommProofState } from '@credo-ts/didcomm'
 import { useFocusEffect } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
-import React, { useRef, useCallback, useState, useTransition } from 'react'
-
-import BasePresentationRequest from './BasePresentationRequest'
-
 import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
 import { useFetchServiceInfo, useScrollSwipeDown } from '@src/hooks'
-import { AgentActionType, useMobileAgent, useAgentActionQueue } from '@src/hooks/agent'
+import { AgentActionType, useAgentActionQueue, useMobileAgent } from '@src/hooks/agent'
 import {
   DeclineProofRequestParameters,
   ProofSendProblemReportDescription,
@@ -17,13 +13,12 @@ import { findAllByAssociatedRecordId, updateChatEntryMetadata } from '@src/hooks
 import { useLocalRealm } from '@src/hooks/providers/RealmProvider'
 import { ChatEntryType } from '@src/model'
 import { CredentialMainInfo } from '@src/services/agent/display'
-import {
-  FormattedSubmission,
-  formatDidcommPresentationSubmission,
-} from '@src/services/agent/formatPresentation'
+import { FormattedSubmission, formatDidcommPresentationSubmission } from '@src/services/agent/formatPresentation'
 import { presentProof } from '@src/services/agent/proofs'
 import { logError } from '@src/utils'
 import { toast } from '@src/utils/toast'
+import React, { useCallback, useRef, useState, useTransition } from 'react'
+import BasePresentationRequest from './BasePresentationRequest'
 
 type Props = StackScreenProps<NavigationStackParams, 'DidcommPresentationRequest'>
 
@@ -56,7 +51,7 @@ const DidcommPresentationRequest: React.FC<Props> = ({ navigation, route }: Prop
         setSubmission(newFormattedPresentationRequest)
       }
       getFormattedPresentation()
-    }, [serviceInfo]),
+    }, [serviceInfo])
   )
 
   const accept = async () => {
@@ -117,8 +112,8 @@ const DidcommPresentationRequest: React.FC<Props> = ({ navigation, route }: Prop
     if (!serviceInfo) return
     const selectedCredentialsMainInfo: CredentialMainInfo[] = []
     Object.entries(selectedCredentials.current).map(([entryId, credentialId]) => {
-      const currentEntry = submission?.entries.find(entry => entry.id === entryId)
-      const credentialSelected = currentEntry?.credentials.find(credential => credential.id === credentialId)
+      const currentEntry = submission?.entries.find((entry) => entry.id === entryId)
+      const credentialSelected = currentEntry?.credentials.find((credential) => credential.id === credentialId)
       if (credentialSelected) selectedCredentialsMainInfo.push(credentialSelected)
     })
     navigation.replace('CredentialPresented', {

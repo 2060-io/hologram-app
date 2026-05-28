@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, TouchableWithoutFeedback } from 'react-native'
+import { TouchableWithoutFeedback, View } from 'react-native'
 
 import Modal from '../Modal'
 import SvgIcon from '../SvgIcon'

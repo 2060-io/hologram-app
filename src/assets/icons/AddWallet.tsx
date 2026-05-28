@@ -1,7 +1,7 @@
 import React from 'react'
 import Svg, { Path, SvgProps } from 'react-native-svg'
 
-const AddWallet: React.FC<SvgProps> = props => (
+const AddWallet: React.FC<SvgProps> = (props) => (
   <Svg width={19} height={19} viewBox="0 0 19 19" {...props}>
     <Path
       fill={props.fill}

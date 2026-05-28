@@ -1,10 +1,9 @@
 import { Slider } from '@sharcoux/slider'
-import React from 'react'
-import { View, StyleSheet } from 'react-native'
-
 import { Text } from '@src/components/common'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { AppTheme } from '@src/styles'
+import React from 'react'
+import { StyleSheet, View } from 'react-native'
 
 interface Props {
   currentTime: number

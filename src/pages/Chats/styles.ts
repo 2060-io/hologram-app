@@ -1,6 +1,5 @@
-import { StyleSheet, Dimensions } from 'react-native'
-
 import { AppTheme } from '@src/styles'
+import { Dimensions, StyleSheet } from 'react-native'
 
 const styles = (theme: AppTheme) =>
   StyleSheet.create({
