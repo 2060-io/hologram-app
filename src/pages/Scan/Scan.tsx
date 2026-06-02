@@ -119,10 +119,11 @@ const Scan = ({ navigation }: Props) => {
         await processImplicitDidInvitation(url)
       } else {
         const parsedUrl = queryString.parseUrl(url)
-        const shortUrl =
-          ((parsedUrl.query.oobUrl as string | undefined) ?? (parsedUrl.query._url as string | undefined))
-            ? TypedArrayEncoder.toUtf8String(TypedArrayEncoder.fromBase64(parsedUrl.query._url as string))
-            : undefined
+        const oobUrl = parsedUrl.query.oobUrl as string | undefined
+        const encodedUrl = parsedUrl.query._url as string | undefined
+        const shortUrl = encodedUrl
+          ? TypedArrayEncoder.toUtf8String(TypedArrayEncoder.fromBase64Url(encodedUrl))
+          : oobUrl
         const invitation = await agent.didcomm.oob.parseInvitation(shortUrl ?? url)
         await processDidcommInvitation(invitation)
       }
