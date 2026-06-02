@@ -25,7 +25,7 @@ overrides:
 
 patchedDependencies:
   '@bam.tech/react-native-image-resizer@3.0.11':
-    hash: b29ef17696e0590f9bb1d4d937ba342164e20c48a854314418aebf23b070e0b7
+    hash: 79181ad08c3a2413f3b3167c312c086e8851bfd3ae3baade8ce9e0eccbf37c03
     path: patches/@bam.tech__react-native-image-resizer@3.0.11.patch
   '@credo-ts/didcomm@0.7.1-pr-2704-20260521221757':
     hash: 9e2a795ca158d545bac0f6f2f34f39b531f668e7c90263b5bf874601dccfb8a2
@@ -103,7 +103,7 @@ importers:
         version: 3.989.0
       '@bam.tech/react-native-image-resizer':
         specifier: 3.0.11
-        version: 3.0.11(patch_hash=b29ef17696e0590f9bb1d4d937ba342164e20c48a854314418aebf23b070e0b7)(react-native@0.84.1(@babel/core@7.29.0)(@react-native-community/cli@20.1.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.84.1(@babel/core@7.29.0)(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.1.0)(react@19.2.3)(utf-8-validate@5.0.10))(react@19.2.3)
+        version: 3.0.11(patch_hash=79181ad08c3a2413f3b3167c312c086e8851bfd3ae3baade8ce9e0eccbf37c03)(react-native@0.84.1(@babel/core@7.29.0)(@react-native-community/cli@20.1.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.84.1(@babel/core@7.29.0)(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.1.0)(react@19.2.3)(utf-8-validate@5.0.10))(react@19.2.3)
       '@credo-ts/action-menu':
         specifier: 0.7.1-pr-2704-20260521221757
         version: 0.7.1-pr-2704-20260521221757(typescript@5.9.3)
@@ -8784,7 +8784,7 @@ snapshots:
       '@babel/helper-string-parser': 7.27.1
       '@babel/helper-validator-identifier': 7.28.5
 
-  '@bam.tech/react-native-image-resizer@3.0.11(patch_hash=b29ef17696e0590f9bb1d4d937ba342164e20c48a854314418aebf23b070e0b7)(react-native@0.84.1(@babel/core@7.29.0)(@react-native-community/cli@20.1.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.84.1(@babel/core@7.29.0)(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.1.0)(react@19.2.3)(utf-8-validate@5.0.10))(react@19.2.3)':
+  '@bam.tech/react-native-image-resizer@3.0.11(patch_hash=79181ad08c3a2413f3b3167c312c086e8851bfd3ae3baade8ce9e0eccbf37c03)(react-native@0.84.1(@babel/core@7.29.0)(@react-native-community/cli@20.1.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.84.1(@babel/core@7.29.0)(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.1.0)(react@19.2.3)(utf-8-validate@5.0.10))(react@19.2.3)':
     dependencies:
       react: 19.2.3
       react-native: 0.84.1(@babel/core@7.29.0)(@react-native-community/cli@20.1.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.84.1(@babel/core@7.29.0)(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.1.0)(react@19.2.3)(utf-8-validate@5.0.10)
