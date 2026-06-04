@@ -40,7 +40,7 @@ const HomeMainContainer = (HomeMainComponent: ElementType) => {
           if (parameterType === 'oobUrl') invitationUrl = urlValue
           else if (parameterType === '_url') {
             invitationUrl = urlValue
-              ? TypedArrayEncoder.toUtf8String(TypedArrayEncoder.fromBase64(urlValue))
+              ? TypedArrayEncoder.toUtf8String(TypedArrayEncoder.fromBase64Url(urlValue))
               : undefined
           } else invitationUrl = `${Config.BASE_INVITATION_URL}?${parameterType}=${urlValue}`
           if (!invitationUrl) throw new Error('Invalid invitation URL')
