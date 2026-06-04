@@ -12,6 +12,8 @@ patchedDependencies:
   '@sphereon/isomorphic-webcrypto@2.5.0-rn-crypto.2': patches/isomorphic-webcrypto@2.5.0-rn-crypto.2.patch
   asmcrypto.js@2.3.2: patches/asmcrypto.js@2.3.2.patch
   didwebvh-ts@2.7.4: patches/didwebvh-ts@2.7.4.patch
+  expo-modules-core@55.0.22: patches/expo-modules-core@55.0.22.patch
+  expo@55.0.15: patches/expo@55.0.15.patch
   pbxproj-dom@1.2.0: patches/pbxproj-dom@1.2.0.patch
   react-native-cloud-store@0.11.0: patches/react-native-cloud-store@0.11.0.patch
   react-native-create-thumbnail@2.2.0: patches/react-native-create-thumbnail@2.2.0.patch

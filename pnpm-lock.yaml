@@ -51,6 +51,9 @@ patchedDependencies:
   expo-modules-core@55.0.22:
     hash: 2f58758aa48053174b492bf19b5801727152d0eee247fd84a31346884b1178fe
     path: patches/expo-modules-core@55.0.22.patch
+  expo@55.0.15:
+    hash: 1674324ecd172debc56eb888bda9a9ecec3e5e6eea15e8123a4e8d7841a345c6
+    path: patches/expo@55.0.15.patch
   pbxproj-dom@1.2.0:
     hash: 6069f532b44c088c8c2e1e3cd5250dbdedfce34a9942480aeb62363aecb33622
     path: patches/pbxproj-dom@1.2.0.patch
@@ -63,7 +66,7 @@ patchedDependencies:
   react-native-image-crop-picker@0.50.1:
     hash: 25bf98e7f00ed0fbb13cbd44c509c60da4aadb01bbd22c2e4ef972d35c8ebc17
     path: patches/react-native-image-crop-picker@0.50.1.patch
-  react-native-reanimated@4.4.0:
+  react-native-reanimated:
     hash: 16221959d7796b35be3796251a8b957551aa9b8923a966a74f52b8e1a1255e93
     path: patches/react-native-reanimated.patch
   semantic-release-react-native@1.9.0:
@@ -211,7 +214,7 @@ importers:
         version: 1.11.13
       expo:
         specifier: 55.0.15
-        version: 55.0.15(6df1509f675917ca520303bce44b9285)
+        version: 55.0.15(patch_hash=1674324ecd172debc56eb888bda9a9ecec3e5e6eea15e8123a4e8d7841a345c6)(6df1509f675917ca520303bce44b9285)
       expo-crypto:
         specifier: 55.0.14
         version: 55.0.14(expo@55.0.15)
@@ -9189,7 +9192,7 @@ snapshots:
       connect: 3.7.0
       debug: 4.4.3(supports-color@10.2.2)
       dnssd-advertise: 1.1.4
-      expo: 55.0.15(6df1509f675917ca520303bce44b9285)
+      expo: 55.0.15(patch_hash=1674324ecd172debc56eb888bda9a9ecec3e5e6eea15e8123a4e8d7841a345c6)(6df1509f675917ca520303bce44b9285)
       expo-server: 55.0.9
       fetch-nodeshim: 0.4.10
       getenv: 2.0.0
@@ -9286,7 +9289,7 @@ snapshots:
 
   '@expo/dom-webview@55.0.6(expo@55.0.15)(react-native@0.84.1(@babel/core@7.29.0)(@react-native-community/cli@20.1.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.84.1(@babel/core@7.29.0)(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.1.0)(react@19.2.3)(utf-8-validate@5.0.10))(react@19.2.3)':
     dependencies:
-      expo: 55.0.15(6df1509f675917ca520303bce44b9285)
+      expo: 55.0.15(patch_hash=1674324ecd172debc56eb888bda9a9ecec3e5e6eea15e8123a4e8d7841a345c6)(6df1509f675917ca520303bce44b9285)
       react: 19.2.3
       react-native: 0.84.1(@babel/core@7.29.0)(@react-native-community/cli@20.1.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.84.1(@babel/core@7.29.0)(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.1.0)(react@19.2.3)(utf-8-validate@5.0.10)
 
@@ -9344,7 +9347,7 @@ snapshots:
     dependencies:
       '@expo/dom-webview': 55.0.6(expo@55.0.15)(react-native@0.84.1(@babel/core@7.29.0)(@react-native-community/cli@20.1.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.84.1(@babel/core@7.29.0)(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.1.0)(react@19.2.3)(utf-8-validate@5.0.10))(react@19.2.3)
       anser: 1.4.10
-      expo: 55.0.15(6df1509f675917ca520303bce44b9285)
+      expo: 55.0.15(patch_hash=1674324ecd172debc56eb888bda9a9ecec3e5e6eea15e8123a4e8d7841a345c6)(6df1509f675917ca520303bce44b9285)
       react: 19.2.3
       react-native: 0.84.1(@babel/core@7.29.0)(@react-native-community/cli@20.1.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.84.1(@babel/core@7.29.0)(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.1.0)(react@19.2.3)(utf-8-validate@5.0.10)
       stacktrace-parser: 0.1.11
@@ -9371,7 +9374,7 @@ snapshots:
       postcss: 8.4.49
       resolve-from: 5.0.0
     optionalDependencies:
-      expo: 55.0.15(6df1509f675917ca520303bce44b9285)
+      expo: 55.0.15(patch_hash=1674324ecd172debc56eb888bda9a9ecec3e5e6eea15e8123a4e8d7841a345c6)(6df1509f675917ca520303bce44b9285)
     transitivePeerDependencies:
       - bufferutil
       - supports-color
@@ -9427,7 +9430,7 @@ snapshots:
       '@expo/json-file': 10.0.14
       '@react-native/normalize-colors': 0.83.6
       debug: 4.4.3(supports-color@10.2.2)
-      expo: 55.0.15(6df1509f675917ca520303bce44b9285)
+      expo: 55.0.15(patch_hash=1674324ecd172debc56eb888bda9a9ecec3e5e6eea15e8123a4e8d7841a345c6)(6df1509f675917ca520303bce44b9285)
       resolve-from: 5.0.0
       semver: 7.7.4
       xml2js: 0.6.0
@@ -9448,7 +9451,7 @@ snapshots:
   '@expo/router-server@55.0.16(expo-constants@55.0.16(expo@55.0.15)(react-native@0.84.1(@babel/core@7.29.0)(@react-native-community/cli@20.1.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.84.1(@babel/core@7.29.0)(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.1.0)(react@19.2.3)(utf-8-validate@5.0.10)))(expo-font@55.0.7(expo@55.0.15)(react-native@0.84.1(@babel/core@7.29.0)(@react-native-community/cli@20.1.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.84.1(@babel/core@7.29.0)(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.1.0)(react@19.2.3)(utf-8-validate@5.0.10))(react@19.2.3))(expo-server@55.0.9)(expo@55.0.15)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)':
     dependencies:
       debug: 4.4.3(supports-color@10.2.2)
-      expo: 55.0.15(6df1509f675917ca520303bce44b9285)
+      expo: 55.0.15(patch_hash=1674324ecd172debc56eb888bda9a9ecec3e5e6eea15e8123a4e8d7841a345c6)(6df1509f675917ca520303bce44b9285)
       expo-constants: 55.0.16(expo@55.0.15)(react-native@0.84.1(@babel/core@7.29.0)(@react-native-community/cli@20.1.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.84.1(@babel/core@7.29.0)(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.1.0)(react@19.2.3)(utf-8-validate@5.0.10))
       expo-font: 55.0.7(expo@55.0.15)(react-native@0.84.1(@babel/core@7.29.0)(@react-native-community/cli@20.1.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.84.1(@babel/core@7.29.0)(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.1.0)(react@19.2.3)(utf-8-validate@5.0.10))(react@19.2.3)
       expo-server: 55.0.9
@@ -10524,7 +10527,7 @@ snapshots:
     dependencies:
       '@react-native-firebase/app': 23.8.8(@react-native-async-storage/async-storage@2.1.2(react-native@0.84.1(@babel/core@7.29.0)(@react-native-community/cli@20.1.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.84.1(@babel/core@7.29.0)(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.1.0)(react@19.2.3)(utf-8-validate@5.0.10)))(expo@55.0.15)(react-native@0.84.1(@babel/core@7.29.0)(@react-native-community/cli@20.1.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.84.1(@babel/core@7.29.0)(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.1.0)(react@19.2.3)(utf-8-validate@5.0.10))(react@19.2.3)
     optionalDependencies:
-      expo: 55.0.15(6df1509f675917ca520303bce44b9285)
+      expo: 55.0.15(patch_hash=1674324ecd172debc56eb888bda9a9ecec3e5e6eea15e8123a4e8d7841a345c6)(6df1509f675917ca520303bce44b9285)
 
   '@react-native-firebase/app@23.8.8(@react-native-async-storage/async-storage@2.1.2(react-native@0.84.1(@babel/core@7.29.0)(@react-native-community/cli@20.1.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.84.1(@babel/core@7.29.0)(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.1.0)(react@19.2.3)(utf-8-validate@5.0.10)))(expo@55.0.15)(react-native@0.84.1(@babel/core@7.29.0)(@react-native-community/cli@20.1.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.84.1(@babel/core@7.29.0)(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.1.0)(react@19.2.3)(utf-8-validate@5.0.10))(react@19.2.3)':
     dependencies:
@@ -10532,7 +10535,7 @@ snapshots:
       react: 19.2.3
       react-native: 0.84.1(@babel/core@7.29.0)(@react-native-community/cli@20.1.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.84.1(@babel/core@7.29.0)(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.1.0)(react@19.2.3)(utf-8-validate@5.0.10)
     optionalDependencies:
-      expo: 55.0.15(6df1509f675917ca520303bce44b9285)
+      expo: 55.0.15(patch_hash=1674324ecd172debc56eb888bda9a9ecec3e5e6eea15e8123a4e8d7841a345c6)(6df1509f675917ca520303bce44b9285)
     transitivePeerDependencies:
       - '@react-native-async-storage/async-storage'
 
@@ -10540,7 +10543,7 @@ snapshots:
     dependencies:
       '@react-native-firebase/app': 23.8.8(@react-native-async-storage/async-storage@2.1.2(react-native@0.84.1(@babel/core@7.29.0)(@react-native-community/cli@20.1.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.84.1(@babel/core@7.29.0)(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.1.0)(react@19.2.3)(utf-8-validate@5.0.10)))(expo@55.0.15)(react-native@0.84.1(@babel/core@7.29.0)(@react-native-community/cli@20.1.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.84.1(@babel/core@7.29.0)(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.1.0)(react@19.2.3)(utf-8-validate@5.0.10))(react@19.2.3)
     optionalDependencies:
-      expo: 55.0.15(6df1509f675917ca520303bce44b9285)
+      expo: 55.0.15(patch_hash=1674324ecd172debc56eb888bda9a9ecec3e5e6eea15e8123a4e8d7841a345c6)(6df1509f675917ca520303bce44b9285)
 
   '@react-native/assets-registry@0.84.1': {}
 
@@ -11302,7 +11305,7 @@ snapshots:
       str2buf: 1.3.0
       webcrypto-shim: 0.1.7
     optionalDependencies:
-      expo: 55.0.15(6df1509f675917ca520303bce44b9285)
+      expo: 55.0.15(patch_hash=1674324ecd172debc56eb888bda9a9ecec3e5e6eea15e8123a4e8d7841a345c6)(6df1509f675917ca520303bce44b9285)
       expo-crypto: 55.0.14(expo@55.0.15)
 
   '@sphereon/kmp-mdoc-core@0.2.0-SNAPSHOT.26':
@@ -11790,7 +11793,7 @@ snapshots:
       resolve-from: 5.0.0
     optionalDependencies:
       '@babel/runtime': 7.29.2
-      expo: 55.0.15(6df1509f675917ca520303bce44b9285)
+      expo: 55.0.15(patch_hash=1674324ecd172debc56eb888bda9a9ecec3e5e6eea15e8123a4e8d7841a345c6)(6df1509f675917ca520303bce44b9285)
     transitivePeerDependencies:
       - '@babel/core'
       - supports-color
@@ -12633,7 +12636,7 @@ snapshots:
   expo-asset@55.0.17(expo@55.0.15)(react-native@0.84.1(@babel/core@7.29.0)(@react-native-community/cli@20.1.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.84.1(@babel/core@7.29.0)(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.1.0)(react@19.2.3)(utf-8-validate@5.0.10))(react@19.2.3)(typescript@5.9.3):
     dependencies:
       '@expo/image-utils': 0.8.14(typescript@5.9.3)
-      expo: 55.0.15(6df1509f675917ca520303bce44b9285)
+      expo: 55.0.15(patch_hash=1674324ecd172debc56eb888bda9a9ecec3e5e6eea15e8123a4e8d7841a345c6)(6df1509f675917ca520303bce44b9285)
       expo-constants: 55.0.16(expo@55.0.15)(react-native@0.84.1(@babel/core@7.29.0)(@react-native-community/cli@20.1.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.84.1(@babel/core@7.29.0)(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.1.0)(react@19.2.3)(utf-8-validate@5.0.10))
       react: 19.2.3
       react-native: 0.84.1(@babel/core@7.29.0)(@react-native-community/cli@20.1.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.84.1(@babel/core@7.29.0)(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.1.0)(react@19.2.3)(utf-8-validate@5.0.10)
@@ -12644,41 +12647,41 @@ snapshots:
   expo-constants@55.0.16(expo@55.0.15)(react-native@0.84.1(@babel/core@7.29.0)(@react-native-community/cli@20.1.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.84.1(@babel/core@7.29.0)(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.1.0)(react@19.2.3)(utf-8-validate@5.0.10)):
     dependencies:
       '@expo/env': 2.1.2
-      expo: 55.0.15(6df1509f675917ca520303bce44b9285)
+      expo: 55.0.15(patch_hash=1674324ecd172debc56eb888bda9a9ecec3e5e6eea15e8123a4e8d7841a345c6)(6df1509f675917ca520303bce44b9285)
       react-native: 0.84.1(@babel/core@7.29.0)(@react-native-community/cli@20.1.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.84.1(@babel/core@7.29.0)(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.1.0)(react@19.2.3)(utf-8-validate@5.0.10)
     transitivePeerDependencies:
       - supports-color
 
   expo-crypto@55.0.14(expo@55.0.15):
     dependencies:
-      expo: 55.0.15(6df1509f675917ca520303bce44b9285)
+      expo: 55.0.15(patch_hash=1674324ecd172debc56eb888bda9a9ecec3e5e6eea15e8123a4e8d7841a345c6)(6df1509f675917ca520303bce44b9285)
 
   expo-file-system@55.0.19(expo@55.0.15)(react-native@0.84.1(@babel/core@7.29.0)(@react-native-community/cli@20.1.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.84.1(@babel/core@7.29.0)(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.1.0)(react@19.2.3)(utf-8-validate@5.0.10)):
     dependencies:
-      expo: 55.0.15(6df1509f675917ca520303bce44b9285)
+      expo: 55.0.15(patch_hash=1674324ecd172debc56eb888bda9a9ecec3e5e6eea15e8123a4e8d7841a345c6)(6df1509f675917ca520303bce44b9285)
       react-native: 0.84.1(@babel/core@7.29.0)(@react-native-community/cli@20.1.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.84.1(@babel/core@7.29.0)(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.1.0)(react@19.2.3)(utf-8-validate@5.0.10)
 
   expo-font@55.0.7(expo@55.0.15)(react-native@0.84.1(@babel/core@7.29.0)(@react-native-community/cli@20.1.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.84.1(@babel/core@7.29.0)(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.1.0)(react@19.2.3)(utf-8-validate@5.0.10))(react@19.2.3):
     dependencies:
-      expo: 55.0.15(6df1509f675917ca520303bce44b9285)
+      expo: 55.0.15(patch_hash=1674324ecd172debc56eb888bda9a9ecec3e5e6eea15e8123a4e8d7841a345c6)(6df1509f675917ca520303bce44b9285)
       fontfaceobserver: 2.3.0
       react: 19.2.3
       react-native: 0.84.1(@babel/core@7.29.0)(@react-native-community/cli@20.1.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.84.1(@babel/core@7.29.0)(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.1.0)(react@19.2.3)(utf-8-validate@5.0.10)
 
   expo-keep-awake@55.0.8(expo@55.0.15)(react@19.2.3):
     dependencies:
-      expo: 55.0.15(6df1509f675917ca520303bce44b9285)
+      expo: 55.0.15(patch_hash=1674324ecd172debc56eb888bda9a9ecec3e5e6eea15e8123a4e8d7841a345c6)(6df1509f675917ca520303bce44b9285)
       react: 19.2.3
 
   expo-linear-gradient@55.0.13(expo@55.0.15)(react-native@0.84.1(@babel/core@7.29.0)(@react-native-community/cli@20.1.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.84.1(@babel/core@7.29.0)(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.1.0)(react@19.2.3)(utf-8-validate@5.0.10))(react@19.2.3):
     dependencies:
-      expo: 55.0.15(6df1509f675917ca520303bce44b9285)
+      expo: 55.0.15(patch_hash=1674324ecd172debc56eb888bda9a9ecec3e5e6eea15e8123a4e8d7841a345c6)(6df1509f675917ca520303bce44b9285)
       react: 19.2.3
       react-native: 0.84.1(@babel/core@7.29.0)(@react-native-community/cli@20.1.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.84.1(@babel/core@7.29.0)(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.1.0)(react@19.2.3)(utf-8-validate@5.0.10)
 
   expo-local-authentication@55.0.13(expo@55.0.15):
     dependencies:
-      expo: 55.0.15(6df1509f675917ca520303bce44b9285)
+      expo: 55.0.15(patch_hash=1674324ecd172debc56eb888bda9a9ecec3e5e6eea15e8123a4e8d7841a345c6)(6df1509f675917ca520303bce44b9285)
       invariant: 2.2.4
 
   expo-modules-autolinking@55.0.17(typescript@5.9.3):
@@ -12701,12 +12704,12 @@ snapshots:
 
   expo-screen-orientation@55.0.13(expo@55.0.15)(react-native@0.84.1(@babel/core@7.29.0)(@react-native-community/cli@20.1.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.84.1(@babel/core@7.29.0)(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.1.0)(react@19.2.3)(utf-8-validate@5.0.10)):
     dependencies:
-      expo: 55.0.15(6df1509f675917ca520303bce44b9285)
+      expo: 55.0.15(patch_hash=1674324ecd172debc56eb888bda9a9ecec3e5e6eea15e8123a4e8d7841a345c6)(6df1509f675917ca520303bce44b9285)
       react-native: 0.84.1(@babel/core@7.29.0)(@react-native-community/cli@20.1.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.84.1(@babel/core@7.29.0)(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.1.0)(react@19.2.3)(utf-8-validate@5.0.10)
 
   expo-server@55.0.9: {}
 
-  expo@55.0.15(6df1509f675917ca520303bce44b9285):
+  expo@55.0.15(patch_hash=1674324ecd172debc56eb888bda9a9ecec3e5e6eea15e8123a4e8d7841a345c6)(6df1509f675917ca520303bce44b9285):
     dependencies:
       '@babel/runtime': 7.29.2
       '@expo/cli': 55.0.24(36118b1901d1b0131f848ec7e2beae32)
