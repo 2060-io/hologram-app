@@ -220,7 +220,9 @@
       "react-native-create-thumbnail@2.2.0": "patches/react-native-create-thumbnail@2.2.0.patch",
       "react-native-image-crop-picker@0.50.1": "patches/react-native-image-crop-picker@0.50.1.patch",
       "react-native-reanimated": "patches/react-native-reanimated.patch",
-      "semantic-release-react-native@1.9.0": "patches/semantic-release-react-native@1.9.0.patch"
+      "semantic-release-react-native@1.9.0": "patches/semantic-release-react-native@1.9.0.patch",
+      "@hyperledger/anoncreds-react-native@0.4.1-alpha-20260519194331": "patches/@hyperledger__anoncreds-react-native@0.4.1-alpha-20260519194331.patch",
+      "@openwallet-foundation/askar-react-native@0.6.0": "patches/@openwallet-foundation__askar-react-native@0.6.0.patch"
     }
   },
   "engines": {

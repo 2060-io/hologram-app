@@ -30,6 +30,12 @@ patchedDependencies:
   '@credo-ts/didcomm@0.7.1-pr-2704-20260521221757':
     hash: 9e2a795ca158d545bac0f6f2f34f39b531f668e7c90263b5bf874601dccfb8a2
     path: patches/@credo-ts__didcomm@0.7.1-pr-2704-20260521221757.patch
+  '@hyperledger/anoncreds-react-native@0.4.1-alpha-20260519194331':
+    hash: 2d56ca47234190e9661af303e0f4120def3404d218803daa18e04b0fab0ea5b0
+    path: patches/@hyperledger__anoncreds-react-native@0.4.1-alpha-20260519194331.patch
+  '@openwallet-foundation/askar-react-native@0.6.0':
+    hash: 8a5f1def0017cbef34d1efe59c23dde1a0406a8e255b7ad86ba7d3bef22f0c4c
+    path: patches/@openwallet-foundation__askar-react-native@0.6.0.patch
   '@robinbobin/react-native-google-drive-api-wrapper@1.2.4':
     hash: b1a56c4240146a667be266b1a781e3c8a1253affca4f03472a1e0e3ea18c825e
     path: patches/@robinbobin__react-native-google-drive-api-wrapper@1.2.4.patch
@@ -142,7 +148,7 @@ importers:
         version: 2.38.2(react-native@0.84.1(@babel/core@7.29.0)(@react-native-community/cli@20.1.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.84.1(@babel/core@7.29.0)(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.1.0)(react@19.2.3)(utf-8-validate@5.0.10))(react@19.2.3)
       '@hyperledger/anoncreds-react-native':
         specifier: 0.4.1-alpha-20260519194331
-        version: 0.4.1-alpha-20260519194331(react-native@0.84.1(@babel/core@7.29.0)(@react-native-community/cli@20.1.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.84.1(@babel/core@7.29.0)(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.1.0)(react@19.2.3)(utf-8-validate@5.0.10))(react@19.2.3)
+        version: 0.4.1-alpha-20260519194331(patch_hash=2d56ca47234190e9661af303e0f4120def3404d218803daa18e04b0fab0ea5b0)(react-native@0.84.1(@babel/core@7.29.0)(@react-native-community/cli@20.1.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.84.1(@babel/core@7.29.0)(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.1.0)(react@19.2.3)(utf-8-validate@5.0.10))(react@19.2.3)
       '@hyperledger/anoncreds-shared':
         specifier: 0.4.1-alpha-20260519194331
         version: 0.4.1-alpha-20260519194331
@@ -154,7 +160,7 @@ importers:
         version: 9.1.8(react-native@0.84.1(@babel/core@7.29.0)(@react-native-community/cli@20.1.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.84.1(@babel/core@7.29.0)(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.1.0)(react@19.2.3)(utf-8-validate@5.0.10))
       '@openwallet-foundation/askar-react-native':
         specifier: 0.6.0
-        version: 0.6.0(react-native@0.84.1(@babel/core@7.29.0)(@react-native-community/cli@20.1.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.84.1(@babel/core@7.29.0)(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.1.0)(react@19.2.3)(utf-8-validate@5.0.10))(react@19.2.3)
+        version: 0.6.0(patch_hash=8a5f1def0017cbef34d1efe59c23dde1a0406a8e255b7ad86ba7d3bef22f0c4c)(react-native@0.84.1(@babel/core@7.29.0)(@react-native-community/cli@20.1.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.84.1(@babel/core@7.29.0)(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.1.0)(react@19.2.3)(utf-8-validate@5.0.10))(react@19.2.3)
       '@openwallet-foundation/askar-shared':
         specifier: 0.6.0
         version: 0.6.0
@@ -9825,7 +9831,7 @@ snapshots:
     dependencies:
       '@hapi/hoek': 9.3.0
 
-  '@hyperledger/anoncreds-react-native@0.4.1-alpha-20260519194331(react-native@0.84.1(@babel/core@7.29.0)(@react-native-community/cli@20.1.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.84.1(@babel/core@7.29.0)(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.1.0)(react@19.2.3)(utf-8-validate@5.0.10))(react@19.2.3)':
+  '@hyperledger/anoncreds-react-native@0.4.1-alpha-20260519194331(patch_hash=2d56ca47234190e9661af303e0f4120def3404d218803daa18e04b0fab0ea5b0)(react-native@0.84.1(@babel/core@7.29.0)(@react-native-community/cli@20.1.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.84.1(@babel/core@7.29.0)(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.1.0)(react@19.2.3)(utf-8-validate@5.0.10))(react@19.2.3)':
     dependencies:
       '@hyperledger/anoncreds-shared': 0.4.1-alpha-20260519194331
       react: 19.2.3
@@ -10214,7 +10220,7 @@ snapshots:
       zod: 4.4.3
       zod-validation-error: 5.0.0(zod@4.4.3)
 
-  '@openwallet-foundation/askar-react-native@0.6.0(react-native@0.84.1(@babel/core@7.29.0)(@react-native-community/cli@20.1.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.84.1(@babel/core@7.29.0)(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.1.0)(react@19.2.3)(utf-8-validate@5.0.10))(react@19.2.3)':
+  '@openwallet-foundation/askar-react-native@0.6.0(patch_hash=8a5f1def0017cbef34d1efe59c23dde1a0406a8e255b7ad86ba7d3bef22f0c4c)(react-native@0.84.1(@babel/core@7.29.0)(@react-native-community/cli@20.1.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.84.1(@babel/core@7.29.0)(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.1.0)(react@19.2.3)(utf-8-validate@5.0.10))(react@19.2.3)':
     dependencies:
       '@openwallet-foundation/askar-shared': 0.6.0
       react: 19.2.3
