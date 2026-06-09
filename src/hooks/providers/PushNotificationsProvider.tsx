@@ -1,4 +1,3 @@
-import notifee, { EventType, Notification } from '@notifee/react-native'
 import { fetch as NetInfo } from '@react-native-community/netinfo'
 import { getMessaging, onTokenRefresh } from '@react-native-firebase/messaging'
 import { AgentActionType, useAgentActionQueue, useMobileAgent } from '@src/hooks/agent'
@@ -6,6 +5,7 @@ import { SavePushNotificationDeviceInfoParameters } from '@src/hooks/agent/actio
 import { log, logWarn } from '@src/utils'
 import { arePushNotificationsAllowed, getFcmDeviceToken } from '@src/utils/pushNotificationsUtils'
 import React, { createContext, useCallback, useContext, useEffect, useState } from 'react'
+import notifee, { EventType, Notification } from 'react-native-notify-kit'
 
 interface Props {
   children?: React.ReactNode
