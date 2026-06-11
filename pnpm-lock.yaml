@@ -155,9 +155,6 @@ importers:
       '@noble/hashes':
         specifier: ^2.0.1
         version: 2.2.0
-      '@notifee/react-native':
-        specifier: 9.1.8
-        version: 9.1.8(react-native@0.84.1(@babel/core@7.29.0)(@react-native-community/cli@20.1.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.84.1(@babel/core@7.29.0)(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.1.0)(react@19.2.3)(utf-8-validate@5.0.10))
       '@openwallet-foundation/askar-react-native':
         specifier: 0.6.0
         version: 0.6.0(patch_hash=8a5f1def0017cbef34d1efe59c23dde1a0406a8e255b7ad86ba7d3bef22f0c4c)(react-native@0.84.1(@babel/core@7.29.0)(@react-native-community/cli@20.1.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.84.1(@babel/core@7.29.0)(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.1.0)(react@19.2.3)(utf-8-validate@5.0.10))(react@19.2.3)
@@ -317,6 +314,9 @@ importers:
       react-native-nitro-modules:
         specifier: 0.35.7
         version: 0.35.7(react-native@0.84.1(@babel/core@7.29.0)(@react-native-community/cli@20.1.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.84.1(@babel/core@7.29.0)(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.1.0)(react@19.2.3)(utf-8-validate@5.0.10))(react@19.2.3)
+      react-native-notify-kit:
+        specifier: 10.4.4
+        version: 10.4.4(expo@55.0.15)(react-native@0.84.1(@babel/core@7.29.0)(@react-native-community/cli@20.1.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.84.1(@babel/core@7.29.0)(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.1.0)(react@19.2.3)(utf-8-validate@5.0.10))
       react-native-open-notification:
         specifier: 0.1.4
         version: 0.1.4
@@ -2244,11 +2244,6 @@ packages:
   '@nodelib/fs.walk@1.2.8':
     resolution: {integrity: sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg==}
     engines: {node: '>= 8'}
-
-  '@notifee/react-native@9.1.8':
-    resolution: {integrity: sha512-Az/dueoPerJsbbjRxu8a558wKY+gONUrfoy3Hs++5OqbeMsR0dYe6P+4oN6twrLFyzAhEA1tEoZRvQTFDRmvQg==}
-    peerDependencies:
-      react-native: '*'
 
   '@octokit/auth-token@5.1.2':
     resolution: {integrity: sha512-JcQDsBdg49Yky2w2ld20IHAlwr8d/d8N6NiOXbtuoPCqzbsiJgF633mVUw3x4mo0H5ypataQIX7SFu3yy44Mpw==}
@@ -6373,6 +6368,16 @@ packages:
       react: 19.2.3
       react-native: '*'
 
+  react-native-notify-kit@10.4.4:
+    resolution: {integrity: sha512-vpDyhmsqUT9v4IswvXXvekajfi2wh3yeRjbM+IVVjMUGQw3TrKc3qAfS8iaeAvXfIXSoHoL4g2eOkMgYdBOowg==}
+    hasBin: true
+    peerDependencies:
+      expo: '*'
+      react-native: '>=0.73.0'
+    peerDependenciesMeta:
+      expo:
+        optional: true
+
   react-native-open-notification@0.1.4:
     resolution: {integrity: sha512-TPeFRsao6nDFW5nvBseD6nheRCN1U3poaY90iDzBY1MEEVepClqfEC9Iw0cqj7LYnpDSF8V25fb/SpjEg3HdQQ==}
 
@@ -10125,10 +10130,6 @@ snapshots:
     dependencies:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.20.1
-
-  '@notifee/react-native@9.1.8(react-native@0.84.1(@babel/core@7.29.0)(@react-native-community/cli@20.1.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.84.1(@babel/core@7.29.0)(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.1.0)(react@19.2.3)(utf-8-validate@5.0.10))':
-    dependencies:
-      react-native: 0.84.1(@babel/core@7.29.0)(@react-native-community/cli@20.1.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.84.1(@babel/core@7.29.0)(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.1.0)(react@19.2.3)(utf-8-validate@5.0.10)
 
   '@octokit/auth-token@5.1.2': {}
 
@@ -15004,6 +15005,16 @@ snapshots:
     dependencies:
       react: 19.2.3
       react-native: 0.84.1(@babel/core@7.29.0)(@react-native-community/cli@20.1.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.84.1(@babel/core@7.29.0)(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.1.0)(react@19.2.3)(utf-8-validate@5.0.10)
+
+  react-native-notify-kit@10.4.4(expo@55.0.15)(react-native@0.84.1(@babel/core@7.29.0)(@react-native-community/cli@20.1.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.84.1(@babel/core@7.29.0)(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.1.0)(react@19.2.3)(utf-8-validate@5.0.10)):
+    dependencies:
+      react-native: 0.84.1(@babel/core@7.29.0)(@react-native-community/cli@20.1.0(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10))(@react-native/metro-config@0.84.1(@babel/core@7.29.0)(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@types/react@19.1.17)(bufferutil@4.1.0)(react@19.2.3)(utf-8-validate@5.0.10)
+    optionalDependencies:
+      chalk: 4.1.2
+      commander: 12.1.0
+      expo: 55.0.15(patch_hash=1674324ecd172debc56eb888bda9a9ecec3e5e6eea15e8123a4e8d7841a345c6)(6df1509f675917ca520303bce44b9285)
+      plist: 3.1.1
+      xcode: 3.0.1
 
   react-native-open-notification@0.1.4: {}
 
