@@ -28,7 +28,9 @@ import {
   VideoCallProvider,
 } from '@src/hooks/providers'
 import { initializeI18n, language } from '@src/utils/language'
+import { deleteRemoteNotifications } from '@src/utils/pushNotificationsUtils'
 import React, { PropsWithChildren, ReactNode, useEffect, useState } from 'react'
+import { AppState } from 'react-native'
 import BootSplash from 'react-native-bootsplash'
 import Toast from './components/Toast'
 
@@ -73,6 +75,16 @@ const App = () => {
 
   useEffect(() => {
     BootSplash.hide({ fade: true })
+  }, [])
+
+  // Force-clear the "checking for new messages" placeholder when the app opens, in case it is
+  // not cleared yet (seen in some cases on iOS).
+  useEffect(() => {
+    deleteRemoteNotifications()
+    const subscription = AppState.addEventListener('change', (state) => {
+      if (state === 'active') deleteRemoteNotifications()
+    })
+    return () => subscription.remove()
   }, [])
 
   return (
