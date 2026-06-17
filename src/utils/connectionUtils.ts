@@ -3,7 +3,7 @@ import { DidCommShareMediaMessage } from '@2060.io/credo-ts-didcomm-media-sharin
 import { MessageReactionsMessage } from '@2060.io/credo-ts-didcomm-reactions'
 import { DidCommMessageReceiptsMessage } from '@2060.io/credo-ts-didcomm-receipts'
 import { DidCommProfileMessage, getConnectionProfile, PictureData } from '@2060.io/credo-ts-didcomm-user-profile'
-import { AgentContext, DidKey, JsonTransformer, tryParseDid } from '@credo-ts/core'
+import { AgentContext, DidKey, JsonTransformer, Kms, tryParseDid } from '@credo-ts/core'
 import {
   DidCommConnectionRecord,
   DidCommConnectionRepository,
@@ -187,10 +187,11 @@ const updateConnectionMediationKeylist = async (
         await mediationRecipientService.keylistUpdateAndAwait(
           agent.context,
           mediationRecord,
-          did.didDocument.getRecipientKeysWithVerificationMethod({ mapX25519ToEd25519: true }).map((item) => ({
-            recipientKey: item.publicJwk,
-            action,
-          }))
+          did.didDocument
+            .getRecipientKeysWithVerificationMethod({ mapX25519ToEd25519: true })
+            .flatMap((item) =>
+              item.publicJwk.is(Kms.Ed25519PublicJwk) ? [{ recipientKey: item.publicJwk, action }] : []
+            )
         )
       }
     }
