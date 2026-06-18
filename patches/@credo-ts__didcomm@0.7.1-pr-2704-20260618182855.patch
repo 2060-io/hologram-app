@@ -1,0 +1,16 @@
+diff --git a/build/modules/routing/DidCommMediationRecipientApi.mjs b/build/modules/routing/DidCommMediationRecipientApi.mjs
+index 5951809330db6a77156f33c2237e219f069eb69d..ad8956bddc2704917332c5f0f8522426311d9297 100644
+--- a/build/modules/routing/DidCommMediationRecipientApi.mjs
++++ b/build/modules/routing/DidCommMediationRecipientApi.mjs
+@@ -128,6 +128,11 @@ let DidCommMediationRecipientApi = class DidCommMediationRecipientApi {
+ 					} else await this.initiateImplicitMode(mediator);
+ 				} catch (error) {
+ 					this.logger.warn("Unable to re-open websocket connection to mediator", { error });
++					// Force-close the outbound WebSocket so its close event retriggers reconnection
++					const wsTransport = this.agentContext.dependencyManager.resolve(DidCommModuleConfig).outboundTransports.find((t) => t.supportedSchemes?.includes("ws"));
++					if (wsTransport && typeof wsTransport.closeSocketByConnectionId === "function") {
++						wsTransport.closeSocketByConnectionId(mediator.connectionId);
++					}
+ 				}
+ 			},
+ 			complete: () => this.logger.info(`Stopping pickup of messages from mediator '${mediator.id}'`)

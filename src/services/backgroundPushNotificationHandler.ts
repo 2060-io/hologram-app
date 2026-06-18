@@ -1,4 +1,4 @@
-import { DidCommEventTypes, DidCommMessageProcessedEvent, DidCommStatusV2Message } from '@credo-ts/didcomm'
+import { DidCommEventTypes, DidCommMessageProcessedEvent, DidCommStatusV4Message } from '@credo-ts/didcomm'
 import { FirebaseMessagingTypes } from '@react-native-firebase/messaging'
 import { manageBackgroundChatEntryChanges, subscribeToAgentChatEvents } from '@src/hooks/agent/chat'
 import { manageConnectionStateChangedEvent } from '@src/hooks/agent/connections/manageConnectionStateChangedEvent'
@@ -63,10 +63,11 @@ export async function backgroundPushNotificationHandler(remoteMessage: FirebaseM
     if (!mobileAgentInstance.getIsAppSubscribedToConnectionEvents()) {
       subscribeToAgentConnectionEvents(agent.context)
     }
-    const mediatorConnection = await agent.didcomm.mediationRecipient.findDefaultMediatorConnection()
+    const mediatorRecord = await agent.didcomm.mediationRecipient.findDefaultMediator()
+    if (!mediatorRecord) return
     await agent.didcomm.messagePickup.pickupMessages({
-      connectionId: mediatorConnection!.id,
-      protocolVersion: 'v2',
+      connectionId: mediatorRecord.connectionId,
+      protocolVersion: mediatorRecord.protocolVersion === 'v2' ? 'v4' : 'v2',
     })
 
     // this events is yet calling when app awakes and receives more because agent is still alive and the same
@@ -76,8 +77,8 @@ export async function backgroundPushNotificationHandler(remoteMessage: FirebaseM
       makeRequestToLocalServer({
         data: `Message processed for connection id ${data.payload.connection?.id}`,
       })
-      if (message.type === DidCommStatusV2Message.type.messageTypeUri) {
-        const messageCount = (message as DidCommStatusV2Message).messageCount
+      if (message.type === DidCommStatusV4Message.type.messageTypeUri) {
+        const messageCount = (message as DidCommStatusV4Message).messageCount
         log(`Status message received. Remaining messages: ${messageCount}`)
         makeRequestToLocalServer({
           data: `Status message received. Remaining messages: ${messageCount}`,

@@ -44,8 +44,8 @@ export const useSignUp = () => {
 
     await agent.didcomm.mediationRecipient.initiateMessagePickup(
       mediationRecord,
-      mediationRecord.mediationProtocolVersion === 'v2'
-        ? DidCommMediatorPickupStrategy.PickUpV3LiveMode
+      mediationRecord.protocolVersion === 'v2'
+        ? DidCommMediatorPickupStrategy.PickUpV4LiveMode
         : DidCommMediatorPickupStrategy.PickUpV2LiveMode
     )
     updateUserProfileData({ displayName: displayName.trim(), displayPicture })
