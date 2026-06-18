@@ -31,12 +31,6 @@ patchedDependencies:
   '@credo-ts/didcomm@0.7.1-pr-2704-20260610194233':
     hash: 9e2a795ca158d545bac0f6f2f34f39b531f668e7c90263b5bf874601dccfb8a2
     path: patches/@credo-ts__didcomm@0.7.1-pr-2704-20260610194233.patch
-  '@hyperledger/anoncreds-react-native@0.4.1-alpha-20260519194331':
-    hash: 2d56ca47234190e9661af303e0f4120def3404d218803daa18e04b0fab0ea5b0
-    path: patches/@hyperledger__anoncreds-react-native@0.4.1-alpha-20260519194331.patch
-  '@openwallet-foundation/askar-react-native@0.6.0':
-    hash: 8a5f1def0017cbef34d1efe59c23dde1a0406a8e255b7ad86ba7d3bef22f0c4c
-    path: patches/@openwallet-foundation__askar-react-native@0.6.0.patch
   '@robinbobin/react-native-google-drive-api-wrapper@1.2.4':
     hash: b1a56c4240146a667be266b1a781e3c8a1253affca4f03472a1e0e3ea18c825e
     path: patches/@robinbobin__react-native-google-drive-api-wrapper@1.2.4.patch
