@@ -63,8 +63,8 @@
     "@hyperledger/anoncreds-react-native": "0.4.1-alpha-20260519194331",
     "@hyperledger/anoncreds-shared": "0.4.1-alpha-20260519194331",
     "@noble/hashes": "^2.0.1",
-    "@openwallet-foundation/askar-react-native": "^0.6.0",
-    "@openwallet-foundation/askar-shared": "^0.6.0",
+    "@openwallet-foundation/askar-react-native": "0.6.1-alpha-20260609124024",
+    "@openwallet-foundation/askar-shared": "0.6.1-alpha-20260609124024",
     "@react-native-async-storage/async-storage": "~2.1.2",
     "@react-native-camera-roll/camera-roll": "7.10.2",
     "@react-native-clipboard/clipboard": "1.16.3",
@@ -221,9 +221,7 @@
       "react-native-create-thumbnail@2.2.0": "patches/react-native-create-thumbnail@2.2.0.patch",
       "react-native-image-crop-picker@0.50.1": "patches/react-native-image-crop-picker@0.50.1.patch",
       "react-native-reanimated": "patches/react-native-reanimated.patch",
-      "semantic-release-react-native@1.9.0": "patches/semantic-release-react-native@1.9.0.patch",
-      "@hyperledger/anoncreds-react-native@0.4.1-alpha-20260519194331": "patches/@hyperledger__anoncreds-react-native@0.4.1-alpha-20260519194331.patch",
-      "@openwallet-foundation/askar-react-native@0.6.0": "patches/@openwallet-foundation__askar-react-native@0.6.0.patch"
+      "semantic-release-react-native@1.9.0": "patches/semantic-release-react-native@1.9.0.patch"
     }
   },
   "engines": {
