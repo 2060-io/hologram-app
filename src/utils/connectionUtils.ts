@@ -169,7 +169,7 @@ const updateConnectionMediationKeylist = async (
       const mediationRecipientService = agent.dependencyManager.resolve(DidCommMediationRecipientService)
       const mediationRecord = await mediationRecipientService.getById(agent.context, record.mediatorId)
 
-      if (mediationRecord.mediationProtocolVersion === 'v2') {
+      if (mediationRecord.protocolVersion === 'v2') {
         // CM 2.0: keylist stores recipient DIDs (did:key), not raw keys
         const v2Action =
           action === DidCommKeylistUpdateAction.add ? KeylistUpdateActionV2.add : KeylistUpdateActionV2.remove

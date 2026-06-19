@@ -59,11 +59,11 @@ export async function initiateMessagePickup(agent: MobileAgent) {
   }
 
   // Initiate message pickup from the mediator. We assume that if Coordinate Mediation v1 was used,
-  // we are under a DIDComm v1 context and we should use PickUpV2LiveMode, otherwise we use PickUpV3LiveMode
+  // we are under a DIDComm v1 context and we should use PickUpV2LiveMode, otherwise we use PickUpV4LiveMode
   await agent.didcomm.mediationRecipient.initiateMessagePickup(
     mediatorRecord,
-    mediatorRecord.mediationProtocolVersion === 'v2'
-      ? DidCommMediatorPickupStrategy.PickUpV3LiveMode
+    mediatorRecord.protocolVersion === 'v2'
+      ? DidCommMediatorPickupStrategy.PickUpV4LiveMode
       : DidCommMediatorPickupStrategy.PickUpV2LiveMode
   )
 }

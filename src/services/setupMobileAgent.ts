@@ -22,7 +22,7 @@ interface MobileAgentConfig {
 
 const baseAgentConfig: MobileAgentConfig = {
   agentDependencies,
-  mediatorPickupStrategy: DidCommMediatorPickupStrategy.PickUpV3LiveMode,
+  mediatorPickupStrategy: DidCommMediatorPickupStrategy.PickUpV4LiveMode,
 }
 
 const getDevEnvValue = async (key: keyof DevEnvsObject): Promise<string | undefined> => {
