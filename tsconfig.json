@@ -15,5 +15,5 @@
     }
   },
   "include": ["**/*.ts", "**/*.tsx", "src/**/*"],
-  "exclude": ["**/node_modules", "**/Pods", "build"]
+  "exclude": ["**/node_modules", "**/Pods", "build", "e2e"]
 }
