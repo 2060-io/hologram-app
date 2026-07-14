@@ -1,5 +1,4 @@
-import { CredentialTypeService, InvitationService } from '@verana-labs/vs-agent-client'
-import { ApiVersion } from '@verana-labs/vs-agent-client'
+import { ApiVersion, CredentialTypeService, InvitationService } from '@verana-labs/vs-agent-client'
 
 export interface Claim {
   name: string
