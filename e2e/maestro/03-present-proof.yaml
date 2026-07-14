@@ -1,0 +1,13 @@
+# Finalize selectors with: maestro studio
+appId: REPLACE_WITH_ANDROID_APPLICATION_ID
+---
+# Proof request arrives over the live connection; wait for the request UI
+- extendedWaitUntil:
+    visible:
+      text: ".*(Proof|Presentation|Share|request).*"
+    timeout: 30000
+- tapOn:
+    text: ".*(Share|Present|Send).*"
+# Presentation sent
+- assertVisible:
+    text: ".*(shared|sent|presented).*"

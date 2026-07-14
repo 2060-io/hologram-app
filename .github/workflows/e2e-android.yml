@@ -1,0 +1,300 @@
+name: Continuous Integration - E2E Android
+
+on:
+  pull_request:
+    branches: [main]
+    # Label-gated: only runs when the 'e2e' label is present (see the guard
+    # below). 'labeled' lets adding the label trigger a run.
+    types: [opened, synchronize, reopened, labeled]
+  workflow_dispatch:
+
+jobs:
+  e2e-android:
+    # Gate: dispatch always runs; PRs only run when labeled 'e2e'.
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'e2e')
+    runs-on: ubuntu-latest
+    # Bound the whole job so a stuck emulator boot or hung maestro cannot run to
+    # the 6h default.
+    timeout-minutes: 60
+
+    env:
+      # ---- Host-side driver (runs on the runner, talks to vs-agent admin REST).
+      # localhost is correct here; run.ts defaults to :3001 so this MUST be set.
+      VS_AGENT_ADMIN_URL: http://localhost:3002
+      APP_ID: io.twentysixty.mobileagent.dev
+      DEFAULT_SERVICE_ALIAS: Welcome to Hologram (E2E)
+
+      # ---- vs-agent connect path is inline-OOB over a didcomm:// deep link, so
+      # its public DID never needs https resolution. Leave the welcome-service DID
+      # empty so the app skips its auto (https-resolving) default-service connect.
+      DEFAULT_SERVICE_PUBLIC_DID: ''
+      VS_AGENT_ENDPOINTS: ws://10.0.2.2:3001
+      VS_AGENT_PUBLIC_API_BASE_URL: http://10.0.2.2:3001
+      # didcomm:// base: routes the OOB to the app without App-Links verification.
+      AGENT_INVITATION_BASE_URL: didcomm://invite
+      EVENTS_BASE_URL: http://10.0.2.2:5000
+
+      # CI checkout paths for the rig build contexts (see docker-compose.yml).
+      MEDIATOR_BUILD_CONTEXT: ./didcomm-mediator-src
+      VS_AGENT_BUILD_CONTEXT: ./vs-agent-src
+
+    steps:
+      - name: Checkout hologram-app
+        uses: actions/checkout@v5
+
+      # Rig sources. Confirm the real repo coordinates/refs; pin a sha for a
+      # deterministic rig. A read token is needed if either repo is private.
+      - name: Checkout didcomm-mediator
+        uses: actions/checkout@v5
+        with:
+          repository: 2060-io/didcomm-mediator
+          path: didcomm-mediator-src
+
+      - name: Checkout vs-agent
+        uses: actions/checkout@v5
+        with:
+          repository: verana-labs/vs-agent
+          path: vs-agent-src
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup node v22
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          registry-url: 'https://registry.npmjs.org/'
+          cache: pnpm
+
+      - name: Set up JDK 17
+        # Gradle 9 / RN 0.84 needs JDK 17+. Pin it so the e2e build is deterministic.
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Cache node_modules
+        uses: actions/cache@v5
+        with:
+          path: node_modules
+          key: node-modules-${{ hashFiles('pnpm-lock.yaml', 'patches/**') }}
+
+      - name: Install app dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install e2e driver dependencies
+        # e2e/ is NOT a pnpm-workspace package and has no committed lockfile, so
+        # --frozen-lockfile would fail here. Install standalone so tsx + the
+        # @verana-labs clients are present before the emulator step.
+        working-directory: e2e
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Build rig images
+        # Pre-build + tag so `compose up --no-build` reuses them and never tries
+        # to rebuild from the parameterized contexts.
+        run: |
+          docker build -t didcomm-mediator:e2e "$MEDIATOR_BUILD_CONTEXT"
+          docker build --target vs-agent-chat -t vs-agent-chat:e2e \
+            -f "$VS_AGENT_BUILD_CONTEXT/apps/vs-agent/Dockerfile" "$VS_AGENT_BUILD_CONTEXT"
+
+      - name: Start HTTPS tunnel for the mediator
+        # did:web is HTTPS-only in the app resolver and the mediator is resolved
+        # strictly by DID, so the emulator needs an https/wss host in front of the
+        # published mediator port (4000). cloudflared's quick tunnel needs no
+        # account/token and serves a publicly-trusted TLS cert (no emulator trust
+        # store changes). We bring the mediator up AFTER we know the tunnel host so
+        # its did doc / serviceEndpoint advertise that host.
+        run: |
+          set -e
+          curl -fsSL https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64 -o /usr/local/bin/cloudflared
+          chmod +x /usr/local/bin/cloudflared
+          # Tunnel is started here but only points somewhere valid once the
+          # mediator is up; cloudflared tolerates the origin being unavailable
+          # briefly. Capture the assigned hostname.
+          nohup cloudflared tunnel --no-autoupdate --url http://localhost:4000 > cloudflared.log 2>&1 &
+          for i in $(seq 1 30); do
+            host=$(grep -Eo 'https://[a-z0-9-]+\.trycloudflare\.com' cloudflared.log | head -1 | sed 's#https://##')
+            if [ -n "$host" ]; then break; fi
+            sleep 2
+          done
+          if [ -z "$host" ]; then echo "cloudflared did not report a hostname"; cat cloudflared.log; exit 1; fi
+          echo "Tunnel host: $host"
+          # did:web encodes ':' as %3A; this host has no port so it is plain.
+          {
+            echo "MEDIATOR_TUNNEL_HOST=$host"
+            echo "MEDIATOR_PUBLIC_DID=did:web:$host"
+            echo "MEDIATOR_AGENT_ENDPOINTS=wss://$host"
+            echo "MEDIATOR_PUBLIC_API_BASE_URL=https://$host"
+          } >> "$GITHUB_ENV"
+
+      - name: Bring up rig
+        # --no-build: reuse the images tagged above. The mediator now advertises
+        # the cloudflared https/wss host injected in the previous step.
+        run: docker compose -f e2e/docker-compose.yml up -d --no-build
+
+      - name: Wait for rig health
+        # depends_on only waits for container start; poll the published well-known
+        # + admin endpoints (and the tunnel) from the host before continuing.
+        run: |
+          set -e
+          poll() {
+            local url="$1"
+            echo "Waiting for $url"
+            for i in $(seq 1 60); do
+              code=$(curl -s -o /dev/null -w '%{http_code}' "$url" || true)
+              if [ "$code" = "200" ] || [ "$code" = "404" ]; then echo "  ready ($code)"; return 0; fi
+              if [ "$i" = "60" ]; then echo "  timed out on $url"; return 1; fi
+              sleep 5
+            done
+          }
+          poll http://localhost:4000/.well-known/did.json
+          poll http://localhost:3001/.well-known/did.json
+          poll http://localhost:3002/v1/credential-types
+          # Confirm the tunnel actually serves the mediator did doc over https.
+          poll "https://${MEDIATOR_TUNNEL_HOST}/.well-known/did.json"
+
+      - name: Generate CI env file for APK
+        # react-native-config bakes these at BUILD time. ENVFILE wins over the
+        # flavor->env mapping in dotenv.gradle. Path note: dotenv.gradle resolves
+        # `$project.rootDir/../$envFile` = android/../ + .env.ci = repo-root
+        # .env.ci, so write it at the repo root and pass ENVFILE=.env.ci (NO ../).
+        run: |
+          cat > .env.ci <<EOF
+          APP_NAME=Hologram
+          BASE_INVITATION_URL=https://hologram.zone
+          MEDIATOR_PUBLIC_DID=${MEDIATOR_PUBLIC_DID}
+          DEFAULT_SERVICE_PUBLIC_DID=${DEFAULT_SERVICE_PUBLIC_DID}
+          DEFAULT_SERVICE_ALIAS=${DEFAULT_SERVICE_ALIAS}
+          SUPPORTED_DIDCOMM_VERSIONS=v1,v2
+          S3_SERVER_URL=http://10.0.2.2:9000
+          INDY_VDR_PROXY_BASE_URL=http://10.0.2.2:3009
+          WEBRTC_SERVER_BASE_URL=http://10.0.2.2:8080
+          BACKUP_NAME=Hologram-wallet-backup-e2e.zip
+          APP_CHECK_DEBUG_MODE=true
+          ANDROID_FIREBASE_DEBUG_TOKEN=
+          IOS_FIREBASE_DEBUG_TOKEN=
+          EOF
+          echo "Baked mediator DID:"
+          grep '^MEDIATOR_PUBLIC_DID=' .env.ci
+
+      - name: Substitute Maestro appId
+        # Maestro reads the target package from the YAML `appId:` field; -e params
+        # do not set it. Replace the placeholder with the dev-flavor applicationId.
+        run: |
+          sed -i "s/REPLACE_WITH_ANDROID_APPLICATION_ID/${APP_ID}/" e2e/maestro/*.yaml
+          grep -H '^appId:' e2e/maestro/*.yaml
+
+      - name: Cache Gradle
+        uses: actions/cache@v5
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            android/.gradle
+          key: gradle-${{ hashFiles('android/**/*.gradle*', 'android/gradle.properties', 'pnpm-lock.yaml') }}
+          restore-keys: |
+            gradle-
+
+      - name: Build debug APK (dev flavor)
+        # Debug build uses the checked-in debug.keystore; no signing secrets.
+        # ENVFILE=.env.ci injects the rig-pointing env (resolves to repo-root
+        # .env.ci). x86_64 ABI so it installs on the CI emulator. New Architecture
+        # needs codegen before assemble; --no-daemon avoids a stale-codegen daemon
+        # across the two invocations.
+        working-directory: android
+        run: |
+          ./gradlew --no-daemon generateCodegenSchemaFromJavaScript generateCodegenArtifactsFromSchema
+          ENVFILE=.env.ci ./gradlew --no-daemon assembleDevDebug -PreactNativeArchitectures=x86_64
+          test -f app/build/outputs/apk/dev/debug/app-dev-debug.apk
+
+      - name: Install Maestro
+        run: |
+          curl -fsSL "https://get.maestro.mobile.dev" | bash
+          echo "$HOME/.maestro/bin" >> "$GITHUB_PATH"
+
+      - name: Enable KVM
+        # reactivecircus/android-emulator-runner needs hardware accel via /dev/kvm.
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' \
+            | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: AVD cache
+        uses: actions/cache@v5
+        id: avd-cache
+        with:
+          path: |
+            ~/.android/avd/*
+            ~/.android/adb*
+          key: avd-34-x86_64
+
+      - name: Create AVD snapshot
+        if: steps.avd-cache.outputs.cache-hit != 'true'
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          arch: x86_64
+          target: google_apis
+          profile: pixel_6
+          force-avd-creation: false
+          emulator-options: -no-window -no-snapshot -noaudio -no-boot-anim -gpu swiftshader_indirect
+          disable-animations: true
+          emulator-boot-timeout: 900
+          script: echo "AVD snapshot created"
+
+      - name: Run e2e on Android emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          arch: x86_64
+          target: google_apis
+          profile: pixel_6
+          force-avd-creation: false
+          emulator-options: -no-window -no-snapshot-save -noaudio -no-boot-anim -gpu swiftshader_indirect
+          disable-animations: true
+          emulator-boot-timeout: 900
+          script: |
+            set -e
+            export PATH="$HOME/.maestro/bin:$PATH"
+            adb uninstall ${APP_ID} || true
+            adb install -r android/app/build/outputs/apk/dev/debug/app-dev-debug.apk
+            # Fresh app storage so the baked MEDIATOR_PUBLIC_DID re-seeds the
+            # persisted devEnvs (ConfigProvider only fills missing keys).
+            adb shell pm clear ${APP_ID} || true
+            # Belt-and-suspenders: even though invitations are didcomm://, allow
+            # the app to own https links to hologram.zone without assetlinks.
+            adb shell pm set-app-links-user-selection --user 0 ${APP_ID} all-allow hologram.zone || true
+            mkdir -p e2e/artifacts
+            adb logcat -c || true
+            adb logcat > e2e/artifacts/logcat.txt &
+            cd e2e
+            # run.ts shells out to `maestro test`; on failure maestro writes its
+            # debug bundle (incl. screenshots) under ~/.maestro/tests, collected
+            # below. Per-flow screenshots in the artifact need a run.ts change to
+            # pass --debug-output (out of scope for this workflow).
+            VS_AGENT_ADMIN_URL=${VS_AGENT_ADMIN_URL} APP_ID=${APP_ID} pnpm tsx src/run.ts
+
+      - name: Collect container logs
+        if: always()
+        run: |
+          mkdir -p e2e/artifacts
+          docker compose -f e2e/docker-compose.yml logs --no-color > e2e/artifacts/rig-logs.txt 2>&1 || true
+          cp cloudflared.log e2e/artifacts/ 2>/dev/null || true
+          cp .env.ci e2e/artifacts/env.ci.txt 2>/dev/null || true
+
+      - name: Collect Maestro debug output
+        if: always()
+        run: cp -r ~/.maestro/tests e2e/artifacts/maestro-tests 2>/dev/null || true
+
+      - name: Upload e2e artifacts
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: e2e-android-artifacts
+          path: e2e/artifacts/**
+          if-no-files-found: ignore
+
+      - name: Tear down rig
+        if: always()
+        run: docker compose -f e2e/docker-compose.yml down -v || true

@@ -1,0 +1,18 @@
+{
+  "name": "hologram-e2e",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "run": "tsx src/run.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@verana-labs/vs-agent-client": "^1.11.0",
+    "@verana-labs/vs-agent-model": "^1.11.0"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.0",
+    "typescript": "^5.5.0"
+  }
+}

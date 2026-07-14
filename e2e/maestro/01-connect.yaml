@@ -1,0 +1,14 @@
+# Finalize selectors with: maestro studio
+# Set appId to the Android applicationId (see android/app/build.gradle).
+appId: REPLACE_WITH_ANDROID_APPLICATION_ID
+---
+- launchApp
+- openLink: ${INVITATION_URL}
+# Accept the incoming connection (confirm the label/text against the running app)
+- assertVisible:
+    text: ".*(Connect|Accept|Invitation).*"
+- tapOn:
+    text: ".*(Connect|Accept).*"
+# Connection established
+- assertVisible:
+    text: ".*(Connected|Chat).*"

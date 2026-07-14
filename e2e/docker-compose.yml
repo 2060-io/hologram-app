@@ -1,0 +1,152 @@
+# E2E rig: postgres + didcomm-mediator + vs-agent.
+#
+# Networking model (see e2e/README.md): the hologram app runs inside an Android
+# emulator and reaches the CI host loopback via the special alias 10.0.2.2.
+# Every URL that ends up inside a resolved DID document, a DIDComm
+# serviceEndpoint, or an OOB invitation MUST be emulator-reachable. localhost,
+# 127.0.0.1, and docker service names (postgres, vs-agent) are NOT reachable from
+# inside the emulator.
+#
+# DID-RESOLUTION CAVEAT (load-bearing): the shipping app reaches the mediator
+# STRICTLY by DID (src/hooks/useSignUp.ts startSignUp -> receiveImplicitInvitation
+# by did). web-did-resolver is HTTPS-only (node_modules/web-did-resolver builds
+# https://<host>/.well-known/did.json and rejects non-https), with no http
+# override patch. So a plain-http did:web:10.0.2.2%3A4000 can NOT resolve and
+# sign-up never gets a mediation grant. A runnable rig REQUIRES an HTTPS/WSS front
+# (a tunnel such as ngrok/cloudflared, or a TLS terminator) in front of the
+# mediator, with MEDIATOR_PUBLIC_DID + MEDIATOR_AGENT_ENDPOINTS pointed at that
+# https/wss host. This mirrors the mediator's own docker-compose, which fronts
+# port 4000 with ngrok and sets AGENT_PUBLIC_DID=did:webvh:<host> /
+# AGENT_ENDPOINTS=wss://<host>. The same applies to the vs-agent public DID if the
+# app's auto default-service connect is used (it also resolves by DID).
+#
+# Every host below is overridable by env so the workflow can inject the tunnel
+# host. The 10.0.2.2 defaults are a non-resolving fallback kept only so the rig
+# boots for local protocol inspection; they will NOT complete sign-up.
+
+services:
+  postgres:
+    image: postgres:alpine3.19
+    restart: always
+    environment:
+      POSTGRES_USER: didcomm-mediator
+      POSTGRES_PASSWORD: didcomm-mediator
+    # Internal only; the emulator never talks to Postgres directly.
+    expose:
+      - '5432'
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U didcomm-mediator']
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  didcomm-mediator:
+    # Context is parameterized so CI can point it at its checkout path
+    # (MEDIATOR_BUILD_CONTEXT). Locally it defaults to the sibling repo. The CI
+    # workflow pre-builds and tags didcomm-mediator:e2e and brings the rig up with
+    # --no-build, so a missing context on the runner is not fatal there.
+    build:
+      context: ${MEDIATOR_BUILD_CONTEXT:-../../didcomm-mediator}
+      dockerfile: Dockerfile
+    image: didcomm-mediator:e2e
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      AGENT_NAME: '2060 DIDComm Mediator - E2E'
+      AGENT_PORT: '4000'
+      # MUST be HTTPS-resolvable from inside the emulator. Set MEDIATOR_PUBLIC_DID
+      # to did:web:<tunnel-host> (or did:webvh:...) and MEDIATOR_AGENT_ENDPOINTS to
+      # wss://<tunnel-host>. The 10.0.2.2 fallback does NOT resolve (see header).
+      AGENT_PUBLIC_DID: '${MEDIATOR_PUBLIC_DID:-did:web:10.0.2.2%3A4000}'
+      AGENT_ENDPOINTS: '${MEDIATOR_AGENT_ENDPOINTS:-ws://10.0.2.2:4000}'
+      AGENT_LOG_LEVEL: '2'
+      WALLET_NAME: didcomm-mediator-e2e
+      WALLET_KEY: e2e-mediator-wallet-key
+      KEY_DERIVATION_METHOD: ARGON2I_MOD
+      # Presence of all three switches wallet + message pickup to Postgres.
+      POSTGRES_HOST: postgres
+      POSTGRES_USER: didcomm-mediator
+      POSTGRES_PASSWORD: didcomm-mediator
+      DIDCOMM_V1_SUPPORT: 'true'
+      DIDCOMM_V2_SUPPORT: 'true'
+      HTTP_SUPPORT: 'true'
+      WS_SUPPORT: 'true'
+      # Origin for /s shorten-url links; align with the public host.
+      SHORTEN_INVITATION_BASE_URL: '${MEDIATOR_PUBLIC_API_BASE_URL:-http://10.0.2.2:4000}'
+    ports:
+      # Single port carries well-known did.json/did.jsonl + DIDComm HTTP + WS
+      # upgrade. A tunnel/terminator fronts THIS port for HTTPS did:web.
+      - '4000:4000'
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - node -e "require('http').get('http://127.0.0.1:4000/.well-known/did.json',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))"
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 60s
+
+  vs-agent:
+    # Context parameterized for CI (VS_AGENT_BUILD_CONTEXT). Confirm the real
+    # repo/Dockerfile path/target against the vs-agent source before relying on
+    # CI; env var names here are matched to the vs-agent helm charts where known
+    # (AGENT_WALLET_ID/KEY, AGENT_DIDCOMM_VERSIONS, USE_CORS, EVENTS_BASE_URL) and
+    # are best-effort otherwise.
+    build:
+      context: ${VS_AGENT_BUILD_CONTEXT:-../../verana/vs-agent-main}
+      dockerfile: apps/vs-agent/Dockerfile
+      # chat plugin gives credential/message handlers; mrtd (ePassport) is not
+      # needed for the connect -> issue -> present flows.
+      target: vs-agent-chat
+    image: vs-agent-chat:e2e
+    restart: always
+    environment:
+      AGENT_LABEL: 'Welcome to Hologram - E2E'
+      AGENT_PORT: '3001'
+      ADMIN_PORT: '3002'
+      # Used only if the app resolves this DID (auto default-service connect, which
+      # also goes through receiveImplicitInvitation by DID and hits the same
+      # HTTPS-only wall). The e2e flow drives vs-agent connect via an inline ?oob=
+      # invitation minted by the admin API instead, which carries the
+      # serviceEndpoint inline and does NOT require resolving this DID. If you
+      # enable the auto connect, set this to did:web:<tunnel-host>.
+      AGENT_PUBLIC_DID: '${DEFAULT_SERVICE_PUBLIC_DID:-did:web:10.0.2.2%3A3001}'
+      AGENT_ENDPOINTS: '${VS_AGENT_ENDPOINTS:-ws://10.0.2.2:3001}'
+      # Base used for anoncreds resource URLs and the legacy did doc.
+      PUBLIC_API_BASE_URL: '${VS_AGENT_PUBLIC_API_BASE_URL:-http://10.0.2.2:3001}'
+      # Prefix of every invitation URL the admin API returns. Use a didcomm://
+      # base: the dev app's didcomm intent-filter has NO autoVerify and always
+      # routes the deep link to the app. The https/hologram.zone filter IS
+      # autoVerify and fails App-Links verification on a CI emulator (assetlinks
+      # check fails -> Android opens a browser instead of the app). The ?oob=
+      # payload's serviceEndpoint comes from AGENT_ENDPOINTS (emulator-reachable),
+      # so the wrapper host is irrelevant to delivery.
+      AGENT_INVITATION_BASE_URL: '${AGENT_INVITATION_BASE_URL:-didcomm://invite}'
+      AGENT_DIDCOMM_VERSIONS: 'v1,v2'
+      VS_AGENT_PLUGINS: 'messaging,chat'
+      AGENT_WALLET_ID: vs-agent-e2e
+      AGENT_WALLET_KEY: e2e-vs-agent-wallet-key
+      AGENT_WALLET_KEY_DERIVATION_METHOD: ARGON2I_MOD
+      # Skip storage migration export to avoid a fatal on a fresh wallet.
+      AGENT_AUTO_UPDATE_STORAGE_ON_STARTUP: 'false'
+      AGENT_LOG_LEVEL: '2'
+      ADMIN_LOG_LEVEL: '2'
+      USE_CORS: 'true'
+      # Domain events sink; the host-side issuer/driver does not require it for
+      # the connect/issue/present flow but vs-agent expects a target.
+      EVENTS_BASE_URL: '${EVENTS_BASE_URL:-http://10.0.2.2:5000}'
+    ports:
+      # 3001 = DIDComm public + well-known (emulator dials this / its tunnel).
+      # 3002 = admin REST the host-side issuer (e2e/src/issuer.ts) drives.
+      - '3001:3001'
+      - '3002:3002'
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - node -e "require('http').get('http://127.0.0.1:3001/.well-known/did.json',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))"
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 90s
