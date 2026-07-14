@@ -137,16 +137,19 @@ android {
         dev {
             applicationIdSuffix ".dev"
             resValue "string", "build_config_package", "io.twentysixty.mobileagent"
+            manifestPlaceholders = [appScheme: "hologram-zone-dev"]
         }
 
         staging {
             applicationIdSuffix ".st"
             resValue "string", "build_config_package", "io.twentysixty.mobileagent"
+            manifestPlaceholders = [appScheme: "hologram-zone-staging"]
         }
 
         prod {
             applicationIdSuffix ".m"
             resValue "string", "build_config_package", "io.twentysixty.mobileagent"
+            manifestPlaceholders = [appScheme: "hologram-zone"]
         }
     }
 
