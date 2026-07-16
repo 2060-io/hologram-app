@@ -367,7 +367,7 @@ jobs:
           echo "install.html created successfully."
 
       - name: Setup MinIO client
-        uses: yakubique/setup-minio-cli@v1
+        uses: yakubique/setup-minio-cli@d9826c1ad14228495203415557139d4cf491bed9 # v1
 
       - name: Upload manifest.plist to MinIO
         run: |
