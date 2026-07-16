@@ -2,6 +2,7 @@ import { DidCommUserProfileData } from '@2060.io/credo-ts-didcomm-user-profile'
 import defaultAvatar from '@src/assets/images/defaultUser.png'
 import { Avatar, SvgIcon, Text, TextInput } from '@src/components/common'
 import { ImageOrVideo, useImageCropPicker } from '@src/hooks'
+import { createProfilePicture } from '@src/hooks/media/profilePicture'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { dataUrl } from '@src/utils'
 import { widthPercentageToDP } from '@src/utils/responsiveUtils'
@@ -31,8 +32,10 @@ const UserProfileForm: React.FC<Props> = (props) => {
     borderRadius: avatarSize / 2,
   }
 
-  const onChangeAvatarInfo = (info: ImageOrVideo) => {
-    if (info.data) onHandleChangePicture({ mimeType: info.mime, base64: info.data })
+  const onChangeAvatarInfo = async (info: ImageOrVideo) => {
+    if (!info.path) return
+    const picture = await createProfilePicture({ imageUrl: info.path })
+    if (picture) onHandleChangePicture(picture)
   }
 
   const onTakePhotoOrGallery = (type: 'Gallery' | 'Camera') => {
