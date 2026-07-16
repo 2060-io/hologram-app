@@ -152,7 +152,7 @@ jobs:
           ./gradlew assembleStagingRelease -PreactNativeArchitectures=arm64-v8a
 
       - name: Setup MinIO client
-        uses: yakubique/setup-minio-cli@v1
+        uses: yakubique/setup-minio-cli@d9826c1ad14228495203415557139d4cf491bed9 # v1
 
       - name: Upload app.apk to MinIO
         run: |
