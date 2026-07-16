@@ -40,7 +40,7 @@ const CustomChatHeader: React.FC<Props> = ({
 
   const goBack = () => {
     if (redirectToHomeOnBack) {
-      navigation.dispatch(StackActions.replace('Home'))
+      navigation.dispatch(StackActions.popTo('Home'))
     } else {
       navigation.goBack()
     }
