@@ -30,7 +30,7 @@
       android:icon="@mipmap/ic_launcher"
       android:allowBackup="false"
       tools:replace="android:theme"
-      android:theme="@style/Theme.App.Starting"
+      android:theme="@style/BootTheme"
       android:supportsRtl="true"
       android:requestLegacyExternalStorage="true"
       android:extractNativeLibs="true"
@@ -55,7 +55,7 @@
            <data android:mimeType="image/*" />
            <data android:mimeType="video/*" />
        </intent-filter>
-       <intent-filter android:autoVerify="true">
+       <intent-filter>
           <action android:name="android.intent.action.MAIN"/>
           <category android:name="android.intent.category.LAUNCHER"/>
         </intent-filter>
@@ -64,6 +64,12 @@
           <category android:name="android.intent.category.DEFAULT"/>
           <category android:name="android.intent.category.BROWSABLE"/>
           <data android:scheme="didcomm" />
+        </intent-filter>
+        <intent-filter>
+          <action android:name="android.intent.action.VIEW"/>
+          <category android:name="android.intent.category.DEFAULT"/>
+          <category android:name="android.intent.category.BROWSABLE"/>
+          <data android:scheme="${appScheme}" />
         </intent-filter>
         <intent-filter android:autoVerify="true">
           <action android:name="android.intent.action.VIEW"/>

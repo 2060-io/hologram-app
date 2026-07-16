@@ -13,8 +13,13 @@ end
 node_require('react-native/scripts/react_native_pods.rb')
 node_require('react-native-permissions/scripts/setup.rb')
 
-platform :ios, '15.6'
+platform :ios, '16.0'
 install! 'cocoapods', :deterministic_uuids => false
+
+# Disable RN 0.84 prebuilt binaries — they conflict with Expo 55's pod setup,
+# which doesn't handle the dual module definitions from source pods + XCFramework.
+# See: https://github.com/expo/expo/issues/39233
+ENV['RCT_USE_PREBUILT_RNCORE'] = '0'
 
 linkage = ENV['USE_FRAMEWORKS']
 if linkage != nil
@@ -66,7 +71,10 @@ abstract_target 'CommonPods' do
     end
   end
   add_common_dependencies()
-  pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec', :modular_headers => false
+  # Match modular-header settings that use_expo_modules! enables in the share
+  # extension abstract target, to avoid CocoaPods "Unable to determine whether
+  # to build ... as a module" warnings.
+  pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec', :modular_headers => true
   pre_install do |installer|
     Pod::Installer::Xcode::TargetValidator.send(:define_method, :verify_no_static_framework_transitive_dependencies) {}
   end
@@ -78,10 +86,78 @@ abstract_target 'CommonPods' do
       :mac_catalyst_enabled => false,
       :ccache_enabled => true
     )
+
+    # Fix module discovery for Swift:
+    # 1. Disable PrecompileSwiftBridgingHeader (it uses Clang without module map flags)
+    # 2. Redirect build-products module maps to Pods/Headers/Public/ versions where
+    #    available. Build-products module maps reference umbrella headers whose
+    #    #imports (e.g. "Expo/ExpoReactNativeFactory.h") can't be resolved because
+    #    headers aren't copied to build products. Headers/Public versions sit alongside
+    #    the actual headers and resolve correctly.
+    # 3. Forward remaining -fmodule-map-file= from OTHER_CFLAGS to Swift via -Xcc.
+    pods_public_headers = File.join(installer.sandbox.root, 'Headers', 'Public')
+    Dir.glob(File.join(installer.sandbox.root, 'Target Support Files', 'Pods-Common*', '*.xcconfig')).each do |xcconfig_path|
+      content = File.read(xcconfig_path)
+
+      # Step 2: Redirect build-products module maps already in OTHER_SWIFT_FLAGS
+      content.gsub!(/(-fmodule-map-file=")(\$\{PODS_CONFIGURATION_BUILD_DIR\})\/([^\/]+)\/([^"]+)"/) { |match|
+        pod_name = $3
+        map_name = $4
+        public_map = File.join(pods_public_headers, pod_name, map_name)
+        if File.exist?(public_map)
+          "-fmodule-map-file=\"#{public_map}\""
+        else
+          match
+        end
+      }
+
+      # Step 3: Forward OTHER_CFLAGS module map flags not already in OTHER_SWIFT_FLAGS
+      other_cflags_maps = content.scan(/OTHER_CFLAGS.*/).join(' ').scan(/-fmodule-map-file="[^"]+"/).uniq
+      swift_flags_maps = content.scan(/OTHER_SWIFT_FLAGS.*/).join(' ').scan(/-fmodule-map-file="[^"]+"/).uniq
+      missing = other_cflags_maps - swift_flags_maps
+      unless missing.empty?
+        xcc_flags = missing.map { |flag|
+          if flag =~ /PODS_CONFIGURATION_BUILD_DIR\}\/([^\/]+)\/([^"]+)/
+            pod_name = $1
+            map_name = $2
+            public_map = File.join(pods_public_headers, pod_name, map_name)
+            File.exist?(public_map) ? "-Xcc -fmodule-map-file=\"#{public_map}\"" : "-Xcc #{flag}"
+          else
+            "-Xcc #{flag}"
+          end
+        }.join(' ')
+        if content.include?('OTHER_SWIFT_FLAGS')
+          content.gsub!(/^(OTHER_SWIFT_FLAGS\s*=.*)$/) { "#{$1} #{xcc_flags}" }
+        else
+          content += "\nOTHER_SWIFT_FLAGS = $(inherited) #{xcc_flags}\n"
+        end
+      end
+
+      # Step 1: Disable bridging header precompilation. Without this, the precompile
+      # step emits a noisy "module 'Expo' not defined in any loaded module map" fatal
+      # error. The build still succeeds (Xcode falls back to non-precompiled header)
+      # but the error is alarming and the failed precompile work is wasted.
+      unless content.include?('SWIFT_PRECOMPILE_BRIDGING_HEADER')
+        content += "\nSWIFT_PRECOMPILE_BRIDGING_HEADER = NO\n"
+      end
+      File.write(xcconfig_path, content)
+    end
+
     installer.pods_project.targets.each do |target|
       target.build_configurations.each do |config|
         config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)', '_LIBCPP_ENABLE_CXX17_REMOVED_UNARY_BINARY_FUNCTION']
         config.build_settings['APPLICATION_EXTENSION_API_ONLY'] = 'NO'
+      end
+      if target.name == 'fmt'
+        target.build_configurations.each do |config|
+          config.build_settings['CLANG_CXX_LANGUAGE_STANDARD'] = 'c++17'
+        end
+      end
+      if ['Expo', 'ExpoModulesCore'].include?(target.name)
+        target.build_configurations.each do |config|
+          config.build_settings['GCC_WARN_INHIBIT_ALL_WARNINGS'] = 'YES'
+          config.build_settings['SWIFT_ENABLE_EXPLICIT_MODULES'] = 'NO'
+        end
       end
     end
   end

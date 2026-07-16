@@ -1,14 +1,12 @@
-import { DidCommMessageSentEvent, DidCommEventTypes, MessageSendingError } from '@credo-ts/didcomm'
-import { Realm } from 'realm'
-import { ReplaySubject, firstValueFrom, filter, first, timeout, catchError, map } from 'rxjs'
-
-import { ActionExecutionStatus, AgentAction, OutboundMessageContextData } from './AgentAction'
-import { AgentActionExecuterMap } from './AgentActionExecuterMap'
-
+import { DidCommEventTypes, DidCommMessageSentEvent, MessageSendingError } from '@credo-ts/didcomm'
 import { updateChatEntry } from '@src/hooks/agent/chat/services/ChatEntryService'
 import { ChatEntry, ChatEntryState } from '@src/model'
 import { MobileAgent } from '@src/services/agent'
 import { log, logError } from '@src/utils'
+import { Realm } from 'realm'
+import { catchError, filter, first, firstValueFrom, map, ReplaySubject, timeout } from 'rxjs'
+import { ActionExecutionStatus, AgentAction, OutboundMessageContextData } from './AgentAction'
+import { AgentActionExecuterMap } from './AgentActionExecuterMap'
 
 // Hard ceiling for the action callback itself (i.e. the underlying `sendMessage`
 // dispatching logic). If the outbound transport hangs (dead socket, stalled
@@ -32,14 +30,14 @@ const withTimeout = <T>(promise: Promise<T>, ms: number, label: string): Promise
   new Promise<T>((resolve, reject) => {
     const timer = setTimeout(() => reject(new Error(`${label} timed out after ${ms}ms`)), ms)
     promise.then(
-      value => {
+      (value) => {
         clearTimeout(timer)
         resolve(value)
       },
-      err => {
+      (err) => {
         clearTimeout(timer)
         reject(err)
-      },
+      }
     )
   })
 
@@ -58,9 +56,7 @@ export class AgentActionExecuter {
     const replaySubject = new ReplaySubject<DidCommMessageSentEvent>()
     log('Execute Agent Action', JSON.stringify(action))
 
-    const chatEntry = action.chatEntryId
-      ? realm.objectForPrimaryKey(ChatEntry, action.chatEntryId)
-      : undefined
+    const chatEntry = action.chatEntryId ? realm.objectForPrimaryKey(ChatEntry, action.chatEntryId) : undefined
 
     // Start looking at AgentMessageSent events
     const subscription = agent.events
@@ -69,22 +65,18 @@ export class AgentActionExecuter {
 
     try {
       const callback = AgentActionExecuterMap[action.type](action)
-      const { associatedRecord, outgoingMessageType } = await withTimeout(
+      const { associatedRecord, outgoingMessageTypes } = await withTimeout(
         callback({ agent }),
         ACTION_CALLBACK_TIMEOUT_MS,
-        `Agent action ${action.type} callback`,
+        `Agent action ${action.type} callback`
       )
 
       // Wait until the outgoing message has been submitted and update the chat entry accordingly
       const message = await firstValueFrom(
         replaySubject.asObservable().pipe(
+          filter((e) => !outgoingMessageTypes?.length || outgoingMessageTypes.includes(e.payload.message.message.type)),
           filter(
-            e => outgoingMessageType === undefined || e.payload.message.message.type === outgoingMessageType,
-          ),
-          filter(
-            e =>
-              associatedRecord === undefined ||
-              e.payload.message.associatedRecord?.id === associatedRecord.id,
+            (e) => associatedRecord === undefined || e.payload.message.associatedRecord?.id === associatedRecord.id
           ),
           first(),
           timeout(MESSAGE_SENT_EVENT_TIMEOUT_MS),
@@ -94,12 +86,10 @@ export class AgentActionExecuter {
             // duplicate sends, so we surface a non-retryable error and let the
             // queue move on. The chat entry will stay in `Created` until further
             // reconciliation.
-            throw new Error(
-              `DidCommMessageSent not emitted in ${MESSAGE_SENT_EVENT_TIMEOUT_MS}ms (${action.type})`,
-            )
+            throw new Error(`DidCommMessageSent not emitted in ${MESSAGE_SENT_EVENT_TIMEOUT_MS}ms (${action.type})`)
           }),
-          map(e => e.payload.message),
-        ),
+          map((e) => e.payload.message)
+        )
       )
 
       // Message is submitted: update the associated chat entry to the corresponding state
@@ -132,7 +122,7 @@ export class AgentActionExecuter {
         if (serializedSize > MAX_RETRY_MESSAGE_JSON_BYTES) {
           logError(
             `Outbound message for ${action.type} is ${serializedSize} bytes, ` +
-              `above the ${MAX_RETRY_MESSAGE_JSON_BYTES}-byte retry cap; dropping retries.`,
+              `above the ${MAX_RETRY_MESSAGE_JSON_BYTES}-byte retry cap; dropping retries.`
           )
           // Return OK so no retry is enqueued. The chat entry stays in `Created`
           // and the caller can surface it as an unsent message in the UI.
@@ -144,9 +134,7 @@ export class AgentActionExecuter {
           outboundMessageContextData: {
             message: messageJson,
             associatedChatEntryId: chatEntry?.id,
-            associatedRecord: associatedRecord
-              ? { type: associatedRecord.type, id: associatedRecord.id }
-              : undefined,
+            associatedRecord: associatedRecord ? { type: associatedRecord.type, id: associatedRecord.id } : undefined,
             didcommConnectionId: connection?.id,
           },
         }

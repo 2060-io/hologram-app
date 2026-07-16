@@ -1,5 +1,8 @@
 import { downloadFile, read, stat } from '@dr.pogodin/react-native-fs'
 import { GDrive, ListQueryBuilder } from '@robinbobin/react-native-google-drive-api-wrapper'
+import { GOOGLE_ACCOUNT_BACKUP_PERSIST_KEY, getStorageData, setStorageData } from '@src/services/localStorage'
+import { log, logError } from '@src/utils'
+import { BACKUP_NAME, BACKUP_ZIP_FILE_PATH } from '@src/utils/walletBackUpUtils'
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import {
@@ -7,18 +10,13 @@ import {
   googleDriveGetAccessToken,
   googleDriveSelectAccount,
 } from 'react-native-local-native-modules'
-
 import {
-  restoreProgressInitialValues,
   BackupHandler,
-  OnBackupFinish,
   BackupProgressProps,
+  OnBackupFinish,
   RestoreProgress,
+  restoreProgressInitialValues,
 } from './backup'
-
-import { GOOGLE_ACCOUNT_BACKUP_PERSIST_KEY, getStorageData, setStorageData } from '@src/services/localStorage'
-import { log, logError } from '@src/utils'
-import { BACKUP_NAME, BACKUP_ZIP_FILE_PATH } from '@src/utils/walletBackUpUtils'
 
 type FilesProps = {
   id: string
@@ -45,7 +43,11 @@ export const useGoogleDrive = () => {
     const setup = async () => {
       const storedGoogleAccount = await getStorageData(GOOGLE_ACCOUNT_BACKUP_PERSIST_KEY)
       setSelectedGoogleAccount(String(storedGoogleAccount))
-      storedGoogleAccount ? authorize(String(storedGoogleAccount)) : selectAccount()
+      if (storedGoogleAccount) {
+        authorize(String(storedGoogleAccount))
+      } else {
+        selectAccount()
+      }
     }
     setup()
   }, [])
@@ -55,7 +57,7 @@ export const useGoogleDrive = () => {
       const { exists, backup } = await existsBackup()
       if (exists) getBackupInfo(backup.id)
     }
-    isCloudAvailable && checkBackup()
+    if (isCloudAvailable) checkBackup()
   }, [isCloudAvailable])
 
   const initializeGoogleDrive = async () => {
@@ -151,7 +153,7 @@ export const useGoogleDrive = () => {
     async (
       fileToUploadLocation: string,
       onBackupUploadSuccess: OnBackupFinish,
-      onBackupUploadFailure: (error: string) => void,
+      onBackupUploadFailure: (error: string) => void
     ) => {
       try {
         const UPLOAD_SIZE_PER_CHUNK = TWO_MB
@@ -180,7 +182,7 @@ export const useGoogleDrive = () => {
           }).catch(() => log('Uploading backup file chunk'))
           const response = typeof chunkResponse === 'object' ? chunkResponse.data : null
           const progress = Number(((end / fileToUploadInfo.size) * 100).toFixed())
-          setUploadProgress(prev => ({ ...prev, progress }))
+          setUploadProgress((prev) => ({ ...prev, progress }))
           if (response) {
             await initializeGoogleDrive()
             setTimeout(() => {
@@ -197,29 +199,28 @@ export const useGoogleDrive = () => {
       }
     }
 
-  const downloadBackup =
-    (setRestoreProgress: React.Dispatch<React.SetStateAction<RestoreProgress>>) => async () => {
-      try {
-        const { promise } = downloadFile({
-          fromUrl: backupHandler?.backup?.downloadUrl ?? '',
-          progressInterval: 5000,
-          headers: { Authorization: `Bearer ${googleDriveConnection?.accessToken}` },
-          toFile: BACKUP_ZIP_FILE_PATH,
-          begin: () => log('Download of backup file begin'),
-          progress: res => {
-            const progress = Number(((res.bytesWritten / res.contentLength) * 100).toFixed())
-            const progressLessOne = progress ? progress - 1 : progress
-            setRestoreProgress(prev => ({ ...prev, progress: progressLessOne }))
-            log(`Downloading backup progress: ${progress}%`)
-          },
-        })
-        await promise
-        return true
-      } catch (error) {
-        setRestoreProgress({ ...restoreProgressInitialValues, error: `${error}` })
-        return false
-      }
+  const downloadBackup = (setRestoreProgress: React.Dispatch<React.SetStateAction<RestoreProgress>>) => async () => {
+    try {
+      const { promise } = downloadFile({
+        fromUrl: backupHandler?.backup?.downloadUrl ?? '',
+        progressInterval: 5000,
+        headers: { Authorization: `Bearer ${googleDriveConnection?.accessToken}` },
+        toFile: BACKUP_ZIP_FILE_PATH,
+        begin: () => log('Download of backup file begin'),
+        progress: (res) => {
+          const progress = Number(((res.bytesWritten / res.contentLength) * 100).toFixed())
+          const progressLessOne = progress ? progress - 1 : progress
+          setRestoreProgress((prev) => ({ ...prev, progress: progressLessOne }))
+          log(`Downloading backup progress: ${progress}%`)
+        },
+      })
+      await promise
+      return true
+    } catch (error) {
+      setRestoreProgress({ ...restoreProgressInitialValues, error: `${error}` })
+      return false
     }
+  }
 
   return {
     isCloudAvailable,

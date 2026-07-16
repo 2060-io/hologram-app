@@ -1,22 +1,19 @@
-import React, { memo } from 'react'
-import { useTranslation } from 'react-i18next'
-import { Image, TouchableOpacity, View, ActivityIndicator } from 'react-native'
-
-import { ImageProps } from '../ChatProps'
-import RetryMediaUploadView from '../RetryMediaUploadView'
-import { ParsedText } from '../components'
-
-import ImageView from './ImageView'
-import getStyles from './styles'
-
 import imagePlaceholder from '@src/assets/images/placeholderImg.png'
-import { Icon, Text, Progress, UniversalImage } from '@src/components/common'
+import { Icon, Progress, Text, UniversalImage } from '@src/components/common'
 import { useMedia } from '@src/hooks'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { ImageMetadata, MediaDownloadState, MediaUploadState } from '@src/model'
 import { getFileSize } from '@src/utils'
 import { getLocalFileUri } from '@src/utils/RNFS'
 import { screenWidth } from '@src/utils/responsiveUtils'
+import React, { memo } from 'react'
+import { useTranslation } from 'react-i18next'
+import { ActivityIndicator, Image, TouchableOpacity, View } from 'react-native'
+import { ImageProps } from '../ChatProps'
+import { ParsedText } from '../components'
+import RetryMediaUploadView from '../RetryMediaUploadView'
+import ImageView from './ImageView'
+import getStyles from './styles'
 
 const MINIMUM_ASPECT_RATIO = 2 / 3
 const SCREEN_WIDTH_TO_75_PERCENTAGE = screenWidth * 0.75
@@ -73,8 +70,7 @@ const ImageChatView = (props: ImageProps) => {
   const imageStyle = getImageStyle(metadata)
   const imagePreview = { uri: preview ?? Image.resolveAssetSource(imagePlaceholder).uri }
   const isMediaUploadError =
-    mediaUploadState === MediaUploadState.ErrorCreating ||
-    mediaUploadState === MediaUploadState.ErrorUploading
+    mediaUploadState === MediaUploadState.ErrorCreating || mediaUploadState === MediaUploadState.ErrorUploading
 
   return (
     <View
@@ -143,11 +139,7 @@ const ImageChatView = (props: ImageProps) => {
         </>
       )}
       {description && (
-        <ParsedText
-          text={description}
-          theme={theme}
-          textProps={{ numberOfLines: 10, style: styles.descriptionImg }}
-        />
+        <ParsedText text={description} theme={theme} textProps={{ numberOfLines: 10, style: styles.descriptionImg }} />
       )}
     </View>
   )

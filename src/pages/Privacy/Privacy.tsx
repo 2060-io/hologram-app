@@ -1,16 +1,14 @@
-import React, { useMemo, useRef, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { TouchableOpacity, View } from 'react-native'
-
-import getStyles from './styles'
-
 import { ModalBottomHalf } from '@src/components'
-import { Switch, SvgIcon, OptionsList, Text } from '@src/components/common'
+import { OptionsList, SvgIcon, Switch, Text } from '@src/components/common'
 import { Option } from '@src/components/common/OptionsList'
 import { IconsNames } from '@src/components/common/SvgIcon'
 import { AutomaticDownloadTypes, DownloadOptions, useFileUploadDownload } from '@src/hooks/agent'
-import { useScreenLock, INSTANT_TIMEOUT, FIVE_MINUTES_TIMEOUT } from '@src/hooks/providers/ScreenLockProvider'
+import { FIVE_MINUTES_TIMEOUT, INSTANT_TIMEOUT, useScreenLock } from '@src/hooks/providers/ScreenLockProvider'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import React, { useMemo, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { TouchableOpacity, View } from 'react-native'
+import getStyles from './styles'
 
 const mediaIconName: Record<keyof AutomaticDownloadTypes, keyof IconsNames> = {
   audio: 'microphone',
@@ -19,11 +17,11 @@ const mediaIconName: Record<keyof AutomaticDownloadTypes, keyof IconsNames> = {
 }
 
 const SHORTHAND_TIMEOUT_TEXT: Record<number, string> = {
-  60_000: '1m',
+  60000: '1m',
   [FIVE_MINUTES_TIMEOUT]: '5m',
-  900_000: '15m',
-  1_800_000: '30m',
-  3_600_000: '1h',
+  900000: '15m',
+  1800000: '30m',
+  3600000: '1h',
   [INSTANT_TIMEOUT]: 'Inst',
 }
 
@@ -32,8 +30,7 @@ const Privacy = () => {
   const theme = useTheme()
   const styles = getStyles(theme)
   const { automaticDownloadValues, changeAutomaticDownloadOption } = useFileUploadDownload()
-  const { isScreenLockEnabled, onToggleLockScreen, changeScreenLockTimeout, screenLockTimeout } =
-    useScreenLock()
+  const { isScreenLockEnabled, onToggleLockScreen, changeScreenLockTimeout, screenLockTimeout } = useScreenLock()
   const [showLockTimeoutOptions, setShowLockTimeoutOptions] = useState(false)
   const currentAutomaticOptionForModal = useRef<{
     key: keyof AutomaticDownloadTypes
@@ -41,8 +38,8 @@ const Privacy = () => {
   }>(undefined)
   const [showAutomaticDownloadOptions, setShowAutomaticDownloadOptions] = useState(false)
 
-  const changeAutomaticDownloadOptionsVisibility = () => setShowAutomaticDownloadOptions(prev => !prev)
-  const changeLockTimeoutOptionsVisibility = () => setShowLockTimeoutOptions(prev => !prev)
+  const changeAutomaticDownloadOptionsVisibility = () => setShowAutomaticDownloadOptions((prev) => !prev)
+  const changeLockTimeoutOptionsVisibility = () => setShowLockTimeoutOptions((prev) => !prev)
 
   const automaticDownloadTypeTexts: Record<keyof AutomaticDownloadTypes, string> = {
     audio: t('settings.audio'),
@@ -132,7 +129,7 @@ const Privacy = () => {
           <Text fontFamily="EuclidCircularA-SemiBold" style={[styles.title, styles.timeoutOptionsTitle]}>
             {t('settings.screenLockTimeout')}
           </Text>
-          {timeoutOptions.map(option => {
+          {timeoutOptions.map((option) => {
             const isSelected = option.value === screenLockTimeout
             return (
               <TouchableOpacity
@@ -146,16 +143,13 @@ const Privacy = () => {
           })}
         </View>
       </ModalBottomHalf>
-      <ModalBottomHalf
-        visible={showAutomaticDownloadOptions}
-        onClose={changeAutomaticDownloadOptionsVisibility}
-      >
+      <ModalBottomHalf visible={showAutomaticDownloadOptions} onClose={changeAutomaticDownloadOptionsVisibility}>
         <View style={styles.optionsContainer}>
           <Text fontFamily="EuclidCircularA-SemiBold" style={[styles.title, styles.timeoutOptionsTitle]}>
             {currentAutomaticOptionForModal.current?.key &&
               automaticDownloadTypeTexts[currentAutomaticOptionForModal.current.key]}
           </Text>
-          {Object.values(DownloadOptions).map(option => {
+          {Object.values(DownloadOptions).map((option) => {
             const isSelected = currentAutomaticOptionForModal.current?.value === option
             return (
               <TouchableOpacity

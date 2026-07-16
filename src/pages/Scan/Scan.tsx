@@ -1,33 +1,36 @@
 /* eslint-disable no-underscore-dangle */
-import { Buffer } from '@credo-ts/core'
+import { TypedArrayEncoder } from '@credo-ts/core'
 import { DidCommOutOfBandInvitation } from '@credo-ts/didcomm'
 import { useIsFocused } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
-import queryString from 'query-string'
-import React, { useState, useEffect } from 'react'
-import { useTranslation } from 'react-i18next'
-import {
-  View,
-  KeyboardAvoidingView,
-  Keyboard,
-  TouchableWithoutFeedback,
-  Platform,
-  TouchableOpacity,
-} from 'react-native'
-
-import getStyles from './styles'
-
 import { CodeScanner } from '@src/components'
+import { MainButton, ModalLoading, Text, TextInput } from '@src/components/common'
 import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
-import { TextInput, Text, MainButton, ModalLoading } from '@src/components/common'
 import { useAppState } from '@src/hooks'
 import { useMobileAgent } from '@src/hooks/agent'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
-import { DidcommInvitationType, getOutOfBandRecordById, processInvitation } from '@src/services/agent/oob'
+import {
+  DidcommInvitationType,
+  getOutOfBandRecordById,
+  processImplicitInvitation,
+  processInvitation,
+} from '@src/services/agent/oob'
 import { log, logError } from '@src/utils'
 import { toast } from '@src/utils/toast'
+import queryString from 'query-string'
+import React, { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import {
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native'
+import getStyles from './styles'
 
-interface Props extends StackScreenProps<NavigationStackParams, 'Scan'> {}
+type Props = StackScreenProps<NavigationStackParams, 'Scan'>
 
 const Scan = ({ navigation }: Props) => {
   const { t } = useTranslation()
@@ -85,33 +88,46 @@ const Scan = ({ navigation }: Props) => {
     }
   }
 
+  const processImplicitDidInvitation = async (did: string) => {
+    if (!agent) return
+    try {
+      setProcessing(true)
+      const result = await processImplicitInvitation(agent, did)
+      log('processImplicitInvitationResult:', result)
+      if (!result.success) throw new Error(result.error)
+      const outOfBandRecord = await getOutOfBandRecordById(agent, result.recordId)
+      navigation.navigate('ConnectionInvitation', {
+        outOfBandRecord,
+        existingConnectionId: result.existingConnectionId,
+      })
+    } catch (error) {
+      setIsActiveCamera(true)
+      toast({ type: 'error', message: t('invitation.errorProcessingInvitation'), duration: 5000 })
+      logError(`Error processing Didcomm Invitation: ${error}`)
+    } finally {
+      setProcessing(false)
+    }
+  }
+
   const onCodeScanned = async (rawUrl: string) => {
     if (!agent) return
     try {
       setIsActiveCamera(false)
 
       const url = rawUrl.trim()
-      let invitation: DidCommOutOfBandInvitation | undefined
       if (url.startsWith('did:')) {
-        log('1.1: DID invitation')
-        // FIXME: this should be based on both Hologram and other party supported protocols
-        invitation = new DidCommOutOfBandInvitation({
-          id: url,
-          label: 'DID Invitation',
-          services: [url],
-          handshakeProtocols: ['https://didcomm.org/didexchange/1.1'],
-        })
-        invitation.setThread({ parentThreadId: url })
+        await processImplicitDidInvitation(url)
       } else {
         const parsedUrl = queryString.parseUrl(url)
-        const shortUrl =
-          ((parsedUrl.query.oobUrl as string | undefined) ?? (parsedUrl.query._url as string | undefined))
-            ? Buffer.from(parsedUrl.query._url as string, 'base64').toString('ascii')
-            : undefined
-        invitation = await agent.didcomm.oob.parseInvitation(shortUrl ?? url)
+        const oobUrl = parsedUrl.query.oobUrl as string | undefined
+        const encodedUrl = parsedUrl.query._url as string | undefined
+        const shortUrl = encodedUrl
+          ? TypedArrayEncoder.toUtf8String(TypedArrayEncoder.fromBase64Url(encodedUrl))
+          : oobUrl
+        const invitation = await agent.didcomm.oob.parseInvitation(shortUrl ?? url)
+        await processDidcommInvitation(invitation)
       }
 
-      await processDidcommInvitation(invitation)
       setScannedCode('')
     } catch (error) {
       setIsActiveCamera(true)
@@ -127,18 +143,14 @@ const Scan = ({ navigation }: Props) => {
         onPress={() => setTabType('scanner')}
         style={[styles.containerTab, isTabSelected('scanner') && styles.containerSelectedTab]}
       >
-        <Text style={[styles.tabText, isTabSelected('scanner') && styles.selectedTabText]}>
-          {t('scan.useCamera')}
-        </Text>
+        <Text style={[styles.tabText, isTabSelected('scanner') && styles.selectedTabText]}>{t('scan.useCamera')}</Text>
       </TouchableOpacity>
       <TouchableOpacity
         activeOpacity={0.8}
         onPress={() => setTabType('link')}
         style={[styles.containerTab, isTabSelected('link') && styles.containerSelectedTab]}
       >
-        <Text style={[styles.tabText, isTabSelected('link') && styles.selectedTabText]}>
-          {t('scan.useLink')}
-        </Text>
+        <Text style={[styles.tabText, isTabSelected('link') && styles.selectedTabText]}>{t('scan.useLink')}</Text>
       </TouchableOpacity>
     </View>
   )
@@ -163,7 +175,7 @@ const Scan = ({ navigation }: Props) => {
               multiline={true}
               numberOfLines={6}
               underlineColorAndroid="transparent"
-              onChangeText={text => setScannedCode(text)}
+              onChangeText={(text) => setScannedCode(text)}
               style={styles.input}
             />
           </View>

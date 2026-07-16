@@ -1,22 +1,20 @@
 import { useHeaderHeight } from '@react-navigation/elements'
 import { StackScreenProps } from '@react-navigation/stack'
-import React, { useCallback, useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { TouchableOpacity, View } from 'react-native'
-
-import getStyles from './styles'
-
 import { Connections } from '@src/components'
 import { ConnectionItem } from '@src/components/Connections/ConnectionList'
-import { ChatStackParams } from '@src/components/Navigation/NavigationProps'
 import { SvgIcon, Text } from '@src/components/common'
+import { ChatStackParams } from '@src/components/Navigation/NavigationProps'
 import { useChatActions } from '@src/hooks'
 import { useConnections } from '@src/hooks/agent'
 import { useSharedDataFromOtherApps } from '@src/hooks/providers/SharedDataFromOtherAppsProvider'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { notAllowedConnectionsIdsToSendMessages } from '@src/utils/connectionUtils'
+import React, { useCallback, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { TouchableOpacity, View } from 'react-native'
+import getStyles from './styles'
 
-interface Props extends StackScreenProps<ChatStackParams, 'ShareMessages'> {}
+type Props = StackScreenProps<ChatStackParams, 'ShareMessages'>
 
 type SelectedConnection = {
   id: string
@@ -44,10 +42,10 @@ const ShareMessages = ({ navigation }: Props) => {
   }, [])
 
   const updateSelectedConnections = useCallback((connectionItem: ConnectionItem) => {
-    setSelectedConnections(prevState => {
+    setSelectedConnections((prevState) => {
       const newSelectedConnections = [...prevState]
       const connectionAlreadySelectedSelectedIndex = newSelectedConnections.findIndex(
-        connection => connection.id === connectionItem.id,
+        (connection) => connection.id === connectionItem.id
       )
       const connectionIsAlreadySelected = connectionAlreadySelectedSelectedIndex !== -1
       if (connectionIsAlreadySelected) {
@@ -64,8 +62,8 @@ const ShareMessages = ({ navigation }: Props) => {
     if (!sharedData) return
     navigation.goBack()
     shareMessages(
-      selectedConnections.map(connection => connection.id),
-      sharedData,
+      selectedConnections.map((connection) => connection.id),
+      sharedData
     )
   }
 
@@ -86,7 +84,7 @@ const ShareMessages = ({ navigation }: Props) => {
               </TouchableOpacity>
             ),
           }}
-          selectedConnections={selectedConnections.map(connection => connection.id)}
+          selectedConnections={selectedConnections.map((connection) => connection.id)}
           excludedConnections={excludedConnections}
         />
       </View>

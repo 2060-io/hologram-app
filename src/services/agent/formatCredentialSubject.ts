@@ -58,7 +58,7 @@ export function formatCredentialSubject(args: FormatCredentialSubject): Credenti
   const stringRows: CredentialAttributeRow[] = []
   const objectTables: CredentialAttributeTable[] = []
 
-  Object.keys(subject).forEach(key => {
+  Object.keys(subject).forEach((key) => {
     if (key === 'id' || key === 'type') return // omit id and type
 
     const value = subject[key]
@@ -100,7 +100,7 @@ export function formatCredentialSubject(args: FormatCredentialSubject): Credenti
             depth: depth + 1,
             parent: title,
             title,
-          }),
+          })
         )
       }
     }
@@ -109,14 +109,14 @@ export function formatCredentialSubject(args: FormatCredentialSubject): Credenti
   const tableData: CredentialAttributeTable[] = [{ title, rows: stringRows, depth, parent }, ...objectTables]
 
   return tableData
-    .filter(table => table.rows.length > 0)
-    .map(table => {
+    .filter((table) => table.rows.length > 0)
+    .map((table) => {
       // Special rendering for OpenBadgeCredentials, which include a single 'image' and 'name'
       // We'll combine both into an 'imageAndString' to make it look nicer
       const imageKeyValue = 'image'
       const nameKeyValue = 'name'
-      const firstImageIndex = table.rows.findIndex(row => row.type === 'image' && row.key === imageKeyValue)
-      const firstStringIndex = table.rows.findIndex(row => row.type === 'string' && row.key === nameKeyValue)
+      const firstImageIndex = table.rows.findIndex((row) => row.type === 'image' && row.key === imageKeyValue)
+      const firstStringIndex = table.rows.findIndex((row) => row.type === 'string' && row.key === nameKeyValue)
       let rows = table.rows
 
       if (
@@ -136,7 +136,7 @@ export function formatCredentialSubject(args: FormatCredentialSubject): Credenti
         } satisfies CredentialAttributeRowImageAndString
 
         // Remove the image and string rows and replace with the combined row
-        rows = [imageAndStringRow, ...table.rows.filter(row => row !== imageRow && row !== stringRow)]
+        rows = [imageAndStringRow, ...table.rows.filter((row) => row !== imageRow && row !== stringRow)]
       }
 
       return {

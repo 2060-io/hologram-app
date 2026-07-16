@@ -1,9 +1,7 @@
-import React, { memo } from 'react'
-
-import SvgIcon, { IconsNames } from '../SvgIcon'
-
 import { ChatEntryState } from '@src/model'
 import { AppTheme } from '@src/styles'
+import React, { memo } from 'react'
+import SvgIcon, { IconsNames } from '../SvgIcon'
 
 type Props = { theme: AppTheme; state: ChatEntryState }
 

@@ -1,8 +1,7 @@
-import Realm from 'realm'
-
 import { ChatEntry, ChatEntryRole, ChatThread } from '@src/model'
 import { MobileAgent } from '@src/services/agent'
 import { displayNewChatMessageNotification } from '@src/utils/pushNotificationsUtils'
+import Realm from 'realm'
 
 export const manageBackgroundChatEntryChanges = (realm: Realm, agent: MobileAgent) => {
   const entries = realm.objects(ChatEntry)

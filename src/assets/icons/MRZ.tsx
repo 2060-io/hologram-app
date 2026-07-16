@@ -1,19 +1,13 @@
 import React from 'react'
-import Svg, { Defs, G, Rect, Path, Text, TSpan, SvgProps } from 'react-native-svg'
+import Svg, { Defs, G, Path, Rect, SvgProps, Text, TSpan } from 'react-native-svg'
 
-const MRZ: React.FC<SvgProps> = props => (
+const MRZ: React.FC<SvgProps> = (props) => (
   <Svg viewBox="0 0 314.16 190.04" {...props}>
     <Defs />
     <G data-name="Grupo 2142">
       <G data-name="Grupo 2115" transform="translate(-5558.729 -8118.08) translate(-1114.166 118)">
         <G transform="translate(6672.89 8000.08)" filter="url(#a)">
-          <G
-            data-name="Rect\xE1ngulo 6080"
-            transform="translate(3 2)"
-            fill="#fff"
-            stroke="#cadde2"
-            strokeWidth={0.75}
-          >
+          <G data-name="Rect\xE1ngulo 6080" transform="translate(3 2)" fill="#fff" stroke="#cadde2" strokeWidth={0.75}>
             <Rect width={308.16} height={184.04} rx={8.56} stroke="none" />
             <Rect x={0.375} y={0.375} width={307.41} height={183.29} rx={8.185} fill="none" />
           </G>

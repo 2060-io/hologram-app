@@ -1,20 +1,9 @@
-import React, {
-  createContext,
-  PropsWithChildren,
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
-
+import { AgentActionQueueSingleton } from '@src/services/AgentActionQueueSingleton'
+import React, { createContext, PropsWithChildren, useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { useLocalRealm } from '../providers/RealmProvider'
 import { useNetwork } from '../useNetwork'
-
-import { useMobileAgent } from './MobileAgentProvider'
 import { AgentActionOptions } from './actions/AgentAction'
-
-import { AgentActionQueueSingleton } from '@src/services/AgentActionQueueSingleton'
+import { useMobileAgent } from './MobileAgentProvider'
 
 type AgentActionQueueContextProps = {
   addAgentActionToQueue: (action: AgentActionOptions) => void

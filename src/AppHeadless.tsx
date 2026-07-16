@@ -16,7 +16,7 @@ const AppHeadless = () => {
   }, [])
 
   useEffect(() => {
-    getIsHeadless(messaging).then(headless => {
+    getIsHeadless(messaging).then((headless) => {
       setIsHeadless(headless)
       const userEntersToApp = !headless && appState === 'active'
       if (userEntersToApp) appStateSubscription.current?.remove() // Clean up listener if user opens the app

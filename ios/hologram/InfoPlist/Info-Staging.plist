@@ -31,11 +31,14 @@
 			<array>
 				<string>ShareMenuModuleStaging</string>
 				<string>didcomm</string>
+				<string>hologram-zone-staging</string>
 			</array>
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>2000000</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>whatsapp</string>
@@ -110,7 +113,7 @@
 		<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
-	<string>SplashScreenStaging.storyboard</string>
+	<string>BootSplashStaging</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>arm64</string>

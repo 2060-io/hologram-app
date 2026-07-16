@@ -1,15 +1,13 @@
 import { BottomTabScreenProps } from '@react-navigation/bottom-tabs'
 import { createStackNavigator } from '@react-navigation/stack'
-import React, { useLayoutEffect } from 'react'
-
-import getStyles from './styles'
-
 import { useUnreadChatThreads } from '@src/hooks/agent'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import Chats from '@src/pages/Chats'
 import { HomeMainTabParams } from '@src/pages/HomeMain/HomeMainProps'
 import SubChats from '@src/pages/SubChats'
 import { getGlobalStyles } from '@src/styles'
+import React, { useLayoutEffect } from 'react'
+import getStyles from './styles'
 
 type ChatsStackParams = {
   ChatsMain: undefined
@@ -17,7 +15,7 @@ type ChatsStackParams = {
 }
 
 const Stack = createStackNavigator<ChatsStackParams>()
-interface Props extends BottomTabScreenProps<HomeMainTabParams, 'Chats'> {}
+type Props = BottomTabScreenProps<HomeMainTabParams, 'Chats'>
 
 export const ChatsStack = ({ navigation }: Props) => {
   const unreadThreads = useUnreadChatThreads()

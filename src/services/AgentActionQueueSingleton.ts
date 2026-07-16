@@ -2,16 +2,11 @@ import { DidCommMediaSharingRecord } from '@2060.io/credo-ts-didcomm-media-shari
 import { ActionMenuRecord, ActionMenuRepository } from '@credo-ts/action-menu'
 import { BaseRecord, JsonTransformer } from '@credo-ts/core'
 import {
-  DidCommMessage,
   DidCommBasicMessageRecord,
+  DidCommMessage,
   DidCommMessageSender,
   getOutboundDidCommMessageContext,
 } from '@credo-ts/didcomm'
-import queue, { Worker } from 'react-native-job-queue'
-
-import AgentSingleton from './AgentSingleton'
-import RealmSingleton from './RealmSingleton'
-
 import {
   ActionExecutionStatus,
   AgentAction,
@@ -23,6 +18,9 @@ import { AgentActionExecuter } from '@src/hooks/agent/actions/AgentActionExecute
 import { updateChatEntry } from '@src/hooks/agent/chat/services'
 import { ChatEntry, ChatEntryState } from '@src/model'
 import { log, logError } from '@src/utils'
+import queue, { Worker } from 'react-native-job-queue'
+import AgentSingleton from './AgentSingleton'
+import RealmSingleton from './RealmSingleton'
 
 // Hard ceilings enforced by `react-native-job-queue`. If the executer promise
 // doesn't settle within these, the library rejects the job via Promise.race,
@@ -41,14 +39,14 @@ const withTimeout = <T>(promise: Promise<T>, ms: number, label: string): Promise
   new Promise<T>((resolve, reject) => {
     const timer = setTimeout(() => reject(new Error(`${label} timed out after ${ms}ms`)), ms)
     promise.then(
-      value => {
+      (value) => {
         clearTimeout(timer)
         resolve(value)
       },
-      err => {
+      (err) => {
         clearTimeout(timer)
         reject(err)
-      },
+      }
     )
   })
 
@@ -65,10 +63,10 @@ export class AgentActionQueueSingleton {
   private isConfigured = false
 
   static get instance() {
-    if (!this.agentActionQueueInstance) {
-      this.agentActionQueueInstance = new AgentActionQueueSingleton()
+    if (!AgentActionQueueSingleton.agentActionQueueInstance) {
+      AgentActionQueueSingleton.agentActionQueueInstance = new AgentActionQueueSingleton()
     }
-    return this.agentActionQueueInstance
+    return AgentActionQueueSingleton.agentActionQueueInstance
   }
 
   configureQueue() {
@@ -77,9 +75,7 @@ export class AgentActionQueueSingleton {
     if (!realm) throw new Error('Realm is not open yet. You must openRealmIfIsClosed first')
     const agent = AgentSingleton.instance.getMobileAgent()
     if (!agent?.isInitialized) {
-      throw new Error(
-        'Agent is not initialized yet. You must setupMobileAgent and openAndInitMobileAgent first',
-      )
+      throw new Error('Agent is not initialized yet. You must setupMobileAgent and openAndInitMobileAgent first')
     }
 
     for (const worker in queue.registeredWorkers) {
@@ -118,14 +114,14 @@ export class AgentActionQueueSingleton {
                 'RetryAgentAction',
                 retryAction,
                 { attempts: 0, timeout: RETRY_ACTION_JOB_TIMEOUT_MS, priority: 0 },
-                false,
+                false
               )
             } else {
               logError(`AgentAction ${job.payload.type} failed unrecoverably: ${error}`)
             }
           },
-        },
-      ),
+        }
+      )
     )
 
     const getAssociatedRecord = async (options: { recordType: string; recordId: string }) => {
@@ -164,16 +160,13 @@ export class AgentActionQueueSingleton {
             await withTimeout(
               messageSender.sendMessage(
                 await getOutboundDidCommMessageContext(agent.context, {
-                  message: JsonTransformer.fromJSON(
-                    payload.outboundMessageContextData.message,
-                    DidCommMessage,
-                  ),
+                  message: JsonTransformer.fromJSON(payload.outboundMessageContextData.message, DidCommMessage),
                   associatedRecord: associatedRecord ?? undefined,
                   connectionRecord,
-                }),
+                })
               ),
               RETRY_SEND_MESSAGE_TIMEOUT_MS,
-              'RetryAgentAction sendMessage',
+              'RetryAgentAction sendMessage'
             )
             const associatedChatEntryId = payload.outboundMessageContextData.associatedChatEntryId
             const chatEntry = associatedChatEntryId
@@ -209,14 +202,14 @@ export class AgentActionQueueSingleton {
                 'RetryAgentAction',
                 newRetryAction,
                 { attempts: 0, timeout: RETRY_ACTION_JOB_TIMEOUT_MS, priority: 0 },
-                false,
+                false
               )
             } else {
               logError(`RetryAgentAction failed unrecoverably: ${error}`)
             }
           },
-        },
-      ),
+        }
+      )
     )
     this.isConfigured = true
     // Kick the queue as soon as it is configured. `start()` is idempotent (it
@@ -262,7 +255,7 @@ export class AgentActionQueueSingleton {
       'AgentAction',
       { ...payload, attempts: 4 },
       { attempts: 0, timeout: AGENT_ACTION_JOB_TIMEOUT_MS, priority: 0 },
-      startQueue,
+      startQueue
     )
   }
 }

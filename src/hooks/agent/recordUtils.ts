@@ -1,15 +1,15 @@
 import type {
-  BaseRecord,
-  RecordSavedEvent,
-  RecordDeletedEvent,
-  RecordUpdatedEvent,
   Agent,
   BaseEvent,
+  BaseRecord,
   Constructor,
+  RecordDeletedEvent,
+  RecordSavedEvent,
+  RecordUpdatedEvent,
 } from '@credo-ts/core'
 
 import { RepositoryEventTypes } from '@credo-ts/core'
-import { map, filter, pipe } from 'rxjs'
+import { filter, map, pipe } from 'rxjs'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type BaseRecordAny = BaseRecord<any, any, any>
@@ -30,7 +30,7 @@ export const addRecord = <R extends BaseRecordAny>(record: R, state: RecordsStat
 
 export const updateRecord = <R extends BaseRecordAny>(record: R, state: RecordsState<R>): RecordsState<R> => {
   const newRecordsState = [...state.records]
-  const index = newRecordsState.findIndex(r => r.id === record.id)
+  const index = newRecordsState.findIndex((r) => r.id === record.id)
   if (index > -1) newRecordsState[index] = record
 
   return {
@@ -40,7 +40,7 @@ export const updateRecord = <R extends BaseRecordAny>(record: R, state: RecordsS
 }
 
 export const removeRecord = <R extends BaseRecordAny>(record: R, state: RecordsState<R>): RecordsState<R> => {
-  const newRecordsState = state.records.filter(r => r.id !== record.id)
+  const newRecordsState = state.records.filter((r) => r.id !== record.id)
   return {
     loading: state.loading,
     records: newRecordsState,
@@ -50,24 +50,19 @@ export const removeRecord = <R extends BaseRecordAny>(record: R, state: RecordsS
 const filterByType = <R extends BaseRecordAny>(recordClass: RecordClass<R>) => {
   return pipe(
     map((event: BaseEvent) => (event.payload as Record<string, R>).record),
-    filter((record: R) => record.type === recordClass.type),
+    filter((record: R) => record.type === recordClass.type)
   )
 }
 
-export const recordsAddedByType = <R extends BaseRecordAny>(
-  agent: Agent | undefined,
-  recordClass: RecordClass<R>,
-) => {
+export const recordsAddedByType = <R extends BaseRecordAny>(agent: Agent | undefined, recordClass: RecordClass<R>) => {
   if (!agent) throw new Error('Agent is required to subscribe to events')
 
-  return agent?.events
-    .observable<RecordSavedEvent<R>>(RepositoryEventTypes.RecordSaved)
-    .pipe(filterByType(recordClass))
+  return agent?.events.observable<RecordSavedEvent<R>>(RepositoryEventTypes.RecordSaved).pipe(filterByType(recordClass))
 }
 
 export const recordsUpdatedByType = <R extends BaseRecordAny>(
   agent: Agent | undefined,
-  recordClass: RecordClass<R>,
+  recordClass: RecordClass<R>
 ) => {
   if (!agent) throw new Error('Agent is required to subscribe to events')
 
@@ -78,7 +73,7 @@ export const recordsUpdatedByType = <R extends BaseRecordAny>(
 
 export const recordsRemovedByType = <R extends BaseRecordAny>(
   agent: Agent | undefined,
-  recordClass: RecordClass<R>,
+  recordClass: RecordClass<R>
 ) => {
   if (!agent) throw new Error('Agent is required to subscribe to events')
 

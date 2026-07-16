@@ -1,17 +1,8 @@
 /* eslint-disable react/no-unstable-nested-components */
 
 import { DidCommProofState } from '@credo-ts/didcomm'
-import { useNavigation, ParamListBase } from '@react-navigation/native'
+import { ParamListBase, useNavigation } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
-import React, { useState, memo, useEffect } from 'react'
-import { useTranslation } from 'react-i18next'
-import { ActivityIndicator, View } from 'react-native'
-
-import { ChatParticipant } from '../ChatMessage/Props'
-import { Header, OutlinedBlueButton, BlueButton } from '../components'
-
-import getStyles from './styles'
-
 import { ModalConfirmAction } from '@src/components'
 import { Text } from '@src/components/common'
 import { AgentActionType, useAgentActionQueue } from '@src/hooks/agent'
@@ -26,10 +17,13 @@ import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { VerifierInfo, VPRequestMetadata } from '@src/model'
 import { MobileAgent } from '@src/services/agent'
 import { RequestedCredentialItem } from '@src/services/agent/display'
-import {
-  FormattedSubmission,
-  formatDidcommPresentationSubmission,
-} from '@src/services/agent/formatPresentation'
+import { FormattedSubmission, formatDidcommPresentationSubmission } from '@src/services/agent/formatPresentation'
+import React, { memo, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { ActivityIndicator, View } from 'react-native'
+import { ChatParticipant } from '../ChatMessage/Props'
+import { BlueButton, Header, OutlinedBlueButton } from '../components'
+import getStyles from './styles'
 
 interface Props {
   sender?: ChatParticipant
@@ -48,13 +42,7 @@ type MainButtonsProps = {
   proofState: DidCommProofState
 }
 
-const VPRequestChatView = ({
-  sender,
-  proofRecordId,
-  metadata,
-  agent,
-  chatEntryId,
-}: Props): React.ReactElement => {
+const VPRequestChatView = ({ sender, proofRecordId, metadata, agent, chatEntryId }: Props): React.ReactElement => {
   const navigation: StackNavigationProp<ParamListBase> = useNavigation()
   const { t } = useTranslation()
   const theme = useTheme()
@@ -64,9 +52,7 @@ const VPRequestChatView = ({
   const [showModalRefuseConfirmation, setShowModalRefuseConfirmation] = useState(false)
   const [formattedPresentationRequest, setFormattedPresentationRequest] = useState<FormattedSubmission>()
 
-  const requestedCredentialsForDisplay: RequestedCredentialsForDisplay = JSON.parse(
-    metadata.requestedAttributes,
-  )
+  const requestedCredentialsForDisplay: RequestedCredentialsForDisplay = JSON.parse(metadata.requestedAttributes)
 
   const { verifier: verifierInfo } = requestedCredentialsForDisplay
   const senderName = sender?.name?.length ? sender.name : verifierInfo.name
@@ -81,7 +67,7 @@ const VPRequestChatView = ({
       })
       setFormattedPresentationRequest(newFormattedPresentationRequest)
     }
-    metadata.proofState === DidCommProofState.RequestReceived && getFormattedPresentation()
+    if (metadata.proofState === DidCommProofState.RequestReceived) getFormattedPresentation()
   }, [])
 
   const hideModalRefuseConfirmation = () => setShowModalRefuseConfirmation(false)
@@ -121,9 +107,7 @@ const VPRequestChatView = ({
 
   const NoCompatibleCredentials = () => (
     <View>
-      <Text style={styles.title}>
-        {t('presentationRequest.noCompatibleCredentials', { sender: senderName })}
-      </Text>
+      <Text style={styles.title}>{t('presentationRequest.noCompatibleCredentials', { sender: senderName })}</Text>
       <BlueButton
         text={t('presentationRequest.notify', { sender: senderName })}
         onPress={notify}
@@ -157,9 +141,7 @@ const VPRequestChatView = ({
   const status: Partial<Record<DidCommProofState, React.ReactElement>> = {
     [DidCommProofState.Abandoned]: (
       <>
-        <Text style={styles.title}>
-          {t('presentationRequest.noCompatibleCredentials', { sender: senderName })}
-        </Text>
+        <Text style={styles.title}>{t('presentationRequest.noCompatibleCredentials', { sender: senderName })}</Text>
         <BlueButton
           disabled
           text={t('presentationRequest.notified', { sender: senderName })}
@@ -200,7 +182,7 @@ const VPRequestChatView = ({
       />
       <Header theme={theme} title={t('presentationRequest.title')} leftIconName="id" />
       <View style={styles.subContainer}>
-        {requestedCredentialsForDisplay?.requestedCredentials?.map(requestedCredential => (
+        {requestedCredentialsForDisplay?.requestedCredentials?.map((requestedCredential) => (
           <View key={requestedCredential?.schemaName}>
             <Text style={styles.title}>
               {t('chat.isRequestingYou', {

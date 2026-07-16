@@ -1,7 +1,7 @@
-diff --git a/node_modules/@simform_solutions/react-native-audio-waveform/android/src/main/java/com/audiowaveform/AudioWaveformModule.kt b/node_modules/@simform_solutions/react-native-audio-waveform/android/src/main/java/com/audiowaveform/AudioWaveformModule.kt
+diff --git a/android/src/main/java/com/audiowaveform/AudioWaveformModule.kt b/android/src/main/java/com/audiowaveform/AudioWaveformModule.kt
 index 6e2f7db..0777442 100644
---- a/node_modules/@simform_solutions/react-native-audio-waveform/android/src/main/java/com/audiowaveform/AudioWaveformModule.kt
-+++ b/node_modules/@simform_solutions/react-native-audio-waveform/android/src/main/java/com/audiowaveform/AudioWaveformModule.kt
+--- a/android/src/main/java/com/audiowaveform/AudioWaveformModule.kt
++++ b/android/src/main/java/com/audiowaveform/AudioWaveformModule.kt
 @@ -103,13 +103,13 @@ class AudioWaveformModule(context: ReactApplicationContext): ReactContextBaseJav
          }
  
@@ -27,10 +27,10 @@ index 6e2f7db..0777442 100644
              if (currentDecibel == Double.NEGATIVE_INFINITY) {
                  args.putDouble(Constants.currentDecibel, 0.0)
              } else {
-diff --git a/node_modules/@simform_solutions/react-native-audio-waveform/ios/AudioRecorder.swift b/node_modules/@simform_solutions/react-native-audio-waveform/ios/AudioRecorder.swift
+diff --git a/ios/AudioRecorder.swift b/ios/AudioRecorder.swift
 index d571ca0..9a735da 100644
---- a/node_modules/@simform_solutions/react-native-audio-waveform/ios/AudioRecorder.swift
-+++ b/node_modules/@simform_solutions/react-native-audio-waveform/ios/AudioRecorder.swift
+--- a/ios/AudioRecorder.swift
++++ b/ios/AudioRecorder.swift
 @@ -17,6 +17,7 @@ public class AudioRecorder: NSObject, AVAudioRecorderDelegate{
    var recordedDuration: CMTime = CMTime.zero
    private var timer: Timer?
@@ -58,10 +58,10 @@ index d571ca0..9a735da 100644
          }
      }
      
-diff --git a/node_modules/@simform_solutions/react-native-audio-waveform/lib/components/Waveform/Waveform.js b/node_modules/@simform_solutions/react-native-audio-waveform/lib/components/Waveform/Waveform.js
+diff --git a/lib/components/Waveform/Waveform.js b/lib/components/Waveform/Waveform.js
 index d6086fc..d1c7343 100644
---- a/node_modules/@simform_solutions/react-native-audio-waveform/lib/components/Waveform/Waveform.js
-+++ b/node_modules/@simform_solutions/react-native-audio-waveform/lib/components/Waveform/Waveform.js
+--- a/lib/components/Waveform/Waveform.js
++++ b/lib/components/Waveform/Waveform.js
 @@ -4,7 +4,7 @@ import head from 'lodash/head';
  import isEmpty from 'lodash/isEmpty';
  import isNil from 'lodash/isNil';
@@ -162,10 +162,10 @@ index d6086fc..d1c7343 100644
  });
  //# sourceMappingURL=Waveform.js.map
 \ No newline at end of file
-diff --git a/node_modules/@simform_solutions/react-native-audio-waveform/lib/components/Waveform/WaveformTypes.d.ts b/node_modules/@simform_solutions/react-native-audio-waveform/lib/components/Waveform/WaveformTypes.d.ts
+diff --git a/lib/components/Waveform/WaveformTypes.d.ts b/lib/components/Waveform/WaveformTypes.d.ts
 index 929b60d..2d5af20 100644
---- a/node_modules/@simform_solutions/react-native-audio-waveform/lib/components/Waveform/WaveformTypes.d.ts
-+++ b/node_modules/@simform_solutions/react-native-audio-waveform/lib/components/Waveform/WaveformTypes.d.ts
+--- a/lib/components/Waveform/WaveformTypes.d.ts
++++ b/lib/components/Waveform/WaveformTypes.d.ts
 @@ -2,14 +2,13 @@ import type { StyleProp, ViewStyle } from 'react-native';
  import type { FinishMode, PlayerState, RecorderState } from '../../constants';
  import type { IStartRecording } from '../../types';
@@ -190,10 +190,10 @@ index 929b60d..2d5af20 100644
  }
  export interface LiveWaveform extends BaseWaveform {
      mode: 'live';
-diff --git a/node_modules/@simform_solutions/react-native-audio-waveform/lib/components/WaveformCandle/WaveformCandle.js b/node_modules/@simform_solutions/react-native-audio-waveform/lib/components/WaveformCandle/WaveformCandle.js
+diff --git a/lib/components/WaveformCandle/WaveformCandle.js b/lib/components/WaveformCandle/WaveformCandle.js
 index 270406b..b7e2988 100644
---- a/node_modules/@simform_solutions/react-native-audio-waveform/lib/components/WaveformCandle/WaveformCandle.js
-+++ b/node_modules/@simform_solutions/react-native-audio-waveform/lib/components/WaveformCandle/WaveformCandle.js
+--- a/lib/components/WaveformCandle/WaveformCandle.js
++++ b/lib/components/WaveformCandle/WaveformCandle.js
 @@ -2,9 +2,11 @@ import React from 'react';
  import { View } from 'react-native';
  import { Colors } from '../../theme';
@@ -233,10 +233,10 @@ index 270406b..b7e2988 100644
                  },
              ] })));
  };
-diff --git a/node_modules/@simform_solutions/react-native-audio-waveform/lib/components/WaveformCandle/WaveformCandleStyles.js b/node_modules/@simform_solutions/react-native-audio-waveform/lib/components/WaveformCandle/WaveformCandleStyles.js
+diff --git a/lib/components/WaveformCandle/WaveformCandleStyles.js b/lib/components/WaveformCandle/WaveformCandleStyles.js
 index 27f6c36..a428dce 100644
---- a/node_modules/@simform_solutions/react-native-audio-waveform/lib/components/WaveformCandle/WaveformCandleStyles.js
-+++ b/node_modules/@simform_solutions/react-native-audio-waveform/lib/components/WaveformCandle/WaveformCandleStyles.js
+--- a/lib/components/WaveformCandle/WaveformCandleStyles.js
++++ b/lib/components/WaveformCandle/WaveformCandleStyles.js
 @@ -1,7 +1,7 @@
  import { StyleSheet } from 'react-native';
  import { Colors } from '../../theme';
@@ -246,10 +246,10 @@ index 27f6c36..a428dce 100644
      waveformCandle: { backgroundColor: Colors.waveStickBackground },
      waveformCandleCompleted: {
          backgroundColor: Colors.waveStickCompleteBackground,
-diff --git a/node_modules/@simform_solutions/react-native-audio-waveform/lib/types/AudioWaveformTypes.d.ts b/node_modules/@simform_solutions/react-native-audio-waveform/lib/types/AudioWaveformTypes.d.ts
+diff --git a/lib/types/AudioWaveformTypes.d.ts b/lib/types/AudioWaveformTypes.d.ts
 index 0fbd6c1..31e8cfa 100644
---- a/node_modules/@simform_solutions/react-native-audio-waveform/lib/types/AudioWaveformTypes.d.ts
-+++ b/node_modules/@simform_solutions/react-native-audio-waveform/lib/types/AudioWaveformTypes.d.ts
+--- a/lib/types/AudioWaveformTypes.d.ts
++++ b/lib/types/AudioWaveformTypes.d.ts
 @@ -52,6 +52,7 @@ export interface IOnCurrentExtractedWaveForm extends IPlayerKey {
  }
  export interface IOnCurrentRecordingWaveForm {

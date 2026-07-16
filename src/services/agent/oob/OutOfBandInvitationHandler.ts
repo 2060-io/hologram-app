@@ -1,19 +1,17 @@
 import { EventEmitter } from '@credo-ts/core'
 import {
   DidCommMessageHandler,
-  DidCommOutOfBandInvitation,
   DidCommMessageHandlerInboundMessage,
+  DidCommOutOfBandInvitation,
 } from '@credo-ts/didcomm'
-
-import { OutOfBandInvitationEvent, OutOfBandInvitationEventTypes } from './OutOfBandEvents'
-
 import { getOutOfBandRecord } from './index'
+import { OutOfBandInvitationEvent, OutOfBandInvitationEventTypes } from './OutOfBandEvents'
 
 export class DidCommOutOfBandInvitationHandler implements DidCommMessageHandler {
   public supportedMessages = [DidCommOutOfBandInvitation]
 
   public async handle(
-    messageContext: DidCommMessageHandlerInboundMessage<DidCommOutOfBandInvitationHandler>,
+    messageContext: DidCommMessageHandlerInboundMessage<DidCommOutOfBandInvitationHandler>
   ): Promise<undefined> {
     const agentContext = messageContext.agentContext
     messageContext.assertReadyConnection()

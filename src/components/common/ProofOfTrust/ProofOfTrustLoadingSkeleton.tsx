@@ -1,11 +1,10 @@
 /* eslint-disable react/no-unstable-nested-components */
+
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { Skeleton } from 'moti/skeleton'
 import React, { memo } from 'react'
 import { View } from 'react-native'
-
 import getStyles from './styles'
-
-import { useTheme } from '@src/hooks/providers/ThemeProvider'
 
 const ProofOfTrustLoadingSkeleton = () => {
   const theme = useTheme()

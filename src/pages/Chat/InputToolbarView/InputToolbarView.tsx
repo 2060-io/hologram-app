@@ -1,16 +1,5 @@
 import { stat } from '@dr.pogodin/react-native-fs'
-import { useAudioRecorder, useAudioPlayer } from '@simform_solutions/react-native-audio-waveform/lib/hooks'
-import React, { useRef, useEffect, useState, useCallback } from 'react'
-import { useTranslation } from 'react-i18next'
-import { View, TouchableOpacity } from 'react-native'
-
-import ComposerInput from '../ComposerInput'
-import RepliedMessageView from '../RepliedMessageView/RepliedMessageView'
-import { getMinutesAndSeconds } from '../utils'
-
-import { SendButton, AudioButton } from './components'
-import getStyles from './styles'
-
+import { useAudioPlayer, useAudioRecorder } from '@simform_solutions/react-native-audio-waveform/lib/hooks'
 import { Icon, SvgIcon, Text } from '@src/components/common'
 import { TextInputForwardRefProps } from '@src/components/common/TextInput'
 import { useChatActions } from '@src/hooks'
@@ -18,13 +7,17 @@ import { useChat } from '@src/hooks/agent'
 import { generateFileName } from '@src/hooks/media/files'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { logWarn } from '@src/utils'
+import { askMicrophonePermission, checkMicrophonePermission, handleMicrophonePermission } from '@src/utils/permissions'
 import { deleteFile } from '@src/utils/RNFS'
-import {
-  handleMicrophonePermission,
-  checkMicrophonePermission,
-  askMicrophonePermission,
-} from '@src/utils/permissions'
 import { toast } from '@src/utils/toast'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { TouchableOpacity, View } from 'react-native'
+import ComposerInput from '../ComposerInput'
+import RepliedMessageView from '../RepliedMessageView/RepliedMessageView'
+import { getMinutesAndSeconds } from '../utils'
+import { AudioButton, SendButton } from './components'
+import getStyles from './styles'
 
 interface Props {
   onShowMediaOptions(): void
@@ -54,7 +47,7 @@ const InputToolbarView = (props: Props) => {
   const styles = getStyles(theme, isRecordingVoiceNote)
 
   useEffect(() => {
-    const audioRecordingListener = onCurrentRecordingWaveformData(result => {
+    const audioRecordingListener = onCurrentRecordingWaveformData((result) => {
       setRecordTime(getMinutesAndSeconds(result.progress))
     })
     return () => {
@@ -99,7 +92,7 @@ const InputToolbarView = (props: Props) => {
     let canRecord = await checkMicrophonePermission()
     if (!canRecord) {
       canRecord = await askMicrophonePermission()
-      canRecord && setAutomaticRecording()
+      if (canRecord) setAutomaticRecording()
     }
     if (canRecord) {
       setRecordTime(INITIAL_TIME_RECORDED)
@@ -107,7 +100,7 @@ const InputToolbarView = (props: Props) => {
       startRecording({
         sampleRate: 11025, // A quarter of the standard value (44100)
         bitRate: 32000, // A quarter of the standard value (128000)
-      }).catch(error => logWarn(`Error starting recording note voice: ${error}`))
+      }).catch((error) => logWarn(`Error starting recording note voice: ${error}`))
     }
   }, [])
 

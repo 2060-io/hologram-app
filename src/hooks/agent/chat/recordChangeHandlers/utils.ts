@@ -1,11 +1,9 @@
 import { DidCommMediaSharingRecord } from '@2060.io/credo-ts-didcomm-media-sharing'
 import { DidCommBasicMessageRecord } from '@credo-ts/didcomm'
-import Realm from 'realm'
-
-import { findAllByAssociatedRecordId } from '../services/ChatEntryService'
-
 import { ChatEntryType } from '@src/model'
 import { MobileAgent } from '@src/services/agent'
+import Realm from 'realm'
+import { findAllByAssociatedRecordId } from '../services/ChatEntryService'
 
 // FIXME: This first tries in BasicMessage repo and then in MediaSharing repo. It sould be actually a tag in
 // ChatEntryRecord, as we only need the record itself and its didcommThreadId
@@ -13,9 +11,9 @@ export async function getChatEntryByDidcommThreadId(agent: MobileAgent, realm: R
   let originMessage: DidCommBasicMessageRecord | DidCommMediaSharingRecord
   try {
     originMessage = await agent.didcomm.basicMessages.getByThreadId(threadId)
-  } catch (error) {
+  } catch {
     // TODO: Use findByThreadId (update to media sharing is required)
-    ;[originMessage] = (await agent.modules.media.getAll()).filter(item => item.threadId === threadId)
+    ;[originMessage] = (await agent.modules.media.getAll()).filter((item) => item.threadId === threadId)
   }
   const [chatEntryRecord] = findAllByAssociatedRecordId(realm, originMessage.id)
 

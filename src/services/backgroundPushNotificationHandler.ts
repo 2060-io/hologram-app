@@ -1,15 +1,13 @@
-import { DidCommMessageProcessedEvent, DidCommStatusV2Message, DidCommEventTypes } from '@credo-ts/didcomm'
+import { DidCommEventTypes, DidCommMessageProcessedEvent, DidCommStatusV4Message } from '@credo-ts/didcomm'
 import { FirebaseMessagingTypes } from '@react-native-firebase/messaging'
-
-import { AgentActionQueueSingleton } from './AgentActionQueueSingleton'
-import AgentSingleton from './AgentSingleton'
-import RealmSingleton from './RealmSingleton'
-
 import { manageBackgroundChatEntryChanges, subscribeToAgentChatEvents } from '@src/hooks/agent/chat'
 import { manageConnectionStateChangedEvent } from '@src/hooks/agent/connections/manageConnectionStateChangedEvent'
 import { subscribeToAgentConnectionEvents } from '@src/hooks/agent/connections/subscribeToAgentConnectionEvents'
 import { log, logWarn } from '@src/utils'
 import { arePushNotificationsAllowed, deleteRemoteNotifications } from '@src/utils/pushNotificationsUtils'
+import { AgentActionQueueSingleton } from './AgentActionQueueSingleton'
+import AgentSingleton from './AgentSingleton'
+import RealmSingleton from './RealmSingleton'
 
 const makeRequestToLocalServer = (payload: Record<string, string>) => {
   if (__DEV__) {
@@ -49,12 +47,8 @@ export async function backgroundPushNotificationHandler(remoteMessage: FirebaseM
     await mobileAgentInstance.setupMobileAgent()
     const agent = mobileAgentInstance.getMobileAgent()
     if (!agent) return
-    const { addChatEntryChangeListener, removeChatEntryChangeListener } = manageBackgroundChatEntryChanges(
-      realm,
-      agent,
-    )
-    const { addConnectionChangeListener, removeConnectionChangeListener } =
-      manageConnectionStateChangedEvent(agent)
+    const { addChatEntryChangeListener, removeChatEntryChangeListener } = manageBackgroundChatEntryChanges(realm, agent)
+    const { addConnectionChangeListener, removeConnectionChangeListener } = manageConnectionStateChangedEvent(agent)
     addChatEntryChangeListener()
     addConnectionChangeListener()
     if (!mobileAgentInstance.getMobileAgent()?.isInitialized) {
@@ -69,21 +63,22 @@ export async function backgroundPushNotificationHandler(remoteMessage: FirebaseM
     if (!mobileAgentInstance.getIsAppSubscribedToConnectionEvents()) {
       subscribeToAgentConnectionEvents(agent.context)
     }
-    const mediatorConnection = await agent.didcomm.mediationRecipient.findDefaultMediatorConnection()
+    const mediatorRecord = await agent.didcomm.mediationRecipient.findDefaultMediator()
+    if (!mediatorRecord) return
     await agent.didcomm.messagePickup.pickupMessages({
-      connectionId: mediatorConnection!.id,
-      protocolVersion: 'v2',
+      connectionId: mediatorRecord.connectionId,
+      protocolVersion: mediatorRecord.protocolVersion === 'v2' ? 'v4' : 'v2',
     })
 
     // this events is yet calling when app awakes and receives more because agent is still alive and the same
-    agent.events.on<DidCommMessageProcessedEvent>(DidCommEventTypes.DidCommMessageProcessed, async data => {
+    agent.events.on<DidCommMessageProcessedEvent>(DidCommEventTypes.DidCommMessageProcessed, async (data) => {
       const message = data.payload.message
       log(`Message processed for connection id ${data.payload.connection?.id} Type: ${message.type}`)
       makeRequestToLocalServer({
         data: `Message processed for connection id ${data.payload.connection?.id}`,
       })
-      if (message.type === DidCommStatusV2Message.type.messageTypeUri) {
-        const messageCount = (message as DidCommStatusV2Message).messageCount
+      if (message.type === DidCommStatusV4Message.type.messageTypeUri) {
+        const messageCount = (message as DidCommStatusV4Message).messageCount
         log(`Status message received. Remaining messages: ${messageCount}`)
         makeRequestToLocalServer({
           data: `Status message received. Remaining messages: ${messageCount}`,

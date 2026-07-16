@@ -4,4 +4,4 @@ import ParsedText from './ParsedText'
 import State from './State'
 
 export * from './Buttons'
-export { Header, ParsedText, State, CompressingVideo }
+export { CompressingVideo, Header, ParsedText, State }

@@ -1,7 +1,7 @@
 import React from 'react'
 import Svg, { G, Path, SvgProps } from 'react-native-svg'
 
-const verifiedMark: React.FC<SvgProps> = props => (
+const verifiedMark: React.FC<SvgProps> = (props) => (
   <Svg viewBox="0 0 24 24" {...props}>
     <G data-name="Group 1494" />
     <G data-name="Group 1496">

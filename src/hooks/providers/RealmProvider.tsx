@@ -1,13 +1,12 @@
 import { TypedArrayEncoder } from '@credo-ts/core'
-import React, { createContext, useCallback, useContext, useRef, useState } from 'react'
-import Realm from 'realm'
-
 import { UploadTask } from '@src/model'
-import RealmSingleton from '@src/services/RealmSingleton'
 import { createAndStoreEncryptedKey, KeyChainService } from '@src/services/keys'
+import RealmSingleton from '@src/services/RealmSingleton'
 import { logError } from '@src/utils'
 import { deleteFile } from '@src/utils/RNFS'
 import { getRealmConfig } from '@src/utils/realm'
+import React, { createContext, useCallback, useContext, useRef, useState } from 'react'
+import Realm from 'realm'
 
 interface Props {
   children?: React.ReactNode
@@ -72,7 +71,7 @@ export const RealmProvider: React.FC<React.PropsWithChildren<Props>> = ({ childr
         logError('Error importing realm chats file', error)
       }
     },
-    [realm],
+    [realm]
   )
 
   const closeRealm = useCallback(async () => {
@@ -84,9 +83,5 @@ export const RealmProvider: React.FC<React.PropsWithChildren<Props>> = ({ childr
     }
   }, [realm])
 
-  return (
-    <LocalRealmContext value={{ realm, openRealm, importAndOpenRealm, closeRealm }}>
-      {children}
-    </LocalRealmContext>
-  )
+  return <LocalRealmContext value={{ realm, openRealm, importAndOpenRealm, closeRealm }}>{children}</LocalRealmContext>
 }

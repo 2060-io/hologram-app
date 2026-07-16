@@ -1,19 +1,9 @@
 import { CacheModuleConfig } from '@credo-ts/core'
 import { StackActions } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { View, Image, TouchableOpacity, TouchableWithoutFeedback, Alert, ScrollView } from 'react-native'
-import NotificationSetting from 'react-native-open-notification'
-
-import { version } from '../../../package.json'
-import { HomeMainTabParams } from '../HomeMain/HomeMainProps'
-
-import getStyles from './styles'
-
 import defaultAvatar from '@src/assets/images/defaultUser.png'
 import { ModalConfirmAction } from '@src/components'
-import { Avatar, Text, SvgIcon, OptionsList, FullScreenImage } from '@src/components/common'
+import { Avatar, FullScreenImage, OptionsList, SvgIcon, Text } from '@src/components/common'
 import { Option } from '@src/components/common/OptionsList/OptionsListProps'
 import { useMobileAgent, useUserProfile } from '@src/hooks/agent'
 import { useConfig } from '@src/hooks/providers/ConfigProvider'
@@ -23,11 +13,18 @@ import { AgentActionQueueSingleton } from '@src/services/AgentActionQueueSinglet
 import { AgentSingleton } from '@src/services/AgentSingleton'
 import { deleteAllKeys } from '@src/services/keys'
 import { removeStorageData, USER_INVITATION_OUT_OF_BAND_RECORD_ID } from '@src/services/localStorage'
-import { logError, dataUrl } from '@src/utils'
+import { dataUrl, logError } from '@src/utils'
 import { deleteDir, walletDirectoryPath } from '@src/utils/RNFS'
 import { toast } from '@src/utils/toast'
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { Alert, Image, ScrollView, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
+import NotificationSetting from 'react-native-open-notification'
+import { version } from '../../../package.json'
+import { HomeMainTabParams } from '../HomeMain/HomeMainProps'
+import getStyles from './styles'
 
-interface Props extends StackScreenProps<HomeMainTabParams, 'Settings'> {}
+type Props = StackScreenProps<HomeMainTabParams, 'Settings'>
 
 const MAX_DELAY_BETWEEN_TOUCHES = 3000
 const TIMES_TO_ENABLE_DEV_MODE = 7

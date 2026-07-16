@@ -1,7 +1,7 @@
 import React from 'react'
-import Svg, { G, Image, Path, Rect, Ellipse, Circle, SvgProps } from 'react-native-svg'
+import Svg, { Circle, Ellipse, G, Image, Path, Rect, SvgProps } from 'react-native-svg'
 
-const NFCGroup: React.FC<SvgProps> = props => {
+const NFCGroup: React.FC<SvgProps> = (props) => {
   return (
     <Svg viewBox="0 0 314.77 271.964" {...props}>
       <G data-name="Grupo 2182" transform="translate(-56.615 -449.939)">

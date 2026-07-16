@@ -1,7 +1,7 @@
 import React from 'react'
 import Svg, { Path, SvgProps } from 'react-native-svg'
 
-const ArrowForward: React.FC<SvgProps> = props => (
+const ArrowForward: React.FC<SvgProps> = (props) => (
   <Svg width={24} height={24} viewBox="0 0 24 24" {...props}>
     <Path data-name="Rectangle 4082" fill="none" d="M0 0h24v24H0z" />
     <Path

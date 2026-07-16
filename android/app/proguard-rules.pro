@@ -18,3 +18,9 @@
 -keep class org.ejbca.** { *; }
 -dontwarn java.applet.Applet
 -dontwarn java.awt.**
+
+# react-native-file-logger (SLF4J + logback-android)
+-keep class org.slf4j.impl.** { *; }
+-keep class ch.qos.logback.** { *; }
+-dontwarn org.slf4j.**
+-dontwarn ch.qos.logback.**

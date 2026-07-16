@@ -1,28 +1,3 @@
-import React, { memo, useCallback, useMemo } from 'react'
-import { useTranslation } from 'react-i18next'
-import { View, TouchableOpacity, ViewStyle } from 'react-native'
-
-import CallOfferChatView from '../CallOfferChatView'
-import DeletedMessageView from '../DeletedMessageView'
-import EMrtdReadRequestChatView from '../EMrtdReadRequestChatView'
-import HtmlChatView from '../HtmlChatView'
-import ImageChatView from '../ImageChatView'
-import InvitationChatView from '../InvitationChatView'
-import MessageTextView from '../MessageTextView'
-import MrzRequestChatView from '../MrzRequestChatView'
-import QuestionChatView from '../QuestionChatView'
-import RepliedMessageView from '../RepliedMessageView'
-import TicksView from '../TicksView'
-import UserActionChatView from '../UserActionChatView'
-import VCOfferChatView from '../VCOfferChatView'
-import VPChatView from '../VPChatView'
-import VPRequestChatView from '../VPRequestChatView'
-import VideoChatView from '../VideoChatView'
-import VoiceNoteChatView from '../VoiceNoteChatView'
-
-import getStyles from './styles'
-import { mustDisplayAckAndTime } from './utils'
-
 import { Text } from '@src/components/common'
 import { useChat } from '@src/hooks/agent'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
@@ -43,8 +18,30 @@ import {
 } from '@src/model'
 import { BaseCustomMessageViewProps } from '@src/pages/Chat/ChatMessage/Props'
 import { dateToString } from '@src/utils/dateUtils'
+import React, { memo, useCallback, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
+import { TouchableOpacity, View, ViewStyle } from 'react-native'
+import CallOfferChatView from '../CallOfferChatView'
+import DeletedMessageView from '../DeletedMessageView'
+import EMrtdReadRequestChatView from '../EMrtdReadRequestChatView'
+import HtmlChatView from '../HtmlChatView'
+import ImageChatView from '../ImageChatView'
+import InvitationChatView from '../InvitationChatView'
+import MessageTextView from '../MessageTextView'
+import MrzRequestChatView from '../MrzRequestChatView'
+import QuestionChatView from '../QuestionChatView'
+import RepliedMessageView from '../RepliedMessageView'
+import TicksView from '../TicksView'
+import UserActionChatView from '../UserActionChatView'
+import VCOfferChatView from '../VCOfferChatView'
+import VideoChatView from '../VideoChatView'
+import VoiceNoteChatView from '../VoiceNoteChatView'
+import VPChatView from '../VPChatView'
+import VPRequestChatView from '../VPRequestChatView'
+import getStyles from './styles'
+import { mustDisplayAckAndTime } from './utils'
 
-const BaseCustomView: React.FC<BaseCustomMessageViewProps> = memo(props => {
+const BaseCustomView: React.FC<BaseCustomMessageViewProps> = memo((props) => {
   const {
     onTouchRepliedMessage,
     supportsMessageReceipts,
@@ -64,7 +61,7 @@ const BaseCustomView: React.FC<BaseCustomMessageViewProps> = memo(props => {
   const nextMessageChatEntry = nextMessage
   const relatedEntryProps = chatEntry.relatedEntryProps
   const { chatThread } = useChat()
-  const sender = chatThread?.participants.find(p => p.id === chatEntry.role)
+  const sender = chatThread?.participants.find((p) => p.id === chatEntry.role)
   const messageTime = dateToString(new Date(currentMessage?.createdAt), timeFormat)
   const displayTimeAndTicks = mustDisplayAckAndTime({
     messageTime,
@@ -208,14 +205,12 @@ const BaseCustomView: React.FC<BaseCustomMessageViewProps> = memo(props => {
         displayTimeAndTicks && (
           <View style={containerStyle}>
             <Text style={styles.timeText}>{messageTime}</Text>
-            {supportsMessageReceipts ? (
-              <TicksView role={currentMessage.role} state={currentMessage.state} />
-            ) : null}
+            {supportsMessageReceipts ? <TicksView role={currentMessage.role} state={currentMessage.state} /> : null}
           </View>
         )
       )
     },
-    [displayTimeAndTicks, messageTime, currentMessage, theme],
+    [displayTimeAndTicks, messageTime, currentMessage, theme]
   )
 
   const renderMessage = useMemo(() => {

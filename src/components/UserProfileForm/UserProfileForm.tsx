@@ -1,15 +1,15 @@
 import { DidCommUserProfileData } from '@2060.io/credo-ts-didcomm-user-profile'
-import React, { memo } from 'react'
-import { useTranslation } from 'react-i18next'
-import { View, TouchableOpacity, Image } from 'react-native'
-
-import getStyles from './styles'
-
 import defaultAvatar from '@src/assets/images/defaultUser.png'
-import { Text, TextInput, SvgIcon, Avatar } from '@src/components/common'
-import { useImageCropPicker, ImageOrVideo } from '@src/hooks'
+import { Avatar, SvgIcon, Text, TextInput } from '@src/components/common'
+import { ImageOrVideo, useImageCropPicker } from '@src/hooks'
+import { createProfilePicture } from '@src/hooks/media/profilePicture'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { dataUrl } from '@src/utils'
+import { widthPercentageToDP } from '@src/utils/responsiveUtils'
+import React, { memo } from 'react'
+import { useTranslation } from 'react-i18next'
+import { Image, TouchableOpacity, View } from 'react-native'
+import getStyles from './styles'
 
 type Props = {
   displayPicture: DidCommUserProfileData['displayPicture']
@@ -18,17 +18,24 @@ type Props = {
   onHandleChangeName(value: string): void
 }
 
-const UserProfileForm: React.FC<Props> = props => {
+const UserProfileForm: React.FC<Props> = (props) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
   const { takePhotoOrVideo, takePhotoOrVideoFromGallery } = useImageCropPicker()
   const { displayPicture, displayName, onHandleChangePicture, onHandleChangeName } = props
   const imgUrl = displayPicture ? dataUrl(displayPicture.mimeType, displayPicture.base64) : null
-  const avatarUri = imgUrl ?? Image.resolveAssetSource(defaultAvatar).uri
+  const avatarSize = widthPercentageToDP('46%')
+  const defaultAvatarStyle = {
+    width: avatarSize,
+    height: avatarSize,
+    borderRadius: avatarSize / 2,
+  }
 
-  const onChangeAvatarInfo = (info: ImageOrVideo) => {
-    if (info.data) onHandleChangePicture({ mimeType: info.mime, base64: info.data })
+  const onChangeAvatarInfo = async (info: ImageOrVideo) => {
+    if (!info.path) return
+    const picture = await createProfilePicture({ imageUrl: info.path })
+    if (picture) onHandleChangePicture(picture)
   }
 
   const onTakePhotoOrGallery = (type: 'Gallery' | 'Camera') => {
@@ -43,15 +50,15 @@ const UserProfileForm: React.FC<Props> = props => {
       <Text style={styles.textInputDescription}>{t('signUp.textInputNicknameDescription')}</Text>
       <View style={styles.containerRootAvatar}>
         {imgUrl?.length && (
-          <TouchableOpacity
-            style={styles.btnClose}
-            onPress={() => onHandleChangePicture(null)}
-            activeOpacity={0.6}
-          >
+          <TouchableOpacity style={styles.btnClose} onPress={() => onHandleChangePicture(null)} activeOpacity={0.6}>
             <SvgIcon name="close" fill={theme.colors.lightGrey} />
           </TouchableOpacity>
         )}
-        <Avatar uri={avatarUri} label={displayName} size="46%" />
+        {imgUrl ? (
+          <Avatar uri={imgUrl} label={displayName} size="46%" />
+        ) : (
+          <Image source={defaultAvatar} style={defaultAvatarStyle} />
+        )}
       </View>
       <View style={styles.containerOptions}>
         <View style={styles.containerOption}>

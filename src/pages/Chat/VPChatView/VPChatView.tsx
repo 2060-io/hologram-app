@@ -1,18 +1,10 @@
 import { DidCommProofState } from '@credo-ts/didcomm'
 import { useNavigation } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
-import React, { memo, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { View } from 'react-native'
-
-import { BlueButton, Header, OutlinedBlueButton, State } from '../components'
-
-import getStyles from './styles'
-
 import { ModalConfirmAction } from '@src/components'
-import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
 import { CredentialMainInformation, Text } from '@src/components/common'
-import { AgentActionType, useChat, useAgentActionQueue } from '@src/hooks/agent'
+import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
+import { AgentActionType, useAgentActionQueue, useChat } from '@src/hooks/agent'
 import {
   AcceptProofProposalParameters,
   ProofSendProblemReportDescription,
@@ -24,6 +16,11 @@ import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { ChatEntryRole, VPResponseMetadata, VPResponsePresentedCredential } from '@src/model'
 import { MobileAgent } from '@src/services/agent'
 import { toast } from '@src/utils/toast'
+import React, { memo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { View } from 'react-native'
+import { BlueButton, Header, OutlinedBlueButton, State } from '../components'
+import getStyles from './styles'
 
 type Props = {
   metadata: VPResponseMetadata
@@ -43,7 +40,7 @@ const VPChatView = ({ metadata, role, agent, proofRecordId, chatEntryId }: Props
   const navigation: StackNavigationProp<NavigationStackParams> = useNavigation()
   const [showModalRefuseConfirmation, setShowModalRefuseConfirmation] = useState(false)
   const { presentedCredentials: pc, proofState } = metadata
-  const otherSidesName = chatThread?.participants.find(p => p.id === ChatEntryRole.Receiver)?.name
+  const otherSidesName = chatThread?.participants.find((p) => p.id === ChatEntryRole.Receiver)?.name
   const presentedCredentials: VPResponsePresentedCredential[] = pc ? JSON.parse(pc) : []
   const isSender = role === ChatEntryRole.Sender
   const mainMessage = isSender
@@ -60,7 +57,11 @@ const VPChatView = ({ metadata, role, agent, proofRecordId, chatEntryId }: Props
   const displayModalRefuseConfirmation = () => setShowModalRefuseConfirmation(true)
 
   const chooseWhereToGo = (credential: VPResponsePresentedCredential) => {
-    isSender ? verifyCanGoToCredentialDetails(credential.mainInfo.recordId) : goToPresentation(credential)
+    if (isSender) {
+      verifyCanGoToCredentialDetails(credential.mainInfo.recordId)
+    } else {
+      goToPresentation(credential)
+    }
   }
 
   const goToPresentation = (credential: VPResponsePresentedCredential) => {
@@ -78,7 +79,7 @@ const VPChatView = ({ metadata, role, agent, proofRecordId, chatEntryId }: Props
     try {
       await agent.w3cCredentials.getById(credentialRecordId)
       navigation.navigate('CredentialDetails', { credentialRecordId })
-    } catch (error) {
+    } catch {
       toast({ type: 'error', message: t('chat.noCredentialFound') })
     }
   }
@@ -106,9 +107,7 @@ const VPChatView = ({ metadata, role, agent, proofRecordId, chatEntryId }: Props
   }
 
   const status: Record<DidCommProofState, React.ReactElement | null> = {
-    [DidCommProofState.ProposalSent]: (
-      <State text={t('presentationRequest.waitingForAcceptance')} type="warning" />
-    ),
+    [DidCommProofState.ProposalSent]: <State text={t('presentationRequest.waitingForAcceptance')} type="warning" />,
     [DidCommProofState.ProposalReceived]: (
       <View style={styles.buttonsContainer}>
         <OutlinedBlueButton
@@ -116,11 +115,7 @@ const VPChatView = ({ metadata, role, agent, proofRecordId, chatEntryId }: Props
           onPress={displayModalRefuseConfirmation}
           style={styles.refuseButton}
         />
-        <BlueButton
-          text={t('general.accept')}
-          onPress={acceptCredentialPresentation}
-          style={styles.acceptButton}
-        />
+        <BlueButton text={t('general.accept')} onPress={acceptCredentialPresentation} style={styles.acceptButton} />
       </View>
     ),
     [DidCommProofState.RequestSent]: <State text={t('presentationRequest.accepted')} />,
@@ -143,12 +138,7 @@ const VPChatView = ({ metadata, role, agent, proofRecordId, chatEntryId }: Props
         onConfirm={refuseCredentialPresentation}
         onCancel={hideModalRefuseConfirmation}
       />
-      <Header
-        theme={theme}
-        title={t('presentationRequest.verifiablePresentation')}
-        leftIconName="id"
-        role={role}
-      />
+      <Header theme={theme} title={t('presentationRequest.verifiablePresentation')} leftIconName="id" role={role} />
       <View style={styles.subContainer}>
         <Text style={styles.title}>{mainMessage}</Text>
         {presentedCredentials.map((credential, index) => {

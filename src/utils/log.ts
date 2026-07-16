@@ -5,7 +5,7 @@ import { areLogsEnabled } from './developer'
 import { toast } from './toast'
 
 let logsEnabled = false
-;(async function () {
+;(async () => {
   logsEnabled = await areLogsEnabled()
 })()
 

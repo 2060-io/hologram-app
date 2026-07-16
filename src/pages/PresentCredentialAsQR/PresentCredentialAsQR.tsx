@@ -1,22 +1,20 @@
 import { StackScreenProps } from '@react-navigation/stack'
+import { CredentialPresented } from '@src/components'
+import { MainButton, ModalLoading, SvgIcon, Text } from '@src/components/common'
+import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
+import { IS_IOS } from '@src/constants'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { logError } from '@src/utils'
+import { widthPercentageToDP } from '@src/utils/responsiveUtils'
 import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ActivityIndicator, Platform, TouchableOpacity, View } from 'react-native'
 import QRCode from 'react-native-qrcode-svg'
 import Share, { ShareOptions } from 'react-native-share'
-
 import getStyles from './styles'
 import { State, usePresentCredentialAsQR } from './usePresentCredentialAsQR'
 
-import { CredentialPresented } from '@src/components'
-import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
-import { MainButton, ModalLoading, SvgIcon, Text } from '@src/components/common'
-import { IS_IOS } from '@src/constants'
-import { useTheme } from '@src/hooks/providers/ThemeProvider'
-import { logError } from '@src/utils'
-import { widthPercentageToDP } from '@src/utils/responsiveUtils'
-
-interface Props extends StackScreenProps<NavigationStackParams, 'PresentCredentialAsQR'> {}
+type Props = StackScreenProps<NavigationStackParams, 'PresentCredentialAsQR'>
 
 const PresentCredentialAsQR = ({ navigation, route }: Props) => {
   const { credentialRecordId, attributesToPresent } = route.params
@@ -32,7 +30,7 @@ const PresentCredentialAsQR = ({ navigation, route }: Props) => {
 
   useEffect(() => {
     if (IS_IOS) return
-    const unsubscribe = navigation.addListener('beforeRemove', e => {
+    const unsubscribe = navigation.addListener('beforeRemove', (e) => {
       if (e.data.action.type === 'GO_BACK') e.preventDefault()
     })
     return unsubscribe
@@ -67,7 +65,7 @@ const PresentCredentialAsQR = ({ navigation, route }: Props) => {
             ],
           },
           default: { url: urlForQr, failOnCancel: false },
-        }),
+        })
       )
     } catch (error) {
       logError('Error sharing credential QR', error)

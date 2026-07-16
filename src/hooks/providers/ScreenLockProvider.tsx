@@ -1,27 +1,16 @@
-import React, {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-  useRef,
-  PropsWithChildren,
-} from 'react'
-import { View, PanResponder, StyleSheet } from 'react-native'
-
-import { useNavigation } from '../agent/NavigationProvider'
-import { useAppState } from '../useAppState'
-
-import { useVideoCallContext } from './useVideoCallContext'
-
 import Authentication from '@src/components/Authentication'
 import Modal from '@src/components/common/Modal'
 import {
-  setStorageData,
   getStorageData,
   SCREEN_LOCK_ENABLED_PERSIST_KEY,
   SCREEN_LOCK_TIMEOUT_PERSIST_KEY,
+  setStorageData,
 } from '@src/services/localStorage'
+import React, { createContext, PropsWithChildren, useCallback, useContext, useEffect, useRef, useState } from 'react'
+import { PanResponder, StyleSheet, View } from 'react-native'
+import { useNavigation } from '../agent/NavigationProvider'
+import { useAppState } from '../useAppState'
+import { useVideoCallContext } from './useVideoCallContext'
 
 interface ScreenLockInterface {
   isScreenLockEnabled: boolean
@@ -72,7 +61,11 @@ export const ScreenLockProvider: React.FC<PropsWithChildren> = ({ children }) =>
    */
   useEffect(() => {
     if (screenLockTimeout === INSTANT_TIMEOUT) return
-    isScreenLockForceDisabled ? clearInactivityTimeout() : clearAndRestartInactivityTimeout()
+    if (isScreenLockForceDisabled) {
+      clearInactivityTimeout()
+    } else {
+      clearAndRestartInactivityTimeout()
+    }
   }, [isScreenLockForceDisabled])
 
   /**
@@ -86,8 +79,7 @@ export const ScreenLockProvider: React.FC<PropsWithChildren> = ({ children }) =>
 
   useEffect(() => {
     const getStoredScreenLockedTimeout = async () => {
-      const storedScreenLockTimeout =
-        (await getStorageData(SCREEN_LOCK_TIMEOUT_PERSIST_KEY)) ?? FIVE_MINUTES_TIMEOUT
+      const storedScreenLockTimeout = (await getStorageData(SCREEN_LOCK_TIMEOUT_PERSIST_KEY)) ?? FIVE_MINUTES_TIMEOUT
       setLockTimeout(Number(storedScreenLockTimeout))
     }
     getStoredScreenLockedTimeout()

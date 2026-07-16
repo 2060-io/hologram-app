@@ -1,19 +1,16 @@
 import { useHeaderHeight } from '@react-navigation/elements'
 import { ParamListBase } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
-import React, { useCallback, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { TouchableOpacity, View } from 'react-native'
-
-import Connections from '../Connections'
-import { ConnectionItem } from '../Connections/ConnectionList'
-
-import getStyles from './styles'
-
 import { SvgIcon, Text } from '@src/components/common'
 import { useConnections } from '@src/hooks/agent'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { notAllowedConnectionsIdsToSendMessages } from '@src/utils/connectionUtils'
+import React, { useCallback, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { TouchableOpacity, View } from 'react-native'
+import Connections from '../Connections'
+import { ConnectionItem } from '../Connections/ConnectionList'
+import getStyles from './styles'
 
 interface Props {
   navigation: StackNavigationProp<ParamListBase>
@@ -40,10 +37,10 @@ const ConnectionsSelection = ({ navigation, onPressSend, connectionIdToExclude, 
   if (connectionIdToExclude) excludedConnections.push(connectionIdToExclude)
 
   const onPressConnection = useCallback((connectionItem: ConnectionItem) => {
-    setSelectedConnections(prevState => {
+    setSelectedConnections((prevState) => {
       const newSelectedConnections = [...prevState]
       const connectionAlreadySelectedSelectedIndex = newSelectedConnections.findIndex(
-        connection => connection.id === connectionItem.id,
+        (connection) => connection.id === connectionItem.id
       )
       const connectionIsAlreadySelected = connectionAlreadySelectedSelectedIndex !== -1
       if (connectionIsAlreadySelected) {
@@ -57,7 +54,7 @@ const ConnectionsSelection = ({ navigation, onPressSend, connectionIdToExclude, 
   }, [])
 
   const send = () => {
-    onPressSend(selectedConnections.map(connection => connection.id))
+    onPressSend(selectedConnections.map((connection) => connection.id))
   }
 
   return (
@@ -67,7 +64,7 @@ const ConnectionsSelection = ({ navigation, onPressSend, connectionIdToExclude, 
           navigation={navigation}
           onPressConnection={onPressConnection}
           headerProps={{ height: headerHeight, title: headerTitle ?? t('navigation.ForwardTo') }}
-          selectedConnections={selectedConnections.map(connection => connection.id)}
+          selectedConnections={selectedConnections.map((connection) => connection.id)}
           excludedConnections={excludedConnections}
         />
       </View>

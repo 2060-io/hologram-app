@@ -1,24 +1,16 @@
 import { ParamListBase } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
-import React, { useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { View, TouchableOpacity, ScrollView, TouchableWithoutFeedback, ActivityIndicator } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
-
-import getStyles from './styles'
-
 import { ModalConfirmAction } from '@src/components'
-import {
-  CredentialMainInformation,
-  MainButton,
-  Text,
-  ServiceMainInfo,
-  RadioButton,
-} from '@src/components/common'
+import { CredentialMainInformation, MainButton, RadioButton, ServiceMainInfo, Text } from '@src/components/common'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { ServiceInfo } from '@src/model'
 import { FormattedSubmission } from '@src/services/agent/formatPresentation'
 import { screenHeight } from '@src/utils/responsiveUtils'
+import React, { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { ActivityIndicator, ScrollView, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import getStyles from './styles'
 
 type Props = {
   navigation: StackNavigationProp<ParamListBase>
@@ -52,11 +44,11 @@ const BasePresentationRequest: React.FC<Props> = ({
   const styles = getStyles(theme)
   const defaultSelectedCredentialsIndexes = new Array(submission.entries.length).fill(-1)
   const [selectedCredentialsIndexes, setSelectedCredentialsIndexes] = useState<number[]>(
-    defaultSelectedCredentialsIndexes,
+    defaultSelectedCredentialsIndexes
   )
   const [showModalRefuseConfirmation, setShowModalRefuseConfirmation] = useState(false)
-  const hasCompatibleCredentials = submission.entries.some(entry => entry.credentials.length > 0)
-  const enabledPresentButton = selectedCredentialsIndexes.every(value => value >= 0)
+  const hasCompatibleCredentials = submission.entries.some((entry) => entry.credentials.length > 0)
+  const enabledPresentButton = selectedCredentialsIndexes.every((value) => value >= 0)
 
   useEffect(() => {
     if (!hasCompatibleCredentials) {
@@ -95,7 +87,7 @@ const BasePresentationRequest: React.FC<Props> = ({
     positionToUpdate: number,
     newValue: number,
     entryId: string,
-    credentialId: string,
+    credentialId: string
   ) => {
     const newSelectedCredentialsIndexes = [...selectedCredentialsIndexes]
     newSelectedCredentialsIndexes[positionToUpdate] = newValue

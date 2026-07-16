@@ -7,19 +7,19 @@ import { DidcommCredentialOffer } from './CredentialOffer'
 import { CredentialPresentation, EphemeralCredentialPresentation } from './CredentialPresentation'
 import CredentialPresented from './CredentialPresented'
 import Developer from './Developer'
-import { ForwardMessages, ForwardConnection } from './Forward'
+import { ForwardConnection, ForwardMessages } from './Forward'
 import HomeMain from './HomeMain'
-import MRZScanner from './MRZScanner'
 import MessageDetails from './MessageDetails'
+import MRZScanner from './MRZScanner'
 import ParentalControl from './ParentalControl'
+import { DidcommPresentationRequest } from './PresentationRequest'
 import PresentCredential from './PresentCredential'
 import PresentCredentialAsQR from './PresentCredentialAsQR'
 import PresentCredentialsFromChat from './PresentCredentialsFromChat'
-import { DidcommPresentationRequest } from './PresentationRequest'
 import Privacy from './Privacy'
 import RelatedConnections from './RelatedConnections'
 import SelectCredentialAttributes from './SelectCredentialAttributes'
-import { UserProfile, WalletBackup, ChangeBackupPassword } from './Settings'
+import { ChangeBackupPassword, UserProfile, WalletBackup } from './Settings'
 import ShareMessages from './ShareMessages'
 import ProfileCreation from './SignUp/ProfileCreation'
 import RestoreWalletBackup from './SignUp/RestoreWalletBackup'
@@ -27,36 +27,36 @@ import SignUpMain from './SignUp/SignUpMain'
 import UserInvitation from './UserInvitation'
 
 export {
+  ChangeBackupPassword,
+  Chat,
   ConnectionDetails,
+  ConnectionInvitation,
   Connections,
-  Privacy,
+  ConnectionsForNewChat,
+  CredentialDetails,
+  CredentialPresentation,
+  CredentialPresented,
+  Developer,
   DidcommCredentialOffer,
   DidcommPresentationRequest,
+  EphemeralCredentialPresentation,
+  ForwardConnection,
+  ForwardMessages,
   HomeMain,
-  ConnectionInvitation,
-  Chat,
-  RelatedConnections,
-  UserProfile,
-  WalletBackup,
-  ChangeBackupPassword,
+  MessageDetails,
+  MRZScanner,
+  ParentalControl,
+  PresentCredential,
+  PresentCredentialAsQR,
+  PresentCredentialsFromChat,
+  Privacy,
   ProfileCreation,
+  RelatedConnections,
   RestoreWalletBackup,
+  SelectCredentialAttributes,
+  ShareMessages,
   SignUpMain,
   UserInvitation,
-  CredentialDetails,
-  Developer,
-  CredentialPresented,
-  ConnectionsForNewChat,
-  MessageDetails,
-  ForwardMessages,
-  ForwardConnection,
-  ShareMessages,
-  MRZScanner,
-  PresentCredential,
-  CredentialPresentation,
-  ParentalControl,
-  PresentCredentialsFromChat,
-  SelectCredentialAttributes,
-  PresentCredentialAsQR,
-  EphemeralCredentialPresentation,
+  UserProfile,
+  WalletBackup,
 }

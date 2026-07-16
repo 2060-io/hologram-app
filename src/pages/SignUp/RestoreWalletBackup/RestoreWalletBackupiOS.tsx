@@ -1,10 +1,8 @@
-import React, { useState } from 'react'
-
-import BaseRestoreWalletBackup from './BaseRestoreWalletBackup'
-import { RestoreProgressProps } from './RestoreWalletBackupProps'
-
 import { useICloud } from '@src/hooks'
 import { restoreProgressInitialValues } from '@src/hooks/backup'
+import React, { useState } from 'react'
+import BaseRestoreWalletBackup from './BaseRestoreWalletBackup'
+import { RestoreProgressProps } from './RestoreWalletBackupProps'
 
 const RestoreWalletBackupiOS = () => {
   const { isCloudAvailable, backupHandler, downloadBackup } = useICloud()

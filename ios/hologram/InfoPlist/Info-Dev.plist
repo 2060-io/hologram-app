@@ -35,11 +35,14 @@
 			<array>
 				<string>ShareMenuModuleDev</string>
 				<string>didcomm</string>
+				<string>hologram-zone-dev</string>
 			</array>
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>2000000</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>whatsapp</string>
@@ -110,7 +113,7 @@
 		<string>remote-notification</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
-	<string>SplashScreenDev.storyboard</string>
+	<string>BootSplashDev</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>arm64</string>

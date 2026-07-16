@@ -1,18 +1,16 @@
+import { OptionsList, Switch, Text } from '@src/components/common'
+import { IS_ANDROID, KID_BIRTHDATE_DATE_FORMAT } from '@src/constants'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { ParentalControlEnum, retrieveKeyInConfigFile, storeKeyInConfigFile } from '@src/services/config'
+import { createAndStoreEncryptedKey, deleteEncryptedKey, KeyChainService } from '@src/services/keys'
+import { dateToString, stringToDate } from '@src/utils/dateUtils'
 import React, { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TouchableOpacity, View } from 'react-native'
 import DatePicker from 'react-native-date-picker'
-
 import SetPIN from './SetPIN'
 import { OnCloseSetPINCallback } from './SetPIN/SetPIN'
 import getStyles from './styles'
-
-import { OptionsList, Switch, Text } from '@src/components/common'
-import { IS_ANDROID, KID_BIRTHDATE_DATE_FORMAT } from '@src/constants'
-import { useTheme } from '@src/hooks/providers/ThemeProvider'
-import { storeKeyInConfigFile, retrieveKeyInConfigFile, ParentalControlEnum } from '@src/services/config'
-import { createAndStoreEncryptedKey, deleteEncryptedKey, KeyChainService } from '@src/services/keys'
-import { dateToString, stringToDate } from '@src/utils/dateUtils'
 
 const ParentalControl = () => {
   const { t } = useTranslation()
@@ -38,10 +36,7 @@ const ParentalControl = () => {
         const storedKidBirthdate = stringToDate(storedStringKidBirthday, KID_BIRTHDATE_DATE_FORMAT)
         setKidBirthday(storedKidBirthdate)
       } else {
-        storeKeyInConfigFile(
-          ParentalControlEnum.KidBirthday,
-          dateToString(new Date(), KID_BIRTHDATE_DATE_FORMAT),
-        )
+        storeKeyInConfigFile(ParentalControlEnum.KidBirthday, dateToString(new Date(), KID_BIRTHDATE_DATE_FORMAT))
       }
     }
     loadIsParentalControlEnabled()
@@ -85,9 +80,7 @@ const ParentalControl = () => {
   const options = [
     {
       text: t('navigation.ParentalControl'),
-      rightContent: () => (
-        <Switch isChecked={isParentalControlEnabled} onToggle={onToggleParentalControlSwitch} />
-      ),
+      rightContent: () => <Switch isChecked={isParentalControlEnabled} onToggle={onToggleParentalControlSwitch} />,
     },
     {
       text: t('parentalControl.kidBirthday'),

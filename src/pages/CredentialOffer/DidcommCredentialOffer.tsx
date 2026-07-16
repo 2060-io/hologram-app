@@ -1,22 +1,17 @@
 import { DidCommCredentialState } from '@credo-ts/didcomm'
 import { StackActions } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
-import React from 'react'
-
-import BaseCredentialOffer from './BaseCredentialOffer'
-
 import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
 import { AgentActionType, useAgentActionQueue, useChats, useMobileAgent } from '@src/hooks/agent'
-import {
-  AcceptCredentialOfferParameters,
-  DeclineCredentialOfferParameters,
-} from '@src/hooks/agent/actions/types'
+import { AcceptCredentialOfferParameters, DeclineCredentialOfferParameters } from '@src/hooks/agent/actions/types'
 import { findAllByAssociatedRecordId, updateChatEntryMetadata } from '@src/hooks/agent/chat/services'
 import { useLocalRealm } from '@src/hooks/providers/RealmProvider'
 import { useCredentialExchangeForDisplay } from '@src/hooks/useCredentialExchangeForDisplay'
 import { ChatEntryType } from '@src/model'
+import React from 'react'
+import BaseCredentialOffer from './BaseCredentialOffer'
 
-interface Props extends StackScreenProps<NavigationStackParams, 'DidcommCredentialOffer'> {}
+type Props = StackScreenProps<NavigationStackParams, 'DidcommCredentialOffer'>
 
 const DidcommCredentialOffer: React.FC<Props> = ({ route, navigation }) => {
   const { credentialRecordId, did } = route.params
@@ -47,7 +42,7 @@ const DidcommCredentialOffer: React.FC<Props> = ({ route, navigation }) => {
         StackActions.replace('ChatStack', {
           screen: 'Chat',
           params: { chatThreadId, redirectToHomeOnBack: true },
-        }),
+        })
       )
     }
   }
@@ -59,7 +54,11 @@ const DidcommCredentialOffer: React.FC<Props> = ({ route, navigation }) => {
       type: AgentActionType.AcceptCredentialOffer,
       parameters,
     })
-    did ? goToChatScreen(did) : navigation.goBack()
+    if (did) {
+      goToChatScreen(did)
+    } else {
+      navigation.goBack()
+    }
   }
 
   const refuse = () => {
@@ -69,7 +68,11 @@ const DidcommCredentialOffer: React.FC<Props> = ({ route, navigation }) => {
       type: AgentActionType.DeclineCredentialOffer,
       parameters,
     })
-    did ? goToChatScreen(did) : navigation.goBack()
+    if (did) {
+      goToChatScreen(did)
+    } else {
+      navigation.goBack()
+    }
   }
 
   if (!credentialDetails) return null

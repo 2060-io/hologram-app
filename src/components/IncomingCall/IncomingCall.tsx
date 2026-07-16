@@ -1,15 +1,12 @@
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { useVideoCallContext } from '@src/hooks/providers/useVideoCallContext'
+import { getConnectionDisplayName, getConnectionDisplayPicture } from '@src/utils/connectionUtils'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-
-import { CallButton, AnswerButton, HangupButton, Avatar, Text } from '../common'
-
+import { AnswerButton, Avatar, CallButton, HangupButton, Text } from '../common'
 import getStyles from './styles'
-
-import { useTheme } from '@src/hooks/providers/ThemeProvider'
-import { useVideoCallContext } from '@src/hooks/providers/useVideoCallContext'
-import { getConnectionDisplayName, getConnectionDisplayPicture } from '@src/utils/connectionUtils'
 
 const IncomingCall = () => {
   const theme = useTheme()

@@ -1,29 +1,29 @@
 import { DidCommConnectionRecord } from '@credo-ts/didcomm'
 import { StackActions } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
-import React, { ReactElement, useLayoutEffect, useTransition } from 'react'
-import { useTranslation } from 'react-i18next'
-import { TouchableOpacity, View, ScrollView } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
-
-import AlreadyConnected from './AlreadyConnected'
-import getStyles from './styles'
-
-import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
 import { HeaderTitle, ModalLoading, Text } from '@src/components/common'
+import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
 import { useScrollSwipeDown } from '@src/hooks'
 import { useChats, useMobileAgent, useUserProfile } from '@src/hooks/agent'
+import { AgentActionType } from '@src/hooks/agent/actions/AgentAction'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { AgentActionQueueSingleton } from '@src/services/AgentActionQueueSingleton'
 import { acceptInvitation } from '@src/services/agent/oob'
 import { logError } from '@src/utils'
 import { screenHeight } from '@src/utils/responsiveUtils'
 import { toast } from '@src/utils/toast'
+import React, { ReactElement, useLayoutEffect, useTransition } from 'react'
+import { useTranslation } from 'react-i18next'
+import { ScrollView, TouchableOpacity, View } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import AlreadyConnected from './AlreadyConnected'
+import getStyles from './styles'
 
 type InvitationType = 'peer' | 'public' | 'subInvitation'
 
 const getInvitationType = (
   invitationDid: string | undefined,
-  parentConnectionId: string | undefined,
+  parentConnectionId: string | undefined
 ): InvitationType => {
   const isSubInvitation = parentConnectionId as string
   const isService = invitationDid !== undefined && !invitationDid.startsWith('did:peer')
@@ -33,8 +33,7 @@ const getInvitationType = (
   return 'subInvitation'
 }
 
-export interface ConnectionInvitationProps
-  extends StackScreenProps<NavigationStackParams, 'ConnectionInvitation'> {}
+export type ConnectionInvitationProps = StackScreenProps<NavigationStackParams, 'ConnectionInvitation'>
 
 interface BaseConnectionInvitationProps extends ConnectionInvitationProps {
   mainInfo: ReactElement
@@ -77,7 +76,7 @@ const BaseConnectionInvitation = ({
       StackActions.replace('ChatStack', {
         screen: 'Chat',
         params: { chatThreadId, redirectToHomeOnBack: true },
-      }),
+      })
     )
   }
 
@@ -106,7 +105,17 @@ const BaseConnectionInvitation = ({
           connectionId: parentConnectionId,
         }
         const { connectionRecord } = await acceptInvitation(agent.context, invitationOptions)
-        if (connectionRecord) goToChat(connectionRecord)
+        if (connectionRecord) {
+          // V2 OOB has no handshake; queue a trust-ping so the inviter creates the
+          // connection on its side.
+          if (connectionRecord.didcommVersion === 'v2') {
+            AgentActionQueueSingleton.instance.addJob({
+              type: AgentActionType.SendTrustPing,
+              parameters: { connectionId: connectionRecord.id },
+            })
+          }
+          goToChat(connectionRecord)
+        }
       } catch (error) {
         toast({ type: 'error', message: `Failed to add connection ${error}` })
         logError('Error accepting connection invitation', error)

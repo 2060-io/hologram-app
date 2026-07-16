@@ -1,10 +1,8 @@
-import { IOrg, resolveDID } from '@verana-labs/verre'
-import { Resolver } from 'did-resolver'
-
-import { MobileAgent } from './agent'
-
 import { ServiceInfo } from '@src/model'
 import { log, logError } from '@src/utils'
+import { IOrg, resolveDID } from '@verana-labs/verre'
+import { Resolver } from 'did-resolver'
+import { MobileAgent } from './agent'
 
 function getCredoTsDidResolver(agent: MobileAgent): Resolver {
   return new Resolver(
@@ -14,15 +12,12 @@ function getCredoTsDidResolver(agent: MobileAgent): Resolver {
         get: (_target, _method: string) => {
           return async (did: string) => agent.dids.resolve(did)
         },
-      },
-    ),
+      }
+    )
   )
 }
 
-export async function getServiceInfo(options: {
-  agent: MobileAgent
-  did: string
-}): Promise<ServiceInfo | null> {
+export async function getServiceInfo(options: { agent: MobileAgent; did: string }): Promise<ServiceInfo | null> {
   const { agent, did } = options
 
   const trustResolution = await resolveDID(did, {

@@ -3,10 +3,10 @@ import 'react-native-url-polyfill/auto'
 import 'web-streams-polyfill/dist/polyfill'
 
 import {
-  S3Client,
-  CreateMultipartUploadCommand,
-  CompleteMultipartUploadCommand,
   AbortMultipartUploadCommand,
+  CompleteMultipartUploadCommand,
+  CreateMultipartUploadCommand,
+  S3Client,
   UploadPartCommand,
 } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
@@ -14,11 +14,9 @@ import { CacheModuleConfig } from '@credo-ts/core'
 import { uploadFiles } from '@dr.pogodin/react-native-fs'
 import { getApp } from '@react-native-firebase/app'
 import { getToken } from '@react-native-firebase/app-check'
-import { XMLParser } from 'fast-xml-parser'
-
-import { MobileAgent } from './agent/MobileAgent'
-
 import { log } from '@src/utils/log'
+import { XMLParser } from 'fast-xml-parser'
+import { MobileAgent } from './agent/MobileAgent'
 
 export const BUCKET_NAME = 'hologram-media-sharing'
 
@@ -120,7 +118,7 @@ export async function s3UploadFile({
         Bucket: BUCKET_NAME,
         Key: key,
         ContentType: 'application/octet-stream',
-      }),
+      })
     )
 
     onMultipartCreated()
@@ -138,7 +136,7 @@ export async function s3UploadFile({
           UploadId: uploadId,
           PartNumber: partNumber,
         }),
-        { expiresIn: 3_600 },
+        { expiresIn: 3_600 }
       )
 
       // Upload using uploadFiles from react-native-fs to stream file directly from disk (no JS buffer)
@@ -165,7 +163,7 @@ export async function s3UploadFile({
             ' partNumber: ' +
             partNumber +
             ' With the next result: ' +
-            JSON.stringify(uploadResult),
+            JSON.stringify(uploadResult)
         )
       }
       // Parse ETag from response headers
@@ -188,7 +186,7 @@ export async function s3UploadFile({
         MultipartUpload: {
           Parts: parts,
         },
-      }),
+      })
     )
     log('Multipart upload completed successfully', completeMultipartUploadResult)
     onUploadComplete({ key })
@@ -207,7 +205,7 @@ async function s3AbortMultipartUploadCommand(params: { s3Client: S3Client; key: 
       Bucket: BUCKET_NAME,
       Key: params.key,
       UploadId: params.uploadId,
-    }),
+    })
   )
   return result
 }

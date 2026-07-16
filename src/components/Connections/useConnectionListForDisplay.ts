@@ -1,22 +1,21 @@
 import { DidCommConnectionRecord } from '@credo-ts/didcomm'
-import { useEffect, useState } from 'react'
-
 import { ConnectionItem, ConnectionsBySections } from '@src/components/Connections/ConnectionList'
 import { useConnections, useParentConnections } from '@src/hooks/agent'
 import { useMobileAgent } from '@src/hooks/agent/MobileAgentProvider'
 import { MobileAgent } from '@src/services/agent'
 import { getInCacheServiceInfo } from '@src/services/agent/cache'
 import {
+  filterConnectionsByParentId,
   getConnectionDisplayName,
   getConnectionDisplayPicture,
-  filterConnectionsByParentId,
   isService,
 } from '@src/utils/connectionUtils'
+import { useEffect, useState } from 'react'
 
 const getConnectionItem = async (
   connection: DidCommConnectionRecord,
   findSubConnections: (connectionId: string) => DidCommConnectionRecord[],
-  agent: MobileAgent,
+  agent: MobileAgent
 ): Promise<ConnectionItem> => {
   const isConnectionService = isService(connection)
   let connectionItem: ConnectionItem = {
@@ -26,9 +25,7 @@ const getConnectionItem = async (
     invitationDid: connection.invitationDid,
     avatarUrl: getConnectionDisplayPicture(connection),
     subConnections: await Promise.all(
-      findSubConnections(connection.id).map(
-        async item => await getConnectionItem(item, findSubConnections, agent),
-      ),
+      findSubConnections(connection.id).map(async (item) => await getConnectionItem(item, findSubConnections, agent))
     ),
   }
   const did = connection.invitationDid
@@ -54,14 +51,14 @@ const getConnectionItem = async (
 const getConnectionsBySections = async (
   connections: DidCommConnectionRecord[],
   findSubConnections: (connectionId: string) => DidCommConnectionRecord[],
-  agent: MobileAgent,
+  agent: MobileAgent
 ) => {
   const connectionsGroupBySections: ConnectionsBySections[] = []
   for (const connection of connections) {
     const connectionName = getConnectionDisplayName(connection) as string
     const connectionItem = await getConnectionItem(connection, findSubConnections, agent)
     const firstLetter = connectionName.charAt(0).toLocaleLowerCase()
-    const sectionAlreadyExists = connectionsGroupBySections.findIndex(item => item.title === firstLetter)
+    const sectionAlreadyExists = connectionsGroupBySections.findIndex((item) => item.title === firstLetter)
     if (sectionAlreadyExists >= 0) {
       connectionsGroupBySections[sectionAlreadyExists].connections.push(connectionItem)
     } else {
@@ -71,7 +68,7 @@ const getConnectionsBySections = async (
   }
 
   return connectionsGroupBySections
-    .map(section => ({
+    .map((section) => ({
       ...section,
       connections: section.connections.sort((a, b) => a.name.localeCompare(b.name)),
     }))
@@ -80,25 +77,25 @@ const getConnectionsBySections = async (
 
 // FIXME: This is not very efficient, as it does multiple searches
 const searchByName = (dataList: ConnectionsBySections[], search: string) => {
-  const matches = dataList.map(section => ({
+  const matches = dataList.map((section) => ({
     ...section,
     connections: section.connections
-      .filter(connection => {
+      .filter((connection) => {
         const names = [
           connection.name.toLocaleLowerCase(),
-          ...connection.subConnections.map(subConnection => subConnection.name.toLocaleLowerCase()),
+          ...connection.subConnections.map((subConnection) => subConnection.name.toLocaleLowerCase()),
         ]
-        return names.some(name => name.includes(search.toLocaleLowerCase()))
+        return names.some((name) => name.includes(search.toLocaleLowerCase()))
       })
-      .map(connection => ({
+      .map((connection) => ({
         ...connection,
-        subConnectionsThatMatchWithSearch: connection.subConnections.filter(subConnection =>
-          subConnection.name.toLocaleLowerCase().includes(search.toLocaleLowerCase()),
+        subConnectionsThatMatchWithSearch: connection.subConnections.filter((subConnection) =>
+          subConnection.name.toLocaleLowerCase().includes(search.toLocaleLowerCase())
         ).length,
       })),
   }))
   // Only those sections with at least a matching connection
-  return matches.filter(section => section.connections.length)
+  return matches.filter((section) => section.connections.length)
 }
 
 export const useConnectionListForDisplay = ({
@@ -117,13 +114,13 @@ export const useConnectionListForDisplay = ({
     const getSections = async () => {
       if (!agent) return
       let newConnectionsBySections = await getConnectionsBySections(
-        rootConnections.filter(item => !excludedConnections.includes(item.id)),
+        rootConnections.filter((item) => !excludedConnections.includes(item.id)),
         (connectionId: string) =>
           filterConnectionsByParentId(
-            connections.filter(item => !excludedConnections.includes(item.id)),
-            connectionId,
+            connections.filter((item) => !excludedConnections.includes(item.id)),
+            connectionId
           ),
-        agent,
+        agent
       )
       if (search.length >= 2) newConnectionsBySections = searchByName(newConnectionsBySections, search)
       setConnectionsBySections(newConnectionsBySections)

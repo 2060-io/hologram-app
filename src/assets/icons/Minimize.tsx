@@ -1,7 +1,7 @@
 import React from 'react'
 import Svg, { Path, SvgProps } from 'react-native-svg'
 
-const Minimize: React.FC<SvgProps> = props => (
+const Minimize: React.FC<SvgProps> = (props) => (
   <Svg
     viewBox="0 0 24 24"
     strokeWidth={2}

@@ -1,7 +1,6 @@
-import { StyleSheet } from 'react-native'
-
 import { AppTheme } from '@src/styles'
 import { widthPercentageToDP } from '@src/utils/responsiveUtils'
+import { StyleSheet } from 'react-native'
 
 const DIAL_PAD_SIZE_CONTAINER = widthPercentageToDP('17%')
 export const DIAL_SIZE = 35

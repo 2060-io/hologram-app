@@ -1,19 +1,17 @@
 import { CommonActions, useNavigation } from '@react-navigation/native'
-import { useCallback, useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-
-import { RestoreProgress, restoreProgressInitialValues } from './backup'
-
 import { AgentActionType, useAgentActionQueue } from '@src/hooks/agent'
-import { useMobileAgent } from '@src/hooks/agent/MobileAgentProvider'
 import { SavePushNotificationDeviceInfoParameters } from '@src/hooks/agent/actions/types'
+import { useMobileAgent } from '@src/hooks/agent/MobileAgentProvider'
 import { useLocalRealm } from '@src/hooks/providers/RealmProvider'
 import { useWallet } from '@src/hooks/useWallet'
-import { KeyChainService, createAndStoreEncryptedKey } from '@src/services/keys'
+import { createAndStoreEncryptedKey, KeyChainService } from '@src/services/keys'
 import { logError } from '@src/utils'
-import { deleteDir, makeDirectory, walletDirectoryPath } from '@src/utils/RNFS'
 import { getFcmDeviceToken, requestNotificationsPermission } from '@src/utils/pushNotificationsUtils'
+import { deleteDir, makeDirectory, walletDirectoryPath } from '@src/utils/RNFS'
 import * as BackupUtils from '@src/utils/walletBackUpUtils'
+import { useCallback, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { RestoreProgress, restoreProgressInitialValues } from './backup'
 
 type Props = {
   restoreProgress: RestoreProgress
@@ -33,17 +31,17 @@ export const useRestoreBackup = ({ restoreProgress, setRestoreProgress, download
 
   useEffect(
     () =>
-      navigation.addListener('beforeRemove', e => {
+      navigation.addListener('beforeRemove', (e) => {
         const isInitialState = !restoreProgress.isDownloadingBackUp && !restoreProgress.done
         const wantsToNavigateToHome = e.data.action.type === 'RESET'
         const canLeave = isInitialState || wantsToNavigateToHome
         if (canLeave) {
           return
         }
-        restoreProgress.isDownloadingBackUp && setShowConfirmLeaveScreen(true)
+        if (restoreProgress.isDownloadingBackUp) setShowConfirmLeaveScreen(true)
         e.preventDefault()
       }),
-    [navigation, restoreProgress],
+    [navigation, restoreProgress]
   )
 
   const closeConfirmLeaveScreen = () => setShowConfirmLeaveScreen(false)
@@ -111,7 +109,7 @@ export const useRestoreBackup = ({ restoreProgress, setRestoreProgress, download
       return true
     } catch (error) {
       await deleteDir(walletDirectoryPath)
-      setRestoreProgress(prev => ({
+      setRestoreProgress((prev) => ({
         ...prev,
         isDownloadingBackUp: false,
         error: t('signUp.wrongRestoreWalletPassword'),
@@ -127,7 +125,7 @@ export const useRestoreBackup = ({ restoreProgress, setRestoreProgress, download
     await importAndOpenRealm(BackupUtils.REALM_BACKUP_FILE_PATH, backupKey)
     await openWallet()
     await handleNotificationsPermission()
-    setRestoreProgress(prev => ({ ...prev, isDownloadingBackUp: false, done: true, progress: 100 }))
+    setRestoreProgress((prev) => ({ ...prev, isDownloadingBackUp: false, done: true, progress: 100 }))
     await BackupUtils.deleteBackupDirectory()
   }
 

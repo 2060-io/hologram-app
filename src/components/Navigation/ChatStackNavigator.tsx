@@ -1,18 +1,15 @@
 import { createStackNavigator } from '@react-navigation/stack'
-import React from 'react'
-import { useTranslation } from 'react-i18next'
-import { View } from 'react-native'
-
-import { SvgIcon, HeaderTitle } from '../common'
-
-import { ChatStackParams } from './NavigationProps'
-import getStyles from './styles'
-
 import { ChatProvider } from '@src/hooks/agent'
 import { MediaPlayerProvider } from '@src/hooks/providers'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
-import { Chat, MessageDetails, ForwardMessages, ShareMessages, MRZScanner } from '@src/pages'
+import { Chat, ForwardMessages, MessageDetails, MRZScanner, ShareMessages } from '@src/pages'
 import { getGlobalStyles } from '@src/styles'
+import React from 'react'
+import { useTranslation } from 'react-i18next'
+import { View } from 'react-native'
+import { HeaderTitle, SvgIcon } from '../common'
+import { ChatStackParams } from './NavigationProps'
+import getStyles from './styles'
 
 const ChatStack = createStackNavigator<ChatStackParams>()
 const ChatStackNavigator = () => {

@@ -1,7 +1,7 @@
-diff --git a/node_modules/react-native-cloud-store/ios/CloudStore.m b/node_modules/react-native-cloud-store/ios/CloudStore.m
+diff --git a/ios/CloudStore.m b/ios/CloudStore.m
 index e8916e0..7109be1 100644
---- a/node_modules/react-native-cloud-store/ios/CloudStore.m
-+++ b/node_modules/react-native-cloud-store/ios/CloudStore.m
+--- a/ios/CloudStore.m
++++ b/ios/CloudStore.m
 @@ -52,6 +52,8 @@ RCT_EXTERN_METHOD(exist: (NSString)path resolver:(RCTPromiseResolveBlock)resolve
                    rejecter: (RCTPromiseRejectBlock)reject)
  RCT_EXTERN_METHOD(stat: (NSString)path resolver:(RCTPromiseResolveBlock)resolve
@@ -11,10 +11,10 @@ index e8916e0..7109be1 100644
  RCT_EXTERN_METHOD(evictUbiquitousItem: (NSString)path resolver:(RCTPromiseResolveBlock)resolve
                    rejecter: (RCTPromiseRejectBlock)reject)
  RCT_EXTERN_METHOD(startDownloadingUbiquitousItem: (NSString)path resolver:(RCTPromiseResolveBlock)resolve
-diff --git a/node_modules/react-native-cloud-store/ios/CloudStore.swift b/node_modules/react-native-cloud-store/ios/CloudStore.swift
+diff --git a/ios/CloudStore.swift b/ios/CloudStore.swift
 index a4b691a..bd6cb0c 100644
---- a/node_modules/react-native-cloud-store/ios/CloudStore.swift
-+++ b/node_modules/react-native-cloud-store/ios/CloudStore.swift
+--- a/ios/CloudStore.swift
++++ b/ios/CloudStore.swift
 @@ -322,7 +322,9 @@ extension CloudStoreModule {
  enum ICloudGatheringFileType:String{
      case upload = "upload"
@@ -206,10 +206,10 @@ index a4b691a..bd6cb0c 100644
  
      @objc
      func evictUbiquitousItem(_ path: String, resolver resolve: RCTPromiseResolveBlock,
-diff --git a/node_modules/react-native-cloud-store/lib/commonjs/icloud.js b/node_modules/react-native-cloud-store/lib/commonjs/icloud.js
+diff --git a/lib/commonjs/icloud.js b/lib/commonjs/icloud.js
 index e8b6d85..b1c4bdd 100644
---- a/node_modules/react-native-cloud-store/lib/commonjs/icloud.js
-+++ b/node_modules/react-native-cloud-store/lib/commonjs/icloud.js
+--- a/lib/commonjs/icloud.js
++++ b/lib/commonjs/icloud.js
 @@ -28,6 +28,7 @@ exports.registerICloudIdentityDidChangeEvent = registerICloudIdentityDidChangeEv
  exports.setUbiquitous = setUbiquitous;
  exports.startDownloadingUbiquitousItem = startDownloadingUbiquitousItem;
@@ -233,10 +233,10 @@ index e8b6d85..b1c4bdd 100644
  /**
   * Get the detailed info of the file/directory
   * @param path
-diff --git a/node_modules/react-native-cloud-store/lib/module/icloud.js b/node_modules/react-native-cloud-store/lib/module/icloud.js
+diff --git a/lib/module/icloud.js b/lib/module/icloud.js
 index afdf98f..119705a 100644
---- a/node_modules/react-native-cloud-store/lib/module/icloud.js
-+++ b/node_modules/react-native-cloud-store/lib/module/icloud.js
+--- a/lib/module/icloud.js
++++ b/lib/module/icloud.js
 @@ -152,6 +152,16 @@ export let DownloadStatus;
    DownloadStatus["downloaded"] = "NSURLUbiquitousItemDownloadingStatusDownloaded";
    DownloadStatus["notDownloaded"] = "NSURLUbiquitousItemDownloadingStatusNotDownloaded";
@@ -254,10 +254,10 @@ index afdf98f..119705a 100644
  /**
   * Get the detailed info of the file/directory
   * @param path
-diff --git a/node_modules/react-native-cloud-store/lib/typescript/icloud.d.ts b/node_modules/react-native-cloud-store/lib/typescript/icloud.d.ts
+diff --git a/lib/typescript/icloud.d.ts b/lib/typescript/icloud.d.ts
 index 3b47f07..f26e04b 100644
---- a/node_modules/react-native-cloud-store/lib/typescript/icloud.d.ts
-+++ b/node_modules/react-native-cloud-store/lib/typescript/icloud.d.ts
+--- a/lib/typescript/icloud.d.ts
++++ b/lib/typescript/icloud.d.ts
 @@ -132,6 +132,17 @@ export interface ICloudStat {
      fileSize?: number;
      isDirectory?: boolean;
@@ -276,10 +276,10 @@ index 3b47f07..f26e04b 100644
  /**
   * Get the detailed info of the file/directory
   * @param path
-diff --git a/node_modules/react-native-cloud-store/src/icloud.ts b/node_modules/react-native-cloud-store/src/icloud.ts
+diff --git a/src/icloud.ts b/src/icloud.ts
 index 40f4f2e..a2f609a 100644
---- a/node_modules/react-native-cloud-store/src/icloud.ts
-+++ b/node_modules/react-native-cloud-store/src/icloud.ts
+--- a/src/icloud.ts
++++ b/src/icloud.ts
 @@ -215,6 +215,15 @@ export interface ICloudStat {
    isDirectory?: boolean;
  }

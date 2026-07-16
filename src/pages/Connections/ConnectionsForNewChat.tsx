@@ -1,18 +1,17 @@
 import { StackActions } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
+import { Connections } from '@src/components'
+import { ConnectionItem } from '@src/components/Connections/ConnectionList'
+import { Text } from '@src/components/common'
+import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
+import { useChats, useConnections } from '@src/hooks/agent'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { AppTheme } from '@src/styles'
 import React, { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { StyleSheet, TouchableOpacity } from 'react-native'
 
-import { Connections } from '@src/components'
-import { ConnectionItem } from '@src/components/Connections/ConnectionList'
-import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
-import { Text } from '@src/components/common'
-import { useChats, useConnections } from '@src/hooks/agent'
-import { useTheme } from '@src/hooks/providers/ThemeProvider'
-import { AppTheme } from '@src/styles'
-
-interface Props extends StackScreenProps<NavigationStackParams, 'ConnectionsForNewChat'> {}
+type Props = StackScreenProps<NavigationStackParams, 'ConnectionsForNewChat'>
 
 const ConnectionsForNewChat = ({ navigation }: Props) => {
   const { t } = useTranslation()
@@ -22,7 +21,7 @@ const ConnectionsForNewChat = ({ navigation }: Props) => {
   const { connections } = useConnections()
 
   const tryGoToChatScreen = useCallback((connectionItem: ConnectionItem) => {
-    const connection = connections.find(conn => conn.id === connectionItem.id)
+    const connection = connections.find((conn) => conn.id === connectionItem.id)
     if (!connection) return
     const chatThreadId = findOrCreateThread({ connection }).id
     goToChatScreen(chatThreadId)

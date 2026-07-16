@@ -1,20 +1,14 @@
-import React from 'react'
-import { useTranslation } from 'react-i18next'
-import { TouchableOpacity, View } from 'react-native'
-
-import { withRenderConnectionMainActions } from '../../ConnectionDetails/withRenderConnectionMainActions'
-
-import getStyles from './styles'
-
 import { SvgIcon, Text } from '@src/components/common'
-import {
-  ConnectionMainActionsProps,
-  ActionIconsNames,
-} from '@src/components/common/ConnectionMainActions/Props'
+import { ActionIconsNames, ConnectionMainActionsProps } from '@src/components/common/ConnectionMainActions/Props'
 import { IconsNames } from '@src/components/common/SvgIcon'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { useConnectionMainActions } from '@src/hooks/useConnectionMainActions'
 import { getConnectionDisplayName } from '@src/utils/connectionUtils'
+import React from 'react'
+import { useTranslation } from 'react-i18next'
+import { TouchableOpacity, View } from 'react-native'
+import { withRenderConnectionMainActions } from '../../ConnectionDetails/withRenderConnectionMainActions'
+import getStyles from './styles'
 
 const AlreadyConnected = ({ navigation, connection, includeDefaultActions }: ConnectionMainActionsProps) => {
   const { t } = useTranslation()
@@ -35,7 +29,7 @@ const AlreadyConnected = ({ navigation, connection, includeDefaultActions }: Con
         {t('connection.youAreAlreadyConnected', { connectionName })}
       </Text>
       <View style={styles.actionsContainer}>
-        {actions.map(action => (
+        {actions.map((action) => (
           <TouchableOpacity key={action.value} onPress={action.onPress} style={styles.actionContainer}>
             <SvgIcon name={ActionIconsNames[action.value] as keyof IconsNames} fill={iconColor} />
             <Text style={styles.actionText}>{actionLabel[action.value]}</Text>

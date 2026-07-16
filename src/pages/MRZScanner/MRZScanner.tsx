@@ -1,25 +1,22 @@
 import { MrtdProblemReportReason } from '@2060.io/credo-ts-didcomm-mrtd'
 import { StackScreenProps } from '@react-navigation/stack'
+import { ChatStackParams } from '@src/components/Navigation/NavigationProps'
+import { useChat, useMobileAgent } from '@src/hooks/agent'
 import { activateKeepAwakeAsync, deactivateKeepAwake } from 'expo-keep-awake'
 import {
   OrientationLock,
-  lockAsync as setScreenOrientation,
   unlockAsync as resetScreenOrientation,
+  lockAsync as setScreenOrientation,
 } from 'expo-screen-orientation'
 import React, { useEffect, useRef, useState } from 'react'
-import { useCameraDevices } from 'react-native-vision-camera'
-
-import MRZCamera from './MRZCamera'
+import { useCameraDevice } from 'react-native-vision-camera'
 import { findAndParseMrz } from './findAndParseMrz'
+import MRZCamera from './MRZCamera'
 
-import { ChatStackParams } from '@src/components/Navigation/NavigationProps'
-import { useChat, useMobileAgent } from '@src/hooks/agent'
-
-interface Props extends StackScreenProps<ChatStackParams, 'MRZScanner'> {}
+type Props = StackScreenProps<ChatStackParams, 'MRZScanner'>
 
 const MRZScanner = ({ navigation, route }: Props) => {
-  const devices = useCameraDevices()
-  const device = devices.find(dev => dev.position === 'back')
+  const device = useCameraDevice('back')
   const [isActive, setIsActive] = useState(true)
   const [scanSuccess, setScanSuccess] = useState(false)
   const scanSuccessAux = useRef(false)

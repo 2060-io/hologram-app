@@ -1,15 +1,13 @@
 import { DidCommProofState } from '@credo-ts/didcomm'
 import { StackScreenProps } from '@react-navigation/stack'
-import React, { useEffect, useState } from 'react'
-
-import BaseCredentialPresentation from './BaseCredentialPresentation'
-
 import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
 import { findAllByAssociatedRecordId, updateChatEntryMetadata } from '@src/hooks/agent/chat/services'
 import { useLocalRealm } from '@src/hooks/providers/RealmProvider'
 import { ChatEntry, ChatEntryType, VPResponseMetadata, VPResponsePresentedCredential } from '@src/model'
+import React, { useEffect, useState } from 'react'
+import BaseCredentialPresentation from './BaseCredentialPresentation'
 
-interface Props extends StackScreenProps<NavigationStackParams, 'CredentialPresentation'> {}
+type Props = StackScreenProps<NavigationStackParams, 'CredentialPresentation'>
 
 const CredentialPresentation = ({ navigation, route }: Props) => {
   const {

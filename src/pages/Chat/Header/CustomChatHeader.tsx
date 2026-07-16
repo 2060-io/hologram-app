@@ -1,16 +1,14 @@
 import { StackActions } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
-import React from 'react'
-import { useTranslation } from 'react-i18next'
-import { View, TouchableOpacity } from 'react-native'
-
-import getStyles from './styles'
-
+import { Avatar, ConnectionMainActions, SvgIcon, Text } from '@src/components/common'
 import { ChatStackParams } from '@src/components/Navigation/NavigationProps'
-import { Avatar, Text, SvgIcon, ConnectionMainActions } from '@src/components/common'
 import { useConnectionById } from '@src/hooks/agent'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { ChatThreadData } from '@src/model'
+import React from 'react'
+import { useTranslation } from 'react-i18next'
+import { TouchableOpacity, View } from 'react-native'
+import getStyles from './styles'
 
 interface Props {
   navigation: StackNavigationProp<ChatStackParams, 'Chat', 'stack_navigator_main'>
@@ -42,7 +40,7 @@ const CustomChatHeader: React.FC<Props> = ({
 
   const goBack = () => {
     if (redirectToHomeOnBack) {
-      navigation.dispatch(StackActions.replace('Home'))
+      navigation.dispatch(StackActions.popTo('Home'))
     } else {
       navigation.goBack()
     }
@@ -89,11 +87,7 @@ const CustomChatHeader: React.FC<Props> = ({
           )}
         </TouchableOpacity>
         {connection && (
-          <ConnectionMainActions
-            connectionId={connection.id}
-            navigation={navigation}
-            includeDefaultActions={false}
-          />
+          <ConnectionMainActions connectionId={connection.id} navigation={navigation} includeDefaultActions={false} />
         )}
         {showMenuIcon && (
           <TouchableOpacity onPress={handleShowContextMenu} style={styles.containerIconMenu}>

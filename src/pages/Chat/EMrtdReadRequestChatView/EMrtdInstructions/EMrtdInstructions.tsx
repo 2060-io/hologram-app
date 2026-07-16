@@ -1,13 +1,11 @@
+import { MainButton, SvgIcon, Text } from '@src/components/common'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { widthPercentageToDP } from '@src/utils/responsiveUtils'
 import React from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { TouchableOpacity, View } from 'react-native'
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
-
 import getStyles from './styles'
-
-import { MainButton, SvgIcon, Text } from '@src/components/common'
-import { useTheme } from '@src/hooks/providers/ThemeProvider'
-import { widthPercentageToDP } from '@src/utils/responsiveUtils'
 
 type Props = {
   scan: () => void

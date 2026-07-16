@@ -1,13 +1,11 @@
-import { Skeleton } from 'moti/skeleton'
-import React from 'react'
-import { View, TouchableOpacity, StyleProp, ImageStyle, ViewStyle } from 'react-native'
-
-import getStyles from './styles'
-
 import { Text, UniversalImage } from '@src/components/common'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { sanitizeString } from '@src/services/agent/display'
 import { CredentialAttributeRow } from '@src/services/agent/formatCredentialSubject'
+import { Skeleton } from 'moti/skeleton'
+import React from 'react'
+import { ImageStyle, StyleProp, TouchableOpacity, View, ViewStyle } from 'react-native'
+import getStyles from './styles'
 
 type ImageSectionProps = {
   image: string
@@ -31,13 +29,7 @@ type DetailSectionProps = {
   rightContent?: React.JSX.Element | null
 }
 
-const CredentialAttribute = ({
-  attribute,
-  onPress,
-  onPressDetailImage,
-  style,
-  rightContent,
-}: DetailSectionProps) => {
+const CredentialAttribute = ({ attribute, onPress, onPressDetailImage, style, rightContent }: DetailSectionProps) => {
   const theme = useTheme()
   const styles = getStyles(theme)
   const Wrapper = onPress ? TouchableOpacity : View

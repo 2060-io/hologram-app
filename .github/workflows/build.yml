@@ -15,33 +15,36 @@ jobs:
       UPLOAD_KEY_KEYSTORE_B64: ${{ secrets.UPLOAD_KEY_KEYSTORE_B64 }}
     steps:
       - name: Checkout hologram-app
-        uses: actions/checkout@v4
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4.3.0
 
       - name: Setup Node.js v22
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
         with:
           node-version: 22
           registry-url: 'https://registry.npmjs.org/'
-          cache: yarn
+          cache: pnpm
 
       - name: Cache node_modules
-        uses: actions/cache@v4
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: node_modules
-          key: node-modules-${{ hashFiles('yarn.lock', 'patches/**') }}
+          key: node-modules-${{ hashFiles('pnpm-lock.yaml', 'patches/**') }}
 
       - name: Install Dependencies
         run: |
-          yarn install --immutable
+          pnpm install --frozen-lockfile
 
       - name: Cache Gradle
-        uses: actions/cache@v4
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
             android/.gradle
-          key: gradle-${{ hashFiles('android/**/*.gradle*', 'android/gradle.properties', 'yarn.lock') }}
+          key: gradle-${{ hashFiles('android/**/*.gradle*', 'android/gradle.properties', 'pnpm-lock.yaml') }}
           restore-keys: gradle-
 
       - name: Build Android
@@ -61,34 +64,37 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4.3.0
 
       - name: Setup Node.js v22
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
         with:
           node-version: 22
           registry-url: 'https://registry.npmjs.org/'
-          cache: yarn
+          cache: pnpm
 
       - name: Setup Xcode
-        uses: maxim-lobanov/setup-xcode@v1
+        uses: maxim-lobanov/setup-xcode@ed7a3b1fda3918c0306d1b724322adc0b8cc0a90 # v1.7.0
         with:
-          xcode-version: '26.2.0'
+          xcode-version: '26.3.0'
 
       - name: Cache node_modules
-        uses: actions/cache@v4
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: node_modules
-          key: node-modules-${{ hashFiles('yarn.lock', 'patches/**') }}
+          key: node-modules-${{ hashFiles('pnpm-lock.yaml', 'patches/**') }}
 
       - name: Install Dependencies
-        run: yarn install --immutable
+        run: pnpm install --frozen-lockfile
 
       - name: Install ccache
         run: brew install ccache
 
       - name: Cache ccache
-        uses: actions/cache@v4
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: ~/Library/Caches/ccache
           key: ccache-ios-${{ hashFiles('ios/Podfile.lock') }}
@@ -143,24 +149,24 @@ jobs:
           grep -R "io.2060.mobileagent.dev.share" ~/Library/MobileDevice/Provisioning\ Profiles/ || true
 
       - name: Cache CocoaPods
-        uses: actions/cache@v4
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: |
             ios/Pods
             ~/Library/Caches/CocoaPods
           key: pods-${{ hashFiles('ios/Podfile.lock') }}
-          restore-keys: pods-
 
       - name: Install Pods
         working-directory: ios
         run: |
+          pod update hermes-engine --no-repo-update
           pod install
 
       - name: Cache DerivedData
-        uses: actions/cache@v4
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: ~/Library/Developer/Xcode/DerivedData
-          key: derived-data-${{ hashFiles('ios/Podfile.lock', 'yarn.lock') }}
+          key: derived-data-${{ hashFiles('ios/Podfile.lock', 'pnpm-lock.yaml') }}
 
       - name: Build Archive
         working-directory: ios

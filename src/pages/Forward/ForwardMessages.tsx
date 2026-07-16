@@ -1,12 +1,11 @@
 import { StackScreenProps } from '@react-navigation/stack'
-import React from 'react'
-
 import { ConnectionsSelection } from '@src/components'
 import { ChatStackParams } from '@src/components/Navigation/NavigationProps'
 import { useChatActions } from '@src/hooks'
 import { useChat } from '@src/hooks/agent'
+import React from 'react'
 
-interface Props extends StackScreenProps<ChatStackParams, 'ForwardMessages'> {}
+type Props = StackScreenProps<ChatStackParams, 'ForwardMessages'>
 
 const ForwardMessages = ({ navigation }: Props) => {
   const { forwardSelectedMessages } = useChatActions()

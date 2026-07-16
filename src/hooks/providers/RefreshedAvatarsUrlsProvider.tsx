@@ -24,7 +24,7 @@ export const RefreshedAvatarsUrlsProvider: React.FC<React.PropsWithChildren<Prop
   const [refreshedAvatarsUrlsList, setRefreshedAvatarsUrlsRefreshedList] = useState<string[]>([])
 
   const updateRefreshedAvatarsUrlsList = (avatarUrl: string) => {
-    setRefreshedAvatarsUrlsRefreshedList(prevState => [...prevState, avatarUrl])
+    setRefreshedAvatarsUrlsRefreshedList((prevState) => [...prevState, avatarUrl])
   }
 
   return (

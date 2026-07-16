@@ -1,12 +1,11 @@
 import { StackScreenProps } from '@react-navigation/stack'
-import React, { useCallback } from 'react'
-import { useTranslation } from 'react-i18next'
-
 import { ConnectionsSelection } from '@src/components'
 import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
 import { usePresentCredential } from '@src/hooks'
+import React, { useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 
-interface Props extends StackScreenProps<NavigationStackParams, 'PresentCredential'> {}
+type Props = StackScreenProps<NavigationStackParams, 'PresentCredential'>
 
 const PresentCredential = ({ navigation, route }: Props) => {
   const { credentialRecordId, attributesToPresent } = route.params

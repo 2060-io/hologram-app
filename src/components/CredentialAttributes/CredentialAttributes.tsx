@@ -1,14 +1,11 @@
-import React, { useRef, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { View } from 'react-native'
-
-import CredentialAttribute from '../CredentialAttribute'
-
-import getStyles from './styles'
-
 import { FullScreenImage, Text } from '@src/components/common'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { formatCredentialSubject } from '@src/services/agent/formatCredentialSubject'
+import React, { useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { View } from 'react-native'
+import CredentialAttribute from '../CredentialAttribute'
+import getStyles from './styles'
 
 type Props = {
   attributes: Record<string, unknown>
@@ -42,12 +39,8 @@ const CredentialAttributes = ({ attributes }: Props) => {
             {section.title ?? t('credentialOffer.claims')}
           </Text>
           <View style={styles.sectionRowsContainer}>
-            {section.rows.map(rowDetail => (
-              <CredentialAttribute
-                key={rowDetail.key}
-                attribute={rowDetail}
-                onPressDetailImage={onPressDetailImage}
-              />
+            {section.rows.map((rowDetail) => (
+              <CredentialAttribute key={rowDetail.key} attribute={rowDetail} onPressDetailImage={onPressDetailImage} />
             ))}
           </View>
         </View>

@@ -19,20 +19,23 @@ jobs:
       experimental: ${{ steps.release.outputs.experimental }}
     steps:
       - name: Checkout hologram-app
-        uses: actions/checkout@v4
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
         with:
           fetch-depth: 0
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4.3.0
+
       - name: Setup node v22
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
         with:
           node-version: 22
           registry-url: 'https://registry.npmjs.org/'
-          cache: yarn
+          cache: pnpm
 
       - name: Install dependencies
         run: |
-          yarn install --immutable
+          pnpm install --frozen-lockfile
 
       # Detect if this is an experimental build (manual workflow_dispatch)
       - name: Detect build mode
@@ -48,62 +51,56 @@ jobs:
             echo "experimental=false" >> $GITHUB_OUTPUT
           fi
 
-      - uses: codfish/semantic-release-action@v3
+      - name: Prepare semantic-release config
         if: steps.mode.outputs.experimental == 'false'
-        id: semantic
-        with:
-          branches: |
-            [
-              'release',
-              { 
-                name: 'main',
-                prerelease: 'dev'
-              }
-            ]
-          tag-format: "v${version}"
-          additional-packages: |
-            ['@2060.io/semantic-release-react-native@1.11.0']
-          plugins: |
-            [
+        run: |
+          cat > .releaserc.json <<'EOF'
+          {
+            "branches": [
+              "release",
+              { "name": "main", "prerelease": "dev" }
+            ],
+            "tagFormat": "v${version}",
+            "plugins": [
               [
                 "@semantic-release/commit-analyzer",
                 {
                   "preset": "angular",
                   "releaseRules": [
-                    {
-                      "type": "*!",
-                      "release": "major"
-                    },
-                    {
-                      "type": "refactor",
-                      "release": "patch"
-                    }
+                    { "type": "*!", "release": "major" },
+                    { "type": "refactor", "release": "patch" },
+                    { "type": "build", "release": "patch" }
                   ]
                 }
               ],
               [
                 "@semantic-release/npm",
-                {
-                  "npmPublish": false
-                }
+                { "npmPublish": false }
               ],
               [
                 "semantic-release-react-native",
                 {
                   "versionStrategy": {
-                    "android": {
-                      "buildNumber": "relative",
-                      "preRelease": true
-                    },
-                    "ios": {
-                      "buildNumber": "semantic",
-                      "preRelease": true
-                    }
+                    "android": { "buildNumber": "relative", "preRelease": true },
+                    "ios": { "buildNumber": "semantic", "preRelease": true }
                   }
                 }
               ],
-              "@semantic-release/release-notes-generator",
+              "@semantic-release/release-notes-generator"
             ]
+          }
+          EOF
+
+      - name: Run semantic-release
+        if: steps.mode.outputs.experimental == 'false'
+        id: semantic
+        uses: cycjimmy/semantic-release-action@16ca923e6ccbb50770c415a0ccd43709a8c5f7a4 # v4.2.2
+        with:
+          semantic_version: 23
+          extra_plugins: |
+            semantic-release-react-native@1.9.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # Consolidate outputs regardless of which path was taken
       - name: Consolidate release outputs
@@ -126,14 +123,14 @@ jobs:
             echo "new-release-published=true" >> $GITHUB_OUTPUT
             echo "experimental=true" >> $GITHUB_OUTPUT
           else
-            echo "release-version=${{ steps.semantic.outputs.release-version }}" >> $GITHUB_OUTPUT
-            echo "new-release-published=${{ steps.semantic.outputs.new-release-published }}" >> $GITHUB_OUTPUT
+            echo "release-version=${{ steps.semantic.outputs.new_release_version }}" >> $GITHUB_OUTPUT
+            echo "new-release-published=${{ steps.semantic.outputs.new_release_published }}" >> $GITHUB_OUTPUT
             echo "experimental=false" >> $GITHUB_OUTPUT
           fi
 
       - name: Upload Version files
         if: steps.release.outputs.new-release-published == 'true'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
         with:
           name: version-files
           path: |
@@ -155,37 +152,40 @@ jobs:
       NEW_RELEASE_VERSION: ${{needs.semantic-release.outputs.new-release-version}}
     steps:
       - name: Checkout hologram-app
-        uses: actions/checkout@v4
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4.3.0
 
       - name: Setup node v22
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
         with:
           node-version: 22
           registry-url: 'https://registry.npmjs.org/'
-          cache: yarn
+          cache: pnpm
 
       - name: Cache node_modules
-        uses: actions/cache@v4
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: node_modules
-          key: node-modules-${{ hashFiles('yarn.lock', 'patches/**') }}
+          key: node-modules-${{ hashFiles('pnpm-lock.yaml', 'patches/**') }}
 
       - name: Install dependencies
         run: |
-          yarn install --immutable
+          pnpm install --frozen-lockfile
 
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
         with:
           name: version-files
 
       - name: Cache Gradle
-        uses: actions/cache@v4
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
             android/.gradle
-          key: gradle-${{ hashFiles('android/**/*.gradle*', 'android/gradle.properties', 'yarn.lock') }}
+          key: gradle-${{ hashFiles('android/**/*.gradle*', 'android/gradle.properties', 'pnpm-lock.yaml') }}
           restore-keys: gradle-
 
       - name: Build Android
@@ -196,7 +196,7 @@ jobs:
           ./gradlew assembleDevRelease -PreactNativeArchitectures=arm64-v8a
 
       - name: Setup MinIO client
-        uses: yakubique/setup-minio-cli@v1
+        uses: yakubique/setup-minio-cli@d9826c1ad14228495203415557139d4cf491bed9 # v1
 
       - name: Upload app.apk to MinIO
         run: |
@@ -218,26 +218,34 @@ jobs:
       CERT_P12_PATH: cert.p12
     steps:
       - name: Checkout hologram-app
-        uses: actions/checkout@v4
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+
+      - name: Setup Xcode
+        uses: maxim-lobanov/setup-xcode@ed7a3b1fda3918c0306d1b724322adc0b8cc0a90 # v1.7.0
+        with:
+          xcode-version: '26.3.0'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4.3.0
 
       - name: Setup node v22
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
         with:
           node-version: 22
           registry-url: 'https://registry.npmjs.org/'
-          cache: yarn
+          cache: pnpm
 
       - name: Cache node_modules
-        uses: actions/cache@v4
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: node_modules
-          key: node-modules-${{ hashFiles('yarn.lock', 'patches/**') }}
+          key: node-modules-${{ hashFiles('pnpm-lock.yaml', 'patches/**') }}
 
       - name: Install dependencies
         run: |
-          yarn install --immutable
+          pnpm install --frozen-lockfile
 
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
         with:
           name: version-files
 
@@ -245,7 +253,7 @@ jobs:
         run: brew install ccache
 
       - name: Cache ccache
-        uses: actions/cache@v4
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: ~/Library/Caches/ccache
           key: ccache-ios-${{ hashFiles('ios/Podfile.lock') }}
@@ -293,24 +301,24 @@ jobs:
           cp io.2060.mobileagent.dev.share.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
 
       - name: Cache CocoaPods
-        uses: actions/cache@v4
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: |
             ios/Pods
             ~/Library/Caches/CocoaPods
           key: pods-${{ hashFiles('ios/Podfile.lock') }}
-          restore-keys: pods-
 
       - name: Install Pods
         working-directory: ios
         run: |
+          pod update hermes-engine --no-repo-update
           pod install
 
       - name: Cache DerivedData
-        uses: actions/cache@v4
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: ~/Library/Developer/Xcode/DerivedData
-          key: derived-data-${{ hashFiles('ios/Podfile.lock', 'yarn.lock') }}
+          key: derived-data-${{ hashFiles('ios/Podfile.lock', 'pnpm-lock.yaml') }}
 
       - name: Build Archive
         working-directory: ios
@@ -403,7 +411,7 @@ jobs:
           echo "install.html created successfully."
 
       - name: Setup MinIO client
-        uses: yakubique/setup-minio-cli@v1
+        uses: yakubique/setup-minio-cli@d9826c1ad14228495203415557139d4cf491bed9 # v1
 
       - name: Upload manifest.plist to MinIO
         run: |
@@ -430,7 +438,7 @@ jobs:
       NEW_RELEASE_VERSION: ${{needs.semantic-release.outputs.new-release-version}}
     steps:
       - name: Notify subscribers
-        uses: dawidd6/action-send-mail@v4
+        uses: dawidd6/action-send-mail@611879133a9569642c41be66f4a323286e9b8a3b # v4
         with:
           server_address: smtp.gmail.com
           server_port: 465

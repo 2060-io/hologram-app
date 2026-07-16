@@ -1,15 +1,29 @@
 import {
-  getStorageData,
-  setStorageData,
-  LOGS_ENABLED_PERSIST_KEY,
   DEVELOPER_MODE_ENABLED_PERSIST_KEY,
+  getStorageData,
+  LOGS_ENABLED_PERSIST_KEY,
+  setStorageData,
 } from '@src/services/localStorage'
 
 export interface DevEnvsKeys {
   S3_SERVER_URL: string
-  CLOUD_AGENT_PUBLIC_DID: string
+  MEDIATOR_PUBLIC_DID: string
   INDY_VDR_PROXY_BASE_URL: string
   WEBRTC_SERVER_BASE_URL: string
+  SUPPORTED_DIDCOMM_VERSIONS: string
+}
+
+export type DidCommVersion = 'v1' | 'v2'
+
+export const ALL_DIDCOMM_VERSIONS: DidCommVersion[] = ['v1', 'v2']
+
+export const parseDidcommVersions = (value: string | undefined | null): DidCommVersion[] => {
+  const parsed = (value ?? '')
+    .split(',')
+    .map((v) => v.trim().toLowerCase())
+    .filter((v): v is DidCommVersion => v === 'v1' || v === 'v2')
+  const deduped = ALL_DIDCOMM_VERSIONS.filter((v) => parsed.includes(v))
+  return deduped.length > 0 ? deduped : ['v1']
 }
 
 export type DevEnvsObject = Record<keyof DevEnvsKeys, string>
@@ -21,15 +35,18 @@ export type DevEnv = {
 }
 
 export const devEnvPlaceholder: DevEnvsObject = {
-  CLOUD_AGENT_PUBLIC_DID: 'Cloud Agent Public DID',
+  MEDIATOR_PUBLIC_DID: 'Mediator Public DID',
   S3_SERVER_URL: 'S3 server URL',
   WEBRTC_SERVER_BASE_URL: 'WebRTC server base URL',
   INDY_VDR_PROXY_BASE_URL: 'Indy VDR Proxy base URL',
+  SUPPORTED_DIDCOMM_VERSIONS: 'Supported DIDComm versions',
 }
+
+export const isMultiSelectDevEnv = (key: keyof DevEnvsKeys) => key === 'SUPPORTED_DIDCOMM_VERSIONS'
 
 export const allDevEnvs: DevEnv[] = [
   {
-    key: 'CLOUD_AGENT_PUBLIC_DID',
+    key: 'MEDIATOR_PUBLIC_DID',
     values: ['did:web:ca.dev.2060.io', 'did:web:ca.2060.io'],
   },
   {
@@ -43,6 +60,10 @@ export const allDevEnvs: DevEnv[] = [
   {
     key: 'INDY_VDR_PROXY_BASE_URL',
     values: ['https://indyvdrproxy.ca.dev.2060.io', 'https://indyvdrproxy.ca.2060.io'],
+  },
+  {
+    key: 'SUPPORTED_DIDCOMM_VERSIONS',
+    values: ALL_DIDCOMM_VERSIONS,
   },
 ]
 

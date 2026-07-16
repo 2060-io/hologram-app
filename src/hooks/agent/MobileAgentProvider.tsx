@@ -1,14 +1,12 @@
 import { CacheModuleConfig } from '@credo-ts/core'
-import React, { useState, createContext, useEffect, useContext, useCallback, useRef } from 'react'
-import EIdReader from 'react-native-eid-reader'
-
-import { useNetwork } from '../useNetwork'
-
 import AgentSingleton from '@src/services/AgentSingleton'
 import { isRegistered, MobileAgent } from '@src/services/agent/MobileAgent'
 import { MediatorEventTypes } from '@src/services/transport/MediatorEventTypes'
-import { TunedMobileWsOutboundTransport } from '@src/services/transport/TunedMobileWsOutboundTransport'
+import { MobileWsOutboundTransport } from '@src/services/transport/MobileWsOutboundTransport'
 import { logError, logWarn } from '@src/utils'
+import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
+import EIdReader from 'react-native-eid-reader'
+import { useNetwork } from '../useNetwork'
 
 interface MobileAgentState {
   agent?: MobileAgent
@@ -63,8 +61,8 @@ export const MobileAgentProvider: React.FC<Props> = ({ children }) => {
 
   useEffect(() => {
     if (agent) {
-      const connectedListener = () => handleCloudAgentConnectionUpdate(true)
-      const disconnectedListener = () => handleCloudAgentConnectionUpdate(false)
+      const connectedListener = () => handleMediatorConnectionUpdate(true)
+      const disconnectedListener = () => handleMediatorConnectionUpdate(false)
 
       agent.events.on(MediatorEventTypes.MediatorConnected, connectedListener)
       agent.events.on(MediatorEventTypes.MediatorDisconnected, disconnectedListener)
@@ -77,18 +75,18 @@ export const MobileAgentProvider: React.FC<Props> = ({ children }) => {
   }, [agent])
 
   useEffect(() => {
-    if (!isNetworkConnected) handleCloudAgentConnectionUpdate(false)
+    if (!isNetworkConnected) handleMediatorConnectionUpdate(false)
   }, [isNetworkConnected])
 
-  const handleCloudAgentConnectionUpdate = useCallback(
+  const handleMediatorConnectionUpdate = useCallback(
     (isConnectedToCloudAgent: boolean) => {
       handleChangeAgentState({ isConnectedToCloudAgent: isConnectedToCloudAgent && isNetworkConnected })
     },
-    [isNetworkConnected],
+    [isNetworkConnected]
   )
 
   const handleChangeAgentState = (state: Partial<MobileAgentState>) => {
-    setAgentState(prevState => ({ ...prevState, ...state }))
+    setAgentState((prevState) => ({ ...prevState, ...state }))
   }
 
   const openAndInitMobileAgent = useCallback(async () => {
@@ -114,8 +112,8 @@ export const MobileAgentProvider: React.FC<Props> = ({ children }) => {
       if (defaultMediatorConnection) {
         for (const transport of agent.didcomm.outboundTransports) {
           if (transport.supportedSchemes.includes('ws')) {
-            isConnectedToCloudAgent = (transport as TunedMobileWsOutboundTransport).isConnectedTo(
-              defaultMediatorConnection.id,
+            isConnectedToCloudAgent = (transport as MobileWsOutboundTransport).isConnectedTo(
+              defaultMediatorConnection.id
             )
           }
         }

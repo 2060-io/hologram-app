@@ -1,0 +1,22 @@
+diff --git a/index.js b/index.js
+index 9af8552aca23921d1b468ac8914dcaced2bce431..91302e9299db95aac6c7876ebf491a78ba66858f 100644
+--- a/index.js
++++ b/index.js
+@@ -881,8 +881,6 @@ const utf8Fallback = /* @__PURE__ */ Object.freeze({
+     },
+     decode(str) {
+         astr('utf8', str);
+-        if (!_isWellFormed(str))
+-            throw new TypeError('utf8 expected well-formed string');
+         // Direct Uint8Array writes are much faster than number[] + Uint8Array.from on Hermes and
+         // large Node inputs.
+         const res = new Uint8Array(str.length * 3);
+@@ -938,8 +936,6 @@ export const utf8 = /* @__PURE__ */ (() => {
+         },
+         decode(str) {
+             astr('utf8', str);
+-            if (!_isWellFormed(str))
+-                throw new TypeError('utf8 expected well-formed string');
+             return (_utf8Encoder || (_utf8Encoder = new TextEncoder())).encode(str);
+         },
+     };

@@ -1,15 +1,12 @@
-import React, { useState, memo, useCallback } from 'react'
-import { useTranslation } from 'react-i18next'
-import { View, TouchableOpacity } from 'react-native'
-
-import { Header } from '../components'
-
-import { QuestionAnswerOption, QuestionChatViewProps } from './QuestionChatViewProps'
-import getStyles from './styles'
-
 import { Text } from '@src/components/common'
 import { useChatActions } from '@src/hooks'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import React, { memo, useCallback, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { TouchableOpacity, View } from 'react-native'
+import { Header } from '../components'
+import { QuestionAnswerOption, QuestionChatViewProps } from './QuestionChatViewProps'
+import getStyles from './styles'
 
 const QuestionChatView = ({ question, associatedRecordId }: QuestionChatViewProps) => {
   const [optionSelected, setOptionSelected] = useState<string | undefined>(question.response)
@@ -30,7 +27,7 @@ const QuestionChatView = ({ question, associatedRecordId }: QuestionChatViewProp
       <View style={styles.containerMain}>
         <Text style={styles.description}>{question?.text}</Text>
         <View style={styles.containerOptions}>
-          {options.map(option => (
+          {options.map((option) => (
             <TouchableOpacity
               key={option.text}
               activeOpacity={0.6}

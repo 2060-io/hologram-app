@@ -1,5 +1,5 @@
-import { GetUserProfileDataReturnType, DidCommUserProfileData } from '@2060.io/credo-ts-didcomm-user-profile'
-import React, { createContext, useState, useEffect, useContext, useCallback } from 'react'
+import { DidCommUserProfileData, GetUserProfileDataReturnType } from '@2060.io/credo-ts-didcomm-user-profile'
+import React, { createContext, useCallback, useContext, useEffect, useState } from 'react'
 
 import { useMobileAgent } from './MobileAgentProvider'
 
@@ -42,10 +42,8 @@ export const UserProfileProvider: React.FC<Props> = ({ children }) => {
       const userProfileData = await agent?.modules.profile.updateUserProfileData(data)
       setUserProfileState({ userProfileData })
     },
-    [agent],
+    [agent]
   )
 
-  return (
-    <UserProfileContext value={{ ...userProfileState, updateUserProfileData }}>{children}</UserProfileContext>
-  )
+  return <UserProfileContext value={{ ...userProfileState, updateUserProfileData }}>{children}</UserProfileContext>
 }

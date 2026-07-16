@@ -1,30 +1,29 @@
-import axios from 'axios'
-import {
-  OrientationLock,
-  lockAsync as setScreenOrientation,
-  unlockAsync as resetScreenOrientation,
-} from 'expo-screen-orientation'
-import { Device, types } from 'mediasoup-client'
-import { WebSocketTransport, Peer } from 'protoo-client'
-import { useEffect, useState, useRef, useCallback } from 'react'
-import { useTranslation } from 'react-i18next'
-import InCallManager from 'react-native-incall-manager'
-import { MediaStream, mediaDevices, registerGlobals } from 'react-native-webrtc'
-
 import { AgentActionType, useAgentActionQueue, useMobileAgent } from '@src/hooks/agent'
 import { CreateCallOfferParameters, HangupCallParameters } from '@src/hooks/agent/actions/types'
 import { findAllDidcommThreadId, updateChatEntryMetadata } from '@src/hooks/agent/chat/services'
 import { useConfig } from '@src/hooks/providers/ConfigProvider'
 import { useLocalRealm } from '@src/hooks/providers/RealmProvider'
 import {
-  ConnectionStatus,
   CallStatus,
-  useVideoCallContext,
+  ConnectionStatus,
   isIncomingCallInfo,
+  useVideoCallContext,
 } from '@src/hooks/providers/useVideoCallContext'
 import { CallOfferMetadata, CallOfferState, ChatEntryType } from '@src/model'
 import { log, logError } from '@src/utils'
 import { getAppCheckHeaders } from '@src/utils/firebaseUtils'
+import axios from 'axios'
+import {
+  OrientationLock,
+  unlockAsync as resetScreenOrientation,
+  lockAsync as setScreenOrientation,
+} from 'expo-screen-orientation'
+import { Device, types } from 'mediasoup-client'
+import { Peer, WebSocketTransport } from 'protoo-client'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import InCallManager from 'react-native-incall-manager'
+import { MediaStream, mediaDevices, registerGlobals } from 'react-native-webrtc'
 
 function generatePeerId(length = 8) {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
@@ -153,9 +152,7 @@ export const useVideoCall = () => {
       try {
         setScreenOrientation(OrientationLock.PORTRAIT_UP)
         InCallManager.start({ media: isVideoCall ? 'video' : 'audio' })
-        const callInfo = incomingCallInfo
-          ? incomingCallInfo
-          : await createRoom(devEnvs.WEBRTC_SERVER_BASE_URL)
+        const callInfo = incomingCallInfo ? incomingCallInfo : await createRoom(devEnvs.WEBRTC_SERVER_BASE_URL)
         roomId.current = callInfo.roomId
         peerId.current = callInfo.peerId ?? generatePeerId()
         const socketUrl = `${callInfo.wsUrl}/?roomId=${roomId.current}&peerId=${peerId.current}`
@@ -221,10 +218,10 @@ export const useVideoCall = () => {
           cleanObjects()
           updateCallStatus({ status: CallStatus.Disconnected, statusMessage: 'Disconnected' })
         })
-        peer.current.on('failed', retryNumber => {
+        peer.current.on('failed', (retryNumber) => {
           log('Socket connection failed', retryNumber, new Date().toLocaleTimeString())
         })
-        peer.current.on('notification', notification => {
+        peer.current.on('notification', (notification) => {
           switch (notification.method) {
             case 'peerLeft': {
               log('other peer left call', notification.data)
@@ -336,7 +333,7 @@ export const useVideoCall = () => {
   }, [isMicrophoneOn])
 
   const handleCameraSwitched = () => {
-    handleCamera(async newIsCameraOn => {
+    handleCamera(async (newIsCameraOn) => {
       if (newIsCameraOn) {
         await startToProduceVideo()
       } else {
@@ -350,7 +347,7 @@ export const useVideoCall = () => {
       const request = isMicrophoneOnRef.current ? 'resumeProducer' : 'pauseProducer'
       peer.current?.request(request, { producerId: micProducer.current?.id })
     }
-    localAudioStreamRef.current?.getAudioTracks().forEach(audioTrack => {
+    localAudioStreamRef.current?.getAudioTracks().forEach((audioTrack) => {
       audioTrack.enabled = isMicrophoneOnRef.current
     })
   }
@@ -363,7 +360,7 @@ export const useVideoCall = () => {
 
       // Remove video orientation extension due to incompatibilities with pymediasoup and other clients
       routerRtpCapabilities.current.headerExtensions = routerRtpCapabilities.current.headerExtensions?.filter(
-        ext => ext.uri !== 'urn:3gpp:video-orientation',
+        (ext) => ext.uri !== 'urn:3gpp:video-orientation'
       )
       await device.current.load({
         routerRtpCapabilities: routerRtpCapabilities.current,
@@ -421,7 +418,7 @@ export const useVideoCall = () => {
             // Something was wrong in server side.
             errback(new Error(`${error}`))
           }
-        },
+        }
       )
     } catch (error) {
       logError('Error creating send transport:', error)
@@ -519,7 +516,7 @@ export const useVideoCall = () => {
   const handleSwitchCamera = () => {
     facingMode.current = facingMode.current === 'environment' ? 'user' : 'environment'
     const constraints = { facingMode: facingMode.current }
-    localVideoStream?.getVideoTracks().forEach(videoTrack => {
+    localVideoStream?.getVideoTracks().forEach((videoTrack) => {
       videoTrack.applyConstraints(constraints)
     })
   }

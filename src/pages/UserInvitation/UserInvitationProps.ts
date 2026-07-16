@@ -9,8 +9,7 @@ export type Invitation = {
   displayName: string
 }
 
-export interface WrapperUserInvitationProps
-  extends StackScreenProps<NavigationStackParams, 'UserInvitation'> {}
+export type WrapperUserInvitationProps = StackScreenProps<NavigationStackParams, 'UserInvitation'>
 
 export interface UserInvitationProps extends StackScreenProps<NavigationStackParams> {
   invitation: Invitation

@@ -1,14 +1,11 @@
-import React, { memo, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { View, LayoutChangeEvent, TextInputProps } from 'react-native'
-
-import { MESSAGE_INPUT_INITIAL_HEIGHT } from '../InputToolbarView/styles'
-
-import getStyles from './styles'
-
 import { TextInput } from '@src/components/common'
 import { TextInputForwardRefProps } from '@src/components/common/TextInput'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import React, { memo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { LayoutChangeEvent, TextInputProps, View } from 'react-native'
+import { MESSAGE_INPUT_INITIAL_HEIGHT } from '../InputToolbarView/styles'
+import getStyles from './styles'
 
 interface Props {
   isRepliedMessage: boolean
@@ -34,7 +31,7 @@ const ComposerInput: React.FC<Props> = ({
 
   const onLayout = (e: LayoutChangeEvent) => {
     const newPadding = e.nativeEvent.layout.height > MESSAGE_INPUT_INITIAL_HEIGHT ? 4 : 0
-    newPadding !== paddingVertical && setPadding(newPadding)
+    if (newPadding !== paddingVertical) setPadding(newPadding)
   }
 
   return (

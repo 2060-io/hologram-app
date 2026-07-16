@@ -1,0 +1,92 @@
+diff --git a/build/DidCommDispatcher.mjs b/build/DidCommDispatcher.mjs
+index 0b0ca933a13387a2fc7210b8888eeb82334ff67f..d25a26e5375bc4cc296a8eecd73e8f9e18bbbabc 100644
+--- a/build/DidCommDispatcher.mjs
++++ b/build/DidCommDispatcher.mjs
+@@ -29,6 +29,15 @@ let DidCommDispatcher = class DidCommDispatcher {
+ 			if (!messageHandler) throw new DidCommProblemReportError(`Error handling message ${inboundMessageContext.message.id} with type ${inboundMessageContext.message.type}. The message type is not supported`, { problemCode: DidCommProblemReportReason.MessageParseFailure });
+ 			const outboundMessage = await messageHandler.handle(inboundMessageContext);
+ 			if (outboundMessage) inboundMessageContext.setResponseMessage(outboundMessage);
++			this.eventEmitter.emit(inboundMessageContext.agentContext, {
++				type: DidCommEventTypes.DidCommMessageProcessed,
++				payload: {
++					message: inboundMessageContext.message,
++					connection: inboundMessageContext.connection,
++					receivedAt: inboundMessageContext.receivedAt,
++					encryptedMessage: inboundMessageContext.encryptedMessage
++				}
++			});
+ 			await next();
+ 		};
+ 		this.messageSender = messageSender;
+@@ -73,15 +82,6 @@ let DidCommDispatcher = class DidCommDispatcher {
+ 			if (!outboundMessage.inboundMessageContext) outboundMessage.inboundMessageContext = messageContext;
+ 			await this.messageSender.sendMessage(outboundMessage);
+ 		}
+-		this.eventEmitter.emit(agentContext, {
+-			type: DidCommEventTypes.DidCommMessageProcessed,
+-			payload: {
+-				message,
+-				connection,
+-				receivedAt: messageContext.receivedAt,
+-				encryptedMessage
+-			}
+-		});
+ 	}
+ };
+ DidCommDispatcher = __decorate([
+diff --git a/build/modules/routing/DidCommMediationRecipientApi.mjs b/build/modules/routing/DidCommMediationRecipientApi.mjs
+index 5951809330db6a77156f33c2237e219f069eb69d..98f75c0987226006a6836486082daaed9b0fd785 100644
+--- a/build/modules/routing/DidCommMediationRecipientApi.mjs
++++ b/build/modules/routing/DidCommMediationRecipientApi.mjs
+@@ -128,6 +128,10 @@ let DidCommMediationRecipientApi = class DidCommMediationRecipientApi {
+ 					} else await this.initiateImplicitMode(mediator);
+ 				} catch (error) {
+ 					this.logger.warn("Unable to re-open websocket connection to mediator", { error });
++					const wsTransport = this.agentContext.dependencyManager.resolve(DidCommModuleConfig).outboundTransports.find((t) => t.supportedSchemes?.includes("ws"));
++					if (wsTransport && typeof wsTransport.closeSocketByConnectionId === "function") {
++						wsTransport.closeSocketByConnectionId(mediator.connectionId);
++					}
+ 				}
+ 			},
+ 			complete: () => this.logger.info(`Stopping pickup of messages from mediator '${mediator.id}'`)
+@@ -184,6 +188,7 @@ let DidCommMediationRecipientApi = class DidCommMediationRecipientApi {
+ 			case DidCommMediatorPickupStrategy.PickUpV2LiveMode:
+ 				this.logger.info(`Starting Live Mode pickup of messages from mediator '${mediatorRecord.id}'`);
+ 				await this.monitorMediatorWebSocketEvents(mediatorRecord, mediatorPickupStrategy);
++				try {
+ 				await this.messagePickupApi.pickupMessages({
+ 					connectionId: mediatorConnection.id,
+ 					protocolVersion: "v2",
+@@ -194,10 +199,18 @@ let DidCommMediationRecipientApi = class DidCommMediationRecipientApi {
+ 					liveDelivery: true,
+ 					protocolVersion: "v2"
+ 				});
++				} catch (error) {
++					this.logger.warn("Unable to set live delivery mode for mediator", { error });
++					const wsTransport = this.agentContext.dependencyManager.resolve(DidCommModuleConfig).outboundTransports.find((t) => t.supportedSchemes?.includes("ws"));
++					if (wsTransport && typeof wsTransport.closeSocketByConnectionId === "function") {
++						wsTransport.closeSocketByConnectionId(mediatorConnection.id);
++					}
++				}
+ 				break;
+ 			case DidCommMediatorPickupStrategy.PickUpV4LiveMode:
+ 				this.logger.info(`Starting Live Mode pickup of messages from mediator '${mediatorRecord.id}' using v4`);
+ 				await this.monitorMediatorWebSocketEvents(mediatorRecord, mediatorPickupStrategy);
++				try {
+ 				await this.messagePickupApi.pickupMessages({
+ 					connectionId: mediatorConnection.id,
+ 					protocolVersion: "v4",
+@@ -208,6 +221,13 @@ let DidCommMediationRecipientApi = class DidCommMediationRecipientApi {
+ 					liveDelivery: true,
+ 					protocolVersion: "v4"
+ 				});
++				} catch (error) {
++					this.logger.warn("Unable to set live delivery mode for mediator", { error });
++					const wsTransport = this.agentContext.dependencyManager.resolve(DidCommModuleConfig).outboundTransports.find((t) => t.supportedSchemes?.includes("ws"));
++					if (wsTransport && typeof wsTransport.closeSocketByConnectionId === "function") {
++						wsTransport.closeSocketByConnectionId(mediatorConnection.id);
++					}
++				}
+ 				break;
+ 			case DidCommMediatorPickupStrategy.Implicit:
+ 				this.logger.info(`Starting implicit pickup of messages from mediator '${mediatorRecord.id}'`);

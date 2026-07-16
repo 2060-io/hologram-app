@@ -5,13 +5,13 @@ import android.content.Intent
 import android.net.Uri
 import com.facebook.react.bridge.ActivityEventListener
 import com.facebook.react.bridge.Arguments
-import com.facebook.react.bridge.BridgeReactContext
 import com.facebook.react.bridge.Callback
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContext
 import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.module.annotations.ReactModule
+import com.facebook.react.modules.core.DeviceEventManagerModule
 
 
 @ReactModule(name = ShareMenuModule.NAME)
@@ -107,12 +107,12 @@ class ShareMenuModule(reactContext: ReactApplicationContext?) : NativeShareMenuS
   }
 
   private fun dispatchEvent(shared: ReadableMap?) {
-    if (mReactContext == null || !mReactContext.hasActiveCatalystInstance()) {
+    if (mReactContext == null || !mReactContext.hasActiveReactInstance()) {
       return
     }
 
     mReactContext
-      .getJSModule(BridgeReactContext.RCTDeviceEventEmitter::class.java)
+      .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
       .emit(NEW_SHARE_EVENT, shared)
   }
 
@@ -149,6 +149,14 @@ class ShareMenuModule(reactContext: ReactApplicationContext?) : NativeShareMenuS
 
     // Update intent in case the user calls `getSharedText` again
     currentActivity.intent = intent
+  }
+
+  override fun addListener(eventName: String?) {
+    // No-op: event registration managed by JS NativeEventEmitter
+  }
+
+  override fun removeListeners(count: Double) {
+    // No-op
   }
 
   companion object {

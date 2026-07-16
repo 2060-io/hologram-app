@@ -1,11 +1,8 @@
-import React from 'react'
-import { View, ActivityIndicator } from 'react-native'
-
-import Text from '../Text'
-
-import getStyles from './styles'
-
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import React from 'react'
+import { ActivityIndicator, View } from 'react-native'
+import Text from '../Text'
+import getStyles from './styles'
 
 type LoaderProps = {
   message?: string

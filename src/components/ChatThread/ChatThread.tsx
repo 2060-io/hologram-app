@@ -1,16 +1,13 @@
-import React, { memo } from 'react'
-import { useTranslation } from 'react-i18next'
-import { View, TouchableOpacity } from 'react-native'
-
-import Avatar from '../common/Avatar'
-
-import getStyles from './styles'
-
-import { Text, MessageStateIcon, SvgIcon } from '@src/components/common'
+import { MessageStateIcon, SvgIcon, Text } from '@src/components/common'
 import { useConnectionById } from '@src/hooks/agent'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { ChatEntryState, ChatThreadData } from '@src/model'
 import { chatDateFormat } from '@src/utils/dateUtils'
+import React, { memo } from 'react'
+import { useTranslation } from 'react-i18next'
+import { TouchableOpacity, View } from 'react-native'
+import Avatar from '../common/Avatar'
+import getStyles from './styles'
 
 interface Props extends ChatThreadData {
   using24HourFormat: boolean

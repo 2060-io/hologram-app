@@ -1,16 +1,14 @@
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { ChatEntryRole, ChatEntryState } from '@src/model'
+import { FloatingChatMessageProps } from '@src/pages/Chat/ChatMessage/Props'
 import React, { memo } from 'react'
 import { View } from 'react-native'
-
 import BaseCustomView from './BaseCustomView'
 import Reactions from './Reactions'
 import getStyles, { REACTIONS_MARGIN_BOTTOM } from './styles'
 import { ROUND_BORDER } from './utils'
 
-import { useTheme } from '@src/hooks/providers/ThemeProvider'
-import { ChatEntryRole, ChatEntryState } from '@src/model'
-import { FloatingChatMessageProps } from '@src/pages/Chat/ChatMessage/Props'
-
-const FloatingChatMessage: React.FC<FloatingChatMessageProps> = memo(props => {
+const FloatingChatMessage: React.FC<FloatingChatMessageProps> = memo((props) => {
   const theme = useTheme()
   const styles = getStyles(theme)
   const chatEntry = props.currentMessage
@@ -22,10 +20,7 @@ const FloatingChatMessage: React.FC<FloatingChatMessageProps> = memo(props => {
 
   return (
     <View style={[styles.floatingMessageContainer, props.style, { marginBottom: containerMarginBottom }]}>
-      <View
-        style={[styles.subContainer, styles[`${position}SubContainer`], { ...borders }]}
-        pointerEvents="none"
-      >
+      <View style={[styles.subContainer, styles[`${position}SubContainer`], { ...borders }]} pointerEvents="none">
         <BaseCustomView {...props} borders={borders} />
       </View>
       {!!chatEntry.reactions.length && chatEntry.state !== ChatEntryState.Deleted && (

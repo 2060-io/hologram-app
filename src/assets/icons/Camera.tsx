@@ -1,7 +1,7 @@
 import React from 'react'
-import Svg, { Path, Circle, SvgProps } from 'react-native-svg'
+import Svg, { Circle, Path, SvgProps } from 'react-native-svg'
 
-const Camera: React.FC<SvgProps> = props => (
+const Camera: React.FC<SvgProps> = (props) => (
   <Svg width={24} height={24} viewBox="0 0 24 24" {...props}>
     <Path data-name="Path 360" d="M0 0h24v24H0Z" fill="none" />
     <Circle data-name="Ellipse 35" cx={3} cy={3} r={3} transform="translate(9 9)" fill={props.fill} />

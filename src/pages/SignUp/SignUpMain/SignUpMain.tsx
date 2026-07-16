@@ -1,19 +1,16 @@
 import { StackActions } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
+import AppLogo from '@src/assets/icons/AppLogo'
+import { SvgIcon, Text } from '@src/components/common'
+import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
+import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, TouchableOpacity } from 'react-native'
-
+import { TouchableOpacity, View } from 'react-native'
 import { version } from '../../../../package.json'
-
 import getStyles from './styles'
 
-import AppLogo from '@src/assets/icons/AppLogo'
-import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
-import { Text, SvgIcon } from '@src/components/common'
-import { useTheme } from '@src/hooks/providers/ThemeProvider'
-
-interface Props extends StackScreenProps<NavigationStackParams, 'Home'> {}
+type Props = StackScreenProps<NavigationStackParams, 'Home'>
 
 const SignUpMain = ({ navigation }: Props) => {
   const { t } = useTranslation()
