@@ -106,15 +106,24 @@ jobs:
           ./gradlew assembleProdRelease
           ./gradlew bundleProdRelease
 
+      - name: Decode Google Play service account
+        env:
+          GOOGLE_SERVICE_ACCOUNT_JSON_B64: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON_B64 }}
+        run: |
+          echo "$GOOGLE_SERVICE_ACCOUNT_JSON_B64" | base64 --decode > play-service-account.json
+
       - name: Upload Android App Bundle to Google Play Store
-        id: upload_aab
-        uses: KevinRohn/github-action-upload-play-store@6c133652de87baa74d9826a480a5bc869c6f60e8 # v1.0.1
+        uses: r0adkll/upload-google-play@e738b9dd8f2476ea806d921b64aacd24f34515a5 # v1.1.5
         with:
-          service_account_json: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON_B64 }}
-          package_name: "io.twentysixty.mobileagent.m"
-          aab_file_path: "./android/app/build/outputs/bundle/prodRelease/app-prod-release.aab"
-          track: "internal"
-          release_status: "draft"
+          serviceAccountJson: play-service-account.json
+          packageName: "io.twentysixty.mobileagent.m"
+          releaseFiles: "./android/app/build/outputs/bundle/prodRelease/app-prod-release.aab"
+          tracks: "internal"
+          status: "draft"
+
+      - name: Clean up Google Play service account
+        if: ${{ always() }}
+        run: rm -f play-service-account.json
 
   build-ios:
     runs-on: macos-latest
