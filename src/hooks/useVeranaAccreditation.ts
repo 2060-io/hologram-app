@@ -52,7 +52,13 @@ const useAccreditation = (options: {
     let cancelled = false
 
     const check = async () => {
-      if (!agent || !did) return
+      // No DID means there is nothing to ask the registry about, which is could-not-determine and
+      // must not leave the gate stuck closed. A missing agent is still start-up, so it stays closed.
+      if (!did) {
+        setIsChecking(false)
+        return
+      }
+      if (!agent) return
       setIsChecking(true)
       try {
         const anonCredsId = await options.resolveAnonCredsId(agent)
