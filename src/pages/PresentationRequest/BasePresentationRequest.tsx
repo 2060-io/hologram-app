@@ -6,7 +6,7 @@ import VeranaTrustCard, { VeranaTrustAsk } from '@src/components/common/VeranaTr
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { ServiceInfo } from '@src/model'
 import { FormattedSubmission } from '@src/services/agent/formatPresentation'
-import { isVeranaActionBlocked, veranaTrustStatusOf } from '@src/services/verana'
+import { isVeranaActionBlocked, isVeranaResolutionPending, veranaTrustStatusOf } from '@src/services/verana'
 import { screenHeight } from '@src/utils/responsiveUtils'
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -54,7 +54,7 @@ const BasePresentationRequest: React.FC<Props> = ({
   const hasCompatibleCredentials = submission.entries.some((entry) => entry.credentials.length > 0)
   const trustBlocked = isVeranaActionBlocked({
     trustStatus: veranaTrustStatusOf(serviceInfo ?? undefined, failedFetchInfo),
-    isResolving: Boolean(isFetchingInfo),
+    isResolving: isVeranaResolutionPending({ did: serviceInfo?.did, serviceInfo, isFetchingInfo, failedFetchInfo }),
     isCheckingPermission: ask?.isChecking,
     permissionGranted: ask?.accreditation?.granted,
   })

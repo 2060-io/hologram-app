@@ -56,6 +56,22 @@ export function veranaTrustStatusOf(
   return serviceInfo.trustStatus
 }
 
+/**
+ * The pending flag only rises once the transition starts, so a DID with no answer and no failure
+ * yet is still in flight. Without this the consent screen shows Accept for a frame before the
+ * resolver has been asked anything.
+ */
+export function isVeranaResolutionPending(input: {
+  did?: string
+  serviceInfo?: unknown
+  isFetchingInfo?: boolean
+  failedFetchInfo?: boolean
+}): boolean {
+  if (input.isFetchingInfo) return true
+  if (!input.did) return false
+  return !input.failedFetchInfo && input.serviceInfo === undefined
+}
+
 export type VeranaGateInput = {
   trustStatus: VeranaTrustStatus
   isResolving: boolean

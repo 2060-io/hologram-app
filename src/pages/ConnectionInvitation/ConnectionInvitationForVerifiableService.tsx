@@ -3,7 +3,7 @@ import { useUserProfile } from '@src/hooks/agent'
 import { useFetchServiceInfo } from '@src/hooks/useFetchServiceInfo'
 import { useValidateKidAgeRestrictions } from '@src/hooks/useValidateKidAgeRestrictions'
 import { ServiceInfo, ServiceStatus, UNVERIFIED_SERVICE_STATUS } from '@src/model'
-import { isVeranaActionBlocked, veranaTrustStatusOf } from '@src/services/verana'
+import { isVeranaActionBlocked, isVeranaResolutionPending, veranaTrustStatusOf } from '@src/services/verana'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { View } from 'react-native'
 import BaseConnectionInvitation, { ConnectionInvitationProps } from './BaseConnectionInvitation'
@@ -33,7 +33,7 @@ const ConnectionInvitationForVerifiableService = (props: ConnectionInvitationPro
   const userName = userProfileData?.displayName
   const trustBlocked = isVeranaActionBlocked({
     trustStatus: veranaTrustStatusOf(serviceInfo, failedFetchInfo),
-    isResolving: isFetchingInfo,
+    isResolving: isVeranaResolutionPending({ did, serviceInfo, isFetchingInfo, failedFetchInfo }),
   })
 
   useEffect(() => {

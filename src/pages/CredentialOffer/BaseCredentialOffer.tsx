@@ -8,7 +8,7 @@ import { useFetchServiceInfo } from '@src/hooks/useFetchServiceInfo'
 import { useVeranaIssuerAccreditation } from '@src/hooks/useVeranaAccreditation'
 import { ServiceInfo, UNVERIFIED_SERVICE_STATUS } from '@src/model'
 import { CredentialDetailsForDisplay } from '@src/services/agent/display'
-import { isVeranaActionBlocked, veranaTrustStatusOf } from '@src/services/verana'
+import { isVeranaActionBlocked, isVeranaResolutionPending, veranaTrustStatusOf } from '@src/services/verana'
 import React, { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ScrollView, TouchableOpacity, View } from 'react-native'
@@ -52,7 +52,7 @@ const BaseCredentialOffer: React.FC<Props> = ({
 
   const trustBlocked = isVeranaActionBlocked({
     trustStatus: veranaTrustStatusOf(serviceInfo, failedFetchInfo),
-    isResolving: isFetchingInfo,
+    isResolving: isVeranaResolutionPending({ did, serviceInfo, isFetchingInfo, failedFetchInfo }),
     isCheckingPermission: isChecking,
     permissionGranted: accreditation?.granted,
   })

@@ -5,6 +5,7 @@ import {
   deriveVeranaTrustStatus,
   describeVeranaVerdict,
   isVeranaActionBlocked,
+  isVeranaResolutionPending,
 } from './veranaTrust.ts'
 
 describe('deriveVeranaTrustStatus', () => {
@@ -141,5 +142,28 @@ describe('areClaimsRegistryVerified', () => {
   it('refuses invalid and a missing outcome', () => {
     assert.equal(areClaimsRegistryVerified('invalid'), false)
     assert.equal(areClaimsRegistryVerified(undefined), false)
+  })
+})
+
+describe('isVeranaResolutionPending', () => {
+  it('is pending while the transition runs', () => {
+    assert.equal(isVeranaResolutionPending({ did: 'did:webvh:x', isFetchingInfo: true }), true)
+  })
+
+  it('is pending before the resolver has been asked, when the flag has not risen yet', () => {
+    assert.equal(isVeranaResolutionPending({ did: 'did:webvh:x' }), true)
+  })
+
+  it('settles once an answer arrives', () => {
+    assert.equal(isVeranaResolutionPending({ did: 'did:webvh:x', serviceInfo: {} }), false)
+  })
+
+  it('settles on a failure, which is could-not-determine rather than in flight', () => {
+    assert.equal(isVeranaResolutionPending({ did: 'did:webvh:x', failedFetchInfo: true }), false)
+  })
+
+  it('is never pending when there is no DID to resolve', () => {
+    assert.equal(isVeranaResolutionPending({}), false)
+    assert.equal(isVeranaResolutionPending({ did: '' }), false)
   })
 })
