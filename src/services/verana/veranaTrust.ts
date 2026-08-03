@@ -1,0 +1,53 @@
+export type VeranaTrustStatus = 'TRUSTED' | 'PARTIAL' | 'UNTRUSTED' | 'UNVERIFIED'
+
+export type VeranaTrustEvidence = {
+  resolved: boolean
+  hasServiceCredential: boolean
+  hasOrganizationCredential: boolean
+  structurallyValid?: boolean
+}
+
+/**
+ * UNVERIFIED is wallet-local: verre's four outcomes cannot tell a resolver that could not be
+ * reached from a counterparty the registry genuinely refuses, and only the second is an accusation.
+ */
+export function deriveVeranaTrustStatus(evidence: VeranaTrustEvidence): VeranaTrustStatus {
+  if (!evidence.resolved) return 'UNVERIFIED'
+  if (evidence.hasServiceCredential && evidence.hasOrganizationCredential) return 'TRUSTED'
+  if (evidence.hasServiceCredential || evidence.hasOrganizationCredential) return 'PARTIAL'
+  return 'UNTRUSTED'
+}
+
+export function describeVeranaVerdict(status: VeranaTrustStatus, evidence: VeranaTrustEvidence): string {
+  if (status === 'UNVERIFIED') {
+    return 'The Verana resolver could not be reached. This counterparty is neither trusted nor untrusted.'
+  }
+  if (status === 'TRUSTED') {
+    return 'Both identity credentials verified against the Verana public registry'
+  }
+  if (status === 'PARTIAL') {
+    return evidence.hasServiceCredential
+      ? 'The service credential verified. Nothing verifies who operates it.'
+      : 'The operator credential verified. Nothing verifies the service itself.'
+  }
+  return evidence.structurallyValid
+    ? 'The Verana public registry does not vouch for this service.'
+    : 'Neither identity credential verified. This counterparty cannot present verifiable trust credentials.'
+}
+
+export type VeranaGateInput = {
+  trustStatus: VeranaTrustStatus
+  isResolving: boolean
+  permissionGranted?: boolean
+  isCheckingPermission?: boolean
+}
+
+/**
+ * Blocks on a refusal and while a check is still running, never on could-not-determine:
+ * an unreachable registry is a warning, and refusing on it would punish a flaky network.
+ */
+export function isVeranaActionBlocked(input: VeranaGateInput): boolean {
+  if (input.isResolving || input.isCheckingPermission) return true
+  if (input.trustStatus === 'UNTRUSTED') return true
+  return input.permissionGranted === false
+}
