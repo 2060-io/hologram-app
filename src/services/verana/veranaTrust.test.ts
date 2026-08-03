@@ -1,6 +1,11 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
-import { deriveVeranaTrustStatus, describeVeranaVerdict, isVeranaActionBlocked } from './veranaTrust.ts'
+import {
+  areClaimsRegistryVerified,
+  deriveVeranaTrustStatus,
+  describeVeranaVerdict,
+  isVeranaActionBlocked,
+} from './veranaTrust.ts'
 
 describe('deriveVeranaTrustStatus', () => {
   it('is TRUSTED only when both identity credentials verified', () => {
@@ -120,5 +125,21 @@ describe('isVeranaActionBlocked', () => {
 
   it('allows PARTIAL, which is a warning rather than a refusal', () => {
     assert.equal(isVeranaActionBlocked({ trustStatus: 'PARTIAL', isResolving: false }), false)
+  })
+})
+
+describe('areClaimsRegistryVerified', () => {
+  it('accepts a schema anchored in a configured registry, production or test', () => {
+    assert.equal(areClaimsRegistryVerified('verified'), true)
+    assert.equal(areClaimsRegistryVerified('verified-test'), true)
+  })
+
+  it('refuses not-trusted, which is what a self-issued ECS credential resolves to', () => {
+    assert.equal(areClaimsRegistryVerified('not-trusted'), false)
+  })
+
+  it('refuses invalid and a missing outcome', () => {
+    assert.equal(areClaimsRegistryVerified('invalid'), false)
+    assert.equal(areClaimsRegistryVerified(undefined), false)
   })
 })

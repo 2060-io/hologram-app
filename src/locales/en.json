@@ -574,7 +574,8 @@
       "intact": "intact",
       "noDigest": "no digest",
       "openInVerana": "Open this DID in Verana",
-      "demoNetwork": "Demo network - do not share real data"
+      "demoNetwork": "Demo network - do not share real data",
+      "claimsSelfIssued": "Issued by this service to itself, so nothing independent verifies it."
     }
   }
 }

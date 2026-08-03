@@ -3,7 +3,7 @@ import { log, logError } from '@src/utils'
 import { ECS, IOrg, IService, resolveDID, TrustResolutionOutcome } from '@verana-labs/verre'
 import { Resolver } from 'did-resolver'
 import { MobileAgent } from './agent'
-import { deriveVeranaTrustStatus, veranaRegistries } from './verana'
+import { areClaimsRegistryVerified, deriveVeranaTrustStatus, veranaRegistries } from './verana'
 
 function getCredoTsDidResolver(agent: MobileAgent): Resolver {
   return new Resolver(
@@ -61,10 +61,11 @@ export async function getServiceInfo(options: { agent: MobileAgent; did: string 
     trustResolution.serviceProvider?.schemaType === ECS.ORG ? (trustResolution.serviceProvider as IOrg) : undefined
 
   const status = trustResolution.outcome
+  const claimsVerified = areClaimsRegistryVerified(status)
   const trustStatus = deriveVeranaTrustStatus({
     resolved: true,
-    hasServiceCredential: service !== undefined,
-    hasOrganizationCredential: organization !== undefined,
+    hasServiceCredential: claimsVerified && service !== undefined,
+    hasOrganizationCredential: claimsVerified && organization !== undefined,
     structurallyValid: status !== TrustResolutionOutcome.INVALID,
   })
 
@@ -75,6 +76,8 @@ export async function getServiceInfo(options: { agent: MobileAgent; did: string 
     name: service?.name ?? '',
     status,
     trustStatus,
+    claimsVerified,
+    claimsSelfIssued: service !== undefined && service.issuer === trustResolution.didDocument.id,
     dataPrivacyUrl: service?.privacyPolicy,
     dataPrivacyDigestSri: service?.privacyPolicyDigestSri,
     description: service?.description,

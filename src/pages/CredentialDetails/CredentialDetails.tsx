@@ -42,6 +42,7 @@ const CredentialDetails = ({ route, navigation }: Props) => {
     minimumAgeRequired: 0,
     status: UNVERIFIED_SERVICE_STATUS,
     trustStatus: 'UNVERIFIED',
+    claimsVerified: false,
   })
 
   const hideConfirmationDeleteModal = () => setShowConfirmationDeleteModal(false)

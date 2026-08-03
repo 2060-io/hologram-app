@@ -53,13 +53,19 @@ const isHttpUri = (uri?: string): uri is string => typeof uri === 'string' && /^
 const VeranaTrustCard = ({ did, serviceInfo, trustStatus, isFetchingInfo, ask }: Props) => {
   const { t } = useTranslation()
   const organization = serviceInfo?.serviceProvider
-  const hasServiceCredential = Boolean(serviceInfo?.name)
-  const hasOrganizationCredential = Boolean(organization?.entityName)
+  const claimsVerified = Boolean(serviceInfo?.claimsVerified)
+  const hasServiceCredential = claimsVerified && Boolean(serviceInfo?.name)
+  const hasOrganizationCredential = claimsVerified && Boolean(organization?.entityName)
   const tone = VERDICT_TONE[trustStatus]
 
   const stepTone = (present: boolean): StepTone => (trustStatus === 'UNVERIFIED' ? 'none' : present ? 'ok' : 'bad')
 
-  const withheldDetail = trustStatus === 'UNVERIFIED' ? t('veranaTrust.notChecked') : t('veranaTrust.claimsWithheld')
+  const withheldDetail =
+    trustStatus === 'UNVERIFIED'
+      ? t('veranaTrust.notChecked')
+      : serviceInfo?.claimsSelfIssued
+        ? t('veranaTrust.claimsSelfIssued')
+        : t('veranaTrust.claimsWithheld')
 
   const minimumAgeRequired = serviceInfo?.minimumAgeRequired ?? 0
   const hasConditions =
@@ -85,7 +91,7 @@ const VeranaTrustCard = ({ did, serviceInfo, trustStatus, isFetchingInfo, ask }:
         <View style={styles.identityRow}>
           <View style={styles.identityBody}>
             <Text style={styles.identityName} numberOfLines={2}>
-              {serviceInfo?.name || t('veranaTrust.notPresented')}
+              {hasServiceCredential ? serviceInfo?.name : t('veranaTrust.notPresented')}
             </Text>
             {hasServiceCredential ? (
               <Text style={styles.identityDetail} numberOfLines={3}>
@@ -93,7 +99,9 @@ const VeranaTrustCard = ({ did, serviceInfo, trustStatus, isFetchingInfo, ask }:
               </Text>
             ) : (
               <Text style={styles.identityWithheld} numberOfLines={3}>
-                {trustStatus === 'UNVERIFIED' ? withheldDetail : t('veranaTrust.noServiceCredential')}
+                {trustStatus === 'UNVERIFIED' || serviceInfo?.name
+                  ? withheldDetail
+                  : t('veranaTrust.noServiceCredential')}
               </Text>
             )}
           </View>
@@ -107,9 +115,9 @@ const VeranaTrustCard = ({ did, serviceInfo, trustStatus, isFetchingInfo, ask }:
           <View style={styles.identityBody}>
             <View style={styles.identityHeadingRow}>
               <Text style={styles.identityName} numberOfLines={2}>
-                {organization?.entityName || t('veranaTrust.notPresented')}
+                {hasOrganizationCredential ? organization?.entityName : t('veranaTrust.notPresented')}
               </Text>
-              <CountryFlag code={organization?.countryCode} />
+              {hasOrganizationCredential && <CountryFlag code={organization?.countryCode} />}
             </View>
             {hasOrganizationCredential ? (
               <>
@@ -125,7 +133,9 @@ const VeranaTrustCard = ({ did, serviceInfo, trustStatus, isFetchingInfo, ask }:
               </>
             ) : (
               <Text style={styles.identityWithheld} numberOfLines={3}>
-                {trustStatus === 'UNVERIFIED' ? withheldDetail : t('veranaTrust.noOrganizationCredential')}
+                {trustStatus === 'UNVERIFIED' || organization?.entityName
+                  ? withheldDetail
+                  : t('veranaTrust.noOrganizationCredential')}
               </Text>
             )}
           </View>

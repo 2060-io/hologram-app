@@ -25,6 +25,7 @@ const ConnectionInvitationForVerifiableService = (props: ConnectionInvitationPro
     minimumAgeRequired: 0,
     status: UNVERIFIED_SERVICE_STATUS,
     trustStatus: 'UNVERIFIED',
+    claimsVerified: false,
   }).current
   const [minimumAgeRequired, setMinimumAgeRequired] = useState(initialServiceInfo.minimumAgeRequired)
   const [serviceStatus, setServiceStatus] = useState<ServiceStatus>(initialServiceInfo.status)

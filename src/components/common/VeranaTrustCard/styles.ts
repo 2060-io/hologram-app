@@ -43,6 +43,7 @@ const styles = StyleSheet.create({
   },
   didDot: {
     borderRadius: 4,
+    flexShrink: 0,
     height: 8,
     width: 8,
   },
@@ -53,6 +54,7 @@ const styles = StyleSheet.create({
   },
   testnetChip: {
     borderColor: veranaCardColors.warnLine,
+    flexShrink: 0,
     borderRadius: 6,
     borderWidth: 1,
     paddingHorizontal: 5,
@@ -104,6 +106,7 @@ const styles = StyleSheet.create({
   tick: {
     alignItems: 'center',
     borderRadius: 10,
+    flexShrink: 0,
     height: 20,
     justifyContent: 'center',
     width: 20,
@@ -202,6 +205,7 @@ const styles = StyleSheet.create({
   },
   ageBadge: {
     backgroundColor: veranaCardColors.card,
+    flexShrink: 0,
     borderColor: veranaCardColors.warnLine,
     borderRadius: 6,
     borderWidth: 1,

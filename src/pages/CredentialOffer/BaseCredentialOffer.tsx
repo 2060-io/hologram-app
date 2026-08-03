@@ -47,6 +47,7 @@ const BaseCredentialOffer: React.FC<Props> = ({
     minimumAgeRequired: 0,
     status: UNVERIFIED_SERVICE_STATUS,
     trustStatus: 'UNVERIFIED',
+    claimsVerified: false,
   })
 
   const trustBlocked = isVeranaActionBlocked({

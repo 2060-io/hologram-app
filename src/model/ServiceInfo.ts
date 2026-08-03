@@ -42,6 +42,13 @@ export type ServiceInfo = {
   serviceProvider?: ServiceProvider
   status: ServiceStatus
   trustStatus: VeranaTrustStatus
+  /**
+   * The resolver anchored these ECS credentials in a registry the wallet trusts. verre returns a
+   * structurally valid credential either way, so without this a service that issues its own ECS
+   * credentials to itself would earn a green tick the registry never gave it.
+   */
+  claimsVerified: boolean
+  claimsSelfIssued?: boolean
   lastTimeUpdated?: number
 }
 

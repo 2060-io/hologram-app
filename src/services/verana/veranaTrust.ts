@@ -1,5 +1,14 @@
 export type VeranaTrustStatus = 'TRUSTED' | 'PARTIAL' | 'UNTRUSTED' | 'UNVERIFIED'
 
+/**
+ * verre returns a structurally valid `service`/`serviceProvider` even when the outcome is
+ * `not-trusted`, which is exactly what a service issuing its own ECS credentials to itself looks
+ * like. Only a schema anchored in a configured registry is evidence; anything else is a claim.
+ */
+export function areClaimsRegistryVerified(outcome: string | undefined): boolean {
+  return outcome === 'verified' || outcome === 'verified-test'
+}
+
 export type VeranaTrustEvidence = {
   resolved: boolean
   hasServiceCredential: boolean
