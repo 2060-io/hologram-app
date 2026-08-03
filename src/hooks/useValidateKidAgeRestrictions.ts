@@ -1,8 +1,7 @@
 import { KID_BIRTHDATE_DATE_FORMAT } from '@src/constants'
-import { ServiceStatus } from '@src/model'
+import { isTrustedStatus, ServiceStatus } from '@src/model'
 import { ParentalControlEnum, retrieveKeyInConfigFile } from '@src/services/config'
 import { dateToString, stringToDate, timeFromNow } from '@src/utils/dateUtils'
-import { TrustResolutionOutcome } from '@verana-labs/verre'
 import { useEffect, useState } from 'react'
 
 const calculateAge = (kidBirthday: string) => {
@@ -19,7 +18,7 @@ export const useValidateKidAgeRestrictions = ({ minimumAgeRequired, serviceStatu
 
   useEffect(() => {
     const checkIfValidateKidAge = async () => {
-      const ageValidationIsNotRequired = minimumAgeRequired <= 0 && serviceStatus === TrustResolutionOutcome.VERIFIED
+      const ageValidationIsNotRequired = minimumAgeRequired <= 0 && isTrustedStatus(serviceStatus)
       if (ageValidationIsNotRequired) return
       const isParentalControlEnabled = await retrieveKeyInConfigFile(ParentalControlEnum.Enabled)
       if (isParentalControlEnabled === 'true') validateKidCanConnect()
@@ -30,7 +29,7 @@ export const useValidateKidAgeRestrictions = ({ minimumAgeRequired, serviceStatu
         (await retrieveKeyInConfigFile(ParentalControlEnum.KidBirthday)) ??
         dateToString(new Date(), KID_BIRTHDATE_DATE_FORMAT)
       const age = calculateAge(kidBirthday)
-      const canNotConnect = age < minimumAgeRequired || serviceStatus !== TrustResolutionOutcome.VERIFIED
+      const canNotConnect = age < minimumAgeRequired || !isTrustedStatus(serviceStatus)
       if (canNotConnect) {
         setKidAge(age)
         setAgeRestricted(true)

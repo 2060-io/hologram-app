@@ -1,4 +1,4 @@
-import { VeranaTrustStatus } from '@src/services/verana'
+import { isVeranaTestnet, VeranaTrustStatus } from '@src/services/verana'
 import { TrustResolutionOutcome } from '@verana-labs/verre'
 
 /**
@@ -8,6 +8,15 @@ import { TrustResolutionOutcome } from '@verana-labs/verre'
 export const UNVERIFIED_SERVICE_STATUS = 'unverified'
 
 export type ServiceStatus = TrustResolutionOutcome | typeof UNVERIFIED_SERVICE_STATUS
+
+/**
+ * On a testnet build `verified-test` IS the success outcome, so warning about it would contradict
+ * the trust card rendered on the same screen. On a production build it stays a warning, because a
+ * test credential really is not production trust.
+ */
+export const isTrustedStatus = (status: ServiceStatus): boolean =>
+  status === TrustResolutionOutcome.VERIFIED ||
+  (status === TrustResolutionOutcome.VERIFIED_TEST && isVeranaTestnet)
 
 export type BaseEntity = {
   countryCode: string
