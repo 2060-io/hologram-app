@@ -172,7 +172,8 @@
       "errorGettingInvitation": "There was an error getting current invitation",
       "errorCreatingInvitation": "There was an error creating invitation",
       "errorProcessingInvitation": "There was an error processing invitation",
-      "pressRefresh": "Press Refresh to invalidate current invitation code and create a new one."
+      "pressRefresh": "Press Refresh to invalidate current invitation code and create a new one.",
+      "notVerifiedYetService": "has not been checked against the Verana public registry"
     },
     "credential": {
       "noCredentials": "You do not have any credential yet",
@@ -541,6 +542,39 @@
       "disablePINFooter": "Please enter the PIN you set when you enabled Parental Control",
       "pinDoesNotMatchFooter": "Make sure to enter the same PIN, or press Cancel to restart the process",
       "setPINFooter": "Be sure to write down your PIN carefully. There is no way to recover it if it's lost"
+    },
+    "veranaTrust": {
+      "sectionService": "Service",
+      "sectionOperatedBy": "Operated by",
+      "sectionOffersYou": "Offers you",
+      "sectionAsksYouFor": "Asks you for",
+      "sectionConditions": "Conditions of connecting",
+      "registryChip": "REG",
+      "testnet": "TESTNET",
+      "verdictTrusted": "TRUSTED",
+      "verdictPartial": "PARTIAL",
+      "verdictUntrusted": "UNTRUSTED",
+      "verdictUnverified": "COULD NOT VERIFY",
+      "notPresented": "Not presented",
+      "noServiceCredential": "No ECS-Service credential presented",
+      "noOrganizationCredential": "No ECS-Organization credential presented",
+      "notChecked": "Not checked.",
+      "claimsWithheld": "Nothing in the registry vouches for this credential, so its claims are not shown.",
+      "resolving": "Resolving trust credentials…",
+      "checkingRegistry": "Checking the Verana public registry…",
+      "permissionUncheckable": "This could not be checked against the registry.",
+      "authorizedIssuer": "authorized issuer",
+      "authorizedVerifier": "authorized verifier",
+      "authorizedFor": "{{party}} is an {{authority}} of {{credential}}",
+      "notAuthorizedFor": "{{party}} is not an {{authority}} of {{credential}}",
+      "ageRestriction": "This service requires you to be at least {{age}} to connect",
+      "noAgeRestriction": "No age restriction",
+      "termsAndConditions": "Terms & conditions",
+      "privacyPolicy": "Privacy policy",
+      "intact": "intact",
+      "noDigest": "no digest",
+      "openInVerana": "Open this DID in Verana",
+      "demoNetwork": "Demo network - do not share real data"
     }
   }
 }

@@ -1,5 +1,6 @@
-import ProofOfTrust from '@src/components/common/ProofOfTrust'
+import VeranaTrustCard, { VeranaTrustAsk } from '@src/components/common/VeranaTrustCard'
 import { ServiceInfo } from '@src/model'
+import { veranaTrustStatusOf } from '@src/services/verana'
 import React, { memo } from 'react'
 import { View } from 'react-native'
 import ServiceMainInfo from './ServiceMainInfo'
@@ -9,9 +10,10 @@ type Props = {
   isFetchingInfo: boolean
   serviceInfo: ServiceInfo | undefined
   failedFetchInfo: boolean
+  ask?: VeranaTrustAsk
 }
 
-const ServiceInformation = ({ initialServiceInfo, isFetchingInfo, serviceInfo, failedFetchInfo }: Props) => {
+const ServiceInformation = ({ initialServiceInfo, isFetchingInfo, serviceInfo, failedFetchInfo, ask }: Props) => {
   const serviceInfoToDisplay = serviceInfo ?? initialServiceInfo
 
   return (
@@ -21,10 +23,12 @@ const ServiceInformation = ({ initialServiceInfo, isFetchingInfo, serviceInfo, f
         isFetchingInfo={isFetchingInfo}
         failedFetchInfo={failedFetchInfo}
       />
-      <ProofOfTrust
-        serviceInfo={serviceInfoToDisplay}
+      <VeranaTrustCard
+        did={serviceInfoToDisplay.did}
+        serviceInfo={serviceInfo}
+        trustStatus={veranaTrustStatusOf(serviceInfo, failedFetchInfo)}
         isFetchingInfo={isFetchingInfo}
-        failedFetchInfo={failedFetchInfo}
+        ask={ask}
       />
     </View>
   )

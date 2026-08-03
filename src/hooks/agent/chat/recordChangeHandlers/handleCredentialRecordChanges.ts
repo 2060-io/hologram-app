@@ -8,11 +8,10 @@ import {
   DidCommProblemReportMessage,
   parseMessageType,
 } from '@credo-ts/didcomm'
-import { ChatEntryRole, ChatEntryState, ChatEntryType } from '@src/model'
+import { ChatEntryRole, ChatEntryState, ChatEntryType, UNVERIFIED_SERVICE_STATUS } from '@src/model'
 import { MobileAgent } from '@src/services/agent'
 import { getDidCommCredentialDisplayMetadata, setDidCommCredentialMetadata } from '@src/services/agent/RecordMetadata'
 import { getConnectionDisplayName, getConnectionDisplayPicture } from '@src/utils/connectionUtils'
-import { TrustResolutionOutcome } from '@verana-labs/verre'
 import Realm from 'realm'
 import { createChatEntry, findAllByAssociatedRecordId, updateChatEntry } from '../services/ChatEntryService'
 import { addUnread, findOrCreateChatThread } from '../services/ChatThreadService'
@@ -84,7 +83,7 @@ export const handleCredentialExchangeRecordChanges = async (options: {
       ? (await agent.modules.anoncreds.getCredentialDefinition(credentialDefinitionId)).credentialDefinition?.issuerId
       : undefined)
   const issuerName = getConnectionDisplayName(connection)
-  const issuerStatus = TrustResolutionOutcome.INVALID
+  const issuerStatus = UNVERIFIED_SERVICE_STATUS
   const issuerLogoUrl = getConnectionDisplayPicture(connection)
   const schemaName = schemaId ? (await agent.modules.anoncreds.getSchema(schemaId)).schema?.name : undefined
 

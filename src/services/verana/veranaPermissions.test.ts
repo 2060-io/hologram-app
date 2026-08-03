@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
 import { afterEach, describe, it } from 'node:test'
+import type { VeranaPermission } from './veranaPermissions.ts'
 import {
   checkVeranaPermission,
   describeAccreditation,
@@ -11,7 +12,6 @@ import {
   resolveVeranaAccreditation,
   SCHEMA_UNMATCHED_REASON,
 } from './veranaPermissions.ts'
-import type { VeranaPermission } from './veranaPermissions.ts'
 
 const DID = 'did:webvh:Qme1B4:demo-issuer-accredited.playground.testnet.verana.network'
 const BASE_URL = 'https://idx.testnet.verana.network/verana'
@@ -192,7 +192,8 @@ describe('resolveVeranaAccreditation', () => {
 
   const happyRoutes = (url: string) => {
     if (url === resourceUrl) return { metadata: { relatedJsonSchemaCredentialId: vtjscUrl } }
-    if (url === vtjscUrl) return { credentialSubject: { jsonSchema: { $ref: 'vpr:verana:vna-testnet-1/cs/v1/js/253' } } }
+    if (url === vtjscUrl)
+      return { credentialSubject: { jsonSchema: { $ref: 'vpr:verana:vna-testnet-1/cs/v1/js/253' } } }
     if (url.startsWith(BASE_URL)) {
       return { permissions: [{ id: 795, schema_id: 253, type: 'ISSUER', did: DID, vp_state: 'VALIDATED' }] }
     }

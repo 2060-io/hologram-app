@@ -190,7 +190,11 @@ export async function resolveVeranaAccreditation(options: {
   const resolution = await resolveVtjscFromAnonCreds(options.anonCredsId)
   if (!resolution.reachable) return { granted: undefined, reason: REGISTRY_UNREACHABLE_REASON }
   if (!resolution.jsonSchema) {
-    return { granted: undefined, reason: SCHEMA_UNMATCHED_REASON, jsonSchemaCredentialId: resolution.jsonSchemaCredentialId }
+    return {
+      granted: undefined,
+      reason: SCHEMA_UNMATCHED_REASON,
+      jsonSchemaCredentialId: resolution.jsonSchemaCredentialId,
+    }
   }
 
   const baseUrl = options.registryBaseUrlFor(resolution.jsonSchema.registryId)
@@ -203,5 +207,9 @@ export async function resolveVeranaAccreditation(options: {
     schemaId: resolution.jsonSchema.schemaId,
     at: options.at,
   })
-  return { ...check, jsonSchemaCredentialId: resolution.jsonSchemaCredentialId, schemaId: resolution.jsonSchema.schemaId }
+  return {
+    ...check,
+    jsonSchemaCredentialId: resolution.jsonSchemaCredentialId,
+    schemaId: resolution.jsonSchema.schemaId,
+  }
 }

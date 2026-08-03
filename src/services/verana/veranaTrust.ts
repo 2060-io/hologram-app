@@ -35,6 +35,18 @@ export function describeVeranaVerdict(status: VeranaTrustStatus, evidence: Veran
     : 'Neither identity credential verified. This counterparty cannot present verifiable trust credentials.'
 }
 
+/**
+ * A service the resolver never answered for, and one cached before this field existed, are both
+ * could-not-determine rather than a refusal.
+ */
+export function veranaTrustStatusOf(
+  serviceInfo: { trustStatus?: VeranaTrustStatus } | undefined,
+  failedFetchInfo?: boolean
+): VeranaTrustStatus {
+  if (failedFetchInfo || !serviceInfo?.trustStatus) return 'UNVERIFIED'
+  return serviceInfo.trustStatus
+}
+
 export type VeranaGateInput = {
   trustStatus: VeranaTrustStatus
   isResolving: boolean

@@ -78,9 +78,7 @@ describe('readJsonSchemaPointer', () => {
 
   it('unwraps a verifiable presentation and an array subject', () => {
     const vtjsc = {
-      verifiableCredential: [
-        { credentialSubject: [{ jsonSchema: { $ref: 'vpr:verana:vna-testnet-1/cs/v1/js/7' } }] },
-      ],
+      verifiableCredential: [{ credentialSubject: [{ jsonSchema: { $ref: 'vpr:verana:vna-testnet-1/cs/v1/js/7' } }] }],
     }
     assert.equal(readJsonSchemaPointer(vtjsc), 'vpr:verana:vna-testnet-1/cs/v1/js/7')
   })

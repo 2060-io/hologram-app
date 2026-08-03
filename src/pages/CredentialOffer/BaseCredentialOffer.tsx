@@ -5,9 +5,10 @@ import { CredentialDetails, ModalConfirmAction } from '@src/components'
 import { ServiceInformation, Text } from '@src/components/common'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { useFetchServiceInfo } from '@src/hooks/useFetchServiceInfo'
-import { ServiceInfo } from '@src/model'
+import { useVeranaIssuerAccreditation } from '@src/hooks/useVeranaAccreditation'
+import { ServiceInfo, UNVERIFIED_SERVICE_STATUS } from '@src/model'
 import { CredentialDetailsForDisplay } from '@src/services/agent/display'
-import { TrustResolutionOutcome } from '@verana-labs/verre'
+import { isVeranaActionBlocked, veranaTrustStatusOf } from '@src/services/verana'
 import React, { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ScrollView, TouchableOpacity, View } from 'react-native'
@@ -17,17 +18,26 @@ import getStyles from './styles'
 type Props = {
   navigation: StackNavigationProp<ParamListBase>
   credentialDetails: CredentialDetailsForDisplay
+  credentialRecordId: string
   accept: () => void
   refuse: () => void
   enableMainButtons: boolean
 }
 
-const BaseCredentialOffer: React.FC<Props> = ({ navigation, credentialDetails, accept, refuse, enableMainButtons }) => {
+const BaseCredentialOffer: React.FC<Props> = ({
+  navigation,
+  credentialDetails,
+  credentialRecordId,
+  accept,
+  refuse,
+  enableMainButtons,
+}) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
   const did = credentialDetails.mainInfo.issuer.id
   const { isFetchingInfo, serviceInfo, failedFetchInfo } = useFetchServiceInfo({ did })
+  const { accreditation, isChecking } = useVeranaIssuerAccreditation({ did, credentialRecordId })
   const [showModalRefuseConfirmation, setShowModalRefuseConfirmation] = useState(false)
   const initialServiceInfo = useRef<ServiceInfo>({
     did,
@@ -35,8 +45,17 @@ const BaseCredentialOffer: React.FC<Props> = ({ navigation, credentialDetails, a
     name: credentialDetails.mainInfo.issuer.name,
     logoUrl: credentialDetails.mainInfo.issuer.logoUrl,
     minimumAgeRequired: 0,
-    status: TrustResolutionOutcome.INVALID,
+    status: UNVERIFIED_SERVICE_STATUS,
+    trustStatus: 'UNVERIFIED',
   })
+
+  const trustBlocked = isVeranaActionBlocked({
+    trustStatus: veranaTrustStatusOf(serviceInfo, failedFetchInfo),
+    isResolving: isFetchingInfo,
+    isCheckingPermission: isChecking,
+    permissionGranted: accreditation?.granted,
+  })
+  const canAccept = enableMainButtons && !trustBlocked
 
   const displayModalRefuseConfirmation = () => setShowModalRefuseConfirmation(true)
   const hideModalRefuseConfirmation = () => setShowModalRefuseConfirmation(false)
@@ -59,7 +78,7 @@ const BaseCredentialOffer: React.FC<Props> = ({ navigation, credentialDetails, a
           <HeaderBackButton {...props} />
         ),
       headerRight: () =>
-        enableMainButtons ? (
+        canAccept ? (
           <TouchableOpacity style={styles.headerRight} onPress={accept}>
             <Text fontFamily="EuclidCircularA-Medium" style={styles.headerBtnText}>
               {t('general.accept')}
@@ -67,7 +86,7 @@ const BaseCredentialOffer: React.FC<Props> = ({ navigation, credentialDetails, a
           </TouchableOpacity>
         ) : null,
     })
-  }, [enableMainButtons])
+  }, [enableMainButtons, canAccept])
 
   return (
     <SafeAreaView style={styles.container} edges={['bottom']}>
@@ -105,6 +124,13 @@ const BaseCredentialOffer: React.FC<Props> = ({ navigation, credentialDetails, a
                 isFetchingInfo={isFetchingInfo}
                 serviceInfo={serviceInfo}
                 failedFetchInfo={failedFetchInfo}
+                ask={{
+                  kind: 'offer',
+                  credential: credentialDetails.mainInfo.schemaName,
+                  party: serviceInfo?.name || credentialDetails.mainInfo.issuer.name || did,
+                  accreditation,
+                  isChecking,
+                }}
               />
             </View>
           </View>

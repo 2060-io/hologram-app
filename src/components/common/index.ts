@@ -19,6 +19,7 @@ import Text from './Text'
 import TextInput from './TextInput'
 import TextInputPassword from './TextInputPassword'
 import UniversalImage from './UniversalImage'
+import VeranaTrustCard from './VeranaTrustCard'
 import VerifiedIcon from './VerifiedIcon'
 
 export * from './Buttons'
@@ -46,5 +47,6 @@ export {
   TextInput,
   TextInputPassword,
   UniversalImage,
+  VeranaTrustCard,
   VerifiedIcon,
 }

@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
-import { describeVeranaVerdict, deriveVeranaTrustStatus, isVeranaActionBlocked } from './veranaTrust.ts'
+import { deriveVeranaTrustStatus, describeVeranaVerdict, isVeranaActionBlocked } from './veranaTrust.ts'
 
 describe('deriveVeranaTrustStatus', () => {
   it('is TRUSTED only when both identity credentials verified', () => {
@@ -45,11 +45,19 @@ describe('describeVeranaVerdict', () => {
       'Both identity credentials verified against the Verana public registry'
     )
     assert.equal(
-      describeVeranaVerdict('PARTIAL', { resolved: true, hasServiceCredential: true, hasOrganizationCredential: false }),
+      describeVeranaVerdict('PARTIAL', {
+        resolved: true,
+        hasServiceCredential: true,
+        hasOrganizationCredential: false,
+      }),
       'The service credential verified. Nothing verifies who operates it.'
     )
     assert.equal(
-      describeVeranaVerdict('PARTIAL', { resolved: true, hasServiceCredential: false, hasOrganizationCredential: true }),
+      describeVeranaVerdict('PARTIAL', {
+        resolved: true,
+        hasServiceCredential: false,
+        hasOrganizationCredential: true,
+      }),
       'The operator credential verified. Nothing verifies the service itself.'
     )
     assert.equal(
@@ -92,10 +100,7 @@ describe('isVeranaActionBlocked', () => {
   })
 
   it('blocks on a permission the registry refused', () => {
-    assert.equal(
-      isVeranaActionBlocked({ trustStatus: 'TRUSTED', isResolving: false, permissionGranted: false }),
-      true
-    )
+    assert.equal(isVeranaActionBlocked({ trustStatus: 'TRUSTED', isResolving: false, permissionGranted: false }), true)
   })
 
   it('does NOT block on could-not-determine - that is a warning, not a refusal', () => {

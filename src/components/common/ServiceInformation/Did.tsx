@@ -39,6 +39,7 @@ const Did = ({ did, serviceInfoStatus, isFetchingInfo }: Props) => {
     'verified-test': t('invitation.notTrustedService'),
     'not-trusted': t('invitation.notTrustedService'),
     invalid: t('invitation.notFoundService'),
+    unverified: t('invitation.notVerifiedYetService'),
   }
 
   const onPressDid = () => setTruncated(!truncated)

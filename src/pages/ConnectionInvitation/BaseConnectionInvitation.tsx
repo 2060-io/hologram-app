@@ -38,6 +38,7 @@ export type ConnectionInvitationProps = StackScreenProps<NavigationStackParams, 
 interface BaseConnectionInvitationProps extends ConnectionInvitationProps {
   mainInfo: ReactElement
   ageRestricted?: boolean
+  trustBlocked?: boolean
   onSwipeDown?: () => void
   disabledSwipeDown?: boolean
 }
@@ -47,6 +48,7 @@ const BaseConnectionInvitation = ({
   route,
   mainInfo,
   ageRestricted = false,
+  trustBlocked = false,
   onSwipeDown,
   disabledSwipeDown = true,
 }: BaseConnectionInvitationProps) => {
@@ -68,7 +70,7 @@ const BaseConnectionInvitation = ({
   const parentConnectionId = outOfBandRecord.getTag('parentConnectionId') as string | undefined
   const invitationType = getInvitationType(invitationDid, parentConnectionId)
   const isAlreadyConnected = !!existingConnectionId
-  const canConnect = !isAlreadyConnected && !ageRestricted
+  const canConnect = !isAlreadyConnected && !ageRestricted && !trustBlocked
 
   const goToChat = (connection: DidCommConnectionRecord) => {
     const chatThreadId = findOrCreateThread({ connection }).id
@@ -148,7 +150,7 @@ const BaseConnectionInvitation = ({
     })
   }
 
-  useLayoutEffect(handleChangeHeaderOptions, [canConnect, theme.colors])
+  useLayoutEffect(handleChangeHeaderOptions, [canConnect, isAlreadyConnected, theme.colors])
 
   return (
     <SafeAreaView style={styles.container} edges={['bottom']}>

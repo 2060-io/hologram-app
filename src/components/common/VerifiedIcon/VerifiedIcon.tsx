@@ -18,6 +18,7 @@ const VerifiedIcon = ({ style, status }: Props) => {
     'verified-test': 'warning',
     'not-trusted': 'warning',
     invalid: 'warning',
+    unverified: 'info',
   }
 
   const backgroundColors: Record<ServiceStatus, string> = {
@@ -25,6 +26,7 @@ const VerifiedIcon = ({ style, status }: Props) => {
     invalid: theme.colors.red,
     'not-trusted': theme.colors.orange,
     'verified-test': theme.colors.orange,
+    unverified: theme.colors.secondaryGrey,
   }
   const backgroundColor = backgroundColors[status]
 

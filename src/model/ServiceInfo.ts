@@ -1,6 +1,13 @@
+import { VeranaTrustStatus } from '@src/services/verana'
 import { TrustResolutionOutcome } from '@verana-labs/verre'
 
-export type ServiceStatus = TrustResolutionOutcome
+/**
+ * Wallet-local: nothing is known yet, or the resolver could not be reached. verre has no such
+ * outcome, and painting that state as `invalid` accuses the counterparty before anything is known.
+ */
+export const UNVERIFIED_SERVICE_STATUS = 'unverified'
+
+export type ServiceStatus = TrustResolutionOutcome | typeof UNVERIFIED_SERVICE_STATUS
 
 export type BaseEntity = {
   countryCode: string
@@ -18,6 +25,7 @@ interface CertificationEntity extends BaseEntity {
 
 export interface ServiceProvider extends BaseEntity {
   certificationEntity: CertificationEntity
+  address?: string
 }
 
 export type ServiceInfo = {
@@ -26,11 +34,14 @@ export type ServiceInfo = {
   id: string
   logoUrl?: string
   dataPrivacyUrl?: string
+  dataPrivacyDigestSri?: string
   minimumAgeRequired: number
   termsAndConditionsUrl?: string
+  termsAndConditionsDigestSri?: string
   name: string
   serviceProvider?: ServiceProvider
   status: ServiceStatus
+  trustStatus: VeranaTrustStatus
   lastTimeUpdated?: number
 }
 

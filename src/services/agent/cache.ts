@@ -1,8 +1,7 @@
 import { AgentContext, CacheModuleConfig } from '@credo-ts/core'
 import { DidCommConnectionsApi } from '@credo-ts/didcomm'
-import { isServiceInfo, ServiceInfo } from '@src/model'
+import { isServiceInfo, ServiceInfo, UNVERIFIED_SERVICE_STATUS } from '@src/model'
 import { getConnectionDisplayName, getConnectionDisplayPicture } from '@src/utils/connectionUtils'
-import { TrustResolutionOutcome } from '@verana-labs/verre'
 
 export async function getInCacheServiceInfo(did: string, agentContext: AgentContext): Promise<ServiceInfo | null> {
   const cache = agentContext.dependencyManager.resolve(CacheModuleConfig).cache
@@ -17,7 +16,8 @@ export async function getInCacheServiceInfo(did: string, agentContext: AgentCont
       minimumAgeRequired: 0,
       name: getConnectionDisplayName(connection),
       logoUrl: getConnectionDisplayPicture(connection),
-      status: TrustResolutionOutcome.INVALID,
+      status: UNVERIFIED_SERVICE_STATUS,
+      trustStatus: 'UNVERIFIED',
     }
   }
   return null
