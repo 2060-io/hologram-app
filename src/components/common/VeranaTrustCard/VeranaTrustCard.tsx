@@ -68,8 +68,11 @@ const VeranaTrustCard = ({ did, serviceInfo, trustStatus, isFetchingInfo, ask }:
         : t('veranaTrust.claimsWithheld')
 
   const minimumAgeRequired = serviceInfo?.minimumAgeRequired ?? 0
+  // Conditions read off the ECS-Service credential, so they are claims too: an unanchored service
+  // does not get to state binding conditions on this surface.
   const hasConditions =
-    minimumAgeRequired > 0 || isHttpUri(serviceInfo?.termsAndConditionsUrl) || isHttpUri(serviceInfo?.dataPrivacyUrl)
+    claimsVerified &&
+    (minimumAgeRequired > 0 || isHttpUri(serviceInfo?.termsAndConditionsUrl) || isHttpUri(serviceInfo?.dataPrivacyUrl))
 
   return (
     <View style={styles.card}>
