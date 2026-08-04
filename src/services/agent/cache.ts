@@ -17,7 +17,6 @@ export async function getInCacheServiceInfo(did: string, agentContext: AgentCont
       name: getConnectionDisplayName(connection),
       logoUrl: getConnectionDisplayPicture(connection),
       status: UNVERIFIED_SERVICE_STATUS,
-      trustStatus: 'UNVERIFIED',
       claimsVerified: false,
     }
   }

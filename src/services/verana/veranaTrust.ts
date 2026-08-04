@@ -60,16 +60,20 @@ export function veranaTrustStatusOf(
  * The pending flag only rises once the transition starts, so a DID with no answer and no failure
  * yet is still in flight. Without this the consent screen shows Accept for a frame before the
  * resolver has been asked anything.
+ *
+ * Only a verdict settles this. The cache hands back a placeholder assembled from an existing
+ * connection so the screen can show a name while the resolver is still being asked, and treating
+ * that as an answer makes the card state "the resolver could not be reached" before it was called.
  */
 export function isVeranaResolutionPending(input: {
   did?: string
-  serviceInfo?: unknown
+  serviceInfo?: { trustStatus?: VeranaTrustStatus }
   isFetchingInfo?: boolean
   failedFetchInfo?: boolean
 }): boolean {
   if (input.isFetchingInfo) return true
   if (!input.did) return false
-  return !input.failedFetchInfo && input.serviceInfo === undefined
+  return !input.failedFetchInfo && !input.serviceInfo?.trustStatus
 }
 
 export type VeranaGateInput = {

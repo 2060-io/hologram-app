@@ -154,8 +154,13 @@ describe('isVeranaResolutionPending', () => {
     assert.equal(isVeranaResolutionPending({ did: 'did:webvh:x' }), true)
   })
 
-  it('settles once an answer arrives', () => {
-    assert.equal(isVeranaResolutionPending({ did: 'did:webvh:x', serviceInfo: {} }), false)
+  it('settles once a verdict arrives', () => {
+    assert.equal(isVeranaResolutionPending({ did: 'did:webvh:x', serviceInfo: { trustStatus: 'TRUSTED' } }), false)
+  })
+
+  it('stays pending on a placeholder built from a connection, which carries no verdict', () => {
+    const fromConnection = { name: 'Accredited Issuer (demo)', trustStatus: undefined }
+    assert.equal(isVeranaResolutionPending({ did: 'did:webvh:x', serviceInfo: fromConnection }), true)
   })
 
   it('settles on a failure, which is could-not-determine rather than in flight', () => {

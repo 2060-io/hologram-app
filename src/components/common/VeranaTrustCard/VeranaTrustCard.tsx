@@ -38,6 +38,7 @@ type Props = {
   serviceInfo?: ServiceInfo
   trustStatus: VeranaTrustStatus
   isFetchingInfo: boolean
+  isResolving?: boolean
   ask?: VeranaTrustAsk
 }
 
@@ -48,17 +49,24 @@ const VERDICT_TONE: Record<VeranaTrustStatus, { color: string; labelKey: string 
   UNVERIFIED: { color: veranaCardColors.faint, labelKey: 'veranaTrust.verdictUnverified' },
 }
 
+const RESOLVING_TONE = { color: veranaCardColors.faint, labelKey: 'veranaTrust.verdictResolving' }
+
 const isHttpUri = (uri?: string): uri is string => typeof uri === 'string' && /^https?:\/\//i.test(uri)
 
-const VeranaTrustCard = ({ did, serviceInfo, trustStatus, isFetchingInfo, ask }: Props) => {
+const VeranaTrustCard = ({ did, serviceInfo, trustStatus, isFetchingInfo, isResolving, ask }: Props) => {
   const { t } = useTranslation()
   const organization = serviceInfo?.serviceProvider
   const claimsVerified = Boolean(serviceInfo?.claimsVerified)
-  const hasServiceCredential = claimsVerified && Boolean(serviceInfo?.name)
-  const hasOrganizationCredential = claimsVerified && Boolean(organization?.entityName)
-  const tone = VERDICT_TONE[trustStatus]
+  const serviceCredentialPresented = Boolean(serviceInfo?.name)
+  const organizationCredentialPresented = Boolean(organization?.entityName)
+  const hasServiceCredential = claimsVerified && serviceCredentialPresented
+  const hasOrganizationCredential = claimsVerified && organizationCredentialPresented
+  const tone = isResolving ? RESOLVING_TONE : VERDICT_TONE[trustStatus]
+  // Nothing has been checked yet, or nothing came back. Either way the chain has no rows to show,
+  // and drawing empty ones reads as a finding about the counterparty rather than about the check.
+  const showChain = !isResolving && trustStatus !== 'UNVERIFIED'
 
-  const stepTone = (present: boolean): StepTone => (trustStatus === 'UNVERIFIED' ? 'none' : present ? 'ok' : 'bad')
+  const stepTone = (present: boolean): StepTone => (present ? 'ok' : 'bad')
 
   const withheldDetail =
     trustStatus === 'UNVERIFIED'
@@ -89,62 +97,72 @@ const VeranaTrustCard = ({ did, serviceInfo, trustStatus, isFetchingInfo, ask }:
         <VeranaMark />
       </View>
 
-      <View style={styles.section}>
-        <SectionLabel>{t('veranaTrust.sectionService')}</SectionLabel>
-        <View style={styles.identityRow}>
-          <View style={styles.identityBody}>
-            <Text style={styles.identityName} numberOfLines={2}>
-              {hasServiceCredential ? serviceInfo?.name : t('veranaTrust.notPresented')}
-            </Text>
-            {hasServiceCredential ? (
-              <Text style={styles.identityDetail} numberOfLines={3}>
-                {serviceInfo?.description}
-              </Text>
-            ) : (
-              <Text style={styles.identityWithheld} numberOfLines={3}>
-                {trustStatus === 'UNVERIFIED' || serviceInfo?.name
-                  ? withheldDetail
-                  : t('veranaTrust.noServiceCredential')}
-              </Text>
-            )}
-          </View>
-          <StepTick tone={stepTone(hasServiceCredential)} />
-        </View>
-      </View>
-
-      <View style={styles.section}>
-        <SectionLabel>{t('veranaTrust.sectionOperatedBy')}</SectionLabel>
-        <View style={styles.identityRow}>
-          <View style={styles.identityBody}>
-            <View style={styles.identityHeadingRow}>
-              <Text style={styles.identityName} numberOfLines={2}>
-                {hasOrganizationCredential ? organization?.entityName : t('veranaTrust.notPresented')}
-              </Text>
-              {hasOrganizationCredential && <CountryFlag code={organization?.countryCode} />}
-            </View>
-            {hasOrganizationCredential ? (
-              <>
-                {organization?.address ? (
-                  <Text style={styles.identityDetail} numberOfLines={2}>
-                    {organization.address}
+      {showChain && (
+        <>
+          <View style={styles.section}>
+            <SectionLabel>{t('veranaTrust.sectionService')}</SectionLabel>
+            <View style={styles.identityRow}>
+              <View style={styles.identityBody}>
+                <Text style={styles.identityName} numberOfLines={2}>
+                  {hasServiceCredential
+                    ? serviceInfo?.name
+                    : serviceCredentialPresented
+                      ? t('veranaTrust.serviceClaimsNotVerified')
+                      : t('veranaTrust.noServiceCredential')}
+                </Text>
+                {hasServiceCredential ? (
+                  <Text style={styles.identityDetail} numberOfLines={3}>
+                    {serviceInfo?.description}
                   </Text>
-                ) : null}
-                <RegistryChip
-                  label={t('veranaTrust.registryChip')}
-                  value={organization?.officialPublicRegistryNumber}
-                />
-              </>
-            ) : (
-              <Text style={styles.identityWithheld} numberOfLines={3}>
-                {trustStatus === 'UNVERIFIED' || organization?.entityName
-                  ? withheldDetail
-                  : t('veranaTrust.noOrganizationCredential')}
-              </Text>
-            )}
+                ) : (
+                  serviceCredentialPresented && (
+                    <Text style={styles.identityWithheld} numberOfLines={3}>
+                      {withheldDetail}
+                    </Text>
+                  )
+                )}
+              </View>
+              <StepTick tone={stepTone(hasServiceCredential)} />
+            </View>
           </View>
-          <StepTick tone={stepTone(hasOrganizationCredential)} />
-        </View>
-      </View>
+
+          <View style={styles.section}>
+            <SectionLabel>{t('veranaTrust.sectionOperatedBy')}</SectionLabel>
+            <View style={styles.identityRow}>
+              <View style={styles.identityBody}>
+                <View style={styles.identityHeadingRow}>
+                  <Text style={styles.identityName} numberOfLines={2}>
+                    {hasOrganizationCredential
+                      ? organization?.entityName
+                      : organizationCredentialPresented
+                        ? t('veranaTrust.operatorClaimsNotVerified')
+                        : t('veranaTrust.noOrganizationCredential')}
+                  </Text>
+                  {hasOrganizationCredential && <CountryFlag code={organization?.countryCode} />}
+                </View>
+                {hasOrganizationCredential ? (
+                  <>
+                    {organization?.address ? (
+                      <Text style={styles.identityDetail} numberOfLines={2}>
+                        {organization.address}
+                      </Text>
+                    ) : null}
+                    <RegistryChip
+                      label={t('veranaTrust.registryChip')}
+                      value={organization?.officialPublicRegistryNumber}
+                    />
+                  </>
+                ) : (
+                  <Text style={styles.identityWithheld} numberOfLines={3}>
+                    {organizationCredentialPresented ? withheldDetail : t('veranaTrust.nothingVerifiesOperator')}
+                  </Text>
+                )}
+              </View>
+              <StepTick tone={stepTone(hasOrganizationCredential)} />
+            </View>
+          </View>
+        </>
+      )}
 
       <View style={styles.verdictStack}>
         <View style={[styles.verdictPill, { borderColor: tone.color }]}>
@@ -162,16 +180,20 @@ const VeranaTrustCard = ({ did, serviceInfo, trustStatus, isFetchingInfo, ask }:
             styles.verdictNote,
             {
               color:
-                trustStatus === 'PARTIAL' || trustStatus === 'UNTRUSTED' ? veranaCardColors.bad : veranaCardColors.sub,
+                !isResolving && (trustStatus === 'PARTIAL' || trustStatus === 'UNTRUSTED')
+                  ? veranaCardColors.bad
+                  : veranaCardColors.sub,
             },
           ]}
         >
-          {describeVeranaVerdict(trustStatus, {
-            resolved: trustStatus !== 'UNVERIFIED',
-            hasServiceCredential,
-            hasOrganizationCredential,
-            structurallyValid: serviceInfo?.status === 'not-trusted',
-          })}
+          {isResolving
+            ? t('veranaTrust.checkingRegistry')
+            : describeVeranaVerdict(trustStatus, {
+                resolved: trustStatus !== 'UNVERIFIED',
+                hasServiceCredential,
+                hasOrganizationCredential,
+                structurallyValid: serviceInfo?.status === 'not-trusted',
+              })}
         </Text>
       </View>
 
@@ -213,7 +235,7 @@ const VeranaTrustCard = ({ did, serviceInfo, trustStatus, isFetchingInfo, ask }:
         </View>
       )}
 
-      {isFetchingInfo && <Text style={styles.loading}>{t('veranaTrust.resolving')}</Text>}
+      {isFetchingInfo && !isResolving && <Text style={styles.loading}>{t('veranaTrust.resolving')}</Text>}
 
       <TouchableOpacity
         accessibilityRole="link"

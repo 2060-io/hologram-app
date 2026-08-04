@@ -52,9 +52,15 @@ const BasePresentationRequest: React.FC<Props> = ({
   )
   const [showModalRefuseConfirmation, setShowModalRefuseConfirmation] = useState(false)
   const hasCompatibleCredentials = submission.entries.some((entry) => entry.credentials.length > 0)
+  const isResolving = isVeranaResolutionPending({
+    did: serviceInfo?.did,
+    serviceInfo: serviceInfo ?? undefined,
+    isFetchingInfo,
+    failedFetchInfo,
+  })
   const trustBlocked = isVeranaActionBlocked({
     trustStatus: veranaTrustStatusOf(serviceInfo ?? undefined, failedFetchInfo),
-    isResolving: isVeranaResolutionPending({ did: serviceInfo?.did, serviceInfo, isFetchingInfo, failedFetchInfo }),
+    isResolving,
     isCheckingPermission: ask?.isChecking,
     permissionGranted: ask?.accreditation?.granted,
   })
@@ -131,6 +137,7 @@ const BasePresentationRequest: React.FC<Props> = ({
                   serviceInfo={serviceInfo}
                   trustStatus={veranaTrustStatusOf(serviceInfo, failedFetchInfo)}
                   isFetchingInfo={isFetchingInfo}
+                  isResolving={isResolving}
                   ask={ask}
                 />
               </>

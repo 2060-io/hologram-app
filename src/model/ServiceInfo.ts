@@ -50,7 +50,11 @@ export type ServiceInfo = {
   name: string
   serviceProvider?: ServiceProvider
   status: ServiceStatus
-  trustStatus: VeranaTrustStatus
+  /**
+   * Absent until the resolver answers. A placeholder assembled from a connection carries a name
+   * but no verdict, and must not read as one.
+   */
+  trustStatus?: VeranaTrustStatus
   /**
    * The resolver anchored these ECS credentials in a registry the wallet trusts. verre returns a
    * structurally valid credential either way, so without this a service that issues its own ECS

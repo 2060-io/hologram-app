@@ -1,6 +1,6 @@
 import VeranaTrustCard, { VeranaTrustAsk } from '@src/components/common/VeranaTrustCard'
 import { ServiceInfo } from '@src/model'
-import { veranaTrustStatusOf } from '@src/services/verana'
+import { isVeranaResolutionPending, veranaTrustStatusOf } from '@src/services/verana'
 import React, { memo } from 'react'
 import { View } from 'react-native'
 import ServiceMainInfo from './ServiceMainInfo'
@@ -28,6 +28,12 @@ const ServiceInformation = ({ initialServiceInfo, isFetchingInfo, serviceInfo, f
         serviceInfo={serviceInfo}
         trustStatus={veranaTrustStatusOf(serviceInfo, failedFetchInfo)}
         isFetchingInfo={isFetchingInfo}
+        isResolving={isVeranaResolutionPending({
+          did: serviceInfoToDisplay.did,
+          serviceInfo,
+          isFetchingInfo,
+          failedFetchInfo,
+        })}
         ask={ask}
       />
     </View>
