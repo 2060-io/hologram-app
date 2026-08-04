@@ -5,6 +5,7 @@ import { CredentialDetails, ModalConfirmAction } from '@src/components'
 import { ServiceInformation, Text } from '@src/components/common'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { useFetchServiceInfo } from '@src/hooks/useFetchServiceInfo'
+import { useTrustDidForCredential } from '@src/hooks/useTrustDidForCredential'
 import { useVeranaIssuerAccreditation } from '@src/hooks/useVeranaAccreditation'
 import { ServiceInfo, UNVERIFIED_SERVICE_STATUS } from '@src/model'
 import { CredentialDetailsForDisplay } from '@src/services/agent/display'
@@ -35,13 +36,16 @@ const BaseCredentialOffer: React.FC<Props> = ({
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
-  const did = credentialDetails.mainInfo.issuer.id
+  const did = useTrustDidForCredential({
+    did: credentialDetails.mainInfo.issuer.id,
+    credentialRecordId,
+  })
   const { isFetchingInfo, serviceInfo, failedFetchInfo } = useFetchServiceInfo({ did })
   const { accreditation, isChecking } = useVeranaIssuerAccreditation({ did, credentialRecordId })
   const [showModalRefuseConfirmation, setShowModalRefuseConfirmation] = useState(false)
   const initialServiceInfo = useRef<ServiceInfo>({
-    did,
-    id: did,
+    did: did ?? '',
+    id: did ?? '',
     name: credentialDetails.mainInfo.issuer.name,
     logoUrl: credentialDetails.mainInfo.issuer.logoUrl,
     minimumAgeRequired: 0,
@@ -128,7 +132,7 @@ const BaseCredentialOffer: React.FC<Props> = ({
                 ask={{
                   kind: 'offer',
                   credential: credentialDetails.mainInfo.schemaName,
-                  party: serviceInfo?.name || credentialDetails.mainInfo.issuer.name || did,
+                  party: serviceInfo?.name || credentialDetails.mainInfo.issuer.name || did || '',
                   accreditation,
                   isChecking,
                 }}
