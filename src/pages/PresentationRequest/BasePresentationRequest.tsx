@@ -2,9 +2,11 @@ import { ParamListBase } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { ModalConfirmAction } from '@src/components'
 import { CredentialMainInformation, MainButton, RadioButton, ServiceMainInfo, Text } from '@src/components/common'
+import VeranaTrustCard, { VeranaTrustAsk } from '@src/components/common/VeranaTrustCard'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { ServiceInfo } from '@src/model'
 import { FormattedSubmission } from '@src/services/agent/formatPresentation'
+import { isVeranaActionBlocked, isVeranaResolutionPending, veranaTrustStatusOf } from '@src/services/verana'
 import { screenHeight } from '@src/utils/responsiveUtils'
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -24,6 +26,7 @@ type Props = {
   isAccepting: boolean
   notifyNoCompatibleCredentials: () => void
   scrollViewProps?: ScrollView['props']
+  ask?: VeranaTrustAsk
 }
 
 const BasePresentationRequest: React.FC<Props> = ({
@@ -38,6 +41,7 @@ const BasePresentationRequest: React.FC<Props> = ({
   isAccepting,
   notifyNoCompatibleCredentials,
   scrollViewProps,
+  ask,
 }) => {
   const { t } = useTranslation()
   const theme = useTheme()
@@ -48,7 +52,19 @@ const BasePresentationRequest: React.FC<Props> = ({
   )
   const [showModalRefuseConfirmation, setShowModalRefuseConfirmation] = useState(false)
   const hasCompatibleCredentials = submission.entries.some((entry) => entry.credentials.length > 0)
-  const enabledPresentButton = selectedCredentialsIndexes.every((value) => value >= 0)
+  const isResolving = isVeranaResolutionPending({
+    did: serviceInfo?.did,
+    serviceInfo: serviceInfo ?? undefined,
+    isFetchingInfo,
+    failedFetchInfo,
+  })
+  const trustBlocked = isVeranaActionBlocked({
+    trustStatus: veranaTrustStatusOf(serviceInfo ?? undefined, failedFetchInfo),
+    isResolving,
+    isCheckingPermission: ask?.isChecking,
+    permissionGranted: ask?.accreditation?.granted,
+  })
+  const enabledPresentButton = selectedCredentialsIndexes.every((value) => value >= 0) && !trustBlocked
 
   useEffect(() => {
     if (!hasCompatibleCredentials) {
@@ -110,11 +126,21 @@ const BasePresentationRequest: React.FC<Props> = ({
         >
           <View style={styles.subContainer}>
             {serviceInfo && isFetchingInfo !== undefined && failedFetchInfo !== undefined && (
-              <ServiceMainInfo
-                isFetchingInfo={isFetchingInfo}
-                serviceInfo={serviceInfo}
-                failedFetchInfo={failedFetchInfo}
-              />
+              <>
+                <ServiceMainInfo
+                  isFetchingInfo={isFetchingInfo}
+                  serviceInfo={serviceInfo}
+                  failedFetchInfo={failedFetchInfo}
+                />
+                <VeranaTrustCard
+                  did={serviceInfo.did}
+                  serviceInfo={serviceInfo}
+                  trustStatus={veranaTrustStatusOf(serviceInfo, failedFetchInfo)}
+                  isFetchingInfo={isFetchingInfo}
+                  isResolving={isResolving}
+                  ask={ask}
+                />
+              </>
             )}
             {hasCompatibleCredentials ? (
               <>

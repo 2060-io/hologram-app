@@ -1,8 +1,9 @@
 import { ServiceInfo } from '@src/model'
 import { log, logError } from '@src/utils'
-import { IOrg, resolveDID } from '@verana-labs/verre'
+import { ECS, IOrg, IService, resolveDID, TrustResolutionOutcome } from '@verana-labs/verre'
 import { Resolver } from 'did-resolver'
 import { MobileAgent } from './agent'
+import { areClaimsRegistryVerified, deriveVeranaTrustStatus, veranaRegistries } from './verana'
 
 function getCredoTsDidResolver(agent: MobileAgent): Resolver {
   return new Resolver(
@@ -17,6 +18,28 @@ function getCredoTsDidResolver(agent: MobileAgent): Resolver {
   )
 }
 
+function toServiceProvider(organization: IOrg, status: ServiceInfo['status']): ServiceInfo['serviceProvider'] {
+  return {
+    address: organization.address,
+    countryCode: organization.countryCode,
+    entityName: organization.name,
+    officialPublicRegistryNumber: organization.registryId,
+    status,
+    certificationEntity: {
+      countryCode: organization.countryCode,
+      entityName: organization.name,
+      officialPublicRegistryNumber: organization.registryId,
+      status,
+      trustRegistry: { name: organization.name, status },
+    },
+  }
+}
+
+/**
+ * Returns null only when the resolver could not answer at all, which the caller renders as
+ * UNVERIFIED. A DID that resolves without ECS credentials is a verdict, not a failure, and must
+ * survive as a ServiceInfo so the consent screens can say UNTRUSTED rather than "could not check".
+ */
 export async function getServiceInfo(options: { agent: MobileAgent; did: string }): Promise<ServiceInfo | null> {
   const { agent, did } = options
 
@@ -24,52 +47,43 @@ export async function getServiceInfo(options: { agent: MobileAgent; did: string 
     skipDigestSRICheck: true,
     logger: agent.config.logger,
     didResolver: getCredoTsDidResolver(agent),
-    verifiablePublicRegistries: [
-      {
-        id: 'vpr:verana:vna-testnet-1',
-        baseUrls: ['https://idx.testnet.verana.network/verana'],
-        production: true, // FIXME: set to false once we have mainnet ready
-      },
-      {
-        id: 'vpr:verana:vna-devnet-1',
-        baseUrls: ['https://idx.devnet.verana.network/verana'],
-        production: true, // FIXME: set to false once we have mainnet ready
-      },
-    ],
+    verifiablePublicRegistries: veranaRegistries,
   })
 
-  if (!trustResolution.service || !trustResolution.didDocument) {
+  if (!trustResolution.didDocument) {
     logError(`trustResolution: ${JSON.stringify(trustResolution)}`)
     return null
   }
   log(`trustResolution: ${JSON.stringify(trustResolution)}`)
 
-  const serviceInfo: ServiceInfo = {
+  const service: IService | undefined = trustResolution.service
+  const organization =
+    trustResolution.serviceProvider?.schemaType === ECS.ORG ? (trustResolution.serviceProvider as IOrg) : undefined
+
+  const status = trustResolution.outcome
+  const claimsVerified = areClaimsRegistryVerified(status)
+  const trustStatus = deriveVeranaTrustStatus({
+    resolved: true,
+    hasServiceCredential: claimsVerified && service !== undefined,
+    hasOrganizationCredential: claimsVerified && organization !== undefined,
+    structurallyValid: status !== TrustResolutionOutcome.INVALID,
+  })
+
+  return {
     did: trustResolution.didDocument.id,
     id: trustResolution.didDocument.id,
-    minimumAgeRequired: trustResolution.service.minimumAgeRequired,
-    name: trustResolution.service.name,
-    status: trustResolution.outcome,
-    dataPrivacyUrl: trustResolution.service.privacyPolicy,
-    description: trustResolution.service.description,
-    logoUrl: trustResolution.service.logo,
-    termsAndConditionsUrl: trustResolution.service.termsAndConditions,
-    serviceProvider: {
-      certificationEntity: {
-        countryCode: (trustResolution.serviceProvider! as IOrg).countryCode,
-        entityName: (trustResolution.serviceProvider! as IOrg).name,
-        officialPublicRegistryNumber: (trustResolution.serviceProvider! as IOrg).registryId,
-        status: trustResolution.outcome,
-        trustRegistry: {
-          name: (trustResolution.serviceProvider! as IOrg).name,
-          status: trustResolution.outcome,
-        },
-      },
-      status: trustResolution.outcome,
-      countryCode: (trustResolution.serviceProvider! as IOrg).countryCode,
-      entityName: (trustResolution.serviceProvider! as IOrg).name,
-      officialPublicRegistryNumber: (trustResolution.serviceProvider! as IOrg).registryId,
-    },
+    minimumAgeRequired: service?.minimumAgeRequired ?? 0,
+    name: service?.name ?? '',
+    status,
+    trustStatus,
+    claimsVerified,
+    claimsSelfIssued: service !== undefined && service.issuer === trustResolution.didDocument.id,
+    dataPrivacyUrl: service?.privacyPolicy,
+    dataPrivacyDigestSri: service?.privacyPolicyDigestSri,
+    description: service?.description,
+    logoUrl: service?.logo,
+    termsAndConditionsUrl: service?.termsAndConditions,
+    termsAndConditionsDigestSri: service?.termsAndConditionsDigestSri,
+    serviceProvider: organization ? toServiceProvider(organization, status) : undefined,
   }
-  return serviceInfo
 }

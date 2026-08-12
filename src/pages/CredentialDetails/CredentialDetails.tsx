@@ -7,11 +7,10 @@ import { useCredentials, useMobileAgent } from '@src/hooks/agent'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { useFetchServiceInfo } from '@src/hooks/useFetchServiceInfo'
 import { useScrollSwipeDown } from '@src/hooks/useScrollSwipeDown'
-import { ServiceInfo } from '@src/model'
+import { ServiceInfo, UNVERIFIED_SERVICE_STATUS } from '@src/model'
 import { getCredentialDetailsForDisplay } from '@src/services/agent/display'
 import { trimText } from '@src/utils'
 import { screenHeight } from '@src/utils/responsiveUtils'
-import { TrustResolutionOutcome } from '@verana-labs/verre'
 import React, { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ScrollView, View } from 'react-native'
@@ -41,7 +40,9 @@ const CredentialDetails = ({ route, navigation }: Props) => {
     name: credentialDetails?.mainInfo.issuer.name ?? trimText(did),
     logoUrl: credentialDetails?.mainInfo.issuer.logoUrl,
     minimumAgeRequired: 0,
-    status: TrustResolutionOutcome.INVALID,
+    status: UNVERIFIED_SERVICE_STATUS,
+    trustStatus: 'UNVERIFIED',
+    claimsVerified: false,
   })
 
   const hideConfirmationDeleteModal = () => setShowConfirmationDeleteModal(false)

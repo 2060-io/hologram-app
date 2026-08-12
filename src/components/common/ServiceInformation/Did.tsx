@@ -1,7 +1,8 @@
 import Text from '@src/components/common/Text'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
-import { ServiceStatus } from '@src/model'
+import { isTrustedStatus, ServiceStatus } from '@src/model'
 import { AppTheme } from '@src/styles'
+import { TrustResolutionOutcome } from '@verana-labs/verre'
 import { Skeleton } from 'moti/skeleton'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -36,9 +37,12 @@ const Did = ({ did, serviceInfoStatus, isFetchingInfo }: Props) => {
 
   const serviceIs: Record<ServiceStatus, string> = {
     verified: t('invitation.isATrustedService'),
-    'verified-test': t('invitation.notTrustedService'),
+    'verified-test': isTrustedStatus(TrustResolutionOutcome.VERIFIED_TEST)
+      ? t('invitation.isATrustedService')
+      : t('invitation.notTrustedService'),
     'not-trusted': t('invitation.notTrustedService'),
     invalid: t('invitation.notFoundService'),
+    unverified: t('invitation.notVerifiedYetService'),
   }
 
   const onPressDid = () => setTruncated(!truncated)

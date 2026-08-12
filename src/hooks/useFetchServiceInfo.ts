@@ -82,8 +82,13 @@ export const useFetchServiceInfo = ({ did, forceFetchIfNotInCache = true }: UseF
           }
 
           if (realm) updateThreadFromServiceInfo({ did, serviceInfoResponse, realm, agent })
+        } else {
+          // No answer at all. The cached value (if any) survives, but consumers must see this as
+          // could-not-determine rather than sit waiting on a resolution that will never arrive.
+          setFailed(true)
         }
       } catch (error) {
+        setFailed(true)
         logError(`Error getting service ${did} info API`, error)
         toast({ type: 'error', message: t('invitation.errorGettingServiceInfoAPI') })
       }

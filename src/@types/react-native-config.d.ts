@@ -13,6 +13,7 @@ declare module 'react-native-config' {
     SUPPORTED_DIDCOMM_VERSIONS: string
     IOS_FIREBASE_DEBUG_TOKEN: string
     ANDROID_FIREBASE_DEBUG_TOKEN: string
+    VERANA_TESTNET: string
   }
 
   export const Config: NativeConfig

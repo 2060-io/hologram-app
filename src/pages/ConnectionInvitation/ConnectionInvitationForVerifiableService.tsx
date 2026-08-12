@@ -2,8 +2,8 @@ import { ServiceInformation } from '@src/components/common'
 import { useUserProfile } from '@src/hooks/agent'
 import { useFetchServiceInfo } from '@src/hooks/useFetchServiceInfo'
 import { useValidateKidAgeRestrictions } from '@src/hooks/useValidateKidAgeRestrictions'
-import { ServiceInfo, ServiceStatus } from '@src/model'
-import { TrustResolutionOutcome } from '@verana-labs/verre'
+import { ServiceInfo, ServiceStatus, UNVERIFIED_SERVICE_STATUS } from '@src/model'
+import { isVeranaActionBlocked, isVeranaResolutionPending, veranaTrustStatusOf } from '@src/services/verana'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { View } from 'react-native'
 import BaseConnectionInvitation, { ConnectionInvitationProps } from './BaseConnectionInvitation'
@@ -23,12 +23,18 @@ const ConnectionInvitationForVerifiableService = (props: ConnectionInvitationPro
     logoUrl: invitation.imageUrl,
     name: invitation.label ?? '',
     minimumAgeRequired: 0,
-    status: TrustResolutionOutcome.INVALID,
+    status: UNVERIFIED_SERVICE_STATUS,
+    trustStatus: 'UNVERIFIED',
+    claimsVerified: false,
   }).current
   const [minimumAgeRequired, setMinimumAgeRequired] = useState(initialServiceInfo.minimumAgeRequired)
   const [serviceStatus, setServiceStatus] = useState<ServiceStatus>(initialServiceInfo.status)
   const { kidAge, ageRestricted } = useValidateKidAgeRestrictions({ minimumAgeRequired, serviceStatus })
   const userName = userProfileData?.displayName
+  const trustBlocked = isVeranaActionBlocked({
+    trustStatus: veranaTrustStatusOf(serviceInfo, failedFetchInfo),
+    isResolving: isVeranaResolutionPending({ did, serviceInfo, isFetchingInfo, failedFetchInfo }),
+  })
 
   useEffect(() => {
     if (serviceInfo) {
@@ -58,6 +64,7 @@ const ConnectionInvitationForVerifiableService = (props: ConnectionInvitationPro
         </View>
       }
       ageRestricted={ageRestricted}
+      trustBlocked={trustBlocked}
     />
   )
 }

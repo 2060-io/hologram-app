@@ -11,6 +11,7 @@ import {
 } from '@src/hooks/agent/actions/types'
 import { findAllByAssociatedRecordId, updateChatEntryMetadata } from '@src/hooks/agent/chat/services'
 import { useLocalRealm } from '@src/hooks/providers/RealmProvider'
+import { useVeranaVerifierAccreditation } from '@src/hooks/useVeranaAccreditation'
 import { ChatEntryType } from '@src/model'
 import { CredentialMainInfo } from '@src/services/agent/display'
 import { FormattedSubmission, formatDidcommPresentationSubmission } from '@src/services/agent/formatPresentation'
@@ -32,6 +33,7 @@ const DidcommPresentationRequest: React.FC<Props> = ({ navigation, route }: Prop
   const selectedCredentials = useRef({})
   const { proofRecordId, did } = route.params
   const { isFetchingInfo, serviceInfo, failedFetchInfo, getServiceInfo } = useFetchServiceInfo({ did })
+  const { accreditation, isChecking } = useVeranaVerifierAccreditation({ did, proofRecordId })
   const { handleScrollBeginDrag, handleScrollEndDrag } = useScrollSwipeDown({
     disabledSwipeDown: isFetchingInfo,
     onSwipeDown: getServiceInfo,
@@ -142,6 +144,13 @@ const DidcommPresentationRequest: React.FC<Props> = ({ navigation, route }: Prop
       isAccepting={isAccepting}
       notifyNoCompatibleCredentials={notify}
       scrollViewProps={{ onScrollBeginDrag: handleScrollBeginDrag, onScrollEndDrag: handleScrollEndDrag }}
+      ask={{
+        kind: 'request',
+        credential: submission.entries.map((entry) => entry.name).join(', '),
+        party: serviceInfo?.name || submission.verifier.name || did,
+        accreditation,
+        isChecking,
+      }}
     />
   ) : null
 }
