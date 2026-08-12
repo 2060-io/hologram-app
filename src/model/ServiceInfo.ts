@@ -15,8 +15,7 @@ export type ServiceStatus = TrustResolutionOutcome | typeof UNVERIFIED_SERVICE_S
  * test credential really is not production trust.
  */
 export const isTrustedStatus = (status: ServiceStatus): boolean =>
-  status === TrustResolutionOutcome.VERIFIED ||
-  (status === TrustResolutionOutcome.VERIFIED_TEST && isVeranaTestnet)
+  status === TrustResolutionOutcome.VERIFIED || (status === TrustResolutionOutcome.VERIFIED_TEST && isVeranaTestnet)
 
 export type BaseEntity = {
   countryCode: string
