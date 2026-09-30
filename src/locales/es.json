@@ -326,7 +326,7 @@
       "issuedCredential": "{{sender}} te emitió una credencial:",
       "noCredentialFound": "Credencial no encontrada",
       "invitationConnectionNotFound": "Conexión no encontrada. Debe haber sido eliminada luego de haber aceptado la invitación",
-      "offeringCredential": "{{sender}} te está ofreciendo una credencial. El emisor de esta credencial es confiable, por lo cual es seguro aceptar esta credencial",
+      "offeringCredential": "{{sender}} te está ofreciendo una credencial. Ábrela para comprobar si el emisor está autorizado antes de aceptarla.",
       "verifiablePresentationRequest": "Solicitud de presentación verificable",
       "isRequestingYou": "{{sender}} te está solicitando los siguientes datos desde una credencial {{ schemaName }}",
       "invitationRequestService": "Invitación a un servicio",

@@ -326,7 +326,7 @@
       "issuedCredential": "{{sender}} issued you a credential:",
       "noCredentialFound": "Credential not found in wallet",
       "invitationConnectionNotFound": "Connection not found. It might have been deleted after this invitation has been accepted",
-      "offeringCredential": "{{sender}} is offering you a credential. Issuer of this credential is trusted, it is safe to accept this credential.",
+      "offeringCredential": "{{sender}} is offering you a credential. Open it to check whether the issuer is authorized before accepting.",
       "verifiablePresentationRequest": "Verifiable Presentation Request",
       "isRequestingYou": "{{sender}} is requesting you the following data from a {{ schemaName }} credential",
       "invitationRequestService": "Service Invitation",

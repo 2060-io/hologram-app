@@ -156,6 +156,7 @@ const BasePresentationRequest: React.FC<Props> = ({
               accreditation={accreditation}
               isChecking={isCheckingAccreditation}
               onRetry={onRetryAccreditation}
+              fallbackSchemaTitle={submission.entries.map((entry) => entry.name).join(', ')}
             />
             {hasCompatibleCredentials ? (
               <>

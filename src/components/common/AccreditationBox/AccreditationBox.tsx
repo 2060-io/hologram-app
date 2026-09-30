@@ -15,6 +15,7 @@ type Props = {
   accreditation?: Accreditation
   isChecking: boolean
   onRetry: () => void
+  fallbackSchemaTitle?: string
 }
 
 const ICON_STATUS = {
@@ -23,11 +24,11 @@ const ICON_STATUS = {
   unverified: ServiceStatus.Unverified,
 } as const
 
-const AccreditationBox = ({ party, serviceName, accreditation, isChecking, onRetry }: Props) => {
+const AccreditationBox = ({ party, serviceName, accreditation, isChecking, onRetry, fallbackSchemaTitle }: Props) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
-  const schema = accreditation?.schemaTitles.join(', ') || t('accreditation.thisCredential')
+  const schema = accreditation?.schemaTitles.join(', ') || fallbackSchemaTitle || t('accreditation.thisCredential')
   const verdicts = {
     ISSUER: {
       authorized: t('accreditation.authorizedIssuer', { service: serviceName, schema }),

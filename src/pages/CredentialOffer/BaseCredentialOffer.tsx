@@ -156,6 +156,7 @@ const BaseCredentialOffer: React.FC<Props> = ({
             <AccreditationBox
               party="ISSUER"
               serviceName={displayIssuerName}
+              fallbackSchemaTitle={credentialDetails.mainInfo.schemaName}
               accreditation={accreditation}
               isChecking={isCheckingAccreditation}
               onRetry={onRetryAccreditation}
