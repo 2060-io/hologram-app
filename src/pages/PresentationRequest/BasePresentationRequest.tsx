@@ -1,10 +1,18 @@
 import { ParamListBase } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { ModalConfirmAction } from '@src/components'
-import { CredentialMainInformation, MainButton, RadioButton, ServiceMainInfo, Text } from '@src/components/common'
+import {
+  AccreditationBox,
+  CredentialMainInformation,
+  MainButton,
+  RadioButton,
+  ServiceMainInfo,
+  Text,
+} from '@src/components/common'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
-import { ServiceInfo } from '@src/model'
+import { ServiceInfo, ServiceStatus } from '@src/model'
 import { FormattedSubmission } from '@src/services/agent/formatPresentation'
+import type { Accreditation } from '@src/services/verana/accreditation'
 import { screenHeight } from '@src/utils/responsiveUtils'
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -25,6 +33,9 @@ type Props = {
   notifyNoCompatibleCredentials: () => void
   scrollViewProps?: ScrollView['props']
   onRetryServiceInfo?: () => void
+  accreditation?: Accreditation
+  isCheckingAccreditation: boolean
+  onRetryAccreditation: () => void
 }
 
 const BasePresentationRequest: React.FC<Props> = ({
@@ -40,6 +51,9 @@ const BasePresentationRequest: React.FC<Props> = ({
   notifyNoCompatibleCredentials,
   scrollViewProps,
   onRetryServiceInfo,
+  accreditation,
+  isCheckingAccreditation,
+  onRetryAccreditation,
 }) => {
   const { t } = useTranslation()
   const theme = useTheme()
@@ -50,7 +64,15 @@ const BasePresentationRequest: React.FC<Props> = ({
   )
   const [showModalRefuseConfirmation, setShowModalRefuseConfirmation] = useState(false)
   const hasCompatibleCredentials = submission.entries.some((entry) => entry.credentials.length > 0)
-  const enabledPresentButton = selectedCredentialsIndexes.every((value) => value >= 0)
+  const [showModalUnsafeShare, setShowModalUnsafeShare] = useState(false)
+  const trustStatus = isFetchingInfo ? ServiceStatus.Resolving : (serviceInfo?.status ?? ServiceStatus.Resolving)
+  const canShare =
+    trustStatus !== ServiceStatus.Resolving &&
+    !isCheckingAccreditation &&
+    accreditation !== undefined &&
+    accreditation.status !== 'unverified'
+  const isSafeToShare = trustStatus === ServiceStatus.Trusted && accreditation?.status === 'authorized'
+  const enabledPresentButton = canShare && selectedCredentialsIndexes.every((value) => value >= 0)
 
   useEffect(() => {
     if (!hasCompatibleCredentials) {
@@ -83,6 +105,11 @@ const BasePresentationRequest: React.FC<Props> = ({
   const onRefuse = () => {
     hideModalRefuseConfirmation()
     refuse()
+  }
+
+  const onUnsafeShare = () => {
+    setShowModalUnsafeShare(false)
+    accept()
   }
 
   const updateSelectedCredential = (
@@ -119,6 +146,13 @@ const BasePresentationRequest: React.FC<Props> = ({
                 onRetry={onRetryServiceInfo}
               />
             )}
+            <AccreditationBox
+              party="VERIFIER"
+              serviceName={submission.verifier.name || serviceInfo?.name || ''}
+              accreditation={accreditation}
+              isChecking={isCheckingAccreditation}
+              onRetry={onRetryAccreditation}
+            />
             {hasCompatibleCredentials ? (
               <>
                 <Text style={[styles.title, styles.mainTitle]}>
@@ -167,9 +201,17 @@ const BasePresentationRequest: React.FC<Props> = ({
                 })}
                 <MainButton
                   disabled={!enabledPresentButton}
-                  text={t('credential.present', { count: submission?.entries?.length })}
-                  onPress={accept}
-                  style={enabledPresentButton ? styles.enabledAcceptButton : styles.disabledAcceptButton}
+                  text={
+                    isSafeToShare
+                      ? t('credential.present', { count: submission?.entries?.length })
+                      : t('accreditation.shareAnyway')
+                  }
+                  onPress={isSafeToShare ? accept : () => setShowModalUnsafeShare(true)}
+                  style={[
+                    enabledPresentButton ? styles.enabledAcceptButton : styles.disabledAcceptButton,
+                    !isSafeToShare && styles.unsafeAcceptButton,
+                  ]}
+                  testID={isSafeToShare ? 'request-share' : 'request-share-unsafe'}
                 />
               </>
             ) : (
@@ -189,6 +231,16 @@ const BasePresentationRequest: React.FC<Props> = ({
         onClose={hideModalRefuseConfirmation}
         onConfirm={onRefuse}
         onCancel={hideModalRefuseConfirmation}
+      />
+      <ModalConfirmAction
+        visible={showModalUnsafeShare}
+        title={t('accreditation.confirmUnsafeShare')}
+        subTitle=""
+        confirmText={t('accreditation.shareAnyway')}
+        cancelText={t('general.cancel')}
+        onClose={() => setShowModalUnsafeShare(false)}
+        onConfirm={onUnsafeShare}
+        onCancel={() => setShowModalUnsafeShare(false)}
       />
     </>
   )

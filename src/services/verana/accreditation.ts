@@ -1,0 +1,147 @@
+import type { W3cDataIntegritySecuredDocument } from '@credo-ts/core'
+import type { MobileAgent } from '@src/services/agent/MobileAgent'
+import { logWarn } from '@src/utils'
+import { fetchJson, getEcosystemDid, isObject } from './indexer'
+import { VERANA_NETWORKS, type VeranaNetwork } from './networks'
+
+export type AccreditationRole = 'ISSUER' | 'VERIFIER'
+
+export type AnonCredsReference = { kind: 'credentialDefinition' | 'schema'; id: string }
+
+export type Accreditation = {
+  status: 'authorized' | 'unauthorized' | 'unverified'
+  schemaTitles: string[]
+}
+
+type CredentialSchema = { network: VeranaNetwork; schemaId: number; title?: string; anonCredsIssuerId: string }
+
+const VPR_SCHEMA_REF = /^vpr:verana:([^:/]+):cs:(\d+)$/
+
+class UnauthorizedError extends Error {}
+
+const resolveAnonCreds = async (agent: MobileAgent, reference: AnonCredsReference) => {
+  const options = { useLocalRecord: false }
+  if (reference.kind === 'credentialDefinition') {
+    const result = await agent.modules.anoncreds.getCredentialDefinition(reference.id, options)
+    if (!result.credentialDefinition) {
+      throw new Error(`Credential definition ${reference.id} not resolved: ${result.resolutionMetadata.error}`)
+    }
+    return { issuerId: result.credentialDefinition.issuerId, metadata: result.credentialDefinitionMetadata }
+  }
+  const result = await agent.modules.anoncreds.getSchema(reference.id, options)
+  if (!result.schema) throw new Error(`Schema ${reference.id} not resolved: ${result.resolutionMetadata.error}`)
+  return { issuerId: result.schema.issuerId, metadata: result.schemaMetadata }
+}
+
+const issuerIdOf = (issuer: unknown) => (isObject(issuer) ? issuer.id : issuer)
+
+const deriveCredentialSchema = async (agent: MobileAgent, reference: AnonCredsReference): Promise<CredentialSchema> => {
+  const { issuerId, metadata } = await resolveAnonCreds(agent, reference)
+  const vtjscId = metadata.relatedJsonSchemaCredentialId
+  if (typeof vtjscId !== 'string') throw new UnauthorizedError(`${reference.id} has no relatedJsonSchemaCredentialId`)
+
+  const { status, body: vtjsc } = await fetchJson(vtjscId)
+  if (status !== 200 || !isObject(vtjsc)) throw new Error(`VTJSC ${vtjscId} fetch failed with HTTP ${status}`)
+  const proof = vtjsc.proof
+  if (!isObject(proof) || proof.type !== 'DataIntegrityProof' || proof.cryptosuite !== 'eddsa-jcs-2022') {
+    throw new UnauthorizedError(`VTJSC ${vtjscId} is not secured with eddsa-jcs-2022`)
+  }
+  const verification = await agent.w3cDataIntegrity.verifySecuredDocument(vtjsc as W3cDataIntegritySecuredDocument)
+  if (!verification.verified) throw new UnauthorizedError(`VTJSC ${vtjscId} proof is invalid`)
+
+  const subject = vtjsc.credentialSubject
+  const ref = isObject(subject) && isObject(subject.jsonSchema) ? subject.jsonSchema.$ref : undefined
+  const match = typeof ref === 'string' ? VPR_SCHEMA_REF.exec(ref) : null
+  const network = match ? VERANA_NETWORKS.find((candidate) => candidate.id === match[1]) : undefined
+  if (!match || !network) throw new UnauthorizedError(`VTJSC ${vtjscId} references no configured network: ${ref}`)
+  const schemaId = Number(match[2])
+
+  const schemaResponse = await fetchJson(`${network.indexerUrl}/v4/credential-schema/get/${schemaId}`)
+  if (schemaResponse.status === 404) throw new UnauthorizedError(`Credential schema ${schemaId} not found`)
+  const schema = isObject(schemaResponse.body) ? schemaResponse.body.schema : undefined
+  if (schemaResponse.status !== 200 || !isObject(schema) || typeof schema.ecosystem_id !== 'number') {
+    throw new Error(`Credential schema ${schemaId} lookup failed with HTTP ${schemaResponse.status}`)
+  }
+  const ecosystemDid = await getEcosystemDid(network, schema.ecosystem_id)
+  if (issuerIdOf(vtjsc.issuer) !== ecosystemDid) {
+    throw new UnauthorizedError(`VTJSC ${vtjscId} is not issued by ecosystem ${ecosystemDid}`)
+  }
+
+  return {
+    network,
+    schemaId,
+    title: typeof schema.title === 'string' ? schema.title : undefined,
+    anonCredsIssuerId: issuerId,
+  }
+}
+
+const isActiveParticipant = async (network: VeranaNetwork, did: string, role: AccreditationRole, schemaId: number) => {
+  const query = new URLSearchParams({
+    did,
+    role,
+    schema_id: String(schemaId),
+    participant_state: 'ACTIVE',
+    limit: '1',
+  })
+  const { status, body } = await fetchJson(`${network.indexerUrl}/v4/participant/list?${query.toString()}`)
+  const participants = isObject(body) ? body.participants : undefined
+  if (status !== 200 || !Array.isArray(participants)) {
+    throw new Error(`Participant lookup on ${network.id} failed with HTTP ${status}`)
+  }
+  return participants.length > 0
+}
+
+const checkReference = async (
+  agent: MobileAgent,
+  reference: AnonCredsReference,
+  role: AccreditationRole,
+  verifierDid?: string
+): Promise<Accreditation> => {
+  let title: string | undefined
+  try {
+    const schema = await deriveCredentialSchema(agent, reference)
+    title = schema.title
+    const did = role === 'ISSUER' ? schema.anonCredsIssuerId : verifierDid
+    if (!did) throw new UnauthorizedError('No verifier DID to check')
+    const authorized = await isActiveParticipant(schema.network, did, role, schema.schemaId)
+    return { status: authorized ? 'authorized' : 'unauthorized', schemaTitles: title ? [title] : [] }
+  } catch (error) {
+    const status = error instanceof UnauthorizedError ? 'unauthorized' : 'unverified'
+    logWarn(`Verana ${role} check of ${reference.id} is ${status}: ${String(error)}`)
+    return { status, schemaTitles: title ? [title] : [] }
+  }
+}
+
+export const checkIssuerAccreditation = (agent: MobileAgent, credentialDefinitionId: string) =>
+  checkReference(agent, { kind: 'credentialDefinition', id: credentialDefinitionId }, 'ISSUER')
+
+const pickGroupResult = (results: Accreditation[]): Accreditation =>
+  results.find((result) => result.status === 'authorized') ??
+  results.find((result) => result.status === 'unverified') ??
+  results[0] ?? { status: 'unauthorized', schemaTitles: [] }
+
+export const checkVerifierAccreditation = async (
+  agent: MobileAgent,
+  requestedGroups: AnonCredsReference[][],
+  verifierDid: string | undefined
+): Promise<Accreditation> => {
+  if (!requestedGroups.length) return { status: 'unauthorized', schemaTitles: [] }
+  const checks = new Map<string, Promise<Accreditation>>()
+  const check = (reference: AnonCredsReference) => {
+    const existing = checks.get(reference.id)
+    if (existing) return existing
+    const pending = checkReference(agent, reference, 'VERIFIER', verifierDid)
+    checks.set(reference.id, pending)
+    return pending
+  }
+  const groups = await Promise.all(
+    requestedGroups.map(async (group) => pickGroupResult(await Promise.all(group.map(check))))
+  )
+  const schemaTitles = [...new Set(groups.flatMap((group) => group.schemaTitles))]
+  const status = groups.every((group) => group.status === 'authorized')
+    ? 'authorized'
+    : groups.some((group) => group.status === 'unauthorized')
+      ? 'unauthorized'
+      : 'unverified'
+  return { status, schemaTitles }
+}

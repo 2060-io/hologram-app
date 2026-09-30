@@ -542,6 +542,21 @@
       "disablePINFooter": "Please enter the PIN you set when you enabled Parental Control",
       "pinDoesNotMatchFooter": "Make sure to enter the same PIN, or press Cancel to restart the process",
       "setPINFooter": "Be sure to write down your PIN carefully. There is no way to recover it if it's lost"
+    },
+    "accreditation": {
+      "offersYou": "OFFERS YOU",
+      "requests": "REQUESTS",
+      "thisCredential": "this credential",
+      "authorizedIssuer": "{{service}} is an authorized issuer of {{schema}}",
+      "unauthorizedIssuer": "{{service}} is not an authorized issuer of {{schema}}",
+      "couldNotVerifyIssuer": "Could not verify whether {{service}} is allowed to issue this credential",
+      "authorizedVerifier": "{{service}} is an authorized verifier of {{schema}}",
+      "unauthorizedVerifier": "{{service}} is not an authorized verifier of {{schema}}",
+      "couldNotVerifyVerifier": "Could not verify whether {{service}} is allowed to request this credential",
+      "acceptAnyway": "Accept anyway (unsafe)",
+      "shareAnyway": "Share anyway (unsafe)",
+      "confirmUnsafeAccept": "This issuer could not be proven trustworthy for this credential. Accept it anyway?",
+      "confirmUnsafeShare": "This verifier could not be proven allowed to request this credential. Share it anyway?"
     }
   }
 }
