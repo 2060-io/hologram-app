@@ -7,7 +7,7 @@ import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { useFetchServiceInfo } from '@src/hooks/useFetchServiceInfo'
 import { ServiceInfo, ServiceStatus } from '@src/model'
 import { CredentialDetailsForDisplay } from '@src/services/agent/display'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ScrollView, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -31,14 +31,18 @@ const BaseCredentialOffer: React.FC<Props> = ({ navigation, credentialDetails, a
     alwaysFetch: true,
   })
   const [showModalRefuseConfirmation, setShowModalRefuseConfirmation] = useState(false)
-  const initialServiceInfo = useRef<ServiceInfo>({
-    did,
-    id: did,
-    name: credentialDetails.mainInfo.issuer.name,
-    logoUrl: credentialDetails.mainInfo.issuer.logoUrl,
-    minimumAgeRequired: 0,
-    status: ServiceStatus.Resolving,
-  })
+  const { name: issuerName, logoUrl: issuerLogoUrl } = credentialDetails.mainInfo.issuer
+  const initialServiceInfo = useMemo<ServiceInfo>(
+    () => ({
+      did,
+      id: did,
+      name: issuerName,
+      logoUrl: issuerLogoUrl,
+      minimumAgeRequired: 0,
+      status: ServiceStatus.Resolving,
+    }),
+    [did, issuerName, issuerLogoUrl]
+  )
 
   const displayModalRefuseConfirmation = () => setShowModalRefuseConfirmation(true)
   const hideModalRefuseConfirmation = () => setShowModalRefuseConfirmation(false)
@@ -103,7 +107,7 @@ const BaseCredentialOffer: React.FC<Props> = ({ navigation, credentialDetails, a
                 {t('credentialOffer.issuerInformation')}
               </Text>
               <ServiceInformation
-                initialServiceInfo={initialServiceInfo.current}
+                initialServiceInfo={initialServiceInfo}
                 isFetchingInfo={isFetchingInfo}
                 serviceInfo={serviceInfo}
                 failedFetchInfo={failedFetchInfo}

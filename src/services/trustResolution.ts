@@ -60,11 +60,10 @@ export async function getServiceInfo({ did }: { did: string }): Promise<ServiceI
       ...operatorEntity,
       certificationEntity: { ...operatorEntity, trustRegistry: { name: operatorEntity.entityName, status } },
     },
-    network: verdict && {
-      id: verdict.network.id,
-      label: verdict.network.label,
-      production: verdict.network.production,
-    },
+    network:
+      verdict && status !== ServiceStatus.Unverified
+        ? { id: verdict.network.id, label: verdict.network.label, production: verdict.network.production }
+        : undefined,
     evaluatedAtTime: answer?.evaluatedAtTime,
     expiresAtTime: answer?.expiresAtTime ?? undefined,
     ecsCredentials: trustedAnswer?.ecsCredentials,
