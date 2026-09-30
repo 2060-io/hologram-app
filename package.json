@@ -141,7 +141,8 @@
     "readable-stream": "^4.7.0",
     "realm": "20.2.0",
     "rn-emoji-keyboard": "1.7.0",
-    "string-width": "4.2.3"
+    "string-width": "4.2.3",
+    "web-streams-polyfill": "^3.3.3"
   },
   "devDependencies": {
     "@babel/plugin-proposal-decorators": "7.28.0",
