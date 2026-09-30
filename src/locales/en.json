@@ -173,7 +173,9 @@
       "errorGettingInvitation": "There was an error getting current invitation",
       "errorCreatingInvitation": "There was an error creating invitation",
       "errorProcessingInvitation": "There was an error processing invitation",
-      "pressRefresh": "Press Refresh to invalidate current invitation code and create a new one."
+      "pressRefresh": "Press Refresh to invalidate current invitation code and create a new one.",
+      "connectAnyway": "Connect anyway (unsafe)",
+      "confirmUnsafeConnect": "This service could not be proven trustworthy. Connect anyway?"
     },
     "credential": {
       "noCredentials": "You do not have any credential yet",

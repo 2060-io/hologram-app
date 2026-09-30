@@ -61,6 +61,9 @@ const ConnectionInvitationForVerifiableService = (props: ConnectionInvitationPro
         </View>
       }
       ageRestricted={ageRestricted}
+      trustStatus={
+        isFetchingInfo ? ServiceStatus.Resolving : failedFetchInfo ? ServiceStatus.Unverified : serviceStatus
+      }
     />
   )
 }

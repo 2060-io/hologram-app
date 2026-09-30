@@ -164,6 +164,97 @@ export const processImplicitInvitation = async (agent: MobileAgent, did: string)
   }
 }
 
+const ATTACHED_REQUEST_TIMEOUT_MS = 30 * 1000
+
+export const acceptInvitationAndWaitForRequest = async (
+  agent: MobileAgent,
+  invitation: DidCommOutOfBandInvitation,
+  outOfBandRecord: DidCommOutOfBandRecord,
+  existingConnection?: DidCommConnectionRecord,
+  label?: string
+): Promise<ProcessInvitationResult> => {
+  // eslint-disable-next-line prefer-const
+  let connectionId: string | undefined
+
+  const credentialOffer = agent.events
+    .observable<DidCommCredentialStateChangedEvent>(DidCommCredentialEventTypes.DidCommCredentialStateChanged)
+    .pipe(
+      filter((event) => event.payload.credentialExchangeRecord.state === DidCommCredentialState.OfferReceived),
+      filter((event) =>
+        connectionId
+          ? event.payload.credentialExchangeRecord.connectionId === connectionId
+          : event.payload.credentialExchangeRecord.parentThreadId === invitation.id
+      )
+    )
+
+  const proofRequest = agent.events
+    .observable<DidCommProofStateChangedEvent>(DidCommProofEventTypes.ProofStateChanged)
+    .pipe(
+      filter((event) =>
+        [DidCommProofState.RequestReceived, DidCommProofState.ProposalReceived].includes(
+          event.payload.proofRecord.state
+        )
+      ),
+      filter((event) =>
+        connectionId
+          ? event.payload.proofRecord.connectionId === connectionId
+          : event.payload.proofRecord.parentThreadId === invitation.id
+      )
+    )
+
+  const eventPromise = firstValueFrom(
+    merge(credentialOffer, proofRequest).pipe(first(), timeout(ATTACHED_REQUEST_TIMEOUT_MS))
+  )
+  const { connectionRecord } = await acceptInvitation(agent.context, { outOfBandId: outOfBandRecord.id, label })
+  connectionId = connectionRecord?.id
+  const isConnectionService = connectionRecord ? isService(connectionRecord) : false
+  if (!isConnectionService && connectionRecord?.id) {
+    agent.didcomm.connections.addConnectionType(connectionRecord.id, 'Ephemeral')
+  }
+  try {
+    const event = await eventPromise
+    if (event.type === DidCommCredentialEventTypes.DidCommCredentialStateChanged) {
+      return {
+        success: true,
+        invitationType: DidcommInvitationType.CredentialOffer,
+        existingConnectionId: existingConnection?.id,
+        recordId: event.payload.credentialExchangeRecord.id,
+      }
+    } else if (event.type === DidCommProofEventTypes.ProofStateChanged) {
+      if (event.payload.proofRecord.state === DidCommProofState.RequestReceived) {
+        return {
+          success: true,
+          invitationType: DidcommInvitationType.PresentationRequest,
+          existingConnectionId: existingConnection?.id,
+          recordId: event.payload.proofRecord.id,
+        }
+      }
+      return {
+        success: true,
+        invitationType: DidcommInvitationType.CredentialPresentation,
+        existingConnectionId: existingConnection?.id,
+        recordId: event.payload.proofRecord.id,
+      }
+    }
+  } catch (error) {
+    logError(`Error while waiting for credential offer or proof request. Deleting out of band record`)
+    // Delete OOB record
+    const outOfBandRepository = agent.dependencyManager.resolve(DidCommOutOfBandRepository)
+    await outOfBandRepository.deleteById(agent.context, outOfBandRecord.id)
+
+    // Delete connection record (only if it was created from this flow)
+    if (!existingConnection && connectionRecord) {
+      log(`Deleting connection`)
+      await deletePendingConnection(agent, connectionRecord)
+    }
+    return {
+      success: false,
+      error: (error as Error).message,
+    }
+  }
+  return { success: false, error: 'No credential offer or proof request received' }
+}
+
 /**
  * Process a DIDComm invitation by assigning an out of band record to it. In case of regular connection
  * invitations, it will return specifying if there was already a connection associated to it.
@@ -212,99 +303,19 @@ export const processInvitation = async (
       throw new Error('Message request is not from supported protocol.')
     }
 
-    // eslint-disable-next-line prefer-const
-    let connectionId: string | undefined
-
-    const credentialOffer = agent.events
-      .observable<DidCommCredentialStateChangedEvent>(DidCommCredentialEventTypes.DidCommCredentialStateChanged)
-      .pipe(
-        filter((event) => event.payload.credentialExchangeRecord.state === DidCommCredentialState.OfferReceived),
-        filter((event) =>
-          connectionId
-            ? event.payload.credentialExchangeRecord.connectionId === connectionId
-            : event.payload.credentialExchangeRecord.parentThreadId === invitation.id
-        )
-      )
-
-    const proofRequest = agent.events
-      .observable<DidCommProofStateChangedEvent>(DidCommProofEventTypes.ProofStateChanged)
-      .pipe(
-        filter((event) =>
-          [DidCommProofState.RequestReceived, DidCommProofState.ProposalReceived].includes(
-            event.payload.proofRecord.state
-          )
-        ),
-        filter((event) =>
-          connectionId
-            ? event.payload.proofRecord.connectionId === connectionId
-            : event.payload.proofRecord.parentThreadId === invitation.id
-        )
-      )
-
-    const eventPromise = firstValueFrom(
-      merge(credentialOffer, proofRequest).pipe(
-        first(),
-        // Wait up to 10 seconds to receive event: TODO add possibility of canceling the process
-        timeout(10 * 1000)
-      )
-    )
-    const { connectionRecord } = await acceptInvitation(agent.context, { outOfBandId: outOfBandRecord.id })
-    connectionId = connectionRecord?.id
-    const isConnectionService = connectionRecord ? isService(connectionRecord) : false
-    if (!isConnectionService && connectionRecord?.id) {
-      agent.didcomm.connections.addConnectionType(connectionRecord.id, 'Ephemeral')
-    }
-    try {
-      const event = await eventPromise
-      if (event.type === DidCommCredentialEventTypes.DidCommCredentialStateChanged) {
-        return {
-          success: true,
-          invitationType: DidcommInvitationType.CredentialOffer,
-          existingConnectionId: existingConnection?.id,
-          recordId: event.payload.credentialExchangeRecord.id,
-        }
-      } else if (event.type === DidCommProofEventTypes.ProofStateChanged) {
-        if (event.payload.proofRecord.state === DidCommProofState.RequestReceived) {
-          return {
-            success: true,
-            invitationType: DidcommInvitationType.PresentationRequest,
-            existingConnectionId: existingConnection?.id,
-            recordId: event.payload.proofRecord.id,
-          }
-        }
-        return {
-          success: true,
-          invitationType: DidcommInvitationType.CredentialPresentation,
-          existingConnectionId: existingConnection?.id,
-          recordId: event.payload.proofRecord.id,
-        }
-      }
-    } catch (error) {
-      logError(`Error while waiting for credential offer or proof request. Deleting out of band record`)
-      // Delete OOB record
-      const outOfBandRepository = agent.dependencyManager.resolve(DidCommOutOfBandRepository)
-      await outOfBandRepository.deleteById(agent.context, outOfBandRecord.id)
-
-      // Delete connection record (only if it was created from this flow)
-      if (!existingConnection && connectionRecord) {
-        log(`Deleting connection`)
-        await deletePendingConnection(agent, connectionRecord)
-      }
+    if (!existingConnection) {
       return {
-        success: false,
-        error: (error as Error).message,
+        success: true,
+        invitationType: DidcommInvitationType.ConnectionRequest,
+        recordId: outOfBandRecord.id,
       }
     }
+    return await acceptInvitationAndWaitForRequest(agent, invitation, outOfBandRecord, existingConnection)
   } catch (error) {
     return {
       success: false,
       error: (error as Error).message,
     }
-  }
-
-  return {
-    success: false,
-    error: 'Unknown error',
   }
 }
 export const createInvitation = async (

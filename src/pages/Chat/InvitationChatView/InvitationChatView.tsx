@@ -4,19 +4,15 @@ import { ConnectionRefusedByAge, SvgIcon, Text, VerifiedIcon } from '@src/compon
 import Avatar from '@src/components/common/Avatar/Avatar'
 import { useFetchServiceInfo } from '@src/hooks'
 import { useChats, useChatThreadById, useUserProfile } from '@src/hooks/agent'
-import { AgentActionType } from '@src/hooks/agent/actions/AgentAction'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { useValidateKidAgeRestrictions } from '@src/hooks/useValidateKidAgeRestrictions'
 import { ChatEntryRole, InvitationMetadata, ServiceStatus } from '@src/model'
 import { InvitationState } from '@src/model/InvitationState'
-import { AgentActionQueueSingleton } from '@src/services/AgentActionQueueSingleton'
 import { MobileAgent } from '@src/services/agent/MobileAgent'
-import { acceptInvitation } from '@src/services/agent/oob'
-import { logError } from '@src/utils'
 import { toast } from '@src/utils/toast'
-import React, { memo, useMemo, useTransition } from 'react'
+import React, { memo, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ActivityIndicator, Image, TouchableOpacity, View } from 'react-native'
+import { Image, TouchableOpacity, View } from 'react-native'
 import { BlueButton, Header } from '../components'
 import getStyles from './styles'
 
@@ -29,8 +25,7 @@ interface Props {
 const isService = (did?: string) => did !== undefined && !did.startsWith('did:peer')
 
 const InvitationChatView = ({ associatedRecordId: outOfBandId, metadata, role, agent }: Props) => {
-  const [isAcceptingInvitation, startAcceptInvitationTransition] = useTransition()
-  const { activeChatThreadId, findOrCreateThread } = useChats()
+  const { activeChatThreadId } = useChats()
   const chatThread = useChatThreadById(activeChatThreadId ?? '')
   const { userProfileData } = useUserProfile()
   const theme = useTheme()
@@ -50,34 +45,6 @@ const InvitationChatView = ({ associatedRecordId: outOfBandId, metadata, role, a
     const outOfBandRecord = await agent?.didcomm.oob.findById(outOfBandId)
     if (outOfBandRecord) navigation.dispatch(StackActions.push('ConnectionInvitation', { outOfBandRecord }))
   }
-  const onAccept = async () => {
-    if (!agent) return
-    startAcceptInvitationTransition(async () => {
-      try {
-        const { connectionRecord } = await acceptInvitation(agent.context, {
-          outOfBandId,
-          label: userProfileData?.displayName,
-        })
-        if (connectionRecord?.didcommVersion === 'v2') {
-          AgentActionQueueSingleton.instance.addJob({
-            type: AgentActionType.SendTrustPing,
-            parameters: { connectionId: connectionRecord.id },
-          })
-        }
-        const chatThreadId = findOrCreateThread({ connection: connectionRecord! }).id
-        navigation.dispatch(
-          StackActions.replace('ChatStack', {
-            screen: 'Chat',
-            params: { chatThreadId },
-          })
-        )
-      } catch (error) {
-        logError('Error accepting invitation', error)
-        toast({ type: 'error', message: `${error}` })
-      }
-    })
-  }
-
   const goToExistingConnection = async () => {
     if (!agent) return
     const [connection] = await agent.didcomm.connections.findAllByOutOfBandId(outOfBandId)
@@ -94,7 +61,7 @@ const InvitationChatView = ({ associatedRecordId: outOfBandId, metadata, role, a
         <BlueButton
           disabled={ageRestricted}
           text={t('general.connect')}
-          onPress={onAccept}
+          onPress={goToInvitation}
           style={ageRestricted ? styles.acceptWithAgeRestricted : styles.acceptWithoutAgeRestricted}
         />
         {ageRestricted && (
@@ -123,9 +90,8 @@ const InvitationChatView = ({ associatedRecordId: outOfBandId, metadata, role, a
   }
 
   const renderFooter = useMemo(() => {
-    if (isAcceptingInvitation) return <ActivityIndicator color={theme.colors.green} />
     return footer[state]
-  }, [isAcceptingInvitation, state, ageRestricted, theme.colors])
+  }, [state, ageRestricted, theme.colors])
 
   return (
     <>
