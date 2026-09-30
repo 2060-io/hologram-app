@@ -1,75 +1,72 @@
-import { ServiceInfo } from '@src/model'
-import { log, logError } from '@src/utils'
-import { IOrg, resolveDID } from '@verana-labs/verre'
-import { Resolver } from 'did-resolver'
-import { MobileAgent } from './agent'
+import { ServiceInfo, ServiceStatus } from '@src/model'
+import { logError } from '@src/utils'
+import { type ResolveResponse, resolveTrust } from './verana/indexer'
 
-function getCredoTsDidResolver(agent: MobileAgent): Resolver {
-  return new Resolver(
-    new Proxy(
-      {},
-      {
-        get: (_target, _method: string) => {
-          return async (did: string) => agent.dids.resolve(did)
-        },
-      }
-    )
-  )
-}
+const NO_DID_DOCUMENT_METHODS = ['key', 'jwk', 'peer']
 
-export async function getServiceInfo(options: { agent: MobileAgent; did: string }): Promise<ServiceInfo | null> {
-  const { agent, did } = options
+const STATUS_BY_RESOLUTION = {
+  trusted: ServiceStatus.Trusted,
+  untrusted: ServiceStatus.Untrusted,
+  unverified: ServiceStatus.Unverified,
+} as const
 
-  const trustResolution = await resolveDID(did, {
-    skipDigestSRICheck: true,
-    logger: agent.config.logger,
-    didResolver: getCredoTsDidResolver(agent),
-    verifiablePublicRegistries: [
-      {
-        id: 'vpr:verana:vna-testnet-1',
-        baseUrls: ['https://idx.testnet.verana.network/verana'],
-        production: true, // FIXME: set to false once we have mainnet ready
-      },
-      {
-        id: 'vpr:verana:vna-devnet-1',
-        baseUrls: ['https://idx.devnet.verana.network/verana'],
-        production: true, // FIXME: set to false once we have mainnet ready
-      },
-    ],
-  })
+const stringOf = (value: unknown) => (typeof value === 'string' ? value : undefined)
 
-  if (!trustResolution.service || !trustResolution.didDocument) {
-    logError(`trustResolution: ${JSON.stringify(trustResolution)}`)
-    return null
+const subjectOf = (response: ResolveResponse | undefined, ecsSchemas: string[]) =>
+  response?.ecsCredentials?.find((credential) => ecsSchemas.includes(credential.ecsSchema))?.credentialSubject
+
+export async function getServiceInfo({ did }: { did: string }): Promise<ServiceInfo> {
+  if (NO_DID_DOCUMENT_METHODS.includes(did.split(':')[1])) {
+    return {
+      did,
+      id: did,
+      name: '',
+      minimumAgeRequired: 0,
+      status: ServiceStatus.Untrusted,
+      untrustedReason: 'noDidDocument',
+    }
   }
-  log(`trustResolution: ${JSON.stringify(trustResolution)}`)
 
-  const serviceInfo: ServiceInfo = {
-    did: trustResolution.didDocument.id,
-    id: trustResolution.didDocument.id,
-    minimumAgeRequired: trustResolution.service.minimumAgeRequired,
-    name: trustResolution.service.name,
-    status: trustResolution.outcome,
-    dataPrivacyUrl: trustResolution.service.privacyPolicy,
-    description: trustResolution.service.description,
-    logoUrl: trustResolution.service.logo,
-    termsAndConditionsUrl: trustResolution.service.termsAndConditions,
-    serviceProvider: {
-      certificationEntity: {
-        countryCode: (trustResolution.serviceProvider! as IOrg).countryCode,
-        entityName: (trustResolution.serviceProvider! as IOrg).name,
-        officialPublicRegistryNumber: (trustResolution.serviceProvider! as IOrg).registryId,
-        status: trustResolution.outcome,
-        trustRegistry: {
-          name: (trustResolution.serviceProvider! as IOrg).name,
-          status: trustResolution.outcome,
-        },
-      },
-      status: trustResolution.outcome,
-      countryCode: (trustResolution.serviceProvider! as IOrg).countryCode,
-      entityName: (trustResolution.serviceProvider! as IOrg).name,
-      officialPublicRegistryNumber: (trustResolution.serviceProvider! as IOrg).registryId,
+  const resolution = await resolveTrust(did)
+  for (const verdict of resolution.verdicts) {
+    if (verdict.kind === 'failed') logError(`Verana resolve of ${did} failed on ${verdict.network.id}`, verdict.error)
+  }
+
+  const status = STATUS_BY_RESOLUTION[resolution.status]
+  const verdict = resolution.verdict
+  const answer = verdict && verdict.kind !== 'failed' ? verdict.response : undefined
+  const trustedAnswer = status === ServiceStatus.Trusted ? answer : undefined
+  const service = subjectOf(trustedAnswer, ['ServiceCredential'])
+  const operator = subjectOf(trustedAnswer, ['OrganizationCredential', 'PersonaCredential'])
+  const operatorEntity = operator && {
+    countryCode: stringOf(operator.countryCode) ?? '',
+    entityName: stringOf(operator.name) ?? '',
+    officialPublicRegistryNumber: stringOf(operator.registryId) ?? '',
+    status,
+  }
+
+  return {
+    did,
+    id: did,
+    status,
+    name: stringOf(service?.name) ?? '',
+    description: stringOf(service?.description),
+    logoUrl: stringOf(service?.logoUri),
+    dataPrivacyUrl: stringOf(service?.privacyPolicyUri),
+    termsAndConditionsUrl: stringOf(service?.termsAndConditionsUri),
+    minimumAgeRequired: typeof service?.minimumAgeRequired === 'number' ? service.minimumAgeRequired : 0,
+    serviceProvider: operatorEntity && {
+      ...operatorEntity,
+      certificationEntity: { ...operatorEntity, trustRegistry: { name: operatorEntity.entityName, status } },
     },
+    network: verdict && {
+      id: verdict.network.id,
+      label: verdict.network.label,
+      production: verdict.network.production,
+    },
+    evaluatedAtTime: answer?.evaluatedAtTime,
+    expiresAtTime: answer?.expiresAtTime ?? undefined,
+    ecsCredentials: trustedAnswer?.ecsCredentials,
+    presentations: answer?.presentations,
   }
-  return serviceInfo
 }

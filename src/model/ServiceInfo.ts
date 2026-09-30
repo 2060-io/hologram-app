@@ -1,6 +1,11 @@
-import { TrustResolutionOutcome } from '@verana-labs/verre'
+import type { EcsCredential, TrustPresentation } from '@src/services/verana/indexer'
 
-export type ServiceStatus = TrustResolutionOutcome
+export enum ServiceStatus {
+  Resolving = 'resolving',
+  Trusted = 'trusted',
+  Untrusted = 'untrusted',
+  Unverified = 'unverified',
+}
 
 export type BaseEntity = {
   countryCode: string
@@ -31,6 +36,12 @@ export type ServiceInfo = {
   name: string
   serviceProvider?: ServiceProvider
   status: ServiceStatus
+  untrustedReason?: 'noDidDocument'
+  network?: { id: string; label: string; production: boolean }
+  evaluatedAtTime?: string
+  expiresAtTime?: string
+  ecsCredentials?: EcsCredential[]
+  presentations?: TrustPresentation[]
   lastTimeUpdated?: number
 }
 

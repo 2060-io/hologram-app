@@ -1,6 +1,5 @@
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { ServiceStatus } from '@src/model'
-import { TrustResolutionOutcome } from '@verana-labs/verre'
 import React from 'react'
 import { StyleProp, View, ViewStyle } from 'react-native'
 import SvgIcon, { IconsNames } from '../SvgIcon'
@@ -14,24 +13,24 @@ type Props = {
 const VerifiedIcon = ({ style, status }: Props) => {
   const theme = useTheme()
   const iconNames: Record<ServiceStatus, keyof IconsNames> = {
-    verified: 'verifiedMark',
-    'verified-test': 'warning',
-    'not-trusted': 'warning',
-    invalid: 'warning',
+    [ServiceStatus.Trusted]: 'verifiedMark',
+    [ServiceStatus.Untrusted]: 'warning',
+    [ServiceStatus.Unverified]: 'warning',
+    [ServiceStatus.Resolving]: 'warning',
   }
 
   const backgroundColors: Record<ServiceStatus, string> = {
-    verified: theme.colors.green,
-    invalid: theme.colors.red,
-    'not-trusted': theme.colors.orange,
-    'verified-test': theme.colors.orange,
+    [ServiceStatus.Trusted]: theme.colors.green,
+    [ServiceStatus.Untrusted]: theme.colors.red,
+    [ServiceStatus.Unverified]: theme.colors.lightGrey,
+    [ServiceStatus.Resolving]: theme.colors.lightGrey,
   }
-  const backgroundColor = backgroundColors[status]
+  const backgroundColor = backgroundColors[status] ?? theme.colors.lightGrey
 
-  const dimensions = status === TrustResolutionOutcome.VERIFIED ? '80%' : '65%'
+  const dimensions = status === ServiceStatus.Trusted ? '80%' : '65%'
   return (
     <View style={[styles.container, { backgroundColor }, style]}>
-      <SvgIcon name={iconNames[status]} fill={theme.colors.white} width={dimensions} height={dimensions} />
+      <SvgIcon name={iconNames[status] ?? 'warning'} fill={theme.colors.white} width={dimensions} height={dimensions} />
     </View>
   )
 }

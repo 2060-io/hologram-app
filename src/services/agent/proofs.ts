@@ -5,8 +5,8 @@ import {
   LegacyIndyDidCommProofFormat,
 } from '@credo-ts/anoncreds'
 import { DidCommMessage, DidCommProofExchangeRecord, DidCommProofFormatPayload } from '@credo-ts/didcomm'
+import { ServiceStatus } from '@src/model'
 import { logError } from '@src/utils'
-import { TrustResolutionOutcome } from '@verana-labs/verre'
 import { getServiceInfo } from '../trustResolution'
 import { CredentialMainInfo, sanitizeString } from './display'
 import { MobileAgent } from './MobileAgent'
@@ -144,12 +144,11 @@ export const proposalGetCredentialInfo = async (options: { agent: MobileAgent; p
         const credentialDefinitionId = firstAttribute.restrictions[0].cred_def_id
 
         if (credentialDefinitionId) {
-          const serviceInfo = await getServiceInfo({
-            agent: agent,
-            did: credentialDefinitionId,
-          })
           const credentialDefinition = (await agent.modules.anoncreds.getCredentialDefinition(credentialDefinitionId))
             .credentialDefinition
+          const serviceInfo = credentialDefinition?.issuerId
+            ? await getServiceInfo({ did: credentialDefinition.issuerId })
+            : undefined
           const schemaId = credentialDefinition?.schemaId
           const schemaName = schemaId ? ((await agent.modules.anoncreds.getSchema(schemaId)).schema?.name ?? '') : ''
           credentialMainInfo = {
@@ -158,9 +157,9 @@ export const proposalGetCredentialInfo = async (options: { agent: MobileAgent; p
             schemaName: sanitizeString(schemaName),
             issuer: {
               id: credentialDefinition?.issuerId ?? '',
-              name: serviceInfo?.name ?? credentialDefinitionId,
+              name: serviceInfo?.name || credentialDefinitionId,
               logoUrl: serviceInfo?.logoUrl,
-              status: serviceInfo?.status ?? TrustResolutionOutcome.INVALID,
+              status: serviceInfo?.status ?? ServiceStatus.Unverified,
             },
           }
         }

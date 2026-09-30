@@ -11,9 +11,8 @@ import {
 } from '@credo-ts/core'
 import { DidCommCredentialState } from '@credo-ts/didcomm'
 import { OpenId4VciResolvedCredentialOffer } from '@credo-ts/openid4vc'
+import { ServiceStatus } from '@src/model'
 import { IssuerInfo, VerifierInfo } from '@src/model/ServiceInfo'
-import { TrustResolutionOutcome } from '@verana-labs/verre'
-
 import { MobileAgent } from './MobileAgent'
 import { getDidCommCredentialDisplayMetadata } from './RecordMetadata'
 import type { W3cCredentialJson, W3cIssuerJson } from './types'
@@ -190,7 +189,7 @@ export async function getCredentialDetailsFromExchange(
           id: displayMetadata?.issuerId ?? '',
           logoUrl: displayMetadata?.issuerLogoUrl,
           name: displayMetadata?.issuerName ?? '',
-          status: displayMetadata?.issuerStatus ?? TrustResolutionOutcome.INVALID,
+          status: displayMetadata?.issuerStatus ?? ServiceStatus.Unverified,
         },
       },
       attributes,
@@ -240,7 +239,7 @@ export function getCredentialMainInfo(
         id: issuerId ?? '',
         name: issuerDisplay.name,
         logoUrl: issuerDisplay.logo?.url,
-        status: TrustResolutionOutcome.INVALID,
+        status: ServiceStatus.Unverified,
       },
     }
   }
@@ -258,7 +257,7 @@ export function getOfferedCredentialDetailsForDisplay(
     mainInfo: {
       createdAt: new Date(),
       id: 'id',
-      issuer: { id: 'issuerId', name: 'issuerName', status: TrustResolutionOutcome.INVALID },
+      issuer: { id: 'issuerId', name: 'issuerName', status: ServiceStatus.Unverified },
       recordId: 'recordId',
       schemaName: 'Schema',
     },

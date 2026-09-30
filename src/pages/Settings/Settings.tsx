@@ -13,6 +13,7 @@ import { AgentActionQueueSingleton } from '@src/services/AgentActionQueueSinglet
 import { AgentSingleton } from '@src/services/AgentSingleton'
 import { deleteAllKeys } from '@src/services/keys'
 import { removeStorageData, USER_INVITATION_OUT_OF_BAND_RECORD_ID } from '@src/services/localStorage'
+import { VERANA_NETWORKS } from '@src/services/verana/networks'
 import { dataUrl, logError } from '@src/utils'
 import { deleteDir, walletDirectoryPath } from '@src/utils/RNFS'
 import { toast } from '@src/utils/toast'
@@ -243,6 +244,11 @@ const Settings = ({ navigation }: Props) => {
             <OptionsList options={options} />
             <View style={styles.appVersionContainer}>
               <Text style={styles.appVersionText}>{version}</Text>
+              {VERANA_NETWORKS.map((network) => (
+                <Text key={network.id} style={styles.appVersionText}>
+                  {`${network.label} · ${network.indexerUrl}`}
+                </Text>
+              ))}
             </View>
           </View>
         </TouchableWithoutFeedback>
