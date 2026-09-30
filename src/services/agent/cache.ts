@@ -6,7 +6,7 @@ import { getConnectionDisplayName, getConnectionDisplayPicture } from '@src/util
 const cacheKey = (did: string) => `serviceInfo:v4:${did}`
 
 const isExpired = (serviceInfo: ServiceInfo) =>
-  serviceInfo.expiresAtTime !== undefined && Date.parse(serviceInfo.expiresAtTime) <= Date.now()
+  !serviceInfo.expiresAtTime || Date.parse(serviceInfo.expiresAtTime) <= Date.now()
 
 export async function getInCacheServiceInfo(did: string, agentContext: AgentContext): Promise<ServiceInfo | null> {
   const cache = agentContext.dependencyManager.resolve(CacheModuleConfig).cache
