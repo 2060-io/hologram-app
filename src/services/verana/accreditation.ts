@@ -19,17 +19,20 @@ const VPR_SCHEMA_REF = /^vpr:verana:([^:/]+):cs:(\d+)$/
 
 class UnauthorizedError extends Error {}
 
+const resolutionError = (reference: AnonCredsReference, error: string | undefined) => {
+  const message = `${reference.kind} ${reference.id} not resolved: ${error}`
+  return error === 'unsupportedAnonCredsMethod' ? new UnauthorizedError(message) : new Error(message)
+}
+
 const resolveAnonCreds = async (agent: MobileAgent, reference: AnonCredsReference) => {
   const options = { useLocalRecord: false }
   if (reference.kind === 'credentialDefinition') {
     const result = await agent.modules.anoncreds.getCredentialDefinition(reference.id, options)
-    if (!result.credentialDefinition) {
-      throw new Error(`Credential definition ${reference.id} not resolved: ${result.resolutionMetadata.error}`)
-    }
+    if (!result.credentialDefinition) throw resolutionError(reference, result.resolutionMetadata.error)
     return { issuerId: result.credentialDefinition.issuerId, metadata: result.credentialDefinitionMetadata }
   }
   const result = await agent.modules.anoncreds.getSchema(reference.id, options)
-  if (!result.schema) throw new Error(`Schema ${reference.id} not resolved: ${result.resolutionMetadata.error}`)
+  if (!result.schema) throw resolutionError(reference, result.resolutionMetadata.error)
   return { issuerId: result.schema.issuerId, metadata: result.schemaMetadata }
 }
 
@@ -46,6 +49,13 @@ const deriveCredentialSchema = async (agent: MobileAgent, reference: AnonCredsRe
   if (!isObject(proof) || proof.type !== 'DataIntegrityProof' || proof.cryptosuite !== 'eddsa-jcs-2022') {
     throw new UnauthorizedError(`VTJSC ${vtjscId} is not secured with eddsa-jcs-2022`)
   }
+  const vtjscIssuer = issuerIdOf(vtjsc.issuer)
+  const signerDid = typeof proof.verificationMethod === 'string' ? proof.verificationMethod.split('#')[0] : undefined
+  if (!signerDid || signerDid !== vtjscIssuer)
+    throw new UnauthorizedError(`VTJSC ${vtjscId} is not signed by its issuer`)
+  const signer = await agent.dids.resolve(signerDid)
+  if (!signer.didDocument)
+    throw new Error(`VTJSC signer ${signerDid} not resolved: ${signer.didResolutionMetadata.error}`)
   const verification = await agent.w3cDataIntegrity.verifySecuredDocument(vtjsc as W3cDataIntegritySecuredDocument)
   if (!verification.verified) throw new UnauthorizedError(`VTJSC ${vtjscId} proof is invalid`)
 
@@ -57,13 +67,16 @@ const deriveCredentialSchema = async (agent: MobileAgent, reference: AnonCredsRe
   const schemaId = Number(match[2])
 
   const schemaResponse = await fetchJson(`${network.indexerUrl}/v4/credential-schema/get/${schemaId}`)
-  if (schemaResponse.status === 404) throw new UnauthorizedError(`Credential schema ${schemaId} not found`)
-  const schema = isObject(schemaResponse.body) ? schemaResponse.body.schema : undefined
+  const schemaBody = schemaResponse.body
+  if (schemaResponse.status === 404 && isObject(schemaBody) && typeof schemaBody.error === 'string') {
+    throw new UnauthorizedError(`Credential schema ${schemaId} not found`)
+  }
+  const schema = isObject(schemaBody) ? schemaBody.schema : undefined
   if (schemaResponse.status !== 200 || !isObject(schema) || typeof schema.ecosystem_id !== 'number') {
     throw new Error(`Credential schema ${schemaId} lookup failed with HTTP ${schemaResponse.status}`)
   }
   const ecosystemDid = await getEcosystemDid(network, schema.ecosystem_id)
-  if (issuerIdOf(vtjsc.issuer) !== ecosystemDid) {
+  if (vtjscIssuer !== ecosystemDid) {
     throw new UnauthorizedError(`VTJSC ${vtjscId} is not issued by ecosystem ${ecosystemDid}`)
   }
 
@@ -88,7 +101,14 @@ const isActiveParticipant = async (network: VeranaNetwork, did: string, role: Ac
   if (status !== 200 || !Array.isArray(participants)) {
     throw new Error(`Participant lookup on ${network.id} failed with HTTP ${status}`)
   }
-  return participants.length > 0
+  return participants.some(
+    (participant) =>
+      isObject(participant) &&
+      participant.did === did &&
+      participant.role === role &&
+      Number(participant.schema_id) === schemaId &&
+      participant.participant_state === 'ACTIVE'
+  )
 }
 
 const checkReference = async (

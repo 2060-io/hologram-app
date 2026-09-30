@@ -45,7 +45,11 @@ const BaseCredentialOffer: React.FC<Props> = ({
   })
   const [showModalRefuseConfirmation, setShowModalRefuseConfirmation] = useState(false)
   const [showModalUnsafeAccept, setShowModalUnsafeAccept] = useState(false)
-  const trustStatus = isFetchingInfo ? ServiceStatus.Resolving : (serviceInfo?.status ?? ServiceStatus.Resolving)
+  const trustStatus = isFetchingInfo
+    ? ServiceStatus.Resolving
+    : failedFetchInfo
+      ? ServiceStatus.Unverified
+      : (serviceInfo?.status ?? ServiceStatus.Resolving)
   const canAccept =
     trustStatus !== ServiceStatus.Resolving &&
     !isCheckingAccreditation &&

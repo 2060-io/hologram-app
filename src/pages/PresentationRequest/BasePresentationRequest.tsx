@@ -65,7 +65,11 @@ const BasePresentationRequest: React.FC<Props> = ({
   const [showModalRefuseConfirmation, setShowModalRefuseConfirmation] = useState(false)
   const hasCompatibleCredentials = submission.entries.some((entry) => entry.credentials.length > 0)
   const [showModalUnsafeShare, setShowModalUnsafeShare] = useState(false)
-  const trustStatus = isFetchingInfo ? ServiceStatus.Resolving : (serviceInfo?.status ?? ServiceStatus.Resolving)
+  const trustStatus = isFetchingInfo
+    ? ServiceStatus.Resolving
+    : failedFetchInfo
+      ? ServiceStatus.Unverified
+      : (serviceInfo?.status ?? ServiceStatus.Resolving)
   const canShare =
     trustStatus !== ServiceStatus.Resolving &&
     !isCheckingAccreditation &&
@@ -199,20 +203,22 @@ const BasePresentationRequest: React.FC<Props> = ({
                     </View>
                   )
                 })}
-                <MainButton
-                  disabled={!enabledPresentButton}
-                  text={
-                    isSafeToShare
-                      ? t('credential.present', { count: submission?.entries?.length })
-                      : t('accreditation.shareAnyway')
-                  }
-                  onPress={isSafeToShare ? accept : () => setShowModalUnsafeShare(true)}
-                  style={[
-                    enabledPresentButton ? styles.enabledAcceptButton : styles.disabledAcceptButton,
-                    !isSafeToShare && styles.unsafeAcceptButton,
-                  ]}
-                  testID={isSafeToShare ? 'request-share' : 'request-share-unsafe'}
-                />
+                {canShare && (
+                  <MainButton
+                    disabled={!enabledPresentButton}
+                    text={
+                      isSafeToShare
+                        ? t('credential.present', { count: submission?.entries?.length })
+                        : t('accreditation.shareAnyway')
+                    }
+                    onPress={isSafeToShare ? accept : () => setShowModalUnsafeShare(true)}
+                    style={[
+                      enabledPresentButton ? styles.enabledAcceptButton : styles.disabledAcceptButton,
+                      !isSafeToShare && styles.unsafeAcceptButton,
+                    ]}
+                    testID={isSafeToShare ? 'request-share' : 'request-share-unsafe'}
+                  />
+                )}
               </>
             ) : (
               <View style={styles.noCompatibleCredentialContainer}>

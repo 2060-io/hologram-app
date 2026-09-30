@@ -40,7 +40,7 @@ const DidcommPresentationRequest: React.FC<Props> = ({ navigation, route }: Prop
     accreditation,
     isChecking: isCheckingAccreditation,
     retry: retryAccreditation,
-  } = useVerifierAccreditation(proofRecordId, did)
+  } = useVerifierAccreditation(proofRecordId)
   const { handleScrollBeginDrag, handleScrollEndDrag } = useScrollSwipeDown({
     disabledSwipeDown: isFetchingInfo,
     onSwipeDown: getServiceInfo,
