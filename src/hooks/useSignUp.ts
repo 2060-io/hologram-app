@@ -82,7 +82,7 @@ export const useSignUp = () => {
     try {
       const did = defaultServicePublicDid
       const serviceInfoResponse = await getServiceInfo({ did })
-      if (serviceInfoResponse.status === ServiceStatus.Trusted) {
+      if (serviceInfoResponse.status === ServiceStatus.Trusted && serviceInfoResponse.name) {
         await saveInCacheServiceInfo(did, agent.context, serviceInfoResponse)
         const realmInstance = RealmSingleton.instance
         const realm = realmInstance.getRealm()

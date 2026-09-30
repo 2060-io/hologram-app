@@ -5,10 +5,13 @@ import { getConnectionDisplayName, getConnectionDisplayPicture } from '@src/util
 
 const cacheKey = (did: string) => `serviceInfo:v4:${did}`
 
+const isExpired = (serviceInfo: ServiceInfo) =>
+  serviceInfo.expiresAtTime !== undefined && Date.parse(serviceInfo.expiresAtTime) <= Date.now()
+
 export async function getInCacheServiceInfo(did: string, agentContext: AgentContext): Promise<ServiceInfo | null> {
   const cache = agentContext.dependencyManager.resolve(CacheModuleConfig).cache
   const cachedServiceInfo = await cache.get<ServiceInfo>(agentContext, cacheKey(did))
-  if (cachedServiceInfo && isServiceInfo(cachedServiceInfo)) return cachedServiceInfo
+  if (cachedServiceInfo && isServiceInfo(cachedServiceInfo) && !isExpired(cachedServiceInfo)) return cachedServiceInfo
   // If info is not in cache, attempt to find it from an existing connection
   const [connection] = await agentContext.dependencyManager.resolve(DidCommConnectionsApi).findByInvitationDid(did)
   if (connection) {
@@ -30,4 +33,9 @@ export async function saveInCacheServiceInfo(did: string, agentContext: AgentCon
     ...serviceInfo,
     lastTimeUpdated: new Date().getTime(),
   })
+}
+
+export async function removeInCacheServiceInfo(did: string, agentContext: AgentContext) {
+  const cache = agentContext.dependencyManager.resolve(CacheModuleConfig).cache
+  await cache.remove(agentContext, cacheKey(did))
 }

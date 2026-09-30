@@ -1,7 +1,7 @@
 import { DidCommConnectionService } from '@credo-ts/didcomm'
 import { fetch as NetInfo } from '@react-native-community/netinfo'
 import { ServiceInfo, ServiceStatus } from '@src/model'
-import { getInCacheServiceInfo, saveInCacheServiceInfo } from '@src/services/agent/cache'
+import { getInCacheServiceInfo, removeInCacheServiceInfo, saveInCacheServiceInfo } from '@src/services/agent/cache'
 import { logError } from '@src/utils'
 import { toast } from '@src/utils/toast'
 import { useEffect, useState, useTransition } from 'react'
@@ -71,13 +71,24 @@ export const useFetchServiceInfo = ({
     startFetchServiceInfoTransition(async () => {
       try {
         const serviceInfoResponse = await getServiceInfoApi({ did })
-        setServiceInfo(serviceInfoResponse)
-        if (serviceInfoResponse.status !== ServiceStatus.Trusted) return
-        await saveInCacheServiceInfo(did, agent.context, serviceInfoResponse)
+        const previous = serviceInfoResponse.name ? null : await getInCacheServiceInfo(did, agent.context)
+        const serviceInfoToShow = previous
+          ? {
+              ...serviceInfoResponse,
+              name: previous.name,
+              logoUrl: previous.logoUrl,
+              description: previous.description,
+            }
+          : serviceInfoResponse
+        setServiceInfo(serviceInfoToShow)
+        if (serviceInfoResponse.status === ServiceStatus.Untrusted) await removeInCacheServiceInfo(did, agent.context)
+        if (serviceInfoResponse.status !== ServiceStatus.Trusted || !serviceInfoToShow.name) return
+        await saveInCacheServiceInfo(did, agent.context, serviceInfoToShow)
+        if (!serviceInfoResponse.name) return
         const [connection] = await agent.didcomm.connections.findByInvitationDid(did)
         if (connection) {
           connection.alias = serviceInfoResponse.name
-          connection.imageUrl = serviceInfoResponse.logoUrl
+          connection.imageUrl = serviceInfoResponse.logoUrl || connection.imageUrl
           await agent.dependencyManager.resolve(DidCommConnectionService).update(agent.context, connection)
         }
         if (realm) updateThreadFromServiceInfo({ did, serviceInfoResponse, realm, agent })

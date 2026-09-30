@@ -144,6 +144,7 @@ const DidcommPresentationRequest: React.FC<Props> = ({ navigation, route }: Prop
       failedFetchInfo={failedFetchInfo}
       isAccepting={isAccepting}
       notifyNoCompatibleCredentials={notify}
+      onRetryServiceInfo={getServiceInfo}
       scrollViewProps={{ onScrollBeginDrag: handleScrollBeginDrag, onScrollEndDrag: handleScrollEndDrag }}
     />
   ) : null

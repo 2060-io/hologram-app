@@ -139,7 +139,7 @@ const ServiceMainInfo = ({ serviceInfo, isFetchingInfo, failedFetchInfo, contain
               <SvgIcon name="arrowUpRightFromSquare" fill={theme.colors.primaryText} width={15} height={15} />
             </TouchableOpacity>
           )}
-          {minimumAgeRequired && (
+          {minimumAgeRequired > 0 && (
             <Text style={{ ...styles.text, ...(ageRestricted && styles.notOldEnoughTextColor) }}>
               {`${t('invitation.ageRestrictions')} ${minimumAgeRequired}+`}
             </Text>
