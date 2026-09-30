@@ -1,5 +1,5 @@
 import { ServiceInfo, ServiceStatus } from '@src/model'
-import { logError } from '@src/utils'
+import { logWarn } from '@src/utils'
 import { type ResolveResponse, resolveTrust } from './verana/indexer'
 
 const NO_DID_DOCUMENT_METHODS = ['key', 'jwk', 'peer']
@@ -29,7 +29,8 @@ export async function getServiceInfo({ did }: { did: string }): Promise<ServiceI
 
   const resolution = await resolveTrust(did)
   for (const verdict of resolution.verdicts) {
-    if (verdict.kind === 'failed') logError(`Verana resolve of ${did} failed on ${verdict.network.id}`, verdict.error)
+    if (verdict.kind === 'failed')
+      logWarn(`Verana resolve of ${did} failed on ${verdict.network.id}: ${String(verdict.error)}`)
   }
 
   const status = STATUS_BY_RESOLUTION[resolution.status]
