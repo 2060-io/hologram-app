@@ -173,7 +173,9 @@
       "errorGettingInvitation": "Ha ocurrido un error obteniendo la invitación actual",
       "errorCreatingInvitation": "Ha ocurrido un error creando la invitación",
       "errorProcessingInvitation": "Ha ocurrido un error procesando la invitación",
-      "pressRefresh": "Presiona Refrescar para invalidar la invitación actual y crear una nueva"
+      "pressRefresh": "Presiona Refrescar para invalidar la invitación actual y crear una nueva",
+      "connectAnyway": "Conectar de todos modos (inseguro)",
+      "confirmUnsafeConnect": "No se pudo comprobar que este servicio sea confiable. ¿Conectar de todos modos?"
     },
     "credential": {
       "noCredentials": "Aún no tienes credenciales",
