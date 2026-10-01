@@ -7,7 +7,6 @@ import com.facebook.react.PackageList
 import com.facebook.react.ReactApplication
 import com.facebook.react.ReactHost
 import com.facebook.react.ReactNativeApplicationEntryPoint.loadReactNative
-import com.reactnativecompressor.CompressorPackage
 
 import expo.modules.ApplicationLifecycleDispatcher
 import expo.modules.ExpoReactHostFactory
@@ -20,7 +19,6 @@ class MainApplication : Application(), ReactApplication {
             packageList =
                 PackageList(this).packages.apply {
                     // Packages that cannot be auto linked yet can be added manually here
-                    add(CompressorPackage())
                 }
         )
     }
