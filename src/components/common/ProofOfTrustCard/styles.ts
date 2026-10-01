@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native'
 
-// Canonical playground palette, shared with AltMe and Sphereon so every wallet shows the same card.
+// Must stay identical to the playground palette that AltMe and Sphereon use for the same card
 export const veranaCardColors = {
   ink: '#111827',
   body: '#374151',
@@ -82,11 +82,6 @@ const styles = StyleSheet.create({
     flexShrink: 1,
     flexGrow: 1,
   },
-  identityHeadingRow: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: 6,
-  },
   identityName: {
     color: veranaCardColors.ink,
     flexShrink: 1,
@@ -159,27 +154,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginTop: 6,
   },
-  askBlock: {
-    borderRadius: 10,
-    borderWidth: 1,
-    marginTop: 14,
-    padding: 10,
-  },
-  askCredential: {
-    color: veranaCardColors.ink,
-    fontSize: 14,
-  },
-  askRow: {
-    alignItems: 'flex-start',
-    flexDirection: 'row',
-    gap: 6,
-    marginTop: 4,
-  },
-  askText: {
-    color: veranaCardColors.askText,
-    flexShrink: 1,
-    fontSize: 12,
-  },
   conditions: {
     backgroundColor: veranaCardColors.chip,
     borderRadius: 10,
@@ -219,11 +193,6 @@ const styles = StyleSheet.create({
     color: veranaCardColors.faint,
     fontSize: 10,
     marginTop: 10,
-  },
-  loading: {
-    color: veranaCardColors.sub,
-    fontSize: 12,
-    marginTop: 12,
   },
 })
 

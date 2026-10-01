@@ -576,7 +576,7 @@
       "operatorClaimsNotVerified": "Datos del operador no verificados",
       "otherCredential": "Esquema de credencial #{{schema}} · Ecosistema #{{ecosystem}}",
       "noDidDocument": "Este servicio no puede presentar credenciales de confianza verificables.",
-      "notRegistered": "No está registrado en ninguna red Verana configurada.",
+      "notTrusted": "No es de confianza en ninguna red Verana configurada.",
       "conditions": "Condiciones de conexión",
       "minimumAge": "Edad mínima {{age}}",
       "demoNetwork": "Red de demostración · no compartas datos reales"

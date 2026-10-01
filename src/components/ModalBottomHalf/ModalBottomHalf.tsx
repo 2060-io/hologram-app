@@ -1,15 +1,6 @@
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import React, { memo, useEffect, useRef, useState } from 'react'
-import {
-  Animated,
-  Dimensions,
-  Modal as NativeModal,
-  PanResponder,
-  StyleProp,
-  TouchableWithoutFeedback,
-  View,
-  ViewStyle,
-} from 'react-native'
+import { Animated, Dimensions, PanResponder, StyleProp, TouchableWithoutFeedback, View, ViewStyle } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Modal } from '../common'
 import getStyles from './styles'
@@ -23,7 +14,6 @@ type ModalBottomHalfProps = {
 
 const ModalBottomHalf = ({ visible, onClose, styleContainer, children }: ModalBottomHalfProps) => {
   const screenHeight = Math.round(Dimensions.get('screen').height)
-  const modalRef = useRef<NativeModal | null>(null)
   const panY = useRef(new Animated.Value(screenHeight)).current
   const onCloseRef = useRef(onClose)
   onCloseRef.current = onClose
@@ -69,7 +59,6 @@ const ModalBottomHalf = ({ visible, onClose, styleContainer, children }: ModalBo
 
   return (
     <Modal
-      ref={modalRef}
       animationType="slide"
       visible={visible}
       transparent={true}

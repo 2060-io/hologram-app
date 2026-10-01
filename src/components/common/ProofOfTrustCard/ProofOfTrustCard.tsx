@@ -34,10 +34,15 @@ const ProofOfTrustCard = ({ serviceInfo, isFetchingInfo, failedFetchInfo, onRetr
     [ServiceStatus.Untrusted]: { color: veranaCardColors.bad, label: t('proofOfTrust.statusUntrusted') },
     [ServiceStatus.Unverified]: { color: veranaCardColors.faint, label: t('proofOfTrust.statusUnverified') },
     [ServiceStatus.Resolving]: { color: veranaCardColors.faint, label: t('proofOfTrust.statusResolving') },
-  }[status] ?? { color: veranaCardColors.faint, label: t('proofOfTrust.statusUnverified') }
+  }[status]
   const claimTone: StepTone =
     status === ServiceStatus.Untrusted ? 'bad' : status === ServiceStatus.Trusted ? 'ok' : 'none'
 
+  const service = isTrusted
+    ? serviceInfo.ecsCredentials?.find((credential) => credential.ecsSchema === 'ServiceCredential')?.credentialSubject
+    : undefined
+  const serviceName = stringOf(service?.name)
+  const serviceDescription = stringOf(service?.description)
   const operator = isTrusted
     ? serviceInfo.ecsCredentials?.find((credential) => OPERATOR_SCHEMAS.includes(credential.ecsSchema))
         ?.credentialSubject
@@ -45,7 +50,7 @@ const ProofOfTrustCard = ({ serviceInfo, isFetchingInfo, failedFetchInfo, onRetr
   const operatorName = stringOf(operator?.name)
   const operatorCountry = stringOf(operator?.countryCode)
   const otherCredentials = isTrusted
-    ? (serviceInfo.presentations ?? []).flatMap((presentation) => presentation.vtcCredentials)
+    ? (serviceInfo.presentations ?? []).flatMap((presentation) => presentation.vtcCredentials ?? [])
     : []
   const failedCredentialIds =
     status === ServiceStatus.Untrusted
@@ -63,7 +68,7 @@ const ProofOfTrustCard = ({ serviceInfo, isFetchingInfo, failedFetchInfo, onRetr
     status === ServiceStatus.Resolving ? t('proofOfTrust.statusResolving') : t('proofOfTrust.notChecked')
 
   return (
-    <View style={styles.card} testID="proof-of-trust">
+    <View style={styles.card}>
       <View style={styles.didRow}>
         <View style={[styles.didDot, { backgroundColor: tone.color }]} />
         <Text style={styles.didText} numberOfLines={1} ellipsizeMode="middle">
@@ -77,7 +82,7 @@ const ProofOfTrustCard = ({ serviceInfo, isFetchingInfo, failedFetchInfo, onRetr
         <VeranaMark />
       </View>
       <View style={styles.verdictStack}>
-        <View style={[styles.verdictPill, { borderColor: tone.color }]} testID={`trust-status-${status}`}>
+        <View style={[styles.verdictPill, { borderColor: tone.color }]}>
           <VeranaMark size={14} />
           <Text fontFamily="EuclidCircularA-Medium" style={[styles.verdictPillLabel, { color: tone.color }]}>
             {tone.label}
@@ -89,7 +94,7 @@ const ProofOfTrustCard = ({ serviceInfo, isFetchingInfo, failedFetchInfo, onRetr
           </Text>
         )}
         {status === ServiceStatus.Unverified && onRetry && (
-          <TouchableOpacity onPress={onRetry} testID="trust-retry">
+          <TouchableOpacity onPress={onRetry}>
             <Text style={[styles.verdictNote, styles.conditionLink]}>{t('tryAgain')}</Text>
           </TouchableOpacity>
         )}
@@ -101,18 +106,18 @@ const ProofOfTrustCard = ({ serviceInfo, isFetchingInfo, failedFetchInfo, onRetr
           <View style={styles.identityBody}>
             <Text style={styles.identityName} numberOfLines={2}>
               {isTrusted
-                ? serviceInfo.name || t('proofOfTrust.noServiceCredential')
+                ? serviceName || t('proofOfTrust.noServiceCredential')
                 : status === ServiceStatus.Untrusted
                   ? t('proofOfTrust.serviceClaimsNotVerified')
                   : notCheckedText}
             </Text>
-            {isTrusted && serviceInfo.description ? (
+            {serviceDescription ? (
               <Text style={styles.identityDetail} numberOfLines={3}>
-                {serviceInfo.description}
+                {serviceDescription}
               </Text>
             ) : null}
           </View>
-          <StepTick tone={isTrusted && !serviceInfo.name ? 'bad' : claimTone} />
+          <StepTick tone={isTrusted && !serviceName ? 'bad' : claimTone} />
         </View>
       </View>
 
@@ -155,12 +160,12 @@ const ProofOfTrustCard = ({ serviceInfo, isFetchingInfo, failedFetchInfo, onRetr
       )}
 
       {status === ServiceStatus.Untrusted && (
-        <View style={styles.section} testID="trust-failures">
+        <View style={styles.section}>
           <SectionLabel>{t('proofOfTrust.sectionFailures')}</SectionLabel>
           <Text style={[styles.identityDetail, { color: veranaCardColors.bad }]}>
             {serviceInfo.untrustedReason === 'noDidDocument'
               ? t('proofOfTrust.noDidDocument')
-              : t('proofOfTrust.notRegistered')}
+              : t('proofOfTrust.notTrusted')}
           </Text>
           {failedCredentialIds.map((id) => (
             <Text key={id} style={styles.identityWithheld} numberOfLines={1} ellipsizeMode="middle">
