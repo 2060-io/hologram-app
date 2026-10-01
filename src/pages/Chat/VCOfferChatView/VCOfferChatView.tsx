@@ -4,7 +4,7 @@ import { StackNavigationProp } from '@react-navigation/stack'
 import { ModalConfirmAction } from '@src/components'
 import { CredentialMainInformation, Text } from '@src/components/common'
 import { AgentActionType, useAgentActionQueue } from '@src/hooks/agent'
-import { AcceptCredentialOfferParameters, DeclineCredentialOfferParameters } from '@src/hooks/agent/actions/types'
+import { DeclineCredentialOfferParameters } from '@src/hooks/agent/actions/types'
 import { updateChatEntryMetadata } from '@src/hooks/agent/chat/services'
 import { useLocalRealm } from '@src/hooks/providers/RealmProvider'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
@@ -58,15 +58,6 @@ const VCOfferChatView = ({ sender, associatedRecordId, metadata, agent, chatEntr
     if (!realm) return
     const newMetadata = { ...metadata, credentialState: newCredentialState }
     updateChatEntryMetadata(realm, chatEntryId, newMetadata)
-  }
-
-  const accept = () => {
-    updateMetadata(DidCommCredentialState.RequestSent)
-    const parameters: AcceptCredentialOfferParameters = { credentialRecordId: associatedRecordId }
-    addAgentActionToQueue({
-      type: AgentActionType.AcceptCredentialOffer,
-      parameters,
-    })
   }
 
   const refuse = () => {
@@ -124,7 +115,11 @@ const VCOfferChatView = ({ sender, associatedRecordId, metadata, agent, chatEntr
           onPress={displayModalRefuseConfirmation}
           style={[styles.refuseButton, { opacity }]}
         />
-        <BlueButton text={t('general.accept')} onPress={accept} style={[styles.acceptButton, { opacity }]} />
+        <BlueButton
+          text={t('general.accept')}
+          onPress={goToCredentialOffer}
+          style={[styles.acceptButton, { opacity }]}
+        />
       </View>
     ),
     [DidCommCredentialState.RequestSent]: (

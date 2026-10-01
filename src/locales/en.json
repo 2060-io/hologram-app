@@ -326,7 +326,7 @@
       "issuedCredential": "{{sender}} issued you a credential:",
       "noCredentialFound": "Credential not found in wallet",
       "invitationConnectionNotFound": "Connection not found. It might have been deleted after this invitation has been accepted",
-      "offeringCredential": "{{sender}} is offering you a credential. Issuer of this credential is trusted, it is safe to accept this credential.",
+      "offeringCredential": "{{sender}} is offering you a credential. Open it to check whether the issuer is authorized before accepting.",
       "verifiablePresentationRequest": "Verifiable Presentation Request",
       "isRequestingYou": "{{sender}} is requesting you the following data from a {{ schemaName }} credential",
       "invitationRequestService": "Service Invitation",
@@ -542,6 +542,21 @@
       "disablePINFooter": "Please enter the PIN you set when you enabled Parental Control",
       "pinDoesNotMatchFooter": "Make sure to enter the same PIN, or press Cancel to restart the process",
       "setPINFooter": "Be sure to write down your PIN carefully. There is no way to recover it if it's lost"
+    },
+    "accreditation": {
+      "offersYou": "OFFERS YOU",
+      "requests": "REQUESTS",
+      "thisCredential": "this credential",
+      "authorizedIssuer": "{{service}} is an authorized issuer of {{schema}}",
+      "unauthorizedIssuer": "{{service}} is not an authorized issuer of {{schema}}",
+      "couldNotVerifyIssuer": "Could not verify whether {{service}} is allowed to issue this credential",
+      "authorizedVerifier": "{{service}} is an authorized verifier of {{schema}}",
+      "unauthorizedVerifier": "{{service}} is not an authorized verifier of {{schema}}",
+      "couldNotVerifyVerifier": "Could not verify whether {{service}} is allowed to request this credential",
+      "acceptAnyway": "Accept anyway (unsafe)",
+      "shareAnyway": "Share anyway (unsafe)",
+      "confirmUnsafeAccept": "This issuer could not be proven trustworthy for this credential. Accept it anyway?",
+      "confirmUnsafeShare": "This verifier could not be proven allowed to request this credential. Share it anyway?"
     }
   }
 }

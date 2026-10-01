@@ -11,6 +11,7 @@ import {
 } from '@src/hooks/agent/actions/types'
 import { findAllByAssociatedRecordId, updateChatEntryMetadata } from '@src/hooks/agent/chat/services'
 import { useLocalRealm } from '@src/hooks/providers/RealmProvider'
+import { useVerifierAccreditation } from '@src/hooks/useAccreditation'
 import { ChatEntryType } from '@src/model'
 import { CredentialMainInfo } from '@src/services/agent/display'
 import { FormattedSubmission, formatDidcommPresentationSubmission } from '@src/services/agent/formatPresentation'
@@ -35,6 +36,7 @@ const DidcommPresentationRequest: React.FC<Props> = ({ navigation, route }: Prop
     did,
     alwaysFetch: true,
   })
+  const { accreditation, retry: retryAccreditation } = useVerifierAccreditation(proofRecordId)
   const { handleScrollBeginDrag, handleScrollEndDrag } = useScrollSwipeDown({
     disabledSwipeDown: isFetchingInfo,
     onSwipeDown: getServiceInfo,
@@ -145,6 +147,8 @@ const DidcommPresentationRequest: React.FC<Props> = ({ navigation, route }: Prop
       isAccepting={isAccepting}
       notifyNoCompatibleCredentials={notify}
       onRetryServiceInfo={getServiceInfo}
+      accreditation={accreditation}
+      onRetryAccreditation={retryAccreditation}
       scrollViewProps={{ onScrollBeginDrag: handleScrollBeginDrag, onScrollEndDrag: handleScrollEndDrag }}
     />
   ) : null

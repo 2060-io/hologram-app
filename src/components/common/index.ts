@@ -1,3 +1,4 @@
+import AccreditationBox from './AccreditationBox'
 import Avatar from './Avatar'
 import ConnectionMainActions from './ConnectionMainActions'
 import ConnectionRefusedByAge from './ConnectionRefusedByAge'
@@ -24,6 +25,7 @@ import VerifiedIcon from './VerifiedIcon'
 export * from './Buttons'
 export * from './ServiceInformation'
 export {
+  AccreditationBox,
   Avatar,
   ConnectionMainActions,
   ConnectionRefusedByAge,
