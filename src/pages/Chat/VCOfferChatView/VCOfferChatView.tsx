@@ -8,11 +8,10 @@ import { AcceptCredentialOfferParameters, DeclineCredentialOfferParameters } fro
 import { updateChatEntryMetadata } from '@src/hooks/agent/chat/services'
 import { useLocalRealm } from '@src/hooks/providers/RealmProvider'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
-import { VCOfferMetadata } from '@src/model'
+import { ServiceStatus, VCOfferMetadata } from '@src/model'
 import { MobileAgent } from '@src/services/agent'
 import { CredentialMainInfo, sanitizeString } from '@src/services/agent/display'
 import { toast } from '@src/utils/toast'
-import { TrustResolutionOutcome } from '@verana-labs/verre'
 import React, { memo, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
@@ -49,7 +48,7 @@ const VCOfferChatView = ({ sender, associatedRecordId, metadata, agent, chatEntr
         id: metadata.issuerId ?? '',
         name: metadata.issuerName ?? sender?.name ?? '',
         logoUrl: metadata.issuerLogoUrl ?? sender?.avatar,
-        status: TrustResolutionOutcome.INVALID,
+        status: ServiceStatus.Unverified,
       },
     }),
     [metadata]

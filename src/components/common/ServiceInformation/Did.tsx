@@ -23,10 +23,11 @@ const truncateDid = (fullDid: string) => {
 type Props = {
   did: string
   serviceInfoStatus: ServiceStatus
+  untrustedReason?: 'noDidDocument'
   isFetchingInfo: boolean
 }
 
-const Did = ({ did, serviceInfoStatus, isFetchingInfo }: Props) => {
+const Did = ({ did, serviceInfoStatus, untrustedReason, isFetchingInfo }: Props) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
@@ -35,10 +36,13 @@ const Did = ({ did, serviceInfoStatus, isFetchingInfo }: Props) => {
   const [truncated, setTruncated] = useState<boolean>(safeDid.length > DID_MAX_DISPLAY_CHARS)
 
   const serviceIs: Record<ServiceStatus, string> = {
-    verified: t('invitation.isATrustedService'),
-    'verified-test': t('invitation.notTrustedService'),
-    'not-trusted': t('invitation.notTrustedService'),
-    invalid: t('invitation.notFoundService'),
+    [ServiceStatus.Trusted]: t('invitation.isATrustedService'),
+    [ServiceStatus.Untrusted]:
+      untrustedReason === 'noDidDocument'
+        ? t('invitation.cannotPresentTrustCredentials')
+        : t('invitation.notTrustedService'),
+    [ServiceStatus.Unverified]: t('invitation.couldNotVerifyService'),
+    [ServiceStatus.Resolving]: '',
   }
 
   const onPressDid = () => setTruncated(!truncated)

@@ -3,7 +3,6 @@ import { useUserProfile } from '@src/hooks/agent'
 import { useFetchServiceInfo } from '@src/hooks/useFetchServiceInfo'
 import { useValidateKidAgeRestrictions } from '@src/hooks/useValidateKidAgeRestrictions'
 import { ServiceInfo, ServiceStatus } from '@src/model'
-import { TrustResolutionOutcome } from '@verana-labs/verre'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { View } from 'react-native'
 import BaseConnectionInvitation, { ConnectionInvitationProps } from './BaseConnectionInvitation'
@@ -15,7 +14,10 @@ const ConnectionInvitationForVerifiableService = (props: ConnectionInvitationPro
   const invitation = outOfBandRecord?.outOfBandInvitation
   const did = invitation.invitationDids[0]
   const { userProfileData } = useUserProfile()
-  const { isFetchingInfo, serviceInfo, failedFetchInfo, getServiceInfo } = useFetchServiceInfo({ did })
+  const { isFetchingInfo, serviceInfo, failedFetchInfo, getServiceInfo } = useFetchServiceInfo({
+    did,
+    alwaysFetch: true,
+  })
   const initialServiceInfo = useRef<ServiceInfo>({
     did,
     description: invitation.label,
@@ -23,7 +25,7 @@ const ConnectionInvitationForVerifiableService = (props: ConnectionInvitationPro
     logoUrl: invitation.imageUrl,
     name: invitation.label ?? '',
     minimumAgeRequired: 0,
-    status: TrustResolutionOutcome.INVALID,
+    status: ServiceStatus.Resolving,
   }).current
   const [minimumAgeRequired, setMinimumAgeRequired] = useState(initialServiceInfo.minimumAgeRequired)
   const [serviceStatus, setServiceStatus] = useState<ServiceStatus>(initialServiceInfo.status)
@@ -54,6 +56,7 @@ const ConnectionInvitationForVerifiableService = (props: ConnectionInvitationPro
             isFetchingInfo={isFetchingInfo}
             serviceInfo={serviceInfo}
             failedFetchInfo={failedFetchInfo}
+            onRetry={refreshServiceInfo}
           />
         </View>
       }

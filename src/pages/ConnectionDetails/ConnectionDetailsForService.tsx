@@ -27,6 +27,7 @@ const ConnectionDetailsForService = (props: ConnectionDetailsProps) => {
             serviceInfo={serviceInfo}
             failedFetchInfo={failedFetchInfo}
             containerStyle={styles.mainInfoContainer}
+            onRetry={refreshServiceInfo}
           />
         ) : null
       }

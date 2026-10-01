@@ -24,7 +24,7 @@ const Connection = ({ onPress, onPressRightSide, connection, isSearchingMode, is
     did: connection.invitationDid && connection.isService ? connection.invitationDid : undefined,
     forceFetchIfNotInCache: false,
   })
-  const name = serviceInfo?.name ?? connection.name
+  const name = serviceInfo?.name || connection.name
   const avatarUrl = serviceInfo?.logoUrl ?? connection.avatarUrl
 
   return (

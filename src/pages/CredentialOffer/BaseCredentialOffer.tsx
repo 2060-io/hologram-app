@@ -5,10 +5,9 @@ import { CredentialDetails, ModalConfirmAction } from '@src/components'
 import { ServiceInformation, Text } from '@src/components/common'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { useFetchServiceInfo } from '@src/hooks/useFetchServiceInfo'
-import { ServiceInfo } from '@src/model'
+import { ServiceInfo, ServiceStatus } from '@src/model'
 import { CredentialDetailsForDisplay } from '@src/services/agent/display'
-import { TrustResolutionOutcome } from '@verana-labs/verre'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ScrollView, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -27,16 +26,23 @@ const BaseCredentialOffer: React.FC<Props> = ({ navigation, credentialDetails, a
   const theme = useTheme()
   const styles = getStyles(theme)
   const did = credentialDetails.mainInfo.issuer.id
-  const { isFetchingInfo, serviceInfo, failedFetchInfo } = useFetchServiceInfo({ did })
-  const [showModalRefuseConfirmation, setShowModalRefuseConfirmation] = useState(false)
-  const initialServiceInfo = useRef<ServiceInfo>({
+  const { isFetchingInfo, serviceInfo, failedFetchInfo, getServiceInfo } = useFetchServiceInfo({
     did,
-    id: did,
-    name: credentialDetails.mainInfo.issuer.name,
-    logoUrl: credentialDetails.mainInfo.issuer.logoUrl,
-    minimumAgeRequired: 0,
-    status: TrustResolutionOutcome.INVALID,
+    alwaysFetch: true,
   })
+  const [showModalRefuseConfirmation, setShowModalRefuseConfirmation] = useState(false)
+  const { name: issuerName, logoUrl: issuerLogoUrl } = credentialDetails.mainInfo.issuer
+  const initialServiceInfo = useMemo<ServiceInfo>(
+    () => ({
+      did,
+      id: did,
+      name: issuerName,
+      logoUrl: issuerLogoUrl,
+      minimumAgeRequired: 0,
+      status: ServiceStatus.Resolving,
+    }),
+    [did, issuerName, issuerLogoUrl]
+  )
 
   const displayModalRefuseConfirmation = () => setShowModalRefuseConfirmation(true)
   const hideModalRefuseConfirmation = () => setShowModalRefuseConfirmation(false)
@@ -85,7 +91,7 @@ const BaseCredentialOffer: React.FC<Props> = ({ navigation, credentialDetails, a
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.subContainer}>
             <Text style={styles.credentialTitle}>
-              {credentialDetails.mainInfo.issuer.name} {t('credentialOffer.offeringYou')}
+              {serviceInfo?.name || issuerName} {t('credentialOffer.offeringYou')}
             </Text>
             <Text fontFamily="EuclidCircularA-Bold" style={[styles.credentialTitle, styles.verifiableCredentialText]}>
               {t('credentialOffer.verifiableCredential')}
@@ -101,10 +107,11 @@ const BaseCredentialOffer: React.FC<Props> = ({ navigation, credentialDetails, a
                 {t('credentialOffer.issuerInformation')}
               </Text>
               <ServiceInformation
-                initialServiceInfo={initialServiceInfo.current}
+                initialServiceInfo={initialServiceInfo}
                 isFetchingInfo={isFetchingInfo}
                 serviceInfo={serviceInfo}
                 failedFetchInfo={failedFetchInfo}
+                onRetry={getServiceInfo}
               />
             </View>
           </View>

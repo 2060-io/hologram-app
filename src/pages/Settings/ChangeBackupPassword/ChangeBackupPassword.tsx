@@ -3,9 +3,9 @@ import { MainButton, SvgIcon, Text, TextInputPassword, VerifiedIcon } from '@src
 import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
 import { IS_IOS } from '@src/constants'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { ServiceStatus } from '@src/model'
 import { toast } from '@src/utils/toast'
 import { setBackupKey } from '@src/utils/walletBackUpUtils'
-import { TrustResolutionOutcome } from '@verana-labs/verre'
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Keyboard, KeyboardAvoidingView, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
@@ -119,7 +119,7 @@ const ChangeBackupPassword = ({ navigation }: Props) => {
           {currentStep === PasswordSteps.Updated && (
             <>
               <View style={styles.successUpdated}>
-                <VerifiedIcon style={styles.verifiedIconContainer} status={TrustResolutionOutcome.VERIFIED} />
+                <VerifiedIcon style={styles.verifiedIconContainer} status={ServiceStatus.Trusted} />
                 <Text fontFamily="EuclidCircularA-Medium" style={styles.title}>
                   {t('settings.passwordSaved')}
                 </Text>

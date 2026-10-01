@@ -1,9 +1,8 @@
 import { DidCommConnectionService } from '@credo-ts/didcomm'
 import { fetch as NetInfo } from '@react-native-community/netinfo'
-import { ServiceInfo } from '@src/model'
-import { getInCacheServiceInfo, saveInCacheServiceInfo } from '@src/services/agent/cache'
+import { ServiceInfo, ServiceStatus } from '@src/model'
+import { getInCacheServiceInfo, removeInCacheServiceInfo, saveInCacheServiceInfo } from '@src/services/agent/cache'
 import { logError } from '@src/utils'
-import { isOlderThan24Hours } from '@src/utils/dateUtils'
 import { toast } from '@src/utils/toast'
 import { useEffect, useState, useTransition } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -15,13 +14,14 @@ import { useLocalRealm } from './providers/RealmProvider'
 interface UseFetchServiceInfoOptions {
   did?: string
   forceFetchIfNotInCache?: boolean
+  alwaysFetch?: boolean
 }
 
 /**
  * Retrieve and cache Verifiable Service information from the Trust Registry.
  *
  * Behavior:
- * - On mount if `forceFetchIfNotInCache` is true and the cached value is missing or older than 24 hours,
+ * - On mount if `forceFetchIfNotInCache` is true and the cached value is missing or past its `expiresAtTime`,
  *   it will trigger a background fetch from the Trust Registry.
  * - When fresh info is obtained, stored cache info is updated and chat thread for the
  *   corresponding connection is updated with the latest name and logo.
@@ -34,7 +34,11 @@ interface UseFetchServiceInfoOptions {
  * @returns Object with the latest known ServiceInfo or undefined, loading and error state flags,
  * and `getServiceInfo` function to trigger a manual refresh.
  */
-export const useFetchServiceInfo = ({ did, forceFetchIfNotInCache = true }: UseFetchServiceInfoOptions = {}) => {
+export const useFetchServiceInfo = ({
+  did,
+  forceFetchIfNotInCache = true,
+  alwaysFetch = false,
+}: UseFetchServiceInfoOptions = {}) => {
   const { t } = useTranslation()
   const { agent } = useMobileAgent()
   const { realm } = useLocalRealm()
@@ -46,15 +50,13 @@ export const useFetchServiceInfo = ({ did, forceFetchIfNotInCache = true }: UseF
     const verifyHasToFetchInfo = async () => {
       if (!did || !agent) return
       const cachedServiceInfo = await getInCacheServiceInfo(did, agent.context)
-      if (cachedServiceInfo) setServiceInfo(cachedServiceInfo)
-      const firstConditionToFetch = forceFetchIfNotInCache
-      const secondConditionToFetch =
-        !cachedServiceInfo?.lastTimeUpdated || isOlderThan24Hours(cachedServiceInfo.lastTimeUpdated)
-      const mustTriggerFetch = firstConditionToFetch && secondConditionToFetch
-      if (mustTriggerFetch) getServiceInfo()
+      if (cachedServiceInfo && !alwaysFetch) setServiceInfo(cachedServiceInfo)
+      const expiresAt = cachedServiceInfo?.expiresAtTime ? Date.parse(cachedServiceInfo.expiresAtTime) : 0
+      const isFresh = Date.now() < expiresAt
+      if (alwaysFetch || (forceFetchIfNotInCache && !isFresh)) getServiceInfo()
     }
     verifyHasToFetchInfo()
-  }, [realm, did])
+  }, [realm, did, agent])
 
   const getServiceInfo = async () => {
     if (!did || !agent) return
@@ -68,22 +70,30 @@ export const useFetchServiceInfo = ({ did, forceFetchIfNotInCache = true }: UseF
     }
     startFetchServiceInfoTransition(async () => {
       try {
-        const serviceInfoResponse = await getServiceInfoApi({ agent, did })
-        // if service exists in trust registry, store it in cache otherwise keep the cached one (if any)
-        if (serviceInfoResponse) {
-          setServiceInfo(serviceInfoResponse)
-          await saveInCacheServiceInfo(did, agent.context, serviceInfoResponse)
-          // Update any connection record associated with this DID
-          const [connection] = await agent.didcomm.connections.findByInvitationDid(did)
-          if (connection) {
-            connection.alias = serviceInfoResponse.name
-            connection.imageUrl = serviceInfoResponse.logoUrl
-            await agent.dependencyManager.resolve(DidCommConnectionService).update(agent.context, connection)
-          }
-
-          if (realm) updateThreadFromServiceInfo({ did, serviceInfoResponse, realm, agent })
+        const serviceInfoResponse = await getServiceInfoApi({ did })
+        const previous = serviceInfoResponse.name ? null : await getInCacheServiceInfo(did, agent.context)
+        const serviceInfoToShow = previous
+          ? {
+              ...serviceInfoResponse,
+              name: previous.name,
+              logoUrl: previous.logoUrl,
+              description: previous.description,
+            }
+          : serviceInfoResponse
+        setServiceInfo(serviceInfoToShow)
+        if (serviceInfoResponse.status === ServiceStatus.Untrusted) await removeInCacheServiceInfo(did, agent.context)
+        if (serviceInfoResponse.status !== ServiceStatus.Trusted || !serviceInfoToShow.name) return
+        await saveInCacheServiceInfo(did, agent.context, serviceInfoToShow)
+        if (!serviceInfoResponse.name) return
+        const [connection] = await agent.didcomm.connections.findByInvitationDid(did)
+        if (connection) {
+          connection.alias = serviceInfoResponse.name
+          connection.imageUrl = serviceInfoResponse.logoUrl || connection.imageUrl
+          await agent.dependencyManager.resolve(DidCommConnectionService).update(agent.context, connection)
         }
+        if (realm) updateThreadFromServiceInfo({ did, serviceInfoResponse, realm, agent })
       } catch (error) {
+        setFailed(true)
         logError(`Error getting service ${did} info API`, error)
         toast({ type: 'error', message: t('invitation.errorGettingServiceInfoAPI') })
       }

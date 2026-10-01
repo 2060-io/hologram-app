@@ -2,6 +2,7 @@ import { DidCommUserProfileData } from '@2060.io/credo-ts-didcomm-user-profile'
 import { DidCommMediatorPickupStrategy } from '@credo-ts/didcomm'
 import { CommonActions, useNavigation } from '@react-navigation/native'
 import { useMobileAgent, useUserProfile } from '@src/hooks/agent'
+import { ServiceStatus } from '@src/model'
 import { isRegistered } from '@src/services/agent'
 import { saveInCacheServiceInfo } from '@src/services/agent/cache'
 import RealmSingleton from '@src/services/RealmSingleton'
@@ -80,8 +81,8 @@ export const useSignUp = () => {
     if (!agent) return
     try {
       const did = defaultServicePublicDid
-      const serviceInfoResponse = await getServiceInfo({ agent, did })
-      if (serviceInfoResponse) {
+      const serviceInfoResponse = await getServiceInfo({ did })
+      if (serviceInfoResponse.status === ServiceStatus.Trusted && serviceInfoResponse.name) {
         await saveInCacheServiceInfo(did, agent.context, serviceInfoResponse)
         const realmInstance = RealmSingleton.instance
         const realm = realmInstance.getRealm()

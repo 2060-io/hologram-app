@@ -24,6 +24,7 @@ type Props = {
   isAccepting: boolean
   notifyNoCompatibleCredentials: () => void
   scrollViewProps?: ScrollView['props']
+  onRetryServiceInfo?: () => void
 }
 
 const BasePresentationRequest: React.FC<Props> = ({
@@ -38,6 +39,7 @@ const BasePresentationRequest: React.FC<Props> = ({
   isAccepting,
   notifyNoCompatibleCredentials,
   scrollViewProps,
+  onRetryServiceInfo,
 }) => {
   const { t } = useTranslation()
   const theme = useTheme()
@@ -114,6 +116,7 @@ const BasePresentationRequest: React.FC<Props> = ({
                 isFetchingInfo={isFetchingInfo}
                 serviceInfo={serviceInfo}
                 failedFetchInfo={failedFetchInfo}
+                onRetry={onRetryServiceInfo}
               />
             )}
             {hasCompatibleCredentials ? (

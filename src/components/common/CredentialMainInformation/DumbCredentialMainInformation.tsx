@@ -69,7 +69,7 @@ const DumbCredentialMainInformation = ({
           <Skeleton width="100%" height={20} colorMode={colorMode} radius="round">
             <View style={styles.bottomContainer}>
               <Text style={styles.bottomText} fontFamily="EuclidCircularA-Medium" numberOfLines={1}>
-                {serviceInfo?.name ?? credentialMainInfo?.issuer.name}
+                {serviceInfo?.name || credentialMainInfo?.issuer.name}
               </Text>
               {serviceInfo?.status && <VerifiedIcon status={serviceInfo.status} />}
             </View>
