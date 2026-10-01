@@ -47,7 +47,7 @@ const ModalBottomHalf = ({ visible, onClose, styleContainer, children }: ModalBo
   })
 
   const handleDismiss = () => {
-    closeAnim.start(() => onCloseRef.current())
+    closeAnim.start(({ finished }) => finished && onCloseRef.current())
   }
 
   const panResponders = useState(
@@ -56,7 +56,7 @@ const ModalBottomHalf = ({ visible, onClose, styleContainer, children }: ModalBo
       onMoveShouldSetPanResponder: () => false,
       onPanResponderMove: Animated.event([null, { dy: panY }], { useNativeDriver: false }),
       onPanResponderRelease: (e, gs) => {
-        if (gs.dy > 0 && gs.vy > 1.5) return closeAnim.start(() => onCloseRef.current())
+        if (gs.dy > 0 && gs.vy > 1.5) return closeAnim.start(({ finished }) => finished && onCloseRef.current())
 
         return resetPositionAnim.start()
       },

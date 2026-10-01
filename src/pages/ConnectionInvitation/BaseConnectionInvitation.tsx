@@ -14,7 +14,7 @@ import { acceptInvitation, acceptInvitationAndWaitForRequest, DidcommInvitationT
 import { logError } from '@src/utils'
 import { screenHeight } from '@src/utils/responsiveUtils'
 import { toast } from '@src/utils/toast'
-import React, { ReactElement, useLayoutEffect, useState, useTransition } from 'react'
+import React, { ReactElement, useLayoutEffect, useRef, useState, useTransition } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ScrollView, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -77,6 +77,7 @@ const BaseConnectionInvitation = ({
   const isSafeToConnect = trustStatus === undefined || trustStatus === ServiceStatus.Trusted
   const hasAttachedRequest = Boolean(invitation.getRequests()?.length)
   const [showModalUnsafeConnect, setShowModalUnsafeConnect] = useState(false)
+  const isAccepting = useRef(false)
 
   const goToChat = (connection: DidCommConnectionRecord) => {
     const chatThreadId = findOrCreateThread({ connection }).id
@@ -133,7 +134,8 @@ const BaseConnectionInvitation = ({
   }
 
   const accept = async () => {
-    if (!agent) return
+    if (!agent || isAccepting.current) return
+    isAccepting.current = true
     startAcceptInvitationTransition(async () => {
       try {
         if (hasAttachedRequest) {
@@ -160,6 +162,8 @@ const BaseConnectionInvitation = ({
       } catch (error) {
         toast({ type: 'error', message: `Failed to add connection ${error}` })
         logError('Error accepting connection invitation', error)
+      } finally {
+        isAccepting.current = false
       }
     })
   }

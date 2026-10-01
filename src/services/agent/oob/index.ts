@@ -243,7 +243,7 @@ export const acceptInvitationAndWaitForRequest = async (
     await outOfBandRepository.deleteById(agent.context, outOfBandRecord.id)
 
     // Delete connection record (only if it was created from this flow)
-    if (!existingConnection && connectionRecord) {
+    if (connectionRecord && connectionRecord.outOfBandId === outOfBandRecord.id) {
       log(`Deleting connection`)
       await deletePendingConnection(agent, connectionRecord)
     }
@@ -303,7 +303,7 @@ export const processInvitation = async (
       throw new Error('Message request is not from supported protocol.')
     }
 
-    if (!existingConnection) {
+    if (!existingConnection && invitation.handshakeProtocols?.length) {
       return {
         success: true,
         invitationType: DidcommInvitationType.ConnectionRequest,
