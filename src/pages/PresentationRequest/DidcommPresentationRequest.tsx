@@ -50,6 +50,7 @@ const DidcommPresentationRequest: React.FC<Props> = ({ navigation, route }: Prop
 
   useFocusEffect(
     useCallback(() => {
+      let isCurrent = true
       const getFormattedPresentation = async () => {
         const verifierInfo = serviceInfo ?? initialServiceInfo
         if (!agent || !verifierInfo) return
@@ -58,9 +59,12 @@ const DidcommPresentationRequest: React.FC<Props> = ({ navigation, route }: Prop
           proofRecordId,
           verifierInfo,
         })
-        setSubmission(newFormattedPresentationRequest)
+        if (isCurrent) setSubmission(newFormattedPresentationRequest)
       }
       getFormattedPresentation()
+      return () => {
+        isCurrent = false
+      }
     }, [serviceInfo, initialServiceInfo])
   )
 
