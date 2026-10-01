@@ -1,5 +1,5 @@
-import { TypedArrayEncoder } from '@credo-ts/core'
-import { useNavigation } from '@react-navigation/native'
+import { JsonEncoder } from '@credo-ts/core'
+import { StackActions, useNavigation } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { Text } from '@src/components/common'
 import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
@@ -39,8 +39,8 @@ const ParsedText: React.FC<ParsedTextProps> = ({ theme, text, textProps }) => {
     try {
       const invitation = await parseInvitation(url)
       if (invitation) {
-        const encodedInvitation = TypedArrayEncoder.fromUtf8String(JSON.stringify(invitation.toJSON()))
-        navigation.navigate('Home', { oob: TypedArrayEncoder.toBase64Url(encodedInvitation) })
+        const oob = JsonEncoder.toBase64Url((invitation.v2Invitation ?? invitation).toJSON())
+        navigation.dispatch(StackActions.popTo('Home', { oob }))
         return
       }
       Linking.openURL(url).catch(() => logError('No handler for URL:', url))
