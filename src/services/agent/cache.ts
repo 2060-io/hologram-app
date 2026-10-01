@@ -3,7 +3,7 @@ import { DidCommConnectionsApi } from '@credo-ts/didcomm'
 import { isServiceInfo, ServiceInfo, ServiceStatus } from '@src/model'
 import { getConnectionDisplayName, getConnectionDisplayPicture } from '@src/utils/connectionUtils'
 
-const cacheKey = (did: string) => `serviceInfo:v4:${did}`
+const cacheKey = (did: string) => `serviceInfo:${did}`
 
 const isExpired = (serviceInfo: ServiceInfo) =>
   !serviceInfo.expiresAtTime || Date.parse(serviceInfo.expiresAtTime) <= Date.now()
@@ -21,7 +21,7 @@ export async function getInCacheServiceInfo(did: string, agentContext: AgentCont
       minimumAgeRequired: 0,
       name: getConnectionDisplayName(connection),
       logoUrl: getConnectionDisplayPicture(connection),
-      status: ServiceStatus.Unverified,
+      status: ServiceStatus.Resolving,
     }
   }
   return null
@@ -29,10 +29,7 @@ export async function getInCacheServiceInfo(did: string, agentContext: AgentCont
 
 export async function saveInCacheServiceInfo(did: string, agentContext: AgentContext, serviceInfo: ServiceInfo) {
   const cache = agentContext.dependencyManager.resolve(CacheModuleConfig).cache
-  await cache.set<ServiceInfo>(agentContext, cacheKey(did), {
-    ...serviceInfo,
-    lastTimeUpdated: new Date().getTime(),
-  })
+  await cache.set<ServiceInfo>(agentContext, cacheKey(did), serviceInfo)
 }
 
 export async function removeInCacheServiceInfo(did: string, agentContext: AgentContext) {

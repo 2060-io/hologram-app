@@ -42,7 +42,6 @@ export type ServiceInfo = {
   expiresAtTime?: string
   ecsCredentials?: EcsCredential[]
   presentations?: TrustPresentation[]
-  lastTimeUpdated?: number
 }
 
 export type IssuerInfo = {

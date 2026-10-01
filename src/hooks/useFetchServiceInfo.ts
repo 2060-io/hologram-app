@@ -21,15 +21,15 @@ interface UseFetchServiceInfoOptions {
  * Retrieve and cache Verifiable Service information from the Trust Registry.
  *
  * Behavior:
- * - On mount it fetches from the Verana indexers when `alwaysFetch` is true, or when `forceFetchIfNotInCache`
- *   is true and the cached value is missing or past its `expiresAtTime`.
- * - A trusted result updates the cache and the name and logo of the matching connection and chat thread.
+ * - On mount if `forceFetchIfNotInCache` is true and the cached value is missing or past its `expiresAtTime`,
+ *   it will trigger a background fetch from the Trust Registry.
+ * - When fresh info is obtained, stored cache info is updated and chat thread for the
+ *   corresponding connection is updated with the latest name and logo.
  *
  * @param options - Configuration options
  * @param options.did - Decentralized identifier of the service.
  * @param options.forceFetchIfNotInCache - Whether to attempt a refresh on mount
  * when the cached value is stale or missing. Defaults to true.
- * @param options.alwaysFetch - Whether to re-resolve on mount regardless of the cache. Defaults to false.
  *
  * @returns Object with the latest known ServiceInfo or undefined, loading and error state flags,
  * and `getServiceInfo` function to trigger a manual refresh.
@@ -50,13 +50,13 @@ export const useFetchServiceInfo = ({
     const verifyHasToFetchInfo = async () => {
       if (!did || !agent) return
       const cachedServiceInfo = await getInCacheServiceInfo(did, agent.context)
-      if (cachedServiceInfo) setServiceInfo(cachedServiceInfo)
+      if (cachedServiceInfo && !alwaysFetch) setServiceInfo(cachedServiceInfo)
       const expiresAt = cachedServiceInfo?.expiresAtTime ? Date.parse(cachedServiceInfo.expiresAtTime) : 0
       const isFresh = Date.now() < expiresAt
       if (alwaysFetch || (forceFetchIfNotInCache && !isFresh)) getServiceInfo()
     }
     verifyHasToFetchInfo()
-  }, [realm, did])
+  }, [realm, did, agent])
 
   const getServiceInfo = async () => {
     if (!did || !agent) return
@@ -93,6 +93,7 @@ export const useFetchServiceInfo = ({
         }
         if (realm) updateThreadFromServiceInfo({ did, serviceInfoResponse, realm, agent })
       } catch (error) {
+        setFailed(true)
         logError(`Error getting service ${did} info API`, error)
         toast({ type: 'error', message: t('invitation.errorGettingServiceInfoAPI') })
       }
