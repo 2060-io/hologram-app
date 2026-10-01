@@ -36,11 +36,7 @@ const DidcommPresentationRequest: React.FC<Props> = ({ navigation, route }: Prop
     did,
     alwaysFetch: true,
   })
-  const {
-    accreditation,
-    isChecking: isCheckingAccreditation,
-    retry: retryAccreditation,
-  } = useVerifierAccreditation(proofRecordId)
+  const { accreditation, retry: retryAccreditation } = useVerifierAccreditation(proofRecordId)
   const { handleScrollBeginDrag, handleScrollEndDrag } = useScrollSwipeDown({
     disabledSwipeDown: isFetchingInfo,
     onSwipeDown: getServiceInfo,
@@ -152,7 +148,6 @@ const DidcommPresentationRequest: React.FC<Props> = ({ navigation, route }: Prop
       notifyNoCompatibleCredentials={notify}
       onRetryServiceInfo={getServiceInfo}
       accreditation={accreditation}
-      isCheckingAccreditation={isCheckingAccreditation}
       onRetryAccreditation={retryAccreditation}
       scrollViewProps={{ onScrollBeginDrag: handleScrollBeginDrag, onScrollEndDrag: handleScrollEndDrag }}
     />

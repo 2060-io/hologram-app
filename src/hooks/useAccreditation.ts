@@ -10,33 +10,36 @@ import { logWarn } from '@src/utils'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useMobileAgent } from './agent/MobileAgentProvider'
 
+const CHECK_TIMEOUT_MS = 30 * 1000
+
 const useAccreditationCheck = (check: (agent: MobileAgent) => Promise<Accreditation>, key: string) => {
   const { agent } = useMobileAgent()
   const [accreditation, setAccreditation] = useState<Accreditation>()
-  const [isChecking, setIsChecking] = useState(true)
   const latestRun = useRef(0)
 
   const run = useCallback(async () => {
     if (!agent) return
     const runId = ++latestRun.current
-    setIsChecking(true)
+    setAccreditation(undefined)
     let result: Accreditation
     try {
-      result = await check(agent)
+      result = await Promise.race([
+        check(agent),
+        new Promise<never>((_, reject) => setTimeout(() => reject(new Error('timed out')), CHECK_TIMEOUT_MS)),
+      ])
     } catch (error) {
       logWarn(`Verana accreditation check for ${key} could not complete: ${String(error)}`)
       result = { status: 'unverified', schemaTitles: [] }
     }
     if (runId !== latestRun.current) return
     setAccreditation(result)
-    setIsChecking(false)
   }, [agent, key])
 
   useEffect(() => {
     run()
   }, [run])
 
-  return { accreditation, isChecking, retry: run }
+  return { accreditation, retry: run }
 }
 
 export const useIssuerAccreditation = (credentialRecordId: string) =>
@@ -49,10 +52,9 @@ export const useIssuerAccreditation = (credentialRecordId: string) =>
 
 const referencesOf = (restrictions: AnonCredsProofRequestRestriction[] = []): AnonCredsReference[] =>
   restrictions.flatMap((restriction): AnonCredsReference[] => {
-    const references: AnonCredsReference[] = []
-    if (restriction.cred_def_id) references.push({ kind: 'credentialDefinition', id: restriction.cred_def_id })
-    if (restriction.schema_id) references.push({ kind: 'schema', id: restriction.schema_id })
-    return references
+    if (restriction.cred_def_id) return [{ kind: 'credentialDefinition', id: restriction.cred_def_id }]
+    if (restriction.schema_id) return [{ kind: 'schema', id: restriction.schema_id }]
+    return []
   })
 
 export const useVerifierAccreditation = (proofRecordId: string) =>

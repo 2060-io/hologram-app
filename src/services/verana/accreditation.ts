@@ -21,7 +21,9 @@ class UnauthorizedError extends Error {}
 
 const resolutionError = (reference: AnonCredsReference, error: string | undefined) => {
   const message = `${reference.kind} ${reference.id} not resolved: ${error}`
-  return error === 'unsupportedAnonCredsMethod' ? new UnauthorizedError(message) : new Error(message)
+  return error === 'unsupportedAnonCredsMethod' || error === 'notFound'
+    ? new UnauthorizedError(message)
+    : new Error(message)
 }
 
 const resolveAnonCreds = async (agent: MobileAgent, reference: AnonCredsReference) => {
@@ -44,6 +46,7 @@ const deriveCredentialSchema = async (agent: MobileAgent, reference: AnonCredsRe
   if (typeof vtjscId !== 'string') throw new UnauthorizedError(`${reference.id} has no relatedJsonSchemaCredentialId`)
 
   const { status, body: vtjsc } = await fetchJson(vtjscId)
+  if (status === 404) throw new UnauthorizedError(`VTJSC ${vtjscId} not found`)
   if (status !== 200 || !isObject(vtjsc)) throw new Error(`VTJSC ${vtjscId} fetch failed with HTTP ${status}`)
   const proof = vtjsc.proof
   if (!isObject(proof) || proof.type !== 'DataIntegrityProof' || proof.cryptosuite !== 'eddsa-jcs-2022') {
@@ -53,6 +56,7 @@ const deriveCredentialSchema = async (agent: MobileAgent, reference: AnonCredsRe
   const signerDid = typeof proof.verificationMethod === 'string' ? proof.verificationMethod.split('#')[0] : undefined
   if (!signerDid || signerDid !== vtjscIssuer)
     throw new UnauthorizedError(`VTJSC ${vtjscId} is not signed by its issuer`)
+  // Credo reports an unresolvable signer as an invalid proof, so resolve it first to tell an outage apart
   const signer = await agent.dids.resolve(signerDid)
   if (!signer.didDocument)
     throw new Error(`VTJSC signer ${signerDid} not resolved: ${signer.didResolutionMetadata.error}`)
@@ -145,7 +149,7 @@ export const checkVerifierAccreditation = async (
   requestedGroups: AnonCredsReference[][],
   verifierDid: string | undefined
 ): Promise<Accreditation> => {
-  if (!requestedGroups.length) return { status: 'unauthorized', schemaTitles: [] }
+  if (!requestedGroups.length || !verifierDid) return { status: 'unauthorized', schemaTitles: [] }
   const checks = new Map<string, Promise<Accreditation>>()
   const check = (reference: AnonCredsReference) => {
     const existing = checks.get(reference.id)

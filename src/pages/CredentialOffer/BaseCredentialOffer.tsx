@@ -22,7 +22,6 @@ type Props = {
   refuse: () => void
   enableMainButtons: boolean
   accreditation?: Accreditation
-  isCheckingAccreditation: boolean
   onRetryAccreditation: () => void
 }
 
@@ -34,7 +33,6 @@ const BaseCredentialOffer: React.FC<Props> = ({
   refuse,
   enableMainButtons,
   accreditation,
-  isCheckingAccreditation,
   onRetryAccreditation,
 }) => {
   const { t } = useTranslation()
@@ -53,10 +51,7 @@ const BaseCredentialOffer: React.FC<Props> = ({
       ? ServiceStatus.Unverified
       : (serviceInfo?.status ?? ServiceStatus.Resolving)
   const canAccept =
-    trustStatus !== ServiceStatus.Resolving &&
-    !isCheckingAccreditation &&
-    accreditation !== undefined &&
-    accreditation.status !== 'unverified'
+    trustStatus !== ServiceStatus.Resolving && accreditation !== undefined && accreditation.status !== 'unverified'
   const isSafeToAccept = trustStatus === ServiceStatus.Trusted && accreditation?.status === 'authorized'
   const displayIssuerName =
     serviceInfo?.status === ServiceStatus.Trusted && serviceInfo.name
@@ -105,7 +100,6 @@ const BaseCredentialOffer: React.FC<Props> = ({
           <TouchableOpacity
             style={styles.headerRight}
             onPress={isSafeToAccept ? accept : () => setShowModalUnsafeAccept(true)}
-            testID={isSafeToAccept ? 'offer-accept' : 'offer-accept-unsafe'}
           >
             <Text
               fontFamily="EuclidCircularA-Medium"
@@ -160,7 +154,6 @@ const BaseCredentialOffer: React.FC<Props> = ({
               serviceName={displayIssuerName}
               fallbackSchemaTitle={credentialDetails.mainInfo.schemaName}
               accreditation={accreditation}
-              isChecking={isCheckingAccreditation}
               onRetry={onRetryAccreditation}
             />
             <View style={styles.containerSectionIssuerInfo}>

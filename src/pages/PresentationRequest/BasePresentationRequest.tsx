@@ -34,7 +34,6 @@ type Props = {
   scrollViewProps?: ScrollView['props']
   onRetryServiceInfo?: () => void
   accreditation?: Accreditation
-  isCheckingAccreditation: boolean
   onRetryAccreditation: () => void
 }
 
@@ -52,7 +51,6 @@ const BasePresentationRequest: React.FC<Props> = ({
   scrollViewProps,
   onRetryServiceInfo,
   accreditation,
-  isCheckingAccreditation,
   onRetryAccreditation,
 }) => {
   const { t } = useTranslation()
@@ -71,12 +69,9 @@ const BasePresentationRequest: React.FC<Props> = ({
       ? ServiceStatus.Unverified
       : (serviceInfo?.status ?? ServiceStatus.Resolving)
   const canShare =
-    trustStatus !== ServiceStatus.Resolving &&
-    !isCheckingAccreditation &&
-    accreditation !== undefined &&
-    accreditation.status !== 'unverified'
+    trustStatus !== ServiceStatus.Resolving && accreditation !== undefined && accreditation.status !== 'unverified'
   const isSafeToShare = trustStatus === ServiceStatus.Trusted && accreditation?.status === 'authorized'
-  const enabledPresentButton = canShare && selectedCredentialsIndexes.every((value) => value >= 0)
+  const enabledPresentButton = selectedCredentialsIndexes.every((value) => value >= 0)
 
   useEffect(() => {
     if (!hasCompatibleCredentials) {
@@ -152,9 +147,8 @@ const BasePresentationRequest: React.FC<Props> = ({
             )}
             <AccreditationBox
               party="VERIFIER"
-              serviceName={submission.verifier.name || serviceInfo?.name || ''}
+              serviceName={submission.verifier.name}
               accreditation={accreditation}
-              isChecking={isCheckingAccreditation}
               onRetry={onRetryAccreditation}
               fallbackSchemaTitle={submission.entries.map((entry) => entry.name).join(', ')}
             />
@@ -217,7 +211,6 @@ const BasePresentationRequest: React.FC<Props> = ({
                       enabledPresentButton ? styles.enabledAcceptButton : styles.disabledAcceptButton,
                       !isSafeToShare && styles.unsafeAcceptButton,
                     ]}
-                    testID={isSafeToShare ? 'request-share' : 'request-share-unsafe'}
                   />
                 )}
               </>

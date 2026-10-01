@@ -22,7 +22,7 @@ const DidcommCredentialOffer: React.FC<Props> = ({ route, navigation }) => {
   const { realm } = useLocalRealm()
   const { findOrCreateThread } = useChats()
   const enableMainButtons = credentialState === DidCommCredentialState.OfferReceived
-  const { accreditation, isChecking, retry } = useIssuerAccreditation(credentialRecordId)
+  const { accreditation, retry } = useIssuerAccreditation(credentialRecordId)
 
   const updateChatEntryMetadataIfNecessary = (newCredentialState: DidCommCredentialState) => {
     if (realm) {
@@ -87,7 +87,6 @@ const DidcommCredentialOffer: React.FC<Props> = ({ route, navigation }) => {
       refuse={refuse}
       enableMainButtons={enableMainButtons}
       accreditation={accreditation}
-      isCheckingAccreditation={isChecking}
       onRetryAccreditation={retry}
     />
   )

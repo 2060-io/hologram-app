@@ -13,7 +13,6 @@ type Props = {
   party: AccreditationRole
   serviceName: string
   accreditation?: Accreditation
-  isChecking: boolean
   onRetry: () => void
   fallbackSchemaTitle?: string
 }
@@ -24,7 +23,7 @@ const ICON_STATUS = {
   unverified: ServiceStatus.Unverified,
 } as const
 
-const AccreditationBox = ({ party, serviceName, accreditation, isChecking, onRetry, fallbackSchemaTitle }: Props) => {
+const AccreditationBox = ({ party, serviceName, accreditation, onRetry, fallbackSchemaTitle }: Props) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
@@ -43,11 +42,11 @@ const AccreditationBox = ({ party, serviceName, accreditation, isChecking, onRet
   }
 
   return (
-    <View style={styles.container} testID="accreditation-box">
+    <View style={styles.container}>
       <Text fontFamily="EuclidCircularA-Medium" style={styles.title}>
         {t(party === 'ISSUER' ? 'accreditation.offersYou' : 'accreditation.requests')}
       </Text>
-      {isChecking || !accreditation ? (
+      {!accreditation ? (
         <Skeleton width="100%" colorMode={theme.isDarkMode ? 'dark' : 'light'} radius="round" show />
       ) : (
         <>
@@ -56,12 +55,10 @@ const AccreditationBox = ({ party, serviceName, accreditation, isChecking, onRet
           </Text>
           <View style={styles.verdict}>
             <VerifiedIcon style={styles.icon} status={ICON_STATUS[accreditation.status]} />
-            <Text style={styles.text} testID={`accreditation-${accreditation.status}`}>
-              {verdicts[party][accreditation.status]}
-            </Text>
+            <Text style={styles.text}>{verdicts[party][accreditation.status]}</Text>
           </View>
           {accreditation.status === 'unverified' && (
-            <TouchableOpacity onPress={onRetry} testID="accreditation-retry">
+            <TouchableOpacity onPress={onRetry}>
               <Text style={[styles.text, styles.retry]}>{t('tryAgain')}</Text>
             </TouchableOpacity>
           )}
