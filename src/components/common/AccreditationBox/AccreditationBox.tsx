@@ -3,6 +3,7 @@ import { Skeleton } from 'moti/skeleton'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { TouchableOpacity, View } from 'react-native'
+import { CheckIcon, CrossIcon, InfoIcon } from '../ProofOfTrustCard/parts'
 import { veranaCardColors } from '../ProofOfTrustCard/styles'
 import Text from '../Text'
 import styles from './styles'
@@ -56,7 +57,15 @@ const AccreditationBox = ({ party, serviceName, accreditation, onRetry, fallback
             {schema}
           </Text>
           <View style={styles.verdict}>
-            <View style={[styles.icon, { backgroundColor: ICON_COLOR[accreditation.status] }]} />
+            <View style={styles.icon}>
+              {accreditation.status === 'authorized' ? (
+                <CheckIcon color={ICON_COLOR.authorized} />
+              ) : accreditation.status === 'unauthorized' ? (
+                <CrossIcon color={ICON_COLOR.unauthorized} />
+              ) : (
+                <InfoIcon color={ICON_COLOR.unverified} />
+              )}
+            </View>
             <Text style={styles.text}>{verdicts[party][accreditation.status]}</Text>
           </View>
           {accreditation.status === 'unverified' && (
