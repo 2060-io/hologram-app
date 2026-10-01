@@ -181,8 +181,6 @@ dependencies {
         implementation jscFlavor
     }
 
-    implementation 'net.java.dev.jna:jna:5.2.0'
-
     // Firebase BOM
     implementation platform('com.google.firebase:firebase-bom:30.1.0')
 
@@ -191,7 +189,17 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics'
 
     implementation 'androidx.core:core-ktx:1.15.0'
-    implementation project(':react-native-compressor')
+}
+
+// react-native-compressor uses TAndroidLame only for audio compression (Audio.compress).
+// TAndroidLame has the GPL-3.0 license, and the app has closed-source SDKs (Firebase, ML Kit).
+// Thus, we remove TAndroidLame from the APK. Video and image compression continue to work.
+// CAUTION: Do not call Audio.compress from react-native-compressor on Android.
+// If you call it, the app gets a NoClassDefFoundError for com.naman14.androidlame classes.
+// To use audio compression, first get a license review. Then remove this exclusion
+// and the related -dontwarn rule in proguard-rules.pro.
+configurations.all {
+    exclude group: 'com.github.kaushik-naik', module: 'TAndroidLame'
 }
 
 apply plugin: 'com.google.gms.google-services'

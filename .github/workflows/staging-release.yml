@@ -151,13 +151,21 @@ jobs:
           ./gradlew generateCodegenSchemaFromJavaScript generateCodegenArtifactsFromSchema
           ./gradlew assembleStagingRelease -PreactNativeArchitectures=arm64-v8a
 
-      - name: Setup MinIO Client and Upload app.apk to MinIO
+      - name: Configure S3 client for MinIO
         run: |
-          echo "$PWD" >> $GITHUB_PATH
-          mc alias set myminio https://$MINIO_HOST $MINIO_USERNAME $MINIO_PASSWORD
-          mc mb --ignore-existing myminio/repository/staging/hologram-app/$NEW_RELEASE_VERSION
-          mc cp ./android/app/build/outputs/apk/staging/release/app-staging-release.apk myminio/repository/staging/hologram-app/$NEW_RELEASE_VERSION/app.apk
+          # The open-source MinIO client (mc) is archived and no longer downloadable.
+          # The AWS CLI is preinstalled on GitHub-hosted runners and supports MinIO.
+          aws configure set aws_access_key_id "$MINIO_USERNAME"
+          aws configure set aws_secret_access_key "$MINIO_PASSWORD"
+          aws configure set region us-east-1
+          aws configure set endpoint_url "https://$MINIO_HOST"
+          aws configure set s3.addressing_style path
+          aws configure set request_checksum_calculation when_required
+          aws configure set response_checksum_validation when_required
 
+      - name: Upload app.apk to MinIO
+        run: |
+          aws s3 cp ./android/app/build/outputs/apk/staging/release/app-staging-release.apk s3://repository/staging/hologram-app/$NEW_RELEASE_VERSION/app.apk --content-type application/vnd.android.package-archive
           echo "app.apk uploaded to MinIO successfully."
 
   build-ios:
@@ -363,24 +371,29 @@ jobs:
 
           echo "install.html created successfully."
 
-      - name: Setup MinIO Client
+      - name: Configure S3 client for MinIO
         run: |
-          echo "$PWD" >> $GITHUB_PATH
-          mc alias set myminio https://$MINIO_HOST $MINIO_USERNAME $MINIO_PASSWORD
+          # The open-source MinIO client (mc) is archived and no longer downloadable.
+          # The AWS CLI is preinstalled on GitHub-hosted runners and supports MinIO.
+          aws configure set aws_access_key_id "$MINIO_USERNAME"
+          aws configure set aws_secret_access_key "$MINIO_PASSWORD"
+          aws configure set region us-east-1
+          aws configure set endpoint_url "https://$MINIO_HOST"
+          aws configure set s3.addressing_style path
+          aws configure set request_checksum_calculation when_required
+          aws configure set response_checksum_validation when_required
 
       - name: Upload manifest.plist to MinIO
         run: |
-          # Upload the manifest.plist to the MinIO repository
-          mc mb --ignore-existing myminio/repository/staging/hologram-app/$NEW_RELEASE_VERSION
-          mc cp manifest.plist myminio/repository/staging/hologram-app/$NEW_RELEASE_VERSION/manifest.plist          
+          aws s3 cp manifest.plist s3://repository/staging/hologram-app/$NEW_RELEASE_VERSION/manifest.plist --content-type application/xml
           echo "manifest.plist uploaded to MinIO successfully."
 
-          mc cp install.html myminio/repository/staging/hologram-app/$NEW_RELEASE_VERSION/install.html          
+          aws s3 cp install.html s3://repository/staging/hologram-app/$NEW_RELEASE_VERSION/install.html --content-type text/html
           echo "install.html uploaded to MinIO successfully."
 
       - name: Upload app.ipa to MinIO
         run: |
-          mc cp ./ios/builds/Staging.ipa myminio/repository/staging/hologram-app/$NEW_RELEASE_VERSION/app.ipa
+          aws s3 cp ./ios/builds/Staging.ipa s3://repository/staging/hologram-app/$NEW_RELEASE_VERSION/app.ipa --content-type application/octet-stream
           echo "app.ipa uploaded to MinIO successfully."
 
   notify-subscribers:
