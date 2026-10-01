@@ -17,6 +17,7 @@ import getStyles from './styles'
 type Props = {
   navigation: StackNavigationProp<ParamListBase>
   credentialDetails: CredentialDetailsForDisplay
+  invitationDid?: string
   accept: () => void
   refuse: () => void
   enableMainButtons: boolean
@@ -28,6 +29,7 @@ type Props = {
 const BaseCredentialOffer: React.FC<Props> = ({
   navigation,
   credentialDetails,
+  invitationDid,
   accept,
   refuse,
   enableMainButtons,
@@ -38,7 +40,7 @@ const BaseCredentialOffer: React.FC<Props> = ({
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
-  const did = credentialDetails.mainInfo.issuer.id
+  const did = credentialDetails.mainInfo.issuer.id || invitationDid || ''
   const { isFetchingInfo, serviceInfo, failedFetchInfo, getServiceInfo } = useFetchServiceInfo({
     did,
     alwaysFetch: true,
@@ -142,7 +144,7 @@ const BaseCredentialOffer: React.FC<Props> = ({
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.subContainer}>
             <Text style={styles.credentialTitle}>
-              {credentialDetails.mainInfo.issuer.name} {t('credentialOffer.offeringYou')}
+              {displayIssuerName} {t('credentialOffer.offeringYou')}
             </Text>
             <Text fontFamily="EuclidCircularA-Bold" style={[styles.credentialTitle, styles.verifiableCredentialText]}>
               {t('credentialOffer.verifiableCredential')}

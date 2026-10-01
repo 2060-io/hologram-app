@@ -82,6 +82,7 @@ const DidcommCredentialOffer: React.FC<Props> = ({ route, navigation }) => {
     <BaseCredentialOffer
       navigation={navigation}
       credentialDetails={credentialDetails}
+      invitationDid={did}
       accept={accept}
       refuse={refuse}
       enableMainButtons={enableMainButtons}
