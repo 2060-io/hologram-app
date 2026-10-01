@@ -24,10 +24,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   icon: {
-    borderRadius: 5,
-    height: 10,
-    marginRight: 8,
-    width: 10,
+    marginRight: 6,
   },
   text: {
     color: veranaCardColors.askText,
