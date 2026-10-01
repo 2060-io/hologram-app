@@ -3,7 +3,7 @@ import { DidCommConnectionRecord, DidCommOutOfBandRecord, DidCommProofState } fr
 import { ChatEntryData, ServiceInfo } from '@src/model'
 import { CredentialMainInfo } from '@src/services/agent/display'
 
-type TypeParameters = 'oob' | 'd_m' | 'c_i' | '_url'
+type TypeParameters = 'oob' | 'd_m' | 'c_i'
 type HomeParams = {
   [K in TypeParameters]?: string
 }

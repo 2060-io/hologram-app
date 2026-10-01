@@ -6,7 +6,7 @@ import { NavigationStackParams } from '@src/components/Navigation/NavigationProp
 import { useMobileAgent } from '@src/hooks/agent/MobileAgentProvider'
 import { AppTheme } from '@src/styles'
 import { logError } from '@src/utils'
-import React from 'react'
+import React, { useRef } from 'react'
 import { Linking, StyleSheet, TextProps } from 'react-native'
 
 type ParsedTextProps = {
@@ -15,22 +15,38 @@ type ParsedTextProps = {
   textProps?: TextProps
 }
 
+const INVITATION_CHECK_TIMEOUT_MS = 5000
+
 const ParsedText: React.FC<ParsedTextProps> = ({ theme, text, textProps }) => {
   const styles = getStyles(theme)
   const { agent } = useMobileAgent()
   const navigation = useNavigation<StackNavigationProp<NavigationStackParams>>()
+  const isOpeningUrl = useRef(false)
+
+  const parseInvitation = (url: string) =>
+    Promise.race([
+      agent?.didcomm.oob.parseInvitation(url).catch(() => undefined),
+      new Promise<undefined>((resolve) => setTimeout(() => resolve(undefined), INVITATION_CHECK_TIMEOUT_MS)),
+    ])
 
   const onUrlPress = async (url: string) => {
     if (/^www\./i.test(url)) {
       onUrlPress(`https://${url}`)
       return
     }
-    const invitation = await agent?.didcomm.oob.parseInvitation(url).catch(() => undefined)
-    if (invitation) {
-      navigation.navigate('Home', { _url: TypedArrayEncoder.toBase64Url(TypedArrayEncoder.fromUtf8String(url)) })
-      return
+    if (isOpeningUrl.current) return
+    isOpeningUrl.current = true
+    try {
+      const invitation = await parseInvitation(url)
+      if (invitation) {
+        const encodedInvitation = TypedArrayEncoder.fromUtf8String(JSON.stringify(invitation.toJSON()))
+        navigation.navigate('Home', { oob: TypedArrayEncoder.toBase64Url(encodedInvitation) })
+        return
+      }
+      Linking.openURL(url).catch(() => logError('No handler for URL:', url))
+    } finally {
+      isOpeningUrl.current = false
     }
-    Linking.openURL(url).catch(() => logError('No handler for URL:', url))
   }
   const textIncludesHttp = text?.includes('http')
 
