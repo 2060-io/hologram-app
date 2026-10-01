@@ -151,14 +151,14 @@ const InvitationChatView = ({ associatedRecordId: outOfBandId, metadata, role, a
             <Avatar uri={serviceInfo?.logoUrl ?? imageUrl ?? defaultUserImg} label={label} size="19.16%" />
           </View>
           <Text fontFamily="EuclidCircularA-Medium" style={styles.label}>
-            {serviceInfo?.name ?? label}
+            {serviceInfo?.name || label}
           </Text>
         </View>
         <Text style={styles.subTitle}>
           {isReceiver ? t('chat.invitationDescription') : t('chat.sentInvitationDescription')}
           <Text fontFamily="EuclidCircularA-SemiBold" style={styles.textSemiBold}>
             {' '}
-            {serviceInfo?.name ?? label}
+            {serviceInfo?.name || label}
           </Text>
           {!isService && t('chat.asASubConnectionOf')}
           {!isService && (
