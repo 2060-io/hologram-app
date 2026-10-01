@@ -75,7 +75,11 @@ const resolveOnNetwork = async (network: VeranaNetwork, did: string): Promise<Ne
     const { status, body } = await fetchJson(`${network.indexerUrl}/v4/verifiable-trust/resolve`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ did, ecsCredentials: true, presentations: true }),
+      body: JSON.stringify({
+        did,
+        ecsCredentials: true,
+        presentations: { unresolvableCredentialIds: true, invalidCredentialIds: true },
+      }),
     })
     if (isDidNotFound(status, body)) return { network, kind: 'untrusted' }
     if (status !== 200 || !isResolveResponse(body)) {

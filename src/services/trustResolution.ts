@@ -35,7 +35,8 @@ export async function getServiceInfo({ did }: { did: string }): Promise<ServiceI
 
   const status = STATUS_BY_RESOLUTION[resolution.status]
   const verdict = resolution.verdict
-  const answer = verdict && verdict.kind !== 'failed' ? verdict.response : undefined
+  const answer =
+    verdict && verdict.kind !== 'failed' && status !== ServiceStatus.Unverified ? verdict.response : undefined
   const trustedAnswer = status === ServiceStatus.Trusted ? answer : undefined
   const service = subjectOf(trustedAnswer, ['ServiceCredential'])
   const operator = subjectOf(trustedAnswer, ['OrganizationCredential', 'PersonaCredential'])
