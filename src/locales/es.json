@@ -285,7 +285,6 @@
       "connectionsManagedBy": "Conexiones administrada por",
       "reportedMessage": "Reportaste un mensaje",
       "usingThisServiceYouAgree": "Al utilizar este servicio, aceptas sus <terms>Términos y condiciones</terms> y <privacy>Política de privacidad</privacy>. Restricciones de edad: {{minimumAgeRequired}}",
-      "proofOfTrust": "Cadena de confianza",
       "serviceNotVerifiable": "Este servicio no es verificable.",
       "noLiabilityDisclaimerDesc": "<bold>Descargo de responsabilidad: </bold>Ten en cuenta que <bold>{{appName}}</bold> actúa únicamente como un proveedor de conexión para <bold>{{serviceName}}</bold>. <bold>{{appName}}</bold> no controla este servicio y por lo tanto no puede ser considerado responsable de cualquier problema, daños o disputas que surjan del uso de <bold>{{serviceName}}</bold>. Cualquier inquietud debe dirigirse directamente a <bold>{{serviceName}}</bold>. \n\n<bold>ESTE SERVICIO NO ES VERIFICABLE.</bold> ÚSALO BAJO TU PROPIO RIESGO.",
       "newConnection": "New Connection",

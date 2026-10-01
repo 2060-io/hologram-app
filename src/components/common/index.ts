@@ -12,7 +12,6 @@ import Modal from './Modal'
 import ModalLoading from './ModalLoading'
 import OptionsList from './OptionsList'
 import Progress from './Progress'
-import ProofOfTrust from './ProofOfTrust'
 import ProofOfTrustCard from './ProofOfTrustCard'
 import RadioButton from './RadioButton'
 import SvgIcon from './SvgIcon'
@@ -41,7 +40,6 @@ export {
   ModalLoading,
   OptionsList,
   Progress,
-  ProofOfTrust,
   ProofOfTrustCard,
   RadioButton,
   SvgIcon,
