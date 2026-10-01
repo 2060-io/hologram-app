@@ -34,9 +34,10 @@ export type TrustResolution = {
 
 const REQUEST_TIMEOUT_MS = 8000
 
-const isObject = (value: unknown): value is Record<string, unknown> => typeof value === 'object' && value !== null
+export const isObject = (value: unknown): value is Record<string, unknown> =>
+  typeof value === 'object' && value !== null
 
-const fetchJson = async (url: string, init?: RequestInit) => {
+export const fetchJson = async (url: string, init?: RequestInit) => {
   const controller = new AbortController()
   const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS)
   try {

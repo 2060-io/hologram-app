@@ -6,6 +6,7 @@ import { AgentActionType, useAgentActionQueue, useChats, useMobileAgent } from '
 import { AcceptCredentialOfferParameters, DeclineCredentialOfferParameters } from '@src/hooks/agent/actions/types'
 import { findAllByAssociatedRecordId, updateChatEntryMetadata } from '@src/hooks/agent/chat/services'
 import { useLocalRealm } from '@src/hooks/providers/RealmProvider'
+import { useIssuerAccreditation } from '@src/hooks/useAccreditation'
 import { useCredentialExchangeForDisplay } from '@src/hooks/useCredentialExchangeForDisplay'
 import { ChatEntryType } from '@src/model'
 import React from 'react'
@@ -21,6 +22,7 @@ const DidcommCredentialOffer: React.FC<Props> = ({ route, navigation }) => {
   const { realm } = useLocalRealm()
   const { findOrCreateThread } = useChats()
   const enableMainButtons = credentialState === DidCommCredentialState.OfferReceived
+  const { accreditation, retry } = useIssuerAccreditation(credentialRecordId)
 
   const updateChatEntryMetadataIfNecessary = (newCredentialState: DidCommCredentialState) => {
     if (realm) {
@@ -80,9 +82,12 @@ const DidcommCredentialOffer: React.FC<Props> = ({ route, navigation }) => {
     <BaseCredentialOffer
       navigation={navigation}
       credentialDetails={credentialDetails}
+      invitationDid={did}
       accept={accept}
       refuse={refuse}
       enableMainButtons={enableMainButtons}
+      accreditation={accreditation}
+      onRetryAccreditation={retry}
     />
   )
 }
