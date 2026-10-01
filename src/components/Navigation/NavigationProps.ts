@@ -3,9 +3,9 @@ import { DidCommConnectionRecord, DidCommOutOfBandRecord, DidCommProofState } fr
 import { ChatEntryData, ServiceInfo } from '@src/model'
 import { CredentialMainInfo } from '@src/services/agent/display'
 
-type TypeParameters = 'oob' | 'd_m' | 'c_i'
+type TypeParameters = 'oob' | 'd_m' | 'c_i' | '_url'
 type HomeParams = {
-  [K in TypeParameters]: string | undefined
+  [K in TypeParameters]?: string
 }
 
 export type ChatStackParams = {

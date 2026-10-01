@@ -1,4 +1,9 @@
+import { TypedArrayEncoder } from '@credo-ts/core'
+import { useNavigation } from '@react-navigation/native'
+import { StackNavigationProp } from '@react-navigation/stack'
 import { Text } from '@src/components/common'
+import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
+import { useMobileAgent } from '@src/hooks/agent/MobileAgentProvider'
 import { AppTheme } from '@src/styles'
 import { logError } from '@src/utils'
 import React from 'react'
@@ -12,13 +17,20 @@ type ParsedTextProps = {
 
 const ParsedText: React.FC<ParsedTextProps> = ({ theme, text, textProps }) => {
   const styles = getStyles(theme)
+  const { agent } = useMobileAgent()
+  const navigation = useNavigation<StackNavigationProp<NavigationStackParams>>()
 
-  const onUrlPress = (url: string) => {
+  const onUrlPress = async (url: string) => {
     if (/^www\./i.test(url)) {
       onUrlPress(`https://${url}`)
-    } else {
-      Linking.openURL(url).catch(() => logError('No handler for URL:', url))
+      return
     }
+    const invitation = await agent?.didcomm.oob.parseInvitation(url).catch(() => undefined)
+    if (invitation) {
+      navigation.navigate('Home', { _url: TypedArrayEncoder.toBase64Url(TypedArrayEncoder.fromUtf8String(url)) })
+      return
+    }
+    Linking.openURL(url).catch(() => logError('No handler for URL:', url))
   }
   const textIncludesHttp = text?.includes('http')
 
