@@ -12,13 +12,13 @@ import {
 import { findAllByAssociatedRecordId, updateChatEntryMetadata } from '@src/hooks/agent/chat/services'
 import { useLocalRealm } from '@src/hooks/providers/RealmProvider'
 import { useVerifierAccreditation } from '@src/hooks/useAccreditation'
-import { ChatEntryType } from '@src/model'
+import { ChatEntryType, ServiceInfo, ServiceStatus } from '@src/model'
 import { CredentialMainInfo } from '@src/services/agent/display'
 import { FormattedSubmission, formatDidcommPresentationSubmission } from '@src/services/agent/formatPresentation'
 import { presentProof } from '@src/services/agent/proofs'
 import { logError } from '@src/utils'
 import { toast } from '@src/utils/toast'
-import React, { useCallback, useRef, useState, useTransition } from 'react'
+import React, { useCallback, useMemo, useRef, useState, useTransition } from 'react'
 import BasePresentationRequest from './BasePresentationRequest'
 
 type Props = StackScreenProps<NavigationStackParams, 'DidcommPresentationRequest'>
@@ -32,6 +32,10 @@ const DidcommPresentationRequest: React.FC<Props> = ({ navigation, route }: Prop
   const { addAgentActionToQueue } = useAgentActionQueue()
   const selectedCredentials = useRef({})
   const { proofRecordId, did } = route.params
+  const initialServiceInfo = useMemo<ServiceInfo | undefined>(
+    () => (did ? { did, id: did, name: '', minimumAgeRequired: 0, status: ServiceStatus.Resolving } : undefined),
+    [did]
+  )
   const { isFetchingInfo, serviceInfo, failedFetchInfo, getServiceInfo } = useFetchServiceInfo({
     did,
     alwaysFetch: true,
@@ -47,16 +51,17 @@ const DidcommPresentationRequest: React.FC<Props> = ({ navigation, route }: Prop
   useFocusEffect(
     useCallback(() => {
       const getFormattedPresentation = async () => {
-        if (!agent || !serviceInfo) return
+        const verifierInfo = serviceInfo ?? initialServiceInfo
+        if (!agent || !verifierInfo) return
         const newFormattedPresentationRequest = await formatDidcommPresentationSubmission({
           agent,
           proofRecordId,
-          verifierInfo: serviceInfo,
+          verifierInfo,
         })
         setSubmission(newFormattedPresentationRequest)
       }
       getFormattedPresentation()
-    }, [serviceInfo])
+    }, [serviceInfo, initialServiceInfo])
   )
 
   const accept = async () => {
@@ -142,7 +147,7 @@ const DidcommPresentationRequest: React.FC<Props> = ({ navigation, route }: Prop
       accept={accept}
       refuse={refuse}
       isFetchingInfo={isFetchingInfo}
-      serviceInfo={serviceInfo}
+      serviceInfo={serviceInfo ?? initialServiceInfo}
       failedFetchInfo={failedFetchInfo}
       isAccepting={isAccepting}
       notifyNoCompatibleCredentials={notify}
