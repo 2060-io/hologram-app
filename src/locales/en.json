@@ -559,6 +559,28 @@
       "shareAnyway": "Share anyway (unsafe)",
       "confirmUnsafeAccept": "This issuer could not be proven trustworthy for this credential. Accept it anyway?",
       "confirmUnsafeShare": "This verifier could not be proven allowed to request this credential. Share it anyway?"
+    },
+    "proofOfTrust": {
+      "statusTrusted": "TRUSTED",
+      "statusUntrusted": "UNTRUSTED",
+      "statusUnverified": "COULD NOT VERIFY",
+      "statusResolving": "Checking…",
+      "evaluatedAt": "Evaluated {{date}}",
+      "notChecked": "Not checked",
+      "sectionService": "Service",
+      "sectionOperatedBy": "Operated by",
+      "sectionOtherCredentials": "Other credentials",
+      "sectionFailures": "Why it is not trusted",
+      "noServiceCredential": "No ECS-Service credential presented.",
+      "noOperatorCredential": "No ECS-Organization or ECS-Persona credential presented.",
+      "serviceClaimsNotVerified": "Service claims not verified",
+      "operatorClaimsNotVerified": "Operator claims not verified",
+      "otherCredential": "Credential schema #{{schema}} · Ecosystem #{{ecosystem}}",
+      "noDidDocument": "This service cannot present verifiable trust credentials.",
+      "notRegistered": "Not registered in any configured Verana network.",
+      "conditions": "Conditions of connecting",
+      "minimumAge": "Minimum age {{age}}",
+      "demoNetwork": "Demo network · do not share real data"
     }
   }
 }

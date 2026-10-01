@@ -149,13 +149,6 @@ const BaseCredentialOffer: React.FC<Props> = ({
               serviceInfo={serviceInfo}
               failedFetchInfo={failedFetchInfo}
             />
-            <AccreditationBox
-              party="ISSUER"
-              serviceName={displayIssuerName}
-              fallbackSchemaTitle={credentialDetails.mainInfo.schemaName}
-              accreditation={accreditation}
-              onRetry={onRetryAccreditation}
-            />
             <View style={styles.containerSectionIssuerInfo}>
               <Text fontFamily="EuclidCircularA-Medium" style={styles.titleIssuerInfo}>
                 {t('credentialOffer.issuerInformation')}
@@ -166,6 +159,15 @@ const BaseCredentialOffer: React.FC<Props> = ({
                 serviceInfo={serviceInfo}
                 failedFetchInfo={failedFetchInfo}
                 onRetry={getServiceInfo}
+                ask={
+                  <AccreditationBox
+                    party="ISSUER"
+                    serviceName={displayIssuerName}
+                    fallbackSchemaTitle={credentialDetails.mainInfo.schemaName}
+                    accreditation={accreditation}
+                    onRetry={onRetryAccreditation}
+                  />
+                }
               />
             </View>
           </View>
