@@ -59,7 +59,7 @@ const Did = ({ did, serviceInfoStatus, untrustedReason, isFetchingInfo }: Props)
     <TouchableOpacity onPress={onPressDid} activeOpacity={0} disabled={safeDid.length <= DID_MAX_DISPLAY_CHARS}>
       <Text style={styles.text}>
         <Text fontFamily="EuclidCircularA-Bold" style={styles.text}>{`${truncated ? initialDid : safeDid} `}</Text>
-        {serviceIs[serviceInfoStatus] ?? t('invitation.couldNotVerifyService')}
+        {serviceIs[serviceInfoStatus]}
       </Text>
     </TouchableOpacity>
   )

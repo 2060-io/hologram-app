@@ -154,7 +154,6 @@
       "certificateisValid": "certificate is valid",
       "isATrustedService": "is a trusted service",
       "notTrustedService": "is a non-trusted verifiable service. Connect at your own risk",
-      "notFoundService": "is unresolvable and thus not trustable. Connect at your own risk.",
       "couldNotVerifyService": "could not be verified right now. Retry, or connect at your own risk.",
       "cannotPresentTrustCredentials": "cannot present verifiable trust credentials",
       "errorGettingServiceInfoAPI": "Error getting service info API: ",

@@ -3,7 +3,6 @@ export type VeranaNetwork = {
   label: string
   indexerUrl: string
   production: boolean
-  explorerUrl?: string
   ecosystemDids?: string[]
 }
 

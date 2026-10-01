@@ -25,12 +25,12 @@ const VerifiedIcon = ({ style, status }: Props) => {
     [ServiceStatus.Unverified]: theme.colors.lightGrey,
     [ServiceStatus.Resolving]: theme.colors.lightGrey,
   }
-  const backgroundColor = backgroundColors[status] ?? theme.colors.lightGrey
+  const backgroundColor = backgroundColors[status]
 
   const dimensions = status === ServiceStatus.Trusted ? '80%' : '65%'
   return (
     <View style={[styles.container, { backgroundColor }, style]}>
-      <SvgIcon name={iconNames[status] ?? 'warning'} fill={theme.colors.white} width={dimensions} height={dimensions} />
+      <SvgIcon name={iconNames[status]} fill={theme.colors.white} width={dimensions} height={dimensions} />
     </View>
   )
 }

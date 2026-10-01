@@ -70,7 +70,7 @@ const passesEcosystemAllowList = async (network: VeranaNetwork, response: Resolv
   return dids.every((did) => allowed.includes(did))
 }
 
-export const resolveOnNetwork = async (network: VeranaNetwork, did: string): Promise<NetworkVerdict> => {
+const resolveOnNetwork = async (network: VeranaNetwork, did: string): Promise<NetworkVerdict> => {
   try {
     const { status, body } = await fetchJson(`${network.indexerUrl}/v4/verifiable-trust/resolve`, {
       method: 'POST',
