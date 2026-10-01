@@ -1,13 +1,11 @@
-import { useTheme } from '@src/hooks/providers/ThemeProvider'
-import { ServiceStatus } from '@src/model'
 import type { Accreditation, AccreditationRole } from '@src/services/verana/accreditation'
 import { Skeleton } from 'moti/skeleton'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { TouchableOpacity, View } from 'react-native'
+import { veranaCardColors } from '../ProofOfTrustCard/styles'
 import Text from '../Text'
-import VerifiedIcon from '../VerifiedIcon'
-import getStyles from './styles'
+import styles from './styles'
 
 type Props = {
   party: AccreditationRole
@@ -17,16 +15,20 @@ type Props = {
   fallbackSchemaTitle?: string
 }
 
-const ICON_STATUS = {
-  authorized: ServiceStatus.Trusted,
-  unauthorized: ServiceStatus.Untrusted,
-  unverified: ServiceStatus.Unverified,
+const ICON_COLOR = {
+  authorized: veranaCardColors.ok,
+  unauthorized: veranaCardColors.bad,
+  unverified: veranaCardColors.faint,
+} as const
+
+const BOX_COLORS = {
+  authorized: { backgroundColor: veranaCardColors.okSoft, borderColor: veranaCardColors.okRail },
+  unauthorized: { backgroundColor: veranaCardColors.badSoft, borderColor: veranaCardColors.badRail },
+  unverified: { backgroundColor: veranaCardColors.neutralSoft, borderColor: veranaCardColors.noneRail },
 } as const
 
 const AccreditationBox = ({ party, serviceName, accreditation, onRetry, fallbackSchemaTitle }: Props) => {
   const { t } = useTranslation()
-  const theme = useTheme()
-  const styles = getStyles(theme)
   const schema = accreditation?.schemaTitles.join(', ') || fallbackSchemaTitle || t('accreditation.thisCredential')
   const verdicts = {
     ISSUER: {
@@ -42,19 +44,19 @@ const AccreditationBox = ({ party, serviceName, accreditation, onRetry, fallback
   }
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, BOX_COLORS[accreditation?.status ?? 'unverified']]}>
       <Text fontFamily="EuclidCircularA-Medium" style={styles.title}>
         {t(party === 'ISSUER' ? 'accreditation.offersYou' : 'accreditation.requests')}
       </Text>
       {!accreditation ? (
-        <Skeleton width="100%" colorMode={theme.isDarkMode ? 'dark' : 'light'} radius="round" show />
+        <Skeleton width="100%" colorMode="light" radius="round" show />
       ) : (
         <>
           <Text fontFamily="EuclidCircularA-Bold" style={styles.schema}>
             {schema}
           </Text>
           <View style={styles.verdict}>
-            <VerifiedIcon style={styles.icon} status={ICON_STATUS[accreditation.status]} />
+            <View style={[styles.icon, { backgroundColor: ICON_COLOR[accreditation.status] }]} />
             <Text style={styles.text}>{verdicts[party][accreditation.status]}</Text>
           </View>
           {accreditation.status === 'unverified' && (

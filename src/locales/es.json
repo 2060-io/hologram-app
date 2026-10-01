@@ -559,6 +559,28 @@
       "shareAnyway": "Compartir de todos modos (inseguro)",
       "confirmUnsafeAccept": "No se pudo comprobar que este emisor sea confiable para esta credencial. ¿Aceptarla de todos modos?",
       "confirmUnsafeShare": "No se pudo comprobar que este verificador pueda solicitar esta credencial. ¿Compartirla de todos modos?"
+    },
+    "proofOfTrust": {
+      "statusTrusted": "CONFIABLE",
+      "statusUntrusted": "NO CONFIABLE",
+      "statusUnverified": "NO SE PUDO VERIFICAR",
+      "statusResolving": "Verificando…",
+      "evaluatedAt": "Evaluado el {{date}}",
+      "notChecked": "No verificado",
+      "sectionService": "Servicio",
+      "sectionOperatedBy": "Operado por",
+      "sectionOtherCredentials": "Otras credenciales",
+      "sectionFailures": "Por qué no es confiable",
+      "noServiceCredential": "No presenta una credencial ECS-Service.",
+      "noOperatorCredential": "No presenta una credencial ECS-Organization ni ECS-Persona.",
+      "serviceClaimsNotVerified": "Datos del servicio no verificados",
+      "operatorClaimsNotVerified": "Datos del operador no verificados",
+      "otherCredential": "Esquema de credencial #{{schema}} · Ecosistema #{{ecosystem}}",
+      "noDidDocument": "Este servicio no puede presentar credenciales de confianza verificables.",
+      "notRegistered": "No está registrado en ninguna red Verana configurada.",
+      "conditions": "Condiciones de conexión",
+      "minimumAge": "Edad mínima {{age}}",
+      "demoNetwork": "Red de demostración · no compartas datos reales"
     }
   }
 }

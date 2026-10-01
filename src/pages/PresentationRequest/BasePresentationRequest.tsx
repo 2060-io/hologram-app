@@ -5,6 +5,7 @@ import {
   AccreditationBox,
   CredentialMainInformation,
   MainButton,
+  ProofOfTrustCard,
   RadioButton,
   ServiceMainInfo,
   Text,
@@ -145,13 +146,23 @@ const BasePresentationRequest: React.FC<Props> = ({
                 onRetry={onRetryServiceInfo}
               />
             )}
-            <AccreditationBox
-              party="VERIFIER"
-              serviceName={submission.verifier.name}
-              accreditation={accreditation}
-              onRetry={onRetryAccreditation}
-              fallbackSchemaTitle={submission.entries.map((entry) => entry.name).join(', ')}
-            />
+            {serviceInfo && (
+              <ProofOfTrustCard
+                serviceInfo={serviceInfo}
+                isFetchingInfo={Boolean(isFetchingInfo)}
+                failedFetchInfo={failedFetchInfo}
+                onRetry={onRetryServiceInfo}
+                ask={
+                  <AccreditationBox
+                    party="VERIFIER"
+                    serviceName={submission.verifier.name}
+                    accreditation={accreditation}
+                    onRetry={onRetryAccreditation}
+                    fallbackSchemaTitle={submission.entries.map((entry) => entry.name).join(', ')}
+                  />
+                }
+              />
+            )}
             {hasCompatibleCredentials ? (
               <>
                 <Text style={[styles.title, styles.mainTitle]}>
