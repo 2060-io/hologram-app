@@ -22,14 +22,19 @@ const useAccreditationCheck = (check: (agent: MobileAgent) => Promise<Accreditat
     const runId = ++latestRun.current
     setAccreditation(undefined)
     let result: Accreditation
+    let timer: ReturnType<typeof setTimeout> | undefined
     try {
       result = await Promise.race([
         check(agent),
-        new Promise<never>((_, reject) => setTimeout(() => reject(new Error('timed out')), CHECK_TIMEOUT_MS)),
+        new Promise<never>((_, reject) => {
+          timer = setTimeout(() => reject(new Error('timed out')), CHECK_TIMEOUT_MS)
+        }),
       ])
     } catch (error) {
       logWarn(`Verana accreditation check for ${key} could not complete: ${String(error)}`)
       result = { status: 'unverified', schemaTitles: [] }
+    } finally {
+      clearTimeout(timer)
     }
     if (runId !== latestRun.current) return
     setAccreditation(result)

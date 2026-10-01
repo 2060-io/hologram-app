@@ -139,32 +139,22 @@ const checkReference = async (
 export const checkIssuerAccreditation = (agent: MobileAgent, credentialDefinitionId: string) =>
   checkReference(agent, { kind: 'credentialDefinition', id: credentialDefinitionId }, 'ISSUER')
 
-const pickGroupResult = (results: Accreditation[]): Accreditation =>
-  results.find((result) => result.status === 'authorized') ??
-  results.find((result) => result.status === 'unverified') ??
-  results[0] ?? { status: 'unauthorized', schemaTitles: [] }
-
 export const checkVerifierAccreditation = async (
   agent: MobileAgent,
   requestedGroups: AnonCredsReference[][],
   verifierDid: string | undefined
 ): Promise<Accreditation> => {
-  if (!requestedGroups.length || !verifierDid) return { status: 'unauthorized', schemaTitles: [] }
-  const checks = new Map<string, Promise<Accreditation>>()
-  const check = (reference: AnonCredsReference) => {
-    const existing = checks.get(reference.id)
-    if (existing) return existing
-    const pending = checkReference(agent, reference, 'VERIFIER', verifierDid)
-    checks.set(reference.id, pending)
-    return pending
+  if (!requestedGroups.length || requestedGroups.some((group) => !group.length) || !verifierDid) {
+    return { status: 'unauthorized', schemaTitles: [] }
   }
-  const groups = await Promise.all(
-    requestedGroups.map(async (group) => pickGroupResult(await Promise.all(group.map(check))))
+  const references = new Map(requestedGroups.flat().map((reference) => [reference.id, reference]))
+  const results = await Promise.all(
+    [...references.values()].map((reference) => checkReference(agent, reference, 'VERIFIER', verifierDid))
   )
-  const schemaTitles = [...new Set(groups.flatMap((group) => group.schemaTitles))]
-  const status = groups.every((group) => group.status === 'authorized')
+  const schemaTitles = [...new Set(results.flatMap((result) => result.schemaTitles))]
+  const status = results.every((result) => result.status === 'authorized')
     ? 'authorized'
-    : groups.some((group) => group.status === 'unauthorized')
+    : results.some((result) => result.status === 'unauthorized')
       ? 'unauthorized'
       : 'unverified'
   return { status, schemaTitles }
