@@ -24,3 +24,6 @@
 -keep class ch.qos.logback.** { *; }
 -dontwarn org.slf4j.**
 -dontwarn ch.qos.logback.**
+# react-native-compressor: build.gradle removes TAndroidLame (GPL-3.0).
+# Only the audio compressor uses these classes. Remove this rule together with that exclusion.
+-dontwarn com.naman14.androidlame.**

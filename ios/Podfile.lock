@@ -1760,8 +1760,9 @@ PODS:
     - Yoga
   - react-native-cloud-store (0.11.0):
     - React-Core
-  - react-native-compressor (1.13.0):
+  - react-native-compressor (2.0.3):
     - hermes-engine
+    - NitroModules
     - RCTRequired
     - RCTTypeSafety
     - React-Core
@@ -3737,7 +3738,7 @@ SPEC CHECKSUMS:
   react-native-audio-waveform: 4e801f7fab95c789697db8d62a50f9156208a3d4
   react-native-cameraroll: b735f80580b2404cef0bb4f04bbe00c0e05f9a6e
   react-native-cloud-store: cc96ca8d9a4400a1a7d8ceb33d2605bccc4986cf
-  react-native-compressor: 6c2699200f33623274c711ff0074360abe2f4187
+  react-native-compressor: 4c3f20fd62868a49be75b39a2c07b3233239ba66
   react-native-config: 3e3089225ccd1fcd4aa47a75aa445a7f7f3ba2c8
   react-native-create-thumbnail: c15cedc37f3822777d44e6035be041f7961341ea
   react-native-date-picker: 6e9e5f8053d0effe41cdbd9aaa8814aedacef5c6
