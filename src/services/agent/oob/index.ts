@@ -303,7 +303,7 @@ export const processInvitation = async (
       throw new Error('Message request is not from supported protocol.')
     }
 
-    if (!existingConnection && invitation.handshakeProtocols?.length) {
+    if (!existingConnection) {
       return {
         success: true,
         invitationType: DidcommInvitationType.ConnectionRequest,
