@@ -181,8 +181,6 @@ dependencies {
         implementation jscFlavor
     }
 
-    implementation 'net.java.dev.jna:jna:5.2.0'
-
     // Firebase BOM
     implementation platform('com.google.firebase:firebase-bom:30.1.0')
 
