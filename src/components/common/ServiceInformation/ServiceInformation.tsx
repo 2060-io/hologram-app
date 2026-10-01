@@ -42,7 +42,7 @@ const ServiceInformation = ({
         onRetry={onRetry}
       />
       <ProofOfTrustCard
-        serviceInfo={serviceInfoToDisplay}
+        serviceInfo={serviceInfo ?? initialServiceInfo}
         isFetchingInfo={isFetchingInfo}
         failedFetchInfo={failedFetchInfo}
         onRetry={onRetry}
