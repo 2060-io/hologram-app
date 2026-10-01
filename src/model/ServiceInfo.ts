@@ -14,16 +14,7 @@ export type BaseEntity = {
   status: ServiceStatus
 }
 
-interface CertificationEntity extends BaseEntity {
-  trustRegistry: {
-    name: string
-    status: ServiceStatus
-  }
-}
-
-export interface ServiceProvider extends BaseEntity {
-  certificationEntity: CertificationEntity
-}
+export type ServiceProvider = BaseEntity
 
 export type ServiceInfo = {
   did: string

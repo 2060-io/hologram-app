@@ -1,18 +1,20 @@
 import { DidCommConnectionRecord } from '@credo-ts/didcomm'
 import { StackActions } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
+import { ModalConfirmAction } from '@src/components'
 import { HeaderTitle, ModalLoading, Text } from '@src/components/common'
 import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'
 import { useScrollSwipeDown } from '@src/hooks'
 import { useChats, useMobileAgent, useUserProfile } from '@src/hooks/agent'
 import { AgentActionType } from '@src/hooks/agent/actions/AgentAction'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
+import { ServiceStatus } from '@src/model'
 import { AgentActionQueueSingleton } from '@src/services/AgentActionQueueSingleton'
-import { acceptInvitation } from '@src/services/agent/oob'
+import { acceptInvitation, acceptInvitationAndWaitForRequest, DidcommInvitationType } from '@src/services/agent/oob'
 import { logError } from '@src/utils'
 import { screenHeight } from '@src/utils/responsiveUtils'
 import { toast } from '@src/utils/toast'
-import React, { ReactElement, useLayoutEffect, useTransition } from 'react'
+import React, { ReactElement, useLayoutEffect, useRef, useState, useTransition } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ScrollView, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -40,6 +42,7 @@ interface BaseConnectionInvitationProps extends ConnectionInvitationProps {
   ageRestricted?: boolean
   onSwipeDown?: () => void
   disabledSwipeDown?: boolean
+  trustStatus?: ServiceStatus
 }
 
 const BaseConnectionInvitation = ({
@@ -49,6 +52,7 @@ const BaseConnectionInvitation = ({
   ageRestricted = false,
   onSwipeDown,
   disabledSwipeDown = true,
+  trustStatus,
 }: BaseConnectionInvitationProps) => {
   const { t } = useTranslation()
   const theme = useTheme()
@@ -68,7 +72,12 @@ const BaseConnectionInvitation = ({
   const parentConnectionId = outOfBandRecord.getTag('parentConnectionId') as string | undefined
   const invitationType = getInvitationType(invitationDid, parentConnectionId)
   const isAlreadyConnected = !!existingConnectionId
-  const canConnect = !isAlreadyConnected && !ageRestricted
+  const isResolvingTrust = trustStatus === ServiceStatus.Resolving
+  const canConnect = !isAlreadyConnected && !ageRestricted && !isResolvingTrust
+  const isSafeToConnect = trustStatus === undefined || trustStatus === ServiceStatus.Trusted
+  const hasAttachedRequest = Boolean(invitation.getRequests()?.length)
+  const [showModalUnsafeConnect, setShowModalUnsafeConnect] = useState(false)
+  const isAccepting = useRef(false)
 
   const goToChat = (connection: DidCommConnectionRecord) => {
     const chatThreadId = findOrCreateThread({ connection }).id
@@ -86,7 +95,8 @@ const BaseConnectionInvitation = ({
   }
 
   const onPressHeaderRightButton = async () => {
-    if (canConnect) accept()
+    if (canConnect && !isSafeToConnect) setShowModalUnsafeConnect(true)
+    else if (canConnect) accept()
     else if (isAlreadyConnected) {
       const connection = await agent?.didcomm.connections.findById(existingConnectionId!)
       if (connection) goToChat(connection)
@@ -95,10 +105,46 @@ const BaseConnectionInvitation = ({
     }
   }
 
-  const accept = async () => {
+  const onUnsafeConnect = () => {
+    setShowModalUnsafeConnect(false)
+    accept()
+  }
+
+  const goToAttachedRequest = async () => {
     if (!agent) return
+    const result = await acceptInvitationAndWaitForRequest(
+      agent,
+      invitation,
+      outOfBandRecord,
+      undefined,
+      userProfileData?.displayName
+    )
+    if (!result.success) {
+      onPressHeaderLeftButton()
+      throw new Error(result.error)
+    }
+    if (result.invitationType === DidcommInvitationType.CredentialOffer) {
+      navigation.dispatch(
+        StackActions.replace('DidcommCredentialOffer', { credentialRecordId: result.recordId, did: invitationDid })
+      )
+    } else if (result.invitationType === DidcommInvitationType.PresentationRequest) {
+      navigation.dispatch(
+        StackActions.replace('DidcommPresentationRequest', { proofRecordId: result.recordId, did: invitationDid })
+      )
+    } else {
+      navigation.dispatch(StackActions.replace('EphemeralCredentialPresentation', { proofRecordId: result.recordId }))
+    }
+  }
+
+  const accept = async () => {
+    if (!agent || isAccepting.current) return
+    isAccepting.current = true
     startAcceptInvitationTransition(async () => {
       try {
+        if (hasAttachedRequest) {
+          await goToAttachedRequest()
+          return
+        }
         const invitationOptions = {
           outOfBandId,
           label: userProfileData?.displayName,
@@ -119,6 +165,8 @@ const BaseConnectionInvitation = ({
       } catch (error) {
         toast({ type: 'error', message: `Failed to add connection ${error}` })
         logError('Error accepting connection invitation', error)
+      } finally {
+        isAccepting.current = false
       }
     })
   }
@@ -138,17 +186,21 @@ const BaseConnectionInvitation = ({
           </Text>
         </TouchableOpacity>
       ),
-      headerRight: () => (
-        <TouchableOpacity style={styles.btnAccept} onPress={onPressHeaderRightButton}>
-          <Text fontFamily="EuclidCircularA-Medium" style={styles.headerBtnText}>
-            {canConnect ? t('general.accept') : t('general.done')}
-          </Text>
-        </TouchableOpacity>
-      ),
+      headerRight: () =>
+        isResolvingTrust && !isAlreadyConnected ? null : (
+          <TouchableOpacity style={styles.btnAccept} onPress={onPressHeaderRightButton}>
+            <Text
+              fontFamily="EuclidCircularA-Medium"
+              style={[styles.headerBtnText, canConnect && !isSafeToConnect && styles.unsafeBtnText]}
+            >
+              {canConnect ? t('general.accept') : t('general.done')}
+            </Text>
+          </TouchableOpacity>
+        ),
     })
   }
 
-  useLayoutEffect(handleChangeHeaderOptions, [canConnect, theme.colors])
+  useLayoutEffect(handleChangeHeaderOptions, [canConnect, isSafeToConnect, isResolvingTrust, theme.colors])
 
   return (
     <SafeAreaView style={styles.container} edges={['bottom']}>
@@ -159,6 +211,16 @@ const BaseConnectionInvitation = ({
         onScrollEndDrag={handleScrollEndDrag}
       >
         <ModalLoading visible={isAcceptingInvitation} />
+        <ModalConfirmAction
+          visible={showModalUnsafeConnect}
+          title={t('invitation.confirmUnsafeConnect')}
+          subTitle=""
+          confirmText={t('invitation.connectAnyway')}
+          cancelText={t('general.cancel')}
+          onClose={() => setShowModalUnsafeConnect(false)}
+          onConfirm={onUnsafeConnect}
+          onCancel={() => setShowModalUnsafeConnect(false)}
+        />
         <View style={styles.subContainer}>
           {isAlreadyConnected && (
             <AlreadyConnected

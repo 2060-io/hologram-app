@@ -39,6 +39,9 @@ const styles = (theme: AppTheme) =>
       fontSize: theme.fontSize.md2 + 1.12,
       color: theme.colors.green,
     },
+    unsafeBtnText: {
+      color: theme.colors.red,
+    },
     fontFamilyBold: {
       fontSize: theme.fontSize.md + 1,
     },

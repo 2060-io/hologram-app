@@ -77,7 +77,9 @@ const ConnectionInvitationWrapper = (props: ConnectionInvitationProps) => {
   const invitation = outOfBandRecord?.outOfBandInvitation
   const invitationDid = invitation.invitationDids[0]
   const isService = invitationDid !== undefined && !invitationDid.startsWith('did:peer')
-  if (isService) return <ConnectionInvitationForVerifiableService {...props} />
+  if (isService || (invitationDid !== undefined && Boolean(invitation.getRequests()?.length))) {
+    return <ConnectionInvitationForVerifiableService {...props} />
+  }
   return <ConnectionInvitation {...props} />
 }
 

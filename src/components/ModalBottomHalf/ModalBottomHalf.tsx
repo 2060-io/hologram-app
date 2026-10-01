@@ -1,15 +1,6 @@
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import React, { memo, useEffect, useRef, useState } from 'react'
-import {
-  Animated,
-  Dimensions,
-  Modal as NativeModal,
-  PanResponder,
-  StyleProp,
-  TouchableWithoutFeedback,
-  View,
-  ViewStyle,
-} from 'react-native'
+import { Animated, Dimensions, PanResponder, StyleProp, TouchableWithoutFeedback, View, ViewStyle } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Modal } from '../common'
 import getStyles from './styles'
@@ -23,8 +14,9 @@ type ModalBottomHalfProps = {
 
 const ModalBottomHalf = ({ visible, onClose, styleContainer, children }: ModalBottomHalfProps) => {
   const screenHeight = Math.round(Dimensions.get('screen').height)
-  const modalRef = useRef<NativeModal | null>(null)
   const panY = useRef(new Animated.Value(screenHeight)).current
+  const onCloseRef = useRef(onClose)
+  onCloseRef.current = onClose
   const theme = useTheme()
   const styles = getStyles(theme)
   const resetPositionAnim = Animated.timing(panY, {
@@ -45,7 +37,7 @@ const ModalBottomHalf = ({ visible, onClose, styleContainer, children }: ModalBo
   })
 
   const handleDismiss = () => {
-    closeAnim.start(() => modalRef.current?.props.onDismiss?.())
+    closeAnim.start(({ finished }) => finished && onCloseRef.current())
   }
 
   const panResponders = useState(
@@ -54,7 +46,7 @@ const ModalBottomHalf = ({ visible, onClose, styleContainer, children }: ModalBo
       onMoveShouldSetPanResponder: () => false,
       onPanResponderMove: Animated.event([null, { dy: panY }], { useNativeDriver: false }),
       onPanResponderRelease: (e, gs) => {
-        if (gs.dy > 0 && gs.vy > 1.5) return closeAnim.start(() => modalRef.current?.props.onDismiss?.())
+        if (gs.dy > 0 && gs.vy > 1.5) return closeAnim.start(({ finished }) => finished && onCloseRef.current())
 
         return resetPositionAnim.start()
       },
@@ -67,7 +59,6 @@ const ModalBottomHalf = ({ visible, onClose, styleContainer, children }: ModalBo
 
   return (
     <Modal
-      ref={modalRef}
       animationType="slide"
       visible={visible}
       transparent={true}

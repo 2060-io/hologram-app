@@ -1,43 +1,41 @@
-import { AppTheme, cardShadowStyles, cardStyles } from '@src/styles'
 import { StyleSheet } from 'react-native'
+import { veranaCardColors } from '../ProofOfTrustCard/styles'
 
-const styles = (theme: AppTheme) =>
-  StyleSheet.create({
-    container: {
-      ...cardStyles(theme),
-      ...cardShadowStyles(theme.colors),
-      marginTop: 16,
-    },
-    title: {
-      color: theme.colors.primaryText,
-      fontSize: theme.fontSize.sm,
-      letterSpacing: 1,
-      marginBottom: 6,
-    },
-    schema: {
-      color: theme.colors.primaryText,
-      fontSize: theme.fontSize.md,
-      marginBottom: 8,
-    },
-    verdict: {
-      flexDirection: 'row',
-      alignItems: 'center',
-    },
-    icon: {
-      width: 22,
-      height: 22,
-      borderRadius: 11,
-      marginRight: 10,
-    },
-    text: {
-      flex: 1,
-      color: theme.colors.primaryText,
-      fontSize: theme.fontSize.md,
-    },
-    retry: {
-      marginTop: 8,
-      textDecorationLine: 'underline',
-    },
-  })
+const styles = StyleSheet.create({
+  container: {
+    borderRadius: 10,
+    borderWidth: 1,
+    marginTop: 14,
+    padding: 10,
+  },
+  title: {
+    color: veranaCardColors.sub,
+    fontSize: 11,
+    letterSpacing: 1,
+    marginBottom: 4,
+  },
+  schema: {
+    color: veranaCardColors.ink,
+    fontSize: 14,
+    marginBottom: 6,
+  },
+  verdict: {
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  icon: {
+    marginRight: 6,
+  },
+  text: {
+    color: veranaCardColors.askText,
+    flex: 1,
+    fontSize: 12,
+  },
+  retry: {
+    color: veranaCardColors.brand,
+    marginTop: 8,
+    textDecorationLine: 'underline',
+  },
+})
 
 export default styles

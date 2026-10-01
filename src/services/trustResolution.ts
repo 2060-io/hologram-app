@@ -57,10 +57,7 @@ export async function getServiceInfo({ did }: { did: string }): Promise<ServiceI
     dataPrivacyUrl: stringOf(service?.privacyPolicyUri),
     termsAndConditionsUrl: stringOf(service?.termsAndConditionsUri),
     minimumAgeRequired: typeof service?.minimumAgeRequired === 'number' ? service.minimumAgeRequired : 0,
-    serviceProvider: operatorEntity && {
-      ...operatorEntity,
-      certificationEntity: { ...operatorEntity, trustRegistry: { name: operatorEntity.entityName, status } },
-    },
+    serviceProvider: operatorEntity,
     network:
       verdict && status !== ServiceStatus.Unverified
         ? { id: verdict.network.id, label: verdict.network.label, production: verdict.network.production }

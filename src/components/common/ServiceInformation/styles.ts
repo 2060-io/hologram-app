@@ -60,20 +60,6 @@ const styles = (theme: AppTheme) =>
       alignItems: 'center',
       marginBottom: 14,
     },
-    networkChip: {
-      alignSelf: 'center',
-      marginTop: 8,
-      paddingHorizontal: 10,
-      paddingVertical: 2,
-      borderRadius: 10,
-      borderWidth: 1,
-      borderColor: theme.colors.orange,
-      color: theme.colors.orange,
-      fontSize: theme.fontSize.sm,
-    },
-    retryText: {
-      marginTop: 8,
-    },
     failedToFetchInfoText: {
       color: theme.colors.red,
       marginTop: 10,
