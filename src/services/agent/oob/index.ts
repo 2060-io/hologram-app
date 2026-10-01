@@ -173,7 +173,6 @@ export const acceptInvitationAndWaitForRequest = async (
   existingConnection?: DidCommConnectionRecord,
   label?: string
 ): Promise<ProcessInvitationResult> => {
-  // eslint-disable-next-line prefer-const
   let connectionId: string | undefined
 
   const credentialOffer = agent.events
@@ -205,6 +204,7 @@ export const acceptInvitationAndWaitForRequest = async (
   const eventPromise = firstValueFrom(
     merge(credentialOffer, proofRequest).pipe(first(), timeout(ATTACHED_REQUEST_TIMEOUT_MS))
   )
+  eventPromise.catch(() => undefined)
   const { connectionRecord } = await acceptInvitation(agent.context, { outOfBandId: outOfBandRecord.id, label })
   connectionId = connectionRecord?.id
   const isConnectionService = connectionRecord ? isService(connectionRecord) : false
@@ -238,12 +238,10 @@ export const acceptInvitationAndWaitForRequest = async (
     }
   } catch (error) {
     logError(`Error while waiting for credential offer or proof request. Deleting out of band record`)
-    // Delete OOB record
     const outOfBandRepository = agent.dependencyManager.resolve(DidCommOutOfBandRepository)
     await outOfBandRepository.deleteById(agent.context, outOfBandRecord.id)
 
-    // Delete connection record (only if it was created from this flow)
-    if (connectionRecord && connectionRecord.outOfBandId === outOfBandRecord.id) {
+    if (!existingConnection && connectionRecord && connectionRecord.outOfBandId === outOfBandRecord.id) {
       log(`Deleting connection`)
       await deletePendingConnection(agent, connectionRecord)
     }
@@ -259,10 +257,9 @@ export const acceptInvitationAndWaitForRequest = async (
  * Process a DIDComm invitation by assigning an out of band record to it. In case of regular connection
  * invitations, it will return specifying if there was already a connection associated to it.
  *
- * In case of Presentation Requests and Credential Offers, it will automatically accept the invitation in
- * order to process the request messages. Later on the user can actually accept or refuse the request
- * specifically. In these cases, we'll attempt to reuse any existing connection. In order for this to work,
- * both receiver and requester agents must be online. Otherwise, the flow will timeout and cancelled.
+ * Presentation Requests and Credential Offers from a service we are not connected to yet come back as
+ * connection requests, so nothing is sent before the user accepts. Otherwise the invitation is accepted on
+ * the existing connection to process the request message, which needs both agents online or it times out.
  *
  * @param agent
  * @param invitation
@@ -303,7 +300,10 @@ export const processInvitation = async (
       throw new Error('Message request is not from supported protocol.')
     }
 
-    if (!existingConnection) {
+    const isKnownService =
+      existingConnection?.invitationDid !== undefined &&
+      invitation.invitationDids.includes(existingConnection.invitationDid)
+    if (!isKnownService) {
       return {
         success: true,
         invitationType: DidcommInvitationType.ConnectionRequest,

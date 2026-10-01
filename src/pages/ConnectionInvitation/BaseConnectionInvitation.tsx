@@ -119,7 +119,10 @@ const BaseConnectionInvitation = ({
       undefined,
       userProfileData?.displayName
     )
-    if (!result.success) throw new Error(result.error)
+    if (!result.success) {
+      onPressHeaderLeftButton()
+      throw new Error(result.error)
+    }
     if (result.invitationType === DidcommInvitationType.CredentialOffer) {
       navigation.dispatch(
         StackActions.replace('DidcommCredentialOffer', { credentialRecordId: result.recordId, did: invitationDid })
@@ -185,11 +188,7 @@ const BaseConnectionInvitation = ({
       ),
       headerRight: () =>
         isResolvingTrust && !isAlreadyConnected ? null : (
-          <TouchableOpacity
-            style={styles.btnAccept}
-            onPress={onPressHeaderRightButton}
-            testID={canConnect ? (isSafeToConnect ? 'invitation-accept' : 'invitation-accept-unsafe') : undefined}
-          >
+          <TouchableOpacity style={styles.btnAccept} onPress={onPressHeaderRightButton}>
             <Text
               fontFamily="EuclidCircularA-Medium"
               style={[styles.headerBtnText, canConnect && !isSafeToConnect && styles.unsafeBtnText]}
