@@ -27,7 +27,8 @@ export const getConnectionDisplayName = (connection: DidCommConnectionRecord) =>
   const nameDisplayName = profile?.displayName
   const nameAlias = connection.alias
   const namelabel = connection?.theirLabel
-  const nameDid = connection.did
+  // `connection.did` is our own pairwise DID: it never identifies the other party
+  const nameDid = isService(connection) ? connection.invitationDid : connection.theirDid
   const displayName = nameAlias || nameDisplayName || namelabel || nameDid || ''
   return displayName
 }

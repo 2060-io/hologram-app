@@ -157,7 +157,11 @@ export function subscribeToAgentChatEvents(
     }
 
     if (messageType.protocolName === DidCommProposeCredentialV1Message.type.protocolName) {
-      const [record] = await agent.didcomm.credentials.findAllByQuery({ threadId: message.threadId })
+      // The same offer can come again on a new connection: more than one record then has this thread id
+      const [record] = await agent.didcomm.credentials.findAllByQuery({
+        threadId: message.threadId,
+        ...(connection && { connectionId: connection.id }),
+      })
       if (!record) return
       await handleCredentialExchangeRecordChanges({
         agent,
@@ -170,7 +174,10 @@ export function subscribeToAgentChatEvents(
     }
 
     if (messageType.protocolName === DidCommProposePresentationV2Message.type.protocolName) {
-      const [record] = await agent.didcomm.proofs.findAllByQuery({ threadId: message.threadId })
+      const [record] = await agent.didcomm.proofs.findAllByQuery({
+        threadId: message.threadId,
+        ...(connection && { connectionId: connection.id }),
+      })
       if (!record) return
       await handleProofExchangeRecordChanges({
         agent,

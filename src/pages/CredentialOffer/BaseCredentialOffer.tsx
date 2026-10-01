@@ -91,7 +91,7 @@ const BaseCredentialOffer: React.FC<Props> = ({ navigation, credentialDetails, a
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.subContainer}>
             <Text style={styles.credentialTitle}>
-              {credentialDetails.mainInfo.issuer.name} {t('credentialOffer.offeringYou')}
+              {serviceInfo?.name || issuerName} {t('credentialOffer.offeringYou')}
             </Text>
             <Text fontFamily="EuclidCircularA-Bold" style={[styles.credentialTitle, styles.verifiableCredentialText]}>
               {t('credentialOffer.verifiableCredential')}
