@@ -143,7 +143,6 @@ const BasePresentationRequest: React.FC<Props> = ({
                 isFetchingInfo={isFetchingInfo}
                 serviceInfo={serviceInfo}
                 failedFetchInfo={failedFetchInfo}
-                onRetry={onRetryServiceInfo}
               />
             )}
             {serviceInfo && (

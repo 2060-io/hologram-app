@@ -576,7 +576,7 @@
       "operatorClaimsNotVerified": "Operator claims not verified",
       "otherCredential": "Credential schema #{{schema}} · Ecosystem #{{ecosystem}}",
       "noDidDocument": "This service cannot present verifiable trust credentials.",
-      "notRegistered": "Not registered in any configured Verana network.",
+      "notTrusted": "Not trusted by any configured Verana network.",
       "conditions": "Conditions of connecting",
       "minimumAge": "Minimum age {{age}}",
       "demoNetwork": "Demo network · do not share real data"

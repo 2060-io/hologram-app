@@ -4,7 +4,7 @@ import Text from '@src/components/common/Text'
 import VerifiedIcon from '@src/components/common/VerifiedIcon'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { useValidateKidAgeRestrictions } from '@src/hooks/useValidateKidAgeRestrictions'
-import { ServiceInfo, ServiceStatus } from '@src/model'
+import { ServiceInfo } from '@src/model'
 import { getFlagEmoji } from '@src/utils'
 import { widthPercentageToDP } from '@src/utils/responsiveUtils'
 import { toast } from '@src/utils/toast'
@@ -21,10 +21,9 @@ type Props = {
   isFetchingInfo: boolean
   failedFetchInfo: boolean
   containerStyle?: ViewStyle
-  onRetry?: () => void
 }
 
-const ServiceMainInfo = ({ serviceInfo, isFetchingInfo, failedFetchInfo, containerStyle, onRetry }: Props) => {
+const ServiceMainInfo = ({ serviceInfo, isFetchingInfo, failedFetchInfo, containerStyle }: Props) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
@@ -107,15 +106,7 @@ const ServiceMainInfo = ({ serviceInfo, isFetchingInfo, failedFetchInfo, contain
         untrustedReason={serviceInfo.untrustedReason}
         isFetchingInfo={isFetchingInfo}
       />
-      {!isFetchingInfo && serviceInfo.network && !serviceInfo.network.production && (
-        <Text style={styles.networkChip}>{serviceInfo.network.label}</Text>
-      )}
       {failedFetchInfo && <Text style={styles.failedToFetchInfoText}>{t('credential.failedFetchInfo')}</Text>}
-      {!isFetchingInfo && onRetry && (failedFetchInfo || serviceInfo.status === ServiceStatus.Unverified) && (
-        <TouchableOpacity onPress={onRetry}>
-          <Text style={[styles.text, styles.underLineText, styles.retryText]}>{t('tryAgain')}</Text>
-        </TouchableOpacity>
-      )}
       {!isFetchingInfo && serviceProvider && (
         <View style={styles.serviceProviderInfoContainer}>
           <Text style={styles.text}>{t('invitation.serviceProvider')}</Text>
