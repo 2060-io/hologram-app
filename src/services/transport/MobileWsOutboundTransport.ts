@@ -18,6 +18,8 @@ import { MediatorConnectedEvent, MediatorDisconnectedEvent, MediatorEventTypes }
 interface MobileOutboundWs {
   ws: WebSocket
   opened: boolean
+  // Resolves when the socket is open; rejects when the handshake fails
+  opening: Promise<void>
   shallKeepOpened: boolean
   lastActivity: Date
   connectionIds: Set<string>
@@ -182,7 +184,15 @@ export class MobileWsOutboundTransport implements DidCommOutboundTransport {
       }
     }
 
+    // A second message can arrive while the socket still connects. Wait for it instead of failing,
+    // because a failure makes the agent fall back to HTTPS for this message.
+    if (socket.ws.readyState === this.WebSocketClass.CONNECTING) {
+      this.logger.debug(`WebSocket to ${socketId} is still connecting, waiting for it`)
+      await socket.opening
+    }
+
     if (socket.ws.readyState !== this.WebSocketClass.OPEN) {
+      this.logger.debug(`WebSocket to ${socketId} is not open (readyState ${socket.ws.readyState})`)
       throw new CredoError('Socket is not open.')
     }
 
@@ -227,11 +237,29 @@ export class MobileWsOutboundTransport implements DidCommOutboundTransport {
 
       if (connectionId) connectionIds.add(connectionId)
 
-      const socket = { ws, connectionIds, opened: false, shallKeepOpened: false, lastActivity: new Date() }
+      let setOpened: () => void = () => {}
+      let setFailed: (error: unknown) => void = () => {}
+      const opening = new Promise<void>((resolveOpening, rejectOpening) => {
+        setOpened = resolveOpening
+        setFailed = rejectOpening
+      })
+      // A waiter that never awaits must not produce an unhandled rejection
+      opening.catch(() => {})
+
+      const socket: MobileOutboundWs = {
+        ws,
+        connectionIds,
+        opened: false,
+        opening,
+        shallKeepOpened: false,
+        lastActivity: new Date(),
+      }
+      const createdAt = Date.now()
       this.transportTable.set(socketId, socket)
       ws.onopen = () => {
-        this.logger.debug(`Successfully connected to WebSocket ${endpoint}`)
+        this.logger.debug(`Successfully connected to WebSocket ${endpoint} in ${Date.now() - createdAt} ms`)
         socket.opened = true
+        setOpened()
 
         resolve(socket)
 
@@ -265,14 +293,21 @@ export class MobileWsOutboundTransport implements DidCommOutboundTransport {
       ws.onmessage = (event) => this.handleMessageEvent(event)
 
       ws.onerror = (error) => {
-        this.logger.debug(`WebSocket error for ${endpoint}`, {
-          error,
-        })
+        // React Native gives the cause of the failure in the close event that follows
+        this.logger.debug(`WebSocket error for ${endpoint}`, { message: error?.message })
+        setFailed(error)
         reject(error)
       }
 
-      ws.onclose = async () => {
-        this.logger.debug(`WebSocket closing to ${endpoint}`)
+      ws.onclose = async (event) => {
+        // Code 1006 is an abnormal closure: the handshake failed or the remote side dropped the socket
+        this.logger.debug(`WebSocket closing to ${endpoint}`, {
+          code: event?.code,
+          reason: event?.reason,
+          opened: socket.opened,
+          lifetimeMs: Date.now() - createdAt,
+        })
+        if (!socket.opened) setFailed(new CredoError(`WebSocket to ${endpoint} closed before it opened`))
 
         const record = this.transportTable.get(socketId)
         const connections = record?.connectionIds

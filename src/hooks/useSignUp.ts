@@ -8,6 +8,7 @@ import { saveInCacheServiceInfo } from '@src/services/agent/cache'
 import RealmSingleton from '@src/services/RealmSingleton'
 import { getServiceInfo } from '@src/services/trustResolution'
 import { log, logError } from '@src/utils'
+import { MEDIATOR_CONNECTION_ALIAS } from '@src/utils/connectionUtils'
 import { useCallback, useState } from 'react'
 import Config from 'react-native-config'
 import { updateThreadFromServiceInfo } from './agent/chat/services'
@@ -31,7 +32,7 @@ export const useSignUp = () => {
     let { connectionRecord: mediatorConnection } = await agent.didcomm.oob.receiveImplicitInvitation({
       label: Config.APP_NAME || 'Hologram',
       did: mediatorPublicDid,
-      alias: 'Mediator',
+      alias: MEDIATOR_CONNECTION_ALIAS,
       autoAcceptConnection: true,
     })
     if (!mediatorConnection) throw new Error('Agency connection not created')
