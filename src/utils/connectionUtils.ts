@@ -9,6 +9,7 @@ import {
   DidCommConnectionRepository,
   DidCommConnectionService,
   DidCommConnectionsApi,
+  DidCommConnectionType,
   DidCommDidExchangeState,
   DidCommKeylistUpdateAction,
   DidCommMediationRecipientService,
@@ -53,6 +54,14 @@ export const getPictureDataUrl = (displayPictureData: PictureData) => {
     ? displayPictureData.links[0]
     : dataUrl(displayPictureData.mimeType, displayPictureData.base64)
 }
+
+// Alias that the sign-up gives to the mediator connection
+export const MEDIATOR_CONNECTION_ALIAS = 'Mediator'
+
+// The Mediator connection type arrives with the mediation grant. Before that, only the alias
+// identifies the mediator connection.
+export const isMediatorConnection = (connection: DidCommConnectionRecord) =>
+  connection.connectionTypes.includes(DidCommConnectionType.Mediator) || connection.alias === MEDIATOR_CONNECTION_ALIAS
 
 export const isService = (connection: DidCommConnectionRecord) =>
   connection.invitationDid !== undefined && !connection.invitationDid.startsWith('did:peer')
