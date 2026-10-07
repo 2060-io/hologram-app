@@ -326,7 +326,7 @@
       "issuedCredential": "{{sender}} te emitió una credencial:",
       "noCredentialFound": "Credencial no encontrada",
       "invitationConnectionNotFound": "Conexión no encontrada. Debe haber sido eliminada luego de haber aceptado la invitación",
-      "offeringCredential": "{{sender}} te está ofreciendo una credencial. El emisor de esta credencial es confiable, por lo cual es seguro aceptar esta credencial",
+      "offeringCredential": "{{sender}} te está ofreciendo una credencial. Ábrela para comprobar si el emisor está autorizado antes de aceptarla.",
       "verifiablePresentationRequest": "Solicitud de presentación verificable",
       "isRequestingYou": "{{sender}} te está solicitando los siguientes datos desde una credencial {{ schemaName }}",
       "invitationRequestService": "Invitación a un servicio",
@@ -542,6 +542,21 @@
       "disablePINFooter": "Por favor ingresa el PIN que asignaste cuando habilitaste el Control Parental",
       "pinDoesNotMatchFooter": "Asegúrate de ingresar el mismo PIN, ó presiona Cancelar para volver a realizar el proceso",
       "setPINFooter": "Asegúrate cuidadosamente de ingresar tu PIN. No hay forma de recuperarlo si lo pierdes"
+    },
+    "accreditation": {
+      "offersYou": "TE OFRECE",
+      "requests": "TE SOLICITA",
+      "thisCredential": "esta credencial",
+      "authorizedIssuer": "{{service}} es un emisor autorizado de {{schema}}",
+      "unauthorizedIssuer": "{{service}} no es un emisor autorizado de {{schema}}",
+      "couldNotVerifyIssuer": "No se pudo verificar si {{service}} puede emitir esta credencial",
+      "authorizedVerifier": "{{service}} es un verificador autorizado de {{schema}}",
+      "unauthorizedVerifier": "{{service}} no es un verificador autorizado de {{schema}}",
+      "couldNotVerifyVerifier": "No se pudo verificar si {{service}} puede solicitar esta credencial",
+      "acceptAnyway": "Aceptar de todos modos (inseguro)",
+      "shareAnyway": "Compartir de todos modos (inseguro)",
+      "confirmUnsafeAccept": "No se pudo comprobar que este emisor sea confiable para esta credencial. ¿Aceptarla de todos modos?",
+      "confirmUnsafeShare": "No se pudo comprobar que este verificador pueda solicitar esta credencial. ¿Compartirla de todos modos?"
     }
   }
 }

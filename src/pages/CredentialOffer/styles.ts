@@ -16,6 +16,9 @@ const styles = (theme: AppTheme) =>
       fontSize: theme.fontSize.md2,
       color: theme.colors.green,
     },
+    unsafeBtnText: {
+      color: theme.colors.red,
+    },
     headerLeft: {
       paddingLeft: 15,
     },

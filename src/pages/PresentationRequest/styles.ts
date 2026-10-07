@@ -64,6 +64,9 @@ const styles = (theme: AppTheme) =>
     disabledAcceptButton: {
       opacity: 0.5,
     },
+    unsafeAcceptButton: {
+      backgroundColor: theme.colors.red,
+    },
   })
 
 export default styles
