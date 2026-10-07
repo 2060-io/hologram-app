@@ -173,7 +173,9 @@
       "errorGettingInvitation": "There was an error getting current invitation",
       "errorCreatingInvitation": "There was an error creating invitation",
       "errorProcessingInvitation": "There was an error processing invitation",
-      "pressRefresh": "Press Refresh to invalidate current invitation code and create a new one."
+      "pressRefresh": "Press Refresh to invalidate current invitation code and create a new one.",
+      "connectAnyway": "Connect anyway (unsafe)",
+      "confirmUnsafeConnect": "This service could not be proven trustworthy. Connect anyway?"
     },
     "credential": {
       "noCredentials": "You do not have any credential yet",
@@ -283,7 +285,6 @@
       "connectionsManagedBy": "Connections managed by",
       "reportedMessage": "You reported a message",
       "usingThisServiceYouAgree": "By using this service you agree to its <terms>Terms and conditions</terms> and <privacy>Privacy policy</privacy>. Age restrictions: {{minimumAgeRequired}}",
-      "proofOfTrust": "Proof of trust",
       "serviceNotVerifiable": "This service is not verifiable.",
       "noLiabilityDisclaimerDesc": "<bold>No-liability disclaimer: </bold> Please be aware that <bold>{{appName}}</bold> acts solely as a connection provider for <bold>{{serviceName}}</bold>. <bold>{{appName}}</bold> does not control this service and therefore cannot be held liable for any issues, damages, or disputes arising from the use of <bold>{{serviceName}}</bold>. Any concerns should be addressed directly to <bold>{{serviceName}}</bold>. \n\n<bold>THIS SERVICE IS NOT VERIFIABLE.</bold> USE IT AT YOUR OWN RISK",
       "newConnection": "New connection",
@@ -557,6 +558,28 @@
       "shareAnyway": "Share anyway (unsafe)",
       "confirmUnsafeAccept": "This issuer could not be proven trustworthy for this credential. Accept it anyway?",
       "confirmUnsafeShare": "This verifier could not be proven allowed to request this credential. Share it anyway?"
+    },
+    "proofOfTrust": {
+      "statusTrusted": "TRUSTED",
+      "statusUntrusted": "UNTRUSTED",
+      "statusUnverified": "COULD NOT VERIFY",
+      "statusResolving": "Checking…",
+      "evaluatedAt": "Evaluated {{date}}",
+      "notChecked": "Not checked",
+      "sectionService": "Service",
+      "sectionOperatedBy": "Operated by",
+      "sectionOtherCredentials": "Other credentials",
+      "sectionFailures": "Why it is not trusted",
+      "noServiceCredential": "No ECS-Service credential presented.",
+      "noOperatorCredential": "No ECS-Organization or ECS-Persona credential presented.",
+      "serviceClaimsNotVerified": "Service claims not verified",
+      "operatorClaimsNotVerified": "Operator claims not verified",
+      "otherCredential": "Credential schema #{{schema}} · Ecosystem #{{ecosystem}}",
+      "noDidDocument": "This service cannot present verifiable trust credentials.",
+      "notTrusted": "Not trusted by any configured Verana network.",
+      "conditions": "Conditions of connecting",
+      "minimumAge": "Minimum age {{age}}",
+      "demoNetwork": "Demo network · do not share real data"
     }
   }
 }

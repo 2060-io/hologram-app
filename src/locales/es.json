@@ -173,7 +173,9 @@
       "errorGettingInvitation": "Ha ocurrido un error obteniendo la invitación actual",
       "errorCreatingInvitation": "Ha ocurrido un error creando la invitación",
       "errorProcessingInvitation": "Ha ocurrido un error procesando la invitación",
-      "pressRefresh": "Presiona Refrescar para invalidar la invitación actual y crear una nueva"
+      "pressRefresh": "Presiona Refrescar para invalidar la invitación actual y crear una nueva",
+      "connectAnyway": "Conectar de todos modos (inseguro)",
+      "confirmUnsafeConnect": "No se pudo comprobar que este servicio sea confiable. ¿Conectar de todos modos?"
     },
     "credential": {
       "noCredentials": "Aún no tienes credenciales",
@@ -283,7 +285,6 @@
       "connectionsManagedBy": "Conexiones administrada por",
       "reportedMessage": "Reportaste un mensaje",
       "usingThisServiceYouAgree": "Al utilizar este servicio, aceptas sus <terms>Términos y condiciones</terms> y <privacy>Política de privacidad</privacy>. Restricciones de edad: {{minimumAgeRequired}}",
-      "proofOfTrust": "Cadena de confianza",
       "serviceNotVerifiable": "Este servicio no es verificable.",
       "noLiabilityDisclaimerDesc": "<bold>Descargo de responsabilidad: </bold>Ten en cuenta que <bold>{{appName}}</bold> actúa únicamente como un proveedor de conexión para <bold>{{serviceName}}</bold>. <bold>{{appName}}</bold> no controla este servicio y por lo tanto no puede ser considerado responsable de cualquier problema, daños o disputas que surjan del uso de <bold>{{serviceName}}</bold>. Cualquier inquietud debe dirigirse directamente a <bold>{{serviceName}}</bold>. \n\n<bold>ESTE SERVICIO NO ES VERIFICABLE.</bold> ÚSALO BAJO TU PROPIO RIESGO.",
       "newConnection": "New Connection",
@@ -557,6 +558,28 @@
       "shareAnyway": "Compartir de todos modos (inseguro)",
       "confirmUnsafeAccept": "No se pudo comprobar que este emisor sea confiable para esta credencial. ¿Aceptarla de todos modos?",
       "confirmUnsafeShare": "No se pudo comprobar que este verificador pueda solicitar esta credencial. ¿Compartirla de todos modos?"
+    },
+    "proofOfTrust": {
+      "statusTrusted": "CONFIABLE",
+      "statusUntrusted": "NO CONFIABLE",
+      "statusUnverified": "NO SE PUDO VERIFICAR",
+      "statusResolving": "Verificando…",
+      "evaluatedAt": "Evaluado el {{date}}",
+      "notChecked": "No verificado",
+      "sectionService": "Servicio",
+      "sectionOperatedBy": "Operado por",
+      "sectionOtherCredentials": "Otras credenciales",
+      "sectionFailures": "Por qué no es confiable",
+      "noServiceCredential": "No presenta una credencial ECS-Service.",
+      "noOperatorCredential": "No presenta una credencial ECS-Organization ni ECS-Persona.",
+      "serviceClaimsNotVerified": "Datos del servicio no verificados",
+      "operatorClaimsNotVerified": "Datos del operador no verificados",
+      "otherCredential": "Esquema de credencial #{{schema}} · Ecosistema #{{ecosystem}}",
+      "noDidDocument": "Este servicio no puede presentar credenciales de confianza verificables.",
+      "notTrusted": "No es de confianza en ninguna red Verana configurada.",
+      "conditions": "Condiciones de conexión",
+      "minimumAge": "Edad mínima {{age}}",
+      "demoNetwork": "Red de demostración · no compartas datos reales"
     }
   }
 }

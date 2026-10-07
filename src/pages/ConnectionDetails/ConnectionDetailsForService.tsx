@@ -1,4 +1,4 @@
-import { ProofOfTrust, ServiceMainInfo } from '@src/components/common'
+import { ProofOfTrustCard, ServiceMainInfo } from '@src/components/common'
 import { useFetchServiceInfo } from '@src/hooks'
 import React, { useCallback } from 'react'
 import { StyleSheet } from 'react-native'
@@ -27,12 +27,18 @@ const ConnectionDetailsForService = (props: ConnectionDetailsProps) => {
             serviceInfo={serviceInfo}
             failedFetchInfo={failedFetchInfo}
             containerStyle={styles.mainInfoContainer}
-            onRetry={refreshServiceInfo}
           />
         ) : null
       }
       footerInfo={
-        <ProofOfTrust serviceInfo={serviceInfo} isFetchingInfo={isFetchingInfo} failedFetchInfo={failedFetchInfo} />
+        serviceInfo ? (
+          <ProofOfTrustCard
+            serviceInfo={serviceInfo}
+            isFetchingInfo={isFetchingInfo}
+            failedFetchInfo={failedFetchInfo}
+            onRetry={refreshServiceInfo}
+          />
+        ) : null
       }
     />
   )

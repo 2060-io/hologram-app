@@ -1,6 +1,6 @@
-import ProofOfTrust from '@src/components/common/ProofOfTrust'
+import ProofOfTrustCard from '@src/components/common/ProofOfTrustCard'
 import { ServiceInfo, ServiceStatus } from '@src/model'
-import React, { memo } from 'react'
+import React, { memo, ReactNode } from 'react'
 import { View } from 'react-native'
 import ServiceMainInfo from './ServiceMainInfo'
 
@@ -10,9 +10,17 @@ type Props = {
   serviceInfo: ServiceInfo | undefined
   failedFetchInfo: boolean
   onRetry?: () => void
+  ask?: ReactNode
 }
 
-const ServiceInformation = ({ initialServiceInfo, isFetchingInfo, serviceInfo, failedFetchInfo, onRetry }: Props) => {
+const ServiceInformation = ({
+  initialServiceInfo,
+  isFetchingInfo,
+  serviceInfo,
+  failedFetchInfo,
+  onRetry,
+  ask,
+}: Props) => {
   const serviceInfoToDisplay: ServiceInfo = !serviceInfo
     ? initialServiceInfo
     : serviceInfo.status === ServiceStatus.Trusted
@@ -31,12 +39,13 @@ const ServiceInformation = ({ initialServiceInfo, isFetchingInfo, serviceInfo, f
         serviceInfo={serviceInfoToDisplay}
         isFetchingInfo={isFetchingInfo}
         failedFetchInfo={failedFetchInfo}
-        onRetry={onRetry}
       />
-      <ProofOfTrust
-        serviceInfo={serviceInfoToDisplay}
+      <ProofOfTrustCard
+        serviceInfo={serviceInfo ?? initialServiceInfo}
         isFetchingInfo={isFetchingInfo}
         failedFetchInfo={failedFetchInfo}
+        onRetry={onRetry}
+        ask={ask}
       />
     </View>
   )
