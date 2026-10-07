@@ -117,6 +117,13 @@ export class AgentActionExecuter {
           })
         }
 
+        // The peer terminated the connection (rotate to nothing): `theirDid` is gone and
+        // no retry can deliver this message.
+        if (connection && !connection.theirDid) {
+          logError(`Connection ${connection.id} was terminated by the peer; dropping retries for ${action.type}.`)
+          return { status: ActionExecutionStatus.OK }
+        }
+
         const messageJson = message.toJSON()
         const serializedSize = JSON.stringify(messageJson).length
         if (serializedSize > MAX_RETRY_MESSAGE_JSON_BYTES) {
