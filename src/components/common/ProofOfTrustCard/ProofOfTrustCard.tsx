@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { Linking, TouchableOpacity, View } from 'react-native'
 import Text from '../Text'
 import { ArrowUpRightIcon, LockIcon, RegistryChip, SectionLabel, StepTick, StepTone, VeranaMark } from './parts'
-import styles, { veranaCardColors } from './styles'
+import { useVeranaCard } from './useVeranaCard'
 
 type Props = {
   serviceInfo: ServiceInfo
@@ -23,6 +23,7 @@ const isHttpUri = (uri?: string): uri is string => typeof uri === 'string' && /^
 
 const ProofOfTrustCard = ({ serviceInfo, isFetchingInfo, failedFetchInfo, onRetry, ask }: Props) => {
   const { t } = useTranslation()
+  const { colors, styles } = useVeranaCard()
   const status = isFetchingInfo
     ? ServiceStatus.Resolving
     : failedFetchInfo
@@ -30,10 +31,10 @@ const ProofOfTrustCard = ({ serviceInfo, isFetchingInfo, failedFetchInfo, onRetr
       : serviceInfo.status
   const isTrusted = status === ServiceStatus.Trusted
   const tone = {
-    [ServiceStatus.Trusted]: { color: veranaCardColors.ok, label: t('proofOfTrust.statusTrusted') },
-    [ServiceStatus.Untrusted]: { color: veranaCardColors.bad, label: t('proofOfTrust.statusUntrusted') },
-    [ServiceStatus.Unverified]: { color: veranaCardColors.faint, label: t('proofOfTrust.statusUnverified') },
-    [ServiceStatus.Resolving]: { color: veranaCardColors.faint, label: t('proofOfTrust.statusResolving') },
+    [ServiceStatus.Trusted]: { color: colors.ok, label: t('proofOfTrust.statusTrusted') },
+    [ServiceStatus.Untrusted]: { color: colors.bad, label: t('proofOfTrust.statusUntrusted') },
+    [ServiceStatus.Unverified]: { color: colors.faint, label: t('proofOfTrust.statusUnverified') },
+    [ServiceStatus.Resolving]: { color: colors.faint, label: t('proofOfTrust.statusResolving') },
   }[status]
   const claimTone: StepTone =
     status === ServiceStatus.Untrusted ? 'bad' : status === ServiceStatus.Trusted ? 'ok' : 'none'
@@ -89,7 +90,7 @@ const ProofOfTrustCard = ({ serviceInfo, isFetchingInfo, failedFetchInfo, onRetr
           </Text>
         </View>
         {serviceInfo.evaluatedAtTime && status !== ServiceStatus.Resolving && (
-          <Text style={[styles.verdictNote, { color: veranaCardColors.sub }]}>
+          <Text style={[styles.verdictNote, { color: colors.sub }]}>
             {t('proofOfTrust.evaluatedAt', { date: new Date(serviceInfo.evaluatedAtTime).toLocaleString() })}
           </Text>
         )}
@@ -162,7 +163,7 @@ const ProofOfTrustCard = ({ serviceInfo, isFetchingInfo, failedFetchInfo, onRetr
       {status === ServiceStatus.Untrusted && (
         <View style={styles.section}>
           <SectionLabel>{t('proofOfTrust.sectionFailures')}</SectionLabel>
-          <Text style={[styles.identityDetail, { color: veranaCardColors.bad }]}>
+          <Text style={[styles.identityDetail, { color: colors.bad }]}>
             {serviceInfo.untrustedReason === 'noDidDocument'
               ? t('proofOfTrust.noDidDocument')
               : t('proofOfTrust.notTrusted')}
@@ -193,9 +194,9 @@ const ProofOfTrustCard = ({ serviceInfo, isFetchingInfo, failedFetchInfo, onRetr
               style={styles.conditionRow}
               onPress={() => Linking.openURL(serviceInfo.termsAndConditionsUrl as string)}
             >
-              <LockIcon color={veranaCardColors.brand} />
+              <LockIcon color={colors.brand} />
               <Text style={styles.conditionLink}>{t('invitation.termsAndConditions')}</Text>
-              <ArrowUpRightIcon color={veranaCardColors.brand} />
+              <ArrowUpRightIcon color={colors.brand} />
             </TouchableOpacity>
           )}
           {isHttpUri(serviceInfo.dataPrivacyUrl) && (
@@ -203,9 +204,9 @@ const ProofOfTrustCard = ({ serviceInfo, isFetchingInfo, failedFetchInfo, onRetr
               style={styles.conditionRow}
               onPress={() => Linking.openURL(serviceInfo.dataPrivacyUrl as string)}
             >
-              <LockIcon color={veranaCardColors.brand} />
+              <LockIcon color={colors.brand} />
               <Text style={styles.conditionLink}>{t('invitation.privacyPolicy')}</Text>
-              <ArrowUpRightIcon color={veranaCardColors.brand} />
+              <ArrowUpRightIcon color={colors.brand} />
             </TouchableOpacity>
           )}
         </View>

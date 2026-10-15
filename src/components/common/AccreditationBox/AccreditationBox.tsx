@@ -1,12 +1,12 @@
 import type { Accreditation, AccreditationRole } from '@src/services/verana/accreditation'
 import { Skeleton } from 'moti/skeleton'
-import React from 'react'
+import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TouchableOpacity, View } from 'react-native'
 import { CheckIcon, CrossIcon, InfoIcon } from '../ProofOfTrustCard/parts'
-import { veranaCardColors } from '../ProofOfTrustCard/styles'
+import { useVeranaCard } from '../ProofOfTrustCard/useVeranaCard'
 import Text from '../Text'
-import styles from './styles'
+import getStyles from './styles'
 
 type Props = {
   party: AccreditationRole
@@ -16,20 +16,20 @@ type Props = {
   fallbackSchemaTitle?: string
 }
 
-const ICON_COLOR = {
-  authorized: veranaCardColors.ok,
-  unauthorized: veranaCardColors.bad,
-  unverified: veranaCardColors.faint,
-} as const
-
-const BOX_COLORS = {
-  authorized: { backgroundColor: veranaCardColors.okSoft, borderColor: veranaCardColors.okRail },
-  unauthorized: { backgroundColor: veranaCardColors.badSoft, borderColor: veranaCardColors.badRail },
-  unverified: { backgroundColor: veranaCardColors.neutralSoft, borderColor: veranaCardColors.noneRail },
-} as const
-
 const AccreditationBox = ({ party, serviceName, accreditation, onRetry, fallbackSchemaTitle }: Props) => {
   const { t } = useTranslation()
+  const { colors, isDarkMode } = useVeranaCard()
+  const styles = useMemo(() => getStyles(colors), [colors])
+  const iconColor = {
+    authorized: colors.ok,
+    unauthorized: colors.bad,
+    unverified: colors.faint,
+  }
+  const boxColors = {
+    authorized: { backgroundColor: colors.okSoft, borderColor: colors.okRail },
+    unauthorized: { backgroundColor: colors.badSoft, borderColor: colors.badRail },
+    unverified: { backgroundColor: colors.neutralSoft, borderColor: colors.noneRail },
+  }
   const schema = accreditation?.schemaTitles.join(', ') || fallbackSchemaTitle || t('accreditation.thisCredential')
   const verdicts = {
     ISSUER: {
@@ -45,12 +45,12 @@ const AccreditationBox = ({ party, serviceName, accreditation, onRetry, fallback
   }
 
   return (
-    <View style={[styles.container, BOX_COLORS[accreditation?.status ?? 'unverified']]}>
+    <View style={[styles.container, boxColors[accreditation?.status ?? 'unverified']]}>
       <Text fontFamily="EuclidCircularA-Medium" style={styles.title}>
         {t(party === 'ISSUER' ? 'accreditation.offersYou' : 'accreditation.requests')}
       </Text>
       {!accreditation ? (
-        <Skeleton width="100%" colorMode="light" radius="round" show />
+        <Skeleton width="100%" colorMode={isDarkMode ? 'dark' : 'light'} radius="round" show />
       ) : (
         <>
           <Text fontFamily="EuclidCircularA-Bold" style={styles.schema}>
@@ -59,11 +59,11 @@ const AccreditationBox = ({ party, serviceName, accreditation, onRetry, fallback
           <View style={styles.verdict}>
             <View style={styles.icon}>
               {accreditation.status === 'authorized' ? (
-                <CheckIcon color={ICON_COLOR.authorized} />
+                <CheckIcon color={iconColor.authorized} />
               ) : accreditation.status === 'unauthorized' ? (
-                <CrossIcon color={ICON_COLOR.unauthorized} />
+                <CrossIcon color={iconColor.unauthorized} />
               ) : (
-                <InfoIcon color={ICON_COLOR.unverified} />
+                <InfoIcon color={iconColor.unverified} />
               )}
             </View>
             <Text style={styles.text}>{verdicts[party][accreditation.status]}</Text>
