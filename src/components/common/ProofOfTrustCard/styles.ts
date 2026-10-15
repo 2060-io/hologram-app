@@ -73,8 +73,7 @@ const darkVeranaCardColors: VeranaCardColors = {
   onTint: '#FFFFFF',
 }
 
-export const getVeranaCardColors = (isDarkMode: boolean) =>
-  isDarkMode ? darkVeranaCardColors : lightVeranaCardColors
+export const getVeranaCardColors = (isDarkMode: boolean) => (isDarkMode ? darkVeranaCardColors : lightVeranaCardColors)
 
 const getStyles = (colors: VeranaCardColors) =>
   StyleSheet.create({
