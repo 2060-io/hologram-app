@@ -6,15 +6,13 @@ import { DidCommReceiptsModule } from '@2060.io/credo-ts-didcomm-receipts'
 import { DidCommShortenUrlModule } from '@2060.io/credo-ts-didcomm-shorten-url'
 import { DidCommUserProfileModule, DidCommUserProfileModuleConfig } from '@2060.io/credo-ts-didcomm-user-profile'
 import { ActionMenuModule } from '@credo-ts/action-menu'
+import { AnonCredsModule } from '@credo-ts/anoncreds'
 import {
   AnonCredsDidCommCredentialFormatService,
   AnonCredsDidCommProofFormatService,
-  AnonCredsModule,
-  DidCommCredentialV1Protocol,
-  DidCommProofV1Protocol,
   LegacyIndyDidCommCredentialFormatService,
   LegacyIndyDidCommProofFormatService,
-} from '@credo-ts/anoncreds'
+} from '@credo-ts/anoncreds/didcomm'
 import { AskarModule } from '@credo-ts/askar'
 import {
   Agent,
@@ -40,7 +38,8 @@ import {
 } from '@credo-ts/didcomm'
 import { DidCommPushNotificationsFcmModule } from '@credo-ts/didcomm-push-notifications'
 import { QuestionAnswerModule } from '@credo-ts/question-answer'
-import { WebVhAnonCredsRegistry, WebVhDidResolver } from '@credo-ts/webvh'
+import { WebVhDidResolver } from '@credo-ts/webvh'
+import { WebVhAnonCredsRegistry } from '@credo-ts/webvh/anoncreds'
 import { anoncreds } from '@hyperledger/anoncreds-react-native'
 import { askar } from '@openwallet-foundation/askar-react-native'
 import { DidCommVersion } from '@src/utils/developer'
@@ -109,9 +108,6 @@ export const getMobileAgentModules = (config: {
       credentials: {
         autoAcceptCredentials: DidCommAutoAcceptCredential.Never,
         credentialProtocols: [
-          new DidCommCredentialV1Protocol({
-            indyCredentialFormat: new LegacyIndyDidCommCredentialFormatService(),
-          }),
           new DidCommCredentialV2Protocol({
             credentialFormats: [
               new AnonCredsDidCommCredentialFormatService(),
@@ -131,7 +127,6 @@ export const getMobileAgentModules = (config: {
       proofs: {
         autoAcceptProofs: DidCommAutoAcceptProof.Never,
         proofProtocols: [
-          new DidCommProofV1Protocol({ indyProofFormat: new LegacyIndyDidCommProofFormatService() }),
           new DidCommProofV2Protocol({
             proofFormats: [new AnonCredsDidCommProofFormatService(), new LegacyIndyDidCommProofFormatService()],
           }),

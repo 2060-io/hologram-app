@@ -1,9 +1,9 @@
+import { AnonCredsSelectedCredentials } from '@credo-ts/anoncreds'
 import {
   AnonCredsDidCommProofFormat,
   AnonCredsPresentationPreviewAttribute,
-  AnonCredsSelectedCredentials,
   LegacyIndyDidCommProofFormat,
-} from '@credo-ts/anoncreds'
+} from '@credo-ts/anoncreds/didcomm'
 import { DidCommMessage, DidCommProofExchangeRecord, DidCommProofFormatPayload } from '@credo-ts/didcomm'
 import { ServiceStatus } from '@src/model'
 import { logError } from '@src/utils'
