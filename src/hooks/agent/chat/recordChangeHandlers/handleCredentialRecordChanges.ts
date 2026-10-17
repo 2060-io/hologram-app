@@ -1,4 +1,3 @@
-import { DidCommCredentialV1ProblemReportMessage } from '@credo-ts/anoncreds'
 import { W3cCredentialRepository } from '@credo-ts/core'
 import {
   DidCommCredentialExchangeRecord,
@@ -40,10 +39,7 @@ export const handleCredentialExchangeRecordChanges = async (options: {
   if (vcOfferEntry) {
     const { messageTypeUri } = parseMessageType(message.type)
     let isRefused = false
-    const isProblemReportMessage = [
-      DidCommCredentialV1ProblemReportMessage.type.messageTypeUri,
-      DidCommCredentialV2ProblemReportMessage.type.messageTypeUri,
-    ].includes(messageTypeUri)
+    const isProblemReportMessage = messageTypeUri === DidCommCredentialV2ProblemReportMessage.type.messageTypeUri
     if (isProblemReportMessage) {
       const problemReportMessage = message as DidCommProblemReportMessage
       const description = problemReportMessage?.description?.en

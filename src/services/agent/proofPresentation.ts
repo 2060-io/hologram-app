@@ -1,4 +1,4 @@
-import { AnonCredsDidCommProofFormat, LegacyIndyDidCommProofFormat } from '@credo-ts/anoncreds'
+import { AnonCredsDidCommProofFormat, LegacyIndyDidCommProofFormat } from '@credo-ts/anoncreds/didcomm'
 import { DidCommProofFormatPayload } from '@credo-ts/didcomm'
 import { ProofSendProblemReportDescription } from '@src/hooks/agent/actions/types'
 

@@ -1,4 +1,3 @@
-import { DidCommRequestPresentationV1Message, V1OfferCredentialMessage } from '@credo-ts/anoncreds'
 import { AgentContext, EventEmitter, isDid, tryParseDid, utils } from '@credo-ts/core'
 import {
   CreateOutOfBandInvitationConfig,
@@ -92,7 +91,6 @@ export const getOutOfBandRecord = async (
       ? await outOfBandApi.receiveImplicitInvitation({
           did: invitation.thread.parentThreadId,
           label: invitation.label ?? '',
-          imageUrl: invitation.imageUrl,
           autoAcceptInvitation: false,
           autoAcceptConnection: false,
         })
@@ -290,9 +288,7 @@ export const processInvitation = async (
 
     const parsedMessageType = parseMessageType(requestMessage['@type'])
     const isValidRequestMessage =
-      supportsIncomingMessageType(parsedMessageType, V1OfferCredentialMessage.type) ||
       supportsIncomingMessageType(parsedMessageType, DidCommOfferCredentialV2Message.type) ||
-      supportsIncomingMessageType(parsedMessageType, DidCommRequestPresentationV1Message.type) ||
       supportsIncomingMessageType(parsedMessageType, DidCommRequestPresentationV2Message.type) ||
       supportsIncomingMessageType(parsedMessageType, DidCommProposePresentationV2Message.type)
 
