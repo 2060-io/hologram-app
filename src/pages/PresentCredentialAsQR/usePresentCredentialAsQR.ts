@@ -5,7 +5,7 @@ import {
   DidCommShortenUrlRepository,
 } from '@2060.io/credo-ts-didcomm-shorten-url'
 import { DidCommConnectionProfileUpdatedEvent, DidCommProfileEventTypes } from '@2060.io/credo-ts-didcomm-user-profile'
-import { AnonCredsPresentationPreviewAttribute } from '@credo-ts/anoncreds'
+import { AnonCredsPresentationPreviewAttribute } from '@credo-ts/anoncreds/didcomm'
 import { TypedArrayEncoder, W3cCredentialRecord } from '@credo-ts/core'
 import {
   DidCommConnectionEventTypes,

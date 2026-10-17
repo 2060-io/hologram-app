@@ -16,7 +16,6 @@ import {
   ReceiptsEventTypes,
 } from '@2060.io/credo-ts-didcomm-receipts'
 import { DidCommConnectionProfileUpdatedEvent, DidCommProfileEventTypes } from '@2060.io/credo-ts-didcomm-user-profile'
-import { DidCommProposeCredentialV1Message } from '@credo-ts/anoncreds'
 import { RecordUpdatedEvent, RepositoryEventTypes, tryParseDid } from '@credo-ts/core'
 import {
   DidCommBasicMessage,
@@ -31,6 +30,7 @@ import {
   DidCommProofEventTypes,
   DidCommProofState,
   DidCommProofStateChangedEvent,
+  DidCommProposeCredentialV2Message,
   DidCommProposePresentationV2Message,
   OutboundMessageSendStatus,
   parseMessageType,
@@ -156,7 +156,7 @@ export function subscribeToAgentChatEvents(
       })
     }
 
-    if (messageType.protocolName === DidCommProposeCredentialV1Message.type.protocolName) {
+    if (messageType.protocolName === DidCommProposeCredentialV2Message.type.protocolName) {
       // The same offer can come again on a new connection: more than one record then has this thread id
       const [record] = await agent.didcomm.credentials.findAllByQuery({
         threadId: message.threadId,
