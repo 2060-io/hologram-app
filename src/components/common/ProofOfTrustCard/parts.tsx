@@ -2,7 +2,7 @@ import React, { FC } from 'react'
 import { View } from 'react-native'
 import Svg, { Circle, Path, Rect } from 'react-native-svg'
 import Text from '../Text'
-import styles, { veranaCardColors } from './styles'
+import { useVeranaCard } from './useVeranaCard'
 
 type IconProps = { color: string; size?: number }
 
@@ -46,25 +46,28 @@ export const ArrowUpRightIcon: FC<IconProps> = ({ color, size = 12 }) => (
   </Svg>
 )
 
-export const VeranaMark: FC<{ size?: number }> = ({ size = 16 }) => (
-  <Svg width={size} height={size} viewBox="0 0 64 64">
-    <Rect width={64} height={64} rx={12} fill={veranaCardColors.verana} />
-    <Path d="M46.3 22.8 32 50.4 17.7 22.8l1.9-3.4 2 3.5L32 43.4l10.4-20.5 2 -3.5 1.9 3.4Z" fill="#ffffff" />
-    <Path d="M22.4 15.8 32 34.2l9.3-18.4H22.4Z" fill="#ffffff" />
-  </Svg>
-)
+export const VeranaMark: FC<{ size?: number }> = ({ size = 16 }) => {
+  const { colors } = useVeranaCard()
+  return (
+    <Svg width={size} height={size} viewBox="0 0 64 64">
+      <Rect width={64} height={64} rx={12} fill={colors.verana} />
+      <Path d="M46.3 22.8 32 50.4 17.7 22.8l1.9-3.4 2 3.5L32 43.4l10.4-20.5 2 -3.5 1.9 3.4Z" fill="#ffffff" />
+      <Path d="M22.4 15.8 32 34.2l9.3-18.4H22.4Z" fill="#ffffff" />
+    </Svg>
+  )
+}
 
 export type StepTone = 'ok' | 'bad' | 'none'
 
 export const StepTick: FC<{ tone: StepTone }> = ({ tone }) => {
-  const backgroundColor =
-    tone === 'ok' ? veranaCardColors.ok : tone === 'bad' ? veranaCardColors.bad : veranaCardColors.noneRail
+  const { colors, styles } = useVeranaCard()
+  const backgroundColor = tone === 'ok' ? colors.ok : tone === 'bad' ? colors.bad : colors.noneRail
   return (
     <View style={[styles.tick, { backgroundColor }]}>
       {tone === 'ok' ? (
-        <CheckIcon color={veranaCardColors.onTint} />
+        <CheckIcon color={colors.onTint} />
       ) : tone === 'bad' ? (
-        <CrossIcon color={veranaCardColors.onTint} />
+        <CrossIcon color={colors.onTint} />
       ) : (
         <Text style={styles.tickUnknownText}>?</Text>
       )}
@@ -72,13 +75,17 @@ export const StepTick: FC<{ tone: StepTone }> = ({ tone }) => {
   )
 }
 
-export const SectionLabel: FC<{ children: string }> = ({ children }) => (
-  <Text fontFamily="EuclidCircularA-Medium" style={styles.sectionLabel}>
-    {children.toUpperCase()}
-  </Text>
-)
+export const SectionLabel: FC<{ children: string }> = ({ children }) => {
+  const { styles } = useVeranaCard()
+  return (
+    <Text fontFamily="EuclidCircularA-Medium" style={styles.sectionLabel}>
+      {children.toUpperCase()}
+    </Text>
+  )
+}
 
 export const RegistryChip: FC<{ label: string; value?: string }> = ({ label, value }) => {
+  const { styles } = useVeranaCard()
   if (!value) return null
   return (
     <View style={styles.registryChip}>
