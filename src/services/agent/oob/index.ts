@@ -9,6 +9,7 @@ import {
   DidCommCredentialState,
   DidCommCredentialStateChangedEvent,
   DidCommDocumentService,
+  DidCommHandshakeProtocol,
   DidCommMediationRecipientApi,
   DidCommOfferCredentialV2Message,
   DidCommOutOfBandApi,
@@ -22,9 +23,12 @@ import {
   DidCommProofStateChangedEvent,
   DidCommProposePresentationV2Message,
   DidCommRequestPresentationV2Message,
+  DidCommRouting,
   DidCommRoutingService,
+  DidCommTrustPingEventTypes,
   parseMessageType,
   supportsIncomingMessageType,
+  TrustPingResponseReceivedEvent,
 } from '@credo-ts/didcomm'
 import { log, logError, logWarn } from '@src/utils'
 import { deletePendingConnection, findExistingConnection, isService } from '@src/utils/connectionUtils'
@@ -66,19 +70,10 @@ export const getOutOfBandRecord = async (
   if (ownInvitationRecord) {
     throw new Error(t('invitation.errorConnectToSelf'))
   }
-  // Check if there is a connection whose did is associated to the same id from the invitation
+  // Check if there is a connection whose did is associated to the same id from the invitation. The invitation
+  // still gets its own out-of-band record: the service learns of the scan when the wallet accepts the
+  // invitation on that connection ([VSA-DC-OOB-3]), so the record must exist for acceptInvitation.
   const existingConnection = await findExistingConnection(agentContext, invitation)
-
-  // Special case: this is a regular connection invitation and we are already connected: return the original
-  // oob record and do not do any further processing
-  const requests = invitation.getRequests()
-  const requestMessage = requests && requests.length ? requests[0] : undefined
-  if (existingConnection?.outOfBandId && !requestMessage) {
-    const oobRecordFromExistingConnection = await outOfBandApi.findById(existingConnection.outOfBandId)
-    if (oobRecordFromExistingConnection) {
-      return { outOfBandRecord: oobRecordFromExistingConnection, existingConnection }
-    }
-  }
 
   // We check if OOB Record with the same invitation ID exists and return it if that's the case
   const existingOobRecord = await outOfBandApi.findByReceivedInvitationId(invitation.id)
@@ -296,17 +291,17 @@ export const processInvitation = async (
       throw new Error('Message request is not from supported protocol.')
     }
 
-    const isKnownService =
-      existingConnection?.invitationDid !== undefined &&
-      invitation.invitationDids.includes(existingConnection.invitationDid)
-    if (!isKnownService) {
-      return {
-        success: true,
-        invitationType: DidcommInvitationType.ConnectionRequest,
-        recordId: outOfBandRecord.id,
-      }
-    }
-    return await acceptInvitationAndWaitForRequest(agent, invitation, outOfBandRecord, existingConnection)
+    // The offer or the request screen comes right after the scan, with no connection screen in between:
+    // that screen resolves the trust of the service and lets the user refuse. The wallet reuses the
+    // connection that it holds with the service, or opens one.
+    const { displayName } = await agent.modules.profile.getUserProfileData()
+    return await acceptInvitationAndWaitForRequest(
+      agent,
+      invitation,
+      outOfBandRecord,
+      existingConnection,
+      displayName ?? undefined
+    )
   } catch (error) {
     return {
       success: false,
@@ -367,12 +362,24 @@ export async function acceptInvitation(
     (outOfBandRecord.getTag('parentConnectionId') as string | undefined) ?? options.connectionId
 
   const routing = await getMediationRouting(agentContext)
+  const label = options.label ?? ''
 
-  const { connectionRecord: newConnection } = await outOfBandApi.acceptInvitation(options.outOfBandId, {
-    label: options.label ?? '',
+  const { connectionRecord: acceptedConnection } = await outOfBandApi.acceptInvitation(options.outOfBandId, {
+    label,
     routing,
     reuseConnection: true,
   })
+
+  // Credo confirms a v1 reuse itself, with handshake-reuse-accepted. A v2 reuse has no such message: the
+  // wallet confirms it with a trust ping that carries the invitation as pthid ([VSA-DC-OOB-3]). When the
+  // invitation carries a request, the answer to that request carries the pthid instead, and no ping is needed.
+  const hasRequests = Boolean(outOfBandRecord.outOfBandInvitation.getRequests()?.length)
+  const isReusedV2Connection =
+    acceptedConnection?.didcommVersion === 'v2' && acceptedConnection.outOfBandId !== outOfBandRecord.id
+  const newConnection =
+    acceptedConnection && isReusedV2Connection && !hasRequests
+      ? await confirmReuse(agentContext, outOfBandRecord, acceptedConnection, { label, routing })
+      : acceptedConnection
 
   // Associate any service info related to the new connection that we have may cached
   if (newConnection?.invitationDid) {
@@ -401,6 +408,55 @@ export async function acceptInvitation(
   })
 
   return { connectionRecord: newConnection }
+}
+
+const REUSE_CONFIRMATION_TIMEOUT_MS = 15 * 1000
+
+/**
+ * Confirms the reuse of a DIDComm v2 connection for an invitation. Credo armed the invitation id as the pthid of
+ * the next outbound message, so the trust ping carries it, and the ping-response is the acceptance of the
+ * inviter. Without a response the wallet opens a new connection instead, as Credo does for a v1 handshake-reuse
+ * that is not accepted. A ping that cannot be sent is an error of the caller: the pthid stays armed.
+ */
+const confirmReuse = async (
+  agentContext: AgentContext,
+  outOfBandRecord: DidCommOutOfBandRecord,
+  connection: DidCommConnectionRecord,
+  options: { label: string; routing?: DidCommRouting }
+): Promise<DidCommConnectionRecord> => {
+  const connectionsApi = agentContext.dependencyManager.resolve(DidCommConnectionsApi)
+  const eventEmitter = agentContext.dependencyManager.resolve(EventEmitter)
+
+  // Subscribe before the send, so that a fast response is not missed
+  let pingThreadId: string | undefined
+  const response = firstValueFrom(
+    eventEmitter
+      .observable<TrustPingResponseReceivedEvent>(DidCommTrustPingEventTypes.DidCommTrustPingResponseReceivedEvent)
+      .pipe(
+        filter((event) => pingThreadId !== undefined && event.payload.message.threadId === pingThreadId),
+        first(),
+        timeout(REUSE_CONFIRMATION_TIMEOUT_MS)
+      )
+  )
+  response.catch(() => undefined)
+
+  const ping = await connectionsApi.sendPing(connection.id, { responseRequested: true })
+  pingThreadId = ping.threadId
+
+  try {
+    await response
+    log(`Invitation ${outOfBandRecord.id} accepted on the existing connection ${connection.id}`)
+    return connection
+  } catch {
+    logWarn(
+      `No answer to the reuse of connection ${connection.id} for invitation ${outOfBandRecord.id}. Opening a new connection`
+    )
+    return connectionsApi.acceptOutOfBandInvitation(outOfBandRecord, {
+      label: options.label,
+      protocol: DidCommHandshakeProtocol.None,
+      routing: options.routing,
+    })
+  }
 }
 
 const getMediationRouting = async (agentContext: AgentContext) => {

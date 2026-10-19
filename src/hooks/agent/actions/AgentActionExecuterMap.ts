@@ -31,7 +31,6 @@ import {
   DidCommProposePresentationV2Message,
   DidCommRequestCredentialV2Message,
   DidCommRequestPresentationV2Message,
-  DidCommTrustPingMessage,
 } from '@credo-ts/didcomm'
 import { DidCommPushNotificationsFcmSetDeviceInfoMessage } from '@credo-ts/didcomm-push-notifications'
 import { AnswerMessage } from '@credo-ts/question-answer'
@@ -233,8 +232,8 @@ export const AgentActionExecuterMap: Record<AgentActionType, ActionFactory> = {
     return async (options: { agent: MobileAgent }) => {
       const parameters = action.parameters as SendTrustPingParameters
       const { connectionId } = parameters
-      await options.agent.didcomm.connections.sendPing(connectionId, {})
-      return { outgoingMessageTypes: [DidCommTrustPingMessage.type.messageTypeUri] }
+      const message = await options.agent.didcomm.connections.sendPing(connectionId, {})
+      return { outgoingMessageTypes: [message.type] }
     }
   },
   [AgentActionType.CreateCallOffer]: (action) => {
