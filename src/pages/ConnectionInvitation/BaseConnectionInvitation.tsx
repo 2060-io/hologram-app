@@ -71,7 +71,9 @@ const BaseConnectionInvitation = ({
   const invitationType = getInvitationType(invitationDid, parentConnectionId)
   const isAlreadyConnected = !!existingConnectionId
   const isResolvingTrust = trustStatus === ServiceStatus.Resolving
-  const canConnect = !isAlreadyConnected && !ageRestricted && !isResolvingTrust
+  // A connected wallet accepts too: the acceptance tells the service which code was scanned, on the
+  // connection that the wallet already holds, and opens no second connection ([VSA-DC-OOB-3]).
+  const canAccept = !ageRestricted && !isResolvingTrust
   const isSafeToConnect = trustStatus === undefined || trustStatus === ServiceStatus.Trusted
   const hasAttachedRequest = Boolean(invitation.getRequests()?.length)
   const [showModalUnsafeConnect, setShowModalUnsafeConnect] = useState(false)
@@ -92,15 +94,10 @@ const BaseConnectionInvitation = ({
     else navigation.dispatch(StackActions.replace('Home'))
   }
 
-  const onPressHeaderRightButton = async () => {
-    if (canConnect && !isSafeToConnect) setShowModalUnsafeConnect(true)
-    else if (canConnect) accept()
-    else if (isAlreadyConnected) {
-      const connection = await agent?.didcomm.connections.findById(existingConnectionId!)
-      if (connection) goToChat(connection)
-    } else {
-      navigation.goBack()
-    }
+  const onPressHeaderRightButton = () => {
+    if (canAccept && !isSafeToConnect) setShowModalUnsafeConnect(true)
+    else if (canAccept) accept()
+    else navigation.goBack()
   }
 
   const onUnsafeConnect = () => {
@@ -148,9 +145,10 @@ const BaseConnectionInvitation = ({
           label: userProfileData?.displayName,
           connectionId: parentConnectionId,
         }
+        // Credo reuses the connection that the wallet already holds with the inviter, and acceptInvitation
+        // confirms a v2 reuse with a trust ping. For a new v2 connection the connection listener sends the
+        // trust ping, so that the inviter creates the connection on its side with one first message.
         const { connectionRecord } = await acceptInvitation(agent.context, invitationOptions)
-        // For a v2 connection the connection listener sends the trust ping, so that the
-        // inviter creates the connection on its side with one first message.
         if (connectionRecord) goToChat(connectionRecord)
       } catch (error) {
         toast({ type: 'error', message: `Failed to add connection ${error}` })
@@ -177,20 +175,20 @@ const BaseConnectionInvitation = ({
         </TouchableOpacity>
       ),
       headerRight: () =>
-        isResolvingTrust && !isAlreadyConnected ? null : (
+        isResolvingTrust ? null : (
           <TouchableOpacity style={styles.btnAccept} onPress={onPressHeaderRightButton}>
             <Text
               fontFamily="EuclidCircularA-Medium"
-              style={[styles.headerBtnText, canConnect && !isSafeToConnect && styles.unsafeBtnText]}
+              style={[styles.headerBtnText, canAccept && !isSafeToConnect && styles.unsafeBtnText]}
             >
-              {canConnect ? t('general.accept') : t('general.done')}
+              {canAccept ? t('general.accept') : t('general.done')}
             </Text>
           </TouchableOpacity>
         ),
     })
   }
 
-  useLayoutEffect(handleChangeHeaderOptions, [canConnect, isSafeToConnect, isResolvingTrust, theme.colors])
+  useLayoutEffect(handleChangeHeaderOptions, [canAccept, isSafeToConnect, isResolvingTrust, theme.colors])
 
   return (
     <SafeAreaView style={styles.container} edges={['bottom']}>
