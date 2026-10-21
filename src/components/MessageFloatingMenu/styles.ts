@@ -6,7 +6,7 @@ import { StyleSheet } from 'react-native'
 export default (theme: AppTheme) =>
   StyleSheet.create({
     container: {
-      ...StyleSheet.absoluteFillObject,
+      ...StyleSheet.absoluteFill,
       backgroundColor: theme.isDarkMode
         ? hexTransparency(theme.colors.black, 'CC')
         : hexTransparency(theme.colors.white, 'CC'),
