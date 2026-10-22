@@ -8,7 +8,7 @@ export default (theme: AppTheme) =>
       justifyContent: 'center',
     },
     videoWrapper: {
-      ...StyleSheet.absoluteFillObject,
+      ...StyleSheet.absoluteFill,
     },
     video: {
       height: '100%',
