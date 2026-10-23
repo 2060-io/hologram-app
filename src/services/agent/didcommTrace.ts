@@ -31,7 +31,9 @@ const shortDid = (did?: string) => {
 
 const describeMessage = (message: DidCommMessage) => {
   const thread = message.threadId !== message.id ? ` thid=${shortId(message.threadId)}` : ''
-  return `${shortType(message.type)} id=${shortId(message.id)}${thread}`
+  const { liveDelivery } = message as DidCommMessage & { liveDelivery?: boolean }
+  const live = liveDelivery === undefined ? '' : ` live_delivery=${liveDelivery}`
+  return `${shortType(message.type)} id=${shortId(message.id)}${thread}${live}`
 }
 
 const describeConnection = (connection?: DidCommConnectionRecord) =>
