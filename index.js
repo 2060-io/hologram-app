@@ -3,7 +3,7 @@ import { Buffer } from 'buffer'
 global.Buffer = Buffer
 
 import 'text-encoding'
-import { getMessaging, setBackgroundMessageHandler } from '@react-native-firebase/messaging'
+import { getMessaging, onMessage, setBackgroundMessageHandler } from '@react-native-firebase/messaging'
 import { AppRegistry } from 'react-native'
 import { FileLogger } from 'react-native-file-logger'
 
@@ -14,6 +14,7 @@ import App from './src/App'
 import AppHeadless from './src/AppHeadless'
 import { IS_IOS } from './src/constants'
 import { backgroundPushNotificationHandler } from './src/services/backgroundPushNotificationHandler'
+import { foregroundPushNotificationHandler } from './src/services/foregroundPushNotificationHandler'
 import { LOGS_DIRECTORY, log, logError } from './src/utils/log'
 
 const formatter = (_, msg) => {
@@ -26,6 +27,7 @@ const TEN_MB = 1024 * 1024 * 10
 const messaging = getMessaging()
 setBackgroundMessageHandler(messaging, backgroundPushNotificationHandler)
 AppRegistry.registerComponent('hologram', () => (IS_IOS ? AppHeadless : App))
+onMessage(messaging, foregroundPushNotificationHandler)
 FileLogger.configure({
   logsDirectory: LOGS_DIRECTORY,
   logPrefix: appName,

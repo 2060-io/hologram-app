@@ -34,59 +34,252 @@ index 05f4fe3185bfca7b8589d33b8f244f2a7d87a203..dc39b72f348389f1ed1dc9e356ba2e59
  	}
  };
  DidCommDispatcher = __decorate([
+diff --git a/build/modules/message-pickup/DidCommMessagePickupApi.mjs b/build/modules/message-pickup/DidCommMessagePickupApi.mjs
+index 824344da9e01a31bd94236cc71210de2fcbd7b73..4a59492e7e1270b625e48e7c21d9a909d6015608 100644
+--- a/build/modules/message-pickup/DidCommMessagePickupApi.mjs
++++ b/build/modules/message-pickup/DidCommMessagePickupApi.mjs
+@@ -1,6 +1,7 @@
+ import __decorate from "../../_virtual/_@oxc-project_runtime@0.151.0/helpers/esm/decorate.mjs";
+ import __decorateMetadata from "../../_virtual/_@oxc-project_runtime@0.151.0/helpers/esm/decorateMetadata.mjs";
+ import { DidCommModuleConfig } from "../../DidCommModuleConfig.mjs";
++import "../../DidCommEvents.mjs";
+ import { assertDidCommV1Connection, assertDidCommV2Connection } from "../../util/didcommVersion.mjs";
+ import __decorateParam from "../../_virtual/_@oxc-project_runtime@0.151.0/helpers/esm/decorateParam.mjs";
+ import { DidCommOutboundMessageContext } from "../../models/DidCommOutboundMessageContext.mjs";
+@@ -10,9 +11,13 @@ import { DidCommConnectionService } from "../connections/services/DidCommConnect
+ import "../connections/services/index.mjs";
+ import "./DidCommMessagePickupEvents.mjs";
+ import { DidCommMessagePickupModuleConfig } from "./DidCommMessagePickupModuleConfig.mjs";
++import { DidCommStatusV2Message } from "./protocol/v2/messages/DidCommStatusV2Message.mjs";
++import "./protocol/v2/messages/index.mjs";
++import { DidCommStatusV4Message } from "./protocol/v4/messages/DidCommStatusV4Message.mjs";
++import "./protocol/v4/messages/index.mjs";
+ import { DidCommMessagePickupSessionService } from "./services/DidCommMessagePickupSessionService.mjs";
+ import { AgentContext, CredoError, EventEmitter, InjectionSymbols, inject, injectable } from "@credo-ts/core";
+-import { ReplaySubject, Subject, filter, first, firstValueFrom, takeUntil, timeout } from "rxjs";
++import { ReplaySubject, Subject, filter, first, firstValueFrom, map, takeUntil, timeout } from "rxjs";
+ //#region src/modules/message-pickup/DidCommMessagePickupApi.ts
+ let DidCommMessagePickupApi = class DidCommMessagePickupApi {
+ 	constructor(messageSender, agentContext, connectionService, eventEmitter, messagePickupSessionService, config, stop$, logger) {
+@@ -133,7 +138,7 @@ let DidCommMessagePickupApi = class DidCommMessagePickupApi {
+ 			connection: connectionRecord
+ 		});
+ 		const replaySubject = new ReplaySubject(1);
+-		if (options.awaitCompletion) this.eventEmitter.observable("DidCommMessagePickupCompleted").pipe(takeUntil(this.stop$), filter((e) => e.payload.connection.id === connectionRecord.id), first(), timeout({
++		if (options.awaitCompletion) this.eventEmitter.observable("DidCommMessagePickupCompleted").pipe(takeUntil(this.stop$), filter((e) => e.payload.connection.id === connectionRecord.id && e.payload.threadId === message.threadId), first(), timeout({
+ 			first: options.awaitCompletionTimeoutMs ?? 1e4,
+ 			meta: "DidCommMessagePickupApi.pickupMessages"
+ 		})).subscribe(replaySubject);
+@@ -144,7 +149,11 @@ let DidCommMessagePickupApi = class DidCommMessagePickupApi {
+ 	* Enable or disable Live Delivery mode as a recipient. Depending on the message pickup protocol used,
+ 	* after receiving a response from the mediator the agent might retrieve any pending message.
+ 	*
+-	* @param options connectionId, protocol version to use and boolean to enable/disable Live Mode
++	* By default, this method only waits until the message is sent. Use `options.awaitConfirmation` to wait until
++	* the mediator's status reply confirms the change. It rejects on a timeout or on any other reply to the change.
++	*
++	* @param options connectionId, protocol version to use, boolean to enable/disable Live Mode, awaitConfirmation,
++	* awaitConfirmationTimeoutMs
+ 	*/
+ 	async setLiveDeliveryMode(options) {
+ 		const connectionRecord = await this.connectionService.getById(this.agentContext, options.connectionId);
+@@ -154,6 +163,11 @@ let DidCommMessagePickupApi = class DidCommMessagePickupApi {
+ 			connectionRecord,
+ 			liveDelivery: options.liveDelivery
+ 		});
++		const replySubject = new ReplaySubject(1);
++		if (options.awaitConfirmation) this.eventEmitter.observable("DidCommMessageProcessed").pipe(takeUntil(this.stop$), first(({ payload: { connection, message: reply } }) => connection?.id === connectionRecord.id && (reply.threadId === message.threadId || reply.thread?.parentThreadId === message.threadId)), map((e) => e.payload.message), timeout({
++			first: options.awaitConfirmationTimeoutMs ?? 1e4,
++			meta: "DidCommMessagePickupApi.setLiveDeliveryMode"
++		})).subscribe(replySubject);
+ 		await this.messageSender.sendMessage(new DidCommOutboundMessageContext(message, {
+ 			agentContext: this.agentContext,
+ 			connection: connectionRecord
+@@ -161,6 +175,10 @@ let DidCommMessagePickupApi = class DidCommMessagePickupApi {
+ 			schemes: ["wss", "ws"],
+ 			restrictive: options.liveDelivery
+ 		} });
++		if (options.awaitConfirmation) {
++			const reply = await firstValueFrom(replySubject);
++			if (!(reply instanceof DidCommStatusV2Message || reply instanceof DidCommStatusV4Message) || reply.liveDelivery === !options.liveDelivery) throw new CredoError(`Live delivery change was not confirmed, the mediator replied with '${reply.type}'`);
++		}
+ 	}
+ };
+ DidCommMessagePickupApi = __decorate([
+diff --git a/build/modules/message-pickup/DidCommMessagePickupApiOptions.d.mts b/build/modules/message-pickup/DidCommMessagePickupApiOptions.d.mts
+index f191835e352bf34d8de1fcee58ccc153f16950a7..9f91584d1977731ea8b06ac744a4f4f1fdf47a73 100644
+--- a/build/modules/message-pickup/DidCommMessagePickupApiOptions.d.mts
++++ b/build/modules/message-pickup/DidCommMessagePickupApiOptions.d.mts
+@@ -33,6 +33,8 @@ export interface SetLiveDeliveryModeOptions<MPPs extends DidCommMessagePickupPro
+   connectionId: string;
+   protocolVersion: DidCommMessagePickupProtocolVersionType<MPPs>;
+   liveDelivery: boolean;
++  awaitConfirmation?: boolean;
++  awaitConfirmationTimeoutMs?: number;
+ }
+ export type QueueMessageReturnType = undefined;
+ export type PickupMessagesReturnType = undefined;
+diff --git a/build/modules/message-pickup/protocol/v1/DidCommMessagePickupV1Protocol.mjs b/build/modules/message-pickup/protocol/v1/DidCommMessagePickupV1Protocol.mjs
+index 9e630f62e1e6e8225614b1593e0688657290ee1a..89b66c51035ebe55e57f254a5b0772ad8b27057a 100644
+--- a/build/modules/message-pickup/protocol/v1/DidCommMessagePickupV1Protocol.mjs
++++ b/build/modules/message-pickup/protocol/v1/DidCommMessagePickupV1Protocol.mjs
+@@ -101,7 +101,9 @@ let DidCommMessagePickupV1Protocol = class DidCommMessagePickupV1Protocol extend
+ 			});
+ 			return null;
+ 		}
+-		return (await this.createPickupMessage(agentContext, { connectionRecord: connection })).message;
++		const { message: pickupMessage } = await this.createPickupMessage(agentContext, { connectionRecord: connection });
++		pickupMessage.setThread({ threadId: batchMessage.threadId });
++		return pickupMessage;
+ 	}
+ };
+ DidCommMessagePickupV1Protocol = __decorate([injectable()], DidCommMessagePickupV1Protocol);
+diff --git a/build/modules/message-pickup/protocol/v2/DidCommMessagePickupV2Protocol.mjs b/build/modules/message-pickup/protocol/v2/DidCommMessagePickupV2Protocol.mjs
+index 7f936cb07543281087706af1df807ed0c356a414..1cde691ead007b531e8e07fd25a321192c2ce8a1 100644
+--- a/build/modules/message-pickup/protocol/v2/DidCommMessagePickupV2Protocol.mjs
++++ b/build/modules/message-pickup/protocol/v2/DidCommMessagePickupV2Protocol.mjs
+@@ -158,10 +158,12 @@ let DidCommMessagePickupV2Protocol = class DidCommMessagePickupV2Protocol extend
+ 			return null;
+ 		}
+ 		const { maximumBatchSize: maximumMessagePickup } = messagePickupModuleConfig;
+-		return new DidCommDeliveryRequestV2Message({
++		const deliveryRequestMessage = new DidCommDeliveryRequestV2Message({
+ 			limit: messageCount < maximumMessagePickup ? messageCount : maximumMessagePickup,
+ 			recipientKey
+ 		});
++		deliveryRequestMessage.setThread({ threadId: statusMessage.threadId });
++		return deliveryRequestMessage;
+ 	}
+ 	async processLiveDeliveryChange(messageContext) {
+ 		const { agentContext, message, sessionId } = messageContext;
+@@ -202,7 +204,9 @@ let DidCommMessagePickupV2Protocol = class DidCommMessagePickupV2Protocol extend
+ 				}
+ 			});
+ 		}
+-		return new DidCommMessagesReceivedV2Message({ messageIdList: ids });
++		const messagesReceivedMessage = new DidCommMessagesReceivedV2Message({ messageIdList: ids });
++		messagesReceivedMessage.setThread({ threadId: messageContext.message.threadId });
++		return messagesReceivedMessage;
+ 	}
+ };
+ DidCommMessagePickupV2Protocol = __decorate([injectable()], DidCommMessagePickupV2Protocol);
+diff --git a/build/modules/message-pickup/protocol/v4/DidCommMessagePickupV4Protocol.mjs b/build/modules/message-pickup/protocol/v4/DidCommMessagePickupV4Protocol.mjs
+index 66ecd63d1c5f569cf17c693a28d35ef2d27a9136..22d39d67f5aca01433bf65a9f04a581545dbdecb 100644
+--- a/build/modules/message-pickup/protocol/v4/DidCommMessagePickupV4Protocol.mjs
++++ b/build/modules/message-pickup/protocol/v4/DidCommMessagePickupV4Protocol.mjs
+@@ -156,10 +156,12 @@ let DidCommMessagePickupV4Protocol = class DidCommMessagePickupV4Protocol extend
+ 			return null;
+ 		}
+ 		const { maximumBatchSize: maximumMessagePickup } = messagePickupModuleConfig;
+-		return new DidCommDeliveryRequestV4Message({
++		const deliveryRequestMessage = new DidCommDeliveryRequestV4Message({
+ 			messageCountLimit: messageCount < maximumMessagePickup ? messageCount : maximumMessagePickup,
+ 			recipientDid
+ 		});
++		deliveryRequestMessage.setThread({ threadId: statusMessage.threadId });
++		return deliveryRequestMessage;
+ 	}
+ 	async processLiveDeliveryChange(messageContext) {
+ 		const { agentContext, message, sessionId } = messageContext;
+diff --git a/build/modules/message-pickup/protocol/v4/handlers/DidCommMessageDeliveryV4Handler.mjs b/build/modules/message-pickup/protocol/v4/handlers/DidCommMessageDeliveryV4Handler.mjs
+index 0b917c9fcd52d55caf426d9092eaa7fa78085812..4561640ebebfe0f2756279d50ee103ee1db71bcf 100644
+--- a/build/modules/message-pickup/protocol/v4/handlers/DidCommMessageDeliveryV4Handler.mjs
++++ b/build/modules/message-pickup/protocol/v4/handlers/DidCommMessageDeliveryV4Handler.mjs
+@@ -26,6 +26,7 @@ var DidCommMessageDeliveryV4Handler = class {
+ 			messageCountLimit: maximumBatchSize,
+ 			recipientDid: message.recipientDid
+ 		});
++		deliveryRequest.setThread({ threadId: message.threadId });
+ 		return new DidCommOutboundMessageContext(deliveryRequest, {
+ 			agentContext,
+ 			connection
 diff --git a/build/modules/routing/DidCommMediationRecipientApi.mjs b/build/modules/routing/DidCommMediationRecipientApi.mjs
-index fd28301fd55417d7757085ff95332f4ce61e876e..619fab9722ef64f091353ed140a9745fa1febb8b 100644
+index fd28301fd55417d7757085ff95332f4ce61e876e..84d82f8581e81b52c6a4ccbe9066079828858393 100644
 --- a/build/modules/routing/DidCommMediationRecipientApi.mjs
 +++ b/build/modules/routing/DidCommMediationRecipientApi.mjs
-@@ -125,6 +125,10 @@ let DidCommMediationRecipientApi = class DidCommMediationRecipientApi {
+@@ -11,6 +11,8 @@ import "./DidCommMediatorPickupStrategy.mjs";
+ import "./models/DidCommMediationState.mjs";
+ import { DidCommMediationRepository } from "./repository/DidCommMediationRepository.mjs";
+ import "./repository/index.mjs";
++import { MessageSendingError } from "../../errors/MessageSendingError.mjs";
++import "../../errors/index.mjs";
+ import { DidCommOutboundMessageContext } from "../../models/DidCommOutboundMessageContext.mjs";
+ import "../../models/index.mjs";
+ import { DidCommMessageSender } from "../../DidCommMessageSender.mjs";
+@@ -31,8 +33,8 @@ import { DidCommStatusV2Message } from "../message-pickup/protocol/v2/messages/D
+ import "../message-pickup/protocol/v2/index.mjs";
+ import { DidCommMediationRecipientModuleConfig } from "./DidCommMediationRecipientModuleConfig.mjs";
+ import { AgentContext, CredoError, DidCommV1Service, DidsApi, EventEmitter, IndyAgentService, InjectionSymbols, didDocumentToNumAlgo4Did, filterContextCorrelationId, getAlternativeDidsForNumAlgo4Did, inject, injectable, isShortFormDidPeer4, verkeyToDidKey } from "@credo-ts/core";
+-import { ReplaySubject, Subject, firstValueFrom, interval, merge, timer } from "rxjs";
+-import { delayWhen, filter as filter$1, first as first$1, takeUntil as takeUntil$1, tap, throttleTime, timeout as timeout$1 } from "rxjs/operators";
++import { ReplaySubject, Subject, TimeoutError, firstValueFrom, interval, merge, timer } from "rxjs";
++import { exhaustMap, filter as filter$1, first as first$1, takeUntil as takeUntil$1, tap, timeout as timeout$1 } from "rxjs/operators";
+ //#region src/modules/routing/DidCommMediationRecipientApi.ts
+ let DidCommMediationRecipientApi = class DidCommMediationRecipientApi {
+ 	constructor(mediationRecipientService, connectionService, dids, messageSender, eventEmitter, discoverFeaturesApi, messagePickupApi, mediationRepository, routingService, logger, agentContext, stop$, mediationRecipientModuleConfig) {
+@@ -90,14 +92,17 @@ let DidCommMediationRecipientApi = class DidCommMediationRecipientApi {
+ 	async monitorMediatorWebSocketEvents(mediator, pickupStrategy) {
+ 		const { baseMediatorReconnectionIntervalMs, maximumMediatorReconnectionIntervalMs } = this.config;
+ 		let interval = baseMediatorReconnectionIntervalMs;
++		let attempts = 0;
+ 		const stopConditions$ = merge(this.stop$, this.stopMessagePickup$).pipe();
+-		this.eventEmitter.observable("DidCommOutboundWebSocketOpenedEvent").pipe(takeUntil$1(stopConditions$), filter$1((e) => e.payload.connectionId === mediator.connectionId)).subscribe(() => {
+-			interval = baseMediatorReconnectionIntervalMs;
+-		});
+-		this.eventEmitter.observable("DidCommOutboundWebSocketClosedEvent").pipe(takeUntil$1(stopConditions$), filter$1((e) => e.payload.connectionId === mediator.connectionId), throttleTime(interval), delayWhen(() => timer(interval)), tap(() => {
++		this.eventEmitter.observable("DidCommOutboundWebSocketClosedEvent").pipe(filter$1((e) => e.payload.connectionId === mediator.connectionId), exhaustMap(() => {
++			const delay = Math.min(interval, maximumMediatorReconnectionIntervalMs);
++			const maximumDelay = Math.min(delay * 1.5, maximumMediatorReconnectionIntervalMs);
++			return timer(delay / 2 + Math.random() * (maximumDelay - delay / 2));
++		}), tap(() => {
+ 			interval = Math.min(interval * 2, maximumMediatorReconnectionIntervalMs);
+-		})).subscribe({
++		}), takeUntil$1(stopConditions$)).subscribe({
+ 			next: async () => {
++				const attempt = ++attempts;
+ 				this.logger.debug(`Websocket connection to mediator with connectionId '${mediator.connectionId}' is closed, attempting to reconnect...`);
+ 				try {
+ 					if (pickupStrategy === "PickUpV2LiveMode") {
+@@ -123,8 +128,13 @@ let DidCommMediationRecipientApi = class DidCommMediationRecipientApi {
+ 							protocolVersion: "v4"
+ 						});
  					} else await this.initiateImplicitMode(mediator);
++					interval = baseMediatorReconnectionIntervalMs;
  				} catch (error) {
  					this.logger.warn("Unable to re-open websocket connection to mediator", { error });
-+					const wsTransport = this.agentContext.dependencyManager.resolve(DidCommModuleConfig).outboundTransports.find((t) => t.supportedSchemes?.includes("ws"));
-+					if (wsTransport && typeof wsTransport.closeSocketByConnectionId === "function") {
-+						wsTransport.closeSocketByConnectionId(mediator.connectionId);
++					if (attempt === attempts && (error instanceof MessageSendingError || error instanceof TimeoutError)) {
++						const { outboundTransports } = this.agentContext.dependencyManager.resolve(DidCommModuleConfig);
++						for (const transport of outboundTransports) transport.closeSocketByConnectionId?.(mediator.connectionId);
 +					}
  				}
  			},
  			complete: () => this.logger.info(`Stopping pickup of messages from mediator '${mediator.id}'`)
-@@ -181,6 +185,7 @@ let DidCommMediationRecipientApi = class DidCommMediationRecipientApi {
- 			case "PickUpV2LiveMode":
- 				this.logger.info(`Starting Live Mode pickup of messages from mediator '${mediatorRecord.id}'`);
- 				await this.monitorMediatorWebSocketEvents(mediatorRecord, mediatorPickupStrategy);
-+				try {
- 				await this.messagePickupApi.pickupMessages({
- 					connectionId: mediatorConnection.id,
- 					protocolVersion: "v2",
-@@ -191,10 +196,18 @@ let DidCommMediationRecipientApi = class DidCommMediationRecipientApi {
- 					liveDelivery: true,
- 					protocolVersion: "v2"
- 				});
-+				} catch (error) {
-+					this.logger.warn("Unable to set live delivery mode for mediator", { error });
-+					const wsTransport = this.agentContext.dependencyManager.resolve(DidCommModuleConfig).outboundTransports.find((t) => t.supportedSchemes?.includes("ws"));
-+					if (wsTransport && typeof wsTransport.closeSocketByConnectionId === "function") {
-+						wsTransport.closeSocketByConnectionId(mediatorConnection.id);
-+					}
-+				}
- 				break;
- 			case "PickUpV4LiveMode":
- 				this.logger.info(`Starting Live Mode pickup of messages from mediator '${mediatorRecord.id}' using v4`);
- 				await this.monitorMediatorWebSocketEvents(mediatorRecord, mediatorPickupStrategy);
-+				try {
- 				await this.messagePickupApi.pickupMessages({
- 					connectionId: mediatorConnection.id,
- 					protocolVersion: "v4",
-@@ -205,6 +218,13 @@ let DidCommMediationRecipientApi = class DidCommMediationRecipientApi {
- 					liveDelivery: true,
- 					protocolVersion: "v4"
- 				});
-+				} catch (error) {
-+					this.logger.warn("Unable to set live delivery mode for mediator", { error });
-+					const wsTransport = this.agentContext.dependencyManager.resolve(DidCommModuleConfig).outboundTransports.find((t) => t.supportedSchemes?.includes("ws"));
-+					if (wsTransport && typeof wsTransport.closeSocketByConnectionId === "function") {
-+						wsTransport.closeSocketByConnectionId(mediatorConnection.id);
-+					}
-+				}
- 				break;
- 			case "Implicit":
- 				this.logger.info(`Starting implicit pickup of messages from mediator '${mediatorRecord.id}'`);
+diff --git a/build/modules/routing/DidCommMediationRecipientModuleConfig.d.mts b/build/modules/routing/DidCommMediationRecipientModuleConfig.d.mts
+index c30553d4a3879dbb0b9437822fa63729d783b5e9..1c256edb9e7c00d3f9d9d70e2acba0cd93f46b96 100644
+--- a/build/modules/routing/DidCommMediationRecipientModuleConfig.d.mts
++++ b/build/modules/routing/DidCommMediationRecipientModuleConfig.d.mts
+@@ -41,6 +41,8 @@ export interface DidCommMediationRecipientModuleConfigOptions {
+    * each retry, resulting in an exponential backoff strategy.
+    *
+    * For instance, if maximumMediatorReconnectionIntervalMs is b, the agent will attempt to reconnect after b, 2*b, 4*b, 8*b, 16*b, ... ms.
++   * Each delay is randomized by up to 50% either way and never exceeds maximumMediatorReconnectionIntervalMs. The interval goes
++   * back to this value once a reconnect sets up pickup again.
+    *
+    * This is only applicable when pickup protocol v2 or implicit pickup is used.
+    *
+diff --git a/build/transport/DidCommOutboundTransport.d.mts b/build/transport/DidCommOutboundTransport.d.mts
+index 8eeb825e1451bee7f1d53f128c659f0c284dae2c..9cdc7b546e04d9ab674ada46be4e31160f7ab561 100644
+--- a/build/transport/DidCommOutboundTransport.d.mts
++++ b/build/transport/DidCommOutboundTransport.d.mts
+@@ -4,6 +4,11 @@ import { AgentContext } from "@credo-ts/core";
+ export interface DidCommOutboundTransport {
+   supportedSchemes: string[];
+   sendMessage(outboundPackage: DidCommOutboundPackage): Promise<void>;
++  /**
++   * Forget the sockets of a connection right away, emit their closed event once and then close them.
++   * Returns true when a socket was closed.
++   */
++  closeSocketByConnectionId?(connectionId: string): boolean;
+   start(agentContext: AgentContext): Promise<void>;
+   stop(): Promise<void>;
+ }
