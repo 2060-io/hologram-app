@@ -7,7 +7,7 @@ let reconnectTimer: ReturnType<typeof setTimeout> | undefined
 const reconnectReasons = new Set<string>()
 let reconnectOpenedBefore = 0
 
-// Stopgap until Credo can check live mode on demand: closing the socket makes the pickup loop reconnect
+// Closing the socket makes the Credo pickup loop reconnect
 export function reconnectMediator(agent: MobileAgent, reason: string, openedBefore = Date.now()): void {
   reconnectReasons.add(reason)
   reconnectOpenedBefore = Math.max(reconnectOpenedBefore, openedBefore)

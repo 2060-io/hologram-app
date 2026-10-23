@@ -123,7 +123,6 @@ export const getMobileAgentModules = (config: {
         maximumMessagePickup: 100,
         baseMediatorReconnectionIntervalMs: 1000,
         maximumMediatorReconnectionIntervalMs: 8000,
-        liveModeCheckIntervalMs: 15000,
       },
       proofs: {
         autoAcceptProofs: DidCommAutoAcceptProof.Never,

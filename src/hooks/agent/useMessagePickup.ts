@@ -1,6 +1,7 @@
 import { DidCommMediatorPickupStrategy } from '@credo-ts/didcomm'
 import { addEventListener, NetInfoState, NetInfoStateType } from '@react-native-community/netinfo'
 import { MobileAgent } from '@src/services/agent'
+import { startLiveModeChecks } from '@src/services/agent/liveModeCheck'
 import { closeMediatorSocket, reconnectMediator } from '@src/services/agent/reconnectMediator'
 import { log, logWarn } from '@src/utils'
 import { useEffect, useRef } from 'react'
@@ -49,6 +50,11 @@ export function useMessagePickup({ agent, isEnabled }: { agent?: MobileAgent; is
       }
     }
   }, [agent, realm, isAppActive, isScreenLockForceDisabled])
+
+  useEffect(() => {
+    if (!agent?.isInitialized || !isEnabled || !isAppActive) return
+    return startLiveModeChecks(agent)
+  }, [agent, isEnabled, isAppActive])
 
   useEffect(() => {
     if (!agent) return
