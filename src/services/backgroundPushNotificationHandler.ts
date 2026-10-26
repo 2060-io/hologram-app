@@ -14,16 +14,6 @@ import RealmSingleton from './RealmSingleton'
 const SETTLE_QUIET_MS = 2_000
 const SETTLE_MAX_MS = 10_000
 
-const makeRequestToLocalServer = (payload: Record<string, string>) => {
-  if (__DEV__) {
-    fetch('http://172.20.10.3:3000/api/echo', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    })
-  }
-}
-
 let isProcessingBackgroundNotification = false
 let skippedPush: FirebaseMessagingTypes.RemoteMessage | undefined
 
@@ -37,13 +27,9 @@ export async function backgroundPushNotificationHandler(remoteMessage: FirebaseM
   deleteRemoteNotifications()
   if (isProcessingBackgroundNotification) {
     skippedPush = remoteMessage
-    logWarn('BACKGROUND PUSH NOTIFICATIONS HANDLER is executing at the moment!!')
-    makeRequestToLocalServer({ data: 'BACKGROUND PUSH NOTIFICATIONS HANDLER is executing at the moment!!' })
     return
   }
   isProcessingBackgroundNotification = true
-  logWarn('STARTED EXECUTING BACKGROUND PUSH NOTIFICATIONS HANDLER')
-  makeRequestToLocalServer({ data: 'STARTED EXECUTING BACKGROUND PUSH NOTIFICATIONS HANDLER' })
   let processingSettled = async (): Promise<void> => {}
   let removeListeners = (): void => {}
   try {
@@ -66,8 +52,6 @@ export async function backgroundPushNotificationHandler(remoteMessage: FirebaseM
     }
     if (!mobileAgentInstance.getMobileAgent()?.isInitialized) {
       await mobileAgentInstance.openAndInitMobileAgent()
-    } else {
-      logWarn('From backgroundPushNotificationHandler agent is already initialized')
     }
     AgentActionQueueSingleton.instance.configureQueue()
     if (!mobileAgentInstance.getIsAppSubscribedToChatEvents()) {
@@ -85,12 +69,9 @@ export async function backgroundPushNotificationHandler(remoteMessage: FirebaseM
       protocolVersion: mediatorRecord.protocolVersion === 'v2' ? 'v4' : 'v2',
       awaitCompletion: true,
     })
-    logWarn('BACKGROUND PUSH NOTIFICATIONS HANDLER EXECUTION FINISHED')
-    makeRequestToLocalServer({ data: 'BACKGROUND PUSH NOTIFICATIONS HANDLER EXECUTION FINISHED' })
     deleteRemoteNotifications()
   } catch (error) {
-    logWarn(`BACKGROUND PUSH NOTIFICATIONS HANDLER failed: ${error}`)
-    makeRequestToLocalServer({ error: `${error}` })
+    logWarn(`Background push handling failed: ${error}`)
   } finally {
     await processingSettled()
     isProcessingBackgroundNotification = false

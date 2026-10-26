@@ -10,7 +10,7 @@ import {
   DidCommStatusV2Message,
   DidCommStatusV4Message,
 } from '@credo-ts/didcomm'
-import { first, firstValueFrom, map, timeout } from 'rxjs'
+import { filter, first, firstValueFrom, map, timeout } from 'rxjs'
 import { MobileWsOutboundTransport } from '../transport/MobileWsOutboundTransport'
 import { MobileAgent } from './MobileAgent'
 import { reconnectMediator } from './reconnectMediator'
@@ -76,6 +76,7 @@ async function requestStatus(
     mediator.protocolVersion === 'v2' ? new DidCommStatusRequestV4Message({}) : new DidCommStatusRequestV2Message({})
   const reply = firstValueFrom(
     agent.events.observable<DidCommMessageProcessedEvent>(DidCommEventTypes.DidCommMessageProcessed).pipe(
+      filter((event) => event.payload.handled),
       map((event) => event.payload.message),
       first(
         (message): message is DidCommStatusMessage =>
