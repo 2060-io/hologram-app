@@ -1,9 +1,5 @@
 import { AnonCredsSelectedCredentials } from '@credo-ts/anoncreds'
-import {
-  AnonCredsDidCommProofFormat,
-  AnonCredsPresentationPreviewAttribute,
-  LegacyIndyDidCommProofFormat,
-} from '@credo-ts/anoncreds/didcomm'
+import { AnonCredsDidCommProofFormat, AnonCredsPresentationPreviewAttribute } from '@credo-ts/anoncreds/didcomm'
 import { DidCommMessage, DidCommProofExchangeRecord, DidCommProofFormatPayload } from '@credo-ts/didcomm'
 import { ServiceStatus } from '@src/model'
 import { logError } from '@src/utils'
@@ -32,7 +28,7 @@ export async function presentProof(options: PresentProofOptions) {
     proofFormats: { anoncreds: { filterByNonRevocationRequirements: true } },
   })
 
-  let anoncreds: AnonCredsSelectedCredentials | undefined, indy: AnonCredsSelectedCredentials | undefined
+  let anoncreds: AnonCredsSelectedCredentials | undefined
 
   const metadata: DidCommPresentationDisplayMetadata = { credentials: [] }
 
@@ -64,38 +60,10 @@ export async function presentProof(options: PresentProofOptions) {
         break
       }
     }
-
-    for (const attributeName in proofFormats.indy?.attributes) {
-      if (attributeName === referent) {
-        if (!indy) indy = { attributes: {}, predicates: {}, selfAttestedAttributes: {} }
-        // @ts-expect-error Ignoring TS errors as we have just defined the object
-        indy.attributes[attributeName] = proofFormats.indy.attributes[attributeName].find(
-          (item) => item.credentialId === credentialId
-        )
-        metadata.credentials.push({ type: 'indy', credentialId })
-        break
-      }
-    }
-
-    for (const predicateName in proofFormats.indy?.predicates) {
-      if (predicateName === referent) {
-        if (!indy) indy = { attributes: {}, predicates: {}, selfAttestedAttributes: {} }
-        // @ts-expect-error Ignoring TS errors as we have just defined the object
-        indy.predicates[predicateName] = proofFormats.indy.predicates[predicateName].find(
-          (item) => item.credentialId === credentialId
-        )
-        metadata.credentials.push({ type: 'indy', credentialId })
-        break
-      }
-    }
   }
 
-  const proofFormatPayload: DidCommProofFormatPayload<
-    (LegacyIndyDidCommProofFormat | AnonCredsDidCommProofFormat)[],
-    'acceptRequest'
-  > = {}
+  const proofFormatPayload: DidCommProofFormatPayload<[AnonCredsDidCommProofFormat], 'acceptRequest'> = {}
   if (anoncreds) proofFormatPayload.anoncreds = anoncreds
-  if (indy) proofFormatPayload.indy = indy
 
   // Update record metadata
   const proofRecord = await agent.didcomm.proofs.getById(proofRecordId)

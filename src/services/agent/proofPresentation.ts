@@ -1,13 +1,10 @@
-import { AnonCredsDidCommProofFormat, LegacyIndyDidCommProofFormat } from '@credo-ts/anoncreds/didcomm'
+import { AnonCredsDidCommProofFormat } from '@credo-ts/anoncreds/didcomm'
 import { DidCommProofFormatPayload } from '@credo-ts/didcomm'
 import { ProofSendProblemReportDescription } from '@src/hooks/agent/actions/types'
 
 import { MobileAgent } from './MobileAgent'
 
-type AcceptProofFormatPayload = DidCommProofFormatPayload<
-  (LegacyIndyDidCommProofFormat | AnonCredsDidCommProofFormat)[],
-  'acceptRequest'
->
+type AcceptProofFormatPayload = DidCommProofFormatPayload<[AnonCredsDidCommProofFormat], 'acceptRequest'>
 
 export type AcceptProofRequestResult = 'presentation' | 'problem-report'
 

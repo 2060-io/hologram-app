@@ -18,6 +18,7 @@ import { MediatorConnectedEvent, MediatorDisconnectedEvent, MediatorEventTypes }
 interface MobileOutboundWs {
   ws: WebSocket
   opened: boolean
+  openedAt?: number
   // Resolves when the socket is open; rejects when the handshake fails
   opening: Promise<void>
   shallKeepOpened: boolean
@@ -51,16 +52,23 @@ export class MobileWsOutboundTransport implements DidCommOutboundTransport {
     return record ? record[1].opened : false
   }
 
-  public closeSocketByConnectionId(connectionId: string) {
-    for (const [, item] of this.transportTable) {
+  public socketOpenedAt(connectionId: string): number | undefined {
+    return [...this.transportTable.values()].find((item) => item.connectionIds.has(connectionId))?.openedAt
+  }
+
+  public closeSocketByConnectionId(connectionId: string): boolean {
+    let closed = false
+    for (const [socketId, item] of this.transportTable) {
       if (item.connectionIds.has(connectionId)) {
+        this.transportTable.delete(socketId)
+        this.emitSocketClosed(socketId, item, connectionId)
         item.ws.removeEventListener('message', this.handleMessageEvent)
         item.ws.close()
-        this.logger.debug(`Socket closed for connectionId '${connectionId}'`)
-        return true
+        this.logger.info(`Socket closed for connectionId '${connectionId}'`)
+        closed = true
       }
     }
-    return false
+    return closed
   }
 
   public async start(agentContext: AgentContext): Promise<void> {
@@ -259,6 +267,7 @@ export class MobileWsOutboundTransport implements DidCommOutboundTransport {
       ws.onopen = () => {
         this.logger.debug(`Successfully connected to WebSocket ${endpoint} in ${Date.now() - createdAt} ms`)
         socket.opened = true
+        socket.openedAt = Date.now()
         setOpened()
 
         resolve(socket)
@@ -301,58 +310,57 @@ export class MobileWsOutboundTransport implements DidCommOutboundTransport {
 
       ws.onclose = async (event) => {
         // Code 1006 is an abnormal closure: the handshake failed or the remote side dropped the socket
-        this.logger.debug(`WebSocket closing to ${endpoint}`, {
+        const closeDetails = {
           code: event?.code,
           reason: event?.reason,
           opened: socket.opened,
           lifetimeMs: Date.now() - createdAt,
-        })
+        }
+        if (this.mediatorEndpoints.includes(endpoint)) {
+          this.logger.warn(`Mediator WebSocket closing to ${endpoint}`, closeDetails)
+        } else {
+          this.logger.debug(`WebSocket closing to ${endpoint}`, closeDetails)
+        }
         if (!socket.opened) setFailed(new CredoError(`WebSocket to ${endpoint} closed before it opened`))
 
-        const record = this.transportTable.get(socketId)
-        const connections = record?.connectionIds
-        if (connections && record?.connectionIds && record?.opened) {
-          for (const item of connections) {
-            this.eventEmitter.emit<DidCommOutboundWebSocketClosedEvent>(this.agentContext, {
-              type: DidCommTransportEventTypes.DidCommOutboundWebSocketClosedEvent,
-              payload: {
-                socketId,
-                connectionId: item,
-              },
-            })
-
-            if (this.defaultMediatorConnection?.id === item) {
-              this.eventEmitter.emit<MediatorDisconnectedEvent>(this.agentContext, {
-                type: MediatorEventTypes.MediatorDisconnected,
-                payload: {
-                  mediatorId: this.defaultMediatorConnection.mediatorId,
-                  connectionId: item,
-                },
-              })
-            }
-          }
-        } else {
-          this.eventEmitter.emit<DidCommOutboundWebSocketClosedEvent>(this.agentContext, {
-            type: DidCommTransportEventTypes.DidCommOutboundWebSocketClosedEvent,
-            payload: {
-              socketId,
-              connectionId,
-            },
-          })
-          if (connectionId && record?.opened) {
-            if (this.defaultMediatorConnection?.id === connectionId) {
-              this.eventEmitter.emit<MediatorDisconnectedEvent>(this.agentContext, {
-                type: MediatorEventTypes.MediatorDisconnected,
-                payload: {
-                  mediatorId: this.defaultMediatorConnection.mediatorId,
-                  connectionId: connectionId,
-                },
-              })
-            }
-          }
-        }
+        // closeSocketByConnectionId already forgot this socket and emitted closed, or a newer socket replaced it
+        if (this.transportTable.get(socketId)?.ws !== ws) return
         this.transportTable.delete(socketId)
+        this.emitSocketClosed(socketId, socket, connectionId)
       }
     })
+  }
+
+  private emitSocketClosed(socketId: string, socket: MobileOutboundWs, connectionId?: string): void {
+    if (!socket.opened) {
+      this.eventEmitter.emit<DidCommOutboundWebSocketClosedEvent>(this.agentContext, {
+        type: DidCommTransportEventTypes.DidCommOutboundWebSocketClosedEvent,
+        payload: {
+          socketId,
+          connectionId,
+        },
+      })
+      return
+    }
+
+    for (const item of socket.connectionIds) {
+      this.eventEmitter.emit<DidCommOutboundWebSocketClosedEvent>(this.agentContext, {
+        type: DidCommTransportEventTypes.DidCommOutboundWebSocketClosedEvent,
+        payload: {
+          socketId,
+          connectionId: item,
+        },
+      })
+
+      if (this.defaultMediatorConnection?.id === item) {
+        this.eventEmitter.emit<MediatorDisconnectedEvent>(this.agentContext, {
+          type: MediatorEventTypes.MediatorDisconnected,
+          payload: {
+            mediatorId: this.defaultMediatorConnection.mediatorId,
+            connectionId: item,
+          },
+        })
+      }
+    }
   }
 }

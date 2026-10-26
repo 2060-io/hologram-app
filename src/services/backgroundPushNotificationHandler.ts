@@ -1,27 +1,22 @@
-import { DidCommEventTypes, DidCommMessageProcessedEvent, DidCommStatusV4Message } from '@credo-ts/didcomm'
+import { DidCommEventTypes } from '@credo-ts/didcomm'
 import { FirebaseMessagingTypes } from '@react-native-firebase/messaging'
 import { manageBackgroundChatEntryChanges, subscribeToAgentChatEvents } from '@src/hooks/agent/chat'
 import { manageConnectionStateChangedEvent } from '@src/hooks/agent/connections/manageConnectionStateChangedEvent'
 import { subscribeToAgentConnectionEvents } from '@src/hooks/agent/connections/subscribeToAgentConnectionEvents'
-import { log, logWarn } from '@src/utils'
+import { logWarn } from '@src/utils'
 import { arePushNotificationsAllowed, deleteRemoteNotifications } from '@src/utils/pushNotificationsUtils'
 import { AgentActionQueueSingleton } from './AgentActionQueueSingleton'
 import AgentSingleton from './AgentSingleton'
+import { MobileAgent } from './agent/MobileAgent'
+import { closeMediatorSocket } from './agent/reconnectMediator'
 import RealmSingleton from './RealmSingleton'
 
-const makeRequestToLocalServer = (payload: Record<string, string>) => {
-  if (__DEV__) {
-    fetch('http://172.20.10.3:3000/api/echo', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    })
-  }
-}
+const SETTLE_QUIET_MS = 2_000
+const SETTLE_MAX_MS = 10_000
 
 let isProcessingBackgroundNotification = false
+let skippedPush: FirebaseMessagingTypes.RemoteMessage | undefined
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function backgroundPushNotificationHandler(remoteMessage: FirebaseMessagingTypes.RemoteMessage) {
   // Note: When user disables notifications and are not displayed (remote notifications) this code can be
   //  executed. For that reason, we need to check if push notifications are allowed to continue processing
@@ -31,13 +26,12 @@ export async function backgroundPushNotificationHandler(remoteMessage: FirebaseM
   }
   deleteRemoteNotifications()
   if (isProcessingBackgroundNotification) {
-    logWarn('BACKGROUND PUSH NOTIFICATIONS HANDLER is executing at the moment!!')
-    makeRequestToLocalServer({ data: 'BACKGROUND PUSH NOTIFICATIONS HANDLER is executing at the moment!!' })
+    skippedPush = remoteMessage
     return
   }
   isProcessingBackgroundNotification = true
-  logWarn('STARTED EXECUTING BACKGROUND PUSH NOTIFICATIONS HANDLER')
-  makeRequestToLocalServer({ data: 'STARTED EXECUTING BACKGROUND PUSH NOTIFICATIONS HANDLER' })
+  let processingSettled = async (): Promise<void> => {}
+  let removeListeners = (): void => {}
   try {
     const realmInstance = RealmSingleton.instance
     await realmInstance.openRealmIfIsClosed()
@@ -51,10 +45,13 @@ export async function backgroundPushNotificationHandler(remoteMessage: FirebaseM
     const { addConnectionChangeListener, removeConnectionChangeListener } = manageConnectionStateChangedEvent(agent)
     addChatEntryChangeListener()
     addConnectionChangeListener()
+    processingSettled = () => waitForProcessingToSettle(agent)
+    removeListeners = () => {
+      removeChatEntryChangeListener()
+      removeConnectionChangeListener()
+    }
     if (!mobileAgentInstance.getMobileAgent()?.isInitialized) {
       await mobileAgentInstance.openAndInitMobileAgent()
-    } else {
-      logWarn('From backgroundPushNotificationHandler agent is already initialized')
     }
     AgentActionQueueSingleton.instance.configureQueue()
     if (!mobileAgentInstance.getIsAppSubscribedToChatEvents()) {
@@ -65,35 +62,45 @@ export async function backgroundPushNotificationHandler(remoteMessage: FirebaseM
     }
     const mediatorRecord = await agent.didcomm.mediationRecipient.findDefaultMediator()
     if (!mediatorRecord) return
+    // A socket left open by an earlier run may be half-open by now, and a push means it is not live anyway
+    await closeMediatorSocket(agent, 'background push', Date.now())
     await agent.didcomm.messagePickup.pickupMessages({
       connectionId: mediatorRecord.connectionId,
       protocolVersion: mediatorRecord.protocolVersion === 'v2' ? 'v4' : 'v2',
+      awaitCompletion: true,
     })
-
-    // this events is yet calling when app awakes and receives more because agent is still alive and the same
-    agent.events.on<DidCommMessageProcessedEvent>(DidCommEventTypes.DidCommMessageProcessed, async (data) => {
-      const message = data.payload.message
-      log(`Message processed for connection id ${data.payload.connection?.id} Type: ${message.type}`)
-      makeRequestToLocalServer({
-        data: `Message processed for connection id ${data.payload.connection?.id}`,
-      })
-      if (message.type === DidCommStatusV4Message.type.messageTypeUri) {
-        const messageCount = (message as DidCommStatusV4Message).messageCount
-        log(`Status message received. Remaining messages: ${messageCount}`)
-        makeRequestToLocalServer({
-          data: `Status message received. Remaining messages: ${messageCount}`,
-        })
-        if (messageCount === 0) {
-          makeRequestToLocalServer({ data: 'BACKGROUND PUSH NOTIFICATIONS HANDLER EXECUTION FINISHED' })
-          isProcessingBackgroundNotification = false
-          deleteRemoteNotifications()
-          removeChatEntryChangeListener()
-          removeConnectionChangeListener()
-        }
-      }
-    })
+    deleteRemoteNotifications()
   } catch (error) {
+    logWarn(`Background push handling failed: ${error}`)
+  } finally {
+    await processingSettled()
     isProcessingBackgroundNotification = false
-    makeRequestToLocalServer({ error: `${error}` })
+    removeListeners()
+    if (skippedPush) {
+      const missedPush = skippedPush
+      skippedPush = undefined
+      // That push may be for a message queued after this run's last status reply
+      await backgroundPushNotificationHandler(missedPush)
+    }
   }
+}
+
+// Pickup completes before the delivered messages are stored, and the notifications come from listeners on those writes
+function waitForProcessingToSettle(agent: MobileAgent): Promise<void> {
+  return new Promise((resolve) => {
+    let quietTimer = setTimeout(settled, SETTLE_QUIET_MS)
+    const maxTimer = setTimeout(settled, SETTLE_MAX_MS)
+    const onProcessed = (): void => {
+      clearTimeout(quietTimer)
+      quietTimer = setTimeout(settled, SETTLE_QUIET_MS)
+    }
+    agent.events.on(DidCommEventTypes.DidCommMessageProcessed, onProcessed)
+
+    function settled(): void {
+      clearTimeout(quietTimer)
+      clearTimeout(maxTimer)
+      agent.events.off(DidCommEventTypes.DidCommMessageProcessed, onProcessed)
+      resolve()
+    }
+  })
 }
