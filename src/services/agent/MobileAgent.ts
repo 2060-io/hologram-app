@@ -10,8 +10,6 @@ import { AnonCredsModule } from '@credo-ts/anoncreds'
 import {
   AnonCredsDidCommCredentialFormatService,
   AnonCredsDidCommProofFormatService,
-  LegacyIndyDidCommCredentialFormatService,
-  LegacyIndyDidCommProofFormatService,
 } from '@credo-ts/anoncreds/didcomm'
 import { AskarModule } from '@credo-ts/askar'
 import {
@@ -111,7 +109,6 @@ export const getMobileAgentModules = (config: {
           new DidCommCredentialV2Protocol({
             credentialFormats: [
               new AnonCredsDidCommCredentialFormatService(),
-              new LegacyIndyDidCommCredentialFormatService(),
               new DidCommJsonLdCredentialFormatService(),
             ],
           }),
@@ -128,7 +125,7 @@ export const getMobileAgentModules = (config: {
         autoAcceptProofs: DidCommAutoAcceptProof.Never,
         proofProtocols: [
           new DidCommProofV2Protocol({
-            proofFormats: [new AnonCredsDidCommProofFormatService(), new LegacyIndyDidCommProofFormatService()],
+            proofFormats: [new AnonCredsDidCommProofFormatService()],
           }),
         ],
       },

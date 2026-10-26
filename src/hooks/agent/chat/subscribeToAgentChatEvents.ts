@@ -21,6 +21,9 @@ import {
   DidCommBasicMessage,
   DidCommConnectionRecord,
   DidCommConnectionType,
+  DidCommCredentialEventTypes,
+  DidCommCredentialState,
+  DidCommCredentialStateChangedEvent,
   DidCommEventTypes,
   DidCommMessage,
   DidCommMessageProcessedEvent,
@@ -274,6 +277,7 @@ export function subscribeToAgentChatEvents(
   }
 
   const agentMessageProcessedListener = async (data: DidCommMessageProcessedEvent) => {
+    if (!data.payload.handled) return
     const connection = data.payload.connection
     const receivedAt = data.payload.receivedAt
 
@@ -423,6 +427,21 @@ export function subscribeToAgentChatEvents(
     })
   }
 
+  // DidCommMessageProcessed for the issued credential only fires once the ack is sent, so a failed ack would skip it
+  const credentialStateChangedListener = async (event: DidCommCredentialStateChangedEvent) => {
+    const record = event.payload.credentialExchangeRecord
+    if (record.state !== DidCommCredentialState.Done) return
+    const message = await agent.didcomm.credentials.findCredentialMessage(record.id)
+    if (!message) return
+    await handleCredentialExchangeRecordChanges({
+      agent,
+      realm,
+      record,
+      activeChatThreadId: getActiveChatThreadId(),
+      message,
+    })
+  }
+
   agent.events.on(RepositoryEventTypes.RecordUpdated, mediaSharingMetadataUpdateListener)
   agent.events.on(DidCommMediaSharingEventTypes.StateChanged, mediaSharingCreationEventListener)
   agent.events.on(DidCommEventTypes.DidCommMessageSent, agentMessageSentEventListener)
@@ -432,6 +451,7 @@ export function subscribeToAgentChatEvents(
   agent.events.on(OutOfBandInvitationEventTypes.OutOfBandInvitationEvent, oobListener)
   agent.events.on(DidCommProfileEventTypes.ConnectionProfileUpdated, connectionProfileListener)
   agent.events.on(DidCommProofEventTypes.ProofStateChanged, proofStateChangedListener)
+  agent.events.on(DidCommCredentialEventTypes.DidCommCredentialStateChanged, credentialStateChangedListener)
 
   return () => {
     agent.events.off(RepositoryEventTypes.RecordUpdated, mediaSharingMetadataUpdateListener)
@@ -443,5 +463,6 @@ export function subscribeToAgentChatEvents(
     agent.events.off(OutOfBandInvitationEventTypes.OutOfBandInvitationEvent, oobListener)
     agent.events.off(DidCommProfileEventTypes.ConnectionProfileUpdated, connectionProfileListener)
     agent.events.off(DidCommProofEventTypes.ProofStateChanged, proofStateChangedListener)
+    agent.events.off(DidCommCredentialEventTypes.DidCommCredentialStateChanged, credentialStateChangedListener)
   }
 }

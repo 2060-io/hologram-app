@@ -31,8 +31,8 @@ export const handleCredentialExchangeRecordChanges = async (options: {
   const associatedMessageId = (await agent.didcomm.credentials.findRequestMessage(credentialExchangeRecord.id))?.id
 
   const formatData = await agent.didcomm.credentials.getFormatData(credentialExchangeRecord.id)
-  const schemaId = formatData.offer?.anoncreds?.schema_id ?? formatData.offer?.indy?.schema_id
-  const credentialDefinitionId = formatData.offer?.anoncreds?.cred_def_id ?? formatData.offer?.indy?.cred_def_id
+  const schemaId = formatData.offer?.anoncreds?.schema_id
+  const credentialDefinitionId = formatData.offer?.anoncreds?.cred_def_id
 
   // Find any VC Offer entry associated to this credential record and update its state
   const [vcOfferEntry] = findAllByAssociatedRecordId(realm, credentialExchangeRecord.id, ChatEntryType.VCOffer)

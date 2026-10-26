@@ -171,7 +171,8 @@ export const VideoCallProvider: React.FC<PropsWithChildren> = ({ children }) => 
         }
       }
       const agentMessageProcessedListener = async (data: DidCommMessageProcessedEvent) => {
-        const { message } = data.payload
+        const { message, handled } = data.payload
+        if (!handled) return
 
         // Call reject
         if (message.type === CallRejectMessage.type.messageTypeUri) {

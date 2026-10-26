@@ -352,14 +352,14 @@ export async function getPresentationRequestForDisplay(options: {
   const { agent, proofRecordId, includeMatches } = options
 
   const formatData = await agent.didcomm.proofs.getFormatData(proofRecordId)
-  const data = formatData.request?.anoncreds ?? formatData.request?.indy
+  const data = formatData.request?.anoncreds
   if (!data) throw new Error(`No available data for proof record with id ${proofRecordId}`)
 
   const availableCredentials = await agent.didcomm.proofs.getCredentialsForRequest({
     proofExchangeRecordId: proofRecordId,
     proofFormats: { anoncreds: { filterByNonRevocationRequirements: true } },
   })
-  const availableCredentialsData = availableCredentials.proofFormats.anoncreds ?? availableCredentials.proofFormats.indy
+  const availableCredentialsData = availableCredentials.proofFormats.anoncreds
 
   const credentialRepository = agent.dependencyManager.resolve(W3cCredentialRepository)
 

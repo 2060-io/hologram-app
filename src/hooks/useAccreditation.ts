@@ -50,7 +50,7 @@ const useAccreditationCheck = (check: (agent: MobileAgent) => Promise<Accreditat
 export const useIssuerAccreditation = (credentialRecordId: string) =>
   useAccreditationCheck(async (agent) => {
     const formatData = await agent.didcomm.credentials.getFormatData(credentialRecordId)
-    const credentialDefinitionId = formatData.offer?.anoncreds?.cred_def_id ?? formatData.offer?.indy?.cred_def_id
+    const credentialDefinitionId = formatData.offer?.anoncreds?.cred_def_id
     if (!credentialDefinitionId) return { status: 'unauthorized', schemaTitles: [] }
     return checkIssuerAccreditation(agent, credentialDefinitionId)
   }, credentialRecordId)
@@ -70,7 +70,7 @@ export const useVerifierAccreditation = (proofRecordId: string) =>
       : null
     const verifierDid = connection?.invitationDid
     const formatData = await agent.didcomm.proofs.getFormatData(proofRecordId)
-    const request = formatData.request?.anoncreds ?? formatData.request?.indy
+    const request = formatData.request?.anoncreds
     if (!request) return { status: 'unauthorized', schemaTitles: [] }
     const groups = [
       ...Object.values(request.requested_attributes ?? {}),
