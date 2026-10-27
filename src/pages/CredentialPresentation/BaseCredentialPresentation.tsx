@@ -48,6 +48,7 @@ const BaseCredentialPresentation = ({
   const { addAgentActionToQueue } = useAgentActionQueue()
   const [showModalRefuseConfirmation, setShowModalRefuseConfirmation] = useState(false)
   const enableMainButtons = proofState === DidCommProofState.ProposalReceived
+  const valuesPending = ![DidCommProofState.PresentationReceived, DidCommProofState.Done].includes(proofState)
 
   useEffect(() => {
     navigation.setOptions({
@@ -99,12 +100,12 @@ const BaseCredentialPresentation = ({
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.subContainer}>
             <CredentialMainInformation credentialMainInfo={credentialMainInfo} />
-            {![DidCommProofState.PresentationReceived, DidCommProofState.Done].includes(proofState) && (
+            {valuesPending && (
               <Text fontFamily="EuclidCircularA-Medium" style={styles.valuesNoRevealedYet}>
                 {t('presentationRequest.valuesNoRevealedYet')}
               </Text>
             )}
-            <CredentialAttributes attributes={credentialAttributes} />
+            <CredentialAttributes attributes={credentialAttributes} valuesPending={valuesPending} />
           </View>
         </ScrollView>
       </SafeAreaView>

@@ -9,9 +9,10 @@ import getStyles from './styles'
 
 type Props = {
   attributes: Record<string, unknown>
+  valuesPending?: boolean
 }
 
-const CredentialAttributes = ({ attributes }: Props) => {
+const CredentialAttributes = ({ attributes, valuesPending }: Props) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
@@ -40,7 +41,12 @@ const CredentialAttributes = ({ attributes }: Props) => {
           </Text>
           <View style={styles.sectionRowsContainer}>
             {section.rows.map((rowDetail) => (
-              <CredentialAttribute key={rowDetail.key} attribute={rowDetail} onPressDetailImage={onPressDetailImage} />
+              <CredentialAttribute
+                key={rowDetail.key}
+                attribute={rowDetail}
+                onPressDetailImage={onPressDetailImage}
+                valuePending={valuesPending}
+              />
             ))}
           </View>
         </View>

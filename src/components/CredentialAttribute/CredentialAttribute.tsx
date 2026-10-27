@@ -27,13 +27,24 @@ type DetailSectionProps = {
   onPressDetailImage?: (image: string) => void
   style?: StyleProp<ViewStyle>
   rightContent?: React.JSX.Element | null
+  valuePending?: boolean
 }
 
-const CredentialAttribute = ({ attribute, onPress, onPressDetailImage, style, rightContent }: DetailSectionProps) => {
+const EMPTY_VALUE_PLACEHOLDER = '—'
+
+const CredentialAttribute = ({
+  attribute,
+  onPress,
+  onPressDetailImage,
+  style,
+  rightContent,
+  valuePending,
+}: DetailSectionProps) => {
   const theme = useTheme()
   const styles = getStyles(theme)
   const Wrapper = onPress ? TouchableOpacity : View
-  const showSkeleton = 'value' in attribute && !attribute.value.length
+  const isEmpty = 'value' in attribute && !attribute.value.length
+  const showSkeleton = isEmpty && !!valuePending
 
   return (
     <Wrapper style={[styles.sectionContainer, style]} onPress={() => onPress?.(attribute.key)}>
@@ -48,7 +59,9 @@ const CredentialAttribute = ({ attribute, onPress, onPressDetailImage, style, ri
           radius="round"
           show={showSkeleton}
         >
-          <Text style={styles.sectionValue}>{'value' in attribute && attribute.value}</Text>
+          <Text style={styles.sectionValue}>
+            {isEmpty ? EMPTY_VALUE_PLACEHOLDER : 'value' in attribute && attribute.value}
+          </Text>
         </Skeleton>
       </View>
       {'image' in attribute && (
