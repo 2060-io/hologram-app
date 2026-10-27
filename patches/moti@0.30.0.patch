@@ -1,0 +1,106 @@
+diff --git a/build/skeleton/skeleton-new.js b/build/skeleton/skeleton-new.js
+index 969296525e45f6f59de7c79c74f51b49feeb1ff5..f75f751d972c576357c107e59d375e097007a2ae 100644
+--- a/build/skeleton/skeleton-new.js
++++ b/build/skeleton/skeleton-new.js
+@@ -50,7 +50,7 @@ export default function Skeleton(props) {
+ }
+ const AnimatedGradient = React.memo(function AnimatedGradient({ colors, backgroundSize, transition, show, measuredWidthSv, Gradient, }) {
+     return (_jsx(MotiView, { style: [
+-            StyleSheet.absoluteFillObject,
++            StyleSheet.absoluteFill,
+             useAnimatedStyle(() => ({
+                 width: measuredWidthSv.value * backgroundSize,
+             }), [backgroundSize, measuredWidthSv]),
+@@ -81,7 +81,7 @@ const AnimatedGradient = React.memo(function AnimatedGradient({ colors, backgrou
+             }, end: {
+                 x: 1,
+                 y: 1,
+-            }, style: StyleSheet.absoluteFillObject }) }));
++            }, style: StyleSheet.absoluteFill }) }));
+ }, function propsAreEqual(prev, next) {
+     if (prev.backgroundSize !== next.backgroundSize)
+         return false;
+diff --git a/build/skeleton/skeleton.js b/build/skeleton/skeleton.js
+index 4e69103c339be320b9170f75559fef79ea97e0a9..25391e88402e3c9bf131e4f988a6e1b2ca925b3d 100644
+--- a/build/skeleton/skeleton.js
++++ b/build/skeleton/skeleton.js
+@@ -58,7 +58,7 @@ export default function Skeleton(props) {
+                     , { colors: colors, backgroundSize: backgroundSize, measuredWidth: measuredWidth, transition: transition }, `${JSON.stringify(colors)}-${measuredWidth}-${JSON.stringify(transition || null)}`) })) })] }));
+ }
+ const AnimatedGradient = React.memo(function AnimatedGradient({ measuredWidth, colors, backgroundSize, transition = {}, }) {
+-    return (_jsx(MotiView, { style: StyleSheet.absoluteFillObject, from: { opacity: 0 }, transition: {
++    return (_jsx(MotiView, { style: StyleSheet.absoluteFill, from: { opacity: 0 }, transition: {
+             type: 'timing',
+             duration: 200,
+         }, animate: measuredWidth
+@@ -66,7 +66,7 @@ const AnimatedGradient = React.memo(function AnimatedGradient({ measuredWidth, c
+                 opacity: 1,
+             }
+             : undefined, children: _jsx(MotiView, { style: [
+-                StyleSheet.absoluteFillObject,
++                StyleSheet.absoluteFill,
+                 {
+                     width: measuredWidth * backgroundSize,
+                 },
+@@ -88,7 +88,7 @@ const AnimatedGradient = React.memo(function AnimatedGradient({ measuredWidth, c
+                 }, end: {
+                     x: 1,
+                     y: 1,
+-                }, style: StyleSheet.absoluteFillObject }) }) }));
++                }, style: StyleSheet.absoluteFill }) }) }));
+ }, function propsAreEqual(prev, next) {
+     if (prev.measuredWidth !== next.measuredWidth)
+         return false;
+diff --git a/src/skeleton/skeleton-new.tsx b/src/skeleton/skeleton-new.tsx
+index 32ac3dadef5e31dc686efaffa3bfeb6e4f5f359d..3679ce9a94ebb03bb06c806bbbc2c6f78a7381b5 100644
+--- a/src/skeleton/skeleton-new.tsx
++++ b/src/skeleton/skeleton-new.tsx
+@@ -118,7 +118,7 @@ const AnimatedGradient = React.memo(
+     return (
+       <MotiView
+         style={[
+-          StyleSheet.absoluteFillObject,
++          StyleSheet.absoluteFill,
+           useAnimatedStyle(
+             () => ({
+               width: measuredWidthSv.value * backgroundSize,
+@@ -162,7 +162,7 @@ const AnimatedGradient = React.memo(
+             x: 1,
+             y: 1,
+           }}
+-          style={StyleSheet.absoluteFillObject}
++          style={StyleSheet.absoluteFill}
+         />
+       </MotiView>
+     )
+diff --git a/src/skeleton/skeleton.tsx b/src/skeleton/skeleton.tsx
+index 3ef5dd11cf582a7b0b6760ae8ca3215fcb182ff6..13259aee4b9a0144e1af7a7358ab8cbfbfe823e0 100644
+--- a/src/skeleton/skeleton.tsx
++++ b/src/skeleton/skeleton.tsx
+@@ -126,7 +126,7 @@ const AnimatedGradient = React.memo(
+   }) {
+     return (
+       <MotiView
+-        style={StyleSheet.absoluteFillObject}
++        style={StyleSheet.absoluteFill}
+         from={{ opacity: 0 }}
+         transition={{
+           type: 'timing',
+@@ -142,7 +142,7 @@ const AnimatedGradient = React.memo(
+       >
+         <MotiView
+           style={[
+-            StyleSheet.absoluteFillObject,
++            StyleSheet.absoluteFill,
+             {
+               width: measuredWidth * backgroundSize,
+             },
+@@ -175,7 +175,7 @@ const AnimatedGradient = React.memo(
+               x: 1,
+               y: 1,
+             }}
+-            style={StyleSheet.absoluteFillObject}
++            style={StyleSheet.absoluteFill}
+           />
+         </MotiView>
+       </MotiView>

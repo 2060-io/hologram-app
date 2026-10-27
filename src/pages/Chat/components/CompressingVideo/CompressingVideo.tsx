@@ -26,7 +26,7 @@ const CompressingVideo = ({ progress, cancelCompression }: Props) => {
 const getStyles = (theme: AppTheme) =>
   StyleSheet.create({
     container: {
-      ...StyleSheet.absoluteFillObject,
+      ...StyleSheet.absoluteFill,
       backgroundColor: 'rgba(0,0,0,0.53)',
       justifyContent: 'center',
       alignItems: 'center',
