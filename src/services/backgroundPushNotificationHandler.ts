@@ -1,5 +1,5 @@
 import { DidCommEventTypes } from '@credo-ts/didcomm'
-import { FirebaseMessagingTypes } from '@react-native-firebase/messaging'
+import type { RemoteMessage } from '@react-native-firebase/messaging'
 import { manageBackgroundChatEntryChanges, subscribeToAgentChatEvents } from '@src/hooks/agent/chat'
 import { manageConnectionStateChangedEvent } from '@src/hooks/agent/connections/manageConnectionStateChangedEvent'
 import { subscribeToAgentConnectionEvents } from '@src/hooks/agent/connections/subscribeToAgentConnectionEvents'
@@ -15,9 +15,9 @@ const SETTLE_QUIET_MS = 2_000
 const SETTLE_MAX_MS = 10_000
 
 let isProcessingBackgroundNotification = false
-let skippedPush: FirebaseMessagingTypes.RemoteMessage | undefined
+let skippedPush: RemoteMessage | undefined
 
-export async function backgroundPushNotificationHandler(remoteMessage: FirebaseMessagingTypes.RemoteMessage) {
+export async function backgroundPushNotificationHandler(remoteMessage: RemoteMessage) {
   // Note: When user disables notifications and are not displayed (remote notifications) this code can be
   //  executed. For that reason, we need to check if push notifications are allowed to continue processing
   if (!(await arePushNotificationsAllowed())) {

@@ -1,13 +1,8 @@
-import { getApp } from '@react-native-firebase/app'
-import type { ReactNativeFirebaseAppCheckProvider as ReactNativeFirebaseAppCheckProviderType } from '@react-native-firebase/app-check'
-import * as appCheckModule from '@react-native-firebase/app-check'
-import { getToken, initializeAppCheck } from '@react-native-firebase/app-check'
 import { DarkTheme, DefaultTheme, NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { StatusBar, View } from 'react-native'
-import Config from 'react-native-config'
 import 'isomorphic-webcrypto'
 
 import { IS_ANDROID } from '@src/constants'
@@ -46,22 +41,13 @@ import {
 import { MobileAgent } from '@src/services/agent'
 import { AppTheme, getGlobalStyles } from '@src/styles'
 import { log, logError } from '@src/utils'
+import { getAppCheckToken } from '@src/utils/firebaseUtils'
 import { HeaderTitle, SvgIcon } from '../common'
 import ChatStackNavigator from './ChatStackNavigator'
 import deepLinking from './deepLinking'
 import Container from './NavigationContainer'
 import { NavigationStackParams } from './NavigationProps'
 import getStyles from './styles'
-
-// Workaround for @react-native-firebase/app-check v23.8.x bug: the root
-// `index.ts` re-exports `ReactNativeFirebaseAppCheckProvider` as a type
-// before `export * from './modular'`, which shadows the value side of the
-// class in TypeScript. The class still exists at runtime.
-const ReactNativeFirebaseAppCheckProvider = (
-  appCheckModule as unknown as {
-    ReactNativeFirebaseAppCheckProvider: new () => ReactNativeFirebaseAppCheckProviderType
-  }
-).ReactNativeFirebaseAppCheckProvider
 
 const Stack = createStackNavigator<NavigationStackParams>()
 type NavigationProps = {
@@ -86,31 +72,15 @@ const Navigation = ({ isSignedUp, agent, theme }: NavigationProps) => {
   })
 
   useEffect(() => {
-    const configureFirebaseProviderAndInitializeAppCheck = async () => {
-      const provider = new ReactNativeFirebaseAppCheckProvider()
-      provider.configure({
-        android: {
-          provider: Config.APP_CHECK_DEBUG_MODE ? 'debug' : 'playIntegrity',
-          debugToken: Config.ANDROID_FIREBASE_DEBUG_TOKEN,
-        },
-        apple: {
-          provider: Config.APP_CHECK_DEBUG_MODE ? 'debug' : 'appAttestWithDeviceCheckFallback',
-          debugToken: Config.IOS_FIREBASE_DEBUG_TOKEN,
-        },
-      })
-      const appCheck = await initializeAppCheck(getApp(), {
-        provider,
-        isTokenAutoRefreshEnabled: true,
-      })
-      // Now verify AppCheck was initialized correctly
+    const verifyAppCheck = async () => {
       try {
-        const { token } = await getToken(appCheck)
+        const token = await getAppCheckToken()
         if (token.length) log('AppCheck verification passed')
       } catch (error) {
         logError(`AppCheck verification failed: ${error}`)
       }
     }
-    configureFirebaseProviderAndInitializeAppCheck()
+    verifyAppCheck()
   }, [])
 
   useEffect(() => {

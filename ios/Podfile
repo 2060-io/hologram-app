@@ -27,6 +27,8 @@ if linkage != nil
   use_frameworks! :linkage => linkage.to_sym
 end
 $RNFirebaseAsStaticFramework = true
+# Firebase defaults to SPM, which requires dynamic frameworks. Keep CocoaPods and static linkage.
+$RNFirebaseDisableSPM = true
 
 # Shared method to configure React Native
 def configure_react_native(config)
@@ -45,6 +47,8 @@ def add_common_dependencies()
   pod 'FirebaseCoreInternal', :modular_headers => true
   pod 'GoogleUtilities', :modular_headers => true
   pod 'FirebaseCore', :modular_headers => true
+  # AppCheckCore (Swift) imports it, which needs a module map when building static libraries
+  pod 'RecaptchaInterop', :modular_headers => true
 end
 
 setup_permissions([

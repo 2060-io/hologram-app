@@ -1,8 +1,8 @@
 diff --git a/ios/RNFBMessaging/RNFBMessaging+AppDelegate.m b/ios/RNFBMessaging/RNFBMessaging+AppDelegate.m
-index 9c3651d..81aa201 100644
+index ce49599..77ddfc6 100644
 --- a/ios/RNFBMessaging/RNFBMessaging+AppDelegate.m
 +++ b/ios/RNFBMessaging/RNFBMessaging+AppDelegate.m
-@@ -158,30 +158,40 @@
+@@ -236,30 +236,40 @@
      if ([UIApplication sharedApplication].applicationState == UIApplicationStateBackground) {
        // Store the completion handler to call later when the JS code finishes
        RNFBMessagingAppDelegate *sharedInstance = [RNFBMessagingAppDelegate sharedInstance];
@@ -19,18 +19,16 @@ index 9c3651d..81aa201 100644
        // If app is in background state, register background task to guarantee async queues aren't
        // frozen.
 -      sharedInstance.backgroundTaskId = [application beginBackgroundTaskWithExpirationHandler:^{
--        dispatch_get_main_queue(), ^{
--          if (sharedInstance.backgroundTaskId != UIBackgroundTaskInvalid) {
--            [application endBackgroundTask:sharedInstance.backgroundTaskId];
 +      __block UIBackgroundTaskIdentifier backgroundTaskId = UIBackgroundTaskInvalid;
 +      backgroundTaskId = [application beginBackgroundTaskWithExpirationHandler:^{
-+        dispatch_async(dispatch_get_main_queue(), ^{
+         dispatch_async(dispatch_get_main_queue(), ^{
+-          if (sharedInstance.backgroundTaskId != UIBackgroundTaskInvalid) {
+-            [application endBackgroundTask:sharedInstance.backgroundTaskId];
 +          if (sharedInstance.backgroundTaskId == backgroundTaskId) {
 +            [application endBackgroundTask:backgroundTaskId];
              sharedInstance.backgroundTaskId = UIBackgroundTaskInvalid;
            }
--        };
-+        });
+         });
        }];
 +      sharedInstance.backgroundTaskId = backgroundTaskId;
  
