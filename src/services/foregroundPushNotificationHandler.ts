@@ -1,4 +1,4 @@
-import { FirebaseMessagingTypes } from '@react-native-firebase/messaging'
+import type { RemoteMessage } from '@react-native-firebase/messaging'
 import AgentSingleton from './AgentSingleton'
 import { reconnectMediator } from './agent/reconnectMediator'
 
@@ -8,7 +8,7 @@ const CLOCK_SKEW_MS = 1_000
 const DAY_MS = 86_400_000
 
 // The mediator pushes only when it has no live session for us, so a push in the foreground means live mode is lost
-export function foregroundPushNotificationHandler(remoteMessage: FirebaseMessagingTypes.RemoteMessage): void {
+export function foregroundPushNotificationHandler(remoteMessage: RemoteMessage): void {
   const agent = AgentSingleton.instance.getMobileAgent()
   if (!agent?.isInitialized) return
   reconnectMediator(agent, 'push received in the foreground', openedBefore(remoteMessage.sentTime, Date.now()))

@@ -12,8 +12,7 @@ import {
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import { CacheModuleConfig } from '@credo-ts/core'
 import { uploadFiles } from '@dr.pogodin/react-native-fs'
-import { getApp } from '@react-native-firebase/app'
-import { getToken } from '@react-native-firebase/app-check'
+import { getAppCheckToken } from '@src/utils/firebaseUtils'
 import { log } from '@src/utils/log'
 import { XMLParser } from 'fast-xml-parser'
 import { MobileAgent } from './agent/MobileAgent'
@@ -42,7 +41,7 @@ async function getS3ServerCredentials(s3ServerUrl: string, agent: MobileAgent): 
   const isTokenValid = storedCredentials && new Date(storedCredentials.Expiration) > new Date(Date.now())
   if (isTokenValid) return storedCredentials
 
-  const firebaseToken = (await getToken(getApp().appCheck())).token
+  const firebaseToken = await getAppCheckToken()
   const params = new URLSearchParams({
     Action: 'AssumeRoleWithCustomToken',
     Version: '2011-06-15',
