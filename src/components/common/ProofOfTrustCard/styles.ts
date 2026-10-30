@@ -1,3 +1,5 @@
+import { cardShadowStyles } from '@src/styles/globalStyles'
+import { AppTheme } from '@src/styles/types'
 import { StyleSheet } from 'react-native'
 
 export type VeranaCardColors = {
@@ -75,78 +77,197 @@ const darkVeranaCardColors: VeranaCardColors = {
 
 export const getVeranaCardColors = (isDarkMode: boolean) => (isDarkMode ? darkVeranaCardColors : lightVeranaCardColors)
 
-const getStyles = (colors: VeranaCardColors) =>
+const NODE_SIZE = 20
+const BADGE_SIZE = 20
+
+const getStyles = (colors: VeranaCardColors, theme: AppTheme) =>
   StyleSheet.create({
     card: {
-      backgroundColor: colors.card,
-      borderColor: colors.line,
-      borderRadius: 14,
-      borderWidth: 1,
+      ...cardShadowStyles(theme.colors),
+      backgroundColor: theme.colors.primary,
+      borderRadius: 9,
       marginTop: 16,
-      overflow: 'hidden',
-      padding: 14,
+      padding: 15,
     },
-    didRow: {
+    header: {
+      alignItems: 'center',
+      flexDirection: 'row',
+      gap: 12,
+    },
+    logo: {
+      flexShrink: 0,
+    },
+    badge: {
+      alignItems: 'center',
+      borderColor: theme.colors.primary,
+      borderRadius: BADGE_SIZE / 2 + 2,
+      borderWidth: 2,
+      bottom: -3,
+      height: BADGE_SIZE + 4,
+      justifyContent: 'center',
+      position: 'absolute',
+      right: -3,
+      width: BADGE_SIZE + 4,
+    },
+    badgeUnknown: {
+      color: colors.onTint,
+      fontSize: 12,
+      lineHeight: 14,
+    },
+    headerBody: {
+      flex: 1,
+      gap: 3,
+    },
+    title: {
+      color: theme.colors.primaryText,
+      fontSize: theme.fontSize.md2,
+    },
+    titleDid: {
+      color: theme.colors.primaryText,
+      fontSize: theme.fontSize.md,
+    },
+    declared: {
+      alignItems: 'center',
+      flexDirection: 'row',
+      gap: 4,
+    },
+    declaredText: {
+      color: colors.warn,
+      fontSize: theme.fontSize.sm,
+    },
+    verdictRow: {
+      alignItems: 'center',
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: 6,
+    },
+    verdict: {
+      fontSize: theme.fontSize.md,
+    },
+    mark: {
+      alignSelf: 'flex-start',
+      flexShrink: 0,
+    },
+    meta: {
+      marginTop: 10,
+    },
+    metaText: {
+      color: theme.colors.secondaryText,
+      fontSize: theme.fontSize.sm,
+    },
+    retry: {
+      alignSelf: 'flex-start',
+      marginTop: 6,
+      paddingVertical: 2,
+    },
+    retryText: {
+      color: colors.brand,
+      fontSize: theme.fontSize.md,
+    },
+    chain: {
+      marginTop: 14,
+    },
+    node: {
+      flexDirection: 'row',
+      gap: 10,
+    },
+    rail: {
+      alignItems: 'center',
+      width: NODE_SIZE,
+    },
+    connector: {
+      borderRadius: 1,
+      flex: 1,
+      marginVertical: 2,
+      minHeight: 8,
+      width: 2,
+    },
+    nodeBody: {
+      flex: 1,
+      paddingBottom: 12,
+    },
+    nodeBodyLast: {
+      paddingBottom: 0,
+    },
+    nodeLabel: {
+      color: theme.colors.secondaryText,
+      fontSize: theme.fontSize.sm,
+      lineHeight: NODE_SIZE,
+    },
+    nodeName: {
+      color: theme.colors.primaryText,
+      fontSize: theme.fontSize.md,
+    },
+    nodeNameInline: {
+      lineHeight: NODE_SIZE,
+    },
+    nodeDetail: {
+      color: colors.body,
+      fontSize: theme.fontSize.sm + 1,
+      marginTop: 2,
+    },
+    nodeWithheld: {
+      color: colors.faint,
+      fontSize: theme.fontSize.sm + 1,
+    },
+    failures: {
+      backgroundColor: colors.badSoft,
+      borderRadius: 8,
+      gap: 3,
+      marginTop: 14,
+      padding: 10,
+    },
+    failuresLabel: {
+      color: colors.bad,
+      fontSize: theme.fontSize.sm,
+    },
+    failuresReason: {
+      color: colors.bad,
+      fontSize: theme.fontSize.sm + 1,
+    },
+    failuresId: {
+      color: colors.sub,
+      fontSize: theme.fontSize.sm,
+    },
+    conditions: {
+      backgroundColor: colors.chip,
+      borderRadius: 8,
+      gap: 8,
+      marginTop: 14,
+      padding: 10,
+    },
+    conditionsLabel: {
+      color: theme.colors.secondaryText,
+      fontSize: theme.fontSize.sm,
+    },
+    conditionRow: {
       alignItems: 'center',
       flexDirection: 'row',
       gap: 6,
     },
-    didDot: {
-      borderRadius: 4,
-      flexShrink: 0,
-      height: 8,
-      width: 8,
-    },
-    didText: {
-      color: colors.sub,
-      flexShrink: 1,
-      fontSize: 11,
-    },
-    testnetChip: {
-      borderColor: colors.warnLine,
-      flexShrink: 0,
+    ageBadge: {
       borderRadius: 6,
       borderWidth: 1,
+      flexShrink: 0,
       paddingHorizontal: 5,
       paddingVertical: 1,
     },
-    testnetChipText: {
-      color: colors.warn,
-      fontSize: 9,
-      letterSpacing: 0.5,
+    ageBadgeText: {
+      fontSize: theme.fontSize.sm - 1,
     },
-    section: {
-      marginTop: 14,
-    },
-    sectionLabel: {
-      color: colors.sub,
-      fontSize: 10,
-      letterSpacing: 0.8,
-      marginBottom: 4,
-    },
-    identityRow: {
-      alignItems: 'center',
-      flexDirection: 'row',
-      gap: 8,
-    },
-    identityBody: {
+    conditionText: {
       flexShrink: 1,
-      flexGrow: 1,
+      fontSize: theme.fontSize.sm + 1,
     },
-    identityName: {
-      color: colors.ink,
+    conditionLink: {
+      color: colors.brand,
       flexShrink: 1,
-      fontSize: 15,
+      fontSize: theme.fontSize.sm + 1,
     },
-    identityDetail: {
-      color: colors.body,
-      fontSize: 12,
-      marginTop: 2,
-    },
-    identityWithheld: {
+    footnote: {
       color: colors.faint,
-      fontSize: 12,
-      marginTop: 2,
+      fontSize: theme.fontSize.sm - 1,
+      marginTop: 10,
     },
     tick: {
       alignItems: 'center',
@@ -182,68 +303,18 @@ const getStyles = (colors: VeranaCardColors) =>
       flexShrink: 1,
       fontSize: 10,
     },
-    verdictStack: {
-      marginTop: 14,
-    },
-    verdictPill: {
-      alignItems: 'center',
-      alignSelf: 'flex-start',
-      borderRadius: 999,
-      borderWidth: 1.5,
-      flexDirection: 'row',
-      gap: 6,
-      maxWidth: '100%',
-      paddingHorizontal: 10,
-      paddingVertical: 5,
-    },
-    verdictPillLabel: {
-      flexShrink: 1,
-      fontSize: 12,
-      letterSpacing: 0.6,
-    },
-    verdictNote: {
-      fontSize: 12,
-      marginTop: 6,
-    },
-    conditions: {
-      backgroundColor: colors.chip,
-      borderRadius: 10,
-      marginTop: 14,
-      padding: 10,
-    },
-    conditionRow: {
-      alignItems: 'center',
-      flexDirection: 'row',
-      gap: 6,
-      marginTop: 6,
-    },
-    conditionLink: {
-      color: colors.brand,
-      flexShrink: 1,
-      fontSize: 12,
-    },
-    conditionText: {
-      color: colors.body,
-      flexShrink: 1,
-      fontSize: 12,
-    },
-    ageBadge: {
-      backgroundColor: colors.card,
-      flexShrink: 0,
+    testnetChip: {
       borderColor: colors.warnLine,
+      flexShrink: 0,
       borderRadius: 6,
       borderWidth: 1,
       paddingHorizontal: 5,
       paddingVertical: 1,
     },
-    ageBadgeText: {
+    testnetChipText: {
       color: colors.warn,
-      fontSize: 10,
-    },
-    footnote: {
-      color: colors.faint,
-      fontSize: 10,
-      marginTop: 10,
+      fontSize: 9,
+      letterSpacing: 0.5,
     },
   })
 

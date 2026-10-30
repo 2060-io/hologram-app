@@ -152,10 +152,6 @@
       "subConnectionInvitationDescription": "Recibiste una invitación para conectarse con",
       "subConnectionInvitationDescriptionAs": "como una conexión administrada por",
       "certificateisValid": "posee un certificado válido",
-      "isATrustedService": "es un servicio confiable",
-      "notTrustedService": "está marcado como peligroso y, para tu seguridad, ha sido deshabilitado.",
-      "couldNotVerifyService": "no pudo ser verificado en este momento. Reintenta o conéctate bajo tu propio riesgo.",
-      "cannotPresentTrustCredentials": "no puede presentar credenciales de confianza verificables",
       "errorGettingServiceInfoAPI": "Error en la API al obtener la informacion del servicio: ",
       "unableToGetServiceInfo": "No se pudó obtener información del servicio porque no tienes conexión a internet.",
       "certificateIsInvalidDescription": "El certificado no es válido. La conexión con este servicio podría estar comprometida. Comunícate con el proveedor para resolver el problema y luego volver a intentarlo.",
@@ -165,7 +161,6 @@
       "serviceProvider": "Proveedor del servicio:",
       "termsAndConditions": "Términos y condiciones",
       "privacyPolicy": "Política de privacidad",
-      "ageRestrictions": "Restricciones de edad:",
       "noAgeRestrictions": "Sin restricciones",
       "serviceNotVerifiable": "Este servicio no es verificable.",
       "connectionRefusedByAge": "Holaa {{ name }}! Solamente tienes <bold>{{ age }}</bold> años. Tendrás que esperar unos años más para poder conectarte a este servicio.",
@@ -202,8 +197,7 @@
       "errorCreatingQR": "Ha ocurrido un error creando el QR . Intentalo nuevamente",
       "youRefusedPresentation": "Rechazaste la presentación de la credencial",
       "noResponseFromVerifier": "No hubo respuesta de parte del verificador dentro del tiempo limite. La presentación es finalizada.",
-      "youDidNotResponseWithinTime": "No respondiste dentro del tiempo limite. La presentación es finalizada.",
-      "failedFetchInfo": "Error obteniendo información del este servicio"
+      "youDidNotResponseWithinTime": "No respondiste dentro del tiempo limite. La presentación es finalizada."
     },
     "credentialOffer": {
       "title": "Credencial ofrecida",
@@ -560,11 +554,13 @@
       "confirmUnsafeShare": "No se pudo comprobar que este verificador pueda solicitar esta credencial. ¿Compartirla de todos modos?"
     },
     "proofOfTrust": {
-      "statusTrusted": "CONFIABLE",
-      "statusUntrusted": "NO CONFIABLE",
-      "statusUnverified": "NO SE PUDO VERIFICAR",
+      "statusTrusted": "Confiable",
+      "statusUntrusted": "No confiable",
+      "statusUnverified": "No se pudo verificar",
       "statusResolving": "Verificando…",
       "evaluatedAt": "Evaluado el {{date}}",
+      "nameNotVerified": "Nombre no verificado",
+      "trustNetwork": "Red de confianza",
       "notChecked": "No verificado",
       "sectionService": "Servicio",
       "sectionOperatedBy": "Operado por",

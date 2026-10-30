@@ -1,7 +1,7 @@
-import { ProofOfTrustCard, ServiceMainInfo } from '@src/components/common'
+import { ProofOfTrustCard } from '@src/components/common'
 import { useFetchServiceInfo } from '@src/hooks'
 import React, { useCallback } from 'react'
-import { StyleSheet } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import BaseConnectionDetails, { ConnectionDetailsProps } from './BaseConnectionDetails'
 
 const ConnectionDetailsForService = (props: ConnectionDetailsProps) => {
@@ -22,22 +22,14 @@ const ConnectionDetailsForService = (props: ConnectionDetailsProps) => {
       disabledSwipeDown={isFetchingInfo}
       mainInfo={
         serviceInfo ? (
-          <ServiceMainInfo
-            isFetchingInfo={isFetchingInfo}
-            serviceInfo={serviceInfo}
-            failedFetchInfo={failedFetchInfo}
-            containerStyle={styles.mainInfoContainer}
-          />
-        ) : null
-      }
-      footerInfo={
-        serviceInfo ? (
-          <ProofOfTrustCard
-            serviceInfo={serviceInfo}
-            isFetchingInfo={isFetchingInfo}
-            failedFetchInfo={failedFetchInfo}
-            onRetry={refreshServiceInfo}
-          />
+          <View style={styles.mainInfoContainer}>
+            <ProofOfTrustCard
+              serviceInfo={serviceInfo}
+              isFetchingInfo={isFetchingInfo}
+              failedFetchInfo={failedFetchInfo}
+              onRetry={refreshServiceInfo}
+            />
+          </View>
         ) : null
       }
     />

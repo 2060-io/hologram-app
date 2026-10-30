@@ -3,9 +3,9 @@ import { useMemo } from 'react'
 import getStyles, { getVeranaCardColors } from './styles'
 
 export const useVeranaCard = () => {
-  const { isDarkMode } = useTheme()
+  const theme = useTheme()
   return useMemo(() => {
-    const colors = getVeranaCardColors(isDarkMode)
-    return { colors, styles: getStyles(colors), isDarkMode }
-  }, [isDarkMode])
+    const colors = getVeranaCardColors(theme.isDarkMode)
+    return { colors, styles: getStyles(colors, theme), isDarkMode: theme.isDarkMode, theme }
+  }, [theme])
 }

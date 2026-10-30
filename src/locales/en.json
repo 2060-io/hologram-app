@@ -152,10 +152,6 @@
       "subConnectionInvitationDescription": "You received an invitation to connect to",
       "subConnectionInvitationDescriptionAs": "as a connection managed by",
       "certificateisValid": "certificate is valid",
-      "isATrustedService": "is a trusted service",
-      "notTrustedService": "is a non-trusted verifiable service. Connect at your own risk",
-      "couldNotVerifyService": "could not be verified right now. Retry, or connect at your own risk.",
-      "cannotPresentTrustCredentials": "cannot present verifiable trust credentials",
       "errorGettingServiceInfoAPI": "Error getting service info API: ",
       "unableToGetServiceInfo": "Unable to get service information because you are offline.",
       "certificateIsInvalidDescription": "certificate is invalid. It might be a man in the middle attack. You may contact the service owners in order to request them to fix the issue, and then retry.",
@@ -165,7 +161,6 @@
       "serviceProvider": "Service provider:",
       "termsAndConditions": "Terms and conditions",
       "privacyPolicy": "Privacy policy",
-      "ageRestrictions": "Age restrictions:",
       "noAgeRestrictions": "No restrictions",
       "serviceNotVerifiable": "This service is not verifiable.",
       "connectionRefusedByAge": "Hey there {{ name }}! You're just <bold>{{ age }}</bold> years old! You'll need to wait a few more years before you can connect to this service.",
@@ -202,8 +197,7 @@
       "errorCreatingQR": "An error creating credential QR has occurred. Try again",
       "youRefusedPresentation": "You refused credential presentation",
       "noResponseFromVerifier": "No response from verifier within the limit time. Presentation is finished.",
-      "youDidNotResponseWithinTime": "You did not respond within the time limit. Presentation is finished.",
-      "failedFetchInfo": "Error while trying to resolve this service"
+      "youDidNotResponseWithinTime": "You did not respond within the time limit. Presentation is finished."
     },
     "credentialOffer": {
       "title": "Credential Offer",
@@ -560,11 +554,13 @@
       "confirmUnsafeShare": "This verifier could not be proven allowed to request this credential. Share it anyway?"
     },
     "proofOfTrust": {
-      "statusTrusted": "TRUSTED",
-      "statusUntrusted": "UNTRUSTED",
-      "statusUnverified": "COULD NOT VERIFY",
+      "statusTrusted": "Trusted",
+      "statusUntrusted": "Untrusted",
+      "statusUnverified": "Could not verify",
       "statusResolving": "Checking…",
       "evaluatedAt": "Evaluated {{date}}",
+      "nameNotVerified": "Name not verified",
+      "trustNetwork": "Trust network",
       "notChecked": "Not checked",
       "sectionService": "Service",
       "sectionOperatedBy": "Operated by",
