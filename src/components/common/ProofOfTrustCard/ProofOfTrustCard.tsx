@@ -123,7 +123,8 @@ const ProofOfTrustCard = ({
       ])
     : []
 
-  const title = (isTrusted ? serviceName || serviceInfo.name || declaredName : declaredName || serviceInfo.name) || ''
+  const knownName = isTrusted ? serviceName || serviceInfo.name || declaredName : declaredName || serviceInfo.name
+  const title = knownName && knownName !== serviceInfo.did ? knownName : ''
   const isTitleUnverified = Boolean(title) && !(isTrusted && serviceName) && status !== ServiceStatus.Resolving
   const logoUrl = isTrusted ? serviceInfo.logoUrl || declaredLogoUrl : declaredLogoUrl || serviceInfo.logoUrl
   const networkLabel = serviceInfo.network && !serviceInfo.network.production ? serviceInfo.network.label : undefined
