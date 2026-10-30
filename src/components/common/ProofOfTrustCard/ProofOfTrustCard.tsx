@@ -1,8 +1,14 @@
+import { useValidateKidAgeRestrictions } from '@src/hooks/useValidateKidAgeRestrictions'
 import { ServiceInfo, ServiceStatus } from '@src/model'
 import { getFlagEmoji } from '@src/utils'
-import React, { memo, ReactNode } from 'react'
+import { widthPercentageToDP } from '@src/utils/responsiveUtils'
+import { toast } from '@src/utils/toast'
+import { Skeleton } from 'moti/skeleton'
+import React, { memo, ReactNode, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Linking, TouchableOpacity, View } from 'react-native'
+import Avatar from '../Avatar'
+import FullScreenImage from '../FullScreenImage'
 import Text from '../Text'
 import {
   ArrowUpRightIcon,
@@ -15,8 +21,6 @@ import {
   StepTone,
   VeranaMark,
 } from './parts'
-import ServiceLogo from './ServiceLogo'
-import { useProofOfTrust } from './useProofOfTrust'
 import { useVeranaCard } from './useVeranaCard'
 
 type Props = {
@@ -29,15 +33,33 @@ type Props = {
   declaredLogoUrl?: string
 }
 
-type ChainNode = {
-  key: string
-  tone: StepTone
-  marker?: ReactNode
-  label?: string
-  content: ReactNode
-}
+const OPERATOR_SCHEMAS = ['OrganizationCredential', 'PersonaCredential']
+const LOGO_SIZE = '16%'
 
-const TONE_RANK: Record<StepTone, number> = { ok: 0, none: 1, bad: 2 }
+const stringOf = (value: unknown) => (typeof value === 'string' && value ? value : undefined)
+
+const httpUriOf = (uri?: string) => (typeof uri === 'string' && /^https?:\/\//i.test(uri) ? uri : undefined)
+
+type ChainStepProps = { tone: StepTone; label: string; isLast?: boolean; marker?: ReactNode; children: ReactNode }
+
+const ChainStep = ({ tone, label, isLast, marker, children }: ChainStepProps) => {
+  const { colors, styles } = useVeranaCard()
+  const railColor = { ok: colors.okRail, bad: colors.badRail, none: colors.noneRail }[tone]
+  return (
+    <View style={styles.node}>
+      <View style={styles.rail}>
+        {marker ?? <StepTick tone={tone} />}
+        {!isLast && <View style={[styles.connector, { backgroundColor: railColor }]} />}
+      </View>
+      <View style={[styles.nodeBody, isLast && styles.nodeBodyLast]}>
+        <Text fontFamily="EuclidCircularA-Medium" style={styles.nodeLabel}>
+          {label}
+        </Text>
+        {children}
+      </View>
+    </View>
+  )
+}
 
 const ProofOfTrustCard = ({
   serviceInfo,
@@ -49,103 +71,101 @@ const ProofOfTrustCard = ({
   declaredLogoUrl,
 }: Props) => {
   const { t } = useTranslation()
-  const { colors, styles, theme } = useVeranaCard()
-  const trust = useProofOfTrust({ serviceInfo, isFetchingInfo, failedFetchInfo, declaredName, declaredLogoUrl })
+  const { colors, styles, isDarkMode } = useVeranaCard()
+  const [fullScreenLogo, setFullScreenLogo] = useState<string>()
+  const minimumAge = serviceInfo.minimumAgeRequired ?? 0
+  const { ageRestricted } = useValidateKidAgeRestrictions({
+    minimumAgeRequired: minimumAge,
+    serviceStatus: serviceInfo.status,
+  })
 
-  const railColor: Record<StepTone, string> = { ok: colors.okRail, bad: colors.badRail, none: colors.noneRail }
-  const badgeColor =
-    trust.status === ServiceStatus.Trusted
-      ? colors.ok
-      : trust.status === ServiceStatus.Untrusted
-        ? colors.bad
-        : colors.noneRail
-  const titleIsDid = !trust.title
-  const titleSelfDeclared = !trust.titleVerified && !titleIsDid && trust.status !== ServiceStatus.Resolving
-  const { service, operator, failure, conditions } = trust
+  const status = isFetchingInfo
+    ? ServiceStatus.Resolving
+    : failedFetchInfo
+      ? ServiceStatus.Unverified
+      : serviceInfo.status
+  const isTrusted = status === ServiceStatus.Trusted
+  const isUntrusted = status === ServiceStatus.Untrusted
+  const statusColor = isTrusted ? colors.ok : isUntrusted ? colors.bad : colors.faint
+  const statusLabel = {
+    [ServiceStatus.Trusted]: t('proofOfTrust.statusTrusted'),
+    [ServiceStatus.Untrusted]: t('proofOfTrust.statusUntrusted'),
+    [ServiceStatus.Unverified]: t('proofOfTrust.statusUnverified'),
+    [ServiceStatus.Resolving]: t('proofOfTrust.statusResolving'),
+  }[status]
+  const claimTone: StepTone = isUntrusted ? 'bad' : isTrusted ? 'ok' : 'none'
+  const unprovenText = isUntrusted
+    ? undefined
+    : status === ServiceStatus.Resolving
+      ? t('proofOfTrust.statusResolving')
+      : t('proofOfTrust.notChecked')
 
-  const nodes: ChainNode[] = [
-    {
-      key: 'service',
-      tone: service.tone,
-      label: t('proofOfTrust.sectionService'),
-      content: (
-        <>
-          {service.name ? (
-            <Text fontFamily="EuclidCircularA-Medium" style={styles.nodeName} numberOfLines={2}>
-              {service.name}
-            </Text>
-          ) : (
-            <Text style={styles.nodeWithheld}>{service.fallback}</Text>
-          )}
-          {service.description ? (
-            <Text style={styles.nodeDetail} numberOfLines={3}>
-              {service.description}
-            </Text>
-          ) : null}
-        </>
-      ),
-    },
-    {
-      key: 'operator',
-      tone: operator.tone,
-      label: t('proofOfTrust.sectionOperatedBy'),
-      content: (
-        <>
-          {operator.name ? (
-            <Text fontFamily="EuclidCircularA-Medium" style={styles.nodeName} numberOfLines={2}>
-              {operator.countryCode ? `${getFlagEmoji(operator.countryCode)} ${operator.name}` : operator.name}
-            </Text>
-          ) : (
-            <Text style={styles.nodeWithheld}>{operator.fallback}</Text>
-          )}
-          {operator.address ? (
-            <Text style={styles.nodeDetail} numberOfLines={2}>
-              {operator.address}
-            </Text>
-          ) : null}
-          <RegistryChip label="REG" value={operator.registryId} />
-        </>
-      ),
-    },
-    ...trust.otherCredentials.map((credential, index) => ({
-      key: `credential-${credential.id}`,
-      tone: 'ok' as StepTone,
-      label: index === 0 ? t('proofOfTrust.sectionOtherCredentials') : undefined,
-      content: (
-        <Text style={[styles.nodeDetail, index > 0 && styles.nodeNameInline]} numberOfLines={1}>
-          {credential.label}
-        </Text>
-      ),
-    })),
-    ...(trust.isTrusted
-      ? [
-          {
-            key: 'network',
-            tone: 'ok' as StepTone,
-            marker: <VeranaMark size={20} />,
-            label: t('proofOfTrust.trustNetwork'),
-            content: (
-              <Text fontFamily="EuclidCircularA-Medium" style={styles.nodeName}>
-                {trust.networkLabel ? `Verana ${trust.networkLabel}` : 'Verana'}
-              </Text>
-            ),
-          },
-        ]
-      : []),
-  ]
+  const ecsSubject = (schemas: string[]) =>
+    isTrusted
+      ? serviceInfo.ecsCredentials?.find((credential) => schemas.includes(credential.ecsSchema))?.credentialSubject
+      : undefined
+  const service = ecsSubject(['ServiceCredential'])
+  const operator = ecsSubject(OPERATOR_SCHEMAS)
+  const serviceName = stringOf(service?.name)
+  const serviceDescription = stringOf(service?.description)
+  const serviceTone: StepTone = isTrusted && !serviceName ? 'bad' : claimTone
+  const operatorName = stringOf(operator?.name)
+  const operatorCountry = stringOf(operator?.countryCode)
+  const operatorAddress = stringOf(operator?.address)
+  const operatorTone: StepTone = isTrusted && !operatorName ? 'bad' : claimTone
+  const otherCredentials = isTrusted
+    ? (serviceInfo.presentations ?? []).flatMap((presentation) => presentation.vtcCredentials ?? [])
+    : []
+  const failedCredentialIds = isUntrusted
+    ? (serviceInfo.presentations ?? []).flatMap((presentation) => [
+        ...(presentation.unresolvableCredentialIds ?? []),
+        ...(presentation.invalidCredentialIds ?? []),
+      ])
+    : []
 
-  let worstTone: StepTone = 'ok'
+  const title = (isTrusted ? serviceName || serviceInfo.name || declaredName : declaredName || serviceInfo.name) || ''
+  const isTitleUnverified = Boolean(title) && !(isTrusted && serviceName) && status !== ServiceStatus.Resolving
+  const logoUrl = isTrusted ? serviceInfo.logoUrl || declaredLogoUrl : declaredLogoUrl || serviceInfo.logoUrl
+  const networkLabel = serviceInfo.network && !serviceInfo.network.production ? serviceInfo.network.label : undefined
+  const termsUrl = isTrusted ? httpUriOf(serviceInfo.termsAndConditionsUrl) : undefined
+  const privacyUrl = isTrusted ? httpUriOf(serviceInfo.dataPrivacyUrl) : undefined
+  const hasConditions = isTrusted && (minimumAge > 0 || Boolean(termsUrl) || Boolean(privacyUrl))
+
+  const openUrl = async (url: string) => {
+    if (await Linking.canOpenURL(url)) await Linking.openURL(url)
+    else toast({ type: 'error', message: `${t('general.canNotOpenURL')} ${url}` })
+  }
 
   return (
     <View style={styles.card}>
       <View style={styles.header}>
         <View style={styles.logo}>
-          <ServiceLogo uri={trust.logoUrl} label={trust.title || trust.did} size="16%" isLoading={isFetchingInfo} />
-          {trust.status !== ServiceStatus.Resolving && (
-            <View style={[styles.badge, { backgroundColor: badgeColor }]}>
-              {trust.status === ServiceStatus.Trusted ? (
+          {isFetchingInfo ? (
+            <Skeleton
+              colorMode={isDarkMode ? 'dark' : 'light'}
+              radius="round"
+              height={widthPercentageToDP(LOGO_SIZE)}
+              width={widthPercentageToDP(LOGO_SIZE)}
+              show
+            />
+          ) : (
+            <Avatar
+              uri={logoUrl}
+              label={title || serviceInfo.did}
+              size={LOGO_SIZE}
+              onImagePressed={setFullScreenLogo}
+            />
+          )}
+          {!isFetchingInfo && (
+            <View
+              style={[
+                styles.badge,
+                { backgroundColor: isTrusted ? colors.ok : isUntrusted ? colors.bad : colors.noneRail },
+              ]}
+            >
+              {isTrusted ? (
                 <CheckIcon color={colors.onTint} size={12} />
-              ) : trust.status === ServiceStatus.Untrusted ? (
+              ) : isUntrusted ? (
                 <CrossIcon color={colors.onTint} size={12} />
               ) : (
                 <Text fontFamily="EuclidCircularA-SemiBold" style={styles.badgeUnknown}>
@@ -156,28 +176,27 @@ const ProofOfTrustCard = ({
           )}
         </View>
         <View style={styles.headerBody}>
-          {titleIsDid ? (
-            <Text fontFamily="EuclidCircularA-Medium" style={styles.titleDid} numberOfLines={1} ellipsizeMode="middle">
-              {trust.did}
-            </Text>
-          ) : (
-            <Text fontFamily="EuclidCircularA-Medium" style={styles.title} numberOfLines={2}>
-              {trust.title}
-            </Text>
-          )}
-          {titleSelfDeclared && (
+          <Text
+            fontFamily="EuclidCircularA-Medium"
+            style={title ? styles.title : styles.titleDid}
+            numberOfLines={title ? 2 : 1}
+            ellipsizeMode={title ? 'tail' : 'middle'}
+          >
+            {title || serviceInfo.did}
+          </Text>
+          {isTitleUnverified && (
             <View style={styles.declared}>
               <InfoIcon color={colors.warn} size={12} />
               <Text style={styles.declaredText}>{t('proofOfTrust.nameNotVerified')}</Text>
             </View>
           )}
           <View style={styles.verdictRow}>
-            <Text fontFamily="EuclidCircularA-Medium" style={[styles.verdict, { color: trust.statusColor }]}>
-              {trust.statusLabel}
+            <Text fontFamily="EuclidCircularA-Medium" style={[styles.verdict, { color: statusColor }]}>
+              {statusLabel}
             </Text>
-            {trust.networkLabel ? (
+            {networkLabel ? (
               <View style={styles.testnetChip}>
-                <Text style={styles.testnetChipText}>{trust.networkLabel}</Text>
+                <Text style={styles.testnetChipText}>{networkLabel}</Text>
               </View>
             ) : null}
           </View>
@@ -188,18 +207,18 @@ const ProofOfTrustCard = ({
       </View>
 
       <View style={styles.meta}>
-        {!titleIsDid && (
+        {title ? (
           <Text style={styles.metaText} numberOfLines={1} ellipsizeMode="middle">
-            {trust.did}
+            {serviceInfo.did}
           </Text>
-        )}
-        {trust.evaluatedAt ? (
+        ) : null}
+        {serviceInfo.evaluatedAtTime && status !== ServiceStatus.Resolving ? (
           <Text style={styles.metaText} numberOfLines={1}>
-            {trust.evaluatedAt}
+            {t('proofOfTrust.evaluatedAt', { date: new Date(serviceInfo.evaluatedAtTime).toLocaleString() })}
           </Text>
         ) : null}
       </View>
-      {trust.status === ServiceStatus.Unverified && onRetry && (
+      {status === ServiceStatus.Unverified && onRetry && (
         <TouchableOpacity style={styles.retry} onPress={onRetry} accessibilityRole="button">
           <Text fontFamily="EuclidCircularA-Medium" style={styles.retryText}>
             {t('tryAgain')}
@@ -208,35 +227,75 @@ const ProofOfTrustCard = ({
       )}
 
       <View style={styles.chain}>
-        {nodes.map((node, index) => {
-          const isLast = index === nodes.length - 1
-          if (TONE_RANK[node.tone] > TONE_RANK[worstTone]) worstTone = node.tone
-          return (
-            <View key={node.key} style={styles.node}>
-              <View style={styles.rail}>
-                {node.marker ?? <StepTick tone={node.tone} />}
-                {!isLast && <View style={[styles.connector, { backgroundColor: railColor[worstTone] }]} />}
-              </View>
-              <View style={[styles.nodeBody, isLast && styles.nodeBodyLast]}>
-                {node.label ? (
-                  <Text fontFamily="EuclidCircularA-Medium" style={styles.nodeLabel}>
-                    {node.label}
-                  </Text>
-                ) : null}
-                {node.content}
-              </View>
-            </View>
-          )
-        })}
+        <ChainStep tone={serviceTone} label={t('proofOfTrust.sectionService')}>
+          {serviceName ? (
+            <Text fontFamily="EuclidCircularA-Medium" style={styles.nodeName} numberOfLines={2}>
+              {serviceName}
+            </Text>
+          ) : (
+            <Text style={styles.nodeWithheld}>
+              {isTrusted
+                ? t('proofOfTrust.noServiceCredential')
+                : (unprovenText ?? t('proofOfTrust.serviceClaimsNotVerified'))}
+            </Text>
+          )}
+          {serviceDescription ? (
+            <Text style={styles.nodeDetail} numberOfLines={3}>
+              {serviceDescription}
+            </Text>
+          ) : null}
+        </ChainStep>
+        <ChainStep tone={operatorTone} label={t('proofOfTrust.sectionOperatedBy')} isLast={!isTrusted}>
+          {operatorName ? (
+            <Text fontFamily="EuclidCircularA-Medium" style={styles.nodeName} numberOfLines={2}>
+              {operatorCountry ? `${getFlagEmoji(operatorCountry)} ${operatorName}` : operatorName}
+            </Text>
+          ) : (
+            <Text style={styles.nodeWithheld}>
+              {isTrusted
+                ? t('proofOfTrust.noOperatorCredential')
+                : (unprovenText ?? t('proofOfTrust.operatorClaimsNotVerified'))}
+            </Text>
+          )}
+          {operatorAddress ? (
+            <Text style={styles.nodeDetail} numberOfLines={2}>
+              {operatorAddress}
+            </Text>
+          ) : null}
+          <RegistryChip label="REG" value={stringOf(operator?.registryId)} />
+        </ChainStep>
+        {otherCredentials.length > 0 && (
+          <ChainStep tone="ok" label={t('proofOfTrust.sectionOtherCredentials')}>
+            {otherCredentials.map((credential) => (
+              <Text key={credential.id} style={styles.nodeDetail} numberOfLines={1}>
+                {t('proofOfTrust.otherCredential', {
+                  schema: credential.credentialSchemaId,
+                  ecosystem: credential.ecosystemId,
+                })}
+              </Text>
+            ))}
+          </ChainStep>
+        )}
+        {isTrusted && (
+          <ChainStep tone="ok" label={t('proofOfTrust.trustNetwork')} marker={<VeranaMark size={20} />} isLast>
+            <Text fontFamily="EuclidCircularA-Medium" style={styles.nodeName}>
+              {networkLabel ? `Verana ${networkLabel}` : 'Verana'}
+            </Text>
+          </ChainStep>
+        )}
       </View>
 
-      {failure && (
+      {isUntrusted && (
         <View style={styles.failures}>
           <Text fontFamily="EuclidCircularA-Medium" style={styles.failuresLabel}>
             {t('proofOfTrust.sectionFailures')}
           </Text>
-          <Text style={styles.failuresReason}>{failure.reason}</Text>
-          {failure.credentialIds.map((id) => (
+          <Text style={styles.failuresReason}>
+            {serviceInfo.untrustedReason === 'noDidDocument'
+              ? t('proofOfTrust.noDidDocument')
+              : t('proofOfTrust.notTrusted')}
+          </Text>
+          {failedCredentialIds.map((id) => (
             <Text key={id} style={styles.failuresId} numberOfLines={1} ellipsizeMode="middle">
               {id}
             </Text>
@@ -246,47 +305,32 @@ const ProofOfTrustCard = ({
 
       {ask}
 
-      {conditions && (
+      {hasConditions && (
         <View style={styles.conditions}>
           <Text fontFamily="EuclidCircularA-Medium" style={styles.conditionsLabel}>
             {t('proofOfTrust.conditions')}
           </Text>
-          {conditions.minimumAge > 0 && (
+          {minimumAge > 0 && (
             <View style={styles.conditionRow}>
-              <View
-                style={[
-                  styles.ageBadge,
-                  conditions.ageRestricted
-                    ? { borderColor: colors.bad, backgroundColor: colors.badSoft }
-                    : { borderColor: colors.warnLine, backgroundColor: theme.colors.primary },
-                ]}
-              >
-                <Text
-                  style={[styles.ageBadgeText, { color: conditions.ageRestricted ? colors.bad : colors.warn }]}
-                >{`${conditions.minimumAge}+`}</Text>
+              <View style={[styles.ageBadge, ageRestricted ? styles.ageBadgeRestricted : styles.ageBadgeNeutral]}>
+                <Text style={[styles.ageBadgeText, { color: ageRestricted ? colors.bad : colors.warn }]}>
+                  {`${minimumAge}+`}
+                </Text>
               </View>
-              <Text style={[styles.conditionText, { color: conditions.ageRestricted ? colors.bad : colors.body }]}>
-                {t('proofOfTrust.minimumAge', { age: conditions.minimumAge })}
+              <Text style={[styles.conditionText, { color: ageRestricted ? colors.bad : colors.body }]}>
+                {t('proofOfTrust.minimumAge', { age: minimumAge })}
               </Text>
             </View>
           )}
-          {conditions.termsUrl && (
-            <TouchableOpacity
-              style={styles.conditionRow}
-              onPress={() => conditions.termsUrl && Linking.openURL(conditions.termsUrl)}
-              accessibilityRole="link"
-            >
+          {termsUrl && (
+            <TouchableOpacity style={styles.conditionRow} onPress={() => openUrl(termsUrl)} accessibilityRole="link">
               <LockIcon color={colors.brand} />
               <Text style={styles.conditionLink}>{t('invitation.termsAndConditions')}</Text>
               <ArrowUpRightIcon color={colors.brand} />
             </TouchableOpacity>
           )}
-          {conditions.privacyUrl && (
-            <TouchableOpacity
-              style={styles.conditionRow}
-              onPress={() => conditions.privacyUrl && Linking.openURL(conditions.privacyUrl)}
-              accessibilityRole="link"
-            >
+          {privacyUrl && (
+            <TouchableOpacity style={styles.conditionRow} onPress={() => openUrl(privacyUrl)} accessibilityRole="link">
               <LockIcon color={colors.brand} />
               <Text style={styles.conditionLink}>{t('invitation.privacyPolicy')}</Text>
               <ArrowUpRightIcon color={colors.brand} />
@@ -295,7 +339,13 @@ const ProofOfTrustCard = ({
         </View>
       )}
 
-      {trust.networkLabel ? <Text style={styles.footnote}>{t('proofOfTrust.demoNetwork')}</Text> : null}
+      {networkLabel ? <Text style={styles.footnote}>{t('proofOfTrust.demoNetwork')}</Text> : null}
+
+      <FullScreenImage
+        showFullScreenImage={Boolean(fullScreenLogo)}
+        closeFullScreenImage={() => setFullScreenLogo(undefined)}
+        imageUri={fullScreenLogo ?? ''}
+      />
     </View>
   )
 }

@@ -6,6 +6,6 @@ export const useVeranaCard = () => {
   const theme = useTheme()
   return useMemo(() => {
     const colors = getVeranaCardColors(theme.isDarkMode)
-    return { colors, styles: getStyles(colors, theme), isDarkMode: theme.isDarkMode, theme }
+    return { colors, styles: getStyles(colors, theme), isDarkMode: theme.isDarkMode }
   }, [theme])
 }

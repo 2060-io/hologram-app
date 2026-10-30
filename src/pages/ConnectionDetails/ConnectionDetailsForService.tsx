@@ -38,7 +38,7 @@ const ConnectionDetailsForService = (props: ConnectionDetailsProps) => {
 
 const styles = StyleSheet.create({
   mainInfoContainer: {
-    marginVertical: 20,
+    marginBottom: 20,
   },
 })
 

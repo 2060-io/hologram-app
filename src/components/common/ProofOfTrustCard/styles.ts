@@ -198,9 +198,6 @@ const getStyles = (colors: VeranaCardColors, theme: AppTheme) =>
       color: theme.colors.primaryText,
       fontSize: theme.fontSize.md,
     },
-    nodeNameInline: {
-      lineHeight: NODE_SIZE,
-    },
     nodeDetail: {
       color: colors.body,
       fontSize: theme.fontSize.sm + 1,
@@ -251,6 +248,14 @@ const getStyles = (colors: VeranaCardColors, theme: AppTheme) =>
       flexShrink: 0,
       paddingHorizontal: 5,
       paddingVertical: 1,
+    },
+    ageBadgeNeutral: {
+      backgroundColor: theme.colors.primary,
+      borderColor: colors.warnLine,
+    },
+    ageBadgeRestricted: {
+      backgroundColor: colors.badSoft,
+      borderColor: colors.bad,
     },
     ageBadgeText: {
       fontSize: theme.fontSize.sm - 1,
