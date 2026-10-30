@@ -7,7 +7,6 @@ import {
   MainButton,
   ProofOfTrustCard,
   RadioButton,
-  ServiceMainInfo,
   Text,
 } from '@src/components/common'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
@@ -138,13 +137,6 @@ const BasePresentationRequest: React.FC<Props> = ({
           {...scrollViewProps}
         >
           <View style={styles.subContainer}>
-            {serviceInfo && isFetchingInfo !== undefined && failedFetchInfo !== undefined && (
-              <ServiceMainInfo
-                isFetchingInfo={isFetchingInfo}
-                serviceInfo={serviceInfo}
-                failedFetchInfo={failedFetchInfo}
-              />
-            )}
             {serviceInfo && (
               <ProofOfTrustCard
                 serviceInfo={serviceInfo}
