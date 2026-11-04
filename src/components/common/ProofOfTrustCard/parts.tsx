@@ -75,15 +75,6 @@ export const StepTick: FC<{ tone: StepTone }> = ({ tone }) => {
   )
 }
 
-export const SectionLabel: FC<{ children: string }> = ({ children }) => {
-  const { styles } = useVeranaCard()
-  return (
-    <Text fontFamily="EuclidCircularA-Medium" style={styles.sectionLabel}>
-      {children.toUpperCase()}
-    </Text>
-  )
-}
-
 export const RegistryChip: FC<{ label: string; value?: string }> = ({ label, value }) => {
   const { styles } = useVeranaCard()
   if (!value) return null

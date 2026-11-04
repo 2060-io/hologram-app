@@ -5,7 +5,7 @@ import { NavigationStackParams } from '@src/components/Navigation/NavigationProp
 import { useNetwork, usePresentCredential } from '@src/hooks'
 import { useCredentials } from '@src/hooks/agent'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
-import { getCredentialAttributes } from '@src/services/agent/display'
+import { getCredentialAttributes, getCredentialMainInfo } from '@src/services/agent/display'
 import { formatCredentialSubject } from '@src/services/agent/formatCredentialSubject'
 import { toast } from '@src/utils/toast'
 import React, { useCallback, useMemo, useState } from 'react'
@@ -28,6 +28,7 @@ const SelectCredentialAttributes = ({ navigation, route }: Props) => {
   const [attributesToPresent, setAttributesToPresent] = useState<string[]>([])
   const [areAllSelected, setAreAllSelected] = useState(false)
   const credentialAttributes = credentialRecord ? getCredentialAttributes(credentialRecord) : undefined
+  const schemaName = credentialRecord ? getCredentialMainInfo(credentialRecord).schemaName : undefined
   const attributesSections = credentialAttributes ? formatCredentialSubject({ subject: credentialAttributes }) : []
   const allAttributes = useMemo(() => {
     return attributesSections.flatMap((section) => section.rows.map(({ key }) => key))
@@ -83,7 +84,7 @@ const SelectCredentialAttributes = ({ navigation, route }: Props) => {
               return (
                 <View key={`${section.title}-${index}`}>
                   <Text style={styles.attributesSectionTitle} fontFamily="EuclidCircularA-SemiBold">
-                    {section.title ?? t('credentialOffer.claims')}
+                    {section.title ?? (schemaName || t('credentialOffer.claims'))}
                   </Text>
                   <FlatList
                     data={section.rows}

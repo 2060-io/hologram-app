@@ -10,9 +10,10 @@ import getStyles from './styles'
 type Props = {
   attributes: Record<string, unknown>
   valuesPending?: boolean
+  schemaName?: string
 }
 
-const CredentialAttributes = ({ attributes, valuesPending }: Props) => {
+const CredentialAttributes = ({ attributes, valuesPending, schemaName }: Props) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
@@ -37,7 +38,7 @@ const CredentialAttributes = ({ attributes, valuesPending }: Props) => {
       {attributesSections.map((section, index) => (
         <View key={index}>
           <Text style={styles.title} fontFamily="EuclidCircularA-SemiBold">
-            {section.title ?? t('credentialOffer.claims')}
+            {section.title ?? (schemaName || t('credentialOffer.claims'))}
           </Text>
           <View style={styles.sectionRowsContainer}>
             {section.rows.map((rowDetail) => (

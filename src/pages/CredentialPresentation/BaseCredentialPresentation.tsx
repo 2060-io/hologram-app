@@ -105,7 +105,11 @@ const BaseCredentialPresentation = ({
                 {t('presentationRequest.valuesNoRevealedYet')}
               </Text>
             )}
-            <CredentialAttributes attributes={credentialAttributes} valuesPending={valuesPending} />
+            <CredentialAttributes
+              attributes={credentialAttributes}
+              valuesPending={valuesPending}
+              schemaName={credentialMainInfo?.schemaName}
+            />
           </View>
         </ScrollView>
       </SafeAreaView>

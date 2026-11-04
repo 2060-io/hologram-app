@@ -33,9 +33,9 @@ const AccreditationBox = ({ party, serviceName, accreditation, onRetry, fallback
   const schema = accreditation?.schemaTitles.join(', ') || fallbackSchemaTitle || t('accreditation.thisCredential')
   const verdicts = {
     ISSUER: {
-      authorized: t('accreditation.authorizedIssuer', { service: serviceName, schema }),
-      unauthorized: t('accreditation.unauthorizedIssuer', { service: serviceName, schema }),
-      unverified: t('accreditation.couldNotVerifyIssuer', { service: serviceName }),
+      authorized: t('accreditation.authorizedIssuer', { schema }),
+      unauthorized: t('accreditation.unauthorizedIssuer', { schema }),
+      unverified: t('accreditation.couldNotVerifyIssuer'),
     },
     VERIFIER: {
       authorized: t('accreditation.authorizedVerifier', { service: serviceName, schema }),
@@ -47,15 +47,17 @@ const AccreditationBox = ({ party, serviceName, accreditation, onRetry, fallback
   return (
     <View style={[styles.container, boxColors[accreditation?.status ?? 'unverified']]}>
       <Text fontFamily="EuclidCircularA-Medium" style={styles.title}>
-        {t(party === 'ISSUER' ? 'accreditation.offersYou' : 'accreditation.requests')}
+        {t(party === 'ISSUER' ? 'accreditation.title' : 'accreditation.requests')}
       </Text>
       {!accreditation ? (
         <Skeleton width="100%" colorMode={isDarkMode ? 'dark' : 'light'} radius="round" show />
       ) : (
         <>
-          <Text fontFamily="EuclidCircularA-Bold" style={styles.schema}>
-            {schema}
-          </Text>
+          {party === 'VERIFIER' && (
+            <Text fontFamily="EuclidCircularA-Bold" style={styles.schema}>
+              {schema}
+            </Text>
+          )}
           <View style={styles.verdict}>
             <View style={styles.icon}>
               {accreditation.status === 'authorized' ? (
