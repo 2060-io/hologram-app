@@ -539,12 +539,12 @@
       "setPINFooter": "Be sure to write down your PIN carefully. There is no way to recover it if it's lost"
     },
     "accreditation": {
-      "offersYou": "OFFERS YOU",
+      "title": "Accreditation",
       "requests": "REQUESTS",
       "thisCredential": "this credential",
-      "authorizedIssuer": "{{service}} is an authorized issuer of {{schema}}",
-      "unauthorizedIssuer": "{{service}} is not an authorized issuer of {{schema}}",
-      "couldNotVerifyIssuer": "Could not verify whether {{service}} is allowed to issue this credential",
+      "authorizedIssuer": "This issuer is accredited for issuing credentials of {{schema}} schema",
+      "unauthorizedIssuer": "This issuer is not accredited for issuing credentials of {{schema}} schema",
+      "couldNotVerifyIssuer": "Could not verify whether this issuer is allowed to issue this credential",
       "authorizedVerifier": "{{service}} is an authorized verifier of {{schema}}",
       "unauthorizedVerifier": "{{service}} is not an authorized verifier of {{schema}}",
       "couldNotVerifyVerifier": "Could not verify whether {{service}} is allowed to request this credential",

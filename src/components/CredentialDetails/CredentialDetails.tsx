@@ -25,7 +25,10 @@ const CredentialDetails = ({ credentialDetails, middleInfo, isFetchingInfo, serv
         failedFetchInfo={failedFetchInfo}
       />
       {middleInfo}
-      <CredentialAttributes attributes={credentialDetails.attributes} />
+      <CredentialAttributes
+        attributes={credentialDetails.attributes}
+        schemaName={credentialDetails.mainInfo.schemaName}
+      />
     </View>
   )
 }
