@@ -59,7 +59,7 @@ export async function getServiceInfo({ did }: { did: string }): Promise<ServiceI
     minimumAgeRequired: typeof service?.minimumAgeRequired === 'number' ? service.minimumAgeRequired : 0,
     serviceProvider: operatorEntity,
     network:
-      verdict && status !== ServiceStatus.Unverified
+      verdict && status === ServiceStatus.Trusted
         ? { id: verdict.network.id, label: verdict.network.label, production: verdict.network.production }
         : undefined,
     evaluatedAtTime: answer?.evaluatedAtTime,
