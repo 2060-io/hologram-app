@@ -21,7 +21,7 @@ export const ChatSwipeOptions: React.FC<Props> = ({ isArchived, onDeleteChat, on
   return (
     <View style={[styles.container, { display }]}>
       <TouchableOpacity
-        testID="chat-row-delete"
+        testID="chat-swipe-delete"
         style={[styles.button, styles.deleteBackground]}
         onPress={onDeleteChat}
         activeOpacity={0.7}
@@ -33,7 +33,7 @@ export const ChatSwipeOptions: React.FC<Props> = ({ isArchived, onDeleteChat, on
       </TouchableOpacity>
       <TouchableOpacity
         style={[styles.button, { ...archiveBackgroundColor }]}
-        testID={isArchived ? 'chat-row-unarchive' : 'chat-row-archive'}
+        testID={isArchived ? 'chat-swipe-unarchive' : 'chat-swipe-archive'}
         onPress={onArchiveChat}
         activeOpacity={0.7}
       >
