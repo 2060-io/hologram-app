@@ -20,7 +20,7 @@ The flows type the PIN `1234` at the screen lock prompt.
 
 - `maestro/smoke`: checks that the two apps open. It needs no backend.
 - `maestro/subflows`: shared steps. `APP_ID`, `NAME`, `LINK` and `APP_LABEL` are their parameters.
-- `fixtures`: media for the flows. `SHA256SUMS` has their hashes.
+- `maestro/fixtures`: media for the flows. `SHA256SUMS` has their hashes. Maestro only reads media inside the directory that it runs, so they are under `maestro`.
 - `ci`: scripts for the CI job in `.github/workflows/e2e-android.yml`.
 
 ## The `e2e` build type
