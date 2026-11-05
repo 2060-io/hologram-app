@@ -29,7 +29,7 @@ tags: [local]
           optional: true
 
 - addMedia:
-    - ../../fixtures/image.jpg
+    - ../fixtures/image.jpg
 - tapOn: { id: "composer-attach" }
 - tapOn: { id: "attachment-file-gallery" }
 - waitForAnimationToEnd
