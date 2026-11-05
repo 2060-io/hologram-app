@@ -78,3 +78,6 @@ android/app/upload-key.keystore
 # Editor and agent config (not shared)
 .claude/
 .vscode/
+
+e2e-out/
+e2e-apks/

@@ -1,0 +1,12 @@
+appId: io.twentysixty.mobileagent.dev
+---
+- runFlow:
+    file: signup.yaml
+    env:
+      APP_ID: io.twentysixty.mobileagent.dev
+      NAME: Alice
+- runFlow:
+    file: signup.yaml
+    env:
+      APP_ID: io.twentysixty.mobileagent.st
+      NAME: Bob

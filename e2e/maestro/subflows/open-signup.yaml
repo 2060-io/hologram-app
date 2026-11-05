@@ -1,0 +1,12 @@
+appId: io.twentysixty.mobileagent.dev
+---
+- launchApp:
+    appId: ${APP_ID}
+    clearState: true
+- extendedWaitUntil:
+    visible: "Hologram Locked|Authenticate to open .*"
+    timeout: 60000
+- runFlow: unlock.yaml
+- extendedWaitUntil:
+    visible: "Choose your name"
+    timeout: 60000

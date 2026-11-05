@@ -130,6 +130,13 @@ android {
             shrinkResources enableShrinkResources
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
+        e2e {
+            initWith release
+            signingConfig signingConfigs.debug
+            matchingFallbacks = ['release']
+            // The RN Gradle plugin only sets this placeholder for debug and release, after initWith ran
+            manifestPlaceholders = [usesCleartextTraffic: "false"]
+        }
     }
 
     flavorDimensions "default"
@@ -211,4 +218,11 @@ def isNewArchitectureEnabled() {
 
 def isNewHermesEnabled() {
     return project.hasProperty("hermesEnabled") && project.hermesEnabled == "true"
+}
+
+androidComponents {
+    beforeVariants { variant ->
+        // Keeps the test CA out of any build with the production application ID
+        if (variant.buildType == 'e2e' && variant.flavorName == 'prod') variant.enable = false
+    }
 }
