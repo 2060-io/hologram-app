@@ -45,7 +45,10 @@ const AccreditationBox = ({ party, serviceName, accreditation, onRetry, fallback
   }
 
   return (
-    <View style={[styles.container, boxColors[accreditation?.status ?? 'unverified']]}>
+    <View
+      testID={`accreditation-status-${accreditation?.status ?? 'loading'}`}
+      style={[styles.container, boxColors[accreditation?.status ?? 'unverified']]}
+    >
       <Text fontFamily="EuclidCircularA-Medium" style={styles.title}>
         {t(party === 'ISSUER' ? 'accreditation.title' : 'accreditation.requests')}
       </Text>
@@ -71,7 +74,7 @@ const AccreditationBox = ({ party, serviceName, accreditation, onRetry, fallback
             <Text style={styles.text}>{verdicts[party][accreditation.status]}</Text>
           </View>
           {accreditation.status === 'unverified' && (
-            <TouchableOpacity onPress={onRetry}>
+            <TouchableOpacity testID="accreditation-retry" onPress={onRetry}>
               <Text style={[styles.text, styles.retry]}>{t('tryAgain')}</Text>
             </TouchableOpacity>
           )}

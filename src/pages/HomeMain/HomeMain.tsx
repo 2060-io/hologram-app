@@ -56,6 +56,7 @@ const HomeMain = (props: HomeTabProps) => {
       initialRouteName="Chats"
       screenOptions={({ route }) => ({
         tabBarLabel: t(`navigation.${route.name}`),
+        tabBarButtonTestID: `${route.name.toLowerCase()}-tab`,
         tabBarAccessibilityLabel: 'icon',
         tabBarAllowFontScaling: true,
         tabBarStyle: styles.tabBarStyle,

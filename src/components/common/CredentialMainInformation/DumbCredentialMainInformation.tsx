@@ -21,6 +21,7 @@ const DumbCredentialMainInformation = ({
   isFetchingInfo,
   serviceInfo,
   failedFetchInfo,
+  testID,
 }: DumbCredentialMainInformationProps) => {
   const { t } = useTranslation()
   const theme = useTheme()
@@ -47,7 +48,7 @@ const DumbCredentialMainInformation = ({
 
   return (
     <Skeleton.Group show={!credentialMainInfo}>
-      <TouchableOpacity style={[styles.container, containerStyle]} activeOpacity={1} onPress={onPress}>
+      <TouchableOpacity testID={testID} style={[styles.container, containerStyle]} activeOpacity={1} onPress={onPress}>
         <View style={styles.subContainer}>
           <Skeleton height={styles.image.height} width={styles.image.width} colorMode={colorMode} radius="square">
             <View style={styles.imageContainer}>{badge}</View>

@@ -111,11 +111,17 @@ const VPChatView = ({ metadata, role, agent, proofRecordId, chatEntryId }: Props
     [DidCommProofState.ProposalReceived]: (
       <View style={styles.buttonsContainer}>
         <OutlinedBlueButton
+          testID="chat-presentation-refuse"
           text={t('general.refuse')}
           onPress={displayModalRefuseConfirmation}
           style={styles.refuseButton}
         />
-        <BlueButton text={t('general.accept')} onPress={acceptCredentialPresentation} style={styles.acceptButton} />
+        <BlueButton
+          testID="chat-presentation-accept"
+          text={t('general.accept')}
+          onPress={acceptCredentialPresentation}
+          style={styles.acceptButton}
+        />
       </View>
     ),
     [DidCommProofState.RequestSent]: <State text={t('presentationRequest.accepted')} />,
@@ -128,7 +134,7 @@ const VPChatView = ({ metadata, role, agent, proofRecordId, chatEntryId }: Props
   }
 
   return (
-    <View style={styles.container}>
+    <View testID="chat-presentation" style={styles.container}>
       <ModalConfirmAction
         visible={showModalRefuseConfirmation}
         title={t('chat.confirmRefuseVerifiablePresentation')}

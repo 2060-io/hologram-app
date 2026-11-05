@@ -35,6 +35,7 @@ const ChatFilterOptions: React.FC<Props> = ({ options = defaultOptions, selected
           style={[styles.containerOptionCard, option.value === selectedOption && styles.btnTextFilterOptionSelected]}
         >
           <TouchableOpacity
+            testID={`chat-filter-${option.value}`}
             style={styles.containerOption}
             activeOpacity={0.9}
             onPress={() => onChangeOption(option.value)}

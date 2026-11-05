@@ -18,6 +18,7 @@ const CredentialDetails = ({ credentialDetails, middleInfo, isFetchingInfo, serv
   return (
     <View style={styles.container}>
       <DumbCredentialMainInformation
+        testID="credential-card"
         credentialMainInfo={credentialDetails.mainInfo}
         containerStyle={styles.credentialMainInfoContainer}
         isFetchingInfo={isFetchingInfo}

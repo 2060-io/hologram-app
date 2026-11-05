@@ -111,11 +111,13 @@ const VCOfferChatView = ({ sender, associatedRecordId, metadata, agent, chatEntr
     [DidCommCredentialState.OfferReceived]: (
       <View style={styles.buttonsContainer}>
         <OutlinedBlueButton
+          testID="chat-credential-offer-refuse"
           text={t('general.refuse')}
           onPress={displayModalRefuseConfirmation}
           style={[styles.refuseButton, { opacity }]}
         />
         <BlueButton
+          testID="chat-credential-offer-accept"
           text={t('general.accept')}
           onPress={goToCredentialOffer}
           style={[styles.acceptButton, { opacity }]}
@@ -134,7 +136,7 @@ const VCOfferChatView = ({ sender, associatedRecordId, metadata, agent, chatEntr
     [DidCommCredentialState.Done]: <State text={t('chat.credentialAdded')} />,
   }
   return (
-    <View style={styles.container}>
+    <View testID="chat-credential-offer" style={styles.container}>
       <ModalConfirmAction
         visible={showModalRefuseConfirmation}
         title={t('chat.confirmRefuseCredentialOffer')}
@@ -146,11 +148,12 @@ const VCOfferChatView = ({ sender, associatedRecordId, metadata, agent, chatEntr
         onCancel={hideModalRefuseConfirmation}
       />
       <Header theme={theme} title={t('credentialOffer.title')} leftIconName="id" />
-      <View style={styles.subContainer}>
+      <View testID={`chat-credential-offer-state-${credentialState}`} style={styles.subContainer}>
         <Text style={styles.title}>
           {t('chat.offeringCredential', { sender: metadata.issuerName ?? sender?.name })}
         </Text>
         <CredentialMainInformation
+          testID="chat-credential-offer-card"
           credentialMainInfo={credentialMainInfo}
           containerStyle={styles.credentialMainInfoContainer}
           onPress={chooseScreenToGo}

@@ -109,6 +109,7 @@ const VPRequestChatView = ({ sender, proofRecordId, metadata, agent, chatEntryId
     <View>
       <Text style={styles.title}>{t('presentationRequest.noCompatibleCredentials', { sender: senderName })}</Text>
       <BlueButton
+        testID="chat-proof-request-notify"
         text={t('presentationRequest.notify', { sender: senderName })}
         onPress={notify}
         style={styles.notifyButton}
@@ -122,12 +123,14 @@ const VPRequestChatView = ({ sender, proofRecordId, metadata, agent, chatEntryId
       <View style={styles.buttonsContainer}>
         <OutlinedBlueButton
           disabled={proofState !== DidCommProofState.RequestReceived}
+          testID="chat-proof-request-refuse"
           text={t('general.refuse')}
           onPress={displayModalRefuseConfirmation}
           style={[styles.refuseButton, { opacity }]}
         />
         <BlueButton
           disabled={proofState !== DidCommProofState.RequestReceived}
+          testID="chat-proof-request-accept"
           text={t('presentationRequest.selectCredential', {
             count: requestedCredentialsForDisplay?.requestedCredentials?.length,
           })}
@@ -169,7 +172,7 @@ const VPRequestChatView = ({ sender, proofRecordId, metadata, agent, chatEntryId
     return status[proofState] ?? <MainButtons proofState={proofState} />
   }
   return (
-    <View style={styles.container}>
+    <View testID="chat-proof-request" style={styles.container}>
       <ModalConfirmAction
         visible={showModalRefuseConfirmation}
         title={t('chat.confirmRefusePresentCredential')}
@@ -181,7 +184,7 @@ const VPRequestChatView = ({ sender, proofRecordId, metadata, agent, chatEntryId
         onCancel={hideModalRefuseConfirmation}
       />
       <Header theme={theme} title={t('presentationRequest.title')} leftIconName="id" />
-      <View style={styles.subContainer}>
+      <View testID={`chat-proof-request-state-${metadata.proofState}`} style={styles.subContainer}>
         {requestedCredentialsForDisplay?.requestedCredentials?.map((requestedCredential) => (
           <View key={requestedCredential?.schemaName}>
             <Text style={styles.title}>

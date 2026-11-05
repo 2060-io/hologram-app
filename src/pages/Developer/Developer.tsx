@@ -70,6 +70,7 @@ const Developer = ({ navigation }: Props) => {
       .filter(([key]) => knownKeys.has(key as keyof DevEnvsKeys))
       .filter(([key]) => !isMultiSelectDevEnv(key as keyof DevEnvsKeys))
       .map(([key, value]) => ({
+        testID: `developer-env-${key.toLowerCase().replace(/_/g, '-')}`,
         text: `${devEnvPlaceholder[key as keyof DevEnvsKeys]}:\n${value}`,
         onPress: () => onPressDevEnv(key as keyof DevEnvsKeys),
       }))
@@ -198,20 +199,25 @@ const Developer = ({ navigation }: Props) => {
   const options: Option[] = [
     {
       iconName: 'trash',
+      testID: 'developer-delete-wallet',
       text: t('settings.deleteWallet'),
       onPress: confirmWalletDeletion,
     },
     {
       iconName: 'edit',
       text: t('settings.displayLogs'),
-      rightContent: () => <Switch isChecked={logsEnabled} onToggle={toggleLogsEnabled} />,
+      rightContent: () => (
+        <Switch testID="developer-logs-switch" isChecked={logsEnabled} onToggle={toggleLogsEnabled} />
+      ),
     },
     {
       iconName: 'download',
+      testID: 'developer-export-logs',
       text: t('settings.exportLogs'),
       onPress: exportLogs,
     },
     {
+      testID: 'developer-didcomm-versions',
       iconName: 'link',
       text: `${devEnvPlaceholder.SUPPORTED_DIDCOMM_VERSIONS}: ${parseDidcommVersions(
         devEnvs?.SUPPORTED_DIDCOMM_VERSIONS
@@ -235,16 +241,23 @@ const Developer = ({ navigation }: Props) => {
                 ...styles.optionContainer,
                 ...(isSelected && styles.optionSelected),
               }}
+              testID="developer-env-custom-value"
               onPress={() => onSelectDevEnvOption(currentDevEnv.key, currentCustomDevEnvValue)}
             >
               <Text style={styles.devEnvText}>{currentCustomDevEnvValue}</Text>
             </TouchableOpacity>
-            <Text onPress={switchToEditionCustomDevEnv} fontFamily="EuclidCircularA-SemiBold" style={styles.textButton}>
+            <Text
+              testID="developer-env-custom-modify"
+              onPress={switchToEditionCustomDevEnv}
+              fontFamily="EuclidCircularA-SemiBold"
+              style={styles.textButton}
+            >
               {t('general.modify')}
             </Text>
           </View>
         ) : (
           <Text
+            testID="developer-env-custom-create"
             onPress={switchToEditionCustomDevEnv}
             fontFamily="EuclidCircularA-SemiBold"
             style={{ ...styles.textButton, ...styles.createCustomDenEnvText }}
@@ -271,6 +284,7 @@ const Developer = ({ navigation }: Props) => {
               </Text>
               <View style={styles.rowContainer}>
                 <TextInput
+                  testID="developer-env-custom-input"
                   ref={customDevInputRef}
                   value={tempCustomDevEnvValue}
                   onChangeText={setTempCustomDevEnvValue}
@@ -279,6 +293,7 @@ const Developer = ({ navigation }: Props) => {
                 />
                 <Text
                   disabled={!tempCustomDevEnvValue?.length}
+                  testID="developer-env-custom-save"
                   onPress={onSaveCustomDevEnv}
                   fontFamily="EuclidCircularA-SemiBold"
                   style={styles.textButton}
@@ -310,6 +325,7 @@ const Developer = ({ navigation }: Props) => {
                         ...styles.optionContainer,
                         ...(isSelected && styles.optionSelected),
                       }}
+                      testID={`developer-didcomm-version-${option}`}
                       onPress={() => onToggleDidcommVersion(option)}
                     >
                       <Text style={styles.devEnvText}>{isSelected ? `🔌 ${option}` : `⚪ ${option}`}</Text>
@@ -323,6 +339,7 @@ const Developer = ({ navigation }: Props) => {
                     <TouchableOpacity
                       key={option}
                       style={{ ...styles.optionContainer, ...(isSelected && styles.optionSelected) }}
+                      testID="developer-env-option"
                       onPress={() => onSelectDevEnvOption(currentDevEnv.key, option)}
                     >
                       <Text style={styles.devEnvText}>{option}</Text>

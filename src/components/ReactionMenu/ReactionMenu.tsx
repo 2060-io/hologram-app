@@ -63,13 +63,19 @@ const ReactionMenu = ({ message, onClose, onReaction }: Props) => {
       <View style={styles.emojiBox}>
         {mainEmojis.map((emoji) => (
           <EmojiItem
+            testID={`message-reaction-${emoji.name}`}
             onPress={() => handleOnEmojiSelected(emoji)}
             key={emoji.name}
             data={emoji}
             isEmojiSelected={getIsEmojiSelected(emoji.emoji)}
           />
         ))}
-        <TouchableOpacity onPress={handleOnshowEmojiPicker} activeOpacity={0.7} style={styles.iconEllipsis}>
+        <TouchableOpacity
+          testID="message-reaction-more"
+          onPress={handleOnshowEmojiPicker}
+          activeOpacity={0.7}
+          style={styles.iconEllipsis}
+        >
           <Icon as="Ionicons" name="add" color={theme.colors.blue} size={25} />
         </TouchableOpacity>
       </View>

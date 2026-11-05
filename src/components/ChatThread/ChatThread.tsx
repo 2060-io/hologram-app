@@ -16,6 +16,7 @@ interface Props extends ChatThreadData {
 }
 
 const ChatThread = ({
+  id,
   picture,
   lastActivityAt,
   lastChildActivityAt,
@@ -36,7 +37,12 @@ const ChatThread = ({
   const lastActivityDate = hasChildren ? lastChildActivityAt : lastActivityAt
 
   return (
-    <TouchableOpacity activeOpacity={0.5} onPress={onPressChatThread} style={styles.container}>
+    <TouchableOpacity
+      testID={`chat-row-${id}`}
+      activeOpacity={0.5}
+      onPress={onPressChatThread}
+      style={styles.container}
+    >
       <Avatar
         uri={picture}
         label={topic}

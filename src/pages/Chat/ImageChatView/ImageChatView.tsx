@@ -74,6 +74,7 @@ const ImageChatView = (props: ImageProps) => {
 
   return (
     <View
+      testID="chat-image"
       style={[
         displayTimeAndTicks ? styles.withTimeAndTicksContainer : styles.withoutTimeAndTicksContainer,
         { width: imageStyle.width },
@@ -119,7 +120,7 @@ const ImageChatView = (props: ImageProps) => {
                 </Text>
               </React.Fragment>
             ) : (
-              <TouchableOpacity style={styles.btnDownload} onPress={downloadMedia}>
+              <TouchableOpacity testID="chat-image-download" style={styles.btnDownload} onPress={downloadMedia}>
                 <Icon as="Ionicons" name="arrow-down-circle" size={30} color={theme.colors.primaryText} />
                 {byteCount && (
                   <Text fontFamily="EuclidCircularA-Medium" style={styles.textsize}>

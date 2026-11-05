@@ -75,7 +75,7 @@ const SelectCredentialAttributes = ({ navigation, route }: Props) => {
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.subContainer}>
           <Text style={styles.title}>{t('credential.selectAttributes')}</Text>
-          <Text style={styles.selectAllText} onPress={handleSelectAll}>
+          <Text testID="present-select-all" style={styles.selectAllText} onPress={handleSelectAll}>
             {areAllSelected ? t('credential.unselectAll') : t('credential.selectAll')}
           </Text>
           <FlatList
@@ -111,6 +111,7 @@ const SelectCredentialAttributes = ({ navigation, route }: Props) => {
           {!presentDirectly && (
             <MainButton
               disabled={!attributesToPresent.length}
+              testID="present-create-qr"
               text={t('credential.createQRCode')}
               onPress={generateQR}
               style={[
@@ -122,6 +123,7 @@ const SelectCredentialAttributes = ({ navigation, route }: Props) => {
           )}
           <MainButton
             disabled={!attributesToPresent.length}
+            testID="present-submit"
             text={presentDirectly ? t('general.present') : t('credential.presentToConnection')}
             onPress={onPresent}
             style={[attributesToPresent.length ? styles.presentEnabled : styles.presentDisabled]}

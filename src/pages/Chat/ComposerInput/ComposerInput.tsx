@@ -39,6 +39,7 @@ const ComposerInput: React.FC<Props> = ({
       <TextInput
         ref={textInputRef}
         accessible
+        testID="composer-input"
         accessibilityLabel={placeholder}
         placeholder={placeholder}
         placeholderTextColor="#807F85"
