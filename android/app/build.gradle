@@ -221,8 +221,8 @@ def isNewHermesEnabled() {
 }
 
 androidComponents {
-    beforeVariants { variant ->
+    beforeVariants(selector().withBuildType('e2e')) { variant ->
         // Keeps the test CA out of any build with the production application ID
-        if (variant.buildType == 'e2e' && variant.flavorName == 'prod') variant.enable = false
+        if (variant.flavorName == 'prod') variant.enable = false
     }
 }
