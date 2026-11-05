@@ -12,6 +12,11 @@ on:
         required: false
         type: string
         default: .env.e2e-local
+      start-stack:
+        description: Start the local stack in e2e/stack
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -171,6 +176,13 @@ jobs:
           sudo udevadm trigger --name-match=kvm
           echo "$ANDROID_HOME/platform-tools" >> "$GITHUB_PATH"
 
+      - name: Start the local stack
+        if: inputs.start-stack
+        run: |
+          DNS_BIND_IP=$(hostname -I | awk '{print $1}')
+          echo "DNS_BIND_IP=$DNS_BIND_IP" >> "$GITHUB_ENV"
+          DNS_BIND_IP=$DNS_BIND_IP e2e/stack/start.sh
+
       - name: Restore the AVD
         id: avd-cache
         uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
@@ -211,9 +223,15 @@ jobs:
       - name: Run the flows
         run: e2e/ci/run-flows.sh "${{ inputs.tags }}"
 
+      - name: Collect the container logs
+        if: always() && inputs.start-stack
+        run: |
+          mkdir -p e2e-out
+          docker compose -f e2e/stack/docker-compose.yml logs --no-color > e2e-out/stack.log 2>&1 || true
+
       - name: Upload the artifacts
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: e2e-output-${{ inputs.tags }}
+          name: e2e-output
           path: e2e-out
