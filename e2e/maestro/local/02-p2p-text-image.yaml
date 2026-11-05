@@ -52,7 +52,7 @@ tags: [spike]
 - extendedWaitUntil:
     visible: "Bob"
     timeout: 10000
-  optional: true
+    optional: true
 
 - runFlow:
     file: ../subflows/switch-app.yaml
