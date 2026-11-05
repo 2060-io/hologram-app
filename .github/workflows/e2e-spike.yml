@@ -187,6 +187,7 @@ jobs:
           pactl set-default-source virtmic.monitor
 
       - name: Boot the emulator
+        timeout-minutes: 25
         run: e2e/spike/boot-emulator.sh
 
       - name: Check DNS in the emulator (R1)

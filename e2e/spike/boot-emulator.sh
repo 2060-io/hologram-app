@@ -5,6 +5,9 @@ IMG="system-images;android-$API;google_apis;x86_64"
 AVD=hologram_e2e
 SDK=${ANDROID_HOME:?ANDROID_HOME is not set}
 export PATH="$SDK/cmdline-tools/latest/bin:$SDK/emulator:$SDK/platform-tools:$PATH"
+# GitHub runners set XDG_CONFIG_HOME, so avdmanager writes under ~/.config while the emulator reads ~/.android
+export ANDROID_AVD_HOME="$HOME/.android/avd"
+mkdir -p "$ANDROID_AVD_HOME"
 OUT=${E2E_OUT:-e2e-out}
 mkdir -p "$OUT"
 
@@ -15,7 +18,11 @@ start_emulator() {
 
 wait_boot() {
   local start=$SECONDS
-  adb wait-for-device
+  if ! timeout 300 adb wait-for-device; then
+    echo "no adb device after 300 s" >&2
+    tail -40 "$OUT/emulator.log" >&2
+    exit 1
+  fi
   until [ "$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')" = "1" ]; do
     if [ $((SECONDS - start)) -gt 600 ]; then
       echo "emulator did not boot in 600 s" >&2
@@ -27,14 +34,14 @@ wait_boot() {
   echo "boot_completed after $((SECONDS - start)) s"
 }
 
-if [ ! -d "$HOME/.android/avd/$AVD.avd" ]; then
+if [ ! -d "$ANDROID_AVD_HOME/$AVD.avd" ]; then
   echo "AVD cache miss: creating $AVD"
   SECONDS=0
   yes 2>/dev/null | sdkmanager --licenses >/dev/null
   sdkmanager --install emulator "$IMG" >/dev/null || exit 1
   echo "sdk install took $SECONDS s"
   echo no | avdmanager create avd -n "$AVD" -k "$IMG" -d pixel_6 --force || exit 1
-  cat >>"$HOME/.android/avd/$AVD.avd/config.ini" <<CFG
+  cat >>"$ANDROID_AVD_HOME/$AVD.avd/config.ini" <<CFG || exit 1
 hw.ramSize=4096
 disk.dataPartition.size=6G
 hw.keyboard=yes
