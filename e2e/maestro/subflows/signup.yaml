@@ -4,11 +4,11 @@ appId: io.twentysixty.mobileagent.dev
     file: open-signup.yaml
     env:
       APP_ID: ${APP_ID}
-- tapOn: "Choose your name"
+- tapOn: { id: "profile-name-input" }
 - inputText: ${NAME}
 # ProfileCreation has no keyboardShouldPersistTaps, so a tap with the keyboard open only closes the keyboard
 - tapOn: "Welcome to Hologram!"
-- tapOn: "Get started"
+- tapOn: { id: "signup-get-started" }
 - extendedWaitUntil:
     visible: "Add a connection to start chatting"
     timeout: 90000
