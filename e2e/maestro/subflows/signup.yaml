@@ -12,6 +12,8 @@ appId: io.twentysixty.mobileagent.dev
     timeout: 60000
 - tapOn: "Choose your name"
 - inputText: ${NAME}
+# ProfileCreation has no keyboardShouldPersistTaps, so a tap with the keyboard open only closes the keyboard
+- hideKeyboard
 - tapOn: "Get started"
 - extendedWaitUntil:
     visible: "Add a connection to start chatting"

@@ -44,20 +44,28 @@ sleep 3
 mkdir -p "$OUT/recordings"
 for f in $(adb shell ls /sdcard/ 2>/dev/null | tr -d '\r' | grep '^rec-'); do adb pull "/sdcard/$f" "$OUT/recordings/" >/dev/null 2>&1; done
 
-echo "## app log access"
-adb shell run-as io.twentysixty.mobileagent.dev ls files 2>&1 | head -3
-adb root 2>&1 | tail -1
-sleep 4
-adb wait-for-device
-adb shell ls -la /data/data/io.twentysixty.mobileagent.dev/files 2>&1 | head -30
-adb shell find /data/data/io.twentysixty.mobileagent.dev -iname '*log*' 2>/dev/null | head -20
-adb unroot >/dev/null 2>&1 || true
-sleep 4
-adb wait-for-device
+pull_app_logs() {
+  local name=$1
+  shift
+  adb root >/dev/null 2>&1
+  sleep 4
+  adb wait-for-device
+  mkdir -p "$OUT/$name"
+  for pkg in "$@"; do
+    adb pull "/data/data/$pkg/files/hologramLogs" "$OUT/$name/app-logs-$pkg" >/dev/null 2>&1 || echo "no app logs for $pkg"
+  done
+  adb unroot >/dev/null 2>&1 || true
+  sleep 4
+  adb wait-for-device
+}
+
+pull_app_logs 03-voice-note io.twentysixty.mobileagent.dev io.twentysixty.mobileagent.st
 
 adb install -r e2e-apks/dev-external.apk >/dev/null
 run_flow x10-accredited-issuer e2e/maestro/external/x10-accredited-issuer.yaml
+pull_app_logs x10-accredited-issuer io.twentysixty.mobileagent.dev
 curl -fsS -m 20 https://demo-chatbot-backend.demos.dev.hologram.zone/health | tee "$OUT/chatbot-health.json" || echo "dev chatbot health check failed"
 run_flow x01-dev-chatbot e2e/maestro/external/x01-dev-chatbot.yaml
+pull_app_logs x01-dev-chatbot io.twentysixty.mobileagent.dev
 
 exit "$FAILED"
