@@ -1,0 +1,58 @@
+name: hologram-e2e
+
+services:
+  caddy:
+    image: caddy:2.10-alpine
+    ports:
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./certs/generated:/certs:ro
+    depends_on:
+      - mediator
+      - minio
+
+  dnsmasq:
+    image: alpine:3.20
+    ports:
+      - "${DNS_BIND_IP:-127.0.0.1}:53:53/udp"
+      - "${DNS_BIND_IP:-127.0.0.1}:53:53/tcp"
+    command: >-
+      sh -c "apk add --no-cache dnsmasq &&
+      exec dnsmasq --keep-in-foreground --no-resolv --server=8.8.8.8 --server=1.1.1.1
+      --address=/hologram.test/10.0.2.2 --log-queries --log-facility=-"
+    cap_add:
+      - NET_ADMIN
+
+  mediator:
+    image: io2060/didcomm-mediator:v2.0.0
+    environment:
+      AGENT_NAME: Hologram E2E Mediator
+      AGENT_PUBLIC_DID: did:web:mediator.hologram.test
+      AGENT_ENDPOINTS: wss://mediator.hologram.test
+      SHORTEN_INVITATION_BASE_URL: https://mediator.hologram.test
+      FIREBASE_CFG_FILE: /nonexistent/firebase.json
+
+  hologram-server:
+    build:
+      context: https://github.com/2060-io/hologram-server.git#7c5394b09e31cc7df64ffd4738e790b9735fdd82
+    environment:
+      APP_PORT: "3000"
+      BUCKET_SERVER: http://minio:9000
+      BUCKET_REGION: us-east-1
+      FIREBASE_CFG_FILE: /nonexistent/firebase.json
+      FIREBASE_PROJECT_ID: hologram-51078
+      MAX_VALIDITY_SECONDS: "900"
+
+  minio:
+    image: bitnamilegacy/minio:2025.7.23-debian-12-r5
+    depends_on:
+      - hologram-server
+    restart: unless-stopped
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+      MINIO_DEFAULT_BUCKETS: hologram-media-sharing:download
+      MINIO_IDENTITY_PLUGIN_URL: http://hologram-server:3000/auth
+      MINIO_IDENTITY_PLUGIN_ROLE_ID: mobile-app
+      MINIO_IDENTITY_PLUGIN_ROLE_POLICY: readwrite

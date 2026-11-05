@@ -130,6 +130,13 @@ android {
             shrinkResources enableShrinkResources
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
+        e2e {
+            initWith release
+            signingConfig signingConfigs.debug
+            matchingFallbacks = ['release']
+            // The RN Gradle plugin only sets this placeholder for debug and release, after initWith ran
+            manifestPlaceholders = [usesCleartextTraffic: "false"]
+        }
     }
 
     flavorDimensions "default"

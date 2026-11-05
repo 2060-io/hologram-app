@@ -1,0 +1,220 @@
+name: E2E spike
+
+on:
+  push:
+    branches: ['spike/539-e2e-android']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: e2e-spike
+  cancel-in-progress: false
+
+
+jobs:
+  stack:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      DNS_BIND_IP: 127.0.0.1
+    steps:
+      - name: Checkout hologram-app
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+
+      - name: Start the local stack
+        run: e2e/stack/start.sh
+
+      - name: Check the stack
+        run: e2e/spike/check-stack.sh
+
+      - name: Container logs
+        if: always()
+        run: |
+          mkdir -p e2e-out
+          docker compose -f e2e/stack/docker-compose.yml logs --no-color > e2e-out/stack.log 2>&1 || true
+
+      - name: Upload logs
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: stack-logs
+          path: e2e-out
+          retention-days: 7
+
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - name: Checkout hologram-app
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+
+      - name: APK cache
+        id: apk-cache
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: e2e-apks
+          key: e2e-apks-${{ hashFiles('android/**', 'src/**', 'modules/**', 'patches/**', 'package.json', 'pnpm-lock.yaml', 'index.js', 'metro.config.js', 'babel.config.js', '.env.e2e-*') }}
+
+      - name: Free disk space
+        if: steps.apk-cache.outputs.cache-hit != 'true'
+        run: |
+          sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/.ghcup /usr/local/share/boost /opt/hostedtoolcache/CodeQL
+          df -h /
+
+      - name: Setup pnpm
+        if: steps.apk-cache.outputs.cache-hit != 'true'
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5.0.0
+
+      - name: Setup Node.js v22
+        if: steps.apk-cache.outputs.cache-hit != 'true'
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
+        with:
+          node-version: 22
+          registry-url: 'https://registry.npmjs.org/'
+          cache: pnpm
+
+      - name: Cache node_modules
+        if: steps.apk-cache.outputs.cache-hit != 'true'
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: node_modules
+          key: node-modules-${{ hashFiles('pnpm-lock.yaml', 'patches/**') }}
+
+      - name: Install dependencies
+        if: steps.apk-cache.outputs.cache-hit != 'true'
+        run: pnpm install --frozen-lockfile
+
+      - name: Cache Gradle
+        if: steps.apk-cache.outputs.cache-hit != 'true'
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            android/.gradle
+          key: gradle-e2e-${{ hashFiles('android/**/*.gradle*', 'android/gradle.properties', 'pnpm-lock.yaml') }}
+          restore-keys: gradle-e2e-
+
+      - name: Generate codegen
+        if: steps.apk-cache.outputs.cache-hit != 'true'
+        working-directory: android
+        run: ./gradlew generateCodegenSchemaFromJavaScript generateCodegenArtifactsFromSchema -PreactNativeArchitectures=x86_64
+
+      - name: Build devE2e and stagingE2e with the local env
+        if: steps.apk-cache.outputs.cache-hit != 'true'
+        working-directory: android
+        env:
+          ENVFILE: .env.e2e-local
+        run: |
+          ./gradlew assembleDevE2e assembleStagingE2e -PreactNativeArchitectures=x86_64
+          mkdir -p ../e2e-apks
+          cp app/build/outputs/apk/dev/e2e/app-dev-e2e.apk ../e2e-apks/dev-local.apk
+          cp app/build/outputs/apk/staging/e2e/app-staging-e2e.apk ../e2e-apks/staging-local.apk
+
+      - name: Build devE2e with the dev env
+        if: steps.apk-cache.outputs.cache-hit != 'true'
+        working-directory: android
+        env:
+          ENVFILE: .env.e2e-dev
+        run: |
+          ./gradlew assembleDevE2e -PreactNativeArchitectures=x86_64
+          cp app/build/outputs/apk/dev/e2e/app-dev-e2e.apk ../e2e-apks/dev-external.apk
+
+      - name: Upload the APKs
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: e2e-apks
+          path: e2e-apks
+          retention-days: 7
+          compression-level: 0
+
+  flows:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - name: Checkout hologram-app
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+
+      - name: Download the APKs
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        with:
+          name: e2e-apks
+          path: e2e-apks
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+          echo "DNS_BIND_IP=$(hostname -I | awk '{print $1}')" >> "$GITHUB_ENV"
+
+      - name: Start the local stack
+        run: e2e/stack/start.sh
+
+      - name: AVD cache
+        id: avd-cache
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: |
+            ~/.android/avd
+            ~/.android/adb*
+            /usr/local/lib/android/sdk/system-images/android-34
+            /usr/local/lib/android/sdk/emulator
+          key: e2e-avd-api34-google_apis-x86_64-${{ hashFiles('e2e/spike/boot-emulator.sh') }}
+
+      - name: Virtual audio input
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq pulseaudio pulseaudio-utils >/dev/null
+          pulseaudio --start --exit-idle-time=-1
+          pactl load-module module-null-sink sink_name=virtmic
+          pactl set-default-source virtmic.monitor
+
+      - name: Boot the emulator
+        run: e2e/spike/boot-emulator.sh
+
+      - name: Check DNS in the emulator (R1)
+        run: |
+          adb shell getprop net.dns1 || true
+          adb shell ping -c 1 -W 3 mediator.hologram.test || true
+          adb shell ping -c 1 -W 3 firebaseappcheck.googleapis.com || true
+
+      - name: Install the two apps
+        run: |
+          adb install -r e2e-apks/dev-local.apk
+          adb install -r e2e-apks/staging-local.apk
+          adb shell pm list packages | grep twentysixty
+
+      - name: Set a PIN on the emulator
+        run: |
+          adb shell locksettings set-pin 1234
+          adb shell input keyevent 82 || true
+
+      - name: Install Maestro
+        run: |
+          curl -fsSL -o /tmp/maestro.zip https://github.com/mobile-dev-inc/maestro/releases/download/cli-2.12.1/maestro.zip
+          unzip -q /tmp/maestro.zip -d "$HOME"
+          echo "$HOME/maestro/bin" >> "$GITHUB_PATH"
+          echo "MAESTRO_CLI_NO_ANALYTICS=1" >> "$GITHUB_ENV"
+
+      - name: Run the flows
+        run: e2e/spike/run-flows.sh
+
+      - name: Collect logs
+        if: always()
+        run: |
+          mkdir -p e2e-out
+          docker compose -f e2e/stack/docker-compose.yml logs --no-color > e2e-out/stack.log 2>&1 || true
+          adb logcat -d > e2e-out/logcat.txt 2>/dev/null || true
+          cp -r ~/.maestro/tests e2e-out/maestro-tests 2>/dev/null || true
+
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: flows-output
+          path: e2e-out
+          retention-days: 7
