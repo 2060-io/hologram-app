@@ -394,7 +394,7 @@ sends.
 | Workflow | Trigger | Jobs | Run time (estimate) |
 | --- | --- | --- | --- |
 | `ci.yml` (exists) | Each PR | Style, types | 3 min |
-| `e2e-local.yml` | Each PR (no docs-only changes), on request | Android build (`devE2e` + `stagingE2e`), stack, local suite | 100 min with a cold build, if each flow signs up and connects again (section 11.1) |
+| `e2e-local.yml` | Each PR (no docs-only changes), on request | Android build (`devE2e` + `stagingE2e`), stack, local suite | About 85 min with a cold build and about 75 min with warm caches, if each flow signs up and connects again (estimate, section 11.1) |
 | `e2e-local-ios.yml` | PRs that change native iOS files (`ios/**`, `package.json`, `pnpm-lock.yaml`, `patches/**`), on request | iOS simulator build, native stack, local suite | 60–80 min |
 | `e2e-external.yml` | On request (`workflow_dispatch`, or the label `e2e-external` on a PR) | Preflight, Android `devE2e` with `.env.e2e-dev`, external suite | 40–60 min |
 | `e2e-release.yml` | Called by the release workflows | Local suite (Android and iOS), L17 (upgrade), two-emulator live mode, external suite | 90–120 min |
@@ -508,7 +508,9 @@ The first attempt on that commit failed because of R14. The spike did not attemp
 
 | Step | Time |
 | --- | --- |
-| Android build of the two variants and one external variant, no Gradle cache | about 40 min (a build with a warm Gradle cache was not measured) |
+| Android build of `devE2e` and `stagingE2e`, codegen included, no cache (#540) | about 25 min |
+| The same build with warm Gradle and ccache caches, after a change in `src` (#540) | about 16.5 min |
+| The spike build, with one more external variant, no cache | about 40 min |
 | APK cache hit (no app file changed) | under 10 s |
 | Stack start | 20–35 s, once 323 s (the cause was not examined) |
 | AVD creation, cache miss | 130–145 s |
