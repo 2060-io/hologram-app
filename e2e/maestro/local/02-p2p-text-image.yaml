@@ -85,6 +85,22 @@ tags: [spike]
 - inputText: "hello from A"
 - tapOn: "send"
 - extendedWaitUntil:
+    visible: "hello from A"
+    timeout: 15000
+
+# Attach and mic appear only after the feature disclosure of B reaches A, which needs a foreground turn of B
+- runFlow:
+    file: ../subflows/switch-app.yaml
+    env: { APP_ID: io.twentysixty.mobileagent.st }
+- extendedWaitUntil:
+    visible: "hello from A"
+    timeout: 60000
+- takeScreenshot: b-received-text
+
+- runFlow:
+    file: ../subflows/switch-app.yaml
+    env: { APP_ID: io.twentysixty.mobileagent.dev }
+- extendedWaitUntil:
     visible: { id: "composer-attach" }
     timeout: 60000
 - addMedia:
@@ -111,9 +127,6 @@ tags: [spike]
 - runFlow:
     file: ../subflows/switch-app.yaml
     env: { APP_ID: io.twentysixty.mobileagent.st }
-- extendedWaitUntil:
-    visible: "hello from A"
-    timeout: 60000
 - extendedWaitUntil:
     visible: { id: "chat-image" }
     timeout: 120000
