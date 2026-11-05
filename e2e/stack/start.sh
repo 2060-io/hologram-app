@@ -11,7 +11,16 @@ openssl x509 -req -in certs/generated/server.csr -CA certs/test-ca.crt -CAkey ce
   -out certs/generated/server.crt 2>/dev/null
 chmod 644 certs/generated/server.key
 
+[ -f .env ] || echo "MINIO_ROOT_PASSWORD=$(openssl rand -hex 16)" > .env
+
 docker compose up -d --build
+
+# did.json requested while the mediator provisions its store crashes it, so nothing may reach it before this line
+for i in $(seq 1 90); do
+  docker compose logs --no-color mediator 2>/dev/null | grep -q 'initialized OK' && break
+  [ "$i" -lt 90 ] || { docker compose logs --no-color mediator | tail -40; echo "mediator did not initialize" >&2; exit 1; }
+  sleep 2
+done
 
 CURL=(curl -sS --cacert certs/test-ca.crt --resolve mediator.hologram.test:443:127.0.0.1 --resolve s3.hologram.test:443:127.0.0.1)
 

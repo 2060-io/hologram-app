@@ -63,6 +63,13 @@ jobs:
           sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/.ghcup /usr/local/share/boost /opt/hostedtoolcache/CodeQL
           df -h /
 
+      - name: Set up JDK 17
+        if: steps.apk-cache.outputs.cache-hit != 'true'
+        uses: actions/setup-java@77dd5b2ce225ea11469928ac317850245a74ae78 # v6.2.0
+        with:
+          distribution: temurin
+          java-version: '17'
+
       - name: Setup pnpm
         if: steps.apk-cache.outputs.cache-hit != 'true'
         uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5.0.0
@@ -143,6 +150,12 @@ jobs:
         with:
           name: e2e-apks
           path: e2e-apks
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@77dd5b2ce225ea11469928ac317850245a74ae78 # v6.2.0
+        with:
+          distribution: temurin
+          java-version: '17'
 
       - name: Enable KVM
         run: |

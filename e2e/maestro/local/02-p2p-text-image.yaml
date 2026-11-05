@@ -1,0 +1,98 @@
+appId: io.twentysixty.mobileagent.dev
+tags: [spike]
+---
+- runFlow:
+    file: ../subflows/switch-app.yaml
+    env: { APP_ID: io.twentysixty.mobileagent.dev }
+- tapOn: "Settings"
+- tapOn: { id: "settings-my-invitation" }
+- extendedWaitUntil:
+    visible: "Share"
+    timeout: 20000
+- tapOn: "Share"
+- waitForAnimationToEnd
+- takeScreenshot: a-share-sheet
+- tapOn: "Copy"
+- waitForAnimationToEnd
+- takeScreenshot: a-after-copy
+
+- runFlow:
+    file: ../subflows/switch-app.yaml
+    env: { APP_ID: io.twentysixty.mobileagent.st }
+- tapOn: "Scan"
+- tapOn: "Use link"
+- longPressOn: { id: "scan-link-input" }
+- takeScreenshot: b-paste-menu
+- tapOn: "Paste"
+- takeScreenshot: b-pasted
+- tapOn: "Open"
+- extendedWaitUntil:
+    visible: "Accept"
+    timeout: 30000
+- takeScreenshot: b-invitation
+- tapOn: "Accept"
+- extendedWaitUntil:
+    visible: "Message"
+    timeout: 60000
+- tapOn: "Message"
+- inputText: "hello from B"
+- tapOn: "send"
+- extendedWaitUntil:
+    visible: "hello from B"
+    timeout: 15000
+- takeScreenshot: b-sent-text
+
+- runFlow:
+    file: ../subflows/switch-app.yaml
+    env: { APP_ID: io.twentysixty.mobileagent.dev }
+- runFlow:
+    when:
+      visible: "Done"
+    commands:
+      - tapOn: "Done"
+- tapOn: "Chats"
+- extendedWaitUntil:
+    visible: "Bob"
+    timeout: 60000
+- tapOn: "Bob"
+- extendedWaitUntil:
+    visible: "hello from B"
+    timeout: 60000
+- takeScreenshot: a-received-text
+- tapOn: "Message"
+- inputText: "hello from A"
+- tapOn: "send"
+- extendedWaitUntil:
+    visible: { id: "composer-attach" }
+    timeout: 60000
+- addMedia:
+    - ../../fixtures/image.png
+- tapOn: { id: "composer-attach" }
+- tapOn: "Photo & video library"
+- waitForAnimationToEnd
+- takeScreenshot: a-photo-picker
+- runFlow:
+    when:
+      visible: "Photo taken on .*"
+    commands:
+      - tapOn:
+          text: "Photo taken on .*"
+          index: 0
+- runFlow:
+    when:
+      notVisible: "Message"
+    commands:
+      - tapOn: { point: "17%,30%" }
+- waitForAnimationToEnd
+- takeScreenshot: a-after-pick
+
+- runFlow:
+    file: ../subflows/switch-app.yaml
+    env: { APP_ID: io.twentysixty.mobileagent.st }
+- extendedWaitUntil:
+    visible: "hello from A"
+    timeout: 60000
+- extendedWaitUntil:
+    visible: { id: "chat-image" }
+    timeout: 120000
+- takeScreenshot: b-received-image

@@ -4,7 +4,7 @@ cd "$(dirname "$0")/../stack"
 CURL=(curl -sS --cacert certs/test-ca.crt --resolve mediator.hologram.test:443:127.0.0.1 --resolve s3.hologram.test:443:127.0.0.1)
 GS=../../android/app/google-services.json
 PROJECT=hologram-51078
-DEBUG_TOKEN=8305FD57-71EF-476A-AC15-32482CAECC44
+DEBUG_TOKEN=$(sed -n 's/^ANDROID_FIREBASE_DEBUG_TOKEN=//p' ../../.env.e2e-local)
 API_KEY=$(jq -r '.client[0].api_key[0].current_key' "$GS")
 RESULT=0
 

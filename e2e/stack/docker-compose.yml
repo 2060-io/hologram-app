@@ -4,7 +4,7 @@ services:
   caddy:
     image: caddy:2.10-alpine
     ports:
-      - "443:443"
+      - "${CADDY_BIND_IP:-127.0.0.1}:443:443"
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
       - ./certs/generated:/certs:ro
@@ -20,7 +20,7 @@ services:
     command: >-
       sh -c "apk add --no-cache dnsmasq &&
       exec dnsmasq --keep-in-foreground --no-resolv --server=8.8.8.8 --server=1.1.1.1
-      --address=/hologram.test/10.0.2.2 --log-queries --log-facility=-"
+      --interface=eth0 --address=/hologram.test/10.0.2.2 --log-queries --log-facility=-"
     cap_add:
       - NET_ADMIN
 
@@ -51,7 +51,7 @@ services:
     restart: unless-stopped
     environment:
       MINIO_ROOT_USER: minioadmin
-      MINIO_ROOT_PASSWORD: minioadmin
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?run e2e/stack/start.sh, it generates this value}
       MINIO_DEFAULT_BUCKETS: hologram-media-sharing:download
       MINIO_IDENTITY_PLUGIN_URL: http://hologram-server:3000/auth
       MINIO_IDENTITY_PLUGIN_ROLE_ID: mobile-app

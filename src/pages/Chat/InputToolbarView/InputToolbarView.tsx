@@ -146,7 +146,12 @@ const InputToolbarView = (props: Props) => {
       <View style={styles.subContainer}>
         <View style={styles.leftAndCenterContainer}>
           {showMediaOptions && (
-            <TouchableOpacity style={styles.iconContainer} onPress={onShowMediaOptions} activeOpacity={0.7}>
+            <TouchableOpacity
+              testID="composer-attach"
+              style={styles.iconContainer}
+              onPress={onShowMediaOptions}
+              activeOpacity={0.7}
+            >
               <SvgIcon name="add" fill={theme.colors.primaryText} />
             </TouchableOpacity>
           )}

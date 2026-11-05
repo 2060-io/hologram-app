@@ -1,0 +1,10 @@
+appId: io.twentysixty.mobileagent.dev
+---
+- launchApp:
+    appId: ${APP_ID}
+    stopApp: false
+- waitForAnimationToEnd
+- runFlow:
+    file: unlock.yaml
+    when:
+      visible: "Hologram Locked|Authenticate to open .*"

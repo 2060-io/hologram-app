@@ -1,0 +1,33 @@
+appId: io.twentysixty.mobileagent.dev
+tags: [spike]
+---
+- runFlow:
+    file: ../subflows/signup.yaml
+    env: { APP_ID: io.twentysixty.mobileagent.dev, NAME: Xavier }
+- runScript:
+    file: ../scripts/playground-offer.js
+    env: { SERVICE: demo-issuer-accredited }
+- openLink: ${output.link}
+- extendedWaitUntil:
+    visible: "Credential Offer"
+    timeout: 90000
+- takeScreenshot: x10-offer
+- extendedWaitUntil:
+    visible: "Accept"
+    timeout: 90000
+- takeScreenshot: x10-offer-ready
+- assertNotVisible: "Could not verify.*"
+- tapOn: "Accept"
+- waitForAnimationToEnd
+- takeScreenshot: x10-after-accept
+- assertNotVisible: "Accept anyway.*"
+- extendedWaitUntil:
+    visible: "Credential added to your Wallet"
+    timeout: 90000
+- takeScreenshot: x10-accepted
+- runScript:
+    file: ../scripts/playground-state.js
+    env:
+      SERVICE: demo-issuer-accredited
+      EXCHANGE_ID: ${output.exchangeId}
+- assertTrue: ${output.exchangeDone}

@@ -166,7 +166,12 @@ const Settings = ({ navigation }: Props) => {
   const handleChangeHeaderOptions = () => {
     navigation.setOptions({
       headerLeft: () => (
-        <TouchableOpacity style={styles.btnQr} onPress={goToUserInvitation} activeOpacity={0.6}>
+        <TouchableOpacity
+          testID="settings-my-invitation"
+          style={styles.btnQr}
+          onPress={goToUserInvitation}
+          activeOpacity={0.6}
+        >
           <SvgIcon name="qrcode" fill={theme.colors.primaryText} />
         </TouchableOpacity>
       ),

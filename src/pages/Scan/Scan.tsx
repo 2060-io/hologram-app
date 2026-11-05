@@ -171,6 +171,7 @@ const Scan = ({ navigation }: Props) => {
           <Text style={styles.textDescriptionLink}>{t('scan.textDescriptionLink')}</Text>
           <View style={styles.containerInput}>
             <TextInput
+              testID="scan-link-input"
               value={scannedCode}
               multiline={true}
               numberOfLines={6}

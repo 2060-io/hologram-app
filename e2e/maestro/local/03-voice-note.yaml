@@ -1,0 +1,21 @@
+appId: io.twentysixty.mobileagent.dev
+tags: [spike]
+---
+- runFlow:
+    file: ../subflows/switch-app.yaml
+    env: { APP_ID: io.twentysixty.mobileagent.dev }
+- extendedWaitUntil:
+    visible: { id: "composer-mic" }
+    timeout: 30000
+- longPressOn: { id: "composer-mic" }
+- takeScreenshot: a-after-voice
+- assertNotVisible: "Recorded audio is too short.*"
+
+- runFlow:
+    file: ../subflows/switch-app.yaml
+    env: { APP_ID: io.twentysixty.mobileagent.st }
+- back
+- extendedWaitUntil:
+    visible: ".*Voice note shared"
+    timeout: 120000
+- takeScreenshot: b-voice-note-in-list

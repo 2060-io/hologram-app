@@ -1,0 +1,9 @@
+appId: io.twentysixty.mobileagent.dev
+tags: [spike]
+---
+- runFlow:
+    file: ../subflows/signup.yaml
+    env: { APP_ID: io.twentysixty.mobileagent.dev, NAME: Alice }
+- runFlow:
+    file: ../subflows/signup.yaml
+    env: { APP_ID: io.twentysixty.mobileagent.st, NAME: Bob }

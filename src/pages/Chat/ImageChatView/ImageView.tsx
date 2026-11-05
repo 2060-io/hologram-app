@@ -48,7 +48,7 @@ const ImageView = memo((props: ImageView) => {
           <UniversalImage source={{ uri: imageUri }} style={styles.imageLightbox} />
         </TouchableOpacity>
       </LightboxModal>
-      <TouchableOpacity onPress={onToggleModalLightbox} onLongPress={onLongPress}>
+      <TouchableOpacity testID="chat-image" onPress={onToggleModalLightbox} onLongPress={onLongPress}>
         <UniversalImage style={props.style} source={{ uri: imagePreviewUri }} />
       </TouchableOpacity>
     </>

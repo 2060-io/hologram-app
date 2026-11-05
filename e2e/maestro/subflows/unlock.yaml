@@ -1,0 +1,19 @@
+appId: io.twentysixty.mobileagent.dev
+---
+- runFlow:
+    when:
+      visible: "Retry"
+    commands:
+      - tapOn: "Retry"
+- runFlow:
+    when:
+      visible: "Authenticate"
+    commands:
+      - tapOn: "Authenticate"
+- waitForAnimationToEnd
+- takeScreenshot: unlock-prompt
+- inputText: "1234"
+- pressKey: Enter
+- extendedWaitUntil:
+    notVisible: "Hologram Locked"
+    timeout: 20000
