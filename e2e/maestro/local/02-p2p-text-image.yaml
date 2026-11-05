@@ -47,10 +47,12 @@ tags: [spike]
     commands:
       - tapOn: "Done"
 - tapOn: "Chats"
+# DID exchange needs three deliveries: B request, A response, B complete. A shows Bob only after the
+# last one, and nothing on screen says that A sent its response, so this only gives A time to send it.
 - extendedWaitUntil:
     visible: "Bob"
-    timeout: 60000
-- takeScreenshot: a-connected
+    timeout: 10000
+  optional: true
 
 - runFlow:
     file: ../subflows/switch-app.yaml
@@ -70,6 +72,10 @@ tags: [spike]
 - runFlow:
     file: ../subflows/switch-app.yaml
     env: { APP_ID: io.twentysixty.mobileagent.dev }
+- extendedWaitUntil:
+    visible: "Bob"
+    timeout: 60000
+- takeScreenshot: a-connected
 - tapOn: "Bob"
 - extendedWaitUntil:
     visible: "hello from B"
