@@ -12,8 +12,9 @@ appId: io.twentysixty.mobileagent.dev
     timeout: 60000
 - tapOn: "Choose your name"
 - inputText: ${NAME}
-# ProfileCreation has no keyboardShouldPersistTaps, so a tap with the keyboard open only closes the keyboard
-- hideKeyboard
+# ProfileCreation has no keyboardShouldPersistTaps, so a tap with the keyboard open only closes the keyboard.
+# hideKeyboard is not usable: it sends Back, which leaves the app when only the compact IME bar is shown.
+- tapOn: "Welcome to Hologram!"
 - tapOn: "Get started"
 - extendedWaitUntil:
     visible: "Add a connection to start chatting"
