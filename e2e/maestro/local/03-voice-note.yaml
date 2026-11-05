@@ -14,7 +14,9 @@ tags: [spike]
 - runFlow:
     file: ../subflows/switch-app.yaml
     env: { APP_ID: io.twentysixty.mobileagent.st }
+# Bob reached this chat from the Scan tab, so back returns there and not to the chat list
 - back
+- tapOn: "Chats"
 - extendedWaitUntil:
     visible: ".*Voice note shared"
     timeout: 120000
