@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+  <base-config cleartextTrafficPermitted="false">
+    <trust-anchors>
+      <certificates src="system" />
+    </trust-anchors>
+  </base-config>
+  <domain-config cleartextTrafficPermitted="false">
+    <domain includeSubdomains="true">hologram.test</domain>
+    <trust-anchors>
+      <certificates src="@raw/e2e_test_ca" />
+    </trust-anchors>
+  </domain-config>
+</network-security-config>

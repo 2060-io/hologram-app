@@ -1,0 +1,24 @@
+name: E2E smoke
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'android/**'
+      - 'e2e/**'
+      - '.env.e2e-*'
+      - '.github/workflows/e2e-*.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: e2e-smoke-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  smoke:
+    uses: ./.github/workflows/e2e-android.yml
+    with:
+      tags: smoke
