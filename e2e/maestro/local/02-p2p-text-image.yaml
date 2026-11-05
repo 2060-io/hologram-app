@@ -32,16 +32,12 @@ tags: [spike]
 - takeScreenshot: b-invitation
 - tapOn: "Accept"
 - extendedWaitUntil:
-    visible: "Message"
-    timeout: 60000
-- tapOn: "Message"
-- inputText: "hello from B"
-- tapOn: "send"
-- extendedWaitUntil:
-    visible: "hello from B"
-    timeout: 15000
-- takeScreenshot: b-sent-text
+    visible: "Waiting for Alice to accept invitation"
+    timeout: 30000
+- takeScreenshot: b-waiting
 
+# In the background the app closes its mediator socket, and the local mediator has no push.
+# So each app receives messages only while it is in the foreground.
 - runFlow:
     file: ../subflows/switch-app.yaml
     env: { APP_ID: io.twentysixty.mobileagent.dev }
@@ -54,6 +50,26 @@ tags: [spike]
 - extendedWaitUntil:
     visible: "Bob"
     timeout: 60000
+- takeScreenshot: a-connected
+
+- runFlow:
+    file: ../subflows/switch-app.yaml
+    env: { APP_ID: io.twentysixty.mobileagent.st }
+- extendedWaitUntil:
+    visible: "Message"
+    timeout: 60000
+- takeScreenshot: b-connected
+- tapOn: "Message"
+- inputText: "hello from B"
+- tapOn: "send"
+- extendedWaitUntil:
+    visible: "hello from B"
+    timeout: 15000
+- takeScreenshot: b-sent-text
+
+- runFlow:
+    file: ../subflows/switch-app.yaml
+    env: { APP_ID: io.twentysixty.mobileagent.dev }
 - tapOn: "Bob"
 - extendedWaitUntil:
     visible: "hello from B"

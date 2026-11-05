@@ -62,6 +62,8 @@ pull_app_logs() {
 pull_app_logs 03-voice-note io.twentysixty.mobileagent.dev io.twentysixty.mobileagent.st
 
 adb install -r e2e-apks/dev-external.apk >/dev/null
+# Both flavors handle didcomm://, so with two apps openLink stops at the Android "Open with" sheet
+adb uninstall io.twentysixty.mobileagent.st >/dev/null
 run_flow x10-accredited-issuer e2e/maestro/external/x10-accredited-issuer.yaml
 pull_app_logs x10-accredited-issuer io.twentysixty.mobileagent.dev
 curl -fsS -m 20 https://demo-chatbot-backend.demos.dev.hologram.zone/health | tee "$OUT/chatbot-health.json" || echo "dev chatbot health check failed"
