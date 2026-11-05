@@ -524,6 +524,7 @@ The first attempt on that commit failed because of R14. The spike did not attemp
 
 - The fix for R14: an app bug that makes the flows fail. It should come before phase 2.
 - Does the app get a real "copy link" button? The flows now use the system share sheet.
+- What should X03 and X05 do with `file`? The app has no chat entry type for files, and the attachment options have no document item, so these flows have nothing to examine for a file now.
 - Do the flows that need a connection share one? The local suite could take about 60 min
   (estimate) if each flow signs up and connects again.
 
