@@ -146,7 +146,12 @@ const InputToolbarView = (props: Props) => {
       <View style={styles.subContainer}>
         <View style={styles.leftAndCenterContainer}>
           {showMediaOptions && (
-            <TouchableOpacity style={styles.iconContainer} onPress={onShowMediaOptions} activeOpacity={0.7}>
+            <TouchableOpacity
+              testID="composer-attach"
+              style={styles.iconContainer}
+              onPress={onShowMediaOptions}
+              activeOpacity={0.7}
+            >
               <SvgIcon name="add" fill={theme.colors.primaryText} />
             </TouchableOpacity>
           )}
@@ -160,7 +165,7 @@ const InputToolbarView = (props: Props) => {
             <Icon as="FontAwesome" name="microphone" size={20} color={theme.colors.red} />
             <Text style={styles.recordTime}>{recordTime}</Text>
             {isAutomaticRecording ? (
-              <TouchableOpacity onPress={cancelAudioRecording}>
+              <TouchableOpacity testID="composer-recording-cancel" onPress={cancelAudioRecording}>
                 <Text style={styles.cancelVoiceRecord}>{t('general.cancel')}</Text>
               </TouchableOpacity>
             ) : (

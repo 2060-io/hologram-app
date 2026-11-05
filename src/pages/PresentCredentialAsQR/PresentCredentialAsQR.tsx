@@ -40,7 +40,7 @@ const PresentCredentialAsQR = ({ navigation, route }: Props) => {
     navigation.setOptions({
       headerLeft: () => null,
       headerRight: () => (
-        <TouchableOpacity style={styles.headerRight} onPress={goBackToCredentialDetails}>
+        <TouchableOpacity testID="present-qr-done" style={styles.headerRight} onPress={goBackToCredentialDetails}>
           <Text fontFamily="EuclidCircularA-Medium" style={styles.headerRightText}>
             {t('general.done')}
           </Text>
@@ -77,7 +77,7 @@ const PresentCredentialAsQR = ({ navigation, route }: Props) => {
     created: (
       <View style={styles.generatedContainer}>
         <Text style={styles.generatedTitle}>{t('credential.generatedQRTitle')}</Text>
-        <View style={styles.containerCardQR}>
+        <View testID="present-qr-code" style={styles.containerCardQR}>
           <QRCode
             size={widthPercentageToDP('70%')}
             color={theme.colors.black}
@@ -85,7 +85,12 @@ const PresentCredentialAsQR = ({ navigation, route }: Props) => {
             value={urlForQr}
           />
         </View>
-        <MainButton onPress={shareShortenedUrl} text={t('connection.share')} iconName="shareSocial" />
+        <MainButton
+          testID="present-qr-share"
+          onPress={shareShortenedUrl}
+          text={t('connection.share')}
+          iconName="shareSocial"
+        />
       </View>
     ),
     expiredShortenedUrl: (
@@ -94,7 +99,7 @@ const PresentCredentialAsQR = ({ navigation, route }: Props) => {
           <Text style={styles.commonText}>{t('credential.expiredQR')}</Text>
         </View>
         <View style={styles.containerButtonScannedOrExpired}>
-          <MainButton text={t('invitation.refresh')} onPress={refreshQRCode} />
+          <MainButton testID="present-qr-refresh" text={t('invitation.refresh')} onPress={refreshQRCode} />
         </View>
       </>
     ),
@@ -105,7 +110,7 @@ const PresentCredentialAsQR = ({ navigation, route }: Props) => {
           <ActivityIndicator size="large" color={theme.colors.green} />
         </View>
         <View style={styles.containerButtonScannedOrExpired}>
-          <MainButton text={t('general.cancel')} onPress={goBackToCredentialDetails} />
+          <MainButton testID="present-qr-cancel" text={t('general.cancel')} onPress={goBackToCredentialDetails} />
         </View>
       </>
     ),

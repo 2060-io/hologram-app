@@ -5,4 +5,5 @@ export interface CustomSwitchProps {
   isDisabled?: boolean
   isChecked: boolean
   onToggle(): void
+  testID?: string
 }

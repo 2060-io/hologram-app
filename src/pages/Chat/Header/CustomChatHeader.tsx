@@ -60,7 +60,7 @@ const CustomChatHeader: React.FC<Props> = ({
   return (
     <View style={styles.container}>
       <View style={styles.containerHeader}>
-        <TouchableOpacity activeOpacity={0.4} onPress={goBack} style={styles.rowContainer}>
+        <TouchableOpacity testID="chat-back" activeOpacity={0.4} onPress={goBack} style={styles.rowContainer}>
           <SvgIcon name="arrowBack" width={28} height={28} fill={theme.colors.primaryText} />
           <View style={styles.containerAvatar}>
             <Avatar
@@ -72,6 +72,7 @@ const CustomChatHeader: React.FC<Props> = ({
           </View>
         </TouchableOpacity>
         <TouchableOpacity
+          testID="chat-header-name"
           disabled={isConnectionDeleted}
           activeOpacity={0.4}
           style={styles.displayName}
@@ -90,7 +91,7 @@ const CustomChatHeader: React.FC<Props> = ({
           <ConnectionMainActions connectionId={connection.id} navigation={navigation} includeDefaultActions={false} />
         )}
         {showMenuIcon && (
-          <TouchableOpacity onPress={handleShowContextMenu} style={styles.containerIconMenu}>
+          <TouchableOpacity testID="chat-menu" onPress={handleShowContextMenu} style={styles.containerIconMenu}>
             <SvgIcon name="menuOutline" fill={theme.colors.primaryText} />
           </TouchableOpacity>
         )}

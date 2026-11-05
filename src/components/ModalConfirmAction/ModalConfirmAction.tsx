@@ -10,6 +10,7 @@ type Props = {
   title: string
   subTitle?: string
   confirmText: string
+  confirmTestID?: string
   confirmTextSecondary?: string
   cancelText: string
   onClose(): void
@@ -23,6 +24,7 @@ const ModalConfirmAction = ({
   title,
   subTitle,
   confirmText,
+  confirmTestID = 'modal-confirm',
   confirmTextSecondary,
   cancelText,
   onClose,
@@ -39,11 +41,16 @@ const ModalConfirmAction = ({
           {title}
         </Text>
         {subTitle && <Text style={styles.descriptionDelete}>{subTitle}</Text>}
-        <MainButton text={confirmText} style={styles.button} onPress={onConfirm} />
+        <MainButton testID={confirmTestID} text={confirmText} style={styles.button} onPress={onConfirm} />
         {confirmTextSecondary && onConfirmSecondary && (
-          <OutlinedGreenButton text={confirmTextSecondary} style={styles.button} onPress={onConfirmSecondary} />
+          <OutlinedGreenButton
+            testID="modal-confirm-secondary"
+            text={confirmTextSecondary}
+            style={styles.button}
+            onPress={onConfirmSecondary}
+          />
         )}
-        <OutlinedButton text={cancelText} onPress={onCancel} />
+        <OutlinedButton testID="modal-cancel" text={cancelText} onPress={onCancel} />
       </View>
     </ModalBottomHalf>
   )

@@ -6,13 +6,16 @@ import getStyles from './styles'
 type Props = {
   style?: ViewStyle
   isChecked: boolean
+  testID?: string
 }
 
-const RadioButton = ({ style, isChecked }: Props) => {
+const RadioButton = ({ style, isChecked, testID }: Props) => {
   const theme = useTheme()
   const styles = getStyles(theme)
   return (
-    <View style={[styles.radioButtonOutside, style]}>{isChecked && <View style={styles.radioButtonInside} />}</View>
+    <View testID={testID} style={[styles.radioButtonOutside, style]}>
+      {isChecked && <View style={styles.radioButtonInside} />}
+    </View>
   )
 }
 

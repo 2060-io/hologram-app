@@ -15,7 +15,11 @@ const Dial = ({ dial, onDialPressed }: Props) => {
   return dial === '' ? (
     <View style={styles.empty} />
   ) : (
-    <TouchableOpacity onPress={() => onDialPressed(dial)} style={styles.buttonContainer}>
+    <TouchableOpacity
+      testID={`parental-pin-dial-${dial}`}
+      onPress={() => onDialPressed(dial)}
+      style={styles.buttonContainer}
+    >
       {dial === 'del' ? (
         <Icon as="Ionicons" name="backspace-outline" color={theme.colors.tertiaryText} size={DIAL_SIZE} />
       ) : (

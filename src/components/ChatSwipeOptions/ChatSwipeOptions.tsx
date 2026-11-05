@@ -20,7 +20,12 @@ export const ChatSwipeOptions: React.FC<Props> = ({ isArchived, onDeleteChat, on
   const display = isSwiped ? 'flex' : 'none'
   return (
     <View style={[styles.container, { display }]}>
-      <TouchableOpacity style={[styles.button, styles.deleteBackground]} onPress={onDeleteChat} activeOpacity={0.7}>
+      <TouchableOpacity
+        testID="chat-row-delete"
+        style={[styles.button, styles.deleteBackground]}
+        onPress={onDeleteChat}
+        activeOpacity={0.7}
+      >
         <SvgIcon name="trashOutlined" fill={theme.colors.white} width={20} height={20} />
         <Text fontFamily="EuclidCircularA-Medium" style={styles.backText}>
           {t('chat.delete')}
@@ -28,6 +33,7 @@ export const ChatSwipeOptions: React.FC<Props> = ({ isArchived, onDeleteChat, on
       </TouchableOpacity>
       <TouchableOpacity
         style={[styles.button, { ...archiveBackgroundColor }]}
+        testID={isArchived ? 'chat-row-unarchive' : 'chat-row-archive'}
         onPress={onArchiveChat}
         activeOpacity={0.7}
       >

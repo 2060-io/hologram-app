@@ -140,6 +140,7 @@ const Scan = ({ navigation }: Props) => {
     <View style={styles.containerTabs}>
       <TouchableOpacity
         activeOpacity={0.8}
+        testID="scan-camera-tab"
         onPress={() => setTabType('scanner')}
         style={[styles.containerTab, isTabSelected('scanner') && styles.containerSelectedTab]}
       >
@@ -147,6 +148,7 @@ const Scan = ({ navigation }: Props) => {
       </TouchableOpacity>
       <TouchableOpacity
         activeOpacity={0.8}
+        testID="scan-link-tab"
         onPress={() => setTabType('link')}
         style={[styles.containerTab, isTabSelected('link') && styles.containerSelectedTab]}
       >
@@ -171,6 +173,7 @@ const Scan = ({ navigation }: Props) => {
           <Text style={styles.textDescriptionLink}>{t('scan.textDescriptionLink')}</Text>
           <View style={styles.containerInput}>
             <TextInput
+              testID="scan-link-input"
               value={scannedCode}
               multiline={true}
               numberOfLines={6}
@@ -180,6 +183,7 @@ const Scan = ({ navigation }: Props) => {
             />
           </View>
           <MainButton
+            testID="scan-link-open"
             text={t('general.open')}
             onPress={() => onCodeScanned(scannedCode)}
             activeOpacity={0.5}

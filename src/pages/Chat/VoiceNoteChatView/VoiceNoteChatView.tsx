@@ -140,7 +140,7 @@ const VoiceNoteChatView = memo(
     }
 
     return (
-      <View style={styles.container}>
+      <View testID="chat-voice-note" style={styles.container}>
         <View style={styles.subContainer}>
           <View style={styles.containerButtonPlay}>
             {isDownloading ? (
@@ -150,12 +150,12 @@ const VoiceNoteChatView = memo(
                 isRetryingUpload ? (
                   <ActivityIndicator color={theme.colors.white} />
                 ) : (
-                  <TouchableOpacity onPress={retryMediaUpload}>
+                  <TouchableOpacity testID="chat-voice-note-retry" onPress={retryMediaUpload}>
                     <Icon as="MaterialCommunityIcons" name="upload" size={24} color={theme.colors.white} />
                   </TouchableOpacity>
                 )
               ) : (
-                <TouchableOpacity onPress={handlePlayPause}>
+                <TouchableOpacity testID="chat-voice-note-play" onPress={handlePlayPause}>
                   <Icon
                     as="MaterialCommunityIcons"
                     name={playerState === PlayerState.playing ? 'pause' : 'play'}
@@ -165,7 +165,7 @@ const VoiceNoteChatView = memo(
                 </TouchableOpacity>
               )
             ) : (
-              <TouchableOpacity onPress={downloadMedia}>
+              <TouchableOpacity testID="chat-voice-note-download" onPress={downloadMedia}>
                 <Icon as="MaterialCommunityIcons" name="arrow-down" size={24} color={theme.colors.white} />
               </TouchableOpacity>
             )}

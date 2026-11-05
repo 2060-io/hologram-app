@@ -30,6 +30,7 @@ const SignUpMain = ({ navigation }: Props) => {
       <View style={styles.containerNavigationOptions}>
         <TouchableOpacity
           activeOpacity={0.5}
+          testID="signup-restore-backup"
           onPress={goToRestoreBackup}
           style={[styles.containerOption, styles.itemSeparator]}
         >
@@ -39,7 +40,12 @@ const SignUpMain = ({ navigation }: Props) => {
             <SvgIcon name="chevronForward" width={20} height={20} fill={theme.colors.primaryText} />
           </View>
         </TouchableOpacity>
-        <TouchableOpacity activeOpacity={0.5} onPress={goToProfileCreation} style={styles.containerOption}>
+        <TouchableOpacity
+          testID="signup-create-wallet"
+          activeOpacity={0.5}
+          onPress={goToProfileCreation}
+          style={styles.containerOption}
+        >
           <SvgIcon name="addWallet" fill={theme.colors.primaryText} />
           <Text style={styles.optionText}>{t('signUp.createNewWallet')}</Text>
           <View style={styles.containerIconChevronForward}>

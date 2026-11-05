@@ -6,6 +6,7 @@ export type Option = {
   text: string
   onPress?: () => void
   rightContent?: () => ReactElement
+  testID?: string
 }
 
 export type Props = {

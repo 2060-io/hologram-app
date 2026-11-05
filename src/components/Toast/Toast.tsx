@@ -67,6 +67,7 @@ const Toast = () => {
 
   return (
     <Animated.View
+      testID="toast"
       style={{
         ...styles.containerMessage,
         ...stylePosition[positionMessage],
@@ -74,10 +75,10 @@ const Toast = () => {
         opacity: animatedOpacity,
       }}
     >
-      <Text style={styles.textMessage} numberOfLines={2}>
+      <Text testID={`toast-${typeMessage}`} style={styles.textMessage} numberOfLines={2}>
         {message.message}
       </Text>
-      <TouchableOpacity onPress={closeToast} style={styles.rightContainer}>
+      <TouchableOpacity testID="toast-close" onPress={closeToast} style={styles.rightContainer}>
         <View style={styles.close}>
           <SvgIcon name="close" fill={theme.colors.white} width={20} height={20} />
         </View>

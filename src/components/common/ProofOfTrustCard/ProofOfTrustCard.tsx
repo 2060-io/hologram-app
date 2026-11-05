@@ -138,7 +138,7 @@ const ProofOfTrustCard = ({
   }
 
   return (
-    <View style={styles.card}>
+    <View testID="trust-card" style={styles.card}>
       <View style={styles.header}>
         <View style={styles.logo}>
           {isFetchingInfo ? (
@@ -192,7 +192,11 @@ const ProofOfTrustCard = ({
             </View>
           )}
           <View style={styles.verdictRow}>
-            <Text fontFamily="EuclidCircularA-Medium" style={[styles.verdict, { color: statusColor }]}>
+            <Text
+              testID={`trust-status-${status}`}
+              fontFamily="EuclidCircularA-Medium"
+              style={[styles.verdict, { color: statusColor }]}
+            >
               {statusLabel}
             </Text>
             {networkLabel ? (
@@ -220,7 +224,7 @@ const ProofOfTrustCard = ({
         ) : null}
       </View>
       {status === ServiceStatus.Unverified && onRetry && (
-        <TouchableOpacity style={styles.retry} onPress={onRetry} accessibilityRole="button">
+        <TouchableOpacity testID="trust-retry" style={styles.retry} onPress={onRetry} accessibilityRole="button">
           <Text fontFamily="EuclidCircularA-Medium" style={styles.retryText}>
             {t('tryAgain')}
           </Text>

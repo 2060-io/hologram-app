@@ -15,6 +15,7 @@ const ConnectionMainActions = ({ navigation, connection, includeDefaultActions }
     <View style={styles.container}>
       {actions.map((action, index) => (
         <TouchableOpacity
+          testID={`connection-action-${action.value}`}
           key={action.value}
           onPress={action.onPress}
           activeOpacity={0.6}

@@ -15,6 +15,7 @@ const OptionsList = ({ options }: Props) => {
         const isNotLast = options.length !== index + 1
         return (
           <TouchableOpacity
+            testID={option.testID}
             key={option.text}
             style={[styles.optionContainer, isNotLast && styles.itemSeparator]}
             onPress={option?.onPress}

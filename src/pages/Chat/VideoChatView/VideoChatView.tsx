@@ -64,6 +64,7 @@ const VideoChatView = memo((props: MediaProps) => {
           style={styles.containerVideo}
         >
           <TouchableOpacity
+            testID="chat-video-play"
             style={styles.btnPlayVideo}
             onPress={() => videoFileUri && playVideo({ videoFileUri, fileMediaInfo, chatEntry })}
           >
@@ -109,7 +110,7 @@ const VideoChatView = memo((props: MediaProps) => {
               </Text>
             </>
           ) : (
-            <TouchableOpacity style={styles.btnDownload} onPress={downloadMedia}>
+            <TouchableOpacity testID="chat-video-download" style={styles.btnDownload} onPress={downloadMedia}>
               <SvgIcon name="download" fill={theme.colors.primary} />
               {byteCount && (
                 <Text fontFamily="EuclidCircularA-Medium" style={styles.textsize}>
@@ -124,7 +125,10 @@ const VideoChatView = memo((props: MediaProps) => {
   )
 
   return (
-    <View style={displayTimeAndTicks ? styles.withTimeAndTicksContainer : styles.withoutTimeAndTicksContainer}>
+    <View
+      testID="chat-video"
+      style={displayTimeAndTicks ? styles.withTimeAndTicksContainer : styles.withoutTimeAndTicksContainer}
+    >
       <View style={styles.containerRootVideo}>
         {isDownloaded ? (
           <Fragment>

@@ -87,7 +87,11 @@ const BaseCredentialOffer: React.FC<Props> = ({
     navigation.setOptions({
       headerLeft: (props) =>
         enableMainButtons ? (
-          <TouchableOpacity style={styles.headerLeft} onPress={displayModalRefuseConfirmation}>
+          <TouchableOpacity
+            testID="credential-offer-refuse"
+            style={styles.headerLeft}
+            onPress={displayModalRefuseConfirmation}
+          >
             <Text fontFamily="EuclidCircularA-Medium" style={styles.headerBtnText}>
               {t('general.refuse')}
             </Text>
@@ -98,6 +102,7 @@ const BaseCredentialOffer: React.FC<Props> = ({
       headerRight: () =>
         enableMainButtons && canAccept ? (
           <TouchableOpacity
+            testID="credential-offer-accept"
             style={styles.headerRight}
             onPress={isSafeToAccept ? accept : () => setShowModalUnsafeAccept(true)}
           >
@@ -113,11 +118,12 @@ const BaseCredentialOffer: React.FC<Props> = ({
   }, [enableMainButtons, canAccept, isSafeToAccept])
 
   return (
-    <SafeAreaView style={styles.container} edges={['bottom']}>
+    <SafeAreaView testID="credential-offer-screen" style={styles.container} edges={['bottom']}>
       <ModalConfirmAction
         visible={showModalRefuseConfirmation}
         title={t('chat.confirmRefuseCredentialOffer')}
         subTitle=""
+        confirmTestID="credential-offer-refuse-confirm"
         confirmText={t('general.confirm')}
         cancelText="No"
         onClose={hideModalRefuseConfirmation}
@@ -128,6 +134,7 @@ const BaseCredentialOffer: React.FC<Props> = ({
         visible={showModalUnsafeAccept}
         title={t('accreditation.confirmUnsafeAccept')}
         subTitle=""
+        confirmTestID="credential-offer-accept-anyway"
         confirmText={t('accreditation.acceptAnyway')}
         cancelText={t('general.cancel')}
         onClose={() => setShowModalUnsafeAccept(false)}

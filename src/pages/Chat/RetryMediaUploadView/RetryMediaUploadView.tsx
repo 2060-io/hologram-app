@@ -21,7 +21,7 @@ const RetryMediaUploadView: React.FC<Props> = ({ uri, isRetryingUpload, containe
         {isRetryingUpload ? (
           <ActivityIndicator size="large" color={theme.colors.green} />
         ) : (
-          <TouchableOpacity style={styles.btn} onPress={onRetryMediaUpload}>
+          <TouchableOpacity testID="chat-media-retry" style={styles.btn} onPress={onRetryMediaUpload}>
             <SvgIcon name="upload" fill={theme.colors.primary} />
             <Text fontFamily="EuclidCircularA-Medium" style={styles.btnText}>
               {t('general.retry').toUpperCase()}
