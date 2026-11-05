@@ -11,19 +11,45 @@ ENVFILE=.env.e2e-local ./android/gradlew -p android assembleDevE2e assembleStagi
 adb install -r android/app/build/outputs/apk/dev/e2e/app-dev-e2e.apk
 adb install -r android/app/build/outputs/apk/staging/e2e/app-staging-e2e.apk
 adb shell locksettings set-pin 1234
-maestro test --include-tags smoke e2e/maestro
+maestro test --include-tags smoke,local e2e/maestro
 ```
 
 The flows type the PIN `1234` at the screen lock prompt.
 
 Use a `google_apis` image: `e2e/ci/run-flows.sh` pulls the app logs with `adb root`, which `google_play` images refuse.
 
+## Local stack
+
+`e2e/stack` runs the mediator, MinIO, hologram-server, Caddy and dnsmasq in Docker. The job needs no
+secrets.
+
+```sh
+DNS_BIND_IP="$(ipconfig getifaddr en0)" e2e/stack/start.sh
+emulator -avd <your avd> -dns-server "$(ipconfig getifaddr en0)"
+```
+
+`start.sh` waits for `did.json`, a WebSocket upgrade and MinIO. Stop the stack with
+`docker compose -f e2e/stack/docker-compose.yml down -v`.
+
+Two limits on a Mac:
+
+- The mediator and hologram-server images have no arm64 build, so on Apple Silicon also set
+  `DOCKER_DEFAULT_PLATFORM=linux/amd64`.
+- dnsmasq needs port 53, and Colima and Lima hold it. Use another Docker runtime, or stop it.
+
+We run the stack in CI. We have not run it end to end on a laptop.
+
+The test CA in `e2e/stack/certs` is for tests only. Its key is public, so never trust it anywhere
+else. It can only sign names under `hologram.test`, and only the `e2e` build type trusts it.
+
 ## Layout
 
 - `maestro/smoke`: checks that the two apps open. It needs no backend.
+- `maestro/local`: flows that need the local stack.
 - `maestro/subflows`: shared steps. `APP_ID`, `NAME`, `LINK` and `APP_LABEL` are their parameters.
 - `maestro/fixtures`: media for the flows. `SHA256SUMS` has their hashes. Maestro only reads media inside the directory that it runs, so they are under `maestro`.
 - `ci`: scripts for the CI job in `.github/workflows/e2e-android.yml`.
+- `stack`: the local stack.
 
 ## The `e2e` build type
 
