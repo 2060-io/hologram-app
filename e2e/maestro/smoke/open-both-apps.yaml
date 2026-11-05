@@ -5,11 +5,13 @@ tags: [smoke]
     file: ../subflows/open-signup.yaml
     env:
       APP_ID: io.twentysixty.mobileagent.dev
+- assertVisible: { id: "signup-get-started" }
 - takeScreenshot: dev-signup
 - runFlow:
     file: ../subflows/open-signup.yaml
     env:
       APP_ID: io.twentysixty.mobileagent.st
+- assertVisible: { id: "signup-get-started" }
 - takeScreenshot: staging-signup
 - runFlow:
     file: ../subflows/open-link.yaml

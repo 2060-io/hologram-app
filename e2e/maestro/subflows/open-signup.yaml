@@ -8,5 +8,5 @@ appId: io.twentysixty.mobileagent.dev
     timeout: 60000
 - runFlow: unlock.yaml
 - extendedWaitUntil:
-    visible: "Choose your name"
+    visible: { id: "profile-name-input" }
     timeout: 60000
