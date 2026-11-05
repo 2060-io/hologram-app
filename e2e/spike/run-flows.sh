@@ -57,5 +57,7 @@ adb wait-for-device
 
 adb install -r e2e-apks/dev-external.apk >/dev/null
 run_flow x10-accredited-issuer e2e/maestro/external/x10-accredited-issuer.yaml
+curl -fsS -m 20 https://demo-chatbot-backend.demos.dev.hologram.zone/health | tee "$OUT/chatbot-health.json" || echo "dev chatbot health check failed"
+run_flow x01-dev-chatbot e2e/maestro/external/x01-dev-chatbot.yaml
 
 exit "$FAILED"

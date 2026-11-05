@@ -34,8 +34,7 @@ services:
       FIREBASE_CFG_FILE: /nonexistent/firebase.json
 
   hologram-server:
-    build:
-      context: https://github.com/2060-io/hologram-server.git#7c5394b09e31cc7df64ffd4738e790b9735fdd82
+    image: io2060/hologram-server:v1.1.0-dev.1
     environment:
       APP_PORT: "3000"
       BUCKET_SERVER: http://minio:9000

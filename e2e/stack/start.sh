@@ -13,7 +13,7 @@ chmod 644 certs/generated/server.key
 
 [ -f .env ] || echo "MINIO_ROOT_PASSWORD=$(openssl rand -hex 16)" > .env
 
-docker compose up -d --build
+docker compose up -d
 
 # did.json requested while the mediator provisions its store crashes it, so nothing may reach it before this line
 for i in $(seq 1 90); do

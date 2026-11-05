@@ -34,8 +34,7 @@ wait_boot() {
   echo "boot_completed after $((SECONDS - start)) s"
 }
 
-if [ ! -d "$ANDROID_AVD_HOME/$AVD.avd" ]; then
-  echo "AVD cache miss: creating $AVD"
+create_avd() {
   SECONDS=0
   yes 2>/dev/null | sdkmanager --licenses >/dev/null
   sdkmanager --install emulator "$IMG" >/dev/null || exit 1
@@ -54,12 +53,21 @@ CFG
   sleep 30
   adb emu kill
   until ! pgrep -f "qemu-system-x86_64" >/dev/null; do sleep 2; done
-fi
+  echo "avd created in $SECONDS s"
+}
 
-echo "snapshot boot"
-start_emulator -no-snapshot-save
-wait_boot
-adb shell settings put global window_animation_scale 0
-adb shell settings put global transition_animation_scale 0
-adb shell settings put global animator_duration_scale 0
-adb shell settings put secure show_ime_with_hard_keyboard 0
+boot_avd() {
+  echo "snapshot boot"
+  start_emulator -no-snapshot-save
+  wait_boot
+  adb shell settings put global window_animation_scale 0
+  adb shell settings put global transition_animation_scale 0
+  adb shell settings put global animator_duration_scale 0
+  adb shell settings put secure show_ime_with_hard_keyboard 0
+}
+
+case "${1:-}" in
+  create) create_avd ;;
+  boot) boot_avd ;;
+  *) echo "usage: boot-emulator.sh create|boot" >&2; exit 2 ;;
+esac

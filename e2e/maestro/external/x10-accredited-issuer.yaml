@@ -5,8 +5,9 @@ tags: [spike]
     file: ../subflows/signup.yaml
     env: { APP_ID: io.twentysixty.mobileagent.dev, NAME: Xavier }
 - runScript:
-    file: ../scripts/playground-offer.js
-    env: { SERVICE: demo-issuer-accredited }
+    file: ../scripts/invitation-link.js
+    env:
+      INVITATION_API: https://playground.testnet.verana.network/api/demo/demo-issuer-accredited?format=anoncreds
 - openLink: ${output.link}
 - extendedWaitUntil:
     visible: "Credential Offer"

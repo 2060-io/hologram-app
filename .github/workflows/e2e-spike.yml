@@ -163,13 +163,14 @@ jobs:
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
           echo "DNS_BIND_IP=$(hostname -I | awk '{print $1}')" >> "$GITHUB_ENV"
+          echo "$ANDROID_HOME/platform-tools" >> "$GITHUB_PATH"
 
       - name: Start the local stack
         run: e2e/stack/start.sh
 
-      - name: AVD cache
+      - name: Restore the AVD
         id: avd-cache
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: |
             ~/.android/avd
@@ -186,9 +187,26 @@ jobs:
           pactl load-module module-null-sink sink_name=virtmic
           pactl set-default-source virtmic.monitor
 
-      - name: Boot the emulator
+      - name: Create the AVD
+        if: steps.avd-cache.outputs.cache-hit != 'true'
         timeout-minutes: 25
-        run: e2e/spike/boot-emulator.sh
+        run: e2e/spike/boot-emulator.sh create
+
+      # Saved here because at the end of the job the running emulator holds locks inside the AVD
+      - name: Save the AVD
+        if: steps.avd-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: |
+            ~/.android/avd
+            ~/.android/adb*
+            /usr/local/lib/android/sdk/system-images/android-34
+            /usr/local/lib/android/sdk/emulator
+          key: ${{ steps.avd-cache.outputs.cache-primary-key }}
+
+      - name: Boot the emulator
+        timeout-minutes: 15
+        run: e2e/spike/boot-emulator.sh boot
 
       - name: Check DNS in the emulator (R1)
         run: |

@@ -1,0 +1,30 @@
+appId: io.twentysixty.mobileagent.dev
+tags: [spike]
+---
+- runFlow:
+    file: ../subflows/signup.yaml
+    env: { APP_ID: io.twentysixty.mobileagent.dev, NAME: Xavier }
+- runScript:
+    file: ../scripts/invitation-link.js
+    env:
+      INVITATION_API: https://demo-chatbot-backend.demos.dev.hologram.zone/invitation?label=e2e-spike
+- openLink: ${output.link}
+- extendedWaitUntil:
+    visible: "Accept"
+    timeout: 90000
+- takeScreenshot: x01-invitation
+- tapOn: "Accept"
+- waitForAnimationToEnd
+- takeScreenshot: x01-after-accept
+- extendedWaitUntil:
+    visible: "Message|.*Welcome to our service.*"
+    timeout: 90000
+- runFlow:
+    when:
+      visible: "Message"
+    commands:
+      - tapOn: "Message"
+- extendedWaitUntil:
+    visible: ".*Welcome to our service.*"
+    timeout: 90000
+- takeScreenshot: x01-welcome
