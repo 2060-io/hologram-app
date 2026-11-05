@@ -1,0 +1,58 @@
+appId: io.twentysixty.mobileagent.dev
+tags: [local]
+---
+- runFlow: ../subflows/signup-both.yaml
+- runFlow: ../subflows/connect-peers.yaml
+
+- tapOn: "Bob"
+# Attach appears only after the feature disclosure of B reaches A, which needs turns of the two apps
+- repeat:
+    times: 6
+    while:
+      notVisible: { id: "composer-attach" }
+    commands:
+      - runFlow:
+          file: ../subflows/switch-app.yaml
+          env:
+            APP_ID: io.twentysixty.mobileagent.st
+      - extendedWaitUntil:
+          visible: { id: "composer-attach" }
+          timeout: 8000
+          optional: true
+      - runFlow:
+          file: ../subflows/switch-app.yaml
+          env:
+            APP_ID: io.twentysixty.mobileagent.dev
+      - extendedWaitUntil:
+          visible: { id: "composer-attach" }
+          timeout: 15000
+          optional: true
+
+- addMedia:
+    - ../fixtures/image.jpg
+- tapOn: { id: "composer-attach" }
+- tapOn: { id: "attachment-file-gallery" }
+- waitForAnimationToEnd
+- runFlow:
+    when:
+      visible: "Photo taken on .*"
+    commands:
+      - tapOn:
+          text: "Photo taken on .*"
+          index: 0
+- runFlow:
+    when:
+      notVisible: { id: "composer-input" }
+    commands:
+      - tapOn: { point: "17%,30%" }
+- waitForAnimationToEnd
+- takeScreenshot: a-sent-image
+
+- runFlow:
+    file: ../subflows/switch-app.yaml
+    env:
+      APP_ID: io.twentysixty.mobileagent.st
+- extendedWaitUntil:
+    visible: { id: "chat-image" }
+    timeout: 120000
+- takeScreenshot: b-received-image
