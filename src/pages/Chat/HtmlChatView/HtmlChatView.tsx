@@ -88,7 +88,7 @@ const HtmlChatView = (props: HtmlChatViewProps) => {
   const renderWebView = () => (
     <React.Fragment>
       <View style={styles.webViewButtonsContainer}>
-        <TouchableOpacity onPress={closeWebView}>
+        <TouchableOpacity testID="chat-link-close" onPress={closeWebView}>
           <SvgIcon name="close" width={30} height={30} fill={theme.colors.secondaryGrey} />
         </TouchableOpacity>
         <TouchableOpacity onPress={changeScreenMode}>
@@ -116,10 +116,11 @@ const HtmlChatView = (props: HtmlChatViewProps) => {
   )
 
   return (
-    <View style={styles.container}>
+    <View testID="chat-link" style={styles.container}>
       {renderMainInfo()}
       <BlueButton
         style={[styles.openWebViewButton, isUrlSecure ? styles.secureUrlButton : styles.unsecureUrlButton]}
+        testID="chat-link-open"
         text={isUrlSecure ? t('general.open') : t('chat.unsecureLink')}
         onPress={showWebView}
         disabled={!isValidUrl}

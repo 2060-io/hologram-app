@@ -46,7 +46,7 @@ const Authentication = ({ isAppActive, makeAutomaticAuth }: Props) => {
   }
 
   return (
-    <View style={styles.container}>
+    <View testID="auth-screen" style={styles.container}>
       <View style={styles.fullOverlay}>
         <View style={styles.containerBgView}>
           <View style={styles.containerAuthCard}>
@@ -57,7 +57,12 @@ const Authentication = ({ isAppActive, makeAutomaticAuth }: Props) => {
             {userHasBiometricAuthEnable ? (
               <>
                 <Text style={styles.enableText}>{t(`authentication.${promptMessage.current}`)}</Text>
-                <TouchableOpacity onPress={makeBiometricAuth} activeOpacity={0.5} style={styles.containerBtnAuth}>
+                <TouchableOpacity
+                  testID="auth-unlock"
+                  onPress={makeBiometricAuth}
+                  activeOpacity={0.5}
+                  style={styles.containerBtnAuth}
+                >
                   <SvgIcon name="authBlocked" fill={theme.colors.white} />
                   <Text fontFamily="EuclidCircularA-Medium" style={styles.btnAuthText}>
                     {t('authentication.auth')}
@@ -72,7 +77,12 @@ const Authentication = ({ isAppActive, makeAutomaticAuth }: Props) => {
                   </View>
                   <Text style={styles.enableErrorText}>{t(`authentication.${promptMessage.current}`)}</Text>
                 </View>
-                <TouchableOpacity onPress={makeBiometricAuth} activeOpacity={0.5} style={styles.containerBtnRetry}>
+                <TouchableOpacity
+                  testID="auth-retry"
+                  onPress={makeBiometricAuth}
+                  activeOpacity={0.5}
+                  style={styles.containerBtnRetry}
+                >
                   <Text fontFamily="EuclidCircularA-Medium" style={styles.btnRetryText}>
                     {t('authentication.retry')}
                   </Text>

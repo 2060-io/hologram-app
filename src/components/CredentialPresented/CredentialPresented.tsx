@@ -38,7 +38,7 @@ const CredentialPresented = ({ credentials, verifierName, verifierPicture, type,
   }
 
   return (
-    <View style={styles.container}>
+    <View testID={`credential-presented-${type}`} style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.subContainer}>
           {header[type]}
@@ -91,7 +91,11 @@ const CredentialPresented = ({ credentials, verifierName, verifierPicture, type,
               </View>
             </View>
             {viewInChatButton && (
-              <TouchableOpacity style={styles.viewInChatButton} onPress={viewInChatButton}>
+              <TouchableOpacity
+                testID="credential-presented-view-in-chat"
+                style={styles.viewInChatButton}
+                onPress={viewInChatButton}
+              >
                 <Text style={styles.viewInChatText}>{t('presentationRequest.viewInChat')}</Text>
               </TouchableOpacity>
             )}

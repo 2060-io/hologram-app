@@ -21,7 +21,7 @@ Note: Validate next items and commands using: Demo Chat Bot Agent
 - [ ] Receive a proof request (before and after receiving the credential)
 - [ ] Receive a credential
 - [ ] Question and answer, action menu
-- [ ] Invitation to services. Send next message: /invitation did:web:em-vs.demos.2060.io
+- [ ] Invitation to services. Send next message: /invitation did=did:web:em-vs.demos.2060.io
 - [ ] Invitation to subconnection. Send next message: /invitation this_is_a_child_connection
 - [ ] Web view. Send next message: /link https://hologram.zone/ Hologram zone https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRSfGMjlS818F78B84hXGsf9DAFmNpMfmx0fA&s
 

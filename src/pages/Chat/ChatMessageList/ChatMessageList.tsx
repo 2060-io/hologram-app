@@ -34,6 +34,7 @@ export const ChatMessageList = memo((props: ChatMessageListProps) => {
   const { messages, listViewProps, commonMessageProps } = props
   return (
     <FlatList
+      testID="chat-message-list"
       data={messages}
       inverted
       keyExtractor={(item) => item.id}

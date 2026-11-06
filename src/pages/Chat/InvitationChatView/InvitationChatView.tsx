@@ -59,6 +59,7 @@ const InvitationChatView = ({ associatedRecordId: outOfBandId, metadata, role, a
     [InvitationState.Received]: (
       <>
         <BlueButton
+          testID="chat-invitation-connect"
           disabled={ageRestricted}
           text={t('general.connect')}
           onPress={goToInvitation}
@@ -74,7 +75,7 @@ const InvitationChatView = ({ associatedRecordId: outOfBandId, metadata, role, a
       </>
     ),
     [InvitationState.Accepted]: (
-      <View style={styles.acceptedContainer}>
+      <View testID="chat-invitation-accepted" style={styles.acceptedContainer}>
         <Text fontFamily="EuclidCircularA-Bold" style={styles.acceptedText}>
           {t('chat.acceptedInvitation')}
         </Text>
@@ -82,6 +83,7 @@ const InvitationChatView = ({ associatedRecordId: outOfBandId, metadata, role, a
     ),
     [InvitationState.AlreadyConnected]: (
       <BlueButton
+        testID="chat-invitation-already-connected"
         text={t('chat.alreadyConnected')}
         style={styles.acceptWithAgeRestricted}
         onPress={goToExistingConnection}
@@ -101,6 +103,7 @@ const InvitationChatView = ({ associatedRecordId: outOfBandId, metadata, role, a
         rightIcon={
           state !== InvitationState.Refused && isReceiver ? (
             <TouchableOpacity
+              testID="chat-invitation-info"
               disabled={ageRestricted && state === InvitationState.Received}
               onPress={state === InvitationState.Received ? goToInvitation : goToExistingConnection}
             >
@@ -110,7 +113,7 @@ const InvitationChatView = ({ associatedRecordId: outOfBandId, metadata, role, a
         }
         title={invitationType}
       />
-      <View style={styles.containerMain}>
+      <View testID="chat-invitation" style={styles.containerMain}>
         <View style={styles.containerInfo}>
           <View style={styles.containerAvatar}>
             {isService(did) && <VerifiedIcon style={styles.containerVerifiedMark} status={serviceStatus} />}

@@ -50,7 +50,12 @@ const UserProfileForm: React.FC<Props> = (props) => {
       <Text style={styles.textInputDescription}>{t('signUp.textInputNicknameDescription')}</Text>
       <View style={styles.containerRootAvatar}>
         {imgUrl?.length && (
-          <TouchableOpacity style={styles.btnClose} onPress={() => onHandleChangePicture(null)} activeOpacity={0.6}>
+          <TouchableOpacity
+            testID="profile-picture-remove"
+            style={styles.btnClose}
+            onPress={() => onHandleChangePicture(null)}
+            activeOpacity={0.6}
+          >
             <SvgIcon name="close" fill={theme.colors.lightGrey} />
           </TouchableOpacity>
         )}
@@ -63,6 +68,7 @@ const UserProfileForm: React.FC<Props> = (props) => {
       <View style={styles.containerOptions}>
         <View style={styles.containerOption}>
           <TouchableOpacity
+            testID="profile-camera"
             onPress={() => onTakePhotoOrGallery('Camera')}
             style={styles.containerOptionIcon}
             activeOpacity={0.7}
@@ -75,6 +81,7 @@ const UserProfileForm: React.FC<Props> = (props) => {
         </View>
         <View style={styles.containerOption}>
           <TouchableOpacity
+            testID="profile-photo"
             onPress={() => onTakePhotoOrGallery('Gallery')}
             style={styles.containerOptionIcon}
             activeOpacity={0.7}
@@ -87,6 +94,7 @@ const UserProfileForm: React.FC<Props> = (props) => {
         </View>
       </View>
       <TextInput
+        testID="profile-name-input"
         value={displayName}
         style={styles.textInput}
         onChangeText={onHandleChangeName}

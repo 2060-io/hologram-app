@@ -159,7 +159,7 @@ const SetPIN = ({ visible, onRequestClose, mode, oniOSDismiss }: Props) => {
             renderItem={({ item }) => <Dial dial={item} onDialPressed={onDialPressed} />}
           />
           <Text style={styles.footerText}>{getFooter(currentFlowState)}</Text>
-          <TouchableOpacity onPress={cancel} style={styles.cancelButton}>
+          <TouchableOpacity testID="parental-pin-cancel" onPress={cancel} style={styles.cancelButton}>
             <Text fontFamily="EuclidCircularA-Medium" style={styles.cancelText}>
               {t('general.cancel')}
             </Text>

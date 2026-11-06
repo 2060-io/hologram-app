@@ -74,6 +74,7 @@ const ConnectionsSelection = ({ navigation, onPressSend, connectionIdToExclude, 
         </Text>
         <TouchableOpacity
           style={[styles.sendButton, isSendButtonDisabled ? styles.disabledSend : styles.enabledSend]}
+          testID="connections-selection-send"
           disabled={isSendButtonDisabled}
           onPress={send}
         >

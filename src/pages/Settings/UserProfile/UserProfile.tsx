@@ -34,7 +34,7 @@ const UserProfile = ({ navigation }: Props) => {
       navigation.setOptions({
         headerStyle: globalStyles.headerStyle,
         headerLeft: () => (
-          <TouchableOpacity style={styles.headerLeft} onPress={goToBack}>
+          <TouchableOpacity testID="profile-cancel" style={styles.headerLeft} onPress={goToBack}>
             <Text fontFamily="EuclidCircularA-Medium" style={styles.headerBtnText}>
               {t('general.cancel')}
             </Text>
@@ -42,7 +42,7 @@ const UserProfile = ({ navigation }: Props) => {
         ),
         headerRight: () =>
           (hasChangedName || hasChangedPicture) && (
-            <TouchableOpacity style={styles.headerRight} onPress={onSaveInfoUser}>
+            <TouchableOpacity testID="profile-done" style={styles.headerRight} onPress={onSaveInfoUser}>
               <Text fontFamily="EuclidCircularA-Medium" style={styles.headerBtnText}>
                 {t('general.done')}
               </Text>

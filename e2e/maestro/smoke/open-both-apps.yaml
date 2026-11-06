@@ -1,0 +1,22 @@
+appId: io.twentysixty.mobileagent.dev
+tags: [smoke]
+---
+- runFlow:
+    file: ../subflows/open-signup.yaml
+    env:
+      APP_ID: io.twentysixty.mobileagent.dev
+- assertVisible: { id: "signup-get-started" }
+- takeScreenshot: dev-signup
+- runFlow:
+    file: ../subflows/open-signup.yaml
+    env:
+      APP_ID: io.twentysixty.mobileagent.st
+- assertVisible: { id: "signup-get-started" }
+- takeScreenshot: staging-signup
+- runFlow:
+    file: ../subflows/open-link.yaml
+    env:
+      LINK: didcomm://invite?_url=e2e-smoke
+      APP_LABEL: Hologram dev
+- assertNotVisible: "Open with"
+- takeScreenshot: after-open-link

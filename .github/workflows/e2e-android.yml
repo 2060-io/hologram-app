@@ -1,0 +1,219 @@
+name: E2E Android (reusable)
+
+on:
+  workflow_call:
+    inputs:
+      tags:
+        description: Maestro tags to run
+        required: true
+        type: string
+      envfile:
+        description: Env file of the app build
+        required: false
+        type: string
+        default: .env.e2e-local
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build the APKs
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      CCACHE_BASEDIR: ${{ github.workspace }}
+      CCACHE_COMPILERCHECK: content
+      CCACHE_MAXSIZE: 1500M
+    steps:
+      - name: Checkout hologram-app
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+
+      - name: APK cache
+        id: apk-cache
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: e2e-apks
+          key: e2e-apks-${{ inputs.envfile }}-${{ hashFiles('android/**', 'src/**', 'modules/**', 'patches/**', 'package.json', 'pnpm-lock.yaml', 'index.js', 'metro.config.js', 'babel.config.js', '.env.e2e-*') }}
+
+      - name: Free disk space
+        if: steps.apk-cache.outputs.cache-hit != 'true'
+        run: |
+          sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/.ghcup /usr/local/share/boost /opt/hostedtoolcache/CodeQL
+          df -h /
+
+      # The default JDK of ubuntu-latest stops configureCMakeRelWithDebInfo
+      - name: Set up JDK 17
+        if: steps.apk-cache.outputs.cache-hit != 'true'
+        uses: actions/setup-java@77dd5b2ce225ea11469928ac317850245a74ae78 # v6.2.0
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Setup pnpm
+        if: steps.apk-cache.outputs.cache-hit != 'true'
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5.0.0
+
+      - name: Setup Node.js v22
+        if: steps.apk-cache.outputs.cache-hit != 'true'
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
+        with:
+          node-version: 22
+          registry-url: 'https://registry.npmjs.org/'
+          cache: pnpm
+
+      - name: Cache node_modules
+        if: steps.apk-cache.outputs.cache-hit != 'true'
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: node_modules
+          key: node-modules-${{ hashFiles('pnpm-lock.yaml', 'patches/**') }}
+
+      - name: Install dependencies
+        if: steps.apk-cache.outputs.cache-hit != 'true'
+        run: pnpm install --frozen-lockfile
+
+      - name: Cache Gradle
+        if: steps.apk-cache.outputs.cache-hit != 'true'
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            android/.gradle
+          key: gradle-e2e-${{ hashFiles('android/**/*.gradle*', 'android/gradle.properties', 'pnpm-lock.yaml') }}
+          restore-keys: gradle-e2e-
+
+      - name: Install ccache
+        if: steps.apk-cache.outputs.cache-hit != 'true'
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ccache
+
+      - name: Cache ccache
+        if: steps.apk-cache.outputs.cache-hit != 'true'
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: ~/.cache/ccache
+          key: ccache-e2e-${{ github.sha }}
+          restore-keys: ccache-e2e-
+
+      - name: Generate codegen
+        if: steps.apk-cache.outputs.cache-hit != 'true'
+        working-directory: android
+        run: ./gradlew generateCodegenSchemaFromJavaScript generateCodegenArtifactsFromSchema -PreactNativeArchitectures=x86_64
+
+      - name: Build devE2e and stagingE2e
+        if: steps.apk-cache.outputs.cache-hit != 'true'
+        working-directory: android
+        env:
+          ENVFILE: ${{ inputs.envfile }}
+        run: |
+          ./gradlew assembleDevE2e assembleStagingE2e -PreactNativeArchitectures=x86_64
+          mkdir -p ../e2e-apks
+          cp app/build/outputs/apk/dev/e2e/app-dev-e2e.apk ../e2e-apks/dev.apk
+          cp app/build/outputs/apk/staging/e2e/app-staging-e2e.apk ../e2e-apks/staging.apk
+
+      - name: ccache statistics
+        if: steps.apk-cache.outputs.cache-hit != 'true'
+        run: ccache -s
+
+      - name: Check that a release build has no test CA
+        if: steps.apk-cache.outputs.cache-hit != 'true'
+        env:
+          ENVFILE: ${{ inputs.envfile }}
+        run: e2e/ci/check-release-clean.sh
+
+      - name: Upload the APKs
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: e2e-apks
+          path: e2e-apks
+          compression-level: 0
+
+  flows:
+    name: Run the flows
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout hologram-app
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+
+      - name: Download the APKs
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        with:
+          name: e2e-apks
+          path: e2e-apks
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@77dd5b2ce225ea11469928ac317850245a74ae78 # v6.2.0
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Install Maestro
+        run: |
+          curl -fsSL -o /tmp/maestro.zip https://github.com/mobile-dev-inc/maestro/releases/download/cli-2.12.1/maestro.zip
+          echo "54dbb0716425626604973cbb374c585ca30272375d9ce15177a1152765ddd9d7  /tmp/maestro.zip" | sha256sum -c -
+          unzip -q /tmp/maestro.zip -d "$HOME"
+          echo "$HOME/maestro/bin" >> "$GITHUB_PATH"
+          echo "MAESTRO_CLI_NO_ANALYTICS=1" >> "$GITHUB_ENV"
+
+      - name: Check the flow syntax
+        run: |
+          find e2e/maestro -name '*.yaml' ! -name config.yaml -print0 | xargs -0 -n1 maestro check-syntax
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+          echo "$ANDROID_HOME/platform-tools" >> "$GITHUB_PATH"
+
+      - name: Restore the AVD
+        id: avd-cache
+        uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: |
+            ~/.android/avd
+            ~/.android/adb*
+            /usr/local/lib/android/sdk/system-images/android-34
+            /usr/local/lib/android/sdk/emulator
+          key: e2e-avd-api34-google_apis-x86_64-${{ hashFiles('e2e/ci/boot-emulator.sh') }}
+
+      - name: Create the AVD
+        if: steps.avd-cache.outputs.cache-hit != 'true'
+        timeout-minutes: 25
+        run: e2e/ci/boot-emulator.sh create
+
+      # Saved here because at the end of the job the running emulator holds locks inside the AVD
+      - name: Save the AVD
+        if: steps.avd-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: |
+            ~/.android/avd
+            ~/.android/adb*
+            /usr/local/lib/android/sdk/system-images/android-34
+            /usr/local/lib/android/sdk/emulator
+          key: ${{ steps.avd-cache.outputs.cache-primary-key }}
+
+      - name: Boot the emulator
+        timeout-minutes: 15
+        run: e2e/ci/boot-emulator.sh boot
+
+      - name: Install the two apps
+        run: |
+          adb install -r e2e-apks/dev.apk
+          adb install -r e2e-apks/staging.apk
+
+      - name: Run the flows
+        run: e2e/ci/run-flows.sh "${{ inputs.tags }}"
+
+      - name: Upload the artifacts
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: e2e-output-${{ inputs.tags }}
+          path: e2e-out
