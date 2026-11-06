@@ -12,7 +12,7 @@ that the test needs.
 | Group | Counterparts | Infrastructure | Runs | Blocks a merge |
 | --- | --- | --- | --- | --- |
 | **Local suite** | A second Hologram app (P2P) | Mediator, MinIO and TLS proxy in the runner | Each PR, before a release | **Yes** (after a period to make it stable) |
-| **External suite** | Deployed demo services: the 2060 demo chatbot and the Verana playground "demo" cast | Dev mediator, dev MinIO, Verana testnet | On request, before a release | No |
+| **External suite** | Deployed demo services: the 2060 demo chatbot and the Verana playground "demo" cast | Dev mediator, dev MinIO, Verana testnet (playground) and devnet (chatbot) | On request, before a release | No |
 | **Manual checklist** | People and real devices | Real devices | Before a release | No (the release manager signs it) |
 
 No suite runs on a schedule. A suite runs only for a PR, on request, or before a release.
@@ -40,12 +40,12 @@ The main decisions are:
 | Topic | Decision |
 | --- | --- |
 | Schedule | No scheduled runs. The local suite runs for each PR. The external suite runs on request and before a release. |
-| Chatbot version | The deployed chatbot follows the VS Agent `:dev` image. The external suite thus also finds VS Agent regressions. The job summary records the versions. |
+| Chatbot version | The deployed chatbot uses a fixed `v2.0.0-dev.N` tag, set in `charts/dev/demo-chatbot.yaml` of `hologram-demos-deploy`. The external suite thus also finds VS Agent regressions. The job summary records the versions. |
 | Verana target | The Verana playground "demo" cast on **testnet** only. We do not use verana-demos. |
 | Test switches in the app | Not preferred. We add a switch only when the spike shows that no other way works (section 5). |
 | Parental control | The dev chatbot requires a minimum age of 18 (section 6.1, C10). |
 | Required check | The local suite becomes a required check after the stabilization period (section 8). |
-| Chatbot trust | The dev chatbot has an ECS Service credential on Verana testnet. Thus X01 expects "trusted", and C10 can set the minimum age. |
+| Chatbot trust | The dev chatbot has an ECS Service credential on Verana **devnet**. The app shows it as "Trusted" with a DEVNET label, so X01 expects "trusted". C10 can set the minimum age (not checked yet). |
 | Playground | The Hologram team also owns the Verana playground. The external suite uses its `/api/demo/<service>` endpoint to get invitation links. If a test needs more from the playground, we change the playground, the same as the chatbot. |
 
 ## 3. Facts that control the design
@@ -76,22 +76,25 @@ The main decisions are:
   random SCID, so CI must use **did:web** (for example `did:web:mediator.hologram.test`).
 - Without Firebase, it does not send pushes. Thus the local suite cannot test push.
 - It supports DIDComm v1 and v2, and HTTP and WebSocket on one port.
+- Its HTTP routes start before its store is ready. A request to `/.well-known/did.json` at this
+  time stops the container (`no such table: config`). Thus the stack waits for the log line
+  `initialized OK` before it sends a request.
 
 ### 3.3 Deployed demo services
 
 | Service | Where | Use in the tests |
 | --- | --- | --- |
-| **2060 demo chatbot** ([vs-agent/examples/chatbot](https://github.com/verana-labs/vs-agent/tree/main/examples/chatbot)) | `dm.chatbot.demos.dev.2060.io`. The image ships with each VS Agent release. We own it, and we can add features to it. | All message types that a service sends: text, menu, question, media, link, invitation, profile, credential offer, proof request, MRZ and eMRTD requests, calls. It answers fixed text (for example `/echo`). Parental control. Section 6.1 adds the features that the tests need. |
+| **2060 demo chatbot** ([vs-agent/examples/chatbot](https://github.com/verana-labs/vs-agent/tree/main/examples/chatbot)) | Backend (`/health`, `/invitation`, `/qr`): `demo-chatbot-backend.demos.dev.hologram.zone`. Agent: `demo-chatbot.demos.dev.hologram.zone`. Network: Verana devnet. The image ships with each VS Agent release. We own it, and we can add features to it. | All message types that a service sends: text, menu, question, media, link, invitation, profile, credential offer, proof request, MRZ and eMRTD requests, calls. It answers fixed text (for example `/echo`). Parental control. Section 6.1 adds the features that the tests need. |
 | **Verana playground "demo" cast** | `https://<id>.playground.testnet.verana.network` (testnet) | Trust matrix: issuer and verifier, each accredited, not accredited, and untrusted. Also a standalone untrusted service. `GET https://playground.testnet.verana.network/api/demo/<service>` returns an invitation link and an exchange ID with no browser. |
 
 Some facts make the external suite less stable:
 
-- **Image versions:** the chatbot uses the `:dev` image tag with `imagePullPolicy: Always`. A
-  restart of the pod can install a new version. A person deploys the playground cast by hand,
-  with fixed versions. The job summary records the version of each service (section 6.2).
-- **No `/qr` or `/invitation` page:** VS Agent v2 removed both. The smoke test still uses
-  `https://dm.chatbot.demos.dev.2060.io/qr`. The new invitation endpoint of the chatbot
-  (section 6.1, C1) replaces it. An implicit invitation to its public DID also works.
+- **Image versions:** the chatbot version changes when the tag in `hologram-demos-deploy`
+  changes. A person deploys the playground cast by hand, with fixed versions. The job summary
+  records the version of each service (section 6.2).
+- **Invitation endpoint:** the chatbot backend has `GET /invitation` and `GET /health`
+  (section 6.1, C1). The smoke test still uses `https://dm.chatbot.demos.dev.2060.io/qr`,
+  which now returns 404. An implicit invitation to its public DID also works.
 - **Negative cache:** the Verana resolver keeps a negative verdict for 1 hour.
 - **DIDs:** the DIDs and the credential definition IDs can change (for example after the
   cast is deployed again with new storage). The tests must read them at run time
@@ -114,12 +117,15 @@ Its `docker-compose.yml` already shows the MinIO configuration that the app need
 MINIO_IDENTITY_PLUGIN_URL: "http://hologram:3000/auth"
 MINIO_IDENTITY_PLUGIN_ROLE_ID: "mobile-app"     # gives arn:minio:iam:::role/idmp-mobile-app
 MINIO_IDENTITY_PLUGIN_ROLE_POLICY: "consoleAdmin"
-image: minio/minio:RELEASE.2025-07-23T15-54-02Z
+image: bitnamilegacy/minio:2025.7.23-debian-12-r5
 ```
 
-The service needs a Firebase **service account** file. A PR from a fork gets no secrets, and
-the local suite must not need secrets. Thus we add a small test mode to hologram-server
-(section 6.3).
+The `minio/minio:RELEASE.2025-07-23T15-54-02Z` tag is not on Docker Hub now. The Bitnami image is no longer maintained,
+so we must replace it at some point. `MINIO_DEFAULT_BUCKETS` creates the bucket, and the local
+stack uses the `readwrite` policy.
+
+Before v1.1.0, the service needed a Firebase **service account** file. A PR from a fork gets no
+secrets, and the local suite must not need secrets. v1.1.0 adds a test mode (section 6.3).
 
 ## 4. Test tool: Maestro
 
@@ -167,22 +173,45 @@ Notes:
   invitation link from A to B. This uses fewer resources than two emulators. It does not test
   delivery in live mode while the two apps are in the foreground at the same time. A job with
   two emulators on a larger runner covers live mode before a release.
+- **Foreground turns.** In the background, the app closes its mediator socket
+  (`useMessagePickup`), and the local mediator sends no pushes. So an app receives messages only
+  in the foreground, and each reply needs a turn of the other app. A connection needs three
+  turns: request (B), response (A), complete (B). A shows the contact only after the last one.
+  The attach and mic buttons appear only after the feature disclosure of the peer arrives, which
+  needs one more turn. No screen shows that A sent its response, so the flows need a loop that
+  moves between the apps until the connection completes.
+- **Moving between apps.** `launchApp` stops the app by default, so the flows use
+  `stopApp: false`. A `runFlow` with `when` can take about 7 s when the condition is false, so
+  each move between apps takes 12–25 s.
+- **Clipboard.** `pasteText` uses only the text from the `copyTextFrom` command of Maestro, not
+  the device clipboard. The flow does a long press on the input and taps the system "Paste". The
+  app has no "copy link" button, so A opens Share and taps the system "Copy".
+- **Deep links.** The two flavors handle `didcomm://`, so with two apps `openLink` stops at the
+  Android "Open with" sheet. The external suite installs one app. L12 must select the app in the
+  sheet (not tested yet).
+- **Keyboard.** The sign-up screen has no `keyboardShouldPersistTaps`, so a tap on "Get started"
+  with the keyboard open only closes the keyboard. `hideKeyboard` left the app in the spike. The
+  flow taps the title first.
 - **TLS.** A test CA (certificate and key in `e2e/stack/certs`, for tests only) signs the
   certificates of Caddy. Only the E2E build type trusts this CA, through a
-  `network_security_config` in `android/app/src/e2e/`. Release builds do not change.
-- **DNS.** The emulator uses dnsmasq on the runner (`-dns-server`). If this does not work,
-  the fallbacks are an `/etc/hosts` file on a writable system image, or a public DNS record
-  `*.e2e.2060.io → 10.0.2.2`.
+  `network_security_config` in `android/app/src/e2e/`. Release builds do not change. The CA has
+  the name constraint `DNS:hologram.test`, and the config applies it only to this domain. The
+  spike examined `fetch`, the WebSocket, the S3 upload and the media download.
+- **DNS.** The emulator uses dnsmasq on the runner (`-dns-server`). dnsmasq binds to the runner
+  IP (`hostname -I`) with `--interface=eth0`, because `127.0.0.1` in the emulator is the emulator.
+  The spike did not need a fallback.
 - **App Check.** The app gets a token from the App Check debug provider. That needs Google
   and the debug token in `.env.dev`, which is already public. hologram-server in test mode
-  verifies the token with no service account (section 6.3). If Google causes flaky tests,
+  verifies the token with no service account (section 6.3). The spike confirmed this for the
+  dev and staging app IDs, and a forged token gets a 403. If Google causes flaky tests,
   hologram-server can accept each token. Only if that is not sufficient, the app gets a switch
   to send a fixed token.
 - **Screen lock.** On Android, the job sets a PIN on the emulator
   (`adb shell locksettings set-pin`). Maestro types the PIN in the system prompt. This needs no
   change to the app, and it also tests the screen lock. On iOS, the simulator can enroll
-  Face ID and send a match. If the spike shows that this is not reliable, the app gets a
-  switch for the screen lock default, which only the E2E env file sets.
+  Face ID and send a match. The spike confirmed the PIN on Android. It did not test iOS. If
+  iOS is not reliable, the app gets a switch for the screen lock default, which only the E2E env
+  file sets.
 - **Not in scope:** calls (WebRTC server, TURN) and pushes (no Firebase in the local mediator).
 
 ### 5.2 iOS simulator (local suite)
@@ -214,7 +243,7 @@ GitHub runner
 `e2e/services.json` is a catalogue. Each entry gives these fields:
 
 - the source of the invitation (the chatbot endpoint, or the playground API)
-- the network (`testnet`)
+- the network (`testnet` or `devnet`)
 - the expected service status
 - the expected issuer or verifier accreditation
 - the minimum age
@@ -226,8 +255,8 @@ When a service changes, we edit the catalogue, not the flows.
 | Change | Why | Effect on production |
 | --- | --- | --- |
 | Add `testID` to about 15 screens (sign-up, chats list, chat, composer, message bubbles, connection details, invitation, credential offer, proof request, wallet, credential details, settings, trust card and status badge) | Stable selectors | None |
-| `.env.e2e-local` and `.env.e2e-dev` (with an empty `DEFAULT_SERVICE_PUBLIC_DID`) | Select the infrastructure per suite | None |
-| Android build type `e2e`: `initWith release`, debug signing, bundled JS, `network_security_config` with the test CA | A build like release, which trusts the local stack | None (the `e2e` source set is only in this build type) |
+| `.env.e2e-local` and `.env.e2e-dev` (with an empty `DEFAULT_SERVICE_PUBLIC_DID`). The app logs `Could not connect to default service` at sign-up, and it continues. | Select the infrastructure per suite | None |
+| Android build type `e2e`: `initWith release`, debug signing, bundled JS, `network_security_config` with the test CA. It must set the `usesCleartextTraffic` placeholder, because the React Native Gradle plugin sets it only for debug and release. | A build like release, which trusts the local stack | None (the `e2e` source set is only in this build type) |
 | iOS scheme and configuration `E2E`: `.env.e2e-*`, simulator SDK, no code signing | Simulator build | None |
 | iOS Podfile toggle `HOLOGRAM_E2E=1`: remove the two MLKit pods; Metro alias to JS stubs | Native arm64 simulators | None (only when the variable is set) |
 | Only if necessary: a switch for the screen lock default, and a switch for a fixed App Check token | See section 5.1 | None (the defaults do not change) |
@@ -268,21 +297,22 @@ and the trust verdict for the playground cast). It writes them in the job summar
 
 ### 6.3 hologram-server
 
-Add a configuration that does not need a service account:
+hologram-server v1.1.0 (2060-io/hologram-server#6) has a configuration that does not need a
+service account:
 
 - `FIREBASE_PROJECT_ID=<id>` with no `FIREBASE_CFG_FILE`: `initializeApp({ projectId })`.
   App Check token verification uses the public Google JWKS, so this verifies the real token
-  of the debug provider. The spike must confirm that `firebase-admin` accepts this
-  configuration.
+  of the debug provider. The spike confirmed this.
 - `APP_CHECK_VERIFY=false` (for tests only): accept each token and log a warning. This is the
-  fallback if Google causes flaky tests.
+  fallback if Google causes flaky tests. The spike did not need it.
 
-The repository has a CI job that publishes the image.
+The repository has a CI job that publishes the image. The stack uses a fixed `dev` tag (the spike used `io2060/hologram-server:v1.1.0-dev.1`).
 
 ## 7. Test suites
 
 Each flow starts with a fresh install (`launchApp: clearState: true`). A shared subflow does
-the sign-up.
+the sign-up. This costs about 100 s for the two apps, and a connection adds about 2 min. Phase 2
+must decide if the flows that need a connection can share one (section 8).
 
 ### 7.1 Local suite (blocks a merge)
 
@@ -290,20 +320,20 @@ the sign-up.
 | --- | --- | --- |
 | L01 | Sign-up with name and picture (`addMedia`) | Signup |
 | L02 | Change the profile. The peer sees the new name and picture. | Settings: modify profile |
-| L03 | A creates an invitation link. B opens it. The connection completes on the two sides. | P2P connection |
+| L03 | A shares its invitation link (system "Copy"). B pastes it in the Scan "link" tab. The connection completes on the two sides. | P2P connection |
 | L04 | B opens the same link again: "You are already connected". A refreshes the invitation. B connects as a new contact. | Settings: invitation |
 | L05 | Text, in the two directions. Receipts (ticks). | Chat |
 | L06 | Image and video from the gallery, in the two directions. Download and preview on the receiver. | Chat |
-| L07 | Voice note (long press). Play on the receiver. | Chat (risk: audio input on the emulator) |
+| L07 | Voice note (long press). The receiver gets it. The emulator records no host audio, so the flow does not examine the sound. | Chat |
 | L08 | Reaction, reply, copy, delete, report | Chat screen features |
 | L09 | Block: B cannot send. Unblock: B can send. | Connection details |
 | L10 | Clear the conversation. Delete the connection. | Connection details |
 | L11 | Chats screen: filter, search, archive, unarchive, delete | Chats screen |
-| L12 | Deep links: valid `didcomm://` and `https://hologram.zone` links open the invitation. An invalid link shows the error toast. | Deep links |
+| L12 | Deep links: valid `didcomm://` and `https://hologram.zone` links open the invitation (select the app in the "Open with" sheet). An invalid link shows the error toast. | Deep links |
 | L13 | Developer mode: tap Settings 7 times. Change an environment value. | Developer |
 | L14 | Delete the wallet. The app shows the sign-up screen. | Settings |
 | L15 | Share text and an image from another app (`am start -a android.intent.action.SEND`) (Android only) | Share from other apps |
-| L16 | Screen lock: "instant" asks for the PIN when the app comes back. "Off" does not ask. (Android only) | Privacy |
+| L16 | Screen lock: "instant" asks for the PIN when the app comes back. "Off" does not ask when the app comes back, but a cold start always asks. (Android only) | Privacy |
 | L17 | Upgrade: install the build of the last release, make data with L03–L07, install the new build over it, then exchange more messages (Android only, before a release) | Wallet restore with migration |
 
 ### 7.2 External suite (does not block a merge)
@@ -364,7 +394,7 @@ sends.
 | Workflow | Trigger | Jobs | Run time (estimate) |
 | --- | --- | --- | --- |
 | `ci.yml` (exists) | Each PR | Style, types | 3 min |
-| `e2e-local.yml` | Each PR (no docs-only changes), on request | Android build (`devE2e` + `stagingE2e`), stack, local suite | 35–45 min |
+| `e2e-local.yml` | Each PR (no docs-only changes), on request | Android build (`devE2e` + `stagingE2e`), stack, local suite | About 85 min with a cold build and about 75 min with warm caches, if each flow signs up and connects again (estimate, section 11.1) |
 | `e2e-local-ios.yml` | PRs that change native iOS files (`ios/**`, `package.json`, `pnpm-lock.yaml`, `patches/**`), on request | iOS simulator build, native stack, local suite | 60–80 min |
 | `e2e-external.yml` | On request (`workflow_dispatch`, or the label `e2e-external` on a PR) | Preflight, Android `devE2e` with `.env.e2e-dev`, external suite | 40–60 min |
 | `e2e-release.yml` | Called by the release workflows | Local suite (Android and iOS), L17 (upgrade), two-emulator live mode, external suite | 90–120 min |
@@ -375,6 +405,18 @@ suite fails. The release manager reads the external report and decides.
 The repository is public, so the standard Linux and macOS runners cost nothing. A PR from a
 fork gets no secrets. The local suite needs no secrets.
 
+Facts from the spike for the jobs:
+
+- Set JDK 17. The default JDK of `ubuntu-latest` (now 26.04) stops `configureCMakeRelWithDebInfo`
+  with `A restricted method in java.lang.System has been called`.
+- Set `ANDROID_AVD_HOME`. Runners set `XDG_CONFIG_HOME`, so `avdmanager` writes under `~/.config`
+  and the emulator reads `~/.android`. Add `platform-tools` to `GITHUB_PATH`.
+- Give `adb wait-for-device` a timeout. Without one, the job hangs until its own timeout.
+- Save the AVD cache just after the snapshot is created. At the end of the job, the emulator is
+  running and holds locks in the AVD.
+- Run `maestro check-syntax` on the flows before the emulator starts. An invalid flow costs a
+  full run.
+
 **Rule for "blocks a merge":** during a stabilization period, the local suite does not block a
 merge. We measure the flake rate. When the rate is below about 2%, we make the job required.
 
@@ -382,8 +424,12 @@ Each flow gives these artifacts:
 
 - a screen recording
 - the Maestro JUnit report
-- the app file logs (through `adb`)
+- the app file logs (`adb root`, then `adb pull` of `files/hologramLogs`; `run-as` does not work,
+  because the `e2e` build type is not debuggable)
 - the logs of the stack containers
+
+The repository limits the artifact retention to 1 day. Anyone with a GitHub account can download
+the artifacts. The app logs hold S3 keys and upload IDs. The spike found no credentials in them.
 
 ## 9. Directory layout
 
@@ -413,7 +459,7 @@ The stack does not build them.
 
 | Phase | Content | Result |
 | --- | --- | --- |
-| **Spike** | Android `devE2e` in CI. Local mediator behind Caddy with the test CA and dnsmasq. hologram-server with `FIREBASE_PROJECT_ID` only. Two apps on one emulator exchange one text message and one image. Screen lock with an emulator PIN. One external flow (X10). | Answers to risks R1–R4 and real run times |
+| **Spike** (done, section 11.1) | Android `devE2e` in CI. Local mediator behind Caddy with the test CA and dnsmasq. hologram-server with `FIREBASE_PROJECT_ID` only. Two apps on one emulator exchange one text message and one image. Screen lock with an emulator PIN. One external flow (X10). | Answers to risks R1–R4 and real run times |
 | 0. Groundwork | Test IDs, env files, `e2e` build type, CI job for the emulator, Maestro skeleton, artifacts | A flow can run in CI |
 | 1. Local stack | Compose file, MinIO with hologram-server, bucket policy, health checks, hologram-server test mode | The stack starts in CI |
 | 2. Local suite (Android) | L01–L16 | The local suite runs for each PR |
@@ -443,10 +489,46 @@ phases 0 to 2.
 | R11 | X09 (call) depends on the dev WebRTC server and on the vision service. | X09 is in the external suite only. A failure does not block a release. |
 | R12 | On iOS, the simulator cannot pass the screen lock (Face ID match) in a reliable way. | A switch for the screen lock default, which only the E2E env file sets. |
 | R13 | C10 (minimum age 18) blocks other flows when a test leaves parental control on. | Each flow starts with a fresh install. X15 turns parental control off at the end. |
+| R14 | After Accept, the chat can show "This connection has been deleted" (2 of the 7 spike runs that reached this step). It did not recover during the 30 s of the flow. Probable cause: `ConnectionsProvider` calls `setState` with a stale `state`, so two connection events in a short time can lose a record. | Use the functional form of `setState`. Then measure again. |
+
+### 11.1 Spike results
+
+Android only, in GitHub Actions on `ubuntu-latest`. All five flows passed in
+[run 42066879160](https://github.com/2060-io/hologram-app/actions/runs/42066879160) (attempt 2).
+The first attempt on that commit failed because of R14. The spike did not attempt iOS.
+
+| Risk | Result | Notes |
+| --- | --- | --- |
+| R1 | Works | `mediator.hologram.test` resolves to `10.0.2.2` in the emulator. Other names go through dnsmasq. |
+| R2 | Works | Sign-up over the WebSocket, S3 upload and media download on the receiver, all with the test CA. |
+| R3 | Works | `io2060/hologram-server:v1.1.0-dev.1` verifies real tokens with only a project ID. |
+| R4 | Works with limits | Text in the two directions and an image from A to B, with foreground turns (section 5.1). The flows do not test live delivery. |
+| R5 | Works with limits | A 2 s voice note is recorded and arrives. The emulator logs ``Could not init `pa' audio driver``, so the PulseAudio step did not supply the audio. The flow does not examine the sound. |
+| R12 | Not tested | iOS was optional. |
+
+| Step | Time |
+| --- | --- |
+| Android build of `devE2e` and `stagingE2e`, codegen included, no cache (#540) | about 25 min |
+| The same build with warm Gradle and ccache caches, after a change in `src` (#540) | about 16.5 min |
+| The spike build, with one more external variant, no cache | about 40 min |
+| APK cache hit (no app file changed) | under 10 s |
+| Stack start | 20–35 s, once 323 s (the cause was not examined) |
+| AVD creation, cache miss | 130–145 s |
+| AVD cache restore, then boot from snapshot | 40–110 s, then 3–7 s |
+| Install the two apps | 12–18 s |
+| `01` sign-up on the two apps | about 100 s |
+| `02` connection, text, image | about 235 s |
+| `03` voice note | about 65 s |
+| `x10` accredited issuer | about 58 s |
+| `x01` connection to the dev chatbot | about 55 s |
 
 ## 12. Open questions
 
-There are no open questions at this time.
+- The fix for R14: an app bug that makes the flows fail. It should come before phase 2.
+- Does the app get a real "copy link" button? The flows now use the system share sheet.
+- What should X03 and X05 do with `file`? The app has no chat entry type for files, and the attachment options have no document item, so these flows have nothing to examine for a file now.
+- Do the flows that need a connection share one? The local suite could take about 60 min
+  (estimate) if each flow signs up and connects again.
 
 ## 13. Example flows
 
@@ -457,21 +539,22 @@ appId: io.twentysixty.mobileagent.dev
 tags: [local, p2p]
 ---
 - runFlow: ../subflows/signup-both.yaml          # signs up app A and app B
-- launchApp: { appId: io.twentysixty.mobileagent.dev }
+- runFlow: { file: ../subflows/switch-app.yaml, env: { APP_ID: io.twentysixty.mobileagent.dev } }
 - tapOn: { id: "settings-tab" }
 - tapOn: { id: "settings-my-invitation" }
-- tapOn: { id: "invitation-copy-link" }          # the link goes to the device clipboard
-- launchApp: { appId: io.twentysixty.mobileagent.st }
+- tapOn: "Share"
+- tapOn: "Copy"                                  # system sheet: the link goes to the device clipboard
+- runFlow: { file: ../subflows/switch-app.yaml, env: { APP_ID: io.twentysixty.mobileagent.st } }
 - tapOn: { id: "scan-tab" }
 - tapOn: { id: "scan-link-tab" }
-- tapOn: { id: "scan-link-input" }
-- pasteText
+- longPressOn: { id: "scan-link-input" }
+- tapOn: "Paste"                                 # pasteText does not read the device clipboard
 - tapOn: { id: "scan-link-open" }
 - tapOn: { id: "invitation-accept" }
-- extendedWaitUntil: { visible: { id: "chat-screen" }, timeout: 30000 }
+- runFlow: ../subflows/complete-connection.yaml  # moves between A and B until the connection completes
 - inputText: "hello from B"
 - tapOn: { id: "composer-send" }
-- launchApp: { appId: io.twentysixty.mobileagent.dev }
+- runFlow: { file: ../subflows/switch-app.yaml, env: { APP_ID: io.twentysixty.mobileagent.dev } }
 - extendedWaitUntil: { visible: "hello from B", timeout: 30000 }
 ```
 
