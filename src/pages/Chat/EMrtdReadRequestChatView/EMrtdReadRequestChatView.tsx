@@ -1,4 +1,4 @@
-import { MrtdProblemReportReason } from '@2060.io/credo-ts-didcomm-mrtd'
+import { MrtdProblemReportReason } from '@credo-ts/didcomm-mrtd'
 import { Modal, SvgIcon, Text } from '@src/components/common'
 import { useChat, useMobileAgent } from '@src/hooks/agent'
 import { useScreenLock } from '@src/hooks/providers/ScreenLockProvider'

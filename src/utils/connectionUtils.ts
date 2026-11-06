@@ -1,8 +1,3 @@
-import { CallOfferMessage, DidCommCallRole } from '@2060.io/credo-ts-didcomm-calls'
-import { DidCommShareMediaMessage } from '@2060.io/credo-ts-didcomm-media-sharing'
-import { MessageReactionsMessage } from '@2060.io/credo-ts-didcomm-reactions'
-import { DidCommMessageReceiptsMessage } from '@2060.io/credo-ts-didcomm-receipts'
-import { DidCommProfileMessage, getConnectionProfile, PictureData } from '@2060.io/credo-ts-didcomm-user-profile'
 import { AgentContext, DidKey, JsonTransformer, Kms, tryParseDid } from '@credo-ts/core'
 import {
   DidCommConnectionRecord,
@@ -18,6 +13,11 @@ import {
   DidCommProtocol,
   KeylistUpdateActionV2,
 } from '@credo-ts/didcomm'
+import { CallOfferMessage, DidCommCallRole } from '@credo-ts/didcomm-calls'
+import { DidCommShareMediaMessage } from '@credo-ts/didcomm-media-sharing'
+import { MessageReactionsMessage } from '@credo-ts/didcomm-reactions'
+import { DidCommMessageReceiptsMessage } from '@credo-ts/didcomm-receipts'
+import { DidCommProfileMessage, getConnectionProfile, PictureData } from '@credo-ts/didcomm-user-profile'
 import { ConnectionType } from '@src/model'
 import { MobileAgent } from '@src/services/agent/MobileAgent'
 import { dataUrl } from './index'

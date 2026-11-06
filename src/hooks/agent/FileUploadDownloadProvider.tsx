@@ -1,5 +1,5 @@
-import { DidCommMediaSharingRepository, SharedMediaItem } from '@2060.io/credo-ts-didcomm-media-sharing'
 import { utils } from '@credo-ts/core'
+import { DidCommMediaSharingRepository, SharedMediaItem } from '@credo-ts/didcomm-media-sharing'
 import { copyFile, downloadFile } from '@dr.pogodin/react-native-fs'
 import { useAudioPlayer } from '@simform_solutions/react-native-audio-waveform'
 import { MediaDownloadState, MediaUploadState, UploadTask } from '@src/model'

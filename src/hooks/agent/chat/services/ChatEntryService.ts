@@ -1,5 +1,5 @@
-import { DidCommMessageReceipt, MessageState } from '@2060.io/credo-ts-didcomm-receipts'
 import { utils } from '@credo-ts/core'
+import { DidCommMessageReceipt, MessageState } from '@credo-ts/didcomm-receipts'
 import { ChatEntry, ChatEntryRole, ChatEntryState, ChatEntryType, ChatThread, RelatedEntryProps } from '@src/model'
 import Realm from 'realm'
 import { updateThread, updateThreadIfNeeded } from './ChatThreadService'

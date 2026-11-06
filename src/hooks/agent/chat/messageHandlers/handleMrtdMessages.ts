@@ -1,17 +1,17 @@
 import {
+  DidCommConnectionRecord,
+  DidCommMessage,
+  DidCommProblemReportMessage,
+  parseMessageType,
+} from '@credo-ts/didcomm'
+import {
   EMrtdDataMessage,
   EMrtdDataRequestMessage,
   MrtdProblemReportMessage,
   MrtdProblemReportReason,
   MrzDataMessage,
   MrzDataRequestMessage,
-} from '@2060.io/credo-ts-didcomm-mrtd'
-import {
-  DidCommConnectionRecord,
-  DidCommMessage,
-  DidCommProblemReportMessage,
-  parseMessageType,
-} from '@credo-ts/didcomm'
+} from '@credo-ts/didcomm-mrtd'
 import { ChatEntryRole, ChatEntryState, ChatEntryType, EMrtdReadRequestMetadata, MrzRequestMetadata } from '@src/model'
 import { log } from '@src/utils'
 import { parse } from 'mrz'

@@ -1,5 +1,5 @@
-import { DidCommUserProfileData } from '@2060.io/credo-ts-didcomm-user-profile'
 import { DidCommMediatorPickupStrategy } from '@credo-ts/didcomm'
+import { DidCommUserProfileData } from '@credo-ts/didcomm-user-profile'
 import { CommonActions, useNavigation } from '@react-navigation/native'
 import { useMobileAgent, useUserProfile } from '@src/hooks/agent'
 import { ServiceStatus } from '@src/model'

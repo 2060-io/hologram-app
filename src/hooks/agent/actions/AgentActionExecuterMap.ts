@@ -1,8 +1,3 @@
-import { CallEndMessage, CallOfferMessage } from '@2060.io/credo-ts-didcomm-calls'
-import { DidCommShareMediaMessage } from '@2060.io/credo-ts-didcomm-media-sharing'
-import { MessageReactionsMessage } from '@2060.io/credo-ts-didcomm-reactions'
-import { DidCommMessageReceiptsMessage } from '@2060.io/credo-ts-didcomm-receipts'
-import { DidCommProfileMessage, DidCommRequestProfileMessage } from '@2060.io/credo-ts-didcomm-user-profile'
 import { PerformMessage } from '@credo-ts/action-menu'
 import { BaseRecord } from '@credo-ts/core'
 import {
@@ -32,7 +27,12 @@ import {
   DidCommRequestCredentialV2Message,
   DidCommRequestPresentationV2Message,
 } from '@credo-ts/didcomm'
+import { CallEndMessage, CallOfferMessage } from '@credo-ts/didcomm-calls'
+import { DidCommShareMediaMessage } from '@credo-ts/didcomm-media-sharing'
 import { DidCommPushNotificationsFcmSetDeviceInfoMessage } from '@credo-ts/didcomm-push-notifications'
+import { MessageReactionsMessage } from '@credo-ts/didcomm-reactions'
+import { DidCommMessageReceiptsMessage } from '@credo-ts/didcomm-receipts'
+import { DidCommProfileMessage, DidCommRequestProfileMessage } from '@credo-ts/didcomm-user-profile'
 import { AnswerMessage } from '@credo-ts/question-answer'
 import { createOobInvitation, MobileAgent } from '@src/services/agent'
 import { acceptProofRequestOrReportNoCompatible } from '@src/services/agent/proofPresentation'

@@ -1,6 +1,6 @@
-import { DidCommMessageReceipt, DidCommMessageReceiptOptions, MessageState } from '@2060.io/credo-ts-didcomm-receipts'
 import { utils } from '@credo-ts/core'
 import { DidCommConnectionRecord } from '@credo-ts/didcomm'
+import { DidCommMessageReceipt, DidCommMessageReceiptOptions, MessageState } from '@credo-ts/didcomm-receipts'
 import { useLocalRealm } from '@src/hooks/providers/RealmProvider'
 import {
   ChatEntry,

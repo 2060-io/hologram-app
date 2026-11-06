@@ -1,9 +1,3 @@
-import {
-  DidCommConnectionProfileUpdatedEvent,
-  DidCommProfileEventTypes,
-  DidCommUserProfileApi,
-  DidCommUserProfileRequestedEvent,
-} from '@2060.io/credo-ts-didcomm-user-profile'
 import { AgentContext, EventEmitter } from '@credo-ts/core'
 import {
   DidCommConnectionEventTypes,
@@ -18,6 +12,12 @@ import {
   DidCommTrustPingReceivedEvent,
   TrustPingResponseReceivedEvent,
 } from '@credo-ts/didcomm'
+import {
+  DidCommConnectionProfileUpdatedEvent,
+  DidCommProfileEventTypes,
+  DidCommUserProfileApi,
+  DidCommUserProfileRequestedEvent,
+} from '@credo-ts/didcomm-user-profile'
 import { AgentActionQueueSingleton } from '@src/services/AgentActionQueueSingleton'
 import AgentSingleton from '@src/services/AgentSingleton'
 import RealmSingleton from '@src/services/RealmSingleton'

@@ -1,4 +1,4 @@
-import { CipheringInfo } from '@2060.io/credo-ts-didcomm-media-sharing'
+import { CipheringInfo } from '@credo-ts/didcomm-media-sharing'
 import {
   decryptFile as nativeDecryptFile,
   encryptFile as nativeEncryptFile,

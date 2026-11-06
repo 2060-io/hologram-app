@@ -1,10 +1,3 @@
-import { DidCommCallsModule } from '@2060.io/credo-ts-didcomm-calls'
-import { DidCommMediaSharingModule } from '@2060.io/credo-ts-didcomm-media-sharing'
-import { DidCommMrtdModule } from '@2060.io/credo-ts-didcomm-mrtd'
-import { DidCommReactionsModule } from '@2060.io/credo-ts-didcomm-reactions'
-import { DidCommReceiptsModule } from '@2060.io/credo-ts-didcomm-receipts'
-import { DidCommShortenUrlModule } from '@2060.io/credo-ts-didcomm-shorten-url'
-import { DidCommUserProfileModule, DidCommUserProfileModuleConfig } from '@2060.io/credo-ts-didcomm-user-profile'
 import { ActionMenuModule } from '@credo-ts/action-menu'
 import { AnonCredsModule } from '@credo-ts/anoncreds'
 import {
@@ -34,7 +27,14 @@ import {
   DidCommModule,
   DidCommProofV2Protocol,
 } from '@credo-ts/didcomm'
+import { DidCommCallsModule } from '@credo-ts/didcomm-calls'
+import { DidCommMediaSharingModule } from '@credo-ts/didcomm-media-sharing'
+import { DidCommMrtdModule } from '@credo-ts/didcomm-mrtd'
 import { DidCommPushNotificationsFcmModule } from '@credo-ts/didcomm-push-notifications'
+import { DidCommReactionsModule } from '@credo-ts/didcomm-reactions'
+import { DidCommReceiptsModule } from '@credo-ts/didcomm-receipts'
+import { DidCommShortenUrlModule } from '@credo-ts/didcomm-shorten-url'
+import { DidCommUserProfileModule, DidCommUserProfileModuleConfig } from '@credo-ts/didcomm-user-profile'
 import { QuestionAnswerModule } from '@credo-ts/question-answer'
 import { WebVhDidResolver } from '@credo-ts/webvh'
 import { WebVhAnonCredsRegistry } from '@credo-ts/webvh/anoncreds'

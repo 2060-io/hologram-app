@@ -2,7 +2,7 @@ import {
   DidCommMediaSharingRecord,
   DidCommMediaSharingRole,
   DidCommMediaSharingState,
-} from '@2060.io/credo-ts-didcomm-media-sharing'
+} from '@credo-ts/didcomm-media-sharing'
 import {
   ChatEntryRole,
   ChatEntryState,

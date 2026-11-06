@@ -1,11 +1,11 @@
+import { DidCommEventTypes, DidCommMessageProcessedEvent, DidCommMessageSentEvent } from '@credo-ts/didcomm'
 import {
   CallAcceptMessage,
   CallEndMessage,
   CallOfferMessage,
   CallRejectMessage,
   DidCommCallType,
-} from '@2060.io/credo-ts-didcomm-calls'
-import { DidCommEventTypes, DidCommMessageProcessedEvent, DidCommMessageSentEvent } from '@credo-ts/didcomm'
+} from '@credo-ts/didcomm-calls'
 import { IncomingCall, VideoCall } from '@src/components'
 import { Modal } from '@src/components/common'
 import { handleCameraPermission, handleMicrophonePermission } from '@src/utils/permissions'

@@ -1,10 +1,3 @@
-import {
-  DidCommShortenedUrlInvalidatedEvent,
-  DidCommShortenedUrlReceivedEvent,
-  DidCommShortenUrlEventTypes,
-  DidCommShortenUrlRepository,
-} from '@2060.io/credo-ts-didcomm-shorten-url'
-import { DidCommConnectionProfileUpdatedEvent, DidCommProfileEventTypes } from '@2060.io/credo-ts-didcomm-user-profile'
 import { AnonCredsPresentationPreviewAttribute } from '@credo-ts/anoncreds/didcomm'
 import { TypedArrayEncoder, W3cCredentialRecord } from '@credo-ts/core'
 import {
@@ -18,6 +11,13 @@ import {
   DidCommProofState,
   DidCommProofStateChangedEvent,
 } from '@credo-ts/didcomm'
+import {
+  DidCommShortenedUrlInvalidatedEvent,
+  DidCommShortenedUrlReceivedEvent,
+  DidCommShortenUrlEventTypes,
+  DidCommShortenUrlRepository,
+} from '@credo-ts/didcomm-shorten-url'
+import { DidCommConnectionProfileUpdatedEvent, DidCommProfileEventTypes } from '@credo-ts/didcomm-user-profile'
 import { ParamListBase } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { AgentActionType, useAgentActionQueue, useCredentials, useMobileAgent } from '@src/hooks/agent'

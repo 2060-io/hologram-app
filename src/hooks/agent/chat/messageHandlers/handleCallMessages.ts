@@ -1,5 +1,5 @@
-import { CallEndMessage, CallOfferMessage, CallRejectMessage, DidCommCallType } from '@2060.io/credo-ts-didcomm-calls'
 import { DidCommConnectionRecord, DidCommMessage, parseMessageType } from '@credo-ts/didcomm'
+import { CallEndMessage, CallOfferMessage, CallRejectMessage, DidCommCallType } from '@credo-ts/didcomm-calls'
 import { CallInfo } from '@src/hooks/providers/useVideoCallContext'
 import { CallOfferMetadata, CallOfferState, ChatEntryRole, ChatEntryState, ChatEntryType } from '@src/model'
 import { logError } from '@src/utils'
