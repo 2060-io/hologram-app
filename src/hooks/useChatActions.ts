@@ -1,6 +1,6 @@
-import { DidCommMessageReactionAction, DidCommMessageReactionOptions } from '@2060.io/credo-ts-didcomm-reactions'
-import { DidCommMessageReceiptOptions, MessageState } from '@2060.io/credo-ts-didcomm-receipts'
 import { ActionMenuRole } from '@credo-ts/action-menu'
+import { DidCommMessageReactionAction, DidCommMessageReactionOptions } from '@credo-ts/didcomm-reactions'
+import { DidCommMessageReceiptOptions, MessageState } from '@credo-ts/didcomm-receipts'
 import { CameraRoll } from '@react-native-camera-roll/camera-roll'
 import { MAX_VIDEO_DURATION } from '@src/constants'
 import {

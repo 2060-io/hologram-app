@@ -1,7 +1,7 @@
-import { DidCommCallType } from '@2060.io/credo-ts-didcomm-calls'
-import { DidCommMessageReactionOptions } from '@2060.io/credo-ts-didcomm-reactions'
-import { DidCommMessageReceiptOptions } from '@2060.io/credo-ts-didcomm-receipts'
-import { DidCommUserProfileData } from '@2060.io/credo-ts-didcomm-user-profile'
+import { DidCommCallType } from '@credo-ts/didcomm-calls'
+import { DidCommMessageReactionOptions } from '@credo-ts/didcomm-reactions'
+import { DidCommMessageReceiptOptions } from '@credo-ts/didcomm-receipts'
+import { DidCommUserProfileData } from '@credo-ts/didcomm-user-profile'
 
 import { CallInfo } from '@src/hooks/providers/useVideoCallContext'
 

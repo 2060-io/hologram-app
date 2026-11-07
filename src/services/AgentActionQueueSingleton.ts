@@ -1,4 +1,3 @@
-import { DidCommMediaSharingRecord } from '@2060.io/credo-ts-didcomm-media-sharing'
 import { ActionMenuRecord, ActionMenuRepository } from '@credo-ts/action-menu'
 import { BaseRecord, JsonTransformer } from '@credo-ts/core'
 import {
@@ -7,6 +6,7 @@ import {
   DidCommMessageSender,
   getOutboundDidCommMessageContext,
 } from '@credo-ts/didcomm'
+import { DidCommMediaSharingRecord } from '@credo-ts/didcomm-media-sharing'
 import {
   ActionExecutionStatus,
   AgentAction,

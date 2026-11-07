@@ -1,4 +1,4 @@
-import { DidCommUserProfileData } from '@2060.io/credo-ts-didcomm-user-profile'
+import { DidCommUserProfileData } from '@credo-ts/didcomm-user-profile'
 import defaultAvatar from '@src/assets/images/defaultUser.png'
 import { Avatar, SvgIcon, Text, TextInput } from '@src/components/common'
 import { ImageOrVideo, useImageCropPicker } from '@src/hooks'

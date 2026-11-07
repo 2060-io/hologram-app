@@ -1,5 +1,5 @@
-import { DidCommCallType } from '@2060.io/credo-ts-didcomm-calls'
 import { DidCommConnectionRecord } from '@credo-ts/didcomm'
+import { DidCommCallType } from '@credo-ts/didcomm-calls'
 import { createContext, MutableRefObject, useContext } from 'react'
 
 export enum CallStatus {

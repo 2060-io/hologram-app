@@ -1,4 +1,4 @@
-import { DidCommUserProfileData, GetUserProfileDataReturnType } from '@2060.io/credo-ts-didcomm-user-profile'
+import { DidCommUserProfileData, GetUserProfileDataReturnType } from '@credo-ts/didcomm-user-profile'
 import React, { createContext, useCallback, useContext, useEffect, useState } from 'react'
 
 import { useMobileAgent } from './MobileAgentProvider'

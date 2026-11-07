@@ -1,4 +1,4 @@
-import { MrtdProblemReportReason } from '@2060.io/credo-ts-didcomm-mrtd'
+import { MrtdProblemReportReason } from '@credo-ts/didcomm-mrtd'
 import { useNavigation } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { SvgIcon, Text } from '@src/components/common'

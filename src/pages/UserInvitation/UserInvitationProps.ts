@@ -1,4 +1,4 @@
-import { DidCommUserProfileData } from '@2060.io/credo-ts-didcomm-user-profile'
+import { DidCommUserProfileData } from '@credo-ts/didcomm-user-profile'
 import { StackScreenProps } from '@react-navigation/stack'
 
 import { NavigationStackParams } from '@src/components/Navigation/NavigationProps'

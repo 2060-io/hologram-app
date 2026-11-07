@@ -1,21 +1,3 @@
-import { CallOfferMessage } from '@2060.io/credo-ts-didcomm-calls'
-import {
-  DidCommMediaSharingEventTypes,
-  DidCommMediaSharingRecord,
-  DidCommMediaSharingState,
-  DidCommMediaSharingStateChangedEvent,
-  DidCommShareMediaMessage,
-} from '@2060.io/credo-ts-didcomm-media-sharing'
-import { MrzDataRequestMessage } from '@2060.io/credo-ts-didcomm-mrtd'
-import { DidCommMessageReactionsReceivedEvent, DidCommReactionsEventTypes } from '@2060.io/credo-ts-didcomm-reactions'
-import {
-  DidCommMessageReceipt,
-  DidCommMessageReceiptOptions,
-  MessageReceiptsReceivedEvent,
-  MessageState,
-  ReceiptsEventTypes,
-} from '@2060.io/credo-ts-didcomm-receipts'
-import { DidCommConnectionProfileUpdatedEvent, DidCommProfileEventTypes } from '@2060.io/credo-ts-didcomm-user-profile'
 import { RecordUpdatedEvent, RepositoryEventTypes, tryParseDid } from '@credo-ts/core'
 import {
   DidCommBasicMessage,
@@ -38,6 +20,24 @@ import {
   OutboundMessageSendStatus,
   parseMessageType,
 } from '@credo-ts/didcomm'
+import { CallOfferMessage } from '@credo-ts/didcomm-calls'
+import {
+  DidCommMediaSharingEventTypes,
+  DidCommMediaSharingRecord,
+  DidCommMediaSharingState,
+  DidCommMediaSharingStateChangedEvent,
+  DidCommShareMediaMessage,
+} from '@credo-ts/didcomm-media-sharing'
+import { MrzDataRequestMessage } from '@credo-ts/didcomm-mrtd'
+import { DidCommMessageReactionsReceivedEvent, DidCommReactionsEventTypes } from '@credo-ts/didcomm-reactions'
+import {
+  DidCommMessageReceipt,
+  DidCommMessageReceiptOptions,
+  MessageReceiptsReceivedEvent,
+  MessageState,
+  ReceiptsEventTypes,
+} from '@credo-ts/didcomm-receipts'
+import { DidCommConnectionProfileUpdatedEvent, DidCommProfileEventTypes } from '@credo-ts/didcomm-user-profile'
 import { AnswerMessage, QuestionMessage } from '@credo-ts/question-answer'
 import { ChatEntryRole, ChatEntryState, ChatEntryType, InvitationMetadata } from '@src/model'
 import { InvitationState } from '@src/model/InvitationState'

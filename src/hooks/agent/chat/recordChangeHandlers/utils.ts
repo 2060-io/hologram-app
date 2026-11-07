@@ -1,5 +1,5 @@
-import { DidCommMediaSharingRecord } from '@2060.io/credo-ts-didcomm-media-sharing'
 import { DidCommBasicMessageRecord } from '@credo-ts/didcomm'
+import { DidCommMediaSharingRecord } from '@credo-ts/didcomm-media-sharing'
 import { ChatEntryType } from '@src/model'
 import { MobileAgent } from '@src/services/agent'
 import Realm from 'realm'

@@ -1,4 +1,4 @@
-import { DidCommCallType } from '@2060.io/credo-ts-didcomm-calls'
+import { DidCommCallType } from '@credo-ts/didcomm-calls'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'

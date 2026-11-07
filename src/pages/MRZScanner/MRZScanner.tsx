@@ -1,4 +1,4 @@
-import { MrtdProblemReportReason } from '@2060.io/credo-ts-didcomm-mrtd'
+import { MrtdProblemReportReason } from '@credo-ts/didcomm-mrtd'
 import { StackScreenProps } from '@react-navigation/stack'
 import { ChatStackParams } from '@src/components/Navigation/NavigationProps'
 import { useChat, useMobileAgent } from '@src/hooks/agent'
