@@ -16,6 +16,8 @@ maestro test --include-tags smoke e2e/maestro
 
 The flows type the PIN `1234` at the screen lock prompt.
 
+Use a `google_apis` image: `e2e/ci/run-flows.sh` pulls the app logs with `adb root`, which `google_play` images refuse.
+
 ## Layout
 
 - `maestro/smoke`: checks that the two apps open. It needs no backend.
