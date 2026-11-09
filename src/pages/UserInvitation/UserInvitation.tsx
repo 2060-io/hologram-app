@@ -23,7 +23,7 @@ const UserInvitation = ({ navigation, invitation, userProfileData, createNewInvi
   useEffect(() => {
     navigation.setOptions({
       headerLeft: () => (
-        <TouchableOpacity testID="invitation-close" style={styles.btnDone} onPress={() => navigation.goBack()}>
+        <TouchableOpacity testID="my-invitation-close" style={styles.btnDone} onPress={() => navigation.goBack()}>
           <Text fontFamily="EuclidCircularA-Medium" style={styles.headerText}>
             {t('chat.done')}
           </Text>
@@ -31,7 +31,7 @@ const UserInvitation = ({ navigation, invitation, userProfileData, createNewInvi
       ),
       headerStyle: globalStyles.headerStyle,
       headerRight: () => (
-        <TouchableOpacity testID="invitation-refresh" style={styles.btnRefresh} onPress={createNewInvitation}>
+        <TouchableOpacity testID="my-invitation-refresh" style={styles.btnRefresh} onPress={createNewInvitation}>
           <Text fontFamily="EuclidCircularA-Medium" style={styles.headerText}>
             {t('invitation.refresh')}
           </Text>
@@ -74,7 +74,7 @@ const UserInvitation = ({ navigation, invitation, userProfileData, createNewInvi
         {userProfileData?.displayName}
       </Text>
       <View>
-        <View testID="invitation-qr" style={styles.containerCardQR}>
+        <View testID="my-invitation-qr" style={styles.containerCardQR}>
           <QRCode
             size={widthPercentageToDP('70%')}
             color={theme.colors.black}
@@ -85,7 +85,7 @@ const UserInvitation = ({ navigation, invitation, userProfileData, createNewInvi
         <Text style={styles.pressRefreshText}>{t('invitation.pressRefresh')}</Text>
       </View>
       <MainButton
-        testID="invitation-share"
+        testID="my-invitation-share"
         onPress={shareInvitation}
         text={t('connection.share')}
         iconName="shareSocial"
