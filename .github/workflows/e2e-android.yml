@@ -245,7 +245,9 @@ jobs:
           adb install -r e2e-apks/staging.apk
 
       - name: Run the flows
-        run: e2e/ci/run-flows.sh "${{ inputs.tags }}"
+        env:
+          TAGS: ${{ inputs.tags }}
+        run: e2e/ci/run-flows.sh "$TAGS"
 
       - name: Upload the artifacts
         if: always()
