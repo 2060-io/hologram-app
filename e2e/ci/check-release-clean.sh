@@ -8,7 +8,7 @@ if grep -q assembleProdE2e <<<"$tasks"; then
   exit 1
 fi
 
-./gradlew :app:processDevReleaseMainManifest :app:mergeDevReleaseResources \
+./gradlew :app:processProdReleaseMainManifest :app:mergeProdReleaseResources \
   :app:processDevE2eMainManifest :app:mergeDevE2eResources -PreactNativeArchitectures=x86_64
 
 has_test_ca() {
@@ -24,11 +24,11 @@ has_network_config() {
 has_test_ca devE2e || { echo "check is stale: no test CA found in devE2e" >&2; exit 1; }
 has_network_config devE2e || { echo "check is stale: no networkSecurityConfig found in devE2e" >&2; exit 1; }
 
-if has_test_ca devRelease; then
+if has_test_ca prodRelease; then
   echo "a release build contains the test CA" >&2
   exit 1
 fi
-if has_network_config devRelease; then
+if has_network_config prodRelease; then
   echo "a release build has the e2e networkSecurityConfig" >&2
   exit 1
 fi
