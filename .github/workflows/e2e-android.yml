@@ -29,9 +29,9 @@ jobs:
       - name: Checkout hologram-app
         uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
 
-      - name: APK cache
+      - name: Restore the APKs
         id: apk-cache
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: e2e-apks
           key: e2e-apks-${{ inputs.envfile }}-${{ hashFiles('android/**', 'src/**', 'modules/**', 'patches/**', 'package.json', 'pnpm-lock.yaml', 'index.js', 'metro.config.js', 'babel.config.js', '.env.e2e-*') }}
@@ -60,11 +60,12 @@ jobs:
         with:
           node-version: 22
           registry-url: 'https://registry.npmjs.org/'
-          cache: pnpm
+          package-manager-cache: false
 
-      - name: Cache node_modules
+      - name: Restore node_modules
+        id: node-modules-cache
         if: steps.apk-cache.outputs.cache-hit != 'true'
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: node_modules
           key: node-modules-${{ hashFiles('pnpm-lock.yaml', 'patches/**') }}
@@ -73,9 +74,18 @@ jobs:
         if: steps.apk-cache.outputs.cache-hit != 'true'
         run: pnpm install --frozen-lockfile
 
-      - name: Cache Gradle
+      # Saved before the build, which writes android/build directories inside node_modules
+      - name: Save node_modules
+        if: github.ref == 'refs/heads/main' && steps.apk-cache.outputs.cache-hit != 'true' && steps.node-modules-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: node_modules
+          key: ${{ steps.node-modules-cache.outputs.cache-primary-key }}
+
+      - name: Restore Gradle
+        id: gradle-cache
         if: steps.apk-cache.outputs.cache-hit != 'true'
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: |
             ~/.gradle/caches
@@ -90,9 +100,10 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -y -qq ccache
 
-      - name: Cache ccache
+      - name: Restore ccache
+        id: ccache-cache
         if: steps.apk-cache.outputs.cache-hit != 'true'
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: ~/.cache/ccache
           key: ccache-e2e-${{ github.sha }}
@@ -123,6 +134,30 @@ jobs:
         env:
           ENVFILE: ${{ inputs.envfile }}
         run: e2e/ci/check-release-clean.sh
+
+      - name: Save the APKs
+        if: github.ref == 'refs/heads/main' && steps.apk-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: e2e-apks
+          key: ${{ steps.apk-cache.outputs.cache-primary-key }}
+
+      - name: Save Gradle
+        if: github.ref == 'refs/heads/main' && steps.apk-cache.outputs.cache-hit != 'true' && steps.gradle-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            android/.gradle
+          key: ${{ steps.gradle-cache.outputs.cache-primary-key }}
+
+      - name: Save ccache
+        if: github.ref == 'refs/heads/main' && steps.apk-cache.outputs.cache-hit != 'true' && steps.ccache-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: ~/.cache/ccache
+          key: ${{ steps.ccache-cache.outputs.cache-primary-key }}
 
       - name: Upload the APKs
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -189,7 +224,7 @@ jobs:
 
       # Saved here because at the end of the job the running emulator holds locks inside the AVD
       - name: Save the AVD
-        if: steps.avd-cache.outputs.cache-hit != 'true'
+        if: github.ref == 'refs/heads/main' && steps.avd-cache.outputs.cache-hit != 'true'
         uses: actions/cache/save@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: |

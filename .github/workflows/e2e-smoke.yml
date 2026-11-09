@@ -1,13 +1,16 @@
 name: E2E smoke
 
 on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'doc/**'
+      - '**/*.md'
   pull_request:
     branches: [main]
-    paths:
-      - 'android/**'
-      - 'e2e/**'
-      - '.env.e2e-*'
-      - '.github/workflows/e2e-*.yml'
+    paths-ignore:
+      - 'doc/**'
+      - '**/*.md'
   workflow_dispatch:
 
 permissions:
