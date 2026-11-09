@@ -106,7 +106,7 @@ jobs:
         uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: ~/.cache/ccache
-          key: ccache-e2e-${{ github.sha }}
+          key: ccache-e2e-${{ hashFiles('android/**/*.gradle*', 'pnpm-lock.yaml', 'patches/**', 'modules/**') }}
           restore-keys: ccache-e2e-
 
       - name: Generate codegen
