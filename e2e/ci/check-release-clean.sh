@@ -2,7 +2,8 @@
 set -euo pipefail
 cd android
 
-if ./gradlew :app:tasks --all | grep -q assembleProdE2e; then
+tasks=$(./gradlew :app:tasks --all)
+if grep -q assembleProdE2e <<<"$tasks"; then
   echo "the prod flavor must not have an e2e variant" >&2
   exit 1
 fi
