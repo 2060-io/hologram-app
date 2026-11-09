@@ -81,3 +81,5 @@ android/app/upload-key.keystore
 
 e2e-out/
 e2e-apks/
+e2e/stack/certs/generated/
+e2e/stack/certs/*.srl
