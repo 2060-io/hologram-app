@@ -91,8 +91,8 @@ jobs:
             ~/.gradle/caches
             ~/.gradle/wrapper
             android/.gradle
-          key: gradle-e2e-${{ hashFiles('android/**/*.gradle*', 'android/gradle.properties', 'pnpm-lock.yaml') }}
-          restore-keys: gradle-e2e-
+          key: gradle-${{ hashFiles('android/**/*.gradle*', 'android/gradle.properties', 'pnpm-lock.yaml') }}
+          restore-keys: gradle-
 
       - name: Install ccache
         if: steps.apk-cache.outputs.cache-hit != 'true'
