@@ -165,6 +165,7 @@ jobs:
           name: e2e-apks
           path: e2e-apks
           compression-level: 0
+          retention-days: 1
 
   flows:
     name: Run the flows
