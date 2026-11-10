@@ -7,13 +7,13 @@ appId: io.twentysixty.mobileagent.dev
 - tapOn: { id: "settings-tab" }
 - tapOn: { id: "settings-my-invitation" }
 - extendedWaitUntil:
-    visible: { id: "invitation-share" }
+    visible: { id: "my-invitation-share" }
     timeout: 20000
-- tapOn: { id: "invitation-share" }
+- tapOn: { id: "my-invitation-share" }
 - waitForAnimationToEnd
 - tapOn: "Copy"
 - waitForAnimationToEnd
-- tapOn: { id: "invitation-close" }
+- tapOn: { id: "my-invitation-close" }
 - tapOn: { id: "chats-tab" }
 
 - runFlow:
