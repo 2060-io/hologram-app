@@ -86,15 +86,15 @@ export const ConnectionsProvider: React.FC<React.PropsWithChildren<Props>> = ({ 
   useEffect(() => {
     if (!state.loading) {
       const connectionAdded$ = recordsAddedByType(agent, DidCommConnectionRecord).subscribe((record) =>
-        setState(addRecord(record, state))
+        setState((current) => addRecord(record, current))
       )
 
       const connectionUpdated$ = recordsUpdatedByType(agent, DidCommConnectionRecord).subscribe((record) =>
-        setState(updateRecord(record, state))
+        setState((current) => updateRecord(record, current))
       )
 
       const connectionRemoved$ = recordsRemovedByType(agent, DidCommConnectionRecord).subscribe((record) =>
-        setState(removeRecord(record, state))
+        setState((current) => removeRecord(record, current))
       )
 
       return () => {
@@ -103,7 +103,7 @@ export const ConnectionsProvider: React.FC<React.PropsWithChildren<Props>> = ({ 
         connectionRemoved$.unsubscribe()
       }
     }
-  }, [state, agent])
+  }, [state.loading, agent])
 
   return (
     <ConnectionContext value={{ connections: state.records, loading: state.loading }}>{children}</ConnectionContext>
