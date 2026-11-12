@@ -52,15 +52,15 @@ export const CredentialsProvider: React.FC<React.PropsWithChildren<Props>> = ({ 
   useEffect(() => {
     if (!w3cState.loading) {
       const credentialAdded$ = recordsAddedByType(agent, W3cCredentialRecord).subscribe((record) =>
-        setW3CState(addRecord(record, w3cState))
+        setW3CState((current) => addRecord(record, current))
       )
 
       const credentialUpdated$ = recordsUpdatedByType(agent, W3cCredentialRecord).subscribe((record) =>
-        setW3CState(updateRecord(record, w3cState))
+        setW3CState((current) => updateRecord(record, current))
       )
 
       const credentialRemoved$ = recordsRemovedByType(agent, W3cCredentialRecord).subscribe((record) =>
-        setW3CState(removeRecord(record, w3cState))
+        setW3CState((current) => removeRecord(record, current))
       )
 
       return () => {
@@ -69,7 +69,7 @@ export const CredentialsProvider: React.FC<React.PropsWithChildren<Props>> = ({ 
         credentialRemoved$.unsubscribe()
       }
     }
-  }, [w3cState, agent])
+  }, [w3cState.loading, agent])
 
   const getCredentialById = useCallback(
     (id: string) => {
