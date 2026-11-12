@@ -101,12 +101,14 @@ const Settings = ({ navigation }: Props) => {
     const developerModeOptions: Option[] = [
       {
         iconName: 'cloudDownload',
+        testID: 'settings-backup',
         text: t('settings.backup'),
         onPress: () => navigateTo('WalletBackup'),
         rightContent: () => optionRightContent(),
       },
       {
         iconName: 'developer',
+        testID: 'settings-developer',
         text: t('settings.developer'),
         onPress: () => navigateTo('Developer'),
         rightContent: () => optionRightContent(),
@@ -126,30 +128,35 @@ const Settings = ({ navigation }: Props) => {
   const fixedOptions: Option[] = [
     {
       iconName: 'notifications',
+      testID: 'settings-notifications',
       text: t('settings.notifications'),
       onPress: () => navigateTo('Notifications'),
       rightContent: () => optionRightContent(),
     },
     {
       iconName: 'users',
+      testID: 'settings-connections',
       text: t('settings.connections'),
       onPress: () => navigateTo('Connections'),
       rightContent: () => optionRightContent(),
     },
     {
       iconName: 'lock',
+      testID: 'settings-privacy',
       text: t('settings.privacyAndDataUse'),
       onPress: () => navigateTo('Privacy'),
       rightContent: () => optionRightContent(),
     },
     {
       iconName: 'people',
+      testID: 'settings-parental-control',
       text: t('navigation.ParentalControl'),
       onPress: () => navigateTo('ParentalControl'),
       rightContent: () => optionRightContent(),
     },
     {
       iconName: 'trash',
+      testID: 'settings-delete-wallet',
       text: t('settings.deleteWallet'),
       onPress: () => setShowConfirmationDeleteModal(true),
     },
@@ -166,12 +173,22 @@ const Settings = ({ navigation }: Props) => {
   const handleChangeHeaderOptions = () => {
     navigation.setOptions({
       headerLeft: () => (
-        <TouchableOpacity style={styles.btnQr} onPress={goToUserInvitation} activeOpacity={0.6}>
+        <TouchableOpacity
+          testID="settings-my-invitation"
+          style={styles.btnQr}
+          onPress={goToUserInvitation}
+          activeOpacity={0.6}
+        >
           <SvgIcon name="qrcode" fill={theme.colors.primaryText} />
         </TouchableOpacity>
       ),
       headerRight: () => (
-        <TouchableOpacity style={styles.btnEdit} activeOpacity={0.7} onPress={goToUserProfile}>
+        <TouchableOpacity
+          testID="settings-edit-profile"
+          style={styles.btnEdit}
+          activeOpacity={0.7}
+          onPress={goToUserProfile}
+        >
           <SvgIcon name="edit" fill={theme.colors.primaryText} />
         </TouchableOpacity>
       ),
@@ -235,14 +252,16 @@ const Settings = ({ navigation }: Props) => {
                 onImagePressed={onAvatarImagePressed}
               />
               {userProfileData?.displayName && (
-                <Text fontFamily="EuclidCircularA-Medium" style={styles.displayName}>
+                <Text testID="settings-display-name" fontFamily="EuclidCircularA-Medium" style={styles.displayName}>
                   {userProfileData?.displayName}
                 </Text>
               )}
             </View>
             <OptionsList options={options} />
             <View style={styles.appVersionContainer}>
-              <Text style={styles.appVersionText}>{version}</Text>
+              <Text testID="settings-version" style={styles.appVersionText}>
+                {version}
+              </Text>
             </View>
           </View>
         </TouchableWithoutFeedback>

@@ -1,0 +1,18 @@
+appId: io.twentysixty.mobileagent.dev
+---
+- runFlow:
+    when:
+      visible: { id: "auth-retry" }
+    commands:
+      - tapOn: { id: "auth-retry" }
+- runFlow:
+    when:
+      visible: { id: "auth-unlock" }
+    commands:
+      - tapOn: { id: "auth-unlock" }
+- waitForAnimationToEnd
+- inputText: "1234"
+- pressKey: Enter
+- extendedWaitUntil:
+    notVisible: { id: "auth-screen" }
+    timeout: 20000

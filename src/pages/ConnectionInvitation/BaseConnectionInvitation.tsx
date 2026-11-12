@@ -168,7 +168,7 @@ const BaseConnectionInvitation = ({
     navigation.setOptions({
       headerTitle: () => <HeaderTitle title={headerTitles[invitationType]} theme={theme} />,
       headerLeft: () => (
-        <TouchableOpacity style={styles.btnRefuse} onPress={onPressHeaderLeftButton}>
+        <TouchableOpacity testID="invitation-refuse" style={styles.btnRefuse} onPress={onPressHeaderLeftButton}>
           <Text fontFamily="EuclidCircularA-Medium" style={styles.headerBtnText}>
             {isAlreadyConnected ? t('general.cancel') : t('general.refuse')}
           </Text>
@@ -176,7 +176,11 @@ const BaseConnectionInvitation = ({
       ),
       headerRight: () =>
         isResolvingTrust ? null : (
-          <TouchableOpacity style={styles.btnAccept} onPress={onPressHeaderRightButton}>
+          <TouchableOpacity
+            testID={canAccept ? 'invitation-accept' : 'invitation-done'}
+            style={styles.btnAccept}
+            onPress={onPressHeaderRightButton}
+          >
             <Text
               fontFamily="EuclidCircularA-Medium"
               style={[styles.headerBtnText, canAccept && !isSafeToConnect && styles.unsafeBtnText]}
@@ -191,7 +195,7 @@ const BaseConnectionInvitation = ({
   useLayoutEffect(handleChangeHeaderOptions, [canAccept, isSafeToConnect, isResolvingTrust, theme.colors])
 
   return (
-    <SafeAreaView style={styles.container} edges={['bottom']}>
+    <SafeAreaView testID="invitation-screen" style={styles.container} edges={['bottom']}>
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ minHeight: screenHeight + 1 }}
@@ -203,6 +207,7 @@ const BaseConnectionInvitation = ({
           visible={showModalUnsafeConnect}
           title={t('invitation.confirmUnsafeConnect')}
           subTitle=""
+          confirmTestID="invitation-connect-anyway"
           confirmText={t('invitation.connectAnyway')}
           cancelText={t('general.cancel')}
           onClose={() => setShowModalUnsafeConnect(false)}

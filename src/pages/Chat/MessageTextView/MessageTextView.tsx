@@ -13,7 +13,7 @@ const MessageTextView: React.FC<Props> = memo(({ text, renderTimeAndTicks }) => 
   const theme = useTheme()
   const styles = getStyles(theme)
   return (
-    <View style={styles.container}>
+    <View testID="chat-text" style={styles.container}>
       <View style={styles.textContainer}>
         <ParsedText theme={theme} text={text} />
       </View>

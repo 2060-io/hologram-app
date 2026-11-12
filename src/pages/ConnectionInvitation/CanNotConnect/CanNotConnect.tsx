@@ -16,7 +16,7 @@ const CanNotConnect = ({ kidAge, userName }: Props) => {
   const iconWidth = widthPercentageToDP('16.5%')
 
   return (
-    <View style={styles.container}>
+    <View testID="invitation-age-restricted" style={styles.container}>
       <SvgIcon name="kid" width={iconWidth} height={iconWidth} />
       <ConnectionRefusedByAge style={styles.text} kidAge={kidAge} userName={userName} />
     </View>

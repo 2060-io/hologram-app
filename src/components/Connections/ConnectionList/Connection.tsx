@@ -29,6 +29,7 @@ const Connection = ({ onPress, onPressRightSide, connection, isSearchingMode, is
 
   return (
     <TouchableOpacity
+      testID={`connection-row-${connection.id}`}
       key={connection.id}
       style={[
         styles.containerConnection,

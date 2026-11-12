@@ -114,11 +114,11 @@ const Chats = ({ navigation }: Props) => {
         placeholder={t('chat.searchInputPlaceHolder')}
         onDebounced={onChangeSearch}
         renderLeftIcon={() => (
-          <TouchableOpacity onPress={() => setShowSearchInput(false)}>
+          <TouchableOpacity testID="chats-search-close" onPress={() => setShowSearchInput(false)}>
             <SvgIcon name="arrowLeft" width={18} height={18} fill={theme.colors.secondaryText} />
           </TouchableOpacity>
         )}
-        textInputProps={{ autoFocus: true }}
+        textInputProps={{ autoFocus: true, testID: 'chats-search-input' }}
       />
     )
     const renderHeaderTitle = () => (
@@ -131,17 +131,22 @@ const Chats = ({ navigation }: Props) => {
       headerTitle: showSearchInput ? renderSearchInput : renderHeaderTitle,
       headerLeft: () =>
         !showSearchInput && (
-          <TouchableOpacity style={styles.btnIconContextMenu} onPress={() => setShowFilterOptions(true)}>
+          <TouchableOpacity
+            testID="chats-filter"
+            style={styles.btnIconContextMenu}
+            onPress={() => setShowFilterOptions(true)}
+          >
             <SvgIcon name="filterOutline" fill={theme.colors.primaryText} />
           </TouchableOpacity>
         ),
       headerRight: () =>
         !showSearchInput && (
           <View style={styles.containerHeaderRight}>
-            <TouchableOpacity onPress={() => setShowSearchInput(true)}>
+            <TouchableOpacity testID="chats-search" onPress={() => setShowSearchInput(true)}>
               <SvgIcon name="search" fill={theme.colors.primaryText} />
             </TouchableOpacity>
             <TouchableOpacity
+              testID="chats-new"
               style={styles.rightHeaderButton}
               onPress={() => navigation.dispatch(StackActions.push('ConnectionsForNewChat'))}
             >
@@ -157,6 +162,7 @@ const Chats = ({ navigation }: Props) => {
       <SafeAreaView style={styles.root} edges={['left', 'right']}>
         <FlatList
           showsVerticalScrollIndicator={false}
+          testID="chats-list"
           data={threads}
           extraData={[selectedChatIds, theme.isDarkMode]}
           renderItem={({ item: chat }) => {
@@ -214,7 +220,7 @@ const Chats = ({ navigation }: Props) => {
           keyExtractor={(item) => item.id}
           ListEmptyComponent={
             !loading ? (
-              <View style={styles.containerListEmpty}>
+              <View testID="chats-empty" style={styles.containerListEmpty}>
                 <Text style={styles.textListEmpty}>{t('chat.emptyListDescription')}</Text>
               </View>
             ) : null

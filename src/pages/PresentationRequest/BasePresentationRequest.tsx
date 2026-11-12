@@ -83,13 +83,21 @@ const BasePresentationRequest: React.FC<Props> = ({
     navigation.setOptions({
       headerLeft: () =>
         hasCompatibleCredentials && !isAccepting ? (
-          <TouchableOpacity style={styles.headerLeft} onPress={displayModalRefuseConfirmation}>
+          <TouchableOpacity
+            testID="proof-request-refuse"
+            style={styles.headerLeft}
+            onPress={displayModalRefuseConfirmation}
+          >
             <Text style={styles.headerBtnText} fontFamily="EuclidCircularA-Medium">
               {t('general.refuse')}
             </Text>
           </TouchableOpacity>
         ) : (
-          <TouchableOpacity style={styles.headerLeft} onPress={() => navigation.goBack()}>
+          <TouchableOpacity
+            testID="proof-request-dismiss"
+            style={styles.headerLeft}
+            onPress={() => navigation.goBack()}
+          >
             <Text style={styles.headerBtnText} fontFamily="EuclidCircularA-Medium">
               {t('general.dismiss')}
             </Text>
@@ -130,7 +138,7 @@ const BasePresentationRequest: React.FC<Props> = ({
   if (isAccepting) return <ActivityIndicator color={theme.colors.green} size={'large'} />
   return (
     <>
-      <SafeAreaView style={styles.root} edges={['bottom']}>
+      <SafeAreaView testID="proof-request-screen" style={styles.root} edges={['bottom']}>
         <ScrollView
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ minHeight: screenHeight + 1 }}
@@ -185,10 +193,12 @@ const BasePresentationRequest: React.FC<Props> = ({
                           >
                             <View style={styles.credentialContainer}>
                               <RadioButton
+                                testID={`proof-request-credential-select-${credential.id}`}
                                 style={styles.radioButton}
                                 isChecked={selectedCredentialsIndexes?.[entryIndex] === credentialIndex}
                               />
                               <CredentialMainInformation
+                                testID={`proof-request-credential-${credential.id}`}
                                 credentialMainInfo={credential}
                                 onPress={() => goToCredentialDetails(credential.recordId)}
                                 size="medium"
@@ -202,6 +212,7 @@ const BasePresentationRequest: React.FC<Props> = ({
                 })}
                 {canShare && (
                   <MainButton
+                    testID={isSafeToShare ? 'proof-request-accept' : 'proof-request-share-anyway'}
                     disabled={!enabledPresentButton}
                     text={
                       isSafeToShare
@@ -217,7 +228,7 @@ const BasePresentationRequest: React.FC<Props> = ({
                 )}
               </>
             ) : (
-              <View style={styles.noCompatibleCredentialContainer}>
+              <View testID="proof-request-no-credentials" style={styles.noCompatibleCredentialContainer}>
                 <Text style={styles.title}>{t('presentationRequest.noCredentials')}</Text>
               </View>
             )}
@@ -228,6 +239,7 @@ const BasePresentationRequest: React.FC<Props> = ({
         visible={showModalRefuseConfirmation}
         title={t('chat.confirmRefusePresentCredential')}
         subTitle=""
+        confirmTestID="proof-request-refuse-confirm"
         confirmText={t('general.confirm')}
         cancelText="No"
         onClose={hideModalRefuseConfirmation}
@@ -238,6 +250,7 @@ const BasePresentationRequest: React.FC<Props> = ({
         visible={showModalUnsafeShare}
         title={t('accreditation.confirmUnsafeShare')}
         subTitle=""
+        confirmTestID="proof-request-share-anyway-confirm"
         confirmText={t('accreditation.shareAnyway')}
         cancelText={t('general.cancel')}
         onClose={() => setShowModalUnsafeShare(false)}

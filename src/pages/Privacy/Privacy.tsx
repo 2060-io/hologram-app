@@ -57,6 +57,7 @@ const Privacy = () => {
     return Object.entries(automaticDownloadValues).map(([key, value]) => {
       const typedKey = key as keyof AutomaticDownloadTypes
       return {
+        testID: `privacy-auto-download-${key}`,
         text: automaticDownloadTypeTexts[typedKey],
         onPress: () => onPressAutomaticDownloadOption(typedKey, value),
         rightContent: () => <Text style={styles.title}>{automaticDownloadOptionTexts[value]}</Text>,
@@ -78,12 +79,15 @@ const Privacy = () => {
     {
       iconName: 'lock',
       text: t('settings.screenLock'),
-      rightContent: () => <Switch isChecked={isScreenLockEnabled} onToggle={onToggleLockScreen} />,
+      rightContent: () => (
+        <Switch testID="privacy-screen-lock-switch" isChecked={isScreenLockEnabled} onToggle={onToggleLockScreen} />
+      ),
     },
     ...(isScreenLockEnabled
       ? ([
           {
             iconName: 'lock',
+            testID: 'privacy-screen-lock-timeout',
             text: t('settings.screenLockTimeout'),
             onPress: changeLockTimeoutOptionsVisibility,
             rightContent: () => (
@@ -133,6 +137,7 @@ const Privacy = () => {
             const isSelected = option.value === screenLockTimeout
             return (
               <TouchableOpacity
+                testID={`privacy-timeout-${option.value}`}
                 key={option.label}
                 onPress={() => onPressTimeoutOption(option.value)}
                 style={{ ...styles.optionContainer, ...(isSelected && styles.optionSelected) }}
@@ -153,6 +158,7 @@ const Privacy = () => {
             const isSelected = currentAutomaticOptionForModal.current?.value === option
             return (
               <TouchableOpacity
+                testID={`privacy-auto-download-option-${option}`}
                 key={option}
                 style={{ ...styles.optionContainer, ...(isSelected && styles.optionSelected) }}
                 onPress={() => {

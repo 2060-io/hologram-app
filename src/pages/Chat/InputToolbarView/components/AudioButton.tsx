@@ -52,6 +52,7 @@ const AudioButton = ({
 
   return (
     <Pressable
+      testID="composer-mic"
       delayLongPress={150}
       onTouchStart={onTouchStart}
       onLongPress={onLongPress}

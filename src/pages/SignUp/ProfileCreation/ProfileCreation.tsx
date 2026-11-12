@@ -117,6 +117,7 @@ const ProfileCreation = ({ navigation }: Props) => {
               onHandleChangePicture={setDisplayPicture}
             />
             <MainButton
+              testID="signup-get-started"
               text={t('signUp.getStarted')}
               activeOpacity={0.6}
               disabled={disableGetStartedBtn}

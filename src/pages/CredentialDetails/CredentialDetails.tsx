@@ -60,11 +60,13 @@ const CredentialDetails = ({ route, navigation }: Props) => {
   const options: Option[] = [
     {
       iconName: 'id',
+      testID: 'credential-details-present',
       text: t('credential.present'),
       onPress: onPressPresentCredential,
     },
     {
       iconName: 'trash',
+      testID: 'credential-details-delete',
       text: t('credential.delete'),
       onPress: () => setShowConfirmationDeleteModal(true),
     },
@@ -72,7 +74,7 @@ const CredentialDetails = ({ route, navigation }: Props) => {
   if (!credentialDetails) return null
   return (
     <>
-      <SafeAreaView style={styles.container} edges={['bottom']}>
+      <SafeAreaView testID="credential-details-screen" style={styles.container} edges={['bottom']}>
         <ScrollView
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ minHeight: screenHeight + 1 }}

@@ -7,6 +7,7 @@ export type CredentialMainInformationProps = {
   containerStyle?: StyleProp<ViewStyle>
   onPress?: () => void
   size?: 'big' | 'medium'
+  testID?: string
 }
 
 export type DumbCredentialMainInformationProps = CredentialMainInformationProps & {

@@ -80,12 +80,19 @@ const ParentalControl = () => {
   const options = [
     {
       text: t('navigation.ParentalControl'),
-      rightContent: () => <Switch isChecked={isParentalControlEnabled} onToggle={onToggleParentalControlSwitch} />,
+      rightContent: () => (
+        <Switch
+          testID="parental-control-switch"
+          isChecked={isParentalControlEnabled}
+          onToggle={onToggleParentalControlSwitch}
+        />
+      ),
     },
     {
       text: t('parentalControl.kidBirthday'),
       rightContent: () => (
         <TouchableOpacity
+          testID="parental-control-birthday"
           disabled={!isParentalControlEnabled}
           onPress={() => setOpenPINConfirmation(true)}
           style={styles.birthdayContainer}

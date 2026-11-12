@@ -84,7 +84,11 @@ const AttachmentOptions: React.FC<Props> = ({
     <View style={styles.container}>
       {options.map((option) => (
         <View style={styles.containerOptionCard} key={option.id}>
-          <TouchableOpacity style={styles.containerOption} onPress={onSelectedOption[option.id]}>
+          <TouchableOpacity
+            testID={`attachment-${option.id}`}
+            style={styles.containerOption}
+            onPress={onSelectedOption[option.id]}
+          >
             <SvgIcon name={option.icon} fill={theme.colors.primaryText} />
             <Text style={styles.optionText}>{label[option.id]}</Text>
           </TouchableOpacity>

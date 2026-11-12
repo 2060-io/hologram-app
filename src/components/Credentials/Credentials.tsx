@@ -33,11 +33,11 @@ const Credentials = ({ navigation, headerTitle, onPressCredential }: Props) => {
       placeholder={t('credential.searchCredentials')}
       onDebounced={setSearch}
       renderLeftIcon={() => (
-        <TouchableOpacity onPress={() => setShowSearchInput(false)}>
+        <TouchableOpacity testID="wallet-search-close" onPress={() => setShowSearchInput(false)}>
           <SvgIcon name="arrowLeft" width={18} height={18} fill={theme.colors.secondaryText} />
         </TouchableOpacity>
       )}
-      textInputProps={{ autoFocus: true }}
+      textInputProps={{ autoFocus: true, testID: 'wallet-search-input' }}
     />
   )
   useEffect(() => {
@@ -45,7 +45,7 @@ const Credentials = ({ navigation, headerTitle, onPressCredential }: Props) => {
       headerTitle: showSearchInput ? renderSearchInput : renderHeaderTitle,
       headerRight: () =>
         !showSearchInput && (
-          <TouchableOpacity style={styles.headerRight} onPress={() => setShowSearchInput(true)}>
+          <TouchableOpacity testID="wallet-search" style={styles.headerRight} onPress={() => setShowSearchInput(true)}>
             <SvgIcon name="search" fill={theme.colors.primaryText} />
           </TouchableOpacity>
         ),
@@ -71,9 +71,11 @@ const Credentials = ({ navigation, headerTitle, onPressCredential }: Props) => {
     <View style={styles.container}>
       <FlatList
         showsVerticalScrollIndicator={false}
+        testID="wallet-list"
         data={credentials}
         renderItem={({ item: credential }) => (
           <CredentialMainInformation
+            testID={`wallet-credential-${credential.recordId}`}
             credentialMainInfo={credential}
             onPress={() => onPressCredential(credential.recordId)}
           />
@@ -81,7 +83,7 @@ const Credentials = ({ navigation, headerTitle, onPressCredential }: Props) => {
         ListEmptyComponent={() => {
           const iconName = theme.isDarkMode ? 'darkCredentialCardSkeleton' : 'lightCredentialCardSkeleton'
           return (
-            <View style={styles.noCredentialsContainer}>
+            <View testID="wallet-empty" style={styles.noCredentialsContainer}>
               <Text style={[styles.noCredentialsMessage, styles.noCredentialsMessageP1]}>
                 {t('credential.noCredentials')}
               </Text>

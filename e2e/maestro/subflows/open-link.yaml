@@ -1,0 +1,10 @@
+appId: io.twentysixty.mobileagent.dev
+---
+- openLink: ${LINK}
+# Both flavors handle didcomm://, so with two apps installed Android asks which one to use
+- runFlow:
+    when:
+      visible: "Open with"
+    commands:
+      - tapOn: ${APP_LABEL}
+      - tapOn: "Just once"

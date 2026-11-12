@@ -1,0 +1,4 @@
+flows:
+  - smoke/*
+  - local/*
+  - external/*

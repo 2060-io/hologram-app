@@ -23,7 +23,7 @@ const CredentialPresentedPage = ({ navigation, route }: Props) => {
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <TouchableOpacity style={styles.headerRight} onPress={goToChatScreen}>
+        <TouchableOpacity testID="credential-presented-done" style={styles.headerRight} onPress={goToChatScreen}>
           <Text fontFamily="EuclidCircularA-Medium" style={styles.headerRightText}>
             {t('general.done')}
           </Text>
