@@ -115,7 +115,7 @@ export const proposalGetCredentialInfo = async (options: { agent: MobileAgent; p
           const credentialDefinition = (await agent.modules.anoncreds.getCredentialDefinition(credentialDefinitionId))
             .credentialDefinition
           const serviceInfo = credentialDefinition?.issuerId
-            ? await getServiceInfo({ did: credentialDefinition.issuerId })
+            ? await getServiceInfo({ did: credentialDefinition.issuerId, agent })
             : undefined
           const schemaId = credentialDefinition?.schemaId
           const schemaName = schemaId ? ((await agent.modules.anoncreds.getSchema(schemaId)).schema?.name ?? '') : ''
