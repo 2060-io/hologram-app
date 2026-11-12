@@ -3,6 +3,8 @@ import { Buffer } from 'buffer'
 global.Buffer = Buffer
 
 import 'text-encoding'
+// Expo replaces the global fetch with one whose response body is a ReadableStream, and Hermes has no ReadableStream.
+import 'web-streams-polyfill/dist/polyfill'
 import { getMessaging, onMessage, setBackgroundMessageHandler } from '@react-native-firebase/messaging'
 import { AppRegistry } from 'react-native'
 import { FileLogger } from 'react-native-file-logger'
