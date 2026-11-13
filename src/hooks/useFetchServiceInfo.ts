@@ -70,7 +70,7 @@ export const useFetchServiceInfo = ({
     }
     startFetchServiceInfoTransition(async () => {
       try {
-        const serviceInfoResponse = await getServiceInfoApi({ did })
+        const serviceInfoResponse = await getServiceInfoApi({ did, agent })
         const previous = serviceInfoResponse.name ? null : await getInCacheServiceInfo(did, agent.context)
         const serviceInfoToShow = previous
           ? {
