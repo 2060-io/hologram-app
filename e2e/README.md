@@ -14,16 +14,49 @@ adb shell locksettings set-pin 1234
 maestro test --include-tags smoke e2e/maestro
 ```
 
-The flows type the PIN `1234` at the screen lock prompt.
+The flows type the PIN `1234` at the screen lock prompt, and they find some system dialogs by their English text, so the device must be in English.
+
+On Apple Silicon the emulator is `arm64-v8a`, so build with `-PreactNativeArchitectures=arm64-v8a`.
 
 Use a `google_apis` image: `e2e/ci/run-flows.sh` pulls the app logs with `adb root`, which `google_play` images refuse.
+
+## Local stack
+
+`e2e/stack` runs the mediator, MinIO, hologram-server, Caddy and dnsmasq in Docker, for the flows
+with the `local` tag. Start it, then start the emulator with the stack as its DNS server, before you
+install the apps:
+
+```sh
+DNS_BIND_IP="$(ipconfig getifaddr en0)" e2e/stack/start.sh
+emulator -avd <your avd> -dns-server "$(ipconfig getifaddr en0)"
+maestro test --include-tags local e2e/maestro
+```
+
+`ipconfig getifaddr en0` is the Wi-Fi address on a Mac. On Linux use the first address of
+`hostname -I`.
+
+`start.sh` waits for the DID document, a WebSocket upgrade, MinIO and dnsmasq. Stop the stack with
+`docker compose -f e2e/stack/docker-compose.yml down -v`.
+
+Two limits on a Mac:
+
+- The mediator and hologram-server images have no arm64 build, so on Apple Silicon also set
+  `DOCKER_DEFAULT_PLATFORM=linux/amd64`.
+- dnsmasq needs port 53, and Colima and Lima hold it. Use another Docker runtime, or stop it.
+
+We run the stack in CI. We have not run it end to end on a laptop.
+
+The test CA in `e2e/stack/certs` is for tests only. Its key is public, so never trust it anywhere
+else. It can only sign DNS names under `hologram.test`, and only the `e2e` build type trusts it.
 
 ## Layout
 
 - `maestro/smoke`: checks that the two apps open. It needs no backend.
+- `maestro/local`: flows that need the local stack.
 - `maestro/subflows`: shared steps. `APP_ID`, `NAME`, `LINK` and `APP_LABEL` are their parameters.
 - `maestro/fixtures`: media for the flows. `SHA256SUMS` has their hashes. Maestro only reads media inside the directory that it runs, so they are under `maestro`.
 - `ci`: scripts for the CI job in `.github/workflows/e2e-android.yml`.
+- `stack`: the local stack.
 
 ## The `e2e` build type
 

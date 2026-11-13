@@ -1,0 +1,67 @@
+appId: io.twentysixty.mobileagent.dev
+---
+- runFlow:
+    file: switch-app.yaml
+    env:
+      APP_ID: io.twentysixty.mobileagent.dev
+- tapOn: { id: "settings-tab" }
+- tapOn: { id: "settings-my-invitation" }
+- extendedWaitUntil:
+    visible: { id: "my-invitation-share" }
+    timeout: 20000
+- tapOn: { id: "my-invitation-share" }
+- waitForAnimationToEnd
+- tapOn: "Copy"
+- waitForAnimationToEnd
+- tapOn: { id: "my-invitation-close" }
+- tapOn: { id: "chats-tab" }
+
+- runFlow:
+    file: switch-app.yaml
+    env:
+      APP_ID: io.twentysixty.mobileagent.st
+- tapOn: { id: "scan-tab" }
+- tapOn: { id: "scan-link-tab" }
+- longPressOn: { id: "scan-link-input" }
+- tapOn: "Paste"
+- tapOn: { id: "scan-link-open" }
+- extendedWaitUntil:
+    visible: { id: "invitation-accept" }
+    timeout: 30000
+- tapOn: { id: "invitation-accept" }
+- extendedWaitUntil:
+    visible: { id: "chat-screen" }
+    timeout: 30000
+
+# In the background the app closes its mediator socket and the local mediator has no push, so each
+# step of the DID exchange needs a foreground turn: request (B), response (A), complete (B).
+- repeat:
+    times: 6
+    while:
+      notVisible: { id: "composer-input" }
+    commands:
+      - runFlow:
+          file: switch-app.yaml
+          env:
+            APP_ID: io.twentysixty.mobileagent.dev
+      - extendedWaitUntil:
+          visible: "Bob"
+          timeout: 8000
+          optional: true
+      - runFlow:
+          file: switch-app.yaml
+          env:
+            APP_ID: io.twentysixty.mobileagent.st
+      - extendedWaitUntil:
+          visible: { id: "composer-input" }
+          timeout: 15000
+          optional: true
+- assertVisible: { id: "composer-input" }
+
+- runFlow:
+    file: switch-app.yaml
+    env:
+      APP_ID: io.twentysixty.mobileagent.dev
+- extendedWaitUntil:
+    visible: "Bob"
+    timeout: 60000

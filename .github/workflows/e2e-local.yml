@@ -1,4 +1,4 @@
-name: E2E smoke
+name: E2E local
 
 on:
   push:
@@ -17,11 +17,12 @@ permissions:
   contents: read
 
 concurrency:
-  group: e2e-smoke-${{ github.ref }}
-  cancel-in-progress: true
+  group: e2e-local-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
-  smoke:
+  local:
     uses: ./.github/workflows/e2e-android.yml
     with:
-      tags: smoke
+      tags: smoke,local
+      start-stack: true

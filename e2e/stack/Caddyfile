@@ -1,0 +1,9 @@
+mediator.hologram.test:443 {
+	tls /certs/server.crt /certs/server.key
+	reverse_proxy mediator:4000
+}
+
+s3.hologram.test:443 {
+	tls /certs/server.crt /certs/server.key
+	reverse_proxy minio:9000
+}
