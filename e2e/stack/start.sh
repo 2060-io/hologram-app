@@ -26,6 +26,7 @@ done
 
 docker compose up -d
 
+# FIXME: remove when didcomm-mediator#73 is fixed (https://github.com/2060-io/didcomm-mediator/issues/73)
 # did.json requested while the mediator provisions its store crashes it, so nothing may reach it before this line
 for i in $(seq 1 90); do
   docker compose logs --no-color mediator 2>/dev/null | grep 'initialized OK' >/dev/null && break
