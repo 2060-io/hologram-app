@@ -11,24 +11,31 @@ ENVFILE=.env.e2e-local ./android/gradlew -p android assembleDevE2e assembleStagi
 adb install -r android/app/build/outputs/apk/dev/e2e/app-dev-e2e.apk
 adb install -r android/app/build/outputs/apk/staging/e2e/app-staging-e2e.apk
 adb shell locksettings set-pin 1234
-maestro test --include-tags smoke,local e2e/maestro
+maestro test --include-tags smoke e2e/maestro
 ```
 
-The flows type the PIN `1234` at the screen lock prompt.
+The flows type the PIN `1234` at the screen lock prompt, and they find some system dialogs by their English text, so the device must be in English.
+
+On Apple Silicon the emulator is `arm64-v8a`, so build with `-PreactNativeArchitectures=arm64-v8a`.
 
 Use a `google_apis` image: `e2e/ci/run-flows.sh` pulls the app logs with `adb root`, which `google_play` images refuse.
 
 ## Local stack
 
-`e2e/stack` runs the mediator, MinIO, hologram-server, Caddy and dnsmasq in Docker. The job needs no
-secrets.
+`e2e/stack` runs the mediator, MinIO, hologram-server, Caddy and dnsmasq in Docker, for the flows
+with the `local` tag. Start it, then start the emulator with the stack as its DNS server, before you
+install the apps:
 
 ```sh
 DNS_BIND_IP="$(ipconfig getifaddr en0)" e2e/stack/start.sh
 emulator -avd <your avd> -dns-server "$(ipconfig getifaddr en0)"
+maestro test --include-tags local e2e/maestro
 ```
 
-`start.sh` waits for `did.json`, a WebSocket upgrade and MinIO. Stop the stack with
+`ipconfig getifaddr en0` is the Wi-Fi address on a Mac. On Linux use the first address of
+`hostname -I`.
+
+`start.sh` waits for the DID document, a WebSocket upgrade, MinIO and dnsmasq. Stop the stack with
 `docker compose -f e2e/stack/docker-compose.yml down -v`.
 
 Two limits on a Mac:
@@ -40,7 +47,7 @@ Two limits on a Mac:
 We run the stack in CI. We have not run it end to end on a laptop.
 
 The test CA in `e2e/stack/certs` is for tests only. Its key is public, so never trust it anywhere
-else. It can only sign names under `hologram.test`, and only the `e2e` build type trusts it.
+else. It can only sign DNS names under `hologram.test`, and only the `e2e` build type trusts it.
 
 ## Layout
 
