@@ -1,6 +1,9 @@
 appId: io.twentysixty.mobileagent.dev
 tags: [local]
 ---
+# Added first: the media picker lists a new file only once the media scanner has indexed it
+- addMedia:
+    - ../fixtures/image.jpg
 - runFlow: ../subflows/signup-both.yaml
 - runFlow: ../subflows/connect-peers.yaml
 
@@ -28,31 +31,25 @@ tags: [local]
           timeout: 15000
           optional: true
 
-- addMedia:
-    - ../fixtures/image.jpg
 - tapOn: { id: "composer-attach" }
 - tapOn: { id: "attachment-file-gallery" }
-- waitForAnimationToEnd
-- runFlow:
-    when:
-      visible: "Photo taken on .*"
-    commands:
-      - tapOn:
-          text: "Photo taken on .*"
-          index: 0
-- runFlow:
-    when:
-      notVisible: { id: "composer-input" }
-    commands:
-      - tapOn: { point: "17%,30%" }
-- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible: "Photo taken on .*"
+    timeout: 30000
+- tapOn:
+    text: "Photo taken on .*"
+    index: 0
+- extendedWaitUntil:
+    visible: { id: "chat-image" }
+    timeout: 60000
 - takeScreenshot: a-sent-image
 
 - runFlow:
     file: ../subflows/switch-app.yaml
     env:
       APP_ID: io.twentysixty.mobileagent.st
+# chat-image-open only renders once B has downloaded and decrypted the file
 - extendedWaitUntil:
-    visible: { id: "chat-image" }
+    visible: { id: "chat-image-open" }
     timeout: 120000
 - takeScreenshot: b-received-image

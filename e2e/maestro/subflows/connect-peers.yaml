@@ -30,7 +30,7 @@ appId: io.twentysixty.mobileagent.dev
     timeout: 30000
 - tapOn: { id: "invitation-accept" }
 - extendedWaitUntil:
-    visible: "Waiting for Alice to accept invitation"
+    visible: { id: "chat-screen" }
     timeout: 30000
 
 # In the background the app closes its mediator socket and the local mediator has no push, so each
