@@ -6,5 +6,16 @@ appId: io.twentysixty.mobileagent.dev
     when:
       visible: "Open with"
     commands:
-      - tapOn: ${APP_LABEL}
-      - tapOn: "Just once"
+      - waitForAnimationToEnd
+      # A tap on the row while the sheet still moves selects nothing and leaves "Just once" disabled
+      - repeat:
+          times: 3
+          while:
+            visible: "Open with"
+          commands:
+            - tapOn: ${APP_LABEL}
+            - tapOn:
+                text: "Just once"
+                enabled: true
+                optional: true
+            - waitForAnimationToEnd
