@@ -2,7 +2,7 @@ name: hologram-e2e
 
 services:
   caddy:
-    image: caddy:2.10-alpine
+    image: caddy:2.10.2-alpine
     ports:
       - "${CADDY_BIND_IP:-127.0.0.1}:443:443"
     volumes:
@@ -34,7 +34,7 @@ services:
       FIREBASE_CFG_FILE: /nonexistent/firebase.json
 
   hologram-server:
-    image: io2060/hologram-server:v1.1.0-dev.1
+    image: io2060/hologram-server:v1.1.0
     environment:
       APP_PORT: "3000"
       BUCKET_SERVER: http://minio:9000

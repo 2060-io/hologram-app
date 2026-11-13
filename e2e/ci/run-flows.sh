@@ -11,7 +11,7 @@ adb shell "rm -rf $REC_DIR && mkdir -p $REC_DIR"
 (
   i=0
   while :; do
-    adb shell screenrecord --bit-rate 2000000 "$REC_DIR/rec-$i.mp4" >/dev/null 2>&1
+    adb shell screenrecord --bit-rate 2000000 "$REC_DIR/rec-$i.mp4" >/dev/null 2>&1 || sleep 2
     i=$((i + 1))
   done
 ) &
@@ -28,7 +28,7 @@ kill "$RECORDER" "$LOGCAT" 2>/dev/null
 adb shell pkill -INT screenrecord 2>/dev/null
 sleep 3
 for f in $(adb shell ls "$REC_DIR" 2>/dev/null | tr -d '\r' | grep '^rec-'); do
-  adb pull "$REC_DIR/$f" "$OUT/recordings/" >/dev/null 2>&1
+  adb pull "$REC_DIR/$f" "$OUT/recordings/" >/dev/null 2>&1 || echo "could not pull $f"
 done
 
 # run-as fails because the e2e build type is not debuggable
