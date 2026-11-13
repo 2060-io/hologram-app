@@ -18,6 +18,12 @@ chmod 644 certs/generated/server.key
 
 [ -f .env ] || echo "MINIO_ROOT_PASSWORD=$(openssl rand -hex 16)" > .env
 
+for attempt in 1 2 3; do
+  docker compose pull --quiet && break
+  [ "$attempt" -lt 3 ] || { echo "could not pull the stack images" >&2; exit 1; }
+  sleep 10
+done
+
 docker compose up -d
 
 # did.json requested while the mediator provisions its store crashes it, so nothing may reach it before this line
