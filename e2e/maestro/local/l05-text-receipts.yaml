@@ -1,0 +1,88 @@
+appId: io.twentysixty.mobileagent.dev
+tags: [local]
+---
+- runFlow: ../subflows/signup-both.yaml
+- runFlow: ../subflows/connect-peers.yaml
+
+# Receipts need the features of the peer on the two apps before the first message
+- tapOn: "Bob"
+- runFlow:
+    file: ../subflows/wait-peer-features.yaml
+    env:
+      APP_ID: io.twentysixty.mobileagent.dev
+      PEER_APP_ID: io.twentysixty.mobileagent.st
+- runFlow:
+    file: ../subflows/switch-app.yaml
+    env:
+      APP_ID: io.twentysixty.mobileagent.st
+- runFlow:
+    file: ../subflows/wait-peer-features.yaml
+    env:
+      APP_ID: io.twentysixty.mobileagent.st
+      PEER_APP_ID: io.twentysixty.mobileagent.dev
+
+- tapOn: { id: "composer-input" }
+- inputText: "hello from Bob"
+- tapOn: { id: "composer-send" }
+- extendedWaitUntil:
+    visible: { id: "message-state-(submitted|received|viewed)" }
+    timeout: 30000
+
+- runFlow:
+    file: ../subflows/switch-app.yaml
+    env:
+      APP_ID: io.twentysixty.mobileagent.dev
+- extendedWaitUntil:
+    visible: "hello from Bob"
+    timeout: 60000
+- tapOn: { id: "composer-input" }
+- inputText: "hello from Alice"
+- tapOn: { id: "composer-send" }
+- extendedWaitUntil:
+    visible: { id: "message-state-(submitted|received|viewed)" }
+    timeout: 30000
+
+- runFlow:
+    file: ../subflows/switch-app.yaml
+    env:
+      APP_ID: io.twentysixty.mobileagent.st
+- extendedWaitUntil:
+    visible: "hello from Alice"
+    timeout: 60000
+- extendedWaitUntil:
+    visible: { id: "message-state-viewed" }
+    timeout: 60000
+- takeScreenshot: l05-b-chat
+
+- runFlow:
+    file: ../subflows/switch-app.yaml
+    env:
+      APP_ID: io.twentysixty.mobileagent.dev
+# B sends its receipt from a queue, so it can still be unsent when B goes to the background
+- repeat:
+    times: 3
+    while:
+      notVisible: { id: "message-state-viewed" }
+    commands:
+      - extendedWaitUntil:
+          visible: { id: "message-state-viewed" }
+          timeout: 20000
+          optional: true
+      - runFlow:
+          when:
+            notVisible: { id: "message-state-viewed" }
+          commands:
+            - runFlow:
+                file: ../subflows/switch-app.yaml
+                env:
+                  APP_ID: io.twentysixty.mobileagent.st
+            - extendedWaitUntil:
+                notVisible: { id: "chat-screen" }
+                timeout: 8000
+                optional: true
+            - runFlow:
+                file: ../subflows/switch-app.yaml
+                env:
+                  APP_ID: io.twentysixty.mobileagent.dev
+- assertVisible: { id: "message-state-viewed" }
+- takeScreenshot: l05-a-chat

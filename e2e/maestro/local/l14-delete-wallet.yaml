@@ -1,0 +1,21 @@
+appId: io.twentysixty.mobileagent.dev
+tags: [local]
+---
+- runFlow:
+    file: ../subflows/signup.yaml
+    env:
+      APP_ID: io.twentysixty.mobileagent.dev
+      NAME: Alice
+
+- tapOn: { id: "settings-tab" }
+- scrollUntilVisible:
+    element: { id: "settings-delete-wallet" }
+- tapOn: { id: "settings-delete-wallet" }
+- waitForAnimationToEnd
+- tapOn: { id: "modal-confirm" }
+- waitForAnimationToEnd
+- tapOn: "Yes, delete"
+- extendedWaitUntil:
+    visible: { id: "profile-name-input" }
+    timeout: 60000
+- takeScreenshot: l14-signup

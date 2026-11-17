@@ -53,7 +53,7 @@ else. It can only sign DNS names under `hologram.test`, and only the `e2e` build
 
 - `maestro/smoke`: checks that the two apps open. It needs no backend.
 - `maestro/local`: flows that need the local stack.
-- `maestro/subflows`: shared steps. `APP_ID`, `NAME`, `LINK` and `APP_LABEL` are their parameters.
+- `maestro/subflows`: shared steps. `APP_ID`, `PEER_APP_ID`, `NAME`, `LINK` and `APP_LABEL` are their parameters.
 - `maestro/fixtures`: media for the flows. `SHA256SUMS` has their hashes. Maestro only reads media inside the directory that it runs, so they are under `maestro`.
 - `ci`: scripts for the CI job in `.github/workflows/e2e-android.yml`.
 - `stack`: the local stack.

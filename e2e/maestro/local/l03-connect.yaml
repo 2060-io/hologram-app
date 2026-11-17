@@ -1,0 +1,22 @@
+appId: io.twentysixty.mobileagent.dev
+tags: [local]
+---
+- runFlow: ../subflows/signup-both.yaml
+- runFlow: ../subflows/connect-peers.yaml
+
+- tapOn: "Bob"
+- extendedWaitUntil:
+    visible: { id: "composer-input" }
+    timeout: 30000
+- assertVisible: "Bob"
+- takeScreenshot: l03-a-chat
+
+- runFlow:
+    file: ../subflows/switch-app.yaml
+    env:
+      APP_ID: io.twentysixty.mobileagent.st
+- assertVisible: { id: "composer-input" }
+- extendedWaitUntil:
+    visible: "Alice"
+    timeout: 30000
+- takeScreenshot: l03-b-chat
