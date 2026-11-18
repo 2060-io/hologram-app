@@ -16,7 +16,9 @@ while read -r flow; do
   ((i % SHARDS == SHARD)) && FLOWS+=("$flow")
   i=$((i + 1))
 done < <(grep -lE "$TAG_RE" e2e/maestro/smoke/*.yaml e2e/maestro/local/*.yaml e2e/maestro/external/*.yaml 2>/dev/null | sort)
+((i == 0)) && { echo "no flow has one of the tags $TAGS"; exit 1; }
 echo "shard $SHARD of $SHARDS runs ${#FLOWS[@]} of $i flows"
+printf '%s\n' "${FLOWS[@]}" | xargs -r -n1 basename -s .yaml >"$OUT/flows.txt"
 
 node e2e/ci/adb-helper.mjs >"$OUT/adb-helper.log" 2>&1 &
 HELPER=$!
@@ -43,7 +45,7 @@ for flow in "${FLOWS[@]}"; do
   ) &
   RECORDER=$!
 
-  maestro test --format junit --output "$OUT/junit/$name.xml" \
+  timeout 900 maestro test --format junit --output "$OUT/junit/$name.xml" \
     --debug-output "$OUT/maestro/$name" --flatten-debug-output "$flow" || CODE=1
 
   kill "$RECORDER" 2>/dev/null
@@ -55,6 +57,7 @@ for flow in "${FLOWS[@]}"; do
   done
   for pkg in $APP_IDS; do
     adb pull "/data/data/$pkg/files/hologramLogs" "$OUT/app-logs/$name/$pkg" >/dev/null 2>&1 || echo "no app logs for $pkg after $name"
+    adb shell "rm -rf /data/data/$pkg/files/hologramLogs/*"
   done
 done
 

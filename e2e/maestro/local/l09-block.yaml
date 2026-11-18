@@ -16,6 +16,7 @@ tags: [local]
     visible: { id: "connection-details-blocked" }
     timeout: 30000
 - assertVisible: { id: "connection-details-unblock" }
+- waitForAnimationToEnd
 - tapOn: { id: "connection-details-done" }
 - extendedWaitUntil:
     notVisible: { id: "composer-input" }
@@ -53,6 +54,7 @@ tags: [local]
     visible: { id: "connection-details-block" }
     timeout: 30000
 - assertNotVisible: { id: "connection-details-blocked" }
+- waitForAnimationToEnd
 - tapOn: { id: "connection-details-done" }
 - extendedWaitUntil:
     visible: { id: "composer-input" }

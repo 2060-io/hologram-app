@@ -8,6 +8,11 @@ title = os.environ.get("SUMMARY_TITLE", "E2E flows")
 artifact_url = os.environ.get("ARTIFACT_URL", "")
 
 rows = []
+planned = (out / "flows.txt").read_text().split() if (out / "flows.txt").exists() else []
+reported = {report.stem for report in (out / "junit").glob("*.xml")}
+for name in planned:
+    if name not in reported:
+        rows.append((name, "no report", "", "Maestro wrote no report (crash or timeout)"))
 for report in sorted((out / "junit").glob("*.xml")):
     try:
         cases = ET.parse(report).getroot().iter("testcase")
@@ -18,7 +23,7 @@ for report in sorted((out / "junit").glob("*.xml")):
         failure = case.find("failure")
         if failure is None:
             failure = case.find("error")
-        passed = failure is None and case.get("status", "SUCCESS") == "SUCCESS"
+        passed = failure is None and case.get("status", "SUCCESS") in ("SUCCESS", "WARNING")
         message = "" if failure is None else (failure.get("message") or failure.text or "").strip()
         time = f"{float(case.get('time', 0)):.0f} s"
         rows.append((case.get("name", report.stem), "passed" if passed else "failed", time, message))

@@ -10,7 +10,13 @@ const MEDIA = {
   mp4: { mime: 'video/mp4', table: 'video' },
 }
 
-const adbShell = (args) => execFileSync('adb', ['shell', ...args], { encoding: 'utf8' })
+const adbShell = (args) => execFileSync('adb', ['shell', ...args], { encoding: 'utf8', timeout: 30000 })
+
+const amStart = (args) => {
+  const output = adbShell(['am', 'start', '-W', ...args])
+  if (/^Error|Exception/m.test(output) || !/Status: ok/.test(output)) throw new Error(`am start failed: ${output}`)
+  return output
+}
 
 const findMediaUri = (name) => {
   const media = MEDIA[name.split('.').pop()]
@@ -35,26 +41,17 @@ const share = ({ appId, text, media }) => {
     extras = ['-t', 'text/plain', '--es', 'android.intent.extra.TEXT', `'${text}'`]
   } else if (media !== undefined) {
     const { uri, mime } = findMediaUri(media)
-    extras = ['-t', mime, '--eu', 'android.intent.extra.STREAM', uri, '--grant-read-uri-permission']
+    extras = ['-t', mime, '--eu', 'android.intent.extra.STREAM', uri]
   } else {
     throw new Error('text or media is required')
   }
-  return adbShell([
-    'am',
-    'start',
-    '-W',
-    '-a',
-    'android.intent.action.SEND',
-    ...extras,
-    '-n',
-    `${appId}/io.twentysixty.mobileagent.MainActivity`,
-  ])
+  return amStart(['-a', 'android.intent.action.SEND', ...extras, '-n', `${appId}/io.twentysixty.mobileagent.MainActivity`])
 }
 
 const view = ({ appId, link }) => {
   if (!APP_IDS.has(appId)) throw new Error(`unknown app ${appId}`)
   if (!/^[\w:/?=.&%-]+$/.test(link)) throw new Error('link has unsafe characters')
-  return adbShell(['am', 'start', '-W', '-a', 'android.intent.action.VIEW', '-d', `'${link}'`, '-p', appId])
+  return amStart(['-a', 'android.intent.action.VIEW', '-d', `'${link}'`, '-p', appId])
 }
 
 const readBody = async (req) => {

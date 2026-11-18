@@ -267,6 +267,7 @@ jobs:
           adb install -r e2e-apks/staging.apk
 
       - name: Run the flows
+        timeout-minutes: 45
         env:
           TAGS: ${{ inputs.tags }}
           SHARD: ${{ strategy.job-index }}

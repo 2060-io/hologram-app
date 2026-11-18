@@ -39,7 +39,6 @@ tags: [local]
 - extendedWaitUntil:
     visible: { id: "privacy-screen-lock-switch" }
     timeout: 20000
-# The lock screen would show as soon as the app is active again, so a short wait on it proves it stays away
 - extendedWaitUntil:
     visible: { id: "auth-screen" }
     timeout: 8000

@@ -10,7 +10,7 @@ type Props = {
 }
 
 const PlayerControls = ({ playing, onPlay, onPause, iconColor }: Props) => (
-  <View style={styles.wrapper}>
+  <View testID="chat-video-controls" style={styles.wrapper}>
     <TouchableOpacity style={styles.touchable} onPress={playing ? onPause : onPlay}>
       <Icon as="Ionicons" name={playing ? 'pause-circle-outline' : 'play-circle-outline'} size={60} color={iconColor} />
     </TouchableOpacity>

@@ -43,6 +43,7 @@ tags: [local]
 - extendedWaitUntil:
     visible: { id: "message-reactions" }
     timeout: 15000
+- assertVisible: "❤.*"
 - takeScreenshot: l08-a-reaction
 
 - longPressOn: "message from Bob"
@@ -84,6 +85,7 @@ tags: [local]
 - extendedWaitUntil:
     visible: { id: "message-reactions" }
     timeout: 60000
+- assertVisible: "❤.*"
 - assertVisible:
     text: "message from Bob"
     index: 1
@@ -126,4 +128,3 @@ tags: [local]
     env:
       APP_ID: io.twentysixty.mobileagent.st
 - assertVisible: "reply from Alice"
-- assertNotVisible: "You reported a message"

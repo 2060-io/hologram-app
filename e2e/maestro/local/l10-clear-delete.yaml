@@ -47,6 +47,7 @@ tags: [local]
     env:
       APP_ID: io.twentysixty.mobileagent.st
 - extendedWaitUntil:
-    notVisible: { id: "composer-input" }
+    visible: "This connection has been terminated"
     timeout: 60000
+- assertNotVisible: { id: "composer-input" }
 - takeScreenshot: l10-b-terminated

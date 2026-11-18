@@ -41,11 +41,21 @@ tags: [local]
 - assertNotVisible: '(?s).*webrtc\.dev\.2060\.io.*'
 - takeScreenshot: l13-env-changed
 
-- back
+- stopApp
+- launchApp:
+    appId: io.twentysixty.mobileagent.dev
 - extendedWaitUntil:
-    visible: { id: "settings-developer" }
-    timeout: 10000
+    visible: "Hologram Locked|Authenticate to open .*"
+    timeout: 60000
+- runFlow: ../subflows/unlock.yaml
+- extendedWaitUntil:
+    visible: "Add a connection to start chatting"
+    timeout: 60000
+- tapOn: { id: "settings-tab" }
+- scrollUntilVisible:
+    element: { id: "settings-developer" }
 - tapOn: { id: "settings-developer" }
 - scrollUntilVisible:
     element: { id: "developer-env-webrtc-server-base-url" }
 - assertVisible: '(?s).*webrtc\.2060\.io.*'
+- assertNotVisible: '(?s).*webrtc\.dev\.2060\.io.*'

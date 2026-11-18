@@ -90,6 +90,7 @@ tags: [local]
           optional: true
 - assertVisible: { id: "composer-input" }
 - tapOn: { id: "chat-back" }
+- tapOn: { id: "chats-tab" }
 - extendedWaitUntil:
     visible: { id: "chat-row-.*", index: 1 }
     timeout: 20000

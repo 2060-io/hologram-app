@@ -59,11 +59,13 @@ tags: [local]
                 env:
                   APP_ID: io.twentysixty.mobileagent.dev
 - assertVisible: { id: "chat-header-name", text: "Alicia" }
-# Without a picture the avatar shows the initial "A" of the name
-- assertNotVisible: "A"
+- extendedWaitUntil:
+    notVisible: "A"
+    timeout: 15000
 - takeScreenshot: l02-b-chat
 
 - tapOn: { id: "chat-back" }
+- tapOn: { id: "chats-tab" }
 - extendedWaitUntil:
     visible: { id: "chats-list" }
     timeout: 20000

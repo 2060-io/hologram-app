@@ -17,7 +17,7 @@ tags: [local]
 - longPressOn: { id: "composer-mic" }
 - extendedWaitUntil:
     visible: "While using the app"
-    timeout: 15000
+    timeout: 10000
     optional: true
 - runFlow:
     when:
@@ -25,6 +25,10 @@ tags: [local]
     commands:
       - tapOn: "While using the app"
 # After the permission dialog the recording is locked and keeps running until the mic is tapped again
+- extendedWaitUntil:
+    visible: { id: "composer-recording-cancel|chat-voice-note" }
+    timeout: 8000
+    optional: true
 - runFlow:
     when:
       visible: { id: "composer-recording-cancel" }
@@ -37,6 +41,12 @@ tags: [local]
 - extendedWaitUntil:
     visible: { id: "chat-voice-note" }
     timeout: 60000
+- extendedWaitUntil:
+    notVisible: { id: "message-state-created" }
+    timeout: 120000
+- extendedWaitUntil:
+    visible: { id: "message-state-(submitted|received|viewed)" }
+    timeout: 30000
 - assertNotVisible: "Recorded audio is too short.*"
 - takeScreenshot: l07-a-sent
 
@@ -56,5 +66,5 @@ tags: [local]
     visible: { id: "chat-voice-note-play" }
     timeout: 60000
 - tapOn: { id: "chat-voice-note-play" }
-- assertVisible: { id: "chat-voice-note" }
+- assertNotVisible: { id: "chat-voice-note-retry" }
 - takeScreenshot: l07-b-received
