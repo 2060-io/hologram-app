@@ -1,0 +1,106 @@
+appId: io.twentysixty.mobileagent.dev
+tags: [external, svc-demo-issuer-accredited, svc-demo-verifier-accredited, svc-demo-verifier-unaccredited, svc-demo-verifier-untrusted]
+---
+- runFlow:
+    file: ../subflows/signup.yaml
+    env:
+      APP_ID: io.twentysixty.mobileagent.dev
+      NAME: Alice
+- runFlow: ../subflows/get-demo-credential.yaml
+
+- runScript:
+    file: ../scripts/playground-offer.js
+    env:
+      SERVICE: demo-verifier-accredited
+      ACTION: request
+- runFlow:
+    file: ../subflows/open-link.yaml
+    env:
+      LINK: ${output.playground.link}
+      APP_LABEL: Hologram dev
+- extendedWaitUntil:
+    visible: { id: "proof-request-screen" }
+    timeout: 90000
+- extendedWaitUntil:
+    visible: { id: "trust-status-trusted" }
+    timeout: 90000
+- extendedWaitUntil:
+    visible: { id: "accreditation-status-authorized" }
+    timeout: 90000
+- extendedWaitUntil:
+    visible: { id: "proof-request-accept" }
+    timeout: 30000
+- assertNotVisible: { id: "proof-request-share-anyway" }
+- takeScreenshot: x13-accredited
+- tapOn: { id: "proof-request-accept" }
+- runScript:
+    file: ../scripts/playground-state.js
+    env:
+      SERVICE: demo-verifier-accredited
+      KIND: proof
+      EXCHANGE_ID: "${output.playground.exchangeId}"
+      EXPECT: "done"
+      TIMEOUT_S: 60
+- extendedWaitUntil:
+    notVisible: { id: "proof-request-screen" }
+    timeout: 30000
+
+- runScript:
+    file: ../scripts/playground-offer.js
+    env:
+      SERVICE: demo-verifier-unaccredited
+      ACTION: request
+- runFlow:
+    file: ../subflows/open-link.yaml
+    env:
+      LINK: ${output.playground.link}
+      APP_LABEL: Hologram dev
+- extendedWaitUntil:
+    visible: { id: "proof-request-screen" }
+    timeout: 90000
+- extendedWaitUntil:
+    visible: { id: "accreditation-status-unauthorized" }
+    timeout: 90000
+- extendedWaitUntil:
+    visible: { id: "proof-request-share-anyway" }
+    timeout: 30000
+- assertNotVisible: { id: "proof-request-accept" }
+- assertVisible: "Share anyway \\(unsafe\\)"
+- takeScreenshot: x13-unaccredited
+- tapOn: { id: "proof-request-share-anyway" }
+- extendedWaitUntil:
+    visible: { id: "proof-request-share-anyway-confirm" }
+    timeout: 10000
+- tapOn: { id: "proof-request-share-anyway-confirm" }
+- runScript:
+    file: ../scripts/playground-state.js
+    env:
+      SERVICE: demo-verifier-unaccredited
+      KIND: proof
+      EXCHANGE_ID: "${output.playground.exchangeId}"
+      EXPECT: "done"
+      TIMEOUT_S: 60
+- extendedWaitUntil:
+    notVisible: { id: "proof-request-screen" }
+    timeout: 30000
+
+- runScript:
+    file: ../scripts/playground-offer.js
+    env:
+      SERVICE: demo-verifier-untrusted
+      ACTION: request
+- runFlow:
+    file: ../subflows/open-link.yaml
+    env:
+      LINK: ${output.playground.link}
+      APP_LABEL: Hologram dev
+- extendedWaitUntil:
+    visible: { id: "proof-request-screen" }
+    timeout: 90000
+- extendedWaitUntil:
+    visible: { id: "trust-status-untrusted" }
+    timeout: 90000
+- assertNotVisible: { id: "trust-status-trusted" }
+- assertNotVisible: { id: "accreditation-status-authorized" }
+- assertNotVisible: { id: "proof-request-accept" }
+- takeScreenshot: x13-untrusted

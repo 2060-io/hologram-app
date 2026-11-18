@@ -1,0 +1,46 @@
+appId: io.twentysixty.mobileagent.dev
+tags: [external, svc-demo-issuer-untrusted]
+---
+- runFlow:
+    file: ../subflows/signup.yaml
+    env:
+      APP_ID: io.twentysixty.mobileagent.dev
+      NAME: Alice
+- runScript:
+    file: ../scripts/playground-offer.js
+    env:
+      SERVICE: demo-issuer-untrusted
+- runFlow:
+    file: ../subflows/open-link.yaml
+    env:
+      LINK: ${output.playground.link}
+      APP_LABEL: Hologram dev
+- extendedWaitUntil:
+    visible: { id: "credential-offer-screen" }
+    timeout: 90000
+- extendedWaitUntil:
+    visible: { id: "trust-status-untrusted" }
+    timeout: 90000
+- assertNotVisible: { id: "trust-status-trusted" }
+- assertNotVisible: { id: "accreditation-status-authorized" }
+- takeScreenshot: x12-offer
+- tapOn: { id: "credential-offer-refuse" }
+- extendedWaitUntil:
+    visible: { id: "credential-offer-refuse-confirm" }
+    timeout: 10000
+- tapOn: { id: "credential-offer-refuse-confirm" }
+- runScript:
+    file: ../scripts/playground-state.js
+    env:
+      SERVICE: demo-issuer-untrusted
+      KIND: credential
+      EXCHANGE_ID: "${output.playground.exchangeId}"
+      EXPECT: "declined"
+      TIMEOUT_S: 60
+- runFlow:
+    when:
+      visible: { id: "chat-back" }
+    commands:
+      - tapOn: { id: "chat-back" }
+- tapOn: { id: "wallet-tab" }
+- assertVisible: { id: "wallet-empty" }

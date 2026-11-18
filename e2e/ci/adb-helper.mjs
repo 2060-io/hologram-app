@@ -45,7 +45,13 @@ const share = ({ appId, text, media }) => {
   } else {
     throw new Error('text or media is required')
   }
-  return amStart(['-a', 'android.intent.action.SEND', ...extras, '-n', `${appId}/io.twentysixty.mobileagent.MainActivity`])
+  return amStart([
+    '-a',
+    'android.intent.action.SEND',
+    ...extras,
+    '-n',
+    `${appId}/io.twentysixty.mobileagent.MainActivity`,
+  ])
 }
 
 const view = ({ appId, link }) => {
