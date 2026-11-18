@@ -54,3 +54,4 @@ tags: [external, svc-demo-issuer-unaccredited]
 - extendedWaitUntil:
     visible: { id: "wallet-credential-.*" }
     timeout: 60000
+- takeScreenshot: x11-final

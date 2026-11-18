@@ -128,3 +128,4 @@ tags: [local]
     env:
       APP_ID: io.twentysixty.mobileagent.st
 - assertVisible: "reply from Alice"
+- takeScreenshot: l08-final

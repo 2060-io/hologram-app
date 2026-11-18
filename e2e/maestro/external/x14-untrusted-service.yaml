@@ -34,3 +34,4 @@ tags: [external, svc-demo-untrusted]
 - extendedWaitUntil:
     notVisible: { id: "invitation-screen" }
     timeout: 10000
+- takeScreenshot: x14-final

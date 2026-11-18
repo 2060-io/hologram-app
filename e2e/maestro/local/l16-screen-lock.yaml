@@ -64,3 +64,4 @@ tags: [local]
 - assertVisible:
     id: "privacy-screen-lock-switch"
     checked: false
+- takeScreenshot: l16-final

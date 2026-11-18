@@ -68,7 +68,7 @@ for flow in "${FLOWS[@]}"; do
   RECORDER=$!
 
   timeout 900 maestro test "${MAESTRO_ENV[@]}" --format junit --output "$OUT/junit/$name.xml" \
-    --debug-output "$OUT/maestro/$name" --flatten-debug-output "$flow" || CODE=1
+    --debug-output "$OUT/maestro/$name" --test-output-dir "$OUT/maestro/$name" --flatten-debug-output "$flow" || CODE=1
 
   kill "$RECORDER" 2>/dev/null
   adb shell pkill -INT screenrecord 2>/dev/null

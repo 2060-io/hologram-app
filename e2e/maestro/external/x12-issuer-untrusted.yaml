@@ -44,3 +44,4 @@ tags: [external, svc-demo-issuer-untrusted]
       - tapOn: { id: "chat-back" }
 - tapOn: { id: "wallet-tab" }
 - assertVisible: { id: "wallet-empty" }
+- takeScreenshot: x12-final

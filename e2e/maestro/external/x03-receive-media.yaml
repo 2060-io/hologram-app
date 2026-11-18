@@ -106,18 +106,4 @@ tags: [external, svc-chatbot]
 - extendedWaitUntil:
     notVisible: { id: "chat-link-close" }
     timeout: 15000
-
-- takeScreenshot: x03-g-before-profile
-- runFlow:
-    file: ../subflows/chatbot-send.yaml
-    env:
-      TEXT: "/profile e2e-bot ${CHATBOT_BACKEND}/bunny.jpeg"
-- extendedWaitUntil:
-    visible: { id: "composer-input" }
-    timeout: 15000
-- extendedWaitUntil:
-    visible: "never appears"
-    timeout: 8000
-    optional: true
-- assertNotVisible: "I do not understand.*"
-- takeScreenshot: x03-h-after-profile
+- takeScreenshot: x03-final

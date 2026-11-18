@@ -217,3 +217,7 @@ tags: [local]
 - assertNotVisible: "There was a problem loading the video."
 - takeScreenshot: l06-a-video-player
 - back
+- extendedWaitUntil:
+    notVisible: { id: "chat-video-player" }
+    timeout: 15000
+- takeScreenshot: l06-final

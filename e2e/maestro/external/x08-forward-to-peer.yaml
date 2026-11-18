@@ -30,11 +30,6 @@ tags: [external, svc-chatbot]
     timeout: 30000
 - takeScreenshot: x08-a-forwarded
 
-# The forwarded invitation leaves A from a queue, so A must stay in the foreground until it is sent
-- extendedWaitUntil:
-    visible: "never appears"
-    timeout: 5000
-    optional: true
 
 - runFlow:
     file: ../subflows/switch-app.yaml

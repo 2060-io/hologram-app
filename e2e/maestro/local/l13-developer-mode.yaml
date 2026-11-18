@@ -59,3 +59,4 @@ tags: [local]
     element: { id: "developer-env-webrtc-server-base-url" }
 - assertVisible: '(?s).*webrtc\.2060\.io.*'
 - assertNotVisible: '(?s).*webrtc\.dev\.2060\.io.*'
+- takeScreenshot: l13-final
