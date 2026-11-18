@@ -44,6 +44,12 @@ const merged = mergeConfig(getDefaultConfig(__dirname), config)
 // alias, to prevent ExpoAsset native module not found error.
 const rnviRoot = path.dirname(require.resolve('react-native-vector-icons/package.json'))
 merged.resolver.resolveRequest = (context, moduleName, platform) => {
+  // lru-cache (used by Credo caches) loads `node:diagnostics_channel` with a dynamic import.
+  // React Native does not have this module. Without an empty module, the import throws when
+  // lru-cache loads, and every Credo cache operation fails.
+  if (moduleName === 'node:diagnostics_channel' || moduleName === 'diagnostics_channel') {
+    return { type: 'empty' }
+  }
   const match = /^react-native-vector-icons(?:\/(.+))?$/.exec(moduleName)
   if (match) {
     const sub = match[1]
