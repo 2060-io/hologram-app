@@ -130,7 +130,7 @@ needs no `repeat`:
 - `maestro/scripts`: `runScript` files that call the adb helper, the chatbot and the playground.
 - `maestro/subflows`: shared steps. `APP_ID`, `PEER_APP_ID`, `NAME`, `LINK` and `APP_LABEL` are their parameters.
 - `maestro/fixtures`: media for the flows. `SHA256SUMS` has their hashes. Maestro only reads media inside the directory that it runs, so they are under `maestro`.
-- `ci`: scripts for the CI job in `.github/workflows/e2e-android.yml`. `run-flows.sh` runs each flow on its own, with its screen recording and app logs, and splits the flows between the shards of the job.
+- `ci`: scripts for the CI job in `.github/workflows/e2e-android.yml`. `run-flows.sh` runs each flow on its own, with its screen recording and app logs, and splits the flows between the shards of the job. `FLOW_FILTER=<regex>` limits it to the matching flow files.
 - `services.json` and `preflight`: the catalogue of the external services, and the check that runs before their flows.
 - `stack`: the local stack.
 

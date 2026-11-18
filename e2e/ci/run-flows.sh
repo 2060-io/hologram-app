@@ -15,7 +15,7 @@ i=0
 while read -r flow; do
   ((i % SHARDS == SHARD)) && FLOWS+=("$flow")
   i=$((i + 1))
-done < <(grep -lE "$TAG_RE" e2e/maestro/smoke/*.yaml e2e/maestro/local/*.yaml e2e/maestro/external/*.yaml 2>/dev/null | sort)
+done < <(grep -lE "$TAG_RE" e2e/maestro/smoke/*.yaml e2e/maestro/local/*.yaml e2e/maestro/external/*.yaml 2>/dev/null | grep -E "${FLOW_FILTER:-.}" | sort)
 ((i == 0)) && { echo "no flow has one of the tags $TAGS"; exit 1; }
 
 # The shard split above must not depend on the skip list, which each shard reads on its own
