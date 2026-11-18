@@ -36,11 +36,12 @@ tags: [local]
     visible: "Add a connection to start chatting"
     timeout: 20000
 
-- runFlow:
-    file: ../subflows/open-link.yaml
+# The error toast lasts about 3 s, less than the app chooser takes, so the intent goes to the app directly
+- runScript:
+    file: ../scripts/view.js
     env:
+      APP_ID: io.twentysixty.mobileagent.dev
       LINK: "didcomm://?oob=bm90LWFuLWludml0YXRpb24"
-      APP_LABEL: Hologram dev
 - extendedWaitUntil:
     visible: { id: "toast-error" }
     timeout: 30000
