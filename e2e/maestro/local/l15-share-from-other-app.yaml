@@ -27,7 +27,8 @@ tags: [local]
 - extendedWaitUntil:
     visible: "Share with"
     timeout: 20000
-- tapOn: "Bob"
+# The share list renders the name with a trailing space before the sub-connection count
+- tapOn: "Bob\\s*"
 - tapOn: { id: "share-messages-send" }
 - tapOn: "Bob"
 - extendedWaitUntil:
@@ -46,7 +47,7 @@ tags: [local]
 - extendedWaitUntil:
     visible: "Share with"
     timeout: 20000
-- tapOn: "Bob"
+- tapOn: "Bob\\s*"
 - tapOn: { id: "share-messages-send" }
 - extendedWaitUntil:
     visible: { id: "chat-image" }

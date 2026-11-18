@@ -5,9 +5,11 @@ tags: [local]
 - runFlow: ../subflows/connect-peers.yaml
 
 - tapOn: "Bob"
-- extendedWaitUntil:
-    visible: { id: "composer-input" }
-    timeout: 30000
+- runFlow:
+    file: ../subflows/wait-peer-features.yaml
+    env:
+      APP_ID: io.twentysixty.mobileagent.dev
+      PEER_APP_ID: io.twentysixty.mobileagent.st
 - tapOn: { id: "composer-input" }
 - inputText: "message before clear"
 - tapOn: { id: "composer-send" }
