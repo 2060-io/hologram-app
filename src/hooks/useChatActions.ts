@@ -1,4 +1,4 @@
-import { ActionMenuRole } from '@credo-ts/action-menu'
+import { DidCommActionMenuRole } from '@credo-ts/didcomm-action-menu'
 import { DidCommMessageReactionAction, DidCommMessageReactionOptions } from '@credo-ts/didcomm-reactions'
 import { DidCommMessageReceiptOptions, MessageState } from '@credo-ts/didcomm-receipts'
 import { CameraRoll } from '@react-native-camera-roll/camera-roll'
@@ -442,7 +442,7 @@ export const useChatActions = () => {
       try {
         const actionMenuRecord = await agent.modules.actionMenu.findActiveMenu({
           connectionId,
-          role: ActionMenuRole.Requester,
+          role: DidCommActionMenuRole.Requester,
         })
 
         const chatEntry = createChatEntry(realm, {

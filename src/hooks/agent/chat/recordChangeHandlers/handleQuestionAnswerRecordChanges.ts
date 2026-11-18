@@ -1,4 +1,4 @@
-import { QuestionAnswerRecord, QuestionAnswerState } from '@credo-ts/question-answer'
+import { DidCommQuestionAnswerRecord, DidCommQuestionAnswerState } from '@credo-ts/didcomm-question-answer'
 import { AnswerMetadata, ChatEntryRole, ChatEntryState, ChatEntryType, QuestionMetadata } from '@src/model'
 import { MobileAgent } from '@src/services/agent'
 import Realm from 'realm'
@@ -8,7 +8,7 @@ import { addUnread, findOrCreateChatThread } from '../services/ChatThreadService
 export const handleQuestionAnswerRecordChanges = async (options: {
   agent: MobileAgent
   realm: Realm
-  record: QuestionAnswerRecord
+  record: DidCommQuestionAnswerRecord
   activeChatThreadId?: string
   receivedAt?: Date
 }) => {
@@ -19,7 +19,7 @@ export const handleQuestionAnswerRecordChanges = async (options: {
 
   const recordState = questionAnswerRecord.state
 
-  if (recordState === QuestionAnswerState.QuestionReceived) {
+  if (recordState === DidCommQuestionAnswerState.QuestionReceived) {
     const metadata: QuestionMetadata = {
       text: questionAnswerRecord.questionText,
       description: questionAnswerRecord.questionDetail,
@@ -38,7 +38,7 @@ export const handleQuestionAnswerRecordChanges = async (options: {
     if (thread.id !== activeChatThreadId) {
       addUnread(realm, thread.id, 1)
     }
-  } else if (recordState === QuestionAnswerState.AnswerReceived) {
+  } else if (recordState === DidCommQuestionAnswerState.AnswerReceived) {
     const metadata: AnswerMetadata = { response: questionAnswerRecord.response ?? '' }
     createChatEntry(realm, {
       associatedRecordId: questionAnswerRecord.id,
@@ -52,7 +52,7 @@ export const handleQuestionAnswerRecordChanges = async (options: {
     if (thread.id !== activeChatThreadId) {
       addUnread(realm, thread.id, 1)
     }
-  } else if (recordState === QuestionAnswerState.QuestionSent) {
+  } else if (recordState === DidCommQuestionAnswerState.QuestionSent) {
     const metadata: QuestionMetadata = {
       text: questionAnswerRecord.questionText,
       description: questionAnswerRecord.questionDetail,

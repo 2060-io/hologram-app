@@ -1,4 +1,3 @@
-import { PerformMessage } from '@credo-ts/action-menu'
 import { BaseRecord } from '@credo-ts/core'
 import {
   DidCommAutoAcceptCredential,
@@ -27,13 +26,14 @@ import {
   DidCommRequestCredentialV2Message,
   DidCommRequestPresentationV2Message,
 } from '@credo-ts/didcomm'
+import { DidCommPerformMessage } from '@credo-ts/didcomm-action-menu'
 import { CallEndMessage, CallOfferMessage } from '@credo-ts/didcomm-calls'
 import { DidCommShareMediaMessage } from '@credo-ts/didcomm-media-sharing'
 import { DidCommPushNotificationsFcmSetDeviceInfoMessage } from '@credo-ts/didcomm-push-notifications'
+import { DidCommAnswerMessage } from '@credo-ts/didcomm-question-answer'
 import { MessageReactionsMessage } from '@credo-ts/didcomm-reactions'
 import { DidCommMessageReceiptsMessage } from '@credo-ts/didcomm-receipts'
 import { DidCommProfileMessage, DidCommRequestProfileMessage } from '@credo-ts/didcomm-user-profile'
-import { AnswerMessage } from '@credo-ts/question-answer'
 import { createOobInvitation, MobileAgent } from '@src/services/agent'
 import { acceptProofRequestOrReportNoCompatible } from '@src/services/agent/proofPresentation'
 import { log, logWarn } from '@src/utils'
@@ -126,7 +126,7 @@ export const AgentActionExecuterMap: Record<AgentActionType, ActionFactory> = {
         connectionId,
         performedAction: { name: selectedItemName },
       })
-      return { outgoingMessageTypes: [PerformMessage.type.messageTypeUri] }
+      return { outgoingMessageTypes: [DidCommPerformMessage.type.messageTypeUri] }
     }
   },
   [AgentActionType.ForwardConnection]: (action) => {
@@ -188,7 +188,7 @@ export const AgentActionExecuterMap: Record<AgentActionType, ActionFactory> = {
       const { response, questionRecordId } = parameters
       const associatedRecord = await options.agent.modules.questionAnswer.sendAnswer(questionRecordId, response)
       return {
-        outgoingMessageTypes: [AnswerMessage.type.messageTypeUri],
+        outgoingMessageTypes: [DidCommAnswerMessage.type.messageTypeUri],
         associatedRecord,
       }
     }
