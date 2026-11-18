@@ -1,0 +1,10 @@
+appId: io.twentysixty.mobileagent.dev
+---
+- tapOn: { id: "composer-attach" }
+- tapOn: { id: "attachment-file-gallery" }
+- extendedWaitUntil:
+    visible: ${LABEL}
+    timeout: 30000
+- tapOn:
+    text: ${LABEL}
+    index: 0

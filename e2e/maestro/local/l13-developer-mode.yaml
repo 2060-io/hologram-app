@@ -1,0 +1,51 @@
+appId: io.twentysixty.mobileagent.dev
+tags: [local]
+---
+- runFlow:
+    file: ../subflows/signup.yaml
+    env:
+      APP_ID: io.twentysixty.mobileagent.dev
+      NAME: Alice
+
+- tapOn: { id: "settings-tab" }
+- scrollUntilVisible:
+    element: { id: "settings-privacy" }
+- assertNotVisible: { id: "settings-developer" }
+- scrollUntilVisible:
+    element: { id: "settings-display-name" }
+    direction: UP
+- tapOn:
+    id: "settings-display-name"
+    repeat: 7
+    delay: 200
+- extendedWaitUntil:
+    visible: "Developer mode enabled"
+    timeout: 10000
+- tapOn: "OK"
+
+- scrollUntilVisible:
+    element: { id: "settings-developer" }
+- tapOn: { id: "settings-developer" }
+- scrollUntilVisible:
+    element: { id: "developer-env-webrtc-server-base-url" }
+- assertVisible: '(?s).*webrtc\.dev\.2060\.io.*'
+- tapOn: { id: "developer-env-webrtc-server-base-url" }
+- extendedWaitUntil:
+    visible: { id: "developer-env-option" }
+    timeout: 10000
+- tapOn: "https://webrtc.2060.io"
+- extendedWaitUntil:
+    notVisible: { id: "developer-env-option" }
+    timeout: 10000
+- assertVisible: '(?s).*webrtc\.2060\.io.*'
+- assertNotVisible: '(?s).*webrtc\.dev\.2060\.io.*'
+- takeScreenshot: l13-env-changed
+
+- back
+- extendedWaitUntil:
+    visible: { id: "settings-developer" }
+    timeout: 10000
+- tapOn: { id: "settings-developer" }
+- scrollUntilVisible:
+    element: { id: "developer-env-webrtc-server-base-url" }
+- assertVisible: '(?s).*webrtc\.2060\.io.*'

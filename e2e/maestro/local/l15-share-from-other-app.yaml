@@ -1,0 +1,66 @@
+appId: io.twentysixty.mobileagent.dev
+tags: [local]
+---
+- addMedia:
+    - ../fixtures/image.jpg
+- runFlow: ../subflows/signup-both.yaml
+- runFlow: ../subflows/connect-peers.yaml
+
+- tapOn: "Bob"
+- runFlow:
+    file: ../subflows/wait-peer-features.yaml
+    env:
+      APP_ID: io.twentysixty.mobileagent.dev
+      PEER_APP_ID: io.twentysixty.mobileagent.st
+- tapOn: { id: "chat-back" }
+
+# Maestro cannot send an intent, so e2e/ci/adb-helper.mjs runs am start for the flow
+- runScript:
+    file: ../scripts/share.js
+    env:
+      APP_ID: io.twentysixty.mobileagent.dev
+      TEXT: "shared from another app"
+- runFlow:
+    file: ../subflows/unlock.yaml
+    when:
+      visible: "Hologram Locked|Authenticate to open .*"
+- extendedWaitUntil:
+    visible: "Share with"
+    timeout: 20000
+- tapOn: "Bob"
+- tapOn: { id: "share-messages-send" }
+- tapOn: "Bob"
+- extendedWaitUntil:
+    visible: "shared from another app"
+    timeout: 30000
+
+- runScript:
+    file: ../scripts/share.js
+    env:
+      APP_ID: io.twentysixty.mobileagent.dev
+      MEDIA: image.jpg
+- runFlow:
+    file: ../subflows/unlock.yaml
+    when:
+      visible: "Hologram Locked|Authenticate to open .*"
+- extendedWaitUntil:
+    visible: "Share with"
+    timeout: 20000
+- tapOn: "Bob"
+- tapOn: { id: "share-messages-send" }
+- extendedWaitUntil:
+    visible: { id: "chat-image" }
+    timeout: 60000
+- takeScreenshot: l15-a-shared
+
+- runFlow:
+    file: ../subflows/switch-app.yaml
+    env:
+      APP_ID: io.twentysixty.mobileagent.st
+- extendedWaitUntil:
+    visible: "shared from another app"
+    timeout: 60000
+- extendedWaitUntil:
+    visible: { id: "chat-image-open" }
+    timeout: 120000
+- takeScreenshot: l15-b-received

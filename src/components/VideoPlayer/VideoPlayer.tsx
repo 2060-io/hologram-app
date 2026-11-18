@@ -75,7 +75,7 @@ const VideoPlayer = ({ uri, showControl, setShowControl, initialPlay = true, sho
   }
 
   return (
-    <Pressable onPress={handleControls} style={styles.container}>
+    <Pressable testID="chat-video-player" onPress={handleControls} style={styles.container}>
       <Fragment>
         <View style={styles.videoWrapper} pointerEvents="none">
           <Video

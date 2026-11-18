@@ -1,0 +1,129 @@
+appId: io.twentysixty.mobileagent.dev
+tags: [local]
+---
+- runFlow: ../subflows/signup-both.yaml
+- runFlow: ../subflows/connect-peers.yaml
+
+- tapOn: "Bob"
+- runFlow:
+    file: ../subflows/wait-peer-features.yaml
+    env:
+      APP_ID: io.twentysixty.mobileagent.dev
+      PEER_APP_ID: io.twentysixty.mobileagent.st
+- runFlow:
+    file: ../subflows/switch-app.yaml
+    env:
+      APP_ID: io.twentysixty.mobileagent.st
+- runFlow:
+    file: ../subflows/wait-peer-features.yaml
+    env:
+      APP_ID: io.twentysixty.mobileagent.st
+      PEER_APP_ID: io.twentysixty.mobileagent.dev
+
+- tapOn: { id: "composer-input" }
+- inputText: "message from Bob"
+- tapOn: { id: "composer-send" }
+- extendedWaitUntil:
+    visible: { id: "message-state-(submitted|received|viewed)" }
+    timeout: 30000
+
+- runFlow:
+    file: ../subflows/switch-app.yaml
+    env:
+      APP_ID: io.twentysixty.mobileagent.dev
+- extendedWaitUntil:
+    visible: "message from Bob"
+    timeout: 60000
+
+- longPressOn: "message from Bob"
+- extendedWaitUntil:
+    visible: { id: "message-reaction-heart" }
+    timeout: 15000
+- tapOn: { id: "message-reaction-heart" }
+- extendedWaitUntil:
+    visible: { id: "message-reactions" }
+    timeout: 15000
+- takeScreenshot: l08-a-reaction
+
+- longPressOn: "message from Bob"
+- extendedWaitUntil:
+    visible: { id: "message-action-copy" }
+    timeout: 15000
+- tapOn: { id: "message-action-copy" }
+- tapOn: { id: "composer-input" }
+- longPressOn: { id: "composer-input" }
+- tapOn: "Paste"
+- assertVisible:
+    text: "message from Bob"
+    index: 1
+- eraseText: 40
+
+- longPressOn: "message from Bob"
+- extendedWaitUntil:
+    visible: { id: "message-action-reply" }
+    timeout: 15000
+- tapOn: { id: "message-action-reply" }
+- assertVisible:
+    text: "message from Bob"
+    index: 1
+- tapOn: { id: "composer-input" }
+- inputText: "reply from Alice"
+- tapOn: { id: "composer-send" }
+- extendedWaitUntil:
+    visible: { id: "message-state-(submitted|received|viewed)" }
+    timeout: 30000
+- takeScreenshot: l08-a-reply
+
+- runFlow:
+    file: ../subflows/switch-app.yaml
+    env:
+      APP_ID: io.twentysixty.mobileagent.st
+- extendedWaitUntil:
+    visible: "reply from Alice"
+    timeout: 60000
+- extendedWaitUntil:
+    visible: { id: "message-reactions" }
+    timeout: 60000
+- assertVisible:
+    text: "message from Bob"
+    index: 1
+- takeScreenshot: l08-b-reaction-and-reply
+
+- runFlow:
+    file: ../subflows/switch-app.yaml
+    env:
+      APP_ID: io.twentysixty.mobileagent.dev
+- longPressOn: "reply from Alice"
+- extendedWaitUntil:
+    visible: { id: "message-action-delete" }
+    timeout: 15000
+- tapOn: { id: "message-action-delete" }
+- extendedWaitUntil:
+    visible: { id: "modal-confirm" }
+    timeout: 15000
+- tapOn: { id: "modal-confirm" }
+- extendedWaitUntil:
+    notVisible: "reply from Alice"
+    timeout: 15000
+- takeScreenshot: l08-a-deleted
+
+- longPressOn: "message from Bob"
+- extendedWaitUntil:
+    visible: { id: "message-action-report" }
+    timeout: 15000
+- tapOn: { id: "message-action-report" }
+- extendedWaitUntil:
+    visible: { id: "modal-confirm" }
+    timeout: 15000
+- tapOn: { id: "modal-confirm" }
+- extendedWaitUntil:
+    visible: "You reported a message"
+    timeout: 15000
+- takeScreenshot: l08-a-reported
+
+- runFlow:
+    file: ../subflows/switch-app.yaml
+    env:
+      APP_ID: io.twentysixty.mobileagent.st
+- assertVisible: "reply from Alice"
+- assertNotVisible: "You reported a message"

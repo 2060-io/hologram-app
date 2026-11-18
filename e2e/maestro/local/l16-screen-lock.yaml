@@ -1,0 +1,67 @@
+appId: io.twentysixty.mobileagent.dev
+tags: [local]
+---
+- runFlow:
+    file: ../subflows/signup.yaml
+    env:
+      APP_ID: io.twentysixty.mobileagent.dev
+      NAME: Alice
+
+- tapOn: { id: "settings-tab" }
+- scrollUntilVisible:
+    element: { id: "settings-privacy" }
+- tapOn: { id: "settings-privacy" }
+- tapOn: { id: "privacy-screen-lock-timeout" }
+- tapOn: { id: "privacy-timeout-0" }
+- extendedWaitUntil:
+    visible: "Inst"
+    timeout: 10000
+
+- pressKey: Home
+- launchApp:
+    appId: io.twentysixty.mobileagent.dev
+    stopApp: false
+- extendedWaitUntil:
+    visible: "Hologram Locked|Authenticate to open .*"
+    timeout: 30000
+- runFlow: ../subflows/unlock.yaml
+- extendedWaitUntil:
+    visible: { id: "privacy-screen-lock-switch" }
+    timeout: 20000
+
+- tapOn: { id: "privacy-screen-lock-switch" }
+- assertNotVisible: { id: "privacy-screen-lock-timeout" }
+
+- pressKey: Home
+- launchApp:
+    appId: io.twentysixty.mobileagent.dev
+    stopApp: false
+- extendedWaitUntil:
+    visible: { id: "privacy-screen-lock-switch" }
+    timeout: 20000
+# The lock screen would show as soon as the app is active again, so a short wait on it proves it stays away
+- extendedWaitUntil:
+    visible: { id: "auth-screen" }
+    timeout: 8000
+    optional: true
+- assertNotVisible: { id: "auth-screen" }
+- assertVisible: { id: "privacy-screen-lock-switch" }
+
+- stopApp
+- launchApp:
+    appId: io.twentysixty.mobileagent.dev
+- extendedWaitUntil:
+    visible: "Hologram Locked|Authenticate to open .*"
+    timeout: 60000
+- runFlow: ../subflows/unlock.yaml
+- extendedWaitUntil:
+    visible: "Add a connection to start chatting"
+    timeout: 60000
+
+- tapOn: { id: "settings-tab" }
+- scrollUntilVisible:
+    element: { id: "settings-privacy" }
+- tapOn: { id: "settings-privacy" }
+- assertVisible:
+    id: "privacy-screen-lock-switch"
+    checked: false

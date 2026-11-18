@@ -17,6 +17,11 @@ on:
         required: false
         type: boolean
         default: false
+      shards:
+        description: JSON list with one entry per emulator job, the flows are split between them
+        required: false
+        type: string
+        default: '[1]'
 
 permissions:
   contents: read
@@ -173,10 +178,14 @@ jobs:
           retention-days: 1
 
   flows:
-    name: Run the flows
+    name: Run the flows (shard ${{ matrix.shard }})
     needs: build
     runs-on: ubuntu-latest
     timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: ${{ fromJSON(inputs.shards) }}
     steps:
       - name: Checkout hologram-app
         uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
@@ -260,7 +269,9 @@ jobs:
       - name: Run the flows
         env:
           TAGS: ${{ inputs.tags }}
-        run: e2e/ci/run-flows.sh "$TAGS"
+          SHARD: ${{ strategy.job-index }}
+          SHARDS: ${{ strategy.job-total }}
+        run: e2e/ci/run-flows.sh "$TAGS" "$SHARD" "$SHARDS"
 
       - name: Collect the container logs
         if: always() && inputs.start-stack
@@ -269,8 +280,16 @@ jobs:
           docker compose -f e2e/stack/docker-compose.yml logs --no-color > e2e-out/stack.log 2>&1 || true
 
       - name: Upload the artifacts
+        id: upload
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: e2e-output-${{ inputs.tags }}
+          name: e2e-output-${{ inputs.tags }}-${{ matrix.shard }}
           path: e2e-out
+
+      - name: Write the job summary
+        if: always()
+        env:
+          SUMMARY_TITLE: Shard ${{ matrix.shard }}
+          ARTIFACT_URL: ${{ steps.upload.outputs.artifact-url }}
+        run: python3 e2e/ci/summary.py e2e-out

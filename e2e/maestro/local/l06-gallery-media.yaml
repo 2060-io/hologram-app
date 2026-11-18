@@ -1,0 +1,160 @@
+appId: io.twentysixty.mobileagent.dev
+tags: [local]
+---
+# Added first: the media picker lists a new file only once the media scanner has indexed it
+- addMedia:
+    - ../fixtures/image.jpg
+    - ../fixtures/video.mp4
+- runFlow: ../subflows/signup-both.yaml
+- runFlow: ../subflows/connect-peers.yaml
+
+- tapOn: "Bob"
+- runFlow:
+    file: ../subflows/wait-peer-features.yaml
+    env:
+      APP_ID: io.twentysixty.mobileagent.dev
+      PEER_APP_ID: io.twentysixty.mobileagent.st
+- runFlow:
+    file: ../subflows/switch-app.yaml
+    env:
+      APP_ID: io.twentysixty.mobileagent.st
+- runFlow:
+    file: ../subflows/wait-peer-features.yaml
+    env:
+      APP_ID: io.twentysixty.mobileagent.st
+      PEER_APP_ID: io.twentysixty.mobileagent.dev
+- runFlow:
+    file: ../subflows/switch-app.yaml
+    env:
+      APP_ID: io.twentysixty.mobileagent.dev
+
+- runFlow:
+    file: ../subflows/send-gallery-media.yaml
+    env:
+      LABEL: "Photo taken on .*"
+- extendedWaitUntil:
+    visible: { id: "chat-image" }
+    timeout: 60000
+- runFlow:
+    file: ../subflows/send-gallery-media.yaml
+    env:
+      LABEL: "Video taken on .*"
+- extendedWaitUntil:
+    visible: { id: "chat-video" }
+    timeout: 120000
+- takeScreenshot: l06-a-sent
+
+- runFlow:
+    file: ../subflows/switch-app.yaml
+    env:
+      APP_ID: io.twentysixty.mobileagent.st
+# chat-image-open only renders once B has downloaded and decrypted the file
+- extendedWaitUntil:
+    visible: { id: "chat-image-open" }
+    timeout: 120000
+- tapOn: { id: "chat-image-open" }
+- extendedWaitUntil:
+    visible: { id: "chat-image-lightbox" }
+    timeout: 15000
+- takeScreenshot: l06-b-image-lightbox
+- back
+- extendedWaitUntil:
+    notVisible: { id: "chat-image-lightbox" }
+    timeout: 15000
+- extendedWaitUntil:
+    visible: { id: "chat-video-(download|play)" }
+    timeout: 120000
+- runFlow:
+    when:
+      visible: { id: "chat-video-download" }
+    commands:
+      - tapOn: { id: "chat-video-download" }
+- extendedWaitUntil:
+    visible: { id: "chat-video-play" }
+    timeout: 120000
+- tapOn: { id: "chat-video-play" }
+- extendedWaitUntil:
+    visible: { id: "chat-video-player" }
+    timeout: 15000
+- assertNotVisible: "There was a problem loading the video."
+- takeScreenshot: l06-b-video-player
+- back
+- extendedWaitUntil:
+    notVisible: { id: "chat-video-player" }
+    timeout: 15000
+
+- tapOn: { id: "composer-input" }
+- inputText: "marker from Bob"
+- tapOn: { id: "composer-send" }
+- extendedWaitUntil:
+    visible: { id: "message-state-(submitted|received|viewed)" }
+    timeout: 30000
+- runFlow:
+    file: ../subflows/send-gallery-media.yaml
+    env:
+      LABEL: "Photo taken on .*"
+- extendedWaitUntil:
+    visible:
+      id: "chat-image"
+      below: "marker from Bob"
+    timeout: 60000
+- runFlow:
+    file: ../subflows/send-gallery-media.yaml
+    env:
+      LABEL: "Video taken on .*"
+- extendedWaitUntil:
+    visible:
+      id: "chat-video"
+      below: "marker from Bob"
+    timeout: 120000
+- takeScreenshot: l06-b-sent
+
+- runFlow:
+    file: ../subflows/switch-app.yaml
+    env:
+      APP_ID: io.twentysixty.mobileagent.dev
+# The media of A is above the marker of B, so anything below it was sent by B
+- extendedWaitUntil:
+    visible:
+      id: "chat-image-open"
+      below: "marker from Bob"
+    timeout: 120000
+- tapOn:
+    id: "chat-image-open"
+    below: "marker from Bob"
+- extendedWaitUntil:
+    visible: { id: "chat-image-lightbox" }
+    timeout: 15000
+- takeScreenshot: l06-a-image-lightbox
+- back
+- extendedWaitUntil:
+    notVisible: { id: "chat-image-lightbox" }
+    timeout: 15000
+- extendedWaitUntil:
+    visible:
+      id: "chat-video-(download|play)"
+      below: "marker from Bob"
+    timeout: 120000
+- runFlow:
+    when:
+      visible:
+        id: "chat-video-download"
+        below: "marker from Bob"
+    commands:
+      - tapOn:
+          id: "chat-video-download"
+          below: "marker from Bob"
+- extendedWaitUntil:
+    visible:
+      id: "chat-video-play"
+      below: "marker from Bob"
+    timeout: 120000
+- tapOn:
+    id: "chat-video-play"
+    below: "marker from Bob"
+- extendedWaitUntil:
+    visible: { id: "chat-video-player" }
+    timeout: 15000
+- assertNotVisible: "There was a problem loading the video."
+- takeScreenshot: l06-a-video-player
+- back

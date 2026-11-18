@@ -1,0 +1,72 @@
+appId: io.twentysixty.mobileagent.dev
+tags: [local]
+---
+- addMedia:
+    - ../fixtures/avatar.png
+- runFlow: ../subflows/signup-both.yaml
+- runFlow: ../subflows/connect-peers.yaml
+
+- tapOn: { id: "settings-tab" }
+- tapOn: { id: "settings-edit-profile" }
+- tapOn: { id: "profile-photo" }
+- extendedWaitUntil:
+    visible: "Photo taken on .*"
+    timeout: 30000
+- tapOn:
+    text: "Photo taken on .*"
+    index: 0
+- extendedWaitUntil:
+    visible: { id: "profile-picture-remove" }
+    timeout: 20000
+- tapOn: { id: "profile-name-input" }
+- eraseText
+- inputText: "Alicia"
+- tapOn: { id: "profile-done" }
+- extendedWaitUntil:
+    visible: { id: "settings-display-name", text: "Alicia" }
+    timeout: 20000
+
+# The app sends its profile to a peer when the chat with that peer opens
+- tapOn: { id: "chats-tab" }
+- tapOn: "Bob"
+- extendedWaitUntil:
+    visible: { id: "composer-input" }
+    timeout: 30000
+
+- repeat:
+    times: 4
+    while:
+      notVisible: "Alicia"
+    commands:
+      - extendedWaitUntil:
+          visible: "Alicia"
+          timeout: 10000
+          optional: true
+      - runFlow:
+          file: ../subflows/switch-app.yaml
+          env:
+            APP_ID: io.twentysixty.mobileagent.st
+      - extendedWaitUntil:
+          visible: "Alicia"
+          timeout: 20000
+          optional: true
+      - runFlow:
+          when:
+            notVisible: "Alicia"
+          commands:
+            - runFlow:
+                file: ../subflows/switch-app.yaml
+                env:
+                  APP_ID: io.twentysixty.mobileagent.dev
+- assertVisible: { id: "chat-header-name", text: "Alicia" }
+# Without a picture the avatar shows the initial "A" of the name
+- assertNotVisible: "A"
+- takeScreenshot: l02-b-chat
+
+- tapOn: { id: "chat-back" }
+- extendedWaitUntil:
+    visible: { id: "chats-list" }
+    timeout: 20000
+- assertVisible: "Alicia"
+- assertNotVisible: "A"
+- takeScreenshot: l02-b-chats

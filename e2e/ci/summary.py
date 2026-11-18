@@ -1,0 +1,36 @@
+import os
+import sys
+import xml.etree.ElementTree as ET
+from pathlib import Path
+
+out = Path(sys.argv[1] if len(sys.argv) > 1 else "e2e-out")
+title = os.environ.get("SUMMARY_TITLE", "E2E flows")
+artifact_url = os.environ.get("ARTIFACT_URL", "")
+
+rows = []
+for report in sorted((out / "junit").glob("*.xml")):
+    try:
+        cases = ET.parse(report).getroot().iter("testcase")
+    except ET.ParseError as error:
+        rows.append((report.stem, "no report", "", str(error)))
+        continue
+    for case in cases:
+        failure = case.find("failure")
+        if failure is None:
+            failure = case.find("error")
+        passed = failure is None and case.get("status", "SUCCESS") == "SUCCESS"
+        message = "" if failure is None else (failure.get("message") or failure.text or "").strip()
+        time = f"{float(case.get('time', 0)):.0f} s"
+        rows.append((case.get("name", report.stem), "passed" if passed else "failed", time, message))
+
+lines = [f"### {title}", "", "| Flow | Result | Time | Failure |", "| --- | --- | --- | --- |"]
+for name, result, time, message in rows:
+    message = " ".join(message.split())[:200].replace("|", "\\|")
+    lines.append(f"| {name} | {result} | {time} | {message} |")
+if not rows:
+    lines.append("| none | no report | | |")
+if artifact_url:
+    lines += ["", f"Recordings, app logs and Maestro output: [artifact]({artifact_url})"]
+
+with open(os.environ.get("GITHUB_STEP_SUMMARY", "/dev/stdout"), "a") as summary:
+    summary.write("\n".join(lines) + "\n")
