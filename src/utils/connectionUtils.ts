@@ -26,7 +26,8 @@ import { log, logError, logWarn } from './log'
 export const getConnectionDisplayName = (connection: DidCommConnectionRecord) => {
   const profile = getConnectionProfile(connection)
   const nameDisplayName = profile?.displayName
-  const nameAlias = connection.alias
+  // Existing peer connections may hold their invitation label as alias, which must not hide later profile names
+  const nameAlias = isService(connection) ? connection.alias : undefined
   const namelabel = connection?.theirLabel
   // `connection.did` is our own pairwise DID: it never identifies the other party
   const nameDid = isService(connection) ? connection.invitationDid : connection.theirDid
