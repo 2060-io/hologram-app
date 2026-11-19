@@ -41,6 +41,7 @@ tags: [external, svc-demo-issuer-accredited, svc-demo-verifier-accredited, svc-d
       EXCHANGE_ID: "${output.playground.exchangeId}"
       EXPECT: "done"
       TIMEOUT_S: 60
+- assertTrue: ${output.playgroundState.verified === true}
 - extendedWaitUntil:
     notVisible: { id: "proof-request-screen" }
     timeout: 30000
@@ -80,6 +81,7 @@ tags: [external, svc-demo-issuer-accredited, svc-demo-verifier-accredited, svc-d
       EXCHANGE_ID: "${output.playground.exchangeId}"
       EXPECT: "done"
       TIMEOUT_S: 60
+- assertTrue: ${output.playgroundState.verified === true}
 - extendedWaitUntil:
     notVisible: { id: "proof-request-screen" }
     timeout: 30000
@@ -100,7 +102,12 @@ tags: [external, svc-demo-issuer-accredited, svc-demo-verifier-accredited, svc-d
 - extendedWaitUntil:
     visible: { id: "trust-status-untrusted" }
     timeout: 90000
+- extendedWaitUntil:
+    visible: { id: "accreditation-status-(unauthorized|unverified)" }
+    timeout: 90000
+- extendedWaitUntil:
+    visible: { id: "proof-request-refuse" }
+    timeout: 30000
 - assertNotVisible: { id: "trust-status-trusted" }
-- assertNotVisible: { id: "accreditation-status-authorized" }
 - assertNotVisible: { id: "proof-request-accept" }
 - takeScreenshot: x13-untrusted
