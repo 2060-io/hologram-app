@@ -28,22 +28,12 @@ for report in sorted((out / "junit").glob("*.xml")):
         time = f"{float(case.get('time', 0)):.0f} s"
         rows.append((case.get("name", report.stem), "passed" if passed else "failed", time, message))
 
-skipped_file = out / "skipped.txt"
-skipped = None
-if skipped_file.exists():
-    skipped = [line.split(maxsplit=1) for line in skipped_file.read_text().splitlines() if line.strip()]
-
-lines = [f"### {title}", ""]
-if skipped is not None:
-    failed = [name for name, result, _, _ in rows if result != "passed"]
-    infra = [f"{flow} ({services})" for flow, services in skipped]
-    lines += [f"**Failed:** {', '.join(failed) or 'none'}", "", f"**Skipped: infra:** {', '.join(infra) or 'none'}", ""]
-lines += ["| Flow | Result | Time | Failure |", "| --- | --- | --- | --- |"]
+lines = [f"### {title}", "", "| Flow | Result | Time | Failure |", "| --- | --- | --- | --- |"]
 for name, result, time, message in rows:
     message = " ".join(message.split())[:200].replace("|", "\\|")
     lines.append(f"| {name} | {result} | {time} | {message} |")
 if not rows:
-    lines.append("| none | skipped: infra | | |" if skipped else "| none | no report | | |")
+    lines.append("| none | no report | | |")
 if artifact_url:
     lines += ["", f"Recordings, app logs and Maestro output: [artifact]({artifact_url})"]
 

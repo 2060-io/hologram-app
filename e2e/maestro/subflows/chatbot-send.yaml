@@ -1,5 +1,0 @@
-appId: io.twentysixty.mobileagent.dev
----
-- tapOn: { id: "composer-input" }
-- inputText: ${TEXT}
-- tapOn: { id: "composer-send" }

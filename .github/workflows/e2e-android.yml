@@ -17,11 +17,6 @@ on:
         required: false
         type: boolean
         default: false
-      preflight:
-        description: Check the external services in e2e/services.json first, and skip the flows of each unhealthy one
-        required: false
-        type: boolean
-        default: false
       shards:
         description: JSON list with one entry per emulator job, the flows are split between them
         required: false
@@ -270,11 +265,6 @@ jobs:
         run: |
           adb install -r e2e-apks/dev.apk
           adb install -r e2e-apks/staging.apk
-
-      - name: Check the external services
-        if: inputs.preflight
-        timeout-minutes: 5
-        run: node e2e/preflight/preflight.mjs
 
       - name: Run the flows
         timeout-minutes: 45
