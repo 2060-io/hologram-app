@@ -12,7 +12,8 @@ OUT=${E2E_OUT:-e2e-out}
 mkdir -p "$OUT"
 
 start_emulator() {
-  nohup emulator -avd "$AVD" -no-window -no-boot-anim -accel on -gpu swiftshader_indirect \
+  # The emulator's host-backed goldfish H.264 decoder throws CodecException at random during video compression
+  nohup emulator -avd "$AVD" -no-window -no-boot-anim -accel on -gpu swiftshader_indirect -feature -HardwareDecoder \
     ${DNS_BIND_IP:+-dns-server "$DNS_BIND_IP"} "$@" >>"$OUT/emulator.log" 2>&1 &
 }
 
