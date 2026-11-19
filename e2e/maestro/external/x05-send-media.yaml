@@ -33,16 +33,6 @@ tags: [external, svc-chatbot]
 - extendedWaitUntil:
     visible: "media-received image/.* [0-9]+ sha256:[0-9a-f]{64}"
     timeout: 180000
-- runFlow:
-    when:
-      visible: "media-received image/.* [0-9]+ sha256:cc2df2416d0503244b1eabfed66c52c50598d9cdd43085fa13bf554695da25d8"
-    commands:
-      - takeScreenshot: x05-image-hash-matches-fixture
-- runFlow:
-    when:
-      notVisible: "media-received image/.* [0-9]+ sha256:cc2df2416d0503244b1eabfed66c52c50598d9cdd43085fa13bf554695da25d8"
-    commands:
-      - takeScreenshot: x05-image-reencoded
 - extendedWaitUntil:
     visible:
       id: "chat-image-(open|download)"
@@ -84,16 +74,6 @@ tags: [external, svc-chatbot]
 - extendedWaitUntil:
     visible: "media-received video/.* [0-9]+ sha256:[0-9a-f]{64}"
     timeout: 300000
-- runFlow:
-    when:
-      visible: "media-received video/.* [0-9]+ sha256:ee8c562518a7bcb91ff89ccb1f3a74fc47031893c17f51b4ff4339e368d9d346"
-    commands:
-      - takeScreenshot: x05-video-hash-matches-fixture
-- runFlow:
-    when:
-      notVisible: "media-received video/.* [0-9]+ sha256:ee8c562518a7bcb91ff89ccb1f3a74fc47031893c17f51b4ff4339e368d9d346"
-    commands:
-      - takeScreenshot: x05-video-reencoded
 - extendedWaitUntil:
     visible:
       id: "chat-video-(download|play)"
@@ -145,9 +125,10 @@ tags: [external, svc-chatbot]
     when:
       visible: { id: "composer-recording-cancel" }
     commands:
+      # The echo must still play when the flow checks it, so the recording runs 5 s
       - extendedWaitUntil:
           visible: "never appears"
-          timeout: 3000
+          timeout: 5000
           optional: true
       - tapOn: { id: "composer-mic" }
 - extendedWaitUntil:
@@ -176,8 +157,34 @@ tags: [external, svc-chatbot]
       id: "chat-voice-note-play"
       below: "media-received audio/.*"
     timeout: 120000
+# The waveform animates during playback, so a default tap waits for the whole note before it returns
 - tapOn:
     id: "chat-voice-note-play"
     below: "media-received audio/.*"
-- assertNotVisible: { id: "chat-voice-note-retry" }
+    waitToSettleTimeoutMs: 500
+- extendedWaitUntil:
+    visible:
+      id: "chat-voice-note-pause"
+      below: "media-received audio/.*"
+    timeout: 10000
 - takeScreenshot: x05-c-voice-echo
+
+# The gallery picker re-encodes images and videos, a shared file reaches the bot byte for byte
+- runScript:
+    file: ../scripts/share.js
+    env:
+      APP_ID: io.twentysixty.mobileagent.dev
+      MEDIA: image.jpg
+- runFlow:
+    file: ../subflows/unlock.yaml
+    when:
+      visible: "Hologram Locked|Authenticate to open .*"
+- extendedWaitUntil:
+    visible: "Share with"
+    timeout: 20000
+- tapOn: { id: "connection-row-.*" }
+- tapOn: { id: "share-messages-send" }
+- extendedWaitUntil:
+    visible: "media-received image/jpeg 19828 sha256:cc2df2416d0503244b1eabfed66c52c50598d9cdd43085fa13bf554695da25d8"
+    timeout: 180000
+- takeScreenshot: x05-d-shared-image-hash
