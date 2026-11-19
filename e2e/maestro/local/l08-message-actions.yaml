@@ -58,8 +58,8 @@ tags: [local]
 - longPressOn: { id: "composer-input" }
 - tapOn: "Paste"
 - assertVisible:
+    id: "composer-input"
     text: "message from Bob"
-    index: 1
 - eraseText: 40
 
 - longPressOn: "message from Bob"
@@ -111,6 +111,12 @@ tags: [local]
     notVisible: "reply from Alice"
     timeout: 15000
 - takeScreenshot: l08-a-deleted
+- tapOn: { id: "composer-input" }
+- inputText: "sent after delete"
+- tapOn: { id: "composer-send" }
+- extendedWaitUntil:
+    visible: "sent after delete"
+    timeout: 15000
 
 - longPressOn: "message from Bob"
 - extendedWaitUntil:
@@ -130,5 +136,8 @@ tags: [local]
     file: ../subflows/switch-app.yaml
     env:
       APP_ID: io.twentysixty.mobileagent.st
+- extendedWaitUntil:
+    visible: "sent after delete"
+    timeout: 60000
 - assertVisible: "reply from Alice"
 - takeScreenshot: l08-final

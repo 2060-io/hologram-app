@@ -35,10 +35,6 @@ tags: [local]
     visible: { id: "chat-row-.*" }
     timeout: 10000
 - eraseText: 10
-- extendedWaitUntil:
-    visible: { id: "chats-empty" }
-    timeout: 2000
-    optional: true
 - tapOn: { id: "chats-search-close" }
 - extendedWaitUntil:
     visible: { id: "chats-filter" }

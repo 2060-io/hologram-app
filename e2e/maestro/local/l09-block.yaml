@@ -34,6 +34,9 @@ tags: [local]
 - extendedWaitUntil:
     visible: "sent while blocked"
     timeout: 30000
+- extendedWaitUntil:
+    visible: { id: "message-state-submitted" }
+    timeout: 60000
 
 - runFlow:
     file: ../subflows/switch-app.yaml
@@ -78,4 +81,5 @@ tags: [local]
 - extendedWaitUntil:
     visible: "sent after unblock"
     timeout: 60000
+- assertNotVisible: "sent while blocked"
 - takeScreenshot: l09-a-unblocked

@@ -66,7 +66,6 @@ tags: [local]
     visible: { id: "chat-screen" }
     timeout: 30000
 
-# Each step of the DID exchange needs a foreground turn of the other app, see connect-peers
 - repeat:
     times: 6
     while:

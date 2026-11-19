@@ -33,6 +33,7 @@ tags: [local]
     when:
       visible: { id: "composer-recording-cancel" }
     commands:
+      # The app drops recordings under 1 s, so the recording runs 3 s before it is stopped
       - extendedWaitUntil:
           visible: "never appears"
           timeout: 3000
@@ -66,5 +67,7 @@ tags: [local]
     visible: { id: "chat-voice-note-play" }
     timeout: 60000
 - tapOn: { id: "chat-voice-note-play" }
-- assertNotVisible: { id: "chat-voice-note-retry" }
+- extendedWaitUntil:
+    visible: { id: "chat-voice-note-pause" }
+    timeout: 10000
 - takeScreenshot: l07-b-received
