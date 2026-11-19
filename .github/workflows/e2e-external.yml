@@ -23,4 +23,4 @@ jobs:
       tags: external
       envfile: .env.e2e-dev
       preflight: true
-      shards: '[1, 2]'
+      shards: '[1, 2, 3, 4]'
