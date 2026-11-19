@@ -382,7 +382,7 @@ export async function acceptInvitation(
       : acceptedConnection
 
   // Associate any service info related to the new connection that we have may cached
-  if (newConnection?.invitationDid) {
+  if (newConnection?.invitationDid && isService(newConnection)) {
     const serviceInfo = await getInCacheServiceInfo(newConnection?.invitationDid, agentContext)
     newConnection.alias = serviceInfo?.name ?? newConnection.alias
     newConnection.imageUrl = serviceInfo?.logoUrl ?? newConnection.imageUrl
