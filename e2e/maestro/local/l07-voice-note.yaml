@@ -33,10 +33,10 @@ tags: [local]
     when:
       visible: { id: "composer-recording-cancel" }
     commands:
-      # The app drops recordings under 1 s, so the recording runs 3 s before it is stopped
+      # The app drops recordings under 1 s, and B must see the note playing, so the recording runs 5 s
       - extendedWaitUntil:
           visible: "never appears"
-          timeout: 3000
+          timeout: 5000
           optional: true
       - tapOn: { id: "composer-mic" }
 - extendedWaitUntil:
@@ -66,7 +66,10 @@ tags: [local]
 - extendedWaitUntil:
     visible: { id: "chat-voice-note-play" }
     timeout: 60000
-- tapOn: { id: "chat-voice-note-play" }
+# The waveform animates during playback, so a default tap waits for the whole note before it returns
+- tapOn:
+    id: "chat-voice-note-play"
+    waitToSettleTimeoutMs: 500
 - extendedWaitUntil:
     visible: { id: "chat-voice-note-pause" }
     timeout: 10000
