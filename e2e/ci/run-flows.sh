@@ -37,8 +37,30 @@ while read -r flow; do
   i=$((i + 1))
 done < <(printf '%s\n' "${TAGGED[@]}" | grep -E "${FLOW_FILTER:-.}" | sort)
 ((i == 0)) && { echo "no flow with the tags $TAGS matches ${FLOW_FILTER:-.}"; exit 1; }
+
+# The shard split above must not depend on the skip list, which each shard reads on its own
+SKIPPED_SERVICES=$OUT/skipped-services.txt
+if [[ -f $SKIPPED_SERVICES ]]; then
+  : >"$OUT/skipped.txt"
+  RUNNABLE=()
+  for flow in "${FLOWS[@]}"; do
+    down=$(sed '/^---/q' "$flow" | grep -oE '\bsvc-[a-z0-9-]+' | cut -c5- | sort -u | grep -xFf "$SKIPPED_SERVICES" | paste -sd, -)
+    if [[ -n $down ]]; then
+      echo "$(basename "$flow" .yaml) $down" | tee -a "$OUT/skipped.txt" | sed 's/^/skipped: infra /'
+    else
+      RUNNABLE+=("$flow")
+    fi
+  done
+  FLOWS=("${RUNNABLE[@]}")
+fi
 echo "shard $SHARD of $SHARDS runs ${#FLOWS[@]} of $i flows"
 printf '%s\n' "${FLOWS[@]}" | xargs -r -n1 basename -s .yaml >"$OUT/flows.txt"
+
+RUN_ID=${RUN_ID:-${GITHUB_RUN_ID:+gh-$GITHUB_RUN_ID-${GITHUB_RUN_ATTEMPT:-1}}}
+MAESTRO_ENV=(-e "RUN_ID=${RUN_ID:-local-$(date +%Y%m%d%H%M%S)}")
+while read -r pair; do
+  MAESTRO_ENV+=(-e "$pair")
+done < <(node -p 'Object.entries(require("./e2e/services.json").env).map(([k, v]) => k + "=" + v).join("\n")')
 
 node e2e/ci/adb-helper.mjs >"$OUT/adb-helper.log" 2>&1 &
 HELPER=$!
@@ -65,7 +87,7 @@ for flow in "${FLOWS[@]}"; do
   ) &
   RECORDER=$!
 
-  timeout 900 maestro test --format junit --output "$OUT/junit/$name.xml" \
+  timeout 900 maestro test "${MAESTRO_ENV[@]}" --format junit --output "$OUT/junit/$name.xml" \
     --debug-output "$OUT/maestro/$name" --test-output-dir "$OUT/maestro/$name" --flatten-debug-output "$flow" || CODE=1
 
   kill "$RECORDER" 2>/dev/null

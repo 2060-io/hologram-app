@@ -1,0 +1,59 @@
+appId: io.twentysixty.mobileagent.dev
+tags: [external, svc-chatbot]
+---
+- runFlow:
+    file: ../subflows/signup.yaml
+    env:
+      APP_ID: io.twentysixty.mobileagent.dev
+      NAME: Alice
+- runFlow: ../subflows/chatbot-connect.yaml
+
+- runFlow:
+    file: ../subflows/chatbot-send.yaml
+    env:
+      TEXT: "/trace on"
+- extendedWaitUntil:
+    visible: "trace on"
+    timeout: 60000
+
+- extendedWaitUntil:
+    visible: "receipt viewed .*"
+    timeout: 90000
+- takeScreenshot: x04-a-receipt
+
+- longPressOn: "trace on"
+- extendedWaitUntil:
+    visible: { id: "message-reaction-good" }
+    timeout: 15000
+- tapOn: { id: "message-reaction-good" }
+- extendedWaitUntil:
+    visible: "reaction react .*"
+    timeout: 60000
+- extendedWaitUntil:
+    visible: { id: "message-reactions" }
+    timeout: 60000
+- assertVisible: "❤.*"
+- takeScreenshot: x04-b-reaction
+
+- tapOn: { id: "chat-back" }
+- tapOn: { id: "settings-tab" }
+- tapOn: { id: "settings-edit-profile" }
+- tapOn: { id: "profile-name-input" }
+- eraseText
+- inputText: "Alicia"
+- tapOn: { id: "profile-done" }
+- extendedWaitUntil:
+    visible: { id: "settings-display-name", text: "Alicia" }
+    timeout: 20000
+- tapOn: { id: "chats-tab" }
+- extendedWaitUntil:
+    visible: { id: "chat-row-.*" }
+    timeout: 20000
+- tapOn: { id: "chat-row-.*" }
+- extendedWaitUntil:
+    visible: { id: "composer-input" }
+    timeout: 30000
+- extendedWaitUntil:
+    visible: "profile Alicia"
+    timeout: 90000
+- takeScreenshot: x04-c-profile

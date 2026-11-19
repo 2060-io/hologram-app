@@ -1,0 +1,59 @@
+appId: io.twentysixty.mobileagent.dev
+tags: [external, svc-demo-issuer-accredited]
+---
+- runFlow:
+    file: ../subflows/signup.yaml
+    env:
+      APP_ID: io.twentysixty.mobileagent.dev
+      NAME: Alice
+- runScript:
+    file: ../scripts/playground-offer.js
+    env:
+      SERVICE: demo-issuer-accredited
+- runFlow:
+    file: ../subflows/open-link.yaml
+    env:
+      LINK: ${output.playground.link}
+      APP_LABEL: Hologram dev
+- extendedWaitUntil:
+    visible: { id: "credential-offer-screen" }
+    timeout: 90000
+- extendedWaitUntil:
+    visible: { id: "trust-status-trusted" }
+    timeout: 90000
+- assertVisible: "TESTNET"
+- extendedWaitUntil:
+    visible: { id: "accreditation-status-authorized" }
+    timeout: 90000
+- extendedWaitUntil:
+    visible: { id: "credential-offer-accept" }
+    timeout: 30000
+- takeScreenshot: x10-offer
+- tapOn: { id: "credential-offer-accept" }
+- waitForAnimationToEnd
+- assertNotVisible: { id: "credential-offer-accept-anyway" }
+- assertNotVisible: "Accept anyway.*"
+- runScript:
+    file: ../scripts/playground-state.js
+    env:
+      SERVICE: demo-issuer-accredited
+      KIND: credential
+      EXCHANGE_ID: "${output.playground.exchangeId}"
+      EXPECT: "done"
+      TIMEOUT_S: 60
+- runFlow:
+    when:
+      visible: { id: "chat-back" }
+    commands:
+      - tapOn: { id: "chat-back" }
+- runFlow:
+    when:
+      visible: { id: "credential-offer-screen" }
+    commands:
+      - pressKey: Back
+- tapOn: { id: "wallet-tab" }
+- extendedWaitUntil:
+    visible: { id: "wallet-credential-.*" }
+    timeout: 60000
+- assertNotVisible: { id: "wallet-empty" }
+- takeScreenshot: x10-wallet

@@ -1,0 +1,86 @@
+appId: io.twentysixty.mobileagent.dev
+tags: [external, svc-chatbot]
+---
+- runFlow:
+    file: ../subflows/signup.yaml
+    env:
+      APP_ID: io.twentysixty.mobileagent.dev
+      NAME: Alice
+- runFlow: ../subflows/chatbot-connect.yaml
+- evalScript: "${output.chatbotDid = 'did:web:' + output.chatbot.link.split('/')[2]}"
+
+- runFlow:
+    file: ../subflows/chatbot-send.yaml
+    env:
+      TEXT: "/invitation did=${output.chatbotDid}"
+- extendedWaitUntil:
+    visible: { id: "chat-invitation-(connect|already-connected)" }
+    timeout: 90000
+- takeScreenshot: x07-a-service-invitation
+- runFlow:
+    when:
+      visible: { id: "chat-invitation-connect" }
+    commands:
+      - tapOn: { id: "chat-invitation-connect" }
+      - extendedWaitUntil:
+          visible: { id: "invitation-accept" }
+          timeout: 90000
+      - takeScreenshot: x07-b-service-invitation-screen
+      - tapOn: { id: "invitation-accept" }
+      - extendedWaitUntil:
+          visible: { id: "chat-screen" }
+          timeout: 60000
+      - extendedWaitUntil:
+          visible: { id: "composer-input" }
+          timeout: 60000
+
+- runFlow:
+    file: ../subflows/chatbot-send.yaml
+    env:
+      TEXT: "/echo e2e-marker-sub"
+- extendedWaitUntil:
+    visible: " *e2e-marker-sub"
+    timeout: 60000
+- runFlow:
+    file: ../subflows/chatbot-send.yaml
+    env:
+      TEXT: "/invitation"
+- extendedWaitUntil:
+    visible:
+      id: "chat-invitation-connect"
+      below: " *e2e-marker-sub"
+    timeout: 90000
+- takeScreenshot: x07-c-sub-invitation
+- tapOn:
+    id: "chat-invitation-connect"
+    below: " *e2e-marker-sub"
+- extendedWaitUntil:
+    visible: { id: "invitation-accept" }
+    timeout: 60000
+- tapOn: { id: "invitation-accept" }
+- extendedWaitUntil:
+    visible: { id: "chat-screen" }
+    timeout: 60000
+- extendedWaitUntil:
+    visible: "Welcome to our service.*"
+    timeout: 120000
+- extendedWaitUntil:
+    visible: { id: "composer-input" }
+    timeout: 60000
+- takeScreenshot: x07-d-sub-connection
+
+- runFlow:
+    file: ../subflows/chatbot-send.yaml
+    env:
+      TEXT: "/terminate"
+- extendedWaitUntil:
+    visible: "This connection has been terminated"
+    timeout: 90000
+- assertNotVisible: { id: "composer-input" }
+- assertNotVisible: { id: "chat-menu" }
+- takeScreenshot: x07-e-terminated
+- tapOn: { id: "chat-header-name" }
+- extendedWaitUntil:
+    visible: { id: "connection-details-terminated" }
+    timeout: 20000
+- takeScreenshot: x07-f-terminated-details

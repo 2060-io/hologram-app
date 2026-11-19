@@ -1,0 +1,21 @@
+appId: io.twentysixty.mobileagent.dev
+---
+- runScript: { file: ../scripts/chatbot-invitation.js }
+- runFlow:
+    file: open-link.yaml
+    env:
+      LINK: ${output.chatbot.link}
+      APP_LABEL: Hologram dev
+- extendedWaitUntil:
+    visible: { id: "invitation-accept" }
+    timeout: 90000
+- tapOn: { id: "invitation-accept" }
+- extendedWaitUntil:
+    visible: { id: "chat-screen" }
+    timeout: 60000
+- extendedWaitUntil:
+    visible: "Welcome to our service.*"
+    timeout: 90000
+- extendedWaitUntil:
+    visible: { id: "chat-menu" }
+    timeout: 60000
