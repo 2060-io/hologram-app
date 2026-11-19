@@ -15,7 +15,6 @@ tags: [external, svc-demo-issuer-accredited]
 - assertVisible: { id: "credential-card" }
 - takeScreenshot: x16-details
 
-# Present to a connection, accepted by app B
 - tapOn: { id: "credential-details-present" }
 - tapOn: { id: "present-select-all" }
 - tapOn: { id: "present-submit" }
@@ -39,7 +38,6 @@ tags: [external, svc-demo-issuer-accredited]
     visible: "Accepted"
     timeout: 30000
 
-# Present to a connection, refused by app B
 - runFlow:
     file: ../subflows/switch-app.yaml
     env:
@@ -67,7 +65,6 @@ tags: [external, svc-demo-issuer-accredited]
     visible: "Refused"
     timeout: 30000
 
-# Present as a link, opened in app B
 - runFlow:
     file: ../subflows/switch-app.yaml
     env:
@@ -124,7 +121,6 @@ tags: [external, svc-demo-issuer-accredited]
     visible: { id: "credential-details-screen" }
     timeout: 20000
 
-# Delete
 - tapOn: { id: "credential-details-delete" }
 - extendedWaitUntil:
     visible: { id: "modal-confirm" }

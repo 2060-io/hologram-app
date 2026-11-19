@@ -53,10 +53,14 @@ tags: [external, svc-chatbot]
     env:
       TEXT: "/proof"
 - extendedWaitUntil:
-    visible: { id: "chat-proof-request-accept" }
+    visible:
+      id: "chat-proof-request-accept"
+      below: { id: "chat-credential-offer-state-(done|credential-received)" }
     timeout: 90000
 - takeScreenshot: x06-e-proof-request
-- tapOn: { id: "chat-proof-request-accept" }
+- tapOn:
+    id: "chat-proof-request-accept"
+    below: { id: "chat-credential-offer-state-(done|credential-received)" }
 - extendedWaitUntil:
     visible: { id: "proof-request-screen" }
     timeout: 60000

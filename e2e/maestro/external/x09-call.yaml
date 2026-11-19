@@ -17,6 +17,10 @@ tags: [external, svc-chatbot]
     timeout: 120000
 - takeScreenshot: x09-a-call-offer
 - tapOn: "(?i)join call"
+- extendedWaitUntil:
+    visible: "While using the app"
+    timeout: 10000
+    optional: true
 - repeat:
     times: 3
     while:
