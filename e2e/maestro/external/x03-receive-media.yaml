@@ -74,8 +74,13 @@ tags: [external, svc-chatbot]
 - extendedWaitUntil:
     visible: { id: "chat-voice-note-play" }
     timeout: 120000
-- tapOn: { id: "chat-voice-note-play" }
-- assertNotVisible: { id: "chat-voice-note-retry" }
+# The waveform animates during playback, so a default tap waits for the whole note before it returns
+- tapOn:
+    id: "chat-voice-note-play"
+    waitToSettleTimeoutMs: 500
+- extendedWaitUntil:
+    visible: { id: "chat-voice-note-pause" }
+    timeout: 10000
 - takeScreenshot: x03-c-audio
 
 - runFlow:
@@ -106,4 +111,23 @@ tags: [external, svc-chatbot]
 - extendedWaitUntil:
     notVisible: { id: "chat-link-close" }
     timeout: 15000
+
+- runFlow:
+    file: ../subflows/chatbot-send.yaml
+    env:
+      TEXT: "/profile E2EBot ${CHATBOT_BACKEND}/bunny.jpeg"
+# A trusted service keeps the name of its service credential, so the profile name must never show
+- extendedWaitUntil:
+    visible: "E2EBot"
+    timeout: 15000
+    optional: true
+- assertVisible: { id: "chat-header-name" }
+- assertNotVisible: "E2EBot"
+- takeScreenshot: x03-g-profile
+- tapOn: { id: "chat-back" }
+- tapOn: { id: "chats-tab" }
+- extendedWaitUntil:
+    visible: { id: "chats-list" }
+    timeout: 20000
+- assertNotVisible: "E2EBot"
 - takeScreenshot: x03-final
