@@ -29,6 +29,7 @@ import {
   DidCommShareMediaMessage,
 } from '@credo-ts/didcomm-media-sharing'
 import { MrzDataRequestMessage } from '@credo-ts/didcomm-mrtd'
+import { DidCommAnswerMessage, DidCommQuestionMessage } from '@credo-ts/didcomm-question-answer'
 import { DidCommMessageReactionsReceivedEvent, DidCommReactionsEventTypes } from '@credo-ts/didcomm-reactions'
 import {
   DidCommMessageReceipt,
@@ -38,7 +39,6 @@ import {
   ReceiptsEventTypes,
 } from '@credo-ts/didcomm-receipts'
 import { DidCommConnectionProfileUpdatedEvent, DidCommProfileEventTypes } from '@credo-ts/didcomm-user-profile'
-import { AnswerMessage, QuestionMessage } from '@credo-ts/question-answer'
 import { ChatEntryRole, ChatEntryState, ChatEntryType, InvitationMetadata } from '@src/model'
 import { InvitationState } from '@src/model/InvitationState'
 import { AgentActionQueueSingleton } from '@src/services/AgentActionQueueSingleton'
@@ -147,7 +147,7 @@ export function subscribeToAgentChatEvents(
       })
     }
 
-    if (messageType.protocolName === QuestionMessage.type.protocolName) {
+    if (messageType.protocolName === DidCommQuestionMessage.type.protocolName) {
       const [record] = await agent.modules.questionAnswer.findAllByQuery({ threadId: message.threadId })
       if (!record) return
       await handleQuestionAnswerRecordChanges({
@@ -293,8 +293,8 @@ export function subscribeToAgentChatEvents(
 
     if (connection && supportsMessageReceipts(connection)) {
       const validMessagesTypesForReceipts = [
-        QuestionMessage.type.messageTypeUri,
-        AnswerMessage.type.messageTypeUri,
+        DidCommQuestionMessage.type.messageTypeUri,
+        DidCommAnswerMessage.type.messageTypeUri,
         DidCommBasicMessage.type.messageTypeUri,
         DidCommShareMediaMessage.type.messageTypeUri,
         DidCommOutOfBandInvitation.type.messageTypeUri,

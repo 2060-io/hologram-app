@@ -1,7 +1,7 @@
-import { ActionMenu } from '@credo-ts/action-menu'
+import { DidCommActionMenu } from '@credo-ts/didcomm-action-menu'
 
 export type ContextualMenuProps = {
-  menu: ActionMenu
+  menu: DidCommActionMenu
   connectionIconUrl?: string
   onSelectOption(optionName: string): void
 }

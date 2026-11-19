@@ -39,6 +39,18 @@ allprojects {
             // runtime and the "cannot be cast to ch.qos.logback.classic.LoggerContext"
             // crash when configuring the file logger.
             force "org.slf4j:slf4j-api:1.7.36"
+            // Replace the dynamic versions of react-native-eid-reader (gson:+) and
+            // react-native-webrtc (webrtc:124.+) with fixed versions. Gradle then
+            // does not read the Maven version lists, which failed on CI.
+            eachDependency { details ->
+                def req = details.requested
+                if (req.group == "com.google.code.gson" && req.name == "gson" && req.version == "+") {
+                    details.useVersion "2.15.0"
+                }
+                if (req.group == "org.jitsi" && req.name == "webrtc" && req.version == "124.+") {
+                    details.useVersion "124.0.0"
+                }
+            }
         }
     }
     repositories {

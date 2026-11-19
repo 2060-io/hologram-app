@@ -1,4 +1,4 @@
-import { ActionMenu, ActionMenuRecord, ActionMenuRole } from '@credo-ts/action-menu'
+import { DidCommActionMenu, DidCommActionMenuRecord, DidCommActionMenuRole } from '@credo-ts/didcomm-action-menu'
 import { useEffect, useState } from 'react'
 
 import { useMobileAgent } from './MobileAgentProvider'
@@ -11,7 +11,7 @@ interface ActionMenuQueryOptions {
 export const useActionMenu = (options: ActionMenuQueryOptions) => {
   const { agent } = useMobileAgent()
 
-  const [state, setState] = useState<{ menu: ActionMenu | undefined; loading: boolean }>({
+  const [state, setState] = useState<{ menu: DidCommActionMenu | undefined; loading: boolean }>({
     menu: undefined,
     loading: true,
   })
@@ -21,7 +21,7 @@ export const useActionMenu = (options: ActionMenuQueryOptions) => {
       if (options.connectionId) {
         const record = await agent.modules.actionMenu.findActiveMenu({
           connectionId: options.connectionId,
-          role: ActionMenuRole.Requester,
+          role: DidCommActionMenuRole.Requester,
         })
         setState({ loading: false, menu: record?.menu })
       }
@@ -34,20 +34,20 @@ export const useActionMenu = (options: ActionMenuQueryOptions) => {
 
   useEffect(() => {
     if (!state.loading) {
-      const actionMenuAdded$ = recordsAddedByType(agent, ActionMenuRecord).subscribe((record) => {
+      const actionMenuAdded$ = recordsAddedByType(agent, DidCommActionMenuRecord).subscribe((record) => {
         if (record.connectionId === options.connectionId) {
           setState({ loading: state.loading, menu: record.menu })
         }
       })
 
-      const actionMenuUpdated$ = recordsUpdatedByType(agent, ActionMenuRecord).subscribe((record) => {
+      const actionMenuUpdated$ = recordsUpdatedByType(agent, DidCommActionMenuRecord).subscribe((record) => {
         if (record.connectionId === options.connectionId) {
           setState({ loading: state.loading, menu: record.menu })
         }
       })
 
       // This should not happen
-      const actionMenuRemoved$ = recordsRemovedByType(agent, ActionMenuRecord).subscribe((record) => {
+      const actionMenuRemoved$ = recordsRemovedByType(agent, DidCommActionMenuRecord).subscribe((record) => {
         if (record.connectionId === options.connectionId) {
           setState({ loading: state.loading, menu: undefined })
         }

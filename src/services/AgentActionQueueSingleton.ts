@@ -1,4 +1,3 @@
-import { ActionMenuRecord, ActionMenuRepository } from '@credo-ts/action-menu'
 import { BaseRecord, JsonTransformer } from '@credo-ts/core'
 import {
   DidCommBasicMessageRecord,
@@ -6,6 +5,7 @@ import {
   DidCommMessageSender,
   getOutboundDidCommMessageContext,
 } from '@credo-ts/didcomm'
+import { DidCommActionMenuRecord, DidCommActionMenuRepository } from '@credo-ts/didcomm-action-menu'
 import { DidCommMediaSharingRecord } from '@credo-ts/didcomm-media-sharing'
 import {
   ActionExecutionStatus,
@@ -128,8 +128,8 @@ export class AgentActionQueueSingleton {
       const { recordType, recordId } = options
       if (recordType === DidCommBasicMessageRecord.type) return agent.didcomm.basicMessages.getById(recordId)
       if (recordType === DidCommMediaSharingRecord.type) return agent.modules.media.findById(recordId)
-      if (recordType === ActionMenuRecord.type) {
-        return agent.dependencyManager.resolve(ActionMenuRepository).findById(agent.context, recordId)
+      if (recordType === DidCommActionMenuRecord.type) {
+        return agent.dependencyManager.resolve(DidCommActionMenuRepository).findById(agent.context, recordId)
       }
       return undefined
     }
