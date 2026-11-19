@@ -1,9 +1,9 @@
 import { appendFileSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
-import { join } from 'node:path'
+import { join, resolve } from 'node:path'
 
 const TIMEOUT_MS = 15000
 const catalogue = JSON.parse(readFileSync(new URL('../services.json', import.meta.url), 'utf8'))
-const out = join(process.cwd(), process.env.E2E_OUT ?? 'e2e-out')
+const out = resolve(process.env.E2E_OUT ?? 'e2e-out')
 
 const isObject = (value) => typeof value === 'object' && value !== null
 
@@ -92,8 +92,9 @@ const minimumAgeOf = (resolution) => {
   return typeof age === 'number' ? age : 0
 }
 
-const checkPlaygroundInvitation = async (id) => {
-  const api = `${catalogue.env.PLAYGROUND_API}/${id}?format=anoncreds`
+const checkPlaygroundInvitation = async (id, service) => {
+  const action = service.invitation === 'playground-request' ? '&action=request' : ''
+  const api = `${catalogue.env.PLAYGROUND_API}/${id}?format=anoncreds${action}`
   const offer = await request(api)
   if (offer.status !== 200 || !isObject(offer.body) || typeof offer.body.url !== 'string') {
     return `playground: ${describe(offer.status, offer.body)}`
@@ -107,7 +108,7 @@ const checkPlaygroundInvitation = async (id) => {
 const checkService = async (id, service) => {
   const problems = []
   const notes = []
-  const result = { id, trust: '', minimumAge: '', version: '' }
+  const result = { id, trust: '', minimumAge: '', version: '', ageMismatch: false }
   try {
     if (service.health) {
       const health = await checkHealth(service.health)
@@ -132,11 +133,14 @@ const checkService = async (id, service) => {
       if (resolution.status === 'trusted') {
         const minimumAge = minimumAgeOf(resolution)
         result.minimumAge = String(minimumAge)
-        if (minimumAge !== service.minimumAge) notes.push(`minimum age ${minimumAge}, expected ${service.minimumAge}`)
+        if (minimumAge !== service.minimumAge) {
+          result.ageMismatch = true
+          notes.push(`minimum age ${minimumAge}, expected ${service.minimumAge}: skips svc-${id}-minimum-age`)
+        }
       }
     }
-    if (service.invitation === 'playground-invitation') {
-      const problem = await checkPlaygroundInvitation(id)
+    if (service.invitation.startsWith('playground-')) {
+      const problem = await checkPlaygroundInvitation(id, service)
       if (problem) problems.push(problem)
     }
   } catch (error) {
@@ -162,7 +166,10 @@ for (const result of results) {
 }
 
 mkdirSync(out, { recursive: true })
-const skipped = results.filter((result) => !result.healthy).map((result) => `${result.id}\n`)
+const skipped = [
+  ...results.filter((result) => !result.healthy).map((result) => `${result.id}\n`),
+  ...results.filter((result) => result.ageMismatch).map((result) => `${result.id}-minimum-age\n`),
+]
 writeFileSync(join(out, 'skipped-services.txt'), skipped.join(''))
 if (process.env.GITHUB_STEP_SUMMARY) appendFileSync(process.env.GITHUB_STEP_SUMMARY, `${lines.join('\n')}\n`)
 else console.log(`\n${lines.join('\n')}`)

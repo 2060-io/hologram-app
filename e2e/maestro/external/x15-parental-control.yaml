@@ -1,5 +1,5 @@
 appId: io.twentysixty.mobileagent.dev
-tags: [external, svc-chatbot]
+tags: [external, svc-chatbot, svc-chatbot-minimum-age]
 ---
 - runFlow:
     file: ../subflows/signup.yaml

@@ -3,7 +3,8 @@ set -uo pipefail
 TAGS=${1:?usage: run-flows.sh <maestro tags> [shard index] [shard count]}
 SHARD=${2:-0}
 SHARDS=${3:-1}
-OUT=$PWD/${E2E_OUT:-e2e-out}
+OUT=${E2E_OUT:-e2e-out}
+[[ $OUT = /* ]] || OUT=$PWD/$OUT
 APP_IDS="io.twentysixty.mobileagent.dev io.twentysixty.mobileagent.st"
 # Outside /sdcard, where the media picker lists the recordings and a flow can attach one
 REC_DIR=/data/local/tmp/e2e-rec
