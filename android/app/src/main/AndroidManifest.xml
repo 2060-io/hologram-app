@@ -24,8 +24,10 @@
     <uses-feature android:name="android.hardware.touchscreen" android:required="true" />
     <uses-feature android:name="android.hardware.telephony" android:required="true" />
 
+    <!-- Hermes 250829098 crashes at random when GWP-ASan samples the app, meta/hermes#1873 -->
     <application
       android:name=".MainApplication"
+      android:gwpAsanMode="never"
       android:label="@string/app_name"
       android:icon="@mipmap/ic_launcher"
       android:allowBackup="false"
