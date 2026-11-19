@@ -99,6 +99,8 @@ The `runScript` helpers:
 - `chatbot-invitation.js` gets a one-time invitation from `${CHATBOT_BACKEND}/invitation?label=${RUN_ID}`.
   It sets `output.chatbot.link`, a `didcomm://invite?_url=` link for `openLink`, and
   `output.chatbot.invitationId`.
+- `service-did.js` (`DID_DOCUMENT`) reads a `did.json` and sets `output.serviceDid` to its `did:webvh`
+  alias, or to its id when it has none.
 - `playground-offer.js` (`SERVICE`, and `ACTION: request` for a verifier) gets a credential offer or a
   proof request from the playground. It sets `output.playground.link` and
   `output.playground.exchangeId`, which is empty for `demo-untrusted` (a plain invitation).
