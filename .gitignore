@@ -84,3 +84,6 @@ e2e-apks/
 e2e/stack/certs/generated/
 e2e/stack/certs/*.srl
 e2e/stack/.env
+
+# Expo CLI local state (created by `expo start`)
+.expo/

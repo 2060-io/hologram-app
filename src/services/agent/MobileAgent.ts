@@ -1,4 +1,3 @@
-import { ActionMenuModule } from '@credo-ts/action-menu'
 import { AnonCredsModule } from '@credo-ts/anoncreds'
 import {
   AnonCredsDidCommCredentialFormatService,
@@ -27,15 +26,16 @@ import {
   DidCommModule,
   DidCommProofV2Protocol,
 } from '@credo-ts/didcomm'
+import { DidCommActionMenuModule } from '@credo-ts/didcomm-action-menu'
 import { DidCommCallsModule } from '@credo-ts/didcomm-calls'
 import { DidCommMediaSharingModule } from '@credo-ts/didcomm-media-sharing'
 import { DidCommMrtdModule } from '@credo-ts/didcomm-mrtd'
 import { DidCommPushNotificationsFcmModule } from '@credo-ts/didcomm-push-notifications'
+import { DidCommQuestionAnswerModule } from '@credo-ts/didcomm-question-answer'
 import { DidCommReactionsModule } from '@credo-ts/didcomm-reactions'
 import { DidCommReceiptsModule } from '@credo-ts/didcomm-receipts'
 import { DidCommShortenUrlModule } from '@credo-ts/didcomm-shorten-url'
 import { DidCommUserProfileModule, DidCommUserProfileModuleConfig } from '@credo-ts/didcomm-user-profile'
-import { QuestionAnswerModule } from '@credo-ts/question-answer'
 import { WebVhDidResolver } from '@credo-ts/webvh'
 import { WebVhAnonCredsRegistry } from '@credo-ts/webvh/anoncreds'
 import { anoncreds } from '@hyperledger/anoncreds-react-native'
@@ -130,14 +130,14 @@ export const getMobileAgentModules = (config: {
         ],
       },
     }),
-    actionMenu: new ActionMenuModule({ strictStateChecking: false }),
+    actionMenu: new DidCommActionMenuModule({ strictStateChecking: false }),
     calls: new DidCommCallsModule(),
     reactions: new DidCommReactionsModule(),
     media: new DidCommMediaSharingModule(),
     mrtd: new DidCommMrtdModule(),
     profile: new DidCommUserProfileModule(new DidCommUserProfileModuleConfig({ autoSendProfile: false })),
     pushNotifications: new DidCommPushNotificationsFcmModule(),
-    questionAnswer: new QuestionAnswerModule(),
+    questionAnswer: new DidCommQuestionAnswerModule(),
     receipts: new DidCommReceiptsModule(),
     shortenUrl: new DidCommShortenUrlModule(),
   } as const
