@@ -18,6 +18,11 @@ tags: [external, svc-demo-issuer-unaccredited]
 - extendedWaitUntil:
     visible: { id: "credential-offer-screen" }
     timeout: 90000
+- scrollUntilVisible:
+    element:
+      id: "accreditation-status-.*"
+    direction: DOWN
+    timeout: 90000
 - extendedWaitUntil:
     visible: { id: "accreditation-status-unauthorized" }
     timeout: 90000

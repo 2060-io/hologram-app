@@ -22,6 +22,11 @@ tags: [external, svc-demo-issuer-accredited]
     visible: { id: "trust-status-trusted" }
     timeout: 90000
 - assertVisible: "TESTNET"
+- scrollUntilVisible:
+    element:
+      id: "accreditation-status-.*"
+    direction: DOWN
+    timeout: 90000
 - extendedWaitUntil:
     visible: { id: "accreditation-status-authorized" }
     timeout: 90000

@@ -27,6 +27,11 @@ tags: [external, svc-demo-issuer-accredited, svc-demo-verifier-accredited, svc-d
 - extendedWaitUntil:
     visible: { id: "accreditation-status-authorized" }
     timeout: 90000
+- scrollUntilVisible:
+    element:
+      id: "proof-request-(accept|share-anyway)"
+    direction: DOWN
+    timeout: 90000
 - extendedWaitUntil:
     visible: { id: "proof-request-accept" }
     timeout: 30000
@@ -61,6 +66,11 @@ tags: [external, svc-demo-issuer-accredited, svc-demo-verifier-accredited, svc-d
     timeout: 90000
 - extendedWaitUntil:
     visible: { id: "accreditation-status-unauthorized" }
+    timeout: 90000
+- scrollUntilVisible:
+    element:
+      id: "proof-request-(accept|share-anyway)"
+    direction: DOWN
     timeout: 90000
 - extendedWaitUntil:
     visible: { id: "proof-request-share-anyway" }
@@ -102,12 +112,22 @@ tags: [external, svc-demo-issuer-accredited, svc-demo-verifier-accredited, svc-d
 - extendedWaitUntil:
     visible: { id: "trust-status-untrusted" }
     timeout: 90000
+- assertNotVisible: { id: "trust-status-trusted" }
+- scrollUntilVisible:
+    element:
+      id: "accreditation-status-.*"
+    direction: DOWN
+    timeout: 90000
 - extendedWaitUntil:
     visible: { id: "accreditation-status-(unauthorized|unverified)" }
     timeout: 90000
 - extendedWaitUntil:
     visible: { id: "proof-request-refuse" }
     timeout: 30000
-- assertNotVisible: { id: "trust-status-trusted" }
+- scrollUntilVisible:
+    element:
+      id: "proof-request-(accept|share-anyway|no-credentials)"
+    direction: DOWN
+    timeout: 90000
 - assertNotVisible: { id: "proof-request-accept" }
 - takeScreenshot: x13-untrusted

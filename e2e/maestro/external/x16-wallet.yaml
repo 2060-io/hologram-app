@@ -19,9 +19,9 @@ tags: [external, svc-demo-issuer-accredited]
 - tapOn: { id: "present-select-all" }
 - tapOn: { id: "present-submit" }
 - extendedWaitUntil:
-    visible: "Bob"
+    visible: "Bob *"
     timeout: 20000
-- tapOn: "Bob"
+- tapOn: "Bob *"
 - tapOn: { id: "connections-selection-send" }
 - extendedWaitUntil:
     visible: { id: "credential-details-screen" }
@@ -46,9 +46,9 @@ tags: [external, svc-demo-issuer-accredited]
 - tapOn: { id: "present-select-all" }
 - tapOn: { id: "present-submit" }
 - extendedWaitUntil:
-    visible: "Bob"
+    visible: "Bob *"
     timeout: 20000
-- tapOn: "Bob"
+- tapOn: "Bob *"
 - tapOn: { id: "connections-selection-send" }
 - extendedWaitUntil:
     visible: { id: "credential-details-screen" }

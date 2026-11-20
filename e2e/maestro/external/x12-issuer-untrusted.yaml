@@ -22,7 +22,14 @@ tags: [external, svc-demo-issuer-untrusted]
     visible: { id: "trust-status-untrusted" }
     timeout: 90000
 - assertNotVisible: { id: "trust-status-trusted" }
-- assertNotVisible: { id: "accreditation-status-authorized" }
+- scrollUntilVisible:
+    element:
+      id: "accreditation-status-.*"
+    direction: DOWN
+    timeout: 90000
+- extendedWaitUntil:
+    visible: { id: "accreditation-status-(unauthorized|unverified)" }
+    timeout: 90000
 - takeScreenshot: x12-offer
 - tapOn: { id: "credential-offer-refuse" }
 - extendedWaitUntil:
