@@ -52,7 +52,7 @@ tags: [local]
     timeout: 15000
 - tapOn: { id: "message-action-copy" }
 # Android 14 shows a clipboard overlay over the bottom left, where a tap opens Nearby Share; a tap elsewhere closes it
-- tapOn: "Today"
+- tapOn: { id: "chat-message-list" }
 - waitForAnimationToEnd
 - tapOn: { id: "composer-input" }
 - longPressOn: { id: "composer-input" }
