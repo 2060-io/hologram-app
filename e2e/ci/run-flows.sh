@@ -9,14 +9,34 @@ APP_IDS="io.twentysixty.mobileagent.dev io.twentysixty.mobileagent.st"
 REC_DIR=/data/local/tmp/e2e-rec
 mkdir -p "$OUT/recordings" "$OUT/app-logs" "$OUT/junit" "$OUT/maestro"
 
-TAG_RE="^tags:.*\\b($(tr ',' '|' <<<"$TAGS"))\\b"
+flow_tags() {
+  awk '/^---/ { exit }
+    /^tags:/ { sub(/^tags:[ \t]*/, ""); gsub(/[][,]/, " "); print; list = 1; next }
+    list && /^[ \t]*- / { sub(/^[ \t]*- /, ""); print; next }
+    { list = 0 }' "$1" | tr -s ' \t' '\n'
+}
+
+TAGGED=()
+FOUND=" "
+for flow in e2e/maestro/*/*.yaml; do
+  [[ $flow == */subflows/* ]] && continue
+  match=
+  for tag in $(flow_tags "$flow"); do
+    [[ ",$TAGS," == *",$tag,"* ]] && match=1 && FOUND+="$tag "
+  done
+  [[ -n $match ]] && TAGGED+=("$flow")
+done
+for tag in ${TAGS//,/ }; do
+  [[ $FOUND == *" $tag "* ]] || { echo "no flow has the tag $tag"; exit 1; }
+done
+
 FLOWS=()
 i=0
 while read -r flow; do
   ((i % SHARDS == SHARD)) && FLOWS+=("$flow")
   i=$((i + 1))
-done < <(grep -lE "$TAG_RE" e2e/maestro/smoke/*.yaml e2e/maestro/local/*.yaml 2>/dev/null | grep -E "${FLOW_FILTER:-.}" | sort)
-((i == 0)) && { echo "no flow has one of the tags $TAGS"; exit 1; }
+done < <(printf '%s\n' "${TAGGED[@]}" | grep -E "${FLOW_FILTER:-.}" | sort)
+((i == 0)) && { echo "no flow with the tags $TAGS matches ${FLOW_FILTER:-.}"; exit 1; }
 echo "shard $SHARD of $SHARDS runs ${#FLOWS[@]} of $i flows"
 printf '%s\n' "${FLOWS[@]}" | xargs -r -n1 basename -s .yaml >"$OUT/flows.txt"
 
