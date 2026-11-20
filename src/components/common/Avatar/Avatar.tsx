@@ -23,6 +23,7 @@ type Props = {
   bgAvatarInitials?: string
   onImagePressed?: (imageUri: string) => void
   enableImageRefresh?: boolean
+  testID?: string
 }
 
 const Avatar: React.FC<Props> = ({
@@ -33,6 +34,7 @@ const Avatar: React.FC<Props> = ({
   bgAvatarInitials,
   onImagePressed,
   enableImageRefresh = true,
+  testID,
 }) => {
   const imageUri = useRef(uri)
   const [isValidImageUrl, setIsValidImageUrl] = useState<boolean>(true)
@@ -53,6 +55,7 @@ const Avatar: React.FC<Props> = ({
 
   const renderAvatar = () => (
     <TouchableOpacity
+      testID={testID ? `${testID}-picture` : undefined}
       style={[styles.containerAvatar, avatarDimensions, borderStyle]}
       disabled={!onImagePressed}
       onPress={() => onImagePressed?.(imageUri.current ?? '')}
@@ -71,6 +74,7 @@ const Avatar: React.FC<Props> = ({
 
   const renderNameInitials = () => (
     <View
+      testID={testID ? `${testID}-initials` : undefined}
       style={[
         styles.containerAvatar,
         { backgroundColor: bgAvatarInitials ?? '#E5E9EA' },

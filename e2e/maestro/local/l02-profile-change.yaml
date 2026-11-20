@@ -60,7 +60,7 @@ tags: [local]
                   APP_ID: io.twentysixty.mobileagent.dev
 - assertVisible: { id: "chat-header-name", text: "Alicia" }
 - extendedWaitUntil:
-    notVisible: "A"
+    visible: { id: "chat-header-avatar-picture" }
     timeout: 15000
 - takeScreenshot: l02-b-chat
 
@@ -70,5 +70,5 @@ tags: [local]
     visible: { id: "chats-list" }
     timeout: 20000
 - assertVisible: "Alicia"
-- assertNotVisible: "A"
+- assertVisible: { id: "chat-thread-avatar-picture" }
 - takeScreenshot: l02-b-chats
