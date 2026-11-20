@@ -81,9 +81,9 @@ and it does not fail when a service is down. `run-flows.sh` then does not run a 
 failed flows. Delete the file to run every flow.
 
 Each external flow names the services that it needs, with the ids of `services.json`:
-`tags: [external, svc-chatbot]`. Keep the tags on one line, `run-flows.sh` selects the flows by that
-line. A flow that needs the minimum age of `services.json` also has the tag `svc-<id>-minimum-age`:
-when the age that the indexer reports is different, the preflight skips only these flows.
+`tags: [external, svc-chatbot]`. A flow that needs the minimum age of `services.json` also has the
+tag `svc-<id>-minimum-age`: when the age that the indexer reports is different, the preflight skips
+only these flows.
 
 `run-flows.sh` passes `CHATBOT_BACKEND` and `PLAYGROUND_API` from `services.json`, and a `RUN_ID`, to
 Maestro. To run one flow with Maestro alone, pass them yourself:
@@ -131,7 +131,7 @@ needs no `repeat`:
 - `maestro/local`: flows that need the local stack.
 - `maestro/external`: flows that need the deployed demo services.
 - `maestro/scripts`: `runScript` files that call the adb helper, the chatbot and the playground.
-- `maestro/subflows`: shared steps. `APP_ID`, `PEER_APP_ID`, `NAME`, `LINK` and `APP_LABEL` are their parameters.
+- `maestro/subflows`: shared steps. `APP_ID`, `PEER_APP_ID`, `NAME`, `LINK`, `APP_LABEL` and `MS` are their parameters.
 - `maestro/fixtures`: media for the flows. `SHA256SUMS` has their hashes. Maestro only reads media inside the directory that it runs, so they are under `maestro`.
 - `ci`: scripts for the CI job in `.github/workflows/e2e-android.yml`. `run-flows.sh` runs each flow on its own, with its screen recording and app logs, and splits the flows between the shards of the job. `FLOW_FILTER=<regex>` limits it to the matching flow files.
 - `services.json` and `preflight`: the catalogue of the external services, and the check that runs before their flows.
