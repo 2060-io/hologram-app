@@ -29,8 +29,12 @@ install the apps:
 ```sh
 DNS_BIND_IP="$(ipconfig getifaddr en0)" e2e/stack/start.sh
 emulator -avd <your avd> -dns-server "$(ipconfig getifaddr en0)"
+node e2e/ci/adb-helper.mjs &
 maestro test --include-tags local e2e/maestro
 ```
+
+Maestro cannot send an Android intent, so L12 and L15 call `e2e/ci/adb-helper.mjs` from a `runScript`
+to run `am start` (share intents, and a link opened in a given app).
 
 `ipconfig getifaddr en0` is the Wi-Fi address on a Mac. On Linux use the first address of
 `hostname -I`.
@@ -53,9 +57,10 @@ else. It can only sign DNS names under `hologram.test`, and only the `e2e` build
 
 - `maestro/smoke`: checks that the two apps open. It needs no backend.
 - `maestro/local`: flows that need the local stack.
-- `maestro/subflows`: shared steps. `APP_ID`, `NAME`, `LINK` and `APP_LABEL` are their parameters.
+- `maestro/scripts`: `runScript` files that call the adb helper.
+- `maestro/subflows`: shared steps. `APP_ID`, `PEER_APP_ID`, `NAME`, `LINK` and `APP_LABEL` are their parameters.
 - `maestro/fixtures`: media for the flows. `SHA256SUMS` has their hashes. Maestro only reads media inside the directory that it runs, so they are under `maestro`.
-- `ci`: scripts for the CI job in `.github/workflows/e2e-android.yml`.
+- `ci`: scripts for the CI job in `.github/workflows/e2e-android.yml`. `run-flows.sh` runs each flow on its own, with its screen recording and app logs, and splits the flows between the shards of the job. `FLOW_FILTER=<regex>` limits it to the matching flow files.
 - `stack`: the local stack.
 
 ## The `e2e` build type

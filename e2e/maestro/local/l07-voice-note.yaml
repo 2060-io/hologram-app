@@ -1,0 +1,76 @@
+appId: io.twentysixty.mobileagent.dev
+tags: [local]
+---
+- runFlow: ../subflows/signup-both.yaml
+- runFlow: ../subflows/connect-peers.yaml
+
+- tapOn: "Bob"
+- runFlow:
+    file: ../subflows/wait-peer-features.yaml
+    env:
+      APP_ID: io.twentysixty.mobileagent.dev
+      PEER_APP_ID: io.twentysixty.mobileagent.st
+- extendedWaitUntil:
+    visible: { id: "composer-mic" }
+    timeout: 30000
+
+- longPressOn: { id: "composer-mic" }
+- extendedWaitUntil:
+    visible: "While using the app"
+    timeout: 10000
+    optional: true
+- runFlow:
+    when:
+      visible: "While using the app"
+    commands:
+      - tapOn: "While using the app"
+# After the permission dialog the recording is locked and keeps running until the mic is tapped again
+- extendedWaitUntil:
+    visible: { id: "composer-recording-cancel|chat-voice-note" }
+    timeout: 8000
+    optional: true
+- runFlow:
+    when:
+      visible: { id: "composer-recording-cancel" }
+    commands:
+      # The app drops recordings under 1 s, and B must see the note playing, so the recording runs 5 s
+      - runFlow:
+          file: ../subflows/wait.yaml
+          env:
+            MS: 5000
+      - tapOn: { id: "composer-mic" }
+- extendedWaitUntil:
+    visible: { id: "chat-voice-note" }
+    timeout: 60000
+- extendedWaitUntil:
+    notVisible: { id: "message-state-created" }
+    timeout: 120000
+- extendedWaitUntil:
+    visible: { id: "message-state-(submitted|received|viewed)" }
+    timeout: 30000
+- assertNotVisible: "Recorded audio is too short.*"
+- takeScreenshot: l07-a-sent
+
+- runFlow:
+    file: ../subflows/switch-app.yaml
+    env:
+      APP_ID: io.twentysixty.mobileagent.st
+- extendedWaitUntil:
+    visible: { id: "chat-voice-note-(download|play)" }
+    timeout: 120000
+- runFlow:
+    when:
+      visible: { id: "chat-voice-note-download" }
+    commands:
+      - tapOn: { id: "chat-voice-note-download" }
+- extendedWaitUntil:
+    visible: { id: "chat-voice-note-play" }
+    timeout: 60000
+# The waveform animates during playback, so a default tap waits for the whole note before it returns
+- tapOn:
+    id: "chat-voice-note-play"
+    waitToSettleTimeoutMs: 500
+- extendedWaitUntil:
+    visible: { id: "chat-voice-note-pause" }
+    timeout: 10000
+- takeScreenshot: l07-b-received

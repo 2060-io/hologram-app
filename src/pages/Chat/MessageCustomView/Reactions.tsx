@@ -42,7 +42,7 @@ const Reactions = ({ role, reactions }: Props) => {
     role === ChatEntryRole.Sender ? styles.reactionsContainerStyleForSender : styles.reactionsContainerStyleForReceiver
 
   return (
-    <View style={[styles.reactionsContainer, containerStyle]}>
+    <View testID="message-reactions" style={[styles.reactionsContainer, containerStyle]}>
       {reactionsGrouped.map((reaction) => (
         <View style={styles.reactionContainer} key={reaction.emoji}>
           <NativeText key={reaction.emoji} style={styles.reactionEmoji}>

@@ -64,6 +64,7 @@ const CustomChatHeader: React.FC<Props> = ({
           <SvgIcon name="arrowBack" width={28} height={28} fill={theme.colors.primaryText} />
           <View style={styles.containerAvatar}>
             <Avatar
+              testID="chat-header-avatar"
               uri={chatThread.picture}
               label={chatThread.topic}
               size="9.50%"

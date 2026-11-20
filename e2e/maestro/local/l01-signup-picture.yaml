@@ -1,0 +1,38 @@
+appId: io.twentysixty.mobileagent.dev
+tags: [local]
+---
+- addMedia:
+    - ../fixtures/avatar.png
+- runFlow:
+    file: ../subflows/open-signup.yaml
+    env:
+      APP_ID: io.twentysixty.mobileagent.dev
+
+- tapOn: { id: "profile-photo" }
+- extendedWaitUntil:
+    visible: "Photo taken on .*"
+    timeout: 30000
+- tapOn:
+    text: "Photo taken on .*"
+    index: 0
+- extendedWaitUntil:
+    visible: { id: "profile-picture-remove" }
+    timeout: 20000
+
+- tapOn: { id: "profile-name-input" }
+- inputText: Alice
+- tapOn: "Welcome to Hologram!"
+- tapOn: { id: "signup-get-started" }
+- extendedWaitUntil:
+    visible: "Add a connection to start chatting"
+    timeout: 90000
+
+- tapOn: { id: "settings-tab" }
+- assertVisible:
+    id: "settings-display-name"
+    text: "Alice"
+- tapOn: { id: "settings-edit-profile" }
+- extendedWaitUntil:
+    visible: { id: "profile-picture-remove" }
+    timeout: 20000
+- takeScreenshot: l01-profile

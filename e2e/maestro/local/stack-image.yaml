@@ -8,28 +8,11 @@ tags: [local]
 - runFlow: ../subflows/connect-peers.yaml
 
 - tapOn: "Bob"
-# Attach appears only after the feature disclosure of B reaches A, which needs turns of the two apps
-- repeat:
-    times: 6
-    while:
-      notVisible: { id: "composer-attach" }
-    commands:
-      - runFlow:
-          file: ../subflows/switch-app.yaml
-          env:
-            APP_ID: io.twentysixty.mobileagent.st
-      - extendedWaitUntil:
-          visible: { id: "composer-attach" }
-          timeout: 8000
-          optional: true
-      - runFlow:
-          file: ../subflows/switch-app.yaml
-          env:
-            APP_ID: io.twentysixty.mobileagent.dev
-      - extendedWaitUntil:
-          visible: { id: "composer-attach" }
-          timeout: 15000
-          optional: true
+- runFlow:
+    file: ../subflows/wait-peer-features.yaml
+    env:
+      APP_ID: io.twentysixty.mobileagent.dev
+      PEER_APP_ID: io.twentysixty.mobileagent.st
 
 - tapOn: { id: "composer-attach" }
 - tapOn: { id: "attachment-file-gallery" }

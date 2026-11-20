@@ -1,0 +1,55 @@
+appId: io.twentysixty.mobileagent.dev
+tags: [local]
+---
+- runFlow: ../subflows/signup-both.yaml
+- runFlow: ../subflows/connect-peers.yaml
+
+- tapOn: "Bob"
+- runFlow:
+    file: ../subflows/wait-peer-features.yaml
+    env:
+      APP_ID: io.twentysixty.mobileagent.dev
+      PEER_APP_ID: io.twentysixty.mobileagent.st
+- tapOn: { id: "composer-input" }
+- inputText: "message before clear"
+- tapOn: { id: "composer-send" }
+- extendedWaitUntil:
+    visible: { id: "message-state-(submitted|received|viewed)" }
+    timeout: 30000
+- assertVisible: "message before clear"
+
+- tapOn: { id: "chat-header-name" }
+- tapOn: { id: "connection-details-clear-chat" }
+- waitForAnimationToEnd
+- tapOn: { id: "modal-confirm" }
+- waitForAnimationToEnd
+- tapOn: { id: "connection-details-done" }
+- extendedWaitUntil:
+    visible: { id: "chat-screen" }
+    timeout: 20000
+- assertNotVisible: "message before clear"
+- assertNotVisible: { id: "message-state-.*" }
+- takeScreenshot: l10-a-cleared
+
+- tapOn: { id: "chat-header-name" }
+- tapOn: { id: "connection-details-delete" }
+- waitForAnimationToEnd
+- tapOn: { id: "modal-confirm" }
+- extendedWaitUntil:
+    visible: { id: "chat-screen" }
+    timeout: 20000
+- tapOn: { id: "chat-back" }
+- extendedWaitUntil:
+    visible: "This connection has been deleted"
+    timeout: 60000
+- takeScreenshot: l10-a-deleted
+
+- runFlow:
+    file: ../subflows/switch-app.yaml
+    env:
+      APP_ID: io.twentysixty.mobileagent.st
+- extendedWaitUntil:
+    visible: "This connection has been terminated"
+    timeout: 60000
+- assertNotVisible: { id: "composer-input" }
+- takeScreenshot: l10-b-terminated

@@ -1,0 +1,105 @@
+appId: io.twentysixty.mobileagent.dev
+tags: [local]
+---
+- runFlow: ../subflows/signup-both.yaml
+- runFlow: ../subflows/connect-peers.yaml
+
+- runFlow:
+    file: ../subflows/switch-app.yaml
+    env:
+      APP_ID: io.twentysixty.mobileagent.st
+- tapOn: { id: "chat-back" }
+- tapOn: { id: "scan-tab" }
+- tapOn: { id: "scan-link-tab" }
+- longPressOn: { id: "scan-link-input" }
+- tapOn: "Paste"
+- tapOn: { id: "scan-link-open" }
+- extendedWaitUntil:
+    visible: { id: "invitation-already-connected" }
+    timeout: 30000
+- assertVisible: "You are already connected to Alice"
+- takeScreenshot: l04-b-already-connected
+- tapOn: { id: "invitation-refuse" }
+- extendedWaitUntil:
+    visible: { id: "scan-link-open" }
+    timeout: 20000
+
+- runFlow:
+    file: ../subflows/switch-app.yaml
+    env:
+      APP_ID: io.twentysixty.mobileagent.dev
+- tapOn: { id: "settings-tab" }
+- tapOn: { id: "settings-my-invitation" }
+- extendedWaitUntil:
+    visible: { id: "my-invitation-refresh" }
+    timeout: 20000
+- tapOn: { id: "my-invitation-refresh" }
+# The refresh swaps the screen for a loading modal, so the share button leaves and comes back
+- extendedWaitUntil:
+    notVisible: { id: "my-invitation-share" }
+    timeout: 5000
+    optional: true
+- extendedWaitUntil:
+    visible: { id: "my-invitation-share" }
+    timeout: 30000
+- tapOn: { id: "my-invitation-share" }
+- waitForAnimationToEnd
+- tapOn: "Copy"
+- waitForAnimationToEnd
+- tapOn: { id: "my-invitation-close" }
+- tapOn: { id: "chats-tab" }
+
+- runFlow:
+    file: ../subflows/switch-app.yaml
+    env:
+      APP_ID: io.twentysixty.mobileagent.st
+- tapOn: { id: "scan-link-tab" }
+- longPressOn: { id: "scan-link-input" }
+- tapOn: "Paste"
+- tapOn: { id: "scan-link-open" }
+- extendedWaitUntil:
+    visible: { id: "invitation-accept" }
+    timeout: 30000
+- assertNotVisible: { id: "invitation-already-connected" }
+- tapOn: { id: "invitation-accept" }
+- extendedWaitUntil:
+    visible: { id: "chat-screen" }
+    timeout: 30000
+
+- repeat:
+    times: 6
+    while:
+      notVisible: { id: "composer-input" }
+    commands:
+      - runFlow:
+          file: ../subflows/switch-app.yaml
+          env:
+            APP_ID: io.twentysixty.mobileagent.dev
+      - extendedWaitUntil:
+          visible: { id: "chat-row-.*", index: 1 }
+          timeout: 8000
+          optional: true
+      - runFlow:
+          file: ../subflows/switch-app.yaml
+          env:
+            APP_ID: io.twentysixty.mobileagent.st
+      - extendedWaitUntil:
+          visible: { id: "composer-input" }
+          timeout: 15000
+          optional: true
+- assertVisible: { id: "composer-input" }
+- tapOn: { id: "chat-back" }
+- tapOn: { id: "chats-tab" }
+- extendedWaitUntil:
+    visible: { id: "chat-row-.*", index: 1 }
+    timeout: 20000
+- takeScreenshot: l04-b-chats
+
+- runFlow:
+    file: ../subflows/switch-app.yaml
+    env:
+      APP_ID: io.twentysixty.mobileagent.dev
+- extendedWaitUntil:
+    visible: { id: "chat-row-.*", index: 1 }
+    timeout: 60000
+- takeScreenshot: l04-a-chats

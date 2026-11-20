@@ -44,6 +44,7 @@ const ChatThread = ({
       style={styles.container}
     >
       <Avatar
+        testID="chat-thread-avatar"
         uri={picture}
         label={topic}
         size="13%"

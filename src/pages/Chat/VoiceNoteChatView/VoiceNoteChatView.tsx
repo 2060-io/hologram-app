@@ -155,7 +155,10 @@ const VoiceNoteChatView = memo(
                   </TouchableOpacity>
                 )
               ) : (
-                <TouchableOpacity testID="chat-voice-note-play" onPress={handlePlayPause}>
+                <TouchableOpacity
+                  testID={playerState === PlayerState.playing ? 'chat-voice-note-pause' : 'chat-voice-note-play'}
+                  onPress={handlePlayPause}
+                >
                   <Icon
                     as="MaterialCommunityIcons"
                     name={playerState === PlayerState.playing ? 'pause' : 'play'}

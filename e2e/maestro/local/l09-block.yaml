@@ -1,0 +1,85 @@
+appId: io.twentysixty.mobileagent.dev
+tags: [local]
+---
+- runFlow: ../subflows/signup-both.yaml
+- runFlow: ../subflows/connect-peers.yaml
+
+- tapOn: "Bob"
+- extendedWaitUntil:
+    visible: { id: "composer-input" }
+    timeout: 30000
+- tapOn: { id: "chat-header-name" }
+- tapOn: { id: "connection-details-block" }
+- waitForAnimationToEnd
+- tapOn: { id: "modal-confirm" }
+- extendedWaitUntil:
+    visible: { id: "connection-details-blocked" }
+    timeout: 30000
+- assertVisible: { id: "connection-details-unblock" }
+- waitForAnimationToEnd
+- tapOn: { id: "connection-details-done" }
+- extendedWaitUntil:
+    notVisible: { id: "composer-input" }
+    timeout: 20000
+- takeScreenshot: l09-a-blocked
+
+# Blocking removes the connection keys from the mediator keylist: B can still send, A does not receive
+- runFlow:
+    file: ../subflows/switch-app.yaml
+    env:
+      APP_ID: io.twentysixty.mobileagent.st
+- tapOn: { id: "composer-input" }
+- inputText: "sent while blocked"
+- tapOn: { id: "composer-send" }
+- extendedWaitUntil:
+    visible: "sent while blocked"
+    timeout: 30000
+- extendedWaitUntil:
+    visible: { id: "message-state-submitted" }
+    timeout: 60000
+
+- runFlow:
+    file: ../subflows/switch-app.yaml
+    env:
+      APP_ID: io.twentysixty.mobileagent.dev
+- extendedWaitUntil:
+    visible: "sent while blocked"
+    timeout: 20000
+    optional: true
+- assertNotVisible: "sent while blocked"
+- assertNotVisible: { id: "composer-input" }
+
+- tapOn: { id: "chat-header-name" }
+- tapOn: { id: "connection-details-unblock" }
+- waitForAnimationToEnd
+- tapOn: { id: "modal-confirm" }
+- extendedWaitUntil:
+    visible: { id: "connection-details-block" }
+    timeout: 30000
+- assertNotVisible: { id: "connection-details-blocked" }
+- waitForAnimationToEnd
+- tapOn: { id: "connection-details-done" }
+- extendedWaitUntil:
+    visible: { id: "composer-input" }
+    timeout: 20000
+
+- runFlow:
+    file: ../subflows/switch-app.yaml
+    env:
+      APP_ID: io.twentysixty.mobileagent.st
+- tapOn: { id: "composer-input" }
+- inputText: "sent after unblock"
+- tapOn: { id: "composer-send" }
+- extendedWaitUntil:
+    visible: "sent after unblock"
+    timeout: 30000
+
+- runFlow:
+    file: ../subflows/switch-app.yaml
+    env:
+      APP_ID: io.twentysixty.mobileagent.dev
+- extendedWaitUntil:
+    visible: "sent after unblock"
+    timeout: 60000
+- assertNotVisible: "sent while blocked"
+- takeScreenshot: l09-a-unblocked

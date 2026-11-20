@@ -26,3 +26,4 @@ jobs:
     with:
       tags: smoke,local
       start-stack: true
+      shards: '[1, 2, 3, 4]'

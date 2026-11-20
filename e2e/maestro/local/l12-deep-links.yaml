@@ -1,0 +1,49 @@
+appId: io.twentysixty.mobileagent.dev
+tags: [local]
+---
+- runFlow:
+    file: ../subflows/signup.yaml
+    env:
+      APP_ID: io.twentysixty.mobileagent.dev
+      NAME: Alice
+
+- runFlow:
+    file: ../subflows/open-link.yaml
+    env:
+      LINK: "didcomm://?oob=eyJAdHlwZSI6Imh0dHBzOi8vZGlkY29tbS5vcmcvb3V0LW9mLWJhbmQvMS4xL2ludml0YXRpb24iLCJAaWQiOiJlMmUtbDEyLWRpZGNvbW0iLCJsYWJlbCI6IkRlZXAgTGluayBEaWRjb21tIiwiaGFuZHNoYWtlX3Byb3RvY29scyI6WyJodHRwczovL2RpZGNvbW0ub3JnL2RpZGV4Y2hhbmdlLzEuMCJdLCJzZXJ2aWNlcyI6WyJkaWQ6d2ViOm1lZGlhdG9yLmhvbG9ncmFtLnRlc3QiXX0"
+      APP_LABEL: Hologram dev
+- extendedWaitUntil:
+    visible: { id: "invitation-screen" }
+    timeout: 60000
+- takeScreenshot: l12-didcomm
+- tapOn: { id: "invitation-refuse" }
+- extendedWaitUntil:
+    visible: "Add a connection to start chatting"
+    timeout: 20000
+
+# Debug signing fails App Links verification, so Android sends this link to the browser unless the app is named
+- runScript:
+    file: ../scripts/view.js
+    env:
+      APP_ID: io.twentysixty.mobileagent.dev
+      LINK: "https://hologram.zone?oob=eyJAdHlwZSI6Imh0dHBzOi8vZGlkY29tbS5vcmcvb3V0LW9mLWJhbmQvMS4xL2ludml0YXRpb24iLCJAaWQiOiJlMmUtbDEyLWh0dHBzIiwibGFiZWwiOiJEZWVwIExpbmsgSHR0cHMiLCJoYW5kc2hha2VfcHJvdG9jb2xzIjpbImh0dHBzOi8vZGlkY29tbS5vcmcvZGlkZXhjaGFuZ2UvMS4wIl0sInNlcnZpY2VzIjpbImRpZDp3ZWI6bWVkaWF0b3IuaG9sb2dyYW0udGVzdCJdfQ"
+- extendedWaitUntil:
+    visible: { id: "invitation-screen" }
+    timeout: 60000
+- takeScreenshot: l12-https
+- tapOn: { id: "invitation-refuse" }
+- extendedWaitUntil:
+    visible: "Add a connection to start chatting"
+    timeout: 20000
+
+# The error toast lasts about 3 s, less than the app chooser takes, so the intent goes to the app directly
+- runScript:
+    file: ../scripts/view.js
+    env:
+      APP_ID: io.twentysixty.mobileagent.dev
+      LINK: "didcomm://?oob=bm90LWFuLWludml0YXRpb24"
+- extendedWaitUntil:
+    visible: { id: "toast-error" }
+    timeout: 30000
+- assertNotVisible: { id: "invitation-screen" }
+- takeScreenshot: l12-invalid

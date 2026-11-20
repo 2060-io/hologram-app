@@ -1,0 +1,88 @@
+appId: io.twentysixty.mobileagent.dev
+tags: [local]
+---
+- runFlow: ../subflows/signup-both.yaml
+- runFlow: ../subflows/connect-peers.yaml
+- assertVisible: { id: "chat-row-.*" }
+
+- tapOn: { id: "chats-filter" }
+- tapOn: { id: "chat-filter-services" }
+- extendedWaitUntil:
+    visible: { id: "chats-empty" }
+    timeout: 10000
+- assertVisible: "Chats - Services"
+- tapOn: { id: "chats-filter" }
+- tapOn: { id: "chat-filter-people" }
+- extendedWaitUntil:
+    visible: { id: "chat-row-.*" }
+    timeout: 10000
+- assertVisible: "Chats - People"
+- tapOn: { id: "chats-filter" }
+- tapOn: { id: "chat-filter-all" }
+- extendedWaitUntil:
+    visible: { id: "chat-row-.*" }
+    timeout: 10000
+
+- tapOn: { id: "chats-search" }
+- tapOn: { id: "chats-search-input" }
+- inputText: "zzz"
+- extendedWaitUntil:
+    visible: { id: "chats-empty" }
+    timeout: 10000
+- eraseText: 10
+- inputText: "Bob"
+- extendedWaitUntil:
+    visible: { id: "chat-row-.*" }
+    timeout: 10000
+- eraseText: 10
+- tapOn: { id: "chats-search-close" }
+- extendedWaitUntil:
+    visible: { id: "chats-filter" }
+    timeout: 10000
+- assertVisible: { id: "chat-row-.*" }
+
+- swipe:
+    from: { id: "chat-row-.*" }
+    direction: LEFT
+    duration: 800
+- waitForAnimationToEnd
+- tapOn: { id: "chat-swipe-archive" }
+- extendedWaitUntil:
+    visible: { id: "chats-empty" }
+    timeout: 10000
+- tapOn: { id: "chats-filter" }
+- tapOn: { id: "chat-filter-archived" }
+- extendedWaitUntil:
+    visible: { id: "chat-row-.*" }
+    timeout: 10000
+- assertVisible: "Chats - Archived"
+- takeScreenshot: l11-archived
+
+- swipe:
+    from: { id: "chat-row-.*" }
+    direction: LEFT
+    duration: 800
+- waitForAnimationToEnd
+- tapOn: { id: "chat-swipe-unarchive" }
+- extendedWaitUntil:
+    visible: { id: "chats-empty" }
+    timeout: 10000
+- tapOn: { id: "chats-filter" }
+- tapOn: { id: "chat-filter-all" }
+- extendedWaitUntil:
+    visible: { id: "chat-row-.*" }
+    timeout: 10000
+
+- swipe:
+    from: { id: "chat-row-.*" }
+    direction: LEFT
+    duration: 800
+- waitForAnimationToEnd
+- tapOn: { id: "chat-swipe-delete" }
+- waitForAnimationToEnd
+- tapOn: { id: "modal-confirm" }
+- extendedWaitUntil:
+    visible: { id: "chats-empty" }
+    timeout: 20000
+- assertNotVisible: { id: "chat-row-.*" }
+- takeScreenshot: l11-deleted
