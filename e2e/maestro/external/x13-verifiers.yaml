@@ -32,8 +32,9 @@ tags: [external, svc-demo-issuer-accredited, svc-demo-verifier-accredited, svc-d
       id: "proof-request-(accept|share-anyway)"
     direction: DOWN
     timeout: 90000
+- tapOn: { id: "proof-request-credential-select-.*" }
 - extendedWaitUntil:
-    visible: { id: "proof-request-accept" }
+    visible: { id: "proof-request-accept", enabled: true }
     timeout: 30000
 - assertNotVisible: { id: "proof-request-share-anyway" }
 - takeScreenshot: x13-accredited
@@ -72,8 +73,9 @@ tags: [external, svc-demo-issuer-accredited, svc-demo-verifier-accredited, svc-d
       id: "proof-request-(accept|share-anyway)"
     direction: DOWN
     timeout: 90000
+- tapOn: { id: "proof-request-credential-select-.*" }
 - extendedWaitUntil:
-    visible: { id: "proof-request-share-anyway" }
+    visible: { id: "proof-request-share-anyway", enabled: true }
     timeout: 30000
 - assertNotVisible: { id: "proof-request-accept" }
 - assertVisible: "Share anyway \\(unsafe\\)"
