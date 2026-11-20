@@ -1,7 +1,7 @@
 import { execFileSync } from 'node:child_process'
 import { createServer } from 'node:http'
 
-const PORT = Number(process.env.ADB_HELPER_PORT ?? 7777)
+const PORT = 7777
 const APP_IDS = new Set(['io.twentysixty.mobileagent.dev', 'io.twentysixty.mobileagent.st'])
 const SAFE_TEXT = /^[\w .,!?-]{1,200}$/
 const MEDIA = {
