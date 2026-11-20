@@ -34,10 +34,10 @@ tags: [local]
       visible: { id: "composer-recording-cancel" }
     commands:
       # The app drops recordings under 1 s, and B must see the note playing, so the recording runs 5 s
-      - extendedWaitUntil:
-          visible: "never appears"
-          timeout: 5000
-          optional: true
+      - runFlow:
+          file: ../subflows/wait.yaml
+          env:
+            MS: 5000
       - tapOn: { id: "composer-mic" }
 - extendedWaitUntil:
     visible: { id: "chat-voice-note" }

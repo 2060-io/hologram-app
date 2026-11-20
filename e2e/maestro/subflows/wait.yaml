@@ -1,0 +1,6 @@
+appId: io.twentysixty.mobileagent.dev
+---
+- extendedWaitUntil:
+    visible: "never appears"
+    timeout: ${MS}
+    optional: true

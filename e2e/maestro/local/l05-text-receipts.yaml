@@ -76,10 +76,10 @@ tags: [local]
                 file: ../subflows/switch-app.yaml
                 env:
                   APP_ID: io.twentysixty.mobileagent.st
-            - extendedWaitUntil:
-                notVisible: { id: "chat-screen" }
-                timeout: 8000
-                optional: true
+            - runFlow:
+                file: ../subflows/wait.yaml
+                env:
+                  MS: 8000
             - runFlow:
                 file: ../subflows/switch-app.yaml
                 env:
