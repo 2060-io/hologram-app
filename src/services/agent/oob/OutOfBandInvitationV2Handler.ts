@@ -1,5 +1,6 @@
-import { EventEmitter } from '@credo-ts/core'
+import { AgentContext, EventEmitter } from '@credo-ts/core'
 import {
+  DidCommConnectionRecord,
   DidCommInvitationType,
   DidCommMessageHandler,
   DidCommMessageHandlerInboundMessage,
@@ -32,26 +33,41 @@ export class DidCommOutOfBandInvitationV2Handler implements DidCommMessageHandle
       `V2 OOB handler: received id=${v2Invitation.id} from=${v2Invitation.from} ` +
         `(via connection=${messageContext.connection?.id ?? 'unknown'})`
     )
-    const invitation = new DidCommOutOfBandInvitation({
-      id: v2Invitation.id,
-      goal: v2Invitation.body?.goal,
-      goalCode: v2Invitation.body?.goalCode,
-      services: [v2Invitation.from],
-    })
-    invitation.invitationType = DidCommInvitationType.V2OutOfBand
-    invitation.v2Invitation = v2Invitation
-
-    const { outOfBandRecord } = await getOutOfBandRecord(agentContext, { invitation })
-    log(`V2 OOB handler: outOfBandRecord ${outOfBandRecord.id} created/fetched, emitting Received event`)
-
-    agentContext.dependencyManager.resolve(EventEmitter).emit<OutOfBandInvitationEvent>(agentContext, {
-      type: OutOfBandInvitationEventTypes.OutOfBandInvitationEvent,
-      payload: {
-        action: 'Received',
-        outOfBandRecord,
-        connection: messageContext.connection,
-        messageId: messageContext.message.id,
-      },
+    await receiveV2Invitation(agentContext, {
+      v2Invitation,
+      connection: messageContext.connection,
+      messageId: v2Invitation.id,
     })
   }
+}
+
+export const receiveV2Invitation = async (
+  agentContext: AgentContext,
+  options: {
+    v2Invitation: DidCommOutOfBandInvitationV2
+    connection?: DidCommConnectionRecord
+    messageId: string
+    label?: string
+    imageUrl?: string
+  }
+) => {
+  const { v2Invitation, connection, messageId, label, imageUrl } = options
+  const invitation = new DidCommOutOfBandInvitation({
+    id: v2Invitation.id,
+    label,
+    imageUrl,
+    goal: v2Invitation.body?.goal,
+    goalCode: v2Invitation.body?.goalCode,
+    services: [v2Invitation.from],
+  })
+  invitation.invitationType = DidCommInvitationType.V2OutOfBand
+  invitation.v2Invitation = v2Invitation
+
+  const { outOfBandRecord } = await getOutOfBandRecord(agentContext, { invitation })
+  log(`V2 OOB: outOfBandRecord ${outOfBandRecord.id} created/fetched, emitting Received event`)
+
+  agentContext.dependencyManager.resolve(EventEmitter).emit<OutOfBandInvitationEvent>(agentContext, {
+    type: OutOfBandInvitationEventTypes.OutOfBandInvitationEvent,
+    payload: { action: 'Received', outOfBandRecord, connection, messageId },
+  })
 }

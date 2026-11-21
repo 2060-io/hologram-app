@@ -1,3 +1,4 @@
+import { DidCommOutOfBandInvitationV2 } from '@credo-ts/didcomm'
 import {
   DidCommMediaSharingRecord,
   DidCommMediaSharingRole,
@@ -17,11 +18,20 @@ import {
   VoiceNoteMetadata,
 } from '@src/model'
 import { MobileAgent } from '@src/services/agent'
+import { receiveV2Invitation } from '@src/services/agent/oob/OutOfBandInvitationV2Handler'
+import { logWarn } from '@src/utils'
 import Realm from 'realm'
 import { getLocalizedPreview, getThumbnail } from '../preview'
-import { createChatEntry, findAllByAssociatedRecordId, updateChatEntry } from '../services/ChatEntryService'
+import {
+  createChatEntry,
+  findAllByAssociatedMessageId,
+  findAllByAssociatedRecordId,
+  updateChatEntry,
+} from '../services/ChatEntryService'
 import { addUnread, findOrCreateChatThread } from '../services/ChatThreadService'
 import { getChatEntryByDidcommThreadId, getChatEntryTypeFromMimeType } from './utils'
+
+const INVITATION_MIME_TYPE = 'application/didcomm-plain+json'
 
 export const handleMediaSharingRecordChanges = async (options: {
   agent: MobileAgent
@@ -35,9 +45,27 @@ export const handleMediaSharingRecordChanges = async (options: {
   const connection = await agent.didcomm.connections.getById(record.connectionId)
   const thread = findOrCreateChatThread(realm, connection)
 
+  const [item] = record.items ?? []
+  if (item?.mimeType === INVITATION_MIME_TYPE) {
+    const messageId = record.threadId ?? record.id
+    const isNew = findAllByAssociatedMessageId(realm, messageId).length === 0
+    if (record.role === DidCommMediaSharingRole.Receiver && item.json && isNew) {
+      await receiveV2Invitation(agent.context, {
+        v2Invitation: DidCommOutOfBandInvitationV2.fromJson(item.json as Record<string, unknown>),
+        connection,
+        messageId,
+        label: (item.metadata?.title as string | undefined) ?? record.description,
+        imageUrl: item.metadata?.icon as string | undefined,
+      })
+    }
+    return
+  }
+
   const data = getChatEntrySpecificData(record)
-  // TODO: Log/handle error?
-  if (!data) return
+  if (!data) {
+    logWarn(`Media sharing record ${record.id} has no supported item: ${item?.mimeType ?? 'no item'}`)
+    return
+  }
   const { type, metadata } = data
 
   let [chatEntry] = findAllByAssociatedRecordId(realm, record.id)
