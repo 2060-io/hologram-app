@@ -1,5 +1,6 @@
 appId: io.twentysixty.mobileagent.dev
-tags: [external, svc-demo-untrusted]
+# Known issue: https://github.com/verana-labs/playground/issues/362
+tags: [external, svc-demo-untrusted, known-issue]
 ---
 - runFlow:
     file: ../subflows/signup.yaml

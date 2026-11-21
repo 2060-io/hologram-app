@@ -18,14 +18,21 @@ flow_tags() {
 }
 
 TAGGED=()
+KNOWN=()
 FOUND=" "
 for flow in e2e/maestro/*/*.yaml; do
   [[ $flow == */subflows/* ]] && continue
+  tags=" $(flow_tags "$flow" | tr '\n' ' ') "
   match=
-  for tag in $(flow_tags "$flow"); do
+  for tag in $tags; do
     [[ ",$TAGS," == *",$tag,"* ]] && match=1 && FOUND+="$tag "
   done
-  [[ -n $match ]] && TAGGED+=("$flow")
+  [[ -z $match ]] && continue
+  if [[ $tags == *" known-issue "* && ",$TAGS," != *",known-issue,"* ]]; then
+    KNOWN+=("$(basename "$flow" .yaml)")
+  else
+    TAGGED+=("$flow")
+  fi
 done
 for tag in ${TAGS//,/ }; do
   [[ $FOUND == *" $tag "* ]] || { echo "no flow has the tag $tag"; exit 1; }
@@ -38,8 +45,10 @@ while read -r flow; do
   i=$((i + 1))
 done < <(printf '%s\n' "${TAGGED[@]}" | grep -E "${FLOW_FILTER:-.}" | sort)
 ((i == 0)) && { echo "no flow with the tags $TAGS matches ${FLOW_FILTER:-.}"; exit 1; }
+if ((SHARD == 0 && ${#KNOWN[@]} > 0)); then
+  printf '%s\n' "${KNOWN[@]}" | tee "$OUT/known-issues.txt" | sed 's/^/skipped: known issue /'
+fi
 
-# The shard split above must not depend on the skip list, which each shard reads on its own
 SKIPPED_SERVICES=$OUT/skipped-services.txt
 if [[ -f $SKIPPED_SERVICES ]]; then
   : >"$OUT/skipped.txt"

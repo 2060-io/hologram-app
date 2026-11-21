@@ -1,5 +1,6 @@
 appId: io.twentysixty.mobileagent.dev
-tags: [external, svc-demo-issuer-accredited]
+# Known issue: https://github.com/2060-io/hologram-backend-deploy/issues/354
+tags: [external, svc-demo-issuer-accredited, known-issue]
 ---
 - runFlow: ../subflows/signup-both.yaml
 - runFlow: ../subflows/connect-peers.yaml

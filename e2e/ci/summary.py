@@ -33,7 +33,12 @@ skipped = None
 if skipped_file.exists():
     skipped = [line.split(maxsplit=1) for line in skipped_file.read_text().splitlines() if line.strip()]
 
+known_file = out / "known-issues.txt"
+known = known_file.read_text().split() if known_file.exists() else []
+
 lines = [f"### {title}", ""]
+if known:
+    lines += [f"**Known issues, not run:** {', '.join(known)}", ""]
 if skipped is not None:
     failed = [name for name, result, _, _ in rows if result != "passed"]
     infra = [f"{flow} ({services})" for flow, services in skipped]

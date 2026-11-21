@@ -73,10 +73,11 @@ e2e/ci/run-flows.sh external
 ```
 
 The preflight checks the chatbot `/health`, the `/.well-known/did.json` of each service and its trust
-verdict from the Verana indexers (`POST /v4/verifiable-trust/resolve`, like the app). It also asks the
-playground API for an invitation of each playground service, and checks that the invitation opens. It
+verdict from the Verana indexers (`POST /v4/verifiable-trust/resolve`, like the app). It does not ask
+the playground API for anything, because each request creates an exchange on the testnet agents. It
 writes the versions to the job summary and the unhealthy services to `e2e-out/skipped-services.txt`,
-and it does not fail when a service is down. `run-flows.sh` then does not run a flow that has the
+and it does not fail when a service is down. In CI it runs once, before the shards, which all get the
+same skip list. `run-flows.sh` then does not run a flow that has the
 `svc-<id>` tag of a skipped service, and the summary lists it as `skipped: infra`, apart from the
 failed flows. Delete the file to run every flow.
 
@@ -84,6 +85,11 @@ Each external flow names the services that it needs, with the ids of `services.j
 `tags: [external, svc-chatbot]`. A flow that needs the minimum age of `services.json` also has the
 tag `svc-<id>-minimum-age`: when the age that the indexer reports is different, the preflight skips
 only these flows.
+
+A flow that fails because of a known bug has the tag `known-issue` and a comment with the link to the
+issue. `run-flows.sh` does not run these flows unless `known-issue` is one of the requested tags, and
+the summary lists them apart. `e2e/ci/run-flows.sh known-issue` runs only them. The fix of the issue
+removes the tag.
 
 `run-flows.sh` passes `CHATBOT_BACKEND` and `PLAYGROUND_API` from `services.json`, and a `RUN_ID`, to
 Maestro. To run one flow with Maestro alone, pass them yourself:
