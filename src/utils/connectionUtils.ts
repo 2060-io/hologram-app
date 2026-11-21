@@ -23,6 +23,9 @@ import { MobileAgent } from '@src/services/agent/MobileAgent'
 import { dataUrl } from './index'
 import { log, logError, logWarn } from './log'
 
+export const canForwardConnection = (source: DidCommConnectionRecord, destination: DidCommConnectionRecord) =>
+  (source.didcommVersion ?? 'v1') === (destination.didcommVersion ?? 'v1')
+
 export const getConnectionDisplayName = (connection: DidCommConnectionRecord) => {
   const profile = getConnectionProfile(connection)
   const nameDisplayName = profile?.displayName
