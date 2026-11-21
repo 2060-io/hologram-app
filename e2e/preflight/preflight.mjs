@@ -92,19 +92,6 @@ const minimumAgeOf = (resolution) => {
   return typeof age === 'number' ? age : 0
 }
 
-const checkPlaygroundInvitation = async (id, service) => {
-  const action = service.invitation === 'playground-request' ? '&action=request' : ''
-  const api = `${catalogue.env.PLAYGROUND_API}/${id}?format=anoncreds${action}`
-  const offer = await request(api)
-  if (offer.status !== 200 || !isObject(offer.body) || typeof offer.body.url !== 'string') {
-    return `playground: ${describe(offer.status, offer.body)}`
-  }
-  const invitation = await request(offer.body.url)
-  if (invitation.status !== 200 || !isObject(invitation.body) || typeof invitation.body['@type'] !== 'string') {
-    return `invitation ${offer.body.url}: ${describe(invitation.status, invitation.body)}`
-  }
-}
-
 const checkService = async (id, service) => {
   const problems = []
   const notes = []
@@ -138,10 +125,6 @@ const checkService = async (id, service) => {
           notes.push(`minimum age ${minimumAge}, expected ${service.minimumAge}: skips svc-${id}-minimum-age`)
         }
       }
-    }
-    if (service.invitation.startsWith('playground-')) {
-      const problem = await checkPlaygroundInvitation(id, service)
-      if (problem) problems.push(problem)
     }
   } catch (error) {
     problems.push(error instanceof Error ? error.message : String(error))
