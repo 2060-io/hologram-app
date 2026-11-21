@@ -1,0 +1,91 @@
+appId: io.twentysixty.mobileagent.dev
+tags: [external, svc-chatbot, svc-chatbot-minimum-age]
+---
+- runFlow:
+    file: ../subflows/signup.yaml
+    env:
+      APP_ID: io.twentysixty.mobileagent.dev
+      NAME: Alice
+
+- tapOn: { id: "settings-tab" }
+- scrollUntilVisible:
+    element: { id: "settings-parental-control" }
+- tapOn: { id: "settings-parental-control" }
+- extendedWaitUntil:
+    visible: { id: "parental-control-switch" }
+    timeout: 20000
+- tapOn: { id: "parental-control-switch" }
+- extendedWaitUntil:
+    visible: "Set Parental Control PIN"
+    timeout: 10000
+- runFlow: ../subflows/enter-parental-pin.yaml
+- extendedWaitUntil:
+    visible: "Confirm Parental Control PIN"
+    timeout: 10000
+- runFlow: ../subflows/enter-parental-pin.yaml
+- extendedWaitUntil:
+    notVisible: "Confirm Parental Control PIN"
+    timeout: 10000
+- assertVisible: { id: "parental-control-birthday" }
+- takeScreenshot: x15-enabled
+
+# The birthday defaults to today when parental control opens for the first time, so the kid is 0
+- runScript:
+    file: ../scripts/chatbot-invitation.js
+- runFlow:
+    file: ../subflows/open-link.yaml
+    env:
+      LINK: ${output.chatbot.link}
+      APP_LABEL: Hologram dev
+- extendedWaitUntil:
+    visible: { id: "invitation-screen" }
+    timeout: 90000
+- extendedWaitUntil:
+    visible: { id: "invitation-age-restricted" }
+    timeout: 90000
+- assertVisible: { id: "invitation-done" }
+- assertNotVisible: { id: "invitation-accept" }
+- takeScreenshot: x15-restricted
+- tapOn: { id: "invitation-done" }
+- extendedWaitUntil:
+    notVisible: { id: "invitation-screen" }
+    timeout: 10000
+- assertNotVisible: { id: "chat-screen" }
+
+- runFlow:
+    when:
+      notVisible: { id: "parental-control-switch" }
+    commands:
+      - tapOn: { id: "settings-tab" }
+      - scrollUntilVisible:
+          element: { id: "settings-parental-control" }
+      - tapOn: { id: "settings-parental-control" }
+- extendedWaitUntil:
+    visible: { id: "parental-control-switch" }
+    timeout: 20000
+- tapOn: { id: "parental-control-switch" }
+- extendedWaitUntil:
+    visible: "Disable Parental Control"
+    timeout: 10000
+- runFlow: ../subflows/enter-parental-pin.yaml
+- extendedWaitUntil:
+    notVisible: "Disable Parental Control"
+    timeout: 10000
+- takeScreenshot: x15-disabled
+
+- runScript:
+    file: ../scripts/chatbot-invitation.js
+- runFlow:
+    file: ../subflows/open-link.yaml
+    env:
+      LINK: ${output.chatbot.link}
+      APP_LABEL: Hologram dev
+- extendedWaitUntil:
+    visible: { id: "invitation-accept" }
+    timeout: 90000
+- assertNotVisible: { id: "invitation-age-restricted" }
+- tapOn: { id: "invitation-accept" }
+- extendedWaitUntil:
+    visible: { id: "chat-screen" }
+    timeout: 60000
+- takeScreenshot: x15-connected

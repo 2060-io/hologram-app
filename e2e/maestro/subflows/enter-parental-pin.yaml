@@ -1,0 +1,6 @@
+appId: io.twentysixty.mobileagent.dev
+---
+- tapOn: { id: "parental-pin-dial-1" }
+- tapOn: { id: "parental-pin-dial-2" }
+- tapOn: { id: "parental-pin-dial-3" }
+- tapOn: { id: "parental-pin-dial-4" }

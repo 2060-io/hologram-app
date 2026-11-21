@@ -87,3 +87,4 @@ e2e/stack/.env
 
 # Expo CLI local state (created by `expo start`)
 .expo/
+__pycache__/

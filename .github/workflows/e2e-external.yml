@@ -1,0 +1,26 @@
+name: E2E external
+
+on:
+  pull_request:
+    types: [labeled, synchronize]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  external:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.action == 'labeled' && github.event.label.name == 'e2e-external') ||
+      (github.event.action == 'synchronize' && contains(github.event.pull_request.labels.*.name, 'e2e-external'))
+    # At the job level, so that a run for another label does not cancel a run of the suite
+    concurrency:
+      group: e2e-external-${{ github.ref }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+    uses: ./.github/workflows/e2e-android.yml
+    with:
+      tags: external
+      envfile: .env.e2e-dev
+      preflight: true
+      shards: '[1, 2, 3, 4]'
