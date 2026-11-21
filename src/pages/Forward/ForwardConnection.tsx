@@ -8,6 +8,7 @@ import { createChatEntry } from '@src/hooks/agent/chat/services'
 import { useLocalRealm } from '@src/hooks/providers/RealmProvider'
 import { ChatEntryRole, ChatEntryState, ChatEntryType } from '@src/model'
 import { InvitationState } from '@src/model/InvitationState'
+import { canForwardConnection, getConnectionDisplayName } from '@src/utils/connectionUtils'
 import { toast } from '@src/utils/toast'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
@@ -25,8 +26,14 @@ const ForwardConnection = ({ navigation, route }: Props) => {
 
   const forwardConnection = async (connectionsId: string[]) => {
     if (!agent || !messageSender || !realm) return
-    connectionsId.forEach(async (connectionId) => {
+    const source = await agent.didcomm.connections.getById(connection.id)
+    const failedNames: string[] = []
+    for (const connectionId of connectionsId) {
       const didcommConnection = await agent.didcomm.connections.getById(connectionId)
+      if (!canForwardConnection(source, didcommConnection)) {
+        failedNames.push(getConnectionDisplayName(didcommConnection))
+        continue
+      }
       const chatThreadId = findOrCreateThread({ connection: didcommConnection }).id
       const metadata = {
         state: InvitationState.AlreadyConnected,
@@ -52,11 +59,12 @@ const ForwardConnection = ({ navigation, route }: Props) => {
         chatEntryId: chatEntry.id,
         parameters,
       })
-    })
-    toast({
-      type: 'success',
-      message: t('connection.forwarded'),
-    })
+    }
+    if (failedNames.length > 0) {
+      toast({ type: 'error', message: t('connection.notForwarded', { names: failedNames.join(', ') }) })
+    } else {
+      toast({ type: 'success', message: t('connection.forwarded') })
+    }
     navigation.goBack()
   }
 
