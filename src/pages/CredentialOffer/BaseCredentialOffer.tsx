@@ -117,6 +117,17 @@ const BaseCredentialOffer: React.FC<Props> = ({
     })
   }, [enableMainButtons, canAccept, isSafeToAccept])
 
+  const accreditationBox = (
+    <AccreditationBox
+      party="ISSUER"
+      serviceName={displayIssuerName}
+      fallbackSchemaTitle={credentialDetails?.mainInfo.schemaName}
+      accreditation={accreditation}
+      onRetry={onRetryAccreditation}
+    />
+  )
+  const isAccreditationWarning = accreditation !== undefined && accreditation.status !== 'authorized'
+
   return (
     <SafeAreaView testID="credential-offer-screen" style={styles.container} edges={['bottom']}>
       <ModalConfirmAction
@@ -144,6 +155,7 @@ const BaseCredentialOffer: React.FC<Props> = ({
       {credentialDetails && (
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.subContainer}>
+            {isAccreditationWarning && <View style={styles.accreditationWarning}>{accreditationBox}</View>}
             <Text style={styles.credentialTitle}>
               {displayIssuerName} {t('credentialOffer.offeringYou')}
             </Text>
@@ -166,15 +178,7 @@ const BaseCredentialOffer: React.FC<Props> = ({
                 serviceInfo={serviceInfo}
                 failedFetchInfo={failedFetchInfo}
                 onRetry={getServiceInfo}
-                ask={
-                  <AccreditationBox
-                    party="ISSUER"
-                    serviceName={displayIssuerName}
-                    fallbackSchemaTitle={credentialDetails.mainInfo.schemaName}
-                    accreditation={accreditation}
-                    onRetry={onRetryAccreditation}
-                  />
-                }
+                ask={isAccreditationWarning ? undefined : accreditationBox}
               />
             </View>
           </View>

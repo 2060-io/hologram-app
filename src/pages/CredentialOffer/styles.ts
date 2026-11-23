@@ -25,6 +25,11 @@ const styles = (theme: AppTheme) =>
     headerRight: {
       paddingRight: 15,
     },
+    accreditationWarning: {
+      alignSelf: 'center',
+      marginBottom: 15,
+      width: widthPercentageToDP('92%'),
+    },
     credentialTitle: {
       fontSize: theme.fontSize.md,
       color: theme.colors.primaryText,
