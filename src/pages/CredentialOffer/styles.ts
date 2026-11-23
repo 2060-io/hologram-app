@@ -19,6 +19,12 @@ const styles = (theme: AppTheme) =>
     unsafeBtnText: {
       color: theme.colors.red,
     },
+    headerButtonContainer: {
+      flexBasis: 'auto',
+    },
+    headerTitleContainer: {
+      flexShrink: 1,
+    },
     headerLeft: {
       paddingLeft: 15,
     },

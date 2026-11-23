@@ -85,6 +85,9 @@ const BaseCredentialOffer: React.FC<Props> = ({
 
   useEffect(() => {
     navigation.setOptions({
+      headerLeftContainerStyle: styles.headerButtonContainer,
+      headerRightContainerStyle: styles.headerButtonContainer,
+      headerTitleContainerStyle: styles.headerTitleContainer,
       headerLeft: (props) =>
         enableMainButtons ? (
           <TouchableOpacity
