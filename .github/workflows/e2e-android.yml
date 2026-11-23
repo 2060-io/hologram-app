@@ -316,6 +316,7 @@ jobs:
         run: |
           mkdir -p e2e-out
           docker compose -f e2e/stack/docker-compose.yml logs --no-color > e2e-out/stack.log 2>&1 || true
+          docker compose -f e2e/stack/docker-compose.yml config --images > e2e-out/stack-images.txt || true
 
       - name: Upload the artifacts
         id: upload

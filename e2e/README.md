@@ -131,6 +131,33 @@ needs no `repeat`:
       EXPECT: done
 ```
 
+## Add a flow
+
+1. Put the file in the directory of its suite, with the next id of the test plan as prefix:
+   `maestro/local/l17-<name>.yaml` or `maestro/external/x19-<name>.yaml`. Add a row to the table of
+   the suite in [the test plan](../doc/E2ETestPlan.md#7-test-suites).
+2. Set `appId` and the tags: `local` or `external`, and for an external flow the `svc-<id>` of each
+   service that it needs.
+3. Start from a fresh app with the shared subflows: `signup.yaml` or `signup-both.yaml`, then
+   `connect-peers.yaml` for two apps, or `chatbot-connect.yaml` for the chatbot.
+4. Find elements by `testID` (`id:` in Maestro). Add a `testID` to the app when an element has none.
+   Text is for system dialogs and for the names that the flow typed.
+5. Wait with `extendedWaitUntil` and a timeout rather than a fixed wait. Use `scrollUntilVisible`
+   for anything below the fold of a small screen.
+6. Check the syntax, then run the flow alone three times before you push it:
+
+```sh
+maestro check-syntax e2e/maestro/local/l17-<name>.yaml
+FLOW_FILTER=l17 e2e/ci/run-flows.sh local
+```
+
+## Flake rate
+
+The local suite becomes a required check when its flake rate is below about 2%.
+`e2e/ci/flake-rate.sh [runs]` reads the last runs of `e2e-local.yml` on PRs (200 by default) and
+counts the runs that failed and then passed on a re-run of the same commit. It needs a logged-in
+`gh`. A flaky flow gets a fix, or the `known-issue` tag with a link to its issue.
+
 ## Layout
 
 - `maestro/smoke`: checks that the two apps open. It needs no backend.
