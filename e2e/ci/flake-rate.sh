@@ -2,18 +2,25 @@
 set -euo pipefail
 LIMIT=${1:-200}
 
-gh run list --workflow e2e-local.yml --event pull_request --limit "$LIMIT" \
-  --json databaseId,attempt,conclusion \
-  -q '.[] | select(.conclusion == "success" or .conclusion == "failure") | [.databaseId, .attempt, .conclusion] | @tsv' |
-  while read -r id attempt last; do
-    first=$last
-    ((attempt > 1)) && first=$(gh api "repos/{owner}/{repo}/actions/runs/$id/attempts/1" -q .conclusion)
-    echo "$first $last"
-  done |
-  awk '{ runs++ }
-    $1 == "failure" && $2 == "success" { flaky++ }
-    $2 == "failure" { failed++ }
-    END {
-      if (!runs) { print "no finished run"; exit }
-      printf "%d runs: %d passed only on a re-run (%.1f%%), %d still fail\n", runs, flaky, 100 * flaky / runs, failed
-    }'
+attempts=$(
+  gh run list --workflow e2e-local.yml --limit "$LIMIT" --json databaseId,attempt,headSha,conclusion \
+    -q '.[] | [.databaseId, .attempt, .headSha, .conclusion] | @tsv' |
+    while read -r id count sha last; do
+      echo "$sha $last"
+      for ((n = 1; n < count; n++)); do
+        earlier=$(gh api "repos/{owner}/{repo}/actions/runs/$id/attempts/$n" -q .conclusion) || exit
+        echo "$sha $earlier"
+      done
+    done
+)
+
+awk '$2 == "success" { passed[$1] = 1 }
+  $2 == "failure" || $2 == "timed_out" { failed[$1] = 1 }
+  END {
+    for (sha in passed) { measured++; if (sha in failed) { flaky++; flaky_shas = flaky_shas " " substr(sha, 1, 7) } }
+    for (sha in failed) if (!(sha in passed)) { measured++; only_failed++; failed_shas = failed_shas " " substr(sha, 1, 7) }
+    printf "%d SHAs measured\n", measured
+    printf "%d flaky (%.1f%%):%s\n", flaky, measured ? 100 * flaky / measured : 0, flaky_shas
+    printf "%d only failed:%s\n", only_failed, failed_shas
+    if (measured < 50) print "warning: fewer than 50 SHAs, too few to trust the rate"
+  }' <<<"$attempts"

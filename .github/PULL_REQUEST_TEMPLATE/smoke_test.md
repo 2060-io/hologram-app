@@ -5,8 +5,9 @@ Run this before a release to dev or staging.
 ## CI
 
 - [ ] [E2E local](https://github.com/2060-io/hologram-app/actions/workflows/e2e-local.yml) is green on the commit you release.
-- [ ] [E2E external](https://github.com/2060-io/hologram-app/actions/workflows/e2e-external.yml) ran on that commit ("Run workflow"). Read the failed and `skipped: infra` flows in its summary.
-- [ ] Check by hand the flows that the two summaries list under "Known issues, not run". The test plan describes each flow: [local](https://github.com/2060-io/hologram-app/blob/main/doc/E2ETestPlan.md#71-local-suite-blocks-a-merge), [external](https://github.com/2060-io/hologram-app/blob/main/doc/E2ETestPlan.md#72-external-suite-does-not-block-a-merge).
+- [ ] [E2E external](https://github.com/2060-io/hologram-app/actions/workflows/e2e-external.yml) ran on that commit ("Run workflow").
+- [ ] Each failed external flow has a linked issue. A failed flow with no issue blocks the release.
+- [ ] Check by hand every flow that the two summaries list as failed, as `skipped: infra`, or under "Known issues, not run". X15 (parental control) is always `skipped: infra` until [hologram-demos-deploy#126](https://github.com/2060-io/hologram-demos-deploy/issues/126) is done. The test plan describes each flow: [local](https://github.com/2060-io/hologram-app/blob/main/doc/E2ETestPlan.md#71-local-suite-blocks-a-merge), [external](https://github.com/2060-io/hologram-app/blob/main/doc/E2ETestPlan.md#72-external-suite-does-not-block-a-merge).
 
 The suites run on Android only. On iOS, check the flows of these two tables by hand until #544 is done.
 

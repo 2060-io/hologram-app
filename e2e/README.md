@@ -86,10 +86,10 @@ Each external flow names the services that it needs, with the ids of `services.j
 tag `svc-<id>-minimum-age`: when the age that the indexer reports is different, the preflight skips
 only these flows.
 
-A flow that fails because of a known bug has the tag `known-issue` and a comment with the link to the
-issue. `run-flows.sh` does not run these flows unless `known-issue` is one of the requested tags, and
-the summary lists them apart. `e2e/ci/run-flows.sh known-issue` runs only them. The fix of the issue
-removes the tag.
+A flow that always fails because of a known bug has the tag `known-issue` and a comment with the link
+to the issue. `run-flows.sh` does not run these flows unless `known-issue` is one of the requested
+tags, and the summary lists them apart. `e2e/ci/run-flows.sh known-issue` runs only them. The fix of
+the issue removes the tag.
 
 `run-flows.sh` passes `CHATBOT_BACKEND` and `PLAYGROUND_API` from `services.json`, and a `RUN_ID`, to
 Maestro. To run one flow with Maestro alone, pass them yourself:
@@ -134,10 +134,13 @@ needs no `repeat`:
 ## Add a flow
 
 1. Put the file in the directory of its suite, with the next id of the test plan as prefix:
-   `maestro/local/l17-<name>.yaml` or `maestro/external/x19-<name>.yaml`. Add a row to the table of
-   the suite in [the test plan](../doc/E2ETestPlan.md#7-test-suites).
+   `maestro/local/l18-<name>.yaml` or `maestro/external/x19-<name>.yaml` (L17 is reserved for the
+   upgrade flow, #545). Add a row to the table of the suite in
+   [the test plan](../doc/E2ETestPlan.md#7-test-suites).
 2. Set `appId` and the tags: `local` or `external`, and for an external flow the `svc-<id>` of each
-   service that it needs.
+   service that it needs. Add `svc-<id>-minimum-age` when the flow needs the minimum age of the
+   catalogue, and `known-issue` when it always fails because of a bug with a linked issue.
+   [External suite](#external-suite) explains these tags.
 3. Start from a fresh app with the shared subflows: `signup.yaml` or `signup-both.yaml`, then
    `connect-peers.yaml` for two apps, or `chatbot-connect.yaml` for the chatbot.
 4. Find elements by `testID` (`id:` in Maestro). Add a `testID` to the app when an element has none.
@@ -147,16 +150,21 @@ needs no `repeat`:
 6. Check the syntax, then run the flow alone three times before you push it:
 
 ```sh
-maestro check-syntax e2e/maestro/local/l17-<name>.yaml
-FLOW_FILTER=l17 e2e/ci/run-flows.sh local
+maestro check-syntax e2e/maestro/local/l18-<name>.yaml
+for i in 1 2 3; do FLOW_FILTER=l18 e2e/ci/run-flows.sh local || break; done
 ```
 
 ## Flake rate
 
 The local suite becomes a required check when its flake rate is below about 2%.
-`e2e/ci/flake-rate.sh [runs]` reads the last runs of `e2e-local.yml` on PRs (200 by default) and
-counts the runs that failed and then passed on a re-run of the same commit. It needs a logged-in
-`gh`. A flaky flow gets a fix, or the `known-issue` tag with a link to its issue.
+`e2e/ci/flake-rate.sh [runs]` reads the last runs of `e2e-local.yml` (200 by default, any event) and
+groups them by commit. A commit is flaky when it has a failed attempt and a passed attempt, in one
+run or in several. Cancelled and skipped attempts do not count. The script prints the commits that
+it measured, the flaky ones with their share, and the ones that only failed. It warns below 50
+commits, because the rate means little with so few. It needs a logged-in `gh`.
+
+A flaky flow gets a fix, or we remove it. The `known-issue` tag is not for flaky flows: it is only
+for a flow that always fails because of a bug with a linked issue.
 
 ## Layout
 
