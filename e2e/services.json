@@ -9,75 +9,51 @@
   },
   "services": {
     "chatbot": {
-      "invitation": "chatbot",
       "network": "devnet",
       "status": "trusted",
-      "role": null,
-      "accreditation": null,
       "minimumAge": 18,
       "health": "https://demo-chatbot-backend.demos.dev.hologram.zone/health",
       "didDocument": "https://demo-chatbot.demos.dev.hologram.zone/.well-known/did.json"
     },
     "demo-issuer-accredited": {
-      "invitation": "playground-offer",
       "network": "testnet",
       "status": "trusted",
-      "role": "issuer",
-      "accreditation": "authorized",
       "minimumAge": 0,
       "didDocument": "https://demo-issuer-accredited.playground.testnet.verana.network/.well-known/did.json"
     },
     "demo-issuer-unaccredited": {
-      "invitation": "playground-offer",
       "network": "testnet",
       "status": "trusted",
-      "role": "issuer",
-      "accreditation": "unauthorized",
       "minimumAge": 0,
       "didDocument": "https://demo-issuer-unaccredited.playground.testnet.verana.network/.well-known/did.json"
     },
     "demo-issuer-untrusted": {
-      "invitation": "playground-offer",
       "network": "testnet",
       "status": "untrusted",
-      "role": "issuer",
-      "accreditation": "unauthorized",
       "minimumAge": 0,
       "didDocument": "https://demo-issuer-untrusted.playground.testnet.verana.network/.well-known/did.json"
     },
     "demo-verifier-accredited": {
-      "invitation": "playground-request",
       "network": "testnet",
       "status": "trusted",
-      "role": "verifier",
-      "accreditation": "authorized",
       "minimumAge": 0,
       "didDocument": "https://demo-verifier-accredited.playground.testnet.verana.network/.well-known/did.json"
     },
     "demo-verifier-unaccredited": {
-      "invitation": "playground-request",
       "network": "testnet",
       "status": "trusted",
-      "role": "verifier",
-      "accreditation": "unauthorized",
       "minimumAge": 0,
       "didDocument": "https://demo-verifier-unaccredited.playground.testnet.verana.network/.well-known/did.json"
     },
     "demo-verifier-untrusted": {
-      "invitation": "playground-request",
       "network": "testnet",
       "status": "untrusted",
-      "role": "verifier",
-      "accreditation": "unauthorized",
       "minimumAge": 0,
       "didDocument": "https://demo-verifier-untrusted.playground.testnet.verana.network/.well-known/did.json"
     },
     "demo-untrusted": {
-      "invitation": "playground-invitation",
       "network": "testnet",
       "status": "untrusted",
-      "role": null,
-      "accreditation": null,
       "minimumAge": 0,
       "didDocument": "https://demo-untrusted.playground.testnet.verana.network/.well-known/did.json"
     }

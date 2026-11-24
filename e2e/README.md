@@ -57,9 +57,9 @@ else. It can only sign DNS names under `hologram.test`, and only the `e2e` build
 
 The flows in `maestro/external` (tag `external`) run against the deployed demo services: the 2060
 demo chatbot on devnet and the Verana playground "demo" cast on testnet. `services.json` is the
-catalogue: for each service the invitation source, the network, the expected trust status,
-accreditation and minimum age, and the URLs that the preflight checks. When a service changes, edit
-the catalogue, not the flows. CI runs the suite from `.github/workflows/e2e-external.yml`, on request
+catalogue that the preflight checks: for each service the network, the expected trust status and
+minimum age, and the URLs of its DID document and health. The flows hold the expected accreditation
+of each service. CI runs the suite from `.github/workflows/e2e-external.yml`, on request
 or with the `e2e-external` label on a PR.
 
 The suite needs no local stack. Build the apps with `.env.e2e-dev`, then run the preflight and the

@@ -18,6 +18,10 @@ tags: [external, svc-demo-issuer-unaccredited]
 - extendedWaitUntil:
     visible: { id: "credential-offer-screen" }
     timeout: 90000
+- extendedWaitUntil:
+    visible: { id: "trust-status-trusted" }
+    timeout: 90000
+- assertVisible: "TESTNET"
 - scrollUntilVisible:
     element:
       id: "accreditation-status-.*"
