@@ -85,8 +85,8 @@ const BaseCredentialOffer: React.FC<Props> = ({
 
   useEffect(() => {
     navigation.setOptions({
-      headerLeftContainerStyle: styles.headerButtonContainer,
-      headerRightContainerStyle: styles.headerButtonContainer,
+      headerLeftContainerStyle: enableMainButtons ? styles.headerButtonContainer : undefined,
+      headerRightContainerStyle: enableMainButtons ? styles.headerButtonContainer : undefined,
       headerTitleContainerStyle: styles.headerTitleContainer,
       headerLeft: (props) =>
         enableMainButtons ? (
@@ -116,6 +116,17 @@ const BaseCredentialOffer: React.FC<Props> = ({
               {t('general.accept')}
             </Text>
           </TouchableOpacity>
+        ) : enableMainButtons ? (
+          <View
+            style={[styles.headerRight, styles.headerBtnPlaceholder]}
+            pointerEvents="none"
+            accessibilityElementsHidden
+            importantForAccessibility="no-hide-descendants"
+          >
+            <Text fontFamily="EuclidCircularA-Medium" style={styles.headerBtnText}>
+              {t('general.accept')}
+            </Text>
+          </View>
         ) : null,
     })
   }, [enableMainButtons, canAccept, isSafeToAccept])

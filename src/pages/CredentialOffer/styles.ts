@@ -19,6 +19,9 @@ const styles = (theme: AppTheme) =>
     unsafeBtnText: {
       color: theme.colors.red,
     },
+    headerBtnPlaceholder: {
+      opacity: 0,
+    },
     headerButtonContainer: {
       flexBasis: 'auto',
     },
