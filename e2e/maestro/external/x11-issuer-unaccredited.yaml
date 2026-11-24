@@ -28,8 +28,13 @@ tags: [external, svc-demo-issuer-unaccredited]
     direction: DOWN
     timeout: 90000
 - extendedWaitUntil:
-    visible: { id: "accreditation-status-unauthorized" }
+    notVisible: { id: "accreditation-status-loading" }
     timeout: 90000
+- scrollUntilVisible:
+    element:
+      id: "accreditation-status-unauthorized"
+    direction: UP
+    timeout: 30000
 - extendedWaitUntil:
     visible: { id: "credential-offer-accept" }
     timeout: 30000
