@@ -1,6 +1,7 @@
 import { RecordUpdatedEvent, RepositoryEventTypes, tryParseDid } from '@credo-ts/core'
 import {
   DidCommBasicMessage,
+  DidCommBasicMessageV2,
   DidCommConnectionRecord,
   DidCommConnectionType,
   DidCommCredentialEventTypes,
@@ -11,6 +12,7 @@ import {
   DidCommMessageProcessedEvent,
   DidCommMessageSentEvent,
   DidCommOutOfBandInvitation,
+  DidCommOutOfBandInvitationV2,
   DidCommOutOfBandState,
   DidCommProofEventTypes,
   DidCommProofState,
@@ -296,8 +298,10 @@ export function subscribeToAgentChatEvents(
         DidCommQuestionMessage.type.messageTypeUri,
         DidCommAnswerMessage.type.messageTypeUri,
         DidCommBasicMessage.type.messageTypeUri,
+        DidCommBasicMessageV2.type.messageTypeUri,
         DidCommShareMediaMessage.type.messageTypeUri,
         DidCommOutOfBandInvitation.type.messageTypeUri,
+        DidCommOutOfBandInvitationV2.type.messageTypeUri,
         DidCommProposePresentationV2Message.type.messageTypeUri,
       ]
       if (validMessagesTypesForReceipts.includes(data.payload.message.type)) {
