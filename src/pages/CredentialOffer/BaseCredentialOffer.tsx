@@ -126,7 +126,9 @@ const BaseCredentialOffer: React.FC<Props> = ({
       onRetry={onRetryAccreditation}
     />
   )
-  const isAccreditationWarning = accreditation !== undefined && accreditation.status !== 'authorized'
+  const [wasAccreditationWarning, setWasAccreditationWarning] = useState(false)
+  const isAccreditationWarning = accreditation ? accreditation.status !== 'authorized' : wasAccreditationWarning
+  if (isAccreditationWarning !== wasAccreditationWarning) setWasAccreditationWarning(isAccreditationWarning)
 
   return (
     <SafeAreaView testID="credential-offer-screen" style={styles.container} edges={['bottom']}>
@@ -155,7 +157,11 @@ const BaseCredentialOffer: React.FC<Props> = ({
       {credentialDetails && (
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.subContainer}>
-            {isAccreditationWarning && <View style={styles.accreditationWarning}>{accreditationBox}</View>}
+            {isAccreditationWarning && (
+              <View style={styles.accreditationWarning} accessibilityRole="alert" accessibilityLiveRegion="polite">
+                {accreditationBox}
+              </View>
+            )}
             <Text style={styles.credentialTitle}>
               {displayIssuerName} {t('credentialOffer.offeringYou')}
             </Text>
