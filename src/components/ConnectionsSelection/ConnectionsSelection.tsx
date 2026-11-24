@@ -17,6 +17,7 @@ interface Props {
   onPressSend: (connectionsId: string[]) => void
   connectionIdToExclude?: string
   headerTitle?: string
+  isSending?: boolean
 }
 
 type SelectedConnection = {
@@ -24,14 +25,14 @@ type SelectedConnection = {
   name: string
 }
 
-const ConnectionsSelection = ({ navigation, onPressSend, connectionIdToExclude, headerTitle }: Props) => {
+const ConnectionsSelection = ({ navigation, onPressSend, connectionIdToExclude, headerTitle, isSending }: Props) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const styles = getStyles(theme)
   const headerHeight = useHeaderHeight()
   const [selectedConnections, setSelectedConnections] = useState<SelectedConnection[]>([])
   const selectedConnectionNames = selectedConnections.map(({ name }) => name).join(', ')
-  const isSendButtonDisabled = !selectedConnections.length
+  const isSendButtonDisabled = !selectedConnections.length || isSending
   const { connections } = useConnections()
   const excludedConnections = notAllowedConnectionsIdsToSendMessages(connections)
   if (connectionIdToExclude) excludedConnections.push(connectionIdToExclude)
