@@ -24,6 +24,7 @@ tags: [external, svc-demo-issuer-accredited, svc-demo-verifier-accredited, svc-d
 - extendedWaitUntil:
     visible: { id: "trust-status-trusted" }
     timeout: 90000
+- assertVisible: "TESTNET"
 - extendedWaitUntil:
     visible: { id: "accreditation-status-authorized" }
     timeout: 90000
@@ -65,6 +66,10 @@ tags: [external, svc-demo-issuer-accredited, svc-demo-verifier-accredited, svc-d
 - extendedWaitUntil:
     visible: { id: "proof-request-screen" }
     timeout: 90000
+- extendedWaitUntil:
+    visible: { id: "trust-status-trusted" }
+    timeout: 90000
+- assertVisible: "TESTNET"
 - extendedWaitUntil:
     visible: { id: "accreditation-status-unauthorized" }
     timeout: 90000
@@ -121,15 +126,32 @@ tags: [external, svc-demo-issuer-accredited, svc-demo-verifier-accredited, svc-d
     direction: DOWN
     timeout: 90000
 - extendedWaitUntil:
-    visible: { id: "accreditation-status-(unauthorized|unverified)" }
+    visible: { id: "accreditation-status-unauthorized" }
     timeout: 90000
-- extendedWaitUntil:
-    visible: { id: "proof-request-refuse" }
-    timeout: 30000
 - scrollUntilVisible:
     element:
-      id: "proof-request-(accept|share-anyway|no-credentials)"
+      id: "proof-request-(accept|share-anyway)"
     direction: DOWN
     timeout: 90000
+- tapOn: { id: "proof-request-credential-select-.*" }
+- extendedWaitUntil:
+    visible: { id: "proof-request-share-anyway", enabled: true }
+    timeout: 30000
 - assertNotVisible: { id: "proof-request-accept" }
 - takeScreenshot: x13-untrusted
+- tapOn: { id: "proof-request-refuse" }
+- extendedWaitUntil:
+    visible: { id: "proof-request-refuse-confirm" }
+    timeout: 10000
+- tapOn: { id: "proof-request-refuse-confirm" }
+- runScript:
+    file: ../scripts/playground-state.js
+    env:
+      SERVICE: demo-verifier-untrusted
+      KIND: proof
+      EXCHANGE_ID: "${output.playground.exchangeId}"
+      EXPECT: "declined"
+      TIMEOUT_S: 60
+- extendedWaitUntil:
+    notVisible: { id: "proof-request-screen" }
+    timeout: 30000
