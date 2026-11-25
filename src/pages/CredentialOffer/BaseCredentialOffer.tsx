@@ -131,6 +131,19 @@ const BaseCredentialOffer: React.FC<Props> = ({
     })
   }, [enableMainButtons, canAccept, isSafeToAccept])
 
+  const accreditationBox = (
+    <AccreditationBox
+      party="ISSUER"
+      serviceName={displayIssuerName}
+      fallbackSchemaTitle={credentialDetails?.mainInfo.schemaName}
+      accreditation={accreditation}
+      onRetry={onRetryAccreditation}
+    />
+  )
+  const [wasAccreditationWarning, setWasAccreditationWarning] = useState(false)
+  const isAccreditationWarning = accreditation ? accreditation.status !== 'authorized' : wasAccreditationWarning
+  if (isAccreditationWarning !== wasAccreditationWarning) setWasAccreditationWarning(isAccreditationWarning)
+
   return (
     <SafeAreaView testID="credential-offer-screen" style={styles.container} edges={['bottom']}>
       <ModalConfirmAction
@@ -158,6 +171,11 @@ const BaseCredentialOffer: React.FC<Props> = ({
       {credentialDetails && (
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.subContainer}>
+            {isAccreditationWarning && (
+              <View style={styles.accreditationWarning} accessibilityRole="alert" accessibilityLiveRegion="polite">
+                {accreditationBox}
+              </View>
+            )}
             <Text style={styles.credentialTitle}>
               {displayIssuerName} {t('credentialOffer.offeringYou')}
             </Text>
@@ -180,15 +198,7 @@ const BaseCredentialOffer: React.FC<Props> = ({
                 serviceInfo={serviceInfo}
                 failedFetchInfo={failedFetchInfo}
                 onRetry={getServiceInfo}
-                ask={
-                  <AccreditationBox
-                    party="ISSUER"
-                    serviceName={displayIssuerName}
-                    fallbackSchemaTitle={credentialDetails.mainInfo.schemaName}
-                    accreditation={accreditation}
-                    onRetry={onRetryAccreditation}
-                  />
-                }
+                ask={isAccreditationWarning ? undefined : accreditationBox}
               />
             </View>
           </View>
