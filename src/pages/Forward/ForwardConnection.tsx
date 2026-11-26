@@ -32,6 +32,7 @@ const ForwardConnection = ({ navigation, route }: Props) => {
     try {
       const source = await agent.didcomm.connections.getById(connection.id)
       const failedNames: string[] = []
+      let queued = 0
       for (const connectionId of connectionsId) {
         const didcommConnection = await agent.didcomm.connections.getById(connectionId)
         if (!canForwardConnection(source, didcommConnection)) {
@@ -63,15 +64,21 @@ const ForwardConnection = ({ navigation, route }: Props) => {
           chatEntryId: chatEntry.id,
           parameters,
         })
+        queued++
       }
-      if (failedNames.length > 0) {
-        toast({ type: 'error', message: t('connection.notForwarded', { names: failedNames.join(', ') }) })
-      } else {
+      const names = failedNames.join(', ')
+      if (!failedNames.length) {
         toast({ type: 'success', message: t('connection.forwarded') })
+      } else if (queued) {
+        toast({ type: 'warning', message: t('connection.partiallyForwarded', { names }) })
+      } else {
+        toast({ type: 'error', message: t('connection.notForwarded', { names }) })
       }
     } catch (error) {
       logError('Error forwarding connection', error)
       toast({ type: 'error', message: t('connection.errorForwarding') })
+    } finally {
+      setIsSending(false)
     }
     navigation.goBack()
   }

@@ -23,6 +23,7 @@ import { MobileAgent } from '@src/services/agent/MobileAgent'
 import { dataUrl } from './index'
 import { log, logError, logWarn } from './log'
 
+// The Forward screen pre-check and the executer must both use this, or the screen leaves a ghost entry
 export const canForwardConnection = (source: DidCommConnectionRecord, destination: DidCommConnectionRecord) =>
   (source.didcommVersion ?? 'v1') === (destination.didcommVersion ?? 'v1')
 
