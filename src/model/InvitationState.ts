@@ -3,4 +3,5 @@ export enum InvitationState {
   Accepted = 'accepted',
   Refused = 'refused',
   AlreadyConnected = 'alreadyConnected',
+  Unsupported = 'unsupported',
 }

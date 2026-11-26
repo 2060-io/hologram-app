@@ -1,13 +1,17 @@
+import { DidCommModuleConfig } from '@credo-ts/didcomm'
 import { StackActions, useNavigation } from '@react-navigation/native'
 import defaultAvatar from '@src/assets/images/defaultUser.png'
 import { ConnectionRefusedByAge, SvgIcon, Text, VerifiedIcon } from '@src/components/common'
 import Avatar from '@src/components/common/Avatar/Avatar'
 import { useFetchServiceInfo } from '@src/hooks'
 import { useChats, useChatThreadById, useUserProfile } from '@src/hooks/agent'
+import { updateChatEntry } from '@src/hooks/agent/chat/services'
+import { useLocalRealm } from '@src/hooks/providers/RealmProvider'
 import { useTheme } from '@src/hooks/providers/ThemeProvider'
 import { useValidateKidAgeRestrictions } from '@src/hooks/useValidateKidAgeRestrictions'
-import { ChatEntryRole, InvitationMetadata, ServiceStatus } from '@src/model'
+import { ChatEntryRole, ChatEntryState, InvitationMetadata, ServiceStatus } from '@src/model'
 import { InvitationState } from '@src/model/InvitationState'
+import { processImplicitInvitation } from '@src/services/agent'
 import { MobileAgent } from '@src/services/agent/MobileAgent'
 import { toast } from '@src/utils/toast'
 import React, { memo, useMemo } from 'react'
@@ -21,10 +25,12 @@ interface Props {
   metadata: InvitationMetadata
   role: ChatEntryRole
   agent?: MobileAgent
+  chatEntryId: string
 }
 const isService = (did?: string) => did !== undefined && !did.startsWith('did:peer')
 
-const InvitationChatView = ({ associatedRecordId: outOfBandId, metadata, role, agent }: Props) => {
+const InvitationChatView = ({ associatedRecordId: outOfBandId, metadata, role, agent, chatEntryId }: Props) => {
+  const { realm } = useLocalRealm()
   const { activeChatThreadId } = useChats()
   const chatThread = useChatThreadById(activeChatThreadId ?? '')
   const { userProfileData } = useUserProfile()
@@ -53,6 +59,34 @@ const InvitationChatView = ({ associatedRecordId: outOfBandId, metadata, role, a
     } else {
       toast({ type: 'error', message: `${t('chat.invitationConnectionNotFound')}` })
     }
+  }
+
+  // An unsupported invitation has no out-of-band record. When the agent supports a DIDComm version of the
+  // service (a later build, or a changed configuration), the same entry lets the user connect.
+  const agentVersions: string[] = agent?.context.dependencyManager.resolve(DidCommModuleConfig).didcommVersions ?? []
+  const isNowSupported =
+    state === InvitationState.Unsupported &&
+    (metadata.didcommVersions ?? []).some((version) => agentVersions.includes(version))
+
+  const connectToUnsupported = async () => {
+    if (!agent || !realm) return
+    const result = await processImplicitInvitation(agent, did, label)
+    if (!result.success) {
+      toast({ type: 'error', message: result.error })
+      return
+    }
+    updateChatEntry(realm, {
+      recordId: chatEntryId,
+      state: ChatEntryState.Viewed,
+      associatedRecordId: result.recordId,
+      metadata: {
+        ...metadata,
+        state: result.existingConnectionId ? InvitationState.AlreadyConnected : InvitationState.Received,
+      },
+    })
+    if (result.existingConnectionId) return
+    const outOfBandRecord = await agent.didcomm.oob.findById(result.recordId)
+    if (outOfBandRecord) navigation.dispatch(StackActions.push('ConnectionInvitation', { outOfBandRecord }))
   }
 
   const footer: Partial<Record<InvitationState, React.ReactElement>> = {
@@ -89,11 +123,26 @@ const InvitationChatView = ({ associatedRecordId: outOfBandId, metadata, role, a
         onPress={goToExistingConnection}
       />
     ),
+    [InvitationState.Unsupported]: isNowSupported ? (
+      <BlueButton
+        testID="chat-invitation-connect"
+        disabled={ageRestricted}
+        text={t('general.connect')}
+        onPress={connectToUnsupported}
+        style={ageRestricted ? styles.acceptWithAgeRestricted : styles.acceptWithoutAgeRestricted}
+      />
+    ) : (
+      <View testID="chat-invitation-unsupported" style={styles.unsupportedContainer}>
+        <Text fontFamily="EuclidCircularA-Bold" style={styles.unsupportedText}>
+          {t('chat.unsupportedInvitation')}
+        </Text>
+      </View>
+    ),
   }
 
   const renderFooter = useMemo(() => {
     return footer[state]
-  }, [state, ageRestricted, theme.colors])
+  }, [state, ageRestricted, theme.colors, isNowSupported])
 
   return (
     <>
@@ -101,7 +150,7 @@ const InvitationChatView = ({ associatedRecordId: outOfBandId, metadata, role, a
         theme={theme}
         leftIconName="personAdd"
         rightIcon={
-          state !== InvitationState.Refused && isReceiver ? (
+          state !== InvitationState.Refused && state !== InvitationState.Unsupported && isReceiver ? (
             <TouchableOpacity
               testID="chat-invitation-info"
               disabled={ageRestricted && state === InvitationState.Received}

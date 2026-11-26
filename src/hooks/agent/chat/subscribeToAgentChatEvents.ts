@@ -328,6 +328,31 @@ export function subscribeToAgentChatEvents(
   }
 
   const oobListener = async (event: OutOfBandInvitationEvent) => {
+    if (event.payload.action === 'Unsupported') {
+      const { connection, invitation, did, didcommVersions, messageId } = event.payload
+      if (!connection) return
+      const thread = findOrCreateChatThread(realm, connection)
+      createChatEntry(realm, {
+        associatedRecordId: '',
+        chatThreadId: thread.id,
+        type: ChatEntryType.Invitation,
+        role: ChatEntryRole.Receiver,
+        state: ChatEntryState.Received,
+        metadata: {
+          state: InvitationState.Unsupported,
+          label: invitation.label ?? 'Unlabeled',
+          did,
+          didcommVersions,
+        },
+        createdAt: new Date().getTime(),
+        associatedMessageId: messageId,
+      })
+      if (thread.id !== getActiveChatThreadId()) {
+        addUnread(realm, thread.id, 1)
+      }
+      return
+    }
+
     const outOfBandRecord = event.payload.outOfBandRecord
     const action = event.payload.action
 

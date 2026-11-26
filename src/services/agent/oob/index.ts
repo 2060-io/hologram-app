@@ -11,6 +11,7 @@ import {
   DidCommDocumentService,
   DidCommHandshakeProtocol,
   DidCommMediationRecipientApi,
+  DidCommModuleConfig,
   DidCommOfferCredentialV2Message,
   DidCommOutOfBandApi,
   DidCommOutOfBandInvitation,
@@ -26,18 +27,50 @@ import {
   DidCommRouting,
   DidCommRoutingService,
   DidCommTrustPingEventTypes,
+  DidCommVersion,
   parseMessageType,
   supportsIncomingMessageType,
   TrustPingResponseReceivedEvent,
 } from '@credo-ts/didcomm'
 import { log, logError, logWarn } from '@src/utils'
-import { deletePendingConnection, findExistingConnection, isService } from '@src/utils/connectionUtils'
+import {
+  deletePendingConnection,
+  findExistingConnection,
+  getConnectionDisplayName,
+  isService,
+} from '@src/utils/connectionUtils'
 import { toast } from '@src/utils/toast'
 import { t } from 'i18next'
 import { filter, first, firstValueFrom, merge, timeout } from 'rxjs'
 import { getInCacheServiceInfo } from '../cache'
 import { MobileAgent } from '../MobileAgent'
 import { OutOfBandInvitationEvent, OutOfBandInvitationEventTypes } from './OutOfBandEvents'
+
+/**
+ * The DID of an invitation advertises only DIDComm versions that this agent does not support.
+ */
+export class UnsupportedDidcommVersionError extends Error {
+  public constructor(
+    public readonly did: string,
+    public readonly didcommVersions: DidCommVersion[]
+  ) {
+    super(t('invitation.errorUnsupportedDidcommVersion'))
+  }
+}
+
+/**
+ * Selects the DIDComm version for a connection to a public DID, as Credo does for an implicit invitation:
+ * v2 when the DID document and this agent both support it, otherwise v1.
+ */
+const selectDidcommVersion = async (agentContext: AgentContext, did: string) => {
+  const { versions } = await agentContext.dependencyManager
+    .resolve(DidCommDocumentService)
+    .getSupportedDidCommVersionsFromDidDoc(agentContext, did)
+  const agentVersions = agentContext.dependencyManager.resolve(DidCommModuleConfig).didcommVersions
+  const supported = versions.filter((version) => agentVersions.includes(version))
+  if (!supported.length) throw new UnsupportedDidcommVersionError(did, versions)
+  return supported.includes('v2') ? 'v2' : 'v1'
+}
 
 export enum DidcommInvitationType {
   ConnectionRequest = 'connection-request',
@@ -85,6 +118,7 @@ export const getOutOfBandRecord = async (
     invitation.thread?.parentThreadId && isDid(invitation.thread.parentThreadId)
       ? await outOfBandApi.receiveImplicitInvitation({
           did: invitation.thread.parentThreadId,
+          didCommVersion: await selectDidcommVersion(agentContext, invitation.thread.parentThreadId),
           label: invitation.label ?? '',
           autoAcceptInvitation: false,
           autoAcceptConnection: false,
@@ -114,9 +148,14 @@ type ProcessInvitationResult =
  * Process an implicit OOB invitation expressed as a public DID. Delegates to Credo's
  * receiveImplicitInvitation, which resolves the DID Doc and picks the highest mutually
  * supported DIDComm version (v2 if both sides support it, otherwise v1). Used when the
- * scanned input is a bare `did:` URI rather than a full OOB invitation.
+ * scanned input is a bare `did:` URI rather than a full OOB invitation, and for a forwarded invitation that
+ * the agent could not accept before it supported the DIDComm version of the service.
  */
-export const processImplicitInvitation = async (agent: MobileAgent, did: string): Promise<ProcessInvitationResult> => {
+export const processImplicitInvitation = async (
+  agent: MobileAgent,
+  did: string,
+  label = 'DID Invitation'
+): Promise<ProcessInvitationResult> => {
   try {
     const existingConnections = await agent.didcomm.connections.findByInvitationDid(did)
     if (existingConnections.length > 1) {
@@ -138,7 +177,7 @@ export const processImplicitInvitation = async (agent: MobileAgent, did: string)
 
     const { outOfBandRecord } = await agent.didcomm.oob.receiveImplicitInvitation({
       did,
-      label: 'DID Invitation',
+      label,
       autoAcceptInvitation: false,
       autoAcceptConnection: false,
     })
@@ -325,11 +364,20 @@ export const getOutOfBandRecordById = async (agent: MobileAgent, outOfBandId: st
   return oobRecord
 }
 
-export const createOobInvitation = (connection: DidCommConnectionRecord) => {
-  if (connection.didcommVersion === 'v2') {
-    if (!connection.invitationDid) {
-      throw new Error('Cannot create v2 OOB invitation: connection has no invitationDid')
-    }
+/**
+ * Builds the invitation that refers a contact to the given connection.
+ *
+ * With a destination of a different DIDComm version, the invitation is a v1 OOB whose pthid is the DID of
+ * the source. The receiver handles it as an implicit invitation and selects the version from the DID
+ * document, so the versions of the source and of the destination do not have to match.
+ */
+export const createOobInvitation = (connection: DidCommConnectionRecord, destination?: DidCommConnectionRecord) => {
+  const isV2Source = connection.didcommVersion === 'v2'
+  if (isV2Source && !connection.invitationDid) {
+    throw new Error('Cannot create OOB invitation: v2 connection has no invitationDid')
+  }
+  const isV2Destination = destination ? destination.didcommVersion === 'v2' : isV2Source
+  if (isV2Source && isV2Destination && connection.invitationDid) {
     return new DidCommOutOfBandInvitationV2({
       from: connection.invitationDid,
       body: { accept: ['didcomm/v2'] },
@@ -339,9 +387,10 @@ export const createOobInvitation = (connection: DidCommConnectionRecord) => {
   const jsonInvitation = {
     '@type': DidCommOutOfBandInvitation.type.messageTypeUri,
     '@id': utils.uuid(),
-    label: connection.theirLabel,
+    // A v2 connection has no label and no handshake protocol
+    label: isV2Source ? getConnectionDisplayName(connection) : connection.theirLabel,
     services: [connection.invitationDid],
-    handshake_protocols: [connection.protocol ?? 'https://didcomm.org/didexchange/1.0'],
+    handshake_protocols: [(!isV2Source && connection.protocol) || 'https://didcomm.org/didexchange/1.0'],
     accept: ['didcomm/aip1', 'didcomm/aip2;env=rfc19'],
   }
   const outOfBandInvitation = DidCommOutOfBandInvitation.fromJson(jsonInvitation)
