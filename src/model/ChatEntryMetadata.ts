@@ -106,6 +106,9 @@ export type InvitationMetadata = {
   label: string
   imageUrl?: string
   did: string
+  // Set for an unsupported invitation: the DIDComm versions of the service. The entry lets the user connect
+  // when the agent supports one of them.
+  didcommVersions?: string[]
 }
 
 export enum CallOfferState {

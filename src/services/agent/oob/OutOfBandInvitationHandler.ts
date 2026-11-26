@@ -3,8 +3,9 @@ import {
   DidCommMessageHandler,
   DidCommMessageHandlerInboundMessage,
   DidCommOutOfBandInvitation,
+  DidCommOutOfBandRecord,
 } from '@credo-ts/didcomm'
-import { getOutOfBandRecord } from './index'
+import { getOutOfBandRecord, UnsupportedDidcommVersionError } from './index'
 import { OutOfBandInvitationEvent, OutOfBandInvitationEventTypes } from './OutOfBandEvents'
 
 export class DidCommOutOfBandInvitationHandler implements DidCommMessageHandler {
@@ -16,11 +17,27 @@ export class DidCommOutOfBandInvitationHandler implements DidCommMessageHandler 
     const agentContext = messageContext.agentContext
     messageContext.assertReadyConnection()
 
-    const { outOfBandRecord } = await getOutOfBandRecord(agentContext, {
-      invitation: messageContext.message,
-    })
+    const eventEmitter = agentContext.dependencyManager.resolve(EventEmitter)
+    let outOfBandRecord: DidCommOutOfBandRecord
+    try {
+      ;({ outOfBandRecord } = await getOutOfBandRecord(agentContext, { invitation: messageContext.message }))
+    } catch (error) {
+      if (!(error instanceof UnsupportedDidcommVersionError)) throw error
+      eventEmitter.emit<OutOfBandInvitationEvent>(agentContext, {
+        type: OutOfBandInvitationEventTypes.OutOfBandInvitationEvent,
+        payload: {
+          action: 'Unsupported',
+          invitation: messageContext.message,
+          did: error.did,
+          didcommVersions: error.didcommVersions,
+          connection: messageContext.connection,
+          messageId: messageContext.message.id,
+        },
+      })
+      return
+    }
     // Emit event: OOB Invitation received
-    agentContext.dependencyManager.resolve(EventEmitter).emit<OutOfBandInvitationEvent>(agentContext, {
+    eventEmitter.emit<OutOfBandInvitationEvent>(agentContext, {
       type: OutOfBandInvitationEventTypes.OutOfBandInvitationEvent,
       payload: {
         action: 'Received',

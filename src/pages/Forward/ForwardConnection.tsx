@@ -9,7 +9,6 @@ import { useLocalRealm } from '@src/hooks/providers/RealmProvider'
 import { ChatEntryRole, ChatEntryState, ChatEntryType } from '@src/model'
 import { InvitationState } from '@src/model/InvitationState'
 import { logError } from '@src/utils'
-import { canForwardConnection, getConnectionDisplayName } from '@src/utils/connectionUtils'
 import { toast } from '@src/utils/toast'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -30,15 +29,8 @@ const ForwardConnection = ({ navigation, route }: Props) => {
     if (!agent || !messageSender || !realm || isSending) return
     setIsSending(true)
     try {
-      const source = await agent.didcomm.connections.getById(connection.id)
-      const failedNames: string[] = []
-      let queued = 0
       for (const connectionId of connectionsId) {
         const didcommConnection = await agent.didcomm.connections.getById(connectionId)
-        if (!canForwardConnection(source, didcommConnection)) {
-          failedNames.push(getConnectionDisplayName(didcommConnection))
-          continue
-        }
         const chatThreadId = findOrCreateThread({ connection: didcommConnection }).id
         const metadata = {
           state: InvitationState.AlreadyConnected,
@@ -64,16 +56,8 @@ const ForwardConnection = ({ navigation, route }: Props) => {
           chatEntryId: chatEntry.id,
           parameters,
         })
-        queued++
       }
-      const names = failedNames.join(', ')
-      if (!failedNames.length) {
-        toast({ type: 'success', message: t('connection.forwarded') })
-      } else if (queued) {
-        toast({ type: 'warning', message: t('connection.partiallyForwarded', { names }) })
-      } else {
-        toast({ type: 'error', message: t('connection.notForwarded', { names }) })
-      }
+      toast({ type: 'success', message: t('connection.forwarded') })
     } catch (error) {
       logError('Error forwarding connection', error)
       toast({ type: 'error', message: t('connection.errorForwarding') })

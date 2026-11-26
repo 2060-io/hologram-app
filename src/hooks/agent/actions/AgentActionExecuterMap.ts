@@ -37,7 +37,6 @@ import { DidCommProfileMessage, DidCommRequestProfileMessage } from '@credo-ts/d
 import { createOobInvitation, MobileAgent } from '@src/services/agent'
 import { acceptProofRequestOrReportNoCompatible } from '@src/services/agent/proofPresentation'
 import { log, logWarn } from '@src/utils'
-import { canForwardConnection } from '@src/utils/connectionUtils'
 import { Platform } from 'react-native'
 import { AgentAction, AgentActionType } from './AgentAction'
 import {
@@ -143,13 +142,7 @@ export const AgentActionExecuterMap: Record<AgentActionType, ActionFactory> = {
           `${originDidcommConnection.invitationDid}) ` +
           `dest=${connection.id} (${destVersion}, ${connection.invitationDid})`
       )
-      if (!canForwardConnection(originDidcommConnection, connection)) {
-        log(`Forward: version mismatch, throwing`)
-        throw new Error(
-          `Cannot forward across DIDComm versions: source is ${sourceVersion}, destination is ${destVersion}`
-        )
-      }
-      const outOfBandInvitation = createOobInvitation(originDidcommConnection)
+      const outOfBandInvitation = createOobInvitation(originDidcommConnection, connection)
       const isV2 = outOfBandInvitation instanceof DidCommOutOfBandInvitationV2
       log(
         `Forward: built ${isV2 ? 'V2' : 'V1'} OOB invitation id=${outOfBandInvitation.id}, sending through ${destVersion} connection`

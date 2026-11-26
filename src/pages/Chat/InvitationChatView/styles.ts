@@ -55,6 +55,17 @@ export default (theme: AppTheme) =>
       color: theme.colors.green,
       fontSize: theme.fontSize.md - 1,
     },
+    unsupportedContainer: {
+      borderRadius: 10,
+      padding: 4,
+      alignItems: 'center',
+      backgroundColor: hexTransparency(theme.colors.red, theme.isDarkMode ? '2E' : '40'),
+    },
+    unsupportedText: {
+      color: theme.colors.red,
+      fontSize: theme.fontSize.md - 1,
+      textAlign: 'center',
+    },
     connectionRefusedByAgeText: {
       marginTop: 4,
       fontSize: theme.fontSize.sm,
