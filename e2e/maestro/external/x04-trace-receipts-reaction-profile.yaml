@@ -1,6 +1,5 @@
 appId: io.twentysixty.mobileagent.dev
-# Known issue: https://github.com/2060-io/hologram-app/issues/563
-tags: [external, svc-chatbot, known-issue]
+tags: [external, svc-chatbot]
 ---
 - runFlow:
     file: ../subflows/signup.yaml
