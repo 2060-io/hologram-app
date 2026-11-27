@@ -92,7 +92,6 @@ const Developer = ({ navigation }: Props) => {
     changeDevEnvOptionsVisibility()
     const newDevEnvsToPersist = { ...devEnvs, [key]: value }
     await updateDevEnvs(newDevEnvsToPersist)
-    if (key === 'INDY_VDR_PROXY_BASE_URL') displayAlertAfterChange()
   }
 
   const onToggleDidcommVersion = async (version: DidCommVersion) => {
@@ -119,7 +118,6 @@ const Developer = ({ navigation }: Props) => {
     await saveCustomDevEnv(newCustomDevEnvValue)
     setTempCustomDevEnvValue('')
     setIsEditionCustomDevEnvMode(false)
-    if (currentDevEnv?.key === 'INDY_VDR_PROXY_BASE_URL') displayAlertAfterChange()
   }
 
   const switchToEditionCustomDevEnv = () => {

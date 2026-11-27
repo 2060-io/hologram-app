@@ -8,7 +8,6 @@ import { DidCommOutOfBandInvitationV2Handler } from './oob/OutOfBandInvitationV2
 export const createMobileAgent = (
   options: {
     config: InitConfig
-    indyVDRProxyBaseUrl: string
     modulesConfig: {
       mediatorPickupStrategy?: DidCommMediatorPickupStrategy
       didcommVersions: DidCommVersion[]
@@ -24,7 +23,6 @@ export const createMobileAgent = (
       modules: getMobileAgentModules({
         mediatorPickupStrategy: options.modulesConfig.mediatorPickupStrategy,
         didcommVersions: options.modulesConfig.didcommVersions,
-        indyVDRProxyBaseUrl: options.indyVDRProxyBaseUrl,
       }),
     },
     dependencyManager

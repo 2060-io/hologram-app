@@ -193,9 +193,6 @@ importers:
       credo-ts-didweb-anoncreds:
         specifier: ^0.0.2-alpha.4
         version: 0.0.2-alpha.6(@credo-ts/anoncreds@0.8.0-alpha-20261118113730(@credo-ts/didcomm@0.8.0-alpha-20261118113730(typescript@5.9.3))(@hyperledger/anoncreds-shared@0.4.1)(typescript@5.9.3))(@credo-ts/core@0.8.0-alpha-20261118113730(typescript@5.9.3))
-      credo-ts-indy-vdr-proxy-client:
-        specifier: ^0.2.8
-        version: 0.2.8(@credo-ts/didcomm@0.8.0-alpha-20261118113730(typescript@5.9.3))(@hyperledger/anoncreds-shared@0.4.1)(typescript@5.9.3)
       dayjs:
         specifier: 1.11.13
         version: 1.11.13
@@ -2926,6 +2923,7 @@ packages:
 
   '@sphereon/kmp-mdoc-core@0.2.0-SNAPSHOT.26':
     resolution: {integrity: sha512-QXJ6R8ENiZV2rPMbn06cw5JKwqUYN1kzVRbYfONqE1PEXx1noQ4md7uxr2zSczi0ubKkNcbyYDNtIMTZIhGzmQ==}
+    bundledDependencies: []
 
   '@sphereon/pex-models@2.3.2':
     resolution: {integrity: sha512-foFxfLkRwcn/MOp/eht46Q7wsvpQGlO7aowowIIb5Tz9u97kYZ2kz6K2h2ODxWuv5CRA7Q0MY8XUBGE2lfOhOQ==}
@@ -3678,9 +3676,6 @@ packages:
     peerDependencies:
       '@credo-ts/anoncreds': 0.8.0-alpha-20261118113730
       '@credo-ts/core': 0.8.0-alpha-20261118113730
-
-  credo-ts-indy-vdr-proxy-client@0.2.8:
-    resolution: {integrity: sha512-ZJ52r0LZaUGoF6/h3M80cnSWKPnXU8H8qCLsVNYPHZYWA2jOicZU2EsdKOfE4KXEcqXCOza09zGIBQUAu6/Q+w==}
 
   cross-fetch@3.2.0:
     resolution: {integrity: sha512-Q+xVJLoGOeIMXZmbUK4HYk+69cQH6LudR0Vu/pRm2YlU/hDV9CiS0gKUMaWY5f2NeUH9C1nV3bsTlCo0FsTV1Q==}
@@ -11697,17 +11692,6 @@ snapshots:
       '@credo-ts/core': 0.8.0-alpha-20261118113730(typescript@5.9.3)
       canonicalize: 2.1.0
       query-string: 9.3.1
-
-  credo-ts-indy-vdr-proxy-client@0.2.8(@credo-ts/didcomm@0.8.0-alpha-20261118113730(typescript@5.9.3))(@hyperledger/anoncreds-shared@0.4.1)(typescript@5.9.3):
-    dependencies:
-      '@credo-ts/anoncreds': 0.8.0-alpha-20261118113730(@credo-ts/didcomm@0.8.0-alpha-20261118113730(typescript@5.9.3))(@hyperledger/anoncreds-shared@0.4.1)(typescript@5.9.3)
-      '@credo-ts/core': 0.8.0-alpha-20261118113730(typescript@5.9.3)
-      uuid: 9.0.1
-    transitivePeerDependencies:
-      - '@credo-ts/didcomm'
-      - '@hyperledger/anoncreds-shared'
-      - supports-color
-      - typescript
 
   cross-fetch@3.2.0:
     dependencies:

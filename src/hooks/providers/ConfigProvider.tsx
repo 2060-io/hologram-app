@@ -13,7 +13,6 @@ const defaultDevEnvs: DevEnvsObject = {
   MEDIATOR_PUBLIC_DID: Config.MEDIATOR_PUBLIC_DID as string,
   S3_SERVER_URL: Config.S3_SERVER_URL as string,
   WEBRTC_SERVER_BASE_URL: Config.WEBRTC_SERVER_BASE_URL as string,
-  INDY_VDR_PROXY_BASE_URL: Config.INDY_VDR_PROXY_BASE_URL as string,
   SUPPORTED_DIDCOMM_VERSIONS: (Config.SUPPORTED_DIDCOMM_VERSIONS as string) ?? 'v1',
 }
 
