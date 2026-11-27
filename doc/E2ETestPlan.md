@@ -293,7 +293,8 @@ changed.
 ### 6.2 Versions in the job summary
 
 The preflight reads the version of each service (C2 for the chatbot, `/.well-known/did.json`
-and the trust verdict for the playground cast). It writes them in the job summary.
+and the trust verdict for the playground cast). It writes them in the job summary. For the local
+suite, the summary lists the images of the stack.
 
 ### 6.3 hologram-server
 
@@ -374,8 +375,11 @@ the app gets the result **failed**. The job summary gives the two lists apart.
 - Push notifications on iOS.
 - MRZ scan and eMRTD read through NFC.
 
-The new smoke test template removes the BCGov showcase, the Gov ID Issuer and the other
-third-party services.
+The smoke test template (`.github/PULL_REQUEST_TEMPLATE/smoke_test.md`) keeps these items, links
+the CI runs, and asks for a manual check of each flow that failed, that was `skipped: infra`, or
+that a known issue stops. A failed external flow with no linked issue blocks the release. It has no
+third-party services (BCGov showcase, Gov ID Issuer). Until #545 is done it also keeps the upgrade
+test and push on Android, and until #544 is done the flows of the two suites are manual on iOS.
 
 ### 7.4 Coverage of the smoke test
 
@@ -418,7 +422,10 @@ Facts from the spike for the jobs:
   full run.
 
 **Rule for "blocks a merge":** during a stabilization period, the local suite does not block a
-merge. We measure the flake rate. When the rate is below about 2%, we make the job required.
+merge. We measure the flake rate with `e2e/ci/flake-rate.sh`: the share of commits that have both
+a failed and a passed attempt of `e2e-local.yml`. When the rate is below about 2%, we make the job
+required. A flaky flow gets a fix, or we remove it. The `known-issue` tag is not for flaky flows:
+it is only for a flow that always fails because of a bug with a linked issue.
 
 Each flow gives these artifacts:
 

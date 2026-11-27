@@ -36,7 +36,12 @@ if skipped_file.exists():
 known_file = out / "known-issues.txt"
 known = known_file.read_text().split() if known_file.exists() else []
 
+images_file = out / "stack-images.txt"
+images = images_file.read_text().split() if images_file.exists() else []
+
 lines = [f"### {title}", ""]
+if images:
+    lines += [f"**Local stack:** {', '.join(f'`{image}`' for image in images)}", ""]
 if known:
     lines += [f"**Known issues, not run:** {', '.join(known)}", ""]
 if skipped is not None:
@@ -50,7 +55,7 @@ for name, result, time, message in rows:
 if not rows:
     lines.append("| none | skipped: infra | | |" if skipped else "| none | no report | | |")
 if artifact_url:
-    lines += ["", f"Recordings, app logs and Maestro output: [artifact]({artifact_url})"]
+    lines += ["", f"Recordings, app logs and Maestro output: [artifact]({artifact_url}), with the recordings of each flow under `recordings/<flow>`"]
 
 with open(os.environ.get("GITHUB_STEP_SUMMARY", "/dev/stdout"), "a") as summary:
     summary.write("\n".join(lines) + "\n")

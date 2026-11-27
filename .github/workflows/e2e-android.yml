@@ -313,9 +313,14 @@ jobs:
 
       - name: Collect the container logs
         if: always() && inputs.start-stack
+        env:
+          SHARD: ${{ strategy.job-index }}
         run: |
           mkdir -p e2e-out
           docker compose -f e2e/stack/docker-compose.yml logs --no-color > e2e-out/stack.log 2>&1 || true
+          if [[ $SHARD == 0 ]]; then
+            docker compose -f e2e/stack/docker-compose.yml config --images > e2e-out/stack-images.txt || true
+          fi
 
       - name: Upload the artifacts
         id: upload
