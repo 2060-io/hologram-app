@@ -19,11 +19,25 @@ const styles = (theme: AppTheme) =>
     unsafeBtnText: {
       color: theme.colors.red,
     },
+    headerBtnPlaceholder: {
+      opacity: 0,
+    },
+    headerButtonContainer: {
+      flexBasis: 'auto',
+    },
+    headerTitleContainer: {
+      flexShrink: 1,
+    },
     headerLeft: {
       paddingLeft: 15,
     },
     headerRight: {
       paddingRight: 15,
+    },
+    accreditationWarning: {
+      alignSelf: 'center',
+      marginBottom: 15,
+      width: widthPercentageToDP('92%'),
     },
     credentialTitle: {
       fontSize: theme.fontSize.md,

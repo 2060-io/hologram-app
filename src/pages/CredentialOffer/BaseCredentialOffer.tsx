@@ -85,6 +85,9 @@ const BaseCredentialOffer: React.FC<Props> = ({
 
   useEffect(() => {
     navigation.setOptions({
+      headerLeftContainerStyle: enableMainButtons ? styles.headerButtonContainer : undefined,
+      headerRightContainerStyle: enableMainButtons ? styles.headerButtonContainer : undefined,
+      headerTitleContainerStyle: styles.headerTitleContainer,
       headerLeft: (props) =>
         enableMainButtons ? (
           <TouchableOpacity
@@ -113,9 +116,33 @@ const BaseCredentialOffer: React.FC<Props> = ({
               {t('general.accept')}
             </Text>
           </TouchableOpacity>
+        ) : enableMainButtons ? (
+          <View
+            style={[styles.headerRight, styles.headerBtnPlaceholder]}
+            pointerEvents="none"
+            accessibilityElementsHidden
+            importantForAccessibility="no-hide-descendants"
+          >
+            <Text fontFamily="EuclidCircularA-Medium" style={styles.headerBtnText}>
+              {t('general.accept')}
+            </Text>
+          </View>
         ) : null,
     })
   }, [enableMainButtons, canAccept, isSafeToAccept])
+
+  const accreditationBox = (
+    <AccreditationBox
+      party="ISSUER"
+      serviceName={displayIssuerName}
+      fallbackSchemaTitle={credentialDetails?.mainInfo.schemaName}
+      accreditation={accreditation}
+      onRetry={onRetryAccreditation}
+    />
+  )
+  const [wasAccreditationWarning, setWasAccreditationWarning] = useState(false)
+  const isAccreditationWarning = accreditation ? accreditation.status !== 'authorized' : wasAccreditationWarning
+  if (isAccreditationWarning !== wasAccreditationWarning) setWasAccreditationWarning(isAccreditationWarning)
 
   return (
     <SafeAreaView testID="credential-offer-screen" style={styles.container} edges={['bottom']}>
@@ -144,6 +171,11 @@ const BaseCredentialOffer: React.FC<Props> = ({
       {credentialDetails && (
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.subContainer}>
+            {isAccreditationWarning && (
+              <View style={styles.accreditationWarning} accessibilityRole="alert" accessibilityLiveRegion="polite">
+                {accreditationBox}
+              </View>
+            )}
             <Text style={styles.credentialTitle}>
               {displayIssuerName} {t('credentialOffer.offeringYou')}
             </Text>
@@ -166,15 +198,7 @@ const BaseCredentialOffer: React.FC<Props> = ({
                 serviceInfo={serviceInfo}
                 failedFetchInfo={failedFetchInfo}
                 onRetry={getServiceInfo}
-                ask={
-                  <AccreditationBox
-                    party="ISSUER"
-                    serviceName={displayIssuerName}
-                    fallbackSchemaTitle={credentialDetails.mainInfo.schemaName}
-                    accreditation={accreditation}
-                    onRetry={onRetryAccreditation}
-                  />
-                }
+                ask={isAccreditationWarning ? undefined : accreditationBox}
               />
             </View>
           </View>
