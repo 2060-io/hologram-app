@@ -6,7 +6,6 @@ declare module 'react-native-config' {
     MEDIATOR_PUBLIC_DID: string
     DEFAULT_SERVICE_PUBLIC_DID: string
     DEFAULT_SERVICE_ALIAS: string
-    INDY_VDR_PROXY_BASE_URL: string
     BACKUP_NAME: string
     APP_CHECK_DEBUG_MODE: boolean
     WEBRTC_SERVER_BASE_URL: string

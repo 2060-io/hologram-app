@@ -33,7 +33,7 @@ The main decisions are:
 5. **iOS:** a special E2E build removes the two pods that use MLKit. Then the app runs on
    arm64 simulators, and Rosetta is not necessary.
 6. **Scope:** no test uses third-party DIDComm services (for example BCGov). No test uses Indy
-   (`did:sov`, `did:indy`), because the app will remove Indy support.
+   (`did:sov`, `did:indy`), because the app does not support Indy.
 
 ## 2. Decisions
 

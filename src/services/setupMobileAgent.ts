@@ -28,10 +28,6 @@ const getDevEnvValue = async (key: keyof DevEnvsObject): Promise<string | undefi
   return undefined
 }
 
-const getIndyVDRProxyBaseUrl = async () => {
-  return (await getDevEnvValue('INDY_VDR_PROXY_BASE_URL')) ?? Config.INDY_VDR_PROXY_BASE_URL
-}
-
 const getDidcommVersions = async () => {
   const persisted = await getDevEnvValue('SUPPORTED_DIDCOMM_VERSIONS')
   return parseDidcommVersions(persisted ?? Config.SUPPORTED_DIDCOMM_VERSIONS)
@@ -39,7 +35,6 @@ const getDidcommVersions = async () => {
 
 let logger: Logger
 export const setupMobileAgent = async (): Promise<MobileAgent> => {
-  const indyVDRProxyBaseUrl = await getIndyVDRProxyBaseUrl()
   const didcommVersions = await getDidcommVersions()
   if (__DEV__) {
     logger = new HologramCustomLogger(LogLevel.Debug)
@@ -52,7 +47,6 @@ export const setupMobileAgent = async (): Promise<MobileAgent> => {
       logger,
       autoUpdateStorageOnStartup: true,
     },
-    indyVDRProxyBaseUrl,
     modulesConfig: {
       mediatorPickupStrategy: baseAgentConfig.mediatorPickupStrategy,
       didcommVersions,

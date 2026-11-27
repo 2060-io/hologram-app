@@ -8,7 +8,6 @@ import {
 export interface DevEnvsKeys {
   S3_SERVER_URL: string
   MEDIATOR_PUBLIC_DID: string
-  INDY_VDR_PROXY_BASE_URL: string
   WEBRTC_SERVER_BASE_URL: string
   SUPPORTED_DIDCOMM_VERSIONS: string
 }
@@ -38,7 +37,6 @@ export const devEnvPlaceholder: DevEnvsObject = {
   MEDIATOR_PUBLIC_DID: 'Mediator Public DID',
   S3_SERVER_URL: 'S3 server URL',
   WEBRTC_SERVER_BASE_URL: 'WebRTC server base URL',
-  INDY_VDR_PROXY_BASE_URL: 'Indy VDR Proxy base URL',
   SUPPORTED_DIDCOMM_VERSIONS: 'Supported DIDComm versions',
 }
 
@@ -56,10 +54,6 @@ export const allDevEnvs: DevEnv[] = [
   {
     key: 'WEBRTC_SERVER_BASE_URL',
     values: ['https://webrtc.dev.2060.io', 'https://webrtc.2060.io'],
-  },
-  {
-    key: 'INDY_VDR_PROXY_BASE_URL',
-    values: ['https://indyvdrproxy.ca.dev.2060.io', 'https://indyvdrproxy.ca.2060.io'],
   },
   {
     key: 'SUPPORTED_DIDCOMM_VERSIONS',

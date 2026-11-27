@@ -41,20 +41,16 @@ import { WebVhAnonCredsRegistry } from '@credo-ts/webvh/anoncreds'
 import { anoncreds } from '@hyperledger/anoncreds-react-native'
 import { askar } from '@openwallet-foundation/askar-react-native'
 import { DidCommVersion } from '@src/utils/developer'
-import { getAppCheckHeaders } from '@src/utils/firebaseUtils'
 import { walletDirectoryPath } from '@src/utils/RNFS'
 import { DidWebAnonCredsRegistry } from 'credo-ts-didweb-anoncreds'
-import { IndyVdrProxyAnonCredsRegistry, IndyVdrProxyDidResolver } from 'credo-ts-indy-vdr-proxy-client'
 import { MobileWsOutboundTransport } from '../transport/MobileWsOutboundTransport'
 
 const SECONDS_PER_DAY = 60 * 60 * 24
 
 export const getMobileAgentModules = (config: {
   mediatorPickupStrategy?: DidCommMediatorPickupStrategy
-  indyVDRProxyBaseUrl: string
   didcommVersions: DidCommVersion[]
 }) => {
-  const proxyBaseUrl = config.indyVDRProxyBaseUrl
   const { didcommVersions } = config
   return {
     askar: new AskarModule({
@@ -71,14 +67,6 @@ export const getMobileAgentModules = (config: {
           cacheOptions: { allowCaching: true, cacheDurationInSeconds: SECONDS_PER_DAY },
         }),
         new WebVhAnonCredsRegistry(),
-        new IndyVdrProxyAnonCredsRegistry({
-          proxyBaseUrl,
-          headers: getAppCheckHeaders,
-          cacheOptions: {
-            allowCaching: true,
-            cacheDurationInSeconds: SECONDS_PER_DAY,
-          },
-        }),
       ],
       anoncreds,
     }),
@@ -89,7 +77,6 @@ export const getMobileAgentModules = (config: {
         new WebDidResolver(),
         new KeyDidResolver(),
         new PeerDidResolver(),
-        new IndyVdrProxyDidResolver({ proxyBaseUrl, headers: getAppCheckHeaders }),
         new WebVhDidResolver(),
       ],
     }),
