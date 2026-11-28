@@ -53,14 +53,94 @@ We run the stack in CI. We have not run it end to end on a laptop.
 The test CA in `e2e/stack/certs` is for tests only. Its key is public, so never trust it anywhere
 else. It can only sign DNS names under `hologram.test`, and only the `e2e` build type trusts it.
 
+## External suite
+
+The flows in `maestro/external` (tag `external`) run against the deployed demo services: the 2060
+demo chatbot on devnet and the Verana playground "demo" cast on testnet. `services.json` is the
+catalogue that the preflight checks: for each service the network, the expected trust status and
+minimum age, and the URLs of its DID document and health. The flows hold the expected accreditation
+of each service. CI runs the suite from `.github/workflows/e2e-external.yml`, on request
+or with the `e2e-external` label on a PR.
+
+The suite needs no local stack. Build the apps with `.env.e2e-dev`, then run the preflight and the
+flows:
+
+```sh
+ENVFILE=.env.e2e-dev ./android/gradlew -p android assembleDevE2e assembleStagingE2e -PreactNativeArchitectures=x86_64
+# install the two APKs and set the PIN as above
+node e2e/preflight/preflight.mjs
+e2e/ci/run-flows.sh external
+```
+
+The preflight checks the chatbot `/health`, the `/.well-known/did.json` of each service and its trust
+verdict from the Verana indexers (`POST /v4/verifiable-trust/resolve`, like the app). It does not ask
+the playground API for anything, because each request creates an exchange on the testnet agents. It
+writes the versions to the job summary and the unhealthy services to `e2e-out/skipped-services.txt`,
+and it does not fail when a service is down. In CI it runs once, before the shards, which all get the
+same skip list. `run-flows.sh` then does not run a flow that has the
+`svc-<id>` tag of a skipped service, and the summary lists it as `skipped: infra`, apart from the
+failed flows. Delete the file to run every flow.
+
+Each external flow names the services that it needs, with the ids of `services.json`:
+`tags: [external, svc-chatbot]`. A flow that needs the minimum age of `services.json` also has the
+tag `svc-<id>-minimum-age`: when the age that the indexer reports is different, the preflight skips
+only these flows.
+
+A flow that fails because of a known bug has the tag `known-issue` and a comment with the link to the
+issue. `run-flows.sh` does not run these flows unless `known-issue` is one of the requested tags, and
+the summary lists them apart. `e2e/ci/run-flows.sh known-issue` runs only them. The fix of the issue
+removes the tag.
+
+`run-flows.sh` passes `CHATBOT_BACKEND` and `PLAYGROUND_API` from `services.json`, and a `RUN_ID`, to
+Maestro. To run one flow with Maestro alone, pass them yourself:
+
+```sh
+maestro test -e RUN_ID=my-run \
+  -e CHATBOT_BACKEND=https://demo-chatbot-backend.demos.dev.hologram.zone \
+  -e PLAYGROUND_API=https://playground.testnet.verana.network/api/demo \
+  e2e/maestro/external/<flow>.yaml
+```
+
+The `runScript` helpers:
+
+- `chatbot-invitation.js` gets a one-time invitation from `${CHATBOT_BACKEND}/invitation?label=${RUN_ID}`.
+  It sets `output.chatbot.link`, a `didcomm://invite?_url=` link for `openLink`, and
+  `output.chatbot.invitationId`.
+- `service-did.js` (`DID_DOCUMENT`) reads a `did.json` and sets `output.serviceDid` to its `did:webvh`
+  alias, or to its id when it has none.
+- `playground-offer.js` (`SERVICE`, and `ACTION: request` for a verifier) gets a credential offer or a
+  proof request from the playground. It sets `output.playground.link` and
+  `output.playground.exchangeId`, which is empty for `demo-untrusted` (a plain invitation).
+- `playground-state.js` (`SERVICE`, `KIND: credential|proof`, `EXCHANGE_ID`, `EXPECT`, and `TIMEOUT_S`,
+  60 by default) asks the playground for the state every 2 s until it matches. `EXPECT` is a regex
+  for the whole state (`offer-sent`, `done`, `abandoned`, ...), and it also matches the outcomes
+  `done` and `declined` that the playground reports. The script fails at once on another final state,
+  or at the timeout. It sets `output.playgroundState` to the last answer: `{state, done, declined, error}`
+  for a credential, `{state, verified, claims}` for a proof.
+
+Maestro scripts have no timers, so `playground-state.js` waits inside one `runScript` and the flow
+needs no `repeat`:
+
+```yaml
+- runScript:
+    file: ../scripts/playground-state.js
+    env:
+      SERVICE: demo-issuer-accredited
+      KIND: credential
+      EXCHANGE_ID: ${output.playground.exchangeId}
+      EXPECT: done
+```
+
 ## Layout
 
 - `maestro/smoke`: checks that the two apps open. It needs no backend.
 - `maestro/local`: flows that need the local stack.
-- `maestro/scripts`: `runScript` files that call the adb helper.
-- `maestro/subflows`: shared steps. `APP_ID`, `PEER_APP_ID`, `NAME`, `LINK` and `APP_LABEL` are their parameters.
+- `maestro/external`: flows that need the deployed demo services.
+- `maestro/scripts`: `runScript` files that call the adb helper, the chatbot and the playground.
+- `maestro/subflows`: shared steps. `APP_ID`, `PEER_APP_ID`, `NAME`, `LINK`, `APP_LABEL` and `MS` are their parameters.
 - `maestro/fixtures`: media for the flows. `SHA256SUMS` has their hashes. Maestro only reads media inside the directory that it runs, so they are under `maestro`.
 - `ci`: scripts for the CI job in `.github/workflows/e2e-android.yml`. `run-flows.sh` runs each flow on its own, with its screen recording and app logs, and splits the flows between the shards of the job. `FLOW_FILTER=<regex>` limits it to the matching flow files.
+- `services.json` and `preflight`: the catalogue of the external services, and the check that runs before their flows.
 - `stack`: the local stack.
 
 ## The `e2e` build type

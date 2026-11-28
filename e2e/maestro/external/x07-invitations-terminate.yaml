@@ -1,0 +1,108 @@
+appId: io.twentysixty.mobileagent.dev
+# Known issue: https://github.com/2060-io/hologram-app/issues/564
+tags: [external, svc-chatbot, svc-demo-issuer-accredited, known-issue]
+---
+- runFlow:
+    file: ../subflows/signup.yaml
+    env:
+      APP_ID: io.twentysixty.mobileagent.dev
+      NAME: Alice
+- runFlow: ../subflows/chatbot-connect.yaml
+- runScript:
+    file: ../scripts/service-did.js
+    env:
+      DID_DOCUMENT: https://demo-issuer-accredited.playground.testnet.verana.network/.well-known/did.json
+
+- runFlow:
+    file: ../subflows/chatbot-send.yaml
+    env:
+      TEXT: "/invitation did=${output.serviceDid}"
+- extendedWaitUntil:
+    visible: { id: "chat-invitation-connect" }
+    timeout: 90000
+- takeScreenshot: x07-a-service-invitation
+- tapOn: { id: "chat-invitation-connect" }
+- extendedWaitUntil:
+    visible: { id: "invitation-screen" }
+    timeout: 30000
+- extendedWaitUntil:
+    visible: { id: "trust-status-trusted" }
+    timeout: 90000
+- extendedWaitUntil:
+    visible: { id: "invitation-accept" }
+    timeout: 30000
+- takeScreenshot: x07-b-service-invitation-screen
+- tapOn: { id: "invitation-accept" }
+- extendedWaitUntil:
+    notVisible: { id: "invitation-screen" }
+    timeout: 60000
+- extendedWaitUntil:
+    visible: { id: "chat-screen" }
+    timeout: 60000
+- assertNotVisible: { id: "chat-invitation" }
+- extendedWaitUntil:
+    visible: { id: "composer-input" }
+    timeout: 60000
+- takeScreenshot: x07-c-service-chat
+
+- tapOn: { id: "chat-back" }
+- tapOn: { id: "chats-tab" }
+- tapOn: ".*Invitation"
+- extendedWaitUntil:
+    visible: { id: "chat-invitation-accepted" }
+    timeout: 30000
+
+- runFlow:
+    file: ../subflows/chatbot-send.yaml
+    env:
+      TEXT: "/echo e2e-marker-sub"
+- extendedWaitUntil:
+    visible: " *e2e-marker-sub"
+    timeout: 60000
+- runFlow:
+    file: ../subflows/chatbot-send.yaml
+    env:
+      TEXT: "/invitation"
+- extendedWaitUntil:
+    visible:
+      id: "chat-invitation-connect"
+      below: " *e2e-marker-sub"
+    timeout: 90000
+- takeScreenshot: x07-d-sub-invitation
+- tapOn:
+    id: "chat-invitation-connect"
+    below: " *e2e-marker-sub"
+- extendedWaitUntil:
+    visible: { id: "invitation-accept" }
+    timeout: 60000
+- tapOn: { id: "invitation-accept" }
+- extendedWaitUntil:
+    notVisible: { id: "invitation-screen" }
+    timeout: 60000
+- extendedWaitUntil:
+    visible: { id: "chat-screen" }
+    timeout: 60000
+- extendedWaitUntil:
+    visible: "Welcome to our service.*"
+    timeout: 120000
+- assertNotVisible: " *e2e-marker-sub"
+- extendedWaitUntil:
+    visible: { id: "composer-input" }
+    timeout: 60000
+- takeScreenshot: x07-e-sub-connection
+
+- runFlow:
+    file: ../subflows/chatbot-send.yaml
+    env:
+      TEXT: "/terminate"
+- extendedWaitUntil:
+    visible: "This connection has been terminated"
+    timeout: 90000
+- assertNotVisible: { id: "composer-input" }
+- assertNotVisible: { id: "chat-menu" }
+- takeScreenshot: x07-f-terminated
+- tapOn: { id: "chat-header-name" }
+- extendedWaitUntil:
+    visible: { id: "connection-details-terminated" }
+    timeout: 20000
+- takeScreenshot: x07-g-terminated-details

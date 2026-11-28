@@ -1,0 +1,40 @@
+appId: io.twentysixty.mobileagent.dev
+# Known issue: https://github.com/2060-io/hologram-demos-deploy/issues/123
+tags: [external, svc-chatbot, known-issue]
+---
+- runFlow:
+    file: ../subflows/signup.yaml
+    env:
+      APP_ID: io.twentysixty.mobileagent.dev
+      NAME: Alice
+- runFlow: ../subflows/chatbot-connect.yaml
+
+- runFlow:
+    file: ../subflows/chatbot-send.yaml
+    env:
+      TEXT: "/call"
+- extendedWaitUntil:
+    visible: "(?i)join call"
+    timeout: 120000
+- takeScreenshot: x09-a-call-offer
+- tapOn: "(?i)join call"
+- extendedWaitUntil:
+    visible: "While using the app"
+    timeout: 10000
+    optional: true
+- repeat:
+    times: 3
+    while:
+      visible: "While using the app"
+    commands:
+      - tapOn: "While using the app"
+      - waitForAnimationToEnd
+- extendedWaitUntil:
+    visible: "End call|Connecting.*"
+    timeout: 60000
+    optional: true
+- takeScreenshot: x09-b-in-call
+- extendedWaitUntil:
+    visible: "Call was succesful"
+    timeout: 240000
+- takeScreenshot: x09-c-success

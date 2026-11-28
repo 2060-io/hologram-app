@@ -1,0 +1,38 @@
+appId: io.twentysixty.mobileagent.dev
+# Known issue: https://github.com/verana-labs/playground/issues/362
+tags: [external, svc-demo-untrusted, known-issue]
+---
+- runFlow:
+    file: ../subflows/signup.yaml
+    env:
+      APP_ID: io.twentysixty.mobileagent.dev
+      NAME: Alice
+- runScript:
+    file: ../scripts/playground-offer.js
+    env:
+      SERVICE: demo-untrusted
+- runFlow:
+    file: ../subflows/open-link.yaml
+    env:
+      LINK: ${output.playground.link}
+      APP_LABEL: Hologram dev
+- extendedWaitUntil:
+    visible: { id: "invitation-screen" }
+    timeout: 90000
+- extendedWaitUntil:
+    visible: { id: "trust-status-untrusted" }
+    timeout: 90000
+- assertNotVisible: { id: "trust-status-trusted" }
+- takeScreenshot: x14-invitation
+- tapOn: { id: "invitation-accept" }
+- extendedWaitUntil:
+    visible: { id: "invitation-connect-anyway" }
+    timeout: 10000
+- assertVisible: "Connect anyway \\(unsafe\\)"
+- tapOn: { id: "modal-cancel" }
+- assertNotVisible: { id: "chat-screen" }
+- tapOn: { id: "invitation-refuse" }
+- extendedWaitUntil:
+    notVisible: { id: "invitation-screen" }
+    timeout: 10000
+- takeScreenshot: x14-final

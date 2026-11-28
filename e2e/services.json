@@ -1,0 +1,61 @@
+{
+  "env": {
+    "CHATBOT_BACKEND": "https://demo-chatbot-backend.demos.dev.hologram.zone",
+    "PLAYGROUND_API": "https://playground.testnet.verana.network/api/demo"
+  },
+  "indexers": {
+    "devnet": "https://idx.devnet.verana.network",
+    "testnet": "https://idx.testnet.verana.network"
+  },
+  "services": {
+    "chatbot": {
+      "network": "devnet",
+      "status": "trusted",
+      "minimumAge": 18,
+      "health": "https://demo-chatbot-backend.demos.dev.hologram.zone/health",
+      "didDocument": "https://demo-chatbot.demos.dev.hologram.zone/.well-known/did.json"
+    },
+    "demo-issuer-accredited": {
+      "network": "testnet",
+      "status": "trusted",
+      "minimumAge": 0,
+      "didDocument": "https://demo-issuer-accredited.playground.testnet.verana.network/.well-known/did.json"
+    },
+    "demo-issuer-unaccredited": {
+      "network": "testnet",
+      "status": "trusted",
+      "minimumAge": 0,
+      "didDocument": "https://demo-issuer-unaccredited.playground.testnet.verana.network/.well-known/did.json"
+    },
+    "demo-issuer-untrusted": {
+      "network": "testnet",
+      "status": "untrusted",
+      "minimumAge": 0,
+      "didDocument": "https://demo-issuer-untrusted.playground.testnet.verana.network/.well-known/did.json"
+    },
+    "demo-verifier-accredited": {
+      "network": "testnet",
+      "status": "trusted",
+      "minimumAge": 0,
+      "didDocument": "https://demo-verifier-accredited.playground.testnet.verana.network/.well-known/did.json"
+    },
+    "demo-verifier-unaccredited": {
+      "network": "testnet",
+      "status": "trusted",
+      "minimumAge": 0,
+      "didDocument": "https://demo-verifier-unaccredited.playground.testnet.verana.network/.well-known/did.json"
+    },
+    "demo-verifier-untrusted": {
+      "network": "testnet",
+      "status": "untrusted",
+      "minimumAge": 0,
+      "didDocument": "https://demo-verifier-untrusted.playground.testnet.verana.network/.well-known/did.json"
+    },
+    "demo-untrusted": {
+      "network": "testnet",
+      "status": "untrusted",
+      "minimumAge": 0,
+      "didDocument": "https://demo-untrusted.playground.testnet.verana.network/.well-known/did.json"
+    }
+  }
+}

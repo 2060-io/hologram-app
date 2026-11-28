@@ -240,15 +240,15 @@ GitHub runner
       runScript → playground state API → the service side agrees with the app (done / declined)
 ```
 
-`e2e/services.json` is a catalogue. Each entry gives these fields:
+`e2e/services.json` is the catalogue that the preflight checks. Each entry gives these fields:
 
-- the source of the invitation (the chatbot endpoint, or the playground API)
 - the network (`testnet` or `devnet`)
 - the expected service status
-- the expected issuer or verifier accreditation
 - the minimum age
+- the URLs of the DID document and of the health endpoint
 
-When a service changes, we edit the catalogue, not the flows.
+The flows hold the expected issuer or verifier accreditation, because each flow asserts it on the
+screen.
 
 ### 5.4 Changes to the app
 

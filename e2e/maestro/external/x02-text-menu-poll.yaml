@@ -1,0 +1,69 @@
+appId: io.twentysixty.mobileagent.dev
+tags: [external, svc-chatbot]
+---
+- runFlow:
+    file: ../subflows/signup.yaml
+    env:
+      APP_ID: io.twentysixty.mobileagent.dev
+      NAME: Alice
+- runFlow: ../subflows/chatbot-connect.yaml
+
+- runFlow:
+    file: ../subflows/chatbot-send.yaml
+    env:
+      TEXT: "/echo e2e-echo-pong"
+- extendedWaitUntil:
+    visible: " *e2e-echo-pong"
+    timeout: 60000
+- takeScreenshot: x02-a-echo
+
+- runFlow:
+    file: ../subflows/chatbot-send.yaml
+    env:
+      TEXT: "/trace on"
+- extendedWaitUntil:
+    visible: "trace on"
+    timeout: 60000
+
+- runFlow:
+    file: ../subflows/chatbot-send.yaml
+    env:
+      TEXT: "/question 3"
+- extendedWaitUntil:
+    visible: "Test question"
+    timeout: 60000
+- assertVisible: "Option 1"
+- assertVisible: "Option 3"
+- tapOn: "Option 2"
+- extendedWaitUntil:
+    visible: "answer Option 2"
+    timeout: 60000
+- takeScreenshot: x02-b-question
+
+- tapOn: { id: "chat-menu" }
+- extendedWaitUntil:
+    visible: ".*Home.*"
+    timeout: 15000
+- tapOn: ".*Home.*"
+- extendedWaitUntil:
+    visible: "menu home"
+    timeout: 60000
+- takeScreenshot: x02-c-menu
+
+- tapOn: { id: "chat-menu" }
+- extendedWaitUntil:
+    visible: ".*World Cup poll.*"
+    timeout: 15000
+- tapOn: ".*World Cup poll.*"
+- extendedWaitUntil:
+    visible: "menu poll"
+    timeout: 60000
+- extendedWaitUntil:
+    visible: ".*Argentina.*"
+    timeout: 60000
+- takeScreenshot: x02-d-poll
+- tapOn: ".*Argentina.*"
+- extendedWaitUntil:
+    visible: "Correct! Vamos Argentina!"
+    timeout: 60000
+- takeScreenshot: x02-e-poll-answer

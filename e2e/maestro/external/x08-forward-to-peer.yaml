@@ -1,0 +1,82 @@
+appId: io.twentysixty.mobileagent.dev
+# Known issue: https://github.com/2060-io/hologram-app/issues/566 and https://github.com/2060-io/hologram-app/issues/565
+tags: [external, svc-chatbot, known-issue]
+---
+- runFlow: ../subflows/signup-both.yaml
+- runFlow: ../subflows/connect-peers.yaml
+
+- runFlow:
+    file: ../subflows/switch-app.yaml
+    env:
+      APP_ID: io.twentysixty.mobileagent.dev
+- runFlow: ../subflows/chatbot-connect.yaml
+
+- tapOn: { id: "chat-header-name" }
+- extendedWaitUntil:
+    visible: { id: "connection-details-screen" }
+    timeout: 20000
+- scrollUntilVisible:
+    element:
+      id: "connection-details-forward"
+    direction: DOWN
+    timeout: 30000
+- tapOn: { id: "connection-details-forward" }
+- extendedWaitUntil:
+    visible: "Bob *"
+    timeout: 30000
+- tapOn: "Bob *"
+- tapOn: { id: "connections-selection-send" }
+- extendedWaitUntil:
+    visible: { id: "toast-success" }
+    timeout: 30000
+- takeScreenshot: x08-a-forwarded
+
+
+- runFlow:
+    file: ../subflows/switch-app.yaml
+    env:
+      APP_ID: io.twentysixty.mobileagent.st
+- repeat:
+    times: 4
+    while:
+      notVisible: { id: "chat-invitation-connect" }
+    commands:
+      - extendedWaitUntil:
+          visible: { id: "chat-invitation-connect" }
+          timeout: 20000
+          optional: true
+      - runFlow:
+          when:
+            notVisible: { id: "chat-invitation-connect" }
+          commands:
+            - runFlow:
+                file: ../subflows/switch-app.yaml
+                env:
+                  APP_ID: io.twentysixty.mobileagent.dev
+            - extendedWaitUntil:
+                visible: "never appears"
+                timeout: 8000
+                optional: true
+            - runFlow:
+                file: ../subflows/switch-app.yaml
+                env:
+                  APP_ID: io.twentysixty.mobileagent.st
+- assertVisible: { id: "chat-invitation-connect" }
+- takeScreenshot: x08-b-invitation-on-b
+
+- tapOn: { id: "chat-invitation-connect" }
+- extendedWaitUntil:
+    visible: { id: "invitation-accept" }
+    timeout: 90000
+- takeScreenshot: x08-c-invitation-screen-on-b
+- tapOn: { id: "invitation-accept" }
+- extendedWaitUntil:
+    visible: { id: "chat-screen" }
+    timeout: 60000
+- extendedWaitUntil:
+    visible: "Welcome to our service.*"
+    timeout: 120000
+- extendedWaitUntil:
+    visible: { id: "chat-menu" }
+    timeout: 60000
+- takeScreenshot: x08-d-chatbot-on-b

@@ -1,0 +1,133 @@
+appId: io.twentysixty.mobileagent.dev
+tags: [external, svc-chatbot]
+---
+- runFlow:
+    file: ../subflows/signup.yaml
+    env:
+      APP_ID: io.twentysixty.mobileagent.dev
+      NAME: Alice
+- runFlow: ../subflows/chatbot-connect.yaml
+
+- runFlow:
+    file: ../subflows/chatbot-send.yaml
+    env:
+      TEXT: "/media image"
+- extendedWaitUntil:
+    visible: { id: "chat-image-(open|download)" }
+    timeout: 120000
+- runFlow:
+    when:
+      visible: { id: "chat-image-download" }
+    commands:
+      - tapOn: { id: "chat-image-download" }
+- extendedWaitUntil:
+    visible: { id: "chat-image-open" }
+    timeout: 120000
+- tapOn: { id: "chat-image-open" }
+- extendedWaitUntil:
+    visible: { id: "chat-image-lightbox" }
+    timeout: 15000
+- takeScreenshot: x03-a-image
+- back
+- extendedWaitUntil:
+    notVisible: { id: "chat-image-lightbox" }
+    timeout: 15000
+
+- runFlow:
+    file: ../subflows/chatbot-send.yaml
+    env:
+      TEXT: "/media video"
+- extendedWaitUntil:
+    visible: { id: "chat-video-(download|play)" }
+    timeout: 120000
+- runFlow:
+    when:
+      visible: { id: "chat-video-download" }
+    commands:
+      - tapOn: { id: "chat-video-download" }
+- extendedWaitUntil:
+    visible: { id: "chat-video-play" }
+    timeout: 120000
+- tapOn: { id: "chat-video-play" }
+- extendedWaitUntil:
+    visible: { id: "chat-video-controls" }
+    timeout: 30000
+- assertNotVisible: "There was a problem loading the video."
+- takeScreenshot: x03-b-video
+- back
+- extendedWaitUntil:
+    notVisible: { id: "chat-video-player" }
+    timeout: 15000
+
+- runFlow:
+    file: ../subflows/chatbot-send.yaml
+    env:
+      TEXT: "/media audio"
+- extendedWaitUntil:
+    visible: { id: "chat-voice-note-(download|play)" }
+    timeout: 120000
+- runFlow:
+    when:
+      visible: { id: "chat-voice-note-download" }
+    commands:
+      - tapOn: { id: "chat-voice-note-download" }
+- extendedWaitUntil:
+    visible: { id: "chat-voice-note-play" }
+    timeout: 120000
+# The waveform animates during playback, so a default tap waits for the whole note before it returns
+- tapOn:
+    id: "chat-voice-note-play"
+    waitToSettleTimeoutMs: 500
+- extendedWaitUntil:
+    visible: { id: "chat-voice-note-pause" }
+    timeout: 10000
+- takeScreenshot: x03-c-audio
+
+- runFlow:
+    file: ../subflows/chatbot-send.yaml
+    env:
+      TEXT: "/media file"
+- extendedWaitUntil:
+    visible: "Your wallet can ignore this item.*"
+    timeout: 120000
+- assertVisible: { id: "composer-input" }
+- takeScreenshot: x03-d-file
+
+- runFlow:
+    file: ../subflows/chatbot-send.yaml
+    env:
+      TEXT: "/link https://2060.io E2ELink Description"
+- extendedWaitUntil:
+    visible: { id: "chat-link-open" }
+    timeout: 60000
+- assertVisible: "E2ELink"
+- takeScreenshot: x03-e-link
+- tapOn: { id: "chat-link-open" }
+- extendedWaitUntil:
+    visible: { id: "chat-link-close" }
+    timeout: 30000
+- takeScreenshot: x03-f-web-view
+- tapOn: { id: "chat-link-close" }
+- extendedWaitUntil:
+    notVisible: { id: "chat-link-close" }
+    timeout: 15000
+
+- runFlow:
+    file: ../subflows/chatbot-send.yaml
+    env:
+      TEXT: "/profile E2EBot ${CHATBOT_BACKEND}/bunny.jpeg"
+# A trusted service keeps the name of its service credential, so the profile name must never show
+- extendedWaitUntil:
+    visible: "E2EBot"
+    timeout: 15000
+    optional: true
+- assertVisible: { id: "chat-header-name" }
+- assertNotVisible: "E2EBot"
+- takeScreenshot: x03-g-profile
+- tapOn: { id: "chat-back" }
+- tapOn: { id: "chats-tab" }
+- extendedWaitUntil:
+    visible: { id: "chats-list" }
+    timeout: 20000
+- assertNotVisible: "E2EBot"
+- takeScreenshot: x03-final
